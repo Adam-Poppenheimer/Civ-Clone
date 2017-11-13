@@ -1,0 +1,604 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UnityCustomUtilities</name>
+    </assembly>
+    <members>
+        <member name="T:UnityCustomUtilities.Grids.FractionalHexCoords">
+            <summary>
+            Represents an alternate, fractional hex coordinate used mostly for line drawing and determining
+            the nearest hex coordinates of a given point in space.
+            </summary>
+            <remarks>
+            Check the resource linked in the namespace summary for a description of what cubic coordinates are.
+            </remarks>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.FractionalHexCoords.Q">
+            <summary>
+            The first cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.FractionalHexCoords.R">
+            <summary>
+            The second cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.FractionalHexCoords.S">
+            <summary>
+            The third cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.FractionalHexCoords.#ctor(System.Single,System.Single,System.Single)">
+            <summary>
+            Creates a new fractional hex out of the given cubic coordinates.
+            </summary>
+            <param name="q">The Q of the new hex</param>
+            <param name="r">The R of the new hex</param>
+            <param name="s">The S of the new hex</param>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.FractionalHexCoords.HexRound(UnityCustomUtilities.Grids.FractionalHexCoords)">
+            <summary>
+            Rounds the given fractional hex to its nearest integer-coordinate hex.
+            </summary>
+            <param name="fractionalCoords">The fractional hex to convert</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.FractionalHexCoords.HexLerp(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords,System.Single)">
+            <summary>
+            Linearly interpolates between the two integer-coordinate hexes, returning a
+            fractional hex that lies somewhere between the two.
+            </summary>
+            <param name="baseHex">The hex to start from</param>
+            <param name="lerpedHex">The hex to lerp towards</param>
+            <param name="t">The parameter of the interpolation</param>
+            <returns>The fractional hex between them</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.FractionalHexCoords.HexLinedraw(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Given a starting and ending hex, produces a list of hex coordinates that
+            represent a continuous line between them.
+            </summary>
+            <param name="startingHex">The hex to start from</param>
+            <param name="endingHex">The hex to end on</param>
+            <returns>A list of hexes that approximate a line between the two, 
+            capped by the starting and ending hexes themselves.</returns>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexCoords">
+            <summary>
+            Represents a coordinate of a hex tile in cubic coordinates, and contains a number
+            of methods for interacting with such coordinates.
+            </summary>
+            <remarks>
+            Check the resource linked in the namespace summary for a description of what cubic coordinates are.
+            Loosely, they are defined in terms of their distance from the origin of a hypothetical grid, but
+            the sum of the coordinates must always equal zero.
+            </remarks>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexCoords.Directions">
+            <summary>
+            Contains a collection of hex coordinates that, when added to a given hex coordinate,
+            produce a neighboring coordinate in a given direction.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexCoords.Diagonals">
+            <summary>
+            Contains a collection of hex coordinates taht, when added to a given hex coordinate,
+            produces a diagonal coordinate in a given direction. Diagonal hexes are the ones
+            pointed to directly by the current hex's vertex.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexCoords.Q">
+            <summary>
+            The first cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexCoords.R">
+            <summary>
+            The second cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexCoords.S">
+            <summary>
+            The third cubic coordinate of the hex.
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.#ctor(System.Int32,System.Int32,System.Int32)">
+            <summary>
+            Creates a new fractional hex out of the given cubic coordinates.
+            </summary>
+            <param name="q">The Q of the new hex</param>
+            <param name="r">The R of the new hex</param>
+            <param name="s">The S of the new hex</param>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.op_Equality(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.op_Inequality(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.Add(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Adds the two coordinates together. This is simply a pairwise addition 
+            of the HexCoords' components.
+            </summary>
+            <param name="a">The first coordinate to add</param>
+            <param name="b">The second coordinate to add</param>
+            <returns>The resulting HexCoords</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.Subtract(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Subtracts second coordinate from the first. This is simply a pairwise subtraction 
+            of the HexCoords' components.
+            </summary>
+            <param name="a">The first coordinate to subtract</param>
+            <param name="b">The second coordinate to subtract</param>
+            <returns>The resulting HexCoords</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.Scale(UnityCustomUtilities.Grids.HexCoords,System.Int32)">
+            <summary>
+            Scales the given coordinate by the given integer scale. This is simply a 
+            scalar multiplication of the HexCoord's components.
+            </summary>
+            <param name="a">The HexCoords to scale</param>
+            <param name="k">The factor of the scale</param>
+            <returns>The resulting HexCoords</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetCoordInDirection(System.Int32)">
+            <summary>
+            Gets the coordinate offset that, when added to a HexCoords, returns the
+            coordinates of its neighbor in the given direction.
+            </summary>
+            <param name="dir">The direction of the coordinate offset you wish to get.</param>
+            <returns>The offset that provides the neighbor</returns>
+            <remarks>
+            Neighbors begin in the upper right hand corner and go counterclockwise.
+            </remarks>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetNeighborInDirection(UnityCustomUtilities.Grids.HexCoords,System.Int32)">
+            <summary>
+            Returns the neighboring coordinates of the given hex in the given direction.
+            </summary>
+            <param name="hex">The hex to consider</param>
+            <param name="dir">The direction of the desired neighbor</param>
+            <returns>The neighbor of the hex to consider</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetDiagonalNeighbor(UnityCustomUtilities.Grids.HexCoords,System.Int32)">
+            <summary>
+            Returns the diagonally neighboring coordinates of the given hex in the given direction.
+            </summary>
+            <param name="hex">The hex to consider</param>
+            <param name="dir">The direction of the desired diagonal neighbor</param>
+            <returns>The HexCoords representing the neighbor pointed to by the the specified vertex</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetLength(UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Get the distance from the center HexCoords (0, 0, 0) to the given hex.
+            This is analogous to the magnitude of a vector.
+            </summary>
+            <param name="hex">The hex to consider</param>
+            <returns>The distance from the center to the given hex</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetDistanceBetween(UnityCustomUtilities.Grids.HexCoords,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Finds the distance between the given hexes.
+            </summary>
+            <param name="a">The first hex to consider</param>
+            <param name="b">The second hex to consider</param>
+            <returns>The distance between them</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetHexesInRadius(UnityCustomUtilities.Grids.HexCoords,System.Int32)">
+            <summary>
+            Return all hexes within a given radius to the given hex, including the
+            hex itself.
+            </summary>
+            <param name="center">The center hex</param>
+            <param name="radius">The desired radius of the search</param>
+            <returns>All hexes whose distance to the center hex is less than or equal to the radius</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetHexRing(UnityCustomUtilities.Grids.HexCoords,System.Int32)">
+            <summary>
+            Retrieves all hexes whose distance from the given center hex is the given radius.
+            </summary>
+            <param name="center">The center hex</param>
+            <param name="radius">The desired radius of the ring</param>
+            <returns>All hexes whose distance to the center hex is equal to the radius</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.ToString">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.Equals(System.Object)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexCoords.GetHashCode">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexGrid`1">
+            <summary>
+            The standard implementation of HexGridBase, which defines a grid of hexagonal tiles.
+            </summary>
+            <typeparam name="T">The type of the tile the grid is using</typeparam>
+            <remarks>
+            This class does not contain a standardized way of creating grids, even though several such
+            methods exist. This class probably needs to be refactored into an abstract class with
+            several methods for generating a grid of a certain shape. As it stands, grid creation is
+            entirely a responsibility of subclasses.
+            </remarks>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGrid`1.Tiles">
+            <inheritdoc/>
+        </member>
+        <member name="F:UnityCustomUtilities.Grids.HexGrid`1.tiles">
+            <summary>
+            A manipulable list of the tiles contained within the grid.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGrid`1.Layout">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGrid`1.TilePathingLogic">
+            <inheritdoc/>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGrid`1.HexToCoords">
+            <summary>
+            A mapping from a given hex tile to its coordinates.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGrid`1.CoordsToHex">
+            <summary>
+            A mapping between a given hex coordinate to its hex tile.
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.TryGetTileOfCoords(UnityCustomUtilities.Grids.HexCoords,`0@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.TryGetNeighborInDirection(`0,System.Int32,`0@)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetDistance(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetShorestPathBetween(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInLine(`0,`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInLine(`0,`0,System.Predicate{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInRadius(`0,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInRadius(`0,System.Int32,System.Predicate{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetNeighbors(`0)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInRing(`0,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGrid`1.GetTilesInRing(`0,System.Int32,System.Predicate{`0})">
+            <inheritdoc/>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexGridBase`1">
+            <summary>
+            An abstract interface defining a grid of hexagonal tiles that can be queried in a 
+            number of ways.
+            </summary>
+            <typeparam name="T">The type of the tile the grid is using</typeparam>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridBase`1.Tiles">
+            <summary>
+            A ReadOnlyCollection of the tiles contained within the grid.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridBase`1.Layout">
+            <summary>
+            The layout that controls how the large the grid's tiles are, where its origin is,
+            and how its hexes are supposed to be oriented.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridBase`1.TilePathingLogic">
+            <summary>
+            The pathing logic used to determine the costs and impassability of tiles
+            for the purposes of pathfinding.
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.TryGetTileOfCoords(UnityCustomUtilities.Grids.HexCoords,`0@)">
+            <summary>
+            Attempts to get the tile of the given coordinates.
+            </summary>
+            <param name="coords">The coordinates of the desired tile</param>
+            <param name="value">An output that contains the desired tile if found</param>
+            <returns>Whether there was a tile with the given coordinates</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.TryGetNeighborInDirection(`0,System.Int32,`0@)">
+            <summary>
+            Attempts to get the neighbor of the given tile in the given direction.
+            </summary>
+            <param name="centeredTile">The tile whose neighbor is being searched for</param>
+            <param name="neighborDirection">The direction of the desired neighbor</param>
+            <param name="value">An output that contains the desired neighbor if found</param>
+            <returns>Whether there was a neighbor in the given direction</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetDistance(`0,`0)">
+            <summary>
+            Calculates the distance between the two tiles.
+            </summary>
+            <param name="tileA">The first tile to consider</param>
+            <param name="tileB">The second tile to consider</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInRadius(`0,System.Int32)">
+            <summary>
+            Get all the tiles within the given radius of the given center tile, including the center tile.
+            </summary>
+            <param name="center">The center tile to consider</param>
+            <param name="radius">The radius of the search</param>
+            <returns>All tiles whose distance from the center tile is less than or equal to the radius</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInRadius(`0,System.Int32,System.Predicate{`0})">
+            <summary>
+            Get all the tiles within the given radius of the given center tile that meet the given condition,
+            including the center tile if it meets the condition.
+            </summary>
+            <param name="center">The center tile to consider</param>
+            <param name="radius">The radius of the search</param>
+            <param name="condition">The condition to meet</param>
+            <returns>All tiles within the radius of the center tile that meet the condition</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInLine(`0,`0)">
+            <summary>
+            Gets all tiles that overlap a line going from the center of the given starting tile
+            to the center of the given ending tile.
+            </summary>
+            <param name="start">The starting tile to consider</param>
+            <param name="end">The ending tile to consider</param>
+            <returns>A collection of tiles that overlap the desired line</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInLine(`0,`0,System.Predicate{`0})">
+            <summary>
+            Gets all tiles that overlap a line going from the center of the given starting tile
+            to the center of the given ending tile that meet a given condition.
+            </summary>
+            <param name="start">The starting tile to consider</param>
+            <param name="end">The ending tile to consider</param>
+            <param name="condition">The condition to meet</param>
+            <returns>A collection of tiles that overlap the desired line and meet the given condition</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInRing(`0,System.Int32)">
+            <summary>
+            Get all tiles whose distance is exactly the given radius from the given center tile.
+            </summary>
+            <param name="center">The center tile to consider</param>
+            <param name="radius">The radius of the desired ring</param>
+            <returns>All tiles whose distance from the center is exactly the given radius</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetTilesInRing(`0,System.Int32,System.Predicate{`0})">
+            <summary>
+            Get all tiles whose distance is exactly the given radius from the given center tile,
+            and who meet the given condition.
+            </summary>
+            <param name="center">The center tile to consider</param>
+            <param name="radius">The radius of the desired ring</param>
+            <param name="condition">The condition to meet</param>
+            <returns>All tiles whose distance from the center is exactly the given radius
+            And that meet the given condition</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetShorestPathBetween(`0,`0)">
+            <summary>
+            Finds the shortest path between the given starting and ending tiles taken only
+            by jumping between adjacent tiles. Path costs and impassability are determined
+            by TilePathingLogic.
+            </summary>
+            <param name="start">The starting tile of the path</param>
+            <param name="end">The ending tile of the path</param>
+            <returns>The shortest path going from the starting tile to the ending pile, including
+            both, or null if none exist</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridBase`1.GetNeighbors(`0)">
+            <summary>
+            Gets all non-diagonal neighboring tiles of the given center tile.
+            </summary>
+            <param name="center">The tile whose neighbors are being found</param>
+            <returns>All the neighboring tiles around the given center tile</returns>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexGridLayout">
+            <summary>
+            Contains information for informing and rendering grids of hexagonal tiles.
+            </summary>
+        </member>
+        <member name="F:UnityCustomUtilities.Grids.HexGridLayout.Pointy">
+            <summary>
+            The orientation for hex tiles that have their top vertex pointing
+            along the positive Y axis.
+            </summary>
+        </member>
+        <member name="F:UnityCustomUtilities.Grids.HexGridLayout.Flat">
+            <summary>
+            The orientation for hex tiles that have their top side perpendicular
+            to the Y axis.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridLayout.Size">
+            <summary>
+            The X and Y dimensions of a given hex tile.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridLayout.Origin">
+            <summary>
+            The origin of the hex grid to be generated.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridLayout.Orientation">
+            <summary>
+            The orientation of the given hex grid.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridLayout.OrientationType">
+            <summary>
+            The orientation type of the hex grid.
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridLayout.#ctor(UnityCustomUtilities.Grids.HexGridOrientationType,UnityEngine.Vector2,UnityEngine.Vector2)">
+            <summary>
+            Constructs a new HexGridLayout with the given orientation type, tile size, and grid origin.
+            </summary>
+            <param name="orientationType">The orientation type of the new layout</param>
+            <param name="size">The tile size of the layout</param>
+            <param name="origin">The origin of the layout</param>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridLayout.HexCoordsToWorldSpace(UnityCustomUtilities.Grids.HexGridLayout,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Given a particular layout, determines the coordinates of the center of the given hex.
+            </summary>
+            <param name="layout">The layout to consider</param>
+            <param name="hex">The hex to consider</param>
+            <returns>The world space position of the center of the given hex</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridLayout.WorldSpaceToFractionalHexCoords(UnityCustomUtilities.Grids.HexGridLayout,UnityEngine.Vector2)">
+            <summary>
+            Given a particular layout, determines the fractional hex coords of the given position.
+            </summary>
+            <param name="layout">The layout to consider</param>
+            <param name="position">The world space position to consider</param>
+            <returns>The fractional hex representing the given world space position</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridLayout.GetHexCornerOffset(UnityCustomUtilities.Grids.HexGridLayout,System.Int32)">
+            <summary>
+            Given a particular layout, generates a vector that points from the center of any
+            hex to the given corner of that hex.
+            </summary>
+            <param name="layout">The layout to consider</param>
+            <param name="corner">The corner to consider</param>
+            <returns>A vector from the center of any hex to that hex's corresponding corner</returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridLayout.GetPolygonCorners(UnityCustomUtilities.Grids.HexGridLayout,UnityCustomUtilities.Grids.HexCoords)">
+            <summary>
+            Given a particular layout, finds the world space coordinates of all of the 
+            corners of a given hex.
+            </summary>
+            <param name="layout">The layout to consider</param>
+            <param name="h">The hex to consider</param>
+            <returns>The world space coordinates of all its corners</returns>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexGridOrientationType">
+            <summary>
+            The names of the two standard orientation types.
+            </summary>
+        </member>
+        <member name="F:UnityCustomUtilities.Grids.HexGridOrientationType.Flat">
+            <summary>
+            A hex orientation where the uppermost edge is perpendicular to the Y axis.
+            </summary>
+        </member>
+        <member name="F:UnityCustomUtilities.Grids.HexGridOrientationType.Pointy">
+            <summary>
+            A hex orientation where the uppermost vertex is pointing in the direction
+            of the Y axis.
+            </summary>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexGridOrientation">
+            <summary>
+            Contains information necessary to define the orientation of hexes in a grid.
+            </summary>
+            <remarks>
+            This class defines a forward matrix F and an inverse matrix B that can be used
+            to transfer from hex space to world space (F) or world space to hex space (B). 
+            It performs this operation on a unit hex.
+            </remarks>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.F0">
+            <summary>
+            The top left element of the forward matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.F1">
+            <summary>
+            The bottom left element of the forward matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.F2">
+            <summary>
+            The top right element of the forward matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.F3">
+            <summary>
+            The bottom right element of the forward matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.B0">
+            <summary>
+            The top left element of the inverse matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.B1">
+            <summary>
+            The bottom left element of the inverse matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.B2">
+            <summary>
+            The top right element of the inverse matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.B3">
+            <summary>
+            The bottom right element of the inverse matrix
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexGridOrientation.StartAngle">
+            <summary>
+            The starting angle of the first corner of the hex
+            </summary>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexGridOrientation.#ctor(System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single,System.Single)">
+            <summary>
+            Creates a new orientation with the given forward matrix, inverse matrix,
+            and starting angle of the first corner.
+            </summary>
+            <param name="f0">The upper left of the forward matrix</param>
+            <param name="f1">The bottom left of the forward matrix</param>
+            <param name="f2">The upper right of the forward matrix</param>
+            <param name="f3">The bottom right of the forward matrix</param>
+            <param name="b0">The upper left of the inverse matrix</param>
+            <param name="b1">The bottom left of the inverse matrix</param>
+            <param name="b2">The upper right of the inverse matrix</param>
+            <param name="b3">The bottom right of the inverse matrix</param>
+            <param name="startAngle">The starting angle of the first corner</param>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexTileBase">
+            <summary>
+            The abstract base class for a tile in a hexagonal grid.
+            </summary>
+        </member>
+        <member name="P:UnityCustomUtilities.Grids.HexTileBase.Coordinates">
+            <summary>
+            The cubic coordinates of the tile.
+            </summary>
+        </member>
+        <member name="T:UnityCustomUtilities.Grids.HexTilePathingLogicBase`1">
+            <summary>
+            The abstract base class for the pathing logic of a hex grid. Determines the cost
+            of entering hex tiles and what hex tiles are completely impassable.
+            </summary>
+            <typeparam name="T"></typeparam>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexTilePathingLogicBase`1.IsTileImpassable(`0)">
+            <summary>
+            Determines whether the given tile is impassable.
+            </summary>
+            <param name="tile">The tile to consider</param>
+            <returns></returns>
+        </member>
+        <member name="M:UnityCustomUtilities.Grids.HexTilePathingLogicBase`1.GetTilePathingCost(`0)">
+            <summary>
+            Determines the cost of entering the given tile.
+            </summary>
+            <param name="tile">The tile to consider</param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
