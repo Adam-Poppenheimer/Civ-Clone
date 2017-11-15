@@ -11,6 +11,10 @@ namespace Assets {
 
         #region instance fields and properties
 
+        public int Total {
+            get { return Food + Production + Gold + Culture; }
+        }
+
         [SerializeField] private int Food;
         [SerializeField] private int Production;
         [SerializeField] private int Gold;
@@ -51,6 +55,20 @@ namespace Assets {
             Gold = gold;
             Culture = culture;
         }
+
+        #endregion
+
+        #region operators
+
+        public static ResourceSummary operator +(ResourceSummary firstSummary, ResourceSummary secondSummary) {
+            return new ResourceSummary(
+                food:       firstSummary.Food       + secondSummary.Food,
+                production: firstSummary.Production + secondSummary.Production,
+                gold:       firstSummary.Gold       + secondSummary.Gold,
+                culture:    firstSummary.Culture    + secondSummary.Culture
+            );
+        }
+
 
         #endregion
 

@@ -5,17 +5,13 @@ using System.Text;
 
 namespace Assets.Cities {
 
-    public class ResourceGenerationLogic : IResourceGenerationLogic {
+    public class ResourceGenerationLogic : IResourceGenerationLogic {        
 
         #region instance methods
 
         #region from IResourceGenerationLogic
 
-        public ResourceSummary GetResourcesFromBuildings(List<IBuilding> buildings) {
-            throw new NotImplementedException();
-        }
-
-        public ResourceSummary GetResourcesFromSlots(List<IWorkerSlot> slots) {
+        public ResourceSummary GetTotalYieldForCity(ICity city) {
             throw new NotImplementedException();
         }
 

@@ -49,9 +49,30 @@ namespace Assets.Cities.Editor {
             GrowthLogicMock.Setup(logic => logic.GetFoodConsumptionPerTurn(It.IsAny<ICity>())).Returns(0);
 
             GenerationLogicMock = new Mock<IResourceGenerationLogic>();
+            GenerationLogicMock.Setup(
+                logic => logic.GetYieldOfSlotForCity(It.IsAny<IWorkerSlot>(), It.IsAny<ICity>())
+            ).Returns<IWorkerSlot, ICity>(
+                (slot, city) => slot.BaseYield
+            );
+            GenerationLogicMock.Setup(
+                logic => logic.GetTotalYieldForCity(It.IsAny<ICity>())
+            ).Returns<ICity>(delegate(ICity city) {
+
+                ResourceSummary retval = new ResourceSummary();
+
+                if(SlotOne  .IsOccupied) { retval += GenerationLogicMock.Object.GetYieldOfSlotForCity(SlotOne,   null); }
+                if(SlotTwo  .IsOccupied) { retval += GenerationLogicMock.Object.GetYieldOfSlotForCity(SlotTwo,   null); }
+                if(SlotThree.IsOccupied) { retval += GenerationLogicMock.Object.GetYieldOfSlotForCity(SlotThree, null); }
+                if(SlotFour .IsOccupied) { retval += GenerationLogicMock.Object.GetYieldOfSlotForCity(SlotFour,  null); }
+                if(SlotFive .IsOccupied) { retval += GenerationLogicMock.Object.GetYieldOfSlotForCity(SlotFive,  null); }
+
+                return retval;
+            });
 
             Container.Bind<IPopulationGrowthLogic>().FromInstance(GrowthLogicMock.Object);
             Container.Bind<IResourceGenerationLogic>().FromInstance(GenerationLogicMock.Object);
+
+            Container.Bind<ICity>().FromMock();
 
             Container.Bind<WorkplaceDistributionLogic>().AsSingle();
         }
@@ -83,8 +104,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsTrue (SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsTrue (SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -120,8 +142,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsTrue (SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsTrue (SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -157,8 +180,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsFalse(SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsFalse(SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -195,8 +219,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsTrue (SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsFalse(SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -233,8 +258,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsTrue (SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsFalse(SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -275,8 +301,9 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(3, slots, preferences);
+            distributionLogic.DistributeWorkersIntoSlots(3, slots, city, preferences);
 
             Assert.IsTrue (SlotOne.IsOccupied,   "Unexpected SlotOne IsOccupied value");
             Assert.IsTrue (SlotTwo.IsOccupied,   "Unexpected SlotTwo IsOccupied value");
@@ -298,14 +325,15 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
-            distributionLogic.DistributeWorkersIntoSlots(8, slots, new DistributionPreferences(true, ResourceType.Culture));
+            distributionLogic.DistributeWorkersIntoSlots(8, slots, city, new DistributionPreferences(true, ResourceType.Culture));
 
-            Assert.AreEqual(8, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots");
+            Assert.AreEqual(8, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots after focused distribution");
 
-            distributionLogic.DistributeWorkersIntoSlots(7, slots, new DistributionPreferences(false, ResourceType.Culture));
+            distributionLogic.DistributeWorkersIntoSlots(7, slots, city, new DistributionPreferences(false, ResourceType.Culture));
 
-            Assert.AreEqual(7, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots");
+            Assert.AreEqual(7, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots after unfocused distribution");
         }
 
         [Test(Description = "When there are fewer slots than people to fill them, the distribution should consider this " +
@@ -322,18 +350,21 @@ namespace Assets.Cities.Editor {
 
             var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
+            var city = Container.Resolve<ICity>();
 
             Assert.DoesNotThrow(
-                () => distributionLogic.DistributeWorkersIntoSlots(20, slots, new DistributionPreferences(false, ResourceType.Culture)),
-                "DistributeWorkersIntoSlots falsely threw an error when given more people than slots to fill"
+                () => distributionLogic.DistributeWorkersIntoSlots(20, slots, city, new DistributionPreferences(true, ResourceType.Culture)),
+                "DistributeWorkersIntoSlots falsely threw an error when given focused distribution orders"
             );
 
-            Assert.AreEqual(10, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots");
-        }
+            Assert.AreEqual(10, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots after focused distribution");
 
-        [Test(Description = "Distributions should take into account the yield of an unemployed person when maximizing yield")]
-        public void AllDistributions_ConsiderUnemploymentYield() {
-            throw new NotImplementedException();
+            Assert.DoesNotThrow(
+                () => distributionLogic.DistributeWorkersIntoSlots(20, slots, city, new DistributionPreferences(false, ResourceType.Culture)),
+                "DistributeWorkersIntoSlots falsely threw an error when given unfocused distribution orders"
+            );
+
+            Assert.AreEqual(10, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots after unfocused distribution");
         }
 
     }

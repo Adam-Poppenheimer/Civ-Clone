@@ -9,9 +9,7 @@ namespace Assets.Cities {
 
         #region methods
 
-        ResourceSummary GetResourcesFromSlots(List<IWorkerSlot> slots);
-
-        ResourceSummary GetResourcesFromBuildings(List<IBuilding> buildings);
+        ResourceSummary GetTotalYieldForCity(ICity city);
 
         ResourceSummary GetYieldOfSlotForCity(IWorkerSlot slot, ICity city);
 
