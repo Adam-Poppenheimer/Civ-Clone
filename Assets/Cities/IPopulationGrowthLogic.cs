@@ -12,7 +12,7 @@ namespace Assets.Cities {
         int GetFoodConsumptionPerTurn(ICity city);
         int GetFoodStockpileToGrow(ICity city);
 
-        int GetFoodStockpileAfterGrowth(ICity city);
+        int GetFoodStockpileSubtractionAfterGrowth(ICity city);
         int GetFoodStockpileAfterStarvation(ICity city);
 
         #endregion

@@ -9,7 +9,7 @@ using Assets.GameMap;
 
 namespace Assets.Cities {
 
-    public class WorkplaceDistributionLogic : IWorkerDistributionLogic {
+    public class WorkerDistributionLogic : IWorkerDistributionLogic {
 
         #region instance fields and properties
 
@@ -22,7 +22,7 @@ namespace Assets.Cities {
         #region constructors
 
         [Inject]
-        public WorkplaceDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic) {
+        public WorkerDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic) {
             GrowthLogic = growthLogic;
             GenerationLogic = generationLogic;
         }
@@ -33,9 +33,11 @@ namespace Assets.Cities {
 
         #region from IWorkerDistributionLogic
 
-        public void DistributeWorkersIntoSlots(int workerCount, List<IWorkerSlot> slots, ICity sourceCity,
-            DistributionPreferences preferences){            
-            slots.ForEach(slot => slot.IsOccupied = false);
+        public void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
+            DistributionPreferences preferences){  
+            foreach(var slot in slots) {
+                slot.IsOccupied = false;
+            }
 
             if(preferences.ShouldFocusResource) {
                 PerformFocusedDistribution(workerCount, slots, sourceCity, preferences);                
@@ -55,7 +57,7 @@ namespace Assets.Cities {
         /// the most food. It does this until the total food yield is sufficient to sustain
         /// the population.
         /// </remarks>
-        private void PerformFocusedDistribution(int workerCount, List<IWorkerSlot> slots, ICity sourceCity,
+        private void PerformFocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             DistributionPreferences preferences) {
             var focusedResource = preferences.FocusedResource;
 
@@ -65,14 +67,14 @@ namespace Assets.Cities {
             MitigateStarvation(workerCount, slots, sourceCity, maximizingComparison);
         }
 
-        private void PerformUnfocusedDistribution(int workerCount, List<IWorkerSlot> slots, ICity sourceCity) {
+        private void PerformUnfocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity) {
             var maximizingComparison = BuildUnfocusedMaximizingComparison(sourceCity);
 
             MaximizeYield(workerCount, slots, sourceCity, maximizingComparison);
             MitigateStarvation(workerCount, slots, sourceCity, maximizingComparison);
         }
 
-        private void MaximizeYield(int workerCount, List<IWorkerSlot> slots, ICity sourceCity,
+        private void MaximizeYield(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             Comparison<IWorkerSlot> yieldMaximizationComparer){
 
             var maximizedSlotsAscending = new List<IWorkerSlot>(slots);
@@ -94,7 +96,7 @@ namespace Assets.Cities {
             }
         }
 
-        private void MitigateStarvation(int workerCount, List<IWorkerSlot> slots, ICity sourceCity,
+        private void MitigateStarvation(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             Comparison<IWorkerSlot> yieldMaximizationComparer) {
 
             int foodProduced = GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food];

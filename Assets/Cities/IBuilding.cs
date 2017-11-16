@@ -12,7 +12,7 @@ namespace Assets.Cities {
 
         ResourceSummary StaticYield { get; }
 
-        ReadOnlyCollection<IWorkerSlot> Slots { get; }
+        ReadOnlyCollection<IWorkerSlot> WorkerSlots { get; }
 
         #endregion
 

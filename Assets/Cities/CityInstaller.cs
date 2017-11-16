@@ -27,8 +27,8 @@ namespace Assets.Cities {
             Container.Bind<IPopulationGrowthLogic>().To<PopulationGrowthLogic>().AsSingle();
             Container.Bind<IProductionLogic>().To<ProductionLogic>().AsSingle();
             Container.Bind<IResourceGenerationLogic>().To<ResourceGenerationLogic>().AsSingle();
-            Container.Bind<ITileExpansionLogic>().To<TileExpansionLogic>().AsSingle();
-            Container.Bind<IWorkerDistributionLogic>().To<WorkplaceDistributionLogic>().AsSingle();
+            Container.Bind<IBorderExpansionLogic>().To<BorderExpansionLogic>().AsSingle();
+            Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
 
             Container.Bind<ITilePossessionCanon>().To<TilePossessionCanon>().AsSingle();
         }

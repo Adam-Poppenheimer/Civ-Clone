@@ -9,6 +9,7 @@ namespace Assets.Cities {
 
         #region properties
 
+        int Progress { get; set; }
         int ProductionToComplete { get; }
 
         #endregion

@@ -6,11 +6,15 @@ using Assets.GameMap;
 
 namespace Assets.Cities {
 
-    public class TileExpansionLogic : ITileExpansionLogic {
+    public class BorderExpansionLogic : IBorderExpansionLogic {
 
         #region instance methods
 
         #region from ICulturalExpansionLogic
+
+        public IMapTile GetNextTileToPursue(ICity city) {
+            throw new NotImplementedException();
+        }
 
         public bool TileIsAvailable(ICity city, IMapTile tile) {
             throw new NotImplementedException();

@@ -11,6 +11,15 @@ namespace Assets.Cities {
 
         #region from IProductionProject
 
+        public int Progress {
+            get {
+                throw new NotImplementedException();
+            }
+            set {
+                throw new NotImplementedException();
+            }
+        }
+
         public int ProductionToComplete {
             get {
                 throw new NotImplementedException();

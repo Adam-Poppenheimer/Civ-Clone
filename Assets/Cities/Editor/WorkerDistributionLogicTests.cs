@@ -74,7 +74,7 @@ namespace Assets.Cities.Editor {
 
             Container.Bind<ICity>().FromMock();
 
-            Container.Bind<WorkplaceDistributionLogic>().AsSingle();
+            Container.Bind<WorkerDistributionLogic>().AsSingle();
         }
 
         [Test(Description = "When a resource focus is being requested, the distribution should attempt to maximize the total " +
@@ -102,7 +102,7 @@ namespace Assets.Cities.Editor {
                 new ResourceSummary(culture: 0, gold: 3, production: 3)
             );
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -140,7 +140,7 @@ namespace Assets.Cities.Editor {
                 new ResourceSummary(culture: 1, gold: 1, production: 1)
             );
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -178,7 +178,7 @@ namespace Assets.Cities.Editor {
                 new ResourceSummary(culture: 1, gold: 3, production: 1)
             );
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -217,7 +217,7 @@ namespace Assets.Cities.Editor {
 
             GrowthLogicMock.Setup(logic => logic.GetFoodConsumptionPerTurn(It.IsAny<ICity>())).Returns(3);
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -256,7 +256,7 @@ namespace Assets.Cities.Editor {
 
             GrowthLogicMock.Setup(logic => logic.GetFoodConsumptionPerTurn(It.IsAny<ICity>())).Returns(3);
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -299,7 +299,7 @@ namespace Assets.Cities.Editor {
             SlotFour .IsOccupied = true;
             SlotFive .IsOccupied = true;
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -323,7 +323,7 @@ namespace Assets.Cities.Editor {
                 Container.Bind<IWorkerSlot>().FromInstance(mockSlot.Object);
             }
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 
@@ -348,7 +348,7 @@ namespace Assets.Cities.Editor {
                 Container.Bind<IWorkerSlot>().FromInstance(mockSlot.Object);
             }
 
-            var distributionLogic = Container.Resolve<WorkplaceDistributionLogic>();
+            var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
             var city = Container.Resolve<ICity>();
 

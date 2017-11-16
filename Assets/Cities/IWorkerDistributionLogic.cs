@@ -10,7 +10,7 @@ namespace Assets.Cities {
         #region methods
 
         void DistributeWorkersIntoSlots(
-            int workerCount, List<IWorkerSlot> slots,
+            int workerCount, IEnumerable<IWorkerSlot> slots,
             ICity sourceCity, DistributionPreferences preferences
         );
 

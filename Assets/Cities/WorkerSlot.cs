@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace Assets.Cities {
 
     public class WorkerSlot : IWorkerSlot {
@@ -12,42 +14,21 @@ namespace Assets.Cities {
         #region from IWorkerSlot
 
         public ResourceSummary BaseYield {
-            get {
-                throw new NotImplementedException();
-            }
+            get { return _baseYield; }
         }
+        private ResourceSummary _baseYield;
 
-        public bool IsLocked {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
-
-        public bool IsOccupied {
-            get {
-                throw new NotImplementedException();
-            }
-
-            set {
-                throw new NotImplementedException();
-            }
-        }
+        public bool IsOccupied { get; set; }
 
         #endregion
 
         #endregion
 
-        #region instance methods
+        #region constructors
 
-        #region from IWorkerSlot
-
-
-
-        #endregion
+        public WorkerSlot(ResourceSummary baseYield) {
+            _baseYield = baseYield;
+        }
 
         #endregion
         

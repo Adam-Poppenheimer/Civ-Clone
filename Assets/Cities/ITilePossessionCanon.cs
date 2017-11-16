@@ -12,7 +12,7 @@ namespace Assets.Cities {
 
         #region methods
 
-        ReadOnlyCollection<IMapTile> GetTilesOfCity(ICity city);
+        IEnumerable<IMapTile> GetTilesOfCity(ICity city);
 
         ICity GetCityOfTile(IMapTile tile);
 

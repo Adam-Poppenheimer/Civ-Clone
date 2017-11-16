@@ -25,7 +25,7 @@ namespace Assets.Cities {
             throw new NotImplementedException();
         }
 
-        public ReadOnlyCollection<IMapTile> GetTilesOfCity(ICity city) {
+        public IEnumerable<IMapTile> GetTilesOfCity(ICity city) {
             throw new NotImplementedException();
         }
 

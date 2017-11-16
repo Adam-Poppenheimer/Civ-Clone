@@ -9,6 +9,8 @@ using Zenject;
 
 using UnityCustomUtilities.Grids;
 
+using Assets.Cities;
+
 namespace Assets.GameMap {
 
     public class MapTile : MonoBehaviour, IMapTile {
@@ -41,9 +43,13 @@ namespace Assets.GameMap {
         }
         [SerializeField] private TerrainFeatureType _feature;
 
-        [SerializeField] private TileConfig TileConfig;
+        public IWorkerSlot WorkerSlot {
+            get { throw new NotImplementedException(); }
+        }
 
         #endregion
+
+        [SerializeField] private TileConfig TileConfig;
 
         #endregion
 

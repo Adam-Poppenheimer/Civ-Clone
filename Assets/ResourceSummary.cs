@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets {
 
+    [SerializeField]
     public struct ResourceSummary {
 
         #region instance fields and properties
@@ -56,6 +57,13 @@ namespace Assets {
             Culture = culture;
         }
 
+        public ResourceSummary(ResourceSummary other) {
+            Food = other.Food;
+            Production = other.Production;
+            Gold = other.Gold;
+            Culture = other.Culture;
+        }
+
         #endregion
 
         #region operators
@@ -69,6 +77,50 @@ namespace Assets {
             );
         }
 
+        public static ResourceSummary operator -(ResourceSummary firstSummary, ResourceSummary secondSummary) {
+            return new ResourceSummary(
+                food:       firstSummary.Food       - secondSummary.Food,
+                production: firstSummary.Production - secondSummary.Production,
+                gold:       firstSummary.Gold       - secondSummary.Gold,
+                culture:    firstSummary.Culture    - secondSummary.Culture
+            );
+        }
+
+        public static ResourceSummary operator -(ResourceSummary summary) {
+            return new ResourceSummary(
+                food:       -summary.Food,
+                production: -summary.Production,
+                gold:       -summary.Gold,
+                culture:    -summary.Culture
+            );
+        }
+
+        public static ResourceSummary operator *(ResourceSummary summary, int coefficient) {
+            return new ResourceSummary(
+                food:       summary.Food       * coefficient,
+                production: summary.Production * coefficient,
+                gold:       summary.Gold       * coefficient,
+                culture:    summary.Culture    * coefficient
+            );
+        }
+
+        public static ResourceSummary operator *(ResourceSummary summary, float coefficient) {
+            return new ResourceSummary(
+                food:       Mathf.RoundToInt(summary.Food       * coefficient),
+                production: Mathf.RoundToInt(summary.Production * coefficient),
+                gold:       Mathf.RoundToInt(summary.Gold       * coefficient),
+                culture:    Mathf.RoundToInt(summary.Culture    * coefficient)
+            );
+        }
+
+        public static ResourceSummary operator /(ResourceSummary summary, float divisor) {
+            return new ResourceSummary(
+                food:       Mathf.RoundToInt(summary.Food       / divisor),
+                production: Mathf.RoundToInt(summary.Production / divisor),
+                gold:       Mathf.RoundToInt(summary.Gold       / divisor),
+                culture:    Mathf.RoundToInt(summary.Culture    / divisor)
+            );
+        }        
 
         #endregion
 

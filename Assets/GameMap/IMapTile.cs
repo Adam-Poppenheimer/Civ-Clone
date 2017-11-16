@@ -6,6 +6,8 @@ using Zenject;
 
 using UnityCustomUtilities.Grids;
 
+using Assets.Cities;
+
 namespace Assets.GameMap {
 
     public interface IMapTile {
@@ -19,6 +21,8 @@ namespace Assets.GameMap {
         TerrainType Terrain { get; set; }
         TerrainShape Shape { get; set; }
         TerrainFeatureType Feature { get; set; }
+
+        IWorkerSlot WorkerSlot { get; }
 
         #endregion
 

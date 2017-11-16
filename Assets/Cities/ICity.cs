@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.GameMap;
+
 namespace Assets.Cities {
 
     public interface ICity {
@@ -14,11 +16,16 @@ namespace Assets.Cities {
 
         ReadOnlyCollection<IBuilding> Buildings { get; }
 
-        ResourceSummary Stockpile { get; set; }
+        int FoodStockpile { get; set; }
+        int CultureStockpile { get; set; }
 
-        ResourceSummary Income { get; }
+        ResourceSummary LastIncome { get; }
 
         IProductionProject CurrentProject { get; }
+
+        DistributionPreferences DistributionPreferences { get; set; }
+
+        IMapTile TileBeingPursued { get; }
 
         #endregion
 
@@ -29,8 +36,12 @@ namespace Assets.Cities {
 
         void SetCurrentProject(IProductionProject project);
 
-        void PerformBeginningOfTurn();
-        void PerformEndOfTurn();
+        void PerformGrowth();
+        void PerformProduction();
+        void PerformExpansion();
+        void PerformDistribution();
+
+        void PerformIncome();
 
         #endregion
 

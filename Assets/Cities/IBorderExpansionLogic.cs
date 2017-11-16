@@ -7,9 +7,11 @@ using Assets.GameMap;
 
 namespace Assets.Cities {
 
-    public interface ITileExpansionLogic {
+    public interface IBorderExpansionLogic {
 
         #region methods
+
+        IMapTile GetNextTileToPursue(ICity city);
 
         bool TileIsAvailable(ICity city, IMapTile tile);
 
