@@ -220,7 +220,7 @@ namespace Assets.Cities.Editor {
             var tile = new Mock<IMapTile>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.TileIsAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
 
             city.PerformExpansion();
 
@@ -238,7 +238,7 @@ namespace Assets.Cities.Editor {
             var tile = new Mock<IMapTile>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.TileIsAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(7);
 
             PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
@@ -257,7 +257,7 @@ namespace Assets.Cities.Editor {
             var tile = new Mock<IMapTile>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.TileIsAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(0);
 
             PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
@@ -281,7 +281,7 @@ namespace Assets.Cities.Editor {
                 .Returns(firstTile)
                 .Returns(secondTile);
 
-            ExpansionMock.Setup(logic => logic.TileIsAvailable(city, firstTile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, firstTile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, firstTile)).Returns(0);
 
             PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(firstTile, city)).Returns(true);

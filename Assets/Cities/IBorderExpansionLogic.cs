@@ -11,9 +11,11 @@ namespace Assets.Cities {
 
         #region methods
 
+        IEnumerable<IMapTile> GetAllTilesAvailableToCity(ICity city);
+
         IMapTile GetNextTileToPursue(ICity city);
 
-        bool TileIsAvailable(ICity city, IMapTile tile);
+        bool IsTileAvailable(ICity city, IMapTile tile);
 
         int GetCultureCostOfAcquiringTile(ICity city, IMapTile tile);
         int GetGoldCostOfAcquiringTile(ICity city, IMapTile tile);

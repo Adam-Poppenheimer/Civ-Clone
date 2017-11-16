@@ -2,30 +2,115 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using UnityEngine;
+
+using Zenject;
+
 using Assets.GameMap;
 
 namespace Assets.Cities {
 
     public class BorderExpansionLogic : IBorderExpansionLogic {
 
+        #region instance fields and properties
+
+        private IMapHexGrid HexGrid;
+
+        private ITilePossessionCanon PossessionCanon;
+        
+        private IBorderExpansionConfig Config;
+
+        private IResourceGenerationLogic ResourceGenerationLogic;
+
+        #endregion
+
+        #region constructors
+
+        [Inject]
+        public BorderExpansionLogic(IMapHexGrid hexGrid, ITilePossessionCanon possessionCanon,
+            IBorderExpansionConfig config, IResourceGenerationLogic resourceGenerationLogic) {
+
+            HexGrid = hexGrid;
+            PossessionCanon = possessionCanon;
+            Config = config;
+            ResourceGenerationLogic = resourceGenerationLogic;
+
+        }
+
+        #endregion
+
         #region instance methods
 
         #region from ICulturalExpansionLogic
 
-        public IMapTile GetNextTileToPursue(ICity city) {
-            throw new NotImplementedException();
+        public IEnumerable<IMapTile> GetAllTilesAvailableToCity(ICity city) {
+            var retval = new HashSet<IMapTile>();
+
+            foreach(var tile in PossessionCanon.GetTilesOfCity(city)) {
+                foreach(var neighbor in HexGrid.GetNeighbors(tile)) {
+
+                    if(IsTileAvailable(city, neighbor)) {
+                        retval.Add(neighbor);
+                    }
+
+                }
+            }
+
+            return retval;
         }
 
-        public bool TileIsAvailable(ICity city, IMapTile tile) {
-            throw new NotImplementedException();
+        public IMapTile GetNextTileToPursue(ICity city) {
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+            var availableTiles = GetAllTilesAvailableToCity(city).ToList();
+
+            if(city.DistributionPreferences.ShouldFocusResource) {
+                availableTiles.Sort(TileComparisonUtil.BuildFocusedComparisonAscending(
+                    city, city.DistributionPreferences.FocusedResource, ResourceGenerationLogic
+                ));
+            }else {
+                availableTiles.Sort(TileComparisonUtil.BuildTotalYieldComparisonAscending(city, ResourceGenerationLogic));
+            }
+
+            return availableTiles.LastOrDefault();
+        }
+
+        public bool IsTileAvailable(ICity city, IMapTile tile) {
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }else if(tile == null){
+                throw new ArgumentNullException("tile");
+            }
+
+            bool isUnowned = PossessionCanon.GetCityOfTile(tile) == null;
+            bool isWithinRange = HexGrid.GetDistance(city.Location, tile) <= Config.MaxRange;
+            bool isNeighborOfPossession = HexGrid.GetNeighbors(tile).Exists(neighbor => PossessionCanon.GetCityOfTile(neighbor) == city);
+
+            return isUnowned && isWithinRange && isNeighborOfPossession;
         }
 
         public int GetCultureCostOfAcquiringTile(ICity city, IMapTile tile) {
-            throw new NotImplementedException();
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }else if(tile == null) {
+                throw new ArgumentNullException("tile");
+            }
+
+            var tileCount = PossessionCanon.GetTilesOfCity(city).Count();
+
+            return Mathf.FloorToInt(
+                Config.TileCostBase + 
+                Mathf.Pow(
+                    Config.PreviousTileCountCoefficient * (tileCount - 1),
+                    Config.PreviousTileCountExponent
+                )
+            );
         }
 
         public int GetGoldCostOfAcquiringTile(ICity city, IMapTile tile) {
-            throw new NotImplementedException();
+            return GetCultureCostOfAcquiringTile(city, tile);
         }
 
         #endregion

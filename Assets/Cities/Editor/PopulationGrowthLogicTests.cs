@@ -123,6 +123,23 @@ namespace Assets.Cities.Editor {
                 "GetFoodStockpileToGrow on a population of 10 returned an incorrect value");
         }
 
+        [Test(Description = "")]
+        public void AllMethods_ThrowExceptionsOnNullArguments() {
+            var growthLogic = Container.Resolve<PopulationGrowthLogic>();
+
+            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodConsumptionPerTurn(null),
+                "GetFoodConsumptionPerTurn fails to throw on a null city");
+
+            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileToGrow(null),
+                "GetFoodStockpileToGrow fails to throw on a null city");
+
+            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileSubtractionAfterGrowth(null),
+                "GetFoodStockpileSubtractionAfterGrowth fails to throw on a null city");
+
+            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileAfterStarvation(null),
+                "GetFoodStockpileAfterStarvation fails to throw on a null city");
+        }
+
     }
 
 }

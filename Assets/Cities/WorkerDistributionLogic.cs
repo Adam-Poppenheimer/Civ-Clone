@@ -61,14 +61,14 @@ namespace Assets.Cities {
             DistributionPreferences preferences) {
             var focusedResource = preferences.FocusedResource;
 
-            var maximizingComparison = BuildFocusedMaximizingComparison(sourceCity, focusedResource);
+            var maximizingComparison = SlotComparisonUtil.BuildFocusedComparisonAscending(sourceCity, focusedResource, GenerationLogic);
 
             MaximizeYield(workerCount, slots, sourceCity, maximizingComparison);
             MitigateStarvation(workerCount, slots, sourceCity, maximizingComparison);
         }
 
         private void PerformUnfocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity) {
-            var maximizingComparison = BuildUnfocusedMaximizingComparison(sourceCity);
+            var maximizingComparison = SlotComparisonUtil.BuildTotalYieldComparisonAscending(sourceCity, GenerationLogic);
 
             MaximizeYield(workerCount, slots, sourceCity, maximizingComparison);
             MitigateStarvation(workerCount, slots, sourceCity, maximizingComparison);
@@ -108,7 +108,7 @@ namespace Assets.Cities {
             occupiedByMaxYieldDescending.Reverse();
 
             var slotsByFoodThenFocusedYield = new List<IWorkerSlot>(slots);
-            var foodComparer = BuildResourceComparisonAscending(ResourceType.Food, sourceCity);
+            var foodComparer = SlotComparisonUtil.BuildResourceComparisonAscending(ResourceType.Food, sourceCity, GenerationLogic);
 
             slotsByFoodThenFocusedYield.Sort(delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
                 int foodComparison = foodComparer(firstSlot, secondSlot);
@@ -132,41 +132,6 @@ namespace Assets.Cities {
                     break;
                 }
             }
-        }
-
-        private Comparison<IWorkerSlot> BuildFocusedMaximizingComparison(ICity sourceCity, ResourceType focusedResource) {
-            return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = GenerationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = GenerationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
-
-                var focusComparison = firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
-                if(focusComparison == 0) {
-                    focusComparison = firstYield[ResourceType.Food].CompareTo(secondYield[ResourceType.Food]);
-                }
-                if(focusComparison == 0) {
-                    focusComparison = firstYield.Total.CompareTo(secondYield.Total);
-                }
-
-                return focusComparison;
-            };
-        }
-
-        private Comparison<IWorkerSlot> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity) {
-            return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = GenerationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = GenerationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
-
-                return firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
-            };
-        }
-
-        private Comparison<IWorkerSlot> BuildUnfocusedMaximizingComparison(ICity sourceCity) {
-            return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = GenerationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = GenerationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
-
-                return firstYield.Total.CompareTo(secondYield.Total);
-            };
         }
 
         #endregion

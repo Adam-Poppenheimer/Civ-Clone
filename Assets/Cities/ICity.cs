@@ -12,6 +12,8 @@ namespace Assets.Cities {
 
         #region properties
 
+        IMapTile Location { get; }
+
         int Population { get; set; }
 
         ReadOnlyCollection<IBuilding> Buildings { get; }

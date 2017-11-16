@@ -35,14 +35,26 @@ namespace Assets.Cities {
         }
 
         public int GetFoodStockpileSubtractionAfterGrowth(ICity city) {
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
             return GetFoodStockpileToGrow(city);
         }
 
         public int GetFoodStockpileAfterStarvation(ICity city) {
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
             return 0;
         }
 
         public int GetFoodStockpileToGrow(ICity city) {
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
             int previousPopulation = city.Population -1;
 
             return Mathf.FloorToInt(

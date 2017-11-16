@@ -18,6 +18,8 @@ namespace Assets.Cities {
 
         #region from ICity
 
+        public IMapTile Location { get; set; }
+
         public int Population {
             get { return _population; }
             set { _population = value; }
