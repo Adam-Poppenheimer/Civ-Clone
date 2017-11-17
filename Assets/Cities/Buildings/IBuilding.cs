@@ -4,15 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Cities {
+using Assets.GameMap;
+using Assets.Cities;
+
+namespace Assets.Cities.Buildings {
 
     public interface IBuilding {
 
         #region properties
 
-        ResourceSummary StaticYield { get; }
+        IBuildingTemplate Template { get; }
 
-        ReadOnlyCollection<IWorkerSlot> WorkerSlots { get; }
+        ReadOnlyCollection<IWorkerSlot> Slots { get; }
 
         #endregion
 

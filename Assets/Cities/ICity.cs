@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.GameMap;
+using Assets.Cities.Buildings;
 
 namespace Assets.Cities {
 

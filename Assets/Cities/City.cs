@@ -9,6 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.GameMap;
+using Assets.Cities.Buildings;
 
 namespace Assets.Cities {
 
@@ -155,7 +156,7 @@ namespace Assets.Cities {
             retval.AddRange(PossessionCanon.GetTilesOfCity(this).Select(tile => tile.WorkerSlot));
 
             foreach(var building in Buildings) {
-                retval.AddRange(building.WorkerSlots);
+                retval.AddRange(building.Slots);
             }
 
             return retval;
