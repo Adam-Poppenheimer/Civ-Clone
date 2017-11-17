@@ -34,7 +34,7 @@ namespace Assets.Cities {
 
         #region from IProductionProject
 
-        public void ExecuteProject(ICity targetCity) {
+        public void Execute(ICity targetCity) {
             throw new NotImplementedException();
         }
 

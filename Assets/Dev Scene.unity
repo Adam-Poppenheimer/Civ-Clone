@@ -3670,6 +3670,7 @@ MonoBehaviour:
   CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
   GrowthConfig: {fileID: 11400000, guid: 546bc637d4fdc0545a115046ead0c92d, type: 2}
   ExpansionConfig: {fileID: 11400000, guid: ea9607d92cb1d234089e1c691290c805, type: 2}
+  HexGrid: {fileID: 987015553}
 --- !u!114 &1904558654
 MonoBehaviour:
   m_ObjectHideFlags: 0

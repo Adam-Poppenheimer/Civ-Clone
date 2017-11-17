@@ -16,7 +16,7 @@ namespace Assets.Cities {
 
         #region methods
 
-        void ExecuteProject(ICity targetCity);
+        void Execute(ICity targetCity);
 
         #endregion
 

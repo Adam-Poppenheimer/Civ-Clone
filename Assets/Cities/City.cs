@@ -117,7 +117,7 @@ namespace Assets.Cities {
             CurrentProject.Progress += ProductionLogic.GetProductionProgressPerTurnOnProject(this, CurrentProject);
 
             if(CurrentProject.ProductionToComplete >= CurrentProject.Progress) {
-                CurrentProject.ExecuteProject(this);
+                CurrentProject.Execute(this);
                 CurrentProject = null;
             }
         }

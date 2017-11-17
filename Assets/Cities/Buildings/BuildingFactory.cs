@@ -20,7 +20,8 @@ namespace Assets.Cities.Buildings {
 
         [Inject]
         public BuildingFactory(ITemplateValidityLogic validityLogic, IBuildingPossessionCanon possessionCanon) {
-
+            ValidityLogic = validityLogic;
+            PossessionCanon = possessionCanon;
         }
 
         #endregion
@@ -49,9 +50,7 @@ namespace Assets.Cities.Buildings {
             PossessionCanon.PlaceBuildingInCity(newBuilding, city);
 
             return newBuilding;
-        }
-
-        
+        }        
 
         #endregion
 

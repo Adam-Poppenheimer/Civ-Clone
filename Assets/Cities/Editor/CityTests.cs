@@ -150,7 +150,7 @@ namespace Assets.Cities.Editor {
 
             city.PerformProduction();
 
-            mockProject.Verify(project => project.ExecuteProject(city), Times.Once, "ExecuteProject on CurrentProject was not called");
+            mockProject.Verify(project => project.Execute(city), Times.Once, "ExecuteProject on CurrentProject was not called");
         }
 
         [Test(Description = "When PerformProduction is called on a city whose CurrentProject has " +

@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.GameMap;
+using Assets.Cities.Buildings;
 
 namespace Assets.Cities {
 
@@ -41,6 +42,8 @@ namespace Assets.Cities {
             Container.Bind<ITilePossessionCanon>().To<TilePossessionCanon>().AsSingle();
 
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);
+
+            Container.BindIFactory<IBuildingTemplate, IProductionProject, ProductionProjectFactory>();
         }
 
         #endregion
