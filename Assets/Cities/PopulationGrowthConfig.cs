@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Cities {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Population Growth Config")]
     public class PopulationGrowthConfig : ScriptableObject, IPopulationGrowthConfig {
 
         #region instance fields and properties

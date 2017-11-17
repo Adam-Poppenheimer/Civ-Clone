@@ -7,13 +7,19 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.GameMap;
+
 namespace Assets.Cities {
 
     public class CityInstaller : MonoInstaller {
 
         #region instance fields and properties
 
-        [SerializeField] private CityConfig Config;
+        [SerializeField] private CityConfig CityConfig;
+        [SerializeField] private PopulationGrowthConfig GrowthConfig;
+        [SerializeField] private BorderExpansionConfig ExpansionConfig;
+
+        [SerializeField] private MapHexGrid HexGrid;
 
         #endregion
 
@@ -22,7 +28,9 @@ namespace Assets.Cities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<ICityConfig>().To<CityConfig>().FromInstance(Config);
+            Container.Bind<ICityConfig>()            .To<CityConfig>()            .FromInstance(CityConfig);
+            Container.Bind<IPopulationGrowthConfig>().To<PopulationGrowthConfig>().FromInstance(GrowthConfig);
+            Container.Bind<IBorderExpansionConfig >().To<BorderExpansionConfig >().FromInstance(ExpansionConfig);
 
             Container.Bind<IPopulationGrowthLogic>().To<PopulationGrowthLogic>().AsSingle();
             Container.Bind<IProductionLogic>().To<ProductionLogic>().AsSingle();
@@ -31,6 +39,8 @@ namespace Assets.Cities {
             Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
 
             Container.Bind<ITilePossessionCanon>().To<TilePossessionCanon>().AsSingle();
+
+            Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);
         }
 
         #endregion

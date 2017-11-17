@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Cities {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Border Expansion Config")]
     public class BorderExpansionConfig : ScriptableObject, IBorderExpansionConfig {
 
         #region instance fields and properties

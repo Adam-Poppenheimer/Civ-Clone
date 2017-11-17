@@ -3613,6 +3613,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1904558652}
   - component: {fileID: 1904558651}
+  - component: {fileID: 1904558654}
   - component: {fileID: 1904558653}
   m_Layer: 0
   m_Name: Core
@@ -3633,6 +3634,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _installers:
+  - {fileID: 1904558654}
   - {fileID: 1904558653}
   _installerPrefabs: []
   _scriptableObjectInstallers: []
@@ -3665,7 +3667,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bdfa5bb9e9f9f8b409f573e6e419330c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Config: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
+  CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
+  GrowthConfig: {fileID: 11400000, guid: 546bc637d4fdc0545a115046ead0c92d, type: 2}
+  ExpansionConfig: {fileID: 11400000, guid: ea9607d92cb1d234089e1c691290c805, type: 2}
+--- !u!114 &1904558654
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1904558650}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c773f60a74817a418bf58c244e7d9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CityPrefab: {fileID: 2102126061}
 --- !u!1 &1952695864
 GameObject:
   m_ObjectHideFlags: 0
@@ -4109,6 +4125,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e6ad719730647234db008672185940ab, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _population: 0
+  _foodStockpile: 0
+  _cultureStockpile: 0
 --- !u!4 &2102126063
 Transform:
   m_ObjectHideFlags: 0
