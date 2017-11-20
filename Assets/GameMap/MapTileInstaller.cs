@@ -35,7 +35,7 @@ namespace Assets.GameMap {
         }
 
         private static void InstallOntoContainer(DiContainer container) {
-            container.Rebind<TileConfig>().FromScriptableObjectResource("Config/Tile Config").AsSingle();
+            container.Rebind<ITileConfig>().To<TileConfig>().FromScriptableObjectResource("Config/Tile Config").AsSingle();
         }
 
         #endregion

@@ -28,8 +28,12 @@ namespace Assets.Cities {
             if(tile == null) {
                 throw new ArgumentNullException("tile");
             }
-
-            return GetCityOfTile(tile) != newOwner;
+            var currentOwner = GetCityOfTile(tile);
+            if(currentOwner != null && currentOwner.Location == tile) {
+                return false;
+            }else {
+                return GetCityOfTile(tile) != newOwner;
+            }            
         }
 
         public void ChangeOwnerOfTile(IMapTile tile, ICity newOwner) {

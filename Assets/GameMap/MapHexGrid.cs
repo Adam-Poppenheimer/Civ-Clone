@@ -21,27 +21,27 @@ namespace Assets.GameMap {
 
         public ReadOnlyCollection<IMapTile> Tiles {
             get {
-                if(tiles == null) {
-                    tiles = new List<IMapTile>();
-                    GetComponentsInChildren(tiles);
+                if(_tiles == null) {
+                    _tiles = new List<IMapTile>();
+                    GetComponentsInChildren(_tiles);
                 }
-                return tiles.AsReadOnly();
+                return _tiles.AsReadOnly();
             }
         }
-        private List<IMapTile> tiles;
+        private List<IMapTile> _tiles;
 
         private Dictionary<HexCoords, IMapTile> CoordsToHex {
             get {
                 if(_coordsToHex == null) {
                     _coordsToHex = new Dictionary<HexCoords, IMapTile>();
-                    foreach(var tile in tiles) {
+                    foreach(var tile in Tiles) {
                         _coordsToHex[tile.Coords] = tile;
                     }
                 }
                 return _coordsToHex;
             }
         }
-        private Dictionary<HexCoords, IMapTile> _coordsToHex = new Dictionary<HexCoords, IMapTile>();
+        private Dictionary<HexCoords, IMapTile> _coordsToHex;
 
         [SerializeField] private int Width;
         [SerializeField] private int Height;

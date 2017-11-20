@@ -62,6 +62,24 @@ namespace Assets.Cities.Editor {
                 "CanChangeOwnerOfTile falsely permits reassignment of a tile to its current owner");
         }
 
+        [Test(Description = "CanChangeOwnerOfTile should return false if the argued tile " +
+            "is the location of a different city, and that different city already possesses the tile")]
+        public void CanChangeOwnerOfTile_FalseIfLocationOfDifferentCity() {
+            var possessionCanon = Container.Resolve<TilePossessionCanon>();
+
+            var tile = new Mock<IMapTile>().Object;
+
+            var firstCityMock = new Mock<ICity>();
+            firstCityMock.SetupGet(city => city.Location).Returns(tile);
+
+            var secondCity = new Mock<ICity>().Object;
+
+            possessionCanon.ChangeOwnerOfTile(tile, firstCityMock.Object);
+            
+            Assert.IsFalse(possessionCanon.CanChangeOwnerOfTile(tile, secondCity),
+                "CanChangeOwnerOfTile falsely permitted the assignment of a city's location to a different city");
+        }
+
         [Test(Description = "When ChangeOwnerOfTile is called, GetCityOfTile should return the " +
             "argued city when passed the argued tile")]
         public void ChangeOwnerOfTile_ChangeReflectedInGetCityOfTile() {

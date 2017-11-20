@@ -47,6 +47,7 @@ namespace Assets.Cities {
 
             var newCity = newCityGameObject.GetComponent<City>();
             newCity.Location = location;
+            location.WorkerSlot.IsOccupiable = false;
 
             allCities.Add(newCity);
 

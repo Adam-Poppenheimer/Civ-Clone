@@ -11,6 +11,8 @@ namespace Assets.Cities {
 
         bool IsOccupied { get; set; }
 
+        bool IsOccupiable { get; set; }
+
         ResourceSummary BaseYield { get; }
 
         #endregion

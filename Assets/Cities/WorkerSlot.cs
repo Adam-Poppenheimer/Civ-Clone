@@ -20,6 +20,8 @@ namespace Assets.Cities {
 
         public bool IsOccupied { get; set; }
 
+        public bool IsOccupiable { get; set; }
+
         #endregion
 
         #endregion

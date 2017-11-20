@@ -46,28 +46,44 @@ namespace Assets.GameMap {
         [SerializeField] private TerrainFeatureType _feature;
 
         public IWorkerSlot WorkerSlot {
-            get { throw new NotImplementedException(); }
+            get {
+                if(_workerSlot == null) {
+                    _workerSlot = new WorkerSlot(ResourceLogic.GetYieldOfTile(this));
+                    _workerSlot.IsOccupiable = !TileConfig.UnoccupiableTerrains.Contains(Terrain);
+                }
+                return _workerSlot;
+            }
         }
+        private WorkerSlot _workerSlot;
 
         #endregion
 
-        [SerializeField] private TileConfig TileConfig;
+        [SerializeField] private ITileConfig TileConfig;
 
         private ITileEventBroadcaster EventBroadcaster;
+
+        private ITileResourceLogic ResourceLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(TileConfig displayConfig, ITileEventBroadcaster eventBroadcaster) {
+        public void InjectDependencies(ITileConfig displayConfig, ITileEventBroadcaster eventBroadcaster,
+            ITileResourceLogic resourceLogic) {
             TileConfig = displayConfig;
             EventBroadcaster = eventBroadcaster;
+
+            ResourceLogic = resourceLogic;
         }
 
         #region Unity message methods
 
         private void OnValidate() {
+            Refresh();
+        }
+
+        private void Start() {
             Refresh();
         }
 

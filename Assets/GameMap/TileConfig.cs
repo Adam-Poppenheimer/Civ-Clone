@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using UnityEngine;
 namespace Assets.GameMap {
 
     [CreateAssetMenu(fileName = "New Tile Display Config", menuName = "Civ Clone/Tile Display Config")]
-    public class TileConfig : ScriptableObject {
+    public class TileConfig : ScriptableObject, ITileConfig {
 
         #region instance fields and properties
 
@@ -26,6 +27,11 @@ namespace Assets.GameMap {
             get { return _desertMaterial; }
         }
         [SerializeField] private Material _desertMaterial;
+
+        public ReadOnlyCollection<TerrainType> UnoccupiableTerrains {
+            get { return _unoccupiableTerrains.AsReadOnly(); }
+        }
+        [SerializeField] private List<TerrainType> _unoccupiableTerrains;
 
         #endregion
 

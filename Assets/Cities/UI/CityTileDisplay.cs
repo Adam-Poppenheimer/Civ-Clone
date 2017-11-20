@@ -50,7 +50,11 @@ namespace Assets.Cities.UI {
             int slotDisplayIndex = 0;
 
             foreach(var tile in PossessionCanon.GetTilesOfCity(CityToDisplay)) {
-                var slotDisplay = GetNextSlotDisplay(slotDisplayIndex);
+                if(!tile.WorkerSlot.IsOccupiable) {
+                    continue;
+                }
+
+                var slotDisplay = GetNextSlotDisplay(slotDisplayIndex++);
 
                 slotDisplay.transform.position = Camera.main.WorldToScreenPoint(tile.transform.position);
                 slotDisplay.IsOccupied = tile.WorkerSlot.IsOccupied;

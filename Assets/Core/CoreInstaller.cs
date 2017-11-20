@@ -18,6 +18,7 @@ namespace Assets.Core {
         #region instance fields and properties
 
         [SerializeField] private GameObject CityPrefab;
+        [SerializeField] private TileResourceConfig TileResourceConfig;
 
         #endregion
 
@@ -34,6 +35,9 @@ namespace Assets.Core {
             Container.Bind<GameCore>().AsSingle();
 
             Container.Bind<ITileEventBroadcaster>().To<TileEventBroadcaster>().AsSingle();
+
+            Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
+            Container.Bind<ITileResourceConfig>().To<TileResourceConfig>().AsSingle();
         }
 
         #endregion

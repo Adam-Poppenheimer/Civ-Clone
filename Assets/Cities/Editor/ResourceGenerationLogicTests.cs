@@ -196,7 +196,13 @@ namespace Assets.Cities.Editor {
             Assert.AreEqual(new ResourceSummary(production: 2), totalYield, "GetTotalYieldForCity returned an unexpected value");
         }
 
-        [Test(Description = "All methods should throw and ArgumentNullException when passed " + 
+        [Test(Description = "GetTotalYieldOfCity should always consider the yield of the " +
+            "unoccupiable tile that the city itself lies upon")]
+        public void GetTotalYieldForCity_ConsidersCityCenter() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "All methods should throw an ArgumentNullException when passed " + 
             "any null argument")]
         public void AllMethods_ThrowExceptionsOnNullArguments() {
             var city = new Mock<ICity>().Object;

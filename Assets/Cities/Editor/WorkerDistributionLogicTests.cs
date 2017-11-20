@@ -371,6 +371,11 @@ namespace Assets.Cities.Editor {
             Assert.AreEqual(10, slots.Where(slot => slot.IsOccupied).Count(), "Unexpected number of occupied slots after unfocused distribution");
         }
 
+        [Test(Description = "Distribution should ignore any slots that are flagged as unoccupiable")]
+        public void AllDistributions_IgnoresUnoccupiableSlots() {
+            throw new NotImplementedException();
+        }
+
     }
 
 }
