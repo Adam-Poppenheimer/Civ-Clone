@@ -4,16 +4,18 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 
 using UnityCustomUtilities.Grids;
 
 using Assets.Cities;
+using Assets.GameMap.UI;
 
 namespace Assets.GameMap {
 
-    public class MapTile : MonoBehaviour, IMapTile {
+    public class MapTile : MonoBehaviour, IMapTile, IPointerClickHandler {
 
         #region instance fields and properties
 
@@ -51,13 +53,16 @@ namespace Assets.GameMap {
 
         [SerializeField] private TileConfig TileConfig;
 
+        private ITileEventBroadcaster EventBroadcaster;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(TileConfig displayConfig) {
+        public void InjectDependencies(TileConfig displayConfig, ITileEventBroadcaster eventBroadcaster) {
             TileConfig = displayConfig;
+            EventBroadcaster = eventBroadcaster;
         }
 
         #region Unity message methods
@@ -68,13 +73,20 @@ namespace Assets.GameMap {
 
         #endregion
 
+        #region EventSystem handler implementations
+
+        public void OnPointerClick(PointerEventData eventData) {
+             EventBroadcaster.BroadcastTileClicked(this, eventData);
+        }
+
+        #endregion
+
         public void Refresh() {
             if(TileConfig != null) {
                 var meshRenderer = GetComponent<MeshRenderer>();
                 meshRenderer.material = TileConfig.GetTerrainMaterial(Terrain);
             }            
         }
-
 
         #endregion
 

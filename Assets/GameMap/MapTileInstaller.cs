@@ -8,6 +8,8 @@ using UnityEditor;
 
 using Zenject;
 
+using Assets.GameMap.UI;
+
 namespace Assets.GameMap {
 
     public class MapTileInstaller : MonoInstaller {
@@ -44,12 +46,9 @@ namespace Assets.GameMap {
 
         public override void InstallBindings() {
             InstallOntoContainer(Container);
-            
         }
 
-        #endregion
-
-        
+        #endregion        
 
         #endregion
 

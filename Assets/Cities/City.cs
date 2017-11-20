@@ -5,15 +5,17 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 
 using Assets.GameMap;
 using Assets.Cities.Buildings;
+using Assets.Cities.UI;
 
 namespace Assets.Cities {
 
-    public class City : MonoBehaviour, ICity {
+    public class City : MonoBehaviour, ICity, IPointerClickHandler {
 
         #region instance fields and properties
 
@@ -26,11 +28,6 @@ namespace Assets.Cities {
             set { _population = value; }
         }
         [SerializeField] private int _population;
-
-        public ReadOnlyCollection<IBuilding> Buildings {
-            get { return buildings.AsReadOnly(); }
-        }
-        private List<IBuilding> buildings = new List<IBuilding>();
 
         public int FoodStockpile {
             get { return _foodStockpile; }
@@ -62,9 +59,13 @@ namespace Assets.Cities {
 
         private IBorderExpansionLogic ExpansionLogic;
 
-        private ITilePossessionCanon PossessionCanon;
+        private ITilePossessionCanon TilePossessionCanon;
 
         private IWorkerDistributionLogic DistributionLogic;
+
+        private IBuildingPossessionCanon BuildingPossessionCanon;
+
+        private ICityEventBroadcaster EventBroadcaster;
 
         #endregion
 
@@ -74,25 +75,28 @@ namespace Assets.Cities {
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
-            ITilePossessionCanon possessionCanon, IWorkerDistributionLogic distributionLogic
+            ITilePossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
+            IBuildingPossessionCanon buildingPossessionCanon, ICityEventBroadcaster eventBroadcaster
         ){
             GrowthLogic = growthLogic;
             ProductionLogic = productionLogic;
             ResourceGenerationLogic = resourceGenerationLogic;
             ExpansionLogic = expansionLogic;
-            PossessionCanon = possessionCanon;
+            TilePossessionCanon = tilePossessionCanon;
             DistributionLogic = distributionLogic;
+            BuildingPossessionCanon = buildingPossessionCanon;
+            EventBroadcaster = eventBroadcaster;
         }
+
+        #region EventSystem handler implementations
+
+        public void OnPointerClick(PointerEventData eventData) {
+            EventBroadcaster.BroadcastCityClicked(this, eventData);
+        }
+
+        #endregion
 
         #region from ICity
-
-        public void AddBuilding(IBuilding building) {
-            throw new NotImplementedException();
-        }
-
-        public void RemoveBuilding(IBuilding building) {
-            throw new NotImplementedException();
-        }
 
         public void SetCurrentProject(IProductionProject project) {
             CurrentProject = project;
@@ -127,10 +131,10 @@ namespace Assets.Cities {
 
             var costOfPursuit = ExpansionLogic.GetCultureCostOfAcquiringTile(this, TileBeingPursued);
 
-            if(TileBeingPursued != null && costOfPursuit <= CultureStockpile && PossessionCanon.CanChangeOwnerOfTile(TileBeingPursued, this)) {
+            if(TileBeingPursued != null && costOfPursuit <= CultureStockpile && TilePossessionCanon.CanChangeOwnerOfTile(TileBeingPursued, this)) {
 
                 CultureStockpile -= costOfPursuit;
-                PossessionCanon.ChangeOwnerOfTile(TileBeingPursued, this);
+                TilePossessionCanon.ChangeOwnerOfTile(TileBeingPursued, this);
 
                 TileBeingPursued = ExpansionLogic.GetNextTileToPursue(this);
             }
@@ -153,9 +157,9 @@ namespace Assets.Cities {
         private List<IWorkerSlot> GetAllAvailableSlots() {
             var retval = new List<IWorkerSlot>();
 
-            retval.AddRange(PossessionCanon.GetTilesOfCity(this).Select(tile => tile.WorkerSlot));
+            retval.AddRange(TilePossessionCanon.GetTilesOfCity(this).Select(tile => tile.WorkerSlot));
 
-            foreach(var building in Buildings) {
+            foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(this)) {
                 retval.AddRange(building.Slots);
             }
 

@@ -3,9 +3,11 @@ using System.Collections.ObjectModel;
 
 using Zenject;
 
+using Assets.GameMap;
+
 namespace Assets.Cities {
 
-    public interface IRecordkeepingCityFactory : IFactory<ICity> {
+    public interface IRecordkeepingCityFactory : IFactory<IMapTile, ICity> {
 
         #region properties
 

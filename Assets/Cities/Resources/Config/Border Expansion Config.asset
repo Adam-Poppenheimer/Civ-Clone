@@ -8,10 +8,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: d336042ffb8938243baac9ee2419a9ce, type: 3}
-  m_Name: New Population Growth Config
+  m_Script: {fileID: 11500000, guid: 5f03afe4e81e51c46b643c850a456bce, type: 3}
+  m_Name: Border Expansion Config
   m_EditorClassIdentifier: 
-  _foodConsumptionPerPerson: 0
-  _baseStockpile: 0
-  _currentPopulationCoefficient: 0
-  _currentPopulationExponent: 0
+  _maxRange: 5
+  _tileCostBase: 20
+  _previousTileCountCoefficient: 10
+  _previousTileCountExponent: 1.1

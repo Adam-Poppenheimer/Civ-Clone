@@ -7,8 +7,16 @@ using UnityEngine;
 
 namespace Assets {
 
-    [SerializeField]
+    [Serializable]
     public struct ResourceSummary {
+
+        #region static fields and properties
+
+        public static ResourceSummary Empty {
+            get { return new ResourceSummary(); }
+        }
+
+        #endregion
 
         #region instance fields and properties
 
@@ -120,7 +128,7 @@ namespace Assets {
                 gold:       Mathf.RoundToInt(summary.Gold       / divisor),
                 culture:    Mathf.RoundToInt(summary.Culture    / divisor)
             );
-        }        
+        }
 
         #endregion
 

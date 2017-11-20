@@ -17,8 +17,6 @@ namespace Assets.Cities {
 
         int Population { get; set; }
 
-        ReadOnlyCollection<IBuilding> Buildings { get; }
-
         int FoodStockpile { get; set; }
         int CultureStockpile { get; set; }
 
@@ -33,9 +31,6 @@ namespace Assets.Cities {
         #endregion
 
         #region instance methods
-
-        void AddBuilding(IBuilding building);
-        void RemoveBuilding(IBuilding building);
 
         void SetCurrentProject(IProductionProject project);
 

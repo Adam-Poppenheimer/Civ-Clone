@@ -23,14 +23,14 @@ namespace Assets.Cities {
         [SerializeField] private int _baseStockpile;
 
         public int PreviousPopulationCoefficient {
-            get { return _currentPopulationCoefficient; }
+            get { return _previousPopulationCoefficient; }
         }
-        [SerializeField] private int _currentPopulationCoefficient;
+        [SerializeField] private int _previousPopulationCoefficient;
 
         public float PreviousPopulationExponent {
-            get { return _currentPopulationExponent; }
+            get { return _previousPopulationExponent; }
         }
-        [SerializeField] private float _currentPopulationExponent;
+        [SerializeField] private float _previousPopulationExponent;
 
         #endregion
 

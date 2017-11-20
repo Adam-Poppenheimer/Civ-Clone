@@ -322,6 +322,8 @@ namespace Assets.Cities.Editor {
 
                 Container.Bind<IWorkerSlot>().FromInstance(mockSlot.Object);
             }
+            
+            GenerationLogicMock.Setup(logic => logic.GetYieldOfSlotForCity(It.IsAny<IWorkerSlot>(), It.IsAny<ICity>())).Returns(ResourceSummary.Empty);
 
             var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();
@@ -347,6 +349,8 @@ namespace Assets.Cities.Editor {
 
                 Container.Bind<IWorkerSlot>().FromInstance(mockSlot.Object);
             }
+
+            GenerationLogicMock.Setup(logic => logic.GetYieldOfSlotForCity(It.IsAny<IWorkerSlot>(), It.IsAny<ICity>())).Returns(ResourceSummary.Empty);
 
             var distributionLogic = Container.Resolve<WorkerDistributionLogic>();
             var slots = Container.ResolveAll<IWorkerSlot>();

@@ -11,34 +11,38 @@ using NUnit.Framework;
 using Moq;
 
 using Assets.GameMap;
+using Assets.Cities.Buildings;
 
 namespace Assets.Cities.Editor {
 
     [TestFixture]
     public class CityTests : ZenjectUnitTestFixture {
 
-        private Mock<IPopulationGrowthLogic> GrowthMock;
-        private Mock<IProductionLogic> ProductionMock;
+        private Mock<IPopulationGrowthLogic>   GrowthMock;
+        private Mock<IProductionLogic>         ProductionMock;
         private Mock<IResourceGenerationLogic> ResourceGenerationMock;
-        private Mock<IBorderExpansionLogic> ExpansionMock;
-        private Mock<ITilePossessionCanon> PossessionCanonMock;
+        private Mock<IBorderExpansionLogic>    ExpansionMock;
+        private Mock<ITilePossessionCanon>     TilePossessionCanonMock;
         private Mock<IWorkerDistributionLogic> DistributionMock;
+        private Mock<IBuildingPossessionCanon> BuildingPossessionCanonMock;
 
         [SetUp]
         public void CommonInstall() {
-            GrowthMock             = new Mock<IPopulationGrowthLogic>();
-            ProductionMock         = new Mock<IProductionLogic>();
-            ResourceGenerationMock = new Mock<IResourceGenerationLogic>();
-            ExpansionMock          = new Mock<IBorderExpansionLogic>();
-            PossessionCanonMock    = new Mock<ITilePossessionCanon>();
-            DistributionMock       = new Mock<IWorkerDistributionLogic>();
+            GrowthMock                  = new Mock<IPopulationGrowthLogic>();
+            ProductionMock              = new Mock<IProductionLogic>();
+            ResourceGenerationMock      = new Mock<IResourceGenerationLogic>();
+            ExpansionMock               = new Mock<IBorderExpansionLogic>();
+            TilePossessionCanonMock     = new Mock<ITilePossessionCanon>();
+            DistributionMock            = new Mock<IWorkerDistributionLogic>();
+            BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
 
-            Container.Bind<IPopulationGrowthLogic>  ().FromInstance(GrowthMock.Object);
-            Container.Bind<IProductionLogic>        ().FromInstance(ProductionMock.Object);
-            Container.Bind<IResourceGenerationLogic>().FromInstance(ResourceGenerationMock.Object);
-            Container.Bind<IBorderExpansionLogic>   ().FromInstance(ExpansionMock.Object);
-            Container.Bind<ITilePossessionCanon>    ().FromInstance(PossessionCanonMock.Object);
-            Container.Bind<IWorkerDistributionLogic>().FromInstance(DistributionMock.Object);
+            Container.Bind<IPopulationGrowthLogic>  ().FromInstance(GrowthMock                 .Object);
+            Container.Bind<IProductionLogic>        ().FromInstance(ProductionMock             .Object);
+            Container.Bind<IResourceGenerationLogic>().FromInstance(ResourceGenerationMock     .Object);
+            Container.Bind<IBorderExpansionLogic>   ().FromInstance(ExpansionMock              .Object);
+            Container.Bind<ITilePossessionCanon>    ().FromInstance(TilePossessionCanonMock    .Object);
+            Container.Bind<IWorkerDistributionLogic>().FromInstance(DistributionMock           .Object);
+            Container.Bind<IBuildingPossessionCanon>().FromInstance(BuildingPossessionCanonMock.Object);
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -224,7 +228,7 @@ namespace Assets.Cities.Editor {
 
             city.PerformExpansion();
 
-            PossessionCanonMock.Verify(canon => canon.CanChangeOwnerOfTile(tile, city), Times.AtLeastOnce, 
+            TilePossessionCanonMock.Verify(canon => canon.CanChangeOwnerOfTile(tile, city), Times.AtLeastOnce, 
                 "PossessionCanon's CanChangeOwnerOfTile method was never called");
         }
 
@@ -241,7 +245,7 @@ namespace Assets.Cities.Editor {
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(7);
 
-            PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -260,11 +264,11 @@ namespace Assets.Cities.Editor {
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(0);
 
-            PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
-            PossessionCanonMock.Verify(canon => canon.ChangeOwnerOfTile(tile, city), Times.Once, 
+            TilePossessionCanonMock.Verify(canon => canon.ChangeOwnerOfTile(tile, city), Times.Once, 
                 "Did not receive the expected ChangeOwnerOfTile call on PossessionCanon");
         }
 
@@ -284,7 +288,7 @@ namespace Assets.Cities.Editor {
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, firstTile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, firstTile)).Returns(0);
 
-            PossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(firstTile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(firstTile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -312,8 +316,10 @@ namespace Assets.Cities.Editor {
             city.Population = 7;
             city.DistributionPreferences = new DistributionPreferences(false, ResourceType.Food);
 
-            PossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city))
+            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city))
                 .Returns(new List<IMapTile>() { new Mock<IMapTile>().Object }.AsReadOnly());
+
+            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             city.PerformDistribution();
 
@@ -328,7 +334,7 @@ namespace Assets.Cities.Editor {
         }
 
         [Test(Description = "When PerformDistribution is called on a city, that city should " +
-            "send DistributionLogic all of the slots it receives from the tiles PossessionCanon " +
+            "send DistributionLogic all of the slots it receives from the tiles TilePossessionCanon " +
             "says it possesses")]
         public void PerformDistribution_DistributionLogicGivenAllTileSlots() {
             var city = Container.Resolve<City>();
@@ -345,7 +351,9 @@ namespace Assets.Cities.Editor {
             var tiles = new List<IMapTile>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
             var tileSlots = tiles.Select(tile => tile.WorkerSlot);
 
-            PossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
+            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
+
+            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             city.PerformDistribution();
 
@@ -359,6 +367,47 @@ namespace Assets.Cities.Editor {
                 Times.Once, "The Enumerable passed into DistributionLogic's DistributeWorkersIntoSlots method " + 
                 "is not a superset of all slots contained within the city's tiles"
             );
+        }
+
+        [Test(Description = "When PerformDistribution is called on a city, that city should " +
+            "send DistributionLogic all of the slots it receives from the buildings BuildingPossessionCanon " +
+            "says it possesses")]
+        public void PerformDistribution_DistributionLogicGivenAllBuildingSlots() {
+            var city = Container.Resolve<City>();
+
+            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IMapTile>().AsReadOnly());
+
+            var buildingMockOne = new Mock<IBuilding>();
+            var firstSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object };
+            buildingMockOne.Setup(building => building.Slots).Returns(firstSlots.AsReadOnly());
+
+            var buildingMockTwo = new Mock<IBuilding>();
+            var secondSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object, new Mock<IWorkerSlot>().Object };
+            buildingMockTwo.Setup(building => building.Slots).Returns(secondSlots.AsReadOnly());
+
+            var buildingMockThree = new Mock<IBuilding>();
+            var thirdSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object, new Mock<IWorkerSlot>().Object, new Mock<IWorkerSlot>().Object };
+            buildingMockThree.Setup(building => building.Slots).Returns(thirdSlots.AsReadOnly());
+
+            var allBuildings = new List<IBuilding>() { buildingMockOne.Object, buildingMockTwo.Object, buildingMockThree.Object };
+            var allSlots = new List<IWorkerSlot>(firstSlots.Concat(secondSlots).Concat(thirdSlots));
+
+            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(allBuildings.AsReadOnly());
+
+            DistributionMock.Setup(
+                logic => logic.DistributeWorkersIntoSlots(
+                    It.IsAny<int>(),
+                    It.IsAny<IEnumerable<IWorkerSlot>>(),
+                    It.IsAny<ICity>(),
+                    It.IsAny<DistributionPreferences>()
+                )
+            ).Callback(
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, DistributionPreferences preferences) {
+                    CollectionAssert.IsSupersetOf(availableSlots, allSlots);
+                }
+            );                
+
+            city.PerformDistribution();
         }
 
         [Test(Description = "When PerformIncome is called on a city, that city should " +
@@ -389,6 +438,8 @@ namespace Assets.Cities.Editor {
         public void PerformIncome_ChecksGrowthLogicForFoodConsumption() {
             var city = Container.Resolve<City>();
             city.FoodStockpile = 5;
+
+            ResourceGenerationMock.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
 
             GrowthMock.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(4);
 

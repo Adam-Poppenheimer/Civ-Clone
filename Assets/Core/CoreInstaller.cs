@@ -8,6 +8,8 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Cities;
+using Assets.GameMap;
+using Assets.GameMap.UI;
 
 namespace Assets.Core {
 
@@ -26,10 +28,12 @@ namespace Assets.Core {
         public override void InstallBindings() {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
-            Container.BindFactory<ICity, Factory<ICity>>().FromFactory<RecordkeepingCityFactory>();
+            Container.BindFactory<IMapTile, ICity, Factory<IMapTile, ICity>>().FromFactory<RecordkeepingCityFactory>();
 
             Container.Bind<ITurnExecuter>().To<TurnExecuter>().AsSingle();
             Container.Bind<GameCore>().AsSingle();
+
+            Container.Bind<ITileEventBroadcaster>().To<TileEventBroadcaster>().AsSingle();
         }
 
         #endregion

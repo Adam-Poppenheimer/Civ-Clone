@@ -9,7 +9,7 @@ using Assets.Cities.Buildings;
 
 namespace Assets.Cities {
 
-    public class ProductionProjectFactory : IFactory<IBuildingTemplate, IProductionProject> {
+    public class ProductionProjectFactory : IProductionProjectFactory {
 
         #region instance fields and properties
 
@@ -30,14 +30,14 @@ namespace Assets.Cities {
 
         #region from IProductionProjectFactory
 
-        public IProductionProject Create(IBuildingTemplate buildingTemplate) {
-            return new BuildingProductionProject(buildingTemplate, BuildingFactory);
+        public BuildingProductionProject ConstructBuildingProject(IBuildingTemplate template) {
+            return new BuildingProductionProject(template, BuildingFactory);
         }
 
         #endregion
 
         #endregion
-
+        
     }
 
 }

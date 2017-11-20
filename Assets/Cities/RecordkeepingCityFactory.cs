@@ -8,6 +8,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.GameMap;
+
 namespace Assets.Cities {
 
     public class RecordkeepingCityFactory : IRecordkeepingCityFactory , IInitializable, IValidatable {
@@ -37,12 +39,17 @@ namespace Assets.Cities {
         #region instance methods
 
         #region from IFactory<ICity>
-        public ICity Create() {
+        public ICity Create(IMapTile location) {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
-            var newCity = newCityGameObject.GetComponent<ICity>();
+            newCityGameObject.transform.SetParent(location.transform, false);
+
+            var newCity = newCityGameObject.GetComponent<City>();
+            newCity.Location = location;
+
             allCities.Add(newCity);
+
             return newCity;
         }
 

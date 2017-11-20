@@ -32,7 +32,7 @@ namespace Assets.Cities {
         public float PreviousTileCountExponent {
             get { return _previousTileCountExponent; }
         }
-        [SerializeField] private int _previousTileCountExponent;
+        [SerializeField] private float _previousTileCountExponent;
 
         #endregion
 

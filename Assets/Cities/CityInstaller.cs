@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.GameMap;
 using Assets.Cities.Buildings;
+using Assets.Cities.UI;
 
 namespace Assets.Cities {
 
@@ -19,6 +20,7 @@ namespace Assets.Cities {
         [SerializeField] private CityConfig CityConfig;
         [SerializeField] private PopulationGrowthConfig GrowthConfig;
         [SerializeField] private BorderExpansionConfig ExpansionConfig;
+        [SerializeField] private ResourceGenerationConfig GenerationConfig;
 
         [SerializeField] private MapHexGrid HexGrid;
 
@@ -29,21 +31,31 @@ namespace Assets.Cities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<ICityConfig>()            .To<CityConfig>()            .FromInstance(CityConfig);
-            Container.Bind<IPopulationGrowthConfig>().To<PopulationGrowthConfig>().FromInstance(GrowthConfig);
-            Container.Bind<IBorderExpansionConfig >().To<BorderExpansionConfig >().FromInstance(ExpansionConfig);
+            Container.Bind<ICityConfig>              ().To<CityConfig>              ().FromInstance(CityConfig);
+            Container.Bind<IPopulationGrowthConfig>  ().To<PopulationGrowthConfig>  ().FromInstance(GrowthConfig);
+            Container.Bind<IBorderExpansionConfig >  ().To<BorderExpansionConfig >  ().FromInstance(ExpansionConfig);
+            Container.Bind<IResourceGenerationConfig>().To<ResourceGenerationConfig>().FromInstance(GenerationConfig);
 
-            Container.Bind<IPopulationGrowthLogic>().To<PopulationGrowthLogic>().AsSingle();
-            Container.Bind<IProductionLogic>().To<ProductionLogic>().AsSingle();
+            Container.Bind<IPopulationGrowthLogic>  ().To<PopulationGrowthLogic>  ().AsSingle();
+            Container.Bind<IProductionLogic>        ().To<ProductionLogic>        ().AsSingle();
             Container.Bind<IResourceGenerationLogic>().To<ResourceGenerationLogic>().AsSingle();
-            Container.Bind<IBorderExpansionLogic>().To<BorderExpansionLogic>().AsSingle();
+            Container.Bind<IBorderExpansionLogic>   ().To<BorderExpansionLogic>   ().AsSingle();
             Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
 
             Container.Bind<ITilePossessionCanon>().To<TilePossessionCanon>().AsSingle();
 
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);
 
-            Container.BindIFactory<IBuildingTemplate, IProductionProject, ProductionProjectFactory>();
+            Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
+            Container.Bind<ITemplateValidityLogic>().To<TemplateValidityLogic>().AsSingle();
+
+            Container.Bind<IBuildingFactory>().To<BuildingFactory>().AsSingle();
+
+            Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
+
+            Container.Bind<ICityEventBroadcaster>().To<CityEventBroadcaster>().AsSingle();
+
+            Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();
         }
 
         #endregion
