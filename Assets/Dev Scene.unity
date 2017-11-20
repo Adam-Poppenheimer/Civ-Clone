@@ -1721,7 +1721,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _nextState: {fileID: 985418710}
-  Panel: {fileID: 1317493252}
+  Panel: {fileID: 1317493249}
 --- !u!4 &618568269
 Transform:
   m_ObjectHideFlags: 0
@@ -3692,9 +3692,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 1317493248}
-  - component: {fileID: 1317493250}
   - component: {fileID: 1317493249}
-  - component: {fileID: 1317493252}
   - component: {fileID: 1317493251}
   m_Layer: 5
   m_Name: City Display
@@ -3732,28 +3730,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 1317493247}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
+  m_Script: {fileID: 11500000, guid: 3dba3accb6220ec4a89f72e50411717a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIConfig: {fileID: 11400000, guid: e06d9cfad76d5d542a1f0ada92682142, type: 2}
-  SlotDisplayPrefab: {fileID: 882659054}
---- !u!114 &1317493250
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317493247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _installers:
-  - {fileID: 1317493249}
-  _installerPrefabs: []
-  _scriptableObjectInstallers: []
-  _autoRun: 1
-  _kernel: {fileID: 0}
 --- !u!114 &1317493251
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3790,17 +3769,6 @@ MonoBehaviour:
     m_DisabledTrigger: Disabled
   m_Interactable: 1
   m_TargetGraphic: {fileID: 0}
---- !u!114 &1317493252
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1317493247}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: -691815783, guid: a1de0ef46b59d8f4e9ae556ef106abf8, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1329153814
 GameObject:
   m_ObjectHideFlags: 0
@@ -4440,7 +4408,7 @@ MonoBehaviour:
   ExternalTransitions:
   - {fileID: 618568268}
   - {fileID: 570307042}
-  MainPanel: {fileID: 1317493252}
+  MainPanel: {fileID: 1317493249}
   SecondaryPanels: []
 --- !u!1 &1797031348
 GameObject:
@@ -4810,6 +4778,8 @@ GameObject:
   - component: {fileID: 1945435207}
   - component: {fileID: 1945435206}
   - component: {fileID: 1945435205}
+  - component: {fileID: 1945435210}
+  - component: {fileID: 1945435209}
   m_Layer: 5
   m_Name: Main Canvas
   m_TagString: Untagged
@@ -4894,6 +4864,37 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &1945435209
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1945435204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIConfig: {fileID: 11400000, guid: e06d9cfad76d5d542a1f0ada92682142, type: 2}
+  SlotDisplayPrefab: {fileID: 882659054}
+  CityTileDisplay: {fileID: 1058249852}
+--- !u!114 &1945435210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1945435204}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _installers:
+  - {fileID: 1945435209}
+  _installerPrefabs: []
+  _scriptableObjectInstallers: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!1 &1952695864
 GameObject:
   m_ObjectHideFlags: 0

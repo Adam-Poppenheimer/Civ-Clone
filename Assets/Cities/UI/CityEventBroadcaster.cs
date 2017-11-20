@@ -13,6 +13,12 @@ namespace Assets.Cities.UI {
 
         #region instance fields and properties
 
+        #region from ICityEventBroadcaster
+
+        public ICity LastClickedCity { get; private set; }
+
+        #endregion
+
         private HashSet<ICityClickedEventHandler> CityClickedHandlers;
 
         #endregion
@@ -50,6 +56,8 @@ namespace Assets.Cities.UI {
             }else if(eventData == null) {
                 throw new NotImplementedException("eventData");
             }
+
+            LastClickedCity = city;
 
             foreach(var handler in CityClickedHandlers) {
                 handler.OnCityClicked(city, eventData);

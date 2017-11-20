@@ -12,6 +12,7 @@ using Moq;
 
 using Assets.GameMap;
 using Assets.Cities.Buildings;
+using Assets.Cities.UI;
 
 namespace Assets.Cities.Editor {
 
@@ -25,6 +26,7 @@ namespace Assets.Cities.Editor {
         private Mock<ITilePossessionCanon>     TilePossessionCanonMock;
         private Mock<IWorkerDistributionLogic> DistributionMock;
         private Mock<IBuildingPossessionCanon> BuildingPossessionCanonMock;
+        private Mock<ICityEventBroadcaster>    EventBroadcasterMock;
 
         [SetUp]
         public void CommonInstall() {
@@ -35,6 +37,7 @@ namespace Assets.Cities.Editor {
             TilePossessionCanonMock     = new Mock<ITilePossessionCanon>();
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
             BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
+            EventBroadcasterMock        = new Mock<ICityEventBroadcaster>();
 
             Container.Bind<IPopulationGrowthLogic>  ().FromInstance(GrowthMock                 .Object);
             Container.Bind<IProductionLogic>        ().FromInstance(ProductionMock             .Object);
@@ -43,6 +46,7 @@ namespace Assets.Cities.Editor {
             Container.Bind<ITilePossessionCanon>    ().FromInstance(TilePossessionCanonMock    .Object);
             Container.Bind<IWorkerDistributionLogic>().FromInstance(DistributionMock           .Object);
             Container.Bind<IBuildingPossessionCanon>().FromInstance(BuildingPossessionCanonMock.Object);
+            Container.Bind<ICityEventBroadcaster>   ().FromInstance(EventBroadcasterMock       .Object);
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -449,6 +453,12 @@ namespace Assets.Cities.Editor {
                 "GrowthLogic's GetFoodConsumptionPerTurn was not called as expected");
 
             Assert.AreEqual(1, city.FoodStockpile, "City did not correctly update its FoodStockpile");
+        }
+
+        [Test(Description = "When OnPointerClick is called, City should call EventBroadcaster.BroadcastCityClick " +
+            "on itself and the argued PointerEventData")]
+        public void OnPointerClickCalled_SendsEventToBroadcaster() {
+            throw new NotImplementedException();
         }
 
     }

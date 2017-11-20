@@ -17,6 +17,8 @@ namespace Assets.Cities.UI {
 
         [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
 
+        [SerializeField] private CityTileDisplay CityTileDisplay;
+
         #endregion
 
         #region instance methods
@@ -26,6 +28,8 @@ namespace Assets.Cities.UI {
         public override void InstallBindings() {
             Container.Bind<ICityUIConfig>().To<CityUIConfig>().FromInstance(UIConfig);
             Container.Bind<IWorkerSlotDisplay>().To<WorkerSlotDisplay>().FromInstance(SlotDisplayPrefab);
+
+            Container.Bind<ICityTileDisplay>().To<CityTileDisplay>().FromInstance(CityTileDisplay);
 
         }
 

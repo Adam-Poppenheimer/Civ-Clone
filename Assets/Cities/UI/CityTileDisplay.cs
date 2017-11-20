@@ -10,7 +10,7 @@ using Zenject;
 
 namespace Assets.Cities.UI {
 
-    public class CityTileDisplay : MonoBehaviour {
+    public class CityTileDisplay : MonoBehaviour, ICityTileDisplay {
 
         #region instance fields and properties
 
@@ -20,7 +20,7 @@ namespace Assets.Cities.UI {
 
         #endregion
 
-        private List<IWorkerSlotDisplay> InstantiatedDisplays;
+        private List<IWorkerSlotDisplay> InstantiatedDisplays = new List<IWorkerSlotDisplay>();
 
         private ITilePossessionCanon PossessionCanon;
 
