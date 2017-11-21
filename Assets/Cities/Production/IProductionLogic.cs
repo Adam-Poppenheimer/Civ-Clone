@@ -3,13 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Cities {
+namespace Assets.Cities.Production {
 
     public interface IProductionLogic {
 
         #region methods
-
-        List<IProductionProject> GetProjectsAvailableToCity(ICity city);
 
         int GetProductionProgressPerTurnOnProject(ICity city, IProductionProject project);
 

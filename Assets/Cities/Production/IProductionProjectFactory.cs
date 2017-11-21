@@ -5,7 +5,7 @@ using System.Text;
 
 using Assets.Cities.Buildings;
 
-namespace Assets.Cities {
+namespace Assets.Cities.Production {
 
     public interface IProductionProjectFactory {
 

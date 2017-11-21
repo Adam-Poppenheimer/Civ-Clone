@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.GameMap;
 using Assets.Cities.Buildings;
+using Assets.Cities.Production;
 using Assets.Cities.UI;
 
 namespace Assets.Cities {

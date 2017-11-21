@@ -5,6 +5,8 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Cities.Production;
+
 namespace Assets.Cities.Buildings {
 
     public class BuildingProductionProject : IProductionProject {
