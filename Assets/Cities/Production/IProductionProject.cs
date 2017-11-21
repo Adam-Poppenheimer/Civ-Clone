@@ -9,6 +9,8 @@ namespace Assets.Cities.Production {
 
         #region properties
 
+        string Name { get; }
+
         int Progress { get; set; }
         int ProductionToComplete { get; }
 

@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Cities.Production.UI;
+
 namespace Assets.Cities.UI {
 
     public class CityUIInstaller : MonoInstaller {
@@ -18,6 +20,12 @@ namespace Assets.Cities.UI {
         [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
 
         [SerializeField] private CityTileDisplay CityTileDisplay;
+
+        [SerializeField] private ProductionDisplay ProductionDisplay;
+
+        [SerializeField] private ProductionProjectDisplay ProductionProjectDisplay;
+
+        [SerializeField] private ProductionProjectChooser ProductionProjectChooser;
 
         #endregion
 
@@ -31,6 +39,10 @@ namespace Assets.Cities.UI {
 
             Container.Bind<ICityTileDisplay>().To<CityTileDisplay>().FromInstance(CityTileDisplay);
 
+            Container.BindInterfacesTo<ProductionDisplay>().AsSingle();
+
+            Container.Bind<IProductionProjectDisplay>().To<ProductionProjectDisplay>().FromInstance(ProductionProjectDisplay);
+            Container.Bind<IProductionProjectChooser>().To<ProductionProjectChooser>().FromInstance(ProductionProjectChooser);
         }
 
         #endregion

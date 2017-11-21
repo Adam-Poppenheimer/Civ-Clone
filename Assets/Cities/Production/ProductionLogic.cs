@@ -17,6 +17,8 @@ namespace Assets.Cities.Production {
 
         private IResourceGenerationLogic GenerationLogic;
 
+        private ITemplateValidityLogic TemplateValidityLogic;
+
         #endregion
 
         #region constructors

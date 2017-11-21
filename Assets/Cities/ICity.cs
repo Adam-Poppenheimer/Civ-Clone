@@ -6,7 +6,7 @@ using System.Text;
 
 using Assets.GameMap;
 using Assets.Cities.Production;
-
+using Assets.Cities.Buildings;
 
 namespace Assets.Cities {
 
@@ -23,7 +23,7 @@ namespace Assets.Cities {
 
         ResourceSummary LastIncome { get; }
 
-        IProductionProject CurrentProject { get; }
+        IProductionProject ActiveProject { get; }
 
         DistributionPreferences DistributionPreferences { get; set; }
 
@@ -33,7 +33,7 @@ namespace Assets.Cities {
 
         #region instance methods
 
-        void SetCurrentProject(IProductionProject project);
+        void SetActiveProductionProject(IBuildingTemplate template);
 
         void PerformGrowth();
         void PerformProduction();

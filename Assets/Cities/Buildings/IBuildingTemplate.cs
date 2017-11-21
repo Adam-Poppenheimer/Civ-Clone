@@ -12,6 +12,8 @@ namespace Assets.Cities.Buildings {
 
         #region properties
 
+        string name { get; }
+
         int Cost { get; }
         int Maintenance { get; }
 

@@ -44,7 +44,7 @@ namespace Assets.Cities {
 
         public ResourceSummary LastIncome { get; private set; }
 
-        public IProductionProject CurrentProject { get; private set; }
+        public IProductionProject ActiveProject { get; private set; }
 
         public DistributionPreferences DistributionPreferences { get; set; }
 
@@ -68,6 +68,8 @@ namespace Assets.Cities {
 
         private ICityEventBroadcaster EventBroadcaster;
 
+        private IProductionProjectFactory ProjectFactory;
+
         #endregion
 
         #region instance methods
@@ -77,16 +79,18 @@ namespace Assets.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             ITilePossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IBuildingPossessionCanon buildingPossessionCanon, ICityEventBroadcaster eventBroadcaster
+            IBuildingPossessionCanon buildingPossessionCanon, ICityEventBroadcaster eventBroadcaster,
+            IProductionProjectFactory projectFactory
         ){
-            GrowthLogic = growthLogic;
-            ProductionLogic = productionLogic;
+            GrowthLogic             = growthLogic;
+            ProductionLogic         = productionLogic;
             ResourceGenerationLogic = resourceGenerationLogic;
-            ExpansionLogic = expansionLogic;
-            TilePossessionCanon = tilePossessionCanon;
-            DistributionLogic = distributionLogic;
+            ExpansionLogic          = expansionLogic;
+            TilePossessionCanon     = tilePossessionCanon;
+            DistributionLogic       = distributionLogic;
             BuildingPossessionCanon = buildingPossessionCanon;
-            EventBroadcaster = eventBroadcaster;
+            EventBroadcaster        = eventBroadcaster;
+            ProjectFactory          = projectFactory;
         }
 
         #region EventSystem handler implementations
@@ -99,8 +103,8 @@ namespace Assets.Cities {
 
         #region from ICity
 
-        public void SetCurrentProject(IProductionProject project) {
-            CurrentProject = project;
+        public void SetActiveProductionProject(IBuildingTemplate template) {
+            ActiveProject = ProjectFactory.ConstructBuildingProject(template);
         }
 
         public void PerformGrowth() {
@@ -115,15 +119,15 @@ namespace Assets.Cities {
         }
 
         public void PerformProduction() {
-            if(CurrentProject == null) {
+            if(ActiveProject == null) {
                 return;
             }
 
-            CurrentProject.Progress += ProductionLogic.GetProductionProgressPerTurnOnProject(this, CurrentProject);
+            ActiveProject.Progress += ProductionLogic.GetProductionProgressPerTurnOnProject(this, ActiveProject);
 
-            if(CurrentProject.ProductionToComplete >= CurrentProject.Progress) {
-                CurrentProject.Execute(this);
-                CurrentProject = null;
+            if(ActiveProject.ProductionToComplete >= ActiveProject.Progress) {
+                ActiveProject.Execute(this);
+                ActiveProject = null;
             }
         }
 

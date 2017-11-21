@@ -8,6 +8,7 @@ using UnityEngine;
 
 namespace Assets.Cities.Buildings {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Building Template")]
     public class BuildingTemplate : ScriptableObject, IBuildingTemplate {
 
         #region instance fields and properties

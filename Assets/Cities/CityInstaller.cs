@@ -18,12 +18,15 @@ namespace Assets.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private CityConfig CityConfig;
-        [SerializeField] private PopulationGrowthConfig GrowthConfig;
-        [SerializeField] private BorderExpansionConfig ExpansionConfig;
+        [SerializeField] private CityConfig               CityConfig;
+        [SerializeField] private PopulationGrowthConfig   GrowthConfig;
+        [SerializeField] private BorderExpansionConfig    ExpansionConfig;
         [SerializeField] private ResourceGenerationConfig GenerationConfig;
+        [SerializeField] private ProductionLogicConfig    ProductionConfig;
 
         [SerializeField] private MapHexGrid HexGrid;
+
+        [SerializeField] private List<BuildingTemplate> AvailableBuildingTemplates;
 
         #endregion
 
@@ -36,6 +39,7 @@ namespace Assets.Cities {
             Container.Bind<IPopulationGrowthConfig>  ().To<PopulationGrowthConfig>  ().FromInstance(GrowthConfig);
             Container.Bind<IBorderExpansionConfig >  ().To<BorderExpansionConfig >  ().FromInstance(ExpansionConfig);
             Container.Bind<IResourceGenerationConfig>().To<ResourceGenerationConfig>().FromInstance(GenerationConfig);
+            Container.Bind<IProductionLogicConfig>   ().To<ProductionLogicConfig>   ().FromInstance(ProductionConfig);
 
             Container.Bind<IPopulationGrowthLogic>  ().To<PopulationGrowthLogic>  ().AsSingle();
             Container.Bind<IProductionLogic>        ().To<ProductionLogic>        ().AsSingle();
@@ -48,6 +52,7 @@ namespace Assets.Cities {
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);
 
             Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
+
             Container.Bind<ITemplateValidityLogic>().To<TemplateValidityLogic>().AsSingle();
 
             Container.Bind<IBuildingFactory>().To<BuildingFactory>().AsSingle();
@@ -57,6 +62,8 @@ namespace Assets.Cities {
             Container.Bind<ICityEventBroadcaster>().To<CityEventBroadcaster>().AsSingle();
 
             Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();
+
+            Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
         }
 
         #endregion

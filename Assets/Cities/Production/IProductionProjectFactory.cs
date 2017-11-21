@@ -11,7 +11,7 @@ namespace Assets.Cities.Production {
 
         #region methods
 
-        BuildingProductionProject ConstructBuildingProject(IBuildingTemplate template);
+        IProductionProject ConstructBuildingProject(IBuildingTemplate template);
 
         #endregion
 

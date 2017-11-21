@@ -30,7 +30,7 @@ namespace Assets.Cities.Production {
 
         #region from IProductionProjectFactory
 
-        public BuildingProductionProject ConstructBuildingProject(IBuildingTemplate template) {
+        public IProductionProject ConstructBuildingProject(IBuildingTemplate template) {
             return new BuildingProductionProject(template, BuildingFactory);
         }
 

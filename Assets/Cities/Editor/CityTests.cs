@@ -20,14 +20,15 @@ namespace Assets.Cities.Editor {
     [TestFixture]
     public class CityTests : ZenjectUnitTestFixture {
 
-        private Mock<IPopulationGrowthLogic>   GrowthMock;
-        private Mock<IProductionLogic>         ProductionMock;
-        private Mock<IResourceGenerationLogic> ResourceGenerationMock;
-        private Mock<IBorderExpansionLogic>    ExpansionMock;
-        private Mock<ITilePossessionCanon>     TilePossessionCanonMock;
-        private Mock<IWorkerDistributionLogic> DistributionMock;
-        private Mock<IBuildingPossessionCanon> BuildingPossessionCanonMock;
-        private Mock<ICityEventBroadcaster>    EventBroadcasterMock;
+        private Mock<IPopulationGrowthLogic>    GrowthMock;
+        private Mock<IProductionLogic>          ProductionMock;
+        private Mock<IResourceGenerationLogic>  ResourceGenerationMock;
+        private Mock<IBorderExpansionLogic>     ExpansionMock;
+        private Mock<ITilePossessionCanon>      TilePossessionCanonMock;
+        private Mock<IWorkerDistributionLogic>  DistributionMock;
+        private Mock<IBuildingPossessionCanon>  BuildingPossessionCanonMock;
+        private Mock<ICityEventBroadcaster>     EventBroadcasterMock;
+        private Mock<IProductionProjectFactory> ProjectFactoryMock;
 
         [SetUp]
         public void CommonInstall() {
@@ -39,15 +40,17 @@ namespace Assets.Cities.Editor {
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
             BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
             EventBroadcasterMock        = new Mock<ICityEventBroadcaster>();
+            ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
 
-            Container.Bind<IPopulationGrowthLogic>  ().FromInstance(GrowthMock                 .Object);
-            Container.Bind<IProductionLogic>        ().FromInstance(ProductionMock             .Object);
-            Container.Bind<IResourceGenerationLogic>().FromInstance(ResourceGenerationMock     .Object);
-            Container.Bind<IBorderExpansionLogic>   ().FromInstance(ExpansionMock              .Object);
-            Container.Bind<ITilePossessionCanon>    ().FromInstance(TilePossessionCanonMock    .Object);
-            Container.Bind<IWorkerDistributionLogic>().FromInstance(DistributionMock           .Object);
-            Container.Bind<IBuildingPossessionCanon>().FromInstance(BuildingPossessionCanonMock.Object);
-            Container.Bind<ICityEventBroadcaster>   ().FromInstance(EventBroadcasterMock       .Object);
+            Container.Bind<IPopulationGrowthLogic>   ().FromInstance(GrowthMock                 .Object);
+            Container.Bind<IProductionLogic>         ().FromInstance(ProductionMock             .Object);
+            Container.Bind<IResourceGenerationLogic> ().FromInstance(ResourceGenerationMock     .Object);
+            Container.Bind<IBorderExpansionLogic>    ().FromInstance(ExpansionMock              .Object);
+            Container.Bind<ITilePossessionCanon>     ().FromInstance(TilePossessionCanonMock    .Object);
+            Container.Bind<IWorkerDistributionLogic> ().FromInstance(DistributionMock           .Object);
+            Container.Bind<IBuildingPossessionCanon> ().FromInstance(BuildingPossessionCanonMock.Object);
+            Container.Bind<ICityEventBroadcaster>    ().FromInstance(EventBroadcasterMock       .Object);
+            Container.Bind<IProductionProjectFactory>().FromInstance(ProjectFactoryMock         .Object);
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -133,8 +136,11 @@ namespace Assets.Cities.Editor {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(30);
 
+            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+                .Returns(mockProject.Object);
+
             var city = Container.Resolve<City>();
-            city.SetCurrentProject(mockProject.Object);
+            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
 
             ProductionMock.Setup(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object)).Returns(9);
 
@@ -154,8 +160,11 @@ namespace Assets.Cities.Editor {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
+            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+                .Returns(mockProject.Object);
+
             var city = Container.Resolve<City>();
-            city.SetCurrentProject(mockProject.Object);
+            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
 
             city.PerformProduction();
 
@@ -170,22 +179,15 @@ namespace Assets.Cities.Editor {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
+            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+                .Returns(mockProject.Object);
+
             var city = Container.Resolve<City>();
-            city.SetCurrentProject(mockProject.Object);
+            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
 
             city.PerformProduction();
 
-            Assert.Null(city.CurrentProject, "CurrentProject was not set to null");
-        }
-
-        [Test(Description = "When PerformProduction is called on a city with a null CurrentProject, " +
-            "no exception should be thrown")]
-        public void PerformProduction_DoesNotThrowOnNullCurrentProject() {
-            var city = Container.Resolve<City>();
-            city.SetCurrentProject(null);
-
-            Assert.DoesNotThrow(() => city.PerformProduction(),
-                "PerformProduction threw an exception when its current project was null");
+            Assert.Null(city.ActiveProject, "CurrentProject was not set to null");
         }
 
         [Test(Description = "When PerformExpansion is called on a city, that city should call " + 

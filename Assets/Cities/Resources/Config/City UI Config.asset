@@ -11,5 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35ee3719b56dc7549bf014877f0d8be0, type: 3}
   m_Name: City UI Config
   m_EditorClassIdentifier: 
-  _occupiedSlotMaterial: {fileID: 0}
-  _unoccupiedSlotMaterial: {fileID: 0}
+  _occupiedSlotMaterial: {fileID: 2100000, guid: 33a7328a873d1bb4a8c076ab96cf9b3e,
+    type: 2}
+  _unoccupiedSlotMaterial: {fileID: 2100000, guid: 0cdc45077edc2fa48a18cfb557b3158c,
+    type: 2}

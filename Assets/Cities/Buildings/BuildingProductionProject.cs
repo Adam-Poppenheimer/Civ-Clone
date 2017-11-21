@@ -15,6 +15,10 @@ namespace Assets.Cities.Buildings {
 
         #region from IProductionProject
 
+        public string Name {
+            get { return BuildingTemplate.name; }
+        }
+
         public int ProductionToComplete {
             get { return BuildingTemplate.Cost; }
         }

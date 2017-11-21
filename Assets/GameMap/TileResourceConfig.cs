@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.GameMap {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Tile Resource Config")]
     public class TileResourceConfig : ScriptableObject, ITileResourceConfig {
 
         #region instance fields and properties
