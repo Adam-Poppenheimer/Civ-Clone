@@ -48,13 +48,17 @@ namespace Assets.GameMap {
         public IWorkerSlot WorkerSlot {
             get {
                 if(_workerSlot == null) {
-                    _workerSlot = new WorkerSlot(ResourceLogic.GetYieldOfTile(this));
+                    var baseYield = ResourceLogic.GetYieldOfTile(this);
+                    _workerSlot = new WorkerSlot(baseYield);
                     _workerSlot.IsOccupiable = !TileConfig.UnoccupiableTerrains.Contains(Terrain);
                 }
+
                 return _workerSlot;
             }
         }
         private WorkerSlot _workerSlot;
+
+        public bool SuppressSlot { get; set; }
 
         #endregion
 

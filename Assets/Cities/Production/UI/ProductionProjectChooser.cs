@@ -12,7 +12,7 @@ using Assets.Cities.Buildings;
 
 namespace Assets.Cities.Production.UI {
 
-    public class ProductionProjectChooser : IProductionProjectChooser, IInitializable {
+    public class ProductionProjectChooser : MonoBehaviour, IProductionProjectChooser {
 
         #region instance fields and properties
 
@@ -49,7 +49,7 @@ namespace Assets.Cities.Production.UI {
 
         #region from IInitializable
 
-        public void Initialize() {
+        public void Start() {
             ProjectDropdown.onValueChanged.AddListener(UpdateChosenProject);
         }
 
@@ -62,15 +62,33 @@ namespace Assets.Cities.Production.UI {
 
             var dropdownOptions = ProjectDropdown.options;
 
+            dropdownOptions.Add(new Dropdown.OptionData("None"));
+            ProjectNameOfOptionIndex[0] = "None";
+
             for(int i = 0; i < templates.Count(); ++i) {
                 var template = templates[i];
 
                 dropdownOptions.Add(new Dropdown.OptionData(template.name));
 
-                ProjectNameOfOptionIndex[i] = template.name;
+                ProjectNameOfOptionIndex[i + 1] = template.name;
             }
 
             ProjectDropdown.RefreshShownValue();
+        }
+
+        public void SetSelectedTemplateFromProject(IProductionProject project) {
+            if(project == null) {
+                ProjectDropdown.value = 0;
+                return;
+            }
+
+            for(int i = 0; i < ProjectDropdown.options.Count; ++i) {
+                if(ProjectDropdown.options[i].text.Equals(project.Name)) {
+                    ProjectDropdown.value = i;
+                    return;
+                }
+            }
+            ProjectDropdown.value = 0;
         }
 
         public void ClearAvailableProjects() {
@@ -84,6 +102,8 @@ namespace Assets.Cities.Production.UI {
             ChosenProjectName = ProjectNameOfOptionIndex[optionIndex];
             RaiseNewProjectChosen();
         }
+
+        
 
         #endregion
 

@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: Tile Resource Config
   m_EditorClassIdentifier: 
   _grasslandsYield:
-    Food: 2
-    Production: 0
+    Food: 3
+    Production: 1
     Gold: 0
     Culture: 0
   _plainsYield:

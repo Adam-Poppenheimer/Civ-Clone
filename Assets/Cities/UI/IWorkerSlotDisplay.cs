@@ -8,8 +8,6 @@ namespace Assets.Cities.UI {
 
         #region properties
 
-        bool IsOccupied { get; set; }
-
         GameObject gameObject { get; }
         Transform transform { get; }
 
@@ -17,7 +15,7 @@ namespace Assets.Cities.UI {
 
         #region methods
 
-        void Refresh();
+        void DisplayOccupationStatus(bool isOccupied, ICityUIConfig config);
 
         #endregion
 

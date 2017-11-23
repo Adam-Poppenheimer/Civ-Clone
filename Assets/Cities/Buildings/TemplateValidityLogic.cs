@@ -15,13 +15,17 @@ namespace Assets.Cities.Buildings {
 
         private List<IBuildingTemplate> AvailableTemplates;
 
+        private IBuildingPossessionCanon PossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public TemplateValidityLogic(List<IBuildingTemplate> availableTemplates) {
+        public TemplateValidityLogic(List<IBuildingTemplate> availableTemplates,
+            IBuildingPossessionCanon possessionCanon) {
             AvailableTemplates = availableTemplates;
+            PossessionCanon = possessionCanon;
         }
 
         #endregion
@@ -35,7 +39,7 @@ namespace Assets.Cities.Buildings {
                 throw new ArgumentNullException("city");
             }
 
-            return AvailableTemplates;
+            return AvailableTemplates.Where(template => IsTemplateValidForCity(template, city));
         }
 
         public bool IsTemplateValidForCity(IBuildingTemplate template, ICity city) {
@@ -45,7 +49,8 @@ namespace Assets.Cities.Buildings {
                 throw new ArgumentNullException("city");
             }
 
-            return AvailableTemplates.Contains(template);
+            var templatesAlreadyThere = PossessionCanon.GetBuildingsInCity(city).Select(building => building.Template);
+            return AvailableTemplates.Contains(template) && !templatesAlreadyThere.Contains(template);
         }
 
         #endregion

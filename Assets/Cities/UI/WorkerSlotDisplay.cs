@@ -14,36 +14,19 @@ namespace Assets.Cities.UI {
 
         #region instance fields and properties
 
-        #region from IWorkerSlotDisplay
-
-        public bool IsOccupied { get; set; }
-
-        #endregion
-
         public Image SlotImage {
             get { return _slotImage; }
             set { _slotImage = value; }
         }
         [SerializeField] private Image _slotImage;
 
-        private ICityUIConfig Config;
-
         #endregion
 
         #region instance methods
 
-        [Inject]
-        public void InjectDependencies(ICityUIConfig config) {
-            Config = config;
+        public void DisplayOccupationStatus(bool isOccupied, ICityUIConfig config) {
+            SlotImage.material = isOccupied ? config.OccupiedSlotMaterial : config.UnoccupiedSlotMaterial;
         }
-
-        #region from IWorkerSlotDisplay
-
-        public void Refresh() {
-            SlotImage.material = IsOccupied ? Config.OccupiedSlotMaterial : Config.UnoccupiedSlotMaterial;
-        }
-
-        #endregion
 
         #endregion
 

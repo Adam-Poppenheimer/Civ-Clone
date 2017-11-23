@@ -73,6 +73,7 @@ namespace Assets.Cities.UI {
 
             ProjectChooser.ClearAvailableProjects();
             ProjectChooser.SetAvailableBuildingTemplates(TemplateValidityLogic.GetTemplatesValidForCity(CityToDisplay).ToList());
+            ProjectChooser.SetSelectedTemplateFromProject(CityToDisplay.ActiveProject);
         }
 
         #endregion
@@ -87,9 +88,7 @@ namespace Assets.Cities.UI {
                 template => template.name.Equals(ProjectChooser.ChosenProjectName)
             ).FirstOrDefault();
 
-            if(templateOfName != null) {
-                CityToDisplay.SetActiveProductionProject(templateOfName);
-            }
+            CityToDisplay.SetActiveProductionProject(templateOfName);
         }
 
         #endregion

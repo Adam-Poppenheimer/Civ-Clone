@@ -104,7 +104,12 @@ namespace Assets.Cities {
         #region from ICity
 
         public void SetActiveProductionProject(IBuildingTemplate template) {
-            ActiveProject = ProjectFactory.ConstructBuildingProject(template);
+            if(template == null) {
+                ActiveProject = null;
+            }else {
+                ActiveProject = ProjectFactory.ConstructBuildingProject(template);
+            }
+            
         }
 
         public void PerformGrowth() {
@@ -125,7 +130,7 @@ namespace Assets.Cities {
 
             ActiveProject.Progress += ProductionLogic.GetProductionProgressPerTurnOnProject(this, ActiveProject);
 
-            if(ActiveProject.ProductionToComplete >= ActiveProject.Progress) {
+            if( ActiveProject.Progress >= ActiveProject.ProductionToComplete) {
                 ActiveProject.Execute(this);
                 ActiveProject = null;
             }
@@ -162,7 +167,7 @@ namespace Assets.Cities {
         private List<IWorkerSlot> GetAllAvailableSlots() {
             var retval = new List<IWorkerSlot>();
 
-            retval.AddRange(TilePossessionCanon.GetTilesOfCity(this).Select(tile => tile.WorkerSlot));
+            retval.AddRange(TilePossessionCanon.GetTilesOfCity(this).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
 
             foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(this)) {
                 retval.AddRange(building.Slots);

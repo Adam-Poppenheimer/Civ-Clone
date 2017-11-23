@@ -37,7 +37,7 @@ namespace Assets.Core {
             Container.Bind<ITileEventBroadcaster>().To<TileEventBroadcaster>().AsSingle();
 
             Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
-            Container.Bind<ITileResourceConfig>().To<TileResourceConfig>().AsSingle();
+            Container.Bind<ITileResourceConfig>().To<TileResourceConfig>().FromInstance(TileResourceConfig);
         }
 
         #endregion

@@ -68,6 +68,12 @@ namespace Assets.Cities.Buildings.Editor {
                 "GetTemplatesValidForCity did not return all available templates for cityTwo");
         }
 
+        [Test(Description = "GetTemplatesValidForCity should not return any templates that " +
+            "are already represented by a building in the argued city")]
+        public void GetTemplatesValidForCity_ExcludesConstructedTemplates() {
+            throw new NotImplementedException();
+        }
+
         [Test(Description = "Every method should throw an ArgumentNullException when passed " +
             "any null argument")]
         public void AllMethods_ThrowOnNullArguments() {

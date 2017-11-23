@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Cities.Production.UI;
+using Assets.UI;
 
 namespace Assets.Cities.UI {
 
@@ -27,6 +28,14 @@ namespace Assets.Cities.UI {
 
         [SerializeField] private ProductionProjectChooser ProductionProjectChooser;
 
+        [SerializeField] private CityGrowthDisplay GrowthDisplay;
+
+        [SerializeField] private ResourceSummaryDisplay CityYieldDisplay;
+
+        [SerializeField] private CityBuildingDisplay CityBuildingDisplay;
+
+        [SerializeField] private CityExpansionDisplay CityExpansionDisplay;
+
         #endregion
 
         #region instance methods
@@ -39,10 +48,18 @@ namespace Assets.Cities.UI {
 
             Container.Bind<ICityTileDisplay>().To<CityTileDisplay>().FromInstance(CityTileDisplay);
 
-            Container.BindInterfacesTo<ProductionDisplay>().AsSingle();
+            Container.Bind<IProductionDisplay>().To<ProductionDisplay>().AsSingle();
 
             Container.Bind<IProductionProjectDisplay>().To<ProductionProjectDisplay>().FromInstance(ProductionProjectDisplay);
             Container.Bind<IProductionProjectChooser>().To<ProductionProjectChooser>().FromInstance(ProductionProjectChooser);
+
+            Container.Bind<ICityGrowthDisplay>().To<CityGrowthDisplay>().FromInstance(GrowthDisplay);
+
+            Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").FromInstance(CityYieldDisplay);
+
+            Container.Bind<ICityBuildingDisplay>().To<CityBuildingDisplay>().FromInstance(CityBuildingDisplay);
+
+            Container.Bind<ICityExpansionDisplay>().To<CityExpansionDisplay>().FromInstance(CityExpansionDisplay);
         }
 
         #endregion

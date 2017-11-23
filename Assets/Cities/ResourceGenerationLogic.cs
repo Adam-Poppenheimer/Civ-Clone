@@ -46,6 +46,10 @@ namespace Assets.Cities {
             int employedPops = 0;
 
             foreach(var tile in TileCanon.GetTilesOfCity(city)) {
+                if(tile.SuppressSlot) {
+                    continue;
+                }
+
                 retval += GetYieldOfSlotForCity(tile.WorkerSlot, city);
                 if(tile.WorkerSlot.IsOccupied) {
                     employedPops++;

@@ -24,6 +24,8 @@ namespace Assets.GameMap {
 
         IWorkerSlot WorkerSlot { get; }
 
+        bool SuppressSlot { get; set; }
+
         #endregion
 
     }

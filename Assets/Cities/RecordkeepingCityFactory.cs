@@ -38,7 +38,8 @@ namespace Assets.Cities {
 
         #region instance methods
 
-        #region from IFactory<ICity>
+        #region from IRecordkeepingCityFactory
+
         public ICity Create(IMapTile location) {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
@@ -46,8 +47,13 @@ namespace Assets.Cities {
             newCityGameObject.transform.SetParent(location.transform, false);
 
             var newCity = newCityGameObject.GetComponent<City>();
+            newCity.Population = 1;
             newCity.Location = location;
-            location.WorkerSlot.IsOccupiable = false;
+            location.SuppressSlot = true;
+            
+
+            newCity.DistributionPreferences = new DistributionPreferences(false, ResourceType.Food);
+            newCity.PerformDistribution();
 
             allCities.Add(newCity);
 

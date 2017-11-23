@@ -26,14 +26,18 @@ namespace Assets.Cities.UI {
 
         private IWorkerSlotDisplay SlotDisplayPrefab;
 
+        private ICityUIConfig Config;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITilePossessionCanon possessionCanon, IWorkerSlotDisplay slotDisplayPrefab) {
+        public void InjectDependencies(ITilePossessionCanon possessionCanon, IWorkerSlotDisplay slotDisplayPrefab,
+            ICityUIConfig config) {
             PossessionCanon = possessionCanon;
             SlotDisplayPrefab = slotDisplayPrefab;
+            Config = config;
         }
 
         #region from ITileDistributionDisplay
@@ -50,14 +54,14 @@ namespace Assets.Cities.UI {
             int slotDisplayIndex = 0;
 
             foreach(var tile in PossessionCanon.GetTilesOfCity(CityToDisplay)) {
-                if(!tile.WorkerSlot.IsOccupiable) {
+                if(tile.SuppressSlot) {
                     continue;
                 }
 
                 var slotDisplay = GetNextSlotDisplay(slotDisplayIndex++);
 
                 slotDisplay.transform.position = Camera.main.WorldToScreenPoint(tile.transform.position);
-                slotDisplay.IsOccupied = tile.WorkerSlot.IsOccupied;
+                slotDisplay.DisplayOccupationStatus(tile.WorkerSlot.IsOccupied, Config);
 
                 slotDisplay.gameObject.SetActive(true);
             }

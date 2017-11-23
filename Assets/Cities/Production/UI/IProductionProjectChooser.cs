@@ -25,6 +25,8 @@ namespace Assets.Cities.Production.UI {
 
         void SetAvailableBuildingTemplates(List<IBuildingTemplate> templates);
 
+        void SetSelectedTemplateFromProject(IProductionProject project);
+
         void ClearAvailableProjects();
 
         #endregion
