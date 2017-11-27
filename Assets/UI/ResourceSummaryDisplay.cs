@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Assets.Simulation;
+
 namespace Assets.UI {
 
     public class ResourceSummaryDisplay : MonoBehaviour, IResourceSummaryDisplay {

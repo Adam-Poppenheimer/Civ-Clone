@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation;
+
 namespace Assets.UI {
 
     public interface IResourceSummaryDisplay {
