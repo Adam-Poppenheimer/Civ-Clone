@@ -22,19 +22,19 @@ namespace Assets.Tests.Cities {
     [TestFixture]
     public class ResourceGenerationLogicTests : ZenjectUnitTestFixture {
 
-        private Mock<IResourceGenerationConfig> MockConfig;
+        private Mock<ICityConfig> MockConfig;
         private Mock<ITilePossessionCanon> MockTileCanon;
         private Mock<IBuildingPossessionCanon> MockBuildingCanon;
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig        = new Mock<IResourceGenerationConfig>();
+            MockConfig        = new Mock<ICityConfig>();
             MockTileCanon     = new Mock<ITilePossessionCanon>();
             MockBuildingCanon = new Mock<IBuildingPossessionCanon>();
 
-            Container.Bind<IResourceGenerationConfig>().FromInstance(MockConfig.Object);
-            Container.Bind<ITilePossessionCanon>()     .FromInstance(MockTileCanon.Object);
-            Container.Bind<IBuildingPossessionCanon>() .FromInstance(MockBuildingCanon.Object);
+            Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
+            Container.Bind<ITilePossessionCanon>()    .FromInstance(MockTileCanon.Object);
+            Container.Bind<IBuildingPossessionCanon>().FromInstance(MockBuildingCanon.Object);
 
             Container.Bind<ResourceGenerationLogic>().AsSingle();
         }

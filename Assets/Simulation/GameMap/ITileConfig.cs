@@ -7,9 +7,16 @@ namespace Assets.Simulation.GameMap {
 
         #region properties
 
-        Material DesertMaterial { get; }
+        Material DesertMaterial    { get; }
         Material GrasslandMaterial { get; }
-        Material PlainsMaterial { get; }
+        Material PlainsMaterial    { get; }
+
+        ResourceSummary DesertYield     { get; }
+        ResourceSummary ForestYield     { get; }
+        ResourceSummary GrasslandsYield { get; }
+        ResourceSummary HillsYield      { get; }
+        ResourceSummary PlainsYield     { get; }
+
         ReadOnlyCollection<TerrainType> UnoccupiableTerrains { get; }
 
         #endregion

@@ -25,10 +25,6 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private GameObject CityPrefab;
 
         [SerializeField] private CityConfig               CityConfig;
-        [SerializeField] private PopulationGrowthConfig   GrowthConfig;
-        [SerializeField] private BorderExpansionConfig    ExpansionConfig;
-        [SerializeField] private ResourceGenerationConfig GenerationConfig;
-        [SerializeField] private ProductionLogicConfig    ProductionConfig;
 
         [SerializeField] private MapHexGrid HexGrid;
 
@@ -45,11 +41,7 @@ namespace Assets.Simulation.Cities {
 
             Container.BindFactory<IMapTile, ICity, Factory<IMapTile, ICity>>().FromFactory<RecordkeepingCityFactory>();
 
-            Container.Bind<ICityConfig>              ().To<CityConfig>              ().FromInstance(CityConfig);
-            Container.Bind<IPopulationGrowthConfig>  ().To<PopulationGrowthConfig>  ().FromInstance(GrowthConfig);
-            Container.Bind<IBorderExpansionConfig >  ().To<BorderExpansionConfig >  ().FromInstance(ExpansionConfig);
-            Container.Bind<IResourceGenerationConfig>().To<ResourceGenerationConfig>().FromInstance(GenerationConfig);
-            Container.Bind<IProductionLogicConfig>   ().To<ProductionLogicConfig>   ().FromInstance(ProductionConfig);
+            Container.Bind<ICityConfig>().To<CityConfig>().FromInstance(CityConfig);
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
 

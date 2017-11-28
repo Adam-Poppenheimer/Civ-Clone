@@ -14,7 +14,7 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
-        private IProductionLogicConfig Config;
+        private ICityConfig Config;
 
         private IResourceGenerationLogic GenerationLogic;
 
@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities.Production {
 
         #region constructors
 
-        public ProductionLogic(IProductionLogicConfig config, IResourceGenerationLogic generationLogic) {
+        public ProductionLogic(ICityConfig config, IResourceGenerationLogic generationLogic) {
             Config = config;
             GenerationLogic = generationLogic;
         }

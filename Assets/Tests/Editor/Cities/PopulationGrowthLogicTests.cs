@@ -15,13 +15,13 @@ namespace Assets.Tests.Cities {
     [TestFixture]
     public class PopulationGrowthLogicTests : ZenjectUnitTestFixture {
 
-        private Mock<IPopulationGrowthConfig> ConfigMock;
+        private Mock<ICityConfig> ConfigMock;
 
         [SetUp]
         public void CommonInstall() {
-            ConfigMock = new Mock<IPopulationGrowthConfig>();
+            ConfigMock = new Mock<ICityConfig>();
 
-            Container.Bind<IPopulationGrowthConfig>().FromInstance(ConfigMock.Object);
+            Container.Bind<ICityConfig>().FromInstance(ConfigMock.Object);
 
             Container.Bind<PopulationGrowthLogic>().AsSingle();
         }
@@ -62,9 +62,9 @@ namespace Assets.Tests.Cities {
             mockCity.SetupAllProperties();
             mockCity.Object.Population = 5;
 
-            ConfigMock.SetupGet(config => config.BaseStockpile).Returns(15);
-            ConfigMock.SetupGet(config => config.PreviousPopulationCoefficient).Returns(6);
-            ConfigMock.SetupGet(config => config.PreviousPopulationExponent).Returns(1.8f);
+            ConfigMock.SetupGet(config => config.BaseGrowthStockpile).Returns(15);
+            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationCoefficient).Returns(6);
+            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationExponent).Returns(1.8f);
 
             var growthLogic = Container.Resolve<PopulationGrowthLogic>();
 
@@ -112,9 +112,9 @@ namespace Assets.Tests.Cities {
             mockCity.SetupAllProperties();
             mockCity.Object.Population = 5;
 
-            ConfigMock.SetupGet(config => config.BaseStockpile).Returns(15);
-            ConfigMock.SetupGet(config => config.PreviousPopulationCoefficient).Returns(6);
-            ConfigMock.SetupGet(config => config.PreviousPopulationExponent).Returns(1.8f);
+            ConfigMock.SetupGet(config => config.BaseGrowthStockpile).Returns(15);
+            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationCoefficient).Returns(6);
+            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationExponent).Returns(1.8f);
 
             var growthLogic = Container.Resolve<PopulationGrowthLogic>();
 

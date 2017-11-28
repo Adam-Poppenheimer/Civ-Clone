@@ -11533,11 +11533,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _installers:
   - {fileID: 1904558656}
+  - {fileID: 1904558659}
   - {fileID: 1904558654}
   - {fileID: 1904558653}
   - {fileID: 1904558657}
   - {fileID: 1904558658}
-  - {fileID: 1904558659}
   _installerPrefabs: []
   _scriptableObjectInstallers: []
   _autoRun: 1
@@ -11571,10 +11571,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   CityPrefab: {fileID: 1974995633884560, guid: 16d91cd461118634e9351255c1792c04, type: 2}
   CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
-  GrowthConfig: {fileID: 11400000, guid: 546bc637d4fdc0545a115046ead0c92d, type: 2}
-  ExpansionConfig: {fileID: 11400000, guid: ea9607d92cb1d234089e1c691290c805, type: 2}
-  GenerationConfig: {fileID: 11400000, guid: eef10315595988048a204079ceef33bf, type: 2}
-  ProductionConfig: {fileID: 11400000, guid: c34c9a46010c6104094d9bfe2c8aaa32, type: 2}
   HexGrid: {fileID: 987015553}
   AvailableBuildingTemplates:
   - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}
@@ -11592,7 +11588,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   TileDisplayConfig: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
-  TileResourceConfig: {fileID: 11400000, guid: dcac57ab768070a41801223427102911, type: 2}
 --- !u!114 &1904558655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11640,7 +11635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIConfig: {fileID: 11400000, guid: e06d9cfad76d5d542a1f0ada92682142, type: 2}
+  UIConfig: {fileID: 0}
   SlotDisplayPrefab: {fileID: 882659054}
   CityYieldDisplay: {fileID: 1779240452}
   CityDisplayRoot: {fileID: 1317493248}

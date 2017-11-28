@@ -25,19 +25,19 @@ namespace Assets.Tests.Cities {
 
         private Mock<IMapHexGrid> MockHexGrid;
         private Mock<ITilePossessionCanon> MockPossessionCanon;
-        private Mock<IBorderExpansionConfig> MockConfig;
+        private Mock<ICityConfig> MockConfig;
         private Mock<IResourceGenerationLogic> MockResourceGenerationLogic;
 
         [SetUp]
         public void CommonInstall() {
             MockHexGrid                 = new Mock<IMapHexGrid>();
             MockPossessionCanon         = new Mock<ITilePossessionCanon>();
-            MockConfig                  = new Mock<IBorderExpansionConfig>();
+            MockConfig                  = new Mock<ICityConfig>();
             MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
 
             Container.Bind<IMapHexGrid>()             .FromInstance(MockHexGrid.Object);
             Container.Bind<ITilePossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
-            Container.Bind<IBorderExpansionConfig>()  .FromInstance(MockConfig.Object);
+            Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceGenerationLogic.Object);
 
             Container.Bind<BorderExpansionLogic>().AsSingle();
@@ -195,7 +195,7 @@ namespace Assets.Tests.Cities {
 
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(centerTile)).Returns(homeCity);
 
-            MockConfig.SetupGet(config => config.MaxRange).Returns(2);
+            MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
             MockHexGrid.Setup(grid => grid.GetNeighbors(nearTile)).Returns(new List<IMapTile>(){ centerTile });
             MockHexGrid.Setup(grid => grid.GetNeighbors(farTile)).Returns(new List<IMapTile>(){ centerTile });
@@ -256,7 +256,7 @@ namespace Assets.Tests.Cities {
 
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(ownedTile)).Returns(owningCity);
 
-            MockConfig.SetupGet(config => config.MaxRange).Returns(2);
+            MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
             MockHexGrid.Setup(grid => grid.GetNeighbors(neighboringTile)).Returns(new List<IMapTile>(){ ownedTile });
             MockHexGrid.Setup(grid => grid.GetNeighbors(nonNeighboringTile)).Returns(new List<IMapTile>());
@@ -374,7 +374,7 @@ namespace Assets.Tests.Cities {
             MockHexGrid.Setup(grid => grid.GetDistance(homeTile, nearNeighboringForeignTile)).Returns(2);
             MockHexGrid.Setup(grid => grid.GetDistance(nearNeighboringForeignTile, homeTile)).Returns(2);
 
-            MockConfig.SetupGet(config => config.MaxRange).Returns(2);
+            MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 

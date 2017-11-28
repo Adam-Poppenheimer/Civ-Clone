@@ -11,3 +11,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cb574b3163e5d1642ae4919d1aba4ab3, type: 3}
   m_Name: City Config
   m_EditorClassIdentifier: 
+  _baseGrowthStockpile: 15
+  _foodConsumptionPerPerson: 2
+  _growthPreviousPopulationCoefficient: 6
+  _growthPreviousPopulationExponent: 1.8
+  _hurryCostPerProduction: 2
+  _maxBorderRange: 3
+  _previousTileCountCoefficient: 10
+  _previousTileCountExponent: 1.1
+  _tileCostBase: 20
+  _unemployedYield:
+    Food: 0
+    Production: 1
+    Gold: 0
+    Culture: 0

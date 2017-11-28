@@ -15,8 +15,6 @@ namespace Assets.Simulation.GameMap {
         #region instance fields and properties
 
         [SerializeField] private TileConfig TileDisplayConfig;
-        
-        [SerializeField] private TileResourceConfig TileResourceConfig;
 
         #endregion
 
@@ -48,7 +46,6 @@ namespace Assets.Simulation.GameMap {
             InstallOntoContainer(Container);
 
             Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
-            Container.Bind<ITileResourceConfig>().To<TileResourceConfig>().FromInstance(TileResourceConfig);
 
             Container.DeclareSignal<TileClickedSignal>();
             Container.DeclareSignal<TilePointerEnterSignal>();

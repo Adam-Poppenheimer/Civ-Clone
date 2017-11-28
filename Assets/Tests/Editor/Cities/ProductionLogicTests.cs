@@ -21,15 +21,15 @@ namespace Assets.Tests.Cities {
     public class ProductionLogicTests : ZenjectUnitTestFixture {
 
         private Mock<IResourceGenerationLogic> GenerationLogicMock;
-        private Mock<IProductionLogicConfig>   ConfigMock;
+        private Mock<ICityConfig>              ConfigMock;
 
         [SetUp]
         public void CommonInstall() {
             GenerationLogicMock = new Mock<IResourceGenerationLogic>();
-            ConfigMock          = new Mock<IProductionLogicConfig>();
+            ConfigMock          = new Mock<ICityConfig>();
 
             Container.Bind<IResourceGenerationLogic>().FromInstance(GenerationLogicMock.Object);
-            Container.Bind<IProductionLogicConfig>()  .FromInstance(ConfigMock         .Object);
+            Container.Bind<ICityConfig>()             .FromInstance(ConfigMock         .Object);
 
             Container.Bind<ProductionLogic>().AsSingle();
         }

@@ -13,14 +13,14 @@ namespace Assets.Simulation.Cities.Growth {
 
         #region instance fields and properties
 
-        private IPopulationGrowthConfig Config;
+        private ICityConfig Config;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IPopulationGrowthConfig config) {
+        public void InjectDependencies(ICityConfig config) {
             Config = config;
         }
 
@@ -58,9 +58,9 @@ namespace Assets.Simulation.Cities.Growth {
             int previousPopulation = city.Population -1;
 
             return Mathf.FloorToInt(
-                Config.BaseStockpile + 
-                Config.PreviousPopulationCoefficient * previousPopulation +
-                Mathf.Pow(previousPopulation, Config.PreviousPopulationExponent)
+                Config.BaseGrowthStockpile + 
+                Config.GrowthPreviousPopulationCoefficient * previousPopulation +
+                Mathf.Pow(previousPopulation, Config.GrowthPreviousPopulationExponent)
             );
         }
 

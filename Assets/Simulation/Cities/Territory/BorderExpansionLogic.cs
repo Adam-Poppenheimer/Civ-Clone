@@ -22,7 +22,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         private ITilePossessionCanon PossessionCanon;
         
-        private IBorderExpansionConfig Config;
+        private ICityConfig Config;
 
         private IResourceGenerationLogic ResourceGenerationLogic;
 
@@ -32,7 +32,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         [Inject]
         public BorderExpansionLogic(IMapHexGrid hexGrid, ITilePossessionCanon possessionCanon,
-            IBorderExpansionConfig config, IResourceGenerationLogic resourceGenerationLogic) {
+            ICityConfig config, IResourceGenerationLogic resourceGenerationLogic) {
 
             HexGrid = hexGrid;
             PossessionCanon = possessionCanon;
@@ -88,7 +88,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
 
             bool isUnowned = PossessionCanon.GetCityOfTile(tile) == null;
-            bool isWithinRange = HexGrid.GetDistance(city.Location, tile) <= Config.MaxRange;
+            bool isWithinRange = HexGrid.GetDistance(city.Location, tile) <= Config.MaxBorderRange;
             bool isNeighborOfPossession = HexGrid.GetNeighbors(tile).Exists(neighbor => PossessionCanon.GetCityOfTile(neighbor) == city);
 
             return isUnowned && isWithinRange && isNeighborOfPossession;

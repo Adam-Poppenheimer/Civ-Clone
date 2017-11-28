@@ -11,14 +11,14 @@ namespace Assets.Simulation.GameMap {
 
         #region instance fields and properties
 
-        private ITileResourceConfig Config;
+        private ITileConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public TileResourceLogic(ITileResourceConfig config) {
+        public TileResourceLogic(ITileConfig config) {
             Config = config;
         }
 

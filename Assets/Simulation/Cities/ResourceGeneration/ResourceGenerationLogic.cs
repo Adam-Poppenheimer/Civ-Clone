@@ -14,7 +14,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        private IResourceGenerationConfig Config;
+        private ICityConfig Config;
 
         private ITilePossessionCanon TileCanon;
         private IBuildingPossessionCanon BuildingCanon;
@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region constructors
 
         [Inject]
-        public ResourceGenerationLogic(IResourceGenerationConfig config, ITilePossessionCanon tileCanon,
+        public ResourceGenerationLogic(ICityConfig config, ITilePossessionCanon tileCanon,
             IBuildingPossessionCanon buildingCanon) {
             Config = config;
             TileCanon = tileCanon;
