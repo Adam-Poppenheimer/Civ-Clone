@@ -17,6 +17,8 @@ namespace Assets.Tests.Cities {
 
         private List<IBuildingTemplate> Templates;
 
+        private Mock<IBuildingPossessionCanon> PossessionCanonMock;
+
         [SetUp]
         public void CommonInstall() {
             Templates = new List<IBuildingTemplate>() {
@@ -25,29 +27,27 @@ namespace Assets.Tests.Cities {
                 new Mock<IBuildingTemplate>().Object
             };
 
+            PossessionCanonMock = new Mock<IBuildingPossessionCanon>();
+            PossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(It.IsAny<ICity>()))
+                .Returns(new List<IBuilding>().AsReadOnly());
+
             Container.Bind<List<IBuildingTemplate>>().FromInstance(Templates);
+
+            Container.Bind<IBuildingPossessionCanon>().FromInstance(PossessionCanonMock.Object);
 
             Container.Bind<TemplateValidityLogic>().AsSingle();
         }
 
-        [Test(Description = "IsTemplateValidForCity should always return true if the " +
-            "template is one of the available templates given to TemplateValidityLogic, " +
-            "and should return false otherwise.")]
-        public void IsTemplateValidForCity_AlwaysTrueIfAvailable() {
+        [Test(Description = "IsTemplateValidForCity should return false if the " +
+            "template is not of the available templates given to TemplateValidityLogic.")]
+        public void IsTemplateValidForCity_FalseIfNotRecognized() {
             var cityOne = new Mock<ICity>().Object;
             var cityTwo = new Mock<ICity>().Object;
 
             var logic = Container.Resolve<TemplateValidityLogic>();
 
             var externalTemplate = new Mock<IBuildingTemplate>().Object;
-
-            foreach(var template in Templates) {
-                Assert.IsTrue(logic.IsTemplateValidForCity(template, cityOne),
-                    "CityOne is considered invalid for a template");
-
-                Assert.IsTrue(logic.IsTemplateValidForCity(template, cityTwo),
-                    "CityOne is considered invalid for a template");
-            }
 
             Assert.IsFalse(logic.IsTemplateValidForCity(externalTemplate, cityOne),
                 "Template not within AvailableTemplates is falsely considered valid for cityOne");
@@ -56,9 +56,37 @@ namespace Assets.Tests.Cities {
                 "Template not within AvailableTemplates is falsely considered valid for cityTwo");
         }
 
+        [Test(Description = "IsTemplateValidForCity should return false if " +
+            "BuildingPossessionCanon claims a building with that template is already at the city")]
+        public void IsTemplateValidForCity_FalseIfAlreadyThere() {
+            var cityOne = new Mock<ICity>().Object;
+            var cityTwo = new Mock<ICity>().Object;
+
+            var buildingMockInCityOne = new Mock<IBuilding>();
+            buildingMockInCityOne.Setup(building => building.Template).Returns(Templates[0]);
+
+            var buildingMockInCityTwo = new Mock<IBuilding>();
+            buildingMockInCityTwo.Setup(building => building.Template).Returns(Templates[1]);
+
+            PossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(cityOne))
+                .Returns(new List<IBuilding>() { buildingMockInCityOne.Object }.AsReadOnly());
+
+            PossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(cityTwo))
+                .Returns(new List<IBuilding>() { buildingMockInCityTwo.Object }.AsReadOnly());
+
+            var logic = Container.Resolve<TemplateValidityLogic>();
+
+            Assert.IsFalse(logic.IsTemplateValidForCity(Templates[0], cityOne),
+                "IsTemplateValidForCity falsely considers Templates[0] valid for cityOne");
+            Assert.IsFalse(logic.IsTemplateValidForCity(Templates[1], cityTwo),
+                "IsTemplateValidForCity falsely considers Templates[1] valid for cityTwo");
+        }
+
         [Test(Description = "GetTemplatesValidForCity should return every template the " +
             "logic has been assigned, since every template is valid for every city")]
-        public void GetTemplatesValidForCity_ReturnsAllAvailableTemplates() {
+        public void GetTemplatesValidForCity_ReturnsUnconstructedTemplates() {
             var cityOne = new Mock<ICity>().Object;
             var cityTwo = new Mock<ICity>().Object;
 
@@ -74,7 +102,46 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetTemplatesValidForCity should not return any templates that " +
             "are already represented by a building in the argued city")]
         public void GetTemplatesValidForCity_ExcludesConstructedTemplates() {
-            throw new NotImplementedException();
+            var cityOne = new Mock<ICity>().Object;
+            var cityTwo = new Mock<ICity>().Object;
+
+            var buildingMockInCityOne = new Mock<IBuilding>();
+            buildingMockInCityOne.Setup(building => building.Template).Returns(Templates[0]);
+
+            var firstBuildingMockInCityTwo = new Mock<IBuilding>();
+            firstBuildingMockInCityTwo.Setup(building => building.Template).Returns(Templates[1]);
+
+            var secondBuildingMockInCityTwo = new Mock<IBuilding>();
+            secondBuildingMockInCityTwo.Setup(building => building.Template).Returns(Templates[2]);
+
+            PossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(cityOne))
+                .Returns(new List<IBuilding>() { buildingMockInCityOne.Object }.AsReadOnly());
+
+            PossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(cityTwo))
+                .Returns(new List<IBuilding>() {
+                    firstBuildingMockInCityTwo.Object, secondBuildingMockInCityTwo.Object
+                }.AsReadOnly());
+
+            var logic = Container.Resolve<TemplateValidityLogic>();
+
+            var validForCityOne = logic.GetTemplatesValidForCity(cityOne);
+            var validForCityTwo = logic.GetTemplatesValidForCity(cityTwo);
+
+            CollectionAssert.DoesNotContain(validForCityOne, Templates[0],
+                "GetTemplatesValidForCity falsely included Templates[0] when queried on cityOne");
+            CollectionAssert.Contains(validForCityOne, Templates[1],
+                "GetTemplatesValidForCity fails to include Templates[1] when queried on cityOne");
+            CollectionAssert.Contains(validForCityOne, Templates[2],
+                "GetTemplatesValidForCity fails to include Templates[2] when queried on cityOne");
+
+            CollectionAssert.Contains(validForCityTwo, Templates[0],
+                "GetTemplatesValidForCity fails to include Templates[0] when queried on cityTwo");
+            CollectionAssert.DoesNotContain(validForCityTwo, Templates[1],
+                "GetTemplatesValidForCity falsely included Templates[1] when queried on cityTwo");
+            CollectionAssert.DoesNotContain(validForCityTwo, Templates[2],
+                "GetTemplatesValidForCity falsely included Templates[2] when queried on cityTwo");
         }
 
         [Test(Description = "Every method should throw an ArgumentNullException when passed " +
