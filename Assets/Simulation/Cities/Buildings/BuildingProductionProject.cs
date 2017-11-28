@@ -25,9 +25,9 @@ namespace Assets.Simulation.Cities.Buildings {
 
         public int Progress { get; set; }
 
-        #endregion
+        public IBuildingTemplate BuildingTemplate { get; private set; }
 
-        private IBuildingTemplate BuildingTemplate;
+        #endregion
 
         private IBuildingFactory BuildingFactory;
 

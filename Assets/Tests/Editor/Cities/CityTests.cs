@@ -5,6 +5,7 @@ using System.Linq.Expressions;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using NUnit.Framework;
@@ -56,6 +57,13 @@ namespace Assets.Tests.Cities {
             Container.Bind<IBuildingPossessionCanon> ().FromInstance(BuildingPossessionCanonMock.Object);
             Container.Bind<IProductionProjectFactory>().FromInstance(ProjectFactoryMock         .Object);
 
+            Container.Bind<SignalManager>().AsSingle();
+
+            Container.DeclareSignal<CityClickedSignal>();
+            Container.DeclareSignal<CityProjectChangedSignal>();
+
+            Container.Bind<CitySignals>().AsSingle();
+
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
 
@@ -88,6 +96,24 @@ namespace Assets.Tests.Cities {
                 "GrowthLogic did not have its GetFoodStockpileAfterStarvation method called");
 
             Assert.AreEqual(9, city.FoodStockpile, "After starvation, City has an unexpected food stockpile");
+        }
+
+        [Test(Description = "When PerformGrowth is called on a city with one population " +
+            "that consumes more food than it produces, FoodStockpile should remain at zero and " +
+            "never become negative")]
+        public void PerformGrowth_SinglePopulationDoesntCauseNegativeFood() {
+            var city = Container.Resolve<City>();
+            
+            GrowthMock.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(10);
+
+            ResourceGenerationMock.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
+
+            city.Population = 1;
+
+            for(int i = 0; i < 10; ++i) {
+                city.PerformGrowth();
+                Assert.That(city.FoodStockpile >= 0, "City's FoodStockpile became negative after PerformGrowth call " + i);
+            }
         }
 
         [Test(Description = "When PerformGrowth is called on a city that isn't starving, " + 
@@ -421,6 +447,45 @@ namespace Assets.Tests.Cities {
             city.PerformDistribution();
         }
 
+        [Test(Description = "When PerformDistribution is called, City does not pass any tile slots " +
+            "whose tiles have been marked for slot suppression")]
+        public void PerformDistribution_SuppressedSlotsNotPassed() {
+            var city = Container.Resolve<City>();
+
+            var tileMockOne = new Mock<IMapTile>();
+            tileMockOne.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
+
+            var tileMockTwo = new Mock<IMapTile>();
+            tileMockTwo.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
+            tileMockTwo.Setup(tile => tile.SuppressSlot).Returns(true);
+
+            var tileMockThree = new Mock<IMapTile>();
+            tileMockThree.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
+
+            var tiles = new List<IMapTile>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
+            var tileSlots = tiles.Select(tile => tile.WorkerSlot);
+
+            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
+
+            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
+
+            DistributionMock.Setup(
+                logic => logic.DistributeWorkersIntoSlots(
+                    It.IsAny<int>(),
+                    It.IsAny<IEnumerable<IWorkerSlot>>(),
+                    It.IsAny<ICity>(),
+                    It.IsAny<DistributionPreferences>()
+                )
+            ).Callback(
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, DistributionPreferences preferences) {
+                    CollectionAssert.DoesNotContain(availableSlots, tileMockTwo.Object.WorkerSlot,
+                        "DistributionLogic was incorrectly passed a slot from a suppressed tile");
+                }
+            ); 
+
+            city.PerformDistribution();
+        }
+
         [Test(Description = "When PerformIncome is called on a city, that city should " +
             "call into ResourceGenerationLogic to determine its LastIncome and update its " +
             "culture and food stockpiles")]
@@ -462,10 +527,47 @@ namespace Assets.Tests.Cities {
             Assert.AreEqual(1, city.FoodStockpile, "City did not correctly update its FoodStockpile");
         }
 
-        [Test(Description = "When OnPointerClick is called, City should call EventBroadcaster.BroadcastCityClick " +
-            "on itself and the argued PointerEventData")]
-        public void OnPointerClickCalled_SendsEventToBroadcaster() {
-            throw new NotImplementedException();
+        [Test(Description = "When OnPointerClick is called, City should fire the CityClicked signal with " +
+            "the appropriate arguments")]
+        public void OnPointerClickCalled_FiresClickedSignal() {
+            var cityToTest = Container.Resolve<City>();
+
+            var dataToPass = new PointerEventData(EventSystem.current);
+
+            var citySignals = Container.Resolve<CitySignals>();
+
+            citySignals.ClickedSignal.Listen(delegate(ICity city, PointerEventData eventData) {
+                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
+                Assert.AreEqual(dataToPass, eventData, "ClickedSignal was passed the wrong event data");
+                Assert.Pass();
+            });
+
+            cityToTest.OnPointerClick(dataToPass);
+            Assert.Fail("ClickedSignal was never fired");
+        }
+
+        [Test(Description = "When SetActiveProductionProject is called, City should fire ProjectChangedSignal " +
+            "with the appropriate arguments")]
+        public void SetActiveProductionProject_FiresProjectChangedSignal() {
+            var cityToTest = Container.Resolve<City>();
+
+            var newTemplate = new Mock<IBuildingTemplate>().Object;
+
+            var mockProject = new Mock<IProductionProject>();
+            mockProject.Setup(project => project.BuildingTemplate).Returns(newTemplate);
+
+            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(newTemplate)).Returns(mockProject.Object);
+
+            var citySignals = Container.Resolve<CitySignals>();
+
+            citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
+                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
+
+                Assert.AreEqual(newTemplate, project.BuildingTemplate, "ClickedSignal was passed a project with the wrong BuildingTemplate");
+                Assert.Pass();
+            });
+
+            cityToTest.SetActiveProductionProject(newTemplate);
         }
 
     }

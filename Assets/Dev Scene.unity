@@ -11635,7 +11635,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIConfig: {fileID: 0}
+  UIConfig: {fileID: 11400000, guid: a6d63f85a10d1d242a9ce6c6e4d9c43f, type: 2}
   SlotDisplayPrefab: {fileID: 882659054}
   CityYieldDisplay: {fileID: 1779240452}
   CityDisplayRoot: {fileID: 1317493248}
