@@ -70,11 +70,9 @@ namespace Assets.Simulation.Cities {
 
         private IBuildingPossessionCanon BuildingPossessionCanon;
 
-        private ICityEventBroadcaster EventBroadcaster;
+        private CitySignals Signals;
 
         private IProductionProjectFactory ProjectFactory;
-
-        private CityProjectChangedSignal ProjectChangedSignal;
 
         #endregion
 
@@ -85,8 +83,8 @@ namespace Assets.Simulation.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             ITilePossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IBuildingPossessionCanon buildingPossessionCanon, ICityEventBroadcaster eventBroadcaster,
-            IProductionProjectFactory projectFactory, CityProjectChangedSignal projectChangedSignal
+            IBuildingPossessionCanon buildingPossessionCanon, IProductionProjectFactory projectFactory,
+            CitySignals signals
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -95,15 +93,14 @@ namespace Assets.Simulation.Cities {
             TilePossessionCanon     = tilePossessionCanon;
             DistributionLogic       = distributionLogic;
             BuildingPossessionCanon = buildingPossessionCanon;
-            EventBroadcaster        = eventBroadcaster;
             ProjectFactory          = projectFactory;
-            ProjectChangedSignal    = projectChangedSignal;
+            Signals                 = signals;
         }
 
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {
-            EventBroadcaster.BroadcastCityClicked(this, eventData);
+            Signals.ClickedSignal.Fire(this, eventData);
         }
 
         #endregion
@@ -116,7 +113,7 @@ namespace Assets.Simulation.Cities {
             }else {
                 ActiveProject = ProjectFactory.ConstructBuildingProject(template);
             }     
-            ProjectChangedSignal.Fire(this, ActiveProject);       
+            Signals.ProjectChangedSignal.Fire(this, ActiveProject);       
         }
 
         public void PerformGrowth() {

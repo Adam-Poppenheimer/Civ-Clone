@@ -34,7 +34,6 @@ namespace Assets.Tests.Cities {
         private Mock<ITilePossessionCanon>      TilePossessionCanonMock;
         private Mock<IWorkerDistributionLogic>  DistributionMock;
         private Mock<IBuildingPossessionCanon>  BuildingPossessionCanonMock;
-        private Mock<ICityEventBroadcaster>     EventBroadcasterMock;
         private Mock<IProductionProjectFactory> ProjectFactoryMock;
 
         [SetUp]
@@ -46,7 +45,6 @@ namespace Assets.Tests.Cities {
             TilePossessionCanonMock     = new Mock<ITilePossessionCanon>();
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
             BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
-            EventBroadcasterMock        = new Mock<ICityEventBroadcaster>();
             ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
 
             Container.Bind<IPopulationGrowthLogic>   ().FromInstance(GrowthMock                 .Object);
@@ -56,7 +54,6 @@ namespace Assets.Tests.Cities {
             Container.Bind<ITilePossessionCanon>     ().FromInstance(TilePossessionCanonMock    .Object);
             Container.Bind<IWorkerDistributionLogic> ().FromInstance(DistributionMock           .Object);
             Container.Bind<IBuildingPossessionCanon> ().FromInstance(BuildingPossessionCanonMock.Object);
-            Container.Bind<ICityEventBroadcaster>    ().FromInstance(EventBroadcasterMock       .Object);
             Container.Bind<IProductionProjectFactory>().FromInstance(ProjectFactoryMock         .Object);
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();

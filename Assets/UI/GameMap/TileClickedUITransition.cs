@@ -8,6 +8,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 using BetterUI;
 
@@ -15,7 +16,7 @@ using Assets.Simulation.GameMap;
 
 namespace Assets.UI.GameMap {
 
-    public class TileClickedUITransition : UITransitionBase, ITileClickedEventHandler {
+    public class TileClickedUITransition : UITransitionBase {
 
         #region instance fields and properties
 
@@ -26,8 +27,8 @@ namespace Assets.UI.GameMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITileEventBroadcaster eventBroadcaster) {
-            eventBroadcaster.SubscribeTileClickedHandler(this);
+        public void InjectDependencies(TileClickedSignal tileClickedSignal) {
+            tileClickedSignal.AsObservable.Subscribe(OnTileClicked);
         }
 
         #region from UITransitionBase
@@ -40,7 +41,7 @@ namespace Assets.UI.GameMap {
 
         #region ITileClickedEventHandler
 
-        public void OnTileClicked(IMapTile tile, PointerEventData eventData) {
+        public void OnTileClicked(Tuple<IMapTile, PointerEventData> dataTuple) {
             WasClickedThisFrame = true;
             StartCoroutine(ResetStateCoroutine());
         }

@@ -8,8 +8,6 @@ using UnityEditor;
 
 using Zenject;
 
-using Assets.Simulation.GameMap.UI;
-
 namespace Assets.Simulation.GameMap {
 
     public class MapTileInstaller : MonoInstaller {
@@ -17,6 +15,8 @@ namespace Assets.Simulation.GameMap {
         #region instance fields and properties
 
         [SerializeField] private TileConfig TileDisplayConfig;
+        
+        [SerializeField] private TileResourceConfig TileResourceConfig;
 
         #endregion
 
@@ -35,7 +35,7 @@ namespace Assets.Simulation.GameMap {
         }
 
         private static void InstallOntoContainer(DiContainer container) {
-            container.Rebind<ITileConfig>().To<TileConfig>().FromScriptableObjectResource("Config/Tile Config").AsSingle();
+            container.Rebind<ITileConfig>().To<TileConfig>().FromScriptableObjectResource("Tile Config").AsSingle();
         }
 
         #endregion
@@ -46,6 +46,15 @@ namespace Assets.Simulation.GameMap {
 
         public override void InstallBindings() {
             InstallOntoContainer(Container);
+
+            Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
+            Container.Bind<ITileResourceConfig>().To<TileResourceConfig>().FromInstance(TileResourceConfig);
+
+            Container.DeclareSignal<TileClickedSignal>();
+            Container.DeclareSignal<TilePointerEnterSignal>();
+            Container.DeclareSignal<TilePointerExitSignal>();
+
+            Container.Bind<MapTileSignals>().AsSingle();
         }
 
         #endregion        

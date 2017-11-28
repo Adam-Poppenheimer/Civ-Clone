@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
-
 using UniRx;
 
 using Assets.Simulation.Core;
@@ -21,17 +21,22 @@ namespace Assets.UI.Cities {
 
         protected ICity CityToDisplay { get; set; }
 
+        private IObservable<Unit> DeselectedSignal;
+        private IDisposable DeselectSubscription;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        private void InjectSignals(CityClickedSignal clickedSignal, CityPanelCloseRequestSignal closeRequestSignal,
-            TurnBeganSignal turnBeganSignal) {
-
+        private void InjectSignals(
+            CityClickedSignal clickedSignal,
+            [Inject(Id = "CityDisplay Deselected")] IObservable<Unit> deslectedSignal,
+            TurnBeganSignal turnBeganSignal
+        ){
             clickedSignal.AsObservable.Subscribe(OnCityClicked);
-            closeRequestSignal.AsObservable.Subscribe(OnCloseRequested);
-            turnBeganSignal.AsObservable.Subscribe(OnTurnBegan);
+            
+            DeselectedSignal = deslectedSignal;
         }
 
         #region Unity message methods
@@ -39,19 +44,25 @@ namespace Assets.UI.Cities {
         private void OnEnable() {
             if(CityToDisplay != null) {
                 DisplayCity(CityToDisplay);
-            }            
+            }
+            DeselectSubscription = DeselectedSignal.Subscribe(OnDeselected);          
+        }
+
+        private void OnDisable() {
+            DeselectSubscription.Dispose();
+            DeselectSubscription = null;
         }
 
         #endregion
 
         #region signal responses
 
-        private void OnCityClicked(ICity city) {
-            CityToDisplay = city;
+        private void OnCityClicked(Tuple<ICity, PointerEventData> dataTuple) {
+            CityToDisplay = dataTuple.Item1;
             gameObject.SetActive(true);
         }
 
-        private void OnCloseRequested(Unit unit) {
+        private void OnDeselected(Unit unit) {
             gameObject.SetActive(false);
         }
 

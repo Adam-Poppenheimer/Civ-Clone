@@ -22,6 +22,8 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
+        [SerializeField] private GameObject CityPrefab;
+
         [SerializeField] private CityConfig               CityConfig;
         [SerializeField] private PopulationGrowthConfig   GrowthConfig;
         [SerializeField] private BorderExpansionConfig    ExpansionConfig;
@@ -39,6 +41,10 @@ namespace Assets.Simulation.Cities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
+
+            Container.BindFactory<IMapTile, ICity, Factory<IMapTile, ICity>>().FromFactory<RecordkeepingCityFactory>();
+
             Container.Bind<ICityConfig>              ().To<CityConfig>              ().FromInstance(CityConfig);
             Container.Bind<IPopulationGrowthConfig>  ().To<PopulationGrowthConfig>  ().FromInstance(GrowthConfig);
             Container.Bind<IBorderExpansionConfig >  ().To<BorderExpansionConfig >  ().FromInstance(ExpansionConfig);
@@ -60,12 +66,12 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
-            Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();
-
-            Container.Bind<ICityEventBroadcaster>().To<CityEventBroadcaster>().AsSingle();            
+            Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();        
 
             Container.DeclareSignal<CityClickedSignal>();
             Container.DeclareSignal<CityProjectChangedSignal>();
+
+            Container.Bind<CitySignals>().AsSingle();
         }
 
         #endregion

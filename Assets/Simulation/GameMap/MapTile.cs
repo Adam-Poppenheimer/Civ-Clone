@@ -12,7 +12,7 @@ using UnityCustomUtilities.Grids;
 
 namespace Assets.Simulation.GameMap {
 
-    public class MapTile : MonoBehaviour, IMapTile, IPointerClickHandler {
+    public class MapTile : MonoBehaviour, IMapTile, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
         #region instance fields and properties
 
@@ -61,7 +61,7 @@ namespace Assets.Simulation.GameMap {
 
         [SerializeField] private ITileConfig TileConfig;
 
-        private ITileEventBroadcaster EventBroadcaster;
+        private MapTileSignals Signals;
 
         private ITileResourceLogic ResourceLogic;
 
@@ -70,11 +70,9 @@ namespace Assets.Simulation.GameMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITileConfig displayConfig, ITileEventBroadcaster eventBroadcaster,
-            ITileResourceLogic resourceLogic) {
+        public void InjectDependencies(ITileConfig displayConfig, MapTileSignals signals, ITileResourceLogic resourceLogic) {
             TileConfig = displayConfig;
-            EventBroadcaster = eventBroadcaster;
-
+            Signals = signals;
             ResourceLogic = resourceLogic;
         }
 
@@ -93,7 +91,15 @@ namespace Assets.Simulation.GameMap {
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {
-             EventBroadcaster.BroadcastTileClicked(this, eventData);
+             Signals.ClickedSignal.Fire(this, eventData);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            Signals.PointerEnterSignal.Fire(this, eventData);
+        }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            Signals.PointerExitSignal.Fire(this, eventData);
         }
 
         #endregion

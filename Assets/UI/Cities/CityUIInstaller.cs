@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.UI;
 
@@ -21,6 +22,8 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private ResourceSummaryDisplay CityYieldDisplay;
 
+        [SerializeField] private Transform CityDisplayRoot;
+
         #endregion
 
         #region instance methods
@@ -34,7 +37,17 @@ namespace Assets.UI.Cities {
 
             Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").To<ResourceSummaryDisplay>().FromInstance(CityYieldDisplay);
 
-            Container.DeclareSignal<CityPanelCloseRequestSignal>();
+            Container.ShouldCheckForInstallWarning = false;
+
+            var clickedAnywhereSignal = Container.ResolveId<IObservable<Unit>>("Clicked Anywhere Signal");
+            var cancelPressedSignal = Container.ResolveId<IObservable<Unit>>("Cancel Pressed Signal");
+
+            var cityDisplayDeselected = Observable.Merge(
+                SignalBuilderUtility.BuildMouseDeselectedSignal(CityDisplayRoot.gameObject, clickedAnywhereSignal),
+                cancelPressedSignal
+            );
+
+            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromInstance(cityDisplayDeselected);
         }
 
         #endregion
