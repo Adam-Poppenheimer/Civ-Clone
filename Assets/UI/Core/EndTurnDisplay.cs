@@ -21,55 +21,34 @@ namespace Assets.UI.Core {
 
         [SerializeField] private Button EndTurnButton;
 
+        [SerializeField] private string EndTurnKeyName;
+
         private ITurnExecuter TurnExecuter;
 
-        private IRecordkeepingCityFactory CityFactory;
-
-        private TurnBeganSignal TurnBeganSignal;
-        private TurnEndedSignal TurnEndedSignal;
+        private EndTurnRequestedSignal EndTurnRequestedSignal;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITurnExecuter turnExecuter, IRecordkeepingCityFactory cityFactory,
-            TurnBeganSignal turnBeganSignal, TurnEndedSignal turnEndedSignal) {
-
-            TurnExecuter = turnExecuter;
-            CityFactory = cityFactory;
-
-            TurnBeganSignal = turnBeganSignal;
-            TurnEndedSignal = turnEndedSignal;
+        public void InjectDependencies(EndTurnRequestedSignal endTurnRequestedSignal) {
+            EndTurnRequestedSignal = endTurnRequestedSignal;
         }
 
         #region Unity message methods
 
         private void Start() {
-            EndTurnButton.onClick.AddListener(EndTurn);
+            EndTurnButton.onClick.AddListener(() => EndTurnRequestedSignal.Fire());
         }
 
         protected override void DoOnUpdate() {
             if(Input.GetButtonDown("Submit")) {
-                EndTurn();
+                EndTurnRequestedSignal.Fire();
             }
         }
 
         #endregion
-
-        private void EndTurn() {
-            foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.EndTurnOnCity(city);
-            }
-
-            TurnEndedSignal.Fire(0);
-
-            foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.BeginTurnOnCity(city);
-            }
-
-            TurnBeganSignal.Fire(0);
-        }
 
         #endregion
 

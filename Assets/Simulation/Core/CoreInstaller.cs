@@ -26,24 +26,10 @@ namespace Assets.Simulation.Core {
             Container.Bind<GameCore>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
-            Container.DeclareSignal<TurnEndedSignal>();
-
-            var clickedAnywhereSignal = Observable.EveryUpdate().Where(ClickedAnywhereFilter).AsUnitObservable();
-            var cancelPressedSignal = Observable.EveryUpdate().Where(CancelPressedFilter).AsUnitObservable();
-
-            Container.Bind<IObservable<Unit>>().WithId("Clicked Anywhere Signal").FromInstance(clickedAnywhereSignal);
-            Container.Bind<IObservable<Unit>>().WithId("Cancel Pressed Signal").FromInstance(cancelPressedSignal);
+            Container.DeclareSignal<TurnEndedSignal>();            
         }
 
         #endregion
-
-        private bool ClickedAnywhereFilter(long frameDuration) {
-            return Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1);
-        }
-
-        private bool CancelPressedFilter(long frameDuration) {
-            return Input.GetButtonDown("Cancel");
-        }
 
         #endregion
 

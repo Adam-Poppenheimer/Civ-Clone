@@ -16,6 +16,10 @@ namespace Assets.Simulation.Core {
         #region instance fields and properties
 
         private ITurnExecuter TurnExecuter;
+
+        private TurnBeganSignal TurnBeganSignal;
+        private TurnEndedSignal TurnEndedSignal;
+
         private IRecordkeepingCityFactory CityFactory;
 
         #endregion
@@ -23,9 +27,16 @@ namespace Assets.Simulation.Core {
         #region constructors
 
         [Inject]
-        public GameCore(ITurnExecuter turnExecuter, IRecordkeepingCityFactory cityFactory) {
+        public GameCore(ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
+            TurnEndedSignal turnEndedSignal, IRecordkeepingCityFactory cityFactory,
+            EndTurnRequestedSignal endTurnRequestedSignal
+        ){
             TurnExecuter = turnExecuter;
+            TurnBeganSignal = turnBeganSignal;
+            TurnEndedSignal = turnEndedSignal;
+
             CityFactory = cityFactory;
+            endTurnRequestedSignal.Listen(OnEndTurnRequested);
         }
 
         #endregion
@@ -36,12 +47,21 @@ namespace Assets.Simulation.Core {
             foreach(var city in CityFactory.AllCities) {
                 TurnExecuter.BeginTurnOnCity(city);
             }
+
+            TurnBeganSignal.Fire(0);
         }
 
         public void EndRound() {
             foreach(var city in CityFactory.AllCities) {
                 TurnExecuter.EndTurnOnCity(city);
             }
+
+            TurnEndedSignal.Fire(0);
+        }
+
+        private void OnEndTurnRequested() {
+            EndRound();
+            BeginRound();
         }
 
         #endregion
