@@ -42,7 +42,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            var retval = ResourceSummary.Empty;
+            var retval = city.Location.WorkerSlot.BaseYield;
 
             int employedPops = 0;
 

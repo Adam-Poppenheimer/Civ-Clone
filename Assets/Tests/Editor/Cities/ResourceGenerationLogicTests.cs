@@ -26,11 +26,25 @@ namespace Assets.Tests.Cities {
         private Mock<ITilePossessionCanon> MockTileCanon;
         private Mock<IBuildingPossessionCanon> MockBuildingCanon;
 
+        private Mock<ICity>       CityMock;
+        private Mock<IMapTile>    CityLocationMock;
+        private Mock<IWorkerSlot> LocationSlotMock;
+
         [SetUp]
         public void CommonInstall() {
             MockConfig        = new Mock<ICityConfig>();
             MockTileCanon     = new Mock<ITilePossessionCanon>();
-            MockBuildingCanon = new Mock<IBuildingPossessionCanon>();
+            MockBuildingCanon = new Mock<IBuildingPossessionCanon>();            
+
+            CityLocationMock = new Mock<IMapTile>();
+            LocationSlotMock = new Mock<IWorkerSlot>();
+            LocationSlotMock.Setup(slot => slot.BaseYield).Returns(ResourceSummary.Empty);
+
+            CityLocationMock.Setup(tile => tile.WorkerSlot).Returns(LocationSlotMock.Object);
+
+            CityMock = new Mock<ICity>();
+
+            CityMock.Setup(city => city.Location).Returns(CityLocationMock.Object);
 
             Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
             Container.Bind<ITilePossessionCanon>()    .FromInstance(MockTileCanon.Object);
@@ -42,7 +56,7 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetYieldOfSlotForCity returns the base yield of any slot " +
             "that is occupied")]
         public void GetYieldOfSlotForCity_ReturnsBaseYieldIfOccupied() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var mockSlot = new Mock<IWorkerSlot>();
             var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
@@ -58,7 +72,7 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetYieldOfSlotForCity returns ResourceSummary.Empty for any " +
             "slot that is unoccupied")]
         public void GetYieldOfSlotForCity_ReturnsEmptyIfUnoccupied() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var mockSlot = new Mock<IWorkerSlot>();
             var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
@@ -74,7 +88,7 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetYieldOfUnemployedForCity should return the value stored in " +
             "ResourceGenerationConfig")]
         public void GetYieldOfUnemployedForCity_ReturnsConfiguredValue() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var unemployedYield = new ResourceSummary(gold: 2, production: 2);
             MockConfig.Setup(config => config.UnemployedYield).Returns(unemployedYield);
@@ -88,7 +102,7 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetTotalYieldOfCity should consider the yield of all " +
             "occupied slots in all tiles possessed by the argued city")]
         public void GetTotalYieldOfCity_ConsidersOccupiedTileSlots() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var tiles = new List<IMapTile>();
             for(int i = 0; i < 3; ++i) {
@@ -112,10 +126,10 @@ namespace Assets.Tests.Cities {
             Assert.AreEqual(new ResourceSummary(food: 3, production: 5), totalYield, "GetTotalYieldForCity returned an unexpected value");
         }
 
-        [Test(Description = "GetTotalYieldOfCity should consider the yield of all " +
+        [Test(Description = "GetTotalYieldOfCity should only consider the yield of all " +
             "occupied slots in all buildings possessed by the argued city")]
         public void GetTotalYieldOfCity_ConsidersOccupiedBuildingSlots() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var buildings = new List<IBuilding>();
             for(int i = 0; i < 3; ++i) {
@@ -143,7 +157,7 @@ namespace Assets.Tests.Cities {
         [Test(Description = "GetTotalYieldOfCity should consider the static yield of " +
             "all buildings possessed by the argued city")]
         public void GetTotalYieldOfCity_ConsiderBuildingStaticYield() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
 
             var buildings = new List<IBuilding>();
             for(int i = 0; i < 3; ++i) {
@@ -170,10 +184,9 @@ namespace Assets.Tests.Cities {
             "all unemployed people in the city, as determined by the total number of occupied " +
             "slots the city has access to")]
         public void GetTotalYieldOfCity_ConsidersUnemployedPeople() {
-            var mockCity = new Mock<ICity>();
-            mockCity.SetupAllProperties();
+            CityMock.SetupAllProperties();
             
-            var city = mockCity.Object;
+            var city = CityMock.Object;
             city.Population = 5;
 
             var buildings = new List<IBuilding>();
@@ -203,15 +216,57 @@ namespace Assets.Tests.Cities {
         }
 
         [Test(Description = "GetTotalYieldOfCity should always consider the yield of the " +
-            "unoccupiable tile that the city itself lies upon")]
-        public void GetTotalYieldForCity_ConsidersCityCenter() {
-            throw new NotImplementedException();
+            "tile that the city itself lies upon")]
+        public void GetTotalYieldOfCity_ConsidersCityCenter() {
+            CityMock.SetupAllProperties();
+
+            var city = CityMock.Object;
+            city.Population = 0;
+
+            LocationSlotMock.Setup(slot => slot.BaseYield).Returns(new ResourceSummary(food: 2, production: 3));
+
+            MockTileCanon.Setup(canon => canon.GetTilesOfCity(It.IsAny<ICity>())).Returns(new List<IMapTile>().AsReadOnly());
+            MockBuildingCanon.Setup(canon => canon.GetBuildingsInCity(It.IsAny<ICity>())).Returns(new List<IBuilding>().AsReadOnly());
+
+            var logic = Container.Resolve<ResourceGenerationLogic>();
+
+            var totalYield = logic.GetTotalYieldForCity(city);
+
+            Assert.AreEqual(new ResourceSummary(food: 2, production: 3), totalYield, "GetTotalYieldForCity returned an unexpected value");
+        }
+
+        [Test(Description = "GetTotalYieldOfCity should not take into account tiles that are " +
+            "suppressing their slots, even when those slots are flagged as occupied")]
+        public void GetTotalYieldOfCity_IgnoresSuppressedSlots() {
+            var city = CityMock.Object;
+
+            var tiles = new List<IMapTile>();
+            for(int i = 0; i < 3; ++i) {
+                var mockSlot = new Mock<IWorkerSlot>();
+                mockSlot.SetupGet(slot => slot.BaseYield).Returns(new ResourceSummary(food: i, production: i + 1));
+                mockSlot.SetupGet(slot => slot.IsOccupied).Returns(i >= 1);
+
+                var mockTile = new Mock<IMapTile>();
+                mockTile.SetupGet(tile => tile.WorkerSlot).Returns(mockSlot.Object);
+                mockTile.Setup(tile => tile.SuppressSlot).Returns(true);
+
+                tiles.Add(mockTile.Object);
+            }
+
+            MockTileCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
+            MockBuildingCanon.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
+
+            var logic = Container.Resolve<ResourceGenerationLogic>();
+
+            var totalYield = logic.GetTotalYieldForCity(city);
+
+            Assert.AreEqual(ResourceSummary.Empty, totalYield, "GetTotalYieldForCity returned an unexpected value");
         }
 
         [Test(Description = "All methods should throw an ArgumentNullException when passed " + 
             "any null argument")]
         public void AllMethods_ThrowExceptionsOnNullArguments() {
-            var city = new Mock<ICity>().Object;
+            var city = CityMock.Object;
             var slot = new Mock<IWorkerSlot>().Object;
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
