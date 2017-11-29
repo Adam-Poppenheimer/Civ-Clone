@@ -37,6 +37,8 @@ namespace Assets.UI.Cities {
             clickedSignal.AsObservable.Subscribe(OnCityClicked);
             
             DeselectedSignal = deslectedSignal;
+
+            turnBeganSignal.Listen(OnTurnBegan);
         }
 
         #region Unity message methods

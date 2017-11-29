@@ -1420,7 +1420,7 @@ MonoBehaviour:
     _q: 2
     _r: 3
     _s: -5
-  _terrain: 2
+  _terrain: 0
   _shape: 0
   _feature: 0
 --- !u!64 &307260578
@@ -2954,7 +2954,7 @@ MonoBehaviour:
     _r: 2
     _s: -3
   _terrain: 0
-  _shape: 1
+  _shape: 0
   _feature: 0
 --- !u!64 &525138646
 MeshCollider:
@@ -3631,7 +3631,7 @@ MonoBehaviour:
     _q: 2
     _r: 1
     _s: -3
-  _terrain: 2
+  _terrain: 0
   _shape: 0
   _feature: 0
 --- !u!64 &642835022
@@ -4202,7 +4202,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 759902750}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: -10}
+  m_LocalPosition: {x: 0.56, y: 3.13, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -5308,7 +5308,7 @@ MonoBehaviour:
     _q: 0
     _r: 2
     _s: -2
-  _terrain: 1
+  _terrain: 0
   _shape: 0
   _feature: 0
 --- !u!64 &932098389
@@ -8902,7 +8902,7 @@ MonoBehaviour:
     _q: 0
     _r: 4
     _s: -4
-  _terrain: 1
+  _terrain: 0
   _shape: 0
   _feature: 0
 --- !u!64 &1527776099
@@ -9381,7 +9381,7 @@ MonoBehaviour:
     _q: 2
     _r: 2
     _s: -4
-  _terrain: 2
+  _terrain: 0
   _shape: 0
   _feature: 0
 --- !u!64 &1583100204
@@ -9853,7 +9853,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   EndTurnButton: {fileID: 1125782296}
-  EndTurnKeyName: 
+  EndTurnKeyName: Submit
 --- !u!1 &1656202012
 GameObject:
   m_ObjectHideFlags: 0
@@ -12585,7 +12585,7 @@ MonoBehaviour:
     _s: -5
   _terrain: 0
   _shape: 0
-  _feature: 1
+  _feature: 0
 --- !u!64 &2036680419
 MeshCollider:
   m_ObjectHideFlags: 0

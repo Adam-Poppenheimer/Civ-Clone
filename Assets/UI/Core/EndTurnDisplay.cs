@@ -39,7 +39,7 @@ namespace Assets.UI.Core {
         #region Unity message methods
 
         private void Start() {
-            EndTurnButton.onClick.AddListener(() => EndTurnRequestedSignal.Fire());
+            EndTurnButton.onClick.AddListener(OnEndTurnButtonClicked);
         }
 
         protected override void DoOnUpdate() {
@@ -49,6 +49,10 @@ namespace Assets.UI.Core {
         }
 
         #endregion
+
+        private void OnEndTurnButtonClicked() {
+            EndTurnRequestedSignal.Fire();
+        }
 
         #endregion
 

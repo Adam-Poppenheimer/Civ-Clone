@@ -15,7 +15,7 @@ MonoBehaviour:
   _plainsMaterial: {fileID: 2100000, guid: 4128cf111d55d574ebda4104758ff80b, type: 2}
   _desertMaterial: {fileID: 2100000, guid: 883a71f688db52240b08695f3850ed63, type: 2}
   _grasslandsYield:
-    Food: 2
+    Food: 3
     Production: 0
     Gold: 0
     Culture: 0
