@@ -42,11 +42,15 @@ namespace Assets.UI.Cities.Production {
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
-            if(city.ActiveProject == null) {
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+
+            if(CityToDisplay.ActiveProject == null) {
                 ClearProjectDisplay();
             }else{
-                DisplayProjectOfCity(city);
+                DisplayProjectOfCity(CityToDisplay);
             }
         }
 

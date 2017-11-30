@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class TemplateValidityLogicTests : ZenjectUnitTestFixture {

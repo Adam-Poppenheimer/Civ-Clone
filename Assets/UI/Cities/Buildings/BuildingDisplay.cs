@@ -12,54 +12,68 @@ using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.Cities.Buildings {
 
-    public class BuildingDisplay : MonoBehaviour, IBuildingDisplay {
+    public class BuildingDisplay : MonoBehaviour {
+
+        #region internal types
+
+        public class Factory : Factory<BuildingDisplay> {  }
+
+        #endregion
 
         #region instance fields and properties
+
+        public IBuilding BuildingToDisplay { get; set; }
 
         [SerializeField] private Text NameField;
         [SerializeField] private Text MaintenanceField;
         [SerializeField] private ResourceSummaryDisplay StaticYieldDisplay;
 
-        [SerializeField] private GameObject SlotDisplayPrefab;
         [SerializeField] private Transform SlotDisplayParent;
 
-        private List<IWorkerSlotDisplay> InstantiatedSlotDisplays = new List<IWorkerSlotDisplay>();
+        private List<WorkerSlotDisplay> InstantiatedSlotDisplays = new List<WorkerSlotDisplay>();
+
+        private WorkerSlotDisplay.Factory SlotDisplayFactory;
 
         #endregion
 
         #region instance methods
 
+        [Inject]
+        public void InjectDependencies(WorkerSlotDisplay.Factory slotDisplayFactory) {
+            SlotDisplayFactory = slotDisplayFactory;
+        }
+
         #region from IBuildingDisplay
 
-        public void DisplayBuilding(IBuilding building, ICityUIConfig config) {
+        public void Refresh() {
             foreach(var slotDisplay in InstantiatedSlotDisplays) {
                 slotDisplay.gameObject.SetActive(false);
             }
 
-            NameField       .text = building.Template.name;
-            MaintenanceField.text = building.Template.Maintenance.ToString();
+            NameField       .text = BuildingToDisplay.Template.name;
+            MaintenanceField.text = BuildingToDisplay.Template.Maintenance.ToString();
 
-            StaticYieldDisplay.DisplaySummary(building.Template.StaticYield);
+            StaticYieldDisplay.DisplaySummary(BuildingToDisplay.Template.StaticYield);
 
             int slotDisplayIndex = 0;
-            foreach(var slot in building.Slots) {
+            foreach(var slot in BuildingToDisplay.Slots) {
                 var slotDisplay = GetSlotDisplay(slotDisplayIndex++);
+                slotDisplay.SlotToDisplay = slot;
 
                 slotDisplay.gameObject.SetActive(true);
-                slotDisplay.DisplayOccupationStatus(slot.IsOccupied, config);
+                slotDisplay.Refresh();
             }
         }
 
         #endregion
 
-        private IWorkerSlotDisplay GetSlotDisplay(int index) {
+        private WorkerSlotDisplay GetSlotDisplay(int index) {
             if(InstantiatedSlotDisplays.Count == index) {
-                var newSlotPrefab = Instantiate(SlotDisplayPrefab);
+                var newDisplay = SlotDisplayFactory.Create();
 
-                var newSlot = newSlotPrefab.GetComponent<IWorkerSlotDisplay>();
-                newSlot.transform.SetParent(SlotDisplayParent, false);
+                newDisplay.transform.SetParent(SlotDisplayParent, false);
 
-                InstantiatedSlotDisplays.Add(newSlot);
+                InstantiatedSlotDisplays.Add(newDisplay);
             }
             return InstantiatedSlotDisplays[index];
         }

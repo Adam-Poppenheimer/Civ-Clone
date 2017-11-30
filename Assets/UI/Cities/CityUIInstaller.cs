@@ -8,7 +8,7 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
-using Assets.UI;
+using Assets.UI.Cities.Buildings;
 
 namespace Assets.UI.Cities {
 
@@ -18,7 +18,9 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private CityUIConfig UIConfig;
 
-        [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
+        [SerializeField] private GameObject SlotDisplayPrefab;
+
+        [SerializeField] private GameObject BuildingDisplayPrefab;
 
         [SerializeField] private ResourceSummaryDisplay CityYieldDisplay;
 
@@ -33,9 +35,13 @@ namespace Assets.UI.Cities {
         public override void InstallBindings() {
             Container.Bind<ICityUIConfig>().To<CityUIConfig>().FromInstance(UIConfig);
 
-            Container.Bind<IWorkerSlotDisplay>().To<WorkerSlotDisplay>().FromInstance(SlotDisplayPrefab);
-
             Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").To<ResourceSummaryDisplay>().FromInstance(CityYieldDisplay);
+
+            Container.BindFactory<WorkerSlotDisplay, WorkerSlotDisplay.Factory>().FromComponentInNewPrefab(SlotDisplayPrefab);
+
+            Container.BindFactory<BuildingDisplay, BuildingDisplay.Factory>().FromComponentInNewPrefab(BuildingDisplayPrefab);
+
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.ShouldCheckForInstallWarning = false;
 

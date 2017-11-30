@@ -18,7 +18,7 @@ using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class BorderExpansionLogicTests : ZenjectUnitTestFixture {
@@ -66,7 +66,7 @@ namespace Assets.Tests.Cities {
 
             var homeCity = cityMock.Object;
 
-            homeCity.DistributionPreferences = new DistributionPreferences(true, ResourceType.Food);
+            homeCity.ResourceFocus = ResourceFocusType.Food;
 
             MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
             MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);
@@ -111,7 +111,7 @@ namespace Assets.Tests.Cities {
 
             var homeCity = cityMock.Object;
 
-            homeCity.DistributionPreferences = new DistributionPreferences(false, ResourceType.Food);
+            homeCity.ResourceFocus = ResourceFocusType.TotalYield;
 
             MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
             MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);
@@ -156,7 +156,7 @@ namespace Assets.Tests.Cities {
 
             var homeCity = cityMock.Object;
 
-            homeCity.DistributionPreferences = new DistributionPreferences(true, ResourceType.Food);
+            homeCity.ResourceFocus = ResourceFocusType.Food;
 
             MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
             MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);

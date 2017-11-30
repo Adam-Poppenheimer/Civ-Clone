@@ -11,7 +11,7 @@ using Assets.Simulation.Core;
 
 using Assets.Simulation.Cities;
 
-namespace Assets.Tests.Core {
+namespace Assets.Tests.Simulation.Core {
 
     [TestFixture]
     public class GameCoreTests : ZenjectUnitTestFixture {

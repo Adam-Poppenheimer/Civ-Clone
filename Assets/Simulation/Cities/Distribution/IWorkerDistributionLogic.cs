@@ -9,10 +9,12 @@ namespace Assets.Simulation.Cities.Distribution {
 
         #region methods
 
-        void DistributeWorkersIntoSlots(
-            int workerCount, IEnumerable<IWorkerSlot> slots,
-            ICity sourceCity, DistributionPreferences preferences
-        );
+        void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots,
+            ICity sourceCity, ResourceFocusType preferences);
+
+        int GetUnemployedPeopleInCity(ICity city);
+
+        IEnumerable<IWorkerSlot> GetSlotsAvailableToCity(ICity city);
 
         #endregion
 

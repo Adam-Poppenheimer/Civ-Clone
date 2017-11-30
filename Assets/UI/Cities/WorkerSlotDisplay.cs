@@ -5,28 +5,63 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 
+using Assets.Simulation;
+
 namespace Assets.UI.Cities {
 
-    public class WorkerSlotDisplay : MonoBehaviour, IWorkerSlotDisplay {
+    public class WorkerSlotDisplay : MonoBehaviour, IPointerClickHandler, IWorkerSlotDisplay {
+
+        #region internal types
+
+        public class Factory : Factory<WorkerSlotDisplay> { }
+
+        #endregion
 
         #region instance fields and properties
 
-        public Image SlotImage {
-            get { return _slotImage; }
-            set { _slotImage = value; }
-        }
-        [SerializeField] private Image _slotImage;
+        public IWorkerSlot SlotToDisplay { get; set; }
+
+        [SerializeField] private Image SlotImage;
+
+        private SlotDisplayClickedSignal ClickedSignal;
+
+        private ICityUIConfig Config;
 
         #endregion
 
         #region instance methods
 
-        public void DisplayOccupationStatus(bool isOccupied, ICityUIConfig config) {
-            SlotImage.material = isOccupied ? config.OccupiedSlotMaterial : config.UnoccupiedSlotMaterial;
+        [Inject]
+        public void InjectDependencies(SlotDisplayClickedSignal clickedSignal, ICityUIConfig config) {
+            ClickedSignal = clickedSignal;
+            Config = config;
         }
+
+        #region EventSystem handler implementations
+
+        public void OnPointerClick(PointerEventData eventData) {
+            if(SlotToDisplay != null) {
+                ClickedSignal.Fire(this);
+            }            
+        }
+
+        #endregion
+
+        public void Refresh() {
+            if(SlotToDisplay == null) {
+                return;
+            }
+
+            if(SlotToDisplay.IsOccupied) {
+                SlotImage.material = SlotToDisplay.IsLocked ? Config.LockedSlotMaterial : Config.OccupiedSlotMaterial;
+            }else {
+                SlotImage.material = Config.UnoccupiedSlotMaterial;
+            }
+        }        
 
         #endregion
 

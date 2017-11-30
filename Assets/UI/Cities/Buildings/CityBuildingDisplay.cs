@@ -18,29 +18,31 @@ namespace Assets.UI.Cities.Buildings {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject BuildingDisplayPrefab;
-
         [SerializeField] private Transform BuildingDisplayParent;
 
-        private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
+        private List<BuildingDisplay> InstantiatedBuildingDisplays = new List<BuildingDisplay>();
 
-        private ICityUIConfig Config;
         private IBuildingPossessionCanon PossessionCanon;
+
+        private BuildingDisplay.Factory DisplayFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICityUIConfig config, IBuildingPossessionCanon possessionCanon) {
-            Config = config;
+        public void InjectDependencies(IBuildingPossessionCanon possessionCanon, BuildingDisplay.Factory displayFactory) {
             PossessionCanon = possessionCanon;
+            DisplayFactory = displayFactory;
         }
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
-            DisplayBuildings(PossessionCanon.GetBuildingsInCity(city));
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+            DisplayBuildings(PossessionCanon.GetBuildingsInCity(CityToDisplay));
         }
 
         #endregion
@@ -51,19 +53,21 @@ namespace Assets.UI.Cities.Buildings {
             }
 
             int buildingDisplayIndex = 0;
-            foreach(var building in buildings) {                
+            foreach(var building in buildings) {   
+                             
                 var buildingDisplay = GetBuildingDisplay(buildingDisplayIndex++);
 
+                buildingDisplay.BuildingToDisplay = building;
+
                 buildingDisplay.gameObject.SetActive(true);
-                buildingDisplay.DisplayBuilding(building, Config);
+                buildingDisplay.Refresh();
             }
         }
 
-        private IBuildingDisplay GetBuildingDisplay(int index) {
+        private BuildingDisplay GetBuildingDisplay(int index) {
             if(InstantiatedBuildingDisplays.Count == index) {
-                var newSlotPrefab = Instantiate(BuildingDisplayPrefab);
+                var newDisplay = DisplayFactory.Create();
 
-                var newDisplay = newSlotPrefab.GetComponent<IBuildingDisplay>();
                 newDisplay.gameObject.transform.SetParent(BuildingDisplayParent, false);
 
                 InstantiatedBuildingDisplays.Add(newDisplay);

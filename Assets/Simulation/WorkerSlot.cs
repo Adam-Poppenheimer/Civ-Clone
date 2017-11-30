@@ -20,7 +20,7 @@ namespace Assets.Simulation {
 
         public bool IsOccupied { get; set; }
 
-        public bool IsOccupiable { get; set; }
+        public bool IsLocked { get; set; }
 
         #endregion
 

@@ -50,7 +50,7 @@ namespace Assets.Simulation.Cities {
 
         public IProductionProject ActiveProject { get; private set; }
 
-        public DistributionPreferences DistributionPreferences { get; set; }
+        public ResourceFocusType ResourceFocus { get; set; }
 
         public IMapTile TileBeingPursued { get; private set; }
 
@@ -83,8 +83,7 @@ namespace Assets.Simulation.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             ITilePossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IBuildingPossessionCanon buildingPossessionCanon, IProductionProjectFactory projectFactory,
-            CitySignals signals
+            IProductionProjectFactory projectFactory, CitySignals signals
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -92,7 +91,6 @@ namespace Assets.Simulation.Cities {
             ExpansionLogic          = expansionLogic;
             TilePossessionCanon     = tilePossessionCanon;
             DistributionLogic       = distributionLogic;
-            BuildingPossessionCanon = buildingPossessionCanon;
             ProjectFactory          = projectFactory;
             Signals                 = signals;
         }
@@ -155,8 +153,15 @@ namespace Assets.Simulation.Cities {
         }
 
         public void PerformDistribution() {
-            var availableSlots = GetAllAvailableSlots();
-            DistributionLogic.DistributeWorkersIntoSlots(Population, availableSlots, this, DistributionPreferences);
+            var allSlots = DistributionLogic.GetSlotsAvailableToCity(this);
+            var occupiedAndLockedSlots = allSlots.Where(slot => slot.IsOccupied && slot.IsLocked);
+
+            int populationToAssign = Population - occupiedAndLockedSlots.Count();
+            var slotsToAssign = allSlots.Where(slot => !slot.IsLocked);
+
+            DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, ResourceFocus);
+
+            Signals.DistributionPerformedSignal.Fire(this);
         }
 
         public void PerformIncome(){
@@ -167,18 +172,6 @@ namespace Assets.Simulation.Cities {
         }
 
         #endregion 
-
-        private List<IWorkerSlot> GetAllAvailableSlots() {
-            var retval = new List<IWorkerSlot>();
-
-            retval.AddRange(TilePossessionCanon.GetTilesOfCity(this).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
-
-            foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(this)) {
-                retval.AddRange(building.Slots);
-            }
-
-            return retval;
-        }
 
         #endregion
 

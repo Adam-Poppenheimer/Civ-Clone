@@ -10,7 +10,7 @@ using UnityCustomUtilities.Extensions;
 
 using Assets.Simulation;
 
-namespace Assets.Tests {
+namespace Assets.Tests.Simulation {
 
     [TestFixture]
     public class ResourceSummaryTests : ZenjectUnitTestFixture{

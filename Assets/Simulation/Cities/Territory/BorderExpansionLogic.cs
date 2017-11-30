@@ -69,13 +69,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
             var availableTiles = GetAllTilesAvailableToCity(city).ToList();
 
-            if(city.DistributionPreferences.ShouldFocusResource) {
-                availableTiles.Sort(TileComparisonUtil.BuildFocusedComparisonAscending(
-                    city, city.DistributionPreferences.FocusedResource, ResourceGenerationLogic
-                ));
-            }else {
-                availableTiles.Sort(TileComparisonUtil.BuildTotalYieldComparisonAscending(city, ResourceGenerationLogic));
-            }
+            availableTiles.Sort(TileComparisonUtil.BuildComparisonAscending(city, city.ResourceFocus, ResourceGenerationLogic));
 
             return availableTiles.LastOrDefault();
         }

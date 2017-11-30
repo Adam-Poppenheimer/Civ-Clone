@@ -13,6 +13,7 @@ namespace Assets.UI.Cities {
 
         Material OccupiedSlotMaterial { get; }
         Material UnoccupiedSlotMaterial { get; }
+        Material LockedSlotMaterial { get; }
 
         #endregion
 

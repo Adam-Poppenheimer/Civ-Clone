@@ -11,6 +11,8 @@ namespace Assets.Simulation {
 
         bool IsOccupied { get; set; }
 
+        bool IsLocked { get; set; }
+
         ResourceSummary BaseYield { get; }
 
         #endregion

@@ -44,13 +44,17 @@ namespace Assets.UI.Cities.TilePossession {
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
-            var nextTile = ExpansionLogic.GetNextTileToPursue(city);
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
 
-            var currentCulture = city.CultureStockpile;
-            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringTile(city, nextTile);
+            var nextTile = ExpansionLogic.GetNextTileToPursue(CityToDisplay);
 
-            var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(city)[ResourceType.Culture];
+            var currentCulture = CityToDisplay.CultureStockpile;
+            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringTile(CityToDisplay, nextTile);
+
+            var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(CityToDisplay)[ResourceType.Culture];
 
             CultureStockpileField.text = currentCulture.ToString();
             CultureNeededField.text = neededCulture.ToString();

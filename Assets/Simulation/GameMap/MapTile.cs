@@ -47,7 +47,6 @@ namespace Assets.Simulation.GameMap {
                 if(_workerSlot == null) {
                     var baseYield = ResourceLogic.GetYieldOfTile(this);
                     _workerSlot = new WorkerSlot(baseYield);
-                    _workerSlot.IsOccupiable = !TileConfig.UnoccupiableTerrains.Contains(Terrain);
                 }
 
                 return _workerSlot;

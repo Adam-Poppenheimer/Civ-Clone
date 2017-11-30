@@ -18,45 +18,62 @@ namespace Assets.UI.Cities.TilePossession {
 
         #region instance fields and properties
 
-        private List<IWorkerSlotDisplay> InstantiatedDisplays = new List<IWorkerSlotDisplay>();
+        private List<WorkerSlotDisplay> InstantiatedDisplays = new List<WorkerSlotDisplay>();
 
         private ITilePossessionCanon PossessionCanon;
 
-        private IWorkerSlotDisplay SlotDisplayPrefab;
+        private WorkerSlotDisplay.Factory SlotFactory;
 
-        private ICityUIConfig Config;
+        private CitySignals Signals;
+
+        private IDisposable DistributionListeningSubscription;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITilePossessionCanon possessionCanon, IWorkerSlotDisplay slotDisplayPrefab,
-            ICityUIConfig config) {
+        public void InjectDependencies(ITilePossessionCanon possessionCanon, WorkerSlotDisplay.Factory slotFactory,
+            CitySignals signals) {
 
-            PossessionCanon    = possessionCanon;
-            SlotDisplayPrefab  = slotDisplayPrefab;
-            Config             = config;
+            PossessionCanon = possessionCanon;
+            SlotFactory     = slotFactory;
+            Signals         = signals;
         }
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
+        protected override void DoOnEnable() {
+            DistributionListeningSubscription = Signals.DistributionPerformedSignal.AsObservable.Subscribe(OnDistributionPerformed);
+        }
+
+        protected override void DoOnDisable() {
+            DistributionListeningSubscription.Dispose();
+            DistributionListeningSubscription = null;
+        }
+
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+
             foreach(var display in InstantiatedDisplays) {
                 display.gameObject.SetActive(false);
             }
 
             int slotDisplayIndex = 0;
 
-            foreach(var tile in PossessionCanon.GetTilesOfCity(city)) {
+            foreach(var tile in PossessionCanon.GetTilesOfCity(CityToDisplay)) {
                 if(tile.SuppressSlot) {
                     continue;
                 }
 
                 var slotDisplay = GetNextSlotDisplay(slotDisplayIndex++);
 
+                slotDisplay.SlotToDisplay = tile.WorkerSlot;
+
                 slotDisplay.transform.position = Camera.main.WorldToScreenPoint(tile.transform.position);
-                slotDisplay.DisplayOccupationStatus(tile.WorkerSlot.IsOccupied, Config);
+                slotDisplay.Refresh();
 
                 slotDisplay.gameObject.SetActive(true);
             }
@@ -64,14 +81,20 @@ namespace Assets.UI.Cities.TilePossession {
 
         #endregion
 
-        private IWorkerSlotDisplay GetNextSlotDisplay(int currentIndex) {
+        private void OnDistributionPerformed(ICity city) {
+            if(city == CityToDisplay) {
+                Refresh();
+            }
+        }
+
+        private WorkerSlotDisplay GetNextSlotDisplay(int currentIndex) {
             if(currentIndex >= InstantiatedDisplays.Count) {
-                var newDisplayObject = GameObject.Instantiate(SlotDisplayPrefab.gameObject);
+                var newDisplay = SlotFactory.Create();
 
-                newDisplayObject.transform.SetParent(transform, false);
-                newDisplayObject.SetActive(false);
+                newDisplay.transform.SetParent(transform, false);
+                newDisplay.gameObject.SetActive(false);
 
-                InstantiatedDisplays.Add(newDisplayObject.GetComponent<IWorkerSlotDisplay>());
+                InstantiatedDisplays.Add(newDisplay);
             }
 
             return InstantiatedDisplays[currentIndex];

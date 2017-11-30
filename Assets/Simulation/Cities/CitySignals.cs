@@ -15,17 +15,20 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        public CityClickedSignal ClickedSignal { get; private set; }
-        public CityProjectChangedSignal ProjectChangedSignal { get; private set; }
+        public CityClickedSignal               ClickedSignal               { get; private set; }
+        public CityProjectChangedSignal        ProjectChangedSignal        { get; private set; }
+        public CityDistributionPerformedSignal DistributionPerformedSignal { get; private set; }
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public CitySignals(CityClickedSignal clickedSignal, CityProjectChangedSignal projectChangedSignal) {
-            ClickedSignal = clickedSignal;
-            ProjectChangedSignal = projectChangedSignal;
+        public CitySignals(CityClickedSignal clickedSignal, CityProjectChangedSignal projectChangedSignal,
+            CityDistributionPerformedSignal distributionPerformedSignal) {
+            ClickedSignal               = clickedSignal;
+            ProjectChangedSignal        = projectChangedSignal;
+            DistributionPerformedSignal = distributionPerformedSignal;
         }
 
         #endregion
@@ -35,5 +38,7 @@ namespace Assets.Simulation.Cities {
     public class CityClickedSignal : Signal<CityClickedSignal, ICity, PointerEventData> { }
 
     public class CityProjectChangedSignal : Signal<CityProjectChangedSignal, ICity, IProductionProject> { }
+
+    public class CityDistributionPerformedSignal : Signal<CityDistributionPerformedSignal, ICity> { }
 
 }

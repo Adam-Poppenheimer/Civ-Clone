@@ -15,7 +15,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Production;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class ProductionLogicTests : ZenjectUnitTestFixture {

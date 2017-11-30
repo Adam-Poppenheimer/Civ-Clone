@@ -5,6 +5,8 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 
@@ -18,14 +20,22 @@ namespace Assets.Simulation.Cities.Distribution {
 
         private IResourceGenerationLogic GenerationLogic;
 
+        private IBuildingPossessionCanon BuildingCanon;
+
+        private ITilePossessionCanon TileCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public WorkerDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic) {
-            GrowthLogic = growthLogic;
+        public WorkerDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic,
+            IBuildingPossessionCanon buildingCanon, ITilePossessionCanon tileCanon) {
+
+            GrowthLogic     = growthLogic;
             GenerationLogic = generationLogic;
+            BuildingCanon   = buildingCanon;
+            TileCanon       = tileCanon;
         }
 
         #endregion
@@ -35,16 +45,46 @@ namespace Assets.Simulation.Cities.Distribution {
         #region from IWorkerDistributionLogic
 
         public void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
-            DistributionPreferences preferences){  
+            ResourceFocusType focus){  
             foreach(var slot in slots) {
                 slot.IsOccupied = false;
             }
 
-            if(preferences.ShouldFocusResource) {
-                PerformFocusedDistribution(workerCount, slots, sourceCity, preferences);                
-            }else {
-                PerformUnfocusedDistribution(workerCount, slots, sourceCity);                
-            }  
+            switch(focus) {
+                case ResourceFocusType.Food:       PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Food);       break;
+                case ResourceFocusType.Gold:       PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Gold);       break;
+                case ResourceFocusType.Production: PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Production); break;
+                case ResourceFocusType.Culture:    PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Culture);    break;
+                case ResourceFocusType.TotalYield: PerformUnfocusedDistribution(workerCount, slots, sourceCity); break;
+                default: break;
+            } 
+        }
+
+        public int GetUnemployedPeopleInCity(ICity city) {
+            int occupiedTiles = TileCanon.GetTilesOfCity(city).Where(tile => tile.WorkerSlot.IsOccupied).Count();
+
+            int occupiedBuildingSlots = 0;
+            foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
+                occupiedBuildingSlots += building.Slots.Where(slot => slot.IsOccupied).Count();
+            }
+
+            int unemployedPeople = city.Population - (occupiedTiles + occupiedBuildingSlots);
+            if(unemployedPeople < 0) {
+                throw new NegativeUnemploymentException("This city has more occupied slots than it has people");
+            }
+            return unemployedPeople;
+        }
+
+        public IEnumerable<IWorkerSlot> GetSlotsAvailableToCity(ICity city) {
+            var retval = new List<IWorkerSlot>();
+
+            retval.AddRange(TileCanon.GetTilesOfCity(city).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
+
+            foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
+                retval.AddRange(building.Slots);
+            }
+
+            return retval;
         }
 
         #endregion
@@ -59,9 +99,7 @@ namespace Assets.Simulation.Cities.Distribution {
         /// the population.
         /// </remarks>
         private void PerformFocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
-            DistributionPreferences preferences) {
-            var focusedResource = preferences.FocusedResource;
-
+            ResourceType focusedResource) {
             var maximizingComparison = SlotComparisonUtil.BuildFocusedComparisonAscending(sourceCity, focusedResource, GenerationLogic);
 
             MaximizeYield(workerCount, slots, sourceCity, maximizingComparison);

@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Growth;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class PopulationGrowthLogicTests : ZenjectUnitTestFixture {

@@ -27,7 +27,7 @@ namespace Assets.Simulation.Cities {
 
         IProductionProject ActiveProject { get; }
 
-        DistributionPreferences DistributionPreferences { get; set; }
+        ResourceFocusType ResourceFocus { get; set; }
 
         IMapTile TileBeingPursued { get; }
 

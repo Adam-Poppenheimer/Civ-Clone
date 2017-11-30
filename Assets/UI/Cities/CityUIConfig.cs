@@ -24,6 +24,11 @@ namespace Assets.UI.Cities {
         }
         [SerializeField] private Material _unoccupiedSlotMaterial;
 
+        public Material LockedSlotMaterial {
+            get { return _lockedSlotMaterial; }
+        }
+        [SerializeField] private Material _lockedSlotMaterial;
+
         #endregion
 
         #endregion

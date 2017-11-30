@@ -1,7 +1,6 @@
 ﻿using System;
 
-using UnityEngine;
-using UnityEngine.UI;
+using Assets.Simulation;
 
 namespace Assets.UI.Cities {
 
@@ -9,16 +8,13 @@ namespace Assets.UI.Cities {
 
         #region properties
 
-        GameObject gameObject { get; }
-        Transform transform { get; }
-
-        Image SlotImage { get; set; }
+        IWorkerSlot SlotToDisplay { get; set; }
 
         #endregion
 
         #region methods
 
-        void DisplayOccupationStatus(bool isOccupied, ICityUIConfig config);
+        void Refresh();
 
         #endregion
 

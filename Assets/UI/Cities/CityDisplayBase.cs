@@ -44,15 +44,17 @@ namespace Assets.UI.Cities {
         #region Unity message methods
 
         private void OnEnable() {
-            if(CityToDisplay != null) {
-                DisplayCity(CityToDisplay);
-            }
-            DeselectSubscription = DeselectedSignal.Subscribe(OnDeselected);          
+            Refresh();
+            DeselectSubscription = DeselectedSignal.Subscribe(OnDeselected);  
+            
+            DoOnEnable();        
         }
 
         private void OnDisable() {
             DeselectSubscription.Dispose();
             DeselectSubscription = null;
+
+            DoOnDisable();
         }
 
         #endregion
@@ -62,6 +64,7 @@ namespace Assets.UI.Cities {
         private void OnCityClicked(Tuple<ICity, PointerEventData> dataTuple) {
             CityToDisplay = dataTuple.Item1;
             gameObject.SetActive(true);
+            Refresh();
         }
 
         private void OnDeselected(Unit unit) {
@@ -69,14 +72,17 @@ namespace Assets.UI.Cities {
         }
 
         private void OnTurnBegan(int turnCount) {
-            if(CityToDisplay != null && gameObject.activeInHierarchy) {
-                DisplayCity(CityToDisplay);
+            if(gameObject.activeInHierarchy) {
+                Refresh();
             }
         }
 
         #endregion
 
-        protected virtual void DisplayCity(ICity city) { }
+        protected virtual void DoOnEnable () { }
+        protected virtual void DoOnDisable() { }
+
+        public virtual void Refresh() { }
 
         #endregion
 

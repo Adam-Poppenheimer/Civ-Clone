@@ -36,8 +36,12 @@ namespace Assets.UI.Cities.Growth {
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
-            DisplayGrowthInformation(city.Population, city.FoodStockpile, GrowthLogic.GetFoodStockpileToGrow(city));
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+
+            DisplayGrowthInformation(CityToDisplay.Population, CityToDisplay.FoodStockpile, GrowthLogic.GetFoodStockpileToGrow(CityToDisplay));
         }
 
         #endregion

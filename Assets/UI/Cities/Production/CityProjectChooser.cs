@@ -40,18 +40,22 @@ namespace Assets.UI.Cities.Production {
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+
             ProjectDropdown.ClearOptions();
 
             ProjectDropdown.options.Add(new Dropdown.OptionData("None"));
 
-            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(city);
+            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(CityToDisplay);
             ProjectDropdown.AddOptions(validTemplates.Select(template => new Dropdown.OptionData(template.name)).ToList());
 
-            if(city.ActiveProject == null) {
+            if(CityToDisplay.ActiveProject == null) {
                 ProjectDropdown.value = 0;
             }else {
-                var activeOptionData = ProjectDropdown.options.Where(option => option.text.Equals(city.ActiveProject.Name)).FirstOrDefault();
+                var activeOptionData = ProjectDropdown.options.Where(option => option.text.Equals(CityToDisplay.ActiveProject.Name)).FirstOrDefault();
                 if(activeOptionData == null) {
                     ProjectDropdown.value = 0;
                 }else {

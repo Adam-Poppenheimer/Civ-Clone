@@ -35,8 +35,12 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         #region from CityDisplayBase
 
-        protected override void DisplayCity(ICity city) {
-            YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetTotalYieldForCity(city));
+        public override void Refresh() {
+            if(CityToDisplay == null) {
+                return;
+            }
+
+            YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetTotalYieldForCity(CityToDisplay));
         }
 
         #endregion

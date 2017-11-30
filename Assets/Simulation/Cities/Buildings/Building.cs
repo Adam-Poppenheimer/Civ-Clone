@@ -27,7 +27,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         public Building(IBuildingTemplate template) {
             Template = template;
-            _slots = template.SlotYields.Select(yield => new WorkerSlot(yield) { IsOccupiable = true } as IWorkerSlot).ToList();
+            _slots = template.SlotYields.Select(yield => new WorkerSlot(yield) as IWorkerSlot).ToList();
         }
 
         #endregion

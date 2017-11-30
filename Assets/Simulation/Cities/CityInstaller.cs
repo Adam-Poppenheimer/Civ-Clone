@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities {
 
         [SerializeField] private GameObject CityPrefab;
 
-        [SerializeField] private CityConfig               CityConfig;
+        [SerializeField] private CityConfig CityConfig;
 
         [SerializeField] private MapHexGrid HexGrid;
 
@@ -62,6 +62,7 @@ namespace Assets.Simulation.Cities {
 
             Container.DeclareSignal<CityClickedSignal>();
             Container.DeclareSignal<CityProjectChangedSignal>();
+            Container.DeclareSignal<CityDistributionPerformedSignal>();
 
             Container.Bind<CitySignals>().AsSingle();
         }

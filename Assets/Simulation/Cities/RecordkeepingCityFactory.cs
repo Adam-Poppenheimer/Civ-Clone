@@ -53,7 +53,7 @@ namespace Assets.Simulation.Cities {
             location.SuppressSlot = true;
             
 
-            newCity.DistributionPreferences = new DistributionPreferences(false, ResourceType.Food);
+            newCity.ResourceFocus = ResourceFocusType.TotalYield;
             newCity.PerformDistribution();
 
             allCities.Add(newCity);

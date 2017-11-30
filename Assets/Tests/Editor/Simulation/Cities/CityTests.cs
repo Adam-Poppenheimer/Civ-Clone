@@ -23,7 +23,7 @@ using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class CityTests : ZenjectUnitTestFixture {
@@ -61,6 +61,7 @@ namespace Assets.Tests.Cities {
 
             Container.DeclareSignal<CityClickedSignal>();
             Container.DeclareSignal<CityProjectChangedSignal>();
+            Container.DeclareSignal<CityDistributionPerformedSignal>();
 
             Container.Bind<CitySignals>().AsSingle();
 
@@ -351,10 +352,10 @@ namespace Assets.Tests.Cities {
         public void PerformDistribution_SendsRequestToDistributionLogic() {
             var city = Container.Resolve<City>();
             city.Population = 7;
-            city.DistributionPreferences = new DistributionPreferences(false, ResourceType.Food);
+            city.ResourceFocus = ResourceFocusType.TotalYield;
 
             TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city))
-                .Returns(new List<IMapTile>() { new Mock<IMapTile>().Object }.AsReadOnly());
+                .Returns(new List<IMapTile>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
 
             BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
 
@@ -362,7 +363,7 @@ namespace Assets.Tests.Cities {
 
             DistributionMock.Verify(
                 logic => logic.DistributeWorkersIntoSlots(
-                    city.Population, It.IsAny<List<IWorkerSlot>>(), city, city.DistributionPreferences
+                    city.Population, It.IsAny<IEnumerable<IWorkerSlot>>(), city, city.ResourceFocus
                 ),
                 Times.Once,
                 "DistributionLogic's DistributeWorkersIntoSlots was not called with the correct " +
@@ -371,48 +372,9 @@ namespace Assets.Tests.Cities {
         }
 
         [Test(Description = "When PerformDistribution is called on a city, that city should " +
-            "send DistributionLogic all of the slots it receives from the tiles TilePossessionCanon " +
-            "says it possesses")]
-        public void PerformDistribution_DistributionLogicGivenAllTileSlots() {
+            "send DistributionLogic all of the slots that distributionLogic claims are available to it")]
+        public void PerformDistribution_CallsIntoGetSlotsAvailableToCity() {
             var city = Container.Resolve<City>();
-
-            var tileMockOne = new Mock<IMapTile>();
-            tileMockOne.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
-
-            var tileMockTwo = new Mock<IMapTile>();
-            tileMockTwo.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
-
-            var tileMockThree = new Mock<IMapTile>();
-            tileMockThree.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
-
-            var tiles = new List<IMapTile>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
-            var tileSlots = tiles.Select(tile => tile.WorkerSlot);
-
-            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
-
-            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
-
-            city.PerformDistribution();
-
-            DistributionMock.Verify(
-                logic => logic.DistributeWorkersIntoSlots(
-                    It.IsAny<int>(),
-                    It.Is<IEnumerable<IWorkerSlot>>(enumerable => new HashSet<IWorkerSlot>(enumerable).IsSupersetOf(tileSlots)),
-                    It.IsAny<ICity>(),
-                    It.IsAny<DistributionPreferences>()
-                ),
-                Times.Once, "The Enumerable passed into DistributionLogic's DistributeWorkersIntoSlots method " + 
-                "is not a superset of all slots contained within the city's tiles"
-            );
-        }
-
-        [Test(Description = "When PerformDistribution is called on a city, that city should " +
-            "send DistributionLogic all of the slots it receives from the buildings BuildingPossessionCanon " +
-            "says it possesses")]
-        public void PerformDistribution_DistributionLogicGivenAllBuildingSlots() {
-            var city = Container.Resolve<City>();
-
-            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IMapTile>().AsReadOnly());
 
             var buildingMockOne = new Mock<IBuilding>();
             var firstSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object };
@@ -426,25 +388,27 @@ namespace Assets.Tests.Cities {
             var thirdSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object, new Mock<IWorkerSlot>().Object, new Mock<IWorkerSlot>().Object };
             buildingMockThree.Setup(building => building.Slots).Returns(thirdSlots.AsReadOnly());
 
-            var allBuildings = new List<IBuilding>() { buildingMockOne.Object, buildingMockTwo.Object, buildingMockThree.Object };
             var allSlots = new List<IWorkerSlot>(firstSlots.Concat(secondSlots).Concat(thirdSlots));
 
-            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(allBuildings.AsReadOnly());
+            DistributionMock.Setup(logic => logic.GetSlotsAvailableToCity(city)).Returns(allSlots);
 
             DistributionMock.Setup(
                 logic => logic.DistributeWorkersIntoSlots(
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
                     It.IsAny<ICity>(),
-                    It.IsAny<DistributionPreferences>()
+                    It.IsAny<ResourceFocusType>()
                 )
             ).Callback(
-                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, DistributionPreferences preferences) {
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
                     CollectionAssert.IsSupersetOf(availableSlots, allSlots);
                 }
             );                
 
             city.PerformDistribution();
+
+            DistributionMock.Verify(logic => logic.GetSlotsAvailableToCity(city), Times.Once,
+                "DistributionLogic.GetSlotsAvailableToCity was not called");
         }
 
         [Test(Description = "When PerformDistribution is called, City does not pass any tile slots " +
@@ -474,16 +438,66 @@ namespace Assets.Tests.Cities {
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
                     It.IsAny<ICity>(),
-                    It.IsAny<DistributionPreferences>()
+                    It.IsAny<ResourceFocusType>()
                 )
             ).Callback(
-                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, DistributionPreferences preferences) {
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
                     CollectionAssert.DoesNotContain(availableSlots, tileMockTwo.Object.WorkerSlot,
                         "DistributionLogic was incorrectly passed a slot from a suppressed tile");
                 }
             ); 
 
             city.PerformDistribution();
+        }
+
+        [Test(Description = "When PerformDistribution is called, City does not pass any slots " +
+            "that are locked, regardless of whether they're occupied or not. Locked slots that " + 
+            "are occupied should also reduce WorkerCount")]
+        public void PerformDistribution_LockedSlotsNotPassed() {
+            var city = Container.Resolve<City>();
+            city.Population = 2;
+
+            var unlockedSlotTile         = BuildMockTile(new TileMockData());
+            var lockedUnoccupiedSlotTile = BuildMockTile(new TileMockData() { SlotIsLocked = true });
+            var lockedOccupiedSlotTile   = BuildMockTile(new TileMockData() { SlotIsLocked = true, SlotIsOccupied = true });
+
+            var tiles = new List<IMapTile>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
+
+            TilePossessionCanonMock
+                .Setup(canon => canon.GetTilesOfCity(city))
+                .Returns(tiles);
+
+            BuildingPossessionCanonMock
+                .Setup(canon => canon.GetBuildingsInCity(city))
+                .Returns(new List<IBuilding>().AsReadOnly());
+
+            DistributionMock.Setup(
+                logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), city, It.IsAny<ResourceFocusType>())
+            ).Callback(
+                delegate(int workerCount, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
+                    Assert.AreEqual(1, workerCount, "Incorrect workerCount passed to DistributionLogic");
+
+                    CollectionAssert.Contains      (availableSlots, unlockedSlotTile        .WorkerSlot, "unlockedSlot not passed to DistributionLogic");
+                    CollectionAssert.DoesNotContain(availableSlots, lockedUnoccupiedSlotTile.WorkerSlot, "lockedUnoccupiedSlot falsely passed to DistributionLogic");
+                    CollectionAssert.DoesNotContain(availableSlots, lockedOccupiedSlotTile  .WorkerSlot, "lockedOccupiedSlot falsely passed to DistributionLogic");
+                }
+            );
+
+            city.PerformDistribution();
+        }
+
+        [Test(Description = "When PerformDistribution is called, City fires the DistributionPerformedSignal")]
+        public void PerformDistribution_DistributionPerformedSignalFired() {
+            var city = Container.Resolve<City>();
+
+            var signal = Container.Resolve<CityDistributionPerformedSignal>();
+            signal.Listen(delegate(ICity sourceCity) {
+                Assert.AreEqual(city, sourceCity, "Signal was not fired on the correct city");
+                Assert.Pass();
+            });
+
+            city.PerformDistribution();
+            Assert.Fail("CityDistributionPerformedSignal was never fired");
         }
 
         [Test(Description = "When PerformIncome is called on a city, that city should " +
@@ -569,6 +583,34 @@ namespace Assets.Tests.Cities {
 
             cityToTest.SetActiveProductionProject(newTemplate);
         }
+
+        #region utilities
+
+        private struct TileMockData {
+
+            public bool SuppressSlot;
+            public bool SlotIsLocked;
+            public bool SlotIsOccupied;
+            public ResourceSummary BaseYield;
+
+        }
+
+        private IMapTile BuildMockTile(TileMockData mockData) {
+            var mockTile = new Mock<IMapTile>();
+
+            var mockSlot = new Mock<IWorkerSlot>();
+            mockSlot.SetupAllProperties();
+            mockSlot.Object.IsLocked = mockData.SlotIsLocked;
+            mockSlot.Object.IsOccupied = mockData.SlotIsOccupied;
+            mockSlot.Setup(slot => slot.BaseYield).Returns(mockData.BaseYield);
+
+            mockTile.Setup(tile => tile.WorkerSlot).Returns(mockSlot.Object);
+            mockTile.Setup(tile => tile.SuppressSlot).Returns(mockData.SuppressSlot);
+
+            return mockTile.Object;
+        }
+
+        #endregion
 
     }
 

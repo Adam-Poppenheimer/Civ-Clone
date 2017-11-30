@@ -5,6 +5,7 @@ using System.Text;
 
 using Assets.Simulation.GameMap;
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.Cities.Distribution;
 
 namespace Assets.Simulation.Cities {
 
@@ -54,6 +55,19 @@ namespace Assets.Simulation.Cities {
                 return firstYield.Total.CompareTo(secondYield.Total);
             };
 
+        }
+
+        public static Comparison<IMapTile> BuildComparisonAscending(ICity sourceCity, ResourceFocusType focus,
+            IResourceGenerationLogic generationLogic) {
+
+            switch(focus) {
+                case ResourceFocusType.Food:       return BuildResourceComparisonAscending(ResourceType.Food,       sourceCity, generationLogic);
+                case ResourceFocusType.Gold:       return BuildResourceComparisonAscending(ResourceType.Gold,       sourceCity, generationLogic);
+                case ResourceFocusType.Production: return BuildResourceComparisonAscending(ResourceType.Production, sourceCity, generationLogic);
+                case ResourceFocusType.Culture:    return BuildResourceComparisonAscending(ResourceType.Culture,    sourceCity, generationLogic);
+                case ResourceFocusType.TotalYield: return BuildTotalYieldComparisonAscending(sourceCity, generationLogic);
+                default: return null;
+            }
         }
 
         #endregion

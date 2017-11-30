@@ -14,7 +14,7 @@ using Assets.Simulation.GameMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class TilePossessionCanonTests : ZenjectUnitTestFixture {

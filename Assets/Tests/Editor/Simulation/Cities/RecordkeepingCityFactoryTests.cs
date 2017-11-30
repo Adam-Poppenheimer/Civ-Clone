@@ -12,7 +12,7 @@ using Moq;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Distribution;
 
-namespace Assets.Tests.Cities {
+namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class RecordkeepingCityFactoryTests : ZenjectUnitTestFixture {
