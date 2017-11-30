@@ -27,7 +27,8 @@ namespace Assets.Simulation.Core {
         #region constructors
 
         [Inject]
-        public GameCore(ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
+        public GameCore(
+            ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
             TurnEndedSignal turnEndedSignal, IRecordkeepingCityFactory cityFactory,
             EndTurnRequestedSignal endTurnRequestedSignal
         ){

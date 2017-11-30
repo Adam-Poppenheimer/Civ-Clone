@@ -427,7 +427,6 @@ namespace Assets.Tests.Simulation.Cities {
             tileMockThree.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
 
             var tiles = new List<IMapTile>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
-            var tileSlots = tiles.Select(tile => tile.WorkerSlot);
 
             TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
 

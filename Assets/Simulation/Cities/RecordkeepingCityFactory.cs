@@ -17,10 +17,14 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
+        #region from IRecordkeepingCityFactory
+
         public ReadOnlyCollection<ICity> AllCities {
             get { return allCities.AsReadOnly(); }
         }
         private List<ICity> allCities = new List<ICity>();
+
+        #endregion
 
         private DiContainer Container;
 
@@ -30,6 +34,7 @@ namespace Assets.Simulation.Cities {
 
         #region constructors
 
+        [Inject]
         public RecordkeepingCityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab) {
             Container = container;
             CityPrefab = cityPrefab;

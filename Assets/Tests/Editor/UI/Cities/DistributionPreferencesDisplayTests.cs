@@ -53,7 +53,7 @@ namespace Assets.Tests.UI.Cities {
             "set the value on its ResourceFocusDropdown to correspond to the resource focus of its " +
             "CityToDisplay")]
         public void CityClickedFired_DropdownSetToCorrectValue() {
-            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
+            Container.Resolve<DistributionPreferencesDisplay>();
             var dropdown = Container.Resolve<Dropdown>();
 
             var cityClickedSignal = Container.Resolve<CityClickedSignal>();
@@ -76,7 +76,7 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When ResourceFocusDropdown's value is changed, DistributionPreferenceDisplay " +
             "should parse the new option and change CityToDisplay's ResourceFocus accordingly")]
         public void DropdownValueChanged_CityResourceFocusChanged() {
-            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
+            Container.Resolve<DistributionPreferencesDisplay>();
             var dropdown = Container.Resolve<Dropdown>();
 
             var cityClickedSignal = Container.Resolve<CityClickedSignal>();
@@ -103,7 +103,7 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When ResourceFocusDropdown's value is changed, DistributionPreferenceDisplay " +
             "should call CityToDisplay.PerformDistribution")]
         public void DropdownValueChanged_CallsPerformDistribution() {
-            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
+            Container.Resolve<DistributionPreferencesDisplay>();
             var dropdown = Container.Resolve<Dropdown>();
 
             var cityClickedSignal = Container.Resolve<CityClickedSignal>();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
 
@@ -22,6 +23,14 @@ namespace Assets.Simulation.Core {
 
         public void EndTurnOnCity(ICity city) {
             city.PerformIncome();
+        }
+
+        public void BeginTurnOnCivilization(ICivilization civilization) {
+            civilization.PerformIncome();
+        }
+
+        public void EndTurnOnCivilization(ICivilization civilization) {
+            
         }
 
         #endregion

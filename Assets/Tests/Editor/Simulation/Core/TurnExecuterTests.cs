@@ -12,6 +12,7 @@ using Moq;
 using Assets.Simulation.Core;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Core {
 
@@ -49,6 +50,27 @@ namespace Assets.Tests.Simulation.Core {
             executer.EndTurnOnCity(mockCity.Object);
 
             mockCity.VerifyAll();
+        }
+
+        [Test(Description = "When BeginTurnOnCivilization is called on a civilization, that " +
+            "city's PerformIncome method should be called")]
+        public void BeginTurnOnCivilization_PerformanceHappensInOrder() {
+            var mockCivilization = new Mock<ICivilization>(MockBehavior.Strict);
+
+            var executionSequence = new MockSequence();
+
+            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
+
+            var executer = new TurnExecuter();
+            executer.EndTurnOnCivilization(mockCivilization.Object);
+
+            mockCivilization.VerifyAll();
+        }
+
+        [Test(Description = "When EndTurnOnCivilization is called on a civilization, " +
+            "nothing of note should happen")]
+        public void EndTurnOnCivilization_PerformanceHappensInOrder() {
+            Assert.Pass();
         }
 
     }

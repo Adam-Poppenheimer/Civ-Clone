@@ -53,6 +53,16 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
+        [Test(Description = "")]
+        public void BeginRound_AllCivilizationsCalled() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "")]
+        public void BeginRound_HasCorrectExecutionOrder() {
+            throw new NotImplementedException();
+        }
+
         [Test(Description = "When EndRound is called, all cities in CityFactory have their " +
             "turns ended in TurnExecuter")]
         public void EndRound_AllCitiesCalledToEndTurn() {
@@ -74,6 +84,16 @@ namespace Assets.Tests.Simulation.Core {
                 TurnExecuterMock.Verify(executer => executer.EndTurnOnCity(city),
                     "TurnExecuter was not called to end a city's turn");
             }
+        }
+
+        [Test(Description = "")]
+        public void EndRound_AllCivilizationsCalled() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "")]
+        public void EndRound_HasCorrectExecutionOrder() {
+            throw new NotImplementedException();
         }
 
     }
