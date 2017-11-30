@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
 
@@ -21,6 +22,7 @@ namespace Assets.Simulation.Core {
         private TurnEndedSignal TurnEndedSignal;
 
         private IRecordkeepingCityFactory CityFactory;
+        private ICivilizationFactory CivilizationFactory;
 
         #endregion
 
@@ -28,15 +30,17 @@ namespace Assets.Simulation.Core {
 
         [Inject]
         public GameCore(
+            IRecordkeepingCityFactory cityFactory, ICivilizationFactory civilizationFactory,
             ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
-            TurnEndedSignal turnEndedSignal, IRecordkeepingCityFactory cityFactory,
-            EndTurnRequestedSignal endTurnRequestedSignal
+            TurnEndedSignal turnEndedSignal, EndTurnRequestedSignal endTurnRequestedSignal
         ){
+            CityFactory = cityFactory;
+            CivilizationFactory = civilizationFactory;
+
             TurnExecuter = turnExecuter;
             TurnBeganSignal = turnBeganSignal;
             TurnEndedSignal = turnEndedSignal;
-
-            CityFactory = cityFactory;
+            
             endTurnRequestedSignal.Listen(OnEndTurnRequested);
         }
 
@@ -49,12 +53,20 @@ namespace Assets.Simulation.Core {
                 TurnExecuter.BeginTurnOnCity(city);
             }
 
+            foreach(var civilization in CivilizationFactory.AllCivilizations) {
+                TurnExecuter.BeginTurnOnCivilization(civilization);
+            }
+
             TurnBeganSignal.Fire(0);
         }
 
         public void EndRound() {
             foreach(var city in CityFactory.AllCities) {
                 TurnExecuter.EndTurnOnCity(city);
+            }
+
+            foreach(var civilization in CivilizationFactory.AllCivilizations) {
+                TurnExecuter.EndTurnOnCivilization(civilization);
             }
 
             TurnEndedSignal.Fire(0);
