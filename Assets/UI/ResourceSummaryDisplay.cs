@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Zenject;
+
 using Assets.Simulation;
 
 namespace Assets.UI {
@@ -22,6 +24,19 @@ namespace Assets.UI {
         #endregion
 
         #region instance methods
+
+        [Inject]
+        public void InjectDependencies(
+            [InjectOptional(Id = "Food Field")]       Text foodField,
+            [InjectOptional(Id = "Gold Field")]       Text goldField,
+            [InjectOptional(Id = "Production Field")] Text productionField,
+            [InjectOptional(Id = "Culture Field")]    Text cultureField
+        ) {
+            FoodField       = foodField       == null ? FoodField       : foodField;
+            GoldField       = goldField       == null ? GoldField       : goldField;
+            ProductionField = productionField == null ? ProductionField : productionField;
+            CultureField    = cultureField    == null ? CultureField    : cultureField;
+        }
 
         #region from IResourceSummaryDisplay
 
