@@ -36,9 +36,14 @@ namespace Assets.UI.Cities {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(SlotDisplayClickedSignal clickedSignal, ICityUIConfig config) {
+        public void InjectDependencies(
+            SlotDisplayClickedSignal clickedSignal, ICityUIConfig config,
+            [InjectOptional(Id = "Slot Image")] Image slotImage
+        ){
             ClickedSignal = clickedSignal;
             Config = config;
+
+            SlotImage = slotImage != null ? slotImage : SlotImage;
         }
 
         #region EventSystem handler implementations
