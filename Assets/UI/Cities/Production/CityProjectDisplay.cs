@@ -32,12 +32,21 @@ namespace Assets.UI.Cities.Production {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IProductionLogic productionLogic,
-            CityProjectChangedSignal projectChangedSignal) {
+        public void InjectDependencies(
+            IProductionLogic productionLogic, CityProjectChangedSignal projectChangedSignal,
+            [InjectOptional(Id = "Project Name Field"        )] Text projectNameField, 
+            [InjectOptional(Id = "Project Cost Field"        )] Text projectCostField, 
+            [InjectOptional(Id = "Turns Left Field"          )] Text turnsLeftField, 
+            [InjectOptional(Id = "Production Progress Slider")] Slider productionProgressSlider
+        ){
 
             ProductionLogic = productionLogic;
-
             projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);
+
+            if(projectNameField != null) { ProjectNameField         = projectNameField;         }
+            if(projectNameField != null) { ProjectCostField         = projectCostField;         }
+            if(projectNameField != null) { TurnsLeftField           = turnsLeftField;           }
+            if(projectNameField != null) { ProductionProgressSlider = productionProgressSlider; }
         }
 
         #region from CityDisplayBase
