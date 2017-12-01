@@ -8,7 +8,8 @@ using UnityEngine.UI;
 
 using Zenject;
 
-using Assets.Simulation.Cities;
+using Assets.Simulation;
+using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Growth;
 
 namespace Assets.UI.Cities.Growth {
@@ -17,21 +18,73 @@ namespace Assets.UI.Cities.Growth {
 
         #region instance fields and properties
 
-        [SerializeField] private Text CurrentPopulationField;
-        [SerializeField] private Text CurrentFoodStockpileField;
-        [SerializeField] private Text FoodUntilNextGrowthField;
+        [InjectOptional(Id = "Current Population Field")]
+        public Text CurrentPopulationField {
+            get { return _currentPopulationField; }
+            set {
+                if(value != null) {
+                    _currentPopulationField = value;
+                }
+            }
+        }
+        [SerializeField] private Text _currentPopulationField;
 
-        [SerializeField] private Slider GrowthSlider;
+        [InjectOptional(Id = "Current Food Stockpile Field")]
+        public Text CurrentFoodStockpileField {
+            get { return _currentFoodStockpileField; }
+            set {
+                if(value != null) {
+                    _currentFoodStockpileField = value;
+                }
+            }
+        }
+        [SerializeField] private Text _currentFoodStockpileField;
+
+        [InjectOptional(Id = "Food Until Next Growth Field")]
+        public Text FoodUntilNextGrowthField {
+            get { return _foodUntilNextGrowthField; }
+            set {
+                if(value != null) {
+                    _foodUntilNextGrowthField = value;
+                }
+            }
+        }
+        [SerializeField] private Text _foodUntilNextGrowthField;
+
+        [InjectOptional(Id = "Change Status Field")]
+        public Text ChangeStatusField {
+            get { return _changeStatusField; }
+            set {
+                if(value != null) {
+                    _changeStatusField = value;
+                }
+            }
+        }
+        [SerializeField] private Text _changeStatusField;
+
+        [InjectOptional(Id = "Growth Slider")]
+        public Slider GrowthSlider {
+            get { return _growthSlider; }
+            set {
+                if(value != null) {
+                    _growthSlider = value;
+                }
+            }
+        }
+        [SerializeField] private Slider _growthSlider;
 
         private IPopulationGrowthLogic GrowthLogic;
+
+        private IResourceGenerationLogic GenerationLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IPopulationGrowthLogic growthLogic) {
+        public void InjectDependencies(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic) {
             GrowthLogic = growthLogic;
+            GenerationLogic = generationLogic;
         }
 
         #region from CityDisplayBase
@@ -56,6 +109,21 @@ namespace Assets.UI.Cities.Growth {
             GrowthSlider.minValue = 0;
             GrowthSlider.maxValue = foodUntilNextGrowth;
             GrowthSlider.value = currentFoodStockpile;
+
+            var netIncome = 
+                GenerationLogic.GetTotalYieldForCity(CityToDisplay)[ResourceType.Food] -
+                GrowthLogic.GetFoodConsumptionPerTurn(CityToDisplay);
+
+            if(netIncome > 0) {
+                int turnsUntilGrowth = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / (float)netIncome);
+
+                ChangeStatusField.text = string.Format("{0} turns until growth", turnsUntilGrowth);
+            }else if(netIncome == 0) {
+                ChangeStatusField.text = "Stagnation";
+            }else {
+                int turnsUntilStarvation = Mathf.CeilToInt(currentFoodStockpile / -(float)netIncome);
+                ChangeStatusField.text = string.Format("{0} turns until starvation", turnsUntilStarvation);
+            }
         }
 
         #endregion
