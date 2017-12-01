@@ -26,8 +26,13 @@ namespace Assets.UI.Cities.Distribution {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IWorkerDistributionLogic distributionLogic) {
+        public void InjectDependencies(
+            IWorkerDistributionLogic distributionLogic,
+            [InjectOptional(Id = "Unemployed People Field")] Text unemployedPeopleField
+        ) {
             DistributionLogic = distributionLogic;
+
+            UnemployedPeopleField = unemployedPeopleField != null ? unemployedPeopleField : UnemployedPeopleField;
         }
 
         #region from CityDisplayBase
