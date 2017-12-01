@@ -12,7 +12,7 @@ using UniRx;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
 
-namespace Assets.UI.Cities.TilePossession {
+namespace Assets.UI.Cities.Territory {
 
     public class CityTileDisplay : CityDisplayBase {
 
