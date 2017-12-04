@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities.Production;
 
@@ -15,7 +16,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        public CityClickedSignal               ClickedSignal               { get; private set; }
+        public ISubject<ICity>                 SelectRequestedSignal       { get; private set; }
         public CityProjectChangedSignal        ProjectChangedSignal        { get; private set; }
         public CityDistributionPerformedSignal DistributionPerformedSignal { get; private set; }
 
@@ -24,9 +25,12 @@ namespace Assets.Simulation.Cities {
         #region constructors
 
         [Inject]
-        public CitySignals(CityClickedSignal clickedSignal, CityProjectChangedSignal projectChangedSignal,
-            CityDistributionPerformedSignal distributionPerformedSignal) {
-            ClickedSignal               = clickedSignal;
+        public CitySignals(
+            [Inject(Id = "Select Request Subject")] ISubject<ICity> selectRequestedSignal,
+            CityProjectChangedSignal projectChangedSignal,
+            CityDistributionPerformedSignal distributionPerformedSignal
+        ){
+            SelectRequestedSignal       = selectRequestedSignal;
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
         }
@@ -34,8 +38,6 @@ namespace Assets.Simulation.Cities {
         #endregion
 
     }
-
-    public class CityClickedSignal : Signal<CityClickedSignal, ICity, PointerEventData> { }
 
     public class CityProjectChangedSignal : Signal<CityProjectChangedSignal, ICity, IProductionProject> { }
 

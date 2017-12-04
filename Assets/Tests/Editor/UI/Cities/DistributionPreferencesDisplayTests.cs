@@ -41,51 +41,52 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<Dropdown>().FromInstance(focusDropdown);
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
 
             Container.Bind<DistributionPreferencesDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
 
-        [Test(Description = "When CityClickedSignal is fired, DistributionPreferenceDisplay should " +
+        [Test(Description = "When Refresh is called, DistributionPreferenceDisplay should " +
             "set the value on its ResourceFocusDropdown to correspond to the resource focus of its " +
             "CityToDisplay")]
         public void CityClickedFired_DropdownSetToCorrectValue() {
-            Container.Resolve<DistributionPreferencesDisplay>();
-            var dropdown = Container.Resolve<Dropdown>();
+            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
 
-            var cityClickedSignal = Container.Resolve<CityClickedSignal>();
+            var dropdown = Container.Resolve<Dropdown>();
 
             var cityMock = new Mock<ICity>();
 
+            preferencesDisplay.ObjectToDisplay = cityMock.Object;
+
             cityMock.Setup(city => city.ResourceFocus).Returns(ResourceFocusType.Culture);                     
-            cityClickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
+            preferencesDisplay.Refresh();
             Assert.AreEqual(3, dropdown.value, "Dropdown was assigned the wrong value for ResourceFocusType.Culture");
 
             cityMock.Setup(city => city.ResourceFocus).Returns(ResourceFocusType.Food);                    
-            cityClickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
+            preferencesDisplay.Refresh();
             Assert.AreEqual(0, dropdown.value, "Dropdown was assigned the wrong value for ResourceFocusType.Food");
 
             cityMock.Setup(city => city.ResourceFocus).Returns(ResourceFocusType.TotalYield);                    
-            cityClickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
+            preferencesDisplay.Refresh();
             Assert.AreEqual(4, dropdown.value, "Dropdown was assigned the wrong value for ResourceFocusType.TotalYield");
         }
 
         [Test(Description = "When ResourceFocusDropdown's value is changed, DistributionPreferenceDisplay " +
             "should parse the new option and change CityToDisplay's ResourceFocus accordingly")]
         public void DropdownValueChanged_CityResourceFocusChanged() {
-            Container.Resolve<DistributionPreferencesDisplay>();
+            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
             var dropdown = Container.Resolve<Dropdown>();
-
-            var cityClickedSignal = Container.Resolve<CityClickedSignal>();
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
             var city = cityMock.Object;
 
-            cityClickedSignal.Fire(city, new PointerEventData(EventSystem.current));
+            preferencesDisplay.ObjectToDisplay = city;
+            preferencesDisplay.Refresh();
 
             dropdown.onValueChanged.Invoke(4);
             Assert.AreEqual(ResourceFocusType.TotalYield, city.ResourceFocus,
@@ -103,15 +104,15 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When ResourceFocusDropdown's value is changed, DistributionPreferenceDisplay " +
             "should call CityToDisplay.PerformDistribution")]
         public void DropdownValueChanged_CallsPerformDistribution() {
-            Container.Resolve<DistributionPreferencesDisplay>();
+            var preferencesDisplay = Container.Resolve<DistributionPreferencesDisplay>();
             var dropdown = Container.Resolve<Dropdown>();
-
-            var cityClickedSignal = Container.Resolve<CityClickedSignal>();
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
 
-            cityClickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
+            preferencesDisplay.ObjectToDisplay = cityMock.Object;
+
+            preferencesDisplay.Refresh();
 
             cityMock.ResetCalls();
 

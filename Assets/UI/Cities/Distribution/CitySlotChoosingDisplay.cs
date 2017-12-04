@@ -33,7 +33,7 @@ namespace Assets.UI.Cities.Distribution {
         }
 
         private void OnDisplayClicked(IWorkerSlotDisplay display) {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
@@ -48,7 +48,7 @@ namespace Assets.UI.Cities.Distribution {
             }
 
             display.Refresh();
-            CityToDisplay.PerformDistribution();            
+            ObjectToDisplay.PerformDistribution();            
         }
 
         private void LockOccupiedSlot(IWorkerSlot slot) {
@@ -61,7 +61,7 @@ namespace Assets.UI.Cities.Distribution {
         }
 
         private void AssignAndLockUnoccupiedSlot(IWorkerSlot slot) {
-            if(DistributionLogic.GetUnemployedPeopleInCity(CityToDisplay) <= 0) {
+            if(DistributionLogic.GetUnemployedPeopleInCity(ObjectToDisplay) <= 0) {
                 FreeUpSomeSlot();
             }
 
@@ -70,7 +70,7 @@ namespace Assets.UI.Cities.Distribution {
         }
 
         private void FreeUpSomeSlot() {
-            var availableSlots = DistributionLogic.GetSlotsAvailableToCity(CityToDisplay)
+            var availableSlots = DistributionLogic.GetSlotsAvailableToCity(ObjectToDisplay)
                 .Where(slot => slot.IsOccupied)
                 .ToList();
 

@@ -41,7 +41,7 @@ namespace Assets.UI.Cities.Production {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
@@ -49,13 +49,13 @@ namespace Assets.UI.Cities.Production {
 
             ProjectDropdown.options.Add(new Dropdown.OptionData("None"));
 
-            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(CityToDisplay);
+            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
             ProjectDropdown.AddOptions(validTemplates.Select(template => new Dropdown.OptionData(template.name)).ToList());
 
-            if(CityToDisplay.ActiveProject == null) {
+            if(ObjectToDisplay.ActiveProject == null) {
                 ProjectDropdown.value = 0;
             }else {
-                var activeOptionData = ProjectDropdown.options.Where(option => option.text.Equals(CityToDisplay.ActiveProject.Name)).FirstOrDefault();
+                var activeOptionData = ProjectDropdown.options.Where(option => option.text.Equals(ObjectToDisplay.ActiveProject.Name)).FirstOrDefault();
                 if(activeOptionData == null) {
                     ProjectDropdown.value = 0;
                 }else {
@@ -69,10 +69,10 @@ namespace Assets.UI.Cities.Production {
         private void OnProjectDropdownChanged(int newValue) {
             var selectedTemplateName = ProjectDropdown.options[ProjectDropdown.value].text;
 
-            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(CityToDisplay);
+            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
             var selectedTemplate = validTemplates.Where(template => template.name.Equals(selectedTemplateName)).FirstOrDefault();
             
-            CityToDisplay.SetActiveProductionProject(selectedTemplate);
+            ObjectToDisplay.SetActiveProductionProject(selectedTemplate);
         }
 
         #endregion

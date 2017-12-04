@@ -38,10 +38,10 @@ namespace Assets.UI.Cities.Distribution {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
-            UnemployedPeopleField.text = DistributionLogic.GetUnemployedPeopleInCity(CityToDisplay).ToString();
+            UnemployedPeopleField.text = DistributionLogic.GetUnemployedPeopleInCity(ObjectToDisplay).ToString();
         }
 
         #endregion

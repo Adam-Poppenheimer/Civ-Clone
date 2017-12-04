@@ -52,14 +52,14 @@ namespace Assets.UI.Cities.Production {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
-            if(CityToDisplay.ActiveProject == null) {
+            if(ObjectToDisplay.ActiveProject == null) {
                 ClearProjectDisplay();
             }else{
-                DisplayProjectOfCity(CityToDisplay);
+                DisplayProjectOfCity(ObjectToDisplay);
             }
         }
 
@@ -68,10 +68,10 @@ namespace Assets.UI.Cities.Production {
         #region signal responses
 
         private void OnProjectChanged(Tuple<ICity, IProductionProject> cityProjectTuple) {
-            if(cityProjectTuple.Item1.Equals(CityToDisplay)) {
+            if(cityProjectTuple.Item1.Equals(ObjectToDisplay)) {
 
-                if(CityToDisplay.ActiveProject != null) {
-                    DisplayProjectOfCity(CityToDisplay);
+                if(ObjectToDisplay.ActiveProject != null) {
+                    DisplayProjectOfCity(ObjectToDisplay);
                 }else {
                     ClearProjectDisplay();
                 }

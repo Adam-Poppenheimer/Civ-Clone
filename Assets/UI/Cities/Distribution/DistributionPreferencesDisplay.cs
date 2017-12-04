@@ -35,12 +35,12 @@ namespace Assets.UI.Cities.Distribution {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
             var currentFocusValue = ResourceFocusDropdown.options
-                .Where(option => option.text.Equals(CityToDisplay.ResourceFocus.ToString()))
+                .Where(option => option.text.Equals(ObjectToDisplay.ResourceFocus.ToString()))
                 .FirstOrDefault();
 
             ResourceFocusDropdown.value = ResourceFocusDropdown.options.IndexOf(currentFocusValue);
@@ -51,8 +51,8 @@ namespace Assets.UI.Cities.Distribution {
         private void OnResourceFocusDropdownChanged(int newValue) {
             var newOption = ResourceFocusDropdown.options[newValue];
             var newFocus = (ResourceFocusType)Enum.Parse(typeof(ResourceFocusType), newOption.text, true);
-            CityToDisplay.ResourceFocus = newFocus;
-            CityToDisplay.PerformDistribution();
+            ObjectToDisplay.ResourceFocus = newFocus;
+            ObjectToDisplay.PerformDistribution();
         }
 
         #endregion

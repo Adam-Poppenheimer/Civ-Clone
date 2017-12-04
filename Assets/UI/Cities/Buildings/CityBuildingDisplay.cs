@@ -39,10 +39,10 @@ namespace Assets.UI.Cities.Buildings {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
-            DisplayBuildings(PossessionCanon.GetBuildingsInCity(CityToDisplay));
+            DisplayBuildings(PossessionCanon.GetBuildingsInCity(ObjectToDisplay));
         }
 
         #endregion

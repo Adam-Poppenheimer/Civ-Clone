@@ -86,16 +86,16 @@ namespace Assets.UI.Cities.Territory {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
-            var nextTile = ExpansionLogic.GetNextTileToPursue(CityToDisplay);
+            var nextTile = ExpansionLogic.GetNextTileToPursue(ObjectToDisplay);
 
-            var currentCulture = CityToDisplay.CultureStockpile;
-            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringTile(CityToDisplay, nextTile);
+            var currentCulture = ObjectToDisplay.CultureStockpile;
+            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringTile(ObjectToDisplay, nextTile);
 
-            var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(CityToDisplay)[ResourceType.Culture];
+            var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Culture];
 
             CultureStockpileField.text = currentCulture.ToString();
             CultureNeededField.text = neededCulture.ToString();

@@ -108,11 +108,13 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
-            Container.DeclareSignal<TurnBeganSignal>();
-            Container.DeclareSignal<CityProjectChangedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.DeclareSignal<TurnBeganSignal>();
+
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
+
+            Container.DeclareSignal<CityProjectChangedSignal>();
         }
 
         #endregion
@@ -152,8 +154,7 @@ namespace Assets.Tests.UI.Cities {
 
             var projectDisplay = Container.Resolve<CityProjectDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(cityMock.Object, new PointerEventData(EventSystem.current));
-
+            projectDisplay.ObjectToDisplay = cityMock.Object;
             projectDisplay.Refresh();
 
             Assert.AreEqual("--", ProjectNameField.text,
@@ -189,9 +190,7 @@ namespace Assets.Tests.UI.Cities {
                 .Setup(logic => logic.GetProductionProgressPerTurnOnProject(It.IsAny<ICity>(), It.IsAny<IProductionProject>()))
                 .Returns(data.ProductionPerTurn);
 
-            var cityClickedSignal = Container.Resolve<CityClickedSignal>();
-            cityClickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
-
+            projectDisplay.ObjectToDisplay = city;
             projectDisplay.Refresh();
 
             Assert.AreEqual(city.ActiveProject.Name, ProjectNameField.text,
@@ -223,7 +222,7 @@ namespace Assets.Tests.UI.Cities {
             var firstCityMock = BuildCity(BuildProject(data.Name, data.ToComplete, data.Progress));
             var firstCity = firstCityMock.Object;
 
-            var projectDisplay = Container.Resolve<CityProjectDisplay>();
+            Container.Resolve<CityProjectDisplay>();
 
             Container.Resolve<CityProjectChangedSignal>().Fire(firstCity, firstCity.ActiveProject);
 
@@ -262,9 +261,7 @@ namespace Assets.Tests.UI.Cities {
                 .Setup(logic => logic.GetProductionProgressPerTurnOnProject(It.IsAny<ICity>(), It.IsAny<IProductionProject>()))
                 .Returns(projectOne.ProductionPerTurn);
 
-            var cityClickedSignal = Container.Resolve<CityClickedSignal>();
-            cityClickedSignal.Fire(actualCity, new PointerEventData(EventSystem.current));
-
+            projectDisplay.ObjectToDisplay = actualCity;
             projectDisplay.Refresh();
 
             cityMock.Setup(city => city.ActiveProject).Returns(secondProject);

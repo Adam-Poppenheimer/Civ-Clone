@@ -9,14 +9,18 @@ using Zenject;
 
 namespace Assets.Simulation.Civilizations {
 
-    public class CivilizationFactory : IFactory<string, ICivilization>, IValidatable {
+    public class CivilizationFactory : ICivilizationFactory, IFactory<string, ICivilization>, IValidatable {
 
         #region instance fields and properties
+
+        #region from ICivilizationFactory
 
         public IEnumerable<ICivilization> AllCivilizations {
             get { return allCivilizations.AsReadOnly(); }
         }
         private List<ICivilization> allCivilizations = new List<ICivilization>();
+
+        #endregion
 
         private DiContainer Container;        
 

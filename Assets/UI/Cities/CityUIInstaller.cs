@@ -10,6 +10,8 @@ using UniRx;
 
 using Assets.UI.Cities.Buildings;
 
+using Assets.Simulation.Cities;
+
 namespace Assets.UI.Cities {
 
     public class CityUIInstaller : MonoInstaller {
@@ -48,12 +50,12 @@ namespace Assets.UI.Cities {
             var clickedAnywhereSignal = Container.ResolveId<IObservable<Unit>>("Clicked Anywhere Signal");
             var cancelPressedSignal = Container.ResolveId<IObservable<Unit>>("Cancel Pressed Signal");
 
-            var cityDisplayDeselected = Observable.Merge(
+            var cityDeselectedSignal = Observable.Merge(
                 SignalBuilderUtility.BuildMouseDeselectedSignal(CityDisplayRoot.gameObject, clickedAnywhereSignal),
                 cancelPressedSignal
-            );
+            ).Select<Unit, ICity>(unit => null);
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromInstance(cityDisplayDeselected);
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromInstance(cityDeselectedSignal);
         }
 
         #endregion

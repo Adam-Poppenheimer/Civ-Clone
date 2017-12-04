@@ -41,19 +41,23 @@ namespace Assets.UI.Cities.Territory {
             Signals         = signals;
         }
 
-        #region from CityDisplayBase
+        #region Unity message methods
 
-        protected override void DoOnEnable() {
+        private void OnEnable() {
             DistributionListeningSubscription = Signals.DistributionPerformedSignal.AsObservable.Subscribe(OnDistributionPerformed);
         }
 
-        protected override void DoOnDisable() {
+        private void OnDisable() {
             DistributionListeningSubscription.Dispose();
             DistributionListeningSubscription = null;
         }
 
+        #endregion
+
+        #region from CityDisplayBase
+
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
@@ -63,7 +67,7 @@ namespace Assets.UI.Cities.Territory {
 
             int slotDisplayIndex = 0;
 
-            foreach(var tile in PossessionCanon.GetTilesOfCity(CityToDisplay)) {
+            foreach(var tile in PossessionCanon.GetTilesOfCity(ObjectToDisplay)) {
                 if(tile.SuppressSlot) {
                     continue;
                 }
@@ -82,7 +86,7 @@ namespace Assets.UI.Cities.Territory {
         #endregion
 
         private void OnDistributionPerformed(ICity city) {
-            if(city == CityToDisplay) {
+            if(city == ObjectToDisplay) {
                 Refresh();
             }
         }

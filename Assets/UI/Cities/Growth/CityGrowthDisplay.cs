@@ -90,11 +90,11 @@ namespace Assets.UI.Cities.Growth {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
-            DisplayGrowthInformation(CityToDisplay.Population, CityToDisplay.FoodStockpile, GrowthLogic.GetFoodStockpileToGrow(CityToDisplay));
+            DisplayGrowthInformation(ObjectToDisplay.Population, ObjectToDisplay.FoodStockpile, GrowthLogic.GetFoodStockpileToGrow(ObjectToDisplay));
         }
 
         #endregion
@@ -111,8 +111,8 @@ namespace Assets.UI.Cities.Growth {
             GrowthSlider.value = currentFoodStockpile;
 
             var netIncome = 
-                GenerationLogic.GetTotalYieldForCity(CityToDisplay)[ResourceType.Food] -
-                GrowthLogic.GetFoodConsumptionPerTurn(CityToDisplay);
+                GenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Food] -
+                GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
 
             if(netIncome > 0) {
                 int turnsUntilGrowth = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / (float)netIncome);

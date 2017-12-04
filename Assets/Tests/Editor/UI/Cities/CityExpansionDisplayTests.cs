@@ -87,10 +87,11 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
 
             Container.Bind<CityExpansionDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -130,7 +131,8 @@ namespace Assets.Tests.UI.Cities {
 
             var expansionDisplay = Container.Resolve<CityExpansionDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            expansionDisplay.ObjectToDisplay = city;
+            expansionDisplay.Refresh();
 
             Assert.AreEqual(cultureStockpile.ToString(), CultureStockpileField.text,
                 "CultureStockpileField.text has an unexpected value");
@@ -162,7 +164,8 @@ namespace Assets.Tests.UI.Cities {
 
             var expansionDisplay = Container.Resolve<CityExpansionDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            expansionDisplay.ObjectToDisplay = city;
+            expansionDisplay.Refresh();
 
             Assert.AreEqual("--", TurnsUntilExpansionField.text, "TurnsUntilExpansionField.text was not cleared correctly");
 
@@ -181,7 +184,8 @@ namespace Assets.Tests.UI.Cities {
 
             var expansionDisplay = Container.Resolve<CityExpansionDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            expansionDisplay.ObjectToDisplay = city;
+            expansionDisplay.Refresh();
 
             var expectedIndicatorLocation = Camera.main.WorldToScreenPoint(nextTilePosition);
 

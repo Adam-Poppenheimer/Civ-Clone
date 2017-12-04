@@ -83,10 +83,11 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
 
             Container.Bind<CityGrowthDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -123,7 +124,8 @@ namespace Assets.Tests.UI.Cities {
 
             var growthDisplay = Container.Resolve<CityGrowthDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            growthDisplay.ObjectToDisplay = city;
+            growthDisplay.Refresh();
 
             Assert.AreEqual(population.ToString(), CurrentPopulationField.text,
                 "CurrentPopulationField.text has an unexpected value"   );
@@ -155,7 +157,8 @@ namespace Assets.Tests.UI.Cities {
 
             var growthDisplay = Container.Resolve<CityGrowthDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            growthDisplay.ObjectToDisplay = city;
+            growthDisplay.Refresh();
 
             Assert.AreEqual("Stagnation", ChangeStatusField.text, "ChangeStatusField.text has an unexpected value");
         }
@@ -171,7 +174,8 @@ namespace Assets.Tests.UI.Cities {
 
             var growthDisplay = Container.Resolve<CityGrowthDisplay>();
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            growthDisplay.ObjectToDisplay = city;
+            growthDisplay.Refresh();
 
             int turnsUntilStarvation = Mathf.CeilToInt(foodStockpile / (float)foodDeficit);
 

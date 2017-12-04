@@ -9,9 +9,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.GameMap;
-
-using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
 
@@ -22,11 +20,14 @@ namespace Assets.Simulation.Core {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();
+
             Container.Bind<ITurnExecuter>().To<TurnExecuter>().AsSingle();
-            Container.Bind<GameCore>().AsSingle().NonLazy();
 
             Container.DeclareSignal<TurnBeganSignal>();
-            Container.DeclareSignal<TurnEndedSignal>();            
+            Container.DeclareSignal<TurnEndedSignal>();
+
+            Container.Bind<GameCore>().AsSingle().NonLazy();
         }
 
         #endregion

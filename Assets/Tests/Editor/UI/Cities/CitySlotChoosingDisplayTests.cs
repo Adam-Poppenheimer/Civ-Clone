@@ -35,9 +35,11 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
 
@@ -60,8 +62,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal is fired on an unlocked but occupied slot, " +
             "that slot should become locked")]
         public void SignalFired_UnlockedOccupiedSlotIsLocked() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest = BuildSlot(true, false);
 
@@ -69,7 +71,7 @@ namespace Assets.Tests.UI.Cities {
 
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             signal.Fire(slotDisplay);
 
@@ -79,8 +81,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal is fired on a locked and occupied slot, " +
             "that slot should get unlocked and become unoccupied")]
         public void SignalFired_LockedOccupiedSlotIsCleared() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest = BuildSlot(true, true);
 
@@ -88,7 +90,7 @@ namespace Assets.Tests.UI.Cities {
 
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             signal.Fire(slotDisplay);
 
@@ -98,8 +100,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal is fired on an unoccupied slot " +
             "and there are unemployed people in CityToDisplay, the slot should be filled and locked")]
         public void SignalFired_SlotFilledWithUnemployed() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest = BuildSlot(false, false);
 
@@ -107,7 +109,7 @@ namespace Assets.Tests.UI.Cities {
 
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             DistributionMock
                 .Setup(logic => logic.GetUnemployedPeopleInCity(It.IsAny<ICity>()))
@@ -122,8 +124,8 @@ namespace Assets.Tests.UI.Cities {
             "and there are no unemployed people in CityToDisplay, some other slot should be " +
             "unassigned, and the clicked slot should be filled and locked")]
         public void SignalFired_ExistingOccupationReplacedWithSlot() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest      = BuildSlot(false, false);
             var occupiedSlotOne = BuildSlot(true,  false);
@@ -131,7 +133,7 @@ namespace Assets.Tests.UI.Cities {
             var slotDisplay = SlotDisplayMock.Object;
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             DistributionMock
                 .Setup(logic => logic.GetSlotsAvailableToCity(It.IsAny<ICity>()))
@@ -146,8 +148,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal causes occupation reassignment, " +
             "it should reassign all unlocked slots before reassigning any locked slots")]
         public void SignalFired_ReassignmentTakesUnlockedSlotsFirst() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var firstSlotToSet = BuildSlot(false, false);
             var secondSlotToSet = BuildSlot(false, false);
@@ -156,7 +158,7 @@ namespace Assets.Tests.UI.Cities {
             var secondOccupiedSlot = BuildSlot(true, false);
             var lockedOccupiedSlot = BuildSlot(true, true);
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             DistributionMock
                 .Setup(logic => logic.GetSlotsAvailableToCity(It.IsAny<ICity>()))
@@ -183,8 +185,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal causes occupation reassignment, " +
             "CitySlotChoosingDisplay should reassign locked slots if no unlocked slots are available")]
         public void SignalFired_LockedSlotsCanGetReassigned() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest         = BuildSlot(false, false);
             var lockedOccupiedSlot = BuildSlot(true,  true);
@@ -192,7 +194,7 @@ namespace Assets.Tests.UI.Cities {
             var slotDisplay = SlotDisplayMock.Object;
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             DistributionMock
                 .Setup(logic => logic.GetSlotsAvailableToCity(It.IsAny<ICity>()))
@@ -207,8 +209,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal is fired, the passed display should " +
             "always be refreshed")]
         public void SignalFired_DisplayRefreshed() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest = BuildSlot(false, false);
 
@@ -216,7 +218,7 @@ namespace Assets.Tests.UI.Cities {
 
             slotDisplay.SlotToDisplay = slotToTest;
 
-            BuildAndDisplayNewCity();
+            choosingDisplay.ObjectToDisplay = BuildNewCity().Object;
 
             signal.Fire(slotDisplay);
 
@@ -227,8 +229,8 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When SlotDisplayClickedSignal is fired, the display should always " +
             "call CityToDisplay.PerformDistribution")]
         public void SignalFired_DistributionPerformed() {
-            Container.Resolve<CitySlotChoosingDisplay>();
-            var signal          = Container.Resolve<SlotDisplayClickedSignal>();
+            var choosingDisplay = Container.Resolve<CitySlotChoosingDisplay>();
+            var signal = Container.Resolve<SlotDisplayClickedSignal>();
 
             var slotToTest = BuildSlot(false, false);
 
@@ -236,7 +238,9 @@ namespace Assets.Tests.UI.Cities {
 
             slotDisplay.SlotToDisplay = slotToTest;
 
-            var cityMock = BuildAndDisplayNewCity();
+            var cityMock = BuildNewCity();
+
+            choosingDisplay.ObjectToDisplay = cityMock.Object;
 
             signal.Fire(slotDisplay);
 
@@ -258,11 +262,8 @@ namespace Assets.Tests.UI.Cities {
             return mockSlot.Object;
         }
 
-        private Mock<ICity> BuildAndDisplayNewCity() {
+        private Mock<ICity> BuildNewCity() {
             var cityMock = new Mock<ICity>();
-
-            var clickedSignal = Container.Resolve<CityClickedSignal>();
-            clickedSignal.Fire(cityMock.Object, new PointerEventData(EventSystem.current));
 
             return cityMock;
         }

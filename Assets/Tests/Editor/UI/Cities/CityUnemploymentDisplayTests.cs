@@ -45,10 +45,11 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
 
             Container.Bind<CityUnemploymentDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -80,7 +81,8 @@ namespace Assets.Tests.UI.Cities {
             
             var city = BuildCity(unemployedPeople);
 
-            Container.Resolve<CityClickedSignal>().Fire(city, new PointerEventData(EventSystem.current));
+            display.ObjectToDisplay = city;
+            display.Refresh();
 
             MockDistributionLogic.Verify(logic => logic.GetUnemployedPeopleInCity(city),
                 Times.Once, "DistributionLogic.GetUnemployedPeopleInCity was called an unexpected number of times");

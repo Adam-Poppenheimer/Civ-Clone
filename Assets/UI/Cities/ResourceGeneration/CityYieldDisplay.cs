@@ -36,11 +36,11 @@ namespace Assets.UI.Cities.ResourceGeneration {
         #region from CityDisplayBase
 
         public override void Refresh() {
-            if(CityToDisplay == null) {
+            if(ObjectToDisplay == null) {
                 return;
             }
 
-            YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetTotalYieldForCity(CityToDisplay));
+            YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay));
         }
 
         #endregion

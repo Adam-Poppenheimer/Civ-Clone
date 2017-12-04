@@ -57,10 +57,11 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
+
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<Unit>>().WithId("CityDisplay Deselected").FromMock();
+            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
         }
 
         #endregion
@@ -91,7 +92,8 @@ namespace Assets.Tests.UI.Cities {
 
             var mockCity = BuildCity(yieldSummary);
 
-            Container.Resolve<CityClickedSignal>().Fire(mockCity.Object, new PointerEventData(EventSystem.current));
+            yieldDisplay.ObjectToDisplay = mockCity.Object;
+            yieldDisplay.Refresh();
 
             MockGenerationLogic.ResetCalls();
             MockYieldDisplay.ResetCalls();

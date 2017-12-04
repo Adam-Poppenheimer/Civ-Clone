@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.GameMap;
 
@@ -60,7 +62,11 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
             Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();        
 
-            Container.DeclareSignal<CityClickedSignal>();
+            var cityClickedSignal = new Subject<ICity>();
+
+            Container.Bind<ISubject<ICity>>().WithId("Select Request Subject").FromInstance(cityClickedSignal);
+            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromInstance(cityClickedSignal);
+
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 

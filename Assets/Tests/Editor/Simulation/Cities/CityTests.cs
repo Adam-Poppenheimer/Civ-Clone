@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation;
 
@@ -59,7 +60,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<CityClickedSignal>();
+            var selectRequestedSignal = new Subject<ICity>();
+
+            Container.Bind<ISubject<ICity>>().WithId("City Select Requested Signal").FromInstance(selectRequestedSignal);
+
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
@@ -549,9 +553,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             var citySignals = Container.Resolve<CitySignals>();
 
-            citySignals.ClickedSignal.Listen(delegate(ICity city, PointerEventData eventData) {
+            citySignals.SelectRequestedSignal.Subscribe(delegate(ICity city) {
                 Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
-                Assert.AreEqual(dataToPass, eventData, "ClickedSignal was passed the wrong event data");
                 Assert.Pass();
             });
 

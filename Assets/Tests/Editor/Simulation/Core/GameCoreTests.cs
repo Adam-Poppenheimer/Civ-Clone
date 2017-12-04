@@ -209,7 +209,7 @@ namespace Assets.Tests.Simulation.Core {
 
             var signal = Container.Resolve<EndTurnRequestedSignal>();
 
-            var gameCore = Container.Resolve<GameCore>();
+            Container.Resolve<GameCore>();
 
             var executionSequence = new MockSequence();
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity(city));
