@@ -18,20 +18,29 @@ namespace Assets.UI.Cities.Buildings {
 
         #region instance fields and properties
 
-        [SerializeField] private Transform BuildingDisplayParent;
+        [InjectOptional(Id = "Building Display Parent")]
+        private Transform BuildingDisplayParent {
+            get { return _buildingDisplayParent; }
+            set {
+                if(value != null) {
+                    _buildingDisplayParent = value;
+                }
+            }
+        }
+        [SerializeField] private Transform _buildingDisplayParent;
 
-        private List<BuildingDisplay> InstantiatedBuildingDisplays = new List<BuildingDisplay>();
+        private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
 
         private IBuildingPossessionCanon PossessionCanon;
 
-        private BuildingDisplay.Factory DisplayFactory;
+        private BuildingDisplayFactory DisplayFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IBuildingPossessionCanon possessionCanon, BuildingDisplay.Factory displayFactory) {
+        public void InjectDependencies(IBuildingPossessionCanon possessionCanon, BuildingDisplayFactory displayFactory) {
             PossessionCanon = possessionCanon;
             DisplayFactory = displayFactory;
         }
@@ -64,7 +73,7 @@ namespace Assets.UI.Cities.Buildings {
             }
         }
 
-        private BuildingDisplay GetBuildingDisplay(int index) {
+        private IBuildingDisplay GetBuildingDisplay(int index) {
             if(InstantiatedBuildingDisplays.Count == index) {
                 var newDisplay = DisplayFactory.Create();
 

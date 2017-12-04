@@ -41,7 +41,7 @@ namespace Assets.UI.Cities {
 
             Container.BindFactory<WorkerSlotDisplay, WorkerSlotDisplay.Factory>().FromComponentInNewPrefab(SlotDisplayPrefab);
 
-            Container.BindFactory<BuildingDisplay, BuildingDisplay.Factory>().FromComponentInNewPrefab(BuildingDisplayPrefab);
+            Container.BindFactory<IBuildingDisplay, BuildingDisplayFactory>().FromComponentInNewPrefab(BuildingDisplayPrefab);
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
 

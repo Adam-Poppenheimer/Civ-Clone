@@ -12,13 +12,7 @@ using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.Cities.Buildings {
 
-    public class BuildingDisplay : MonoBehaviour {
-
-        #region internal types
-
-        public class Factory : Factory<BuildingDisplay> {  }
-
-        #endregion
+    public class BuildingDisplay : MonoBehaviour, IBuildingDisplay {
 
         #region instance fields and properties
 
