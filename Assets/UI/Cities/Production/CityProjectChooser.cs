@@ -17,7 +17,17 @@ namespace Assets.UI.Cities.Production {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown ProjectDropdown;
+        [InjectOptional(Id = "Project Dropdown")]
+        private Dropdown ProjectDropdown {
+            get { return _projectDropdown; }
+            set {
+                if(value != null) {
+                    _projectDropdown = value;
+                    _projectDropdown.onValueChanged.AddListener(OnProjectDropdownChanged);
+                }
+            }
+        }
+        [SerializeField] private Dropdown _projectDropdown;
 
         private ITemplateValidityLogic TemplateValidityLogic;
 
@@ -67,7 +77,11 @@ namespace Assets.UI.Cities.Production {
         #endregion
 
         private void OnProjectDropdownChanged(int newValue) {
-            var selectedTemplateName = ProjectDropdown.options[ProjectDropdown.value].text;
+            if(ObjectToDisplay == null) {
+                return;
+            }
+
+            var selectedTemplateName = ProjectDropdown.options[newValue].text;
 
             var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
             var selectedTemplate = validTemplates.Where(template => template.name.Equals(selectedTemplateName)).FirstOrDefault();
