@@ -118,29 +118,29 @@ namespace Assets.Tests.Simulation {
             var multThree = summary * -1.7f;
 
             foreach(var resourceType in EnumUtil.GetValues<ResourceType>()) {
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] * 1f),  multOne[resourceType],   "MultOne has an incorrect value");
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] * 1.4f), multTwo[resourceType],   "MultTwo has an incorrect value");
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] * -1.7f), multThree[resourceType], "MultThree has an incorrect value");
+                Assert.AreEqual(summary[resourceType] * 1f,    multOne[resourceType],   "MultOne has an incorrect value");
+                Assert.AreEqual(summary[resourceType] * 1.4f,  multTwo[resourceType],   "MultTwo has an incorrect value");
+                Assert.AreEqual(summary[resourceType] * -1.7f, multThree[resourceType], "MultThree has an incorrect value");
 
                 Assert.AreEqual(copyOfSummary[resourceType], summary[resourceType], 
                     "Summary's value was changed by the addition operations");
             }
         }
 
-        [Test(Description = "Float division should divide all components in the summary by the given coefficient, " +
-            "rounding the resulting values. It should not modify its operands")]
+        [Test(Description = "Float division should divide all components in the summary by the given coefficient. " +
+            "It should not modify its operands")]
         public void DivisionOperatorFloat_DividesComponentsByCoefficientAndRounds() {
             var summary = new ResourceSummary(food: 2, production: 2, gold: 2);
             var copyOfSummary = new ResourceSummary(summary);
 
-            var multOne = summary / 2f;
-            var multTwo = summary / 3.5f;
-            var multThree = summary / -4.2f;
+            var divOne = summary / 2f;
+            var divTwo = summary / 3.5f;
+            var divThree = summary / -4.2f;
 
             foreach(var resourceType in EnumUtil.GetValues<ResourceType>()) {
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] / 2f),  multOne[resourceType],   "MultOne has an incorrect value");
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] / 3.5f), multTwo[resourceType],   "MultTwo has an incorrect value");
-                Assert.AreEqual(Mathf.RoundToInt(summary[resourceType] / -4.2f), multThree[resourceType], "MultThree has an incorrect value");
+                Assert.AreEqual(summary[resourceType] / 2f,    divOne[resourceType],   "DivOne has an incorrect value");
+                Assert.AreEqual(summary[resourceType] / 3.5f,  divTwo[resourceType],   "DivTwo has an incorrect value");
+                Assert.AreEqual(summary[resourceType] / -4.2f, divThree[resourceType], "DivThree has an incorrect value");
 
                 Assert.AreEqual(copyOfSummary[resourceType], summary[resourceType], 
                     "Summary's value was changed by the addition operations");

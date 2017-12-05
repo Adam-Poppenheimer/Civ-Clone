@@ -19,6 +19,9 @@ namespace Assets.Simulation.Cities.Buildings {
 
         ReadOnlyCollection<ResourceSummary> SlotYields { get; }
 
+        ResourceSummary CivilizationYieldModifier { get; }
+        ResourceSummary CityYieldModifier         { get; }
+
         #endregion
 
     }

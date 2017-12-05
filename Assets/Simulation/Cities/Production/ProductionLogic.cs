@@ -52,7 +52,7 @@ namespace Assets.Simulation.Cities.Production {
                 throw new ArgumentNullException("project");
             }
 
-            return GenerationLogic.GetTotalYieldForCity(city)[ResourceType.Production];
+            return Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(city)[ResourceType.Production]);
         }
 
         #endregion

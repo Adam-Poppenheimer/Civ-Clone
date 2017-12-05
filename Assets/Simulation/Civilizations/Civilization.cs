@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Cities;
@@ -40,8 +42,8 @@ namespace Assets.Simulation.Civilizations {
 
         public void PerformIncome() {
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(this)) {
-                GoldStockpile    += city.LastIncome[ResourceType.Gold];
-                CultureStockpile += city.LastIncome[ResourceType.Culture];
+                GoldStockpile    += Mathf.FloorToInt(city.LastIncome[ResourceType.Gold]);
+                CultureStockpile += Mathf.FloorToInt(city.LastIncome[ResourceType.Culture]);
             }
         }
 

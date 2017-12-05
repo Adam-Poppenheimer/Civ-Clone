@@ -165,8 +165,8 @@ namespace Assets.Simulation.Cities {
         public void PerformIncome(){
             LastIncome = ResourceGenerationLogic.GetTotalYieldForCity(this);
 
-            CultureStockpile += LastIncome[ResourceType.Culture];
-            FoodStockpile += LastIncome[ResourceType.Food] - GrowthLogic.GetFoodConsumptionPerTurn(this);
+            CultureStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Culture]);
+            FoodStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Food]) - GrowthLogic.GetFoodConsumptionPerTurn(this);
         }
 
         #endregion 

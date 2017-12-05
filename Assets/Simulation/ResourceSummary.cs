@@ -16,24 +16,28 @@ namespace Assets.Simulation {
             get { return new ResourceSummary(); }
         }
 
+        public static ResourceSummary Ones {
+            get { return new ResourceSummary(food: 1, production: 1, gold: 1, culture: 1); }
+        }
+
         #endregion
 
         #region instance fields and properties
 
-        public int Total {
+        public float Total {
             get { return Food + Production + Gold + Culture; }
         }
 
-        [SerializeField] private int Food;
-        [SerializeField] private int Production;
-        [SerializeField] private int Gold;
-        [SerializeField] private int Culture;
+        [SerializeField] private float Food;
+        [SerializeField] private float Production;
+        [SerializeField] private float Gold;
+        [SerializeField] private float Culture;
 
         #endregion
 
         #region indexers
 
-        public int this[ResourceType index] {
+        public float this[ResourceType index] {
             get {
                 switch(index) {
                     case ResourceType.Food:       return Food;
@@ -58,7 +62,7 @@ namespace Assets.Simulation {
 
         #region constructors
 
-        public ResourceSummary(int food = 0, int production = 0, int gold = 0, int culture = 0) {
+        public ResourceSummary(float food = 0, float production = 0, float gold = 0, float culture = 0) {
             Food = food;
             Production = production;
             Gold = gold;
@@ -114,21 +118,34 @@ namespace Assets.Simulation {
 
         public static ResourceSummary operator *(ResourceSummary summary, float coefficient) {
             return new ResourceSummary(
-                food:       Mathf.RoundToInt(summary.Food       * coefficient),
-                production: Mathf.RoundToInt(summary.Production * coefficient),
-                gold:       Mathf.RoundToInt(summary.Gold       * coefficient),
-                culture:    Mathf.RoundToInt(summary.Culture    * coefficient)
+                food:       summary.Food       * coefficient,
+                production: summary.Production * coefficient,
+                gold:       summary.Gold       * coefficient,
+                culture:    summary.Culture    * coefficient
             );
         }
 
         public static ResourceSummary operator /(ResourceSummary summary, float divisor) {
             return new ResourceSummary(
-                food:       Mathf.RoundToInt(summary.Food       / divisor),
-                production: Mathf.RoundToInt(summary.Production / divisor),
-                gold:       Mathf.RoundToInt(summary.Gold       / divisor),
-                culture:    Mathf.RoundToInt(summary.Culture    / divisor)
+                food:       summary.Food       / divisor,
+                production: summary.Production / divisor,
+                gold:       summary.Gold       / divisor,
+                culture:    summary.Culture    / divisor
             );
         }
+
+        #endregion
+
+        #region instance methods
+
+        #region from Object
+
+        public override string ToString() {
+            return string.Format("Food: {0} | Production: {1} | Gold: {2} | Culture: {3}",
+                Food, Production, Gold, Culture);
+        }
+
+        #endregion
 
         #endregion
 

@@ -35,6 +35,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private ResourceSummary _staticYield;
 
+        public ResourceSummary CivilizationYieldModifier {
+            get { return _civilizationYieldModifier; }
+        }
+        [SerializeField] private ResourceSummary _civilizationYieldModifier;
+
+        public ResourceSummary CityYieldModifier {
+            get { return _cityYieldModifier; }
+        }
+        [SerializeField] private ResourceSummary _cityYieldModifier;
+
         #endregion
 
         #endregion

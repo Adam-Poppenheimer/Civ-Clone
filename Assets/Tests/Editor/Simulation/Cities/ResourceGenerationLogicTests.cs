@@ -16,25 +16,38 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
     public class ResourceGenerationLogicTests : ZenjectUnitTestFixture {
 
-        private Mock<ICityConfig> MockConfig;
-        private Mock<ITilePossessionCanon> MockTileCanon;
-        private Mock<IBuildingPossessionCanon> MockBuildingCanon;
+        #region instance fields and properties
+
+        private Mock<ICityConfig>                                   MockConfig;
+        private Mock<ITilePossessionCanon>                          MockTileCanon;
+        private Mock<IBuildingPossessionCanon>                      MockBuildingCanon;
+        private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
         private Mock<ICity>       CityMock;
         private Mock<IMapTile>    CityLocationMock;
         private Mock<IWorkerSlot> LocationSlotMock;
 
+        #endregion
+
+        #region instance methods
+
+        #region setup
+
         [SetUp]
         public void CommonInstall() {
-            MockConfig        = new Mock<ICityConfig>();
-            MockTileCanon     = new Mock<ITilePossessionCanon>();
-            MockBuildingCanon = new Mock<IBuildingPossessionCanon>();            
+            MockConfig              = new Mock<ICityConfig>();
+            MockTileCanon           = new Mock<ITilePossessionCanon>();
+            MockBuildingCanon       = new Mock<IBuildingPossessionCanon>();     
+            MockIncomeLogic         = new Mock<IIncomeModifierLogic>();   
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();    
 
             CityLocationMock = new Mock<IMapTile>();
             LocationSlotMock = new Mock<IWorkerSlot>();
@@ -46,12 +59,17 @@ namespace Assets.Tests.Simulation.Cities {
 
             CityMock.Setup(city => city.Location).Returns(CityLocationMock.Object);
 
-            Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
-            Container.Bind<ITilePossessionCanon>()    .FromInstance(MockTileCanon.Object);
+            Container.Bind<ICityConfig>()             .FromInstance(MockConfig       .Object);
+            Container.Bind<ITilePossessionCanon>()    .FromInstance(MockTileCanon    .Object);
             Container.Bind<IBuildingPossessionCanon>().FromInstance(MockBuildingCanon.Object);
+            Container.Bind<IIncomeModifierLogic>()    .FromInstance(MockIncomeLogic  .Object);
 
             Container.Bind<ResourceGenerationLogic>().AsSingle();
         }
+
+        #endregion
+
+        #region test
 
         [Test(Description = "GetYieldOfSlotForCity returns the base yield of any slot " +
             "that is occupied")]
@@ -84,6 +102,36 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(ResourceSummary.Empty, logic.GetYieldOfSlotForCity(mockSlot.Object, city),
                 "GetYieldOfSlotForCity did not return the expected value");
         }
+
+        [Test(Description = "When GetYieldOfSlotForCity is called, it multiplies its base calculation " +
+            "by income modifiers on the slot itself, the city that controls it, and the civilization " +
+            "the city belongs to")]
+        public void GetYieldOfSlotForCity_ConsidersIncomeModifiers() {
+            var city = CityMock.Object;
+            var civilization = BuildCivilization();
+
+            var mockSlot = new Mock<IWorkerSlot>();
+            var slotYield = new ResourceSummary(food: 1, gold: 1, production: 1, culture: 0);
+            mockSlot.SetupGet(slot => slot.BaseYield).Returns(slotYield);
+            mockSlot.SetupGet(slot => slot.IsOccupied).Returns(false);
+
+            MockIncomeLogic
+                .Setup(logic => logic.GetYieldMultipliersForSlot(mockSlot.Object))
+                .Returns(new ResourceSummary(food: 1, gold: 2, production: 0.5f, culture: 1));
+
+            MockIncomeLogic
+                .Setup(logic => logic.GetYieldMultipliersForCity(city))
+                .Returns(new ResourceSummary(food: 2, gold: 3, production: 1f, culture: 2));
+
+            MockIncomeLogic
+                .Setup(logic => logic.GetYieldMultipliersForCivilization(civilization))
+                .Returns(new ResourceSummary(food: 1, gold: 1, production: 2, culture: 1));                
+
+            var generationLogic = Container.Resolve<ResourceGenerationLogic>();
+
+            throw new NotImplementedException();
+        }
+
 
         [Test(Description = "GetYieldOfUnemployedForCity should return the value stored in " +
             "ResourceGenerationConfig")]
@@ -283,6 +331,21 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Throws<ArgumentNullException>(() => logic.GetYieldOfUnemployedForCity(null),
                 "GetYieldOfUnemployedForCity failed to throw on a null city argument");
         }
+
+        #endregion
+
+        #region utilities
+
+        private ICivilization BuildCivilization() {
+            var mockCivilization = new Mock<ICivilization>();
+
+
+            return mockCivilization.Object;
+        }
+
+        #endregion
+
+        #endregion
 
     }
 

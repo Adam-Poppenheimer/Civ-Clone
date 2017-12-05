@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
@@ -138,7 +140,7 @@ namespace Assets.Simulation.Cities.Distribution {
         private void MitigateStarvation(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             Comparison<IWorkerSlot> yieldMaximizationComparer) {
 
-            int foodProduced = GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food];
+            int foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food]);
             int foodRequired = GrowthLogic.GetFoodConsumptionPerTurn(sourceCity);
 
             var occupiedByMaxYieldDescending = new List<IWorkerSlot>(slots.Where(slot => slot.IsOccupied));
@@ -166,7 +168,7 @@ namespace Assets.Simulation.Cities.Distribution {
                     occupiedByMaxYieldDescending.Remove(worstOccupiedForFocus);
                     slotsByFoodThenFocusedYield.Remove(bestUnoccupiedForFood);
 
-                    foodProduced = GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food];
+                    foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food]);
                 }else {
                     break;
                 }
