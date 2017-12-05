@@ -17,6 +17,10 @@ namespace Assets.UI.GameMap {
 
         [SerializeField] private MapTileDisplay MapTileDisplay;
 
+        [SerializeField] private float MapTileHoverDelay;
+
+        [SerializeField] private ResourceSummaryDisplay MapTileHoverYieldDisplay;
+
         #endregion
 
         #region instance methods
@@ -24,6 +28,16 @@ namespace Assets.UI.GameMap {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<MonoBehaviour>().WithId("Coroutine Invoker").FromInstance(this);
+            Container.Bind<float>().WithId("Map Tile Hover Delay").FromInstance(MapTileHoverDelay);            
+
+            Container.Bind<IMapTileSignalLogic>().To<MapTileSignalLogic>().AsSingle();
+
+            Container.Bind<IResourceSummaryDisplay>()
+                .WithId("Tile Hover Yield Display")
+                .To<ResourceSummaryDisplay>()
+                .FromInstance(MapTileHoverYieldDisplay);
+
             Container.ShouldCheckForInstallWarning = false;
 
             var clickedAnywhereSignal = Container.ResolveId<IObservable<Unit>>("Clicked Anywhere Signal");

@@ -68,8 +68,6 @@ namespace Assets.Simulation.Cities {
 
         private IWorkerDistributionLogic DistributionLogic;
 
-        private IBuildingPossessionCanon BuildingPossessionCanon;
-
         private CitySignals Signals;
 
         private IProductionProjectFactory ProjectFactory;
