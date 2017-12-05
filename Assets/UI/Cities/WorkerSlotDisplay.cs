@@ -15,17 +15,20 @@ namespace Assets.UI.Cities {
 
     public class WorkerSlotDisplay : MonoBehaviour, IPointerClickHandler, IWorkerSlotDisplay {
 
-        #region internal types
-
-        public class Factory : Factory<WorkerSlotDisplay> { }
-
-        #endregion
-
         #region instance fields and properties
 
         public IWorkerSlot SlotToDisplay { get; set; }
 
-        [SerializeField] private Image SlotImage;
+        [InjectOptional(Id = "Slot Image")]
+        private Image SlotImage {
+            get { return _slotImage; }
+            set {
+                if(value != null) {
+                    _slotImage = value;
+                }
+            }
+        }
+        [SerializeField] private Image _slotImage;
 
         private SlotDisplayClickedSignal ClickedSignal;
 
@@ -36,14 +39,9 @@ namespace Assets.UI.Cities {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            SlotDisplayClickedSignal clickedSignal, ICityUIConfig config,
-            [InjectOptional(Id = "Slot Image")] Image slotImage
-        ){
+        public void InjectDependencies(SlotDisplayClickedSignal clickedSignal, ICityUIConfig config){
             ClickedSignal = clickedSignal;
             Config = config;
-
-            SlotImage = slotImage != null ? slotImage : SlotImage;
         }
 
         #region EventSystem handler implementations

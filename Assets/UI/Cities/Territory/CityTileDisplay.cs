@@ -18,41 +18,25 @@ namespace Assets.UI.Cities.Territory {
 
         #region instance fields and properties
 
-        private List<WorkerSlotDisplay> InstantiatedDisplays = new List<WorkerSlotDisplay>();
+        private List<IWorkerSlotDisplay> InstantiatedDisplays = new List<IWorkerSlotDisplay>();
 
         private ITilePossessionCanon PossessionCanon;
 
-        private WorkerSlotDisplay.Factory SlotFactory;
-
-        private CitySignals Signals;
-
-        private IDisposable DistributionListeningSubscription;
+        private WorkerSlotDisplayFactory SlotFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITilePossessionCanon possessionCanon, WorkerSlotDisplay.Factory slotFactory,
+        public void InjectDependencies(ITilePossessionCanon possessionCanon, WorkerSlotDisplayFactory slotFactory,
             CitySignals signals) {
 
             PossessionCanon = possessionCanon;
             SlotFactory     = slotFactory;
-            Signals         = signals;
+            
+            signals.DistributionPerformedSignal.Listen(OnDistributionPerformed);
         }
-
-        #region Unity message methods
-
-        private void OnEnable() {
-            DistributionListeningSubscription = Signals.DistributionPerformedSignal.AsObservable.Subscribe(OnDistributionPerformed);
-        }
-
-        private void OnDisable() {
-            DistributionListeningSubscription.Dispose();
-            DistributionListeningSubscription = null;
-        }
-
-        #endregion
 
         #region from CityDisplayBase
 
@@ -76,7 +60,7 @@ namespace Assets.UI.Cities.Territory {
 
                 slotDisplay.SlotToDisplay = tile.WorkerSlot;
 
-                slotDisplay.transform.position = Camera.main.WorldToScreenPoint(tile.transform.position);
+                slotDisplay.gameObject.transform.position = Camera.main.WorldToScreenPoint(tile.transform.position);
                 slotDisplay.Refresh();
 
                 slotDisplay.gameObject.SetActive(true);
@@ -91,11 +75,11 @@ namespace Assets.UI.Cities.Territory {
             }
         }
 
-        private WorkerSlotDisplay GetNextSlotDisplay(int currentIndex) {
+        private IWorkerSlotDisplay GetNextSlotDisplay(int currentIndex) {
             if(currentIndex >= InstantiatedDisplays.Count) {
                 var newDisplay = SlotFactory.Create();
 
-                newDisplay.transform.SetParent(transform, false);
+                newDisplay.gameObject.transform.SetParent(transform, false);
                 newDisplay.gameObject.SetActive(false);
 
                 InstantiatedDisplays.Add(newDisplay);

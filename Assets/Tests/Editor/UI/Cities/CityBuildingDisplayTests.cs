@@ -138,7 +138,7 @@ namespace Assets.Tests.UI.Cities {
         }
 
         [Test(Description = "When Refresh is called more than once, CityBuildingDisplay " +
-            "should try and reuse as many of its instantiated IBuildingDisplays as it can")]
+            "should try to reuse as many previously instantiated IBuildingDisplays as it can")]
         public void OnRefresh_ReusesExistingDisplays() {
             BuildBuilding();
             BuildBuilding();
@@ -175,8 +175,8 @@ namespace Assets.Tests.UI.Cities {
             }
         }
 
-        [Test(Description = "When Refresh is called more than once, CityBuildingDIsplay " +
-            "should deactivate any unusued IBuildingDisplays that aren't associated with a building")]
+        [Test(Description = "When Refresh is called more than once, CityBuildingDisplay " +
+            "should deactivate any building displays that aren't being used")]
         public void OnRefresh_UnusedDisplaysDeactivated() {
             BuildBuilding();
             BuildBuilding();

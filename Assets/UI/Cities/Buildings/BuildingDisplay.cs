@@ -24,16 +24,16 @@ namespace Assets.UI.Cities.Buildings {
 
         [SerializeField] private Transform SlotDisplayParent;
 
-        private List<WorkerSlotDisplay> InstantiatedSlotDisplays = new List<WorkerSlotDisplay>();
+        private List<IWorkerSlotDisplay> InstantiatedSlotDisplays = new List<IWorkerSlotDisplay>();
 
-        private WorkerSlotDisplay.Factory SlotDisplayFactory;
+        private WorkerSlotDisplayFactory SlotDisplayFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(WorkerSlotDisplay.Factory slotDisplayFactory) {
+        public void InjectDependencies(WorkerSlotDisplayFactory slotDisplayFactory) {
             SlotDisplayFactory = slotDisplayFactory;
         }
 
@@ -61,11 +61,11 @@ namespace Assets.UI.Cities.Buildings {
 
         #endregion
 
-        private WorkerSlotDisplay GetSlotDisplay(int index) {
+        private IWorkerSlotDisplay GetSlotDisplay(int index) {
             if(InstantiatedSlotDisplays.Count == index) {
                 var newDisplay = SlotDisplayFactory.Create();
 
-                newDisplay.transform.SetParent(SlotDisplayParent, false);
+                newDisplay.gameObject.transform.SetParent(SlotDisplayParent, false);
 
                 InstantiatedSlotDisplays.Add(newDisplay);
             }

@@ -39,9 +39,15 @@ namespace Assets.UI.Cities {
 
             Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").To<ResourceSummaryDisplay>().FromInstance(CityYieldDisplay);
 
-            Container.BindFactory<WorkerSlotDisplay, WorkerSlotDisplay.Factory>().FromComponentInNewPrefab(SlotDisplayPrefab);
+            Container
+                .BindFactory<IWorkerSlotDisplay, WorkerSlotDisplayFactory>()
+                .To<WorkerSlotDisplay>()
+                .FromComponentInNewPrefab(SlotDisplayPrefab);
 
-            Container.BindFactory<IBuildingDisplay, BuildingDisplayFactory>().FromComponentInNewPrefab(BuildingDisplayPrefab);
+            Container
+                .BindFactory<IBuildingDisplay, BuildingDisplayFactory>()
+                .To<BuildingDisplay>()
+                .FromComponentInNewPrefab(BuildingDisplayPrefab);
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
 

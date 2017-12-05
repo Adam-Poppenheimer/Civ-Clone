@@ -1,5 +1,9 @@
 ﻿using System;
 
+using UnityEngine;
+
+using Zenject;
+
 using Assets.Simulation;
 
 namespace Assets.UI.Cities {
@@ -7,6 +11,8 @@ namespace Assets.UI.Cities {
     public interface IWorkerSlotDisplay {
 
         #region properties
+
+        GameObject gameObject { get; }
 
         IWorkerSlot SlotToDisplay { get; set; }
 
@@ -19,5 +25,7 @@ namespace Assets.UI.Cities {
         #endregion
 
     }
+
+    public class WorkerSlotDisplayFactory : Factory<IWorkerSlotDisplay> {  }
 
 }
