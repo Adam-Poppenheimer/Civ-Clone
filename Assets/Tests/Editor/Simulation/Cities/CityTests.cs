@@ -60,9 +60,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            var selectRequestedSignal = new Subject<ICity>();
-
-            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").FromInstance(selectRequestedSignal);
+            Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromInstance(new Subject<ICity>());
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
@@ -553,7 +551,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var citySignals = Container.Resolve<CitySignals>();
 
-            citySignals.SelectRequestedSignal.Subscribe(delegate(ICity city) {
+            citySignals.CityClickedSignal.Subscribe(delegate(ICity city) {
                 Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
                 Assert.Pass();
             });

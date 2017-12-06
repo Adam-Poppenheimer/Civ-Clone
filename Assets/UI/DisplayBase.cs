@@ -19,9 +19,10 @@ namespace Assets.UI {
 
         public T ObjectToDisplay { get; set; }
 
+        private IDisplaySignalLogic<T> DisplaySignalLogic;
+
         private IDisposable SelectRequestedSubscription;
 
-        private IObservable<T> DeselectRequestedSignal;
         private IDisposable DeselectRequestedSubscription;        
 
         #endregion
@@ -29,14 +30,12 @@ namespace Assets.UI {
         #region instance methods
 
         [Inject]
-        private void InjectSignals(
-            [Inject(Id = "Select Requested Signal"  )] IObservable<T> selectRequestedSignal,
-            [Inject(Id = "Deselect Requested Signal")] IObservable<T> deselectRequestedSignal,
-            TurnBeganSignal turnBeganSignal
-        ) {
-            SelectRequestedSubscription = selectRequestedSignal.Subscribe(OnSelectRequested);
+        private void InjectSignals(IDisplaySignalLogic<T> displaySignalLogic,
+            TurnBeganSignal turnBeganSignal) {
 
-            DeselectRequestedSignal = deselectRequestedSignal;
+            DisplaySignalLogic = displaySignalLogic;
+
+            SelectRequestedSubscription = displaySignalLogic.OpenDisplayRequested.Subscribe(OnOpenDisplayRequested);
 
             turnBeganSignal.Listen(OnTurnBegan);
         }
@@ -50,8 +49,7 @@ namespace Assets.UI {
             
             if(DeselectRequestedSubscription != null) {
                 DeselectRequestedSubscription.Dispose();
-            }
-            
+            }            
 
             DoOnDestroy();
         }
@@ -62,16 +60,16 @@ namespace Assets.UI {
 
         #region signal responses
 
-        private void OnSelectRequested(T objectToSelect) {
+        private void OnOpenDisplayRequested(T objectToSelect) {
             ObjectToDisplay = objectToSelect;
             gameObject.SetActive(true);
 
-            DeselectRequestedSubscription = DeselectRequestedSignal.Subscribe(OnDeselectRequested);
+            DeselectRequestedSubscription = DisplaySignalLogic.CloseDisplayRequested.Subscribe(OnCloseDisplayRequested);
 
             Refresh();
         }
         
-        private void OnDeselectRequested(T deselectedObject) {
+        private void OnCloseDisplayRequested(T deselectedObject) {
             ObjectToDisplay = null;
             gameObject.SetActive(false);
 

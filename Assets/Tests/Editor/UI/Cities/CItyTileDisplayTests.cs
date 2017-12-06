@@ -17,6 +17,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Core;
 
+using Assets.UI;
 using Assets.UI.Cities;
 using Assets.UI.Cities.Territory;
 
@@ -55,15 +56,18 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
-            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
+            var mockSignalLogic = new Mock<IDisplaySignalLogic<ICity>>();
+            mockSignalLogic.Setup(logic => logic.OpenDisplayRequested) .Returns(new Mock<IObservable<ICity>>().Object);
+            mockSignalLogic.Setup(logic => logic.CloseDisplayRequested).Returns(new Mock<IObservable<ICity>>().Object);
+
+            Container.Bind<IDisplaySignalLogic<ICity>>().FromInstance(mockSignalLogic.Object);
 
             Container.DeclareSignal<TurnBeganSignal>();
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
-            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").To<Subject<ICity>>().AsSingle();
+            Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromMock();
 
             Container.Bind<CitySignals>().AsSingle();
 

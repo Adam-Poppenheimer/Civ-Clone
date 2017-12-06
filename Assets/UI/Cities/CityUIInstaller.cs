@@ -26,7 +26,7 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private ResourceSummaryDisplay CityYieldDisplay;
 
-        [SerializeField] private Transform CityDisplayRoot;
+        [SerializeField] private GameObject CityDisplayRoot;
 
         #endregion
 
@@ -51,17 +51,9 @@ namespace Assets.UI.Cities {
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
 
-            Container.ShouldCheckForInstallWarning = false;
+            Container.Bind<GameObject>().WithId("City Display Root").FromInstance(CityDisplayRoot);
 
-            var clickedAnywhereSignal = Container.ResolveId<IObservable<Unit>>("Clicked Anywhere Signal");
-            var cancelPressedSignal = Container.ResolveId<IObservable<Unit>>("Cancel Pressed Signal");
-
-            var cityDeselectedSignal = Observable.Merge(
-                SignalBuilderUtility.BuildMouseDeselectedSignal(CityDisplayRoot.gameObject, clickedAnywhereSignal),
-                cancelPressedSignal
-            ).Select<Unit, ICity>(unit => null);
-
-            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromInstance(cityDeselectedSignal);
+            Container.Bind<IDisplaySignalLogic<ICity>>().To<CityUISignalLogic>().AsSingle();
         }
 
         #endregion

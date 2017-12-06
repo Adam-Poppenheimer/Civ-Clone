@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.GameMap;
 
 using Assets.Simulation.Cities.Production;
@@ -17,6 +19,8 @@ namespace Assets.Simulation.Cities {
         #region properties
 
         IMapTile Location { get; }
+
+        Transform transform { get; }
 
         int Population { get; set; }
 

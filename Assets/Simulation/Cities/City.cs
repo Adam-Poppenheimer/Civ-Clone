@@ -96,7 +96,7 @@ namespace Assets.Simulation.Cities {
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {
-            Signals.SelectRequestedSignal.OnNext(this);
+            Signals.CityClickedSignal.OnNext(this);
         }
 
         #endregion

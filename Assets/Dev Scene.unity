@@ -14378,7 +14378,7 @@ MonoBehaviour:
   SlotDisplayPrefab: {fileID: 882659052}
   BuildingDisplayPrefab: {fileID: 2118610802}
   CityYieldDisplay: {fileID: 1779240452}
-  CityDisplayRoot: {fileID: 1317493248}
+  CityDisplayRoot: {fileID: 1317493247}
 --- !u!114 &1904558659
 MonoBehaviour:
   m_ObjectHideFlags: 0

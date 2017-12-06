@@ -65,8 +65,8 @@ namespace Assets.Simulation.Cities {
 
             var cityClickedSignal = new Subject<ICity>();
 
-            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").FromInstance(cityClickedSignal);
-            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromInstance(cityClickedSignal);
+            Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromInstance(cityClickedSignal);
+            Container.Bind<IObservable<ICity>>().WithId("City Clicked Signal").FromInstance(cityClickedSignal);
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();

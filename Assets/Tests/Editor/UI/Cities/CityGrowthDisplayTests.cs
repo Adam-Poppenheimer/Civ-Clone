@@ -18,6 +18,7 @@ using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Core;
 
+using Assets.UI;
 using Assets.UI.Cities.Growth;
 
 namespace Assets.Tests.UI.Cities {
@@ -83,11 +84,13 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromMock();
-
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<IObservable<ICity>>().WithId("Deselect Requested Signal").FromMock();
+            var mockSignalLogic = new Mock<IDisplaySignalLogic<ICity>>();
+            mockSignalLogic.Setup(logic => logic.OpenDisplayRequested) .Returns(new Mock<IObservable<ICity>>().Object);
+            mockSignalLogic.Setup(logic => logic.CloseDisplayRequested).Returns(new Mock<IObservable<ICity>>().Object);
+
+            Container.Bind<IDisplaySignalLogic<ICity>>().FromInstance(mockSignalLogic.Object);
 
             Container.Bind<CityGrowthDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

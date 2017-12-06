@@ -16,7 +16,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        public ISubject<ICity>                 SelectRequestedSignal       { get; private set; }
+        public ISubject<ICity>                 CityClickedSignal           { get; private set; }
         public CityProjectChangedSignal        ProjectChangedSignal        { get; private set; }
         public CityDistributionPerformedSignal DistributionPerformedSignal { get; private set; }
 
@@ -26,11 +26,11 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CitySignals(
-            [Inject(Id = "Select Requested Subject")] ISubject<ICity> selectRequestedSignal,
+            [Inject(Id = "City Clicked Subject")] ISubject<ICity> cityClickedSignal,
             CityProjectChangedSignal projectChangedSignal,
             CityDistributionPerformedSignal distributionPerformedSignal
         ){
-            SelectRequestedSignal       = selectRequestedSignal;
+            CityClickedSignal       = cityClickedSignal;
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
         }
