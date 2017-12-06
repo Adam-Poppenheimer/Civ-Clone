@@ -25,6 +25,8 @@ namespace Assets.Simulation.Cities {
         int   GrowthPreviousPopulationCoefficient { get; }
         float GrowthPreviousPopulationExponent    { get; }
 
+        int MinimumSeparation { get; }
+
         #endregion
 
     }

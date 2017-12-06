@@ -25,3 +25,4 @@ MonoBehaviour:
     Production: 1
     Gold: 0
     Culture: 0
+  _minimumSeparation: 3

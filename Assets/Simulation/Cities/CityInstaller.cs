@@ -55,7 +55,8 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ITemplateValidityLogic>  ().To<TemplateValidityLogic>  ().AsSingle();
             Container.Bind<ITilePossessionCanon>    ().To<TilePossessionCanon>    ().AsSingle();
             Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
-            Container.Bind<IIncomeModifierLogic>    ().To<IncomeModifierLogic>    ().AsSingle();  
+            Container.Bind<IIncomeModifierLogic>    ().To<IncomeModifierLogic>    ().AsSingle();
+            Container.Bind<ICityValidityLogic>      ().To<CityValidityLogic>      ().AsSingle();
 
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);  
 

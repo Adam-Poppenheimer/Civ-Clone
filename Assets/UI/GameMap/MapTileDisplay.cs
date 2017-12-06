@@ -10,6 +10,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.Cities;
 using Assets.Simulation.Core;
 using Assets.Simulation.GameMap;
 
@@ -25,6 +26,7 @@ namespace Assets.UI.GameMap {
 
         private IMapTile SelectedTile { get; set; }
 
+        private ICityValidityLogic CityValidityLogic;
         private IObservable<Unit> DeselectedSignal;
         private IDisposable DeselectSubscription;
 
@@ -34,10 +36,11 @@ namespace Assets.UI.GameMap {
 
         [Inject]
         private void InjectDependencies(
-            MapTileSignals signals,
+            MapTileSignals signals, ICityValidityLogic cityValidityLogic,
             [Inject(Id = "MapTileDisplay Deselected")] IObservable<Unit> deselectedSignal
         ){
             signals.ClickedSignal.AsObservable.Subscribe(OnTileClicked);
+            CityValidityLogic = cityValidityLogic;
             DeselectedSignal = deselectedSignal;
         }
 
@@ -45,7 +48,7 @@ namespace Assets.UI.GameMap {
 
         private void OnEnable() {
             if(SelectedTile != null) {
-                CreateCityButton.onClick.AddListener(() => CityBuilder.BuildFullCityOnTile(SelectedTile));
+                CreateCityButton.onClick.AddListener(() => CityBuilder.BuildFullCityOnTile(SelectedTile));               
             }
             DeselectSubscription = DeselectedSignal.Subscribe(OnDeselected);
         }
@@ -62,6 +65,13 @@ namespace Assets.UI.GameMap {
 
         private void OnTileClicked(Tuple<IMapTile, PointerEventData> dataTuple) {
             SelectedTile = dataTuple.Item1;
+
+            if(CityValidityLogic.IsTileValidForCity(SelectedTile)) {
+                CreateCityButton.interactable = true;
+            }else {
+                CreateCityButton.interactable = false;
+            }
+
             gameObject.SetActive(true);
             EventSystem.current.SetSelectedGameObject(gameObject);
         }

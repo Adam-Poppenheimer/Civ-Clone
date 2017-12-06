@@ -64,6 +64,11 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private ResourceSummary _unemployedYield;
 
+        public int MinimumSeparation {
+            get { return _minimumSeparation; }
+        }
+        [SerializeField] private int _minimumSeparation;
+
         #endregion
 
         #endregion
