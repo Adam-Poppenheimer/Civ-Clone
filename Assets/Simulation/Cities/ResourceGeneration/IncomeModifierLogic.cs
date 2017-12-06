@@ -37,7 +37,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region from IIncomeModifierLogic
 
         public ResourceSummary GetYieldMultipliersForCity(ICity city) {
-            var baseModifier = ResourceSummary.Ones;
+            var baseModifier = ResourceSummary.Empty;
 
             foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(city)) {
                 baseModifier += building.Template.CityYieldModifier;
@@ -47,7 +47,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         }
 
         public ResourceSummary GetYieldMultipliersForCivilization(ICivilization civilization) {
-            var baseModifier = ResourceSummary.Ones;
+            var baseModifier = ResourceSummary.Empty;
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
                 foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(city)) {
@@ -59,7 +59,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         }
 
         public ResourceSummary GetYieldMultipliersForSlot(IWorkerSlot slot) {
-            return ResourceSummary.Ones;
+            return ResourceSummary.Empty;
         }
 
         #endregion

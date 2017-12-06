@@ -125,6 +125,15 @@ namespace Assets.Simulation {
             );
         }
 
+        public static ResourceSummary operator *(ResourceSummary firstSummary, ResourceSummary secondSummary) {
+            return new ResourceSummary(
+                food:       firstSummary.Food       * secondSummary.Food,
+                production: firstSummary.Production * secondSummary.Production,
+                gold:       firstSummary.Gold       * secondSummary.Gold,
+                culture:    firstSummary.Culture    * secondSummary.Culture
+            );
+        }
+
         public static ResourceSummary operator /(ResourceSummary summary, float divisor) {
             return new ResourceSummary(
                 food:       summary.Food       / divisor,

@@ -8,6 +8,8 @@ using Zenject;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Territory;
 
+using Assets.Simulation.Civilizations;
+
 namespace Assets.Simulation.Cities.ResourceGeneration {
 
     public class ResourceGenerationLogic : IResourceGenerationLogic {
@@ -19,16 +21,22 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private ITilePossessionCanon TileCanon;
         private IBuildingPossessionCanon BuildingCanon;
 
+        private IIncomeModifierLogic IncomeModifierLogic;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
         public ResourceGenerationLogic(ICityConfig config, ITilePossessionCanon tileCanon,
-            IBuildingPossessionCanon buildingCanon) {
+            IBuildingPossessionCanon buildingCanon, IIncomeModifierLogic incomeModifierLogic,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
             Config = config;
             TileCanon = tileCanon;
             BuildingCanon = buildingCanon;
+            IncomeModifierLogic = incomeModifierLogic;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -81,7 +89,15 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             }
 
             if(slot.IsOccupied) {
-                return slot.BaseYield;
+                var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
+
+                var modifierFromSlot         = IncomeModifierLogic.GetYieldMultipliersForSlot(slot);
+                var modifierFromCity         = IncomeModifierLogic.GetYieldMultipliersForCity(city);
+                var modifierFromCivilization = IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+
+                var multiplier = ResourceSummary.Ones + modifierFromSlot + modifierFromCity + modifierFromCivilization;                    
+
+                return slot.BaseYield * multiplier;
             }else {
                 return ResourceSummary.Empty;
             }
@@ -92,7 +108,14 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            return Config.UnemployedYield;
+            var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
+
+            var modifierFromCity         = IncomeModifierLogic.GetYieldMultipliersForCity(city);
+            var modifierFromCivilization = IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+
+            var multiplier = ResourceSummary.Ones + modifierFromCity + modifierFromCivilization;
+
+            return Config.UnemployedYield * multiplier;
         }
 
         #endregion

@@ -45,13 +45,13 @@ namespace Assets.Tests.Simulation.Cities {
         #region tests
 
         [Test(Description = "When GetYieldMultipliersForCivilization is called, " +
-            "it should return ResourceSummary.Ones as a default value")]
-        public void GetYieldMultipliersForCivilization_StartsAtOne() {
+            "it should return ResourceSummary.Empty as a default value")]
+        public void GetYieldMultipliersForCivilization_StartsAtEmpty() {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             var civilization = BuildCivilization();
 
-            Assert.AreEqual(ResourceSummary.Ones, modifierLogic.GetYieldMultipliersForCivilization(civilization),
+            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value");
         }
 
@@ -74,20 +74,20 @@ namespace Assets.Tests.Simulation.Cities {
 
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
             Assert.AreEqual(
-                new ResourceSummary(food: 1, gold: 6, production: 8, culture: 6) + ResourceSummary.Ones,
+                new ResourceSummary(food: 1, gold: 6, production: 8, culture: 6),
                 modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value"
             );
         }
 
         [Test(Description = "When GetYieldMultipliersForCity is called, " + 
-            "it should return ResourceSummary.Ones as a default value")]
-        public void GetYieldMultipliersForCity_StartsAtOne() {
+            "it should return ResourceSummary.Empty as a default value")]
+        public void GetYieldMultipliersForCity_StartsAtEmpty() {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             var city = BuildCity();
 
-            Assert.AreEqual(ResourceSummary.Ones, modifierLogic.GetYieldMultipliersForCity(city),
+            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForCity(city),
                 "GetYieldMultipliersForCity returned an unexpected value");
         }
 
@@ -104,20 +104,20 @@ namespace Assets.Tests.Simulation.Cities {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             Assert.AreEqual(
-                new ResourceSummary(food: -1, gold: -2, culture: -3) + ResourceSummary.Ones,
+                new ResourceSummary(food: -1, gold: -2, culture: -3),
                 modifierLogic.GetYieldMultipliersForCity(city),
                 "GetYieldMultipliersForCity returned an unexpected value"
             );
         }
 
         [Test(Description = "When GetYieldMultipliersForSlot is called, " +
-            "it should always return the default value of ResourceSummary.Ones")]
-        public void GetYieldMultipliersForSlot_AlwaysOne() {
+            "it should always return the default value of ResourceSummary.Empty")]
+        public void GetYieldMultipliersForSlot_AlwaysEmpty() {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             var slot = new Mock<IWorkerSlot>().Object;
 
-            Assert.AreEqual(ResourceSummary.Ones, modifierLogic.GetYieldMultipliersForSlot(slot),
+            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForSlot(slot),
                 "GetYieldMultipliersForSlot returned an unexpected value");
         }
 

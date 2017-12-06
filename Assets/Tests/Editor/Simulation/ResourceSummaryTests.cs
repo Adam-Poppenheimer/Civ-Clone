@@ -87,6 +87,19 @@ namespace Assets.Tests.Simulation {
             }
         }
 
+        [Test(Description = "ResourceSummary multiplication should return a ResourceSummary whose values " +
+            "are the product of the operands' corresponding fields (food * food, production * production, etc)")]
+        public void MultiplicationOperatorSummaries_MultipliesComponents() {
+            var firstSummary = new ResourceSummary(food: 1, production: 2, gold: -1, culture: 0);
+            var secondSummary = new ResourceSummary(food: 3, production: 4, gold: 2, culture: 10);
+
+            Assert.AreEqual(
+                new ResourceSummary(food: 3, production: 8, gold: -2, culture: 0),
+                firstSummary * secondSummary,
+                "Operator *(ResourceSummary, ResourceSummary) did not return a pairwise multiplication of its operands"
+            );
+        }
+
         [Test(Description = "Integer multiplication should multiply all components in the summary by the given coefficient. " + 
             "It should not modify its operands")]
         public void MultiplicationOperatorInt_MultipliesComponentsByCoefficient() {
