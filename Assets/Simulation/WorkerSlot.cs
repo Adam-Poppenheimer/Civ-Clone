@@ -33,7 +33,19 @@ namespace Assets.Simulation {
         }
 
         #endregion
-        
+
+        #region instance methods
+
+        #region from Object
+
+        public override string ToString() {
+            return string.Format("Slot: {0}", BaseYield);
+        }
+
+        #endregion
+
+        #endregion
+
     }
 
 }

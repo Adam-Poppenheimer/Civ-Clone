@@ -55,7 +55,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             int employedPops = 0;
 
             foreach(var tile in TileCanon.GetTilesOfCity(city)) {
-                if(tile.SuppressSlot) {
+                if(tile.SuppressSlot || !tile.WorkerSlot.IsOccupied) {
                     continue;
                 }
 
@@ -67,10 +67,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
                 foreach(var slot in building.Slots) {
-                    retval += GetYieldOfSlotForCity(slot, city);
-                    if(slot.IsOccupied) {
-                        employedPops++;
+                    if(!slot.IsOccupied) {
+                        continue;
                     }
+
+                    retval += GetYieldOfSlotForCity(slot, city);
+                    employedPops++;
                 }
 
                 retval += building.Template.StaticYield;
@@ -88,20 +90,16 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            if(slot.IsOccupied) {
-                var multiplier = ResourceSummary.Ones +
-                    IncomeModifierLogic.GetYieldMultipliersForSlot(slot) +
-                    IncomeModifierLogic.GetYieldMultipliersForCity(city);   
+            var multiplier = ResourceSummary.Ones +
+                IncomeModifierLogic.GetYieldMultipliersForSlot(slot) +
+                IncomeModifierLogic.GetYieldMultipliersForCity(city);   
                 
-                var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
-                if(owningCivilization != null) {
-                    multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
-                }              
+            var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
+            if(owningCivilization != null) {
+                multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+            }              
 
-                return slot.BaseYield * multiplier;
-            }else {
-                return ResourceSummary.Empty;
-            }
+            return slot.BaseYield * multiplier;
         }
 
         public ResourceSummary GetYieldOfUnemployedForCity(ICity city) {

@@ -70,9 +70,9 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region test
 
-        [Test(Description = "GetYieldOfSlotForCity returns the base yield of any slot " +
-            "that is occupied")]
-        public void GetYieldOfSlotForCity_ReturnsBaseYieldIfOccupied() {
+        [Test(Description = "GetYieldOfSlotForCity returns the base yield of any slot " + 
+            "as long as there are no modifiers applied to it")]
+        public void GetYieldOfSlotForCity_ReturnsBaseYieldIfNoModifiers() {
             var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
 
             var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
@@ -81,20 +81,6 @@ namespace Assets.Tests.Simulation.Cities {
             var logic = Container.Resolve<ResourceGenerationLogic>();
 
             Assert.AreEqual(slotYield, logic.GetYieldOfSlotForCity(slot, city),
-                "GetYieldOfSlotForCity did not return the expected value");
-        }
-
-        [Test(Description = "GetYieldOfSlotForCity returns ResourceSummary.Empty for any " +
-            "slot that is unoccupied")]
-        public void GetYieldOfSlotForCity_ReturnsEmptyIfUnoccupied() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
-
-            var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
-            var slot = BuildSlot(slotYield, false);
-
-            var logic = Container.Resolve<ResourceGenerationLogic>();
-
-            Assert.AreEqual(ResourceSummary.Empty, logic.GetYieldOfSlotForCity(slot, city),
                 "GetYieldOfSlotForCity did not return the expected value");
         }
 
@@ -206,9 +192,9 @@ namespace Assets.Tests.Simulation.Cities {
                 "GetYieldOfUnemployedForCity threw an unexpected exception when passed a city with no civilization");
         }
 
-        [Test(Description = "GetTotalYieldOfCity should consider the yield of all " +
-            "occupied slots in all tiles possessed by the argued city")]
-        public void GetTotalYieldOfCity_ConsidersOccupiedTileSlots() {
+        [Test(Description = "GetTotalYieldOfCity should consider the yield of only " +
+            "occupied slots in tiles possessed by the argued city")]
+        public void GetTotalYieldOfCity_ConsidersOnlyOccupiedTileSlots() {
             var tiles = new List<IMapTile>();
             var buildings = new List<IBuilding>();
 
@@ -228,9 +214,9 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(new ResourceSummary(food: 3, production: 5), totalYield, "GetTotalYieldForCity returned an unexpected value");
         }
 
-        [Test(Description = "GetTotalYieldOfCity should only consider the yield of all " +
-            "occupied slots in all buildings possessed by the argued city")]
-        public void GetTotalYieldOfCity_ConsidersOccupiedBuildingSlots() {
+        [Test(Description = "GetTotalYieldOfCity should consider the yield of only " +
+            "occupied slots in buildings possessed by the argued city")]
+        public void GetTotalYieldOfCity_ConsidersOnlyOccupiedBuildingSlots() {
             var buildings = new List<IBuilding>();
             for(int i = 0; i < 3; ++i) {
                 var slot = BuildSlot(new ResourceSummary(food: i, production: i + 1), i >= 1);
