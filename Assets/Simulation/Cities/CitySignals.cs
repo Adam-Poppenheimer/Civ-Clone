@@ -26,7 +26,7 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CitySignals(
-            [Inject(Id = "Select Request Subject")] ISubject<ICity> selectRequestedSignal,
+            [Inject(Id = "Select Requested Subject")] ISubject<ICity> selectRequestedSignal,
             CityProjectChangedSignal projectChangedSignal,
             CityDistributionPerformedSignal distributionPerformedSignal
         ){

@@ -162,7 +162,7 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When ProjectDropdown fires its onValueChanged event and ObjectToDisplay " +
             "is null, no exception should be thrown")]
         public void ProjectDropdownChanged_DoesNotThrowOnNullCity() {
-            var projectChooser = Container.Resolve<CityProjectChooser>();
+            Container.Resolve<CityProjectChooser>();
 
             Assert.DoesNotThrow(() => ProjectDropdown.onValueChanged.Invoke(1),
                 "ProjectDropdown.onValueChanged invocation falsely caused an error when ObjectToDisplay was null");

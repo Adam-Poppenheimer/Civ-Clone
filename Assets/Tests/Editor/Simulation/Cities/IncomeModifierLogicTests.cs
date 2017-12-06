@@ -121,6 +121,20 @@ namespace Assets.Tests.Simulation.Cities {
                 "GetYieldMultipliersForSlot returned an unexpected value");
         }
 
+        [Test(Description = "All methods should throw ArgumentNullExceptions when passed null arguments")]
+        public void AllMethods_ThrowOnNullArguments() {
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.Throws<ArgumentNullException>(() => modifierLogic.GetYieldMultipliersForCivilization(null),
+                "GetYieldMultipliersForCivilization failed to throw on a null argument");
+
+            Assert.Throws<ArgumentNullException>(() => modifierLogic.GetYieldMultipliersForCity(null),
+                "GetYieldMultipliersForCity failed to throw on a null argument");
+
+            Assert.Throws<ArgumentNullException>(() => modifierLogic.GetYieldMultipliersForSlot(null),
+                "GetYieldMultipliersForSlot failed to throw on a null argument");
+        }
+
         #endregion
 
         #region utilities

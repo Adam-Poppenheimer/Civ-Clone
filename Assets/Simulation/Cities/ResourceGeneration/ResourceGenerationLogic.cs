@@ -89,13 +89,14 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             }
 
             if(slot.IsOccupied) {
+                var multiplier = ResourceSummary.Ones +
+                    IncomeModifierLogic.GetYieldMultipliersForSlot(slot) +
+                    IncomeModifierLogic.GetYieldMultipliersForCity(city);   
+                
                 var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
-
-                var modifierFromSlot         = IncomeModifierLogic.GetYieldMultipliersForSlot(slot);
-                var modifierFromCity         = IncomeModifierLogic.GetYieldMultipliersForCity(city);
-                var modifierFromCivilization = IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
-
-                var multiplier = ResourceSummary.Ones + modifierFromSlot + modifierFromCity + modifierFromCivilization;                    
+                if(owningCivilization != null) {
+                    multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+                }              
 
                 return slot.BaseYield * multiplier;
             }else {
@@ -108,12 +109,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
+            var multiplier = ResourceSummary.Ones + IncomeModifierLogic.GetYieldMultipliersForCity(city);
+
             var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
-
-            var modifierFromCity         = IncomeModifierLogic.GetYieldMultipliersForCity(city);
-            var modifierFromCivilization = IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
-
-            var multiplier = ResourceSummary.Ones + modifierFromCity + modifierFromCivilization;
+            if(owningCivilization != null) {
+                multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+            }
 
             return Config.UnemployedYield * multiplier;
         }

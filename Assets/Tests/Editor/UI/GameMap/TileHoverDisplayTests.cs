@@ -117,7 +117,7 @@ namespace Assets.Tests.UI.GameMap {
                 BuildSlot(baseYield, cityYield), null
             );
 
-            var hoverDisplay = Container.Resolve<TileHoverDisplay>();
+            Container.Resolve<TileHoverDisplay>();
 
             BeginHoverSubject.OnNext(tile);
 
@@ -142,7 +142,7 @@ namespace Assets.Tests.UI.GameMap {
                 BuildSlot(baseYield, cityYield), city
             );
 
-            var hoverDisplay = Container.Resolve<TileHoverDisplay>();
+            Container.Resolve<TileHoverDisplay>();
 
             BeginHoverSubject.OnNext(tile);
 

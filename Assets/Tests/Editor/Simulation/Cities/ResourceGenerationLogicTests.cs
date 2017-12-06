@@ -129,10 +129,29 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(
                 new ResourceSummary(food: 2, gold: 4, production: 2, culture: 0),
                 generationLogic.GetYieldOfSlotForCity(slot, city),
-                "GetTotalYieldForCity returned an unexpected value"
+                "GetYieldOfSlotForCity returned an unexpected value"
             );
         }
 
+        [Test(Description = "GetYieldOfSlotForCity should not throw an exception when passed " +
+            "a city belonging to no civilization")]
+        public void GetYieldOfSlotForCity_HandlesNullCivGracefully() {
+            var slotYield = new ResourceSummary(food: 1, gold: 1, production: 1, culture: 0);
+            var slot = BuildSlot(slotYield, true);
+
+            var tiles = new List<IMapTile>() { BuildTile(slot, false) };
+            var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
+
+            var city = BuildCity(location, tiles, new List<IBuilding>());
+
+            MockIncomeLogic.Setup(logic => logic.GetYieldMultipliersForCivilization(null))
+                .Throws(new ArgumentNullException("civilization"));
+
+            var generationLogic = Container.Resolve<ResourceGenerationLogic>();
+
+            Assert.DoesNotThrow(() => generationLogic.GetYieldOfSlotForCity(slot, city),
+                "GetYieldOfSlotForCity threw an unexpected exception on a city belonging to no civilization");
+        }
 
         [Test(Description = "GetYieldOfUnemployedForCity should return the value stored in " +
             "ResourceGenerationConfig")]
@@ -171,6 +190,20 @@ namespace Assets.Tests.Simulation.Cities {
                 generationLogic.GetYieldOfUnemployedForCity(city),
                 "GetYieldOfUnemployedForCity returned an unexpected value"
             );
+        }
+
+        [Test(Description = "GetYieldOfUnemployedForCity should not throw an exception " +
+            "when the passed city is not owned by any civilization")]
+        public void GetYieldOfUnemployedForCity_HandlesNullCivGracefully() {
+            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+
+            MockIncomeLogic.Setup(logic => logic.GetYieldMultipliersForCivilization(null))
+                .Throws(new ArgumentNullException("civilization"));
+
+            var generationLogic = Container.Resolve<ResourceGenerationLogic>();
+
+            Assert.DoesNotThrow(() => generationLogic.GetYieldOfUnemployedForCity(city),
+                "GetYieldOfUnemployedForCity threw an unexpected exception when passed a city with no civilization");
         }
 
         [Test(Description = "GetTotalYieldOfCity should consider the yield of all " +

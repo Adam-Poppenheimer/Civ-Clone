@@ -54,7 +54,8 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
             Container.Bind<ITemplateValidityLogic>  ().To<TemplateValidityLogic>  ().AsSingle();
             Container.Bind<ITilePossessionCanon>    ().To<TilePossessionCanon>    ().AsSingle();
-            Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();   
+            Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
+            Container.Bind<IIncomeModifierLogic>    ().To<IncomeModifierLogic>    ().AsSingle();  
 
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);  
 
@@ -64,7 +65,7 @@ namespace Assets.Simulation.Cities {
 
             var cityClickedSignal = new Subject<ICity>();
 
-            Container.Bind<ISubject<ICity>>().WithId("Select Request Subject").FromInstance(cityClickedSignal);
+            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").FromInstance(cityClickedSignal);
             Container.Bind<IObservable<ICity>>().WithId("Select Requested Signal").FromInstance(cityClickedSignal);
 
             Container.DeclareSignal<CityProjectChangedSignal>();

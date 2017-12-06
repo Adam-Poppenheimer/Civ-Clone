@@ -62,7 +62,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var selectRequestedSignal = new Subject<ICity>();
 
-            Container.Bind<ISubject<ICity>>().WithId("City Select Requested Signal").FromInstance(selectRequestedSignal);
+            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").FromInstance(selectRequestedSignal);
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();

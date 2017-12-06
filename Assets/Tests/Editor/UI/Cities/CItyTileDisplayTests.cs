@@ -63,7 +63,7 @@ namespace Assets.Tests.UI.Cities {
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
-            Container.Bind<ISubject<ICity>>().WithId("Select Request Subject").To<Subject<ICity>>().AsSingle();
+            Container.Bind<ISubject<ICity>>().WithId("Select Requested Subject").To<Subject<ICity>>().AsSingle();
 
             Container.Bind<CitySignals>().AsSingle();
 
@@ -222,7 +222,7 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When CityDistributionPerformedSignal fires and ObjectToDisplay " +
             "is null, no exception should be thrown and nothing significant should happen")]
         public void DistributionSignalFired_DoesNothingOnNullCity() {
-            var tileDisplay = Container.Resolve<CityTileDisplay>();
+            Container.Resolve<CityTileDisplay>();
 
             var distributionSignal = Container.Resolve<CityDistributionPerformedSignal>();
 

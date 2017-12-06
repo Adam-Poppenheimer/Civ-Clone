@@ -6266,7 +6266,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3febfee02fbdb4419b64f9b3fa42037, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _slotImage: {fileID: 0}
+  _slotImage: {fileID: 882659055}
 --- !u!114 &882659055
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9454,7 +9454,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 01e70c5495da4314dbb24161fcfbf08e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _projectDropdown: {fileID: 0}
+  _projectDropdown: {fileID: 1656202015}
 --- !u!114 &1292876814
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -13479,7 +13479,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e68362833bc8e3848a85296e963cbec8, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _buildingDisplayParent: {fileID: 0}
+  _buildingDisplayParent: {fileID: 767717067}
 --- !u!1 &1821223683
 GameObject:
   m_ObjectHideFlags: 0
