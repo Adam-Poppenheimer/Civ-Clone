@@ -9,6 +9,8 @@ namespace Assets.Simulation.Civilizations {
 
         #region properties
 
+        string Name { get; }
+
         int GoldStockpile    { get; set; }
         int CultureStockpile { get; set; }
 

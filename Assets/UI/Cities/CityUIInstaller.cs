@@ -50,10 +50,6 @@ namespace Assets.UI.Cities {
                 .FromComponentInNewPrefab(BuildingDisplayPrefab);
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
-
-            Container.Bind<GameObject>().WithId("City Display Root").FromInstance(CityDisplayRoot);
-
-            Container.Bind<IDisplaySignalLogic<ICity>>().To<CityUISignalLogic>().AsSingle();
         }
 
         #endregion

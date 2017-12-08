@@ -15816,6 +15816,102 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 2091668151}
+--- !u!1 &2099005304
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 2099005306}
+  - component: {fileID: 2099005305}
+  - component: {fileID: 2099005308}
+  - component: {fileID: 2099005307}
+  m_Layer: 0
+  m_Name: UI State Machine
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!95 &2099005305
+Animator:
+  serializedVersion: 3
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2099005304}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: ef250a7f073d5154babb51c20a9f0c0a, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+--- !u!4 &2099005306
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2099005304}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 386.32632, y: 310.3494, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2099005307
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2099005304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6abf442ab97aa7e46b9817831d274168, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  StateMachineAnimator: {fileID: 2099005305}
+  AllCityDisplays:
+  - {fileID: 1058249852}
+  - {fileID: 261262810}
+  - {fileID: 1797031353}
+  - {fileID: 1292876814}
+  - {fileID: 606507648}
+  - {fileID: 1779240453}
+  - {fileID: 1547081415}
+  - {fileID: 313002784}
+  - {fileID: 1620731734}
+  AllCivilizationDisplays: []
+  AllTileDisplays:
+  - {fileID: 1984595113}
+  TileUIState: {fileID: 114116467585144622, guid: ef250a7f073d5154babb51c20a9f0c0a,
+    type: 2}
+  CityUIState: {fileID: 114145151500905808, guid: ef250a7f073d5154babb51c20a9f0c0a,
+    type: 2}
+  DefaultUIState: {fileID: 114747635173298408, guid: ef250a7f073d5154babb51c20a9f0c0a,
+    type: 2}
+--- !u!114 &2099005308
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2099005304}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _installers:
+  - {fileID: 2099005307}
+  _installerPrefabs: []
+  _scriptableObjectInstallers: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!1 &2116020420
 GameObject:
   m_ObjectHideFlags: 0

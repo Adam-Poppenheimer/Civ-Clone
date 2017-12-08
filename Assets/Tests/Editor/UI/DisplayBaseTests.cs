@@ -63,15 +63,6 @@ namespace Assets.Tests.UI {
 
         [SetUp]
         public void CommonInstall() {
-            OpenDisplayRequestedSignal = new Subject<Foo>();
-            CloseDisplayRequestedSignal = new Subject<Foo>();
-
-            var mockSignalLogic = new Mock<IDisplaySignalLogic<Foo>>();
-            mockSignalLogic.Setup(logic => logic.CloseDisplayRequested).Returns(CloseDisplayRequestedSignal);
-            mockSignalLogic.Setup(logic => logic.OpenDisplayRequested) .Returns(OpenDisplayRequestedSignal);
-
-            Container.Bind<IDisplaySignalLogic<Foo>>().FromInstance(mockSignalLogic.Object);
-
             Container.Bind<SignalManager>().AsSingle();
             Container.DeclareSignal<TurnBeganSignal>();
 
@@ -83,102 +74,6 @@ namespace Assets.Tests.UI {
         #endregion
 
         #region tests
-
-        [Test(Description = "When OpenDisplayRequested fires, DisplayBase should " +
-            "set ObjectToDisplay to the provided value")]
-        public void OnOpenDisplayRequested_ObjectToDisplaySet(){
-            var testDisplay = Container.Resolve<TestDisplayBase>();
-
-            var foo = new Foo();
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-
-            Assert.AreEqual(foo, testDisplay.ObjectToDisplay, "ObjectToDisplay has an unexpected value");
-        }
-
-        [Test(Description = "When OpenDisplayRequested fires, DisplayBase should " +
-            "activate its GameObject")]
-        public void OnOpenDisplayRequested_GameObjectActivated(){
-            var testDisplay = Container.Resolve<TestDisplayBase>();
-            testDisplay.gameObject.SetActive(false);
-
-            var foo = new Foo();
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-
-            Assert.IsTrue(testDisplay.gameObject.activeInHierarchy, "GameObject was not activated as expected");
-        }
-
-        [Test(Description = "When OpenDisplayRequested fires, DisplayBase should " +
-            "call its own Refresh method")]
-        public void OnOpenDisplayRequested_RefreshCalled(){
-            var testDisplay = Container.Resolve<TestDisplayBase>();
-
-            testDisplay.RefreshCalled += (x, y) => Assert.Pass();
-
-            var foo = new Foo();            
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-
-            Assert.Fail("Refresh was never called");
-        }
-
-        [Test(Description = "When OpenDisplayRequested fires, DisplayBase should " +
-            "create a subscription to CloseDisplayRequested, and should not do so beforehand")]
-        public void OnOpenDisplayRequested_DeselectionSubscriptionCreated(){
-            Container.Resolve<TestDisplayBase>();
-
-            Assert.IsFalse(CloseDisplayRequestedSignal.HasObservers, 
-                "DeselectRequestSignal should not have any observers when DisplayBase is instantiated");
-
-            var foo = new Foo();            
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-
-            Assert.IsTrue(CloseDisplayRequestedSignal.HasObservers,
-                "CloseDisplayRequested has no observers after OpenDisplayRequested has fired");
-        }
-
-        [Test(Description = "When CloseDisplayRequested fires, DisplayBase should " +
-            "set ObjectToDisplay to null")]
-        public void OnCloseDisplayRequested_ObjectToDisplayCleared(){
-            var testDisplay = Container.Resolve<TestDisplayBase>();
-
-            var foo = new Foo();
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-            CloseDisplayRequestedSignal.OnNext(foo);
-
-            Assert.Null(testDisplay.ObjectToDisplay, "ObjectToDisplay was not set to null");
-        }
-
-        [Test(Description = "When CloseDisplayRequested fires, DisplayBase should " +
-            "deactivate its GameObject")]
-        public void OnCloseDisplayRequested_GameObjectDeactivated(){
-            var testDisplay = Container.Resolve<TestDisplayBase>();
-
-            var foo = new Foo();
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-            CloseDisplayRequestedSignal.OnNext(foo);
-
-            Assert.IsFalse(testDisplay.gameObject.activeSelf,
-                "TestDisplay's GameObject should not be active after CloseDisplayRequested fires");
-        }
-
-        [Test(Description = "When CloseDisplayRequested fires, DisplayBase should " +
-            "unsubscribe its subscription to Deselect Requested Signal")]
-        public void OnCloseDisplayRequested_DeselectionSubscriptionCleared(){
-            Container.Resolve<TestDisplayBase>();
-
-            var foo = new Foo();
-            
-            OpenDisplayRequestedSignal.OnNext(foo);
-            CloseDisplayRequestedSignal.OnNext(foo);
-
-            Assert.IsFalse(CloseDisplayRequestedSignal.HasObservers, 
-                "CloseDisplayRequested still has observers even after being fired");
-        }
 
         [Test(Description = "When TurnBegan signal fires, DisplayBase should " +
             "call Refresh if and only if its GameObject is active")]

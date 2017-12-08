@@ -66,12 +66,6 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<Transform>().WithId("Building Display Parent").FromInstance(BuildingDisplayParent);
 
-            var mockSignalLogic = new Mock<IDisplaySignalLogic<ICity>>();
-            mockSignalLogic.Setup(logic => logic.OpenDisplayRequested) .Returns(new Mock<IObservable<ICity>>().Object);
-            mockSignalLogic.Setup(logic => logic.CloseDisplayRequested).Returns(new Mock<IObservable<ICity>>().Object);
-
-            Container.Bind<IDisplaySignalLogic<ICity>>().FromInstance(mockSignalLogic.Object);
-
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();

@@ -37,18 +37,6 @@ namespace Assets.UI.GameMap {
                 .WithId("Tile Hover Yield Display")
                 .To<ResourceSummaryDisplay>()
                 .FromInstance(MapTileHoverYieldDisplay);
-
-            Container.ShouldCheckForInstallWarning = false;
-
-            var clickedAnywhereSignal = Container.ResolveId<IObservable<Unit>>("Clicked Anywhere Signal");
-            var cancelPressedSignal = Container.ResolveId<IObservable<Unit>>("Cancel Pressed Signal");
-
-            var mapTileDisplayDeselectedSignal = Observable.Merge(
-                SignalBuilderUtility.BuildMouseDeselectedSignal(MapTileDisplay.gameObject, clickedAnywhereSignal),
-                cancelPressedSignal
-            );
-
-            Container.Bind<IObservable<Unit>>().WithId("MapTileDisplay Deselected").FromInstance(mapTileDisplayDeselectedSignal);
         }
 
         #endregion

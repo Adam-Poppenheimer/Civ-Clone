@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Assets.Simulation.Civilizations {
 
-    public class CivilizationFactory : ICivilizationFactory, IFactory<string, ICivilization>, IValidatable {
+    public class CivilizationFactory : ICivilizationFactory, IValidatable {
 
         #region instance fields and properties
 

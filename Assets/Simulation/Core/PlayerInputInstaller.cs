@@ -18,10 +18,12 @@ namespace Assets.Simulation.Core {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            var clickedAnywhereSignal = Observable.EveryUpdate().Where(ClickedAnywhereFilter).AsUnitObservable();
+            var clickedAnywhereSignal = Observable.EveryUpdate().Where(ClickedAnywhereFilter).Select(ClickedAnywhereSelector);
+
             var cancelPressedSignal = Observable.EveryUpdate().Where(CancelPressedFilter).AsUnitObservable();
 
-            Container.Bind<IObservable<Unit>>().WithId("Clicked Anywhere Signal").FromInstance(clickedAnywhereSignal);
+            Container.Bind<IObservable<PointerEventData>>().WithId("Clicked Anywhere Signal").FromInstance(clickedAnywhereSignal);
+
             Container.Bind<IObservable<Unit>>().WithId("Cancel Pressed Signal").FromInstance(cancelPressedSignal);
 
             Container.DeclareSignal<EndTurnRequestedSignal>();
@@ -30,7 +32,13 @@ namespace Assets.Simulation.Core {
         #endregion
 
         private bool ClickedAnywhereFilter(long frameDuration) {
-            return Input.GetMouseButtonUp(0) || Input.GetMouseButtonUp(1);
+            return Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1);
+        }
+
+        private PointerEventData ClickedAnywhereSelector(long frameDuration) {
+            var newData = new PointerEventData(EventSystem.current);
+            newData.position = Input.mousePosition;
+            return newData;
         }
 
         private bool CancelPressedFilter(long frameDuration) {

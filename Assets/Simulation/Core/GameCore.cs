@@ -16,6 +16,8 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
+        public ICivilization PlayerCivilization { get; private set; }
+
         private ITurnExecuter TurnExecuter;
 
         private TurnBeganSignal TurnBeganSignal;
@@ -42,6 +44,8 @@ namespace Assets.Simulation.Core {
             TurnEndedSignal = turnEndedSignal;
             
             endTurnRequestedSignal.Listen(OnEndTurnRequested);
+
+            PlayerCivilization = CivilizationFactory.Create("Player Civilization");
         }
 
         #endregion

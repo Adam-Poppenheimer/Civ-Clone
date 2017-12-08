@@ -17,6 +17,8 @@ namespace Assets.Simulation.Civilizations {
 
         #region from ICivilization
 
+        public string Name { get; private set; }
+
         public int GoldStockpile    { get; set; }
         public int CultureStockpile { get; set; }
 
@@ -31,9 +33,11 @@ namespace Assets.Simulation.Civilizations {
         #region constructors
 
         [Inject]
-        public Civilization(ICivilizationConfig config, IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
+        public Civilization(ICivilizationConfig config, IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            string name = "") {
             Config = config;
             CityPossessionCanon = cityPossessionCanon;
+            Name = name;
         }
 
         #endregion
