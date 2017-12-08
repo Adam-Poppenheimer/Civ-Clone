@@ -18,7 +18,7 @@ using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Core;
 
-using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities.Growth;
 
 namespace Assets.Tests.UI.Cities {
@@ -85,6 +85,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<CityGrowthDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

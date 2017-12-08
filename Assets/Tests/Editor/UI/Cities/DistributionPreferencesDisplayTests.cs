@@ -44,6 +44,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<Dropdown>().FromInstance(focusDropdown);
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<DistributionPreferencesDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

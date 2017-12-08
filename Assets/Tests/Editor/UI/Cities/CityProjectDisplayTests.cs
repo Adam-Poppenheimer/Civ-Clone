@@ -17,7 +17,7 @@ using Assets.Simulation.Core;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Production;
 
-using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities.Production;
 
 namespace Assets.Tests.UI.Cities {
@@ -109,6 +109,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.DeclareSignal<CityProjectChangedSignal>();
         }

@@ -15,7 +15,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Core;
 
-using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities.Distribution;
 
 namespace Assets.Tests.UI.Cities {
@@ -47,6 +47,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<CityUnemploymentDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

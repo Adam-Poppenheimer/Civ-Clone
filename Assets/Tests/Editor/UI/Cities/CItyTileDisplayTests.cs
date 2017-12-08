@@ -17,7 +17,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Core;
 
-using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities;
 using Assets.UI.Cities.Territory;
 
@@ -60,6 +60,7 @@ namespace Assets.Tests.UI.Cities {
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromMock();
 

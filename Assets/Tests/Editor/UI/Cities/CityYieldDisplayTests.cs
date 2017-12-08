@@ -11,6 +11,7 @@ using NUnit.Framework;
 using Moq;
 using UniRx;
 
+using Assets.UI.Cities;
 using Assets.UI.Cities.ResourceGeneration;
 using Assets.UI;
 
@@ -58,6 +59,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
         }
 
         #endregion

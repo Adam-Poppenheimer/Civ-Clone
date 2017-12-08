@@ -20,7 +20,7 @@ using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.GameMap;
 using Assets.Simulation;
 
-using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities.Territory;
 
 namespace Assets.Tests.UI.Cities {
@@ -89,6 +89,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<CityExpansionDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

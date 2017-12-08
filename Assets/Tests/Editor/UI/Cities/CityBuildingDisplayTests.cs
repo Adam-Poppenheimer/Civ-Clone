@@ -15,6 +15,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Core;
 
 using Assets.UI;
+using Assets.UI.Cities;
 using Assets.UI.Cities.Buildings;
 
 namespace Assets.Tests.UI.Cities {
@@ -69,6 +70,7 @@ namespace Assets.Tests.UI.Cities {
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
+            Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<CityBuildingDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
