@@ -27,20 +27,25 @@ namespace Assets.Simulation.Core {
 
         private IMapHexGrid HexGrid;
 
+        private GameCore GameCore;
+
         #endregion
 
         #region instance methods
 
         [Inject]
         public void InjectDependencies(IRecordkeepingCityFactory cityFactory,
-            ITilePossessionCanon possessionCanon, IMapHexGrid hexGrid) {
+            ITilePossessionCanon possessionCanon, IMapHexGrid hexGrid,
+            GameCore gameCore
+        ){
             CityFactory = cityFactory;
             PossessionCanon = possessionCanon;
             HexGrid = hexGrid;
+            GameCore = gameCore;
         }
 
         public void BuildFullCityOnTile(IMapTile tile) {
-            var newCity = CityFactory.Create(tile);
+            var newCity = CityFactory.Create(tile, GameCore.PlayerCivilization);
 
             newCity.Population = StartingPopulation;
 

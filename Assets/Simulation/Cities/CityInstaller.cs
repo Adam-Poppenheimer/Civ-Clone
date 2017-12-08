@@ -18,6 +18,8 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Distribution;
 
+using Assets.Simulation.Civilizations;
+
 namespace Assets.Simulation.Cities {
 
     public class CityInstaller : MonoInstaller {
@@ -41,7 +43,7 @@ namespace Assets.Simulation.Cities {
         public override void InstallBindings() {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
-            Container.BindFactory<IMapTile, ICity, Factory<IMapTile, ICity>>().FromFactory<RecordkeepingCityFactory>();
+            Container.BindFactory<IMapTile, ICivilization, ICity, Factory<IMapTile, ICivilization, ICity>>().FromFactory<RecordkeepingCityFactory>();
 
             Container.Bind<ICityConfig>().To<CityConfig>().FromInstance(CityConfig);
 

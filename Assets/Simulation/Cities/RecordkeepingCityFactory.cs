@@ -9,6 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.GameMap;
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Distribution;
 
 namespace Assets.Simulation.Cities {
@@ -30,14 +31,19 @@ namespace Assets.Simulation.Cities {
 
         private GameObject CityPrefab;
 
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public RecordkeepingCityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab) {
+        public RecordkeepingCityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+        ){
             Container = container;
             CityPrefab = cityPrefab;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -46,7 +52,7 @@ namespace Assets.Simulation.Cities {
 
         #region from IRecordkeepingCityFactory
 
-        public ICity Create(IMapTile location) {
+        public ICity Create(IMapTile location, ICivilization owner) {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
@@ -57,6 +63,7 @@ namespace Assets.Simulation.Cities {
             newCity.Location = location;
             location.SuppressSlot = true;
             
+            CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
 
             newCity.ResourceFocus = ResourceFocusType.TotalYield;
             newCity.PerformDistribution();
