@@ -565,23 +565,24 @@ namespace Assets.Tests.Simulation.Cities {
         public void SetActiveProductionProject_FiresProjectChangedSignal() {
             var cityToTest = Container.Resolve<City>();
 
-            var newTemplate = new Mock<IBuildingTemplate>().Object;
+            var newTemplateMock = new Mock<IBuildingTemplate>();
+            newTemplateMock.Setup(template => template.name).Returns("New Template");
 
             var mockProject = new Mock<IProductionProject>();
-            mockProject.Setup(project => project.BuildingTemplate).Returns(newTemplate);
+            mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(newTemplate)).Returns(mockProject.Object);
+            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(newTemplateMock.Object)).Returns(mockProject.Object);
 
             var citySignals = Container.Resolve<CitySignals>();
 
             citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
                 Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
 
-                Assert.AreEqual(newTemplate, project.BuildingTemplate, "ClickedSignal was passed a project with the wrong BuildingTemplate");
+                Assert.AreEqual(mockProject.Object, project, "ClickedSignal was passed an unexpected project");
                 Assert.Pass();
             });
 
-            cityToTest.SetActiveProductionProject(newTemplate);
+            cityToTest.SetActiveProductionProject(newTemplateMock.Object);
         }
 
         #region utilities

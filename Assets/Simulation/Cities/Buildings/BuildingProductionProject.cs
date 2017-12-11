@@ -23,11 +23,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return BuildingTemplate.Cost; }
         }
 
-        public int Progress { get; set; }
-
-        public IBuildingTemplate BuildingTemplate { get; private set; }
+        public int Progress { get; set; }        
 
         #endregion
+
+        public IBuildingTemplate BuildingTemplate { get; private set; }
 
         private IBuildingFactory BuildingFactory;
 

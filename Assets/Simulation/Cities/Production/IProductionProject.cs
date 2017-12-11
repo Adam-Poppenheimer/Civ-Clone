@@ -16,8 +16,6 @@ namespace Assets.Simulation.Cities.Production {
         int Progress { get; set; }
         int ProductionToComplete { get; }
 
-        IBuildingTemplate BuildingTemplate { get; }
-
         #endregion
 
         #region methods

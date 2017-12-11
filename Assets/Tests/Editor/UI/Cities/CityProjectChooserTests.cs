@@ -191,7 +191,6 @@ namespace Assets.Tests.UI.Cities {
 
             if(activeTemplate != null) {
                 var mockProject = new Mock<IProductionProject>();
-                mockProject.Setup(project => project.BuildingTemplate).Returns(activeTemplate);
                 mockProject.Setup(project => project.Name).Returns(activeTemplate.name);
 
                 mockCity.Setup(city => city.ActiveProject).Returns(mockProject.Object);
