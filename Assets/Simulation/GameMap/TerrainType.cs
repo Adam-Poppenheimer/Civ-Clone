@@ -6,9 +6,11 @@ using System.Text;
 namespace Assets.Simulation.GameMap {
 
     public enum TerrainType {
-        Grassland = 0,
-        Plains = 1,
-        Desert = 2
+        Grassland    = 0,
+        Plains       = 1,
+        Desert       = 2,
+        ShallowWater = 3,
+        DeepWater    = 4
     }
 
 }
