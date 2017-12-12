@@ -30,7 +30,7 @@ namespace Assets.Simulation.Cities {
             CityProjectChangedSignal projectChangedSignal,
             CityDistributionPerformedSignal distributionPerformedSignal
         ){
-            CityClickedSignal       = cityClickedSignal;
+            CityClickedSignal           = cityClickedSignal;
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
         }

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 
@@ -11,7 +12,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Units {
 
-    public class Unit : MonoBehaviour, IUnit {
+    public class Unit : MonoBehaviour, IUnit, IPointerClickHandler {
 
         #region instance fields and properties
 
@@ -29,16 +30,29 @@ namespace Assets.Simulation.Units {
         }
         private int _health;
 
+        public int CurrentMovement { get; set; }
+
         private IUnitConfig Config;
+
+        private UnitSignals Signals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IUnitConfig config) {
+        public void InjectDependencies(IUnitConfig config, UnitSignals signals) {
             Config = config;
+            Signals = signals;
         }
+
+        #region EventSystem handler implementations
+
+        public void OnPointerClick(PointerEventData eventData) {
+            Signals.UnitClickedSignal.OnNext(this);
+        }
+
+        #endregion
 
         #region from IUnit
 
@@ -47,7 +61,7 @@ namespace Assets.Simulation.Units {
         #endregion
 
         #endregion
-        
+
     }
 
 }

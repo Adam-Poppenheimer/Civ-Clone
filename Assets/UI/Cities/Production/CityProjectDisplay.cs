@@ -43,10 +43,10 @@ namespace Assets.UI.Cities.Production {
             ProductionLogic = productionLogic;
             projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);
 
-            if(projectNameField != null) { ProjectNameField         = projectNameField;         }
-            if(projectNameField != null) { ProjectCostField         = projectCostField;         }
-            if(projectNameField != null) { TurnsLeftField           = turnsLeftField;           }
-            if(projectNameField != null) { ProductionProgressSlider = productionProgressSlider; }
+            if(projectNameField         != null) { ProjectNameField         = projectNameField;         }
+            if(projectCostField         != null) { ProjectCostField         = projectCostField;         }
+            if(turnsLeftField           != null) { TurnsLeftField           = turnsLeftField;           }
+            if(productionProgressSlider != null) { ProductionProgressSlider = productionProgressSlider; }
         }
 
         #region from CityDisplayBase

@@ -9,9 +9,11 @@ namespace Assets.Simulation.Units {
 
         #region properties
 
-
-
         IUnitTemplate Template { get; }
+
+        int Health { get; set; }
+
+        int CurrentMovement { get; set; }
 
         #endregion
 

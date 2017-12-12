@@ -11,12 +11,20 @@ using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.GameMap;
+using Assets.Simulation.Units;
 
 namespace Assets.UI.StateMachine.Transitions {
 
     public class DefaultTransitionLogic {
 
         #region instance fields and properties
+
+        private List<Type> NonDefaultingTypes = new List<Type>() {
+            typeof(ICity),
+            typeof(IMapTile),
+            typeof(IDisplayBase),
+            typeof(IUnit)
+        };
 
         private Animator StateMachineAnimator;
 
@@ -27,7 +35,7 @@ namespace Assets.UI.StateMachine.Transitions {
         [Inject]
         public DefaultTransitionLogic(
             [Inject(Id = "Clicked Anywhere Signal"  )] IObservable<PointerEventData> clickedAnywhereSignal,
-            [Inject(Id = "Cancel Pressed Signal"    )] IObservable<Unit> cancelPressedSignal,
+            [Inject(Id = "Cancel Pressed Signal"    )] IObservable<UniRx.Unit> cancelPressedSignal,
             [Inject(Id = "UI State Machine Animator")] Animator stateMachineAnimator
         ) {
             clickedAnywhereSignal.Subscribe(OnClickedAnywhereFired);
@@ -47,19 +55,17 @@ namespace Assets.UI.StateMachine.Transitions {
             foreach(var raycastResult in raycastResults) {
                 var clickedObject = raycastResult.gameObject;
 
-                if(clickedObject.GetComponentInParent<ICity>() != null) {
-                    return;
-                }else if(clickedObject.GetComponentInParent<IMapTile>() != null) {
-                    return;
-                }else if(clickedObject.GetComponentInParent<IDisplayBase>() != null) {
-                    return;
+                foreach(var type in NonDefaultingTypes) {
+                    if(clickedObject.GetComponentInParent(type) != null) {
+                        return;
+                    }
                 }
             }
             
             StateMachineAnimator.SetTrigger("Default State Requested");
         }
 
-        private void OnCancelPressedFired(Unit unit) {
+        private void OnCancelPressedFired(UniRx.Unit unit) {
             StateMachineAnimator.SetTrigger("Default State Requested");
         }
 

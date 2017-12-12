@@ -70,6 +70,11 @@ namespace Assets.Tests.Simulation.Units {
             );
         }
 
+        [Test(Description = "")]
+        public void OnPointerClick_ClickedSignalFired() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

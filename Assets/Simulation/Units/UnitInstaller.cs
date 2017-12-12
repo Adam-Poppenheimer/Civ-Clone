@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.GameMap;
 
@@ -47,6 +48,10 @@ namespace Assets.Simulation.Units {
 
             Container.Bind<IUnitPositionCanon>().To<UnitPositionCanon>().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
+
+            Container.Bind<ISubject<IUnit>>().WithId("Unit Clicked Signal").To<Subject<IUnit>>().AsSingle();
+
+            Container.Bind<UnitSignals>().AsSingle();
         }
 
         #endregion
