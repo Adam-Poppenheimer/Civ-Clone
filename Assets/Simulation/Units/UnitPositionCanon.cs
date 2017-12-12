@@ -10,7 +10,7 @@ using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Units {
 
-    public class UnitPositionCanon : PossessionRelationship<IMapTile, IUnit> {
+    public class UnitPositionCanon : PossessionRelationship<IMapTile, IUnit>, IUnitPositionCanon {
 
         #region instance fields and properties
 
@@ -42,16 +42,18 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IMapTile location) {
-            var unitType = unit.Template.Type;
-
-            if(unitType == UnitType.WaterMilitary || unitType == UnitType.WaterCivilian) {
-                return IsValidForWaterUnit(location) && !AlreadyHasUnitOfType(location, unitType);
-            }else {
-                return IsValidForLandUnit(location) && !AlreadyHasUnitOfType(location, unitType);
-            }
+            return CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
         }
 
         #endregion
+
+        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IMapTile location) {
+            if(type == UnitType.WaterMilitary || type == UnitType.WaterCivilian) {
+                return IsValidForWaterUnit(location) && !AlreadyHasUnitOfType(location, type);
+            }else {
+                return IsValidForLandUnit(location) && !AlreadyHasUnitOfType(location, type);
+            }
+        }
 
         private bool IsValidForWaterUnit(IMapTile tile) {
             return (

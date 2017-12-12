@@ -43,7 +43,8 @@ namespace Assets.Simulation.Units {
 
             Container.BindFactory<IMapTile, IUnitTemplate, IUnit, Factory<IMapTile, IUnitTemplate, IUnit>>().FromFactory<UnitFactory>();
 
-            Container.Bind<IPossessionRelationship<IMapTile, IUnit>>().To<UnitPositionCanon>().AsSingle();
+            Container.Bind<IUnitPositionCanon>().To<UnitPositionCanon>().AsSingle();
+            Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
         }
 
         #endregion
