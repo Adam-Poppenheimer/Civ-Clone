@@ -5,6 +5,7 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.Cities.Production {
@@ -15,13 +16,16 @@ namespace Assets.Simulation.Cities.Production {
 
         private IBuildingFactory BuildingFactory;
 
+        private IUnitFactory UnitFactory;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public ProductionProjectFactory(IBuildingFactory buildingFactory) {
+        public ProductionProjectFactory(IBuildingFactory buildingFactory, IUnitFactory unitFactory) {
             BuildingFactory = buildingFactory;
+            UnitFactory = unitFactory;
         }
 
         #endregion
@@ -32,6 +36,10 @@ namespace Assets.Simulation.Cities.Production {
 
         public IProductionProject ConstructBuildingProject(IBuildingTemplate template) {
             return new BuildingProductionProject(template, BuildingFactory);
+        }
+
+        public IProductionProject ConstructUnitProject(IUnitTemplate template) {
+            return new UnitProductionProject(template, UnitFactory);
         }
 
         #endregion

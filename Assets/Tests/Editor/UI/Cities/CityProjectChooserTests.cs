@@ -14,6 +14,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Core;
+using Assets.Simulation.Units;
 
 using Assets.UI.Cities;
 using Assets.UI.Cities.Production;
@@ -24,9 +25,13 @@ namespace Assets.Tests.UI.Cities {
 
         #region instance fields and properties
 
-        private Mock<ITemplateValidityLogic> MockTemplateLogic;
+        private Mock<IBuildingProductionValidityLogic> MockBuildingValidityLogic;
 
-        private List<IBuildingTemplate> ValidTemplates = new List<IBuildingTemplate>();
+        private Mock<IUnitProductionValidityLogic> MockUnitValidityLogic;
+
+        private List<IBuildingTemplate> ValidBuildingTemplates = new List<IBuildingTemplate>();
+
+        private List<IUnitTemplate> ValidUnitTemplates = new List<IUnitTemplate>();
 
         private Dropdown ProjectDropdown;
 
@@ -38,15 +43,22 @@ namespace Assets.Tests.UI.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockTemplateLogic = new Mock<ITemplateValidityLogic>();
+            ValidBuildingTemplates.Clear();
+            ValidUnitTemplates.Clear();
 
-            MockTemplateLogic
+            MockBuildingValidityLogic = new Mock<IBuildingProductionValidityLogic>();
+            MockUnitValidityLogic     = new Mock<IUnitProductionValidityLogic>();
+
+            MockBuildingValidityLogic
                 .Setup(logic => logic.GetTemplatesValidForCity(It.IsAny<ICity>()))
-                .Returns(() => ValidTemplates);
+                .Returns(() => ValidBuildingTemplates);            
 
-            ValidTemplates.Clear();
+            MockUnitValidityLogic
+                .Setup(logic => logic.GetTemplatesValidForCity(It.IsAny<ICity>()))
+                .Returns(() => ValidUnitTemplates);
 
-            Container.Bind<ITemplateValidityLogic>().FromInstance(MockTemplateLogic.Object);
+            Container.Bind<IBuildingProductionValidityLogic>().FromInstance(MockBuildingValidityLogic.Object);
+            Container.Bind<IUnitProductionValidityLogic>().FromInstance(MockUnitValidityLogic.Object);
 
             ProjectDropdown = Container.InstantiateComponentOnNewGameObject<Dropdown>();
 
@@ -77,12 +89,16 @@ namespace Assets.Tests.UI.Cities {
         }
 
         [Test(Description = "When Refresh is called, ProjectDropdown should have its options refreshed. " +
-            "Those options should consists of a single option called 'None' followed by options named after " +
-            "every template that's valid for ObjectToDisplay")]
+            "Those options should consists of a single option called 'None', followed by options for "+ 
+            "every valid building template, followed by options for every valid unit template")]
         public void RefreshCalled_DropdownGivenAppropriateOptions() {
-            BuildTemplate("Template One", true);
-            BuildTemplate("Template Two", true);
-            BuildTemplate("Template Three", true);
+            BuildBuildingTemplate("Building Template One", true);
+            BuildBuildingTemplate("Building Template Two", true);
+            BuildBuildingTemplate("Building Template Three", true);
+
+            BuildUnitTemplate("Unit Template One", true);
+            BuildUnitTemplate("Unit Template Two", true);
+            BuildUnitTemplate("Unit Template Three", true);
 
             var cityMock = BuildCity(null);
 
@@ -96,19 +112,23 @@ namespace Assets.Tests.UI.Cities {
             var options = ProjectDropdown.options;
 
             var optionsByText = options.Where(option => options.First() != option).Select(option => option.text);
-            var templatesByName = ValidTemplates.Select(template => template.name);
 
-            CollectionAssert.AreEquivalent(templatesByName, optionsByText,
+            var buildingTemplatesByName = ValidBuildingTemplates.Select(template => template.name);
+            var unitTemplatesByName     = ValidUnitTemplates    .Select(template => template.Name);
+
+            var templatesByName = buildingTemplatesByName.Concat(unitTemplatesByName);
+
+            CollectionAssert.AreEqual(templatesByName, optionsByText,
                 "ProjectDropdown.options does not have the expected options");
         }
 
         [Test(Description = "When Refresh is called, ProjectDropdown should be set to the option that " +
             "corresponds to ObjectToDisplay's active project")]
         public void RefreshCalled_AppropriateDropdownSelected() {
-            var cityMock = BuildCity(BuildTemplate("Active Project Template", true));
+            var cityMock = BuildCity(BuildBuildingTemplate("Active Project Template", true));
 
-            BuildTemplate("Inactive Template 1", true);
-            BuildTemplate("Inactive Template 2", true);
+            BuildBuildingTemplate("Inactive Template 1", true);
+            BuildBuildingTemplate("Inactive Template 2", true);
 
             var projectChooser = Container.Resolve<CityProjectChooser>();
 
@@ -122,9 +142,9 @@ namespace Assets.Tests.UI.Cities {
         [Test(Description = "When Refresh is called and ObjectToDisplay has a null active project, " +
             "ProjectDropdown's value should be set to zero, which corresponds to the 'None' option")]
         public void RefreshCalled_NoneSelectedIfNullProject() {
-            BuildTemplate("Template One", true);
-            BuildTemplate("Template Two", true);
-            BuildTemplate("Template Three", true);
+            BuildBuildingTemplate("Template One", true);
+            BuildBuildingTemplate("Template Two", true);
+            BuildBuildingTemplate("Template Three", true);
 
             var cityMock = BuildCity(null);
 
@@ -141,9 +161,10 @@ namespace Assets.Tests.UI.Cities {
             "is not null, ObjectToDisplay's active project should be set to a template with the same " +
             "name as the text in the option selected")]
         public void ProjectDropdownChanged_ProjectIsUpdated() {
-            var templateOne = BuildTemplate("Template One", true);
-            BuildTemplate("Template Two", true);
-            BuildTemplate("Template Three", true);
+            var templateOne = BuildBuildingTemplate("Template One", true);
+            var templateTwo = BuildBuildingTemplate("Template Two", true);
+
+            var templateThree = BuildUnitTemplate("Template Three", true);
 
             var cityMock = BuildCity(null);
 
@@ -153,9 +174,16 @@ namespace Assets.Tests.UI.Cities {
             projectChooser.Refresh();
 
             ProjectDropdown.onValueChanged.Invoke(1);
-
             cityMock.Verify(city => city.SetActiveProductionProject(templateOne), Times.Once,
-                "ObjectToDisplay did not have its active production project set correctly");
+                "Invoking on TemplateOne did not call ObjectToDisplay.SetActiveProductionProject properly");
+
+            ProjectDropdown.onValueChanged.Invoke(2);
+            cityMock.Verify(city => city.SetActiveProductionProject(templateTwo), Times.Once,
+                "Invoking on TemplateTwo did not call ObjectToDisplay.SetActiveProductionProject properly");
+            
+            ProjectDropdown.onValueChanged.Invoke(3);
+            cityMock.Verify(city => city.SetActiveProductionProject(templateThree), Times.Once,
+                "Invoking on TemplateThree did not call ObjectToDisplay.SetActiveProductionProject properly");
         }
 
         [Test(Description = "When ProjectDropdown fires its onValueChanged event and ObjectToDisplay " +
@@ -171,17 +199,32 @@ namespace Assets.Tests.UI.Cities {
 
         #region utilities
 
-        private IBuildingTemplate BuildTemplate(string name, bool isValid) {
+        private IBuildingTemplate BuildBuildingTemplate(string name, bool isValid) {
             var mockTemplate = new Mock<IBuildingTemplate>();
             mockTemplate.Setup(template => template.name).Returns(name);
 
             var newTemplate = mockTemplate.Object;
 
             if(isValid) {
-                ValidTemplates.Add(newTemplate);
+                ValidBuildingTemplates.Add(newTemplate);
             }
 
-            MockTemplateLogic.Setup(logic => logic.IsTemplateValidForCity(newTemplate, It.IsAny<ICity>())).Returns(isValid);
+            MockBuildingValidityLogic.Setup(logic => logic.IsTemplateValidForCity(newTemplate, It.IsAny<ICity>())).Returns(isValid);
+
+            return newTemplate;
+        }
+
+        private IUnitTemplate BuildUnitTemplate(string name, bool isValid) {
+            var mockTemplate = new Mock<IUnitTemplate>();
+            mockTemplate.Setup(template => template.Name).Returns(name);
+
+            var newTemplate = mockTemplate.Object;
+
+            if(isValid) {
+                ValidUnitTemplates.Add(newTemplate);
+            }
+
+            MockUnitValidityLogic.Setup(logic => logic.IsTemplateValidForCity(newTemplate, It.IsAny<ICity>())).Returns(isValid);
 
             return newTemplate;
         }

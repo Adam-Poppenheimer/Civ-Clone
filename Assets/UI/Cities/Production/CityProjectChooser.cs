@@ -10,6 +10,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Units;
 
 namespace Assets.UI.Cities.Production {
 
@@ -29,15 +30,20 @@ namespace Assets.UI.Cities.Production {
         }
         [SerializeField] private Dropdown _projectDropdown;
 
-        private ITemplateValidityLogic TemplateValidityLogic;
+        private IBuildingProductionValidityLogic BuildingValidityLogic;
+
+        private IUnitProductionValidityLogic UnitValidityLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITemplateValidityLogic templateValidityLogic) {
-            TemplateValidityLogic = templateValidityLogic;
+        public void InjectDependencies(IBuildingProductionValidityLogic templateValidityLogic,
+            IUnitProductionValidityLogic unitValidityLogic
+        ){
+            BuildingValidityLogic = templateValidityLogic;
+            UnitValidityLogic = unitValidityLogic;
         }
 
         #region Unity message methods
@@ -59,8 +65,13 @@ namespace Assets.UI.Cities.Production {
 
             ProjectDropdown.options.Add(new Dropdown.OptionData("None"));
 
-            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
-            ProjectDropdown.AddOptions(validTemplates.Select(template => new Dropdown.OptionData(template.name)).ToList());
+            var validBuildingTemplates = BuildingValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
+            var validUnitTemplates     = UnitValidityLogic    .GetTemplatesValidForCity(ObjectToDisplay);
+
+            var buildingOptions = validBuildingTemplates.Select(template => new Dropdown.OptionData(template.name));
+            var unitOptions     = validUnitTemplates    .Select(template => new Dropdown.OptionData(template.Name));
+
+            ProjectDropdown.AddOptions(buildingOptions.Concat(unitOptions).ToList());
 
             if(ObjectToDisplay.ActiveProject == null) {
                 ProjectDropdown.value = 0;
@@ -83,10 +94,17 @@ namespace Assets.UI.Cities.Production {
 
             var selectedTemplateName = ProjectDropdown.options[newValue].text;
 
-            var validTemplates = TemplateValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
-            var selectedTemplate = validTemplates.Where(template => template.name.Equals(selectedTemplateName)).FirstOrDefault();
+            var validBuildings = BuildingValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
+            var selectedBuilding = validBuildings.Where(template => template.name.Equals(selectedTemplateName)).FirstOrDefault();
+
+            var validUnits = UnitValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
+            var selectedUnit = validUnits.Where(template => template.Name.Equals(selectedTemplateName)).FirstOrDefault();
             
-            ObjectToDisplay.SetActiveProductionProject(selectedTemplate);
+            if(selectedBuilding != null) {
+                ObjectToDisplay.SetActiveProductionProject(selectedBuilding);
+            }else {
+                ObjectToDisplay.SetActiveProductionProject(selectedUnit);
+            }
         }
 
         #endregion

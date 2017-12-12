@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -12,6 +13,8 @@ namespace Assets.Simulation.Cities.Production {
         #region methods
 
         IProductionProject ConstructBuildingProject(IBuildingTemplate template);
+
+        IProductionProject ConstructUnitProject(IUnitTemplate template);
 
         #endregion
 

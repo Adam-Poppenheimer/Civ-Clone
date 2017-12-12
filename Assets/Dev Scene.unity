@@ -798,6 +798,51 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 138168842}
+--- !u!1 &194382588
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 194382590}
+  - component: {fileID: 194382589}
+  m_Layer: 0
+  m_Name: City UI Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &194382589
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 194382588}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UIConfig: {fileID: 11400000, guid: a6d63f85a10d1d242a9ce6c6e4d9c43f, type: 2}
+  SlotDisplayPrefab: {fileID: 882659052}
+  BuildingDisplayPrefab: {fileID: 2118610802}
+  CityYieldDisplay: {fileID: 1779240452}
+  CityDisplayRoot: {fileID: 1317493247}
+--- !u!4 &194382590
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 194382588}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &222197188
 GameObject:
   m_ObjectHideFlags: 0
@@ -3198,6 +3243,53 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 385761647}
+--- !u!1 &422400747
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 422400749}
+  - component: {fileID: 422400748}
+  m_Layer: 0
+  m_Name: City Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &422400748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 422400747}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bdfa5bb9e9f9f8b409f573e6e419330c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  CityPrefab: {fileID: 1974995633884560, guid: 16d91cd461118634e9351255c1792c04, type: 2}
+  CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
+  HexGrid: {fileID: 987015553}
+  AvailableBuildingTemplates:
+  - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}
+  - {fileID: 11400000, guid: b392a53cf08debc44ad6ad5aa3ca32a9, type: 2}
+  - {fileID: 11400000, guid: b7ce9b7952687ca4887e14f8a3e6e5f7, type: 2}
+--- !u!4 &422400749
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 422400747}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &456474909
 GameObject:
   m_ObjectHideFlags: 0
@@ -6977,6 +7069,49 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 957799009}
+--- !u!1 &963436560
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 963436562}
+  - component: {fileID: 963436561}
+  m_Layer: 0
+  m_Name: Game Map UI Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &963436561
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 963436560}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e34dd8f2c38c7104ba22686d17879001, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  MapTileDisplay: {fileID: 1984595113}
+  MapTileHoverDelay: 1
+  MapTileHoverYieldDisplay: {fileID: 385197837}
+--- !u!4 &963436562
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 963436560}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 4
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &967468171
 GameObject:
   m_ObjectHideFlags: 0
@@ -8994,6 +9129,46 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1233157580}
   m_Mesh: {fileID: 4300000, guid: b0a9b8fa88b3b7645b7d43f97a353f0c, type: 3}
+--- !u!1 &1242926360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1242926362}
+  - component: {fileID: 1242926361}
+  m_Layer: 0
+  m_Name: Player Input Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1242926361
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1242926360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ce2006eecb92d3a4388033e7abf202bf, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &1242926362
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1242926360}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1245505486
 GameObject:
   m_ObjectHideFlags: 0
@@ -11729,7 +11904,7 @@ GameObject:
   - component: {fileID: 1559384033}
   - component: {fileID: 1559384034}
   m_Layer: 0
-  m_Name: Unit
+  m_Name: Unit Installer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -14825,6 +15000,47 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1887815176}
+--- !u!1 &1899176766
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1899176768}
+  - component: {fileID: 1899176767}
+  m_Layer: 0
+  m_Name: Civilization Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1899176767
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1899176766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0c317033ca45fb4cbec73078256a82a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Config: {fileID: 11400000, guid: 2e0718ac5ebb0b048aef9d4259d5b58a, type: 2}
+--- !u!4 &1899176768
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1899176766}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1901893023
 GameObject:
   m_ObjectHideFlags: 0
@@ -14928,6 +15144,47 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1901893023}
   m_Mesh: {fileID: 4300000, guid: b0a9b8fa88b3b7645b7d43f97a353f0c, type: 3}
+--- !u!1 &1903147043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1903147045}
+  - component: {fileID: 1903147044}
+  m_Layer: 0
+  m_Name: Map Tile Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1903147044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1903147043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 72dc45d903b28f745a92275a09e5a7b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  TileDisplayConfig: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
+--- !u!4 &1903147045
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1903147043}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1904558650
 GameObject:
   m_ObjectHideFlags: 0
@@ -14937,14 +15194,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1904558652}
   - component: {fileID: 1904558651}
-  - component: {fileID: 1904558654}
-  - component: {fileID: 1904558657}
-  - component: {fileID: 1904558653}
-  - component: {fileID: 1904558658}
   - component: {fileID: 1904558656}
   - component: {fileID: 1904558661}
-  - component: {fileID: 1904558659}
-  - component: {fileID: 1904558660}
   - component: {fileID: 1904558655}
   m_Layer: 0
   m_Name: Core
@@ -14966,13 +15217,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _installers:
   - {fileID: 1904558656}
-  - {fileID: 1904558659}
-  - {fileID: 1904558654}
-  - {fileID: 1904558653}
-  - {fileID: 1904558657}
-  - {fileID: 1904558658}
-  - {fileID: 1904558660}
   - {fileID: 1904558661}
+  - {fileID: 1559384034}
+  - {fileID: 1242926361}
+  - {fileID: 1903147044}
+  - {fileID: 422400748}
+  - {fileID: 963436561}
+  - {fileID: 194382589}
+  - {fileID: 1899176767}
   _installerPrefabs: []
   _scriptableObjectInstallers: []
   _autoRun: 1
@@ -14991,39 +15243,15 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 1559384033}
+  - {fileID: 1242926362}
+  - {fileID: 1903147045}
+  - {fileID: 422400749}
+  - {fileID: 963436562}
+  - {fileID: 194382590}
+  - {fileID: 1899176768}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1904558653
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: bdfa5bb9e9f9f8b409f573e6e419330c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  CityPrefab: {fileID: 1974995633884560, guid: 16d91cd461118634e9351255c1792c04, type: 2}
-  CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
-  HexGrid: {fileID: 987015553}
-  AvailableBuildingTemplates:
-  - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}
-  - {fileID: 11400000, guid: b392a53cf08debc44ad6ad5aa3ca32a9, type: 2}
-  - {fileID: 11400000, guid: b7ce9b7952687ca4887e14f8a3e6e5f7, type: 2}
---- !u!114 &1904558654
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 72dc45d903b28f745a92275a09e5a7b7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  TileDisplayConfig: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
 --- !u!114 &1904558655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -15048,59 +15276,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a13131059b82f1a488c223409f196d30, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &1904558657
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e34dd8f2c38c7104ba22686d17879001, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  MapTileDisplay: {fileID: 1984595113}
-  MapTileHoverDelay: 1
-  MapTileHoverYieldDisplay: {fileID: 385197837}
---- !u!114 &1904558658
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UIConfig: {fileID: 11400000, guid: a6d63f85a10d1d242a9ce6c6e4d9c43f, type: 2}
-  SlotDisplayPrefab: {fileID: 882659052}
-  BuildingDisplayPrefab: {fileID: 2118610802}
-  CityYieldDisplay: {fileID: 1779240452}
-  CityDisplayRoot: {fileID: 1317493247}
---- !u!114 &1904558659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce2006eecb92d3a4388033e7abf202bf, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1904558660
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1904558650}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a0c317033ca45fb4cbec73078256a82a, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Config: {fileID: 11400000, guid: 2e0718ac5ebb0b048aef9d4259d5b58a, type: 2}
 --- !u!114 &1904558661
 MonoBehaviour:
   m_ObjectHideFlags: 0

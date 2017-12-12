@@ -36,12 +36,14 @@ namespace Assets.Simulation.Units {
 
             Container.Bind<GameObject>().WithId("Unit Prefab").FromInstance(UnitPrefab);
 
-            Container.Bind<List<UnitTemplate>>().WithId("Available Templates").FromInstance(AvailableTemplates);
+            Container.Bind<IEnumerable<IUnitTemplate>>()
+                .WithId("Available Unit Templates")
+                .FromInstance(AvailableTemplates.Cast<IUnitTemplate>());
 
             Container.Bind<List<TerrainType>> ().WithId("Land Terrain Types")       .FromInstance(LandTerrainTypes);
             Container.Bind<List<TerrainShape>>().WithId("Impassable Terrain Shapes").FromInstance(ImpassableTerrainShapes);
 
-            Container.BindFactory<IMapTile, IUnitTemplate, IUnit, Factory<IMapTile, IUnitTemplate, IUnit>>().FromFactory<UnitFactory>();
+            Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
 
             Container.Bind<IUnitPositionCanon>().To<UnitPositionCanon>().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();

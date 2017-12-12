@@ -16,13 +16,18 @@ namespace Assets.Simulation.Units {
 
         private IUnitPositionCanon UnitPositionCanon;
 
+        private IEnumerable<IUnitTemplate> AvailableUnitTemplates;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitProductionValidityLogic(IUnitPositionCanon unitPositionCanon) {
+        public UnitProductionValidityLogic(IUnitPositionCanon unitPositionCanon,
+            [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
+        ){
             UnitPositionCanon = unitPositionCanon;
+            AvailableUnitTemplates = availableUnitTemplates;
         }
 
         #endregion
@@ -31,7 +36,11 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitProductionValidityLogic
 
-        public bool IsTemplateValidForProductionInCity(IUnitTemplate template, ICity city) {
+        public IEnumerable<IUnitTemplate> GetTemplatesValidForCity(ICity city) {
+            return AvailableUnitTemplates.Where(template => IsTemplateValidForCity(template, city));
+        }
+
+        public bool IsTemplateValidForCity(IUnitTemplate template, ICity city) {
             return UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location);
         }
 

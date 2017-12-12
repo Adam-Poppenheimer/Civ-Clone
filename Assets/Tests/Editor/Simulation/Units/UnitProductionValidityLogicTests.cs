@@ -98,7 +98,13 @@ namespace Assets.Tests.Simulation.Units {
 
             var validityLogic = Container.Resolve<UnitProductionValidityLogic>();
 
-            return validityLogic.IsTemplateValidForProductionInCity(template, city);
+            return validityLogic.IsTemplateValidForCity(template, city);
+        }
+
+        [Test(Description = "GetTemplatesValidForCity should return all templates " +
+            "in AllTemplates for which IsTemplateValidForProductionInCity returns true")]
+        public bool GetTemplatesValidForCity_ReturnsAllValidTemplates() {
+            throw new NotImplementedException();
         }
 
         #endregion

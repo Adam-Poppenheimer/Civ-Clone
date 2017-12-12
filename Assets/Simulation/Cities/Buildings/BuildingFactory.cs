@@ -11,7 +11,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private ITemplateValidityLogic ValidityLogic;
+        private IBuildingProductionValidityLogic ValidityLogic;
         private IBuildingPossessionCanon PossessionCanon;
 
         #endregion
@@ -19,7 +19,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #region constructors
 
         [Inject]
-        public BuildingFactory(ITemplateValidityLogic validityLogic, IBuildingPossessionCanon possessionCanon) {
+        public BuildingFactory(IBuildingProductionValidityLogic validityLogic, IBuildingPossessionCanon possessionCanon) {
             ValidityLogic = validityLogic;
             PossessionCanon = possessionCanon;
         }

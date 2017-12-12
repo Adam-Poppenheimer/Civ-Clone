@@ -36,7 +36,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IBuildingPossessionCanon>().FromInstance(PossessionCanonMock.Object);
 
-            Container.Bind<TemplateValidityLogic>().AsSingle();
+            Container.Bind<BuildingProductionValidityLogic>().AsSingle();
         }
 
         [Test(Description = "IsTemplateValidForCity should return false if the " +
@@ -45,7 +45,7 @@ namespace Assets.Tests.Simulation.Cities {
             var cityOne = new Mock<ICity>().Object;
             var cityTwo = new Mock<ICity>().Object;
 
-            var logic = Container.Resolve<TemplateValidityLogic>();
+            var logic = Container.Resolve<BuildingProductionValidityLogic>();
 
             var externalTemplate = new Mock<IBuildingTemplate>().Object;
 
@@ -76,7 +76,7 @@ namespace Assets.Tests.Simulation.Cities {
                 .Setup(canon => canon.GetBuildingsInCity(cityTwo))
                 .Returns(new List<IBuilding>() { buildingMockInCityTwo.Object }.AsReadOnly());
 
-            var logic = Container.Resolve<TemplateValidityLogic>();
+            var logic = Container.Resolve<BuildingProductionValidityLogic>();
 
             Assert.IsFalse(logic.IsTemplateValidForCity(Templates[0], cityOne),
                 "IsTemplateValidForCity falsely considers Templates[0] valid for cityOne");
@@ -90,7 +90,7 @@ namespace Assets.Tests.Simulation.Cities {
             var cityOne = new Mock<ICity>().Object;
             var cityTwo = new Mock<ICity>().Object;
 
-            var logic = Container.Resolve<TemplateValidityLogic>();
+            var logic = Container.Resolve<BuildingProductionValidityLogic>();
 
             CollectionAssert.AreEquivalent(Templates, logic.GetTemplatesValidForCity(cityOne),
                 "GetTemplatesValidForCity did not return all available templates for cityOne");
@@ -124,7 +124,7 @@ namespace Assets.Tests.Simulation.Cities {
                     firstBuildingMockInCityTwo.Object, secondBuildingMockInCityTwo.Object
                 }.AsReadOnly());
 
-            var logic = Container.Resolve<TemplateValidityLogic>();
+            var logic = Container.Resolve<BuildingProductionValidityLogic>();
 
             var validForCityOne = logic.GetTemplatesValidForCity(cityOne);
             var validForCityTwo = logic.GetTemplatesValidForCity(cityTwo);
@@ -150,7 +150,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = new Mock<ICity>().Object;
             var template = new Mock<IBuildingTemplate>().Object;
 
-            var logic = Container.Resolve<TemplateValidityLogic>();
+            var logic = Container.Resolve<BuildingProductionValidityLogic>();
 
             Assert.Throws<ArgumentNullException>(() => logic.GetTemplatesValidForCity(null),
                 "GetTemplatesValidForCity did not throw an ArgumentNullException on a null city argument");

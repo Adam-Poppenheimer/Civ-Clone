@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    public class TemplateValidityLogic : ITemplateValidityLogic {
+    public class BuildingProductionValidityLogic : IBuildingProductionValidityLogic {
 
         #region instance fields and properties
 
@@ -20,8 +20,9 @@ namespace Assets.Simulation.Cities.Buildings {
         #region constructors
 
         [Inject]
-        public TemplateValidityLogic(List<IBuildingTemplate> availableTemplates,
-            IBuildingPossessionCanon possessionCanon) {
+        public BuildingProductionValidityLogic(List<IBuildingTemplate> availableTemplates,
+            IBuildingPossessionCanon possessionCanon
+        ){
             AvailableTemplates = availableTemplates;
             PossessionCanon = possessionCanon;
         }

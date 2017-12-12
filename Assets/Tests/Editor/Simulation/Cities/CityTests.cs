@@ -24,6 +24,8 @@ using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
 
+using Assets.Simulation.Units;
+
 namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
@@ -560,9 +562,9 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Fail("ClickedSignal was never fired");
         }
 
-        [Test(Description = "When SetActiveProductionProject is called, City should fire ProjectChangedSignal " +
-            "with the appropriate arguments")]
-        public void SetActiveProductionProject_FiresProjectChangedSignal() {
+        [Test(Description = "When SetActiveProductionProject is called on an IBuildingTemplate, " +
+            "City should fire ProjectChangedSignal with the appropriate arguments")]
+        public void SetActiveProductionProject_OnBuildingTemplate_FiresProjectChangedSignal() {
             var cityToTest = Container.Resolve<City>();
 
             var newTemplateMock = new Mock<IBuildingTemplate>();
@@ -572,6 +574,31 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
             ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(newTemplateMock.Object)).Returns(mockProject.Object);
+
+            var citySignals = Container.Resolve<CitySignals>();
+
+            citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
+                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
+
+                Assert.AreEqual(mockProject.Object, project, "ClickedSignal was passed an unexpected project");
+                Assert.Pass();
+            });
+
+            cityToTest.SetActiveProductionProject(newTemplateMock.Object);
+        }
+
+        [Test(Description = "When SetActiveProductionProject is called on an IUnitTemplate, " +
+            "City should fire ProjectChangedSignal with the appropriate arguments")]
+        public void SetActiveProductionProject_OnUnitTemplate_FiresProjectChangedSignal() {
+            var cityToTest = Container.Resolve<City>();
+
+            var newTemplateMock = new Mock<IUnitTemplate>();
+            newTemplateMock.Setup(template => template.Name).Returns("New Template");
+
+            var mockProject = new Mock<IProductionProject>();
+            mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
+
+            ProjectFactoryMock.Setup(factory => factory.ConstructUnitProject(newTemplateMock.Object)).Returns(mockProject.Object);
 
             var citySignals = Container.Resolve<CitySignals>();
 

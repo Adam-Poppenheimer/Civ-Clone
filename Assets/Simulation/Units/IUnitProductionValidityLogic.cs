@@ -11,7 +11,9 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        bool IsTemplateValidForProductionInCity(IUnitTemplate template, ICity city);
+        IEnumerable<IUnitTemplate> GetTemplatesValidForCity(ICity city);
+
+        bool IsTemplateValidForCity(IUnitTemplate template, ICity city);
 
         #endregion
 

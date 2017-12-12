@@ -11,6 +11,7 @@ using Assets.Simulation.GameMap;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
@@ -40,6 +41,7 @@ namespace Assets.Simulation.Cities {
         #region instance methods
 
         void SetActiveProductionProject(IBuildingTemplate template);
+        void SetActiveProductionProject(IUnitTemplate template);
 
         void PerformGrowth();
         void PerformProduction();

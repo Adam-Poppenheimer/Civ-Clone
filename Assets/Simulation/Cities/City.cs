@@ -17,6 +17,7 @@ using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
@@ -108,8 +109,17 @@ namespace Assets.Simulation.Cities {
                 ActiveProject = null;
             }else {
                 ActiveProject = ProjectFactory.ConstructBuildingProject(template);
-            }     
-            Signals.ProjectChangedSignal.Fire(this, ActiveProject);       
+            }
+            Signals.ProjectChangedSignal.Fire(this, ActiveProject);
+        }
+
+        public void SetActiveProductionProject(IUnitTemplate template) {
+            if(template == null) {
+                ActiveProject = null;
+            }else {
+                ActiveProject = ProjectFactory.ConstructUnitProject(template);
+            }
+            Signals.ProjectChangedSignal.Fire(this, ActiveProject);
         }
 
         public void PerformGrowth() {

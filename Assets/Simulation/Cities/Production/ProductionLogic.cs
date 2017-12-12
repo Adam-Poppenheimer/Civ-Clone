@@ -18,7 +18,7 @@ namespace Assets.Simulation.Cities.Production {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private ITemplateValidityLogic TemplateValidityLogic;
+        private IBuildingProductionValidityLogic TemplateValidityLogic;
 
         #endregion
 

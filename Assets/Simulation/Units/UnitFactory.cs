@@ -26,7 +26,7 @@ namespace Assets.Simulation.Units {
 
         private DiContainer Container;
 
-        private IPossessionRelationship<IMapTile, IUnit> UnitPositionCanon;
+        private IUnitPositionCanon UnitPositionCanon;
 
         private GameObject UnitPrefab;
 
@@ -35,7 +35,7 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitFactory(DiContainer container, IPossessionRelationship<IMapTile, IUnit> unitPositionCanon,
+        public UnitFactory(DiContainer container, IUnitPositionCanon unitPositionCanon,
             [Inject(Id = "Unit Prefab")] GameObject unitPrefab
         ){
             Container = container;

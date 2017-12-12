@@ -43,8 +43,6 @@ namespace Assets.Simulation.Cities {
         public override void InstallBindings() {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
-            Container.BindFactory<IMapTile, ICivilization, ICity, Factory<IMapTile, ICivilization, ICity>>().FromFactory<RecordkeepingCityFactory>();
-
             Container.Bind<ICityConfig>().To<CityConfig>().FromInstance(CityConfig);
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
@@ -54,7 +52,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IResourceGenerationLogic>().To<ResourceGenerationLogic>().AsSingle();
             Container.Bind<IBorderExpansionLogic>   ().To<BorderExpansionLogic>   ().AsSingle();
             Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
-            Container.Bind<ITemplateValidityLogic>  ().To<TemplateValidityLogic>  ().AsSingle();
+            Container.Bind<IBuildingProductionValidityLogic>  ().To<BuildingProductionValidityLogic>  ().AsSingle();
             Container.Bind<ITilePossessionCanon>    ().To<TilePossessionCanon>    ().AsSingle();
             Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
             Container.Bind<IIncomeModifierLogic>    ().To<IncomeModifierLogic>    ().AsSingle();

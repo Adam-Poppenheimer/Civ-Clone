@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    public interface ITemplateValidityLogic {
+    public interface IBuildingProductionValidityLogic {
 
         #region methods
 

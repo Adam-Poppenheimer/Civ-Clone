@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Default Unit Template
   m_EditorClassIdentifier: 
-  _maxMovement: 0
-  _name: 
-  _productionCost: 0
+  _maxMovement: 2
+  _name: Default Unit
+  _productionCost: 40
   _type: 0
