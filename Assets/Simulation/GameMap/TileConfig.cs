@@ -28,7 +28,7 @@ namespace Assets.Simulation.GameMap {
         }
         [SerializeField] private Material _desertMaterial;
 
-        public ResourceSummary GrasslandsYield {
+        public ResourceSummary GrasslandYield {
             get { return _grasslandsYield; }
         }
         [SerializeField] private ResourceSummary _grasslandsYield;
@@ -52,6 +52,41 @@ namespace Assets.Simulation.GameMap {
             get { return _hillsYield; }
         }
         [SerializeField] private ResourceSummary _hillsYield;
+
+        public int GrasslandMoveCost {
+            get { return _grasslandMoveCost; }
+        }
+        [SerializeField] private int _grasslandMoveCost;
+
+        public int PlainsMoveCost {
+            get { return _plainsMoveCost; }
+        }
+        [SerializeField] private int _plainsMoveCost;
+
+        public int DesertMoveCost {
+            get { return _desertMoveCost; }
+        }
+        [SerializeField] private int _desertMoveCost;
+
+        public int HillsMoveCost {
+            get { return _hillsMoveCost; }
+        }
+        [SerializeField] private int _hillsMoveCost;
+
+        public int ForestMoveCost {
+            get { return _forestMoveCost; }
+        }
+        [SerializeField] private int _forestMoveCost;
+
+        public int ShallowWaterMoveCost {
+            get { return _shallowWaterMoveCost; }
+        }
+        [SerializeField] private int _shallowWaterMoveCost;
+
+        public int DeepWaterMoveCost {
+            get { return _deepWaterMoveCost; }
+        }
+        [SerializeField] private int _deepWaterMoveCost;
 
         public ReadOnlyCollection<TerrainType> UnoccupiableTerrains {
             get { return _unoccupiableTerrains.AsReadOnly(); }

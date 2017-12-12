@@ -41,7 +41,7 @@ namespace Assets.Simulation.GameMap {
 
             }else {
                 switch(tile.Terrain) {
-                    case TerrainType.Grassland: return Config.GrasslandsYield;
+                    case TerrainType.Grassland: return Config.GrasslandYield;
                     case TerrainType.Plains:    return Config.PlainsYield;
                     case TerrainType.Desert:    return Config.DesertYield;
                     default: return new ResourceSummary();

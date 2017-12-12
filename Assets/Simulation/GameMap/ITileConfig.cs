@@ -13,9 +13,17 @@ namespace Assets.Simulation.GameMap {
 
         ResourceSummary DesertYield     { get; }
         ResourceSummary ForestYield     { get; }
-        ResourceSummary GrasslandsYield { get; }
+        ResourceSummary GrasslandYield { get; }
         ResourceSummary HillsYield      { get; }
         ResourceSummary PlainsYield     { get; }
+
+        int GrasslandMoveCost    { get; }
+        int PlainsMoveCost       { get; }
+        int DesertMoveCost       { get; }
+        int HillsMoveCost        { get; }
+        int ForestMoveCost       { get; }
+        int ShallowWaterMoveCost { get; }
+        int DeepWaterMoveCost    { get; }
 
         ReadOnlyCollection<TerrainType> UnoccupiableTerrains { get; }
 

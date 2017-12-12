@@ -21,7 +21,7 @@ namespace Assets.Tests.Simulation.GameMap {
         public void CommonInstall() {
             var mockConfig = new Mock<ITileConfig>();
 
-            mockConfig.Setup(config => config.GrasslandsYield).Returns(new ResourceSummary(food: 1));
+            mockConfig.Setup(config => config.GrasslandYield).Returns(new ResourceSummary(food: 1));
             mockConfig.Setup(config => config.PlainsYield    ).Returns(new ResourceSummary(food: 2));
             mockConfig.Setup(config => config.DesertYield    ).Returns(new ResourceSummary(food: 3));
             mockConfig.Setup(config => config.ForestYield    ).Returns(new ResourceSummary(food: 4));
