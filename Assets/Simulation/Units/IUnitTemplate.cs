@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.Units.Abilities;
+
 namespace Assets.Simulation.Units {
 
     public interface IUnitTemplate {
@@ -16,6 +18,8 @@ namespace Assets.Simulation.Units {
         int MaxMovement { get; }
 
         UnitType Type { get; }
+
+        IEnumerable<UnitAbilityDefinition> Abilities { get; }
 
         #endregion
 

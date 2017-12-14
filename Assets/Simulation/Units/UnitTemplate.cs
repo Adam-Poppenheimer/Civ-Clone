@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.Units.Abilities;
+
 namespace Assets.Simulation.Units {
 
     [CreateAssetMenu(menuName = "Civ Clone/Unit Template")]
@@ -33,6 +35,11 @@ namespace Assets.Simulation.Units {
             get { return _type; }
         }
         [SerializeField] private UnitType _type;
+
+        public IEnumerable<UnitAbilityDefinition> Abilities {
+            get { return _abilities; }
+        }
+        [SerializeField] private List<UnitAbilityDefinition> _abilities;
 
         #endregion
 
