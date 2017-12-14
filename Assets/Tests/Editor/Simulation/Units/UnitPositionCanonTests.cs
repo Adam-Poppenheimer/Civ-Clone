@@ -29,14 +29,14 @@ namespace Assets.Tests.Simulation.Units {
                     new List<Tuple<string, UnitType>>() {
                         new Tuple<string, UnitType>("Land Military Unit", UnitType.LandMilitary)
                     }                    
-                );
+                ).SetName("Placing LandMilitary when LandMilitary already present");
 
                 yield return new TestCaseData(
                     new Tuple<string, UnitType>("Unit to Consider", UnitType.LandCivilian),
                     new List<Tuple<string, UnitType>>() {
                         new Tuple<string, UnitType>("Land Civilian Unit", UnitType.LandCivilian)
                     }                    
-                );
+                ).SetName("Placing LandCivilian when LandCivilian already present");;
             }
         }
 
@@ -47,39 +47,39 @@ namespace Assets.Tests.Simulation.Units {
                     new List<Tuple<string, UnitType>>() {
                         new Tuple<string, UnitType>("Land Civilian Unit", UnitType.LandCivilian)
                     }                    
-                );
+                ).SetName("Placing LandMilitary when LandCivilian already present");
 
                 yield return new TestCaseData(
                     new Tuple<string, UnitType>("Unit to Consider", UnitType.LandCivilian),
                     new List<Tuple<string, UnitType>>() {
                         new Tuple<string, UnitType>("Land Military Unit", UnitType.LandMilitary)
                     }                    
-                );
+                ).SetName("Placing LandCivilian when LandMilitary already present");;
             }
         }
 
         private static IEnumerable TerrainConsiderationCases {
             get {
-                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.ShallowWater).Returns(false);
-                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.DeepWater   ).Returns(false);
-                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.ShallowWater).Returns(false);
-                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.DeepWater   ).Returns(false);
+                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.ShallowWater).Returns(false).SetName("No Land Military on Shallow Water");
+                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.DeepWater   ).Returns(false).SetName("No Land Military on Deep Water");
+                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.ShallowWater).Returns(false).SetName("No Land Civilian on Shallow Water");
+                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.DeepWater   ).Returns(false).SetName("No Land Civilian on Deep Water");
 
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Grassland).Returns(false);
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Plains   ).Returns(false);
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Desert   ).Returns(false);
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Grassland).Returns(false);
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Plains   ).Returns(false);
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Desert   ).Returns(false);
+                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Grassland).Returns(false).SetName("No Water Military on Grassland");
+                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Plains   ).Returns(false).SetName("No Water Military on Plains");
+                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Desert   ).Returns(false).SetName("No Water Military on Desert");
+                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Grassland).Returns(false).SetName("No Water Civilian on Grassland");
+                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Plains   ).Returns(false).SetName("No Water Civilian on Plains");
+                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Desert   ).Returns(false).SetName("No Water Civilian on Desert");
             }
         }
 
         private static IEnumerable ShapeConsiderationCases {
             get {
-                yield return new TestCaseData(UnitType.LandMilitary,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false);
-                yield return new TestCaseData(UnitType.LandCivilian,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false);
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false);
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false);
+                yield return new TestCaseData(UnitType.LandMilitary,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false).SetName("No Land Military on Mountains");
+                yield return new TestCaseData(UnitType.LandCivilian,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false).SetName("No Land Civilian on Mountains");
+                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false).SetName("No Water Military on Mountains");
+                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false).SetName("No Water Civilian on Mountains");
             }
         }
 
@@ -180,7 +180,7 @@ namespace Assets.Tests.Simulation.Units {
             var waterCivilian = BuildUnit("Water Civilian", UnitType.WaterMilitary);
 
             var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
-            var city = BuildCity(location);
+            BuildCity(location);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
@@ -216,6 +216,12 @@ namespace Assets.Tests.Simulation.Units {
                 "CanChangeOwnerOfPossession failed to permit the repositioning of consideredUnit");
         }
 
+        [Test(Description = "ChangeOwnerOfPossession should set the parent of the relocated unit " +
+            "to the transform of its new location, or null if its new location is null")]
+        public void ChangeOwnerOfPossession_SetsParentToOwnerTransform() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities
@@ -226,6 +232,7 @@ namespace Assets.Tests.Simulation.Units {
 
         private IUnit BuildUnit(string name, UnitType type) {
             var mockUnit = new Mock<IUnit>();
+            mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
 
             var mockTemplate = new Mock<IUnitTemplate>();
             mockTemplate.Setup(template => template.Name).Returns(name);
@@ -239,14 +246,15 @@ namespace Assets.Tests.Simulation.Units {
             var mockTile = new Mock<IMapTile>();
             mockTile.SetupAllProperties();
 
+            mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
 
-            var tile = mockTile.Object;
+            var newTile = mockTile.Object;
 
-            tile.Terrain = terrain;
-            tile.Shape   = shape;
-            tile.Feature = feature;
+            newTile.Terrain = terrain;
+            newTile.Shape   = shape;
+            newTile.Feature = feature;
 
-            return tile;
+            return newTile;
         }
 
         private ICity BuildCity(IMapTile location) {

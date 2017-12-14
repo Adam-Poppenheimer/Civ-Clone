@@ -21,6 +21,8 @@ namespace Assets.UI.GameMap {
 
         [SerializeField] private ResourceSummaryDisplay MapTileHoverYieldDisplay;
 
+        [SerializeField] private GameObject PathIndicatorPrefab;
+
         #endregion
 
         #region instance methods
@@ -37,6 +39,10 @@ namespace Assets.UI.GameMap {
                 .WithId("Tile Hover Yield Display")
                 .To<ResourceSummaryDisplay>()
                 .FromInstance(MapTileHoverYieldDisplay);
+
+            Container.BindMemoryPool<PathIndicator, PathIndicator.MemoryPool>().FromComponentInNewPrefab(PathIndicatorPrefab);
+
+            Container.Bind<ITilePathDrawer>().To<TilePathDrawer>().AsSingle();
         }
 
         #endregion

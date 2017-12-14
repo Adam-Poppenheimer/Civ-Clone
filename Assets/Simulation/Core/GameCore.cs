@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Core {
 
@@ -18,13 +19,14 @@ namespace Assets.Simulation.Core {
 
         public ICivilization PlayerCivilization { get; private set; }
 
+        private IRecordkeepingCityFactory CityFactory;
+        private ICivilizationFactory      CivilizationFactory;
+        private IUnitFactory              UnitFactory;
+
         private ITurnExecuter TurnExecuter;
 
         private TurnBeganSignal TurnBeganSignal;
-        private TurnEndedSignal TurnEndedSignal;
-
-        private IRecordkeepingCityFactory CityFactory;
-        private ICivilizationFactory CivilizationFactory;
+        private TurnEndedSignal TurnEndedSignal;        
 
         #endregion
 
@@ -33,13 +35,15 @@ namespace Assets.Simulation.Core {
         [Inject]
         public GameCore(
             IRecordkeepingCityFactory cityFactory, ICivilizationFactory civilizationFactory,
-            ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
+            IUnitFactory unitFactory, ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
             TurnEndedSignal turnEndedSignal, EndTurnRequestedSignal endTurnRequestedSignal
         ){
-            CityFactory = cityFactory;
+            CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
+            UnitFactory         = unitFactory;
 
             TurnExecuter = turnExecuter;
+
             TurnBeganSignal = turnBeganSignal;
             TurnEndedSignal = turnEndedSignal;
             
@@ -53,6 +57,10 @@ namespace Assets.Simulation.Core {
         #region instance methods
 
         public void BeginRound() {
+            foreach(var unit in UnitFactory.AllUnits) {
+                TurnExecuter.BeginTurnOnUnit(unit);
+            }
+
             foreach(var city in CityFactory.AllCities) {
                 TurnExecuter.BeginTurnOnCity(city);
             }
@@ -65,6 +73,10 @@ namespace Assets.Simulation.Core {
         }
 
         public void EndRound() {
+            foreach(var unit in UnitFactory.AllUnits) {
+                TurnExecuter.EndTurnOnUnit(unit);
+            }
+
             foreach(var city in CityFactory.AllCities) {
                 TurnExecuter.EndTurnOnCity(city);
             }

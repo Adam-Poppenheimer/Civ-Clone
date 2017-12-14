@@ -16,7 +16,7 @@ MonoBehaviour:
   _desertMaterial: {fileID: 2100000, guid: 883a71f688db52240b08695f3850ed63, type: 2}
   _grasslandsYield:
     Food: 3
-    Production: 0
+    Production: 3
     Gold: 0
     Culture: 0
   _plainsYield:
@@ -39,4 +39,11 @@ MonoBehaviour:
     Production: 2
     Gold: 0
     Culture: 0
+  _grasslandMoveCost: 1
+  _plainsMoveCost: 1
+  _desertMoveCost: 1
+  _hillsMoveCost: 1
+  _forestMoveCost: 1
+  _shallowWaterMoveCost: 1
+  _deepWaterMoveCost: 1
   _unoccupiableTerrains: 

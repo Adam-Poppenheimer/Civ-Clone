@@ -11,15 +11,26 @@ using Assets.Simulation.Core;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Tests.Simulation.Core {
 
     [TestFixture]
     public class GameCoreTests : ZenjectUnitTestFixture {
 
-        private Mock<ITurnExecuter> TurnExecuterMock;
+        #region instance fields and properties
+
         private Mock<IRecordkeepingCityFactory> CityFactoryMock;
-        private Mock<ICivilizationFactory> CivilizationFactoryMock;
+        private Mock<ICivilizationFactory>      CivilizationFactoryMock;
+        private Mock<IUnitFactory>              UnitFactoryMock;
+
+        private Mock<ITurnExecuter> TurnExecuterMock;
+
+        #endregion
+
+        #region instance methods
+
+        #region setup
 
         [SetUp]
         public void CommonInstall() {
@@ -31,9 +42,14 @@ namespace Assets.Tests.Simulation.Core {
             CivilizationFactoryMock = new Mock<ICivilizationFactory>();
             CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>());
 
-            Container.Bind<ITurnExecuter>().FromInstance(TurnExecuterMock.Object);
+            UnitFactoryMock = new Mock<IUnitFactory>();
+            UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
+
             Container.Bind<IRecordkeepingCityFactory>().FromInstance(CityFactoryMock.Object);
-            Container.Bind<ICivilizationFactory>().FromInstance(CivilizationFactoryMock.Object);
+            Container.Bind<ICivilizationFactory>     ().FromInstance(CivilizationFactoryMock.Object);
+            Container.Bind<IUnitFactory>             ().FromInstance(UnitFactoryMock.Object);
+
+            Container.Bind<ITurnExecuter>().FromInstance(TurnExecuterMock.Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -43,6 +59,10 @@ namespace Assets.Tests.Simulation.Core {
 
             Container.Bind<GameCore>().AsSingle();
         }
+
+        #endregion
+
+        #region tests
 
         [Test(Description = "When BeginRound is called, all cities in CityFactory " +
             "are passed to TurnExecuter properly")]
@@ -90,19 +110,43 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
+        [Test(Description = "When BeginRound is called, all units in UnitFactory are passed to " +
+            "TurnExecuter properly")]
+        public void BeginRound_AllUnitsCalled() {
+            var allUnits = new List<IUnit>() {
+                new Mock<IUnit>().Object,
+                new Mock<IUnit>().Object,
+                new Mock<IUnit>().Object
+            };
+
+            UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(allUnits);
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.BeginRound();
+
+            foreach(var unit in allUnits) {
+                TurnExecuterMock.Verify(executer => executer.BeginTurnOnUnit(unit),
+                    "TurnExecuter was not called to begin a unit's turn");
+            }
+        }
+
         [Test(Description = "When BeginRound is called, there is a specific execution order " +
             "between different classes that is always maintained")]
         public void BeginRound_HasCorrectExecutionOrder() {
-            var city = new Mock<ICity>().Object;
+            var city          = new Mock<ICity>()       .Object;
             var civilization = new Mock<ICivilization>().Object;
+            var unit         = new Mock<IUnit>()        .Object;
 
-            CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>() { city }.AsReadOnly());
+            CityFactoryMock        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
             CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization });
+            UnitFactoryMock        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
 
             var executionSequence = new MockSequence();
 
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCity(city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCity        (city));
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCivilization(civilization));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnUnit        (unit));
 
             var gameCore = Container.Resolve<GameCore>();
             gameCore.BeginRound();
@@ -168,19 +212,43 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
+        [Test(Description = "When BeginRound is called, all units in UnitFactory are passed to " +
+            "TurnExecuter properly")]
+        public void EndRound_AllUnitsCalled() {
+            var allUnits = new List<IUnit>() {
+                new Mock<IUnit>().Object,
+                new Mock<IUnit>().Object,
+                new Mock<IUnit>().Object
+            };
+
+            UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(allUnits);
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.EndRound();
+
+            foreach(var unit in allUnits) {
+                TurnExecuterMock.Verify(executer => executer.EndTurnOnUnit(unit),
+                    "TurnExecuter was not called to begin a unit's turn");
+            }
+        }
+
         [Test(Description = "When EndRound is called, there is a specific execution order " +
             "between different classes that is always maintained")]
         public void EndRound_HasCorrectExecutionOrder() {
             var city = new Mock<ICity>().Object;
             var civilization = new Mock<ICivilization>().Object;
+            var unit = new Mock<IUnit>().Object;
 
-            CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>() { city }.AsReadOnly());
+            CityFactoryMock        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
             CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization });
+            UnitFactoryMock        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
 
             var executionSequence = new MockSequence();
 
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity(city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity        (city));
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCivilization(civilization));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnUnit        (unit));
 
             var gameCore = Container.Resolve<GameCore>();
             gameCore.EndRound();
@@ -219,6 +287,16 @@ namespace Assets.Tests.Simulation.Core {
 
             TurnExecuterMock.VerifyAll();
         }
+
+        #endregion
+
+        #region utilities
+
+
+
+        #endregion
+
+        #endregion
 
     }
 

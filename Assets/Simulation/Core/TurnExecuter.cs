@@ -5,6 +5,7 @@ using System.Text;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Core {
 
@@ -31,6 +32,14 @@ namespace Assets.Simulation.Core {
 
         public void EndTurnOnCivilization(ICivilization civilization) {
             
+        }
+
+        public void BeginTurnOnUnit(IUnit unit) {
+            unit.CurrentMovement = unit.Template.MaxMovement;
+        }
+
+        public void EndTurnOnUnit(IUnit unit) {
+            unit.PerformMovement();
         }
 
         #endregion

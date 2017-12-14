@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using UnityEditor;
+
 using Zenject;
 
 using UnityCustomUtilities.Grids;
@@ -85,6 +87,10 @@ namespace Assets.Simulation.GameMap {
             Refresh();
         }
 
+        /*private void OnDrawGizmos() {
+            Handles.Label(transform.position, Coords.ToString(), EditorStyles.centeredGreyMiniLabel);
+        }*/
+
         #endregion
 
         #region EventSystem handler implementations
@@ -99,6 +105,14 @@ namespace Assets.Simulation.GameMap {
 
         public void OnPointerExit(PointerEventData eventData) {
             Signals.PointerExitSignal.Fire(this, eventData);
+        }
+
+        #endregion
+
+        #region from Object
+
+        public override string ToString() {
+            return string.Format("Tile {0}", Coords);
         }
 
         #endregion

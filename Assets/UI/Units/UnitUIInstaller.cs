@@ -13,7 +13,7 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-
+        
 
         #endregion
 
@@ -22,7 +22,7 @@ namespace Assets.UI.Units {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            base.InstallBindings();
+            
         }
 
         #endregion

@@ -45,6 +45,14 @@ namespace Assets.Simulation.Units {
             return CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
         }
 
+        protected override void DoOnPossessionBroken(IUnit possession, IMapTile oldOwner) {
+            possession.gameObject.transform.SetParent(null, false);
+        }
+
+        protected override void DoOnPossessionEstablished(IUnit possession, IMapTile newOwner) {
+            possession.gameObject.transform.SetParent(newOwner.transform, false);
+        }
+
         #endregion
 
         public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IMapTile location) {

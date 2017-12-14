@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
@@ -46,10 +47,21 @@ namespace Assets.Simulation.Units {
 
             Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
 
-            Container.Bind<IUnitPositionCanon>().To<UnitPositionCanon>().AsSingle();
+            Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
+            Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
 
-            Container.Bind<ISubject<IUnit>>().WithId("Unit Clicked Signal").To<Subject<IUnit>>().AsSingle();
+            var unitClickedSignal = new Subject<IUnit>();
+
+            var unitBeginDragSignal = new Subject<Tuple<IUnit, PointerEventData>>();
+            var unitDragSignal      = new Subject<Tuple<IUnit, PointerEventData>>();
+            var unitEndDragSignal   = new Subject<Tuple<IUnit, PointerEventData>>();
+
+            Container.Bind<ISubject<IUnit>>().WithId("Unit Clicked Signal").FromInstance(unitClickedSignal);
+
+            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Begin Drag Signal").FromInstance(unitBeginDragSignal);
+            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Drag Signal"      ).FromInstance(unitDragSignal);
+            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit End Drag Signal"  ).FromInstance(unitEndDragSignal);
 
             Container.Bind<UnitSignals>().AsSingle();
         }

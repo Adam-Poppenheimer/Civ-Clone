@@ -55,8 +55,10 @@ namespace Assets.Simulation.Units {
 
             newUnitObject.transform.SetParent(location.transform, false);
 
-            var newUnit = newUnitObject.GetComponent<Unit>();
+            var newUnit = newUnitObject.GetComponent<GameUnit>();
             newUnit.Template = template;
+
+            newUnit.CurrentMovement = template.MaxMovement;
 
             UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
 

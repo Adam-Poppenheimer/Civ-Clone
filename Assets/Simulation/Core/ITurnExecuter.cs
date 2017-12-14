@@ -2,6 +2,7 @@
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Core {
 
@@ -14,6 +15,9 @@ namespace Assets.Simulation.Core {
 
         void BeginTurnOnCivilization(ICivilization civilization);
         void EndTurnOnCivilization  (ICivilization civilization);
+
+        void BeginTurnOnUnit(IUnit unit);
+        void EndTurnOnUnit  (IUnit unit);
 
         #endregion
 
