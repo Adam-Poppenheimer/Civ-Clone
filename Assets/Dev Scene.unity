@@ -49039,6 +49039,48 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 0
   m_TargetDisplay: 0
+--- !u!1 &1763748230
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1763748232}
+  - component: {fileID: 1763748231}
+  m_Layer: 0
+  m_Name: Improvement Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1763748231
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1763748230}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3106cc7d12aaaa5478f3e1725c58743f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ImprovementPrefab: {fileID: 1218240267054208, guid: af9a69ddc87b1324e92922880ecaca6a,
+    type: 2}
+--- !u!4 &1763748232
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1763748230}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 8
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1767874603
 GameObject:
   m_ObjectHideFlags: 0
@@ -52742,6 +52784,7 @@ MonoBehaviour:
   - {fileID: 1899176767}
   - {fileID: 1559384034}
   - {fileID: 1516131330}
+  - {fileID: 1763748231}
   _installerPrefabs: []
   _scriptableObjectInstallers: []
   _autoRun: 1
@@ -52767,6 +52810,7 @@ Transform:
   - {fileID: 1899176768}
   - {fileID: 1559384033}
   - {fileID: 1516131329}
+  - {fileID: 1763748232}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

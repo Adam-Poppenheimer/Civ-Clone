@@ -11,4 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3fd6b2a3501ff418947e0f73f0a5b0, type: 3}
   m_Name: Test Ability
   m_EditorClassIdentifier: 
-  _commandRequests: []
+  _commandRequests:
+  - CommandType: 0
+    ArgsToPass:
+    - Farm
+  - CommandType: 0
+    ArgsToPass: []

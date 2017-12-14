@@ -15,3 +15,4 @@ MonoBehaviour:
   _name: Default Unit
   _productionCost: 40
   _type: 0
+  _abilities: []

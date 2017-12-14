@@ -47,16 +47,16 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
 
-            Container.Bind<IPopulationGrowthLogic>  ().To<PopulationGrowthLogic>  ().AsSingle();
-            Container.Bind<IProductionLogic>        ().To<ProductionLogic>        ().AsSingle();
-            Container.Bind<IResourceGenerationLogic>().To<ResourceGenerationLogic>().AsSingle();
-            Container.Bind<IBorderExpansionLogic>   ().To<BorderExpansionLogic>   ().AsSingle();
-            Container.Bind<IWorkerDistributionLogic>().To<WorkerDistributionLogic>().AsSingle();
-            Container.Bind<IBuildingProductionValidityLogic>  ().To<BuildingProductionValidityLogic>  ().AsSingle();
-            Container.Bind<ITilePossessionCanon>    ().To<TilePossessionCanon>    ().AsSingle();
-            Container.Bind<IBuildingPossessionCanon>().To<BuildingPossessionCanon>().AsSingle();
-            Container.Bind<IIncomeModifierLogic>    ().To<IncomeModifierLogic>    ().AsSingle();
-            Container.Bind<ICityValidityLogic>      ().To<CityValidityLogic>      ().AsSingle();
+            Container.Bind<IPopulationGrowthLogic>          ().To<PopulationGrowthLogic>          ().AsSingle();
+            Container.Bind<IProductionLogic>                ().To<ProductionLogic>                ().AsSingle();
+            Container.Bind<IResourceGenerationLogic>        ().To<ResourceGenerationLogic>        ().AsSingle();
+            Container.Bind<IBorderExpansionLogic>           ().To<BorderExpansionLogic>           ().AsSingle();
+            Container.Bind<IWorkerDistributionLogic>        ().To<WorkerDistributionLogic>        ().AsSingle();
+            Container.Bind<IBuildingProductionValidityLogic>().To<BuildingProductionValidityLogic>().AsSingle();
+            Container.Bind<ITilePossessionCanon>            ().To<TilePossessionCanon>            ().AsSingle();
+            Container.Bind<IBuildingPossessionCanon>        ().To<BuildingPossessionCanon>        ().AsSingle();
+            Container.Bind<IIncomeModifierLogic>            ().To<IncomeModifierLogic>            ().AsSingle();
+            Container.Bind<ICityValidityLogic>              ().To<CityValidityLogic>              ().AsSingle();
 
             Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);  
 
