@@ -28,6 +28,16 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IUnitAbilityExecuter
 
+        public bool CanExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+            foreach(var handler in AbilityHandlers) {
+                if(handler.CanHandleAbilityOnUnit(ability, unit)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
             foreach(var handler in AbilityHandlers) {
                 if(handler.TryHandleAbilityOnUnit(ability, unit)) {

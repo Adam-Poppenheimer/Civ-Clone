@@ -39,7 +39,55 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test(Description = "When ExecuteAbilityOnUnit is called, it should run down the " +
-            "AllAbilityHandlers enumerable in order, calling TryHandleOnUnit on each of them " +
+            "AllAbilityHandlers enumerable in order, calling CanHandleAbilityOnUnit on each of them " +
+            "until one returns true, at which point it returns")]
+        public void CanExecuteAbilityOnUnit_CallsUpToFirstValidHandler() {
+            var firstFalseHandler  = BuildMockHandler(false);
+            var secondFalseHandler = BuildMockHandler(false);
+
+            var firstTrueHandler  = BuildMockHandler(true);
+            var secondTrueHandler = BuildMockHandler(true);
+
+            var thirdFalseHandler = BuildMockHandler(false);
+
+            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var unit = new Mock<IUnit>().Object;            
+
+            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+
+            abilityExecuter.CanExecuteAbilityOnUnit(ability, unit);
+
+            firstFalseHandler.Verify(handler => handler.CanHandleAbilityOnUnit(ability, unit), Times.Once,
+                "FirstFalseHandler.CanHandleAbilityOnUnit was not called as expected");
+
+            secondFalseHandler.Verify(handler => handler.CanHandleAbilityOnUnit(ability, unit), Times.Once,
+                "SecondFalseHandler.CanHandleAbilityOnUnit was not called as expected");
+
+            firstTrueHandler.Verify(handler => handler.CanHandleAbilityOnUnit(ability, unit), Times.Once,
+                "FirstTrueHandler.CanHandleAbilityOnUnit was not called as expected");
+
+            secondTrueHandler.Verify(handler => handler.CanHandleAbilityOnUnit(ability, unit), Times.Never,
+                "FirstTrueHandler.CanHandleAbilityOnUnit was unexpectedly called");
+
+            thirdFalseHandler.Verify(handler => handler.CanHandleAbilityOnUnit(ability, unit), Times.Never,
+                "FirstTrueHandler.CanHandleAbilityOnUnit was unexpectedly called");
+        }
+
+        [Test(Description = "When CanExecuteAbilityOnUnit is called and there are no handlers " +
+            "for which CanHandleAbilityOnUnit returns true for the arguments, UnitAbilityExecuter " +
+            "should return false")]
+        public void CanExecuteAbilityOnUnit_ReturnsFalseIfNoValidHandlers() {
+            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var unit = new Mock<IUnit>().Object;            
+
+            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+
+            Assert.IsFalse(abilityExecuter.CanExecuteAbilityOnUnit(ability, unit),
+                "CanExecuteAbilityOnUnit returned an unexpected value");
+        }
+
+        [Test(Description = "When ExecuteAbilityOnUnit is called, it should run down the " +
+            "AllAbilityHandlers enumerable in order, calling TryHandleAbilityOnUnit on each of them " +
             "until one returns true, at which point it returns")]
         public void ExecuteAbilityOnUnit_CallsUpToFirstValidHandler() {
             var firstFalseHandler  = BuildMockHandler(false);
@@ -67,10 +115,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                 "FirstTrueHandler.TryHandleAbilityOnUnit was not called as expected");
 
             secondTrueHandler.Verify(handler => handler.TryHandleAbilityOnUnit(ability, unit), Times.Never,
-                "FirstTrueHandler.TryHandleAbilityOnUnit was not called as expected");
+                "FirstTrueHandler.TryHandleAbilityOnUnit was unexpectedly called");
 
             thirdFalseHandler.Verify(handler => handler.TryHandleAbilityOnUnit(ability, unit), Times.Never,
-                "FirstTrueHandler.TryHandleAbilityOnUnit was not called as expected");
+                "FirstTrueHandler.TryHandleAbilityOnUnit was unexpectedly called");
         }
 
         [Test(Description = "When ExecuteAbilityOnUnit is called and there are no handlers " +
@@ -95,6 +143,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             mockHandler.Setup(handler => handler.TryHandleAbilityOnUnit(
                 It.IsAny<IUnitAbilityDefinition>(), It.IsAny<IUnit>())
             ).Returns(canHandle);
+
+            mockHandler.Setup(handler => handler.CanHandleAbilityOnUnit(
+                It.IsAny<IUnitAbilityDefinition>(), It.IsAny<IUnit>()
+            )).Returns(canHandle);
 
             AllAbilityHandlers.Add(mockHandler.Object);
 

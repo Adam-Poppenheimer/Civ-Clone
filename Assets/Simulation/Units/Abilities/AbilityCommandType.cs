@@ -6,7 +6,8 @@ using System.Text;
 namespace Assets.Simulation.Units.Abilities {
 
     public enum AbilityCommandType {
-        BuildImprovement = 0
+        BuildImprovement = 0,
+        FoundCity = 1,
     }
 
 }

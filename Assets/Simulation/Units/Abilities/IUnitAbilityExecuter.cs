@@ -9,6 +9,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region methods
 
+        bool CanExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
+
         void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
 
         #endregion
