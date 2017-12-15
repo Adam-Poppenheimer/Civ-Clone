@@ -13,7 +13,7 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        
+        [SerializeField] private GameObject AbilityDisplayPrefab;
 
         #endregion
 
@@ -22,7 +22,9 @@ namespace Assets.UI.Units {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            
+            Container.BindMemoryPool<IAbilityDisplay, AbilityDisplayMemoryPool>()
+                .To<AbilityDisplay>()
+                .FromComponentInNewPrefab(AbilityDisplayPrefab);
         }
 
         #endregion

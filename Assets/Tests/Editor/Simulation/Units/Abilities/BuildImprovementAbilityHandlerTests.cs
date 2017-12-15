@@ -143,7 +143,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         [Test(Description = "CanHandleAbilityOnUnit should return true if and only if the following conditions are met:\n" + 
             "\t1. There is exactly one CommandRequest whose type is BuildImprovement\n" +
             "\t2. That command request has an argument that is the name of some template in Available Improvement Templates\n" +
-            "\t3. The improvement of that name is valid on the argued unit's location")]
+            "\t3. The improvement of that name is valid on the argued unit's location\n")]
         [TestCaseSource("CanHandleAbilityCases")]
         public bool CanHandleAbilityOnUnitTests(
             string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,

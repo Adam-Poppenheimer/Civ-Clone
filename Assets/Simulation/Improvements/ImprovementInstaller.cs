@@ -35,6 +35,8 @@ namespace Assets.Simulation.Improvements {
                 .FromInstance(AvailableTemplates.Cast<IImprovementTemplate>());
 
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
+
+            Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
         }
 
         #endregion

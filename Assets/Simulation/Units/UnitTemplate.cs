@@ -36,8 +36,8 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private UnitType _type;
 
-        public IEnumerable<UnitAbilityDefinition> Abilities {
-            get { return _abilities; }
+        public IEnumerable<IUnitAbilityDefinition> Abilities {
+            get { return _abilities.Cast<IUnitAbilityDefinition>(); }
         }
         [SerializeField] private List<UnitAbilityDefinition> _abilities;
 

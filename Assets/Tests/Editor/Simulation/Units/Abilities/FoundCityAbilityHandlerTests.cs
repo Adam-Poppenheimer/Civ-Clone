@@ -114,7 +114,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test(Description = "CanHandleAbilityOnUnit should return true if and only if the following conditions are met:\n" +
-            "\t1. CommandRequests contains a request whose type if FoundCity" +
+            "\t1. CommandRequests contains a request whose type if FoundCity\n" +
             "\t2. the tile the activating unit is on is a valid location for a city")]
         [TestCaseSource("CanHandleAbilityCases")]
         public bool CanHandleAbilityOnUnitTests(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,

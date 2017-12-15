@@ -19,7 +19,7 @@ namespace Assets.Simulation.Units {
 
         UnitType Type { get; }
 
-        IEnumerable<UnitAbilityDefinition> Abilities { get; }
+        IEnumerable<IUnitAbilityDefinition> Abilities { get; }
 
         #endregion
 
