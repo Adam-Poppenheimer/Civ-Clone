@@ -12,6 +12,8 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.GameMap;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -22,6 +24,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IBuildingPossessionCanon> MockBuildingPossession;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossession;
+        private Mock<IPossessionRelationship<IMapTile, IImprovement>> MockImprovementPositionCanon;
+
+        private Mock<IMapHexGrid> MockMap;
+
+        private List<IMapTile> AllTiles = new List<IMapTile>();
 
         #endregion
 
@@ -31,11 +38,19 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockBuildingPossession = new Mock<IBuildingPossessionCanon>();
-            MockCityPossession     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            AllTiles.Clear();
 
-            Container.Bind<IBuildingPossessionCanon>()                     .FromInstance(MockBuildingPossession.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession.Object);
+            MockBuildingPossession       = new Mock<IBuildingPossessionCanon>();
+            MockCityPossession           = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockImprovementPositionCanon = new Mock<IPossessionRelationship<IMapTile, IImprovement>>();
+            MockMap                      = new Mock<IMapHexGrid>();
+
+            MockMap.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
+
+            Container.Bind<IBuildingPossessionCanon>                       ().FromInstance(MockBuildingPossession      .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>  ().FromInstance(MockCityPossession          .Object);
+            Container.Bind<IPossessionRelationship<IMapTile, IImprovement>>().FromInstance(MockImprovementPositionCanon.Object);
+            Container.Bind<IMapHexGrid>                                    ().FromInstance(MockMap                     .Object);
 
             Container.Bind<IncomeModifierLogic>().AsSingle();
         }
@@ -43,6 +58,41 @@ namespace Assets.Tests.Simulation.Cities {
         #endregion
 
         #region tests
+
+        [Test(Description = "GetRealBaseYieldForSlot should return the slot's base yield " +
+            "as a default value, if no other modifiers apply")]
+        public void GetRealBaseYieldForSlot_ReturnsBaseYieldAsDefault() {
+            var slot = BuildSlot(new ResourceSummary(food: 1, production: 2));
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(slot.BaseYield, modifierLogic.GetRealBaseYieldForSlot(slot),
+                "GetRealBaseYieldForSlot returned an unexpected value");
+        }
+
+        [Test(Description = "When GetRealBaseYieldForSlot is called, it should determine " +
+            "whether its slot belongs to some tile. If it does, it should search for any " +
+            "improvements on that tile and add their bonus yield to GetRealBaseYieldForSlot's " +
+            "return value")]
+        public void GetRealBaseYieldForSlot_ConsidersImprovementsOnTileSlots() {
+            var untiledSlot = BuildSlot(new ResourceSummary(food: 1, production: 2, gold: 3));
+            var tiledSlot   = BuildSlot(new ResourceSummary(food: 1, production: 2, gold: 3));
+
+            var tile = BuildTile(tiledSlot);
+
+            var improvement = BuildImprovement(tile, new ResourceSummary(food: 2, production: 1));
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(untiledSlot.BaseYield, modifierLogic.GetRealBaseYieldForSlot(untiledSlot),
+                "GetRealBaseYieldForSlot returned an unexpected value for untiledSlot");
+
+            Assert.AreEqual(
+                tiledSlot.BaseYield + improvement.Template.BonusYield,
+                modifierLogic.GetRealBaseYieldForSlot(tiledSlot),
+                "GetRealBaseYieldForSlot returned an unexpected value for tiledSlot"
+            );
+        }
 
         [Test(Description = "When GetYieldMultipliersForCivilization is called, " +
             "it should return ResourceSummary.Empty as a default value")]
@@ -125,6 +175,9 @@ namespace Assets.Tests.Simulation.Cities {
         public void AllMethods_ThrowOnNullArguments() {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
+            Assert.Throws<ArgumentNullException>(() => modifierLogic.GetRealBaseYieldForSlot(null),
+                "GetRealBaseYieldForSlot failed to throw on a null argument");
+
             Assert.Throws<ArgumentNullException>(() => modifierLogic.GetYieldMultipliersForCivilization(null),
                 "GetYieldMultipliersForCivilization failed to throw on a null argument");
 
@@ -169,6 +222,38 @@ namespace Assets.Tests.Simulation.Cities {
                 .Returns(cities);
 
             return civilization;
+        }
+
+        private IImprovement BuildImprovement(IMapTile location, ResourceSummary bonusYield) {
+            var mockImprovment = new Mock<IImprovement>();
+
+            var mockTemplate = new Mock<IImprovementTemplate>();
+            mockTemplate.Setup(template => template.BonusYield).Returns(bonusYield);
+
+            mockImprovment.Setup(improvement => improvement.Template).Returns(mockTemplate.Object);
+
+            MockImprovementPositionCanon
+                .Setup(canon => canon.GetPossessionsOfOwner(location))
+                .Returns(new List<IImprovement>() { mockImprovment.Object });
+
+            return mockImprovment.Object;
+        }
+
+        private IWorkerSlot BuildSlot(ResourceSummary baseYield) {
+            var mockSlot = new Mock<IWorkerSlot>();
+
+            mockSlot.Setup(slot => slot.BaseYield).Returns(baseYield);
+
+            return mockSlot.Object;
+        }
+
+        private IMapTile BuildTile(IWorkerSlot slot) {
+            var mockTile = new Mock<IMapTile>();
+
+            mockTile.Setup(tile => tile.WorkerSlot).Returns(slot);
+            AllTiles.Add(mockTile.Object);
+
+            return mockTile.Object;
         }
 
         #endregion

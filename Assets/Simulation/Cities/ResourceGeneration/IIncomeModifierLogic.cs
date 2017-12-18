@@ -12,6 +12,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region methods
 
+        ResourceSummary GetRealBaseYieldForSlot(IWorkerSlot slot);
+
         ResourceSummary GetYieldMultipliersForSlot(IWorkerSlot slot);
 
         ResourceSummary GetYieldMultipliersForCity(ICity city);

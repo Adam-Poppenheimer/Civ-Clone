@@ -7,6 +7,8 @@ using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.GameMap;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 
@@ -18,16 +20,25 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private IMapHexGrid Map;
+
+        private IPossessionRelationship<IMapTile, IImprovement> ImprovementPositionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public IncomeModifierLogic(IBuildingPossessionCanon buildingPossessionCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
-
-            BuildingPossessionCanon = buildingPossessionCanon;
-            CityPossessionCanon = cityPossessionCanon;
+        public IncomeModifierLogic(
+            IBuildingPossessionCanon buildingPossessionCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IMapTile, IImprovement> improvementPositionCanon,
+            IMapHexGrid map
+        ){
+            BuildingPossessionCanon  = buildingPossessionCanon;
+            CityPossessionCanon      = cityPossessionCanon;
+            ImprovementPositionCanon = improvementPositionCanon;
+            Map                      = map;
         }
 
         #endregion
@@ -35,6 +46,25 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region instance methods
 
         #region from IIncomeModifierLogic
+
+        public ResourceSummary GetRealBaseYieldForSlot(IWorkerSlot slot) {
+            if(slot == null) {
+                throw new ArgumentNullException("slot");
+            }
+
+            var baseYield = slot.BaseYield;
+
+            var tileOfSlot = Map.Tiles.Where(tile => tile.WorkerSlot == slot).FirstOrDefault();
+
+            if(tileOfSlot != null) {
+                var improvementOnTile = ImprovementPositionCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();
+                if(improvementOnTile != null) {
+                    baseYield += improvementOnTile.Template.BonusYield;
+                }
+            }
+
+            return baseYield;
+        }
 
         public ResourceSummary GetYieldMultipliersForCity(ICity city) {
             if(city == null) {

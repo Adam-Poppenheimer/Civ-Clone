@@ -70,13 +70,13 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region test
 
-        [Test(Description = "GetYieldOfSlotForCity returns the base yield of any slot " + 
-            "as long as there are no modifiers applied to it")]
+        [Test(Description = "GetYieldOfSlotForCity should return IncomeModifierLogic.GetRealBaseYieldForSlot " + 
+            "if there are no modifiers applied to the slot")]
         public void GetYieldOfSlotForCity_ReturnsBaseYieldIfNoModifiers() {
             var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
 
             var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
-            var slot = BuildSlot(slotYield, true);            
+            var slot = BuildSlot(slotYield, true);
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
 
@@ -87,7 +87,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When GetYieldOfSlotForCity is called, it multiplies its base calculation " +
             "by income modifiers on the slot itself, the city that controls it, and the civilization " +
             "the city belongs to. All of the multipliers should be added together, added to ResourceSummary.Ones, " +
-            "and then multiplied against the base yield")]
+            "and then multiplied against the real base yield as determined by IncomeModifierLogic.GetRealBaseYieldForSlot")]
         public void GetYieldOfSlotForCity_ConsidersIncomeModifiers() {            
             var slotYield = new ResourceSummary(food: 1, gold: 1, production: 1, culture: 0);
             var slot = BuildSlot(slotYield, true);
@@ -140,7 +140,8 @@ namespace Assets.Tests.Simulation.Cities {
         }
 
         [Test(Description = "GetYieldOfUnemployedForCity should return the value stored in " +
-            "ResourceGenerationConfig")]
+            "ResourceGenerationConfig if there are no city or civilizational modifiers applying " +
+            "to resource yield")]
         public void GetYieldOfUnemployedForCity_ReturnsConfiguredValue() {
             var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
 
@@ -381,7 +382,7 @@ namespace Assets.Tests.Simulation.Cities {
             var slotMock = new Mock<IWorkerSlot>();
 
             slotMock.SetupAllProperties();
-            slotMock.Setup(slot => slot.BaseYield).Returns(yield);
+            MockIncomeLogic.Setup(logic => logic.GetRealBaseYieldForSlot(slotMock.Object)).Returns(yield);
 
             slotMock.Object.IsOccupied = isOccupied;
 
