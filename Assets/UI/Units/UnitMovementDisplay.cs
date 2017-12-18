@@ -88,7 +88,9 @@ namespace Assets.UI.Units {
 
                 var unitLocation = PositionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
-                if(unitLocation == ProspectiveTravelGoal) {
+                if( unitLocation == ProspectiveTravelGoal ||
+                    !PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, ProspectiveTravelGoal)
+                ){
                     ProspectivePath = null;
                 }else {
                     ProspectivePath = Map.GetShortestPathBetween(

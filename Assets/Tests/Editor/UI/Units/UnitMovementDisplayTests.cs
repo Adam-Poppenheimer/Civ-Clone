@@ -221,6 +221,33 @@ namespace Assets.Tests.UI.Units {
             Assert.Null(movementDisplay.ProspectivePath, "ProspectivePath is unexpectedly non-null");
         }
 
+        [Test(Description = "When MapTileSignals.TilePointerEntered fires on a tile that " +
+            "is not a valid location for ObjectToDisplay, ProspectivePath should be set to null")]
+        public void TilePointerEnterFired_NullPathOnInvalidLocation() {
+            var unitLocation = BuildTile();
+            var unit = BuildUnit(unitLocation);
+
+            var enteredTile = BuildTile();
+
+            BuildPath(unitLocation, enteredTile, 3);
+
+            var movementDisplay = Container.Resolve<UnitMovementDisplay>();
+            movementDisplay.OnEnable();
+            movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+
+            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
+
+            tileEnterSignal.Fire(enteredTile, eventData);
+
+            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(unit.Template.Type, enteredTile)).Returns(false);
+
+            tileEnterSignal.Fire(enteredTile, eventData);
+
+            Assert.Null(movementDisplay.ProspectivePath, "ProspectivePath is unexpectedly non-null");
+        }
+
         [Test(Description = "When MapTileSignals.PointerExitSignal fires, UnitMovementDisplay " +
             "should null ProspectiveTravelGoal, ProspectivePath, and call PathDrawer.ClearAllPaths()")]
         public void TilePointerExitFired_EverythingCleared() {
@@ -318,11 +345,17 @@ namespace Assets.Tests.UI.Units {
             return BuildMockUnit(location).Object;            
         }
 
-        private Mock<IUnit> BuildMockUnit(IMapTile location) {
+        private Mock<IUnit> BuildMockUnit(IMapTile location, UnitType type = UnitType.LandMilitary) {
             var mockUnit = new Mock<IUnit>();
             mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
 
+            var mockTemplate = new Mock<IUnitTemplate>();
+            mockTemplate.Setup(template => template.Type).Returns(type);
+
+            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+
             MockPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
+            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(type, It.IsAny<IMapTile>())).Returns(true);
 
             return mockUnit;
         }
