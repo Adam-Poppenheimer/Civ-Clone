@@ -95,7 +95,13 @@ namespace Assets.UI.Units {
                 }else {
                     ProspectivePath = Map.GetShortestPathBetween(
                         unitLocation, ProspectiveTravelGoal, 
-                        tileInMap => TerrainCostLogic.GetCostToMoveUnitIntoTile(ObjectToDisplay, tileInMap)
+                        delegate(IMapTile tileInMap) {
+                            if(PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, tileInMap)) {
+                               return  TerrainCostLogic.GetCostToMoveUnitIntoTile(ObjectToDisplay, tileInMap);
+                            }else {
+                                return -1;
+                            }
+                        }
                     );
                 }                
 
