@@ -11,6 +11,7 @@ using Zenject;
 using Assets.Simulation.GameMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Distribution;
+using Assets.Simulation.Cities.Territory;
 
 namespace Assets.Simulation.Cities {
 
@@ -33,17 +34,24 @@ namespace Assets.Simulation.Cities {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private IMapHexGrid Map;
+
+        private ITilePossessionCanon TilePossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
         public RecordkeepingCityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IMapHexGrid map, 
+            ITilePossessionCanon tilePossessionCanon
         ){
-            Container = container;
-            CityPrefab = cityPrefab;
+            Container           = container;
+            CityPrefab          = cityPrefab;
             CityPossessionCanon = cityPossessionCanon;
+            Map                 = map;
+            TilePossessionCanon = tilePossessionCanon;
         }
 
         #endregion
@@ -52,7 +60,7 @@ namespace Assets.Simulation.Cities {
 
         #region from IRecordkeepingCityFactory
 
-        public ICity Create(IMapTile location, ICivilization owner) {
+        public ICity Create(IMapTile location, ICivilization owner){
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
@@ -62,6 +70,11 @@ namespace Assets.Simulation.Cities {
             newCity.Population = 1;
             newCity.Location = location;
             location.SuppressSlot = true;
+
+            TilePossessionCanon.ChangeOwnerOfTile(location, newCity);
+            foreach(var neighbor in Map.GetNeighbors(location)) {
+                TilePossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
+            }
             
             CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
 

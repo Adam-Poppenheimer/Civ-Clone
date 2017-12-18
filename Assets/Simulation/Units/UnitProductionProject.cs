@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -32,14 +33,19 @@ namespace Assets.Simulation.Units {
 
         private IUnitFactory UnitFactory;
 
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitProductionProject(IUnitTemplate template, IUnitFactory unitFactory) {
+        public UnitProductionProject(IUnitTemplate template, IUnitFactory unitFactory,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+        ){
             TemplateToConstruct = template;
-            UnitFactory = unitFactory;
+            UnitFactory         = unitFactory;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -49,7 +55,7 @@ namespace Assets.Simulation.Units {
         #region from IProductionProject
 
         public void Execute(ICity targetCity) {
-            UnitFactory.Create(targetCity.Location, TemplateToConstruct);
+            UnitFactory.Create(targetCity.Location, TemplateToConstruct, CityPossessionCanon.GetOwnerOfPossession(targetCity));
         }
 
         #endregion

@@ -4,14 +4,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.GameMap;
 using Assets.Simulation.Units;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Units.Abilities {
 
@@ -22,7 +26,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region test cases
 
-        private static IEnumerable CanHandleAbilityCases {
+        private static IEnumerable TestCases {
             get {
                 yield return new TestCaseData(
                     "Found City",
@@ -30,7 +34,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
                     },
                     true
-                ).SetName("Correct command type and valid unit location").Returns(true);
+                ).SetName("True on correct command type and valid unit location").Returns(true);
 
                 yield return new TestCaseData(
                     "Chad",
@@ -38,7 +42,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
                     },
                     true
-                ).SetName("AbilityName isn't relevant").Returns(true);
+                ).SetName("True regardless of AbilityName").Returns(true);
 
                 yield return new TestCaseData(
                     "Chad",
@@ -49,7 +53,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         }
                     },
                     true
-                ).SetName("Args are ignored").Returns(true);
+                ).SetName("True regardless of Args").Returns(true);
 
                 yield return new TestCaseData(
                     "Found City",
@@ -57,7 +61,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
                     },
                     false
-                ).SetName("Correct command type but invalid unit location").Returns(false);
+                ).SetName("False on correct command type but invalid unit location").Returns(false);
 
                 yield return new TestCaseData(
                     "Found City",
@@ -65,7 +69,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement }
                     },
                     true
-                ).SetName("Incorrect command type and valid unit location").Returns(false);
+                ).SetName("false on incorrect command type and valid unit location").Returns(false);
 
                 yield return new TestCaseData(
                     "Found City",
@@ -74,7 +78,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
                     },
                     true
-                ).SetName("Redundant FoundCity commands").Returns(true);
+                ).SetName("True on redundant FoundCity commands").Returns(true);
             }
         }
 
@@ -90,6 +94,8 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         private Mock<IRecordkeepingCityFactory> MockCityFactory;
 
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitOwnershipCanon;
+
         #endregion
 
         #region instance methods
@@ -98,13 +104,15 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         [SetUp]
         public void CommonInstall() {
-            MockCityValidityLogic = new Mock<ICityValidityLogic>();
-            MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
-            MockCityFactory       = new Mock<IRecordkeepingCityFactory>();
+            MockCityValidityLogic  = new Mock<ICityValidityLogic>();
+            MockUnitPositionCanon  = new Mock<IUnitPositionCanon>();
+            MockCityFactory        = new Mock<IRecordkeepingCityFactory>();
+            MockUnitOwnershipCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
 
-            Container.Bind<ICityValidityLogic>       ().FromInstance(MockCityValidityLogic.Object);
-            Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<IRecordkeepingCityFactory>().FromInstance(MockCityFactory      .Object);
+            Container.Bind<ICityValidityLogic>                           ().FromInstance(MockCityValidityLogic .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon .Object);
+            Container.Bind<IRecordkeepingCityFactory>                    ().FromInstance(MockCityFactory       .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitOwnershipCanon.Object);
 
             Container.Bind<FoundCityAbilityHandler>().AsSingle();
         }
@@ -116,23 +124,74 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         [Test(Description = "CanHandleAbilityOnUnit should return true if and only if the following conditions are met:\n" +
             "\t1. CommandRequests contains a request whose type if FoundCity\n" +
             "\t2. the tile the activating unit is on is a valid location for a city")]
-        [TestCaseSource("CanHandleAbilityCases")]
+        [TestCaseSource("TestCases")]
         public bool CanHandleAbilityOnUnitTests(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
             bool unitTileValidForCity
         ){
             var ability = BuildAbility(abilityName, commandRequests);
 
-            var unit = BuildUnit(BuildTile(unitTileValidForCity));
+            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
             return abilityHandler.CanHandleAbilityOnUnit(ability, unit);
         }
 
-        [Test(Description = "")]
-        public void TryHandleAbilityOnUnit() {
-            throw new NotImplementedException("Need tests for valid, invalid, and exceptional cases");
+        [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
+            "but should also create a city on the location and with the owner of the argued unit")]
+        [TestCaseSource("TestCases")]
+        public bool TryHandleAbilityOnUnit_CityCreatedWhenValid(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
+            bool unitTileValidForCity
+        ){
+            var ability = BuildAbility(abilityName, commandRequests);
+
+            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
+
+            var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
+
+            var canResolve = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+
+            if(canResolve) {
+                MockCityFactory.Verify(
+                    factory => factory.Create(
+                        MockUnitPositionCanon .Object.GetOwnerOfPossession(unit),
+                        MockUnitOwnershipCanon.Object.GetOwnerOfPossession(unit)
+                    ),
+                    Times.Once,
+                    "CityFactory.Create was not called as expected"
+                );
+            }else {
+                MockCityFactory.Verify(factory => factory.Create(It.IsAny<IMapTile>(), It.IsAny<ICivilization>()),
+                    Times.Never, "CityFactory.Create was unexpectedly called");
+            }
+
+            return canResolve;
         }
+
+        [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
+            "but should also destroy the argued unit when it returns true")]
+        [TestCaseSource("TestCases")]
+        public bool TryHandleAbilityOnUnit_UnitDestroyedWhenValid(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
+            bool unitTileValidForCity
+        ){
+            var ability = BuildAbility(abilityName, commandRequests);
+
+            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
+
+            var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
+
+            var canResolve = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+
+            if(canResolve) {
+                Assert.That(unit.gameObject == null, "Unit.gameObject was not destroyed as expected");
+            }else {
+                Assert.That(unit.gameObject != null, "Unit.gameObject was unexpectedly destroyed");
+            }
+
+            return canResolve;
+        }
+
+
 
         #endregion
 
@@ -147,10 +206,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockAbility.Object;
         }
 
-        private IUnit BuildUnit(IMapTile location) {
+        private IUnit BuildUnit(IMapTile location, ICivilization owner) {
             var mockUnit = new Mock<IUnit>();
 
+            mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
+
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
+
+            MockUnitOwnershipCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(owner);
 
             return mockUnit.Object;
         }
@@ -161,6 +224,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockCityValidityLogic.Setup(logic => logic.IsTileValidForCity(mockTile.Object)).Returns(validForCity);
 
             return mockTile.Object;
+        }
+
+        private ICivilization BuildCivilization() {
+            return new Mock<ICivilization>().Object;
         }
 
         #endregion

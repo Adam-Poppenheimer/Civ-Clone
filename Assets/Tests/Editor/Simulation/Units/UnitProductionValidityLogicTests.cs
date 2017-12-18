@@ -67,6 +67,8 @@ namespace Assets.Tests.Simulation.Units {
 
         private Mock<IUnitPositionCanon> MockPositionCanon;
 
+        private List<IUnitTemplate> AllTemplates = new List<IUnitTemplate>();
+
         #endregion
 
         #region instance methods
@@ -75,9 +77,13 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
+            AllTemplates.Clear();
+
             MockPositionCanon = new Mock<IUnitPositionCanon>();
             
             Container.Bind<IUnitPositionCanon>().FromInstance(MockPositionCanon.Object);
+
+            Container.Bind<IEnumerable<IUnitTemplate>>().WithId("Available Unit Templates").FromInstance(AllTemplates);
 
             Container.Bind<UnitProductionValidityLogic>().AsSingle();
         }

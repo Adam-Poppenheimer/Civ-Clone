@@ -3,9 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units.Abilities {
 
@@ -19,17 +22,21 @@ namespace Assets.Simulation.Units.Abilities {
 
         private IRecordkeepingCityFactory CityFactory;
 
+        private IPossessionRelationship<ICivilization, IUnit> UnitOwnershipCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
         public FoundCityAbilityHandler(ICityValidityLogic cityValidityLogic,
-            IUnitPositionCanon unitPositionCanon, IRecordkeepingCityFactory cityFactory
+            IUnitPositionCanon unitPositionCanon, IRecordkeepingCityFactory cityFactory,
+            IPossessionRelationship<ICivilization, IUnit> unitOwnershipCanon
         ){
-            CityValidityLogic = cityValidityLogic;
-            UnitPositionCanon = unitPositionCanon;
-            CityFactory = cityFactory;
+            CityValidityLogic  = cityValidityLogic;
+            UnitPositionCanon  = unitPositionCanon;
+            CityFactory        = cityFactory;
+            UnitOwnershipCanon = unitOwnershipCanon;
         }
 
         #endregion
@@ -50,7 +57,19 @@ namespace Assets.Simulation.Units.Abilities {
         }
 
         public bool TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
-            return false;
+            if(CanHandleAbilityOnUnit(ability, unit)) {
+                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), UnitOwnershipCanon.GetOwnerOfPossession(unit));
+
+                if(Application.isPlaying) {
+                    GameObject.Destroy(unit.gameObject);
+                }else {
+                    GameObject.DestroyImmediate(unit.gameObject);
+                }                
+
+                return true;
+            }else {
+                return false;
+            }
         }
 
         #endregion

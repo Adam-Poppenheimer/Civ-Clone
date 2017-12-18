@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.GameMap;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -28,6 +29,8 @@ namespace Assets.Simulation.Units {
 
         private IUnitPositionCanon UnitPositionCanon;
 
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
         private GameObject UnitPrefab;
 
         #endregion
@@ -36,11 +39,13 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitFactory(DiContainer container, IUnitPositionCanon unitPositionCanon,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             [Inject(Id = "Unit Prefab")] GameObject unitPrefab
         ){
-            Container = container;
-            UnitPositionCanon = unitPositionCanon;
-            UnitPrefab = unitPrefab;
+            Container           = container;
+            UnitPositionCanon   = unitPositionCanon;
+            UnitPossessionCanon = unitPossessionCanon;
+            UnitPrefab          = unitPrefab;
         }
 
         #endregion
@@ -49,7 +54,7 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitFactory
 
-        public IUnit Create(IMapTile location, IUnitTemplate template) {
+        public IUnit Create(IMapTile location, IUnitTemplate template, ICivilization owner) {
             var newUnitObject = GameObject.Instantiate(UnitPrefab);
             Container.InjectGameObject(newUnitObject);
 
@@ -61,6 +66,7 @@ namespace Assets.Simulation.Units {
             newUnit.CurrentMovement = template.MaxMovement;
 
             UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
+            UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);
 
             allUnits.Add(newUnit);
 

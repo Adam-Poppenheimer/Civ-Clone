@@ -14,6 +14,8 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
+        private DiContainer Container;
+
         private IBuildingFactory BuildingFactory;
 
         private IUnitFactory UnitFactory;
@@ -23,9 +25,10 @@ namespace Assets.Simulation.Cities.Production {
         #region constructors
 
         [Inject]
-        public ProductionProjectFactory(IBuildingFactory buildingFactory, IUnitFactory unitFactory) {
+        public ProductionProjectFactory(DiContainer container, IBuildingFactory buildingFactory, IUnitFactory unitFactory) {
+            Container       = container;
             BuildingFactory = buildingFactory;
-            UnitFactory = unitFactory;
+            UnitFactory     = unitFactory;
         }
 
         #endregion
@@ -39,7 +42,7 @@ namespace Assets.Simulation.Cities.Production {
         }
 
         public IProductionProject ConstructUnitProject(IUnitTemplate template) {
-            return new UnitProductionProject(template, UnitFactory);
+            return Container.Instantiate<UnitProductionProject>( new List<object>() { template, UnitFactory } );
         }
 
         #endregion
