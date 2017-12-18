@@ -33,7 +33,7 @@ namespace Assets.Tests.UI.Units {
         public void CommonInstall() {
             InstantiatedDisplays.Clear();
 
-            Container.BindMemoryPool<IAbilityDisplay, MemoryPool<IAbilityDisplay>>().FromMethod(delegate(DiContainer container) {
+            Container.BindMemoryPool<IAbilityDisplay, AbilityDisplayMemoryPool>().FromMethod(delegate(DiContainer container) {
                 var mockDisplay = new Mock<IAbilityDisplay>();
                 mockDisplay.SetupAllProperties();
 
@@ -103,7 +103,7 @@ namespace Assets.Tests.UI.Units {
             abilitiesDisplay.ObjectToDisplay = unitThree;
             abilitiesDisplay.Refresh();
 
-            var memoryPool = Container.Resolve<MemoryPool<IAbilityDisplay>>();
+            var memoryPool = Container.Resolve<AbilityDisplayMemoryPool>();
 
             Assert.AreEqual(2, memoryPool.NumActive, "MemoryPool has an unexpected number of active items");
             Assert.AreEqual(2, memoryPool.NumInactive, "MemoryPool has an unexpected number of inactive items");

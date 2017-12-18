@@ -50,9 +50,10 @@ namespace Assets.Simulation.Improvements {
 
             var newGameObject = GameObject.Instantiate(ImprovementPrefab);
 
-            Container.Inject(newGameObject, new List<object>() { template });
+            Container.InjectGameObject(newGameObject);
 
-            var newImprovement = newGameObject.GetComponent<IImprovement>();
+            var newImprovement = newGameObject.GetComponent<Improvement>();
+            newImprovement.Template = template;
 
             ImprovementLocationCanon.ChangeOwnerOfPossession(newImprovement, location);
 

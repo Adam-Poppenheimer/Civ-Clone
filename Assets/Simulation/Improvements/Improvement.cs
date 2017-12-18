@@ -21,7 +21,7 @@ namespace Assets.Simulation.Improvements {
             }
         }
 
-        public IImprovementTemplate Template { get; private set; }
+        public IImprovementTemplate Template { get; set; }
 
         public float WorkInvested { get; set; }
 
@@ -32,8 +32,8 @@ namespace Assets.Simulation.Improvements {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IImprovementTemplate template) {
-            Template = template;
+        public void InjectDependencies() {
+
         }
 
         #endregion

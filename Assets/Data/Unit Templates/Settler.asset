@@ -9,13 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
-  m_Name: Default Unit Template
+  m_Name: Settler
   m_EditorClassIdentifier: 
   _maxMovement: 2
-  _name: Default Unit
-  _productionCost: 40
-  _type: 0
+  _name: Settler
+  _productionCost: 20
+  _type: 1
   _abilities:
-  - {fileID: 11400000, guid: 55849e5c6d2df0d41ad9f3cfff6ced97, type: 2}
-  - {fileID: 11400000, guid: 889583ea605a058488b9537000452202, type: 2}
   - {fileID: 11400000, guid: 3d8d72eb7c0b7864fae2891a9ec0cd47, type: 2}

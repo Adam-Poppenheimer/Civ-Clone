@@ -64,7 +64,8 @@ namespace Assets.Simulation.Units.Abilities {
                 var templateOfName = AvailableTemplates.Where(template => template.name.Equals(improvementName)).FirstOrDefault();
                 
                 if(templateOfName != null && ValidityLogic.IsTemplateValidForTile(templateOfName, unitLocation)) {
-                    throw new NotImplementedException();
+                    ImprovementFactory.Create(templateOfName, unitLocation);
+                    return true;
                 }
             }
 

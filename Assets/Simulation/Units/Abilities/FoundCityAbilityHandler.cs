@@ -50,7 +50,7 @@ namespace Assets.Simulation.Units.Abilities {
         }
 
         public bool TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
-            throw new NotImplementedException();
+            return false;
         }
 
         #endregion

@@ -197,9 +197,28 @@ namespace Assets.Tests.UI.Units {
                 "PathDrawer.DrawPath was incorrectly called");
         }
 
-        [Test(Description = "")]
-        public void TilePointerEnteredFired_DoesSmartThingsOnSameTile() {
-            throw new NotImplementedException();
+        [Test(Description = "When MapTileSignals.TilePointerEntered fires on the same tile " +
+            "where ObjectToDisplay is located, ProspectivePath should be set to null")]
+        public void TilePointerEnteredFired_NullsPathOnSameTile() {
+            var unitLocation = BuildTile();
+            var unit = BuildUnit(unitLocation);
+
+            var enteredTile = BuildTile();
+
+            BuildPath(unitLocation, enteredTile, 3);
+
+            var movementDisplay = Container.Resolve<UnitMovementDisplay>();
+            movementDisplay.OnEnable();
+            movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+
+            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
+
+            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(unitLocation, eventData);
+
+            Assert.Null(movementDisplay.ProspectivePath, "ProspectivePath is unexpectedly non-null");
         }
 
         [Test(Description = "When MapTileSignals.PointerExitSignal fires, UnitMovementDisplay " +

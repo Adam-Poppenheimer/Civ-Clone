@@ -17514,6 +17514,7 @@ MonoBehaviour:
   LandTerrainTypes: 000000000100000002000000
   ImpassableTerrainShapes: 02000000
   AvailableTemplates:
+  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
 --- !u!1 &1560120815
 GameObject:
@@ -20008,7 +20009,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ImprovementPrefab: {fileID: 1218240267054208, guid: af9a69ddc87b1324e92922880ecaca6a,
     type: 2}
-  AvailableTemplates: []
+  AvailableTemplates:
+  - {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
+  - {fileID: 11400000, guid: de08c5dd70339824cb2f33f9865f2d3b, type: 2}
 --- !u!4 &1763748232
 Transform:
   m_ObjectHideFlags: 0
