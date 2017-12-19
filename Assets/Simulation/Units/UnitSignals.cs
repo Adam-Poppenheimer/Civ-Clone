@@ -31,22 +31,15 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitSignals(
-            [Inject(Id = "Unit Clicked Signal"   )] ISubject<IUnit> unitClickedSignal,
-            [Inject(Id = "Unit Begin Drag Signal")] ISubject<Tuple<IUnit, PointerEventData>> unitBeginDragSignal,
-            [Inject(Id = "Unit Drag Signal"      )] ISubject<Tuple<IUnit, PointerEventData>> unitDragSignal,
-            [Inject(Id = "Unit End Drag Signal"  )] ISubject<Tuple<IUnit, PointerEventData>> unitEndDragSignal,
-            [Inject(Id = "Unit Location Changed Signal")]  ISubject<Tuple<IUnit, IMapTile>> unitLocationChangedSignal,
-            [Inject(Id = "Unit Activated Ability Signal")] ISubject<Tuple<IUnit, IUnitAbilityDefinition>> unitActivatedAbilitySignal
-        ) {
-            UnitClickedSignal          = unitClickedSignal;
+        public UnitSignals() {
+            UnitClickedSignal          = new Subject<IUnit>();
 
-            UnitBeginDragSignal        = unitBeginDragSignal;
-            UnitDragSignal             = unitDragSignal;
-            UnitEndDragSignal          = unitEndDragSignal;
+            UnitBeginDragSignal        = new Subject<Tuple<IUnit, PointerEventData>>();
+            UnitDragSignal             = new Subject<Tuple<IUnit, PointerEventData>>();
+            UnitEndDragSignal          = new Subject<Tuple<IUnit, PointerEventData>>();
 
-            UnitLocationChangedSignal  = unitLocationChangedSignal;
-            UnitActivatedAbilitySignal = unitActivatedAbilitySignal;
+            UnitLocationChangedSignal  = new Subject<Tuple<IUnit, IMapTile>>();
+            UnitActivatedAbilitySignal = new Subject<Tuple<IUnit, IUnitAbilityDefinition>>();
         }
 
         #endregion

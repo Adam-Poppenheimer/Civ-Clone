@@ -55,6 +55,14 @@ namespace Assets.Simulation.Units {
         #region from IUnitFactory
 
         public IUnit Create(IMapTile location, IUnitTemplate template, ICivilization owner) {
+            if(location == null) {
+                throw new ArgumentNullException("location");
+            }else if(template == null) {
+                throw new ArgumentNullException("template");
+            }else if(owner == null) {
+                throw new ArgumentNullException("owner");
+            }
+
             var newUnitObject = GameObject.Instantiate(UnitPrefab);
             Container.InjectGameObject(newUnitObject);
 
@@ -65,8 +73,18 @@ namespace Assets.Simulation.Units {
 
             newUnit.CurrentMovement = template.MaxMovement;
 
-            UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
-            UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);
+            if(UnitPositionCanon.CanChangeOwnerOfPossession(newUnit, location)) {
+                UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
+            }else {
+                throw new UnitCreationException("The newly created unit cannot be placed at its location");
+            }
+            
+            if(UnitPossessionCanon.CanChangeOwnerOfPossession(newUnit, owner)) {
+                UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);
+            }else {
+                throw new UnitCreationException("The newly created unit cannot be assigned to its owner");
+            }
+            
 
             allUnits.Add(newUnit);
 

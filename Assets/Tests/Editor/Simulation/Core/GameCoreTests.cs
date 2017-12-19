@@ -20,7 +20,7 @@ namespace Assets.Tests.Simulation.Core {
 
         #region instance fields and properties
 
-        private Mock<IRecordkeepingCityFactory> CityFactoryMock;
+        private Mock<ICityFactory> CityFactoryMock;
         private Mock<ICivilizationFactory>      CivilizationFactoryMock;
         private Mock<IUnitFactory>              UnitFactoryMock;
 
@@ -36,7 +36,7 @@ namespace Assets.Tests.Simulation.Core {
         public void CommonInstall() {
             TurnExecuterMock = new Mock<ITurnExecuter>();
 
-            CityFactoryMock = new Mock<IRecordkeepingCityFactory>();
+            CityFactoryMock = new Mock<ICityFactory>();
             CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
 
             CivilizationFactoryMock = new Mock<ICivilizationFactory>();
@@ -45,7 +45,7 @@ namespace Assets.Tests.Simulation.Core {
             UnitFactoryMock = new Mock<IUnitFactory>();
             UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
 
-            Container.Bind<IRecordkeepingCityFactory>().FromInstance(CityFactoryMock.Object);
+            Container.Bind<ICityFactory>().FromInstance(CityFactoryMock.Object);
             Container.Bind<ICivilizationFactory>     ().FromInstance(CivilizationFactoryMock.Object);
             Container.Bind<IUnitFactory>             ().FromInstance(UnitFactoryMock.Object);
 

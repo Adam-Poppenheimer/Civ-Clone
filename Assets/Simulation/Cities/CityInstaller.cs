@@ -62,7 +62,7 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
-            Container.Bind<IRecordkeepingCityFactory>().To<RecordkeepingCityFactory>().AsSingle();        
+            Container.Bind<ICityFactory>().To<CityFactory>().AsSingle();        
 
             var cityClickedSignal = new Subject<ICity>();
 

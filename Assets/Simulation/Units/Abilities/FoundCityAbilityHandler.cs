@@ -20,7 +20,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         private IUnitPositionCanon UnitPositionCanon;
 
-        private IRecordkeepingCityFactory CityFactory;
+        private ICityFactory CityFactory;
 
         private IPossessionRelationship<ICivilization, IUnit> UnitOwnershipCanon;
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         [Inject]
         public FoundCityAbilityHandler(ICityValidityLogic cityValidityLogic,
-            IUnitPositionCanon unitPositionCanon, IRecordkeepingCityFactory cityFactory,
+            IUnitPositionCanon unitPositionCanon, ICityFactory cityFactory,
             IPossessionRelationship<ICivilization, IUnit> unitOwnershipCanon
         ){
             CityValidityLogic  = cityValidityLogic;

@@ -14,14 +14,14 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private IRecordkeepingCityFactory CityFactory;
+        private ICityFactory CityFactory;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ImprovementValidityLogic(IRecordkeepingCityFactory cityFactory) {
+        public ImprovementValidityLogic(ICityFactory cityFactory) {
             CityFactory = cityFactory;
         }
 

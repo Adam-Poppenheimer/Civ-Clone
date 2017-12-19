@@ -30,7 +30,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IWorkerDistributionLogic>().FromInstance(DistributionMock.Object);
 
-            Container.Bind<RecordkeepingCityFactory>().AsSingle();
+            Container.Bind<CityFactory>().AsSingle();
         }
 
     }

@@ -18,7 +18,7 @@ namespace Assets.Simulation.Units {
 
         private List<TerrainShape> ImpassableTerrainShapes;
 
-        private IRecordkeepingCityFactory CityFactory;
+        private ICityFactory CityFactory;
 
         private UnitSignals Signals;
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units {
         public UnitPositionCanon(
             [Inject(Id = "Land Terrain Types")] List<TerrainType> landTerrainTypes,
             [Inject(Id = "Impassable Terrain Types")] List<TerrainShape> impassableTerrainShapes,
-            IRecordkeepingCityFactory cityFactory, UnitSignals signals
+            ICityFactory cityFactory, UnitSignals signals
         ){
             LandTerrainTypes        = landTerrainTypes;
             ImpassableTerrainShapes = impassableTerrainShapes;

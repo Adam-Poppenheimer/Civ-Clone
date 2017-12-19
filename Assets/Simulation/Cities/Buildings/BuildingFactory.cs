@@ -28,9 +28,15 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance methods
 
-        #region from IManagingBuildingFactory
+        #region from IBuildingFactory
 
         public bool CanConstructTemplateInCity(IBuildingTemplate template, ICity city) {
+            if(template == null) {
+                throw new ArgumentNullException("template");
+            }else if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
             var templateIsValid = ValidityLogic.IsTemplateValidForCity(template, city);
             var buildingAlreadyExists = PossessionCanon.GetBuildingsInCity(city).Any(building => building.Template == template);
 
@@ -38,14 +44,20 @@ namespace Assets.Simulation.Cities.Buildings {
         }
 
         public IBuilding Create(IBuildingTemplate template, ICity city) {
+            if(template == null) {
+                throw new ArgumentNullException("template");
+            }else if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
             if(!CanConstructTemplateInCity(template, city)) {
-                throw new InvalidOperationException("A building of this template cannot be constructed in this city");
+                throw new BuildingCreationException("A building of this template cannot be constructed in this city");
             }
 
             var newBuilding = new Building(template);
 
             if(!PossessionCanon.CanPlaceBuildingInCity(newBuilding, city)) {
-                throw new InvalidOperationException("The city produced from this template cannot be placed into this city");
+                throw new BuildingCreationException("The building produced from this template cannot be placed into this city");
             }
             PossessionCanon.PlaceBuildingInCity(newBuilding, city);
 

@@ -21,7 +21,7 @@ namespace Assets.Simulation.Core {
         [SerializeField] private int StartingPopulation;
         [SerializeField] private int StartingTerritoryRadius;
 
-        private IRecordkeepingCityFactory CityFactory;
+        private ICityFactory CityFactory;
 
         private ITilePossessionCanon PossessionCanon;
 
@@ -34,7 +34,7 @@ namespace Assets.Simulation.Core {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IRecordkeepingCityFactory cityFactory,
+        public void InjectDependencies(ICityFactory cityFactory,
             ITilePossessionCanon possessionCanon, IMapHexGrid hexGrid,
             GameCore gameCore
         ){

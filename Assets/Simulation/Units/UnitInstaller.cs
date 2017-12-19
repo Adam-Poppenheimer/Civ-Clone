@@ -52,24 +52,6 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
             Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
 
-            var unitClickedSignal = new Subject<IUnit>();
-
-            var unitBeginDragSignal = new Subject<Tuple<IUnit, PointerEventData>>();
-            var unitDragSignal      = new Subject<Tuple<IUnit, PointerEventData>>();
-            var unitEndDragSignal   = new Subject<Tuple<IUnit, PointerEventData>>();
-
-            var unitLocationChangedSignal = new Subject<Tuple<IUnit, IMapTile>>();
-            var unitActivatedAbilitySignal = new Subject<Tuple<IUnit, IUnitAbilityDefinition>>();
-
-            Container.Bind<ISubject<IUnit>>().WithId("Unit Clicked Signal").FromInstance(unitClickedSignal);
-
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Begin Drag Signal").FromInstance(unitBeginDragSignal);
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Drag Signal"      ).FromInstance(unitDragSignal);
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit End Drag Signal"  ).FromInstance(unitEndDragSignal);
-
-            Container.Bind<ISubject<Tuple<IUnit, IMapTile>>>              ().WithId("Unit Location Changed Signal" ).FromInstance(unitLocationChangedSignal);
-            Container.Bind<ISubject<Tuple<IUnit, IUnitAbilityDefinition>>>().WithId("Unit Activated Ability Signal").FromInstance(unitActivatedAbilitySignal);
-
             Container.Bind<UnitSignals>().AsSingle();
         }
 

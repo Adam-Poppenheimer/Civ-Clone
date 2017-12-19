@@ -56,6 +56,9 @@ namespace Assets.Simulation.Improvements {
             var newImprovement = newGameObject.GetComponent<Improvement>();
             newImprovement.Template = template;
 
+            if(!ImprovementLocationCanon.CanChangeOwnerOfPossession(newImprovement, location)) {
+                throw new ImprovementCreationException("Cannot assign the new improvement to its intended location");
+            }
             ImprovementLocationCanon.ChangeOwnerOfPossession(newImprovement, location);
 
             return newImprovement;

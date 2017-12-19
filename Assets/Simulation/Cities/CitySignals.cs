@@ -35,6 +35,8 @@ namespace Assets.Simulation.Cities {
             DistributionPerformedSignal = distributionPerformedSignal;
         }
 
+        public CitySignals() { }
+
         #endregion
 
     }

@@ -92,7 +92,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         private Mock<IUnitPositionCanon> MockUnitPositionCanon;
 
-        private Mock<IRecordkeepingCityFactory> MockCityFactory;
+        private Mock<ICityFactory> MockCityFactory;
 
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitOwnershipCanon;
 
@@ -106,12 +106,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         public void CommonInstall() {
             MockCityValidityLogic  = new Mock<ICityValidityLogic>();
             MockUnitPositionCanon  = new Mock<IUnitPositionCanon>();
-            MockCityFactory        = new Mock<IRecordkeepingCityFactory>();
+            MockCityFactory        = new Mock<ICityFactory>();
             MockUnitOwnershipCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
 
             Container.Bind<ICityValidityLogic>                           ().FromInstance(MockCityValidityLogic .Object);
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon .Object);
-            Container.Bind<IRecordkeepingCityFactory>                    ().FromInstance(MockCityFactory       .Object);
+            Container.Bind<ICityFactory>                    ().FromInstance(MockCityFactory       .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitOwnershipCanon.Object);
 
             Container.Bind<FoundCityAbilityHandler>().AsSingle();

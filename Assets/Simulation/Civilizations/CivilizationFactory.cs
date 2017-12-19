@@ -40,6 +40,10 @@ namespace Assets.Simulation.Civilizations {
         #region from IFactory<ICivilization>
 
         public ICivilization Create(string name) {
+            if(name == null) {
+                throw new ArgumentNullException("name");
+            }
+
             var newCivilization = Container.Instantiate<Civilization>(new List<object>() { name });
 
             allCivilizations.Add(newCivilization);

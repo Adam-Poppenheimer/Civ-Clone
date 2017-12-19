@@ -71,7 +71,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private Mock<IRecordkeepingCityFactory> MockCityFactory;
+        private Mock<ICityFactory> MockCityFactory;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -85,10 +85,10 @@ namespace Assets.Tests.Simulation.Improvements {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockCityFactory = new Mock<IRecordkeepingCityFactory>();
+            MockCityFactory = new Mock<ICityFactory>();
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
-            Container.Bind<IRecordkeepingCityFactory>().FromInstance(MockCityFactory.Object);
+            Container.Bind<ICityFactory>().FromInstance(MockCityFactory.Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }

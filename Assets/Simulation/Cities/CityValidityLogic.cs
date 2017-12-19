@@ -21,7 +21,7 @@ namespace Assets.Simulation.Cities {
 
         private IMapHexGrid HexGrid;
 
-        private IRecordkeepingCityFactory CityFactory;
+        private ICityFactory CityFactory;
 
         private ICityConfig Config;
 
@@ -31,7 +31,7 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CityValidityLogic(ITilePossessionCanon tilePossessionCanon, IMapHexGrid hexGrid,
-            IRecordkeepingCityFactory cityFactory, ICityConfig config) {
+            ICityFactory cityFactory, ICityConfig config) {
 
             TilePossessionCanon = tilePossessionCanon;
             HexGrid             = hexGrid;

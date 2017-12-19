@@ -8,7 +8,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities {
 
-    public interface IRecordkeepingCityFactory : IFactory<IMapTile, ICivilization, ICity> {
+    public interface ICityFactory : IFactory<IMapTile, ICivilization, ICity> {
 
         #region properties
 

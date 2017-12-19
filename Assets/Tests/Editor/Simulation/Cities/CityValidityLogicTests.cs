@@ -22,7 +22,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IMapHexGrid> MockHexGrid;
 
-        private Mock<IRecordkeepingCityFactory> MockCityFactory;
+        private Mock<ICityFactory> MockCityFactory;
 
         private Mock<ICityConfig> MockConfig;
 
@@ -40,14 +40,14 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockPossessionCanon = new Mock<ITilePossessionCanon>();
             MockHexGrid         = new Mock<IMapHexGrid>();
-            MockCityFactory     = new Mock<IRecordkeepingCityFactory>();
+            MockCityFactory     = new Mock<ICityFactory>();
             MockConfig          = new Mock<ICityConfig>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
             Container.Bind<ITilePossessionCanon>()     .FromInstance(MockPossessionCanon.Object);
             Container.Bind<IMapHexGrid>()              .FromInstance(MockHexGrid.Object);
-            Container.Bind<IRecordkeepingCityFactory>().FromInstance(MockCityFactory.Object);
+            Container.Bind<ICityFactory>().FromInstance(MockCityFactory.Object);
             Container.Bind<ICityConfig>()              .FromInstance(MockConfig.Object);
 
             Container.Bind<CityValidityLogic>().AsSingle();

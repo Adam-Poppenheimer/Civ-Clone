@@ -15,11 +15,11 @@ using Assets.Simulation.Cities.Territory;
 
 namespace Assets.Simulation.Cities {
 
-    public class RecordkeepingCityFactory : IRecordkeepingCityFactory , IInitializable, IValidatable {
+    public class CityFactory : ICityFactory , IInitializable, IValidatable {
 
         #region instance fields and properties
 
-        #region from IRecordkeepingCityFactory
+        #region from ICityFactory
 
         public ReadOnlyCollection<ICity> AllCities {
             get { return allCities.AsReadOnly(); }
@@ -43,7 +43,7 @@ namespace Assets.Simulation.Cities {
         #region constructors
 
         [Inject]
-        public RecordkeepingCityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
+        public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IMapHexGrid map, 
             ITilePossessionCanon tilePossessionCanon
         ){
@@ -58,9 +58,15 @@ namespace Assets.Simulation.Cities {
 
         #region instance methods
 
-        #region from IRecordkeepingCityFactory
+        #region from ICityFactory
 
         public ICity Create(IMapTile location, ICivilization owner){
+            if(location == null) {
+                throw new ArgumentNullException("location");
+            }else if(owner == null) {
+                throw new ArgumentNullException("owner");
+            }
+
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
@@ -71,12 +77,24 @@ namespace Assets.Simulation.Cities {
             newCity.Location = location;
             location.SuppressSlot = true;
 
-            TilePossessionCanon.ChangeOwnerOfTile(location, newCity);
-            foreach(var neighbor in Map.GetNeighbors(location)) {
-                TilePossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
+            if(TilePossessionCanon.CanChangeOwnerOfTile(location, newCity)) {
+                TilePossessionCanon.ChangeOwnerOfTile(location, newCity);
+            }else {
+                throw new CityCreationException("Cannot assign the given location to the newly created city");
             }
             
-            CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
+            foreach(var neighbor in Map.GetNeighbors(location)) {
+                if(TilePossessionCanon.CanChangeOwnerOfTile(neighbor, newCity)) {
+                    TilePossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
+                }                
+            }
+            
+            if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
+                CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
+            }else {
+                throw new CityCreationException("Cannot assign the newly created city to its intended civilization");
+            }
+            
 
             newCity.ResourceFocus = ResourceFocusType.TotalYield;
             newCity.PerformDistribution();
