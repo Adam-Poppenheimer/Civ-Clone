@@ -83,6 +83,14 @@ namespace Assets.UI.Cities.Territory {
             ResourceGenerationLogic = resourceGenerationLogic;
         }
 
+        #region Unity message methods
+
+        private void Update() {
+            Refresh();
+        }
+
+        #endregion
+
         #region from CityDisplayBase
 
         public override void Refresh() {

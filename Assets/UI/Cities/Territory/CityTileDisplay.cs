@@ -38,6 +38,14 @@ namespace Assets.UI.Cities.Territory {
             signals.DistributionPerformedSignal.Listen(OnDistributionPerformed);
         }
 
+        #region Unity message methods
+
+        private void Update() {
+            Refresh();
+        }
+
+        #endregion
+
         #region from CityDisplayBase
 
         public override void Refresh() {
