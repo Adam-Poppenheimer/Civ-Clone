@@ -28,7 +28,7 @@ namespace Assets.Simulation.Improvements {
         public override void InstallBindings() {
             Container.Bind<GameObject>().WithId("Improvement Prefab").FromInstance(ImprovementPrefab);
 
-            Container.Bind<IPossessionRelationship<IMapTile, IImprovement>>().To<ImprovementLocationCanon>().AsSingle();
+            Container.Bind<IImprovementLocationCanon>().To<ImprovementLocationCanon>().AsSingle();
 
             Container.Bind<IEnumerable<IImprovementTemplate>>()
                 .WithId("Available Improvement Templates")

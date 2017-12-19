@@ -23,7 +23,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region test cases
 
-        private static IEnumerable CanHandleAbilityCases {
+        private static IEnumerable TestCases {
             get {
                 yield return new TestCaseData(
                     "Build Improvement", 
@@ -106,12 +106,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region instance fields and properties
 
         private Mock<IImprovementValidityLogic> MockImprovementValidityLogic;
-
-        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
+        private Mock<IUnitPositionCanon>        MockUnitPositionCanon;
+        private Mock<IImprovementFactory>       MockImprovementFactory;
+        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
 
         private List<IImprovementTemplate> AllTemplates = new List<IImprovementTemplate>();
-
-        private Mock<IImprovementFactory> MockImprovementFactory;
 
         #endregion
 
@@ -126,12 +125,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockImprovementValidityLogic = new Mock<IImprovementValidityLogic>();
             MockUnitPositionCanon        = new Mock<IUnitPositionCanon>();
             MockImprovementFactory       = new Mock<IImprovementFactory>();
+            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
             Container.Bind<IEnumerable<IImprovementTemplate>>().WithId("Available Improvement Templates").FromInstance(AllTemplates);
 
             Container.Bind<IImprovementValidityLogic>().FromInstance(MockImprovementValidityLogic.Object);
             Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon       .Object);
             Container.Bind<IImprovementFactory>      ().FromInstance(MockImprovementFactory      .Object);
+            Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
 
             Container.Bind<BuildImprovementAbilityHandler>().AsSingle();
         }
@@ -144,7 +145,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             "\t1. There is exactly one CommandRequest whose type is BuildImprovement\n" +
             "\t2. That command request has an argument that is the name of some template in Available Improvement Templates\n" +
             "\t3. The improvement of that name is valid on the argued unit's location\n")]
-        [TestCaseSource("CanHandleAbilityCases")]
+        [TestCaseSource("TestCases")]
         public bool CanHandleAbilityOnUnitTests(
             string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
             IEnumerable<string> templateNames, List<string> validTemplateNamesOnLocation
@@ -160,6 +161,56 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
 
             return abilityHandler.CanHandleAbilityOnUnit(ability, unit);
+        }
+
+        [Test(Description = "TryHandleAbilityOnUnit should return identically to CanHandleAbilityOnUnit. " +
+            "It should also create a new improvement of the argued template at the argued location when " +
+            "it returns true")]
+        [TestCaseSource("TestCases")]
+        public bool TryHandleAbilityOnUnitTests_ImprovementCreated(
+            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
+            IEnumerable<string> templateNames, List<string> validTemplateNamesOnLocation
+         ){
+            var ability = BuildAbility(abilityName, commandRequests);
+
+            string expectedTemplateName = null;
+
+            var improvementRequests = commandRequests.Where(request => request.CommandType == AbilityCommandType.BuildImprovement);
+            if(improvementRequests.Count() != 0) {
+                var argsOfFirstRequest = commandRequests.First().ArgsToPass;
+                if(argsOfFirstRequest != null) {
+                    expectedTemplateName = argsOfFirstRequest.FirstOrDefault();
+                }
+            }
+
+            IImprovementTemplate expectedTemplate = null;
+
+            foreach(var name in templateNames) {
+                var newTemplate = BuildTemplate(name);
+                if(name.Equals(expectedTemplateName)) {
+                    expectedTemplate = newTemplate;
+                }
+            }            
+
+            var location = BuildTile(validTemplateNamesOnLocation);
+            var unit = BuildUnit(location);
+
+            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            var handleResult = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            if(handleResult) {
+                MockImprovementFactory.Verify(
+                    factory => factory.Create(expectedTemplate, location), 
+                    Times.Once, "ImprovementFactory.Create was not called as expected"
+                );
+                return true;
+            }else {
+                MockImprovementFactory.Verify(
+                    factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IMapTile>()),
+                    Times.Never, "ImprovementFactory.Create was called unexpectedly"
+                );
+                return false;
+            }
         }
 
         [Test(Description = "CanHandleAbilityOnUnit and TryHandleAbilityOnUnit should throw an InvalidOperationException " +
@@ -200,6 +251,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             mockTemplate.Setup(template => template.name).Returns(name);
 
             AllTemplates.Add(mockTemplate.Object);
+
+            MockImprovementLocationCanon.Setup(
+                canon => canon.CanPlaceImprovementOfTemplateAtLocation(mockTemplate.Object, It.IsAny<IMapTile>())
+            ).Returns(true);
 
             return mockTemplate.Object;
         }

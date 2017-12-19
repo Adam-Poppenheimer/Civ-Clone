@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IBuildingPossessionCanon> MockBuildingPossession;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossession;
-        private Mock<IPossessionRelationship<IMapTile, IImprovement>> MockImprovementPositionCanon;
+        private Mock<IImprovementLocationCanon> MockImprovementPositionCanon;
 
         private Mock<IMapHexGrid> MockMap;
 
@@ -42,15 +42,15 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockBuildingPossession       = new Mock<IBuildingPossessionCanon>();
             MockCityPossession           = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockImprovementPositionCanon = new Mock<IPossessionRelationship<IMapTile, IImprovement>>();
+            MockImprovementPositionCanon = new Mock<IImprovementLocationCanon>();
             MockMap                      = new Mock<IMapHexGrid>();
 
             MockMap.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
 
-            Container.Bind<IBuildingPossessionCanon>                       ().FromInstance(MockBuildingPossession      .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>  ().FromInstance(MockCityPossession          .Object);
-            Container.Bind<IPossessionRelationship<IMapTile, IImprovement>>().FromInstance(MockImprovementPositionCanon.Object);
-            Container.Bind<IMapHexGrid>                                    ().FromInstance(MockMap                     .Object);
+            Container.Bind<IBuildingPossessionCanon>                     ().FromInstance(MockBuildingPossession      .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession          .Object);
+            Container.Bind<IImprovementLocationCanon>                    ().FromInstance(MockImprovementPositionCanon.Object);
+            Container.Bind<IMapHexGrid>                                  ().FromInstance(MockMap                     .Object);
 
             Container.Bind<IncomeModifierLogic>().AsSingle();
         }

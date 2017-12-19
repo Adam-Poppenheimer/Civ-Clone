@@ -17,7 +17,7 @@ namespace Assets.Simulation.Improvements {
 
         private DiContainer Container;
 
-        private IPossessionRelationship<IMapTile, IImprovement> ImprovementLocationCanon;
+        private IImprovementLocationCanon ImprovementLocationCanon;
 
         private GameObject ImprovementPrefab;
 
@@ -27,7 +27,7 @@ namespace Assets.Simulation.Improvements {
 
         [Inject]
         public ImprovementFactory(DiContainer container,
-            IPossessionRelationship<IMapTile, IImprovement> improvementLocationCanon,
+            IImprovementLocationCanon improvementLocationCanon,
             [Inject(Id = "Improvement Prefab")] GameObject improvementPrefab
         ){
             Container = container;
@@ -49,6 +49,7 @@ namespace Assets.Simulation.Improvements {
             }
 
             var newGameObject = GameObject.Instantiate(ImprovementPrefab);
+            newGameObject.transform.SetParent(location.transform, false);
 
             Container.InjectGameObject(newGameObject);
 

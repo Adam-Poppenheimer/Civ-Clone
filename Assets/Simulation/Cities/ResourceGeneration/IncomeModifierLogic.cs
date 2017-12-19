@@ -22,7 +22,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IMapHexGrid Map;
 
-        private IPossessionRelationship<IMapTile, IImprovement> ImprovementPositionCanon;
+        private IImprovementLocationCanon ImprovementLocationCanon;
 
         #endregion
 
@@ -32,12 +32,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public IncomeModifierLogic(
             IBuildingPossessionCanon buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IPossessionRelationship<IMapTile, IImprovement> improvementPositionCanon,
+            IImprovementLocationCanon improvementLocationCanon,
             IMapHexGrid map
         ){
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;
-            ImprovementPositionCanon = improvementPositionCanon;
+            ImprovementLocationCanon = improvementLocationCanon;
             Map                      = map;
         }
 
@@ -57,7 +57,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             var tileOfSlot = Map.Tiles.Where(tile => tile.WorkerSlot == slot).FirstOrDefault();
 
             if(tileOfSlot != null) {
-                var improvementOnTile = ImprovementPositionCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();
+                var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();
                 if(improvementOnTile != null) {
                     baseYield += improvementOnTile.Template.BonusYield;
                 }

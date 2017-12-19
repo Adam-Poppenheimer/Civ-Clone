@@ -31,8 +31,8 @@ namespace Assets.Tests.Simulation.Improvements {
         [Test(Description = "CanChangeOwnerOfPossession should return false if the argued " +
             "tile already possesses an improvement")]
         public void CanChangeOwnerOfPossession_FalseIfOwnerAlreadyHasPossession() {
-            var ownedImprovement = new Mock<IImprovement>().Object;
-            var unownedImprovement = new Mock<IImprovement>().Object;
+            var ownedImprovement   = BuildImprovement();
+            var unownedImprovement = BuildImprovement();
 
             var tile = new Mock<IMapTile>().Object;
 
@@ -44,11 +44,34 @@ namespace Assets.Tests.Simulation.Improvements {
                 "CanChangeOwnerOfPossession falsely permits a tile to have more than one improvement");
         }
 
+        [Test(Description = "CanPlaceImprovementOfTemplateAtLocation should return false if the argued " +
+            "tile already possesses an improvement")]
+        public void CanPlaceImprovementOfTemplateAtLocation_FalseIfLocationAlreadyHasPossession() {
+            var ownedImprovement   = BuildImprovement();
+            var unownedImprovement = BuildImprovement();
+
+            var tile = new Mock<IMapTile>().Object;
+
+            var locationCanon = Container.Resolve<ImprovementLocationCanon>();
+
+            locationCanon.ChangeOwnerOfPossession(ownedImprovement, tile);
+
+            Assert.IsFalse(locationCanon.CanPlaceImprovementOfTemplateAtLocation(unownedImprovement.Template, tile),
+                "CanPlaceImprovementOfTemplateAtLocation falsely permits a tile to have more than one improvement");
+        }
+
         #endregion
 
         #region utilities
 
+        private IImprovement BuildImprovement() {
+            var template = new Mock<IImprovementTemplate>().Object;
 
+            var improvementMock = new Mock<IImprovement>();
+            improvementMock.Setup(improvement => improvement.Template).Returns(template);
+
+            return improvementMock.Object;
+        }
 
         #endregion
 
