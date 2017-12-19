@@ -85,7 +85,13 @@ namespace Assets.Simulation.Units {
             IMapTile tileToTravelTo = null;
 
             while(CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0) {
-                tileToTravelTo = CurrentPath.First();
+                var nextTile = CurrentPath.First();
+                if(!PositionCanon.CanChangeOwnerOfPossession(this, nextTile)) {
+                    CurrentPath.Clear();
+                    break;
+                }
+
+                tileToTravelTo = nextTile;
                 CurrentPath.RemoveAt(0);
 
                 CurrentMovement = Math.Max(0,

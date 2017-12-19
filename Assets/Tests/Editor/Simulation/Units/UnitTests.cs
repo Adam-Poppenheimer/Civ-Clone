@@ -127,8 +127,7 @@ namespace Assets.Tests.Simulation.Units {
         public void OnPointerClick_SignalFired() {
             var unitToTest = Container.Resolve<GameUnit>();
 
-            var clickedSignal = Container.ResolveId<ISubject<IUnit>>("Unit Clicked Signal");
-            clickedSignal.Subscribe(delegate(IUnit clickedUnit) {
+            Container.Resolve<UnitSignals>().UnitClickedSignal.Subscribe(delegate(IUnit clickedUnit) {
                 Assert.AreEqual(unitToTest, clickedUnit, "Unit Clicked Signal received an incorrect clickedUnit");
                 Assert.Pass();
             });
@@ -143,8 +142,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.ResolveId<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>("Unit Begin Drag Signal")
-                .Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().UnitBeginDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Begin Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Begin Drag Signal was passed an incorrect EventData");
                     Assert.Pass();
@@ -160,8 +158,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.ResolveId<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>("Unit Drag Signal")
-                .Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().UnitDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Drag Signal was passed an incorrect EventData");
                     Assert.Pass();
@@ -177,8 +174,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.ResolveId<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>("Unit End Drag Signal")
-                .Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().UnitEndDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit End Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit End Drag Signal was passed an incorrect EventData");
                     Assert.Pass();
@@ -267,6 +263,50 @@ namespace Assets.Tests.Simulation.Units {
             }
         }
 
+        [Test(Description = "When PerformMovement is called and one of the tiles Unit expects to travel into or through " +
+            "cannot accept them, Unit should go as far as it can and then abort, clearing its current path")]
+        public void PerformMovement_AbortsWhenInterrupted() {
+            var startingTile     = BuildTile(1);
+            var interveningTile  = BuildTile(1);
+            var destinationTile  = BuildTile(1);
+
+            var path = new List<IMapTile>() { startingTile, interveningTile, destinationTile };
+
+            var unit = Container.Resolve<GameUnit>();
+            unit.CurrentPath = new List<IMapTile>(path);
+            unit.CurrentMovement = 3;
+
+            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(false);
+
+            unit.PerformMovement();
+
+            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, interveningTile), Times.Never,
+                "Unit falsely attempted to move onto an unoccupiable tile");
+
+            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, destinationTile), Times.Never,
+                "Unit falsely attempted to move through an unoccupiable tile");
+
+            Assert.That(unit.CurrentPath == null || unit.CurrentPath.Count == 0, "Unit failed to clear its path as expected");
+
+            MockPositionCanon.ResetCalls();
+
+            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(true);
+            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, destinationTile)).Returns(false);
+
+            unit.CurrentPath = new List<IMapTile>(path);
+            unit.CurrentMovement = 3;
+
+            unit.PerformMovement();
+
+            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, interveningTile), Times.Once,
+                "Unit failed to move as far along its path as it could");
+
+            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, destinationTile), Times.Never,
+                "Unit falsely attempted to move onto an unoccupiable tile");
+
+            Assert.That(unit.CurrentPath == null || unit.CurrentPath.Count == 0, "Unit failed to clear its path as expected");
+        }
+
         #endregion
 
         #region utilities
@@ -286,6 +326,9 @@ namespace Assets.Tests.Simulation.Units {
             tileMock.Name = string.Format("MapTile with cost {0}", movementCost);
 
             var newTile = tileMock.Object;
+
+            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), tileMock.Object))
+                .Returns(true);
 
             MockTerrainCostLogic.Setup(logic => logic.GetCostToMoveUnitIntoTile(It.IsAny<IUnit>(), newTile))
                 .Returns(movementCost);
