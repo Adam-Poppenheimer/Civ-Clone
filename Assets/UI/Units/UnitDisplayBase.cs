@@ -38,12 +38,17 @@ namespace Assets.UI.Units {
         public void OnEnable() {
             UnitLocationChangedSubscription  = Signals.UnitLocationChangedSignal .Subscribe(OnUnitLocationChangedFired);
             UnitActivatedAbilitySubscription = Signals.UnitActivatedAbilitySignal.Subscribe(OnUnitActivatedAbilityFired);
+            DoOnEnable();
         }
 
         public void OnDisable() {
             UnitLocationChangedSubscription .Dispose();
             UnitActivatedAbilitySubscription.Dispose();
+            DoOnDisable();
         }
+
+        protected virtual void DoOnEnable () { }
+        protected virtual void DoOnDisable() { }
 
         #endregion
 

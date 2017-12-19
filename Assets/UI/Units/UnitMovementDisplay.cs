@@ -54,14 +54,14 @@ namespace Assets.UI.Units {
 
         #region Unity message methods
 
-        public void OnEnable() {
+        protected override void DoOnEnable() {
             UnitEndDragSubscription = UnitSignals.UnitEndDragSignal.Subscribe(OnUnitEndDragFired);
 
             MapTileSignals.PointerEnterSignal.Listen(OnTilePointerEnterFired);
             MapTileSignals.PointerExitSignal .Listen(OnTilePointerExitFired);
         }
 
-        public void OnDisable() {
+        protected override void DoOnDisable() {
             UnitEndDragSubscription.Dispose();
 
             MapTileSignals.PointerEnterSignal.Unlisten(OnTilePointerEnterFired);
