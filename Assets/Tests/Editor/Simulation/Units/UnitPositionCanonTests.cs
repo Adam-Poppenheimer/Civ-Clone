@@ -222,6 +222,11 @@ namespace Assets.Tests.Simulation.Units {
             throw new NotImplementedException();
         }
 
+        [Test(Description = "")]
+        public void EventFiringTestsMissing() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

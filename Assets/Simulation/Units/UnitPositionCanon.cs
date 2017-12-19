@@ -20,6 +20,8 @@ namespace Assets.Simulation.Units {
 
         private IRecordkeepingCityFactory CityFactory;
 
+        private UnitSignals Signals;
+
         #endregion
 
         #region constructors
@@ -28,11 +30,12 @@ namespace Assets.Simulation.Units {
         public UnitPositionCanon(
             [Inject(Id = "Land Terrain Types")] List<TerrainType> landTerrainTypes,
             [Inject(Id = "Impassable Terrain Types")] List<TerrainShape> impassableTerrainShapes,
-            IRecordkeepingCityFactory cityFactory
+            IRecordkeepingCityFactory cityFactory, UnitSignals signals
         ){
-            LandTerrainTypes = landTerrainTypes;
+            LandTerrainTypes        = landTerrainTypes;
             ImpassableTerrainShapes = impassableTerrainShapes;
-            CityFactory = cityFactory;
+            CityFactory             = cityFactory;
+            Signals                 = signals;
         }
 
         #endregion
@@ -51,6 +54,7 @@ namespace Assets.Simulation.Units {
 
         protected override void DoOnPossessionEstablished(IUnit possession, IMapTile newOwner) {
             possession.gameObject.transform.SetParent(newOwner.transform, false);
+            Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IMapTile>(possession, newOwner));
         }
 
         #endregion

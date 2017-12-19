@@ -11,6 +11,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
+        private UnitSignals Signals;
+
         private IEnumerable<IUnitAbilityHandler> AbilityHandlers;
 
         #endregion
@@ -18,7 +20,10 @@ namespace Assets.Simulation.Units.Abilities {
         #region constructors
 
         [Inject]
-        public UnitAbilityExecuter([Inject(Id = "Unit Ability Handlers")] IEnumerable<IUnitAbilityHandler> abilityHandlers) {
+        public UnitAbilityExecuter(UnitSignals signals,
+            [Inject(Id = "Unit Ability Handlers")] IEnumerable<IUnitAbilityHandler> abilityHandlers
+        ){
+            Signals         = signals;
             AbilityHandlers = abilityHandlers;
         }
 
@@ -41,6 +46,7 @@ namespace Assets.Simulation.Units.Abilities {
         public void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
             foreach(var handler in AbilityHandlers) {
                 if(handler.TryHandleAbilityOnUnit(ability, unit)) {
+                    Signals.UnitActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IUnitAbilityDefinition>(unit, ability));
                     return;
                 }
             }

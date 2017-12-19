@@ -133,6 +133,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             Assert.Throws<AbilityNotHandledException>(() => abilityExecuter.ExecuteAbilityOnUnit(ability, unit));
         }
 
+        [Test(Description = "")]
+        public void MissingEventFiringTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities
