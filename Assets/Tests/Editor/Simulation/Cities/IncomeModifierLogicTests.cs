@@ -72,7 +72,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "When GetRealBaseYieldForSlot is called, it should determine " +
             "whether its slot belongs to some tile. If it does, it should search for any " +
-            "improvements on that tile and add their bonus yield to GetRealBaseYieldForSlot's " +
+            "completed improvements on that tile and add their bonus yield to GetRealBaseYieldForSlot's " +
             "return value")]
         public void GetRealBaseYieldForSlot_ConsidersImprovementsOnTileSlots() {
             var untiledSlot = BuildSlot(new ResourceSummary(food: 1, production: 2, gold: 3));
@@ -80,7 +80,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = BuildTile(tiledSlot);
 
-            var improvement = BuildImprovement(tile, new ResourceSummary(food: 2, production: 1));
+            var improvement = BuildImprovement(tile, new ResourceSummary(food: 2, production: 1), true);
 
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
@@ -92,6 +92,19 @@ namespace Assets.Tests.Simulation.Cities {
                 modifierLogic.GetRealBaseYieldForSlot(tiledSlot),
                 "GetRealBaseYieldForSlot returned an unexpected value for tiledSlot"
             );
+        }
+
+        [Test(Description = "GetRealBaseYieldForSlot should not consider bonus yield from improvements " +
+            "that are not complete")]
+        public void GetRealBaseYieldForSlot_IgnoresIncompleteImprovements() {
+            var tile = BuildTile(BuildSlot(ResourceSummary.Empty));
+
+            var improvement = BuildImprovement(tile, new ResourceSummary(food: 4), false);
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetRealBaseYieldForSlot(tile.WorkerSlot),
+                "GetRealBaseYieldForSlot returned an unexpected value");
         }
 
         [Test(Description = "When GetYieldMultipliersForCivilization is called, " +
@@ -224,13 +237,14 @@ namespace Assets.Tests.Simulation.Cities {
             return civilization;
         }
 
-        private IImprovement BuildImprovement(IMapTile location, ResourceSummary bonusYield) {
+        private IImprovement BuildImprovement(IMapTile location, ResourceSummary bonusYield, bool isComplete) {
             var mockImprovment = new Mock<IImprovement>();
 
             var mockTemplate = new Mock<IImprovementTemplate>();
             mockTemplate.Setup(template => template.BonusYield).Returns(bonusYield);
 
-            mockImprovment.Setup(improvement => improvement.Template).Returns(mockTemplate.Object);
+            mockImprovment.Setup(improvement => improvement.Template  ).Returns(mockTemplate.Object);
+            mockImprovment.Setup(improvement => improvement.IsComplete).Returns(isComplete);
 
             MockImprovementPositionCanon
                 .Setup(canon => canon.GetPossessionsOfOwner(location))

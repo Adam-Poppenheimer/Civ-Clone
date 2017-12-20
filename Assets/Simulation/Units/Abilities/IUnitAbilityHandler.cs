@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         bool CanHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
 
-        bool TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
+        AbilityExecutionResults TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
 
         #endregion
 

@@ -149,9 +149,9 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
-            var canResolve = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            var handleResponse = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
 
-            if(canResolve) {
+            if(handleResponse.AbilityHandled) {
                 MockCityFactory.Verify(
                     factory => factory.Create(
                         MockUnitPositionCanon .Object.GetOwnerOfPossession(unit),
@@ -165,7 +165,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                     Times.Never, "CityFactory.Create was unexpectedly called");
             }
 
-            return canResolve;
+            return handleResponse.AbilityHandled;
         }
 
         [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
@@ -180,15 +180,15 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
-            var canResolve = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            var handleResponse = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
 
-            if(canResolve) {
+            if(handleResponse.AbilityHandled) {
                 Assert.That(unit.gameObject == null, "Unit.gameObject was not destroyed as expected");
             }else {
                 Assert.That(unit.gameObject != null, "Unit.gameObject was unexpectedly destroyed");
             }
 
-            return canResolve;
+            return handleResponse.AbilityHandled;
         }
 
 

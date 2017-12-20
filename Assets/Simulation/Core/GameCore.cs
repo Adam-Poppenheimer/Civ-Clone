@@ -10,6 +10,7 @@ using Zenject;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Core {
 
@@ -19,9 +20,10 @@ namespace Assets.Simulation.Core {
 
         public ICivilization PlayerCivilization { get; private set; }
 
-        private ICityFactory CityFactory;
-        private ICivilizationFactory      CivilizationFactory;
-        private IUnitFactory              UnitFactory;
+        private ICityFactory         CityFactory;
+        private ICivilizationFactory CivilizationFactory;
+        private IUnitFactory         UnitFactory;
+        private IUnitAbilityExecuter AbilityExecuter;
 
         private ITurnExecuter TurnExecuter;
 
@@ -35,12 +37,14 @@ namespace Assets.Simulation.Core {
         [Inject]
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
-            IUnitFactory unitFactory, ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
+            IUnitFactory unitFactory, IUnitAbilityExecuter abilityExecuter,
+            ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
             TurnEndedSignal turnEndedSignal, EndTurnRequestedSignal endTurnRequestedSignal
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             UnitFactory         = unitFactory;
+            AbilityExecuter     = abilityExecuter;
 
             TurnExecuter = turnExecuter;
 
@@ -84,6 +88,8 @@ namespace Assets.Simulation.Core {
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
                 TurnExecuter.EndTurnOnCivilization(civilization);
             }
+
+            AbilityExecuter.PerformOngoingAbilities();
 
             TurnEndedSignal.Fire(0);
         }

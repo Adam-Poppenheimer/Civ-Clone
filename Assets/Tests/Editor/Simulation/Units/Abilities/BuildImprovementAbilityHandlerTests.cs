@@ -19,90 +19,6 @@ namespace Assets.Tests.Simulation.Units.Abilities {
     [TestFixture]
     public class BuildImprovementAbilityHandlerTests : ZenjectUnitTestFixture {
 
-        #region static fields and properties
-
-        #region test cases
-
-        private static IEnumerable TestCases {
-            get {
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.BuildImprovement,
-                            ArgsToPass = new List<string>() { "Improvement One" }
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Right type, valid template name argued").Returns(true);
-
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.BuildImprovement,
-                            ArgsToPass = new List<string>() { "Improvement One", "Arglebargle" }
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Right type, valid template name argued, redundant argument").Returns(true);
-
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.BuildImprovement,
-                            ArgsToPass = new List<string>() { "Improvement Two" }
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Right type, template name argued, but template not valid on tile").Returns(false);
-
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.BuildImprovement,
-                            ArgsToPass = new List<string>() { "Arglebargle", "Improvement One" }
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Right type, first argument not name of template").Returns(false);
-
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.BuildImprovement,
-                            ArgsToPass = new List<string>()
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Right type, no arguments").Returns(false);
-
-                yield return new TestCaseData(
-                    "Build Improvement", 
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.FoundCity,
-                            ArgsToPass = new List<string>() { "Improvement One" }
-                        }
-                    },
-                    new List<string>() { "Improvement One", "Improvement Two" },
-                    new List<string>() { "Improvement One" }
-                ).SetName("Wrong type, valid template name argued").Returns(false);
-            }
-        }
-
-        #endregion
-
-        #endregion
-
         #region instance fields and properties
 
         private Mock<IImprovementValidityLogic> MockImprovementValidityLogic;
@@ -127,6 +43,9 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockImprovementFactory       = new Mock<IImprovementFactory>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
+            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<IMapTile>()))
+                .Returns(new List<IImprovement>());
+
             Container.Bind<IEnumerable<IImprovementTemplate>>().WithId("Available Improvement Templates").FromInstance(AllTemplates);
 
             Container.Bind<IImprovementValidityLogic>().FromInstance(MockImprovementValidityLogic.Object);
@@ -141,137 +60,177 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region tests
 
-        [Test(Description = "CanHandleAbilityOnUnit should return true if and only if the following conditions are met:\n" + 
-            "\t1. There is exactly one CommandRequest whose type is BuildImprovement\n" +
-            "\t2. That command request has an argument that is the name of some template in Available Improvement Templates\n" +
-            "\t3. The improvement of that name is valid on the argued unit's location\n")]
-        [TestCaseSource("TestCases")]
-        public bool CanHandleAbilityOnUnitTests(
-            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
-            IEnumerable<string> templateNames, List<string> validTemplateNamesOnLocation
-        ){
-            var ability = BuildAbility(abilityName, commandRequests);
-
-            foreach(var name in templateNames) {
-                BuildTemplate(name);
-            }
-
-            var unit = BuildUnit(BuildTile(validTemplateNamesOnLocation));
-
-            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
-
-            return abilityHandler.CanHandleAbilityOnUnit(ability, unit);
-        }
-
-        [Test(Description = "TryHandleAbilityOnUnit should return identically to CanHandleAbilityOnUnit. " +
-            "It should also create a new improvement of the argued template at the argued location when " +
-            "it returns true")]
-        [TestCaseSource("TestCases")]
-        public bool TryHandleAbilityOnUnitTests_ImprovementCreated(
-            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
-            IEnumerable<string> templateNames, List<string> validTemplateNamesOnLocation
-         ){
-            var ability = BuildAbility(abilityName, commandRequests);
-
-            string expectedTemplateName = null;
-
-            var improvementRequests = commandRequests.Where(request => request.CommandType == AbilityCommandType.BuildImprovement);
-            if(improvementRequests.Count() != 0) {
-                var argsOfFirstRequest = commandRequests.First().ArgsToPass;
-                if(argsOfFirstRequest != null) {
-                    expectedTemplateName = argsOfFirstRequest.FirstOrDefault();
-                }
-            }
-
-            IImprovementTemplate expectedTemplate = null;
-
-            foreach(var name in templateNames) {
-                var newTemplate = BuildTemplate(name);
-                if(name.Equals(expectedTemplateName)) {
-                    expectedTemplate = newTemplate;
-                }
-            }            
-
-            var location = BuildTile(validTemplateNamesOnLocation);
-            var unit = BuildUnit(location);
-
-            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
-
-            var handleResult = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
-            if(handleResult) {
-                MockImprovementFactory.Verify(
-                    factory => factory.Create(expectedTemplate, location), 
-                    Times.Once, "ImprovementFactory.Create was not called as expected"
-                );
-                return true;
-            }else {
-                MockImprovementFactory.Verify(
-                    factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IMapTile>()),
-                    Times.Never, "ImprovementFactory.Create was called unexpectedly"
-                );
-                return false;
-            }
-        }
-
-        [Test(Description = "CanHandleAbilityOnUnit and TryHandleAbilityOnUnit should throw an InvalidOperationException " +
-            "when its argued ability contains multiple command requests whose type is BuildImprovement")]
-        public void BothMethods_ThrowWhenMultipleImprovementRequests() {
-            var ability = BuildAbility("Invalid Ability", new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement }
+        [Test(Description = "CanHandleAbilityOnUnit can only return true if the argued ability " +
+            "has a single BuildImprovement command whose first argument is a valid template name. " + 
+            "TryHandleAbilityOnUnit should also return an AbilityExecutionResults that reflects " +
+            "CanHandleAbilityOnUnit")]
+        public void CanHandleAbilityOnUnit_RequiresProperlyFormedDefinition() {
+            var validAbility = BuildDefinition(new List<AbilityCommandRequest>(){
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
             });
 
-            var unit = BuildUnit(BuildTile(new List<string>()));
+            var validAbility_RedundantArguments = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One", "Improvement Three" } }
+            });
 
-            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
+            var invalidAbility_Duplicates = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } },
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
+            });
 
-            Assert.Throws<InvalidOperationException>(() => abilityHandler.CanHandleAbilityOnUnit(ability, unit),
-                "CanHandleAbilityOnUnit failed to throw on an ability with too many improvement commands");
+            var invalidAbility_WrongType = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity, ArgsToPass = new List<string>() { "Improvement One" } }
+            });
 
-            Assert.Throws<InvalidOperationException>(() => abilityHandler.TryHandleAbilityOnUnit(ability, unit),
-                "TryHandleAbilityOnUnit failed to throw on an ability with too many improvement commands");
+            var invalidAbility_NonTemplateArgument = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Not An Improvement" } }
+            });
+
+            var invalidAbility_InvalidTemplateArgument = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement Three" } }
+            });            
+
+            var templateOne   = BuildImprovementTemplate("Improvement One",   true);
+            var templateTwo   = BuildImprovementTemplate("Improvement Two",   true);
+            var templateThree = BuildImprovementTemplate("Improvement Three", false);
+
+            var unit = BuildUnit(BuildTile());
+
+            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(validAbility,                           unit), "CanHandleAbilityOnUnit invoked on validAbility was not handled correctly");
+            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(validAbility_RedundantArguments,        unit), "CanHandleAbilityOnUnit invoked on validAbility_RedundantArguments was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_Duplicates,              unit), "CanHandleAbilityOnUnit invoked on invalidAbility_Duplicates was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_WrongType,               unit), "CanHandleAbilityOnUnit invoked on invalidAbility_WrongType was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_NonTemplateArgument,     unit), "CanHandleAbilityOnUnit invoked on invalidAbility_NonTemplateArgument was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_InvalidTemplateArgument, unit), "CanHandleAbilityOnUnit invoked on invalidAbility_InvalidTemplateArgument was not handled correctly");
+
+            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(validAbility,                           unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on validAbility was not handled correctly");
+            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(validAbility_RedundantArguments,        unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on validAbility_RedundantArguments was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_Duplicates,              unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_Duplicates was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_WrongType,               unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_WrongType was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_NonTemplateArgument,     unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_NonTemplateArgument was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_InvalidTemplateArgument, unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_InvalidTemplateArgument was not handled correctly");
+        }
+
+        [Test(Description = "If there is already an improvement at the argued unit's location, " +
+            "CanHandleAbilityOnUnit should return true only if that improvement has the same " +
+            "template as specified by the ability and is unfinished. TryHandleAbilityOnUnit " +
+            "should also return an AbilityExecutionResults that reflects CanHandleAbilityOnUnit")]
+        public void CanHandleAbilityOnUnit_AndExistingImprovement_MustBeSimilarAndUnfinished() {
+            var templateOne = BuildImprovementTemplate("Improvement One", true);
+            var templateTwo = BuildImprovementTemplate("Improvement Two", true);
+
+            var validTile = BuildTile();
+            BuildImprovement(templateOne, validTile, false);
+
+            var invalidTile_ImprovementOfWrongTemplate = BuildTile();
+            BuildImprovement(templateTwo, invalidTile_ImprovementOfWrongTemplate, false);
+
+            var invalidTile_ImprovementCompleted = BuildTile();
+            BuildImprovement(templateOne, invalidTile_ImprovementCompleted, true);
+
+            var abilityToTest = BuildDefinition(new List<AbilityCommandRequest>() {
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
+            });            
+
+            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(validTile)),                              "validTile was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementOfWrongTemplate)), "invalidTile_ImprovementOfWrongTemplate was not handled correctly");
+            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementCompleted)),       "invalidTile_ImprovementCompleted was not handled correctly");
+
+            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(validTile))                             .AbilityHandled, "validTile was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementOfWrongTemplate)).AbilityHandled, "invalidTile_ImprovementOfWrongTemplate was not handled correctly");
+            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementCompleted))      .AbilityHandled, "invalidTile_ImprovementCompleted was not handled correctly");
+        }
+
+        [Test(Description = "TryHandleAbilityOnUnit should, in its valid cases, produce a new " +
+            "improvement of the specified template and return a new BuildImprovementOngoingAbility " +
+            "with the new improvement and the argued unit")]
+        public void TryHandleAbilityOnUnit_BuildsNewImprovement() {
+            var templateOne = BuildImprovementTemplate("Improvement One", true);
+
+            var ability = BuildDefinition(new List<AbilityCommandRequest>(){
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
+            });            
+
+            var unitLocation = BuildTile();
+            var unit = BuildUnit(unitLocation);
+
+            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            IImprovement constructedImprovement = null;
+            MockImprovementFactory
+                .Setup(factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IMapTile>()))
+                .Returns<IImprovementTemplate, IMapTile>(delegate(IImprovementTemplate template, IMapTile location) {
+                    constructedImprovement = BuildImprovement(template, location, true);
+                    return constructedImprovement;
+                })
+                .Callback(delegate(IImprovementTemplate template, IMapTile tile) {
+                    Assert.AreEqual(templateOne, template, "ImprovementFactory.Create was called with an unexpected template");
+                    Assert.AreEqual(unitLocation, tile, "ImprovementFactory.Create was called with an unexpected tile");
+                });
+
+            var results = handlerToTest.TryHandleAbilityOnUnit(ability, unit);
+
+            Assert.That(results.NewAbilityActivated is BuildImprovementOngoingAbility, "TryHandleAbilityOnUnit returned an unexpected ability type");
+
+            var ongoingAbility = results.NewAbilityActivated as BuildImprovementOngoingAbility;
+
+            Assert.AreEqual(unit, ongoingAbility.SourceUnit, "OngoingAbility had an unexpected SourceUnit");
+            Assert.AreEqual(constructedImprovement, ongoingAbility.ImprovementToConstruct, "OngoingAbility had an unexpected ImprovementToConstruct");
+        }
+
+        [Test(Description = "TryHandleAbilityOnUnit should, in valid cases, return a new " +
+            "BuildImprovementOngoingAbility with the improvement already there and the argued unit")]
+        public void TryHandleAbilityOnUnit_UsesExistingUnit() {
+            var templateOne = BuildImprovementTemplate("Improvement One", true);
+
+            var ability = BuildDefinition(new List<AbilityCommandRequest>(){
+                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
+            });            
+
+            var unitLocation = BuildTile();
+            var unit = BuildUnit(unitLocation);
+
+            var existingImprovement = BuildImprovement(templateOne, unitLocation, false);
+
+            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            var results = handlerToTest.TryHandleAbilityOnUnit(ability, unit);
+
+            Assert.That(results.NewAbilityActivated is BuildImprovementOngoingAbility, "TryHandleAbilityOnUnit returned an unexpected ability type");
+
+            var ongoingAbility = results.NewAbilityActivated as BuildImprovementOngoingAbility;
+
+            Assert.AreEqual(unit, ongoingAbility.SourceUnit, "OngoingAbility had an unexpected SourceUnit");
+            Assert.AreEqual(existingImprovement, ongoingAbility.ImprovementToConstruct, "OngoingAbility had an unexpected ImprovementToConstruct");
         }
 
         #endregion
 
         #region utilities
 
-        private IUnitAbilityDefinition BuildAbility(string name, IEnumerable<AbilityCommandRequest> commandRequests) {
-            var mockAbility = new Mock<IUnitAbilityDefinition>();
+        private IUnitAbilityDefinition BuildDefinition(IEnumerable<AbilityCommandRequest> commandRequests) {
+            var mockDefinition = new Mock<IUnitAbilityDefinition>();
 
-            mockAbility.Setup(ability => ability.name).Returns(name);
-            mockAbility.Setup(ability => ability.CommandRequests).Returns(commandRequests);
+            mockDefinition.Setup(definition => definition.CommandRequests).Returns(commandRequests);
 
-            return mockAbility.Object;
+            return mockDefinition.Object;
         }
 
-        private IImprovementTemplate BuildTemplate(string name) {
+        private IImprovementTemplate BuildImprovementTemplate(string name, bool isValid) {
             var mockTemplate = new Mock<IImprovementTemplate>();
+            var newTemplate = mockTemplate.Object;
 
-            mockTemplate.Setup(template => template.name).Returns(name);
+            mockTemplate.Setup(template => template.name).Returns(name);            
 
-            AllTemplates.Add(mockTemplate.Object);
+            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForTile(newTemplate, It.IsAny<IMapTile>()))
+                .Returns(isValid);
 
-            MockImprovementLocationCanon.Setup(
-                canon => canon.CanPlaceImprovementOfTemplateAtLocation(mockTemplate.Object, It.IsAny<IMapTile>())
-            ).Returns(true);
-
-            return mockTemplate.Object;
-        }
-
-        private IMapTile BuildTile(List<string> validTemplateNames) {
-            var mockTile = new Mock<IMapTile>();
-
-            foreach(var name in validTemplateNames) {
-                MockImprovementValidityLogic
-                    .Setup(logic => logic.IsTemplateValidForTile(
-                        It.Is<IImprovementTemplate>(template => template.name.Equals(name)),
-                        mockTile.Object
-                    ))
-                    .Returns(true);
-            }            
-
-            return mockTile.Object;
+            AllTemplates.Add(newTemplate);
+            return newTemplate;
         }
 
         private IUnit BuildUnit(IMapTile location) {
@@ -280,6 +239,26 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
 
             return mockUnit.Object;
+        }
+
+        private IMapTile BuildTile() {
+            var mockTile = new Mock<IMapTile>();
+
+            return mockTile.Object;
+        }
+
+        private IImprovement BuildImprovement(IImprovementTemplate template, IMapTile location, bool isComplete) {
+            var mockImprovement = new Mock<IImprovement>();
+            var newImprovement = mockImprovement.Object;
+
+            mockImprovement.Setup(improvement => improvement.Template).Returns(template);
+            mockImprovement.Setup(improvement => improvement.IsComplete).Returns(isComplete);
+
+            MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement)).Returns(location);
+            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
+                .Returns(new List<IImprovement>() { newImprovement });
+
+            return newImprovement;
         }
 
         #endregion

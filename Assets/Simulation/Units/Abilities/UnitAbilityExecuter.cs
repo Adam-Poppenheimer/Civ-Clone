@@ -15,6 +15,11 @@ namespace Assets.Simulation.Units.Abilities {
 
         private IEnumerable<IUnitAbilityHandler> AbilityHandlers;
 
+        public IEnumerable<IOngoingAbility> OngoingAbilities {
+            get { return ongoingAbilities; }
+        }
+        private List<IOngoingAbility> ongoingAbilities = new List<IOngoingAbility>();
+
         #endregion
 
         #region constructors
@@ -45,13 +50,29 @@ namespace Assets.Simulation.Units.Abilities {
 
         public void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
             foreach(var handler in AbilityHandlers) {
-                if(handler.TryHandleAbilityOnUnit(ability, unit)) {
+                var results = handler.TryHandleAbilityOnUnit(ability, unit);
+                if(results.AbilityHandled) {
+                    if(results.NewAbilityActivated != null) {
+                        results.NewAbilityActivated.BeginExecution();
+                        ongoingAbilities.Add(results.NewAbilityActivated);
+                    }
                     Signals.UnitActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IUnitAbilityDefinition>(unit, ability));
                     return;
                 }
             }
 
             throw new AbilityNotHandledException("No handler was able to handle the ability");
+        }
+
+        public void PerformOngoingAbilities() {
+            foreach(var ability in new List<IOngoingAbility>(ongoingAbilities)) {
+                ability.TickExecution();
+
+                if(ability.IsReadyToTerminate()) {
+                    ability.TerminateExecution();
+                    ongoingAbilities.Remove(ability);
+                }
+            }
         }
 
         #endregion

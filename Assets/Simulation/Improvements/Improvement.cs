@@ -23,7 +23,14 @@ namespace Assets.Simulation.Improvements {
 
         public IImprovementTemplate Template { get; set; }
 
-        public float WorkInvested { get; set; }
+        public float WorkInvested {
+            get { return _workInvested; }
+            set {
+                _workInvested = value;
+                Debug.LogFormat("Work invested: {0}", _workInvested);
+            }
+        }
+        private float _workInvested;
 
         #endregion
 

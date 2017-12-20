@@ -56,7 +56,7 @@ namespace Assets.Simulation.Units.Abilities {
             }
         }
 
-        public bool TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public AbilityExecutionResults TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
                 CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), UnitOwnershipCanon.GetOwnerOfPossession(unit));
 
@@ -66,9 +66,9 @@ namespace Assets.Simulation.Units.Abilities {
                     GameObject.DestroyImmediate(unit.gameObject);
                 }                
 
-                return true;
+                return new AbilityExecutionResults(true, null);
             }else {
-                return false;
+                return new AbilityExecutionResults(false, null);
             }
         }
 

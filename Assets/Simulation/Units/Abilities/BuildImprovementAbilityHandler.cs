@@ -48,41 +48,50 @@ namespace Assets.Simulation.Units.Abilities {
         #region from IUnitAbilityHandler
 
         public bool CanHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
-            var improvementName = GetRequestedImprovementName(ability);
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-            if(improvementName != null){
-                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
-                var templateOfName = AvailableTemplates.Where(template => template.name.Equals(improvementName)).FirstOrDefault();
-                
-                return templateOfName != null
-                    && ValidityLogic.IsTemplateValidForTile(templateOfName, unitLocation)
-                    && ImprovementLocationCanon.CanPlaceImprovementOfTemplateAtLocation(templateOfName, unitLocation);
-            }
+            var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
+            var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
-            return false;
+            return templateOfName != null
+                && ValidityLogic.IsTemplateValidForTile(templateOfName, unitLocation)
+                && (
+                    improvementOnTile == null || 
+                    (improvementOnTile.Template == templateOfName && !improvementOnTile.IsComplete)
+                );
         }
 
-        public bool TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public AbilityExecutionResults TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
-                ImprovementFactory.Create(
-                    AvailableTemplates.Where(template => template.name.Equals(GetRequestedImprovementName(ability))).First(),
-                    UnitPositionCanon.GetOwnerOfPossession(unit)
+                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+                var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
+                var improvementOfTemplate = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+                if(improvementOfTemplate == null) {
+                    improvementOfTemplate = ImprovementFactory.Create(templateOfName, unitLocation);
+                }
+
+                return new AbilityExecutionResults(
+                    true,
+                    new BuildImprovementOngoingAbility(improvementOfTemplate, unit, UnitPositionCanon, ImprovementLocationCanon)
                 );
-                return true;
             }else {
-                return false;
+                return new AbilityExecutionResults(false, null);
             }
         }
 
         #endregion
 
+        public IImprovementTemplate GetTemplateOfName(string name) {
+            return name == null ? null : AvailableTemplates.Where(template => template.name.Equals(name)).FirstOrDefault();
+        }
+
         private string GetRequestedImprovementName(IUnitAbilityDefinition ability) {
             var improvementCommands = ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.BuildImprovement);
 
-            if(improvementCommands.Count() == 0) {
+            if(improvementCommands.Count() != 1) {
                 return null;
-            }else if(improvementCommands.Count() > 1) {
-                throw new InvalidOperationException("It's not valid to have two Build Improvement commands on the same ability");
             }else {
                 return improvementCommands.First().ArgsToPass.FirstOrDefault();
             }

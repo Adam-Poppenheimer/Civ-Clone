@@ -12,6 +12,7 @@ using Assets.Simulation.Core;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Tests.Simulation.Core {
 
@@ -20,11 +21,13 @@ namespace Assets.Tests.Simulation.Core {
 
         #region instance fields and properties
 
-        private Mock<ICityFactory> CityFactoryMock;
-        private Mock<ICivilizationFactory>      CivilizationFactoryMock;
-        private Mock<IUnitFactory>              UnitFactoryMock;
+        private Mock<ICityFactory>         CityFactoryMock;
+        private Mock<ICivilizationFactory> CivilizationFactoryMock;
+        private Mock<IUnitFactory>         UnitFactoryMock;
 
         private Mock<ITurnExecuter> TurnExecuterMock;
+
+        private Mock<IUnitAbilityExecuter> MockAbilityExecuter;
 
         #endregion
 
@@ -45,9 +48,12 @@ namespace Assets.Tests.Simulation.Core {
             UnitFactoryMock = new Mock<IUnitFactory>();
             UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
 
-            Container.Bind<ICityFactory>().FromInstance(CityFactoryMock.Object);
-            Container.Bind<ICivilizationFactory>     ().FromInstance(CivilizationFactoryMock.Object);
-            Container.Bind<IUnitFactory>             ().FromInstance(UnitFactoryMock.Object);
+            MockAbilityExecuter = new Mock<IUnitAbilityExecuter>();
+
+            Container.Bind<ICityFactory>        ().FromInstance(CityFactoryMock        .Object);
+            Container.Bind<ICivilizationFactory>().FromInstance(CivilizationFactoryMock.Object);
+            Container.Bind<IUnitFactory>        ().FromInstance(UnitFactoryMock        .Object);
+            Container.Bind<IUnitAbilityExecuter>().FromInstance(MockAbilityExecuter    .Object);
 
             Container.Bind<ITurnExecuter>().FromInstance(TurnExecuterMock.Object);
 
@@ -212,7 +218,7 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
-        [Test(Description = "When BeginRound is called, all units in UnitFactory are passed to " +
+        [Test(Description = "When EndRound is called, all units in UnitFactory are passed to " +
             "TurnExecuter properly")]
         public void EndRound_AllUnitsCalled() {
             var allUnits = new List<IUnit>() {
@@ -249,6 +255,8 @@ namespace Assets.Tests.Simulation.Core {
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity        (city));
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCivilization(civilization));
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnUnit        (unit));
+
+            MockAbilityExecuter.InSequence(executionSequence).Setup(executer => executer.PerformOngoingAbilities());
 
             var gameCore = Container.Resolve<GameCore>();
             gameCore.EndRound();
