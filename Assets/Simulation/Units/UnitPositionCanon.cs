@@ -45,7 +45,7 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IMapTile location) {
-            return CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
+            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IMapTile oldOwner) {
@@ -53,14 +53,16 @@ namespace Assets.Simulation.Units {
         }
 
         protected override void DoOnPossessionEstablished(IUnit possession, IMapTile newOwner) {
-            possession.gameObject.transform.SetParent(newOwner.transform, false);
+            possession.gameObject.transform.SetParent(newOwner != null ? newOwner.transform : null, false);
             Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IMapTile>(possession, newOwner));
         }
 
         #endregion
 
         public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IMapTile location) {
-            if(type == UnitType.WaterMilitary || type == UnitType.WaterCivilian) {
+            if(location == null) {
+                return true;
+            }else if(type == UnitType.WaterMilitary || type == UnitType.WaterCivilian) {
                 return IsValidForWaterUnit(location) && !AlreadyHasUnitOfType(location, type);
             }else {
                 return IsValidForLandUnit(location) && !AlreadyHasUnitOfType(location, type);

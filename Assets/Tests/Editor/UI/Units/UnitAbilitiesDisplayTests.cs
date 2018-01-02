@@ -49,6 +49,8 @@ namespace Assets.Tests.UI.Units {
             Container.DeclareSignal<TurnBeganSignal>();
 
             Container.Bind<UnitAbilitiesDisplay>().FromNewComponentOnNewGameObject().AsSingle();
+
+            Container.Bind<UnitSignals>().FromMock();
         }
 
         #endregion

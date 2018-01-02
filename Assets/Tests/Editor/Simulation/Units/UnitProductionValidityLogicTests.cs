@@ -109,8 +109,18 @@ namespace Assets.Tests.Simulation.Units {
 
         [Test(Description = "GetTemplatesValidForCity should return all templates " +
             "in AllTemplates for which IsTemplateValidForProductionInCity returns true")]
-        public bool GetTemplatesValidForCity_ReturnsAllValidTemplates() {
-            throw new NotImplementedException();
+        public void GetTemplatesValidForCity_ReturnsAllValidTemplates() {
+            var city = BuildCity(new List<UnitType>() { UnitType.WaterCivilian, UnitType.LandMilitary });
+
+            var landCivilianTemplate = BuildTemplate(UnitType.LandCivilian);
+            var waterCivilianTemplate = BuildTemplate(UnitType.WaterCivilian);
+
+            var validityLogic = Container.Resolve<UnitProductionValidityLogic>();
+
+            var validTemplates = validityLogic.GetTemplatesValidForCity(city);
+
+            CollectionAssert.Contains(validTemplates, landCivilianTemplate, "GetTemplatesValidForCity is missing an expected template");
+            CollectionAssert.DoesNotContain(validTemplates, waterCivilianTemplate, "GetTemplatesValidForCity contains an unexpected template");
         }
 
         #endregion
@@ -120,6 +130,8 @@ namespace Assets.Tests.Simulation.Units {
         private IUnitTemplate BuildTemplate(UnitType typeOfUnit) {
             var mockTemplate = new Mock<IUnitTemplate>();
             mockTemplate.Setup(template => template.Type).Returns(typeOfUnit);
+
+            AllTemplates.Add(mockTemplate.Object);
 
             return mockTemplate.Object;
         }

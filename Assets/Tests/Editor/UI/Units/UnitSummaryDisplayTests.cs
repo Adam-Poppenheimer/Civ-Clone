@@ -24,8 +24,8 @@ namespace Assets.Tests.UI.Units {
 
         private static IEnumerable TestCases {
             get {
-                yield return new TestCaseData("Test Unit", 2, 5, UnitType.LandCivilian, 57, 100);
-                yield return new TestCaseData("Test Unit", 6, 5, UnitType.LandCivilian, 100, 100);
+                yield return new TestCaseData("Test Unit 1", 2, 5, UnitType.LandCivilian, 57, 100 ).SetName("Test Unit 1");
+                yield return new TestCaseData("Test Unit 2", 6, 5, UnitType.LandCivilian, 100, 100).SetName("Test Unit 2");
             }
         }
 
@@ -81,7 +81,9 @@ namespace Assets.Tests.UI.Units {
 
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<UnitSummaryDisplay>().FromNewComponentOnNewGameObject().AsSingle();
+            Container.Bind<UnitSignals>().FromMock();
+
+            Container.Bind<UnitSummaryDisplay>().FromNewComponentOnNewGameObject().AsSingle();            
         }
 
         #endregion

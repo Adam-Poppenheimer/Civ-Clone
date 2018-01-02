@@ -51,17 +51,9 @@ namespace Assets.Tests.UI.Units {
             Container.Bind<IMapHexGrid>()          .FromInstance(MockMap.Object);
             Container.Bind<IUnitPositionCanon>()   .FromInstance(MockPositionCanon.Object);
             Container.Bind<IUnitTerrainCostLogic>().FromMock();
-
-            Container.Bind<ISubject<IUnit>>                         ().WithId("Unit Clicked Signal"   ).FromMock();
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Begin Drag Signal").FromMock();
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>().WithId("Unit Drag Signal"      ).FromMock();
-
-            Container.Bind<ISubject<Tuple<IUnit, PointerEventData>>>()
-                .WithId("Unit End Drag Signal")
-                .To<Subject<Tuple<IUnit, PointerEventData>>>()
-                .AsSingle();
             
-            Container.Bind<UnitSignals>().AsSingle();
+            UnitSignals = new UnitSignals();
+            Container.Bind<UnitSignals>().FromInstance(UnitSignals);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -297,8 +289,7 @@ namespace Assets.Tests.UI.Units {
 
             MockPathDrawer.ResetCalls();
 
-            Container.ResolveId<ISubject<Tuple<IUnit, PointerEventData>>>("Unit End Drag Signal")
-                .OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Once, "PathDrawer.ClearAllPaths was not called");
         }
@@ -328,8 +319,7 @@ namespace Assets.Tests.UI.Units {
 
             Container.Resolve<TilePointerEnterSignal>().Fire(enteredTile, eventData);
 
-            Container.ResolveId<ISubject<Tuple<IUnit, PointerEventData>>>("Unit End Drag Signal")
-                .OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
+            UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
 
             unitMock.VerifyAll();
 

@@ -89,6 +89,8 @@ namespace Assets.Tests.Simulation.Units {
 
         private Mock<ICityFactory> MockCityFactory;
 
+        private UnitSignals UnitSignals;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -117,6 +119,9 @@ namespace Assets.Tests.Simulation.Units {
                 .FromInstance(new List<TerrainShape>() { TerrainShape.Mountains });
 
             Container.Bind<UnitPositionCanon>().AsSingle();
+
+            UnitSignals = new UnitSignals();
+            Container.Bind<UnitSignals>().FromInstance(UnitSignals);
         }
 
         #endregion
@@ -219,12 +224,47 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "ChangeOwnerOfPossession should set the parent of the relocated unit " +
             "to the transform of its new location, or null if its new location is null")]
         public void ChangeOwnerOfPossession_SetsParentToOwnerTransform() {
-            throw new NotImplementedException();
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+
+            var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
+
+            var positionCanon = Container.Resolve<UnitPositionCanon>();
+
+            positionCanon.ChangeOwnerOfPossession(unit, location);
+
+            Assert.AreEqual(location.transform, unit.gameObject.transform.parent,
+                "Moving a unit to a location resulted in an unexpected parenting relationship");
+
+            positionCanon.ChangeOwnerOfPossession(unit, null);
+            Assert.Null(unit.gameObject.transform.parent, 
+                "Moving a unit away from a location resulted in an unexpected parenting relationship");
         }
 
-        [Test(Description = "")]
-        public void EventFiringTestsMissing() {
-            throw new NotImplementedException();
+        [Test(Description = "Whenever a unit has its possession changed, UnitPositionCanon should fire " +
+            "UnitSignals.UnitLocationChangedSignal with the unit and its new location")]
+        public void ChangeOwnerOfPossession_LocationChangedSignalFired() {
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+
+            var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
+
+            var positionCanon = Container.Resolve<UnitPositionCanon>();
+
+            UnitSignals.UnitLocationChangedSignal.Subscribe(delegate(Tuple<IUnit, IMapTile> dataTuple) {
+                Assert.AreEqual(dataTuple.Item1, unit,     "UnitLocationChangedSignal was fired on an unexpected unit");
+                Assert.AreEqual(dataTuple.Item2, location, "UnitLocationChangedSignal was fired on an unexpected location");
+
+                Assert.Pass();
+            });
+
+            positionCanon.ChangeOwnerOfPossession(unit, location);
+
+            Assert.Fail("UnitLocationChangedSignal was not fired when location was non-null");
+
+            location = null;
+
+            positionCanon.ChangeOwnerOfPossession(unit, location);
+
+            Assert.Fail("UnitLocationChangedSignal was not fired when location was null");
         }
 
         #endregion
