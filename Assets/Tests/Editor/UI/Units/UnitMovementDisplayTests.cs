@@ -83,6 +83,10 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
             tileEnterSignal.Fire(enteredTile);
@@ -104,6 +108,10 @@ namespace Assets.Tests.UI.Units {
             var movementDisplay = Container.Resolve<UnitMovementDisplay>();
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -127,6 +135,10 @@ namespace Assets.Tests.UI.Units {
             var movementDisplay = Container.Resolve<UnitMovementDisplay>();
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -153,8 +165,8 @@ namespace Assets.Tests.UI.Units {
         }
 
         [Test(Description = "When MapTileSignals.PointerEnterSignal fires, UnitMovementDisplay " +
-            "shouldn't do anything significant unless the argued eventData object records an " +
-            "active drag on ObjectToDisplay.gameObject")]
+            "shouldn't do anything significant unless it's in the middle of a drag event involving " +
+            "its ObjectToDisplay")]
         public void TilePointerEnterFired_DoesNothingIfNotDraggingUnit() {
             var unitLocation = BuildTile();
             var unit = BuildUnit(unitLocation);
@@ -195,6 +207,10 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
             tileEnterSignal.Fire(enteredTile);
@@ -216,6 +232,10 @@ namespace Assets.Tests.UI.Units {
             var movementDisplay = Container.Resolve<UnitMovementDisplay>();
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -241,6 +261,10 @@ namespace Assets.Tests.UI.Units {
             var movementDisplay = Container.Resolve<UnitMovementDisplay>();
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
+
+            var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
@@ -270,6 +294,8 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.ObjectToDisplay = unit;
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
@@ -302,6 +328,8 @@ namespace Assets.Tests.UI.Units {
             unitMock.InSequence(executionSequence).Setup(unit => unit.PerformMovement());
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unitMock.Object.gameObject };
+
+            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
