@@ -5,11 +5,11 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
-    public interface IImprovementFactory : IFactory<IImprovementTemplate, IMapTile, IImprovement> {
+    public interface IImprovementFactory : IFactory<IImprovementTemplate, IHexCell, IImprovement> {
     }
 
 }

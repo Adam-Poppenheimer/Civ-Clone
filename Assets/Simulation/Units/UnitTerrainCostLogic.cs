@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
@@ -32,7 +32,7 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitTerrainCostLogic
 
-        public int GetCostToMoveUnitIntoTile(IUnit unit, IMapTile tile) {
+        public int GetCostToMoveUnitIntoTile(IUnit unit, IHexCell tile) {
             int retval = 0;
 
             switch(tile.Terrain) {
@@ -50,7 +50,7 @@ namespace Assets.Simulation.Units {
             }
 
             switch(tile.Feature) {
-                case TerrainFeatureType.Forest: retval += Config.ForestMoveCost; break;
+                case TerrainFeature.Forest: retval += Config.ForestMoveCost; break;
                 default: break;
             }
 

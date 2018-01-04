@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities {
 
@@ -8,7 +8,7 @@ namespace Assets.Simulation.Cities {
 
         #region methods
 
-        bool IsTileValidForCity(IMapTile tile);
+        bool IsTileValidForCity(IHexCell tile);
 
         #endregion
 

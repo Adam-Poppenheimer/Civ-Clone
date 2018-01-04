@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
@@ -41,7 +41,7 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementFactory
 
-        public IImprovement Create(IImprovementTemplate template, IMapTile location) {
+        public IImprovement Create(IImprovementTemplate template, IHexCell location) {
             if(template == null) {
                 throw new ArgumentNullException("template");
             }else if(location == null) {

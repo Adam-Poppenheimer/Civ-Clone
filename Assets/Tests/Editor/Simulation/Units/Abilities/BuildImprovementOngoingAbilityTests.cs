@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Improvements;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Units.Abilities {
 
@@ -159,11 +159,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region utilities
 
-        private IMapTile BuildTile() {
-            return new Mock<IMapTile>().Object;
+        private IHexCell BuildTile() {
+            return new Mock<IHexCell>().Object;
         }
 
-        private IImprovement BuildImprovement(IMapTile location, bool isComplete) {
+        private IImprovement BuildImprovement(IHexCell location, bool isComplete) {
             var mockImprovement = new Mock<IImprovement>();
             var newImprovement = mockImprovement.Object;
 
@@ -175,7 +175,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return newImprovement;
         }
 
-        private IUnit BuildUnit(IMapTile location, int currentMovement) {
+        private IUnit BuildUnit(IHexCell location, int currentMovement) {
             var mockUnit = new Mock<IUnit>();
             var newUnit = mockUnit.Object;
 

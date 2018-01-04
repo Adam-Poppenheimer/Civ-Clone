@@ -8,7 +8,7 @@ using UnityEngine.EventSystems;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.UI.StateMachine.States;
 
@@ -27,7 +27,7 @@ namespace Assets.UI.StateMachine.Transitions {
         #region constructors
 
         [Inject]
-        public MapTileTransitionLogic(MapTileSignals tileSignals, TileUIState tileUIState,
+        public MapTileTransitionLogic(HexCellSignals tileSignals, TileUIState tileUIState,
             [Inject(Id = "UI State Machine Animator")] Animator stateMachineAnimator) {
 
             tileSignals.ClickedSignal.Listen(OnTileClickedFired);
@@ -39,7 +39,7 @@ namespace Assets.UI.StateMachine.Transitions {
 
         #region instance methods
 
-        private void OnTileClickedFired(IMapTile tileClicked, PointerEventData eventData) {
+        private void OnTileClickedFired(IHexCell tileClicked, Vector3 mousePosition) {
             TileUIState.TileToDisplay = tileClicked;
             StateMachineAnimator.SetTrigger("Tile State Requested");
         }

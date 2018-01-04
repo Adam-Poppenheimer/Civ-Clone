@@ -11,7 +11,7 @@ using NUnit.Framework;
 using Moq;
 using UniRx;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities;
 
@@ -135,7 +135,7 @@ namespace Assets.Tests.Simulation.Units {
             Tuple<string, UnitType> consideredUnitData,
             List<Tuple<string, UnitType>> presentUnitsData
         ){
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
 
             var consideredUnit = BuildUnit(consideredUnitData);
 
@@ -157,7 +157,7 @@ namespace Assets.Tests.Simulation.Units {
         [TestCaseSource("TerrainConsiderationCases")]
         public bool CanChangeOwnerOfPossession_ConsidersTerrain(UnitType unitType, TerrainType terrain) {
             var unit = BuildUnit(unitType.ToString(), unitType);
-            var tile = BuildTile(terrain, TerrainShape.Flat, TerrainFeatureType.None);
+            var tile = BuildTile(terrain, TerrainShape.Flat, TerrainFeature.None);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
@@ -171,7 +171,7 @@ namespace Assets.Tests.Simulation.Units {
             TerrainShape shape
         ){
             var unit = BuildUnit(unitType.ToString(), unitType);
-            var tile = BuildTile(terrain, shape, TerrainFeatureType.None);
+            var tile = BuildTile(terrain, shape, TerrainFeature.None);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
@@ -184,7 +184,7 @@ namespace Assets.Tests.Simulation.Units {
             var waterMilitary = BuildUnit("Water Military", UnitType.WaterMilitary);
             var waterCivilian = BuildUnit("Water Civilian", UnitType.WaterMilitary);
 
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
             BuildCity(location);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
@@ -205,7 +205,7 @@ namespace Assets.Tests.Simulation.Units {
             Tuple<string, UnitType> consideredUnitData,
             List<Tuple<string, UnitType>> presentUnitsData
         ){
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
 
             var consideredUnit = BuildUnit(consideredUnitData);
 
@@ -224,7 +224,7 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "ChangeOwnerOfPossession should set the parent of the relocated unit " +
             "to the transform of its new location, or null if its new location is null")]
         public void ChangeOwnerOfPossession_SetsParentToOwnerTransform() {
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
 
             var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
 
@@ -243,13 +243,13 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "Whenever a unit has its possession changed, UnitPositionCanon should fire " +
             "UnitSignals.UnitLocationChangedSignal with the unit and its new location")]
         public void ChangeOwnerOfPossession_LocationChangedSignalFired() {
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeatureType.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
 
             var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
-            UnitSignals.UnitLocationChangedSignal.Subscribe(delegate(Tuple<IUnit, IMapTile> dataTuple) {
+            UnitSignals.UnitLocationChangedSignal.Subscribe(delegate(Tuple<IUnit, IHexCell> dataTuple) {
                 Assert.AreEqual(dataTuple.Item1, unit,     "UnitLocationChangedSignal was fired on an unexpected unit");
                 Assert.AreEqual(dataTuple.Item2, location, "UnitLocationChangedSignal was fired on an unexpected location");
 
@@ -287,8 +287,8 @@ namespace Assets.Tests.Simulation.Units {
             return mockUnit.Object;
         }
 
-        private IMapTile BuildTile(TerrainType terrain, TerrainShape shape, TerrainFeatureType feature) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(TerrainType terrain, TerrainShape shape, TerrainFeature feature) {
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
@@ -302,7 +302,7 @@ namespace Assets.Tests.Simulation.Units {
             return newTile;
         }
 
-        private ICity BuildCity(IMapTile location) {
+        private ICity BuildCity(IHexCell location) {
             var mockCity = new Mock<ICity>();
             mockCity.Setup(city => city.Location).Returns(location);
 

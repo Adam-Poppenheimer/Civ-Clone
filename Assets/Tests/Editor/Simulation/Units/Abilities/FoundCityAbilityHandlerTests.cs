@@ -13,7 +13,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units.Abilities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
 
@@ -161,7 +161,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                     "CityFactory.Create was not called as expected"
                 );
             }else {
-                MockCityFactory.Verify(factory => factory.Create(It.IsAny<IMapTile>(), It.IsAny<ICivilization>()),
+                MockCityFactory.Verify(factory => factory.Create(It.IsAny<IHexCell>(), It.IsAny<ICivilization>()),
                     Times.Never, "CityFactory.Create was unexpectedly called");
             }
 
@@ -206,7 +206,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockAbility.Object;
         }
 
-        private IUnit BuildUnit(IMapTile location, ICivilization owner) {
+        private IUnit BuildUnit(IHexCell location, ICivilization owner) {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
@@ -218,8 +218,8 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockUnit.Object;
         }
 
-        private IMapTile BuildTile(bool validForCity) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(bool validForCity) {
+            var mockTile = new Mock<IHexCell>();
 
             MockCityValidityLogic.Setup(logic => logic.IsTileValidForCity(mockTile.Object)).Returns(validForCity);
 

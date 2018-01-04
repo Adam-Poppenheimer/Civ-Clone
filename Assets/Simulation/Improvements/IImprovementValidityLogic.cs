@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
@@ -11,7 +11,7 @@ namespace Assets.Simulation.Improvements {
 
         #region methods
 
-        bool IsTemplateValidForTile(IImprovementTemplate template, IMapTile tile);
+        bool IsTemplateValidForTile(IImprovementTemplate template, IHexCell tile);
 
         #endregion
 

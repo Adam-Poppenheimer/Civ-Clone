@@ -12,12 +12,12 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Territory;
 
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 using Assets.UI;
 
 namespace Assets.Tests.UI.GameMap {
@@ -32,13 +32,13 @@ namespace Assets.Tests.UI.GameMap {
         private Text TerrainFeatureField;
 
         private Mock<IResourceSummaryDisplay>  MockYieldDisplay;
-        private Mock<IMapTileSignalLogic>      MockSignalLogic;
+        private Mock<IHexCellSignalLogic>      MockSignalLogic;
 
         private Mock<IResourceGenerationLogic> MockResourceLogic;
         private Mock<ITilePossessionCanon>     MockPossessionCanon;
 
-        private ISubject<IMapTile> BeginHoverSubject;
-        private ISubject<IMapTile> EndHoverSubject;
+        private ISubject<IHexCell> BeginHoverSubject;
+        private ISubject<IHexCell> EndHoverSubject;
 
         #endregion
 
@@ -57,19 +57,19 @@ namespace Assets.Tests.UI.GameMap {
             Container.Bind<Text>().WithId("Terrain Feature Field").FromInstance(TerrainFeatureField);
 
             MockYieldDisplay    = new Mock<IResourceSummaryDisplay>();
-            MockSignalLogic     = new Mock<IMapTileSignalLogic>();
+            MockSignalLogic     = new Mock<IHexCellSignalLogic>();
 
             MockResourceLogic   = new Mock<IResourceGenerationLogic>();
             MockPossessionCanon = new Mock<ITilePossessionCanon>();            
 
-            BeginHoverSubject = new Subject<IMapTile>();
-            EndHoverSubject   = new Subject<IMapTile>();
+            BeginHoverSubject = new Subject<IHexCell>();
+            EndHoverSubject   = new Subject<IHexCell>();
             
             MockSignalLogic.Setup(logic => logic.BeginHoverSignal).Returns(BeginHoverSubject);
             MockSignalLogic.Setup(logic => logic.EndHoverSignal)  .Returns(EndHoverSubject);
 
             Container.Bind<IResourceSummaryDisplay>().WithId("Tile Hover Yield Display").FromInstance(MockYieldDisplay.Object);
-            Container.Bind<IMapTileSignalLogic>()                                       .FromInstance(MockSignalLogic.Object);
+            Container.Bind<IHexCellSignalLogic>()                                       .FromInstance(MockSignalLogic.Object);
 
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceLogic.Object);
             Container.Bind<ITilePossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
@@ -85,7 +85,7 @@ namespace Assets.Tests.UI.GameMap {
             "and displays the information in the firing IMapTile in its various fields")]
         public void BeginHoverSignalFired_DisplayActivatesAndFillsFields() {
             var tile = BuildTile(
-                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeatureType.Forest,
+                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeature.Forest,
                 BuildSlot(ResourceSummary.Empty, ResourceSummary.Empty), null
             );
 
@@ -113,7 +113,7 @@ namespace Assets.Tests.UI.GameMap {
             var cityYield = new ResourceSummary(production: 2, gold: 3);
 
             var tile = BuildTile(
-                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeatureType.Forest,
+                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeature.Forest,
                 BuildSlot(baseYield, cityYield), null
             );
 
@@ -138,7 +138,7 @@ namespace Assets.Tests.UI.GameMap {
             var city = new Mock<ICity>().Object;
 
             var tile = BuildTile(
-                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeatureType.Forest,
+                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeature.Forest,
                 BuildSlot(baseYield, cityYield), city
             );
 
@@ -157,7 +157,7 @@ namespace Assets.Tests.UI.GameMap {
             "to the screen-space coordinates of its new tile")]
         public void BeginHoverSignalFired_DisplayRepositionedToTile() {
             var tile = BuildTile(
-                new Vector3(1, -2, 3), TerrainType.Plains, TerrainShape.Flat, TerrainFeatureType.Forest,
+                new Vector3(1, -2, 3), TerrainType.Plains, TerrainShape.Flat, TerrainFeature.Forest,
                 BuildSlot(ResourceSummary.Empty, ResourceSummary.Empty), null
             );
 
@@ -174,7 +174,7 @@ namespace Assets.Tests.UI.GameMap {
         [Test(Description = "When EndHoverSignal is fired, TileHoverDisplay should deactivate its GameObject")]
         public void EndHoverSignalFired_DisplayDeactivates() {
             var tile = BuildTile(
-                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeatureType.Forest,
+                Vector3.zero, TerrainType.Plains, TerrainShape.Hills, TerrainFeature.Forest,
                 BuildSlot(ResourceSummary.Empty, ResourceSummary.Empty), null
             );
 
@@ -189,11 +189,11 @@ namespace Assets.Tests.UI.GameMap {
 
         #region utilities
 
-        private IMapTile BuildTile(Vector3 position, TerrainType terrain,
-            TerrainShape shape, TerrainFeatureType feature, IWorkerSlot slot,
+        private IHexCell BuildTile(Vector3 position, TerrainType terrain,
+            TerrainShape shape, TerrainFeature feature, IWorkerSlot slot,
             ICity owner
         ){
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
             mockTile.Setup(tile => tile.WorkerSlot).Returns(slot);
 

@@ -9,9 +9,9 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.UI.GameMap {
 
@@ -42,7 +42,7 @@ namespace Assets.Tests.UI.GameMap {
             "indicator for each tile. It then sets that indicator's parent to some canvas " +
             "that is a child of the child the indicator is assigned to")]
         public void DrawPath_IndicatorsCreatedAndParented() {
-            var pathToDraw = new List<IMapTile>() {
+            var pathToDraw = new List<IHexCell>() {
                 BuildTile(), BuildTile(), BuildTile(), BuildTile(), BuildTile()
             };
 
@@ -64,9 +64,9 @@ namespace Assets.Tests.UI.GameMap {
         [Test(Description = "When DrawPath is called multiple times, TilePathDrawer will draw multiple paths, " +
             "each one with its own set of indicators, and without removing any existing paths.")]
         public void DrawPath_MultipleCallsCreateMultiplePaths() {
-            var pathOne   = new List<IMapTile>() { BuildTile(), BuildTile() };
-            var pathTwo   = new List<IMapTile>() { BuildTile(), BuildTile(), BuildTile() };
-            var pathThree = new List<IMapTile>() { BuildTile(), BuildTile(), BuildTile(), BuildTile() };
+            var pathOne   = new List<IHexCell>() { BuildTile(), BuildTile() };
+            var pathTwo   = new List<IHexCell>() { BuildTile(), BuildTile(), BuildTile() };
+            var pathThree = new List<IHexCell>() { BuildTile(), BuildTile(), BuildTile(), BuildTile() };
 
             var pathDrawer = Container.Resolve<TilePathDrawer>();
 
@@ -82,8 +82,8 @@ namespace Assets.Tests.UI.GameMap {
 
         [Test(Description = "When ClearPath is called, all instantiated indicators are despawned")]
         public void ClearPath_AllIndicatorsDeactivated() {
-            var pathOne   = new List<IMapTile>() { BuildTile(), BuildTile() };
-            var pathTwo   = new List<IMapTile>() { BuildTile(), BuildTile(), BuildTile() };
+            var pathOne   = new List<IHexCell>() { BuildTile(), BuildTile() };
+            var pathTwo   = new List<IHexCell>() { BuildTile(), BuildTile(), BuildTile() };
 
             var pathDrawer = Container.Resolve<TilePathDrawer>();
 
@@ -102,8 +102,8 @@ namespace Assets.Tests.UI.GameMap {
 
         #region utilities
 
-        private IMapTile BuildTile() {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile() {
+            var mockTile = new Mock<IHexCell>();
 
             var gameObject = new GameObject();
             gameObject.AddComponent<Canvas>();

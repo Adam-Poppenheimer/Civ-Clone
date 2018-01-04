@@ -12,7 +12,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Tests.Simulation.Cities {
@@ -26,9 +26,9 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossession;
         private Mock<IImprovementLocationCanon> MockImprovementPositionCanon;
 
-        private Mock<IMapHexGrid> MockMap;
+        private Mock<IHexGrid> MockGrid;
 
-        private List<IMapTile> AllTiles = new List<IMapTile>();
+        private List<IHexCell> AllTiles = new List<IHexCell>();
 
         #endregion
 
@@ -43,14 +43,14 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossession       = new Mock<IBuildingPossessionCanon>();
             MockCityPossession           = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockImprovementPositionCanon = new Mock<IImprovementLocationCanon>();
-            MockMap                      = new Mock<IMapHexGrid>();
+            MockGrid                      = new Mock<IHexGrid>();
 
-            MockMap.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
+            MockGrid.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
 
             Container.Bind<IBuildingPossessionCanon>                     ().FromInstance(MockBuildingPossession      .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession          .Object);
             Container.Bind<IImprovementLocationCanon>                    ().FromInstance(MockImprovementPositionCanon.Object);
-            Container.Bind<IMapHexGrid>                                  ().FromInstance(MockMap                     .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                    .Object);
 
             Container.Bind<IncomeModifierLogic>().AsSingle();
         }
@@ -237,7 +237,7 @@ namespace Assets.Tests.Simulation.Cities {
             return civilization;
         }
 
-        private IImprovement BuildImprovement(IMapTile location, ResourceSummary bonusYield, bool isComplete) {
+        private IImprovement BuildImprovement(IHexCell location, ResourceSummary bonusYield, bool isComplete) {
             var mockImprovment = new Mock<IImprovement>();
 
             var mockTemplate = new Mock<IImprovementTemplate>();
@@ -261,8 +261,8 @@ namespace Assets.Tests.Simulation.Cities {
             return mockSlot.Object;
         }
 
-        private IMapTile BuildTile(IWorkerSlot slot) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(IWorkerSlot slot) {
+            var mockTile = new Mock<IHexCell>();
 
             mockTile.Setup(tile => tile.WorkerSlot).Returns(slot);
             AllTiles.Add(mockTile.Object);

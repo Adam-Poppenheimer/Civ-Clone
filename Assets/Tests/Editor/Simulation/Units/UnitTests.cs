@@ -13,7 +13,7 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
 
@@ -193,7 +193,7 @@ namespace Assets.Tests.Simulation.Units {
             Assert.DoesNotThrow(() => unit.PerformMovement(),
                 "PerformMovement falsely threw an exception when CurrentPath was null");
 
-            unit.CurrentPath = new List<IMapTile>();
+            unit.CurrentPath = new List<IHexCell>();
 
             Assert.DoesNotThrow(() => unit.PerformMovement(),
                 "PerformMovement falsely threw an exception when CurrentPath was empty");
@@ -209,7 +209,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var unit = Container.Resolve<GameUnit>();
 
-            unit.CurrentPath = new List<IMapTile>(startingPath);
+            unit.CurrentPath = new List<IHexCell>(startingPath);
             unit.CurrentMovement = startingMovement;
 
             unit.PerformMovement();
@@ -238,12 +238,12 @@ namespace Assets.Tests.Simulation.Units {
 
             var expectedStopTile = startingPath[expectedStopIndex];
 
-            var expectedEndingPath = new List<IMapTile>(startingPath);
+            var expectedEndingPath = new List<IHexCell>(startingPath);
             expectedEndingPath.RemoveRange(0, expectedStopIndex + 1);
 
             var unit = Container.Resolve<GameUnit>();
 
-            unit.CurrentPath = new List<IMapTile>(startingPath);
+            unit.CurrentPath = new List<IHexCell>(startingPath);
             unit.CurrentMovement = startingMovement;
 
             unit.PerformMovement();
@@ -270,10 +270,10 @@ namespace Assets.Tests.Simulation.Units {
             var interveningTile  = BuildTile(1);
             var destinationTile  = BuildTile(1);
 
-            var path = new List<IMapTile>() { startingTile, interveningTile, destinationTile };
+            var path = new List<IHexCell>() { startingTile, interveningTile, destinationTile };
 
             var unit = Container.Resolve<GameUnit>();
-            unit.CurrentPath = new List<IMapTile>(path);
+            unit.CurrentPath = new List<IHexCell>(path);
             unit.CurrentMovement = 3;
 
             MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(false);
@@ -293,7 +293,7 @@ namespace Assets.Tests.Simulation.Units {
             MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(true);
             MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, destinationTile)).Returns(false);
 
-            unit.CurrentPath = new List<IMapTile>(path);
+            unit.CurrentPath = new List<IHexCell>(path);
             unit.CurrentMovement = 3;
 
             unit.PerformMovement();
@@ -311,7 +311,7 @@ namespace Assets.Tests.Simulation.Units {
 
         #region utilities
 
-        private GameUnit BuildUnit(IMapTile location, int currentMovement) {
+        private GameUnit BuildUnit(IHexCell location, int currentMovement) {
             var newUnit = Container.Resolve<GameUnit>();
 
             newUnit.CurrentMovement = currentMovement;
@@ -321,8 +321,8 @@ namespace Assets.Tests.Simulation.Units {
             return newUnit;
         }
 
-        private IMapTile BuildTile(int movementCost) {
-            var tileMock = new Mock<IMapTile>();
+        private IHexCell BuildTile(int movementCost) {
+            var tileMock = new Mock<IHexCell>();
             tileMock.Name = string.Format("MapTile with cost {0}", movementCost);
 
             var newTile = tileMock.Object;

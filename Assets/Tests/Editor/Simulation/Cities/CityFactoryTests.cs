@@ -20,7 +20,7 @@ using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Territory;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 
 using Assets.Simulation.Units;
@@ -38,7 +38,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
-        private Mock<IMapHexGrid> MockMap;
+        private Mock<IHexGrid> MockGrid;
 
         private Mock<ITilePossessionCanon> MockTilePossessionCanon;
 
@@ -60,12 +60,12 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockMap                 = new Mock<IMapHexGrid>();
+            MockGrid                 = new Mock<IHexGrid>();
             MockTilePossessionCanon = new Mock<ITilePossessionCanon>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IMapHexGrid>                                  ().FromInstance(MockMap                .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
             Container.Bind<ITilePossessionCanon>                         ().FromInstance(MockTilePossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
 
@@ -284,8 +284,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IMapTile BuildTile(bool canBeAssigned) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(bool canBeAssigned) {
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
@@ -306,14 +306,14 @@ namespace Assets.Tests.Simulation.Cities {
             return civilizationMock.Object;
         }
 
-        private List<IMapTile> BuildNeighborsFor(IMapTile centeredTile, int neighborCount, bool canBeAssigned) {
-            var retval = new List<IMapTile>();
+        private List<IHexCell> BuildNeighborsFor(IHexCell centeredTile, int neighborCount, bool canBeAssigned) {
+            var retval = new List<IHexCell>();
 
             for(int i = 0; i < neighborCount; ++i) {
                 retval.Add(BuildTile(canBeAssigned));
             }
 
-            MockMap.Setup(map => map.GetNeighbors(centeredTile)).Returns(retval);
+            MockGrid.Setup(map => map.GetNeighbors(centeredTile)).Returns(retval);
 
             return retval;
         }

@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.Territory;
@@ -29,8 +29,6 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private GameObject CityPrefab;
 
         [SerializeField] private CityConfig CityConfig;
-
-        [SerializeField] private MapHexGrid HexGrid;
 
         [SerializeField] private List<BuildingTemplate> AvailableBuildingTemplates;
 
@@ -57,8 +55,6 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IBuildingPossessionCanon>        ().To<BuildingPossessionCanon>        ().AsSingle();
             Container.Bind<IIncomeModifierLogic>            ().To<IncomeModifierLogic>            ().AsSingle();
             Container.Bind<ICityValidityLogic>              ().To<CityValidityLogic>              ().AsSingle();
-
-            Container.Bind<IMapHexGrid>().To<MapHexGrid>().FromInstance(HexGrid);  
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();

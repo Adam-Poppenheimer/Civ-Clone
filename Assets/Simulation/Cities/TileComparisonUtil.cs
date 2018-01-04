@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Distribution;
 
@@ -13,10 +13,10 @@ namespace Assets.Simulation.Cities {
 
         #region static methods
 
-        public static Comparison<IMapTile> BuildFocusedComparisonAscending(ICity sourceCity,
+        public static Comparison<IHexCell> BuildFocusedComparisonAscending(ICity sourceCity,
             ResourceType focusedResource, IResourceGenerationLogic generationLogic) {
 
-            return delegate(IMapTile firstTile, IMapTile secondTile) {
+            return delegate(IHexCell firstTile, IHexCell secondTile) {
                 var firstYield = generationLogic.GetYieldOfSlotForCity(firstTile.WorkerSlot, sourceCity);
                 var secondYield = generationLogic.GetYieldOfSlotForCity(secondTile.WorkerSlot, sourceCity);
 
@@ -33,10 +33,10 @@ namespace Assets.Simulation.Cities {
 
         }
 
-        public static Comparison<IMapTile> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity,
+        public static Comparison<IHexCell> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity,
             IResourceGenerationLogic generationLogic) {
 
-            return delegate(IMapTile firstTile, IMapTile secondTile) {
+            return delegate(IHexCell firstTile, IHexCell secondTile) {
                 var firstYield = generationLogic.GetYieldOfSlotForCity(firstTile.WorkerSlot, sourceCity);
                 var secondYield = generationLogic.GetYieldOfSlotForCity(secondTile.WorkerSlot, sourceCity);
 
@@ -45,10 +45,10 @@ namespace Assets.Simulation.Cities {
 
         }
 
-        public static Comparison<IMapTile> BuildTotalYieldComparisonAscending(ICity sourceCity,
+        public static Comparison<IHexCell> BuildTotalYieldComparisonAscending(ICity sourceCity,
             IResourceGenerationLogic generationLogic) {
 
-            return delegate(IMapTile firstTile, IMapTile secondTile) {
+            return delegate(IHexCell firstTile, IHexCell secondTile) {
                 var firstYield = generationLogic.GetYieldOfSlotForCity(firstTile.WorkerSlot, sourceCity);
                 var secondYield = generationLogic.GetYieldOfSlotForCity(secondTile.WorkerSlot, sourceCity);
 
@@ -57,7 +57,7 @@ namespace Assets.Simulation.Cities {
 
         }
 
-        public static Comparison<IMapTile> BuildComparisonAscending(ICity sourceCity, ResourceFocusType focus,
+        public static Comparison<IHexCell> BuildComparisonAscending(ICity sourceCity, ResourceFocusType focus,
             IResourceGenerationLogic generationLogic) {
 
             switch(focus) {

@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
@@ -18,7 +18,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region instance fields and properties
 
-        private IMapHexGrid HexGrid;
+        private IHexGrid HexGrid;
 
         private ITilePossessionCanon PossessionCanon;
         
@@ -31,7 +31,7 @@ namespace Assets.Simulation.Cities.Territory {
         #region constructors
 
         [Inject]
-        public BorderExpansionLogic(IMapHexGrid hexGrid, ITilePossessionCanon possessionCanon,
+        public BorderExpansionLogic(IHexGrid hexGrid, ITilePossessionCanon possessionCanon,
             ICityConfig config, IResourceGenerationLogic resourceGenerationLogic) {
 
             HexGrid = hexGrid;
@@ -47,8 +47,8 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region from ICulturalExpansionLogic
 
-        public IEnumerable<IMapTile> GetAllTilesAvailableToCity(ICity city) {
-            var retval = new HashSet<IMapTile>();
+        public IEnumerable<IHexCell> GetAllTilesAvailableToCity(ICity city) {
+            var retval = new HashSet<IHexCell>();
 
             foreach(var tile in PossessionCanon.GetTilesOfCity(city)) {
                 foreach(var neighbor in HexGrid.GetNeighbors(tile)) {
@@ -63,7 +63,7 @@ namespace Assets.Simulation.Cities.Territory {
             return retval;
         }
 
-        public IMapTile GetNextTileToPursue(ICity city) {
+        public IHexCell GetNextTileToPursue(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
@@ -74,7 +74,7 @@ namespace Assets.Simulation.Cities.Territory {
             return availableTiles.LastOrDefault();
         }
 
-        public bool IsTileAvailable(ICity city, IMapTile tile) {
+        public bool IsTileAvailable(ICity city, IHexCell tile) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }else if(tile == null){
@@ -88,7 +88,7 @@ namespace Assets.Simulation.Cities.Territory {
             return isUnowned && isWithinRange && isNeighborOfPossession;
         }
 
-        public int GetCultureCostOfAcquiringTile(ICity city, IMapTile tile) {
+        public int GetCultureCostOfAcquiringTile(ICity city, IHexCell tile) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }else if(tile == null) {
@@ -106,7 +106,7 @@ namespace Assets.Simulation.Cities.Territory {
             );
         }
 
-        public int GetGoldCostOfAcquiringTile(ICity city, IMapTile tile) {
+        public int GetGoldCostOfAcquiringTile(ICity city, IHexCell tile) {
             return GetCultureCostOfAcquiringTile(city, tile);
         }
 

@@ -12,7 +12,7 @@ using UniRx;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Units.Abilities {
 
@@ -43,7 +43,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockImprovementFactory       = new Mock<IImprovementFactory>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
-            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<IMapTile>()))
+            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<IHexCell>()))
                 .Returns(new List<IImprovement>());
 
             Container.Bind<IEnumerable<IImprovementTemplate>>().WithId("Available Improvement Templates").FromInstance(AllTemplates);
@@ -162,12 +162,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             IImprovement constructedImprovement = null;
             MockImprovementFactory
-                .Setup(factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IMapTile>()))
-                .Returns<IImprovementTemplate, IMapTile>(delegate(IImprovementTemplate template, IMapTile location) {
+                .Setup(factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IHexCell>()))
+                .Returns<IImprovementTemplate, IHexCell>(delegate(IImprovementTemplate template, IHexCell location) {
                     constructedImprovement = BuildImprovement(template, location, true);
                     return constructedImprovement;
                 })
-                .Callback(delegate(IImprovementTemplate template, IMapTile tile) {
+                .Callback(delegate(IImprovementTemplate template, IHexCell tile) {
                     Assert.AreEqual(templateOne, template, "ImprovementFactory.Create was called with an unexpected template");
                     Assert.AreEqual(unitLocation, tile, "ImprovementFactory.Create was called with an unexpected tile");
                 });
@@ -226,14 +226,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             mockTemplate.Setup(template => template.name).Returns(name);            
 
-            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForTile(newTemplate, It.IsAny<IMapTile>()))
+            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForTile(newTemplate, It.IsAny<IHexCell>()))
                 .Returns(isValid);
 
             AllTemplates.Add(newTemplate);
             return newTemplate;
         }
 
-        private IUnit BuildUnit(IMapTile location) {
+        private IUnit BuildUnit(IHexCell location) {
             var mockUnit = new Mock<IUnit>();
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
@@ -241,13 +241,13 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockUnit.Object;
         }
 
-        private IMapTile BuildTile() {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile() {
+            var mockTile = new Mock<IHexCell>();
 
             return mockTile.Object;
         }
 
-        private IImprovement BuildImprovement(IImprovementTemplate template, IMapTile location, bool isComplete) {
+        private IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location, bool isComplete) {
             var mockImprovement = new Mock<IImprovement>();
             var newImprovement = mockImprovement.Object;
 

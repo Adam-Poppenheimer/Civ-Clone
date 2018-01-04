@@ -9,7 +9,7 @@ using Moq;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -20,7 +20,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<ITilePossessionCanon> MockPossessionCanon;
 
-        private Mock<IMapHexGrid> MockHexGrid;
+        private Mock<IHexGrid> MockHexGrid;
 
         private Mock<ICityFactory> MockCityFactory;
 
@@ -39,15 +39,15 @@ namespace Assets.Tests.Simulation.Cities {
             AllCities.Clear();
 
             MockPossessionCanon = new Mock<ITilePossessionCanon>();
-            MockHexGrid         = new Mock<IMapHexGrid>();
+            MockHexGrid         = new Mock<IHexGrid>();
             MockCityFactory     = new Mock<ICityFactory>();
             MockConfig          = new Mock<ICityConfig>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
             Container.Bind<ITilePossessionCanon>()     .FromInstance(MockPossessionCanon.Object);
-            Container.Bind<IMapHexGrid>()              .FromInstance(MockHexGrid.Object);
-            Container.Bind<ICityFactory>().FromInstance(MockCityFactory.Object);
+            Container.Bind<IHexGrid>()                 .FromInstance(MockHexGrid.Object);
+            Container.Bind<ICityFactory>()             .FromInstance(MockCityFactory.Object);
             Container.Bind<ICityConfig>()              .FromInstance(MockConfig.Object);
 
             Container.Bind<CityValidityLogic>().AsSingle();
@@ -112,15 +112,15 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IMapTile BuildTile(ICity owner) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(ICity owner) {
+            var mockTile = new Mock<IHexCell>();
 
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(mockTile.Object)).Returns(owner);
 
             return mockTile.Object;
         }
 
-        private ICity BuildCity(IMapTile location) {
+        private ICity BuildCity(IHexCell location) {
             var mockCity = new Mock<ICity>();
 
             mockCity.Setup(city => city.Location).Returns(location);

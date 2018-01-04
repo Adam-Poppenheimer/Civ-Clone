@@ -34,8 +34,9 @@ namespace Assets.UI {
         #region from ITickable
 
         public void Tick() {
-            CameraToControl.transform.position += new Vector3(
+            CameraToControl.transform.Translate(
                 Input.GetAxis("Horizontal") * Config.PanningSpeed,
+                0f,
                 Input.GetAxis("Vertical") * Config.PanningSpeed
             );
 

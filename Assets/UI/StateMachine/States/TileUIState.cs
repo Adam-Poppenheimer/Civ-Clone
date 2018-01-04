@@ -8,9 +8,9 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 
 namespace Assets.UI.StateMachine.States {
 
@@ -18,7 +18,7 @@ namespace Assets.UI.StateMachine.States {
 
         #region instance fields and properties
 
-        public IMapTile TileToDisplay { get; set; }
+        public IHexCell TileToDisplay { get; set; }
 
         private List<TileDisplayBase> DisplaysToManage;
 

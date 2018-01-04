@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Improvements;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units.Abilities {
 

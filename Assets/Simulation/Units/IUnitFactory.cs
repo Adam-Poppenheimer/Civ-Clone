@@ -5,12 +5,12 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
-    public interface IUnitFactory : IFactory<IMapTile, IUnitTemplate, ICivilization, IUnit> {
+    public interface IUnitFactory : IFactory<IHexCell, IUnitTemplate, ICivilization, IUnit> {
 
         #region properties
 

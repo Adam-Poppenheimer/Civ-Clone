@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Moq;
 using UniRx;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation;
@@ -29,7 +29,7 @@ namespace Assets.Tests.UI.Cities {
 
         private Mock<ITilePossessionCanon> MockPossessionCanon;
 
-        private List<Mock<IMapTile>> AllTileMocks = new List<Mock<IMapTile>>();
+        private List<Mock<IHexCell>> AllTileMocks = new List<Mock<IHexCell>>();
 
         private List<Mock<IWorkerSlotDisplay>> AllSlotDisplayMocks = new List<Mock<IWorkerSlotDisplay>>();
 
@@ -268,9 +268,9 @@ namespace Assets.Tests.UI.Cities {
 
         #region utilities
 
-        private Mock<IMapTile> BuildTile(Vector3 position, bool suppressSlot,
+        private Mock<IHexCell> BuildTile(Vector3 position, bool suppressSlot,
             IWorkerSlot slot) {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
 
             var newTransform = new GameObject().transform;
             newTransform.position = position;

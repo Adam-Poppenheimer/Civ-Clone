@@ -9,7 +9,7 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
@@ -29,7 +29,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CanChangeOwnerOfTile_TrueIfHasOtherOwner() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var oldCity = new Mock<ICity>().Object;
             var newCity = new Mock<ICity>().Object;
 
@@ -44,7 +44,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CanChangeOwnerOfTile_TrueIfHasNoOwner() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var city = new Mock<ICity>().Object;
 
             Assert.IsTrue(possessionCanon.CanChangeOwnerOfTile(tile, city),
@@ -56,7 +56,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CanChangeOwnerOfTile_FalseIfAlreadyOwnedBy() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var city = new Mock<ICity>().Object;
 
             possessionCanon.ChangeOwnerOfTile(tile, city);
@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CanChangeOwnerOfTile_FalseIfLocationOfDifferentCity() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             var firstCityMock = new Mock<ICity>();
             firstCityMock.SetupGet(city => city.Location).Returns(tile);
@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void ChangeOwnerOfTile_ChangeReflectedInGetCityOfTile() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var oldCity = new Mock<ICity>().Object;
             var newCity = new Mock<ICity>().Object;
 
@@ -108,7 +108,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void ChangeOwnerOfTile_ChangeReflectedInGetTilesOfCity() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var oldCity = new Mock<ICity>().Object;
             var newCity = new Mock<ICity>().Object;
 
@@ -131,7 +131,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void ChangeOwnerOfTile_NullOwnerValid() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
             var city = new Mock<ICity>().Object;
 
             possessionCanon.ChangeOwnerOfTile(tile, city);
@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void ChangeOwnerOfTile_ThrowsIfNotPermitted() {
             var possessionCanon = Container.Resolve<TilePossessionCanon>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             Assert.Throws<InvalidOperationException>(() => possessionCanon.ChangeOwnerOfTile(tile, null),
                 "ChangeOwnerOfTile failed to throw on an invalid change operation");

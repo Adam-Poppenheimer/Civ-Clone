@@ -10,7 +10,7 @@ using Moq;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
 
@@ -137,11 +137,11 @@ namespace Assets.Tests.Simulation.Units {
         }
 
         private ICity BuildCity(List<UnitType> typesNotPermitted) {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
 
             MockPositionCanon
                 .Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(It.IsAny<UnitType>(), mockTile.Object))
-                .Returns<UnitType, IMapTile>((type, tile) => !typesNotPermitted.Contains(type));
+                .Returns<UnitType, IHexCell>((type, tile) => !typesNotPermitted.Contains(type));
 
             var mockCity = new Mock<ICity>();
             mockCity.Setup(city => city.Location).Returns(mockTile.Object);

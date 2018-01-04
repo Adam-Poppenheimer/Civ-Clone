@@ -10,7 +10,7 @@ using Moq;
 
 using Assets.Simulation;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
@@ -73,7 +73,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetYieldOfSlotForCity should return IncomeModifierLogic.GetRealBaseYieldForSlot " + 
             "if there are no modifiers applied to the slot")]
         public void GetYieldOfSlotForCity_ReturnsBaseYieldIfNoModifiers() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(null, new List<IHexCell>(), new List<IBuilding>());
 
             var slotYield = new ResourceSummary(food: 1, gold: 3, production: 2);
             var slot = BuildSlot(slotYield, true);
@@ -92,7 +92,7 @@ namespace Assets.Tests.Simulation.Cities {
             var slotYield = new ResourceSummary(food: 1, gold: 1, production: 1, culture: 0);
             var slot = BuildSlot(slotYield, true);
 
-            var tiles = new List<IMapTile>() { BuildTile(slot, false) };
+            var tiles = new List<IHexCell>() { BuildTile(slot, false) };
             var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
 
             var city = BuildCity(location, tiles, new List<IBuilding>());
@@ -125,7 +125,7 @@ namespace Assets.Tests.Simulation.Cities {
             var slotYield = new ResourceSummary(food: 1, gold: 1, production: 1, culture: 0);
             var slot = BuildSlot(slotYield, true);
 
-            var tiles = new List<IMapTile>() { BuildTile(slot, false) };
+            var tiles = new List<IHexCell>() { BuildTile(slot, false) };
             var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
 
             var city = BuildCity(location, tiles, new List<IBuilding>());
@@ -143,7 +143,7 @@ namespace Assets.Tests.Simulation.Cities {
             "ResourceGenerationConfig if there are no city or civilizational modifiers applying " +
             "to resource yield")]
         public void GetYieldOfUnemployedForCity_ReturnsConfiguredValue() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(null, new List<IHexCell>(), new List<IBuilding>());
 
             var unemployedYield = new ResourceSummary(gold: 2, production: 2);
             MockConfig.Setup(config => config.UnemployedYield).Returns(unemployedYield);
@@ -157,7 +157,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetYieldOfUnemployedForCity should have its value modified " +
             "by city and civilizational income modifiers from IncomeModifierLogic")]
         public void GetYieldOfUnemployedForCity_ModifiedByIncomeModifiers() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(null, new List<IHexCell>(), new List<IBuilding>());
 
             var civilization = BuildCivilization(city);
 
@@ -182,7 +182,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetYieldOfUnemployedForCity should not throw an exception " +
             "when the passed city is not owned by any civilization")]
         public void GetYieldOfUnemployedForCity_HandlesNullCivGracefully() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(null, new List<IHexCell>(), new List<IBuilding>());
 
             MockIncomeLogic.Setup(logic => logic.GetYieldMultipliersForCivilization(null))
                 .Throws(new ArgumentNullException("civilization"));
@@ -196,7 +196,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetTotalYieldOfCity should consider the yield of only " +
             "occupied slots in tiles possessed by the argued city")]
         public void GetTotalYieldOfCity_ConsidersOnlyOccupiedTileSlots() {
-            var tiles = new List<IMapTile>();
+            var tiles = new List<IHexCell>();
             var buildings = new List<IBuilding>();
 
             for(int i = 0; i < 3; ++i) {
@@ -229,7 +229,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
 
-            var city = BuildCity(location, new List<IMapTile>(), buildings);
+            var city = BuildCity(location, new List<IHexCell>(), buildings);
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
 
@@ -248,7 +248,7 @@ namespace Assets.Tests.Simulation.Cities {
             }
 
             var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
-            var tiles = new List<IMapTile>();
+            var tiles = new List<IHexCell>();
 
             var city = BuildCity(location, tiles, buildings);
 
@@ -264,7 +264,7 @@ namespace Assets.Tests.Simulation.Cities {
             "slots the city has access to")]
         public void GetTotalYieldOfCity_ConsidersUnemployedPeople() {
             var buildings = new List<IBuilding>();
-            var tiles = new List<IMapTile>() {
+            var tiles = new List<IHexCell>() {
                 BuildTile(BuildSlot(ResourceSummary.Empty, true), false),
                 BuildTile(BuildSlot(ResourceSummary.Empty, true), false),
                 BuildTile(BuildSlot(ResourceSummary.Empty, true), false)
@@ -289,7 +289,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void GetTotalYieldOfCity_ConsidersCityCenter() {
             var location = BuildTile(BuildSlot(new ResourceSummary(food: 2, production: 3), false), true);
 
-            var city = BuildCity(location, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(location, new List<IHexCell>(), new List<IBuilding>());
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
 
@@ -307,7 +307,7 @@ namespace Assets.Tests.Simulation.Cities {
             var tileTwo   = BuildTile(BuildSlot(new ResourceSummary(food: 1, production: 1), false), true);
             var tileThree = BuildTile(BuildSlot(new ResourceSummary(food: 1, production: 1), true), true);
 
-            var tiles = new List<IMapTile>() { tileOne, tileTwo, tileThree };
+            var tiles = new List<IHexCell>() { tileOne, tileTwo, tileThree };
             var buildings = new List<IBuilding>();
 
             var city = BuildCity(location, tiles, buildings);
@@ -324,7 +324,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "All methods should throw an ArgumentNullException when passed " + 
             "any null argument")]
         public void AllMethods_ThrowExceptionsOnNullArguments() {
-            var city = BuildCity(null, new List<IMapTile>(), new List<IBuilding>());
+            var city = BuildCity(null, new List<IHexCell>(), new List<IBuilding>());
             var slot = BuildSlot(ResourceSummary.Empty, true);
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
@@ -358,7 +358,7 @@ namespace Assets.Tests.Simulation.Cities {
             return mockCivilization.Object;
         }
 
-        private ICity BuildCity(IMapTile location, IEnumerable<IMapTile> tiles, IEnumerable<IBuilding> buildings) {
+        private ICity BuildCity(IHexCell location, IEnumerable<IHexCell> tiles, IEnumerable<IBuilding> buildings) {
             var cityMock = new Mock<ICity>();
 
             cityMock.SetupAllProperties();
@@ -370,8 +370,8 @@ namespace Assets.Tests.Simulation.Cities {
             return cityMock.Object;
         }
 
-        private IMapTile BuildTile(IWorkerSlot slot, bool suppressSlot) {
-            var tileMock = new Mock<IMapTile>();
+        private IHexCell BuildTile(IWorkerSlot slot, bool suppressSlot) {
+            var tileMock = new Mock<IHexCell>();
             tileMock.Setup(tile => tile.SuppressSlot).Returns(suppressSlot);
             tileMock.Setup(tile => tile.WorkerSlot).Returns(slot);
 

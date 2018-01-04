@@ -9,7 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities {
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.Cities {
 
         private ITilePossessionCanon TilePossessionCanon;
 
-        private IMapHexGrid HexGrid;
+        private IHexGrid HexGrid;
 
         private ICityFactory CityFactory;
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.Cities {
         #region constructors
 
         [Inject]
-        public CityValidityLogic(ITilePossessionCanon tilePossessionCanon, IMapHexGrid hexGrid,
+        public CityValidityLogic(ITilePossessionCanon tilePossessionCanon, IHexGrid hexGrid,
             ICityFactory cityFactory, ICityConfig config) {
 
             TilePossessionCanon = tilePossessionCanon;
@@ -45,7 +45,7 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityValidityLogic
 
-        public bool IsTileValidForCity(IMapTile tile) {
+        public bool IsTileValidForCity(IHexCell tile) {
             if(TilePossessionCanon.GetCityOfTile(tile) != null) {
                 return false;
             }

@@ -5,7 +5,7 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
@@ -21,7 +21,7 @@ namespace Assets.Simulation.Units {
 
         GameObject gameObject { get; }
 
-        List<IMapTile> CurrentPath { get; set; }
+        List<IHexCell> CurrentPath { get; set; }
 
         #endregion
 

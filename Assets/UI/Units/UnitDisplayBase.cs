@@ -9,7 +9,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
 
 namespace Assets.UI.Units {
@@ -52,7 +52,7 @@ namespace Assets.UI.Units {
 
         #endregion
 
-        private void OnUnitLocationChangedFired(Tuple<IUnit, IMapTile> dataTuple) {
+        private void OnUnitLocationChangedFired(Tuple<IUnit, IHexCell> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }

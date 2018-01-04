@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Moq;
 
 using Assets.Simulation.Improvements;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Improvements {
 
@@ -122,8 +122,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region utilities
 
-        private IMapTile BuildTile(bool validForImprovement) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(bool validForImprovement) {
+            var mockTile = new Mock<IHexCell>();
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
 

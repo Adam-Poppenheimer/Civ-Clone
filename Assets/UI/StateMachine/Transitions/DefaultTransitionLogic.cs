@@ -10,7 +10,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 
 namespace Assets.UI.StateMachine.Transitions {
@@ -21,7 +21,7 @@ namespace Assets.UI.StateMachine.Transitions {
 
         private List<Type> NonDefaultingTypes = new List<Type>() {
             typeof(ICity),
-            typeof(IMapTile),
+            typeof(IHexCell),
             typeof(IDisplayBase),
             typeof(IUnit)
         };

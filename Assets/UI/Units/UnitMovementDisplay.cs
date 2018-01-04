@@ -10,28 +10,31 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 
 namespace Assets.UI.Units {
 
     public class UnitMovementDisplay : UnitDisplayBase {
 
         #region instance fields and properties 
-
+        private IDisposable UnitBeginDragSubscription;
         private IDisposable UnitEndDragSubscription;
+
         private IDisposable MapTilePointerEnterSubscription;
         private IDisposable MapTilePointerExitSubscription;
 
-        public IMapTile ProspectiveTravelGoal { get; private set; }
+        public IHexCell ProspectiveTravelGoal { get; private set; }
 
-        public List<IMapTile> ProspectivePath { get; private set; }
+        public List<IHexCell> ProspectivePath { get; private set; }
+
+        private bool IsDragging;
 
         private UnitSignals           UnitSignals;
-        private MapTileSignals        MapTileSignals;
+        private HexCellSignals        MapTileSignals;
         private ITilePathDrawer       PathDrawer;
-        private IMapHexGrid           Map;
+        private IHexGrid              Grid;
         private IUnitPositionCanon    PositionCanon;
         private IUnitTerrainCostLogic TerrainCostLogic;        
 
@@ -40,13 +43,13 @@ namespace Assets.UI.Units {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(UnitSignals signals, MapTileSignals mapTileSignals,
-            ITilePathDrawer pathDrawer, IMapHexGrid map, IUnitPositionCanon positionCanon,
+        public void InjectDependencies(UnitSignals signals, HexCellSignals mapTileSignals,
+            ITilePathDrawer pathDrawer, IHexGrid grid, IUnitPositionCanon positionCanon,
             IUnitTerrainCostLogic terrainCostLogic
         ){
             UnitSignals      = signals;
             PathDrawer       = pathDrawer;
-            Map              = map;
+            Grid             = grid;
             PositionCanon    = positionCanon;
             MapTileSignals   = mapTileSignals;
             TerrainCostLogic = terrainCostLogic;
@@ -55,14 +58,16 @@ namespace Assets.UI.Units {
         #region Unity message methods
 
         protected override void DoOnEnable() {
-            UnitEndDragSubscription = UnitSignals.UnitEndDragSignal.Subscribe(OnUnitEndDragFired);
+            UnitBeginDragSubscription = UnitSignals.UnitBeginDragSignal.Subscribe(OnUnitBeginDragFired);
+            UnitEndDragSubscription   = UnitSignals.UnitEndDragSignal  .Subscribe(OnUnitEndDragFired);
 
             MapTileSignals.PointerEnterSignal.Listen(OnTilePointerEnterFired);
             MapTileSignals.PointerExitSignal .Listen(OnTilePointerExitFired);
         }
 
         protected override void DoOnDisable() {
-            UnitEndDragSubscription.Dispose();
+            UnitBeginDragSubscription.Dispose();
+            UnitEndDragSubscription  .Dispose();
 
             MapTileSignals.PointerEnterSignal.Unlisten(OnTilePointerEnterFired);
             MapTileSignals.PointerExitSignal .Unlisten(OnTilePointerExitFired);
@@ -70,8 +75,16 @@ namespace Assets.UI.Units {
 
         #endregion
 
+        private void OnUnitBeginDragFired(Tuple<IUnit, PointerEventData> dataTuple) {
+            if(dataTuple.Item1 == ObjectToDisplay) {
+                Debug.Log("Unit Begin Drag");
+                IsDragging = true;
+            }
+        }
+
         private void OnUnitEndDragFired(Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
+                Debug.Log("Unit End Drag");
                 PathDrawer.ClearAllPaths();              
 
                 ObjectToDisplay.CurrentPath = ProspectivePath;
@@ -79,11 +92,14 @@ namespace Assets.UI.Units {
 
                 ProspectiveTravelGoal = null;
                 ProspectivePath = null;
+
+                IsDragging = false;
             }
         }
 
-        private void OnTilePointerEnterFired(IMapTile tile, PointerEventData eventData) {
-            if(eventData.dragging && eventData.pointerDrag == ObjectToDisplay.gameObject) {
+        private void OnTilePointerEnterFired(IHexCell tile) {
+            if(IsDragging) {
+                Debug.Log("Tile Pointer Enter");
                 ProspectiveTravelGoal = tile;
 
                 var unitLocation = PositionCanon.GetOwnerOfPossession(ObjectToDisplay);
@@ -93,9 +109,9 @@ namespace Assets.UI.Units {
                 ){
                     ProspectivePath = null;
                 }else {
-                    ProspectivePath = Map.GetShortestPathBetween(
+                    ProspectivePath = Grid.GetShortestPathBetween(
                         unitLocation, ProspectiveTravelGoal, 
-                        delegate(IMapTile tileInMap) {
+                        delegate(IHexCell tileInMap) {
                             if(PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, tileInMap)) {
                                return  TerrainCostLogic.GetCostToMoveUnitIntoTile(ObjectToDisplay, tileInMap);
                             }else {
@@ -113,8 +129,9 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnTilePointerExitFired(IMapTile tile, PointerEventData eventData) {
-            if(eventData.dragging && eventData.pointerDrag == ObjectToDisplay.gameObject) {
+        private void OnTilePointerExitFired(IHexCell tile) {
+            if(IsDragging) {
+                Debug.Log("Tile Pointer Exit");
                 if(ProspectiveTravelGoal == tile) {
                     ProspectiveTravelGoal = null;
                     ProspectivePath = null;

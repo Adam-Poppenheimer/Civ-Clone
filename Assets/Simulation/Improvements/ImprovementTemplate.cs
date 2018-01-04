@@ -5,7 +5,7 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
@@ -21,10 +21,10 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private ResourceSummary _bonusYield;
 
-        public IEnumerable<TerrainFeatureType> ValidFeatures {
+        public IEnumerable<TerrainFeature> ValidFeatures {
             get { return _validFeatures; }
         }
-        [SerializeField] private List<TerrainFeatureType> _validFeatures;
+        [SerializeField] private List<TerrainFeature> _validFeatures;
 
         public IEnumerable<TerrainShape> ValidShapes {
             get { return _validShapes; }

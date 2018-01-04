@@ -11,7 +11,7 @@ using Moq;
 
 using Assets.Simulation;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Distribution;
@@ -23,19 +23,19 @@ namespace Assets.Tests.Simulation.Cities {
     [TestFixture]
     public class BorderExpansionLogicTests : ZenjectUnitTestFixture {
 
-        private Mock<IMapHexGrid> MockHexGrid;
+        private Mock<IHexGrid> MockHexGrid;
         private Mock<ITilePossessionCanon> MockPossessionCanon;
         private Mock<ICityConfig> MockConfig;
         private Mock<IResourceGenerationLogic> MockResourceGenerationLogic;
 
         [SetUp]
         public void CommonInstall() {
-            MockHexGrid                 = new Mock<IMapHexGrid>();
+            MockHexGrid                 = new Mock<IHexGrid>();
             MockPossessionCanon         = new Mock<ITilePossessionCanon>();
             MockConfig                  = new Mock<ICityConfig>();
             MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
 
-            Container.Bind<IMapHexGrid>()             .FromInstance(MockHexGrid.Object);
+            Container.Bind<IHexGrid>()                .FromInstance(MockHexGrid.Object);
             Container.Bind<ITilePossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
             Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceGenerationLogic.Object);
@@ -46,9 +46,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When a city expresses a preference for a particular resource type, " + 
             "GetNextTileToPursue should return a tile that maximizes yield on that resource for that city")]
         public void GetNextTileToPursue_FocusedCityMaximization() {
-            var homeTileMock       = new Mock<IMapTile>();
-            var neutralTileOneMock = new Mock<IMapTile>();
-            var neutralTileTwoMock = new Mock<IMapTile>();
+            var homeTileMock       = new Mock<IHexCell>();
+            var neutralTileOneMock = new Mock<IHexCell>();
+            var neutralTileTwoMock = new Mock<IHexCell>();
 
             homeTileMock      .Name = "Home Tile";
             neutralTileOneMock.Name = "Neutral Tile One";
@@ -58,7 +58,7 @@ namespace Assets.Tests.Simulation.Cities {
             var neutralTileOne = neutralTileOneMock.Object;
             var neutralTileTwo = neutralTileTwoMock.Object;
 
-            var tiles = new List<IMapTile>() { homeTile, neutralTileOne, neutralTileTwo };
+            var tiles = new List<IHexCell>() { homeTile, neutralTileOne, neutralTileTwo };
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
@@ -68,8 +68,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             homeCity.ResourceFocus = ResourceFocusType.Food;
 
-            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
-            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);
+            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>())).Returns(0);
+            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IHexCell>())).Returns(tiles);
 
             MockResourceGenerationLogic.Setup(
                 logic => logic.GetYieldOfSlotForCity(neutralTileOne.WorkerSlot, homeCity)
@@ -79,7 +79,7 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IMapTile>() { homeTile });
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IHexCell>() { homeTile });
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
@@ -91,9 +91,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When a city does not express a preference for a particular resource type, " +
             "GetNextTileToPursue should return a tile that maximizes total yield for that city")]
         public void GetNextTileToPursue_UnfocusedCityMaximization() {
-            var homeTileMock       = new Mock<IMapTile>();
-            var neutralTileOneMock = new Mock<IMapTile>();
-            var neutralTileTwoMock = new Mock<IMapTile>();
+            var homeTileMock       = new Mock<IHexCell>();
+            var neutralTileOneMock = new Mock<IHexCell>();
+            var neutralTileTwoMock = new Mock<IHexCell>();
 
             homeTileMock      .Name = "Home Tile";
             neutralTileOneMock.Name = "Neutral Tile One";
@@ -103,7 +103,7 @@ namespace Assets.Tests.Simulation.Cities {
             var neutralTileOne = neutralTileOneMock.Object;
             var neutralTileTwo = neutralTileTwoMock.Object;
 
-            var tiles = new List<IMapTile>() { homeTile, neutralTileOne, neutralTileTwo };
+            var tiles = new List<IHexCell>() { homeTile, neutralTileOne, neutralTileTwo };
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
@@ -113,8 +113,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             homeCity.ResourceFocus = ResourceFocusType.TotalYield;
 
-            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
-            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);
+            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>())).Returns(0);
+            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IHexCell>())).Returns(tiles);
 
             MockResourceGenerationLogic.Setup(
                 logic => logic.GetYieldOfSlotForCity(neutralTileOne.WorkerSlot, homeCity)
@@ -124,7 +124,7 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IMapTile>() { homeTile });
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IHexCell>() { homeTile });
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
@@ -136,9 +136,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetNextTileToPursue should only ever return a tile that is available, " +
             "even if it doesn't maximize yield")]
         public void GetNextTileToPursue_IsAlwaysAvailable() {
-            var homeTileMock       = new Mock<IMapTile>();
-            var neutralTileOneMock = new Mock<IMapTile>();
-            var neutralTileTwoMock = new Mock<IMapTile>();
+            var homeTileMock       = new Mock<IHexCell>();
+            var neutralTileOneMock = new Mock<IHexCell>();
+            var neutralTileTwoMock = new Mock<IHexCell>();
 
             homeTileMock      .Name = "Home Tile";
             neutralTileOneMock.Name = "Neutral Tile One";
@@ -148,7 +148,7 @@ namespace Assets.Tests.Simulation.Cities {
             var neutralTileOne = neutralTileOneMock.Object;
             var neutralTileTwo = neutralTileTwoMock.Object;
 
-            var tiles = new List<IMapTile>() { homeTile, neutralTileOne, neutralTileTwo };
+            var tiles = new List<IHexCell>() { homeTile, neutralTileOne, neutralTileTwo };
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
@@ -158,8 +158,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             homeCity.ResourceFocus = ResourceFocusType.Food;
 
-            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IMapTile>(), It.IsAny<IMapTile>())).Returns(0);
-            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IMapTile>())).Returns(tiles);
+            MockHexGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>())).Returns(0);
+            MockHexGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IHexCell>())).Returns(tiles);
 
             MockResourceGenerationLogic.Setup(
                 logic => logic.GetYieldOfSlotForCity(homeTile.WorkerSlot, homeCity)
@@ -173,7 +173,7 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IMapTile>() { homeTile });
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCity)).Returns(new List<IHexCell>() { homeTile });
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
@@ -185,9 +185,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "A tile should not be available if it is beyond the max range " +
             "specified in the logic's Config")]
         public void IsTileAvailable_MustBeWithinMaxRange() {
-            var centerTile = new Mock<IMapTile>().Object;
-            var nearTile = new Mock<IMapTile>().Object;
-            var farTile = new Mock<IMapTile>().Object;
+            var centerTile = new Mock<IHexCell>().Object;
+            var nearTile = new Mock<IHexCell>().Object;
+            var farTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
             mockCity.SetupGet(city => city.Location).Returns(centerTile);
@@ -197,8 +197,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
-            MockHexGrid.Setup(grid => grid.GetNeighbors(nearTile)).Returns(new List<IMapTile>(){ centerTile });
-            MockHexGrid.Setup(grid => grid.GetNeighbors(farTile)).Returns(new List<IMapTile>(){ centerTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(nearTile)).Returns(new List<IHexCell>(){ centerTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(farTile)).Returns(new List<IHexCell>(){ centerTile });
 
             MockHexGrid.Setup(grid => grid.GetDistance(centerTile, nearTile)).Returns(2);
             MockHexGrid.Setup(grid => grid.GetDistance(nearTile, centerTile)).Returns(2);
@@ -217,9 +217,9 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "A tile should not be available if it is already owned by a city")]
         public void IsTileAvailable_MustBeUnowned() {
-            var homeTile = new Mock<IMapTile>().Object;
-            var neutralTile = new Mock<IMapTile>().Object;
-            var foreignTile = new Mock<IMapTile>().Object;
+            var homeTile = new Mock<IHexCell>().Object;
+            var neutralTile = new Mock<IHexCell>().Object;
+            var foreignTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
             mockCity.SetupGet(city => city.Location).Returns(homeTile);
@@ -230,8 +230,8 @@ namespace Assets.Tests.Simulation.Cities {
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(homeTile)).Returns(homeCity);
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(foreignTile)).Returns(foreignCity);
 
-            MockHexGrid.Setup(grid => grid.GetNeighbors(neutralTile)).Returns(new List<IMapTile>(){ homeTile });
-            MockHexGrid.Setup(grid => grid.GetNeighbors(foreignTile)).Returns(new List<IMapTile>(){ homeTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(neutralTile)).Returns(new List<IHexCell>(){ homeTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(foreignTile)).Returns(new List<IHexCell>(){ homeTile });
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -245,9 +245,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "A tile should not be available if it isn't adjacent to a tile " +
             "the city has already claimed")]
         public void IsTileAvailable_MustBeAdjacentToTerritory() {
-            var ownedTile = new Mock<IMapTile>().Object;
-            var neighboringTile = new Mock<IMapTile>().Object;
-            var nonNeighboringTile = new Mock<IMapTile>().Object;
+            var ownedTile = new Mock<IHexCell>().Object;
+            var neighboringTile = new Mock<IHexCell>().Object;
+            var nonNeighboringTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
             mockCity.SetupGet(city => city.Location).Returns(ownedTile);
@@ -258,8 +258,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
-            MockHexGrid.Setup(grid => grid.GetNeighbors(neighboringTile)).Returns(new List<IMapTile>(){ ownedTile });
-            MockHexGrid.Setup(grid => grid.GetNeighbors(nonNeighboringTile)).Returns(new List<IMapTile>());
+            MockHexGrid.Setup(grid => grid.GetNeighbors(neighboringTile)).Returns(new List<IHexCell>(){ ownedTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(nonNeighboringTile)).Returns(new List<IHexCell>());
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -276,15 +276,15 @@ namespace Assets.Tests.Simulation.Cities {
             "The returned value should be rounded down")]
         public void GetCultureCostOfAcquiringTile_FollowsEquationAndConfig() {
             var city = new Mock<ICity>().Object;
-            var newTile = new Mock<IMapTile>().Object;
+            var newTile = new Mock<IHexCell>().Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IMapTile>() {
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IHexCell>() {
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
             });
 
             MockConfig.SetupGet(config => config.TileCostBase).Returns(20);
@@ -301,15 +301,15 @@ namespace Assets.Tests.Simulation.Cities {
             "GetCultureCostOfAcquiringTile")]
         public void GetGoldCostOfAcquiringTile_IdenticalToCultureCost() {
             var city = new Mock<ICity>().Object;
-            var newTile = new Mock<IMapTile>().Object;
+            var newTile = new Mock<IHexCell>().Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IMapTile>() {
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
-               new Mock<IMapTile>().Object,
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(new List<IHexCell>() {
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
+               new Mock<IHexCell>().Object,
             });
 
             MockConfig.SetupGet(config => config.TileCostBase).Returns(20);
@@ -325,11 +325,11 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "GetAllTilesAvailableToCity should return all tiles for which " +
             "IsTileAvailable is true and no others")]
         public void GetAllTilesAvailableToCity_ReturnsAllAndOnlyAllCorrectTiles() {
-            var homeTileMock                      = new Mock<IMapTile>(); 
-            var nearNeighboringNeutralTileMock    = new Mock<IMapTile>(); 
-            var farNeighboringNeutralTileMock     = new Mock<IMapTile>(); 
-            var nearNonNeighboringNeutralTileMock = new Mock<IMapTile>(); 
-            var nearNeighboringForeignTileMock    = new Mock<IMapTile>(); 
+            var homeTileMock                      = new Mock<IHexCell>(); 
+            var nearNeighboringNeutralTileMock    = new Mock<IHexCell>(); 
+            var farNeighboringNeutralTileMock     = new Mock<IHexCell>(); 
+            var nearNonNeighboringNeutralTileMock = new Mock<IHexCell>(); 
+            var nearNeighboringForeignTileMock    = new Mock<IHexCell>(); 
 
             homeTileMock.Name                      = "Home Tile";
             nearNeighboringNeutralTileMock.Name    = "Near Neighboring Neutral Tile";
@@ -350,17 +350,17 @@ namespace Assets.Tests.Simulation.Cities {
             var foreignCityMock = new Mock<ICity>();
             foreignCityMock.Name = "Foreign City";
 
-            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCityMock.Object)).Returns(new List<IMapTile>() { homeTile });
+            MockPossessionCanon.Setup(canon => canon.GetTilesOfCity(homeCityMock.Object)).Returns(new List<IHexCell>() { homeTile });
 
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(homeTile)).Returns(homeCityMock.Object);
             MockPossessionCanon.Setup(canon => canon.GetCityOfTile(nearNeighboringForeignTile)).Returns(foreignCityMock.Object);
 
             MockHexGrid.Setup(grid => grid.GetNeighbors(homeTile)).Returns(
-                new List<IMapTile>() { nearNeighboringNeutralTile, farNeighboringNeutralTile, nearNeighboringForeignTile }
+                new List<IHexCell>() { nearNeighboringNeutralTile, farNeighboringNeutralTile, nearNeighboringForeignTile }
             );
-            MockHexGrid.Setup(grid => grid.GetNeighbors(nearNeighboringNeutralTile)).Returns(new List<IMapTile>() { homeTile });
-            MockHexGrid.Setup(grid => grid.GetNeighbors(farNeighboringNeutralTile)).Returns(new List<IMapTile>() { homeTile });
-            MockHexGrid.Setup(grid => grid.GetNeighbors(nearNeighboringForeignTile)).Returns(new List<IMapTile>() { homeTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(nearNeighboringNeutralTile)).Returns(new List<IHexCell>() { homeTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(farNeighboringNeutralTile)).Returns(new List<IHexCell>() { homeTile });
+            MockHexGrid.Setup(grid => grid.GetNeighbors(nearNeighboringForeignTile)).Returns(new List<IHexCell>() { homeTile });
 
             MockHexGrid.Setup(grid => grid.GetDistance(homeTile, nearNeighboringNeutralTile)).Returns(2);
             MockHexGrid.Setup(grid => grid.GetDistance(nearNeighboringNeutralTile, homeTile)).Returns(2);
@@ -392,7 +392,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void AllMethods_ThrowExceptionsOnNullArguments() {
             var logic = Container.Resolve<BorderExpansionLogic>();
 
-            var testTile = new Mock<IMapTile>().Object;
+            var testTile = new Mock<IHexCell>().Object;
             var testCity = new Mock<ICity>().Object;
 
             Assert.Throws<ArgumentNullException>(() => logic.GetNextTileToPursue(null),

@@ -6,7 +6,7 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Distribution;
@@ -19,7 +19,7 @@ namespace Assets.Simulation.Cities {
 
         #region properties
 
-        IMapTile Location { get; }
+        IHexCell Location { get; }
 
         Transform transform { get; }
 
@@ -34,7 +34,7 @@ namespace Assets.Simulation.Cities {
 
         ResourceFocusType ResourceFocus { get; set; }
 
-        IMapTile TileBeingPursued { get; }
+        IHexCell TileBeingPursued { get; }
 
         #endregion
 

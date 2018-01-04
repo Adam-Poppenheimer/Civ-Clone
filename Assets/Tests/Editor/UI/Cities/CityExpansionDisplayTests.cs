@@ -17,7 +17,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Core;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation;
 
 using Assets.UI.Cities;
@@ -195,8 +195,8 @@ namespace Assets.Tests.UI.Cities {
 
         #region utilities
 
-        private IMapTile BuildTile(Vector3 position) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(Vector3 position) {
+            var mockTile = new Mock<IHexCell>();
 
             var transform = new GameObject().transform;
             transform.position = position;
@@ -206,7 +206,7 @@ namespace Assets.Tests.UI.Cities {
             return mockTile.Object;
         }
 
-        private ICity BuildCity(int cultureNeeded, int cultureStockpile, int cultureIncome, IMapTile nextTile) {
+        private ICity BuildCity(int cultureNeeded, int cultureStockpile, int cultureIncome, IHexCell nextTile) {
             var mockCity = new Mock<ICity>();
 
             mockCity.Setup(city => city.CultureStockpile).Returns(cultureStockpile);

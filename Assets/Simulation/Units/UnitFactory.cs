@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
@@ -54,7 +54,7 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitFactory
 
-        public IUnit Create(IMapTile location, IUnitTemplate template, ICivilization owner) {
+        public IUnit Create(IHexCell location, IUnitTemplate template, ICivilization owner) {
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(template == null) {

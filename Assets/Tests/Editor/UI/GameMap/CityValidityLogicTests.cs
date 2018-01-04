@@ -7,7 +7,7 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
 namespace Assets.Tests.Simulation.GameMap {

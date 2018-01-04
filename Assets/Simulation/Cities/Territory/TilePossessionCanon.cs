@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
 
@@ -14,9 +14,9 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region instance fields and properties
 
-        private DictionaryOfLists<ICity, IMapTile> TilesOfCity = new DictionaryOfLists<ICity, IMapTile>();
+        private DictionaryOfLists<ICity, IHexCell> TilesOfCity = new DictionaryOfLists<ICity, IHexCell>();
 
-        private Dictionary<IMapTile, ICity> CityOfTile = new Dictionary<IMapTile, ICity>();
+        private Dictionary<IHexCell, ICity> CityOfTile = new Dictionary<IHexCell, ICity>();
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region from ITilePossessionCanon
 
-        public bool CanChangeOwnerOfTile(IMapTile tile, ICity newOwner) {
+        public bool CanChangeOwnerOfTile(IHexCell tile, ICity newOwner) {
             if(tile == null) {
                 throw new ArgumentNullException("tile");
             }
@@ -36,7 +36,7 @@ namespace Assets.Simulation.Cities.Territory {
             }            
         }
 
-        public void ChangeOwnerOfTile(IMapTile tile, ICity newOwner) {
+        public void ChangeOwnerOfTile(IHexCell tile, ICity newOwner) {
             if(tile == null) {
                 throw new ArgumentNullException("tile");
             }else if(!CanChangeOwnerOfTile(tile, newOwner)) {
@@ -55,7 +55,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
         }
 
-        public ICity GetCityOfTile(IMapTile tile) {
+        public ICity GetCityOfTile(IHexCell tile) {
             if(tile == null) {
                 throw new ArgumentNullException("tile");
             }
@@ -65,7 +65,7 @@ namespace Assets.Simulation.Cities.Territory {
             return retval;
         }
 
-        public IEnumerable<IMapTile> GetTilesOfCity(ICity city) {
+        public IEnumerable<IHexCell> GetTilesOfCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }

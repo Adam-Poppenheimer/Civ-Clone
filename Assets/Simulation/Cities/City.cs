@@ -9,7 +9,7 @@ using UnityEngine.EventSystems;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
@@ -27,7 +27,7 @@ namespace Assets.Simulation.Cities {
 
         #region from ICity
 
-        public IMapTile Location { get; set; }
+        public IHexCell Location { get; set; }
 
         public int Population {
             get { return _population; }
@@ -53,7 +53,7 @@ namespace Assets.Simulation.Cities {
 
         public ResourceFocusType ResourceFocus { get; set; }
 
-        public IMapTile TileBeingPursued { get; private set; }
+        public IHexCell TileBeingPursued { get; private set; }
 
         #endregion
 

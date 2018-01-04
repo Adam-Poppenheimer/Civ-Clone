@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 

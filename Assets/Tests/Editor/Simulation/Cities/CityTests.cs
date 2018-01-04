@@ -14,7 +14,7 @@ using UniRx;
 
 using Assets.Simulation;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Growth;
@@ -230,7 +230,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_ChecksExpansionLogicForTileToPursue() {
             var city = Container.Resolve<City>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
 
@@ -247,7 +247,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_ChecksExpansionLogicForTileAcquisition() {
             var city = Container.Resolve<City>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
 
@@ -263,7 +263,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_ChecksPosessionCanonForTileAcquisition() {
             var city = Container.Resolve<City>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
@@ -281,7 +281,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = Container.Resolve<City>();
             city.CultureStockpile = 10;
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
@@ -300,7 +300,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_RequestsOwnershipChangeFromPossessionCanon() {
             var city = Container.Resolve<City>();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
             ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
@@ -320,8 +320,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_ChecksExpansionLogicAfterAcquisition() {
             var city = Container.Resolve<City>();
 
-            var firstTile = new Mock<IMapTile>().Object;
-            var secondTile = new Mock<IMapTile>().Object;
+            var firstTile = new Mock<IHexCell>().Object;
+            var secondTile = new Mock<IHexCell>().Object;
 
             ExpansionMock.SetupSequence(logic => logic.GetNextTileToPursue(city))
                 .Returns(firstTile)
@@ -343,7 +343,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_DoesNotThrowOnNullPursuit() {
             var city = Container.Resolve<City>();
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns<IMapTile>(null);
+            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns<IHexCell>(null);
 
             Assert.DoesNotThrow(() => city.PerformExpansion(),
                 "An exception was thrown when calling PerformExpansion on a null TileToPursue, even though this should be valid");
@@ -359,7 +359,7 @@ namespace Assets.Tests.Simulation.Cities {
             city.ResourceFocus = ResourceFocusType.TotalYield;
 
             TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city))
-                .Returns(new List<IMapTile>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
+                .Returns(new List<IHexCell>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
 
             BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
 
@@ -420,17 +420,17 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformDistribution_SuppressedSlotsNotPassed() {
             var city = Container.Resolve<City>();
 
-            var tileMockOne = new Mock<IMapTile>();
+            var tileMockOne = new Mock<IHexCell>();
             tileMockOne.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
 
-            var tileMockTwo = new Mock<IMapTile>();
+            var tileMockTwo = new Mock<IHexCell>();
             tileMockTwo.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
             tileMockTwo.Setup(tile => tile.SuppressSlot).Returns(true);
 
-            var tileMockThree = new Mock<IMapTile>();
+            var tileMockThree = new Mock<IHexCell>();
             tileMockThree.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
 
-            var tiles = new List<IMapTile>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
+            var tiles = new List<IHexCell>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
 
             TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
 
@@ -464,7 +464,7 @@ namespace Assets.Tests.Simulation.Cities {
             var lockedUnoccupiedSlotTile = BuildMockTile(new TileMockData() { SlotIsLocked = true });
             var lockedOccupiedSlotTile   = BuildMockTile(new TileMockData() { SlotIsLocked = true, SlotIsOccupied = true });
 
-            var tiles = new List<IMapTile>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
+            var tiles = new List<IHexCell>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
 
             TilePossessionCanonMock
                 .Setup(canon => canon.GetTilesOfCity(city))
@@ -623,8 +623,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         }
 
-        private IMapTile BuildMockTile(TileMockData mockData) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildMockTile(TileMockData mockData) {
+            var mockTile = new Mock<IHexCell>();
 
             var mockSlot = new Mock<IWorkerSlot>();
             mockSlot.SetupAllProperties();

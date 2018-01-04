@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
@@ -25,7 +25,7 @@ namespace Assets.Simulation.Core {
 
         private ITilePossessionCanon PossessionCanon;
 
-        private IMapHexGrid HexGrid;
+        private IHexGrid HexGrid;
 
         private GameCore GameCore;
 
@@ -35,7 +35,7 @@ namespace Assets.Simulation.Core {
 
         [Inject]
         public void InjectDependencies(ICityFactory cityFactory,
-            ITilePossessionCanon possessionCanon, IMapHexGrid hexGrid,
+            ITilePossessionCanon possessionCanon, IHexGrid hexGrid,
             GameCore gameCore
         ){
             CityFactory = cityFactory;
@@ -44,12 +44,12 @@ namespace Assets.Simulation.Core {
             GameCore = gameCore;
         }
 
-        public void BuildFullCityOnTile(IMapTile tile) {
+        public void BuildFullCityOnTile(IHexCell tile) {
             var newCity = CityFactory.Create(tile, GameCore.PlayerCivilization);
 
             newCity.Population = StartingPopulation;
 
-            foreach(var nearbyTile in HexGrid.GetTilesInRadius(newCity.Location, StartingTerritoryRadius)) {
+            foreach(var nearbyTile in HexGrid.GetCellsInRadius(newCity.Location, StartingTerritoryRadius)) {
                 if(PossessionCanon.CanChangeOwnerOfTile(nearbyTile, newCity)) {
                     PossessionCanon.ChangeOwnerOfTile(nearbyTile, newCity);
                 }

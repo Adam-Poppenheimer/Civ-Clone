@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
@@ -31,7 +31,7 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementValidityLogic
 
-        public bool IsTemplateValidForTile(IImprovementTemplate template, IMapTile tile) {
+        public bool IsTemplateValidForTile(IImprovementTemplate template, IHexCell tile) {
             if(template == null) {
                 throw new ArgumentNullException("template");
             }else if(tile == null) {

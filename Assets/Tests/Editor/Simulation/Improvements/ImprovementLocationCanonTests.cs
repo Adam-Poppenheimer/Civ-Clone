@@ -7,7 +7,7 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Tests.Simulation.Improvements {
@@ -34,7 +34,7 @@ namespace Assets.Tests.Simulation.Improvements {
             var ownedImprovement   = BuildImprovement();
             var unownedImprovement = BuildImprovement();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             var locationCanon = Container.Resolve<ImprovementLocationCanon>();
 
@@ -50,7 +50,7 @@ namespace Assets.Tests.Simulation.Improvements {
             var ownedImprovement   = BuildImprovement();
             var unownedImprovement = BuildImprovement();
 
-            var tile = new Mock<IMapTile>().Object;
+            var tile = new Mock<IHexCell>().Object;
 
             var locationCanon = Container.Resolve<ImprovementLocationCanon>();
 

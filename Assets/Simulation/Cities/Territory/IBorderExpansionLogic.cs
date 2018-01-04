@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities.Territory {
 
@@ -11,14 +11,14 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region methods
 
-        IEnumerable<IMapTile> GetAllTilesAvailableToCity(ICity city);
+        IEnumerable<IHexCell> GetAllTilesAvailableToCity(ICity city);
 
-        IMapTile GetNextTileToPursue(ICity city);
+        IHexCell GetNextTileToPursue(ICity city);
 
-        bool IsTileAvailable(ICity city, IMapTile tile);
+        bool IsTileAvailable(ICity city, IHexCell tile);
 
-        int GetCultureCostOfAcquiringTile(ICity city, IMapTile tile);
-        int GetGoldCostOfAcquiringTile(ICity city, IMapTile tile);
+        int GetCultureCostOfAcquiringTile(ICity city, IHexCell tile);
+        int GetGoldCostOfAcquiringTile(ICity city, IHexCell tile);
 
         #endregion
 

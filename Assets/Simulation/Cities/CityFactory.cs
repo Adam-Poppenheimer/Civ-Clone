@@ -8,7 +8,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Territory;
@@ -34,7 +34,7 @@ namespace Assets.Simulation.Cities {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IMapHexGrid Map;
+        private IHexGrid Map;
 
         private ITilePossessionCanon TilePossessionCanon;
 
@@ -44,7 +44,7 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IMapHexGrid map, 
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid map, 
             ITilePossessionCanon tilePossessionCanon
         ){
             Container           = container;
@@ -60,7 +60,7 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityFactory
 
-        public ICity Create(IMapTile location, ICivilization owner){
+        public ICity Create(IHexCell location, ICivilization owner){
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(owner == null) {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.Improvements {
 
         IEnumerable<TerrainShape> ValidShapes { get; }
 
-        IEnumerable<TerrainFeatureType> ValidFeatures { get; }
+        IEnumerable<TerrainFeature> ValidFeatures { get; }
 
         ResourceSummary BonusYield { get; }
 

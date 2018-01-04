@@ -10,10 +10,10 @@ using Zenject;
 using UnityCustomUtilities.Grids;
 using UnityCustomUtilities.DataStructures;
 
-namespace Assets.Simulation.GameMap {
+namespace Assets.Simulation.HexMap {
 
-    [ExecuteInEditMode]
-    public class MapHexGrid : MonoBehaviour, IMapHexGrid {
+    /*[ExecuteInEditMode]
+    public class MapHexGrid : MonoBehaviour, IHexGrid {
 
         #region instance fields and properties
 
@@ -256,7 +256,7 @@ namespace Assets.Simulation.GameMap {
 
         #endregion
 
-    }
+    }*/
 
 }
 

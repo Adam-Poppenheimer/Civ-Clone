@@ -8,7 +8,7 @@ using Moq;
 
 using Assets.Simulation;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.ResourceGeneration;
@@ -30,7 +30,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private List<IWorkerSlot> AllSlots = new List<IWorkerSlot>();
 
-        private List<IMapTile> AllTiles = new List<IMapTile>();
+        private List<IHexCell> AllTiles = new List<IHexCell>();
 
         private List<IBuilding> AllBuildings = new List<IBuilding>();
 
@@ -333,8 +333,8 @@ namespace Assets.Tests.Simulation.Cities {
             return mockSlot.Object;
         }
 
-        private IMapTile BuildMapTile(bool suppressSlot, IWorkerSlot slot) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildMapTile(bool suppressSlot, IWorkerSlot slot) {
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.SuppressSlot = suppressSlot;

@@ -12,11 +12,11 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Core;
 
 using Assets.UI.Units;
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 
 namespace Assets.Tests.UI.Units {
 
@@ -27,11 +27,11 @@ namespace Assets.Tests.UI.Units {
 
         private Mock<ITilePathDrawer> MockPathDrawer;
 
-        private Mock<IMapHexGrid> MockMap;
+        private Mock<IHexGrid> MockGrid;
 
         private Mock<IUnitPositionCanon> MockPositionCanon;
 
-        private MapTileSignals TileSignals;
+        private HexCellSignals TileSignals;
 
         private UnitSignals UnitSignals;
 
@@ -44,11 +44,11 @@ namespace Assets.Tests.UI.Units {
         [SetUp]
         public void CommonInstall() {
             MockPathDrawer    = new Mock<ITilePathDrawer>();
-            MockMap           = new Mock<IMapHexGrid>();
+            MockGrid           = new Mock<IHexGrid>();
             MockPositionCanon = new Mock<IUnitPositionCanon>();
 
             Container.Bind<ITilePathDrawer>()      .FromInstance(MockPathDrawer.Object);
-            Container.Bind<IMapHexGrid>()          .FromInstance(MockMap.Object);
+            Container.Bind<IHexGrid>()             .FromInstance(MockGrid.Object);
             Container.Bind<IUnitPositionCanon>()   .FromInstance(MockPositionCanon.Object);
             Container.Bind<IUnitTerrainCostLogic>().FromMock();
             
@@ -57,11 +57,11 @@ namespace Assets.Tests.UI.Units {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<TileClickedSignal>();
-            Container.DeclareSignal<TilePointerEnterSignal>();
-            Container.DeclareSignal<TilePointerExitSignal>();
+            Container.DeclareSignal<CellClickedSignal>();
+            Container.DeclareSignal<CellPointerEnterSignal>();
+            Container.DeclareSignal<CellPointerExitSignal>();
 
-            Container.Bind<MapTileSignals>().AsSingle();
+            Container.Bind<HexCellSignals>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();
 
@@ -83,11 +83,9 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
-
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             Assert.AreEqual(enteredTile, movementDisplay.ProspectiveTravelGoal,
                 "MovementDisplay.ProspectiveTravelGoal has an unexpected value");
@@ -107,11 +105,9 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
-
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             CollectionAssert.AreEqual(pathBetween, movementDisplay.ProspectivePath,
                 "MovementDisplay.ProspectivePath has an unexpected value");
@@ -132,29 +128,27 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
-
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
             var executionSequence = new MockSequence();
 
             MockPathDrawer.InSequence(executionSequence).Setup(drawer => drawer.ClearAllPaths());
             MockPathDrawer.InSequence(executionSequence).Setup(drawer => drawer.DrawPath(pathBetween));
 
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             MockPathDrawer.VerifyAll();
             MockPathDrawer.ResetCalls();
 
-            MockMap.Setup(map => map.GetShortestPathBetween(unitLocation, enteredTile, It.IsAny<Func<IMapTile, int>>()))
-                .Returns(null as List<IMapTile>);
+            MockGrid.Setup(map => map.GetShortestPathBetween(unitLocation, enteredTile, It.IsAny<Func<IHexCell, int>>()))
+                .Returns(null as List<IHexCell>);
 
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Once,
                 "PathDrawer.ClearAllPaths was not called when no valid path existed between the tiles");
 
-            MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IMapTile>>()), Times.Never,
+            MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IHexCell>>()), Times.Never,
                 "PathDrawer.DrawPath was incorrectly called when no valid path existed between the tiles");
         }
 
@@ -173,11 +167,9 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true };
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
-
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             Assert.Null(movementDisplay.ProspectiveTravelGoal, "MovementDisplay.ProspectiveTravelGoal is not null");
             Assert.Null(movementDisplay.ProspectivePath,       "MovementDisplay.ProspectivePath is not null");
@@ -185,7 +177,7 @@ namespace Assets.Tests.UI.Units {
             MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Never,
                 "PathDrawer.ClearAllPaths was incorrectly called");
 
-            MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IMapTile>>()), Times.Never,
+            MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IHexCell>>()), Times.Never,
                 "PathDrawer.DrawPath was incorrectly called");
         }
 
@@ -203,12 +195,10 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
-
-            tileEnterSignal.Fire(enteredTile, eventData);
-            tileEnterSignal.Fire(unitLocation, eventData);
+            tileEnterSignal.Fire(enteredTile);
+            tileEnterSignal.Fire(unitLocation);
 
             Assert.Null(movementDisplay.ProspectivePath, "ProspectivePath is unexpectedly non-null");
         }
@@ -227,15 +217,13 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
+            var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
-            var tileEnterSignal = Container.Resolve<TilePointerEnterSignal>();
-
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(unit.Template.Type, enteredTile)).Returns(false);
 
-            tileEnterSignal.Fire(enteredTile, eventData);
+            tileEnterSignal.Fire(enteredTile);
 
             Assert.Null(movementDisplay.ProspectivePath, "ProspectivePath is unexpectedly non-null");
         }
@@ -254,13 +242,11 @@ namespace Assets.Tests.UI.Units {
             movementDisplay.OnEnable();
             movementDisplay.ObjectToDisplay = unit;
 
-            var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
-
-            Container.Resolve<TilePointerEnterSignal>().Fire(enteredTile, eventData);
+            Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
             MockPathDrawer.ResetCalls();
 
-            Container.Resolve<TilePointerExitSignal>().Fire(enteredTile, eventData);
+            Container.Resolve<CellPointerExitSignal>().Fire(enteredTile);
 
             Assert.Null(movementDisplay.ProspectiveTravelGoal, "ProspectiveTravelGoal is not null");
             Assert.Null(movementDisplay.ProspectivePath,       "ProspectivePath is not null");
@@ -285,7 +271,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
 
-            Container.Resolve<TilePointerEnterSignal>().Fire(enteredTile, eventData);
+            Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
             MockPathDrawer.ResetCalls();
 
@@ -317,7 +303,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unitMock.Object.gameObject };
 
-            Container.Resolve<TilePointerEnterSignal>().Fire(enteredTile, eventData);
+            Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
             UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
 
@@ -331,11 +317,11 @@ namespace Assets.Tests.UI.Units {
 
         #region utilities
 
-        private IUnit BuildUnit(IMapTile location) {
+        private IUnit BuildUnit(IHexCell location) {
             return BuildMockUnit(location).Object;            
         }
 
-        private Mock<IUnit> BuildMockUnit(IMapTile location, UnitType type = UnitType.LandMilitary) {
+        private Mock<IUnit> BuildMockUnit(IHexCell location, UnitType type = UnitType.LandMilitary) {
             var mockUnit = new Mock<IUnit>();
             mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
 
@@ -345,17 +331,17 @@ namespace Assets.Tests.UI.Units {
             mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 
             MockPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
-            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(type, It.IsAny<IMapTile>())).Returns(true);
+            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(type, It.IsAny<IHexCell>())).Returns(true);
 
             return mockUnit;
         }
 
-        private IMapTile BuildTile() {
-            return new Mock<IMapTile>().Object;
+        private IHexCell BuildTile() {
+            return new Mock<IHexCell>().Object;
         }
 
-        private List<IMapTile> BuildPath(IMapTile start, IMapTile end, int interveningTileCount) {
-            var newPath = new List<IMapTile>();
+        private List<IHexCell> BuildPath(IHexCell start, IHexCell end, int interveningTileCount) {
+            var newPath = new List<IHexCell>();
 
             newPath.Add(start);
             for(int i = 0; i < interveningTileCount; ++i) {
@@ -363,7 +349,7 @@ namespace Assets.Tests.UI.Units {
             }
             newPath.Add(end);
 
-            MockMap.Setup(map => map.GetShortestPathBetween(start, end, It.IsAny<Func<IMapTile, int>>())).Returns(newPath);
+            MockGrid.Setup(map => map.GetShortestPathBetween(start, end, It.IsAny<Func<IHexCell, int>>())).Returns(newPath);
 
             return newPath;
         }

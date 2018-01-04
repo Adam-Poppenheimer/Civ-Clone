@@ -7,7 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
@@ -20,7 +20,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IMapHexGrid Map;
+        private IHexGrid Map;
 
         private IImprovementLocationCanon ImprovementLocationCanon;
 
@@ -33,7 +33,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             IBuildingPossessionCanon buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IImprovementLocationCanon improvementLocationCanon,
-            IMapHexGrid map
+            IHexGrid map
         ){
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;

@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities.Territory {
 
@@ -12,12 +12,12 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region methods
 
-        IEnumerable<IMapTile> GetTilesOfCity(ICity city);
+        IEnumerable<IHexCell> GetTilesOfCity(ICity city);
 
-        ICity GetCityOfTile(IMapTile tile);
+        ICity GetCityOfTile(IHexCell tile);
 
-        bool CanChangeOwnerOfTile(IMapTile tile, ICity newOwner);
-        void ChangeOwnerOfTile(IMapTile tile, ICity newOwner);
+        bool CanChangeOwnerOfTile(IHexCell tile, ICity newOwner);
+        void ChangeOwnerOfTile(IHexCell tile, ICity newOwner);
 
         #endregion
 

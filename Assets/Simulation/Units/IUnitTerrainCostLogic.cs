@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        int GetCostToMoveUnitIntoTile(IUnit unit, IMapTile tile);
+        int GetCostToMoveUnitIntoTile(IUnit unit, IHexCell tile);
 
         #endregion
 

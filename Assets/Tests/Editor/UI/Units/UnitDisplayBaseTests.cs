@@ -10,7 +10,7 @@ using UniRx;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Core;
 
 using Assets.UI.Units;
@@ -87,7 +87,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.ObjectToDisplay = unit;
             displayToTest.OnEnable();
 
-            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IMapTile>(unit, newLocation));
+            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
 
             Assert.Fail("Refresh was never called");
         }
@@ -102,7 +102,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.RefreshFired += (sender, args) => Assert.Fail("DisplayToTest refreshed on an invalid signal");
             displayToTest.OnEnable();
 
-            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IMapTile>(unit, newLocation));
+            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
         }
 
         [Test(Description = "When UnitSignals.UnitActivatedAbilitySignal is fired, UnitDisplayBase " +
@@ -145,8 +145,8 @@ namespace Assets.Tests.UI.Units {
             return mockUnit.Object;
         }
 
-        private IMapTile BuildTile() {
-            return new Mock<IMapTile>().Object;
+        private IHexCell BuildTile() {
+            return new Mock<IHexCell>().Object;
         }
 
         private IUnitAbilityDefinition BuildAbility() {

@@ -10,7 +10,7 @@ using NUnit.Framework;
 using Moq;
 
 using Assets.Simulation;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.GameMap {
 
@@ -51,12 +51,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on an empty grassland, the yield of the plains should apply")]
         public void OnEmptyPlains_PlainsYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Plains;
             mockTile.Object.Shape   = TerrainShape.Flat;
-            mockTile.Object.Feature = TerrainFeatureType.None;
+            mockTile.Object.Feature = TerrainFeature.None;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -68,12 +68,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on an empty grassland, the yield of the desert should apply")]
         public void OnEmptyDesert_DesertYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Desert;
             mockTile.Object.Shape   = TerrainShape.Flat;
-            mockTile.Object.Feature = TerrainFeatureType.None;
+            mockTile.Object.Feature = TerrainFeature.None;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -85,12 +85,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a forested grassland, the yield of the forest should apply")]
         public void OnForestedGrassland_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Grassland;
             mockTile.Object.Shape   = TerrainShape.Flat;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -102,12 +102,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a forested plains, the yield of the forest should apply")]
         public void OnForestedPlains_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Plains;
             mockTile.Object.Shape   = TerrainShape.Flat;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -119,12 +119,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a forested desert, the yield of the forest should apply")]
         public void OnForestedDesert_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Desert;
             mockTile.Object.Shape   = TerrainShape.Flat;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -136,12 +136,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a hilled grassland, the yield of the hill should apply")]
         public void OnHilledGrassland_HillYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Grassland;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.None;
+            mockTile.Object.Feature = TerrainFeature.None;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -153,12 +153,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a hilled plains, the yield of the hill should apply")]
         public void OnHilledPlains_HillYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Plains;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.None;
+            mockTile.Object.Feature = TerrainFeature.None;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -170,12 +170,12 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [Test(Description = "When GetYieldOfTile is called on a hilled desert, the yield of the hill should apply")]
         public void OnHilledDesert_HillYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Desert;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.None;
+            mockTile.Object.Feature = TerrainFeature.None;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -188,12 +188,12 @@ namespace Assets.Tests.Simulation.GameMap {
         [Test(Description = "When GetYieldOfTile is called on a hilled grassland with a forest, the "
             + "yield of the forest should apply")]
         public void OnHilledForestedGrassland_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Grassland;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -206,12 +206,12 @@ namespace Assets.Tests.Simulation.GameMap {
         [Test(Description = "When GetYieldOfTile is called on a hilled plains with a forest, the "
             + "yield of the forest should apply")]
         public void OnHilledForestedPlains_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Plains;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 
@@ -224,12 +224,12 @@ namespace Assets.Tests.Simulation.GameMap {
         [Test(Description = "When GetYieldOfTile is called on a hilled desert with a forest, the " +
             "yield of the forest should apply")]
         public void OnHilledForestedDesert_ForestYieldApplies() {
-            var mockTile = new Mock<IMapTile>();
+            var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
             mockTile.Object.Terrain = TerrainType.Desert;
             mockTile.Object.Shape   = TerrainShape.Hills;
-            mockTile.Object.Feature = TerrainFeatureType.Forest;
+            mockTile.Object.Feature = TerrainFeature.Forest;
 
             var config = Container.Resolve<ITileConfig>();
 

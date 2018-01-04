@@ -9,7 +9,7 @@ using Zenject;
 
 using Assets.UI.Cities;
 using Assets.UI.Civilizations;
-using Assets.UI.GameMap;
+using Assets.UI.HexMap;
 using Assets.UI.Units;
 
 using Assets.UI.StateMachine.States;

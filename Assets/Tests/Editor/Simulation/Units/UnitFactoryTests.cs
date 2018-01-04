@@ -12,7 +12,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Units {
 
@@ -202,8 +202,8 @@ namespace Assets.Tests.Simulation.Units {
 
         #region utilities
 
-        private IMapTile BuildTile(bool isValidPlaceForUnit) {
-            var mockTile = new Mock<IMapTile>();
+        private IHexCell BuildTile(bool isValidPlaceForUnit) {
+            var mockTile = new Mock<IHexCell>();
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
 

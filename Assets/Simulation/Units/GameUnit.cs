@@ -9,8 +9,9 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.HexMap;
+
 using UnityCustomUtilities.Extensions;
-using Assets.Simulation.GameMap;
 
 namespace Assets.Simulation.Units {
 
@@ -23,7 +24,7 @@ namespace Assets.Simulation.Units {
 
         public IUnitTemplate Template { get; set; }
 
-        public List<IMapTile> CurrentPath { get; set; }
+        public List<IHexCell> CurrentPath { get; set; }
 
         #endregion
 
@@ -82,7 +83,7 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            IMapTile tileToTravelTo = null;
+            IHexCell tileToTravelTo = null;
 
             while(CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0) {
                 var nextTile = CurrentPath.First();

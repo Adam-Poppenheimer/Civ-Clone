@@ -5,12 +5,12 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.GameMap;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Units {
 
-    public class UnitPositionCanon : PossessionRelationship<IMapTile, IUnit>, IUnitPositionCanon {
+    public class UnitPositionCanon : PossessionRelationship<IHexCell, IUnit>, IUnitPositionCanon {
 
         #region instance fields and properties
 
@@ -44,22 +44,22 @@ namespace Assets.Simulation.Units {
 
         #region from PossessionRelationship<IMapTile, IUnit>
 
-        protected override bool IsPossessionValid(IUnit unit, IMapTile location) {
+        protected override bool IsPossessionValid(IUnit unit, IHexCell location) {
             return location == null || CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
         }
 
-        protected override void DoOnPossessionBroken(IUnit possession, IMapTile oldOwner) {
+        protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
             possession.gameObject.transform.SetParent(null, false);
         }
 
-        protected override void DoOnPossessionEstablished(IUnit possession, IMapTile newOwner) {
+        protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
             possession.gameObject.transform.SetParent(newOwner != null ? newOwner.transform : null, false);
-            Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IMapTile>(possession, newOwner));
+            Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IHexCell>(possession, newOwner));
         }
 
         #endregion
 
-        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IMapTile location) {
+        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location) {
             if(location == null) {
                 return true;
             }else if(type == UnitType.WaterMilitary || type == UnitType.WaterCivilian) {
@@ -69,19 +69,19 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        private bool IsValidForWaterUnit(IMapTile tile) {
+        private bool IsValidForWaterUnit(IHexCell tile) {
             return (
                 !LandTerrainTypes.Contains(tile.Terrain)
                 || CityFactory.AllCities.Where(city => city.Location == tile).LastOrDefault() != null
             ) && !ImpassableTerrainShapes.Contains(tile.Shape);
         }
 
-        private bool IsValidForLandUnit(IMapTile tile) {
+        private bool IsValidForLandUnit(IHexCell tile) {
             return LandTerrainTypes.Contains(tile.Terrain)
                 && !ImpassableTerrainShapes.Contains(tile.Shape);
         }
 
-        private bool AlreadyHasUnitOfType(IMapTile owner, UnitType type) {
+        private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
             return GetPossessionsOfOwner(owner).Select(unit => unit.Template.Type).Contains(type);
         }
 
