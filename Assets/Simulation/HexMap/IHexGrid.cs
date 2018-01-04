@@ -21,8 +21,8 @@ namespace Assets.Simulation.HexMap {
         bool     HasCellAtCoordinates(HexCoordinates coords);
         IHexCell GetCellAtCoordinates(HexCoordinates coords);
 
-        bool     HasNeighborInDirection(IHexCell center, HexDirection direction);
-        IHexCell GetNeighborInDirection(IHexCell center, HexDirection direction);
+        bool     HasNeighbor(IHexCell center, HexDirection direction);
+        IHexCell GetNeighbor(IHexCell center, HexDirection direction);
 
         int GetDistance(IHexCell tileOne, IHexCell tileTwo);
 

@@ -107,18 +107,45 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void Triangulate(HexCell cell) {
-            Vector3 center = cell.transform.localPosition;
-
-            for(int i = 0; i < 6; ++i) {
-                AddTriangle(
-                    center,
-                    center + HexMetrics.Corners[i],
-                    center + HexMetrics.Corners[i + 1]
-                );
-
-                AddTriangleColor(cell.Color);
+            for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
+                Triangulate(direction, cell);
             }
-            
+        }
+
+        private void Triangulate(HexDirection direction, HexCell cell) {
+            Vector3 center = cell.transform.localPosition;
+            Vector3 v1 = center + HexMetrics.GetFirstSolidCorner(direction);
+            Vector3 v2 = center + HexMetrics.GetSecondSolidCorner(direction);
+
+            AddTriangle(center, v1, v2);
+            AddTriangleColor(cell.Color);
+
+            if(direction <= HexDirection.SE) {
+                TriangulateConnection(direction, cell, v1, v2); 
+            }                    
+        }
+
+        private void TriangulateConnection(HexDirection direction, HexCell cell, Vector3 v1, Vector3 v2) {
+            if(!Grid.HasNeighbor(cell, direction)) {
+                return;
+            }
+
+            IHexCell neighbor = Grid.GetNeighbor(cell, direction);
+
+            Vector3 bridge = HexMetrics.GetBridge(direction);
+            Vector3 v3 = v1 + bridge;
+            Vector3 v4 = v2 + bridge;
+
+            AddQuad(v1, v2, v3, v4);
+            AddQuadColor(cell.Color, neighbor.Color);
+
+            if(direction > HexDirection.E || !Grid.HasNeighbor(cell, direction.Next())) {
+                return;
+            }
+
+            IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
+            AddTriangle(v2, v4, v2 + HexMetrics.GetBridge(direction.Next()));
+            AddTriangleColor(cell.Color, neighbor.Color, nextNeighbor.Color);
         }
 
         private void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
@@ -137,6 +164,43 @@ namespace Assets.Simulation.HexMap {
             Colors.Add(color);
             Colors.Add(color);
             Colors.Add(color);
+        }
+
+        private void AddTriangleColor(Color colorOne, Color colorTwo, Color colorThree) {
+            Colors.Add(colorOne);
+            Colors.Add(colorTwo);
+            Colors.Add(colorThree);
+        }
+
+        private void AddQuad(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour) {
+            int vertexIndex = Vertices.Count;
+
+            Vertices.Add(vertexOne);
+		    Vertices.Add(vertexTwo);
+		    Vertices.Add(vertexThree);
+		    Vertices.Add(vertexFour);
+
+		    Triangles.Add(vertexIndex);
+		    Triangles.Add(vertexIndex + 2);
+		    Triangles.Add(vertexIndex + 1);
+		    Triangles.Add(vertexIndex + 1);
+		    Triangles.Add(vertexIndex + 2);
+		    Triangles.Add(vertexIndex + 3);
+        }
+
+        private void AddQuadColor(Color colorOne, Color colorTwo, Color colorThree, Color colorFour) {
+            Colors.Add(colorOne);
+            Colors.Add(colorTwo);
+            Colors.Add(colorThree);
+            Colors.Add(colorFour);
+        }
+
+        private void AddQuadColor(Color colorOne, Color colorTwo) {
+            Colors.Add(colorOne);
+            Colors.Add(colorOne);
+
+            Colors.Add(colorTwo);
+            Colors.Add(colorTwo);
         }
 
         private IHexCell GetCellUnderPosition(Vector3 position) {

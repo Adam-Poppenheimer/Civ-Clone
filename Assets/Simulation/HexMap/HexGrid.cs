@@ -87,7 +87,9 @@ namespace Assets.Simulation.HexMap {
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
             int expectedIndex = coordinates.X + coordinates.Z * Width + coordinates.Z / 2;
 
-            return expectedIndex >= 0 && expectedIndex < Cells.Length;
+            return expectedIndex >= 0
+                && expectedIndex < Cells.Length
+                && Cells[expectedIndex].Coordinates == coordinates;
         }
 
         public IHexCell GetCellAtCoordinates(HexCoordinates coordinates) {
@@ -100,11 +102,11 @@ namespace Assets.Simulation.HexMap {
             return Cells[index];
         }
 
-        public bool HasNeighborInDirection(IHexCell center, HexDirection direction) {
+        public bool HasNeighbor(IHexCell center, HexDirection direction) {
             return HasCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
         }
 
-        public IHexCell GetNeighborInDirection(IHexCell center, HexDirection direction) {
+        public IHexCell GetNeighbor(IHexCell center, HexDirection direction) {
             return GetCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
         }
 
