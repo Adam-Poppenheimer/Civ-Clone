@@ -97,6 +97,7 @@ MonoBehaviour:
   _terrain: 0
   _shape: 0
   _feature: 0
+  _elevation: 0
 --- !u!114 &114935352165385794
 MonoBehaviour:
   m_ObjectHideFlags: 1

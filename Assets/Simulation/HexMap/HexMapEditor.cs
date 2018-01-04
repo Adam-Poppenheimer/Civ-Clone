@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+using Zenject;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexMapEditor : MonoBehaviour {
@@ -16,17 +18,24 @@ namespace Assets.Simulation.HexMap {
         public bool IsPaintingShape   { get; set; }
         public bool IsPaintingFeature { get; set; }
 
-        [SerializeField] private HexGrid HexGrid;
-
         private TerrainType ActiveTerrain;
 
         private TerrainShape ActiveShape;
 
         private TerrainFeature ActiveFeature;
 
+        private IHexGrid HexGrid;
+        private ITileConfig TileConfig;
+
         #endregion
 
         #region instance methods
+
+        [Inject]
+        public void InjectDependencies(IHexGrid hexGrid, ITileConfig tileConfig) {
+            HexGrid = hexGrid;
+            TileConfig = tileConfig;
+        }
 
         #region Unity message methods
 
@@ -57,18 +66,29 @@ namespace Assets.Simulation.HexMap {
         private void HandleInput() {
             var inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
-            if(Physics.Raycast(inputRay, out hit)) {
-                if(IsPaintingTerrain) {
-                    HexGrid.PaintCellTerrain(hit.point, ActiveTerrain);
-                }
-                if(IsPaintingShape) {
-                    HexGrid.PaintCellShape(hit.point, ActiveShape);
-                }
-                if(IsPaintingFeature) {
-                    HexGrid.PaintCellFeature(hit.point, ActiveFeature);
-                }
+            if(Physics.Raycast(inputRay, out hit) && HexGrid.HasCellAtLocation(hit.point)) {
+                var cellToDraw = HexGrid.GetCellAtLocation(hit.point);
+                EditCell(cellToDraw);                
             }
-        }  
+        }
+
+        private void EditCell(IHexCell cell) {
+            if(IsPaintingTerrain) {
+                cell.Terrain = ActiveTerrain;
+                cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
+            }
+
+            if(IsPaintingShape) {
+                cell.Shape = ActiveShape;
+                cell.Elevation = TileConfig.ElevationsOfShapes[(int)cell.Shape];
+            }
+
+            if(IsPaintingFeature) {
+                cell.Feature = ActiveFeature;
+            }
+
+            HexGrid.Refresh();
+        }
 
         #endregion
 

@@ -41,11 +41,22 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private TerrainFeature _feature;
 
+        public int Elevation {
+            get { return _elevation; }
+            set {
+                _elevation = value;
+                var localPosition = transform.localPosition;
+                localPosition.y = _elevation * HexMetrics.ElevationStep;
+                transform.localPosition = localPosition;
+            }
+        }
+        [SerializeField] private int _elevation;
+
         public IWorkerSlot WorkerSlot { get; private set; }
 
         public bool SuppressSlot { get; set; }
 
-        public Color Color { get; set; }
+        public Color Color { get; set; }        
 
         #endregion
 
@@ -59,6 +70,14 @@ namespace Assets.Simulation.HexMap {
         public void InjectDependencies(ITileResourceLogic resourceLogic) {
             WorkerSlot = new WorkerSlot(resourceLogic.GetYieldOfTile(this));
         }
+
+        #region from IHexCell
+
+        public HexEdgeType GetEdgeType(IHexCell otherCell) {
+            return HexMetrics.GetEdgeType(Elevation, otherCell.Elevation);
+        }
+
+        #endregion
 
         #endregion
 

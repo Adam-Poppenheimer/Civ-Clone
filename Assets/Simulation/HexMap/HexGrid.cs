@@ -36,18 +36,17 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private Color DefaultColor;
 
-        [SerializeField] private List<Color> ColorsOfTerrain;
-
         [SerializeField] private HexCell CellPrefab;
 
         [SerializeField] private Text CellLabelPrefab;
 
-        private Canvas GridCanvas;
         private HexMesh HexMesh;
 
         private HexCell[] Cells;
 
         private HexCellSignals CellSignals;
+
+        private ITileConfig TileConfig;
 
         private DiContainer Container;
 
@@ -56,15 +55,15 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(HexCellSignals cellSignals, DiContainer container) {
+        public void InjectDependencies(HexCellSignals cellSignals, ITileConfig tileConfig, DiContainer container) {
             CellSignals = cellSignals;
+            TileConfig = tileConfig;
             Container = container;
         }
 
         #region Unity message methods
 
         private void Awake() {
-            GridCanvas = GetComponentInChildren<Canvas> ();
             HexMesh    = GetComponentInChildren<HexMesh>();
 
             Cells = new HexCell[Width * Height];
@@ -100,6 +99,18 @@ namespace Assets.Simulation.HexMap {
             }
 
             return Cells[index];
+        }
+
+        public bool HasCellAtLocation(Vector3 location) {
+		    HexCoordinates coordinates = HexCoordinates.FromPosition(transform.InverseTransformPoint(location));
+
+            return HasCellAtCoordinates(coordinates);
+        }
+
+        public IHexCell GetCellAtLocation(Vector3 location) {
+            HexCoordinates coordinates = HexCoordinates.FromPosition(transform.InverseTransformPoint(location));
+
+            return GetCellAtCoordinates(coordinates);
         }
 
         public bool HasNeighbor(IHexCell center, HexDirection direction) {
@@ -209,37 +220,7 @@ namespace Assets.Simulation.HexMap {
             return GetCellsInRadius(center, 1);
         }
 
-        public void PaintCellTerrain(Vector3 position, TerrainType terrain) {
-            position = transform.InverseTransformPoint(position);
-
-            var coordinates = HexCoordinates.FromPosition(position);
-
-            var touchedCell = GetCellAtCoordinates(coordinates);
-
-            touchedCell.Terrain = terrain;
-            touchedCell.Color = ColorsOfTerrain[(int)terrain];
-            HexMesh.Triangulate(Cells);
-        }
-
-        public void PaintCellShape(Vector3 position, TerrainShape shape) {
-            position = transform.InverseTransformPoint(position);
-
-            var coordinates = HexCoordinates.FromPosition(position);
-
-            var touchedCell = GetCellAtCoordinates(coordinates);
-
-            touchedCell.Shape = shape;
-            HexMesh.Triangulate(Cells);
-        }
-
-        public void PaintCellFeature(Vector3 position, TerrainFeature feature) {
-            position = transform.InverseTransformPoint(position);
-
-            var coordinates = HexCoordinates.FromPosition(position);
-
-            var touchedCell = GetCellAtCoordinates(coordinates);
-
-            touchedCell.Feature = feature;
+        public void Refresh() {
             HexMesh.Triangulate(Cells);
         }
 
@@ -262,11 +243,12 @@ namespace Assets.Simulation.HexMap {
             newCell.Terrain = TerrainType.Grassland;
             newCell.Shape   = TerrainShape.Flat;
             newCell.Feature = TerrainFeature.None;
-            newCell.Color   = ColorsOfTerrain[(int)newCell.Terrain];
+            newCell.Color   = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
+
+            var cellCanvas = newCell.GetComponentInChildren<Canvas>();
 
             Text label = Instantiate<Text>(CellLabelPrefab);
-            label.rectTransform.SetParent(GridCanvas.transform, false);
-            label.rectTransform.anchoredPosition = new Vector2(position.x, position.z);
+            label.rectTransform.SetParent(cellCanvas.transform, false);
             label.text = newCell.Coordinates.ToStringOnSeparateLines();
         }
 

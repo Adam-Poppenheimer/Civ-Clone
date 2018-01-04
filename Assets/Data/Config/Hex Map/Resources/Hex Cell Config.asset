@@ -11,9 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6a3877a431fcd2546b439a69e11818cc, type: 3}
   m_Name: Hex Cell Config
   m_EditorClassIdentifier: 
-  _grasslandMaterial: {fileID: 2100000, guid: 176df8737d32bf842a0e453273f15a49, type: 2}
-  _plainsMaterial: {fileID: 2100000, guid: 4128cf111d55d574ebda4104758ff80b, type: 2}
-  _desertMaterial: {fileID: 2100000, guid: 883a71f688db52240b08695f3850ed63, type: 2}
+  _colorOfTerrains:
+  - {r: 0.10437007, g: 0.8014706, b: 0.047145326, a: 1}
+  - {r: 1, g: 0.93103456, b: 0, a: 1}
+  - {r: 1, g: 0.9761663, b: 0.6544118, a: 1}
+  - {r: 0.58823526, g: 0.8807302, b: 1, a: 1}
+  - {r: 0, g: 0.46206903, b: 1, a: 1}
+  _elevationOfShapes: 000000000100000002000000
   _grasslandsYield:
     Food: 3
     Production: 3

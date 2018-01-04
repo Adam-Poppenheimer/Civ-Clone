@@ -17,6 +17,16 @@ namespace Assets.Simulation.HexMap {
         public const float SolidFactor = 0.85f;
         public const float BlendFactor = 1f - SolidFactor;
 
+        public const float ElevationStep = 5f;
+
+        public const int TerracesPerSlope = 2;
+
+        public const int TerraceSteps = TerracesPerSlope * 2 + 1;
+
+        public const float HorizontalTerraceStepSize = 1f / TerraceSteps;
+
+        public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
+
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
             new Vector3(InnerRadius, 0f,  0.5f * OuterRadius),
@@ -49,6 +59,32 @@ namespace Assets.Simulation.HexMap {
 
         public static Vector3 GetBridge(HexDirection direction) {
             return (Corners[(int)direction] + Corners[(int)direction + 1]) * BlendFactor;
+        }
+
+        public static Vector3 TerraceLerp(Vector3 a, Vector3 b, int step) {
+            float horizontalDelta = step * HexMetrics.HorizontalTerraceStepSize;
+            a.x += (b.x - a.x) * horizontalDelta;
+            a.z += (b.z - a.z) * horizontalDelta;
+
+            float verticalDelta = ((step + 1) / 2) * HexMetrics.VerticalTerraceStepSize;
+            a.y += (b.y - a.y) * verticalDelta;
+
+            return a;
+        }
+
+        public static Color TerraceLerp(Color a, Color b, int step) {
+            float h = step * HexMetrics.HorizontalTerraceStepSize;
+            return Color.Lerp(a, b, h);
+        }
+
+        public static HexEdgeType GetEdgeType(int elevationOne, int elevationTwo) {
+            if(elevationOne == elevationTwo) {
+                return HexEdgeType.Flat;
+            }else if(Math.Abs(elevationOne - elevationTwo) == 1) {
+                return HexEdgeType.Slope;
+            }else {
+                return HexEdgeType.Cliff;
+            }
         }
 
         #endregion

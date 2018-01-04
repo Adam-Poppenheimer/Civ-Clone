@@ -7,9 +7,9 @@ namespace Assets.Simulation.HexMap {
 
         #region properties
 
-        Material DesertMaterial    { get; }
-        Material GrasslandMaterial { get; }
-        Material PlainsMaterial    { get; }
+        ReadOnlyCollection<Color> ColorsOfTerrains { get; }
+
+        ReadOnlyCollection<int> ElevationsOfShapes { get; }
 
         ResourceSummary DesertYield     { get; }
         ResourceSummary ForestYield     { get; }
@@ -26,12 +26,6 @@ namespace Assets.Simulation.HexMap {
         int DeepWaterMoveCost    { get; }
 
         ReadOnlyCollection<TerrainType> UnoccupiableTerrains { get; }
-
-        #endregion
-
-        #region methods
-
-        Material GetTerrainMaterial(TerrainType terrain);
 
         #endregion
 

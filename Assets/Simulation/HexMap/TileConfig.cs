@@ -13,20 +13,15 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public Material GrasslandMaterial {
-            get { return _grasslandMaterial; }
+        public ReadOnlyCollection<Color> ColorsOfTerrains {
+            get { return _colorOfTerrains.AsReadOnly(); }
         }
-        [SerializeField] private Material _grasslandMaterial;
+        [SerializeField] private List<Color> _colorOfTerrains;
 
-        public Material PlainsMaterial {
-            get { return _plainsMaterial; }
+        public ReadOnlyCollection<int> ElevationsOfShapes {
+            get { return _elevationOfShapes.AsReadOnly(); }
         }
-        [SerializeField] private Material _plainsMaterial;
-
-        public Material DesertMaterial {
-            get { return _desertMaterial; }
-        }
-        [SerializeField] private Material _desertMaterial;
+        [SerializeField] private List<int> _elevationOfShapes;
 
         public ResourceSummary GrasslandYield {
             get { return _grasslandsYield; }
@@ -92,19 +87,6 @@ namespace Assets.Simulation.HexMap {
             get { return _unoccupiableTerrains.AsReadOnly(); }
         }
         [SerializeField] private List<TerrainType> _unoccupiableTerrains;
-
-        #endregion
-
-        #region instance methods
-
-        public Material GetTerrainMaterial(TerrainType terrain) {
-            switch(terrain) {
-                case TerrainType.Grassland: return GrasslandMaterial;
-                case TerrainType.Plains: return PlainsMaterial;
-                case TerrainType.Desert: return DesertMaterial;
-                default: return null;
-            }
-        }
 
         #endregion
 

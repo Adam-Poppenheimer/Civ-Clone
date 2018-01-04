@@ -20,11 +20,19 @@ namespace Assets.Simulation.HexMap {
         TerrainShape   Shape   { get; set; }
         TerrainFeature Feature { get; set; }
 
+        int Elevation { get; set; }
+
         Color Color { get; set; }
 
         IWorkerSlot WorkerSlot { get; }
 
         bool SuppressSlot { get; set; }
+
+        #endregion
+
+        #region methods
+
+        HexEdgeType GetEdgeType(IHexCell otherCell);
 
         #endregion
 

@@ -21,6 +21,9 @@ namespace Assets.Simulation.HexMap {
         bool     HasCellAtCoordinates(HexCoordinates coords);
         IHexCell GetCellAtCoordinates(HexCoordinates coords);
 
+        bool     HasCellAtLocation(Vector3 location);
+        IHexCell GetCellAtLocation(Vector3 location);
+
         bool     HasNeighbor(IHexCell center, HexDirection direction);
         IHexCell GetNeighbor(IHexCell center, HexDirection direction);
 
@@ -38,11 +41,7 @@ namespace Assets.Simulation.HexMap {
 
         List<IHexCell> GetNeighbors(IHexCell center);
 
-        void PaintCellTerrain(Vector3 position, TerrainType terrain);
-
-        void PaintCellShape(Vector3 position, TerrainShape shape);
-
-        void PaintCellFeature(Vector3 position, TerrainFeature feature);
+        void Refresh();
 
         #endregion
 
