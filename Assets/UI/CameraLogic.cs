@@ -40,11 +40,7 @@ namespace Assets.UI {
                 Input.GetAxis("Vertical") * Config.PanningSpeed
             );
 
-            CameraToControl.fieldOfView = Mathf.Clamp(
-                CameraToControl.fieldOfView + -Input.GetAxis("Mouse ScrollWheel") * Config.ZoomingSpeed,
-                Config.MinFOV,
-                Config.MaxFOV
-            );
+            
         }
 
         #endregion

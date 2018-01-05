@@ -44,6 +44,9 @@ namespace Assets.Simulation.HexMap {
         public int Elevation {
             get { return _elevation; }
             set {
+                if(_elevation == value) {
+                    return;
+                }
                 _elevation = value;
                 var localPosition = transform.localPosition;
 
@@ -52,30 +55,59 @@ namespace Assets.Simulation.HexMap {
                     HexMetrics.ElevationPerturbStrength;
 
                 transform.localPosition = localPosition;
+
+                Refresh();
             }
         }
-        [SerializeField] private int _elevation;
+        [SerializeField] private int _elevation = int.MinValue;
 
         public IWorkerSlot WorkerSlot { get; private set; }
 
         public bool SuppressSlot { get; set; }
 
-        public Color Color { get; set; }        
+        public Color Color {
+            get { return _color; }
+            set {
+                if(_color == value) {
+                    return;
+                }
+
+                _color = value;
+                Refresh();
+            }
+        }
+        private Color _color;
+
+        public HexGridChunk Chunk { get; set; }
 
         #endregion
 
+        private Canvas Canvas;
+
         private ITileResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
+        private IHexGrid Grid;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITileResourceLogic resourceLogic, INoiseGenerator noiseGenerator) {
+        public void InjectDependencies(ITileResourceLogic resourceLogic,
+            INoiseGenerator noiseGenerator, IHexGrid grid
+        ){
             WorkerSlot = new WorkerSlot(resourceLogic.GetYieldOfTile(this));
             NoiseGenerator = noiseGenerator;
+            Grid = grid;
         }
+
+        #region Unity messages
+
+        private void Awake() {
+            Canvas = GetComponentInChildren<Canvas>();
+        }
+
+        #endregion
 
         #region from IHexCell
 
@@ -83,7 +115,24 @@ namespace Assets.Simulation.HexMap {
             return HexMetrics.GetEdgeType(Elevation, otherCell.Elevation);
         }
 
+        public void ToggleUI(bool isVisible) {
+            if(Canvas != null) {
+                Canvas.gameObject.SetActive(isVisible);
+            }
+        }
+
         #endregion
+
+        public void Refresh() {
+            if(Chunk != null) {
+                Chunk.Refresh();
+                foreach(var neighbor in Grid.GetNeighbors(this)) {
+                    if(neighbor.Chunk != Chunk) {
+                        neighbor.Chunk.Refresh();
+                    }
+                }
+            }
+        }
 
         #endregion
 

@@ -28,11 +28,15 @@ namespace Assets.Simulation.HexMap {
 
         bool SuppressSlot { get; set; }
 
+        HexGridChunk Chunk { get; }
+
         #endregion
 
         #region methods
 
         HexEdgeType GetEdgeType(IHexCell otherCell);
+
+        void Refresh();
 
         #endregion
 

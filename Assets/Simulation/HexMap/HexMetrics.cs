@@ -31,6 +31,8 @@ namespace Assets.Simulation.HexMap {
 
         public const float ElevationPerturbStrength = 1.5f;
 
+        public const int ChunkSizeX = 5, ChunkSizeZ = 5;
+
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
             new Vector3(InnerRadius, 0f,  0.5f * OuterRadius),

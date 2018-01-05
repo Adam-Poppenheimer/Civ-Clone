@@ -14,6 +14,9 @@ namespace Assets.Simulation.HexMap {
 
         ReadOnlyCollection<IHexCell> Tiles { get; }
 
+        int ChunkCountX { get; }
+        int ChunkCountZ { get; }
+
         #endregion
 
         #region methods
@@ -41,7 +44,7 @@ namespace Assets.Simulation.HexMap {
 
         List<IHexCell> GetNeighbors(IHexCell center);
 
-        void Refresh();
+        void ToggleUI(bool isVisible);
 
         #endregion
 

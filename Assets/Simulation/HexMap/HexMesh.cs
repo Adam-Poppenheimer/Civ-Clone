@@ -13,14 +13,18 @@ namespace Assets.Simulation.HexMap {
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
     public class HexMesh : MonoBehaviour {
 
+        #region static fields and properties
+
+        private static List<Vector3> Vertices  = new List<Vector3>();
+        private static List<int>     Triangles = new List<int>();
+        private static List<Color>   Colors    = new List<Color>();
+
+        #endregion
+
         #region instance fields and properties
 
         private Mesh ManagedMesh;
-        public MeshCollider Collider { get; private set; }
-
-        private List<Vector3> Vertices;
-        private List<int>     Triangles;
-        private List<Color>   Colors;
+        public MeshCollider Collider { get; private set; }        
 
         private IHexGrid Grid;
         private INoiseGenerator NoiseGenerator;
@@ -43,10 +47,6 @@ namespace Assets.Simulation.HexMap {
             ManagedMesh.name = "Hex Mesh";
             
             Collider = GetComponent<MeshCollider>();
-
-            Vertices  = new List<Vector3>();
-            Triangles = new List<int>();
-            Colors    = new List<Color>();
         }        
 
         #endregion        

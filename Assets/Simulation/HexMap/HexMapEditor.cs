@@ -14,15 +14,17 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public bool IsPaintingTerrain { get; set; }
-        public bool IsPaintingShape   { get; set; }
-        public bool IsPaintingFeature { get; set; }
+        private bool ApplyTerrain;
+        private bool ApplyShape;
+        private bool ApplyFeature;
 
         private TerrainType ActiveTerrain;
 
         private TerrainShape ActiveShape;
 
         private TerrainFeature ActiveFeature;
+
+        private int BrushSize;
 
         private IHexGrid HexGrid;
         private ITileConfig TileConfig;
@@ -52,15 +54,32 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         public void SelectTerrain(int index) {
-            ActiveTerrain = (TerrainType)index;
+            ApplyTerrain = index >= 0;
+            if(ApplyTerrain) {
+                ActiveTerrain = (TerrainType)index;
+            }            
         }
 
         public void SelectShape(int index) {
-            ActiveShape = (TerrainShape)index;
+            ApplyShape = index >= 0;
+            if(ApplyShape) {
+                ActiveShape = (TerrainShape)index;
+            }
         }
 
         public void SelectFeature(int index) {
-            ActiveFeature = (TerrainFeature)index;
+            ApplyFeature = index >= 0;
+            if(ApplyFeature) {
+                ActiveFeature = (TerrainFeature)index;
+            }            
+        }
+
+        public void SelectBrushSize(float size) {
+            BrushSize = (int)size;
+        }
+
+        public void ToggleUI(bool isVisible) {
+            HexGrid.ToggleUI(isVisible);
         }
 
         private void HandleInput() {
@@ -68,26 +87,30 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(inputRay, out hit) && HexGrid.HasCellAtLocation(hit.point)) {
                 var cellToDraw = HexGrid.GetCellAtLocation(hit.point);
-                EditCell(cellToDraw);                
+                EditCells(cellToDraw);                               
+            }
+        }
+
+        private void EditCells(IHexCell center) {
+            foreach(var cell in HexGrid.GetCellsInRadius(center, BrushSize)) {
+                EditCell(cell);
             }
         }
 
         private void EditCell(IHexCell cell) {
-            if(IsPaintingTerrain) {
+            if(ApplyTerrain) {
                 cell.Terrain = ActiveTerrain;
                 cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
             }
 
-            if(IsPaintingShape) {
+            if(ApplyShape) {
                 cell.Shape = ActiveShape;
                 cell.Elevation = TileConfig.ElevationsOfShapes[(int)cell.Shape];
             }
 
-            if(IsPaintingFeature) {
+            if(ApplyFeature) {
                 cell.Feature = ActiveFeature;
             }
-
-            HexGrid.Refresh();
         }
 
         #endregion

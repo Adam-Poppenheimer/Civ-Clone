@@ -29,20 +29,32 @@ namespace Assets.Simulation.HexMap {
         }
         private List<IHexCell> _tiles;
 
-        #endregion
+        public int ChunkCountX {
+            get { return _chunkCountX; }
+        }
+        [SerializeField] private int _chunkCountX;
 
-        [SerializeField] private int Width;
-        [SerializeField] private int Height;
+        public int ChunkCountZ {
+            get { return _chunkCountZ; }
+        }
+        [SerializeField] private int _chunkCountZ;
+
+        #endregion        
 
         [SerializeField] private Color DefaultColor;
 
         [SerializeField] private HexCell CellPrefab;
 
+        [SerializeField] private HexGridChunk ChunkPrefab;
+
         [SerializeField] private Text CellLabelPrefab;
 
-        private HexMesh HexMesh;
+        private int CellCountX;
+        private int CellCountZ;
 
         private HexCell[] Cells;
+
+        private HexGridChunk[] Chunks;
 
         private HexCellSignals CellSignals;
 
@@ -64,19 +76,13 @@ namespace Assets.Simulation.HexMap {
         #region Unity message methods
 
         private void Awake() {
-            HexMesh    = GetComponentInChildren<HexMesh>();
+            CellCountX = ChunkCountX * HexMetrics.ChunkSizeX;
+            CellCountZ = ChunkCountZ * HexMetrics.ChunkSizeZ;
 
-            Cells = new HexCell[Width * Height];
+            CreateChunks();
+            CreateCells();
 
-            for(int z = 0, i = 0; z < Height; ++ z) {
-                for(int x = 0; x < Width; ++x) {
-                    CreateCell(x, z, i++);
-                }
-            }
-        }
-
-        private void Start() {
-            HexMesh.Triangulate(Cells);
+            ToggleUI(false);
         }
 
         #endregion
@@ -84,7 +90,7 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
-            int expectedIndex = coordinates.X + coordinates.Z * Width + coordinates.Z / 2;
+            int expectedIndex = coordinates.X + coordinates.Z * CellCountX + coordinates.Z / 2;
 
             return expectedIndex >= 0
                 && expectedIndex < Cells.Length
@@ -92,7 +98,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public IHexCell GetCellAtCoordinates(HexCoordinates coordinates) {
-            int index = coordinates.X + coordinates.Z * Width + coordinates.Z / 2;
+            int index = coordinates.X + coordinates.Z * CellCountX + coordinates.Z / 2;
 
             if(index < 0 || index >= Cells.Length) {
                 throw new IndexOutOfRangeException("The given coordinates represent a cell that's not in the grid");
@@ -220,11 +226,34 @@ namespace Assets.Simulation.HexMap {
             return GetCellsInRadius(center, 1);
         }
 
-        public void Refresh() {
-            HexMesh.Triangulate(Cells);
+        public void ToggleUI(bool isVisible) {
+            foreach(var cell in Cells) {
+                cell.ToggleUI(isVisible);
+            }
         }
 
         #endregion
+
+        private void CreateChunks() {
+            Chunks = new HexGridChunk[ChunkCountX * ChunkCountZ];
+
+            for(int z = 0, i = 0; z < ChunkCountZ; z++) {
+                for(int x = 0; x < ChunkCountX; x++) {
+                    HexGridChunk chunk = Chunks[i++] = Container.InstantiatePrefabForComponent<HexGridChunk>(ChunkPrefab);
+                    chunk.transform.SetParent(transform);
+                }
+            }
+        }
+
+        private void CreateCells() {
+            Cells = new HexCell[CellCountX * CellCountZ];
+
+            for(int z = 0, i = 0; z < CellCountZ; ++ z) {
+                for(int x = 0; x < CellCountX; ++x) {
+                    CreateCell(x, z, i++);
+                }
+            }
+        }
 
         private void CreateCell(int x, int z, int i) {
             var position = new Vector3(
@@ -234,23 +263,37 @@ namespace Assets.Simulation.HexMap {
             );
 
             var newCell = Cells[i] = Container.InstantiatePrefabForComponent<HexCell>(CellPrefab);
-            newCell.transform.SetParent(transform, false);
-            newCell.transform.localPosition = position;            
+
+            newCell.transform.localPosition = position;
 
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-            newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
-
-            newCell.Terrain   = TerrainType.Grassland;
-            newCell.Shape     = TerrainShape.Flat;
-            newCell.Feature   = TerrainFeature.None;
-            newCell.Color     = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
-            newCell.Elevation = 0;
+            newCell.Terrain     = TerrainType.Grassland;
+            newCell.Shape       = TerrainShape.Flat;
+            newCell.Feature     = TerrainFeature.None;
+            newCell.Color       = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
+            newCell.Elevation   = 0;
 
             var cellCanvas = newCell.GetComponentInChildren<Canvas>();
 
+            newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
             Text label = Instantiate<Text>(CellLabelPrefab);
             label.rectTransform.SetParent(cellCanvas.transform, false);
             label.text = newCell.Coordinates.ToStringOnSeparateLines();
+
+            AddCellToChunk(x, z, newCell);
+        }
+
+        private void AddCellToChunk(int x, int z, HexCell cell) {
+            int chunkX = x / HexMetrics.ChunkSizeX;
+            int chunkZ = z / HexMetrics.ChunkSizeZ;
+            HexGridChunk chunk = Chunks[chunkX + chunkZ * ChunkCountX];
+
+            int localX = x - chunkX * HexMetrics.ChunkSizeX;
+            int localZ = z - chunkZ * HexMetrics.ChunkSizeZ;
+
+            chunk.AddCell(localX + localZ * HexMetrics.ChunkSizeX, cell);
+
+            cell.Chunk = chunk;
         }
 
         #endregion
