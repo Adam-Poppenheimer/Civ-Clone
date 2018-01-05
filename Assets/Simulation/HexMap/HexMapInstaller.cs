@@ -19,6 +19,8 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private TileConfig Config;
 
+        [SerializeField] private Texture2D NoiseSource;
+
         #endregion
 
         #region instance methods
@@ -33,6 +35,9 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<ITileConfig>().To<TileConfig>().FromInstance(Config);
 
             Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
+
+            Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
+            Container.Bind<INoiseGenerator>().To<NoiseGenerator>().AsSingle();
 
             Container.DeclareSignal<CellClickedSignal>();
             Container.DeclareSignal<CellPointerEnterSignal>();

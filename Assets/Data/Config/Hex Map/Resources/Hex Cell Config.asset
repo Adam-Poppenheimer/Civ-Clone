@@ -17,7 +17,7 @@ MonoBehaviour:
   - {r: 1, g: 0.9761663, b: 0.6544118, a: 1}
   - {r: 0.58823526, g: 0.8807302, b: 1, a: 1}
   - {r: 0, g: 0.46206903, b: 1, a: 1}
-  _elevationOfShapes: 000000000100000002000000
+  _elevationOfShapes: 000000000100000003000000
   _grasslandsYield:
     Food: 3
     Production: 3

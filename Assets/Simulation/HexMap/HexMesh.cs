@@ -11,32 +11,28 @@ using Zenject;
 namespace Assets.Simulation.HexMap {
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
-    public class HexMesh : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class HexMesh : MonoBehaviour {
 
         #region instance fields and properties
 
         private Mesh ManagedMesh;
         public MeshCollider Collider { get; private set; }
 
-        private HexCellSignals CellSignals;
-        private IHexGrid Grid;
-
         private List<Vector3> Vertices;
         private List<int>     Triangles;
         private List<Color>   Colors;
 
-        private IHexCell LastCellEntered;
-
-        private bool ShouldEmitEnterExitMessages;        
+        private IHexGrid Grid;
+        private INoiseGenerator NoiseGenerator;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(HexCellSignals cellSignals, IHexGrid grid) {
-            CellSignals = cellSignals;
-            Grid = grid;
+        public void InjectDependencies(IHexGrid grid, INoiseGenerator noiseGenerator) {
+            Grid           = grid;
+            NoiseGenerator = noiseGenerator;
         }
 
 
@@ -51,42 +47,9 @@ namespace Assets.Simulation.HexMap {
             Vertices  = new List<Vector3>();
             Triangles = new List<int>();
             Colors    = new List<Color>();
-        }
+        }        
 
-        private void Update() {
-            TryEmitEnterExitMessages();
-        }
-
-        #endregion
-
-        #region EventSystem handler implementations
-
-        public void OnPointerClick(PointerEventData eventData) {
-            var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
-
-                if(hit.collider == Collider) {
-                    var coordinates = HexCoordinates.FromPosition(hit.point);
-                    var clickedCell = Grid.GetCellAtCoordinates(coordinates);
-                    CellSignals.ClickedSignal.Fire(clickedCell, Input.mousePosition);
-                }
-            }
-        }
-
-        public void OnPointerEnter(PointerEventData eventData) {
-            ShouldEmitEnterExitMessages = true;
-        }
-
-        public void OnPointerExit(PointerEventData eventData) {
-            ShouldEmitEnterExitMessages = false;
-            if(LastCellEntered != null) {
-                EmitExitMessage(LastCellEntered);
-                LastCellEntered = null;
-            }
-        }
-
-        #endregion
+        #endregion        
 
         public void Triangulate(HexCell[] cells) {
             ManagedMesh.Clear();
@@ -114,18 +77,21 @@ namespace Assets.Simulation.HexMap {
 
         private void Triangulate(HexDirection direction, HexCell cell) {
             Vector3 center = cell.transform.localPosition;
-            Vector3 v1 = center + HexMetrics.GetFirstSolidCorner(direction);
-            Vector3 v2 = center + HexMetrics.GetSecondSolidCorner(direction);
+            EdgeVertices edge = new EdgeVertices(
+                center + HexMetrics.GetFirstSolidCorner(direction),
+                center + HexMetrics.GetSecondSolidCorner(direction)
+            );
 
-            AddTriangle(center, v1, v2);
-            AddTriangleColor(cell.Color);
+            TriangulateEdgeFan(center, edge, cell.Color);
 
             if(direction <= HexDirection.SE) {
-                TriangulateConnection(direction, cell, v1, v2); 
+                TriangulateConnection(direction, cell, edge); 
             }                    
         }
 
-        private void TriangulateConnection(HexDirection direction, HexCell cell, Vector3 v1, Vector3 v2) {
+        private void TriangulateConnection(
+            HexDirection direction, HexCell cell, EdgeVertices edgeOne
+        ){
             if(!Grid.HasNeighbor(cell, direction)) {
                 return;
             }
@@ -133,16 +99,17 @@ namespace Assets.Simulation.HexMap {
             IHexCell neighbor = Grid.GetNeighbor(cell, direction);
 
             Vector3 bridge = HexMetrics.GetBridge(direction);
-            Vector3 v3 = v1 + bridge;
-            Vector3 v4 = v2 + bridge;
-            v3.y = v4.y = neighbor.Elevation * HexMetrics.ElevationStep;
+            bridge.y = neighbor.transform.localPosition.y - cell.transform.localPosition.y;
+            EdgeVertices edgeTwo = new EdgeVertices(
+                edgeOne.V1 + bridge,
+                edgeOne.V4 + bridge
+            );
 
             var edgeType = HexMetrics.GetEdgeType(cell.Elevation, neighbor.Elevation);
             if(edgeType == HexEdgeType.Slope) {
-                TriangulateEdgeTerraces(v1, v2, cell, v3, v4, neighbor);
+                TriangulateEdgeTerraces(edgeOne, cell, edgeTwo, neighbor);
             }else {
-                AddQuad(v1, v2, v3, v4);
-                AddQuadColor(cell.Color, neighbor.Color);
+                TriangulateEdgeStrip(edgeOne, cell.Color, edgeTwo, neighbor.Color);
             }
 
             if(direction > HexDirection.E || !Grid.HasNeighbor(cell, direction.Next())) {
@@ -151,51 +118,65 @@ namespace Assets.Simulation.HexMap {
 
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
 
-            Vector3 v5 = v2 + HexMetrics.GetBridge(direction.Next());
-            v5.y = nextNeighbor.Elevation * HexMetrics.ElevationStep;
+            Vector3 v5 = edgeOne.V4 + HexMetrics.GetBridge(direction.Next());
+            v5.y = nextNeighbor.transform.localPosition.y;
 
             if(cell.Elevation <= neighbor.Elevation) {
                 if(cell.Elevation <= nextNeighbor.Elevation) {
-                    TriangulateCorner(v2, cell, v4, neighbor, v5, nextNeighbor);
+                    TriangulateCorner(edgeOne.V4, cell, edgeTwo.V4, neighbor, v5, nextNeighbor);
                 }else {
-                    TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                    TriangulateCorner(v5, nextNeighbor, edgeOne.V4, cell, edgeTwo.V4, neighbor);
                 }
             }else if(neighbor.Elevation <= nextNeighbor.Elevation) {
-                TriangulateCorner(v4, neighbor, v5, nextNeighbor, v2, cell);
+                TriangulateCorner(edgeTwo.V4, neighbor, v5, nextNeighbor, edgeOne.V4, cell);
             }else {
-                TriangulateCorner(v5, nextNeighbor, v2, cell, v4, neighbor);
+                TriangulateCorner(v5, nextNeighbor, edgeOne.V4, cell, edgeTwo.V4, neighbor);
             }
 
-            //AddTriangle(v2, v4, v5);
-            //AddTriangleColor(cell.Color, neighbor.Color, nextNeighbor.Color);
         }
 
         private void TriangulateEdgeTerraces(
-            Vector3 beginleft, Vector3 beginRight, IHexCell beginCell,
-            Vector3 endLeft, Vector3 endRight, IHexCell endCell
+            EdgeVertices begin, IHexCell beginCell,
+            EdgeVertices end, IHexCell endCell
         ) {
-            Vector3 v3 = HexMetrics.TerraceLerp(beginleft, endLeft, 1);
-            Vector3 v4 = HexMetrics.TerraceLerp(beginRight, endRight, 1);
+            EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
             Color c2 = HexMetrics.TerraceLerp(beginCell.Color, endCell.Color, 1);
 
-            AddQuad(beginleft, beginRight, v3, v4);
-            AddQuadColor(beginCell.Color, c2);
+            TriangulateEdgeStrip(begin, beginCell.Color, e2, c2);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
-                Vector3 v1 = v3;
-                Vector3 v2 = v4;
+                EdgeVertices e1 = e2;
                 Color c1 = c2;
 
-                v3 = HexMetrics.TerraceLerp(beginleft, endLeft, i);
-                v4 = HexMetrics.TerraceLerp(beginRight, endRight, i);
+                e2 = EdgeVertices.TerraceLerp(begin, end, i);
                 c2 = HexMetrics.TerraceLerp(beginCell.Color, endCell.Color, i);
 
-                AddQuad(v1, v2, v3, v4);
-                AddQuadColor(c1, c2);
+                TriangulateEdgeStrip(e1, c1, e2, c2);
             }
 
-            AddQuad(v3, v4, endLeft, endRight);
-            AddQuadColor(c2, endCell.Color);
+            TriangulateEdgeStrip(e2, c2, end, endCell.Color);
+        }
+
+        private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, Color color) {
+            AddTriangle(center, edge.V1, edge.V2);
+            AddTriangleColor(color);
+
+            AddTriangle(center, edge.V2, edge.V3);
+            AddTriangleColor(color);
+
+            AddTriangle(center, edge.V3, edge.V4);
+            AddTriangleColor(color);
+        }
+
+        private void TriangulateEdgeStrip(EdgeVertices e1, Color c1, EdgeVertices e2, Color c2) {
+            AddQuad(e1.V1, e1.V2, e2.V1, e2.V2);
+            AddQuadColor(c1, c2);
+
+		    AddQuad(e1.V2, e1.V3, e2.V2, e2.V3);
+		    AddQuadColor(c1, c2);
+
+		    AddQuad(e1.V3, e1.V4, e2.V3, e2.V4);
+		    AddQuadColor(c1, c2);
         }
 
         private void TriangulateCorner(
@@ -279,7 +260,7 @@ namespace Assets.Simulation.HexMap {
         ){
             float b = Mathf.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
 
-            Vector3 boundary = Vector3.Lerp(begin, right, b);
+            Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(right), b);
             Color boundaryColor = Color.Lerp(beginCell.Color, rightCell.Color, b);
 
             TriangulateBoundaryTriangle(begin, beginCell, left, leftCell, boundary, boundaryColor);
@@ -287,7 +268,7 @@ namespace Assets.Simulation.HexMap {
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
                 TriangulateBoundaryTriangle(left, leftCell, right, rightCell, boundary, boundaryColor);
             }else {
-                AddTriangle(left, right, boundary);
+                AddTriangleUnperturbed(Perturb(left), Perturb(right), boundary);
                 AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
             }
         }
@@ -298,7 +279,7 @@ namespace Assets.Simulation.HexMap {
             Vector3 right, IHexCell rightCell
         ){
             float b = Mathf.Abs(1f / (leftCell.Elevation - beginCell.Elevation));
-            Vector3 boundary = Vector3.Lerp(begin, left, b);
+            Vector3 boundary = Vector3.Lerp(Perturb(begin), Perturb(left), b);
             Color boundaryColor = Color.Lerp(beginCell.Color, leftCell.Color, b);
 
             TriangulateBoundaryTriangle(right, rightCell, begin, beginCell, boundary, boundaryColor);
@@ -306,7 +287,7 @@ namespace Assets.Simulation.HexMap {
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
                 TriangulateBoundaryTriangle(left, leftCell, right, rightCell, boundary, boundaryColor);
             }else {
-                AddTriangle(left, right, boundary);
+                AddTriangleUnperturbed(Perturb(left), Perturb(right), boundary);
                 AddTriangleColor(leftCell.Color, rightCell.Color, boundaryColor);
             }
         }
@@ -316,35 +297,57 @@ namespace Assets.Simulation.HexMap {
             Vector3 left, IHexCell leftCell,
             Vector3 boundary, Color boundaryColor
         ) {
-            Vector3 v2 = HexMetrics.TerraceLerp(begin, left, 1);
+            Vector3 v2 = Perturb(HexMetrics.TerraceLerp(begin, left, 1));
             Color c2 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, 1);
 
-            AddTriangle(begin, v2, boundary);
+            AddTriangleUnperturbed(Perturb(begin), v2, boundary);
             AddTriangleColor(beginCell.Color, c2, boundaryColor);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v2;
                 Color c1 = c2;
-                v2 = HexMetrics.TerraceLerp(begin, left, i);
+                v2 = Perturb(HexMetrics.TerraceLerp(begin, left, i));
                 c2 = HexMetrics.TerraceLerp(beginCell.Color, leftCell.Color, i);
-                AddTriangle(v1, v2, boundary);
+                AddTriangleUnperturbed(v1, v2, boundary);
                 AddTriangleColor(c1, c2, boundaryColor);
             }
 
-            AddTriangle(v2, left, boundary);
+            AddTriangleUnperturbed(v2, Perturb(left), boundary);
             AddTriangleColor(c2, leftCell.Color, boundaryColor);
+        }
+
+        private Vector3 Perturb(Vector3 position) {
+            Vector4 sample = NoiseGenerator.SampleNoise(position);
+
+            position.x += (sample.x * 2f - 1f) * HexMetrics.CellPerturbStrength;
+            //position.y += (sample.y * 2f - 1f) * HexMetrics.CellPerturbStrength;
+            position.z += (sample.z * 2f - 1f) * HexMetrics.CellPerturbStrength;
+
+            return position;
         }
 
         private void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(vertexOne);
-            Vertices.Add(vertexTwo);
-            Vertices.Add(vertexThree);
+            Vertices.Add(Perturb(vertexOne));
+            Vertices.Add(Perturb(vertexTwo));
+            Vertices.Add(Perturb(vertexThree));
 
             Triangles.Add(vertexIndex);
             Triangles.Add(vertexIndex + 1);
             Triangles.Add(vertexIndex + 2);
+        }
+
+        private void AddTriangleUnperturbed(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
+            int vertexIndex = Vertices.Count;
+
+		    Vertices.Add(vertexOne);
+		    Vertices.Add(vertexTwo);
+		    Vertices.Add(vertexThree);
+
+		    Triangles.Add(vertexIndex);
+		    Triangles.Add(vertexIndex + 1);
+		    Triangles.Add(vertexIndex + 2);
         }
 
         private void AddTriangleColor(Color color) {
@@ -362,10 +365,10 @@ namespace Assets.Simulation.HexMap {
         private void AddQuad(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(vertexOne);
-		    Vertices.Add(vertexTwo);
-		    Vertices.Add(vertexThree);
-		    Vertices.Add(vertexFour);
+            Vertices.Add(Perturb(vertexOne));
+		    Vertices.Add(Perturb(vertexTwo));
+		    Vertices.Add(Perturb(vertexThree));
+		    Vertices.Add(Perturb(vertexFour));
 
 		    Triangles.Add(vertexIndex);
 		    Triangles.Add(vertexIndex + 2);
@@ -388,47 +391,6 @@ namespace Assets.Simulation.HexMap {
 
             Colors.Add(colorTwo);
             Colors.Add(colorTwo);
-        }
-
-        private IHexCell GetCellUnderPosition(Vector3 position) {
-            var pointerRay = Camera.main.ScreenPointToRay(position);
-
-            RaycastHit hit;
-            if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
-                if(hit.collider == Collider) {
-                    var coordinates = HexCoordinates.FromPosition(hit.point);
-                    return Grid.GetCellAtCoordinates(coordinates);
-                }
-            }
-
-            return null;
-        }
-
-        private void TryEmitEnterExitMessages() {
-            if( ShouldEmitEnterExitMessages &&
-                (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
-            ){
-                var cellUnderMouse = GetCellUnderPosition(Input.mousePosition);
-                if(cellUnderMouse != LastCellEntered) {
-                    if(LastCellEntered != null) {
-                        EmitExitMessage(LastCellEntered);
-                    }
-
-                    LastCellEntered = cellUnderMouse;
-
-                    if(LastCellEntered != null) {
-                        EmitEnterMessage(LastCellEntered);
-                    }
-                }
-            }
-        }
-
-        private void EmitEnterMessage(IHexCell cell) {
-            CellSignals.PointerEnterSignal.Fire(LastCellEntered);
-        }
-
-        private void EmitExitMessage(IHexCell cell) {
-            CellSignals.PointerExitSignal.Fire(cell);
         }
 
         #endregion

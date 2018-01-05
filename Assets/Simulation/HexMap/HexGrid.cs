@@ -240,10 +240,11 @@ namespace Assets.Simulation.HexMap {
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
 
-            newCell.Terrain = TerrainType.Grassland;
-            newCell.Shape   = TerrainShape.Flat;
-            newCell.Feature = TerrainFeature.None;
-            newCell.Color   = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
+            newCell.Terrain   = TerrainType.Grassland;
+            newCell.Shape     = TerrainShape.Flat;
+            newCell.Feature   = TerrainFeature.None;
+            newCell.Color     = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
+            newCell.Elevation = 0;
 
             var cellCanvas = newCell.GetComponentInChildren<Canvas>();
 

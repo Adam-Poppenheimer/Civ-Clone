@@ -46,7 +46,11 @@ namespace Assets.Simulation.HexMap {
             set {
                 _elevation = value;
                 var localPosition = transform.localPosition;
+
                 localPosition.y = _elevation * HexMetrics.ElevationStep;
+                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f - 1f) *
+                    HexMetrics.ElevationPerturbStrength;
+
                 transform.localPosition = localPosition;
             }
         }
@@ -61,14 +65,16 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         private ITileResourceLogic ResourceLogic;
+        private INoiseGenerator NoiseGenerator;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITileResourceLogic resourceLogic) {
+        public void InjectDependencies(ITileResourceLogic resourceLogic, INoiseGenerator noiseGenerator) {
             WorkerSlot = new WorkerSlot(resourceLogic.GetYieldOfTile(this));
+            NoiseGenerator = noiseGenerator;
         }
 
         #region from IHexCell

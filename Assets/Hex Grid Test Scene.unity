@@ -1479,6 +1479,7 @@ MonoBehaviour:
   Grid: {fileID: 1225987528}
   Mesh: {fileID: 1402636364}
   Config: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
+  NoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
 --- !u!114 &516329105
 MonoBehaviour:
   m_ObjectHideFlags: 0

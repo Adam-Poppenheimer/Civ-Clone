@@ -231,12 +231,6 @@ MonoBehaviour:
   Width: 10
   Height: 10
   DefaultColor: {r: 1, g: 1, b: 1, a: 1}
-  ColorsOfTerrain:
-  - {r: 0.17352934, g: 0.86764705, b: 0, a: 1}
-  - {r: 1, g: 0.80689657, b: 0, a: 1}
-  - {r: 1, g: 0.974645, b: 0.63235295, a: 1}
-  - {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
-  - {r: 0.125, g: 0.31206912, b: 1, a: 1}
   CellPrefab: {fileID: 114875879364669384, guid: 18e8accca100eb548bc4d8a368598c70,
     type: 2}
   CellLabelPrefab: {fileID: 114997286279715064, guid: ef08c6ad79eba49459d6466abdfbceed,
@@ -1353,9 +1347,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 142608700}
+  - component: {fileID: 142608702}
+  - component: {fileID: 142608705}
   - component: {fileID: 142608704}
   - component: {fileID: 142608703}
-  - component: {fileID: 142608702}
   - component: {fileID: 142608701}
   m_Layer: 0
   m_Name: Hex Mesh
@@ -1441,6 +1436,17 @@ MeshFilter:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 142608699}
   m_Mesh: {fileID: 0}
+--- !u!114 &142608705
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 142608699}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &148974806
 GameObject:
   m_ObjectHideFlags: 0
@@ -5420,7 +5426,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 00f3bfcc9bbb26a4f9ac703d842bb104, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HexGrid: {fileID: 0}
 --- !u!1 &555231674
 GameObject:
   m_ObjectHideFlags: 0
@@ -18149,6 +18154,7 @@ MonoBehaviour:
   Grid: {fileID: 3764550}
   Mesh: {fileID: 142608702}
   Config: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
+  NoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
 --- !u!4 &1903147045
 Transform:
   m_ObjectHideFlags: 0
