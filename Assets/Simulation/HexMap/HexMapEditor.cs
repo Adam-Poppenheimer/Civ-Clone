@@ -12,6 +12,14 @@ namespace Assets.Simulation.HexMap {
 
     public class HexMapEditor : MonoBehaviour {
 
+        #region internal types
+
+        private enum OptionalToggle {
+            Ignore, Yes, No
+        }
+
+        #endregion
+
         #region instance fields and properties
 
         private bool ApplyTerrain;
@@ -25,6 +33,12 @@ namespace Assets.Simulation.HexMap {
         private TerrainFeature ActiveFeature;
 
         private int BrushSize;
+
+        private OptionalToggle RiverMode;
+
+        private bool IsDragging;
+        HexDirection DragDirection;
+        IHexCell PreviousCell;
 
         private IHexGrid HexGrid;
         private ITileConfig TileConfig;
@@ -46,8 +60,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void Update() {
-            if(Input.GetMouseButtonDown(0) && !EventSystem.current.IsPointerOverGameObject()) {
+            if(Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
                 HandleInput();
+            }else {
+                PreviousCell = null;
             }
         }
 
@@ -82,13 +98,37 @@ namespace Assets.Simulation.HexMap {
             HexGrid.ToggleUI(isVisible);
         }
 
+        public void SetRiverMode(int mode) {
+            RiverMode = (OptionalToggle)mode;
+        }
+
         private void HandleInput() {
             var inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
             if(Physics.Raycast(inputRay, out hit) && HexGrid.HasCellAtLocation(hit.point)) {
-                var cellToDraw = HexGrid.GetCellAtLocation(hit.point);
-                EditCells(cellToDraw);                               
+                IHexCell currentCell = HexGrid.GetCellAtLocation(hit.point);
+
+                if(PreviousCell != null && PreviousCell != currentCell){
+                    ValidateDrag(currentCell);
+                }else{
+                    IsDragging = false;
+                }
+
+                EditCells(currentCell);   
+                PreviousCell = currentCell;                            
+            }else {
+                PreviousCell = null;
             }
+        }
+
+        private void ValidateDrag(IHexCell currentCell) {
+            for(DragDirection = HexDirection.NE; DragDirection <= HexDirection.NW; DragDirection++) {
+                if(HexGrid.GetNeighbor(PreviousCell, DragDirection) == currentCell) {
+                    IsDragging = true;
+                    return;
+                }
+            }
+            IsDragging = false;
         }
 
         private void EditCells(IHexCell center) {
@@ -98,6 +138,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void EditCell(IHexCell cell) {
+            if(cell == null) {
+                return;
+            }
+
             if(ApplyTerrain) {
                 cell.Terrain = ActiveTerrain;
                 cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
@@ -110,6 +154,15 @@ namespace Assets.Simulation.HexMap {
 
             if(ApplyFeature) {
                 cell.Feature = ActiveFeature;
+            }
+
+            if(RiverMode == OptionalToggle.No) {
+                cell.RemoveRiver();
+            }else if(IsDragging && RiverMode == OptionalToggle.Yes) {
+                IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
+                if(otherCell != null) {
+                    otherCell.SetOutgoingRiver(DragDirection);
+                }                
             }
         }
 

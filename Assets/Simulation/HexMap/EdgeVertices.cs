@@ -11,7 +11,7 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public Vector3 V1, V2, V3, V4;
+        public Vector3 V1, V2, V3, V4, V5;
 
         #endregion
 
@@ -19,9 +19,18 @@ namespace Assets.Simulation.HexMap {
 
         public EdgeVertices(Vector3 cornerOne, Vector3 cornerTwo) {
             V1 = cornerOne;
-            V2 = Vector3.Lerp(cornerOne, cornerTwo, 1f / 3f);
-            V3 = Vector3.Lerp(cornerOne, cornerTwo, 2f / 3f);
-            V4 = cornerTwo;
+            V2 = Vector3.Lerp(cornerOne, cornerTwo, 0.25f);
+            V3 = Vector3.Lerp(cornerOne, cornerTwo, 0.5f);
+            V4 = Vector3.Lerp(cornerOne, cornerTwo, 0.75f);
+            V5 = cornerTwo;
+        }
+
+        public EdgeVertices(Vector3 cornerOne, Vector3 cornerTwo, float outerStep) {
+            V1 = cornerOne;
+            V2 = Vector3.Lerp(cornerOne, cornerTwo, outerStep);
+            V3 = Vector3.Lerp(cornerOne, cornerTwo, 0.5f);
+            V4 = Vector3.Lerp(cornerOne, cornerTwo, 1f - outerStep);
+            V5 = cornerTwo;
         }
 
         #endregion
@@ -35,6 +44,7 @@ namespace Assets.Simulation.HexMap {
             result.V2 = HexMetrics.TerraceLerp(a.V2, b.V2, step);
             result.V3 = HexMetrics.TerraceLerp(a.V3, b.V3, step);
             result.V4 = HexMetrics.TerraceLerp(a.V4, b.V4, step);
+            result.V5 = HexMetrics.TerraceLerp(a.V5, b.V5, step);
 
             return result;
         }

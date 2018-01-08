@@ -56,12 +56,48 @@ namespace Assets.Simulation.HexMap {
 
                 transform.localPosition = localPosition;
 
+                if(HasOutgoingRiver && Elevation < Grid.GetNeighbor(this, OutgoingRiver).Elevation) {
+                    RemoveOutgoingRiver();
+                }
+
+                if(HasIncomingRiver && Elevation < Grid.GetNeighbor(this, IncomingRiver).Elevation) {
+                    RemoveIncomingRiver();
+                }
+
                 Refresh();
             }
         }
         [SerializeField] private int _elevation = int.MinValue;
 
-        public IWorkerSlot WorkerSlot { get; private set; }
+        public bool HasRiver {
+            get { return HasIncomingRiver || HasOutgoingRiver; }
+        }
+
+        public bool HasRiverBeginOrEnd {
+            get { return HasIncomingRiver != HasOutgoingRiver; }
+        }
+
+        public bool HasIncomingRiver { get; set; }
+
+        public bool HasOutgoingRiver { get; set; }
+
+        public HexDirection IncomingRiver { get; set; }
+
+        public HexDirection OutgoingRiver { get; set; }
+
+        public float StreamBedY {
+            get {
+                return (Elevation + HexMetrics.StreamBedElevationOffset) * HexMetrics.ElevationStep;
+            }
+        }
+
+        public float RiverSurfaceY {
+            get {
+                return (Elevation + HexMetrics.RiverSurfaceElevationOffset) * HexMetrics.ElevationStep;
+            }
+        }
+
+        public IWorkerSlot WorkerSlot { get; set; }
 
         public bool SuppressSlot { get; set; }
 
@@ -121,7 +157,64 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        #endregion
+        public bool HasRiverThroughEdge(HexDirection direction) {
+            return (HasIncomingRiver && IncomingRiver == direction)
+                || (HasOutgoingRiver && OutgoingRiver == direction);
+        }
+
+        public void SetOutgoingRiver(HexDirection direction) {
+            if(HasOutgoingRiver && OutgoingRiver == direction) {
+                return;
+            }
+
+            IHexCell neighbor = Grid.GetNeighbor(this, direction);
+            if(neighbor == null || neighbor.Elevation > Elevation) {
+                return;
+            }
+
+            RemoveOutgoingRiver();
+            if(HasIncomingRiver && IncomingRiver == direction) {
+                RemoveIncomingRiver();
+            }
+
+            HasOutgoingRiver = true;
+            OutgoingRiver = direction;
+            RefreshSelfOnly();
+
+            neighbor.RemoveIncomingRiver();
+            neighbor.HasIncomingRiver = true;
+            neighbor.IncomingRiver = direction.Opposite();
+            neighbor.RefreshSelfOnly();
+        }
+
+        public void RemoveOutgoingRiver() {
+            if(!HasOutgoingRiver) {
+                return;
+            }
+            HasOutgoingRiver = false;
+            RefreshSelfOnly();
+
+            IHexCell neighbor = Grid.GetNeighbor(this, OutgoingRiver);
+            neighbor.HasOutgoingRiver = false;
+            neighbor.RefreshSelfOnly();
+        }
+
+        public void RemoveIncomingRiver() {
+            if(!HasIncomingRiver) {
+                return;
+            }
+            HasIncomingRiver = false;
+            RefreshSelfOnly();
+
+            IHexCell neighbor = Grid.GetNeighbor(this, IncomingRiver);
+            neighbor.HasOutgoingRiver = false;
+            neighbor.RefreshSelfOnly();
+        }
+
+        public void RemoveRiver() {
+            RemoveOutgoingRiver();
+            RemoveIncomingRiver();
+        }
 
         public void Refresh() {
             if(Chunk != null) {
@@ -133,6 +226,12 @@ namespace Assets.Simulation.HexMap {
                 }
             }
         }
+
+        public void RefreshSelfOnly() {
+            Chunk.Refresh();
+        }
+
+        #endregion
 
         #endregion
 

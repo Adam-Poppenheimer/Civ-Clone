@@ -11,8 +11,11 @@ namespace Assets.Simulation.HexMap {
 
         #region static fields and properties
 
+        public const float OuterToInner = 0.866025404f;
+        public const float InnerToOuter = 1f / OuterToInner;
+
         public const float OuterRadius = 10f;
-        public const float InnerRadius = OuterRadius * 0.866025404f;
+        public const float InnerRadius = OuterRadius * OuterToInner;
 
         public const float SolidFactor = 0.8f;
         public const float BlendFactor = 1f - SolidFactor;
@@ -32,6 +35,10 @@ namespace Assets.Simulation.HexMap {
         public const float ElevationPerturbStrength = 1.5f;
 
         public const int ChunkSizeX = 5, ChunkSizeZ = 5;
+
+        public const float StreamBedElevationOffset = -1.75f;
+
+        public const float RiverSurfaceElevationOffset = -0.5f;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
@@ -92,6 +99,10 @@ namespace Assets.Simulation.HexMap {
                 return HexEdgeType.Cliff;
             }
         }
+
+        public static Vector3 GetSolidEdgeMiddle(HexDirection direction) {
+            return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f * SolidFactor;
+        } 
 
         #endregion
 
