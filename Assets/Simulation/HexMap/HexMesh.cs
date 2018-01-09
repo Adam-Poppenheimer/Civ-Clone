@@ -10,7 +10,7 @@ using Zenject;
 
 namespace Assets.Simulation.HexMap {
 
-    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer), typeof(MeshCollider))]
+    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class HexMesh : MonoBehaviour {
 
         #region instance fields and properties

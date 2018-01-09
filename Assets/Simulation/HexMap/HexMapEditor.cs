@@ -34,7 +34,7 @@ namespace Assets.Simulation.HexMap {
 
         private int BrushSize;
 
-        private OptionalToggle RiverMode;
+        private OptionalToggle RiverMode, RoadMode;
 
         private bool IsDragging;
         HexDirection DragDirection;
@@ -102,6 +102,10 @@ namespace Assets.Simulation.HexMap {
             RiverMode = (OptionalToggle)mode;
         }
 
+        public void SetRoadMode(int mode) {
+            RoadMode = (OptionalToggle)mode;
+        }
+
         private void HandleInput() {
             var inputRay = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit hit;
@@ -123,7 +127,9 @@ namespace Assets.Simulation.HexMap {
 
         private void ValidateDrag(IHexCell currentCell) {
             for(DragDirection = HexDirection.NE; DragDirection <= HexDirection.NW; DragDirection++) {
-                if(HexGrid.GetNeighbor(PreviousCell, DragDirection) == currentCell) {
+                if( HexGrid.HasNeighbor(PreviousCell, DragDirection) &&
+                    HexGrid.GetNeighbor(PreviousCell, DragDirection) == currentCell
+                ){
                     IsDragging = true;
                     return;
                 }
@@ -158,10 +164,19 @@ namespace Assets.Simulation.HexMap {
 
             if(RiverMode == OptionalToggle.No) {
                 cell.RemoveRiver();
-            }else if(IsDragging && RiverMode == OptionalToggle.Yes) {
+            }
+            if(RoadMode == OptionalToggle.No) {
+                cell.RemoveRoads();
+            }
+            if(IsDragging) {
                 IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
                 if(otherCell != null) {
-                    otherCell.SetOutgoingRiver(DragDirection);
+                    if(RiverMode == OptionalToggle.Yes) {
+                        otherCell.SetOutgoingRiver(DragDirection);
+                    }
+                    if(RoadMode == OptionalToggle.Yes) {
+                        otherCell.AddRoad(DragDirection);
+                    }
                 }                
             }
         }

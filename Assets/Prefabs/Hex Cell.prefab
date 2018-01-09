@@ -98,6 +98,7 @@ MonoBehaviour:
   _shape: 0
   _feature: 0
   _elevation: 0
+  Roads: 000000000000
 --- !u!114 &114935352165385794
 MonoBehaviour:
   m_ObjectHideFlags: 1

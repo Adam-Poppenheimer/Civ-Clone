@@ -31,8 +31,12 @@ namespace Assets.Simulation.HexMap {
         HexDirection IncomingRiver { get; set; }
         HexDirection OutgoingRiver { get; set; }
 
+        HexDirection RiverBeginOrEndDirection { get; }
+
         float StreamBedY { get; }
         float RiverSurfaceY { get; }
+
+        bool HasRoads { get; }
 
         Color Color { get; set; }
 
@@ -56,6 +60,14 @@ namespace Assets.Simulation.HexMap {
         void RemoveIncomingRiver();
 
         void RemoveRiver();
+
+        bool HasRoadThroughEdge(HexDirection direction);
+
+        void AddRoad(HexDirection direction);
+
+        void RemoveRoads();
+
+        int GetElevationDifference(HexDirection direction);
 
         void Refresh();
         void RefreshSelfOnly();
