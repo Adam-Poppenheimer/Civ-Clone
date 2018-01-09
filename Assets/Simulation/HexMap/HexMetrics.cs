@@ -30,7 +30,7 @@ namespace Assets.Simulation.HexMap {
 
         public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
 
-        public const float CellPerturbStrength = 4f;
+        public const float CellPerturbStrength = 0f;//4f;
 
         public const float ElevationPerturbStrength = 1.5f;
 
@@ -38,7 +38,10 @@ namespace Assets.Simulation.HexMap {
 
         public const float StreamBedElevationOffset = -1.75f;
 
-        public const float RiverSurfaceElevationOffset = -0.5f;
+        public const float WaterElevationOffset = -0.5f;
+
+        public const float WaterFactor = 0.6f;
+        public const float WaterBlendFactor = 1f - WaterFactor;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
@@ -102,7 +105,19 @@ namespace Assets.Simulation.HexMap {
 
         public static Vector3 GetSolidEdgeMiddle(HexDirection direction) {
             return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f * SolidFactor;
-        } 
+        }
+
+        public static Vector3 GetFirstWaterCorner(HexDirection direction) {
+            return Corners[(int)direction] * WaterFactor;
+        }
+
+        public static Vector3 GetSecondWaterCorner(HexDirection direction) {
+            return Corners[(int)direction + 1] * WaterFactor;
+        }
+
+        public static Vector3 GetWaterBridge(HexDirection direction) {
+            return (Corners[(int)direction] + Corners[(int)direction + 1]) * WaterBlendFactor;
+        }
 
         #endregion
 

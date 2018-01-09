@@ -58,13 +58,7 @@ namespace Assets.Simulation.HexMap {
 
                 transform.localPosition = localPosition;
 
-                if(HasOutgoingRiver && Elevation < Grid.GetNeighbor(this, OutgoingRiver).Elevation) {
-                    RemoveOutgoingRiver();
-                }
-
-                if(HasIncomingRiver && Elevation > Grid.GetNeighbor(this, IncomingRiver).Elevation) {
-                    RemoveIncomingRiver();
-                }
+                ValidateRivers();
 
                 foreach(var direction in EnumUtil.GetValues<HexDirection>()){
                     if(Roads[(int)direction] && GetElevationDifference(direction) > 1){
@@ -107,12 +101,36 @@ namespace Assets.Simulation.HexMap {
 
         public float RiverSurfaceY {
             get {
-                return (Elevation + HexMetrics.RiverSurfaceElevationOffset) * HexMetrics.ElevationStep;
+                return (Elevation + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
             }
         }
 
         public bool HasRoads {
             get { return Roads.Contains(true); }
+        }
+
+        public int WaterLevel {
+            get { return _waterLevel; }
+            set {
+                if(_waterLevel == value) {
+                    return;
+                }
+
+                _waterLevel = value;
+                ValidateRivers();
+                Refresh();
+            }
+        }
+        private int _waterLevel;
+
+        public bool IsUnderwater {
+            get { return WaterLevel > Elevation; }
+        }
+
+        public float WaterSurfaceY {
+            get {
+                return (WaterLevel + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
+            }
         }
 
         public IWorkerSlot WorkerSlot { get; set; }
@@ -196,7 +214,7 @@ namespace Assets.Simulation.HexMap {
             }
 
             IHexCell neighbor = Grid.GetNeighbor(this, direction);
-            if(neighbor == null || neighbor.Elevation > Elevation) {
+            if(!IsValidRiverDestination(neighbor)) {
                 return;
             }
 
@@ -245,6 +263,11 @@ namespace Assets.Simulation.HexMap {
             RemoveIncomingRiver();
         }
 
+        public bool IsValidRiverDestination(IHexCell neighbor) {
+            return neighbor != null
+                && (Elevation >= neighbor.Elevation || WaterLevel == neighbor.Elevation);
+        }
+
         public bool HasRoadThroughEdge(HexDirection direction) {
             return Roads[(int)direction];
         }
@@ -271,6 +294,20 @@ namespace Assets.Simulation.HexMap {
                 return Math.Abs(Elevation - neighbor.Elevation);
             }else {
                 return 0;
+            }
+        }
+
+        private void ValidateRivers() {
+            if( HasOutgoingRiver &&
+                !IsValidRiverDestination(Grid.GetNeighbor(this, OutgoingRiver))
+            ) {
+                RemoveOutgoingRiver();
+            }
+
+            if( HasIncomingRiver &&
+                !Grid.GetNeighbor(this, IncomingRiver).IsValidRiverDestination(this)
+            ) {
+                RemoveIncomingRiver();
             }
         }
 

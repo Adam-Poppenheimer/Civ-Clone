@@ -18,6 +18,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private bool UseCollider;
         [SerializeField] private bool UseColors;
         [SerializeField] private bool UseUVCoordinates;
+        [SerializeField] private bool UseUV2Coordinates;
 
         private Mesh ManagedMesh;
         public MeshCollider Collider { get; private set; }
@@ -26,6 +27,7 @@ namespace Assets.Simulation.HexMap {
         [NonSerialized] private List<int>     Triangles;
         [NonSerialized] private List<Color>   Colors;
         [NonSerialized] private List<Vector2> UVs;
+        [NonSerialized] private List<Vector2> UV2s;
 
         private INoiseGenerator NoiseGenerator;
 
@@ -63,6 +65,10 @@ namespace Assets.Simulation.HexMap {
             if(UseUVCoordinates) {
                 UVs = ListPool<Vector2>.Get();
             }
+
+            if(UseUV2Coordinates) {
+                UV2s = ListPool<Vector2>.Get();
+            }
         }
 
         public void Apply() {
@@ -80,6 +86,11 @@ namespace Assets.Simulation.HexMap {
             if(UseUVCoordinates) {
                 ManagedMesh.SetUVs(0, UVs);
                 ListPool<Vector2>.Add(UVs);
+            }
+
+            if(UseUV2Coordinates) {
+                ManagedMesh.SetUVs(1, UV2s);
+                ListPool<Vector2>.Add(UV2s);
             }
 
             ManagedMesh.RecalculateNormals();
@@ -141,6 +152,22 @@ namespace Assets.Simulation.HexMap {
 		    Triangles.Add(vertexIndex + 3);
         }
 
+        public void AddQuadUnperturbed(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour) {
+            int vertexIndex = Vertices.Count;
+
+            Vertices.Add(vertexOne);
+		    Vertices.Add(vertexTwo);
+		    Vertices.Add(vertexThree);
+		    Vertices.Add(vertexFour);
+
+		    Triangles.Add(vertexIndex);
+		    Triangles.Add(vertexIndex + 2);
+		    Triangles.Add(vertexIndex + 1);
+		    Triangles.Add(vertexIndex + 1);
+		    Triangles.Add(vertexIndex + 2);
+		    Triangles.Add(vertexIndex + 3);
+        }
+
         public void AddQuadColor(Color colorOne, Color colorTwo, Color colorThree, Color colorFour) {
             Colors.Add(colorOne);
             Colors.Add(colorTwo);
@@ -181,6 +208,26 @@ namespace Assets.Simulation.HexMap {
             UVs.Add(new Vector2(uMax, vMin));
             UVs.Add(new Vector2(uMin, vMax));
             UVs.Add(new Vector2(uMax, vMax));
+        }
+
+        public void AddTriangleUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3) {
+            UV2s.Add(uv1);
+            UV2s.Add(uv2);
+            UV2s.Add(uv3);
+        }
+
+        public void AddQuadUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4) {
+            UV2s.Add(uv1);
+            UV2s.Add(uv2);
+            UV2s.Add(uv3);
+            UV2s.Add(uv4);
+        }
+
+        public void AddQuadUV2(float uMin, float uMax, float vMin, float vMax) {
+            UV2s.Add(new Vector2(uMin, vMin));
+            UV2s.Add(new Vector2(uMax, vMin));
+            UV2s.Add(new Vector2(uMin, vMax));
+            UV2s.Add(new Vector2(uMax, vMax));
         }
 
         #endregion

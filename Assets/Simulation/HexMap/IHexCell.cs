@@ -38,6 +38,12 @@ namespace Assets.Simulation.HexMap {
 
         bool HasRoads { get; }
 
+        int WaterLevel { get; set; }
+
+        float WaterSurfaceY { get; }
+
+        bool IsUnderwater { get; }
+
         Color Color { get; set; }
 
         IWorkerSlot WorkerSlot { get; }
@@ -60,6 +66,8 @@ namespace Assets.Simulation.HexMap {
         void RemoveIncomingRiver();
 
         void RemoveRiver();
+
+        bool IsValidRiverDestination(IHexCell neighbor);
 
         bool HasRoadThroughEdge(HexDirection direction);
 

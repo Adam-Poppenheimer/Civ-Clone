@@ -124,7 +124,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         public IHexCell GetNeighbor(IHexCell center, HexDirection direction) {
-            return GetCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
+            if(HasNeighbor(center, direction)) {
+                return GetCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
+            }else {
+                return null;
+            }            
         }
 
         public int GetDistance(IHexCell cellOne, IHexCell cellTwo) {

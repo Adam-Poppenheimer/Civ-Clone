@@ -23,14 +23,12 @@ namespace Assets.Simulation.HexMap {
         #region instance fields and properties
 
         private bool ApplyTerrain;
-        private bool ApplyShape;
-        private bool ApplyFeature;
+        private bool ApplyElevation;
+        private bool ApplyWaterLevel;
 
         private TerrainType ActiveTerrain;
-
-        private TerrainShape ActiveShape;
-
-        private TerrainFeature ActiveFeature;
+        private int         ActiveElevation;
+        private int         ActiveWaterLevel;
 
         private int BrushSize;
 
@@ -76,18 +74,20 @@ namespace Assets.Simulation.HexMap {
             }            
         }
 
-        public void SelectShape(int index) {
-            ApplyShape = index >= 0;
-            if(ApplyShape) {
-                ActiveShape = (TerrainShape)index;
-            }
+        public void SetApplyElevation(bool toggle) {
+            ApplyElevation = toggle;
         }
 
-        public void SelectFeature(int index) {
-            ApplyFeature = index >= 0;
-            if(ApplyFeature) {
-                ActiveFeature = (TerrainFeature)index;
-            }            
+        public void SetActiveElevation(float level) {
+            ActiveElevation = (int)level;
+        }
+
+        public void SetApplyWaterLevel(bool toggle) {
+            ApplyWaterLevel = toggle;
+        }
+
+        public void SetWaterLevel(float level) {
+            ActiveWaterLevel = (int)level;
         }
 
         public void SelectBrushSize(float size) {
@@ -153,13 +153,12 @@ namespace Assets.Simulation.HexMap {
                 cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
             }
 
-            if(ApplyShape) {
-                cell.Shape = ActiveShape;
-                cell.Elevation = TileConfig.ElevationsOfShapes[(int)cell.Shape];
+            if(ApplyElevation) {
+                cell.Elevation = ActiveElevation;
             }
 
-            if(ApplyFeature) {
-                cell.Feature = ActiveFeature;
+            if(ApplyWaterLevel) {
+                cell.WaterLevel = ActiveWaterLevel;
             }
 
             if(RiverMode == OptionalToggle.No) {
@@ -168,7 +167,7 @@ namespace Assets.Simulation.HexMap {
             if(RoadMode == OptionalToggle.No) {
                 cell.RemoveRoads();
             }
-            if(IsDragging) {
+            if(IsDragging && HexGrid.HasNeighbor(cell, DragDirection.Opposite())) {
                 IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
                 if(otherCell != null) {
                     if(RiverMode == OptionalToggle.Yes) {
