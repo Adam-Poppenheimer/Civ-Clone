@@ -22,6 +22,8 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh WaterShore;
         [SerializeField] private HexMesh Estuaries;
 
+        [SerializeField] private HexFeatureManager Features;
+
         private IHexGrid Grid;
 
         private INoiseGenerator NoiseGenerator;
@@ -65,6 +67,7 @@ namespace Assets.Simulation.HexMap {
             Water     .Clear();
             WaterShore.Clear();
             Estuaries .Clear();
+            Features  .Clear();
 
             for(int i = 0; i < Cells.Length; ++i) {
                 Triangulate(Cells[i]);
@@ -76,12 +79,17 @@ namespace Assets.Simulation.HexMap {
             Water     .Apply();
             WaterShore.Apply();
             Estuaries .Apply();
+            Features  .Apply();
         }
 
         private void Triangulate(HexCell cell) {
             for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
                 Triangulate(direction, cell);
             }
+
+            if(!cell.IsUnderwater && !cell.HasRiver && !cell.HasRoads) {
+                Features.AddFeature(cell.transform.localPosition);
+            }            
         }
 
         private void Triangulate(HexDirection direction, HexCell cell) {
@@ -104,6 +112,10 @@ namespace Assets.Simulation.HexMap {
                 }
             }else {
                 TriangulateWithoutRiver(direction, cell, center, edge);
+
+                if(!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction)) {
+                    Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f));
+                }
             }            
 
             if(direction <= HexDirection.SE) {
@@ -257,6 +269,10 @@ namespace Assets.Simulation.HexMap {
 
             TriangulateEdgeStrip(middle, cell.Color, e, cell.Color);
             TriangulateEdgeFan(center, middle, cell.Color);
+
+            if(!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction)) {
+                Features.AddFeature((center + e.V1 + e.V5) * (1f / 3f));
+            }
         }
 
         private void TriangulateConnection(

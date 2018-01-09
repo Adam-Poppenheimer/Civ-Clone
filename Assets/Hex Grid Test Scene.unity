@@ -2783,6 +2783,7 @@ MonoBehaviour:
   Mesh: {fileID: 0}
   Config: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
   NoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
+  RandomSeed: 2536
 --- !u!114 &516329105
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5419,8 +5420,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3e14ad4149ced4db3bc876c9487ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _chunkCountX: 1
-  _chunkCountZ: 1
+  _chunkCountX: 4
+  _chunkCountZ: 3
   DefaultColor: {r: 1, g: 1, b: 1, a: 1}
   CellPrefab: {fileID: 114875879364669384, guid: 18e8accca100eb548bc4d8a368598c70,
     type: 2}

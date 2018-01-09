@@ -10,6 +10,8 @@ namespace Assets.Simulation.HexMap {
 
         Vector3 Perturb(Vector3 position);
 
+        HexHash SampleHashGrid(Vector3 position);
+
         #endregion
 
     }

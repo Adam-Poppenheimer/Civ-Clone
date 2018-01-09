@@ -21,6 +21,8 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private Texture2D NoiseSource;
 
+        [SerializeField] private int RandomSeed;
+
         #endregion
 
         #region instance methods
@@ -37,6 +39,8 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
 
             Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
+            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(RandomSeed);
+
             Container.Bind<INoiseGenerator>().To<NoiseGenerator>().AsSingle();
 
             Container.DeclareSignal<CellClickedSignal>();

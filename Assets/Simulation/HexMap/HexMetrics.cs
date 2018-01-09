@@ -30,7 +30,7 @@ namespace Assets.Simulation.HexMap {
 
         public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
 
-        public const float CellPerturbStrength = 0f;//4f;
+        public const float CellPerturbStrength = 4f;
 
         public const float ElevationPerturbStrength = 1.5f;
 
