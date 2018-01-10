@@ -111,12 +111,8 @@ namespace Assets.UI.Units {
                 }else {
                     ProspectivePath = Grid.GetShortestPathBetween(
                         unitLocation, ProspectiveTravelGoal, 
-                        delegate(IHexCell tileInMap) {
-                            if(PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, tileInMap)) {
-                               return  TerrainCostLogic.GetCostToMoveUnitIntoTile(ObjectToDisplay, tileInMap);
-                            }else {
-                                return -1;
-                            }
+                        delegate(IHexCell currentCell, IHexCell nextCell) {
+                            return TerrainCostLogic.GetTraversalCostForUnit(ObjectToDisplay, currentCell, nextCell);
                         }
                     );
                 }                

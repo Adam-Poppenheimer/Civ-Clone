@@ -83,6 +83,7 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
+            IHexCell currentTile = PositionCanon.GetOwnerOfPossession(this);
             IHexCell tileToTravelTo = null;
 
             while(CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0) {
@@ -96,8 +97,9 @@ namespace Assets.Simulation.Units {
                 CurrentPath.RemoveAt(0);
 
                 CurrentMovement = Math.Max(0,
-                    CurrentMovement - TerrainCostLogic.GetCostToMoveUnitIntoTile(this, tileToTravelTo)
+                    CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentTile, tileToTravelTo)
                 );
+                currentTile = tileToTravelTo;
             }
 
             if(tileToTravelTo != null) {

@@ -10,39 +10,123 @@ using Moq;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
 
 namespace Assets.Tests.Simulation.Units {
 
     [TestFixture]
     public class UnitTerrainCostLogicTests : ZenjectUnitTestFixture {
 
+        #region internal types
+
+        public struct TestData {
+
+            public TerrainType NextCellTerrain;
+            public TerrainFeature NextCellFeature;
+            public int NextCellElevation;
+            public bool NextCellIsUnderwater;
+
+            public int CurrentCellElevation;
+
+            public bool UnitIsAquatic;
+
+            public bool NextHasCity;
+
+        }
+
+        #endregion
+
         #region static fields and properties
 
         private static IEnumerable TestCases {
             get {
-                yield return new TestCaseData(TerrainType.Grassland,    TerrainShape.Flat, TerrainFeature.None).SetName("Grassland/Flat/None")   .Returns(1);
-                yield return new TestCaseData(TerrainType.Plains,       TerrainShape.Flat, TerrainFeature.None).SetName("Plains/Flat/None")      .Returns(1);
-                yield return new TestCaseData(TerrainType.Desert,       TerrainShape.Flat, TerrainFeature.None).SetName("Desert/Flat/None")      .Returns(1);
-                yield return new TestCaseData(TerrainType.ShallowWater, TerrainShape.Flat, TerrainFeature.None).SetName("ShallowWater/Flat/None").Returns(1);
-                yield return new TestCaseData(TerrainType.DeepWater,    TerrainShape.Flat, TerrainFeature.None).SetName("DeepWater/Flat/None")   .Returns(2);
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 0,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = false
+                }).Returns(1).SetName("Non-aquatic into empty grassland, no elevation change, no water");
 
-                yield return new TestCaseData(TerrainType.Grassland,    TerrainShape.Hills, TerrainFeature.None).SetName("Grassland/Hills/None")   .Returns(2);
-                yield return new TestCaseData(TerrainType.Plains,       TerrainShape.Hills, TerrainFeature.None).SetName("Plains/Hills/None")      .Returns(2);
-                yield return new TestCaseData(TerrainType.Desert,       TerrainShape.Hills, TerrainFeature.None).SetName("Desert/Hills/None")      .Returns(2);
-                yield return new TestCaseData(TerrainType.ShallowWater, TerrainShape.Hills, TerrainFeature.None).SetName("ShallowWater/Hills/None").Returns(1);
-                yield return new TestCaseData(TerrainType.DeepWater,    TerrainShape.Hills, TerrainFeature.None).SetName("DeepWater/Hills/None")   .Returns(2);
-                 
-                yield return new TestCaseData(TerrainType.Grassland,    TerrainShape.Flat, TerrainFeature.Forest).SetName("Grassland/Flat/Forest")   .Returns(2);
-                yield return new TestCaseData(TerrainType.Plains,       TerrainShape.Flat, TerrainFeature.Forest).SetName("Plains/Flat/Forest")      .Returns(2);
-                yield return new TestCaseData(TerrainType.Desert,       TerrainShape.Flat, TerrainFeature.Forest).SetName("Desert/Flat/Forest")      .Returns(2);
-                yield return new TestCaseData(TerrainType.ShallowWater, TerrainShape.Flat, TerrainFeature.Forest).SetName("ShallowWater/Flat/Forest").Returns(1);
-                yield return new TestCaseData(TerrainType.DeepWater,    TerrainShape.Flat, TerrainFeature.Forest).SetName("DeepWater/Flat/Forest")   .Returns(2);
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 0,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = true
+                }).Returns(-1).SetName("Aquatic into empty grassland, no water");
 
-                yield return new TestCaseData(TerrainType.Grassland,    TerrainShape.Hills, TerrainFeature.Forest).SetName("Grassland/Hills/Forest")   .Returns(3);
-                yield return new TestCaseData(TerrainType.Plains,       TerrainShape.Hills, TerrainFeature.Forest).SetName("Plains/Hills/Forest")      .Returns(3);
-                yield return new TestCaseData(TerrainType.Desert,       TerrainShape.Hills, TerrainFeature.Forest).SetName("Desert/Hills/Forest")      .Returns(3);
-                yield return new TestCaseData(TerrainType.ShallowWater, TerrainShape.Hills, TerrainFeature.Forest).SetName("ShallowWater/Hills/Forest").Returns(1);
-                yield return new TestCaseData(TerrainType.DeepWater,    TerrainShape.Hills, TerrainFeature.Forest).SetName("DeepWater/Hills/Forest")   .Returns(2);
+                yield return new TestCaseData(new TestData() {
+                    NextCellIsUnderwater = true,
+                    UnitIsAquatic        = false
+                }).Returns(-1).SetName("Non-aquatic into underwater tile");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellIsUnderwater = true,
+                    UnitIsAquatic        = true
+                }).Returns(1).SetName("Aquatic into underwater tile");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellIsUnderwater = false,
+                    UnitIsAquatic        = true,
+                    NextHasCity          = true
+                }).Returns(1).SetName("Aquatic into land tile with city");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.Forest,
+                    NextCellElevation    = 0,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = false
+                }).Returns(2).SetName("Non-aquatic into forested grassland, no elevation change, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 1,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = false
+                }).Returns(3).SetName("Non-aquatic into empty grassland, elevation increase of 1, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 2,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = false
+                }).Returns(-1).SetName("Non-aquatic into empty grassland, elevation increase of 2, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 0,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 1,
+                    UnitIsAquatic        = false
+                }).Returns(1).SetName("Non-aquatic into empty grassland, elevation decrease of 1, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.None,
+                    NextCellElevation    = 0,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 2,
+                    UnitIsAquatic        = false
+                }).Returns(-1).SetName("Non-aquatic into empty grassland, elevation decrease of 2, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    NextCellTerrain      = TerrainType.Grassland,
+                    NextCellFeature      = TerrainFeature.Forest,
+                    NextCellElevation    = 1,
+                    NextCellIsUnderwater = false,
+                    CurrentCellElevation = 0,
+                    UnitIsAquatic        = false
+                }).Returns(4).SetName("Non-aquatic into forest, elevation increase of 1, no water");
             }
         }
 
@@ -52,6 +136,10 @@ namespace Assets.Tests.Simulation.Units {
 
         private Mock<IHexGridConfig> MockConfig;
 
+        private Mock<ICityFactory> MockCityFactory;
+
+        private List<ICity> AllCities = new List<ICity>();
+
         #endregion
 
         #region instance methods
@@ -60,17 +148,22 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig = new Mock<IHexGridConfig>();
+            AllCities.Clear();
 
-            MockConfig.Setup(config => config.GrasslandMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.PlainsMoveCost)      .Returns(1);
-            MockConfig.Setup(config => config.DesertMoveCost)      .Returns(1);
-            MockConfig.Setup(config => config.ShallowWaterMoveCost).Returns(1);
-            MockConfig.Setup(config => config.DeepWaterMoveCost)   .Returns(2);
-            MockConfig.Setup(config => config.HillsMoveCost)       .Returns(1);
-            MockConfig.Setup(config => config.ForestMoveCost)      .Returns(1);
+            MockConfig      = new Mock<IHexGridConfig>();
+            MockCityFactory = new Mock<ICityFactory>();
+
+            MockConfig.Setup(config => config.GrasslandMoveCost).Returns(1);
+            MockConfig.Setup(config => config.PlainsMoveCost)   .Returns(1);
+            MockConfig.Setup(config => config.DesertMoveCost)   .Returns(1);
+            MockConfig.Setup(config => config.ForestMoveCost)   .Returns(1);
+            MockConfig.Setup(config => config.WaterMoveCost)    .Returns(1);
+            MockConfig.Setup(config => config.SlopeMoveCost)    .Returns(2);
+
+            MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
             Container.Bind<IHexGridConfig>().FromInstance(MockConfig.Object);
+            Container.Bind<ICityFactory>  ().FromInstance(MockCityFactory.Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -79,41 +172,74 @@ namespace Assets.Tests.Simulation.Units {
 
         #region tests
 
-        [Test(Description = "GetCostToMoveUnitIntoTile should consider only the properties of " +
-            "the tile in question, summing up the movement costs of the terrain, shape and features " +
-            "as defined in ITileConfig")]
+        [Test(Description = "GetTraversalCostForUnit should consider the terrain and features of NextCell, " +
+            "as well as whether that cell is underwater, to determine unit traversal. It should also consider " +
+            "the EdgeType between currentCell and nextCell and whether the argued unit is aquatic or not")]
         [TestCaseSource("TestCases")]
-        public int GetCostToMoveUnitIntoTile_ConsidersTileCosts(
-            TerrainType terrain, TerrainShape shape, TerrainFeature feature
-        ){
-            var tile = BuildTile(terrain, shape, feature);
-            var unit = BuildUnit();
+        public int GetTraversalCostForUnitTests(TestData data){
+            var currentCell = BuildCell(
+                TerrainType.Grassland, TerrainFeature.None,
+                data.CurrentCellElevation, false
+            );
+
+            var nextCell = BuildCell(
+                data.NextCellTerrain, data.NextCellFeature,
+                data.NextCellElevation, data.NextCellIsUnderwater
+            );
+
+            var unit = BuildUnit(data.UnitIsAquatic);
+
+            if(data.NextHasCity) {
+                BuildCity(nextCell);
+            }
 
             var costLogic = Container.Resolve<UnitTerrainCostLogic>();
 
-            return costLogic.GetCostToMoveUnitIntoTile(unit, tile);
+            return costLogic.GetTraversalCostForUnit(unit, currentCell, nextCell);
         }
 
         #endregion
 
         #region utilities
 
-        private IHexCell BuildTile(TerrainType terrain, TerrainShape shape, TerrainFeature feature) {
-            var mockTile = new Mock<IHexCell>();
+        private IHexCell BuildCell(
+            TerrainType terrain, TerrainFeature feature,
+            int elevation, bool isUnderwater
+        ){
+            var mockCell = new Mock<IHexCell>();
 
-            mockTile.SetupAllProperties();
+            mockCell.SetupAllProperties();
+            mockCell.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
 
-            var newTile = mockTile.Object;
+            var newCell = mockCell.Object;
 
-            newTile.Terrain = terrain;
-            newTile.Shape = shape;
-            newTile.Feature = feature;
+            newCell.Terrain = terrain;
+            newCell.Shape   = TerrainShape.Flat;
+            newCell.Feature = feature;
+            newCell.Elevation = elevation;
 
-            return newTile;
+            return newCell;
         }
 
-        private IUnit BuildUnit() {
-            return new Mock<IUnit>().Object;
+        private IUnit BuildUnit(bool isAquatic) {
+            var unitMock = new Mock<IUnit>();
+
+            var mockTemplate = new Mock<IUnitTemplate>();
+            mockTemplate.Setup(template => template.IsAquatic).Returns(isAquatic);
+
+            unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+
+            return unitMock.Object;
+        }
+
+        private ICity BuildCity(IHexCell location) {
+            var mockCity = new Mock<ICity>();
+
+            mockCity.Setup(city => city.Location).Returns(location);
+
+            AllCities.Add(mockCity.Object);
+
+            return mockCity.Object;
         }
 
         #endregion

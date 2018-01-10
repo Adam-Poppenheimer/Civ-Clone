@@ -54,6 +54,13 @@ namespace Assets.Simulation.Units {
 
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
             possession.gameObject.transform.SetParent(newOwner != null ? newOwner.transform : null, false);
+
+            if(newOwner != null && newOwner.IsUnderwater) {
+                var unitLocation = possession.gameObject.transform.localPosition;
+                unitLocation.y = newOwner.WaterSurfaceY;
+                possession.gameObject.transform.localPosition = unitLocation;
+            }
+
             Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IHexCell>(possession, newOwner));
         }
 
@@ -62,10 +69,8 @@ namespace Assets.Simulation.Units {
         public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location) {
             if(location == null) {
                 return true;
-            }else if(type == UnitType.WaterMilitary || type == UnitType.WaterCivilian) {
-                return IsValidForWaterUnit(location) && !AlreadyHasUnitOfType(location, type);
             }else {
-                return IsValidForLandUnit(location) && !AlreadyHasUnitOfType(location, type);
+                return !AlreadyHasUnitOfType(location, type);
             }
         }
 

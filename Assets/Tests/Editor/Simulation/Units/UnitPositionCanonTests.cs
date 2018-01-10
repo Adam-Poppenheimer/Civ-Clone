@@ -58,31 +58,6 @@ namespace Assets.Tests.Simulation.Units {
             }
         }
 
-        private static IEnumerable TerrainConsiderationCases {
-            get {
-                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.ShallowWater).Returns(false).SetName("No Land Military on Shallow Water");
-                yield return new TestCaseData(UnitType.LandMilitary, TerrainType.DeepWater   ).Returns(false).SetName("No Land Military on Deep Water");
-                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.ShallowWater).Returns(false).SetName("No Land Civilian on Shallow Water");
-                yield return new TestCaseData(UnitType.LandCivilian, TerrainType.DeepWater   ).Returns(false).SetName("No Land Civilian on Deep Water");
-
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Grassland).Returns(false).SetName("No Water Military on Grassland");
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Plains   ).Returns(false).SetName("No Water Military on Plains");
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.Desert   ).Returns(false).SetName("No Water Military on Desert");
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Grassland).Returns(false).SetName("No Water Civilian on Grassland");
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Plains   ).Returns(false).SetName("No Water Civilian on Plains");
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.Desert   ).Returns(false).SetName("No Water Civilian on Desert");
-            }
-        }
-
-        private static IEnumerable ShapeConsiderationCases {
-            get {
-                yield return new TestCaseData(UnitType.LandMilitary,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false).SetName("No Land Military on Mountains");
-                yield return new TestCaseData(UnitType.LandCivilian,  TerrainType.Grassland, TerrainShape.Mountains).Returns(false).SetName("No Land Civilian on Mountains");
-                yield return new TestCaseData(UnitType.WaterMilitary, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false).SetName("No Water Military on Mountains");
-                yield return new TestCaseData(UnitType.WaterCivilian, TerrainType.DeepWater, TerrainShape.Mountains).Returns(false).SetName("No Water Civilian on Mountains");
-            }
-        }
-
         #endregion
 
         #region instance fields and properties
@@ -149,53 +124,6 @@ namespace Assets.Tests.Simulation.Units {
 
             Assert.IsFalse(positionCanon.CanChangeOwnerOfPossession(consideredUnit, location),
                 "CanChangeOwnerOfPossession falsely permitted the repositioning of consideredUnit");
-        }
-
-        [Test(Description = "CanChangeOwnerOfPossession should not permit the placement of " + 
-            "any land unit on any water terrain, nor the placement of any water unit on any " +
-            "land terrain")]
-        [TestCaseSource("TerrainConsiderationCases")]
-        public bool CanChangeOwnerOfPossession_ConsidersTerrain(UnitType unitType, TerrainType terrain) {
-            var unit = BuildUnit(unitType.ToString(), unitType);
-            var tile = BuildTile(terrain, TerrainShape.Flat, TerrainFeature.None);
-
-            var positionCanon = Container.Resolve<UnitPositionCanon>();
-
-            return positionCanon.CanChangeOwnerOfPossession(unit, tile);
-        }
-
-        [Test(Description = "CanChangeOwnerOfPossession should not permit the placement of " +
-            "any unit on a tile whose shape is Mountains")]
-        [TestCaseSource("ShapeConsiderationCases")]
-        public bool CanChangeOwnerOfPossession_ConsidersShape(UnitType unitType, TerrainType terrain,
-            TerrainShape shape
-        ){
-            var unit = BuildUnit(unitType.ToString(), unitType);
-            var tile = BuildTile(terrain, shape, TerrainFeature.None);
-
-            var positionCanon = Container.Resolve<UnitPositionCanon>();
-
-            return positionCanon.CanChangeOwnerOfPossession(unit, tile);
-        }
-
-        [Test(Description = "CanChangeOwnerOfPossession should permit water units to go on " +
-            "any tile with a city, even if that tile is a land tile")]
-        public void CanChangeOwnerOfPossession_WaterCanGoOnCity() {
-            var waterMilitary = BuildUnit("Water Military", UnitType.WaterMilitary);
-            var waterCivilian = BuildUnit("Water Civilian", UnitType.WaterMilitary);
-
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
-            BuildCity(location);
-
-            var positionCanon = Container.Resolve<UnitPositionCanon>();
-
-            Assert.IsTrue(positionCanon.CanChangeOwnerOfPossession(waterMilitary, location),
-                "CanChangeOwnerOfPossession failed to permit a Water Military unit from " +
-                "moving onto a city");
-
-            Assert.IsTrue(positionCanon.CanChangeOwnerOfPossession(waterCivilian, location),
-                "CanChangeOwnerOfPossession failed to permit a Water Civilian unit from " +
-                "moving onto a city");
         }        
 
         [Test(Description = "CanChangeOwnerOfPossession should return true if there are no Units " +
@@ -282,6 +210,9 @@ namespace Assets.Tests.Simulation.Units {
             var mockTemplate = new Mock<IUnitTemplate>();
             mockTemplate.Setup(template => template.Name).Returns(name);
             mockTemplate.Setup(template => template.Type).Returns(type);
+
+            mockTemplate.Setup(template => template.IsAquatic)
+                .Returns(type == UnitType.WaterCivilian || type == UnitType.WaterMilitary);
 
             mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
             return mockUnit.Object;

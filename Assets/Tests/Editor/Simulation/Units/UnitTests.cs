@@ -187,7 +187,7 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "When PerformMovement is called, it shouldn't throw an exception " +
             "when CurrentPath is null or empty list")]
         public void PerformMovement_DoesNotThrowOnNullOrEmptyPath() {
-            var unit = BuildUnit(location: BuildTile(1), currentMovement: 2);
+            var unit = BuildUnit(location: BuildCell(1), currentMovement: 2);
             unit.CurrentPath = null;
 
             Assert.DoesNotThrow(() => unit.PerformMovement(),
@@ -205,7 +205,7 @@ namespace Assets.Tests.Simulation.Units {
             "CurrentPath field")]
         [TestCaseSource("TotalMovementTestCases")]
         public void PerformMovement_ReachesEndIfSufficientMovement(int startingMovement, List<int> pathCosts, int endingMovement) {
-            var startingPath = pathCosts.Select(cost => BuildTile(cost)).ToList();
+            var startingPath = pathCosts.Select(cost => BuildCell(cost)).ToList();
 
             var unit = Container.Resolve<GameUnit>();
 
@@ -234,7 +234,7 @@ namespace Assets.Tests.Simulation.Units {
             "only result in one location change")]
         [TestCaseSource("PartialMovementTestCases")]
         public void PerformMovement_MakesPartialProgress(int startingMovement, List<int> pathCosts, int expectedStopIndex) {
-            var startingPath = pathCosts.Select(cost => BuildTile(cost)).ToList();
+            var startingPath = pathCosts.Select(cost => BuildCell(cost)).ToList();
 
             var expectedStopTile = startingPath[expectedStopIndex];
 
@@ -266,9 +266,9 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "When PerformMovement is called and one of the tiles Unit expects to travel into or through " +
             "cannot accept them, Unit should go as far as it can and then abort, clearing its current path")]
         public void PerformMovement_AbortsWhenInterrupted() {
-            var startingTile     = BuildTile(1);
-            var interveningTile  = BuildTile(1);
-            var destinationTile  = BuildTile(1);
+            var startingTile     = BuildCell(1);
+            var interveningTile  = BuildCell(1);
+            var destinationTile  = BuildCell(1);
 
             var path = new List<IHexCell>() { startingTile, interveningTile, destinationTile };
 
@@ -321,19 +321,22 @@ namespace Assets.Tests.Simulation.Units {
             return newUnit;
         }
 
-        private IHexCell BuildTile(int movementCost) {
-            var tileMock = new Mock<IHexCell>();
-            tileMock.Name = string.Format("MapTile with cost {0}", movementCost);
+        private IHexCell BuildCell(int movementCost) {
+            var cellMock = new Mock<IHexCell>();
+            cellMock.Name = string.Format("MapTile with cost {0}", movementCost);
 
-            var newTile = tileMock.Object;
+            var newCell = cellMock.Object;
 
-            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), tileMock.Object))
+            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), cellMock.Object))
                 .Returns(true);
 
-            MockTerrainCostLogic.Setup(logic => logic.GetCostToMoveUnitIntoTile(It.IsAny<IUnit>(), newTile))
-                .Returns(movementCost);
+            MockTerrainCostLogic.Setup(logic =>
+                logic.GetTraversalCostForUnit(
+                    It.IsAny<IUnit>(), It.IsAny<IHexCell>(), newCell
+                )
+            ).Returns(movementCost);
 
-            return newTile;
+            return newCell;
         }
 
         #endregion

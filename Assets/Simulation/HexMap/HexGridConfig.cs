@@ -78,20 +78,15 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _forestMoveCost;
 
-        public int ShallowWaterMoveCost {
-            get { return _shallowWaterMoveCost; }
+        public int WaterMoveCost {
+            get { return _waterMoveCost; }
         }
-        [SerializeField] private int _shallowWaterMoveCost;
+        [SerializeField] private int _waterMoveCost;
 
-        public int DeepWaterMoveCost {
-            get { return _deepWaterMoveCost; }
+        public int SlopeMoveCost {
+            get { return _slopeMoveCost; }
         }
-        [SerializeField] private int _deepWaterMoveCost;
-
-        public ReadOnlyCollection<TerrainType> UnoccupiableTerrains {
-            get { return _unoccupiableTerrains.AsReadOnly(); }
-        }
-        [SerializeField] private List<TerrainType> _unoccupiableTerrains;
+        [SerializeField] private int _slopeMoveCost;
 
         #endregion
 

@@ -166,10 +166,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end) {
-            return GetShortestPathBetween(start, end, (a) => 1);
+            return GetShortestPathBetween(start, end, (a, b) => 1);
         }
 
-        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, int> costFunction) {
+        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, int> costFunction) {
             if(start == null) {
                 throw new ArgumentNullException("start");
             }else if(end == null) {
@@ -196,10 +196,12 @@ namespace Assets.Simulation.HexMap {
                         continue;
                     }
                     nextHex = GetCellAtCoordinates(nextCoords);
-                    if(costFunction(nextHex) < 0) {
+
+                    int cost = costFunction(GetCellAtCoordinates(current), nextHex);
+                    if(cost < 0) {
                         continue;
                     }
-                    int newCost = costSoFar[current] + costFunction(nextHex);
+                    int newCost = costSoFar[current] + cost;
 
                     if(!costSoFar.ContainsKey(nextCoords) || newCost < costSoFar[nextCoords]) {
                         costSoFar[nextCoords] = newCost;

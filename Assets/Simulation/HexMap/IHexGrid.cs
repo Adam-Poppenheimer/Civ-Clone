@@ -40,7 +40,7 @@ namespace Assets.Simulation.HexMap {
 
         List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end);
 
-        List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, int> costFunction);
+        List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, int> costFunction);
 
         List<IHexCell> GetNeighbors(IHexCell center);
 

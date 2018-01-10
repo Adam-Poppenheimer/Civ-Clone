@@ -19,6 +19,8 @@ namespace Assets.Simulation.Units {
 
         UnitType Type { get; }
 
+        bool IsAquatic { get; }
+
         IEnumerable<IUnitAbilityDefinition> Abilities { get; }
 
         #endregion

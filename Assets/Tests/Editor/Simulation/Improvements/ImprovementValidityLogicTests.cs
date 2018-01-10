@@ -137,7 +137,7 @@ namespace Assets.Tests.Simulation.Improvements {
             "whenever passed a null argument")]
         public void IsTemplateValidForTile_ThrowsOnNullArguments() {
             var template = BuildTemplate(null, null, null);
-            var tile = BuildTile(TerrainType.DeepWater, TerrainShape.Flat, TerrainFeature.Forest);
+            var tile = BuildTile(TerrainType.Desert, TerrainShape.Flat, TerrainFeature.Forest);
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 

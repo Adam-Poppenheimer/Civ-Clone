@@ -36,6 +36,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private UnitType _type;
 
+        public bool IsAquatic {
+            get { return Type == UnitType.WaterMilitary || Type == UnitType.WaterCivilian; }
+        }
+
         public IEnumerable<IUnitAbilityDefinition> Abilities {
             get { return _abilities.Cast<IUnitAbilityDefinition>(); }
         }

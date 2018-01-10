@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        int GetCostToMoveUnitIntoTile(IUnit unit, IHexCell tile);
+        int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell);
 
         #endregion
 

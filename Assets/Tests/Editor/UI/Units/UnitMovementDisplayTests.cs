@@ -152,7 +152,7 @@ namespace Assets.Tests.UI.Units {
             MockPathDrawer.VerifyAll();
             MockPathDrawer.ResetCalls();
 
-            MockGrid.Setup(map => map.GetShortestPathBetween(unitLocation, enteredTile, It.IsAny<Func<IHexCell, int>>()))
+            MockGrid.Setup(map => map.GetShortestPathBetween(unitLocation, enteredTile, It.IsAny<Func<IHexCell, IHexCell, int>>()))
                 .Returns(null as List<IHexCell>);
 
             tileEnterSignal.Fire(enteredTile);
@@ -377,7 +377,7 @@ namespace Assets.Tests.UI.Units {
             }
             newPath.Add(end);
 
-            MockGrid.Setup(map => map.GetShortestPathBetween(start, end, It.IsAny<Func<IHexCell, int>>())).Returns(newPath);
+            MockGrid.Setup(map => map.GetShortestPathBetween(start, end, It.IsAny<Func<IHexCell, IHexCell, int>>())).Returns(newPath);
 
             return newPath;
         }
