@@ -14,9 +14,9 @@ namespace Assets.Simulation.HexMap {
 
         private const float NoiseScale = 0.003f;
 
-        public const int HashGridSize = 256;
+        private const int HashGridSize = 256;
 
-        public const float HashGridScale = 0.25f;
+        private const float HashGridScale = 0.25f;
 
         private Texture2D NoiseSource;
 

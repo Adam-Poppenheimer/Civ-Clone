@@ -50,7 +50,7 @@ namespace Assets.Tests.Simulation.Units {
 
         #region instance fields and properties
 
-        private Mock<ITileConfig> MockConfig;
+        private Mock<IHexGridConfig> MockConfig;
 
         #endregion
 
@@ -60,7 +60,7 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig = new Mock<ITileConfig>();
+            MockConfig = new Mock<IHexGridConfig>();
 
             MockConfig.Setup(config => config.GrasslandMoveCost)   .Returns(1);
             MockConfig.Setup(config => config.PlainsMoveCost)      .Returns(1);
@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Units {
             MockConfig.Setup(config => config.HillsMoveCost)       .Returns(1);
             MockConfig.Setup(config => config.ForestMoveCost)      .Returns(1);
 
-            Container.Bind<ITileConfig>().FromInstance(MockConfig.Object);
+            Container.Bind<IHexGridConfig>().FromInstance(MockConfig.Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }

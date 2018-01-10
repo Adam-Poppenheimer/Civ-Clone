@@ -3,9 +3,11 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    public interface ITileConfig {
+    public interface IHexGridConfig {
 
         #region properties
+
+        int RandomSeed { get; }
 
         ReadOnlyCollection<Color> ColorsOfTerrains { get; }
 

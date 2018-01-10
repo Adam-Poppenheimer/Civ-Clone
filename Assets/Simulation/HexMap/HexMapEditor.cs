@@ -39,14 +39,14 @@ namespace Assets.Simulation.HexMap {
         IHexCell PreviousCell;
 
         private IHexGrid HexGrid;
-        private ITileConfig TileConfig;
+        private IHexGridConfig TileConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid hexGrid, ITileConfig tileConfig) {
+        public void InjectDependencies(IHexGrid hexGrid, IHexGridConfig tileConfig) {
             HexGrid = hexGrid;
             TileConfig = tileConfig;
         }

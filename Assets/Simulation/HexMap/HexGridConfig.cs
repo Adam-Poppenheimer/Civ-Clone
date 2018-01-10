@@ -8,10 +8,15 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    [CreateAssetMenu(fileName = "New Tile Display Config", menuName = "Civ Clone/Tile Display Config")]
-    public class TileConfig : ScriptableObject, ITileConfig {
+    [CreateAssetMenu(fileName = "New Hex Grid Config", menuName = "Civ Clone/Hex Grid Config")]
+    public class HexGridConfig : ScriptableObject, IHexGridConfig {
 
         #region instance fields and properties
+
+        public int RandomSeed {
+            get { return _randomSeed; }
+        }
+        [SerializeField] private int _randomSeed;
 
         public ReadOnlyCollection<Color> ColorsOfTerrains {
             get { return _colorOfTerrains.AsReadOnly(); }

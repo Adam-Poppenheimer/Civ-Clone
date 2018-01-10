@@ -11,14 +11,14 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private ITileConfig Config;
+        private IHexGridConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public TileResourceLogic(ITileConfig config) {
+        public TileResourceLogic(IHexGridConfig config) {
             Config = config;
         }
 

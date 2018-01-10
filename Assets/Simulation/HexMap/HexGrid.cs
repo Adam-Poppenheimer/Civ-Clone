@@ -58,7 +58,7 @@ namespace Assets.Simulation.HexMap {
 
         private HexCellSignals CellSignals;
 
-        private ITileConfig TileConfig;
+        private IHexGridConfig TileConfig;
 
         private DiContainer Container;
 
@@ -67,7 +67,7 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(HexCellSignals cellSignals, ITileConfig tileConfig, DiContainer container) {
+        public void InjectDependencies(HexCellSignals cellSignals, IHexGridConfig tileConfig, DiContainer container) {
             CellSignals = cellSignals;
             TileConfig = tileConfig;
             Container = container;

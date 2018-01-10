@@ -15,14 +15,14 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private ITileConfig Config;
+        private IHexGridConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitTerrainCostLogic(ITileConfig config) {
+        public UnitTerrainCostLogic(IHexGridConfig config) {
             Config = config;
         }
 

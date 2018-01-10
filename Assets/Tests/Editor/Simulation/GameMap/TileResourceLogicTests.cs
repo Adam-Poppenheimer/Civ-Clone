@@ -19,7 +19,7 @@ namespace Assets.Tests.Simulation.GameMap {
 
         [SetUp]
         public void CommonInstall() {
-            var mockConfig = new Mock<ITileConfig>();
+            var mockConfig = new Mock<IHexGridConfig>();
 
             mockConfig.Setup(config => config.GrasslandYield).Returns(new ResourceSummary(food: 1));
             mockConfig.Setup(config => config.PlainsYield    ).Returns(new ResourceSummary(food: 2));
@@ -27,7 +27,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockConfig.Setup(config => config.ForestYield    ).Returns(new ResourceSummary(food: 4));
             mockConfig.Setup(config => config.HillsYield     ).Returns(new ResourceSummary(food: 5));
 
-            Container.Bind<ITileConfig>().FromInstance(mockConfig.Object);
+            Container.Bind<IHexGridConfig>().FromInstance(mockConfig.Object);
 
             Container.Bind<TileResourceLogic>().AsSingle();
         }
@@ -58,7 +58,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Flat;
             mockTile.Object.Feature = TerrainFeature.None;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -75,7 +75,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Flat;
             mockTile.Object.Feature = TerrainFeature.None;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -92,7 +92,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Flat;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -109,7 +109,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Flat;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -126,7 +126,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Flat;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -143,7 +143,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.None;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -160,7 +160,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.None;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -177,7 +177,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.None;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -195,7 +195,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -213,7 +213,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
@@ -231,7 +231,7 @@ namespace Assets.Tests.Simulation.GameMap {
             mockTile.Object.Shape   = TerrainShape.Hills;
             mockTile.Object.Feature = TerrainFeature.Forest;
 
-            var config = Container.Resolve<ITileConfig>();
+            var config = Container.Resolve<IHexGridConfig>();
 
             var resourceLogic = Container.Resolve<TileResourceLogic>();
 
