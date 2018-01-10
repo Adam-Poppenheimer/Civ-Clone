@@ -23,12 +23,14 @@ namespace Assets.Simulation.HexMap {
         #region instance fields and properties
 
         private bool ApplyTerrain;
+        private bool ApplyFeatures;
         private bool ApplyElevation;
         private bool ApplyWaterLevel;
 
-        private TerrainType ActiveTerrain;
-        private int         ActiveElevation;
-        private int         ActiveWaterLevel;
+        private TerrainType    ActiveTerrain;
+        private TerrainFeature ActiveFeature;
+        private int            ActiveElevation;
+        private int            ActiveWaterLevel;
 
         private int BrushSize;
 
@@ -72,6 +74,13 @@ namespace Assets.Simulation.HexMap {
             if(ApplyTerrain) {
                 ActiveTerrain = (TerrainType)index;
             }            
+        }
+
+        public void SelectFeature(int index) {
+            ApplyFeatures = index >= 0;
+            if(ApplyFeatures) {
+                ActiveFeature = (TerrainFeature)index;
+            }
         }
 
         public void SetApplyElevation(bool toggle) {
@@ -151,6 +160,10 @@ namespace Assets.Simulation.HexMap {
             if(ApplyTerrain) {
                 cell.Terrain = ActiveTerrain;
                 cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
+            }
+
+            if(ApplyFeatures) {
+                cell.Feature = ActiveFeature;
             }
 
             if(ApplyElevation) {

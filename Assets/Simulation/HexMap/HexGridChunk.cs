@@ -87,8 +87,8 @@ namespace Assets.Simulation.HexMap {
                 Triangulate(direction, cell);
             }
 
-            if(!cell.IsUnderwater && !cell.HasRiver && !cell.HasRoads) {
-                Features.AddFeature(cell.transform.localPosition);
+            if(cell.Feature == TerrainFeature.Forest) {
+                Features.AddFeature(cell.transform.localPosition, cell.Feature);
             }            
         }
 
@@ -113,8 +113,8 @@ namespace Assets.Simulation.HexMap {
             }else {
                 TriangulateWithoutRiver(direction, cell, center, edge);
 
-                if(!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction)) {
-                    Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f));
+                if(cell.Feature == TerrainFeature.Forest) {
+                    Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f), cell.Feature);
                 }
             }            
 
@@ -271,7 +271,7 @@ namespace Assets.Simulation.HexMap {
             TriangulateEdgeFan(center, middle, cell.Color);
 
             if(!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction)) {
-                Features.AddFeature((center + e.V1 + e.V5) * (1f / 3f));
+                Features.AddFeature((center + e.V1 + e.V5) * (1f / 3f), cell.Feature);
             }
         }
 

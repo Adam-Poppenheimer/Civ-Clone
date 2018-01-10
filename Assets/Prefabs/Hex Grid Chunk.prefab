@@ -574,6 +574,16 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FeaturePrefab: {fileID: 4826877744169130, guid: 760b8ba297f5e594d8cd9125a759dec0,
     type: 2}
+  TreePrefabs:
+  - {fileID: 4000014025775786, guid: ad3005a6509b92043b9bcf785f6bc460, type: 2}
+  - {fileID: 4000011831428426, guid: 45fac61a6e75e02449fec92eb7d91020, type: 2}
+  - {fileID: 4000012315276196, guid: 24001a612f0668e4295033d59803f364, type: 2}
+  - {fileID: 4000012315276196, guid: 5e892ec15a6dc4d41b1d3e31cc5bae92, type: 2}
+  - {fileID: 4000012661798874, guid: 09632955a3d591f4c80de66e4b2a2ec6, type: 2}
+  - {fileID: 4000012551040692, guid: 31de5c3fc0d998a4c8ad5e6eba15c188, type: 2}
+  - {fileID: 4000012315276196, guid: 81161b1629145e944b8abaf86c3be617, type: 2}
+  - {fileID: 4000010181493276, guid: 105539f0c24dd8b458e80f7a778ebca3, type: 2}
+  - {fileID: 4000014025775786, guid: d70b0686fd8663240b4d36dbf9394485, type: 2}
 --- !u!114 &114270732117973604
 MonoBehaviour:
   m_ObjectHideFlags: 1

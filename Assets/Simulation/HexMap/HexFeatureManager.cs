@@ -15,6 +15,8 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private Transform FeaturePrefab;
 
+        [SerializeField] private List<Transform> TreePrefabs;
+
         private INoiseGenerator NoiseGenerator;
 
         private Transform Container;
@@ -39,17 +41,28 @@ namespace Assets.Simulation.HexMap {
 
         public void Apply() { }
 
-        public void AddFeature(Vector3 position) {
+        public void AddFeature(Vector3 position, TerrainFeature featureType) {
             HexHash hash = NoiseGenerator.SampleHashGrid(position);
             if(hash.A >= 0.5f) {
                 return;
             }
 
-            Transform instance = Instantiate(FeaturePrefab);
+            Transform prefabToUse = GetFeaturePrefab(featureType, hash);
+
+            Transform instance = Instantiate(prefabToUse);
             position.y += instance.localScale.y * 0.5f;
             instance.localPosition = NoiseGenerator.Perturb(position);
             instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
             instance.SetParent(Container, false);
+        }
+
+        private Transform GetFeaturePrefab(TerrainFeature featureType, HexHash hash) {
+            if(featureType == TerrainFeature.Forest) {
+                int treeIndex = (int)(hash.C * TreePrefabs.Count);
+                return TreePrefabs[treeIndex];
+            }else {
+                return FeaturePrefab;
+            }
         }
 
         #endregion

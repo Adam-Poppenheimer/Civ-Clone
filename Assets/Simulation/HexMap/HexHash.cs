@@ -10,7 +10,7 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public float A, B;
+        public float A, B, C;
 
         #endregion
 
@@ -20,6 +20,7 @@ namespace Assets.Simulation.HexMap {
             HexHash hash;
             hash.A = Random.value;
             hash.B = Random.value;
+            hash.C = Random.value;
             return hash;
         }
 

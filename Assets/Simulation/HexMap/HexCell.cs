@@ -39,7 +39,14 @@ namespace Assets.Simulation.HexMap {
 
         public TerrainFeature Feature {
             get { return _feature; }
-            set { _feature = value; }
+            set {
+                if(value == _feature) {
+                    return;
+                }
+
+                _feature = value;
+                RefreshSelfOnly();
+            }
         }
         [SerializeField] private TerrainFeature _feature;
 
