@@ -37,10 +37,6 @@ namespace Assets.UI.HexMap {
 
         private HexCellSignals CellSignals;
 
-        private HexMesh HexMesh;
-
-        private IHexGrid Grid;
-
         private MonoBehaviour CoroutineInvoker;
 
         #endregion
@@ -48,7 +44,7 @@ namespace Assets.UI.HexMap {
         #region constructors
 
         [Inject]
-        public HexCellSignalLogic(HexCellSignals cellSignals, HexMesh hexMesh, IHexGrid grid,
+        public HexCellSignalLogic(HexCellSignals cellSignals,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
             [Inject(Id = "Map Tile Hover Delay")] float hoverDelay
         ){
@@ -56,8 +52,6 @@ namespace Assets.UI.HexMap {
             EndHoverSubject = new Subject<IHexCell>();
 
             CellSignals = cellSignals;
-            HexMesh = hexMesh;
-            Grid = grid;
 
             cellSignals.PointerEnterSignal.Listen(OnEnterSignal);
             cellSignals.PointerExitSignal .Listen(OnExitSignal);

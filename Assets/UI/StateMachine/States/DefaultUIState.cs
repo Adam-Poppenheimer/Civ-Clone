@@ -20,6 +20,8 @@ namespace Assets.UI.StateMachine.States {
 
         private List<CivilizationDisplayBase> CivilizationDisplays;
 
+        private List<RectTransform> DefaultPanels;
+
         private ICivilization PlayerCivilization;
 
         #endregion
@@ -27,8 +29,13 @@ namespace Assets.UI.StateMachine.States {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(List<CivilizationDisplayBase> civilizationDisplays, GameCore gameCore) {
+        public void InjectDependencies(
+            List<CivilizationDisplayBase> civilizationDisplays,
+            [Inject(Id = "Default Panels")] List<RectTransform> defaultPanels,
+            GameCore gameCore
+        ){
             CivilizationDisplays = civilizationDisplays;
+            DefaultPanels = defaultPanels;
             PlayerCivilization = gameCore.PlayerCivilization;
         }
 
@@ -40,6 +47,10 @@ namespace Assets.UI.StateMachine.States {
                 display.ObjectToDisplay = PlayerCivilization;
                 display.Refresh();
             }
+
+            foreach(var panel in DefaultPanels) {
+                panel.gameObject.SetActive(true);
+            }
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -47,6 +58,13 @@ namespace Assets.UI.StateMachine.States {
                 display.gameObject.SetActive(false);
                 display.ObjectToDisplay = null;
             }
+
+            foreach(var panel in DefaultPanels) {
+                panel.gameObject.SetActive(false);
+            }
+
+            animator.ResetTrigger("Default State Requested");
+            animator.ResetTrigger("Map Editing Return Requested");
         }
 
         #endregion

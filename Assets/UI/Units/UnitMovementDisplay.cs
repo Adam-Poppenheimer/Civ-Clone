@@ -77,14 +77,12 @@ namespace Assets.UI.Units {
 
         private void OnUnitBeginDragFired(Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
-                Debug.Log("Unit Begin Drag");
                 IsDragging = true;
             }
         }
 
         private void OnUnitEndDragFired(Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
-                Debug.Log("Unit End Drag");
                 PathDrawer.ClearAllPaths();              
 
                 ObjectToDisplay.CurrentPath = ProspectivePath;
@@ -99,7 +97,6 @@ namespace Assets.UI.Units {
 
         private void OnTilePointerEnterFired(IHexCell tile) {
             if(IsDragging) {
-                Debug.Log("Tile Pointer Enter");
                 ProspectiveTravelGoal = tile;
 
                 var unitLocation = PositionCanon.GetOwnerOfPossession(ObjectToDisplay);
@@ -127,7 +124,6 @@ namespace Assets.UI.Units {
 
         private void OnTilePointerExitFired(IHexCell tile) {
             if(IsDragging) {
-                Debug.Log("Tile Pointer Exit");
                 if(ProspectiveTravelGoal == tile) {
                     ProspectiveTravelGoal = null;
                     ProspectivePath = null;

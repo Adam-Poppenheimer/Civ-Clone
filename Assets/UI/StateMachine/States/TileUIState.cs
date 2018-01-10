@@ -46,6 +46,8 @@ namespace Assets.UI.StateMachine.States {
                 display.gameObject.SetActive(false);
                 display.ObjectToDisplay = null;
             }
+
+            animator.ResetTrigger("Tile State Requested");
         }
 
         #endregion

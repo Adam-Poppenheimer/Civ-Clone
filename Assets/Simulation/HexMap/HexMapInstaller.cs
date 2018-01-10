@@ -15,8 +15,6 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexGrid Grid;
 
-        [SerializeField] private HexMesh Mesh;
-
         [SerializeField] private HexGridConfig Config;
 
         [SerializeField] private Texture2D NoiseSource;
@@ -29,8 +27,6 @@ namespace Assets.Simulation.HexMap {
 
         public override void InstallBindings() {
             Container.Bind<IHexGrid>().To<HexGrid>().FromInstance(Grid);
-
-            Container.Bind<HexMesh>().FromInstance(Mesh);
 
             Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(Config);
 

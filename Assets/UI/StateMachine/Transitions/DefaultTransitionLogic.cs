@@ -21,7 +21,7 @@ namespace Assets.UI.StateMachine.Transitions {
 
         private List<Type> NonDefaultingTypes = new List<Type>() {
             typeof(ICity),
-            typeof(IHexCell),
+            typeof(HexGridChunk),
             typeof(IDisplayBase),
             typeof(IUnit)
         };

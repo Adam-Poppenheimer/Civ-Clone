@@ -22,7 +22,6 @@ GameObject:
   - component: {fileID: 33711452234731192}
   - component: {fileID: 23833063909925002}
   - component: {fileID: 114270732117973604}
-  - component: {fileID: 114645566068486902}
   m_Layer: 0
   m_Name: Water
   m_TagString: Untagged
@@ -41,7 +40,6 @@ GameObject:
   - component: {fileID: 33033494446661392}
   - component: {fileID: 23851422793109288}
   - component: {fileID: 114792601958404866}
-  - component: {fileID: 114844619519860360}
   m_Layer: 0
   m_Name: Estuary
   m_TagString: Untagged
@@ -60,7 +58,6 @@ GameObject:
   - component: {fileID: 33633647113513668}
   - component: {fileID: 23020860729629232}
   - component: {fileID: 114415578841082280}
-  - component: {fileID: 114134012127424818}
   m_Layer: 0
   m_Name: Roads
   m_TagString: Untagged
@@ -95,7 +92,6 @@ GameObject:
   - component: {fileID: 33969381285377944}
   - component: {fileID: 23984730175875422}
   - component: {fileID: 114157243756510432}
-  - component: {fileID: 114981214967519948}
   m_Layer: 0
   m_Name: Water Shore
   m_TagString: Untagged
@@ -114,7 +110,6 @@ GameObject:
   - component: {fileID: 33858692542768808}
   - component: {fileID: 23729685959293716}
   - component: {fileID: 114275613597108862}
-  - component: {fileID: 114883422798893446}
   m_Layer: 0
   m_Name: Rivers
   m_TagString: Untagged
@@ -148,7 +143,6 @@ GameObject:
   - component: {fileID: 4896056729340168}
   - component: {fileID: 33616928310495292}
   - component: {fileID: 23147990319181082}
-  - component: {fileID: 64536286672883112}
   - component: {fileID: 114749892619900210}
   - component: {fileID: 114432045013604670}
   m_Layer: 0
@@ -503,31 +497,6 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1533324543438160}
   m_Mesh: {fileID: 0}
---- !u!64 &64536286672883112
-MeshCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1899024599210500}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Convex: 0
-  m_InflateMesh: 0
-  m_SkinWidth: 0.01
-  m_Mesh: {fileID: 0}
---- !u!114 &114134012127424818
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1371931142840626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114137592705337108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -640,17 +609,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114645566068486902
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1107014492107892}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114749892619900210
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -681,36 +639,3 @@ MonoBehaviour:
   UseColors: 0
   UseUVCoordinates: 1
   UseUV2Coordinates: 1
---- !u!114 &114844619519860360
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1250858644925776}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114883422798893446
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1668243530926648}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &114981214967519948
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1533324543438160}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e901974372b1c1248969030af65d637c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

@@ -35,7 +35,7 @@ namespace Assets.Simulation.HexMap {
 
         #region Unity messages
 
-        private void Awake() {
+        private void Start() {
             Collider = GetComponent<MeshCollider>();
         }
 

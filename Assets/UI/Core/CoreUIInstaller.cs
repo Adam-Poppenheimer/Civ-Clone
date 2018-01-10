@@ -13,9 +13,7 @@ namespace Assets.UI.Core {
 
         #region instance fields and properties
 
-        [SerializeField] private Camera MainCamera;
-
-        [SerializeField] private CameraConfig CameraConfig;
+        
 
         #endregion
 
@@ -24,10 +22,7 @@ namespace Assets.UI.Core {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<ICameraConfig>().To<CameraConfig>().FromInstance(CameraConfig);
-            Container.Bind<Camera>().WithId("Main Camera").FromInstance(MainCamera);
-
-            Container.BindInterfacesAndSelfTo<CameraLogic>().AsSingle().NonLazy();
+            
         }
 
         #endregion

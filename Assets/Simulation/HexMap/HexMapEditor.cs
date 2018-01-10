@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 namespace Assets.Simulation.HexMap {
 
@@ -42,15 +43,19 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGrid HexGrid;
         private IHexGridConfig TileConfig;
+        private HexCellSignals CellSignals;
+
+        private IDisposable CellEnterSubscription;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid hexGrid, IHexGridConfig tileConfig) {
+        public void InjectDependencies(IHexGrid hexGrid, IHexGridConfig tileConfig, HexCellSignals cellSignals) {
             HexGrid = hexGrid;
             TileConfig = tileConfig;
+            CellSignals = cellSignals;
         }
 
         #region Unity message methods
@@ -60,11 +65,23 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void Update() {
-            if(Input.GetMouseButton(0) && !EventSystem.current.IsPointerOverGameObject()) {
-                HandleInput();
-            }else {
+            if(!Input.GetMouseButton(0)) {
                 PreviousCell = null;
             }
+        }
+
+        private void OnEnable() {
+            CellEnterSubscription = CellSignals.PointerEnterSignal.AsObservable.Subscribe(delegate(IHexCell cell) {
+                if(Input.GetMouseButton(0)) {
+                    HandleInput();
+                }
+            });
+        }
+
+        private void OnDisable() {
+            IsDragging = false;
+            PreviousCell = null;
+            CellEnterSubscription.Dispose();
         }
 
         #endregion
