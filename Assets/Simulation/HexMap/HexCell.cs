@@ -27,7 +27,10 @@ namespace Assets.Simulation.HexMap {
 
         public TerrainType Terrain {
             get { return _terrain; }
-            set { _terrain = value; }
+            set {
+                _terrain = value;
+                workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
+            }
         }
         [SerializeField] private TerrainType _terrain;
 
@@ -45,6 +48,7 @@ namespace Assets.Simulation.HexMap {
                 }
 
                 _feature = value;
+                workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
                 RefreshSelfOnly();
             }
         }
@@ -118,7 +122,10 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public IWorkerSlot WorkerSlot { get; set; }
+        public IWorkerSlot WorkerSlot {
+            get { return workerSlot; }
+        }
+        private WorkerSlot workerSlot = new WorkerSlot(ResourceSummary.Empty);
 
         public bool SuppressSlot { get; set; }
 
@@ -159,7 +166,7 @@ namespace Assets.Simulation.HexMap {
         public void InjectDependencies(ITileResourceLogic resourceLogic,
             INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon
         ){
-            WorkerSlot = new WorkerSlot(resourceLogic.GetYieldOfTile(this));
+            ResourceLogic = resourceLogic;
             NoiseGenerator = noiseGenerator;
             Grid = grid;
             RiverCanon = riverCanon;

@@ -11,20 +11,14 @@ namespace Assets.Simulation.HexMap {
 
         ReadOnlyCollection<Color> ColorsOfTerrains { get; }
 
-        ReadOnlyCollection<int> ElevationsOfShapes { get; }
+        ReadOnlyCollection<ResourceSummary> TerrainYields { get; }
 
-        ResourceSummary DesertYield    { get; }
-        ResourceSummary ForestYield    { get; }
-        ResourceSummary GrasslandYield { get; }
-        ResourceSummary HillsYield     { get; }
-        ResourceSummary PlainsYield    { get; }
+        ReadOnlyCollection<ResourceSummary> FeatureYields { get; }
 
-        int GrasslandMoveCost { get; }
-        int PlainsMoveCost    { get; }
-        int DesertMoveCost    { get; }
-        int WaterMoveCost     { get; }
+        int BaseLandMoveCost { get; }
+        int WaterMoveCost    { get; }
 
-        int ForestMoveCost { get; }
+        ReadOnlyCollection<int> FeatureMoveCosts { get; }
 
         int SlopeMoveCost { get; }
 

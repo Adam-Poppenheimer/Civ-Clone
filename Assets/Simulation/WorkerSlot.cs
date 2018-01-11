@@ -13,10 +13,7 @@ namespace Assets.Simulation {
 
         #region from IWorkerSlot
 
-        public ResourceSummary BaseYield {
-            get { return _baseYield; }
-        }
-        private ResourceSummary _baseYield;
+        public ResourceSummary BaseYield { get; set; }
 
         public bool IsOccupied { get; set; }
 
@@ -29,7 +26,7 @@ namespace Assets.Simulation {
         #region constructors
 
         public WorkerSlot(ResourceSummary baseYield) {
-            _baseYield = baseYield;
+            BaseYield = baseYield;
         }
 
         #endregion

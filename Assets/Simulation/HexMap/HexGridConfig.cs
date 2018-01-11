@@ -23,60 +23,25 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private List<Color> _colorOfTerrains;
 
-        public ReadOnlyCollection<int> ElevationsOfShapes {
-            get { return _elevationOfShapes.AsReadOnly(); }
+        public ReadOnlyCollection<ResourceSummary> TerrainYields {
+            get { return _terrainYields.AsReadOnly(); }
         }
-        [SerializeField] private List<int> _elevationOfShapes;
+        [SerializeField] private List<ResourceSummary> _terrainYields;
 
-        public ResourceSummary GrasslandYield {
-            get { return _grasslandsYield; }
+        public ReadOnlyCollection<ResourceSummary> FeatureYields {
+            get { return _featureYields.AsReadOnly(); }
         }
-        [SerializeField] private ResourceSummary _grasslandsYield;
+        [SerializeField] private List<ResourceSummary> _featureYields;
 
-        public ResourceSummary PlainsYield {
-            get { return _plainsYield; }
+        public int BaseLandMoveCost {
+            get { return _baseLandMoveCost; }
         }
-        [SerializeField] private ResourceSummary _plainsYield;
+        [SerializeField] private int _baseLandMoveCost;
 
-        public ResourceSummary DesertYield {
-            get { return _desertYield; }
+        public ReadOnlyCollection<int> FeatureMoveCosts {
+            get { return _featureMoveCosts.AsReadOnly(); }
         }
-        [SerializeField] private ResourceSummary _desertYield;
-
-        public ResourceSummary ForestYield {
-            get { return _forestYield; }
-        }
-        [SerializeField] private ResourceSummary _forestYield;
-
-        public ResourceSummary HillsYield {
-            get { return _hillsYield; }
-        }
-        [SerializeField] private ResourceSummary _hillsYield;
-
-        public int GrasslandMoveCost {
-            get { return _grasslandMoveCost; }
-        }
-        [SerializeField] private int _grasslandMoveCost;
-
-        public int PlainsMoveCost {
-            get { return _plainsMoveCost; }
-        }
-        [SerializeField] private int _plainsMoveCost;
-
-        public int DesertMoveCost {
-            get { return _desertMoveCost; }
-        }
-        [SerializeField] private int _desertMoveCost;
-
-        public int HillsMoveCost {
-            get { return _hillsMoveCost; }
-        }
-        [SerializeField] private int _hillsMoveCost;
-
-        public int ForestMoveCost {
-            get { return _forestMoveCost; }
-        }
-        [SerializeField] private int _forestMoveCost;
+        [SerializeField] private List<int> _featureMoveCosts;
 
         public int WaterMoveCost {
             get { return _waterMoveCost; }

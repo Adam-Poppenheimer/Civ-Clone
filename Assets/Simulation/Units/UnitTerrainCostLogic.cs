@@ -63,22 +63,19 @@ namespace Assets.Simulation.Units {
                 return -1;
             }
 
-            int moveCost = 0;
-
-            switch(nextCell.Terrain) {
-                case TerrainType.Grassland:    moveCost += Config.GrasslandMoveCost;    break;
-                case TerrainType.Plains:       moveCost += Config.PlainsMoveCost;       break;
-                case TerrainType.Desert:       moveCost += Config.DesertMoveCost;       break;
-                default: break;
-            }
+            int moveCost = Config.BaseLandMoveCost;
 
             if(edgeType == HexEdgeType.Slope && nextCell.Elevation > currentCell.Elevation) {
                 moveCost += Config.SlopeMoveCost;
             }
 
-            switch(nextCell.Feature) {
-                case TerrainFeature.Forest: moveCost += Config.ForestMoveCost; break;
-                default: break;
+            var featureCost = Config.FeatureMoveCosts[(int)nextCell.Feature];
+            if(nextCell.Feature != TerrainFeature.None) {
+                if(featureCost == -1) {
+                    return -1;
+                }else {
+                    moveCost += featureCost;
+                }
             }
 
             return moveCost;

@@ -153,12 +153,14 @@ namespace Assets.Tests.Simulation.Units {
             MockConfig      = new Mock<IHexGridConfig>();
             MockCityFactory = new Mock<ICityFactory>();
 
-            MockConfig.Setup(config => config.GrasslandMoveCost).Returns(1);
-            MockConfig.Setup(config => config.PlainsMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.DesertMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.ForestMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.WaterMoveCost)    .Returns(1);
-            MockConfig.Setup(config => config.SlopeMoveCost)    .Returns(2);
+            MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
+            MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
+            MockConfig.Setup(config => config.SlopeMoveCost)   .Returns(2);
+
+            MockConfig.Setup(config => config.FeatureMoveCosts).Returns(new List<int>() {
+                -1, //None cost
+                1,  //Forest cost
+            }.AsReadOnly());
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 

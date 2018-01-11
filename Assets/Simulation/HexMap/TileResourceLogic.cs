@@ -28,24 +28,16 @@ namespace Assets.Simulation.HexMap {
 
         #region from ITileResourceLogic
 
-        public ResourceSummary GetYieldOfTile(IHexCell tile) {
+        public ResourceSummary GetYieldOfCell(IHexCell tile) {
             if(tile == null) {
                 throw new ArgumentNullException("tile");
             }
 
-            if(tile.Feature == TerrainFeature.Forest) {
-                return Config.ForestYield;
-
-            }else if(tile.Shape == TerrainShape.Hills) {
-                return Config.HillsYield;
+            if(tile.Feature != TerrainFeature.None) {
+                return Config.FeatureYields[(int)tile.Feature];
 
             }else {
-                switch(tile.Terrain) {
-                    case TerrainType.Grassland: return Config.GrasslandYield;
-                    case TerrainType.Plains:    return Config.PlainsYield;
-                    case TerrainType.Desert:    return Config.DesertYield;
-                    default: return new ResourceSummary();
-                }
+                return Config.TerrainYields[(int)tile.Terrain];
             }
         }
 
