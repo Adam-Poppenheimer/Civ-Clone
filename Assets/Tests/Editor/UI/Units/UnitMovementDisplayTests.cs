@@ -144,7 +144,7 @@ namespace Assets.Tests.UI.Units {
 
             var executionSequence = new MockSequence();
 
-            MockPathDrawer.InSequence(executionSequence).Setup(drawer => drawer.ClearAllPaths());
+            MockPathDrawer.InSequence(executionSequence).Setup(drawer => drawer.ClearPath());
             MockPathDrawer.InSequence(executionSequence).Setup(drawer => drawer.DrawPath(pathBetween));
 
             tileEnterSignal.Fire(enteredTile);
@@ -157,7 +157,7 @@ namespace Assets.Tests.UI.Units {
 
             tileEnterSignal.Fire(enteredTile);
 
-            MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Once,
+            MockPathDrawer.Verify(drawer => drawer.ClearPath(), Times.Once,
                 "PathDrawer.ClearAllPaths was not called when no valid path existed between the tiles");
 
             MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IHexCell>>()), Times.Never,
@@ -186,7 +186,7 @@ namespace Assets.Tests.UI.Units {
             Assert.Null(movementDisplay.ProspectiveTravelGoal, "MovementDisplay.ProspectiveTravelGoal is not null");
             Assert.Null(movementDisplay.ProspectivePath,       "MovementDisplay.ProspectivePath is not null");
 
-            MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Never,
+            MockPathDrawer.Verify(drawer => drawer.ClearPath(), Times.Never,
                 "PathDrawer.ClearAllPaths was incorrectly called");
 
             MockPathDrawer.Verify(drawer => drawer.DrawPath(It.IsAny<List<IHexCell>>()), Times.Never,
@@ -275,7 +275,7 @@ namespace Assets.Tests.UI.Units {
             Assert.Null(movementDisplay.ProspectiveTravelGoal, "ProspectiveTravelGoal is not null");
             Assert.Null(movementDisplay.ProspectivePath,       "ProspectivePath is not null");
 
-            MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Once,
+            MockPathDrawer.Verify(drawer => drawer.ClearPath(), Times.Once,
                 "PathDrawer.ClearAllPaths was not called exactly once");
         }
 
@@ -303,7 +303,7 @@ namespace Assets.Tests.UI.Units {
 
             UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
-            MockPathDrawer.Verify(drawer => drawer.ClearAllPaths(), Times.Once, "PathDrawer.ClearAllPaths was not called");
+            MockPathDrawer.Verify(drawer => drawer.ClearPath(), Times.Once, "PathDrawer.ClearAllPaths was not called");
         }
 
 

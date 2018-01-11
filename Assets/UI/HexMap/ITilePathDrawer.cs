@@ -15,7 +15,7 @@ namespace Assets.UI.HexMap {
 
         #region methods
 
-        void ClearAllPaths();
+        void ClearPath();
 
         void DrawPath(List<IHexCell> path);
 

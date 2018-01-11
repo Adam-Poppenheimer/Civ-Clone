@@ -12,7 +12,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.HexMap;
 
-namespace Assets.Tests.Simulation.GameMap {
+namespace Assets.Tests.Simulation.HexMap {
 
     [TestFixture]
     public class TileResourceLogicTests : ZenjectUnitTestFixture {

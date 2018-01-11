@@ -40,8 +40,6 @@ namespace Assets.UI.HexMap {
                 .To<ResourceSummaryDisplay>()
                 .FromInstance(MapTileHoverYieldDisplay);
 
-            Container.BindMemoryPool<PathIndicator, PathIndicator.MemoryPool>().FromComponentInNewPrefab(PathIndicatorPrefab);
-
             Container.Bind<ITilePathDrawer>().To<TilePathDrawer>().AsSingle();
         }
 

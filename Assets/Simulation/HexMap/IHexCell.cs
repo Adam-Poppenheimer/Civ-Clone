@@ -4,6 +4,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.UI.HexMap;
+
 using UnityCustomUtilities.Grids;
 
 namespace Assets.Simulation.HexMap {
@@ -40,6 +42,8 @@ namespace Assets.Simulation.HexMap {
         bool SuppressSlot { get; set; }
 
         HexGridChunk Chunk { get; }
+
+        IHexCellOverlay Overlay { get; }
 
         #endregion
 

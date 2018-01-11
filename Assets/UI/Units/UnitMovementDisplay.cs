@@ -83,7 +83,7 @@ namespace Assets.UI.Units {
 
         private void OnUnitEndDragFired(Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
-                PathDrawer.ClearAllPaths();              
+                PathDrawer.ClearPath();              
 
                 ObjectToDisplay.CurrentPath = ProspectivePath;
                 ObjectToDisplay.PerformMovement();
@@ -114,7 +114,7 @@ namespace Assets.UI.Units {
                     );
                 }                
 
-                PathDrawer.ClearAllPaths();
+                PathDrawer.ClearPath();
 
                 if(ProspectivePath != null) {                    
                     PathDrawer.DrawPath(ProspectivePath);
@@ -127,7 +127,7 @@ namespace Assets.UI.Units {
                 if(ProspectiveTravelGoal == tile) {
                     ProspectiveTravelGoal = null;
                     ProspectivePath = null;
-                    PathDrawer.ClearAllPaths();
+                    PathDrawer.ClearPath();
                 }
             }            
         }

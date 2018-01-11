@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.HexMap;
+using Assets.UI.HexMap;
 
 using UnityCustomUtilities.Extensions;
 
@@ -137,11 +137,14 @@ namespace Assets.Simulation.HexMap {
 
         public HexGridChunk Chunk { get; set; }
 
+        public IHexCellOverlay Overlay {
+            get { return overlay; }
+        }
+        [SerializeField] private HexCellOverlay overlay;
+
         #endregion
 
         [SerializeField] private bool[] Roads;
-
-        private Canvas Canvas;
 
         private ITileResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
@@ -165,7 +168,7 @@ namespace Assets.Simulation.HexMap {
         #region Unity messages
 
         private void Awake() {
-            Canvas = GetComponentInChildren<Canvas>();
+            overlay.Parent = this;
         }
 
         #endregion
@@ -182,12 +185,6 @@ namespace Assets.Simulation.HexMap {
 
         public HexEdgeType GetEdgeType(IHexCell otherCell) {
             return HexMetrics.GetEdgeType(Elevation, otherCell.Elevation);
-        }
-
-        public void ToggleUI(bool isVisible) {
-            if(Canvas != null) {
-                Canvas.gameObject.SetActive(isVisible);
-            }
         }
 
         public bool HasRoadThroughEdge(HexDirection direction) {

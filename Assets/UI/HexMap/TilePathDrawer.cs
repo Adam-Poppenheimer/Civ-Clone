@@ -16,17 +16,15 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        private PathIndicator.MemoryPool IndicatorPool;
-
-        private List<PathIndicator> ActiveIndicators = new List<PathIndicator>();
+        private List<IHexCell> LastPath;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public TilePathDrawer(PathIndicator.MemoryPool indicatorFactory){
-            IndicatorPool = indicatorFactory;
+        public TilePathDrawer(){
+
         }
 
         #endregion
@@ -35,25 +33,22 @@ namespace Assets.UI.HexMap {
 
         #region from ITilePathDrawer
 
-        public void ClearAllPaths() {
-            ActiveIndicators.ForEach(indicator => IndicatorPool.Despawn(indicator));
-            ActiveIndicators.Clear();
+        public void ClearPath() {
+            if(LastPath != null) {
+                foreach(var cell in LastPath) {
+                    cell.Overlay.Clear();
+                    cell.Overlay.Hide();
+                }
+            }
         }
 
         public void DrawPath(List<IHexCell> path) {
-            foreach(var tile in path) {
-                var tileCanvas = tile.transform.GetComponentInChildren<Canvas>();
-                if(tileCanvas == null) {
-                    Debug.LogErrorFormat("Tile {0} lacks a child canvas for displaying UI indicators", tile);
-                    return;
-                }
+            ClearPath();
+            LastPath = path;
 
-                var indicatorForTile = IndicatorPool.Spawn();
-                indicatorForTile.gameObject.SetActive(true);
-
-                indicatorForTile.transform.SetParent(tileCanvas.transform, false);
-
-                ActiveIndicators.Add(indicatorForTile);
+            foreach(var cell in path) {
+                cell.Overlay.SetDisplayType(CellOverlayType.PathIndicator);
+                cell.Overlay.Show();
             }
         }
 

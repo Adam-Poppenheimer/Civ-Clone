@@ -231,11 +231,9 @@ MonoBehaviour:
   _chunkCountX: 4
   _chunkCountZ: 3
   DefaultColor: {r: 1, g: 1, b: 1, a: 1}
-  CellPrefab: {fileID: 114875879364669384, guid: 18e8accca100eb548bc4d8a368598c70,
+  CellPrefab: {fileID: 114287632469189624, guid: 18e8accca100eb548bc4d8a368598c70,
     type: 2}
   ChunkPrefab: {fileID: 114137592705337108, guid: 3543181dd3150494d8af40abab06a3cd,
-    type: 2}
-  CellLabelPrefab: {fileID: 114997286279715064, guid: ef08c6ad79eba49459d6466abdfbceed,
     type: 2}
 --- !u!4 &3764551
 Transform:

@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
-namespace Assets.Tests.Simulation.GameMap {
+namespace Assets.Tests.Simulation.HexMap {
 
     public class CityValidityLogicTests {
     }

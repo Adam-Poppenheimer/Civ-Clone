@@ -47,8 +47,6 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexGridChunk ChunkPrefab;
 
-        [SerializeField] private Text CellLabelPrefab;
-
         private int CellCountX;
         private int CellCountZ;
 
@@ -234,7 +232,12 @@ namespace Assets.Simulation.HexMap {
 
         public void ToggleUI(bool isVisible) {
             foreach(var cell in Cells) {
-                cell.ToggleUI(isVisible);
+                cell.Overlay.SetDisplayType(UI.HexMap.CellOverlayType.Labels);
+                if(isVisible) {
+                    cell.Overlay.Show();
+                }else {
+                    cell.Overlay.Hide();
+                }
             }
         }
 
@@ -279,12 +282,7 @@ namespace Assets.Simulation.HexMap {
             newCell.Color       = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
             newCell.Elevation   = 0;
 
-            var cellCanvas = newCell.GetComponentInChildren<Canvas>();
-
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
-            Text label = Instantiate<Text>(CellLabelPrefab);
-            label.rectTransform.SetParent(cellCanvas.transform, false);
-            label.text = newCell.Coordinates.ToStringOnSeparateLines();
 
             AddCellToChunk(x, z, newCell);
         }
