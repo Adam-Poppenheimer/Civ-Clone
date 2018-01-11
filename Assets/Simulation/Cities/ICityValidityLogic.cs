@@ -8,7 +8,7 @@ namespace Assets.Simulation.Cities {
 
         #region methods
 
-        bool IsTileValidForCity(IHexCell tile);
+        bool IsCellValidForCity(IHexCell tile);
 
         #endregion
 

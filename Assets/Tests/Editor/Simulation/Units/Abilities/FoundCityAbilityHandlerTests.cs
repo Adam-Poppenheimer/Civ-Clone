@@ -221,7 +221,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         private IHexCell BuildTile(bool validForCity) {
             var mockTile = new Mock<IHexCell>();
 
-            MockCityValidityLogic.Setup(logic => logic.IsTileValidForCity(mockTile.Object)).Returns(validForCity);
+            MockCityValidityLogic.Setup(logic => logic.IsCellValidForCity(mockTile.Object)).Returns(validForCity);
 
             return mockTile.Object;
         }

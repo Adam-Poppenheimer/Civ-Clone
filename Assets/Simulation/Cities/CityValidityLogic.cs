@@ -17,7 +17,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        private ITilePossessionCanon TilePossessionCanon;
+        private ITilePossessionCanon CellPossessionCanon;
 
         private IHexGrid HexGrid;
 
@@ -25,18 +25,22 @@ namespace Assets.Simulation.Cities {
 
         private ICityConfig Config;
 
+        private IRiverCanon RiverCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public CityValidityLogic(ITilePossessionCanon tilePossessionCanon, IHexGrid hexGrid,
-            ICityFactory cityFactory, ICityConfig config) {
-
-            TilePossessionCanon = tilePossessionCanon;
+        public CityValidityLogic(
+            ITilePossessionCanon tilePossessionCanon, IHexGrid hexGrid,
+            ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon
+        ){
+            CellPossessionCanon = tilePossessionCanon;
             HexGrid             = hexGrid;
             CityFactory         = cityFactory;
             Config              = config;
+            RiverCanon          = riverCanon;
         }
 
         #endregion
@@ -45,13 +49,17 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityValidityLogic
 
-        public bool IsTileValidForCity(IHexCell tile) {
-            if(TilePossessionCanon.GetCityOfTile(tile) != null) {
+        public bool IsCellValidForCity(IHexCell cell) {
+            if(CellPossessionCanon.GetCityOfTile(cell) != null) {
+                return false;
+            }
+
+            if(cell.IsUnderwater || RiverCanon.HasRiver(cell)) {
                 return false;
             }
 
             foreach(var city in CityFactory.AllCities) {
-                if(HexGrid.GetDistance(tile, city.Location) < Config.MinimumSeparation) {
+                if(HexGrid.GetDistance(cell, city.Location) < Config.MinimumSeparation) {
                     return false;
                 }
             }

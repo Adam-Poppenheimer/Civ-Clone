@@ -46,7 +46,7 @@ namespace Assets.UI.HexMap {
         #region signal responses
 
         public override void Refresh() {
-            if(CityValidityLogic.IsTileValidForCity(ObjectToDisplay)) {
+            if(CityValidityLogic.IsCellValidForCity(ObjectToDisplay)) {
                 CreateCityButton.interactable = true;
             }else {
                 CreateCityButton.interactable = false;

@@ -50,7 +50,7 @@ namespace Assets.Simulation.Units.Abilities {
 
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                return CityValidityLogic.IsTileValidForCity(unitLocation);
+                return CityValidityLogic.IsCellValidForCity(unitLocation);
             }else {
                 return false;
             }

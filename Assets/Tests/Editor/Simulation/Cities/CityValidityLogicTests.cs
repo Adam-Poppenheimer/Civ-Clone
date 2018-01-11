@@ -26,6 +26,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<ICityConfig> MockConfig;
 
+        private Mock<IRiverCanon> MockRiverCanon;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -42,13 +44,15 @@ namespace Assets.Tests.Simulation.Cities {
             MockHexGrid         = new Mock<IHexGrid>();
             MockCityFactory     = new Mock<ICityFactory>();
             MockConfig          = new Mock<ICityConfig>();
+            MockRiverCanon      = new Mock<IRiverCanon>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
-            Container.Bind<ITilePossessionCanon>()     .FromInstance(MockPossessionCanon.Object);
-            Container.Bind<IHexGrid>()                 .FromInstance(MockHexGrid.Object);
-            Container.Bind<ICityFactory>()             .FromInstance(MockCityFactory.Object);
-            Container.Bind<ICityConfig>()              .FromInstance(MockConfig.Object);
+            Container.Bind<ITilePossessionCanon>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IHexGrid>()            .FromInstance(MockHexGrid.Object);
+            Container.Bind<ICityFactory>()        .FromInstance(MockCityFactory.Object);
+            Container.Bind<ICityConfig>()         .FromInstance(MockConfig.Object);
+            Container.Bind<IRiverCanon>()         .FromInstance(MockRiverCanon.Object);
 
             Container.Bind<CityValidityLogic>().AsSingle();
         }
@@ -60,22 +64,22 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "IsTileValidForCity should return false if the " +
             "argued tile already belongs to another city")]
         public void IsTileValidForCity_FalseIfTileBelongsToCity() {
-            var tile = BuildTile(new Mock<ICity>().Object);
+            var tile = BuildCell(new Mock<ICity>().Object);
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
 
-            Assert.IsFalse(validityLogic.IsTileValidForCity(tile),
+            Assert.IsFalse(validityLogic.IsCellValidForCity(tile),
                 "IsTileValidForCity returned true on a tile that's already owned");
         }
 
         [Test(Description = "IsTileValidForCity should return false if the " +
             "distance between this tile and any city is less than Config.MinSeparation")]
         public void IsTileValidForCity_FalseIfTileTooCloseToCity() {
-            var tile = BuildTile(null);
+            var tile = BuildCell(null);
 
-            var firstCity  = BuildCity(BuildTile(null));
-            var secondCity = BuildCity(BuildTile(null));
-            var thirdCity  = BuildCity(BuildTile(null));
+            var firstCity  = BuildCity(BuildCell(null));
+            var secondCity = BuildCity(BuildCell(null));
+            var thirdCity  = BuildCity(BuildCell(null));
 
             MockConfig.Setup(config => config.MinimumSeparation).Returns(3);
 
@@ -85,17 +89,17 @@ namespace Assets.Tests.Simulation.Cities {
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
 
-            Assert.IsFalse(validityLogic.IsTileValidForCity(tile),
+            Assert.IsFalse(validityLogic.IsCellValidForCity(tile),
                 "IsTileValidForCity returns true for a tile too close to existing cities");
         }
 
         [Test(Description = "IsTileValidForCity should return true if the " +
             "tile is unowned and no city is less than Config.MinSeparation away from it")]
         public void IsTileValidForCity_TrueOtherwise() {
-            var tile = BuildTile(null);
+            var tile = BuildCell(null);
 
-            var firstCity  = BuildCity(BuildTile(null));
-            var secondCity = BuildCity(BuildTile(null));
+            var firstCity  = BuildCity(BuildCell(null));
+            var secondCity = BuildCity(BuildCell(null));
 
             MockConfig.Setup(config => config.MinimumSeparation).Returns(3);
 
@@ -104,20 +108,43 @@ namespace Assets.Tests.Simulation.Cities {
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
 
-            Assert.IsTrue(validityLogic.IsTileValidForCity(tile),
+            Assert.IsTrue(validityLogic.IsCellValidForCity(tile),
                 "IsTileValidForCity returns false for a tile that should be valid");
+        }
+
+        [Test(Description = "IsCellValidForCity should return false on any tile that " +
+            "has a river or is underwater")]
+        public void IsCellValidForCity_ConsidersRiversAndWater() {
+            var underwaterCell        = BuildCell(null, true, false);
+            var riveredCell           = BuildCell(null, false, true);
+            var underwaterRiveredCell = BuildCell(null, true, true);
+
+            var validityLogic = Container.Resolve<CityValidityLogic>();
+
+            Assert.IsFalse(validityLogic.IsCellValidForCity(underwaterCell),
+                "An underwater cell is incorrectly considered valid for city placement");
+
+            Assert.IsFalse(validityLogic.IsCellValidForCity(riveredCell),
+                "A rivered cell is incorrectly considered valid for city placement");
+
+            Assert.IsFalse(validityLogic.IsCellValidForCity(underwaterRiveredCell),
+                "An underwater rivered cell is incorrectly considered valid for city placement");
         }
 
         #endregion
 
         #region utilities
 
-        private IHexCell BuildTile(ICity owner) {
-            var mockTile = new Mock<IHexCell>();
+        private IHexCell BuildCell(ICity owner, bool isUnderwater = false, bool hasRiver = false) {
+            var mockCell = new Mock<IHexCell>();
 
-            MockPossessionCanon.Setup(canon => canon.GetCityOfTile(mockTile.Object)).Returns(owner);
+            mockCell.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
 
-            return mockTile.Object;
+            MockPossessionCanon.Setup(canon => canon.GetCityOfTile(mockCell.Object)).Returns(owner);
+
+            MockRiverCanon.Setup(canon => canon.HasRiver(mockCell.Object)).Returns(hasRiver);
+
+            return mockCell.Object;
         }
 
         private ICity BuildCity(IHexCell location) {

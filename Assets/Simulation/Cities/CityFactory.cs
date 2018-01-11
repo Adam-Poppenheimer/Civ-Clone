@@ -101,6 +101,7 @@ namespace Assets.Simulation.Cities {
 
             allCities.Add(newCity);
 
+            location.RefreshSelfOnly();
             return newCity;
         }
 

@@ -7,6 +7,10 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Cities;
+
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexGridChunk : MonoBehaviour {
@@ -30,6 +34,8 @@ namespace Assets.Simulation.HexMap {
 
         private IRiverCanon RiverCanon;
 
+        private ICityFactory CityFactory;
+
         #endregion
 
         #region instance methods
@@ -37,11 +43,12 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             IHexGrid grid, INoiseGenerator noiseGenerator,
-            IRiverCanon riverCanon
+            IRiverCanon riverCanon, ICityFactory cityFactory
         ){
-            Grid = grid;
+            Grid           = grid;
             NoiseGenerator = noiseGenerator;
-            RiverCanon = riverCanon;
+            RiverCanon     = riverCanon;
+            CityFactory    = cityFactory;
         }
 
         #region Unity messages
@@ -88,17 +95,17 @@ namespace Assets.Simulation.HexMap {
             Features  .Apply();
         }
 
-        private void Triangulate(HexCell cell) {
+        private void Triangulate(IHexCell cell) {
             for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
                 Triangulate(direction, cell);
             }
 
-            if(cell.Feature == TerrainFeature.Forest) {
+            if(cell.Feature == TerrainFeature.Forest && !CityFactory.AllCities.Exists(city => city.Location == cell)) {
                 Features.AddFeature(cell.transform.localPosition, cell.Feature);
             }            
         }
 
-        private void Triangulate(HexDirection direction, HexCell cell) {
+        private void Triangulate(HexDirection direction, IHexCell cell) {
             Vector3 center = cell.transform.localPosition;
             EdgeVertices edge = new EdgeVertices(
                 center + HexMetrics.GetFirstSolidCorner(direction),
@@ -212,7 +219,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void TriangulateWithRiverBeginOrEnd(
-            HexDirection direction, HexCell cell, Vector3 center, EdgeVertices e
+            HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices e
         ) {
             EdgeVertices middle = new EdgeVertices(
                 Vector3.Lerp(center, e.V1, 0.5f),
@@ -278,7 +285,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void TriangulateConnection(
-            HexDirection direction, HexCell cell, EdgeVertices edgeOne
+            HexDirection direction, IHexCell cell, EdgeVertices edgeOne
         ){
             if(!Grid.HasNeighbor(cell, direction)) {
                 return;
