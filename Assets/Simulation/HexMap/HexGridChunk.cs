@@ -100,7 +100,10 @@ namespace Assets.Simulation.HexMap {
                 Triangulate(direction, cell);
             }
 
-            if(cell.Feature == TerrainFeature.Forest && !CityFactory.AllCities.Exists(city => city.Location == cell)) {
+            if( cell.Feature == TerrainFeature.Forest &&
+                !RiverCanon.HasRiver(cell) &&
+                !CityFactory.AllCities.Exists(city => city.Location == cell)
+            ){
                 Features.AddFeature(cell.transform.localPosition, cell.Feature);
             }            
         }
@@ -122,6 +125,10 @@ namespace Assets.Simulation.HexMap {
                     }                    
                 }else {
                     TriangulateAdjacentToRiver(direction, cell, center, edge);
+
+                    if(cell.Feature == TerrainFeature.Forest) {
+                        Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f), cell.Feature);
+                    }
                 }
             }else {
                 TriangulateWithoutRiver(direction, cell, center, edge);

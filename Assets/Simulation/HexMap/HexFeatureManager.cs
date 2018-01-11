@@ -50,7 +50,6 @@ namespace Assets.Simulation.HexMap {
             Transform prefabToUse = GetFeaturePrefab(featureType, hash);
 
             Transform instance = Instantiate(prefabToUse);
-            position.y += instance.localScale.y * 0.5f;
             instance.localPosition = NoiseGenerator.Perturb(position);
             instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
             instance.SetParent(Container, false);

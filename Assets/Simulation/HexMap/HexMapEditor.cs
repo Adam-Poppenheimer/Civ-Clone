@@ -185,7 +185,7 @@ namespace Assets.Simulation.HexMap {
                 cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
             }
 
-            if(ApplyFeatures) {
+            if(ApplyFeatures && !cell.IsUnderwater) {
                 cell.Feature = ActiveFeature;
             }
 
@@ -195,6 +195,9 @@ namespace Assets.Simulation.HexMap {
 
             if(ApplyWaterLevel) {
                 cell.WaterLevel = ActiveWaterLevel;
+                if(cell.IsUnderwater) {
+                    cell.Feature = TerrainFeature.None;
+                }
             }
 
             if(RiverMode == OptionalToggle.No) {
