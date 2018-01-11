@@ -37,6 +37,8 @@ namespace Assets.Simulation.HexMap {
 
             Container.Bind<INoiseGenerator>().To<NoiseGenerator>().AsSingle();
 
+            Container.Bind<IRiverCanon>().To<RiverCanon>().AsSingle();
+
             Container.DeclareSignal<CellClickedSignal>();
             Container.DeclareSignal<CellPointerEnterSignal>();
             Container.DeclareSignal<CellPointerExitSignal>();

@@ -22,17 +22,6 @@ namespace Assets.Simulation.HexMap {
 
         int Elevation { get; set; }
 
-        bool HasRiver { get; }
-        bool HasRiverBeginOrEnd { get; }
-
-        bool HasIncomingRiver { get; set; }
-        bool HasOutgoingRiver { get; set; }
-
-        HexDirection IncomingRiver { get; set; }
-        HexDirection OutgoingRiver { get; set; }
-
-        HexDirection RiverBeginOrEndDirection { get; }
-
         float StreamBedY { get; }
         float RiverSurfaceY { get; }
 
@@ -57,17 +46,6 @@ namespace Assets.Simulation.HexMap {
         #region methods
 
         HexEdgeType GetEdgeType(IHexCell otherCell);
-
-        bool HasRiverThroughEdge(HexDirection direction);
-
-        void SetOutgoingRiver(HexDirection direction);
-
-        void RemoveOutgoingRiver();
-        void RemoveIncomingRiver();
-
-        void RemoveRiver();
-
-        bool IsValidRiverDestination(IHexCell neighbor);
 
         bool HasRoadThroughEdge(HexDirection direction);
 

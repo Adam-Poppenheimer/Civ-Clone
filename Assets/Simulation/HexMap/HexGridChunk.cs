@@ -28,14 +28,20 @@ namespace Assets.Simulation.HexMap {
 
         private INoiseGenerator NoiseGenerator;
 
+        private IRiverCanon RiverCanon;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid grid, INoiseGenerator noiseGenerator) {
+        public void InjectDependencies(
+            IHexGrid grid, INoiseGenerator noiseGenerator,
+            IRiverCanon riverCanon
+        ){
             Grid = grid;
             NoiseGenerator = noiseGenerator;
+            RiverCanon = riverCanon;
         }
 
         #region Unity messages
@@ -99,10 +105,10 @@ namespace Assets.Simulation.HexMap {
                 center + HexMetrics.GetSecondSolidCorner(direction)
             );
 
-            if(cell.HasRiver) {
-                if(cell.HasRiverThroughEdge(direction)) {
+            if(RiverCanon.HasRiver(cell)) {
+                if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
                     edge.V3.y = cell.StreamBedY;
-                    if(cell.HasRiverBeginOrEnd) {
+                    if(RiverCanon.HasRiverBeginOrEnd(cell)) {
                         TriangulateWithRiverBeginOrEnd(direction, cell, center, edge);
                     }else {
                         TriangulateWithRiver(direction, cell, center, edge);
@@ -149,23 +155,23 @@ namespace Assets.Simulation.HexMap {
         ) {
             Vector3 centerLeft, centerRight;
             
-            if(cell.HasRiverThroughEdge(direction.Opposite())){
+            if(RiverCanon.HasRiverThroughEdge(cell, direction.Opposite())){
                 centerLeft  = center + HexMetrics.GetFirstSolidCorner (direction.Previous()) * 0.25f;
                 centerRight = center + HexMetrics.GetSecondSolidCorner(direction.Next    ()) * 0.25f;
 
-            }else if (cell.HasRiverThroughEdge(direction.Next())) {
+            }else if (RiverCanon.HasRiverThroughEdge(cell, direction.Next())) {
                 centerLeft = center;
                 centerRight = Vector3.Lerp(center, edge.V5, 2f / 3f);
 
-            }else if(cell.HasRiverThroughEdge(direction.Previous())) {
+            }else if(RiverCanon.HasRiverThroughEdge(cell, direction.Previous())) {
                 centerLeft = Vector3.Lerp(center, edge.V1, 2f / 3f);
                 centerRight = center;
 
-            }else if(cell.HasRiverThroughEdge(direction.Next2())) {
+            }else if(RiverCanon.HasRiverThroughEdge(cell, direction.Next2())) {
                 centerLeft = center;
                 centerRight = center + HexMetrics.GetSolidEdgeMiddle(direction.Next()) * 0.5f * HexMetrics.InnerToOuter;
 
-            }else if(cell.HasRiverThroughEdge(direction.Previous2())) {
+            }else if(RiverCanon.HasRiverThroughEdge(cell, direction.Previous2())) {
                 centerLeft = center + HexMetrics.GetSolidEdgeMiddle(direction.Previous()) * 0.5f * HexMetrics.InnerToOuter;
                 centerRight = center;
 
@@ -198,7 +204,7 @@ namespace Assets.Simulation.HexMap {
             Terrain.AddTriangleColor(cell.Color);
 
             if(!cell.IsUnderwater) {
-                bool isReversed = cell.IncomingRiver == direction;
+                bool isReversed = RiverCanon.GetIncomingRiver(cell) == direction;
 
                 TriangulateRiverQuad(centerLeft, centerRight, middle.V2, middle.V4, cell.RiverSurfaceY, 0.4f, isReversed);
                 TriangulateRiverQuad(middle.V2,  middle.V4,   edge.V2,   edge.V4,   cell.RiverSurfaceY, 0.6f, isReversed);
@@ -219,7 +225,7 @@ namespace Assets.Simulation.HexMap {
             TriangulateEdgeFan(center, middle, cell.Color);
 
             if(!cell.IsUnderwater) {
-                bool reversed = cell.HasIncomingRiver;
+                bool reversed = RiverCanon.HasIncomingRiver(cell);
                 TriangulateRiverQuad(middle.V2, middle.V4, e.V2, e.V4, cell.RiverSurfaceY, 0.6f, reversed);
 
                 center.y = middle.V2.y = middle.V4.y = cell.RiverSurfaceY;
@@ -247,17 +253,17 @@ namespace Assets.Simulation.HexMap {
                 TriangulateRoadsAdjacentToRiver(direction, cell, center, e);
             }
 
-            if(cell.HasRiverThroughEdge(direction.Next())) {
-                if(cell.HasRiverThroughEdge(direction.Previous())) {
+            if(RiverCanon.HasRiverThroughEdge(cell, direction.Next())) {
+                if(RiverCanon.HasRiverThroughEdge(cell, direction.Previous())) {
                     center += HexMetrics.GetSolidEdgeMiddle(direction) * HexMetrics.InnerToOuter * 0.5f;
 
-                }else if(cell.HasRiverThroughEdge(direction.Previous2())) {
+                }else if(RiverCanon.HasRiverThroughEdge(cell, direction.Previous2())) {
                     center += HexMetrics.GetFirstSolidCorner(direction) * 0.25f;
 
                 }
             }else if(
-                cell.HasRiverThroughEdge(direction.Previous()) &&
-                cell.HasRiverThroughEdge(direction.Next2())
+                RiverCanon.HasRiverThroughEdge(cell, direction.Previous()) &&
+                RiverCanon.HasRiverThroughEdge(cell, direction.Next2())
             ) {
                 center += HexMetrics.GetSecondSolidCorner(direction) * 0.25f;
             }
@@ -269,10 +275,6 @@ namespace Assets.Simulation.HexMap {
 
             TriangulateEdgeStrip(middle, cell.Color, e, cell.Color);
             TriangulateEdgeFan(center, middle, cell.Color);
-
-            if(!cell.IsUnderwater && !cell.HasRoadThroughEdge(direction)) {
-                Features.AddFeature((center + e.V1 + e.V5) * (1f / 3f), cell.Feature);
-            }
         }
 
         private void TriangulateConnection(
@@ -291,7 +293,7 @@ namespace Assets.Simulation.HexMap {
                 edgeOne.V5 + bridge
             );
 
-            if(cell.HasRiverThroughEdge(direction)) {
+            if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
                 edgeTwo.V3.y = neighbor.StreamBedY;
 
                 if(!cell.IsUnderwater) {
@@ -299,7 +301,7 @@ namespace Assets.Simulation.HexMap {
                         TriangulateRiverQuad(
                             edgeOne.V2, edgeOne.V4, edgeTwo.V2, edgeTwo.V4,
                             cell.RiverSurfaceY, neighbor.RiverSurfaceY, 0.8f,
-                            cell.HasIncomingRiver && cell.IncomingRiver == direction
+                            RiverCanon.HasIncomingRiver(cell) && RiverCanon.GetIncomingRiver(cell) == direction
                         );
                     }else if(cell.Elevation > neighbor.WaterLevel){
                         TriangulateWaterfallInWater(
@@ -613,18 +615,18 @@ namespace Assets.Simulation.HexMap {
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices e
         ){
             bool hasRoadThroughEdge = cell.HasRoadThroughEdge(direction);
-            bool previousHasRiver   = cell.HasRiverThroughEdge(direction.Previous());
-            bool nextHasRiver       = cell.HasRiverThroughEdge(direction.Next());
+            bool previousHasRiver   = RiverCanon.HasRiverThroughEdge(cell, direction.Previous());
+            bool nextHasRiver       = RiverCanon.HasRiverThroughEdge(cell, direction.Next());
 
             Vector2 interpolators = GetRoadInterpolators(direction, cell);
             Vector3 roadCenter = center;
 
-            if(cell.HasRiverBeginOrEnd) {
+            if(RiverCanon.HasRiverBeginOrEnd(cell)) {
                 roadCenter += HexMetrics.GetSolidEdgeMiddle(
-                    cell.RiverBeginOrEndDirection.Opposite()
+                    RiverCanon.GetRiverBeginOrEndDirection(cell).Opposite()
                 ) * (1f / 3f);
 
-            }else if(cell.IncomingRiver == cell.OutgoingRiver.Opposite()) {
+            }else if(RiverCanon.GetIncomingRiver(cell) == RiverCanon.GetOutgoingRiver(cell).Opposite()) {
                 Vector3 corner;
                 if(previousHasRiver) {
                     if( !hasRoadThroughEdge &&
@@ -644,11 +646,11 @@ namespace Assets.Simulation.HexMap {
                 roadCenter += corner * 0.5f;
                 center += corner * 0.25f;
 
-            }else if(cell.IncomingRiver == cell.OutgoingRiver.Previous()) {
-                roadCenter -= HexMetrics.GetSecondCorner(cell.IncomingRiver) * 0.2f;
+            }else if(RiverCanon.GetIncomingRiver(cell) == RiverCanon.GetOutgoingRiver(cell).Previous()) {
+                roadCenter -= HexMetrics.GetSecondCorner(RiverCanon.GetOutgoingRiver(cell)) * 0.2f;
 
-            }else if(cell.IncomingRiver == cell.OutgoingRiver.Next()) {
-                roadCenter -= HexMetrics.GetFirstCorner(cell.IncomingRiver) * 0.2f;
+            }else if(RiverCanon.GetIncomingRiver(cell) == RiverCanon.GetOutgoingRiver(cell).Next()) {
+                roadCenter -= HexMetrics.GetFirstCorner(RiverCanon.GetIncomingRiver(cell)) * 0.2f;
 
             }else if(previousHasRiver && nextHasRiver) {
                 if(!hasRoadThroughEdge) {
@@ -740,8 +742,8 @@ namespace Assets.Simulation.HexMap {
                 centerTwo + HexMetrics.GetFirstSolidCorner (direction.Opposite())
             );
 
-            if(cell.HasRiverThroughEdge(direction)) {
-                TriangulateEstuary(edgeOne, edgeTwo, cell.IncomingRiver == direction);
+            if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
+                TriangulateEstuary(edgeOne, edgeTwo, RiverCanon.GetIncomingRiver(cell) == direction);
             }else {
                 WaterShore.AddQuad(edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2);
                 WaterShore.AddQuad(edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3);

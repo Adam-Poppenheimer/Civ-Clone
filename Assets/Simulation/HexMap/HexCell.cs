@@ -65,7 +65,7 @@ namespace Assets.Simulation.HexMap {
 
                 transform.localPosition = localPosition;
 
-                ValidateRivers();
+                RiverCanon.ValidateRivers(this);
 
                 foreach(var direction in EnumUtil.GetValues<HexDirection>()){
                     if(Roads[(int)direction] && GetElevationDifference(direction) > 1){
@@ -77,28 +77,6 @@ namespace Assets.Simulation.HexMap {
             }
         }
         [SerializeField] private int _elevation = int.MinValue;
-
-        public bool HasRiver {
-            get { return HasIncomingRiver || HasOutgoingRiver; }
-        }
-
-        public bool HasRiverBeginOrEnd {
-            get { return HasIncomingRiver != HasOutgoingRiver; }
-        }
-
-        public bool HasIncomingRiver { get; set; }
-
-        public bool HasOutgoingRiver { get; set; }
-
-        public HexDirection IncomingRiver { get; set; }
-
-        public HexDirection OutgoingRiver { get; set; }
-
-        public HexDirection RiverBeginOrEndDirection {
-            get {
-                return HasIncomingRiver ? IncomingRiver : OutgoingRiver;
-            }
-        }
 
         public float StreamBedY {
             get {
@@ -124,7 +102,7 @@ namespace Assets.Simulation.HexMap {
                 }
 
                 _waterLevel = value;
-                ValidateRivers();
+                RiverCanon.ValidateRivers(this);
                 Refresh();
             }
         }
@@ -168,6 +146,7 @@ namespace Assets.Simulation.HexMap {
         private ITileResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
         private IHexGrid Grid;
+        private IRiverCanon RiverCanon;
 
         #endregion
 
@@ -175,11 +154,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(ITileResourceLogic resourceLogic,
-            INoiseGenerator noiseGenerator, IHexGrid grid
+            INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon
         ){
             WorkerSlot = new WorkerSlot(resourceLogic.GetYieldOfTile(this));
             NoiseGenerator = noiseGenerator;
             Grid = grid;
+            RiverCanon = riverCanon;
         }
 
         #region Unity messages
@@ -210,77 +190,12 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public bool HasRiverThroughEdge(HexDirection direction) {
-            return (HasIncomingRiver && IncomingRiver == direction)
-                || (HasOutgoingRiver && OutgoingRiver == direction);
-        }
-
-        public void SetOutgoingRiver(HexDirection direction) {
-            if(HasOutgoingRiver && OutgoingRiver == direction) {
-                return;
-            }
-
-            IHexCell neighbor = Grid.GetNeighbor(this, direction);
-            if(!IsValidRiverDestination(neighbor)) {
-                return;
-            }
-
-            RemoveOutgoingRiver();
-            if(HasIncomingRiver && IncomingRiver == direction) {
-                RemoveIncomingRiver();
-            }
-
-            HasOutgoingRiver = true;
-            OutgoingRiver = direction;
-
-            neighbor.RemoveIncomingRiver();
-            neighbor.HasIncomingRiver = true;
-            neighbor.IncomingRiver = direction.Opposite();
-
-            SetRoad(direction, false);
-        }
-
-        public void RemoveOutgoingRiver() {
-            if(!HasOutgoingRiver) {
-                return;
-            }
-
-            HasOutgoingRiver = false;
-            RefreshSelfOnly();
-
-            IHexCell neighbor = Grid.GetNeighbor(this, OutgoingRiver);
-            neighbor.HasOutgoingRiver = false;
-            neighbor.RefreshSelfOnly();
-        }
-
-        public void RemoveIncomingRiver() {
-            if(!HasIncomingRiver) {
-                return;
-            }
-            HasIncomingRiver = false;
-            RefreshSelfOnly();
-
-            IHexCell neighbor = Grid.GetNeighbor(this, IncomingRiver);
-            neighbor.HasOutgoingRiver = false;
-            neighbor.RefreshSelfOnly();
-        }
-
-        public void RemoveRiver() {
-            RemoveOutgoingRiver();
-            RemoveIncomingRiver();
-        }
-
-        public bool IsValidRiverDestination(IHexCell neighbor) {
-            return neighbor != null
-                && (Elevation >= neighbor.Elevation || WaterLevel == neighbor.Elevation);
-        }
-
         public bool HasRoadThroughEdge(HexDirection direction) {
             return Roads[(int)direction];
         }
 
         public void AddRoad(HexDirection direction) {
-            if(!Roads[(int)direction] && !HasRiverThroughEdge(direction) &&
+            if(!Roads[(int)direction] /*&& !HasRiverThroughEdge(direction)*/ &&
                 GetElevationDifference(direction) <= 1
             ){
                 SetRoad(direction, true);
@@ -301,20 +216,6 @@ namespace Assets.Simulation.HexMap {
                 return Math.Abs(Elevation - neighbor.Elevation);
             }else {
                 return 0;
-            }
-        }
-
-        private void ValidateRivers() {
-            if( HasOutgoingRiver &&
-                !IsValidRiverDestination(Grid.GetNeighbor(this, OutgoingRiver))
-            ) {
-                RemoveOutgoingRiver();
-            }
-
-            if( HasIncomingRiver &&
-                !Grid.GetNeighbor(this, IncomingRiver).IsValidRiverDestination(this)
-            ) {
-                RemoveIncomingRiver();
             }
         }
 

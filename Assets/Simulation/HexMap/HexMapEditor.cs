@@ -41,21 +41,27 @@ namespace Assets.Simulation.HexMap {
         HexDirection DragDirection;
         IHexCell PreviousCell;
 
+        private IDisposable CellEnterSubscription;
+
         private IHexGrid HexGrid;
         private IHexGridConfig TileConfig;
         private HexCellSignals CellSignals;
 
-        private IDisposable CellEnterSubscription;
+        private IRiverCanon RiverCanon;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid hexGrid, IHexGridConfig tileConfig, HexCellSignals cellSignals) {
+        public void InjectDependencies(
+            IHexGrid hexGrid, IHexGridConfig tileConfig,
+            HexCellSignals cellSignals, IRiverCanon riverCanon
+        ){
             HexGrid = hexGrid;
             TileConfig = tileConfig;
             CellSignals = cellSignals;
+            RiverCanon = riverCanon;
         }
 
         #region Unity message methods
@@ -192,7 +198,7 @@ namespace Assets.Simulation.HexMap {
             }
 
             if(RiverMode == OptionalToggle.No) {
-                cell.RemoveRiver();
+                RiverCanon.RemoveRiver(cell);
             }
             if(RoadMode == OptionalToggle.No) {
                 cell.RemoveRoads();
@@ -201,7 +207,7 @@ namespace Assets.Simulation.HexMap {
                 IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
                 if(otherCell != null) {
                     if(RiverMode == OptionalToggle.Yes) {
-                        otherCell.SetOutgoingRiver(DragDirection);
+                        RiverCanon.SetOutgoingRiver(otherCell, DragDirection);
                     }
                     if(RoadMode == OptionalToggle.Yes) {
                         otherCell.AddRoad(DragDirection);
