@@ -30,6 +30,15 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IBuildingFactory
 
+        /// <inheritdoc/>
+        /// <remarks>
+        /// Unlike other factory classes, this factory checks both technical and mechanical
+        /// restrictions to city placement. It calls into
+        /// <ref>IBuildingProductionValidityLogic.IsTemplateValidForCity</ref> and
+        /// <ref>IBuildingPossessionCanon.GetBuildingsInCity</ref> to make sure that the
+        /// argued template is valid. This inconsistency should probably be resolved, though
+        /// it's not clear whether BuildingFactory is a model or an aberration.
+        /// </remarks>
         public bool CanConstructTemplateInCity(IBuildingTemplate template, ICity city) {
             if(template == null) {
                 throw new ArgumentNullException("template");
@@ -43,6 +52,15 @@ namespace Assets.Simulation.Cities.Buildings {
             return templateIsValid && !buildingAlreadyExists;
         }
 
+        /// <summary>
+        /// Creates a city with the given template in the given city, making sure to assign
+        /// that building to its city.
+        /// </summary>
+        /// <param name="template">The template of the new building</param>
+        /// <param name="city">The city to place the new building in</param>
+        /// <returns>The newly-created building</returns>
+        /// <exception cref="System.ArgumentNullException">Thrown when either template or city are null</exception>
+        /// <exception cref="BuildingCreationException">Thrown when <ref>CanConstructTemplateInCity</ref> would return false on the arguments</exception>
         public IBuilding Create(IBuildingTemplate template, ICity city) {
             if(template == null) {
                 throw new ArgumentNullException("template");

@@ -21,39 +21,55 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
+    /// <summary>
+    /// The standard implementation of ICity.
+    /// </summary>
+    /// <remarks>
+    /// This class makes heavy use of the Humble Object pattern. Most of its logic involves
+    /// calling into various logic- and canon-suffixed classes that handle the bulk of 
+    /// behavior. Bugs are more likely to emerge from those classes rather than this one.
+    /// </remarks>
     public class City : MonoBehaviour, ICity, IPointerClickHandler {
 
         #region instance fields and properties
 
         #region from ICity
 
+        /// <inheritdoc/>
         public IHexCell Location { get; set; }
 
+        /// <inheritdoc/>
         public int Population {
             get { return _population; }
             set { _population = value; }
         }
         [SerializeField] private int _population;
 
+        /// <inheritdoc/>
         public int FoodStockpile {
             get { return _foodStockpile; }
             set { _foodStockpile = value; }
         }
         [SerializeField] private int _foodStockpile;
 
+        /// <inheritdoc/>
         public int CultureStockpile {
             get { return _cultureStockpile; }
             set { _cultureStockpile = value; }
         }
         [SerializeField] private int _cultureStockpile;
 
+        /// <inheritdoc/>
         public ResourceSummary LastIncome { get; private set; }
 
+        /// <inheritdoc/>
         public IProductionProject ActiveProject { get; private set; }
 
+        /// <inheritdoc/>
         public ResourceFocusType ResourceFocus { get; set; }
 
-        public IHexCell TileBeingPursued { get; private set; }
+        /// <inheritdoc/>
+        public IHexCell CellBeingPursued { get; private set; }
 
         #endregion
 
@@ -65,7 +81,7 @@ namespace Assets.Simulation.Cities {
 
         private IBorderExpansionLogic ExpansionLogic;
 
-        private ITilePossessionCanon TilePossessionCanon;
+        private ICellPossessionCanon TilePossessionCanon;
 
         private IWorkerDistributionLogic DistributionLogic;
 
@@ -77,11 +93,22 @@ namespace Assets.Simulation.Cities {
 
         #region instance methods
 
+        /// <summary>
+        /// Constructor-like method to facilitate dependency injection with the Zenject framework.
+        /// </summary>
+        /// <param name="growthLogic"></param>
+        /// <param name="productionLogic"></param>
+        /// <param name="resourceGenerationLogic"></param>
+        /// <param name="expansionLogic"></param>
+        /// <param name="tilePossessionCanon"></param>
+        /// <param name="distributionLogic"></param>
+        /// <param name="projectFactory"></param>
+        /// <param name="signals"></param>
         [Inject]
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
-            ITilePossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
+            ICellPossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
             IProductionProjectFactory projectFactory, CitySignals signals
         ){
             GrowthLogic             = growthLogic;
@@ -96,6 +123,7 @@ namespace Assets.Simulation.Cities {
 
         #region EventSystem handler implementations
 
+        /// <inheritdoc/>
         public void OnPointerClick(PointerEventData eventData) {
             Signals.CityClickedSignal.OnNext(this);
         }
@@ -104,6 +132,7 @@ namespace Assets.Simulation.Cities {
 
         #region from ICity
 
+        /// <inheritdoc/>
         public void SetActiveProductionProject(IBuildingTemplate template) {
             if(template == null) {
                 ActiveProject = null;
@@ -113,6 +142,7 @@ namespace Assets.Simulation.Cities {
             Signals.ProjectChangedSignal.Fire(this, ActiveProject);
         }
 
+        /// <inheritdoc/>
         public void SetActiveProductionProject(IUnitTemplate template) {
             if(template == null) {
                 ActiveProject = null;
@@ -122,6 +152,7 @@ namespace Assets.Simulation.Cities {
             Signals.ProjectChangedSignal.Fire(this, ActiveProject);
         }
 
+        /// <inheritdoc/>
         public void PerformGrowth() {
             if(FoodStockpile < 0 && Population > 1) {
                 Population--;
@@ -133,6 +164,7 @@ namespace Assets.Simulation.Cities {
             }
         }
 
+        /// <inheritdoc/>
         public void PerformProduction() {
             if(ActiveProject == null) {
                 return;
@@ -146,20 +178,22 @@ namespace Assets.Simulation.Cities {
             }
         }
 
+        /// <inheritdoc/>
         public void PerformExpansion() {
-            TileBeingPursued = ExpansionLogic.GetNextTileToPursue(this);
+            CellBeingPursued = ExpansionLogic.GetNextCellToPursue(this);
 
-            var costOfPursuit = ExpansionLogic.GetCultureCostOfAcquiringTile(this, TileBeingPursued);
+            var costOfPursuit = ExpansionLogic.GetCultureCostOfAcquiringCell(this, CellBeingPursued);
 
-            if(TileBeingPursued != null && costOfPursuit <= CultureStockpile && TilePossessionCanon.CanChangeOwnerOfTile(TileBeingPursued, this)) {
+            if(CellBeingPursued != null && costOfPursuit <= CultureStockpile && TilePossessionCanon.CanChangeOwnerOfTile(CellBeingPursued, this)) {
 
                 CultureStockpile -= costOfPursuit;
-                TilePossessionCanon.ChangeOwnerOfTile(TileBeingPursued, this);
+                TilePossessionCanon.ChangeOwnerOfTile(CellBeingPursued, this);
 
-                TileBeingPursued = ExpansionLogic.GetNextTileToPursue(this);
+                CellBeingPursued = ExpansionLogic.GetNextCellToPursue(this);
             }
         }
 
+        /// <inheritdoc/>
         public void PerformDistribution() {
             var allSlots = DistributionLogic.GetSlotsAvailableToCity(this);
             var occupiedAndLockedSlots = allSlots.Where(slot => slot.IsOccupied && slot.IsLocked);
@@ -172,6 +206,7 @@ namespace Assets.Simulation.Cities {
             Signals.DistributionPerformedSignal.Fire(this);
         }
 
+        /// <inheritdoc/>
         public void PerformIncome(){
             LastIncome = ResourceGenerationLogic.GetTotalYieldForCity(this);
 

@@ -15,12 +15,16 @@ using Assets.Simulation.Cities.Territory;
 
 namespace Assets.Simulation.Cities {
 
-    public class CityFactory : ICityFactory , IInitializable, IValidatable {
+    /// <summary>
+    /// The standard implementation for ICityFactory.
+    /// </summary>
+    public class CityFactory : ICityFactory, IValidatable {
 
         #region instance fields and properties
 
         #region from ICityFactory
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<ICity> AllCities {
             get { return allCities.AsReadOnly(); }
         }
@@ -34,24 +38,32 @@ namespace Assets.Simulation.Cities {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IHexGrid Map;
+        private IHexGrid Grid;
 
-        private ITilePossessionCanon TilePossessionCanon;
+        private ICellPossessionCanon CellPossessionCanon;
 
         #endregion
 
         #region constructors
 
+        /// <summary>
+        /// Constructs a factory capable of creating properly-integrated cities.
+        /// </summary>
+        /// <param name="container">The container used to inject dependencies into newly-created factories.</param>
+        /// <param name="cityPrefab">The prefab used to instantiate new cities.</param>
+        /// <param name="cityPossessionCanon">The canon used to assign new cities to their proper owners.</param>
+        /// <param name="grid">The HexGrid used.</param>
+        /// <param name="cellPossessionCanon">The canon used to assign adjacent cells to the city</param>
         [Inject]
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid map, 
-            ITilePossessionCanon tilePossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
+            ICellPossessionCanon cellPossessionCanon
         ){
             Container           = container;
             CityPrefab          = cityPrefab;
             CityPossessionCanon = cityPossessionCanon;
-            Map                 = map;
-            TilePossessionCanon = tilePossessionCanon;
+            Grid                = grid;
+            CellPossessionCanon = cellPossessionCanon;
         }
 
         #endregion
@@ -60,6 +72,18 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityFactory
 
+        /// <summary>
+        /// Creates a new city at the argued location belonging to the argued civilization.
+        /// </summary>
+        /// <param name="location">The location to place the city</param>
+        /// <param name="owner">The owner the city will belong to</param>
+        /// <returns>A fully-instantiated anc configured city with the correct location and owner</returns>
+        /// <remarks>
+        /// This method makes sure that the created city has the correct population, location,
+        /// owner, starting tiles, and resource focus. It also suppresses the slot of the argued location,
+        /// performs distribution on the city, adds it to the AllCities collection, and refreshes the city's
+        /// location.
+        /// </remarks>
         public ICity Create(IHexCell location, ICivilization owner){
             if(location == null) {
                 throw new ArgumentNullException("location");
@@ -77,15 +101,15 @@ namespace Assets.Simulation.Cities {
             newCity.Location = location;
             location.SuppressSlot = true;
 
-            if(TilePossessionCanon.CanChangeOwnerOfTile(location, newCity)) {
-                TilePossessionCanon.ChangeOwnerOfTile(location, newCity);
+            if(CellPossessionCanon.CanChangeOwnerOfTile(location, newCity)) {
+                CellPossessionCanon.ChangeOwnerOfTile(location, newCity);
             }else {
                 throw new CityCreationException("Cannot assign the given location to the newly created city");
             }
             
-            foreach(var neighbor in Map.GetNeighbors(location)) {
-                if(TilePossessionCanon.CanChangeOwnerOfTile(neighbor, newCity)) {
-                    TilePossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
+            foreach(var neighbor in Grid.GetNeighbors(location)) {
+                if(CellPossessionCanon.CanChangeOwnerOfTile(neighbor, newCity)) {
+                    CellPossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
                 }                
             }
             
@@ -107,21 +131,9 @@ namespace Assets.Simulation.Cities {
 
         #endregion
 
-        #region from IInitializable
-
-        public void Initialize() {
-            foreach(var city in GameObject.FindObjectsOfType<City>()) {
-                if(!allCities.Contains(city)) {
-                    Container.InjectGameObject(city.gameObject);
-                    allCities.Add(city);
-                }
-            }
-        }
-
-        #endregion
-
         #region from IValidatable        
 
+        /// <inheritdoc/>
         public void Validate() {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);

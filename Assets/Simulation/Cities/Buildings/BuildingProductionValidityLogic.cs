@@ -7,6 +7,9 @@ using Zenject;
 
 namespace Assets.Simulation.Cities.Buildings {
 
+    /// <summary>
+    /// The standard implementation for IBuildingProductionValidityLogic.
+    /// </summary>
     public class BuildingProductionValidityLogic : IBuildingProductionValidityLogic {
 
         #region instance fields and properties
@@ -19,6 +22,11 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="availableTemplates"></param>
+        /// <param name="possessionCanon"></param>
         [Inject]
         public BuildingProductionValidityLogic(List<IBuildingTemplate> availableTemplates,
             IBuildingPossessionCanon possessionCanon
@@ -33,6 +41,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IBuildingValidityLogic
 
+        /// <inheritdoc/>
         public IEnumerable<IBuildingTemplate> GetTemplatesValidForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -41,6 +50,7 @@ namespace Assets.Simulation.Cities.Buildings {
             return AvailableTemplates.Where(template => IsTemplateValidForCity(template, city));
         }
 
+        /// <inheritdoc/>
         public bool IsTemplateValidForCity(IBuildingTemplate template, ICity city) {
             if(template == null) {
                 throw new ArgumentNullException("template");

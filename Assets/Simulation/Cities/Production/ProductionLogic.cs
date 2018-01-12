@@ -10,6 +10,9 @@ using Assets.Simulation.Cities.ResourceGeneration;
 
 namespace Assets.Simulation.Cities.Production {
 
+    /// <summary>
+    /// The standard implementation of IProductionLogic.
+    /// </summary>
     public class ProductionLogic : IProductionLogic {
 
         #region instance fields and properties
@@ -18,12 +21,15 @@ namespace Assets.Simulation.Cities.Production {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private IBuildingProductionValidityLogic TemplateValidityLogic;
-
         #endregion
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="generationLogic"></param>
         public ProductionLogic(ICityConfig config, IResourceGenerationLogic generationLogic) {
             Config = config;
             GenerationLogic = generationLogic;
@@ -35,6 +41,7 @@ namespace Assets.Simulation.Cities.Production {
 
         #region from IProductionLogic
 
+        /// <inheritdoc/>
         public int GetGoldCostToHurryProject(ICity city, IProductionProject project) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -45,6 +52,7 @@ namespace Assets.Simulation.Cities.Production {
             return Mathf.FloorToInt((project.ProductionToComplete - project.Progress) * Config.HurryCostPerProduction);
         }
 
+        /// <inheritdoc/>
         public int GetProductionProgressPerTurnOnProject(ICity city, IProductionProject project) {
             if(city == null) {
                 throw new ArgumentNullException("city");

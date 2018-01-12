@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IHexGrid> MockGrid;
 
-        private Mock<ITilePossessionCanon> MockTilePossessionCanon;
+        private Mock<ICellPossessionCanon> MockTilePossessionCanon;
 
         private Mock<IWorkerDistributionLogic> MockDistributionLogic;
 
@@ -61,12 +61,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGrid                 = new Mock<IHexGrid>();
-            MockTilePossessionCanon = new Mock<ITilePossessionCanon>();
+            MockTilePossessionCanon = new Mock<ICellPossessionCanon>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<ITilePossessionCanon>                         ().FromInstance(MockTilePossessionCanon.Object);
+            Container.Bind<ICellPossessionCanon>                         ().FromInstance(MockTilePossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
 
             Container.Bind<IPopulationGrowthLogic>   ().FromMock();

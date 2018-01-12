@@ -35,7 +35,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IProductionLogic>          ProductionMock;
         private Mock<IResourceGenerationLogic>  ResourceGenerationMock;
         private Mock<IBorderExpansionLogic>     ExpansionMock;
-        private Mock<ITilePossessionCanon>      TilePossessionCanonMock;
+        private Mock<ICellPossessionCanon>      TilePossessionCanonMock;
         private Mock<IWorkerDistributionLogic>  DistributionMock;
         private Mock<IBuildingPossessionCanon>  BuildingPossessionCanonMock;
         private Mock<IProductionProjectFactory> ProjectFactoryMock;
@@ -46,7 +46,7 @@ namespace Assets.Tests.Simulation.Cities {
             ProductionMock              = new Mock<IProductionLogic>();
             ResourceGenerationMock      = new Mock<IResourceGenerationLogic>();
             ExpansionMock               = new Mock<IBorderExpansionLogic>();
-            TilePossessionCanonMock     = new Mock<ITilePossessionCanon>();
+            TilePossessionCanonMock     = new Mock<ICellPossessionCanon>();
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
             BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
             ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
@@ -55,7 +55,7 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IProductionLogic>         ().FromInstance(ProductionMock             .Object);
             Container.Bind<IResourceGenerationLogic> ().FromInstance(ResourceGenerationMock     .Object);
             Container.Bind<IBorderExpansionLogic>    ().FromInstance(ExpansionMock              .Object);
-            Container.Bind<ITilePossessionCanon>     ().FromInstance(TilePossessionCanonMock    .Object);
+            Container.Bind<ICellPossessionCanon>     ().FromInstance(TilePossessionCanonMock    .Object);
             Container.Bind<IWorkerDistributionLogic> ().FromInstance(DistributionMock           .Object);
             Container.Bind<IBuildingPossessionCanon> ().FromInstance(BuildingPossessionCanonMock.Object);
             Container.Bind<IProductionProjectFactory>().FromInstance(ProjectFactoryMock         .Object);
@@ -232,13 +232,13 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
 
             city.PerformExpansion();
 
-            ExpansionMock.Verify(logic => logic.GetNextTileToPursue(city), Times.AtLeastOnce,
+            ExpansionMock.Verify(logic => logic.GetNextCellToPursue(city), Times.AtLeastOnce,
                 "ExpansionLogic's GetNextTileToPursue method was never called");
-            Assert.AreEqual(tile, city.TileBeingPursued, "City has an incorrect TileBeingPursued");
+            Assert.AreEqual(tile, city.CellBeingPursued, "City has an incorrect TileBeingPursued");
         }
 
         [Test(Description = "When PerformExpansion is called on a city, that city should call " +
@@ -249,11 +249,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
 
             city.PerformExpansion();
 
-            ExpansionMock.Verify(logic => logic.GetCultureCostOfAcquiringTile(city, tile), Times.AtLeastOnce,
+            ExpansionMock.Verify(logic => logic.GetCultureCostOfAcquiringCell(city, tile), Times.AtLeastOnce,
                 "ExpansionLogic's GetCultureCostOfAcquiringTile method was never called");
         }
 
@@ -265,8 +265,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
 
             city.PerformExpansion();
 
@@ -283,9 +283,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(7);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(7);
 
             TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
 
@@ -302,9 +302,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, tile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, tile)).Returns(0);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(0);
 
             TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
 
@@ -323,18 +323,18 @@ namespace Assets.Tests.Simulation.Cities {
             var firstTile = new Mock<IHexCell>().Object;
             var secondTile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.SetupSequence(logic => logic.GetNextTileToPursue(city))
+            ExpansionMock.SetupSequence(logic => logic.GetNextCellToPursue(city))
                 .Returns(firstTile)
                 .Returns(secondTile);
 
-            ExpansionMock.Setup(logic => logic.IsTileAvailable(city, firstTile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringTile(city, firstTile)).Returns(0);
+            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, firstTile)).Returns(true);
+            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, firstTile)).Returns(0);
 
             TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(firstTile, city)).Returns(true);
 
             city.PerformExpansion();
 
-            Assert.AreEqual(secondTile, city.TileBeingPursued, "A configuration that should've led to a successful " +
+            Assert.AreEqual(secondTile, city.CellBeingPursued, "A configuration that should've led to a successful " +
                 "tile acquisition did not change the TileBeingPursued of the city to the next tile to pursue");
         }
 
@@ -343,12 +343,12 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_DoesNotThrowOnNullPursuit() {
             var city = Container.Resolve<City>();
 
-            ExpansionMock.Setup(logic => logic.GetNextTileToPursue(city)).Returns<IHexCell>(null);
+            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns<IHexCell>(null);
 
             Assert.DoesNotThrow(() => city.PerformExpansion(),
                 "An exception was thrown when calling PerformExpansion on a null TileToPursue, even though this should be valid");
 
-            Assert.IsNull(city.TileBeingPursued, "TileBeingPursued has an incorrect value");
+            Assert.IsNull(city.CellBeingPursued, "TileBeingPursued has an incorrect value");
         }
 
         [Test(Description = "When PerformDistribution is called on a city, that city should " + 

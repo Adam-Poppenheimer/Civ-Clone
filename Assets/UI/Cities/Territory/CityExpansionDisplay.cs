@@ -98,10 +98,10 @@ namespace Assets.UI.Cities.Territory {
                 return;
             }
 
-            var nextTile = ExpansionLogic.GetNextTileToPursue(ObjectToDisplay);
+            var nextTile = ExpansionLogic.GetNextCellToPursue(ObjectToDisplay);
 
             var currentCulture = ObjectToDisplay.CultureStockpile;
-            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringTile(ObjectToDisplay, nextTile);
+            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringCell(ObjectToDisplay, nextTile);
 
             var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Culture];
 

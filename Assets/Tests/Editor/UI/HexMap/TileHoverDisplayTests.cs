@@ -35,7 +35,7 @@ namespace Assets.Tests.UI.GameMap {
         private Mock<IHexCellSignalLogic>      MockSignalLogic;
 
         private Mock<IResourceGenerationLogic> MockResourceLogic;
-        private Mock<ITilePossessionCanon>     MockPossessionCanon;
+        private Mock<ICellPossessionCanon>     MockPossessionCanon;
 
         private ISubject<IHexCell> BeginHoverSubject;
         private ISubject<IHexCell> EndHoverSubject;
@@ -60,7 +60,7 @@ namespace Assets.Tests.UI.GameMap {
             MockSignalLogic     = new Mock<IHexCellSignalLogic>();
 
             MockResourceLogic   = new Mock<IResourceGenerationLogic>();
-            MockPossessionCanon = new Mock<ITilePossessionCanon>();            
+            MockPossessionCanon = new Mock<ICellPossessionCanon>();            
 
             BeginHoverSubject = new Subject<IHexCell>();
             EndHoverSubject   = new Subject<IHexCell>();
@@ -72,7 +72,7 @@ namespace Assets.Tests.UI.GameMap {
             Container.Bind<IHexCellSignalLogic>()                                       .FromInstance(MockSignalLogic.Object);
 
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceLogic.Object);
-            Container.Bind<ITilePossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
+            Container.Bind<ICellPossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
 
             Container.Bind<TileHoverDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

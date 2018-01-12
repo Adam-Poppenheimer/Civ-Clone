@@ -214,11 +214,11 @@ namespace Assets.Tests.UI.Cities {
             var newCity = mockCity.Object;
 
             MockExpansionLogic
-                .Setup(logic => logic.GetNextTileToPursue(newCity))
+                .Setup(logic => logic.GetNextCellToPursue(newCity))
                 .Returns(nextTile);
 
             MockExpansionLogic
-                .Setup(logic => logic.GetCultureCostOfAcquiringTile(newCity, nextTile))
+                .Setup(logic => logic.GetCultureCostOfAcquiringCell(newCity, nextTile))
                 .Returns(cultureNeeded);
 
             MockGenerationLogic

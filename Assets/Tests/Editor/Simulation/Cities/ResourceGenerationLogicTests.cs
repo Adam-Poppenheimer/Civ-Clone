@@ -26,7 +26,7 @@ namespace Assets.Tests.Simulation.Cities {
         #region instance fields and properties
 
         private Mock<ICityConfig>                                   MockConfig;
-        private Mock<ITilePossessionCanon>                          MockTileCanon;
+        private Mock<ICellPossessionCanon>                          MockTileCanon;
         private Mock<IBuildingPossessionCanon>                      MockBuildingCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockConfig              = new Mock<ICityConfig>();
-            MockTileCanon           = new Mock<ITilePossessionCanon>();
+            MockTileCanon           = new Mock<ICellPossessionCanon>();
             MockBuildingCanon       = new Mock<IBuildingPossessionCanon>();     
             MockIncomeLogic         = new Mock<IIncomeModifierLogic>();   
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();    
@@ -58,7 +58,7 @@ namespace Assets.Tests.Simulation.Cities {
                 .Returns(ResourceSummary.Empty);
 
             Container.Bind<ICityConfig>()                                  .FromInstance(MockConfig             .Object);
-            Container.Bind<ITilePossessionCanon>()                         .FromInstance(MockTileCanon          .Object);
+            Container.Bind<ICellPossessionCanon>()                         .FromInstance(MockTileCanon          .Object);
             Container.Bind<IBuildingPossessionCanon>()                     .FromInstance(MockBuildingCanon      .Object);
             Container.Bind<IIncomeModifierLogic>()                         .FromInstance(MockIncomeLogic        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);

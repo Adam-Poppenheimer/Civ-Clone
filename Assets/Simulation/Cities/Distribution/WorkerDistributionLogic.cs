@@ -14,6 +14,9 @@ using Assets.Simulation.Cities.ResourceGeneration;
 
 namespace Assets.Simulation.Cities.Distribution {
 
+    /// <summary>
+    /// The standard implementation of IWorkerDistributionLogic.
+    /// </summary>
     public class WorkerDistributionLogic : IWorkerDistributionLogic {
 
         #region instance fields and properties
@@ -24,15 +27,22 @@ namespace Assets.Simulation.Cities.Distribution {
 
         private IBuildingPossessionCanon BuildingCanon;
 
-        private ITilePossessionCanon TileCanon;
+        private ICellPossessionCanon TileCanon;
 
         #endregion
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="growthLogic"></param>
+        /// <param name="generationLogic"></param>
+        /// <param name="buildingCanon"></param>
+        /// <param name="tileCanon"></param>
         [Inject]
         public WorkerDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic,
-            IBuildingPossessionCanon buildingCanon, ITilePossessionCanon tileCanon) {
+            IBuildingPossessionCanon buildingCanon, ICellPossessionCanon tileCanon) {
 
             GrowthLogic     = growthLogic;
             GenerationLogic = generationLogic;
@@ -46,6 +56,7 @@ namespace Assets.Simulation.Cities.Distribution {
 
         #region from IWorkerDistributionLogic
 
+        /// <inheritdoc/>
         public void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             ResourceFocusType focus){  
             foreach(var slot in slots) {
@@ -62,6 +73,7 @@ namespace Assets.Simulation.Cities.Distribution {
             } 
         }
 
+        /// <inheritdoc/>
         public int GetUnemployedPeopleInCity(ICity city) {
             int occupiedTiles = TileCanon.GetTilesOfCity(city).Where(tile => tile.WorkerSlot.IsOccupied).Count();
 
@@ -77,6 +89,7 @@ namespace Assets.Simulation.Cities.Distribution {
             return unemployedPeople;
         }
 
+        /// <inheritdoc/>
         public IEnumerable<IWorkerSlot> GetSlotsAvailableToCity(ICity city) {
             var retval = new List<IWorkerSlot>();
 
@@ -92,13 +105,12 @@ namespace Assets.Simulation.Cities.Distribution {
         #endregion
 
         /// <remarks>
-        /// This algorithm works in two stages. First, it assigns workers to the highest
-        /// possible yield for the resource focus preferences is requesting. Once that's been
-        /// done, it checks to see if its current distribution is capable of sustaining the
-        /// population. If it isn't, it starts removing workers from the slots that yield
-        /// the least of the focused resource and starts placing them in the slots that yield
-        /// the most food. It does this until the total food yield is sufficient to sustain
-        /// the population.
+        /// This algorithm works in two stages. First, it assigns workers based purely on the 
+        /// given focused resource. Once that's been done, it checks to see if its current
+        /// distribution is capable of sustaining the population. If it isn't, it starts
+        /// removing workers from the slots that yield the least of the focused resource and
+        /// places them in the slots that yield the most food. It does this until the total food
+        /// yield is sufficient to sustain the population.
         /// </remarks>
         private void PerformFocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             ResourceType focusedResource) {

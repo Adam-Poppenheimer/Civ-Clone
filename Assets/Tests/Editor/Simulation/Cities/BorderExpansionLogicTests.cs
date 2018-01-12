@@ -24,19 +24,19 @@ namespace Assets.Tests.Simulation.Cities {
     public class BorderExpansionLogicTests : ZenjectUnitTestFixture {
 
         private Mock<IHexGrid> MockHexGrid;
-        private Mock<ITilePossessionCanon> MockPossessionCanon;
+        private Mock<ICellPossessionCanon> MockPossessionCanon;
         private Mock<ICityConfig> MockConfig;
         private Mock<IResourceGenerationLogic> MockResourceGenerationLogic;
 
         [SetUp]
         public void CommonInstall() {
             MockHexGrid                 = new Mock<IHexGrid>();
-            MockPossessionCanon         = new Mock<ITilePossessionCanon>();
+            MockPossessionCanon         = new Mock<ICellPossessionCanon>();
             MockConfig                  = new Mock<ICityConfig>();
             MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
 
             Container.Bind<IHexGrid>()                .FromInstance(MockHexGrid.Object);
-            Container.Bind<ITilePossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
+            Container.Bind<ICellPossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
             Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceGenerationLogic.Object);
 
@@ -84,7 +84,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(neutralTileTwo, expansionLogic.GetNextTileToPursue(homeCity), 
+            Assert.AreEqual(neutralTileTwo, expansionLogic.GetNextCellToPursue(homeCity), 
                 "GetNextTileToPursue did not return the tile that maximizes food");
         }
 
@@ -129,7 +129,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(neutralTileOne, expansionLogic.GetNextTileToPursue(homeCity), 
+            Assert.AreEqual(neutralTileOne, expansionLogic.GetNextCellToPursue(homeCity), 
                 "GetNextTileToPursue did not return the tile that maximizes food and is also available");
         }
 
@@ -178,7 +178,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(neutralTileTwo, expansionLogic.GetNextTileToPursue(homeCity), 
+            Assert.AreEqual(neutralTileTwo, expansionLogic.GetNextCellToPursue(homeCity), 
                 "GetNextTileToPursue did not return the tile that maximizes food and is also available");
         }
 
@@ -208,10 +208,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.IsTrue(expansionLogic.IsTileAvailable(homeCity, nearTile),
+            Assert.IsTrue(expansionLogic.IsCellAvailable(homeCity, nearTile),
                 "NearTile was falsely flagged as unavailable for expansion");
 
-            Assert.IsFalse(expansionLogic.IsTileAvailable(homeCity, farTile),
+            Assert.IsFalse(expansionLogic.IsCellAvailable(homeCity, farTile),
                 "FarTile was falsely flagged as available for expansion");
         }
 
@@ -235,10 +235,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.IsTrue(expansionLogic.IsTileAvailable(homeCity, neutralTile),
+            Assert.IsTrue(expansionLogic.IsCellAvailable(homeCity, neutralTile),
                 "NeutralTile was falsely flagged as unavailable for expansion");
 
-            Assert.IsFalse(expansionLogic.IsTileAvailable(homeCity, foreignTile),
+            Assert.IsFalse(expansionLogic.IsCellAvailable(homeCity, foreignTile),
                 "ForeignTile was falsely flagged as available for expansion");
         }
 
@@ -263,10 +263,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.IsTrue(expansionLogic.IsTileAvailable(owningCity, neighboringTile),
+            Assert.IsTrue(expansionLogic.IsCellAvailable(owningCity, neighboringTile),
                 "NeighboringTile was falsely flagged as unavailable for expansion");
 
-            Assert.IsFalse(expansionLogic.IsTileAvailable(owningCity, nonNeighboringTile),
+            Assert.IsFalse(expansionLogic.IsCellAvailable(owningCity, nonNeighboringTile),
                 "NonNeighboringTile was falsely flagged as available for expansion");
         }
 
@@ -293,7 +293,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var logic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(93, logic.GetCultureCostOfAcquiringTile(city, newTile),
+            Assert.AreEqual(93, logic.GetCultureCostOfAcquiringCell(city, newTile),
                 "GetCultureCostOfAcquiringTile returned an incorrect value on a city with 6 tiles");
         }
 
@@ -318,7 +318,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var logic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(93, logic.GetGoldCostOfAcquiringTile(city, newTile),
+            Assert.AreEqual(93, logic.GetGoldCostOfAcquiringCell(city, newTile),
                 "GetCultureCostOfAcquiringTile returned an incorrect value on a city with 6 tiles");
         }
 
@@ -378,7 +378,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            var availableTiles = expansionLogic.GetAllTilesAvailableToCity(homeCityMock.Object);
+            var availableTiles = expansionLogic.GetAllCellsAvailableToCity(homeCityMock.Object);
 
             Assert.IsFalse(availableTiles.Contains(homeTile),                      "HomeTile is falsely considered an available tile");
             Assert.IsTrue (availableTiles.Contains(nearNeighboringNeutralTile),    "nearNeighboringNeutralTile is not considered an available tile");
@@ -395,25 +395,25 @@ namespace Assets.Tests.Simulation.Cities {
             var testTile = new Mock<IHexCell>().Object;
             var testCity = new Mock<ICity>().Object;
 
-            Assert.Throws<ArgumentNullException>(() => logic.GetNextTileToPursue(null),
+            Assert.Throws<ArgumentNullException>(() => logic.GetNextCellToPursue(null),
                 "GetNextTileToPursue failed to throw on a null city argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.IsTileAvailable(null, testTile),
+            Assert.Throws<ArgumentNullException>(() => logic.IsCellAvailable(null, testTile),
                 "IsTileAvailable failed to throw on a null city argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.IsTileAvailable(testCity, null),
+            Assert.Throws<ArgumentNullException>(() => logic.IsCellAvailable(testCity, null),
                 "IsTileAvailable failed to throw on a null tile argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.GetCultureCostOfAcquiringTile(null, testTile),
+            Assert.Throws<ArgumentNullException>(() => logic.GetCultureCostOfAcquiringCell(null, testTile),
                 "GetCultureCostOfAcquiringTile failed to throw on a null city argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.GetCultureCostOfAcquiringTile(testCity, null),
+            Assert.Throws<ArgumentNullException>(() => logic.GetCultureCostOfAcquiringCell(testCity, null),
                 "GetCultureCostOfAcquiringTile failed to throw on a null tile argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.GetGoldCostOfAcquiringTile(null, testTile),
+            Assert.Throws<ArgumentNullException>(() => logic.GetGoldCostOfAcquiringCell(null, testTile),
                 "GetGoldCostOfAcquiringTile failed to throw on a null city argument");
 
-            Assert.Throws<ArgumentNullException>(() => logic.GetGoldCostOfAcquiringTile(testCity, null),
+            Assert.Throws<ArgumentNullException>(() => logic.GetGoldCostOfAcquiringCell(testCity, null),
                 "GetGoldCostOfAcquiringTile failed to throw on a null tile argument");
         }
 

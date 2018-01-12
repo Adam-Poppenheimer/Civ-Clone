@@ -13,11 +13,14 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities {
 
+    /// <summary>
+    /// The standard implementation of ICityValidityLogic
+    /// </summary>
     public class CityValidityLogic : ICityValidityLogic {
 
         #region instance fields and properties
 
-        private ITilePossessionCanon CellPossessionCanon;
+        private ICellPossessionCanon CellPossessionCanon;
 
         private IHexGrid HexGrid;
 
@@ -31,9 +34,17 @@ namespace Assets.Simulation.Cities {
 
         #region constructors
 
+        /// <summary>
+        /// The standard constructor for a CityValidityLogic object.
+        /// </summary>
+        /// <param name="tilePossessionCanon"></param>
+        /// <param name="hexGrid"></param>
+        /// <param name="cityFactory"></param>
+        /// <param name="config"></param>
+        /// <param name="riverCanon"></param>
         [Inject]
         public CityValidityLogic(
-            ITilePossessionCanon tilePossessionCanon, IHexGrid hexGrid,
+            ICellPossessionCanon tilePossessionCanon, IHexGrid hexGrid,
             ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon
         ){
             CellPossessionCanon = tilePossessionCanon;
@@ -49,6 +60,10 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityValidityLogic
 
+        /// <inheritdoc/>
+        /// <remarks>
+        /// Check CityValidityLogicTests to learn exactly what constitutes a valid city placement.
+        /// </remarks>
         public bool IsCellValidForCity(IHexCell cell) {
             if(CellPossessionCanon.GetCityOfTile(cell) != null) {
                 return false;

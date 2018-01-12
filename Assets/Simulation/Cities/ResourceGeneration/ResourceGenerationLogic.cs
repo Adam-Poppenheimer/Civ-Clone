@@ -12,13 +12,16 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 
+    /// <summary>
+    /// The standard implementation of IResourceGenerationLogic.
+    /// </summary>
     public class ResourceGenerationLogic : IResourceGenerationLogic {
 
         #region instance fields and properties
 
         private ICityConfig Config;
 
-        private ITilePossessionCanon TileCanon;
+        private ICellPossessionCanon TileCanon;
         private IBuildingPossessionCanon BuildingCanon;
 
         private IIncomeModifierLogic IncomeModifierLogic;
@@ -28,8 +31,16 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
+        /// <param name="tileCanon"></param>
+        /// <param name="buildingCanon"></param>
+        /// <param name="incomeModifierLogic"></param>
+        /// <param name="cityPossessionCanon"></param>
         [Inject]
-        public ResourceGenerationLogic(ICityConfig config, ITilePossessionCanon tileCanon,
+        public ResourceGenerationLogic(ICityConfig config, ICellPossessionCanon tileCanon,
             IBuildingPossessionCanon buildingCanon, IIncomeModifierLogic incomeModifierLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
             Config = config;
@@ -45,6 +56,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region from IResourceGenerationLogic
 
+        /// <inheritdoc/>
         public ResourceSummary GetTotalYieldForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -83,6 +95,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return retval;
         }
 
+        /// <inheritdoc/>
         public ResourceSummary GetYieldOfSlotForCity(IWorkerSlot slot, ICity city) {
             if(slot == null) {
                 throw new ArgumentNullException("slot");
@@ -104,6 +117,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return realBaseYield * multiplier;
         }
 
+        /// <inheritdoc/>
         public ResourceSummary GetYieldOfUnemployedForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");

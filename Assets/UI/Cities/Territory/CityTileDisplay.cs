@@ -20,7 +20,7 @@ namespace Assets.UI.Cities.Territory {
 
         private List<IWorkerSlotDisplay> InstantiatedDisplays = new List<IWorkerSlotDisplay>();
 
-        private ITilePossessionCanon PossessionCanon;
+        private ICellPossessionCanon PossessionCanon;
 
         private WorkerSlotDisplayFactory SlotFactory;
 
@@ -29,7 +29,7 @@ namespace Assets.UI.Cities.Territory {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITilePossessionCanon possessionCanon, WorkerSlotDisplayFactory slotFactory,
+        public void InjectDependencies(ICellPossessionCanon possessionCanon, WorkerSlotDisplayFactory slotFactory,
             CitySignals signals) {
 
             PossessionCanon = possessionCanon;

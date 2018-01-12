@@ -27,7 +27,7 @@ namespace Assets.Tests.UI.Cities {
 
         #region instance fields and properties
 
-        private Mock<ITilePossessionCanon> MockPossessionCanon;
+        private Mock<ICellPossessionCanon> MockPossessionCanon;
 
         private List<Mock<IHexCell>> AllTileMocks = new List<Mock<IHexCell>>();
 
@@ -44,12 +44,12 @@ namespace Assets.Tests.UI.Cities {
             AllTileMocks.Clear();
             AllSlotDisplayMocks.Clear();
 
-            MockPossessionCanon = new Mock<ITilePossessionCanon>();
+            MockPossessionCanon = new Mock<ICellPossessionCanon>();
             MockPossessionCanon
                 .Setup(canon => canon.GetTilesOfCity(It.IsAny<ICity>()))
                 .Returns(AllTileMocks.Select(mock => mock.Object));
 
-            Container.Bind<ITilePossessionCanon>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<ICellPossessionCanon>().FromInstance(MockPossessionCanon.Object);
 
             Container.BindFactory<IWorkerSlotDisplay, WorkerSlotDisplayFactory>().FromMethod(BuildSlotDisplay);
 

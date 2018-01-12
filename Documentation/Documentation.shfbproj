@@ -1,0 +1,122 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <!-- The configuration and platform will be used to determine which assemblies to include from solution and
+				 project documentation sources -->
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>26dc0085-db70-4591-a2cd-3606cc08d9da</ProjectGuid>
+    <SHFBSchemaVersion>2015.6.5.0</SHFBSchemaVersion>
+    <!-- AssemblyName, Name, and RootNamespace are not used by SHFB but Visual Studio adds them anyway -->
+    <AssemblyName>Documentation</AssemblyName>
+    <RootNamespace>Documentation</RootNamespace>
+    <Name>Documentation</Name>
+    <!-- SHFB properties -->
+    <FrameworkVersion>.NET Framework 3.5</FrameworkVersion>
+    <OutputPath>.\Help\</OutputPath>
+    <HtmlHelpName>CivCloneDocumentation</HtmlHelpName>
+    <Language>en-US</Language>
+    <TransformComponentArguments>
+      <Argument Key="logoFile" Value="Help.png" xmlns="" />
+      <Argument Key="logoHeight" Value="" xmlns="" />
+      <Argument Key="logoWidth" Value="" xmlns="" />
+      <Argument Key="logoAltText" Value="" xmlns="" />
+      <Argument Key="logoPlacement" Value="left" xmlns="" />
+      <Argument Key="logoAlignment" Value="left" xmlns="" />
+      <Argument Key="maxVersionParts" Value="" xmlns="" />
+    </TransformComponentArguments>
+    <SaveComponentCacheCapacity>100</SaveComponentCacheCapacity>
+    <BuildAssemblerVerbosity>OnlyWarningsAndErrors</BuildAssemblerVerbosity>
+    <HelpFileFormat>HtmlHelp1, Website</HelpFileFormat>
+    <IndentHtml>False</IndentHtml>
+    <KeepLogFile>True</KeepLogFile>
+    <DisableCodeBlockComponent>False</DisableCodeBlockComponent>
+    <CleanIntermediates>True</CleanIntermediates>
+    <DocumentationSources>
+      <DocumentationSource sourceFile="..\Civ-Clone.CSharp.csproj" xmlns="" />
+    </DocumentationSources>
+    <HelpFileVersion>1.0.0.0</HelpFileVersion>
+    <MaximumGroupParts>2</MaximumGroupParts>
+    <NamespaceGrouping>False</NamespaceGrouping>
+    <SyntaxFilters>Standard</SyntaxFilters>
+    <SdkLinkTarget>Blank</SdkLinkTarget>
+    <RootNamespaceContainer>False</RootNamespaceContainer>
+    <PresentationStyle>VS2013</PresentationStyle>
+    <Preliminary>False</Preliminary>
+    <NamingMethod>Guid</NamingMethod>
+    <HelpTitle>Civ-Clone Technical Documentation</HelpTitle>
+    <ContentPlacement>AboveNamespaces</ContentPlacement>
+    <ApiFilter>
+      <Filter entryType="Namespace" fullName="UnityEngine" isExposed="True" xmlns="">
+  <Filter entryType="Class" fullName="UnityEngine.Behaviour" filterName="Behaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Component" filterName="Component" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.MonoBehaviour" filterName="MonoBehaviour" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.Object" filterName="Object" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.ScriptableObject" filterName="ScriptableObject" isExposed="False" />
+  <Filter entryType="Class" fullName="UnityEngine.StateMachineBehaviour" filterName="StateMachineBehaviour" isExposed="False" />
+</Filter>
+    </ApiFilter>
+    <VisibleItems>InheritedMembers, InheritedFrameworkMembers, Protected, ProtectedInternalAsProtected</VisibleItems>
+    <NamespaceSummaries>
+      <NamespaceSummaryItem name="Assets.Simulation" isDocumented="True">Contains all code that establishes the state and mechanics of the game.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities" isDocumented="True">Contains classes and utilities that define, create, and manage cities and everything contained within them.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.Buildings" isDocumented="True">Establishes buildings. Buildings exist within cities, providing yield and worker slots to their cities.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.Distribution" isDocumented="True">Contains the logic by which citizens are distributed into available slots.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.Growth" isDocumented="True">Contains the logic that mediates city growth and starvation.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.Production" isDocumented="True">Contains the logic that defines and executes construction projects, which allow cities to train units and construct buildings.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.ResourceGeneration" isDocumented="True">Contains logic that determines yields and income modifiers of slots, tiles, and cities.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Cities.Territory" isDocumented="True">Contains classes that handle border expansion and tile possession by individual cities.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Civilizations" isDocumented="True">Contains all the code that defines, creates, and executes civilizations, which are the largest actors in the game and represent all the things that a particular player has control over.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Core" isDocumented="True">Contains classes that lie at the core of gameplay execution. Mostly involves player input and turn execution.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.HexMap" isDocumented="True">Contains all the classes that build the map upon which play occurs. Includes the logical aspects of hex grids as well as the geometry necessary to build the game world's meshes and to display features.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Improvements" isDocumented="True">Contains classes that implement improvements, features that sit on top of a cell and provide various bonuses.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Units" isDocumented="True">Contains classes that define, create, and operate units, which are objects that move across the game world in a variety of ways and can perform a variety of actions.</NamespaceSummaryItem>
+<NamespaceSummaryItem name="Assets.Simulation.Units.Abilities" isDocumented="True">Contains the logic to execute unit abilities, which allow units to affect the state of the game.</NamespaceSummaryItem></NamespaceSummaries>
+  </PropertyGroup>
+  <!-- There are no properties for these groups.  AnyCPU needs to appear in order for Visual Studio to perform
+			 the build.  The others are optional common platform types that may appear. -->
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x64' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|Win32' ">
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|Win32' ">
+  </PropertyGroup>
+  <ItemGroup>
+    <Folder Include="Content" />
+    <Folder Include="Content\VersionHistory" />
+    <Folder Include="icons" />
+    <Folder Include="media" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Content\VersionHistory\v1.0.0.0.aml" />
+    <None Include="Content\VersionHistory\VersionHistory.aml" />
+  </ItemGroup>
+  <ItemGroup>
+    <ContentLayout Include="ContentLayout.content" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="icons\Help.png" />
+  </ItemGroup>
+  <!-- Import the SHFB build targets -->
+  <Import Project="$(SHFBROOT)\SandcastleHelpFileBuilder.targets" />
+  <!-- The pre-build and post-build event properties must appear *after* the targets file import in order to be
+			 evaluated correctly. -->
+  <PropertyGroup>
+    <PreBuildEvent>
+    </PreBuildEvent>
+    <PostBuildEvent>
+    </PostBuildEvent>
+    <RunPostBuildEvent>OnBuildSuccess</RunPostBuildEvent>
+  </PropertyGroup>
+</Project>

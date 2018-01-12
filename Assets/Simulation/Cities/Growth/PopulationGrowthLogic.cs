@@ -9,6 +9,9 @@ using Zenject;
 
 namespace Assets.Simulation.Cities.Growth {
 
+    /// <summary>
+    /// The standard implementation for IPopulationGrowthLogic.
+    /// </summary>
     public class PopulationGrowthLogic : IPopulationGrowthLogic {
 
         #region instance fields and properties
@@ -17,15 +20,24 @@ namespace Assets.Simulation.Cities.Growth {
 
         #endregion
 
-        #region instance methods
+        #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="config"></param>
         [Inject]
-        public void InjectDependencies(ICityConfig config) {
+        public PopulationGrowthLogic(ICityConfig config) {
             Config = config;
         }
 
+        #endregion
+
+        #region instance methods
+
         #region from IPopulationGrowthLogic
 
+        /// <inheritdoc/>
         public int GetFoodConsumptionPerTurn(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -34,6 +46,7 @@ namespace Assets.Simulation.Cities.Growth {
             return city.Population * Config.FoodConsumptionPerPerson;
         }
 
+        /// <inheritdoc/>
         public int GetFoodStockpileSubtractionAfterGrowth(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -42,6 +55,7 @@ namespace Assets.Simulation.Cities.Growth {
             return GetFoodStockpileToGrow(city);
         }
 
+        /// <inheritdoc/>
         public int GetFoodStockpileAfterStarvation(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -50,6 +64,7 @@ namespace Assets.Simulation.Cities.Growth {
             return 0;
         }
 
+        /// <inheritdoc/>
         public int GetFoodStockpileToGrow(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");

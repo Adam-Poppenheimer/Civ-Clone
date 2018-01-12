@@ -18,7 +18,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<ITilePossessionCanon> MockPossessionCanon;
+        private Mock<ICellPossessionCanon> MockPossessionCanon;
 
         private Mock<IHexGrid> MockHexGrid;
 
@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockPossessionCanon = new Mock<ITilePossessionCanon>();
+            MockPossessionCanon = new Mock<ICellPossessionCanon>();
             MockHexGrid         = new Mock<IHexGrid>();
             MockCityFactory     = new Mock<ICityFactory>();
             MockConfig          = new Mock<ICityConfig>();
@@ -48,7 +48,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
-            Container.Bind<ITilePossessionCanon>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<ICellPossessionCanon>().FromInstance(MockPossessionCanon.Object);
             Container.Bind<IHexGrid>()            .FromInstance(MockHexGrid.Object);
             Container.Bind<ICityFactory>()        .FromInstance(MockCityFactory.Object);
             Container.Bind<ICityConfig>()         .FromInstance(MockConfig.Object);

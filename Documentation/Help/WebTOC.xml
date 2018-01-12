@@ -1,0 +1,1897 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<HelpTOC>
+
+  <HelpTOCNode Id="9390e262-37f3-4af5-bb3b-16376b4eb44d" Title="Assets.Simulation" Url="html/36ed979e-3340-83d2-3c92-5ddd154fab29.htm">
+    <HelpTOCNode Id="e3fbf7d2-f3db-4e62-b0f6-4b98121defdb" Title="IPossessionRelationship(TOwner, TPossession) Interface" Url="html/bad6e9e3-1791-2d71-66a8-4a20d60a2065.htm">
+      <HelpTOCNode Id="497dafca-e60c-4170-983c-93f84c64f9e9" Title="IPossessionRelationship(TOwner, TPossession) Methods" Url="html/9762cef1-c816-ade1-d1d1-5340e1a84d3d.htm">
+        <HelpTOCNode Title="CanChangeOwnerOfPossession Method " Url="html/355141d4-cd06-c8c6-b618-3b222a8ae461.htm" />
+        <HelpTOCNode Title="ChangeOwnerOfPossession Method " Url="html/7f4a751d-b42c-95c5-bafb-29553ce7b6e4.htm" />
+        <HelpTOCNode Title="GetOwnerOfPossession Method " Url="html/48837e81-c2f6-7c00-738a-9e4298500602.htm" />
+        <HelpTOCNode Title="GetPossessionsOfOwner Method " Url="html/d3892ece-83dd-33ab-159b-8fae7a181325.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="df0a7493-7349-4617-89c8-fe5e32ce73ec" Title="IWorkerSlot Interface" Url="html/3392fcbe-9703-0069-bd5a-5771d7bb20a2.htm">
+      <HelpTOCNode Id="4a42b5c6-d865-46bb-8e4d-26fb9074ba2a" Title="IWorkerSlot Properties" Url="html/f898c537-bcd9-3125-8b71-b979388e4b18.htm">
+        <HelpTOCNode Title="BaseYield Property " Url="html/74f766e9-dc9f-b4c0-53a4-38c2153631ff.htm" />
+        <HelpTOCNode Title="IsLocked Property " Url="html/fff9e97f-becd-6db3-3ff4-2ee0d6ef1db6.htm" />
+        <HelpTOCNode Title="IsOccupied Property " Url="html/9cdb6b98-55d5-7018-73c7-a2fa8ece7dff.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d0406542-de9a-4788-8a19-1bef2cbe05d0" Title="PossessionRelationship(TOwner, TPossession) Class" Url="html/db3e0feb-2a42-ef32-c09e-ca67c762b01e.htm">
+      <HelpTOCNode Title="PossessionRelationship(TOwner, TPossession) Constructor " Url="html/9dfaf0dc-d33c-abec-bde1-2de7652ab325.htm" />
+      <HelpTOCNode Id="9aecd845-cc4b-4fc2-93c1-fef33aa3be2e" Title="PossessionRelationship(TOwner, TPossession) Methods" Url="html/ed9f5cc0-101f-35bb-cbad-ddac9263e1e5.htm">
+        <HelpTOCNode Title="CanChangeOwnerOfPossession Method " Url="html/472b5bad-b310-ec01-e054-47490d5c4103.htm" />
+        <HelpTOCNode Title="ChangeOwnerOfPossession Method " Url="html/d4c5dd1e-ca81-9adb-3473-b9ba6c418de8.htm" />
+        <HelpTOCNode Title="DoOnPossessionBroken Method " Url="html/10b9ecd6-9bc6-0028-c5ec-017ddb55c842.htm" />
+        <HelpTOCNode Title="DoOnPossessionEstablished Method " Url="html/a34c1aab-7307-f1e2-6a6b-f267afb29a7c.htm" />
+        <HelpTOCNode Title="GetOwnerOfPossession Method " Url="html/9ebf56c0-8a8a-ce35-daf1-c57d08e06278.htm" />
+        <HelpTOCNode Title="GetPossessionsOfOwner Method " Url="html/6ed4b3c5-a7cf-2973-88c0-d1bf724a4577.htm" />
+        <HelpTOCNode Title="IsPossessionValid Method " Url="html/a901cb06-c1df-42df-7e3e-87e4a3fb6c80.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="eba9b97c-eea6-4ef9-94db-5cc0246aad6e" Title="ResourceSummary Structure" Url="html/6b68aef2-f426-fcd5-3d51-35281461e1eb.htm">
+      <HelpTOCNode Id="1516b74b-b63c-49a3-a2dd-6847a141c485" Title="ResourceSummary Constructor " Url="html/765b8e8e-ac69-6b87-7ae3-c50e1ca3e219.htm">
+        <HelpTOCNode Title="ResourceSummary Constructor (ResourceSummary)" Url="html/0fefcf0b-3a68-b1be-3320-d7d7a9338023.htm" />
+        <HelpTOCNode Title="ResourceSummary Constructor (Single, Single, Single, Single)" Url="html/6c725e35-bc70-f36b-731f-7702f9250ce8.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="7c3e7b30-ad49-4e30-be03-dd055f5f3f6b" Title="ResourceSummary Properties" Url="html/59455739-a8ef-e8b8-75cf-8f5485e584b6.htm">
+        <HelpTOCNode Title="Empty Property " Url="html/c2ad042a-6350-ec65-df78-3e3eb883d626.htm" />
+        <HelpTOCNode Title="Item Property " Url="html/ff380be9-ec77-6d14-2435-1af5772962bc.htm" />
+        <HelpTOCNode Title="Ones Property " Url="html/bd56027a-24a2-e8c0-3649-cbe0c374eb51.htm" />
+        <HelpTOCNode Title="Total Property " Url="html/e408739a-d8d2-e025-49b0-8e2373e8ea25.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="0a18aaa2-de84-4eb8-836f-c27cc7f62843" Title="ResourceSummary Methods" Url="html/a8f422cd-152c-2a3b-53f8-8459cafb44df.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/7808b570-15b0-1a49-4f7d-f1ad0ee41759.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5fc24992-dab5-4115-ab54-93cd7497ed96" Title="ResourceSummary Operators" Url="html/d0ae1ef5-55e9-ede4-c92e-9698ef148714.htm">
+        <HelpTOCNode Title="Addition Operator " Url="html/3e428dba-46b3-b48e-d020-48692f4b3629.htm" />
+        <HelpTOCNode Title="Division Operator " Url="html/897d3b21-b52d-2dd9-9414-f8db903d42d7.htm" />
+        <HelpTOCNode Id="6e9044e7-e8d6-4239-b155-a6f8fbd1ecdb" Title="Multiply Operator " Url="html/cba2f84e-c56f-5ecc-7cd6-9f46f7248fab.htm">
+          <HelpTOCNode Title="Multiply Operator (ResourceSummary, ResourceSummary)" Url="html/fe0b9e8b-3c5b-b8a0-6e5a-d1957d37b74e.htm" />
+          <HelpTOCNode Title="Multiply Operator (ResourceSummary, Int32)" Url="html/aa905ec4-ce73-5716-4d65-ecc00d4d672b.htm" />
+          <HelpTOCNode Title="Multiply Operator (ResourceSummary, Single)" Url="html/a07a020a-ec0e-02ec-8032-410bfb1dfabd.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Subtraction Operator " Url="html/155c32eb-2e4e-5346-f6f4-e0a43e331a6a.htm" />
+        <HelpTOCNode Title="UnaryNegation Operator " Url="html/9ad9dca7-a4c0-8235-f556-4df954cc4ecc.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="ResourceType Enumeration" Url="html/62c4852f-3e03-8fc4-c917-12b5828a5b45.htm" />
+    <HelpTOCNode Id="f657e6fc-96e1-4b24-a05e-4a6795f5e716" Title="WorkerSlot Class" Url="html/2eae24be-b02a-9df8-6b17-70f13e50f682.htm">
+      <HelpTOCNode Title="WorkerSlot Constructor " Url="html/1983483a-69ac-ddf8-b8c4-59456a8accc3.htm" />
+      <HelpTOCNode Id="1eeff509-b7c1-4440-8aff-52c1a422665d" Title="WorkerSlot Properties" Url="html/a87c36f4-5eee-962d-2eb9-e6c6a6e4c57c.htm">
+        <HelpTOCNode Title="BaseYield Property " Url="html/3cfb17ce-c4b8-d322-d9df-e947aa9231c4.htm" />
+        <HelpTOCNode Title="IsLocked Property " Url="html/5b2d7e37-2b62-2d3c-966e-e14db920660c.htm" />
+        <HelpTOCNode Title="IsOccupied Property " Url="html/0d4b4a7d-c7e4-85fd-6c21-0f8b9e78f9ba.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="a9ed9cf1-ad9d-4208-8e54-660d58e851b0" Title="WorkerSlot Methods" Url="html/5dc74f3e-00c3-3214-2aab-fc81a73fcee9.htm">
+        <HelpTOCNode Title="ToString Method " Url="html/d816c065-704f-0c11-f2cf-bf6161af6155.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="7ebb5f72-b077-4f5b-b904-a2b5b82e4dd8" Title="Assets.Simulation.Cities" Url="html/5e4948e8-df59-5a69-699c-3b9963263abc.htm">
+    <HelpTOCNode Id="d406fc94-9837-4a63-b399-cf9a4f990414" Title="CellComparisonUtil Class" Url="html/35e3e1d2-b69a-9c75-0248-276af7bcc02d.htm">
+      <HelpTOCNode Id="e97ec00b-ddad-45e5-8240-8438588e8659" Title="CellComparisonUtil Methods" Url="html/afcc545b-9aa1-57e7-f1ce-8117db9936b4.htm">
+        <HelpTOCNode Title="BuildComparisonAscending Method " Url="html/f254230e-c00f-c136-ea0c-33f3478f1bbb.htm" />
+        <HelpTOCNode Title="BuildFocusedComparisonAscending Method " Url="html/54ba3288-74d0-ff1a-d29e-f2e58c944cd5.htm" />
+        <HelpTOCNode Title="BuildResourceComparisonAscending Method " Url="html/a88c2a86-40af-f471-d095-832f61f35788.htm" />
+        <HelpTOCNode Title="BuildTotalYieldComparisonAscending Method " Url="html/b5ae0504-516b-9433-a96e-a957a3b98cde.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="14ad5983-0403-4b30-b003-ebe9bd40aafd" Title="City Class" Url="html/19ab96c2-326d-8fbd-399a-1fc54feadb1a.htm">
+      <HelpTOCNode Title="City Constructor " Url="html/4c7ebe07-b9d3-1517-f1f4-aa4b3c846073.htm" />
+      <HelpTOCNode Id="a0a45c0c-cd59-4419-ab3f-2c396af3147e" Title="City Properties" Url="html/b91e5842-2555-8591-fa15-915f3a2b4ad7.htm">
+        <HelpTOCNode Title="ActiveProject Property " Url="html/0428c099-7bba-e16b-30a5-4f3c7871a4f5.htm" />
+        <HelpTOCNode Title="CellBeingPursued Property " Url="html/2e7cae6a-1d17-2d07-5e00-ee5566c4cd4a.htm" />
+        <HelpTOCNode Title="CultureStockpile Property " Url="html/90731cb8-312b-1195-12a7-cd644ae96ac6.htm" />
+        <HelpTOCNode Title="FoodStockpile Property " Url="html/d049ee02-8d7e-18fd-4159-2883183d617a.htm" />
+        <HelpTOCNode Title="LastIncome Property " Url="html/849b27e1-5552-1b1f-3496-edef2828db44.htm" />
+        <HelpTOCNode Title="Location Property " Url="html/50631319-456d-208a-d490-b9f6a60c4e76.htm" />
+        <HelpTOCNode Title="Population Property " Url="html/ec3054e9-ebba-2e59-0905-8a5191759257.htm" />
+        <HelpTOCNode Title="ResourceFocus Property " Url="html/c64a3c67-c06e-5893-6e65-7abecd1ba337.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b72b0051-5fc5-4067-a149-05f9f0267a67" Title="City Methods" Url="html/6640589c-e220-879f-2f3e-5947b0bc527d.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/982f84d3-2c25-def5-a0b0-a1620618c2a9.htm" />
+        <HelpTOCNode Title="OnPointerClick Method " Url="html/a17af3e6-5999-7718-4243-e06aa9a2c41b.htm" />
+        <HelpTOCNode Title="PerformDistribution Method " Url="html/ecdda7ac-064d-6455-f007-d3e6011ff19b.htm" />
+        <HelpTOCNode Title="PerformExpansion Method " Url="html/fecfc119-2b41-56bc-2c4f-8860e7cb1f35.htm" />
+        <HelpTOCNode Title="PerformGrowth Method " Url="html/ed1c89bc-1bb2-7c41-3aa9-92f28479cf9d.htm" />
+        <HelpTOCNode Title="PerformIncome Method " Url="html/1a36a2d6-372c-a425-5865-4dd1c5982de9.htm" />
+        <HelpTOCNode Title="PerformProduction Method " Url="html/7b23a386-5cba-2c27-a0b1-1696698fd0ed.htm" />
+        <HelpTOCNode Id="25b2ed3d-025b-4566-8b44-25efda8e9bfb" Title="SetActiveProductionProject Method " Url="html/71c2a5b4-1f37-5def-df73-7e4e83a2dded.htm">
+          <HelpTOCNode Title="SetActiveProductionProject Method (IBuildingTemplate)" Url="html/f1554585-f394-06a4-0bf7-3a5c69edba23.htm" />
+          <HelpTOCNode Title="SetActiveProductionProject Method (IUnitTemplate)" Url="html/6d965c7b-bf3c-03da-7efe-dde78d777018.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="aa3a62bf-61a8-409f-8d30-76c8e80b9555" Title="CityConfig Class" Url="html/f948fd71-d285-d9a5-e106-eae10e5edd02.htm">
+      <HelpTOCNode Title="CityConfig Constructor " Url="html/7597cb7a-0546-07ae-c0ab-f0c7987e3f4a.htm" />
+      <HelpTOCNode Id="08a7e6c8-b5b2-4af7-a961-d6981dd2f674" Title="CityConfig Properties" Url="html/3a0ccc75-e22c-77f8-8094-1408a2f7b46b.htm">
+        <HelpTOCNode Title="BaseGrowthStockpile Property " Url="html/844f536a-62b9-c69e-5019-91d07ac9cddc.htm" />
+        <HelpTOCNode Title="FoodConsumptionPerPerson Property " Url="html/568f6bfe-ffe1-050a-e205-fd6e49576eeb.htm" />
+        <HelpTOCNode Title="GrowthPreviousPopulationCoefficient Property " Url="html/0668845e-6083-e9e4-8b04-02a142f9f9c5.htm" />
+        <HelpTOCNode Title="GrowthPreviousPopulationExponent Property " Url="html/75dcb14c-fef1-f60b-7306-a2affd97874c.htm" />
+        <HelpTOCNode Title="HurryCostPerProduction Property " Url="html/0ce51625-ad65-40d9-7f9e-2eca06f5eaca.htm" />
+        <HelpTOCNode Title="MaxBorderRange Property " Url="html/4f4c86e9-61a5-51a0-0e03-9f445e3b1ce9.htm" />
+        <HelpTOCNode Title="MinimumSeparation Property " Url="html/506d59d8-19b1-c988-8e5e-4b64b5064102.htm" />
+        <HelpTOCNode Title="PreviousTileCountCoefficient Property " Url="html/acce23f8-fcfe-5368-6c14-7d292e512517.htm" />
+        <HelpTOCNode Title="PreviousTileCountExponent Property " Url="html/2e4ecebb-6820-7654-e59a-5d85840633d8.htm" />
+        <HelpTOCNode Title="TileCostBase Property " Url="html/e4ce9013-e9d8-ce5e-9138-c79e8943f78d.htm" />
+        <HelpTOCNode Title="UnemployedYield Property " Url="html/dbd788c7-4870-f560-ac4e-46e93be8e21f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="CityConfig Methods" Url="html/4ed70f69-c90f-e4fb-5642-5867d081279f.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a7fd27e7-a686-4161-87f2-cb7d05e8957b" Title="CityCreationException Class" Url="html/887a1759-60e4-6e39-8c43-573913dc730d.htm">
+      <HelpTOCNode Id="ea81a629-757a-43c3-a643-07f91150f9c4" Title="CityCreationException Constructor " Url="html/2108da64-7dff-6ee7-3e45-725d498958fd.htm">
+        <HelpTOCNode Title="CityCreationException Constructor " Url="html/35006c44-1a0f-82f4-efd4-167fee4a1093.htm" />
+        <HelpTOCNode Title="CityCreationException Constructor (String)" Url="html/bfd56708-a2a7-7055-58cc-3f441657bccf.htm" />
+        <HelpTOCNode Title="CityCreationException Constructor (SerializationInfo, StreamingContext)" Url="html/d9206bb1-7d7d-8b3b-c050-c6cfbfe9e69a.htm" />
+        <HelpTOCNode Title="CityCreationException Constructor (String, Exception)" Url="html/e6f11c44-a1f8-5ae3-a129-35765e5a40af.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="CityCreationException Properties" Url="html/3553d54e-2343-9f30-d1d3-73324d6456c2.htm" />
+      <HelpTOCNode Title="CityCreationException Methods" Url="html/d7b22dea-6e6a-5d2d-87f0-3942fab24e8b.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="d17d61bf-0077-44a5-8c27-393d8d5c56e7" Title="CityDistributionPerformedSignal Class" Url="html/3091cf89-dff4-903a-9359-181c356a3317.htm">
+      <HelpTOCNode Title="CityDistributionPerformedSignal Constructor " Url="html/419eaf47-a5da-0f01-8a20-01505c703a3d.htm" />
+      <HelpTOCNode Title="CityDistributionPerformedSignal Properties" Url="html/bd56fe0a-9574-4de6-3652-2ca85d48d582.htm" />
+      <HelpTOCNode Title="CityDistributionPerformedSignal Methods" Url="html/28385945-52d0-6bfc-fc5f-a9a9577c5494.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="1fbcdbfe-f128-4506-81e3-d5dbac162a0d" Title="CityFactory Class" Url="html/da2c34f3-8ac4-a6cd-fde3-23ae2e4a902e.htm">
+      <HelpTOCNode Title="CityFactory Constructor " Url="html/28b75589-4bc3-11c2-5a96-02eb525faa94.htm" />
+      <HelpTOCNode Id="0fe21408-0e4a-4e48-85f5-de8b08d328ad" Title="CityFactory Properties" Url="html/bc74b8d2-c103-6ef8-9f13-9f6bbe2bd52b.htm">
+        <HelpTOCNode Title="AllCities Property " Url="html/dd3204bb-1318-2713-3026-5c4acedac665.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="9acadf2b-5932-4c57-bc59-ad13fa856e20" Title="CityFactory Methods" Url="html/bcb6fe68-8677-34f5-6c21-d50e5d8d6f76.htm">
+        <HelpTOCNode Title="Create Method " Url="html/28cc883e-b133-192c-c4e3-7c456a106447.htm" />
+        <HelpTOCNode Title="Validate Method " Url="html/636b3ea6-9d99-1aa4-9f6f-499f7c274bba.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="12102213-585e-43a2-ab96-31160c0a7b3f" Title="CityInstaller Class" Url="html/f7596ac1-c647-eceb-1aa6-1fbaa2e75dec.htm">
+      <HelpTOCNode Title="CityInstaller Constructor " Url="html/d1fcf87b-025d-12a8-4c7c-f9a3ee3b4805.htm" />
+      <HelpTOCNode Title="CityInstaller Properties" Url="html/11ce4454-dfe9-f3ff-ce1a-9ec729eb2bb2.htm" />
+      <HelpTOCNode Id="89ea1a51-2369-43ef-adb4-a50fbae9bf57" Title="CityInstaller Methods" Url="html/7ad135d1-8865-6304-18f5-0ea4ccc3f027.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/d950d5e9-1043-7fd0-5259-61f819cf920f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="bf0cdf23-6887-4980-bf67-0fb74b60293f" Title="CityProjectChangedSignal Class" Url="html/975760f6-80aa-4fc6-41f8-5ebf293a36d5.htm">
+      <HelpTOCNode Title="CityProjectChangedSignal Constructor " Url="html/408a6581-d664-2d88-c891-ea180d83cfd7.htm" />
+      <HelpTOCNode Title="CityProjectChangedSignal Properties" Url="html/7178f3a0-2807-0c9b-5187-fd585d10fd6b.htm" />
+      <HelpTOCNode Title="CityProjectChangedSignal Methods" Url="html/496f96fc-d33e-aae6-80db-f656db1072bc.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="e7a482f9-ebe6-41d7-bfd5-c6533007f095" Title="CitySignals Class" Url="html/ee0393f0-0fd2-1696-19f3-a9f9b64be04c.htm">
+      <HelpTOCNode Title="CitySignals Constructor " Url="html/0627f773-cf3d-aa84-65f6-1b831b9e4767.htm" />
+      <HelpTOCNode Id="aac97f9a-a225-4ecf-991d-e313c90646ae" Title="CitySignals Properties" Url="html/8fa781fe-97a0-427b-4964-013c78c5d3c1.htm">
+        <HelpTOCNode Title="CityClickedSignal Property " Url="html/0033761c-f9b7-94ae-491d-a96452895767.htm" />
+        <HelpTOCNode Title="DistributionPerformedSignal Property " Url="html/31ba665d-22fa-3006-6ee8-6dfd37532da2.htm" />
+        <HelpTOCNode Title="ProjectChangedSignal Property " Url="html/ce9c79c1-8b8f-6ada-b607-517a21d76e9d.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="CitySignals Methods" Url="html/72bf04f6-1328-eac4-2299-764cbf7746e8.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="e982031b-0122-4525-9467-937116fef223" Title="CityValidityLogic Class" Url="html/bb882942-aa87-de85-ab3e-40b5b2cff4cc.htm">
+      <HelpTOCNode Title="CityValidityLogic Constructor " Url="html/1ea820f0-e027-e81f-5429-fb1752fc7b30.htm" />
+      <HelpTOCNode Id="1806a13e-9cc3-43dd-882e-1be1e0f6bd16" Title="CityValidityLogic Methods" Url="html/e7cf4c77-441e-ce86-35d5-4cca0fa1323f.htm">
+        <HelpTOCNode Title="IsCellValidForCity Method " Url="html/19fcfdbc-b2ba-91b7-2791-3f6afa2c7f1d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b4d820d6-e4fd-47d1-8d9e-84b17fa439d2" Title="ICity Interface" Url="html/96648464-febc-a5b0-d720-1466eaa76111.htm">
+      <HelpTOCNode Id="65e1fd83-393e-4230-b4b6-3c9c6b7f3e55" Title="ICity Properties" Url="html/528ab990-2390-a3e6-fe3e-cc33c0d25fe7.htm">
+        <HelpTOCNode Title="ActiveProject Property " Url="html/981ad9b4-b112-f4b7-f8d2-a1712c94ca53.htm" />
+        <HelpTOCNode Title="CellBeingPursued Property " Url="html/6e27cad2-2d56-54bb-42f4-6617024131d6.htm" />
+        <HelpTOCNode Title="CultureStockpile Property " Url="html/0dbb4d4b-0395-9249-fd7c-3dab9a307089.htm" />
+        <HelpTOCNode Title="FoodStockpile Property " Url="html/cf7b0a34-11c4-b25b-1351-6f85b979866f.htm" />
+        <HelpTOCNode Title="LastIncome Property " Url="html/e202dc60-d0b5-e415-652d-cd863bcb76f1.htm" />
+        <HelpTOCNode Title="Location Property " Url="html/b3d7df4e-f743-c312-34a1-87275a4a7581.htm" />
+        <HelpTOCNode Title="Population Property " Url="html/9154d222-3cc7-1016-c464-a3d3b8cb3fde.htm" />
+        <HelpTOCNode Title="ResourceFocus Property " Url="html/946edc7c-8e36-14fd-d676-8da27fb01631.htm" />
+        <HelpTOCNode Title="transform Property " Url="html/a60c55fb-dad1-1fbd-66d6-643deb00d3d1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="2b3a3ca9-fe7b-440f-ba81-1191c943b33e" Title="ICity Methods" Url="html/c2aae120-c492-e3fc-a45a-2d2b6ca83b6f.htm">
+        <HelpTOCNode Title="PerformDistribution Method " Url="html/7799a25a-dde7-e871-5988-c1f294a1497c.htm" />
+        <HelpTOCNode Title="PerformExpansion Method " Url="html/d501749c-9377-a415-57bb-420aa2432d44.htm" />
+        <HelpTOCNode Title="PerformGrowth Method " Url="html/407d0b2c-c5fa-9280-04f0-d9c8670ff991.htm" />
+        <HelpTOCNode Title="PerformIncome Method " Url="html/962fec7b-4568-c02b-58e3-dd1fa34c2119.htm" />
+        <HelpTOCNode Title="PerformProduction Method " Url="html/64840f5d-08f6-81ed-9641-37ad3cc8dbb3.htm" />
+        <HelpTOCNode Id="68bb0211-7098-4ca5-83f7-66a7606a0b41" Title="SetActiveProductionProject Method " Url="html/8c8599e1-3141-7f78-e1e5-7daaeebc1696.htm">
+          <HelpTOCNode Title="SetActiveProductionProject Method (IBuildingTemplate)" Url="html/c26f47e5-8c41-c64d-1ea3-3a6a9ffe1aac.htm" />
+          <HelpTOCNode Title="SetActiveProductionProject Method (IUnitTemplate)" Url="html/838d5325-ef3a-8875-06d1-dbcc567469aa.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="22061c78-62f4-4f0d-8d8f-3d3f9c6a165a" Title="ICityConfig Interface" Url="html/7d1ada48-9c98-b0fe-f462-12ac0db3678b.htm">
+      <HelpTOCNode Id="a7b2bbf7-3e57-437e-a520-379209fe2dd5" Title="ICityConfig Properties" Url="html/dc41f895-c865-67b3-d045-abd6bca1ea34.htm">
+        <HelpTOCNode Title="BaseGrowthStockpile Property " Url="html/6b48bebc-47df-9fa4-296b-fa516333f3dd.htm" />
+        <HelpTOCNode Title="FoodConsumptionPerPerson Property " Url="html/c4b95de9-6c44-396c-b9a5-b7428bcba17f.htm" />
+        <HelpTOCNode Title="GrowthPreviousPopulationCoefficient Property " Url="html/d8aa947b-c48b-cfbe-5a8f-a1cecca0b69e.htm" />
+        <HelpTOCNode Title="GrowthPreviousPopulationExponent Property " Url="html/8d60023f-1bc9-d4cb-ee83-e0ae5d972aca.htm" />
+        <HelpTOCNode Title="HurryCostPerProduction Property " Url="html/579e2ca9-32ab-1e7e-5cc4-4a8d34c9dcf8.htm" />
+        <HelpTOCNode Title="MaxBorderRange Property " Url="html/b8e65827-68e0-b471-e28c-11a3944e811f.htm" />
+        <HelpTOCNode Title="MinimumSeparation Property " Url="html/fa95c8f4-fab5-f1b3-f6d6-91689263e1bd.htm" />
+        <HelpTOCNode Title="PreviousTileCountCoefficient Property " Url="html/3d421e30-28e6-f6a7-eb31-3330cc80205c.htm" />
+        <HelpTOCNode Title="PreviousTileCountExponent Property " Url="html/0e07952a-e38b-363e-1abb-cdb4d9a33985.htm" />
+        <HelpTOCNode Title="TileCostBase Property " Url="html/7e3b0aa2-c254-ac36-e9a9-94687c77c14b.htm" />
+        <HelpTOCNode Title="UnemployedYield Property " Url="html/5d73f9b6-87c2-1a1f-bb5d-15e89e98480f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="87071665-27c6-4769-a367-bb3417367e0f" Title="ICityFactory Interface" Url="html/3508bd0b-cd16-014e-89da-4e17f5273489.htm">
+      <HelpTOCNode Id="49098b90-a2ac-40c5-99a9-cae0d9048e5a" Title="ICityFactory Properties" Url="html/994293a2-b350-60a5-42bf-41829b1aa5a1.htm">
+        <HelpTOCNode Title="AllCities Property " Url="html/b70200e2-8364-da20-1c5e-24e82e402c20.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ICityFactory Methods" Url="html/b2329b25-2f37-9918-8832-0a24600605fc.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="29527de5-4e3c-4235-a94d-f3d651f0ef69" Title="ICityValidityLogic Interface" Url="html/8ee6b503-36d4-7e94-e7bb-84e2416006fe.htm">
+      <HelpTOCNode Id="d3dbca8e-27c7-4d20-bcec-de8d1d2d9137" Title="ICityValidityLogic Methods" Url="html/a15fc099-f2d8-b474-b631-ffe9cb476741.htm">
+        <HelpTOCNode Title="IsCellValidForCity Method " Url="html/e1c90f37-0bdd-152c-3233-6873b819a6d3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="845e05cb-31e6-4be7-a035-da6356279cab" Title="NegativeUnemploymentException Class" Url="html/dd5d7ca6-de60-ca7f-2b07-f16fdaceef82.htm">
+      <HelpTOCNode Id="27fe4f30-e974-4dfa-85a3-eb03f2f3684e" Title="NegativeUnemploymentException Constructor " Url="html/bc69832f-f071-80f8-aa83-72668ed92a84.htm">
+        <HelpTOCNode Title="NegativeUnemploymentException Constructor " Url="html/7f2af96b-ef46-b68e-05d1-d3e196193490.htm" />
+        <HelpTOCNode Title="NegativeUnemploymentException Constructor (String)" Url="html/c6149124-e849-5429-95d8-a8c95a6b2cfd.htm" />
+        <HelpTOCNode Title="NegativeUnemploymentException Constructor (String, Exception)" Url="html/d6f6aa70-5fc0-19db-c3ae-3aea752e87ab.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="NegativeUnemploymentException Properties" Url="html/b74c721d-f1ae-3895-9b10-a4b1db083344.htm" />
+      <HelpTOCNode Title="NegativeUnemploymentException Methods" Url="html/30bece4d-17e3-2508-26d8-6daa988036d8.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="84f65a0b-cd01-4990-8832-29f865ee68ff" Title="SlotComparisonUtil Class" Url="html/4c16a5fb-8c03-0cca-00cb-9f7bd478614b.htm">
+      <HelpTOCNode Id="ce978771-36da-402b-a187-310c8b606db8" Title="SlotComparisonUtil Methods" Url="html/17e52b1b-cc23-b91d-ce84-c0fb6a5b7937.htm">
+        <HelpTOCNode Title="BuildFocusedComparisonAscending Method " Url="html/ece41f56-ba2d-009f-de1f-5f23441d4529.htm" />
+        <HelpTOCNode Title="BuildResourceComparisonAscending Method " Url="html/49026ae5-4296-a17f-851e-b04d2ab87248.htm" />
+        <HelpTOCNode Title="BuildTotalYieldComparisonAscending Method " Url="html/8b2bfc85-b51c-f4f5-bbf5-4b625a773781.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="82a5de81-854e-4e2f-bde9-276934bdfdec" Title="Assets.Simulation.Cities.Buildings" Url="html/76b4cbc4-90bc-3c1d-f7bd-0ab22ce42c36.htm">
+    <HelpTOCNode Id="9479810d-7b79-4efe-8bda-904cd564b54a" Title="Building Class" Url="html/7a4da215-27d0-4c0e-72d3-b2dea17274b1.htm">
+      <HelpTOCNode Title="Building Constructor " Url="html/60c838d1-4f1d-42ad-e019-180d2eefed65.htm" />
+      <HelpTOCNode Id="23bad251-28dd-456a-90d8-6f484166cc6c" Title="Building Properties" Url="html/e4d79bfb-316d-5710-c490-17c3f0bd1f49.htm">
+        <HelpTOCNode Title="Slots Property " Url="html/44f45084-6891-1511-c9b5-b75add9787ee.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/f8daba3f-2ada-9235-fa40-199eb5725a05.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="Building Methods" Url="html/099e8948-6ca1-3bc8-b22f-b5103c71c5d0.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="681e1788-1375-4c6f-8b19-be4cb0cc741a" Title="BuildingCreationException Class" Url="html/9e93d958-e5b5-c621-9b8a-0284728a5234.htm">
+      <HelpTOCNode Id="09359b8b-2fb5-4891-9fc4-b09313fda81c" Title="BuildingCreationException Constructor " Url="html/c5786132-c7a5-44ca-596c-a267d1844d02.htm">
+        <HelpTOCNode Title="BuildingCreationException Constructor " Url="html/36d2f2ab-7d55-0ce7-4a0a-ca5471b21fd6.htm" />
+        <HelpTOCNode Title="BuildingCreationException Constructor (String)" Url="html/8f651455-70cf-90e7-aaf7-73875de81cc8.htm" />
+        <HelpTOCNode Title="BuildingCreationException Constructor (SerializationInfo, StreamingContext)" Url="html/2f7fee78-6eeb-53de-2d1a-f06f75e148c2.htm" />
+        <HelpTOCNode Title="BuildingCreationException Constructor (String, Exception)" Url="html/dbf84e9e-8fba-aa20-d191-21b5f0f918a2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="BuildingCreationException Properties" Url="html/72372dd6-3dc7-7682-b75d-af025b17ade6.htm" />
+      <HelpTOCNode Title="BuildingCreationException Methods" Url="html/3023bc4d-bd5d-bd4b-52a3-98a56867e1fa.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="700d485a-7900-420a-a5ca-a9494267e384" Title="BuildingFactory Class" Url="html/bd4a6088-6a5b-693f-1cc3-4f5966cc9196.htm">
+      <HelpTOCNode Title="BuildingFactory Constructor " Url="html/1eafb4d4-da30-c688-0546-7778d668d85d.htm" />
+      <HelpTOCNode Id="68a21054-b036-40d7-988a-d18367944bc1" Title="BuildingFactory Methods" Url="html/924b4272-d3c3-0a97-bed3-60f0ae88b97b.htm">
+        <HelpTOCNode Title="CanConstructTemplateInCity Method " Url="html/8926523e-14cb-160b-6d7a-ef398dcbcc02.htm" />
+        <HelpTOCNode Title="Create Method " Url="html/eb3cdf24-becd-c942-d73a-2eca5484f004.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="3f91b8e5-4fd0-4131-afb7-b61c40ef6199" Title="BuildingPossessionCanon Class" Url="html/49c85bfc-4b6d-190a-038a-0fb691018c2e.htm">
+      <HelpTOCNode Title="BuildingPossessionCanon Constructor " Url="html/4d1aebcc-1416-565a-cbe3-b31bb1a34bdd.htm" />
+      <HelpTOCNode Id="a4b70448-8fd8-46e7-9593-ccc7d71e731a" Title="BuildingPossessionCanon Methods" Url="html/ccdad189-5e81-bed8-bf84-c1eb637c4b69.htm">
+        <HelpTOCNode Title="CanPlaceBuildingInCity Method " Url="html/005f3200-ca34-1fe1-35e3-4f969c9490c0.htm" />
+        <HelpTOCNode Title="GetBuildingsInCity Method " Url="html/d3cb7a10-0c7f-9ca6-ec81-d419840d8452.htm" />
+        <HelpTOCNode Title="GetCityOfBuilding Method " Url="html/fc8bce38-a37c-07d0-facd-6f04bc64b39b.htm" />
+        <HelpTOCNode Title="PlaceBuildingInCity Method " Url="html/d7be8da5-abaf-8d23-bf76-b75a3df94c61.htm" />
+        <HelpTOCNode Title="RemoveBuildingFromCurrentCity Method " Url="html/1215298c-6602-f648-3afe-888de80e2923.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e941bd89-ad18-40c7-8c85-d1ef5eaba784" Title="BuildingProductionProject Class" Url="html/2b6155ce-14dc-c131-d762-65395a11043d.htm">
+      <HelpTOCNode Title="BuildingProductionProject Constructor " Url="html/5b406185-c910-3369-bfb9-0e51e857b579.htm" />
+      <HelpTOCNode Id="0ad5dc36-9f85-49cc-8bf2-aac0d1bc1389" Title="BuildingProductionProject Properties" Url="html/be53ce06-01bd-7a06-6e30-7e63a163e8f0.htm">
+        <HelpTOCNode Title="BuildingTemplate Property " Url="html/e447d95b-20e6-b7fd-22cf-51e7ce9215fc.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/0a460d1b-9a7b-e975-9dea-3cc70465a3e8.htm" />
+        <HelpTOCNode Title="ProductionToComplete Property " Url="html/c76a4472-47e5-0ecd-f58d-0ea0f6b46f38.htm" />
+        <HelpTOCNode Title="Progress Property " Url="html/e1f6cddb-bb14-7440-ca39-cd78b20f52c6.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="0a7a9f7c-50c4-45ab-ba99-315b72096b23" Title="BuildingProductionProject Methods" Url="html/5d296659-b95f-c933-d4e6-ea848209bdd7.htm">
+        <HelpTOCNode Title="Execute Method " Url="html/10b8faee-33d9-2672-930e-84c90a6b33c2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="0b33f02a-f348-46c5-8521-3874f12c874e" Title="BuildingProductionValidityLogic Class" Url="html/a33b518c-30b2-6c33-1efa-d0c18b2ca022.htm">
+      <HelpTOCNode Title="BuildingProductionValidityLogic Constructor " Url="html/4f06fb37-1c1f-446b-4d17-e52c409c13c2.htm" />
+      <HelpTOCNode Id="9e7c3b08-ea74-4a22-b443-dc94e27e21e3" Title="BuildingProductionValidityLogic Methods" Url="html/9db48029-ec7a-805a-9ba5-11211c6b3fef.htm">
+        <HelpTOCNode Title="GetTemplatesValidForCity Method " Url="html/fe4a504e-d74c-aeee-922f-458a6b715996.htm" />
+        <HelpTOCNode Title="IsTemplateValidForCity Method " Url="html/710911d1-ca59-c9fb-e750-880612856f74.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c6b67a4a-3b71-40e4-8ff3-eb2429fb6089" Title="BuildingTemplate Class" Url="html/759dc3e8-2089-eec8-3fa7-d75bb0f68ea0.htm">
+      <HelpTOCNode Title="BuildingTemplate Constructor " Url="html/e576dcd9-1008-fa9b-e0df-5bb84abb890f.htm" />
+      <HelpTOCNode Id="44cabd20-8e6f-43d6-889f-4d55ad3493a7" Title="BuildingTemplate Properties" Url="html/c96e1362-d77e-f374-ca6a-088c4fd5274d.htm">
+        <HelpTOCNode Title="CityYieldModifier Property " Url="html/a64778ba-56f6-3536-1dd6-4e52820e5a15.htm" />
+        <HelpTOCNode Title="CivilizationYieldModifier Property " Url="html/6894b946-19cd-6cb1-a51c-5c2032053c9e.htm" />
+        <HelpTOCNode Title="Cost Property " Url="html/aa8417cf-8331-a392-ab75-2e9fcfcc8078.htm" />
+        <HelpTOCNode Title="Maintenance Property " Url="html/dc3eaedb-3767-0845-9f20-48da316e82b4.htm" />
+        <HelpTOCNode Title="SlotYields Property " Url="html/4d763113-05fb-8a26-5581-f66f7994c8ce.htm" />
+        <HelpTOCNode Title="StaticYield Property " Url="html/22c198b4-df93-afb3-f38f-344db5b8e254.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="BuildingTemplate Methods" Url="html/884cca56-8aae-aaa7-dccf-639afb46383d.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="d8c8bab2-58c5-4da6-9b41-d463793d57fc" Title="IBuilding Interface" Url="html/6bceb4ef-0f7f-8b72-851d-1fc17f9222dd.htm">
+      <HelpTOCNode Id="dd95639d-04d4-4ef6-8ffa-c940f65cc9bc" Title="IBuilding Properties" Url="html/582817c2-0cc0-250f-b7d5-125de2092f87.htm">
+        <HelpTOCNode Title="Slots Property " Url="html/59428912-36a8-b5d4-39a5-31ca16c00abc.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/40236223-3bda-3fb7-4c7a-d78647564479.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="bc0084ec-a1ae-4c1a-a973-b5fc2bf9b75b" Title="IBuildingFactory Interface" Url="html/8e045e53-cd43-5515-d508-b1edb47f8484.htm">
+      <HelpTOCNode Id="8a49d75e-65c9-4332-ab2c-6c54a43bb7b6" Title="IBuildingFactory Methods" Url="html/64bcea72-8e00-77ed-5cdb-89ca32bd2510.htm">
+        <HelpTOCNode Title="CanConstructTemplateInCity Method " Url="html/85a4835c-1ff5-b70b-823a-40726565487a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8a8b489c-4061-4ca6-be8e-c78083a14258" Title="IBuildingPossessionCanon Interface" Url="html/35c71b27-2b95-019c-bff3-6e4ef7beab75.htm">
+      <HelpTOCNode Id="b08cc33f-6da0-4746-8843-dc6adf5972c1" Title="IBuildingPossessionCanon Methods" Url="html/3735d4f9-04e5-6e4d-79e0-2f0d8210fe0f.htm">
+        <HelpTOCNode Title="CanPlaceBuildingInCity Method " Url="html/7ee6cbe4-8b44-602e-7009-1e321da8fbb8.htm" />
+        <HelpTOCNode Title="GetBuildingsInCity Method " Url="html/c75a5d90-41bf-3d9b-4021-d1469703be42.htm" />
+        <HelpTOCNode Title="GetCityOfBuilding Method " Url="html/d8ee1640-ae21-0cff-acc6-da19a2e9b31c.htm" />
+        <HelpTOCNode Title="PlaceBuildingInCity Method " Url="html/21ae19af-7dce-94dd-d8a6-4b800ee928c5.htm" />
+        <HelpTOCNode Title="RemoveBuildingFromCurrentCity Method " Url="html/c945556d-db22-a28e-6dda-126cb3f91c09.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="6e15e420-9ce3-4b1b-b0b8-d646ac6563fb" Title="IBuildingProductionValidityLogic Interface" Url="html/550ba505-62f1-5b76-a476-c923a6b4be18.htm">
+      <HelpTOCNode Id="95ef6b95-7aac-4200-a262-7437e9a27ab2" Title="IBuildingProductionValidityLogic Methods" Url="html/7fd0d77b-70ac-74e9-06eb-f5c88d238310.htm">
+        <HelpTOCNode Title="GetTemplatesValidForCity Method " Url="html/b57a5350-dd69-0b73-0782-681d3659ad9c.htm" />
+        <HelpTOCNode Title="IsTemplateValidForCity Method " Url="html/7d763118-6f08-0c60-1f0d-82b5160bd971.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7f9fb1e8-4d2f-4f75-91b0-5bda613c6128" Title="IBuildingTemplate Interface" Url="html/ca1c8294-93bd-160d-ea1d-f76e0b56e7f5.htm">
+      <HelpTOCNode Id="54987035-7d27-4be2-9905-3996bc32beeb" Title="IBuildingTemplate Properties" Url="html/4218d765-8d2f-e7ba-ab05-be5c3d1442e8.htm">
+        <HelpTOCNode Title="CityYieldModifier Property " Url="html/2d5da589-2849-3e52-a2f3-9b23d0d01e3a.htm" />
+        <HelpTOCNode Title="CivilizationYieldModifier Property " Url="html/2fcc06dd-7c63-85d8-e3db-5306c2035efd.htm" />
+        <HelpTOCNode Title="Cost Property " Url="html/101a2b7b-9083-56e4-3c24-a346249fba57.htm" />
+        <HelpTOCNode Title="Maintenance Property " Url="html/55e63f76-d05f-39a6-6a22-8a3a06eb41bf.htm" />
+        <HelpTOCNode Title="name Property " Url="html/2d656234-d879-b4b8-5e14-1fdf5705671f.htm" />
+        <HelpTOCNode Title="SlotYields Property " Url="html/812ce98e-7292-8357-052a-a356c9edcb4a.htm" />
+        <HelpTOCNode Title="StaticYield Property " Url="html/a01f574b-8254-9117-acae-a0e4734c79ad.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="fc0532cb-b481-4112-8ff4-e12440d463a9" Title="Assets.Simulation.Cities.Distribution" Url="html/0db2f5f0-e085-b4ff-7d9e-ecef6d657383.htm">
+    <HelpTOCNode Id="921f01f0-aa6a-4a93-aca0-322a9697782c" Title="IWorkerDistributionLogic Interface" Url="html/6b0cfcb5-1901-725f-b4cf-9285c75a6528.htm">
+      <HelpTOCNode Id="f4f1f9e3-f945-4114-b78f-f5722fb09bac" Title="IWorkerDistributionLogic Methods" Url="html/e317dbc9-3755-dc81-71e6-7baeed5f0a3c.htm">
+        <HelpTOCNode Title="DistributeWorkersIntoSlots Method " Url="html/fb400587-395a-8210-6911-b9b0392adab0.htm" />
+        <HelpTOCNode Title="GetSlotsAvailableToCity Method " Url="html/1989a8a6-6ec5-5e54-e222-e5e57db3d5d9.htm" />
+        <HelpTOCNode Title="GetUnemployedPeopleInCity Method " Url="html/92f9a12e-40ed-ab39-0698-bb880b4b5741.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="ResourceFocusType Enumeration" Url="html/43d8d818-6cb5-7c93-ab71-6e019c717cd4.htm" />
+    <HelpTOCNode Id="2560af48-aa57-446a-929a-9ea66eb8f60c" Title="WorkerDistributionLogic Class" Url="html/ca3102cd-68e7-1467-8c34-c28d9048fc25.htm">
+      <HelpTOCNode Title="WorkerDistributionLogic Constructor " Url="html/a3963ae9-a79a-2f02-820d-bfb654c04919.htm" />
+      <HelpTOCNode Id="c4354380-019b-46f1-8ee5-e44e9dc54ead" Title="WorkerDistributionLogic Methods" Url="html/7d69a7e6-881f-d264-b68b-cb6af1b9b29f.htm">
+        <HelpTOCNode Title="DistributeWorkersIntoSlots Method " Url="html/32ef47c3-1a1f-0cff-cc50-5f3d7cac8d8b.htm" />
+        <HelpTOCNode Title="GetSlotsAvailableToCity Method " Url="html/9c84c0da-c418-3675-ed48-57fe29c97998.htm" />
+        <HelpTOCNode Title="GetUnemployedPeopleInCity Method " Url="html/86572418-dffa-5906-0b76-df0c10253e88.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="0a1ed959-c30b-417e-b992-83df8f57296f" Title="Assets.Simulation.Cities.Growth" Url="html/984fb7b8-8bad-43c5-4af1-1c9c7a829502.htm">
+    <HelpTOCNode Id="682d23f6-35c3-49b6-95b0-c4200c34f825" Title="IPopulationGrowthLogic Interface" Url="html/8b1ed8b1-8e79-c85b-3b98-b81b483784ea.htm">
+      <HelpTOCNode Id="92042c73-dab0-43ca-849f-9ae58e1a1e1d" Title="IPopulationGrowthLogic Methods" Url="html/01f614aa-96c7-4dec-9abb-83c08e24cc1f.htm">
+        <HelpTOCNode Title="GetFoodConsumptionPerTurn Method " Url="html/f4fe9766-2c92-552e-bf47-2f760f1ca8f8.htm" />
+        <HelpTOCNode Title="GetFoodStockpileAfterStarvation Method " Url="html/3a64694a-21a1-c6a4-9ad6-4e9724364061.htm" />
+        <HelpTOCNode Title="GetFoodStockpileSubtractionAfterGrowth Method " Url="html/15775eac-fc4f-6b6c-7478-604a7c550185.htm" />
+        <HelpTOCNode Title="GetFoodStockpileToGrow Method " Url="html/44c8a2d5-39f9-0248-8835-1d98a421e706.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="95c55d96-6cac-442e-91a1-58a31c2b42ef" Title="PopulationGrowthLogic Class" Url="html/9b7c3425-5ddd-99b6-2351-17bc2d1ce747.htm">
+      <HelpTOCNode Title="PopulationGrowthLogic Constructor " Url="html/6482c5fa-d55c-747e-ad68-67b53e03a927.htm" />
+      <HelpTOCNode Id="9521ca8f-7d78-4569-9d36-4f318dde480a" Title="PopulationGrowthLogic Methods" Url="html/ebd2a574-abc0-1ea6-87c0-e6c1e4a2cd48.htm">
+        <HelpTOCNode Title="GetFoodConsumptionPerTurn Method " Url="html/068e58e5-6637-4b9b-f5e3-a0172cf97895.htm" />
+        <HelpTOCNode Title="GetFoodStockpileAfterStarvation Method " Url="html/8c02874a-b780-a251-328a-3b5509ddb125.htm" />
+        <HelpTOCNode Title="GetFoodStockpileSubtractionAfterGrowth Method " Url="html/de2b87e9-f05b-d389-8a9e-4cd9ae65e8b5.htm" />
+        <HelpTOCNode Title="GetFoodStockpileToGrow Method " Url="html/4d6ce164-bbee-af52-e70f-d48579dc11be.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="cacff26d-c18c-4ee1-aefb-bc4544a3463c" Title="Assets.Simulation.Cities.Production" Url="html/f1646319-529f-2238-6563-9c1e3bf6b7e2.htm">
+    <HelpTOCNode Id="128a4f6d-d3cb-404a-9f6c-31cbe17f78c5" Title="IProductionLogic Interface" Url="html/ca3864ce-bc9e-090f-958a-dcdaffefa2d4.htm">
+      <HelpTOCNode Id="a6419bc7-4682-40d3-80d2-8e80177fed2f" Title="IProductionLogic Methods" Url="html/c4cd41de-518e-ff4a-abef-5db1cdf7ee5c.htm">
+        <HelpTOCNode Title="GetGoldCostToHurryProject Method " Url="html/c7181fe9-e3f2-8776-1a39-d5f74f0f56ff.htm" />
+        <HelpTOCNode Title="GetProductionProgressPerTurnOnProject Method " Url="html/73ef5dc5-8174-8a5d-7e20-4a058db99d81.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d0bde85c-a78d-435b-bdd1-2f175fc131b7" Title="IProductionProject Interface" Url="html/215e0520-e3ff-a31a-a808-4dffb66d8f3f.htm">
+      <HelpTOCNode Id="0df4dbbc-e1bd-4fa9-86c5-6517bd9bf60a" Title="IProductionProject Properties" Url="html/b24cefba-4866-5c30-ea6c-4dbc09965412.htm">
+        <HelpTOCNode Title="Name Property " Url="html/5a7fd3b9-529d-95dd-195a-afeac2514c75.htm" />
+        <HelpTOCNode Title="ProductionToComplete Property " Url="html/de880f8d-d055-8dc4-6f70-961a5058f2df.htm" />
+        <HelpTOCNode Title="Progress Property " Url="html/b3240440-06c9-4345-2bb5-751e55a09eb1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="fd554313-eb96-4f18-bd87-315d346d3667" Title="IProductionProject Methods" Url="html/58caeb9f-047e-c614-6bae-8737dfc45aab.htm">
+        <HelpTOCNode Title="Execute Method " Url="html/174ef818-4f95-2603-d1af-61de035c664b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="171a160c-df7b-42f1-ac6f-cb753921a869" Title="IProductionProjectFactory Interface" Url="html/10a98b08-55f5-d7d8-a36e-737119e65a62.htm">
+      <HelpTOCNode Id="21fd4a0a-ef4e-4b46-ab4c-6b73437c14f2" Title="IProductionProjectFactory Methods" Url="html/e668908d-8406-7343-2cad-8511802ec560.htm">
+        <HelpTOCNode Title="ConstructBuildingProject Method " Url="html/6acfb3ca-bd0d-946c-4d1d-2e0a6fa46bbf.htm" />
+        <HelpTOCNode Title="ConstructUnitProject Method " Url="html/ff42388c-e12b-2cb1-ed46-daacb2006491.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="0e5d02a3-5175-4f1e-9ac4-7aceaa5df78a" Title="ProductionLogic Class" Url="html/8503d4dc-8175-51ef-d78d-554c393a75cc.htm">
+      <HelpTOCNode Title="ProductionLogic Constructor " Url="html/b8289395-dcfc-c826-81cf-849548c03a15.htm" />
+      <HelpTOCNode Id="d940d677-7b64-486e-9836-4534e2eb8d10" Title="ProductionLogic Methods" Url="html/26f1075e-ce68-929e-c736-6a7d6dbd7a27.htm">
+        <HelpTOCNode Title="GetGoldCostToHurryProject Method " Url="html/15a43682-5b6a-68d1-2a88-4d9d6cfe4114.htm" />
+        <HelpTOCNode Title="GetProductionProgressPerTurnOnProject Method " Url="html/55ab6114-455d-b97b-e28d-eff63afbe55d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="18adc396-e581-4a29-aef8-3ff5f13a9c91" Title="ProductionProjectFactory Class" Url="html/9386db05-0e69-5036-482d-b87ea75f2ba6.htm">
+      <HelpTOCNode Title="ProductionProjectFactory Constructor " Url="html/1f3e7036-a952-1667-856f-2ff5e2d98dd1.htm" />
+      <HelpTOCNode Id="96b02d75-5ca9-4ef0-af03-d1d7da8fa76d" Title="ProductionProjectFactory Methods" Url="html/5013cc4f-e8c9-619b-3e22-6d16e553a7c2.htm">
+        <HelpTOCNode Title="ConstructBuildingProject Method " Url="html/ab37cd85-50e3-f098-7bca-3be3f5ad0388.htm" />
+        <HelpTOCNode Title="ConstructUnitProject Method " Url="html/3b5127ba-7ad2-3bee-3a23-0cec90183ae7.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="e30643c6-be9c-4a02-b814-1c88d0b713f0" Title="Assets.Simulation.Cities.ResourceGeneration" Url="html/461e2841-d588-db9a-6cb8-c28a4f7cee7f.htm">
+    <HelpTOCNode Id="a0b59461-c450-4a83-9b18-f9c7a2fad0a8" Title="IIncomeModifierLogic Interface" Url="html/a5850d42-c9a2-ec52-0a36-07185e3dd77b.htm">
+      <HelpTOCNode Id="8b8b783c-282d-4e3a-85a4-863b5590e385" Title="IIncomeModifierLogic Methods" Url="html/d7cc1ec3-47fc-7534-8156-e28843a99782.htm">
+        <HelpTOCNode Title="GetRealBaseYieldForSlot Method " Url="html/6d8f4f04-6ce8-4be9-9616-58e2b4fcc2b2.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForCity Method " Url="html/bddd1015-bf5a-d4ad-9555-56bb8854693f.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForCivilization Method " Url="html/d8313ce7-d4fe-4bfb-76c5-ba78b202204c.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForSlot Method " Url="html/5d84926e-0fe9-a5cb-8a8e-e4fee5016b55.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="6c1c38b0-cb6b-48aa-842f-7305e7190220" Title="IncomeModifierLogic Class" Url="html/d691373a-d5cc-8bd6-99fd-93d9381bc4fa.htm">
+      <HelpTOCNode Title="IncomeModifierLogic Constructor " Url="html/1bc7c225-9ab6-0f7a-e64c-5f0f1878a363.htm" />
+      <HelpTOCNode Id="3c53a74b-502a-4ea4-a3bf-26626f3cb89e" Title="IncomeModifierLogic Methods" Url="html/431003b0-da62-d698-50af-3345cdde9cc7.htm">
+        <HelpTOCNode Title="GetRealBaseYieldForSlot Method " Url="html/c62729e3-9001-b3cf-65cc-48896b3390cf.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForCity Method " Url="html/7b8615ca-6a86-450a-ffbf-265fb85bc4ae.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForCivilization Method " Url="html/cb8bf945-1d48-5db8-c72b-e74f1f401e7c.htm" />
+        <HelpTOCNode Title="GetYieldMultipliersForSlot Method " Url="html/54de28d5-d66f-a80b-b59a-d334f8ccbe42.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7a44bab2-265b-4ed8-ba0c-9354f861fa91" Title="IResourceGenerationLogic Interface" Url="html/4e0b4274-d5c5-f20c-387d-9af2c604311f.htm">
+      <HelpTOCNode Id="132d25b8-f75b-4586-9a9a-1954b484e572" Title="IResourceGenerationLogic Methods" Url="html/08729a21-cafc-1acc-d232-7bd3f48ea904.htm">
+        <HelpTOCNode Title="GetTotalYieldForCity Method " Url="html/e082b560-8fd7-9b64-de2c-a6dbe7723ae6.htm" />
+        <HelpTOCNode Title="GetYieldOfSlotForCity Method " Url="html/cd140f69-d863-8673-0a74-38896d50645c.htm" />
+        <HelpTOCNode Title="GetYieldOfUnemployedForCity Method " Url="html/0096f730-21d2-888a-051c-c89175f9b401.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b78febe9-578f-4575-8d88-d798ff417476" Title="ResourceGenerationLogic Class" Url="html/c92c0645-1aaf-b32d-e1ed-317698d623e1.htm">
+      <HelpTOCNode Title="ResourceGenerationLogic Constructor " Url="html/76a9eed2-5c9d-173b-40da-7f42a1985ed4.htm" />
+      <HelpTOCNode Id="052eea82-926d-4e83-b090-06764ed58c94" Title="ResourceGenerationLogic Methods" Url="html/5bcd027e-f329-558e-146f-a9723650ef24.htm">
+        <HelpTOCNode Title="GetTotalYieldForCity Method " Url="html/3b86c0f6-b79b-ff0a-83e0-991ca3444407.htm" />
+        <HelpTOCNode Title="GetYieldOfSlotForCity Method " Url="html/455b7bc0-fc7a-0e49-9506-2f479d108c71.htm" />
+        <HelpTOCNode Title="GetYieldOfUnemployedForCity Method " Url="html/7504f9a6-95f9-2b52-dea4-c0ec68998bb4.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="51cd4817-bfde-4697-b22e-9e58446e1b17" Title="Assets.Simulation.Cities.Territory" Url="html/b3df12ab-553a-2629-bd02-4d98502c20a9.htm">
+    <HelpTOCNode Id="c257b87d-a812-409f-a320-f8c41c7b66ed" Title="BorderExpansionLogic Class" Url="html/2abe1e4e-76c5-b6c1-c659-1eed682a547b.htm">
+      <HelpTOCNode Title="BorderExpansionLogic Constructor " Url="html/3bb32f94-84d1-7ba8-f5d4-edc6122f092a.htm" />
+      <HelpTOCNode Id="12534636-cd96-4fe6-a71c-30e7c837a3a5" Title="BorderExpansionLogic Methods" Url="html/70eb0602-ac71-e09c-6312-1390b3a8edec.htm">
+        <HelpTOCNode Title="GetAllCellsAvailableToCity Method " Url="html/71343757-1636-bac5-6132-6377e751c3ff.htm" />
+        <HelpTOCNode Title="GetCultureCostOfAcquiringCell Method " Url="html/abd0c096-1bde-6018-5c44-1e2575216806.htm" />
+        <HelpTOCNode Title="GetGoldCostOfAcquiringCell Method " Url="html/1494b9ba-372a-f473-14a6-cf33fcab6fb9.htm" />
+        <HelpTOCNode Title="GetNextCellToPursue Method " Url="html/ec7ce9df-7b90-89d0-18f6-ff2291f88d9b.htm" />
+        <HelpTOCNode Title="IsCellAvailable Method " Url="html/7f207ab1-acfe-22a3-3773-8fc43c011fc3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="95aefa8a-44f3-4faa-b4dd-993cda8fa3f7" Title="CellPossessionCanon Class" Url="html/3a04aa59-5272-14b1-9f11-2c2632df466c.htm">
+      <HelpTOCNode Title="CellPossessionCanon Constructor " Url="html/2e2a016b-337a-fd1a-93e0-20808127cf81.htm" />
+      <HelpTOCNode Id="5e56d95a-0f49-470e-afe2-43950661ca3e" Title="CellPossessionCanon Methods" Url="html/a6a4a891-54eb-e28d-0326-62bb2c35280e.htm">
+        <HelpTOCNode Title="CanChangeOwnerOfTile Method " Url="html/f6637f90-09e0-b595-0eb1-9d5469e1653c.htm" />
+        <HelpTOCNode Title="ChangeOwnerOfTile Method " Url="html/ab3a887e-8c2e-b2c5-63ae-ad7dba62d824.htm" />
+        <HelpTOCNode Title="GetCityOfTile Method " Url="html/1afe43f9-791d-f404-da5c-89b748b97a4e.htm" />
+        <HelpTOCNode Title="GetTilesOfCity Method " Url="html/462c24d7-a468-9c9e-1f17-b3e0c85f5120.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b79f1704-ec50-44d1-9960-61b4ebbbce8a" Title="IBorderExpansionLogic Interface" Url="html/3012bd65-68e9-0891-3eaa-ae642f91e032.htm">
+      <HelpTOCNode Id="1adbbb3e-d800-4275-a25b-8d92bb3081e9" Title="IBorderExpansionLogic Methods" Url="html/dbc38930-71a3-7294-feb5-036ba996f9fd.htm">
+        <HelpTOCNode Title="GetAllCellsAvailableToCity Method " Url="html/20af7717-1d60-2922-a823-8e7b45913fe6.htm" />
+        <HelpTOCNode Title="GetCultureCostOfAcquiringCell Method " Url="html/9f3a577b-b170-ea6c-679f-9bb60b1ffd5b.htm" />
+        <HelpTOCNode Title="GetGoldCostOfAcquiringCell Method " Url="html/d61f8c60-e8cd-14af-e47a-887cb4af77de.htm" />
+        <HelpTOCNode Title="GetNextCellToPursue Method " Url="html/e4cec28c-88de-4260-e85b-27a107acfa5d.htm" />
+        <HelpTOCNode Title="IsCellAvailable Method " Url="html/cb3faa77-1c43-c89d-bdd6-1c96660bc15a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4d83b02d-a16d-4ec8-aabe-354966a512a7" Title="ICellPossessionCanon Interface" Url="html/a46d5572-b5ad-78ea-0d2b-dd43a584742d.htm">
+      <HelpTOCNode Id="ddc8172b-1549-4105-8914-3086503e68e8" Title="ICellPossessionCanon Methods" Url="html/6f3885fd-3f6d-e1dd-55e9-bc8758602260.htm">
+        <HelpTOCNode Title="CanChangeOwnerOfTile Method " Url="html/9a720f61-9124-7142-ef10-fd07d7fd00f9.htm" />
+        <HelpTOCNode Title="ChangeOwnerOfTile Method " Url="html/f852d020-f4d1-f931-2261-71bd2dc9fd4b.htm" />
+        <HelpTOCNode Title="GetCityOfTile Method " Url="html/fcb4f75a-08be-5d41-5bf9-bf6e7eaaeffa.htm" />
+        <HelpTOCNode Title="GetTilesOfCity Method " Url="html/2755cbad-c35c-3ffd-15c4-6e3ce49ad945.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="3e3567bd-d5d8-40bf-9c64-ca68ef4519dc" Title="Assets.Simulation.Civilizations" Url="html/18aa5419-0a19-88ab-7a77-cfbe9273da92.htm">
+    <HelpTOCNode Id="a8a59671-632a-49e3-b8f9-c8be1443f64e" Title="Civilization Class" Url="html/052eed5b-bb20-effb-f106-3eff6fd9fd8c.htm">
+      <HelpTOCNode Title="Civilization Constructor " Url="html/ac8cf3f1-55a6-1a84-d611-c2ee1cc5d729.htm" />
+      <HelpTOCNode Id="564379a0-51c1-47b1-bf80-96456fe7ea00" Title="Civilization Properties" Url="html/e85ad4c6-b27e-00c0-e48f-bfcd07d72cd5.htm">
+        <HelpTOCNode Title="CultureStockpile Property " Url="html/459e5da5-4eaa-1517-65b8-829d0863d603.htm" />
+        <HelpTOCNode Title="GoldStockpile Property " Url="html/279086a4-aa7a-f8bc-8e62-278f177754f7.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/6abe3704-0d04-aba9-3b5e-4f7eb637acf2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="095a4b3a-8efb-4f8a-9ab5-f0c064abcb9b" Title="Civilization Methods" Url="html/70963f12-0765-1fa9-3860-1edfd71db104.htm">
+        <HelpTOCNode Title="PerformIncome Method " Url="html/27816dd0-50be-1445-73cb-9a492a14fb75.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="10892360-815b-4827-9d9f-4da54b172f26" Title="CivilizationConfig Class" Url="html/3504df12-aea7-7ea7-1bb0-c3ef15922ee4.htm">
+      <HelpTOCNode Title="CivilizationConfig Constructor " Url="html/28b024b2-4c10-feab-d0d9-ec4d68cd80e8.htm" />
+      <HelpTOCNode Title="CivilizationConfig Methods" Url="html/b686280d-abc1-1ea5-1728-b0caebfadb65.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="dd08cf42-be08-4eec-9d45-053330ba98e6" Title="CivilizationFactory Class" Url="html/cc4bdea5-6e3f-37de-7b7b-a8d83bfe7633.htm">
+      <HelpTOCNode Title="CivilizationFactory Constructor " Url="html/8b934037-5dfa-c411-0af1-f438083c260f.htm" />
+      <HelpTOCNode Id="1cad9256-ee82-4205-a083-4680beb453ac" Title="CivilizationFactory Properties" Url="html/dbe851a4-217f-381e-2278-864d258943be.htm">
+        <HelpTOCNode Title="AllCivilizations Property " Url="html/eee18e3b-2768-d97a-cb6f-8829c163d5db.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="50654d1d-f42b-41a0-ad79-1c71738bf528" Title="CivilizationFactory Methods" Url="html/891103d7-342f-b2a1-779b-d579a705bd28.htm">
+        <HelpTOCNode Title="Create Method " Url="html/8ac954d0-4d88-32d5-11d2-0969be886e6f.htm" />
+        <HelpTOCNode Title="Validate Method " Url="html/d5fa3e4b-484d-a54b-0844-fb4d5db40dc9.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="181a14b4-3763-496a-8f18-6529820dd7ea" Title="CivilizationInstaller Class" Url="html/25509c5b-d8ab-9204-193b-e1c426cd2aad.htm">
+      <HelpTOCNode Title="CivilizationInstaller Constructor " Url="html/346c8670-0f39-7c61-a094-d685e642f92c.htm" />
+      <HelpTOCNode Title="CivilizationInstaller Properties" Url="html/0c780325-5d07-650d-19f2-c6d387504229.htm" />
+      <HelpTOCNode Id="b337580f-6d2c-47d5-8b8f-1dce64441616" Title="CivilizationInstaller Methods" Url="html/ba32baf1-a639-5be7-90f6-f0a8577d03b2.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/72a11d52-d543-7ede-8f7c-67a448c390b1.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5068d8c4-be64-42bf-bdd9-05f59aa06e53" Title="ICivilization Interface" Url="html/cdf23622-6484-c16d-4d21-7de3772c96ce.htm">
+      <HelpTOCNode Id="fef20b15-d99b-4a4a-b25c-6d4c9c3411e2" Title="ICivilization Properties" Url="html/cfbb24e3-7d9d-7339-5381-d542fd86655c.htm">
+        <HelpTOCNode Title="CultureStockpile Property " Url="html/5915aaec-b0b3-a20a-0609-e8c8d4b03a20.htm" />
+        <HelpTOCNode Title="GoldStockpile Property " Url="html/1b69216d-dc59-6427-7841-74687fe50f7b.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/1d3ec502-25e3-2d22-b2e4-5fc6fcc61393.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="149c2b1a-8383-44f9-9b5f-2b9cd585c427" Title="ICivilization Methods" Url="html/39531d71-c572-da0e-fa13-738602bd5635.htm">
+        <HelpTOCNode Title="PerformIncome Method " Url="html/cd20dff5-e9cd-8db9-33dc-f636da873f11.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="ICivilizationConfig Interface" Url="html/93fabb12-2526-00e5-e22f-69c19ce10bfd.htm" />
+    <HelpTOCNode Id="f6da0e16-5127-460e-adf8-4e51f1e8e94b" Title="ICivilizationFactory Interface" Url="html/7ab986e5-cb4f-de5e-f8e3-f61c497c531e.htm">
+      <HelpTOCNode Id="ba4f0b72-40a9-4a12-955c-e7e5fc1a096e" Title="ICivilizationFactory Properties" Url="html/ad29bfe6-0bb2-594d-3dbf-e87d92024242.htm">
+        <HelpTOCNode Title="AllCivilizations Property " Url="html/ee375014-196f-825e-5edf-7a0c7d8860d6.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ICivilizationFactory Methods" Url="html/6392b44d-cba8-89fe-d386-0a19380253fc.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="5e24373a-e440-4405-a06a-62e359ab8921" Title="Assets.Simulation.Core" Url="html/beb05e21-7de4-2e08-97e6-f28a9187a369.htm">
+    <HelpTOCNode Id="e1285509-6e49-4aff-a8ef-5e6c75997304" Title="CityBuilder Class" Url="html/bcbc9885-a285-2f07-ef68-a46f11558d26.htm">
+      <HelpTOCNode Title="CityBuilder Constructor " Url="html/48f6ce96-6298-6bd8-2e22-812e7a8b3d10.htm" />
+      <HelpTOCNode Id="e273eebc-8b63-478f-b058-a6d849a18275" Title="CityBuilder Methods" Url="html/8975d10c-82e0-876b-35b0-c76d1087855b.htm">
+        <HelpTOCNode Title="BuildFullCityOnTile Method " Url="html/15f9e337-1599-0b17-7159-dabd31afbd59.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/c3f498ec-8fb0-305d-ae53-28fe3f61c1ae.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9f534c23-dd1f-45bb-a22b-7be1d95f17b8" Title="CoreInstaller Class" Url="html/d398cd9d-17a6-d588-48cb-2961c793b6d5.htm">
+      <HelpTOCNode Title="CoreInstaller Constructor " Url="html/63874ff3-dd86-65c5-38d4-f8eed0279ce4.htm" />
+      <HelpTOCNode Title="CoreInstaller Properties" Url="html/1aafd984-a559-8b47-91c4-0f6271506abc.htm" />
+      <HelpTOCNode Id="511eca14-7320-4c44-9122-1c996ddfb3a0" Title="CoreInstaller Methods" Url="html/d4022f06-d0a7-4fbe-a687-8955b32c1ea8.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/2775da9c-fe04-d5d1-74a2-8350bf70921b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="19e6432e-e0ec-49ab-8aa6-77fe0fde22be" Title="EndTurnRequestedSignal Class" Url="html/f2c9f9d1-44e3-0599-98a1-01078d77dda0.htm">
+      <HelpTOCNode Title="EndTurnRequestedSignal Constructor " Url="html/b758a3ad-a680-136b-7d0f-e7bba2d1b856.htm" />
+      <HelpTOCNode Title="EndTurnRequestedSignal Properties" Url="html/f4715c8c-9a77-fbac-2866-5e9ed7368f46.htm" />
+      <HelpTOCNode Title="EndTurnRequestedSignal Methods" Url="html/68047d1c-fdfa-fd66-3a90-4370bd605064.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="00cbf064-b428-4d27-8702-149118f0d008" Title="GameCore Class" Url="html/88e87162-933f-1f3b-db47-84f628868122.htm">
+      <HelpTOCNode Title="GameCore Constructor " Url="html/817d2b9c-7bb6-5d49-d974-14c83ab0431a.htm" />
+      <HelpTOCNode Id="00ee4328-36dd-44cb-8f7d-accb20e17975" Title="GameCore Properties" Url="html/2de5444e-76e9-30f6-d4a9-b7fb4f6d46e9.htm">
+        <HelpTOCNode Title="PlayerCivilization Property " Url="html/f5b7bd5d-0788-2ac9-f633-6d0e4a8639c3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="7c69827a-c7bd-4eca-b620-1a8c2a210678" Title="GameCore Methods" Url="html/5c14aaab-5910-7a37-7bd3-7a5c47159228.htm">
+        <HelpTOCNode Title="BeginRound Method " Url="html/90ee2d0b-9626-4fb6-4386-a74583217ae4.htm" />
+        <HelpTOCNode Title="EndRound Method " Url="html/24f5b1d7-4a57-9543-7250-23b2e8efcf9e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="6ede30ae-49fb-4fad-9c7e-4977d48fe484" Title="ITurnExecuter Interface" Url="html/95629623-3114-623c-63e4-33b46c498ef8.htm">
+      <HelpTOCNode Id="9b45384a-7366-423e-a855-2b73b03e6b8f" Title="ITurnExecuter Methods" Url="html/1b655278-82f2-78cb-5c8a-48d273817bfe.htm">
+        <HelpTOCNode Title="BeginTurnOnCity Method " Url="html/4a8e19bf-436f-630e-f7e1-76da8c81d970.htm" />
+        <HelpTOCNode Title="BeginTurnOnCivilization Method " Url="html/6942a340-7e04-4371-f8be-aff48328efb5.htm" />
+        <HelpTOCNode Title="BeginTurnOnUnit Method " Url="html/3771178a-b629-35ef-60dc-789b16807c59.htm" />
+        <HelpTOCNode Title="EndTurnOnCity Method " Url="html/fb33337d-4d9b-f4f2-c325-2af960202a2c.htm" />
+        <HelpTOCNode Title="EndTurnOnCivilization Method " Url="html/4699a37d-ac2a-fdeb-6bed-69315e495deb.htm" />
+        <HelpTOCNode Title="EndTurnOnUnit Method " Url="html/04d95357-d297-f41d-7abb-0715fb802dc3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c9624e38-b63c-497b-bf97-3b7b1370b6c4" Title="PlayerInputInstaller Class" Url="html/adb507b5-11ff-0deb-d039-5ebdc3a503f3.htm">
+      <HelpTOCNode Title="PlayerInputInstaller Constructor " Url="html/2df97500-766d-6f77-d482-60f2d7315d69.htm" />
+      <HelpTOCNode Title="PlayerInputInstaller Properties" Url="html/fe676ad3-6a19-3087-51da-b62a1635d66c.htm" />
+      <HelpTOCNode Id="222ddc16-313d-4208-a416-ff8d363b36af" Title="PlayerInputInstaller Methods" Url="html/206dad09-9413-2857-82c4-a6da46b5b5bc.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/11ac76c9-d6c8-47c5-a82e-a52f54bfb2cd.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="f6c2815b-b705-4f62-816c-117be03016ac" Title="TurnBeganSignal Class" Url="html/43da03a3-11a1-8687-4a82-02e967c308e1.htm">
+      <HelpTOCNode Title="TurnBeganSignal Constructor " Url="html/ee8aa56c-d294-787c-c367-d26826c2bab1.htm" />
+      <HelpTOCNode Title="TurnBeganSignal Properties" Url="html/508eb56a-ff14-2463-6420-3191718edf65.htm" />
+      <HelpTOCNode Title="TurnBeganSignal Methods" Url="html/1b3dd730-a79a-5a5d-8eb1-c61e5642fe4e.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="ed2783f7-1eef-4901-ab79-b6f4a3cc0910" Title="TurnEndedSignal Class" Url="html/cf09131e-e5a6-8f1e-09a4-b5756d069965.htm">
+      <HelpTOCNode Title="TurnEndedSignal Constructor " Url="html/7d695ed9-c45e-b73d-e403-a58d891d2106.htm" />
+      <HelpTOCNode Title="TurnEndedSignal Properties" Url="html/1247c245-fa4a-1cd4-cf9c-d3d7882f932a.htm" />
+      <HelpTOCNode Title="TurnEndedSignal Methods" Url="html/4149f894-168a-c373-5abc-bcd66b8bba34.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="aa254a57-77db-404f-a51b-d3d9d75508b7" Title="TurnExecuter Class" Url="html/02cee815-3dba-f5cf-e511-58ebfb750233.htm">
+      <HelpTOCNode Title="TurnExecuter Constructor " Url="html/26296a8f-cced-a88d-75ff-4b989ce437e0.htm" />
+      <HelpTOCNode Id="c60ce320-536f-4ac0-b255-c51c850f693d" Title="TurnExecuter Methods" Url="html/808b3e31-2368-d037-0258-41c8b3717e1c.htm">
+        <HelpTOCNode Title="BeginTurnOnCity Method " Url="html/d2ac85c9-9077-9182-b6a2-d774d9065d8b.htm" />
+        <HelpTOCNode Title="BeginTurnOnCivilization Method " Url="html/b4137dd1-0a7d-bcb0-a0a8-393ef31d0a98.htm" />
+        <HelpTOCNode Title="BeginTurnOnUnit Method " Url="html/fada032e-8df8-c1ae-541e-0f5ccc8c71d5.htm" />
+        <HelpTOCNode Title="EndTurnOnCity Method " Url="html/879bc432-ea26-9a52-0066-79bbeeb4fc7c.htm" />
+        <HelpTOCNode Title="EndTurnOnCivilization Method " Url="html/84b6f4e6-5561-5bd6-8c86-ed75d415e58b.htm" />
+        <HelpTOCNode Title="EndTurnOnUnit Method " Url="html/9d8434b7-05e5-9b7d-3797-06d60a84df99.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="ad647961-f5c5-4269-90f1-a81bebcce096" Title="Assets.Simulation.HexMap" Url="html/b317c7d8-4c2a-e857-df2c-7087cc0ec31e.htm">
+    <HelpTOCNode Id="58dfa750-ca39-4424-ad51-93dfe8691497" Title="CellClickedSignal Class" Url="html/53144c6f-effa-3698-587c-17fea344eb84.htm">
+      <HelpTOCNode Title="CellClickedSignal Constructor " Url="html/619a95f4-dd11-50ba-4994-242cc2eef6db.htm" />
+      <HelpTOCNode Title="CellClickedSignal Properties" Url="html/f44d33de-b2ce-84e2-44b1-153c99989e9c.htm" />
+      <HelpTOCNode Title="CellClickedSignal Methods" Url="html/e911a1ee-5072-23e8-07af-c36ed56c2450.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="f6632f9f-ac0d-4d17-8f1b-2d3cb539e659" Title="CellPointerEnterSignal Class" Url="html/739e5b6e-cab6-321c-4de6-ab9d4ee8b75c.htm">
+      <HelpTOCNode Title="CellPointerEnterSignal Constructor " Url="html/07796cd4-e406-af8b-4c2d-b19723f7f829.htm" />
+      <HelpTOCNode Title="CellPointerEnterSignal Properties" Url="html/292f13f2-87aa-d301-1692-b55645da01a8.htm" />
+      <HelpTOCNode Title="CellPointerEnterSignal Methods" Url="html/0caf4406-831b-202e-2902-36020da250a0.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="325630bb-7b92-417a-b02b-4efa601ae5c6" Title="CellPointerExitSignal Class" Url="html/e57e7098-5e7d-51b7-14ca-da7e37e9f4a3.htm">
+      <HelpTOCNode Title="CellPointerExitSignal Constructor " Url="html/4f8f8182-5b16-e000-a7bb-63e797ea8e9f.htm" />
+      <HelpTOCNode Title="CellPointerExitSignal Properties" Url="html/530d65c0-5573-45f6-3214-9ed622213353.htm" />
+      <HelpTOCNode Title="CellPointerExitSignal Methods" Url="html/784da6de-a437-c4b1-a948-ae167f42b910.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="75c85a62-0c70-4320-8f1a-4983dbda5d3e" Title="EdgeVertices Structure" Url="html/64867dc2-43e6-fcc5-44fa-d5d4bf599689.htm">
+      <HelpTOCNode Id="4f82a4ea-f8a5-4b67-a041-128074916d9f" Title="EdgeVertices Constructor " Url="html/ee386de8-6f6d-9cb7-ea90-55186fc5c25d.htm">
+        <HelpTOCNode Title="EdgeVertices Constructor (Vector3, Vector3)" Url="html/a2f4c9ea-36fd-17d3-0cf0-11672dccb50b.htm" />
+        <HelpTOCNode Title="EdgeVertices Constructor (Vector3, Vector3, Single)" Url="html/a67f43c6-1066-6e53-5d5c-f24751b8ef07.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="aa19d2bc-4649-4f91-9216-02a0e6fbb134" Title="EdgeVertices Methods" Url="html/a47915b4-ea67-7481-6ebb-471df6ba0be0.htm">
+        <HelpTOCNode Title="TerraceLerp Method " Url="html/5e74c08b-f578-81ee-2367-3b977ae8266f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6eb7561c-d1e8-4d6a-b1eb-059a40c15c52" Title="EdgeVertices Fields" Url="html/d519c99f-cc1d-d255-4a3e-93daefa1eb03.htm">
+        <HelpTOCNode Title="V1 Field" Url="html/ab3a9454-926f-6271-fe65-74ef92d111c1.htm" />
+        <HelpTOCNode Title="V2 Field" Url="html/b3479c5f-48da-77a8-a6d2-9f15d4ed7b24.htm" />
+        <HelpTOCNode Title="V3 Field" Url="html/0b90b161-475d-4e92-81fd-f257a0d10bd8.htm" />
+        <HelpTOCNode Title="V4 Field" Url="html/429bfa73-d81d-e318-2834-380c621bc867.htm" />
+        <HelpTOCNode Title="V5 Field" Url="html/70979a5d-71de-a180-0fbe-6137611ad44e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="82415517-fd64-4d6d-b188-31971c370fd1" Title="HexCell Class" Url="html/3a0fe10f-662d-ec2c-6817-442d84472364.htm">
+      <HelpTOCNode Title="HexCell Constructor " Url="html/0a013394-1d7a-1506-faf3-1ddeef1ccefc.htm" />
+      <HelpTOCNode Id="a6f35453-473c-47ad-b785-f8cb1f8ab4d3" Title="HexCell Properties" Url="html/c036ae94-350b-efdb-f0c9-37431675c363.htm">
+        <HelpTOCNode Title="Chunk Property " Url="html/a901697a-4dbb-ab0d-cd73-406d7263c806.htm" />
+        <HelpTOCNode Title="Color Property " Url="html/e9eb0fb0-a77f-0582-29d5-07612c8417c7.htm" />
+        <HelpTOCNode Title="Coordinates Property " Url="html/4a1170cb-7d23-b343-1597-ffa65c226335.htm" />
+        <HelpTOCNode Title="Elevation Property " Url="html/d86ebedd-c813-3c92-6ed6-6ab291178cdb.htm" />
+        <HelpTOCNode Title="Feature Property " Url="html/69419f96-5558-cccb-b135-f0e88fa579a9.htm" />
+        <HelpTOCNode Title="HasRoads Property " Url="html/ec6807aa-a32a-41e7-06fb-71653d152d54.htm" />
+        <HelpTOCNode Title="IsUnderwater Property " Url="html/8865e30a-752d-c479-4914-7b3a4b702e00.htm" />
+        <HelpTOCNode Title="Overlay Property " Url="html/a3177785-74b4-56cb-e1e3-dd85ce4b5860.htm" />
+        <HelpTOCNode Title="RiverSurfaceY Property " Url="html/a58dd61d-cf0b-cacd-f708-de625c05ad16.htm" />
+        <HelpTOCNode Title="Shape Property " Url="html/d08348a1-5155-1381-ab42-f8be8760b664.htm" />
+        <HelpTOCNode Title="StreamBedY Property " Url="html/5c841871-2f0e-1cc7-8ec2-36305d4912d9.htm" />
+        <HelpTOCNode Title="SuppressSlot Property " Url="html/b906ce68-ae22-7c7b-ac80-ce4fea308214.htm" />
+        <HelpTOCNode Title="Terrain Property " Url="html/d478e190-6da0-ad4a-c84d-1993e4ab25b7.htm" />
+        <HelpTOCNode Title="WaterLevel Property " Url="html/703c1fa2-e8de-cf80-7c68-c8cc2b24391f.htm" />
+        <HelpTOCNode Title="WaterSurfaceY Property " Url="html/4ecce29c-a907-2259-ba5f-cd1277c7136f.htm" />
+        <HelpTOCNode Title="WorkerSlot Property " Url="html/1cec31cf-fdc7-9df5-02cc-0b096a682282.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b6edcc23-b393-4587-95fa-ea7ffa9ae1c3" Title="HexCell Methods" Url="html/a92ab262-10eb-1b2d-ad83-45529bf93b5c.htm">
+        <HelpTOCNode Title="AddRoad Method " Url="html/02ff9f3b-831d-cd95-93a5-221bcfdfa752.htm" />
+        <HelpTOCNode Title="GetEdgeType Method " Url="html/7f25857f-e522-bf60-9370-6428021dacf3.htm" />
+        <HelpTOCNode Title="GetElevationDifference Method " Url="html/b7aa3aaf-0ad6-8927-2e20-d8599bcc8005.htm" />
+        <HelpTOCNode Title="HasRoadThroughEdge Method " Url="html/2d111b27-4cec-1da0-ffbb-50b42d07f38f.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/3d277c18-48a4-2501-e52c-cf5411d2af30.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/4c9172c7-2a65-a31f-7c5b-95c8f0de3299.htm" />
+        <HelpTOCNode Title="RefreshSelfOnly Method " Url="html/37f4ecc0-0eec-5a88-6027-86f645897b4b.htm" />
+        <HelpTOCNode Title="RemoveRoads Method " Url="html/7ae33c44-7313-a219-9a70-aac832329b53.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/3a00cafa-d9f0-1448-eb00-7c97036d140b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="54b6a8b5-03d6-4b82-89e9-5ddd05302aff" Title="HexCellSignals Class" Url="html/987eb578-7cd4-82ab-d436-13f82812eeb7.htm">
+      <HelpTOCNode Title="HexCellSignals Constructor " Url="html/9cd6de38-2ba5-a707-a804-316aabd598bf.htm" />
+      <HelpTOCNode Id="10d9d49a-ca52-4d34-946a-8b7df8ff036c" Title="HexCellSignals Properties" Url="html/26f00e13-b8ef-742f-1fc0-2460a6f2e953.htm">
+        <HelpTOCNode Title="ClickedSignal Property " Url="html/1025b856-97b2-8451-871f-115eb8bd8108.htm" />
+        <HelpTOCNode Title="PointerEnterSignal Property " Url="html/145522e7-aaf8-1f30-ef70-a5b294a84ba5.htm" />
+        <HelpTOCNode Title="PointerExitSignal Property " Url="html/ad1ef61d-caa2-5e43-62d9-660a1d17ded2.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="HexCellSignals Methods" Url="html/56a4ddfd-bec4-d005-57de-1f2a0b9c0086.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="496192df-d1da-4401-9f6d-66ac7d2d2b2a" Title="HexCoordinates Class" Url="html/2c280f6c-5151-00fe-32f6-1f05d8065cf7.htm">
+      <HelpTOCNode Title="HexCoordinates Constructor " Url="html/8d3caf07-df13-88fe-732a-418107392afd.htm" />
+      <HelpTOCNode Id="dc6c7132-c88f-46e7-bd1c-fa2f8630c0a5" Title="HexCoordinates Properties" Url="html/dd35653a-d26d-78bc-1550-091e27a11a9e.htm">
+        <HelpTOCNode Title="X Property " Url="html/69321013-6af3-e8c3-4252-0c191db6415c.htm" />
+        <HelpTOCNode Title="Y Property " Url="html/0b4b1e42-c627-a25c-0bb1-be833bc4c2d9.htm" />
+        <HelpTOCNode Title="Z Property " Url="html/72018df9-5974-dd22-92df-26ac0dcd749b.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8707eafc-2c74-48c2-ad12-fc347c116674" Title="HexCoordinates Methods" Url="html/9a575134-a7fd-f73b-d1d1-2b20d60b6735.htm">
+        <HelpTOCNode Title="Add Method " Url="html/5e03231a-9deb-8d62-a769-97eaae2249a4.htm" />
+        <HelpTOCNode Title="Equals Method " Url="html/9ed6d694-6ec7-919c-beb7-ad8dcb397828.htm" />
+        <HelpTOCNode Title="FromOffsetCoordinates Method " Url="html/5459a70d-f154-4e85-7dc8-dfb3b6ead381.htm" />
+        <HelpTOCNode Title="FromPosition Method " Url="html/a17b25c8-23d0-89d9-3af1-6c8700692704.htm" />
+        <HelpTOCNode Title="GetCoordinateInDirection Method " Url="html/38384203-1678-2b3c-aa4e-05feafc36d57.htm" />
+        <HelpTOCNode Title="GetCoordinatesInRadius Method " Url="html/db60b700-a10c-0d8f-68fa-e447eb3bfa7c.htm" />
+        <HelpTOCNode Title="GetCoordinatesInRing Method " Url="html/d88df57d-2640-8dce-79df-50803da59e82.htm" />
+        <HelpTOCNode Title="GetDistanceBetween Method " Url="html/c31431d4-563b-05da-706d-010bea22981b.htm" />
+        <HelpTOCNode Title="GetHashCode Method " Url="html/70bce113-f679-c1ed-d96b-2810c41a2876.htm" />
+        <HelpTOCNode Title="GetLength Method " Url="html/912bd9b4-280f-9046-4470-c8125324aef0.htm" />
+        <HelpTOCNode Title="GetNeighborInDirection Method " Url="html/680ab74c-4031-3d21-d17c-f8e522337076.htm" />
+        <HelpTOCNode Title="Scale Method " Url="html/360fd8fc-50ec-e3c2-29aa-416feb73d661.htm" />
+        <HelpTOCNode Title="Subtract Method " Url="html/bf293fa1-a009-c118-7582-1517295338cf.htm" />
+        <HelpTOCNode Title="ToString Method " Url="html/4b0f6f13-9173-d843-0269-2f8a3c2c0415.htm" />
+        <HelpTOCNode Title="ToStringOnSeparateLines Method " Url="html/5225f846-bd26-a5ef-f22f-193d1f8a73c5.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="dbe413df-a11d-4a95-9744-71148fca2168" Title="HexCoordinates Operators" Url="html/a6a10d78-7387-28b6-05e1-44fc79f13145.htm">
+        <HelpTOCNode Title="Equality Operator " Url="html/13118afa-2d5e-10cd-da1c-060835350719.htm" />
+        <HelpTOCNode Title="Inequality Operator " Url="html/f79559c9-5dcb-a43b-cafa-5064d925334f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="HexDirection Enumeration" Url="html/68dcf947-a694-5066-4f1f-6a06dd3a4b46.htm" />
+    <HelpTOCNode Id="b4c84b39-b6d4-4baf-9e98-52f1217fc82c" Title="HexDirectionExtensions Class" Url="html/796bafa5-0f45-916f-c80b-531832e40808.htm">
+      <HelpTOCNode Id="a0570ea1-9f6f-408b-989b-ad0687dd3233" Title="HexDirectionExtensions Methods" Url="html/c82bbd91-991e-05fe-31a4-121c9ea756a3.htm">
+        <HelpTOCNode Title="Next Method " Url="html/4bc62218-4865-a3d8-01be-618b7204b70e.htm" />
+        <HelpTOCNode Title="Next2 Method " Url="html/c0daffa2-3f0e-8e65-4538-2c34b9a69b8b.htm" />
+        <HelpTOCNode Title="Opposite Method " Url="html/cda40512-0ce6-14d4-0610-3006195736c4.htm" />
+        <HelpTOCNode Title="Previous Method " Url="html/41b79e6a-7fd9-15b9-9b2f-a433c3bf438a.htm" />
+        <HelpTOCNode Title="Previous2 Method " Url="html/7dd15da5-0039-470e-c447-3b65bd4387df.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="HexEdgeType Enumeration" Url="html/e37b1859-740e-97b3-9906-3d62047968b0.htm" />
+    <HelpTOCNode Id="b9950f35-e50c-4d37-9c5c-ff07ffa75520" Title="HexFeatureManager Class" Url="html/b54213b6-d048-6ab6-5a26-082f481410ff.htm">
+      <HelpTOCNode Title="HexFeatureManager Constructor " Url="html/abaecd3f-3511-9d71-712e-f14a044a2b8b.htm" />
+      <HelpTOCNode Id="43d33b0e-6634-43a6-9b69-e5b7ca8bf07e" Title="HexFeatureManager Methods" Url="html/23cea345-3fc3-d22a-cd19-aa2101bc4ee5.htm">
+        <HelpTOCNode Title="AddFeature Method " Url="html/a8255d8f-aac9-4d8c-5a4c-96b11480773a.htm" />
+        <HelpTOCNode Title="Apply Method " Url="html/373f6d74-ef20-7f54-298f-41b03e41d838.htm" />
+        <HelpTOCNode Title="Clear Method " Url="html/3d26c1d0-bee6-388c-60a8-ae583a45545d.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/380ccc54-de84-3ad1-211b-d7206e39010d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="566e7404-3407-4347-88de-8705001abc6d" Title="HexGrid Class" Url="html/d993db49-5103-70b2-488e-da07055c809b.htm">
+      <HelpTOCNode Title="HexGrid Constructor " Url="html/006930e9-b5ca-f987-6b50-ae20ea881bbf.htm" />
+      <HelpTOCNode Id="64459be4-5fe9-4384-9320-42e98be14209" Title="HexGrid Properties" Url="html/378affec-ebbd-298a-b2f9-ff3d3f59f9fd.htm">
+        <HelpTOCNode Title="ChunkCountX Property " Url="html/336e1a81-a88f-dcf6-d62d-2d4ed59cc0a9.htm" />
+        <HelpTOCNode Title="ChunkCountZ Property " Url="html/dff9212e-dda5-faa8-e5b1-f908bfce7321.htm" />
+        <HelpTOCNode Title="Tiles Property " Url="html/e2bb1fab-c1f8-fc40-cab8-ed1d232838f4.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="56a46c5c-5072-4e33-bde9-b65b8346cd9f" Title="HexGrid Methods" Url="html/8105bc48-9484-ba0d-fe28-250cb65eb312.htm">
+        <HelpTOCNode Title="GetCellAtCoordinates Method " Url="html/48ee0584-eb75-4d52-b1b6-96b190249d0c.htm" />
+        <HelpTOCNode Title="GetCellAtLocation Method " Url="html/37531160-a315-699e-96d2-5c319df018bc.htm" />
+        <HelpTOCNode Title="GetCellsInLine Method " Url="html/f803b82f-c2c3-b1ff-1fac-bca406cb04d9.htm" />
+        <HelpTOCNode Title="GetCellsInRadius Method " Url="html/04569e82-5c6b-7a43-3013-355a0ff58262.htm" />
+        <HelpTOCNode Title="GetCellsInRing Method " Url="html/52d01941-0f78-3414-fe67-e4975f67be2f.htm" />
+        <HelpTOCNode Title="GetDistance Method " Url="html/decf82ca-9ac2-92fe-7d57-3e82fbf5553f.htm" />
+        <HelpTOCNode Title="GetNeighbor Method " Url="html/48ebf401-e1d8-2eef-2e02-f89d98698145.htm" />
+        <HelpTOCNode Title="GetNeighbors Method " Url="html/50ead9af-584e-d0e9-c7fa-bfadedb058be.htm" />
+        <HelpTOCNode Id="41e6c84a-3540-44a9-9ad9-deab12f63bf0" Title="GetShortestPathBetween Method " Url="html/35bd68a6-77c4-6b10-3149-af94c2740d31.htm">
+          <HelpTOCNode Title="GetShortestPathBetween Method (IHexCell, IHexCell)" Url="html/924d0a04-df61-4a26-9669-0fd58468adc7.htm" />
+          <HelpTOCNode Title="GetShortestPathBetween Method (IHexCell, IHexCell, Func(IHexCell, IHexCell, Int32))" Url="html/811aa696-f52b-0ad5-53a8-e79aa2226b03.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="HasCellAtCoordinates Method " Url="html/994cb1bf-090a-7d8a-fe84-311cac322352.htm" />
+        <HelpTOCNode Title="HasCellAtLocation Method " Url="html/19542425-193d-8e85-7db0-c7c11f9ca016.htm" />
+        <HelpTOCNode Title="HasNeighbor Method " Url="html/ea82f9dc-a577-3a35-6f8c-71a5a31968db.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/05ce4a24-eded-7ca7-0dc9-08fe7a6cb999.htm" />
+        <HelpTOCNode Title="ToggleUI Method " Url="html/64f68fc3-5224-d51c-c18f-61b728193822.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7905abfc-5ebc-48c1-b832-9ca58a4b2006" Title="HexGridChunk Class" Url="html/21a1b178-58ad-c861-8240-dcb4dfe60c71.htm">
+      <HelpTOCNode Title="HexGridChunk Constructor " Url="html/4eb28364-65f0-9a9f-b7bf-749c80200251.htm" />
+      <HelpTOCNode Id="410917b3-7800-44eb-9994-438dcbeeaedf" Title="HexGridChunk Methods" Url="html/0932d95f-cd91-6430-f234-c704a83f88a0.htm">
+        <HelpTOCNode Title="AddCell Method " Url="html/de09ae2a-7d97-cb18-c828-17034f561be4.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/1cb7c7c2-0a8e-2c7e-e251-0075766bb30a.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/f3aea226-3d98-65fc-e0ba-c111fba849b3.htm" />
+        <HelpTOCNode Title="Triangulate Method " Url="html/7dc08d56-1c38-01e6-e638-0ce97153e14b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="0c3dada8-10ea-44d6-af10-029752e27b15" Title="HexGridConfig Class" Url="html/a4d0b14f-2a0b-769c-3f38-02799d745ce4.htm">
+      <HelpTOCNode Title="HexGridConfig Constructor " Url="html/98344f5a-27a8-6fd3-9024-c5f878e81744.htm" />
+      <HelpTOCNode Id="ef327c0c-9d78-4b23-b338-d9833b130c96" Title="HexGridConfig Properties" Url="html/a58559cc-c98e-b4c3-1330-7ab4bd53402c.htm">
+        <HelpTOCNode Title="BaseLandMoveCost Property " Url="html/0c72b2b6-8375-735a-50b0-ba990a5e1985.htm" />
+        <HelpTOCNode Title="ColorsOfTerrains Property " Url="html/04c0b7f9-1238-185c-0765-caa66e143454.htm" />
+        <HelpTOCNode Title="FeatureMoveCosts Property " Url="html/7a6e9ecc-66e2-b3cf-e04e-1598cc8feee5.htm" />
+        <HelpTOCNode Title="FeatureYields Property " Url="html/3bbe98e5-51de-413f-8eca-0eee3e1a58d3.htm" />
+        <HelpTOCNode Title="RandomSeed Property " Url="html/876e0a52-7d41-5eac-c8d8-3baefde9c9a3.htm" />
+        <HelpTOCNode Title="SlopeMoveCost Property " Url="html/483f79b9-4ff7-e0bd-01cd-21ba7000ce14.htm" />
+        <HelpTOCNode Title="TerrainYields Property " Url="html/50055d79-e390-ae1f-db98-b607da3d911e.htm" />
+        <HelpTOCNode Title="WaterMoveCost Property " Url="html/97a26e4d-aa88-7895-fc4a-51ebf0baa3e0.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="HexGridConfig Methods" Url="html/017fa517-176f-f119-5686-80d7bd0bded7.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a422c223-9ebd-4ccc-b5b2-0fa325cdf039" Title="HexHash Structure" Url="html/418f874b-5618-15fc-bbc8-156af67d85eb.htm">
+      <HelpTOCNode Id="3aec3536-143f-440b-b37c-117624a2343e" Title="HexHash Methods" Url="html/66b40ded-f18d-321e-b8cc-764e0ab5cc3f.htm">
+        <HelpTOCNode Title="Create Method " Url="html/c8a7d247-eee2-890d-c2be-9287fd89ce5f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="6d2e9255-d620-4499-9b95-e2c2382f24a6" Title="HexHash Fields" Url="html/87d4c3ac-9fad-fb45-a5db-807965cc9295.htm">
+        <HelpTOCNode Title="A Field" Url="html/30e2175a-3c06-633a-1eda-1e3784652b91.htm" />
+        <HelpTOCNode Title="B Field" Url="html/84fb8460-6e1b-79eb-14b3-9c6023af343b.htm" />
+        <HelpTOCNode Title="C Field" Url="html/d1930547-c31e-d8b0-040d-873171b5421c.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ae11bf36-7ad1-4176-b071-5972b0840ec1" Title="HexMapEditor Class" Url="html/6d79eb12-b81d-d99b-696a-d8e0f1489ab1.htm">
+      <HelpTOCNode Title="HexMapEditor Constructor " Url="html/af697627-db63-4112-7733-09428209f4e2.htm" />
+      <HelpTOCNode Id="8568d02f-90d5-4cc9-9e00-8f62e6e975f7" Title="HexMapEditor Methods" Url="html/e13469ed-0141-0c93-b4a5-74f3b3d131d9.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/ff16a831-9a38-8bc1-6bf3-0f8a68597015.htm" />
+        <HelpTOCNode Title="SelectBrushSize Method " Url="html/de223cdf-f1fa-b8da-c91b-894051dc1f3b.htm" />
+        <HelpTOCNode Title="SelectFeature Method " Url="html/f8216f17-c351-9c47-07f1-d46e00882797.htm" />
+        <HelpTOCNode Title="SelectTerrain Method " Url="html/f0cdaf22-7b26-6b57-8203-4e006a872ea6.htm" />
+        <HelpTOCNode Title="SetActiveElevation Method " Url="html/c5d507ad-de7c-8e5e-8bb3-fa311c7ca1c4.htm" />
+        <HelpTOCNode Title="SetApplyElevation Method " Url="html/cd8e91dc-9955-20ce-1641-fa0139999e99.htm" />
+        <HelpTOCNode Title="SetApplyWaterLevel Method " Url="html/577976c1-1336-34d7-cb48-66b37b54c745.htm" />
+        <HelpTOCNode Title="SetRiverMode Method " Url="html/6a59e76e-403e-ca84-5eed-e7f368b05e37.htm" />
+        <HelpTOCNode Title="SetRoadMode Method " Url="html/387ce0a0-6af6-24ca-fc5e-ed4507bfce1c.htm" />
+        <HelpTOCNode Title="SetWaterLevel Method " Url="html/9dc330d3-1352-29a1-1a7e-f94048969014.htm" />
+        <HelpTOCNode Title="ToggleUI Method " Url="html/87fd0605-72e3-02f5-3c9e-d7cbf9a9bbc7.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="68d839a5-024c-42e8-ad26-7d1699cd618b" Title="HexMapInstaller Class" Url="html/877660b0-8d8e-69b1-0429-f54657df917f.htm">
+      <HelpTOCNode Title="HexMapInstaller Constructor " Url="html/8577182d-9ce0-6d91-db86-9d41390f9292.htm" />
+      <HelpTOCNode Title="HexMapInstaller Properties" Url="html/83ee22f7-93c6-c1f5-20b2-cae38891161f.htm" />
+      <HelpTOCNode Id="120ea259-6122-4e00-8d18-f87f503049bd" Title="HexMapInstaller Methods" Url="html/88eb5106-3a3a-306a-4f27-7b06304a0a99.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/a2fbb746-5321-669a-7c47-1a2f78f9dc41.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="97138e92-9e2a-4b1c-ba48-0e23c56a759b" Title="HexMesh Class" Url="html/0243d57c-8f4b-7e0c-732e-3ac0bd09aacb.htm">
+      <HelpTOCNode Title="HexMesh Constructor " Url="html/c03d0c1f-945f-6616-3a94-505cff1a51f2.htm" />
+      <HelpTOCNode Id="395451e3-789e-4936-9165-551a00c3fab8" Title="HexMesh Properties" Url="html/85a8c16c-fbb9-9908-6b11-78642bf7866b.htm">
+        <HelpTOCNode Title="Collider Property " Url="html/b2cd292f-16fe-e390-e90a-83bef192d4cb.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="dc1a8764-1cd1-4ccf-a098-ae72319277f7" Title="HexMesh Methods" Url="html/e424312f-168f-7e96-90b0-df5eb5449c7c.htm">
+        <HelpTOCNode Title="AddQuad Method " Url="html/115c47dd-71e6-c87e-3fb2-2ff3a4e8f532.htm" />
+        <HelpTOCNode Id="f2a90ca8-311a-4d7f-b29e-6271ea75c694" Title="AddQuadColor Method " Url="html/f318c8af-1080-5171-4a61-ce39877dd696.htm">
+          <HelpTOCNode Title="AddQuadColor Method (Color)" Url="html/b10a59ca-8e26-d0a7-e2d1-980376938ba2.htm" />
+          <HelpTOCNode Title="AddQuadColor Method (Color, Color)" Url="html/c5c5e835-fe95-a449-9d3f-6e872003f49e.htm" />
+          <HelpTOCNode Title="AddQuadColor Method (Color, Color, Color, Color)" Url="html/7b5ef2ba-ea47-34f3-6e3a-4ceaffb5c996.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="AddQuadUnperturbed Method " Url="html/9157faac-7cb8-26fd-1b65-7a8aa2189e22.htm" />
+        <HelpTOCNode Id="cee7fb11-fef6-48d5-b4d3-a17e1fa6b336" Title="AddQuadUV Method " Url="html/a1b343d9-6e05-7197-f7c8-9b59edab8970.htm">
+          <HelpTOCNode Title="AddQuadUV Method (Single, Single, Single, Single)" Url="html/3b68fa1e-4bed-82b4-4daf-a1bbcec74e65.htm" />
+          <HelpTOCNode Title="AddQuadUV Method (Vector2, Vector2, Vector2, Vector2)" Url="html/ac09394d-4f13-b5d1-aefc-e017782c6554.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Id="5fa815ce-6b0d-4c0e-9810-b5547e01ae6f" Title="AddQuadUV2 Method " Url="html/ea790621-6a01-89c5-7322-03aeb3a77401.htm">
+          <HelpTOCNode Title="AddQuadUV2 Method (Single, Single, Single, Single)" Url="html/f455cc95-d32a-cfb0-6c4d-743b46e22daa.htm" />
+          <HelpTOCNode Title="AddQuadUV2 Method (Vector2, Vector2, Vector2, Vector2)" Url="html/69c6e928-c030-ba40-ebb8-84ca0b07efb7.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="AddTriangle Method " Url="html/1e3cce57-fb6c-cb3d-c51f-5b92095868ef.htm" />
+        <HelpTOCNode Id="62b80262-392a-423f-8baa-8935d14eb561" Title="AddTriangleColor Method " Url="html/ff8de908-ac62-82ff-6913-cfa50cdb0acd.htm">
+          <HelpTOCNode Title="AddTriangleColor Method (Color)" Url="html/7911eb46-2405-7302-97fb-7e37f944083d.htm" />
+          <HelpTOCNode Title="AddTriangleColor Method (Color, Color, Color)" Url="html/7be4bd69-8e41-4fb5-58fd-a5a74947e94c.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="AddTriangleUnperturbed Method " Url="html/babd528f-7866-06ed-0f61-0b87458b1497.htm" />
+        <HelpTOCNode Title="AddTriangleUV Method " Url="html/2856a94b-706b-2212-c7d4-c5a27214215e.htm" />
+        <HelpTOCNode Title="AddTriangleUV2 Method " Url="html/0d0ef84a-fddf-ff6b-a94f-1e626f2c4168.htm" />
+        <HelpTOCNode Title="Apply Method " Url="html/2cac7a24-0868-9882-22fd-670df0af6c95.htm" />
+        <HelpTOCNode Title="Clear Method " Url="html/dc423342-c1ac-49c5-75b0-16dad3f51c04.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/aed21c5d-66ca-e578-b4d6-620263e4d50e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="cd082661-544a-424c-9974-93429dcdfb60" Title="HexMeshEventEmitter Class" Url="html/0be306a4-27e9-3ebd-ae81-aef39bf2440a.htm">
+      <HelpTOCNode Title="HexMeshEventEmitter Constructor " Url="html/633bd163-ecee-3fae-a461-c4b23a059ca1.htm" />
+      <HelpTOCNode Id="2dce5bd7-cf3a-4d97-a045-603639578454" Title="HexMeshEventEmitter Properties" Url="html/55586b02-640a-c35b-8392-f6d4a56a7781.htm">
+        <HelpTOCNode Title="Collider Property " Url="html/910b9138-5050-db2d-8252-8b3dd9a1f6ad.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="ddbc4d64-565b-4a28-bf2f-4f4d27483ff3" Title="HexMeshEventEmitter Methods" Url="html/a376e5e3-46a4-f8e3-3e84-46578ef36d92.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/9e0a20c7-af7b-90b9-005e-8c552cc6cce1.htm" />
+        <HelpTOCNode Title="OnPointerClick Method " Url="html/ebeb40fc-acae-8509-4344-1acad69c8908.htm" />
+        <HelpTOCNode Title="OnPointerEnter Method " Url="html/99d4a7aa-39ee-2a56-6d96-da4b586a8e60.htm" />
+        <HelpTOCNode Title="OnPointerExit Method " Url="html/6fac0221-9ef3-9513-2e22-d3bdc75e6fed.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="dc4343c4-75ed-41f7-8a12-6e4ca4426219" Title="HexMetrics Class" Url="html/da917181-fc8d-c99e-ab83-e7bc4b064b54.htm">
+      <HelpTOCNode Id="9c8458b8-36fb-4e7f-8350-607f0c925ec6" Title="HexMetrics Methods" Url="html/0151b59f-06de-7310-cce9-72f73bd82eeb.htm">
+        <HelpTOCNode Title="GetBridge Method " Url="html/cf0fa3d7-9ab9-385a-4244-ec270b8508ba.htm" />
+        <HelpTOCNode Title="GetEdgeType Method " Url="html/750a19cf-4fd8-cfab-f943-d9dec290694c.htm" />
+        <HelpTOCNode Title="GetFirstCorner Method " Url="html/50e49089-30b6-275c-4fdb-5082036e62f3.htm" />
+        <HelpTOCNode Title="GetFirstSolidCorner Method " Url="html/417e2c1e-7b1a-bc41-278d-08733bb91b46.htm" />
+        <HelpTOCNode Title="GetFirstWaterCorner Method " Url="html/53b11efc-5903-f885-da60-e0cd26a6558d.htm" />
+        <HelpTOCNode Title="GetSecondCorner Method " Url="html/952ac75e-fdaf-17d2-390e-9d6ec817bfa5.htm" />
+        <HelpTOCNode Title="GetSecondSolidCorner Method " Url="html/40bad65c-2ce5-0fee-292a-762c71f533d5.htm" />
+        <HelpTOCNode Title="GetSecondWaterCorner Method " Url="html/87837913-cd60-2098-d6ba-df463b21fb3d.htm" />
+        <HelpTOCNode Title="GetSolidEdgeMiddle Method " Url="html/b1f10e3d-f283-c7ea-1acb-1bc200d8d827.htm" />
+        <HelpTOCNode Title="GetWaterBridge Method " Url="html/daee4116-32d7-a675-edf4-824e9c0d6ddf.htm" />
+        <HelpTOCNode Id="0c88c672-faa7-4a30-b992-13de8ec685d0" Title="TerraceLerp Method " Url="html/2ce96ebd-685f-1881-f92b-ae2fce468b18.htm">
+          <HelpTOCNode Title="TerraceLerp Method (Color, Color, Int32)" Url="html/8598c8cb-716e-3838-6238-65e74a71941b.htm" />
+          <HelpTOCNode Title="TerraceLerp Method (Vector3, Vector3, Int32)" Url="html/f87e34fb-b624-0941-406a-13bf4a7fceb9.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+      <HelpTOCNode Id="24eb2b2c-4ec3-4116-b9dd-1b44a3f5d01c" Title="HexMetrics Fields" Url="html/83386650-0691-4aca-893a-eb84809d2fc1.htm">
+        <HelpTOCNode Title="BlendFactor Field" Url="html/b24e612d-7c82-e9af-5f11-8b5818b1a1f3.htm" />
+        <HelpTOCNode Title="CellPerturbStrength Field" Url="html/3687d388-d0af-2f0a-4a0a-756816f73b39.htm" />
+        <HelpTOCNode Title="ChunkSizeX Field" Url="html/b9624901-4eda-2ef6-d42c-3460fc73d72c.htm" />
+        <HelpTOCNode Title="ChunkSizeZ Field" Url="html/70c4dbe5-90c1-d3a3-b9d6-63c305427cdc.htm" />
+        <HelpTOCNode Title="ElevationPerturbStrength Field" Url="html/33b64424-935d-3d4d-5d9b-3f9d955f4aae.htm" />
+        <HelpTOCNode Title="ElevationStep Field" Url="html/bdbf8629-e594-6526-8aa5-92ee1d7b5d3e.htm" />
+        <HelpTOCNode Title="HorizontalTerraceStepSize Field" Url="html/a2fb57fc-cb11-fd63-d1c5-c87ce66b40f6.htm" />
+        <HelpTOCNode Title="InnerRadius Field" Url="html/bc4f9f72-512e-0fce-1437-3252dff20adc.htm" />
+        <HelpTOCNode Title="InnerToOuter Field" Url="html/838e48ef-a165-449c-0ffc-e2f3393f7052.htm" />
+        <HelpTOCNode Title="OuterRadius Field" Url="html/5b34d42b-0d71-5eec-5d33-693b7c879256.htm" />
+        <HelpTOCNode Title="OuterToInner Field" Url="html/fcbed19e-9607-5956-5406-6d29f7607619.htm" />
+        <HelpTOCNode Title="SolidFactor Field" Url="html/7360bede-4839-c311-5686-4b637006550e.htm" />
+        <HelpTOCNode Title="StreamBedElevationOffset Field" Url="html/2bf8e4d1-3196-167c-cde7-ebc9c349baff.htm" />
+        <HelpTOCNode Title="TerracesPerSlope Field" Url="html/19254ef2-9189-7d9a-0f93-03187749722f.htm" />
+        <HelpTOCNode Title="TerraceSteps Field" Url="html/096ae550-0bd3-2a09-4427-3415cb2ed910.htm" />
+        <HelpTOCNode Title="VerticalTerraceStepSize Field" Url="html/2025dddb-bfa7-837b-e04d-c83239a2d58f.htm" />
+        <HelpTOCNode Title="WaterBlendFactor Field" Url="html/21811c96-a51b-e8a9-7bae-e80257266dec.htm" />
+        <HelpTOCNode Title="WaterElevationOffset Field" Url="html/f38f751c-12cc-174a-497a-801b3f047836.htm" />
+        <HelpTOCNode Title="WaterFactor Field" Url="html/91e8cf72-9d95-a5a6-2d0b-faa041be812e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a41855d2-720a-457f-8bdf-07522dbc0489" Title="IHexCell Interface" Url="html/b71176f8-f921-6058-b2b7-806d293cedef.htm">
+      <HelpTOCNode Id="522ee662-51c2-41dd-a560-c04065caf053" Title="IHexCell Properties" Url="html/c3043b50-435c-d798-72d8-753b6c6edc6f.htm">
+        <HelpTOCNode Title="Chunk Property " Url="html/4cff4e03-4851-7dae-dc82-dee3da5f3381.htm" />
+        <HelpTOCNode Title="Color Property " Url="html/b6428fc0-bbed-e560-6099-b5ed41eaeaf5.htm" />
+        <HelpTOCNode Title="Coordinates Property " Url="html/75d9e767-8441-9dca-e2cf-fc5d3cddd6ff.htm" />
+        <HelpTOCNode Title="Elevation Property " Url="html/6a2c2db1-2968-2c15-e520-e9680335239b.htm" />
+        <HelpTOCNode Title="Feature Property " Url="html/9a3c4df3-e67f-68c6-72df-eaa911267225.htm" />
+        <HelpTOCNode Title="HasRoads Property " Url="html/be0c843d-afb6-f080-d514-2f604fb62ac9.htm" />
+        <HelpTOCNode Title="IsUnderwater Property " Url="html/9cb37c34-4b2c-a10b-235d-469017c9503e.htm" />
+        <HelpTOCNode Title="Overlay Property " Url="html/543972eb-6ff0-7f4a-f10d-ff40b5c9c91d.htm" />
+        <HelpTOCNode Title="RiverSurfaceY Property " Url="html/a98a4a48-4e07-73d0-ea95-b41aa094e1ed.htm" />
+        <HelpTOCNode Title="Shape Property " Url="html/0a8b3a75-84f7-4db5-75db-6f2613cd438d.htm" />
+        <HelpTOCNode Title="StreamBedY Property " Url="html/2ee5d387-3f27-8df5-b04e-92137441248f.htm" />
+        <HelpTOCNode Title="SuppressSlot Property " Url="html/74b3bd59-1a3c-27c5-ab05-c0313ae45604.htm" />
+        <HelpTOCNode Title="Terrain Property " Url="html/a130670f-a441-d21f-ffe8-4e6ad222320f.htm" />
+        <HelpTOCNode Title="transform Property " Url="html/48d78f53-06d5-b354-464a-19469f38857b.htm" />
+        <HelpTOCNode Title="WaterLevel Property " Url="html/c5265050-98a1-5da4-3038-8b47e902475d.htm" />
+        <HelpTOCNode Title="WaterSurfaceY Property " Url="html/e515baaa-1f73-1193-e496-d4fe9d2001f7.htm" />
+        <HelpTOCNode Title="WorkerSlot Property " Url="html/cc2bd4e6-af0a-c096-c732-8667f88815de.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="1251964e-ae2d-4bb3-9e27-087ffc2a5675" Title="IHexCell Methods" Url="html/790c5805-7f88-2bed-bcb6-07752d217ee0.htm">
+        <HelpTOCNode Title="AddRoad Method " Url="html/138a4a6b-4340-30f5-f5c7-38bf16c009b8.htm" />
+        <HelpTOCNode Title="GetEdgeType Method " Url="html/5bb23123-97bb-1b41-ee15-cc438bbe225e.htm" />
+        <HelpTOCNode Title="GetElevationDifference Method " Url="html/c41c5938-2631-ab51-6131-f98e11c13537.htm" />
+        <HelpTOCNode Title="HasRoadThroughEdge Method " Url="html/57bebc7a-5bd8-c230-6408-2264885b44fb.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/e75e33b4-b44a-6086-8a56-cbc54127f442.htm" />
+        <HelpTOCNode Title="RefreshSelfOnly Method " Url="html/b701f369-16b4-1204-b21f-b37e58d7d69c.htm" />
+        <HelpTOCNode Title="RemoveRoads Method " Url="html/2e3e0d22-b861-6e62-4125-9aba0afa53f0.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="165585c4-eeb4-4a2e-af95-41d8c9635cd2" Title="IHexGrid Interface" Url="html/5caf0bf0-b72c-571a-946d-60f7bc045253.htm">
+      <HelpTOCNode Id="6aa32d2a-6520-4d13-ac50-9523686f1d71" Title="IHexGrid Properties" Url="html/addb0a9a-d72b-e589-b3c3-57008147cf08.htm">
+        <HelpTOCNode Title="ChunkCountX Property " Url="html/910cd65c-6321-834a-158e-bb5707ef4e50.htm" />
+        <HelpTOCNode Title="ChunkCountZ Property " Url="html/de214a00-70f6-6c5b-1812-2d77208c7954.htm" />
+        <HelpTOCNode Title="Tiles Property " Url="html/5549c44f-bd71-161c-b75f-af33910895e1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="a71e9aeb-9d2c-4586-b0ed-9c5dcc09371c" Title="IHexGrid Methods" Url="html/9bfe2354-b633-a78e-7928-a6738933c81b.htm">
+        <HelpTOCNode Title="GetCellAtCoordinates Method " Url="html/a74ebb31-84d8-fb86-bae1-1941d6080b67.htm" />
+        <HelpTOCNode Title="GetCellAtLocation Method " Url="html/1b60b8b0-0cbb-26d7-c5d3-486567c7811d.htm" />
+        <HelpTOCNode Title="GetCellsInLine Method " Url="html/67265470-c03f-7d9a-9d3c-f39268f8e441.htm" />
+        <HelpTOCNode Title="GetCellsInRadius Method " Url="html/67ce3bdd-8fe3-1fcf-b9ea-fa5ead2c5a21.htm" />
+        <HelpTOCNode Title="GetCellsInRing Method " Url="html/fea55935-fccd-95d6-a0d1-660d0c32c1a6.htm" />
+        <HelpTOCNode Title="GetDistance Method " Url="html/c22eebc5-e200-dc05-9b31-e4b35a2b8f0e.htm" />
+        <HelpTOCNode Title="GetNeighbor Method " Url="html/7a8176fe-d304-4ed0-b943-8268bfbd4602.htm" />
+        <HelpTOCNode Title="GetNeighbors Method " Url="html/5759ff32-ccb0-b730-8353-6a16a5141faf.htm" />
+        <HelpTOCNode Id="21ce082e-27bc-4dd5-b472-3a737ed1f58e" Title="GetShortestPathBetween Method " Url="html/e719fd62-4ad7-ad3d-6138-ed58c4260535.htm">
+          <HelpTOCNode Title="GetShortestPathBetween Method (IHexCell, IHexCell)" Url="html/206a186a-e1f4-70b4-4382-0cdb6779011c.htm" />
+          <HelpTOCNode Title="GetShortestPathBetween Method (IHexCell, IHexCell, Func(IHexCell, IHexCell, Int32))" Url="html/6a2fc368-cfd1-9582-6a9f-3ef7020d2162.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="HasCellAtCoordinates Method " Url="html/a814dcae-0de8-b4fd-aa07-02325e6030b3.htm" />
+        <HelpTOCNode Title="HasCellAtLocation Method " Url="html/b3000b46-1ded-a089-b1b6-d452341d1c34.htm" />
+        <HelpTOCNode Title="HasNeighbor Method " Url="html/99889bf0-8f24-908f-5fed-d469bf5efd07.htm" />
+        <HelpTOCNode Title="ToggleUI Method " Url="html/0a1f000d-7b19-d863-c140-d263675e5303.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="346b9588-0250-45e7-8d76-b78b909d5784" Title="IHexGridConfig Interface" Url="html/4b073f27-fcda-1411-c62a-0d6393517a83.htm">
+      <HelpTOCNode Id="7a9cfc77-1ffb-4d12-b35c-2eccde34d54f" Title="IHexGridConfig Properties" Url="html/af2f1b09-505a-512e-a3ed-e3019ff451e5.htm">
+        <HelpTOCNode Title="BaseLandMoveCost Property " Url="html/0ea84ef1-383e-d7fa-e163-dca1f5067835.htm" />
+        <HelpTOCNode Title="ColorsOfTerrains Property " Url="html/2a946483-fa67-b2ac-7743-2f7b2a96377b.htm" />
+        <HelpTOCNode Title="FeatureMoveCosts Property " Url="html/8a1efb60-4d47-0023-94d6-3897dd027114.htm" />
+        <HelpTOCNode Title="FeatureYields Property " Url="html/6d0abe3e-1d55-bc0d-353c-6581d0b41a97.htm" />
+        <HelpTOCNode Title="RandomSeed Property " Url="html/6f07c3d7-deac-f05c-f585-82ccab1c2d1c.htm" />
+        <HelpTOCNode Title="SlopeMoveCost Property " Url="html/2efc43d9-ddcc-8690-06f5-2653edc20d2a.htm" />
+        <HelpTOCNode Title="TerrainYields Property " Url="html/e331253a-790d-d90f-71af-5e5c8ae591e5.htm" />
+        <HelpTOCNode Title="WaterMoveCost Property " Url="html/6f6801ec-a2ab-5900-2e5a-16e8d7c3067b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="43386160-9376-4bb8-8e3e-35135bf0f3da" Title="INoiseGenerator Interface" Url="html/2605c074-5550-3329-a173-47c8e453e7bf.htm">
+      <HelpTOCNode Id="f86c5192-34bc-4d5d-896c-eea16d7b1177" Title="INoiseGenerator Methods" Url="html/3f7bfb39-3513-40a8-566e-e59c8409b20b.htm">
+        <HelpTOCNode Title="Perturb Method " Url="html/4a496f45-362e-ab74-f172-0d6536010509.htm" />
+        <HelpTOCNode Title="SampleHashGrid Method " Url="html/cea3a784-6d25-d526-51e6-c14809e2549b.htm" />
+        <HelpTOCNode Title="SampleNoise Method " Url="html/92d77d36-8901-c800-56ac-9f8a844dc0f3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="49e80e8b-1fd3-466f-a58d-b18fb443bb82" Title="IRiverCanon Interface" Url="html/3dcca5ab-7cdf-d656-9325-8f677b78ad93.htm">
+      <HelpTOCNode Id="637777c2-d42e-46de-aa35-8a32ca25d4eb" Title="IRiverCanon Methods" Url="html/ab33dee2-68c1-dbd1-3678-cf7a7893158b.htm">
+        <HelpTOCNode Title="CanAddIncomingRiverThroughEdge Method " Url="html/55a89e3c-36a6-6428-333f-c8914ee7b062.htm" />
+        <HelpTOCNode Title="CanAddOutgoingRiverThroughEdge Method " Url="html/a3799a89-66cc-1072-33e9-b0fc6913477b.htm" />
+        <HelpTOCNode Title="GetIncomingRiver Method " Url="html/0f910e6a-952a-4329-4c95-df028752c56b.htm" />
+        <HelpTOCNode Title="GetOutgoingRiver Method " Url="html/810e680f-def1-de89-e2cc-bdec73dbb9ec.htm" />
+        <HelpTOCNode Title="GetRiverBeginOrEndDirection Method " Url="html/da1b3880-cf41-1301-9ce4-a2b48a6d4e3b.htm" />
+        <HelpTOCNode Title="HasIncomingRiver Method " Url="html/bf685f2f-a9cc-e915-3418-4eab64d0e78e.htm" />
+        <HelpTOCNode Title="HasOutgoingRiver Method " Url="html/6eb9f49a-8414-d631-4ae6-7300b16bf519.htm" />
+        <HelpTOCNode Title="HasRiver Method " Url="html/c08e12d5-3e4f-cc6a-8b00-0a4f32b45b50.htm" />
+        <HelpTOCNode Title="HasRiverBeginOrEnd Method " Url="html/b96665b2-a0cc-9a30-c0ed-edd19a75da74.htm" />
+        <HelpTOCNode Title="HasRiverThroughEdge Method " Url="html/f95d322b-dca0-5f7f-74be-f3e2201e3d67.htm" />
+        <HelpTOCNode Title="RemoveOutgoingRiver Method " Url="html/e67166f9-b353-c5bc-bada-12ecad87b0cd.htm" />
+        <HelpTOCNode Title="RemoveRiver Method " Url="html/4e36f28d-c9bc-7475-f5a3-9317a2a00244.htm" />
+        <HelpTOCNode Title="SetOutgoingRiver Method " Url="html/a50ce6b2-6b1e-e7e9-ddaf-26cc772e1331.htm" />
+        <HelpTOCNode Title="ValidateRivers Method " Url="html/7cc7b813-ac60-2958-62cf-6dc75438054d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="67da0d04-9156-44eb-90ed-38dfba510b7e" Title="ITileResourceLogic Interface" Url="html/698061dc-a8a2-3983-4931-1f509db54895.htm">
+      <HelpTOCNode Id="977d382c-30f5-47f2-9498-03c6f2aaac52" Title="ITileResourceLogic Methods" Url="html/e3b6c06d-1eb6-6697-9207-42adb10836f6.htm">
+        <HelpTOCNode Title="GetYieldOfCell Method " Url="html/ef2366c0-5dab-3ad5-51be-19854f4f5ac1.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="78c658d3-6060-4430-a05c-9728e2ddf2fe" Title="ListPool(T) Class" Url="html/58443c52-d0ef-a088-39c0-5029f4ca3837.htm">
+      <HelpTOCNode Id="00bc83af-da79-4ef9-af27-507bb7e96636" Title="ListPool(T) Methods" Url="html/fba9b1ee-7e6f-3e47-5517-793b80143c0f.htm">
+        <HelpTOCNode Title="Add Method " Url="html/0644bac7-bdaf-2dd6-54f0-40f61cdf1868.htm" />
+        <HelpTOCNode Title="Get Method " Url="html/3f8d1309-1b35-d704-5b8c-49940e2dd5b1.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8ec056cb-0961-4feb-803e-dafa63804777" Title="NoiseGenerator Class" Url="html/8daca2ac-9395-72c5-10ea-1c62b7d7e45a.htm">
+      <HelpTOCNode Title="NoiseGenerator Constructor " Url="html/37d7c82c-cf32-e48f-7b0a-61df81c52dc4.htm" />
+      <HelpTOCNode Id="3fd89b7b-77bf-47e4-a01c-048de31dedf0" Title="NoiseGenerator Methods" Url="html/38708b16-df15-6c7b-ef24-8a4dbb573f90.htm">
+        <HelpTOCNode Title="Perturb Method " Url="html/5613d833-ac4c-95ca-40f5-567f0b93e89a.htm" />
+        <HelpTOCNode Title="SampleHashGrid Method " Url="html/608a1dae-e137-21bd-8573-bfbf958adc08.htm" />
+        <HelpTOCNode Title="SampleNoise Method " Url="html/92c7c447-7d32-8154-96d3-f3470ed5ee7c.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="369238e0-ef57-4d95-8076-cd3cf0c68a95" Title="RiverCanon Class" Url="html/cd7896ac-946b-f3ee-9912-7635981eea59.htm">
+      <HelpTOCNode Title="RiverCanon Constructor " Url="html/d9791a59-9c6c-a8f1-3278-40aa80ce7e88.htm" />
+      <HelpTOCNode Id="546b46e5-4fa0-4d15-84ec-9f1ef8cf8a8e" Title="RiverCanon Methods" Url="html/4c7d6aa2-6a33-c3ad-2f07-6f9a4e2dda5e.htm">
+        <HelpTOCNode Title="CanAddIncomingRiverThroughEdge Method " Url="html/ccc2ac15-9886-3489-0122-05d4c4d00afd.htm" />
+        <HelpTOCNode Title="CanAddOutgoingRiverThroughEdge Method " Url="html/e97f5797-a11a-6b36-f354-1c9336405ada.htm" />
+        <HelpTOCNode Title="GetIncomingRiver Method " Url="html/122cf79b-6e01-3d00-b69c-3a80a93774d7.htm" />
+        <HelpTOCNode Title="GetOutgoingRiver Method " Url="html/0ddfd52a-149a-3a52-6a68-720779783d71.htm" />
+        <HelpTOCNode Title="GetRiverBeginOrEndDirection Method " Url="html/b5e1b719-9bb0-bb74-0c69-b1615b7f42de.htm" />
+        <HelpTOCNode Title="HasIncomingRiver Method " Url="html/55e5f09e-c240-a870-76db-abb5dd5c978f.htm" />
+        <HelpTOCNode Title="HasOutgoingRiver Method " Url="html/4324f403-4834-efbe-f50f-9d2be64b859b.htm" />
+        <HelpTOCNode Title="HasRiver Method " Url="html/08342928-83b6-5342-fdf9-c2516c5fe789.htm" />
+        <HelpTOCNode Title="HasRiverBeginOrEnd Method " Url="html/6584a468-6d90-dd3a-bddd-ad0146d07f6e.htm" />
+        <HelpTOCNode Title="HasRiverThroughEdge Method " Url="html/179b70e4-9d00-6c11-1125-dda70ca29942.htm" />
+        <HelpTOCNode Title="RemoveOutgoingRiver Method " Url="html/a7a72f94-79fe-c6c4-8095-8367e6eca53f.htm" />
+        <HelpTOCNode Title="RemoveRiver Method " Url="html/7c938fa9-228f-9a0e-84cc-17578b196cd2.htm" />
+        <HelpTOCNode Title="SetOutgoingRiver Method " Url="html/4b4ffaa4-bd35-3acc-59dc-5029cff79144.htm" />
+        <HelpTOCNode Title="ValidateRivers Method " Url="html/729a3712-41a4-d6c4-efe1-eab2e0ab440a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="TerrainFeature Enumeration" Url="html/a2516225-496f-2f57-55a7-d3b6d2123f90.htm" />
+    <HelpTOCNode Title="TerrainShape Enumeration" Url="html/4431bb79-fb1b-d90b-c0a9-2187a0f69623.htm" />
+    <HelpTOCNode Title="TerrainType Enumeration" Url="html/7590ee13-41d2-6fda-6bb1-a823b50b82ad.htm" />
+    <HelpTOCNode Id="67422b30-41ca-4e45-b7eb-4cd9f71740c2" Title="TileResourceLogic Class" Url="html/c9c0b65a-c89f-a28d-a879-3cbcdd205bab.htm">
+      <HelpTOCNode Title="TileResourceLogic Constructor " Url="html/dfe29461-f609-cd3c-64f7-9a1b816c384f.htm" />
+      <HelpTOCNode Id="a86c0b50-e6bc-4255-bccc-d8cec15a4277" Title="TileResourceLogic Methods" Url="html/b85aef6a-6a30-529c-4479-81975f82ecab.htm">
+        <HelpTOCNode Title="GetYieldOfCell Method " Url="html/3373fc8f-b586-3482-2b4f-18181aab1030.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="2db21896-30f5-471a-ac42-aa9cc1634666" Title="Assets.Simulation.Improvements" Url="html/80280355-91e3-79d8-74d2-1f4a20456883.htm">
+    <HelpTOCNode Id="3fb33270-1056-414f-b426-c976f63cd33f" Title="IImprovement Interface" Url="html/0524e5fb-f76a-648d-d3d2-23b3c8808590.htm">
+      <HelpTOCNode Id="2e841851-0a70-4e79-a498-d9e2c366a96d" Title="IImprovement Properties" Url="html/45d01fdc-b483-fbb9-4ed7-a39bc2d007ff.htm">
+        <HelpTOCNode Title="IsComplete Property " Url="html/7dfcd421-23e8-1ddc-6a87-b6a3204f553b.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/e809fa8b-154b-97e4-598b-26171ce7715c.htm" />
+        <HelpTOCNode Title="transform Property " Url="html/26f0acd8-32f6-bb0f-b212-c19e00ebc3be.htm" />
+        <HelpTOCNode Title="WorkInvested Property " Url="html/3d324ba5-a5a3-6d92-2420-5206fea03ced.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c745d8a4-cedd-4c90-81ee-603fe2590fe6" Title="IImprovementFactory Interface" Url="html/adec04a9-7234-a5d2-9e0f-0f051408a926.htm">
+      <HelpTOCNode Title="IImprovementFactory Methods" Url="html/d7a0e65a-a7ec-1369-6b98-458d7b1f9d58.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="2b37e289-dc06-4fb6-8032-ebe0803b6c61" Title="IImprovementLocationCanon Interface" Url="html/c0ce284b-9f92-31e0-75ba-d719ccbe2121.htm">
+      <HelpTOCNode Id="4261fd89-a20f-471f-8228-794ffb4a3794" Title="IImprovementLocationCanon Methods" Url="html/665770ad-94d2-8cf0-5a24-32e0e7a862b1.htm">
+        <HelpTOCNode Title="CanPlaceImprovementOfTemplateAtLocation Method " Url="html/fcc900e9-9c60-25fb-7143-b6e78db8128f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5d53e3fa-423d-49aa-8188-3649c955da66" Title="IImprovementTemplate Interface" Url="html/2df5f044-cdc4-8c3c-aa25-eaadd8b3f6d9.htm">
+      <HelpTOCNode Id="a2fda83a-3693-4ba1-8749-b41bcb8ab369" Title="IImprovementTemplate Properties" Url="html/e98b668f-e328-9621-677b-cbb30756bc69.htm">
+        <HelpTOCNode Title="BonusYield Property " Url="html/e23a0388-dc15-a089-d1ac-61dad36c3218.htm" />
+        <HelpTOCNode Title="name Property " Url="html/10dcb7a4-73bc-ee1c-0314-cb43a3ddc2de.htm" />
+        <HelpTOCNode Title="ValidFeatures Property " Url="html/d991fd18-b7ac-f2bb-fe0e-72f30a13207d.htm" />
+        <HelpTOCNode Title="ValidShapes Property " Url="html/156603db-f3e2-016c-d723-ff72b246fb81.htm" />
+        <HelpTOCNode Title="ValidTerrains Property " Url="html/b147653b-9256-2dc7-fd50-80846e7167ea.htm" />
+        <HelpTOCNode Title="WorkToComplete Property " Url="html/a3ad7511-de54-9a8c-6fd2-10bf6bd1bfc8.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ad8420d8-5694-4507-bf2f-8a74ec311cac" Title="IImprovementValidityLogic Interface" Url="html/3f118dea-674e-725d-de25-35211c1528dd.htm">
+      <HelpTOCNode Id="56242d53-6937-4413-a5cb-30f2c11cb424" Title="IImprovementValidityLogic Methods" Url="html/3e78ec05-aece-7d15-18ea-daf020688fd4.htm">
+        <HelpTOCNode Title="IsTemplateValidForTile Method " Url="html/a2815f8e-6ac6-018d-9379-0daa474e1219.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="56a52b42-0a2f-4c29-93eb-9d51cb091ac4" Title="Improvement Class" Url="html/814c7d1f-18a9-ec76-9987-61fc7077fadc.htm">
+      <HelpTOCNode Title="Improvement Constructor " Url="html/c8e925b0-52cc-8bbb-77d1-6763d7adec20.htm" />
+      <HelpTOCNode Id="a9d0aa3f-01ff-429a-9d25-66780eb1bfcb" Title="Improvement Properties" Url="html/6e895e86-fde0-8b05-75e6-98d30bf6d7ac.htm">
+        <HelpTOCNode Title="IsComplete Property " Url="html/34ca717e-caf5-7ec4-e089-9a2860719fe5.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/fd511f4d-7277-35d3-e1af-38cd8a5b0dc7.htm" />
+        <HelpTOCNode Title="WorkInvested Property " Url="html/d5604f18-e8b8-62b9-093d-f7eaa7ffd149.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="a386ef2a-23f2-486f-8b6c-4493e0fb9d44" Title="Improvement Methods" Url="html/936e97e5-326c-0802-8c12-d01ba43515e2.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/b88d2fe5-b749-6c90-6602-8e8ed99a6e05.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c1ba84f9-150b-4c83-a8dc-d034979cbfcf" Title="ImprovementCreationException Class" Url="html/b0facdb8-bef5-b1e0-9734-d7f00b8da2b2.htm">
+      <HelpTOCNode Id="fb4ec5a8-0db3-43e3-b858-1955ff022df5" Title="ImprovementCreationException Constructor " Url="html/3620ff58-4b6e-3a56-25a1-73e143a7e9b4.htm">
+        <HelpTOCNode Title="ImprovementCreationException Constructor " Url="html/2020b8b0-e75c-9799-fa3e-0049018c5d09.htm" />
+        <HelpTOCNode Title="ImprovementCreationException Constructor (String)" Url="html/3fd1fef2-0f70-5b11-d50b-80a5bdd37444.htm" />
+        <HelpTOCNode Title="ImprovementCreationException Constructor (SerializationInfo, StreamingContext)" Url="html/cc73da3b-a06d-2405-b170-dd58a8d30778.htm" />
+        <HelpTOCNode Title="ImprovementCreationException Constructor (String, Exception)" Url="html/7a20b6e3-b486-1bbb-4b58-12770661d350.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ImprovementCreationException Properties" Url="html/fff23212-faf0-ad8e-671a-0679a06ac9e9.htm" />
+      <HelpTOCNode Title="ImprovementCreationException Methods" Url="html/47102e13-cdcb-60b5-0278-02f68e002b68.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a90578b3-be9d-4861-8cdd-2584e38778f7" Title="ImprovementFactory Class" Url="html/e79c29c3-209b-9ce6-7979-687cfde0a00b.htm">
+      <HelpTOCNode Title="ImprovementFactory Constructor " Url="html/747b1bab-b3bd-a076-12a3-d49ded380cb4.htm" />
+      <HelpTOCNode Id="6f32f2da-b14d-4407-a16b-b78d3531ee76" Title="ImprovementFactory Methods" Url="html/e5c2d165-ae17-0795-53b6-369d8e259a59.htm">
+        <HelpTOCNode Title="Create Method " Url="html/0d82408f-fe33-5145-4a72-d4b3b792693f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e76aff8f-1fbf-417a-8f43-df942d55e100" Title="ImprovementInstaller Class" Url="html/d6e8dc3f-46fe-600e-2bf6-0192a8e54946.htm">
+      <HelpTOCNode Title="ImprovementInstaller Constructor " Url="html/a64a3dd0-04d3-0404-5ab4-661d9abc03b9.htm" />
+      <HelpTOCNode Title="ImprovementInstaller Properties" Url="html/8c4d4b0a-2e7a-558d-fe5f-205f62734855.htm" />
+      <HelpTOCNode Id="e32586bf-adae-4eee-bd7f-3df629ee49e9" Title="ImprovementInstaller Methods" Url="html/cb58130c-be6e-52b2-eb9a-ef3a0f9f15f8.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/d9414575-f321-82fb-3775-042dc4502922.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="019dac4e-6346-4742-9641-5014aaa2169e" Title="ImprovementLocationCanon Class" Url="html/41a67aef-88eb-9db5-5280-fb677bbe5e00.htm">
+      <HelpTOCNode Title="ImprovementLocationCanon Constructor " Url="html/9dd8261b-efdb-1809-59ea-e100481eac85.htm" />
+      <HelpTOCNode Id="bc1c3ad6-c0e7-413e-934d-1f77f656cb4a" Title="ImprovementLocationCanon Methods" Url="html/4d326729-d0a0-06a1-3d5e-57a4959d582b.htm">
+        <HelpTOCNode Title="CanPlaceImprovementOfTemplateAtLocation Method " Url="html/3d33b29a-7abd-e9cd-012e-49698c30be71.htm" />
+        <HelpTOCNode Title="IsPossessionValid Method " Url="html/92beea86-d2a9-19a7-4aa6-0a5a667a994a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="bcdfec19-588f-43e3-a4f5-f752cf7e7cc0" Title="ImprovementTemplate Class" Url="html/24897dbf-1a1d-8808-9ead-2fe95e92cfdf.htm">
+      <HelpTOCNode Title="ImprovementTemplate Constructor " Url="html/9e7555f0-1047-fa4b-de41-2cf096304c74.htm" />
+      <HelpTOCNode Id="9fc7324c-5526-4304-9f6a-793cb97fd828" Title="ImprovementTemplate Properties" Url="html/77ff65b0-b1da-ab29-36b2-d339fc1b607f.htm">
+        <HelpTOCNode Title="BonusYield Property " Url="html/19ba2f80-c040-3c36-1826-e690a6cd146c.htm" />
+        <HelpTOCNode Title="ValidFeatures Property " Url="html/1cbf8c73-268f-91ac-7500-c18d823a229d.htm" />
+        <HelpTOCNode Title="ValidShapes Property " Url="html/a5c3dd20-ce02-6a80-8393-7b15f629f1e5.htm" />
+        <HelpTOCNode Title="ValidTerrains Property " Url="html/c2a3c416-5ebd-ff0f-8e4b-23807574ecb0.htm" />
+        <HelpTOCNode Title="WorkToComplete Property " Url="html/f57313ab-908b-dc76-28a2-bc7a5f859068.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="ImprovementTemplate Methods" Url="html/c6248ccd-09bc-43cf-dfe0-217740058922.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="407be5df-7ea7-437e-9006-6fdf187c0ebb" Title="ImprovementValidityLogic Class" Url="html/28e40084-0203-9e55-9b6c-faa19e21efa3.htm">
+      <HelpTOCNode Title="ImprovementValidityLogic Constructor " Url="html/f0d5321b-9392-5d69-46a3-b111d2ef1070.htm" />
+      <HelpTOCNode Id="20bb6a5b-6284-4669-a597-3eed2c551983" Title="ImprovementValidityLogic Methods" Url="html/280e9ac1-8dd3-2672-c35a-8fc95cf16461.htm">
+        <HelpTOCNode Title="IsTemplateValidForTile Method " Url="html/b3def5d8-39d4-ab85-ce04-c6afbdd5d2a2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="fa561324-0693-4d6b-bd71-5b633406c04f" Title="Assets.Simulation.Units" Url="html/66ab57f0-2139-f274-c6e4-4ff790c49481.htm">
+    <HelpTOCNode Id="6127d067-6ebf-462a-816c-00f4e449ff48" Title="GameUnit Class" Url="html/9ec847ed-9ad9-7ec8-5ae8-0d0e43422496.htm">
+      <HelpTOCNode Title="GameUnit Constructor " Url="html/d3a08c7b-c10e-d58c-8ba0-7c91417ac36e.htm" />
+      <HelpTOCNode Id="4a43ac40-f5b8-497b-a9b8-ec19c1a28691" Title="GameUnit Properties" Url="html/88923644-0c41-e42f-fabc-1d2cddfae035.htm">
+        <HelpTOCNode Title="CurrentMovement Property " Url="html/628375d9-c17c-91d6-999d-be9edff29011.htm" />
+        <HelpTOCNode Title="CurrentPath Property " Url="html/4665fa0d-1485-8d66-57c2-1e4db57a2b22.htm" />
+        <HelpTOCNode Title="Health Property " Url="html/945ee0c1-2d06-5428-194f-0e5c4aa0580b.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/2016f325-4c1d-a607-52af-36dcd6ae6533.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8b6a7990-42fa-4b74-92ef-0720460aa622" Title="GameUnit Methods" Url="html/3be51e71-f4f0-55f1-f3cc-3487846ed47b.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/21d96ba2-4630-4781-a69d-6b40f85a0bc0.htm" />
+        <HelpTOCNode Title="OnBeginDrag Method " Url="html/e056a6e8-4299-f7d0-81f6-392512c0d424.htm" />
+        <HelpTOCNode Title="OnDrag Method " Url="html/58693234-6aad-b03d-dd28-642d6be97875.htm" />
+        <HelpTOCNode Title="OnEndDrag Method " Url="html/6f60a3ee-c750-40f8-e99d-3f31e34357d2.htm" />
+        <HelpTOCNode Title="OnPointerClick Method " Url="html/37a9c9e9-8d2f-20f7-baf9-c4dc8765443f.htm" />
+        <HelpTOCNode Title="PerformMovement Method " Url="html/2ed028c0-6811-1a6f-817f-30523d88284e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="07b6a9c6-af61-41a5-bd53-f8afc6e32c18" Title="IUnit Interface" Url="html/c38d4f6c-ee6a-8022-a57f-93fed9e517b2.htm">
+      <HelpTOCNode Id="feb1a6e8-c9d8-40c2-b104-6338a5cb9e89" Title="IUnit Properties" Url="html/cee2fd7d-d7ae-e131-b3c6-e7f3371f1d06.htm">
+        <HelpTOCNode Title="CurrentMovement Property " Url="html/0f2ea9cb-0c6c-a3b4-d012-2f21637982b8.htm" />
+        <HelpTOCNode Title="CurrentPath Property " Url="html/2db606e6-2a49-b578-879a-6922fc353292.htm" />
+        <HelpTOCNode Title="gameObject Property " Url="html/afa81404-9144-42e6-03cd-d20169527ff3.htm" />
+        <HelpTOCNode Title="Health Property " Url="html/34f7408a-aa62-7ad9-2ba2-5fbf9448098a.htm" />
+        <HelpTOCNode Title="Template Property " Url="html/959e6c02-0c14-e5ce-8f9b-d6954d9c7c7a.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="deec8074-e415-4463-9a3e-c8a0c86c09e2" Title="IUnit Methods" Url="html/23561b83-c149-7958-5b34-9dc0b3bd5284.htm">
+        <HelpTOCNode Title="PerformMovement Method " Url="html/5341231f-2fc6-6674-5397-6b9bce64c190.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="f1092aac-d779-402b-ba01-803e51a114b3" Title="IUnitConfig Interface" Url="html/f4157dc6-6a7f-8936-657d-5d40979c72f5.htm">
+      <HelpTOCNode Id="e778080b-c642-46d6-8117-e8ce00e2cb89" Title="IUnitConfig Properties" Url="html/1ed48d68-122d-f3a0-d9d3-846fc6701125.htm">
+        <HelpTOCNode Title="MaxHealth Property " Url="html/f5012422-840a-46f7-6822-75c2699d2a09.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="cc39c487-b34b-4f38-b9fe-b07bdd19fcbc" Title="IUnitFactory Interface" Url="html/e00f6f53-77e7-a57f-59e4-cf23585765c9.htm">
+      <HelpTOCNode Id="10ea4d43-a4c5-49b5-a4da-6d57506a946c" Title="IUnitFactory Properties" Url="html/196af8f4-37dc-05fe-e6ae-238af3d511a6.htm">
+        <HelpTOCNode Title="AllUnits Property " Url="html/d25b9d1d-5e7e-b61b-38bb-26d936238585.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="IUnitFactory Methods" Url="html/aca35f38-055c-2064-4cd0-df72707ed847.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="ceab7262-35b0-41e5-ae47-d77304492fef" Title="IUnitPositionCanon Interface" Url="html/61340dd1-b2ee-f3de-be91-2a2c615a13b2.htm">
+      <HelpTOCNode Id="bf03c934-a912-4343-9683-0ccdc8add44b" Title="IUnitPositionCanon Methods" Url="html/820646d1-2775-8f3f-da02-d0a9495c1933.htm">
+        <HelpTOCNode Title="CanPlaceUnitOfTypeAtLocation Method " Url="html/06909d4a-e295-235c-6ad1-0d34f6a27d67.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="26ce8421-c98d-4a78-b75f-d56c391162ce" Title="IUnitProductionValidityLogic Interface" Url="html/ad3426bc-fb3a-aa08-05d7-5e34c2e8856f.htm">
+      <HelpTOCNode Id="330ec0f5-cfb1-48e7-b3fb-ad6deeb6f621" Title="IUnitProductionValidityLogic Methods" Url="html/e9efc450-aa6f-b714-112a-0384f0b1bff7.htm">
+        <HelpTOCNode Title="GetTemplatesValidForCity Method " Url="html/b9d10a0a-8636-80fb-fea6-ad88808d69ad.htm" />
+        <HelpTOCNode Title="IsTemplateValidForCity Method " Url="html/4b50ca27-fac9-3e81-e9ba-d238da4a4af3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="f6bb87e5-be82-415b-aa9a-83f97493d6eb" Title="IUnitTemplate Interface" Url="html/0da0ba17-9125-f405-78dd-ff258182bbe0.htm">
+      <HelpTOCNode Id="5de0d803-8c15-4b9e-881d-a5af7b92c479" Title="IUnitTemplate Properties" Url="html/bfa4f8bb-ecb7-4653-b2c1-f86ffbad3f81.htm">
+        <HelpTOCNode Title="Abilities Property " Url="html/f9652941-825b-a528-2751-5a3db154071a.htm" />
+        <HelpTOCNode Title="IsAquatic Property " Url="html/7bd9aafe-263a-59f3-6f0b-ee57c075808a.htm" />
+        <HelpTOCNode Title="MaxMovement Property " Url="html/09b23075-0cd0-51f9-4f57-911a04f057a0.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/d012059e-2e11-1ab0-0d37-792a34c222da.htm" />
+        <HelpTOCNode Title="ProductionCost Property " Url="html/3ad2a98b-4504-6838-11aa-c3517c73e6ba.htm" />
+        <HelpTOCNode Title="Type Property " Url="html/4d5d82c7-1a62-0e18-2109-8219c3235ed6.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2476bca1-ef34-4cc1-9403-413792ef5d5a" Title="IUnitTerrainCostLogic Interface" Url="html/c627615b-07e3-2708-0e78-fd01ced361ed.htm">
+      <HelpTOCNode Id="15ca96fa-33d5-4da8-ac2f-384b8c3c018f" Title="IUnitTerrainCostLogic Methods" Url="html/6e6cad1e-d400-15aa-77dd-b41f880545e7.htm">
+        <HelpTOCNode Title="GetTraversalCostForUnit Method " Url="html/2702cdf3-8784-6390-4cc8-3c8fc2a72c11.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5400a5c8-430d-48d1-a570-4609bef24c48" Title="UnitConfig Class" Url="html/4e6b69bc-f890-0765-f0b4-383b8eeb2fa1.htm">
+      <HelpTOCNode Title="UnitConfig Constructor " Url="html/f5b1cac5-b8dd-4950-523a-cfee7a9f5799.htm" />
+      <HelpTOCNode Id="a117a966-e66f-4a51-bf78-f17e07d6728e" Title="UnitConfig Properties" Url="html/45f0ce26-5af0-27bb-9301-0de268124971.htm">
+        <HelpTOCNode Title="MaxHealth Property " Url="html/98040a76-904c-b25c-84ac-ad9e73f304f7.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnitConfig Methods" Url="html/7e48f8cf-9b71-803d-6834-7f2f573a399d.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="d7ea7b1e-a780-4d0e-81d6-f178bf1c9356" Title="UnitCreationException Class" Url="html/d62b681d-aef6-60cf-4227-d0b2a2904286.htm">
+      <HelpTOCNode Id="8bf87ca1-8d67-4d1c-bafe-4652b12fc690" Title="UnitCreationException Constructor " Url="html/d1d04215-f0e8-c265-6b15-b620d5f5c1c8.htm">
+        <HelpTOCNode Title="UnitCreationException Constructor " Url="html/2c8fe8c2-ab57-1ff9-b741-91357d0c5846.htm" />
+        <HelpTOCNode Title="UnitCreationException Constructor (String)" Url="html/8c827e54-2621-c6d7-b208-e8e9c21bb328.htm" />
+        <HelpTOCNode Title="UnitCreationException Constructor (SerializationInfo, StreamingContext)" Url="html/dcee3629-7908-3ff6-91d4-e443a5e295a4.htm" />
+        <HelpTOCNode Title="UnitCreationException Constructor (String, Exception)" Url="html/bb44789a-410b-76f6-8f51-005cb437737b.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnitCreationException Properties" Url="html/1fed69af-fe6d-fbde-d2bb-2d75f85249b7.htm" />
+      <HelpTOCNode Title="UnitCreationException Methods" Url="html/7ee7727d-829b-ede5-8bf2-c8e40e61425e.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="e1d0f6de-265a-4eca-8bbb-fa79d2fd2555" Title="UnitFactory Class" Url="html/f227fc28-f296-54f2-d782-4715fd71ff52.htm">
+      <HelpTOCNode Title="UnitFactory Constructor " Url="html/202c08d0-c51d-c197-1768-f4bbc525a29d.htm" />
+      <HelpTOCNode Id="6bf6e234-30e1-4ae2-9b0d-4e9e654fe970" Title="UnitFactory Properties" Url="html/6c4a16f7-f7d4-cf6a-c3c1-5d74fbe60c95.htm">
+        <HelpTOCNode Title="AllUnits Property " Url="html/118e4f8a-b3cc-e0b4-4a64-4d54f188d313.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bea3328a-7de6-4f65-bba0-177ea870ed5b" Title="UnitFactory Methods" Url="html/94b4daf8-d1d2-64a1-1c68-41ebfa0a50ed.htm">
+        <HelpTOCNode Title="Create Method " Url="html/bfd923a6-95f1-0ff8-7ccc-afaaebc51035.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="14edfcef-3017-4d00-970f-e6cb43da7409" Title="UnitInstaller Class" Url="html/23079227-53ad-dc57-fb6b-8775a912c06b.htm">
+      <HelpTOCNode Title="UnitInstaller Constructor " Url="html/06347aed-7162-0d9e-7ebc-9e3e174f3c41.htm" />
+      <HelpTOCNode Title="UnitInstaller Properties" Url="html/ebc3ba31-b31e-fe5d-23b4-42ca4cdc9c9f.htm" />
+      <HelpTOCNode Id="88550c48-949f-4d2f-a40e-eea4be1bd154" Title="UnitInstaller Methods" Url="html/259951d4-cfe5-ff8a-70e1-c572286e237e.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/cdb0662f-860f-992d-9e37-333d60307e72.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4a957ec3-f639-4ed0-849d-35c6ff96ca9b" Title="UnitPositionCanon Class" Url="html/7a4ca096-c51a-e3b6-6747-900b7b387dbe.htm">
+      <HelpTOCNode Title="UnitPositionCanon Constructor " Url="html/6ad5ba13-51c8-2cf5-7b1f-858de416840d.htm" />
+      <HelpTOCNode Id="19d07b6f-4dc0-40af-844a-cf640df0b011" Title="UnitPositionCanon Methods" Url="html/76c7cd04-4370-b895-cdb9-24119978738a.htm">
+        <HelpTOCNode Title="CanPlaceUnitOfTypeAtLocation Method " Url="html/72b3dab2-a927-982b-fa6d-d6c3c6867530.htm" />
+        <HelpTOCNode Title="DoOnPossessionBroken Method " Url="html/1ff00477-80a1-961b-ed4a-d2efa9f70837.htm" />
+        <HelpTOCNode Title="DoOnPossessionEstablished Method " Url="html/24208f28-13f5-a799-3b0c-8fa32ff6f625.htm" />
+        <HelpTOCNode Title="IsPossessionValid Method " Url="html/18bd67e6-ffd2-b58c-09df-925904ec6a30.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ae043f82-0685-4f13-b258-f5848d61d204" Title="UnitProductionProject Class" Url="html/93dda9a6-575d-50b3-1067-32f3786c3077.htm">
+      <HelpTOCNode Title="UnitProductionProject Constructor " Url="html/3fd28114-5f65-a8b3-d85e-a3404ecf5c0b.htm" />
+      <HelpTOCNode Id="0bfc0998-ceee-404b-99f8-59f25b891d0d" Title="UnitProductionProject Properties" Url="html/f2e37780-9427-df1e-36a1-308525263777.htm">
+        <HelpTOCNode Title="Name Property " Url="html/88b9c667-4aa8-a8bb-0517-7745e8860fdb.htm" />
+        <HelpTOCNode Title="ProductionToComplete Property " Url="html/fe6731ec-5c7f-dcd0-ca7b-894c0d9cdcb1.htm" />
+        <HelpTOCNode Title="Progress Property " Url="html/da88e384-322e-e4ff-94f9-579116631f5e.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d8a8a0d0-f18f-4484-89de-07fcdb50b486" Title="UnitProductionProject Methods" Url="html/aa0b1f3d-1527-e61f-9d3e-9443b328a839.htm">
+        <HelpTOCNode Title="Execute Method " Url="html/01e5015b-84bb-e8e3-b5f4-190484453bde.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b45490b3-e1b3-4669-bd0f-d9fa68eae755" Title="UnitProductionValidityLogic Class" Url="html/24679882-f871-5552-6a31-b35480ab5fa9.htm">
+      <HelpTOCNode Title="UnitProductionValidityLogic Constructor " Url="html/e9735f15-b77f-82c8-e2a0-81dcb34813d0.htm" />
+      <HelpTOCNode Id="6bf4d95a-def2-45d4-9a89-bcdeeeae2f80" Title="UnitProductionValidityLogic Methods" Url="html/b96513c0-d864-2c6f-04ac-02750a249b3a.htm">
+        <HelpTOCNode Title="GetTemplatesValidForCity Method " Url="html/083ec807-98f4-3cfc-f034-691f0453d304.htm" />
+        <HelpTOCNode Title="IsTemplateValidForCity Method " Url="html/88c4738a-76cc-0aa4-0418-cf63a7917081.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="264d0d36-efef-4ebd-af19-bb66150adf2f" Title="UnitSignals Class" Url="html/c70d6e4c-b248-92bd-7bdc-641485c3f503.htm">
+      <HelpTOCNode Title="UnitSignals Constructor " Url="html/93ea1f76-a540-6a24-de2f-c0c463115662.htm" />
+      <HelpTOCNode Id="06dac6bf-49af-4460-8aad-77114226acde" Title="UnitSignals Properties" Url="html/da17bb0a-a758-6329-2170-9e786eb98c1a.htm">
+        <HelpTOCNode Title="UnitActivatedAbilitySignal Property " Url="html/54154bd0-0079-b281-1a7d-51edc01d65a5.htm" />
+        <HelpTOCNode Title="UnitBeginDragSignal Property " Url="html/e767e639-0b78-144e-03c6-e8df3700e946.htm" />
+        <HelpTOCNode Title="UnitClickedSignal Property " Url="html/79ee5fd2-a4d8-e70a-babe-634bccc3b72a.htm" />
+        <HelpTOCNode Title="UnitDragSignal Property " Url="html/5cba0240-5e2f-0f2d-d165-39e79a5d21f7.htm" />
+        <HelpTOCNode Title="UnitEndDragSignal Property " Url="html/e66eb644-4fa8-aeff-b46e-6c3610bab04e.htm" />
+        <HelpTOCNode Title="UnitLocationChangedSignal Property " Url="html/232e0254-cfde-400f-c5e1-1db50dc5ea3c.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnitSignals Methods" Url="html/790ebe43-9b57-461c-28a8-348ba26c389b.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="2c5c1d92-fde7-412b-9d9a-20cd6fed3cac" Title="UnitTemplate Class" Url="html/c47e049b-61c3-4988-106f-7823bb0b20d7.htm">
+      <HelpTOCNode Title="UnitTemplate Constructor " Url="html/1ffb2c39-6cdf-5712-f0fa-a806482c4a63.htm" />
+      <HelpTOCNode Id="38572047-9d80-449e-ad03-bd443924def8" Title="UnitTemplate Properties" Url="html/092c3f60-4a57-f734-baf8-28f00ad3e96f.htm">
+        <HelpTOCNode Title="Abilities Property " Url="html/50a3a892-d483-a976-7169-43bb0ca5b9b1.htm" />
+        <HelpTOCNode Title="IsAquatic Property " Url="html/8f5d19fb-6b79-80f6-fa3c-17f718295b6e.htm" />
+        <HelpTOCNode Title="MaxMovement Property " Url="html/616e173e-638f-8563-8321-685c0f63b777.htm" />
+        <HelpTOCNode Title="Name Property " Url="html/391efafb-bd39-d497-2f98-a53ce0ccc088.htm" />
+        <HelpTOCNode Title="ProductionCost Property " Url="html/ff049951-e937-c83a-3f14-0376b6f42b5e.htm" />
+        <HelpTOCNode Title="Type Property " Url="html/c4f0a30e-8920-9c74-cbb3-cc0c4219ccec.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnitTemplate Methods" Url="html/61ba71bc-b097-b40e-875e-0c7d991bbd09.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="0b7f7d67-e51f-4c68-8064-f4eaa861b283" Title="UnitTerrainCostLogic Class" Url="html/5b268568-4023-9acc-f697-a4ff9f81d2b9.htm">
+      <HelpTOCNode Title="UnitTerrainCostLogic Constructor " Url="html/24c2458b-2a31-049b-db2c-07ccf15f0030.htm" />
+      <HelpTOCNode Id="485be3ad-87e8-45f1-80f9-e3e199bb2849" Title="UnitTerrainCostLogic Methods" Url="html/6aea970d-8916-484f-5263-4a0cd0f3e3cd.htm">
+        <HelpTOCNode Title="GetTraversalCostForUnit Method " Url="html/89cf50ae-b647-d69e-5922-404650ce91a7.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="UnitType Enumeration" Url="html/077ffccb-4053-b6df-9dc1-ae488d6a5255.htm" />
+  </HelpTOCNode>
+  <HelpTOCNode Id="cdffd1d0-7ec8-40cd-9bd9-f9fb0d07e8ee" Title="Assets.Simulation.Units.Abilities" Url="html/d3efac63-540e-416e-7b5f-0526b4c81b60.htm">
+    <HelpTOCNode Id="e58d64b9-3fa0-49c6-a9b2-702bd6bac4b4" Title="AbilityCommandRequest Structure" Url="html/3fc9c8d8-594b-5266-b8df-132a6b6d6ea8.htm">
+      <HelpTOCNode Title="AbilityCommandRequest Methods" Url="html/b6f4f4aa-fd5c-688e-39c6-004cbfb12dbe.htm" />
+      <HelpTOCNode Id="0776c56a-fa03-462b-a5a9-e24455d0cd24" Title="AbilityCommandRequest Fields" Url="html/6f9047df-5610-7e98-1ef2-ed288f92e232.htm">
+        <HelpTOCNode Title="ArgsToPass Field" Url="html/5b0f25d2-5d92-c6ca-1a4f-3cdf10f3c59a.htm" />
+        <HelpTOCNode Title="CommandType Field" Url="html/d26d0158-16a2-0fdf-cb67-fe0fb54d506e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Title="AbilityCommandType Enumeration" Url="html/9764930c-2d3a-0cc4-5b93-b577888133c2.htm" />
+    <HelpTOCNode Id="0c29e43a-05c7-47f1-bbfa-d2e47da3f269" Title="AbilityExecutionResults Structure" Url="html/03f59cdf-160f-185c-dd09-573221eb719c.htm">
+      <HelpTOCNode Title="AbilityExecutionResults Constructor " Url="html/927613fc-b97a-49f2-14e2-6b38358ac8c3.htm" />
+      <HelpTOCNode Id="e8871c88-d85b-45bf-b466-f64edc8ea8b2" Title="AbilityExecutionResults Properties" Url="html/cb20f041-0227-48da-0ef7-0a7acc1398c2.htm">
+        <HelpTOCNode Title="AbilityHandled Property " Url="html/702aea00-9070-a1d8-65cb-13187a3402e2.htm" />
+        <HelpTOCNode Title="NewAbilityActivated Property " Url="html/1d700308-0be0-d208-920d-c85eb0245e1e.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="AbilityExecutionResults Methods" Url="html/8122b76d-99fc-f943-3d71-bbcb99212883.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="d31e0317-4e76-4026-9cee-d50b2c11887f" Title="AbilityInstaller Class" Url="html/8d0a51c8-caf4-4887-3892-2a778eb59b19.htm">
+      <HelpTOCNode Title="AbilityInstaller Constructor " Url="html/8f5cc6f4-fa7b-fc98-6ee8-8cd4cc015428.htm" />
+      <HelpTOCNode Title="AbilityInstaller Properties" Url="html/4638b50b-d517-9c89-5321-5bf5dc6141e5.htm" />
+      <HelpTOCNode Id="42cb1843-0187-418f-9dd6-03ca948192d6" Title="AbilityInstaller Methods" Url="html/c6b46608-5723-383b-79c9-832be49e35ef.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/4165add8-d62b-6edb-4f60-fcbfbb899782.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c01e4fc4-733e-49c8-ae4e-0714c7b7891e" Title="AbilityNotHandledException Class" Url="html/4ecf56d4-60cc-dea6-9d7d-69fcdfd50bd7.htm">
+      <HelpTOCNode Id="1094deaa-6c6d-4306-91b4-0d054d92b7cd" Title="AbilityNotHandledException Constructor " Url="html/6e668579-cde9-b016-f209-ead81f050ece.htm">
+        <HelpTOCNode Title="AbilityNotHandledException Constructor " Url="html/8fcc8ef5-5de8-723f-f209-9faafd3879ba.htm" />
+        <HelpTOCNode Title="AbilityNotHandledException Constructor (String)" Url="html/0ab4c3ca-9621-d5e2-40f5-fed744821f9e.htm" />
+        <HelpTOCNode Title="AbilityNotHandledException Constructor (SerializationInfo, StreamingContext)" Url="html/85193b66-c2a8-8fd8-532e-d38a3c117910.htm" />
+        <HelpTOCNode Title="AbilityNotHandledException Constructor (String, Exception)" Url="html/cdc9ed52-a1b6-2911-c8f2-7c4618c456dd.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="AbilityNotHandledException Properties" Url="html/2e0821c2-f8d2-a7e0-a479-41bc902f18eb.htm" />
+      <HelpTOCNode Title="AbilityNotHandledException Methods" Url="html/64c6dfe9-37df-3409-194a-094692680714.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="e81bca6b-09f4-4e2d-9577-9b516a58fd21" Title="BuildImprovementAbilityHandler Class" Url="html/9ff9a503-c162-2de7-5c4f-78232b9941ff.htm">
+      <HelpTOCNode Title="BuildImprovementAbilityHandler Constructor " Url="html/206f3be3-88c4-e2e3-1540-adeb6d8f111f.htm" />
+      <HelpTOCNode Id="1073c611-4d4d-4134-9b4d-edca98ba5c1a" Title="BuildImprovementAbilityHandler Methods" Url="html/e9d6f9fb-288f-9cf0-70a2-5c9fe7c2e902.htm">
+        <HelpTOCNode Title="CanHandleAbilityOnUnit Method " Url="html/cd4d8a9f-11ad-daed-2ff6-6689c5ff250f.htm" />
+        <HelpTOCNode Title="GetTemplateOfName Method " Url="html/f09b7885-2180-3547-716e-35b674170493.htm" />
+        <HelpTOCNode Title="TryHandleAbilityOnUnit Method " Url="html/5089314c-7f19-64b9-485c-c835c78f3602.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="96a4817e-5bef-4ba3-a4e7-d75c2001a4c1" Title="BuildImprovementOngoingAbility Class" Url="html/efb2aa0f-980b-2a5f-3824-973b1b304d6e.htm">
+      <HelpTOCNode Title="BuildImprovementOngoingAbility Constructor " Url="html/585e9150-0855-33f8-6db2-eaa82253808b.htm" />
+      <HelpTOCNode Id="2bde626e-5ed1-448a-a648-87e12b5d8fc8" Title="BuildImprovementOngoingAbility Properties" Url="html/897d99cf-c3d8-1ba5-f6d9-c28df7b63d09.htm">
+        <HelpTOCNode Title="ImprovementToConstruct Property " Url="html/a2d14233-a2de-9c68-3a95-d710c00da687.htm" />
+        <HelpTOCNode Title="SourceUnit Property " Url="html/7b850c71-61f2-ff88-dbf2-92a60497d189.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="b30cae6b-e264-4541-b870-cf4f70c59f15" Title="BuildImprovementOngoingAbility Methods" Url="html/fef65dae-fecd-f71f-a3be-77a4507d4156.htm">
+        <HelpTOCNode Title="BeginExecution Method " Url="html/f840d2a5-0ebe-4589-df1f-7d4e6060ebca.htm" />
+        <HelpTOCNode Title="IsReadyToTerminate Method " Url="html/ddbc3f6d-aef9-48fd-adaa-013aaabaaafe.htm" />
+        <HelpTOCNode Title="TerminateExecution Method " Url="html/a9de1939-9164-1e8d-4b7e-95d67b516a77.htm" />
+        <HelpTOCNode Title="TickExecution Method " Url="html/288e53c0-bc58-d321-201f-269248440617.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e7242b01-c4c6-4ad4-a5bf-fc94d6bf8aa1" Title="FoundCityAbilityHandler Class" Url="html/b850332d-c191-a0d7-8147-8106bb542265.htm">
+      <HelpTOCNode Title="FoundCityAbilityHandler Constructor " Url="html/40ff9195-0520-b2a6-59c0-edf7f7e8bfc4.htm" />
+      <HelpTOCNode Id="7cc0a640-d985-438f-8f6f-47159894262d" Title="FoundCityAbilityHandler Methods" Url="html/0d12c080-1891-c35d-df65-a3baf3d81dfd.htm">
+        <HelpTOCNode Title="CanHandleAbilityOnUnit Method " Url="html/5a323e1a-e339-55e2-fe6e-ce1569b558a8.htm" />
+        <HelpTOCNode Title="TryHandleAbilityOnUnit Method " Url="html/5307801e-0955-b522-7bec-df81f74dffda.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e58a28d6-686b-4546-af72-61fe4a506da5" Title="IOngoingAbility Interface" Url="html/6f2b7aa4-245d-07c5-527a-3942d7181008.htm">
+      <HelpTOCNode Id="b527f34c-606f-4bdb-8905-2bc05e9225ed" Title="IOngoingAbility Methods" Url="html/00c8f284-4aa9-2ec1-345c-ece003030c4d.htm">
+        <HelpTOCNode Title="BeginExecution Method " Url="html/d2ff97aa-3961-d965-4387-992d2660c30c.htm" />
+        <HelpTOCNode Title="IsReadyToTerminate Method " Url="html/63bf6d63-3da9-4d4d-e855-717e99f20be9.htm" />
+        <HelpTOCNode Title="TerminateExecution Method " Url="html/f57e3cf6-c86e-6f36-63b7-d6cddbb346bc.htm" />
+        <HelpTOCNode Title="TickExecution Method " Url="html/8702e109-13e5-907d-9d26-c7c9a4e12067.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b39b3886-73c8-4651-bd5a-341dfbe1e1b4" Title="IUnitAbilityDefinition Interface" Url="html/a6dbf7ba-ff09-8bd3-8865-61d4af8e8803.htm">
+      <HelpTOCNode Id="3e1da2f6-b9b8-4c5d-8a18-5a967fcf9473" Title="IUnitAbilityDefinition Properties" Url="html/491fee0c-8268-3ede-a6e9-1ffdbbe37f51.htm">
+        <HelpTOCNode Title="CommandRequests Property " Url="html/28599fdd-baa6-8b77-12e4-bd00b16fdefb.htm" />
+        <HelpTOCNode Title="name Property " Url="html/5d7fd5f8-c515-e036-105e-3c6e930cd705.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="8e638a87-a6dc-4b47-97f5-e0487d49fde5" Title="IUnitAbilityExecuter Interface" Url="html/8c1edd48-936a-2c91-6c7c-fb7842cb2ea3.htm">
+      <HelpTOCNode Id="2d8e5be4-1fed-45c3-a987-f3d4f7334586" Title="IUnitAbilityExecuter Methods" Url="html/29acf359-e4cd-23aa-1eda-bc7a97725995.htm">
+        <HelpTOCNode Title="CanExecuteAbilityOnUnit Method " Url="html/ad55d9c3-b34f-1455-e0b0-2550bcf58b44.htm" />
+        <HelpTOCNode Title="ExecuteAbilityOnUnit Method " Url="html/fba603be-2386-4b41-c12a-51125ae249da.htm" />
+        <HelpTOCNode Title="PerformOngoingAbilities Method " Url="html/02b76f80-ca7d-3278-75a3-b924a03754e5.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="517675b3-db9f-4c87-9b5e-104e48d3c18e" Title="IUnitAbilityHandler Interface" Url="html/b316bc23-36da-04b7-d3cf-79629798da05.htm">
+      <HelpTOCNode Id="99ffad89-f4c6-4057-89d9-0f0e6daedc03" Title="IUnitAbilityHandler Methods" Url="html/428dd7cd-49e6-d4e3-67cf-d904c0ab955e.htm">
+        <HelpTOCNode Title="CanHandleAbilityOnUnit Method " Url="html/3ff4f05a-9573-7587-9878-161dd34f586b.htm" />
+        <HelpTOCNode Title="TryHandleAbilityOnUnit Method " Url="html/9656fdd8-d897-78a9-9110-8c4665398680.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="53780a48-4baf-45f8-9e90-0dbf871a7efa" Title="UnitAbilityDefinition Class" Url="html/b241ed6a-be30-4401-a534-e45d36aed9b3.htm">
+      <HelpTOCNode Title="UnitAbilityDefinition Constructor " Url="html/f591a6be-504f-c8fb-1a09-b4ef7b9862e8.htm" />
+      <HelpTOCNode Id="1c5438ef-aa2e-4124-97b1-06b1c0c08cfc" Title="UnitAbilityDefinition Properties" Url="html/72e8fe9a-a553-8af6-53d0-63c6e765cf3b.htm">
+        <HelpTOCNode Title="CommandRequests Property " Url="html/166f92c9-f10d-d719-90e0-4e979e45ab11.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="UnitAbilityDefinition Methods" Url="html/6cf8c4fe-86c9-11c2-f312-096901f5387f.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="b20b793b-fc0c-426f-a5d9-4edd899c5c34" Title="UnitAbilityExecuter Class" Url="html/81cd575c-5bf6-598a-fe8f-334faadbea34.htm">
+      <HelpTOCNode Title="UnitAbilityExecuter Constructor " Url="html/00c47bb9-e060-4e30-81d0-4effe53be3d9.htm" />
+      <HelpTOCNode Id="460e8620-111a-4845-b833-78f01fe7e27d" Title="UnitAbilityExecuter Properties" Url="html/5761f715-b450-0810-4454-a88c6a568eea.htm">
+        <HelpTOCNode Title="OngoingAbilities Property " Url="html/cc928f8f-e3c6-b4f5-e164-5c016ec9ab1f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="87de8af7-27fe-4e97-9cbd-1dafaebeb380" Title="UnitAbilityExecuter Methods" Url="html/c7feee9d-9b41-18bf-c8cf-6abfb8246fd8.htm">
+        <HelpTOCNode Title="CanExecuteAbilityOnUnit Method " Url="html/38c2d761-94ce-6807-10d1-0c59195a6013.htm" />
+        <HelpTOCNode Title="ExecuteAbilityOnUnit Method " Url="html/ef1da935-f944-3bce-c495-e211969a1f9c.htm" />
+        <HelpTOCNode Title="PerformOngoingAbilities Method " Url="html/838f1e6c-82a3-6813-f585-c161d41f2437.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="a044cf3b-666b-4dcd-995f-3d82a0e53fd7" Title="Assets.UI" Url="html/44f10340-5633-26d4-8828-b8d30dda9705.htm">
+    <HelpTOCNode Id="06f9a5fb-9611-44c2-87e1-154cd0a76566" Title="DisplayBase(T) Class" Url="html/76918454-1f26-4ac6-acaf-463b9e6b9355.htm">
+      <HelpTOCNode Title="DisplayBase(T) Constructor " Url="html/997e8956-ed79-d52e-c3fb-80d15cf4905b.htm" />
+      <HelpTOCNode Id="e58265bc-5c68-49d3-a8db-f73027774352" Title="DisplayBase(T) Properties" Url="html/def6b759-93a5-bb6c-7701-81f066fc3c46.htm">
+        <HelpTOCNode Title="ObjectToDisplay Property " Url="html/b2da15b7-cce2-d53f-7f93-098d552fe3e7.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="bd943ba8-806d-4d72-8689-9a4bd86d72de" Title="DisplayBase(T) Methods" Url="html/cfa9087c-b0a6-e014-cdaf-5f7b20e03ca4.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/22534a74-103e-e9c4-2767-dd6c2eeaa093.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="498b8337-4b5f-4375-ac98-3f321675f45c" Title="GameCamera Class" Url="html/fd3a7056-6eea-3555-239f-b57f5f8193ed.htm">
+      <HelpTOCNode Title="GameCamera Constructor " Url="html/adb6bfd5-c149-c7f0-a5f7-2942bdec2458.htm" />
+      <HelpTOCNode Id="1599292e-1b9c-4982-a0ed-b1a4a7753bd6" Title="GameCamera Methods" Url="html/ca773977-2412-3306-5a15-f4d6984d61ec.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/096a4e81-a216-c2f8-24c2-ee5ac1259266.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="5680150b-5390-4065-9efe-1f07cb14168e" Title="ICameraConfig Interface" Url="html/a1c8d7a5-b9c0-33fc-434c-a84bcb2066ef.htm">
+      <HelpTOCNode Id="1fec800c-33f6-406c-a372-e6a1831de5d2" Title="ICameraConfig Properties" Url="html/71f897e4-e2d5-9f4e-7e7f-4d5e16807dff.htm">
+        <HelpTOCNode Title="MaxFOV Property " Url="html/388a7029-38cb-cc85-78ef-d5dbffb49fab.htm" />
+        <HelpTOCNode Title="MinFOV Property " Url="html/35d60c02-1a01-e2e2-b61b-79fdc72dd1cb.htm" />
+        <HelpTOCNode Title="PanningSpeed Property " Url="html/7ca0250b-6df4-61cb-fdcd-4ae805fd9d91.htm" />
+        <HelpTOCNode Title="ZoomingSpeed Property " Url="html/34c3745c-f42f-2448-237f-d0a880bc6393.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a40a11a1-4f61-46db-bd93-fe880c5590b9" Title="IResourceSummaryDisplay Interface" Url="html/e517afba-fb3b-c74d-79ef-19a6f142cc47.htm">
+      <HelpTOCNode Id="a50b42bc-a567-497c-9083-3b7b7b275553" Title="IResourceSummaryDisplay Methods" Url="html/88f73277-bb12-4fd5-e236-87f215a31cf3.htm">
+        <HelpTOCNode Title="DisplaySummary Method " Url="html/a0ee8947-404e-8673-b751-dc1858ec63f2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9c0f3fcf-e7fd-4088-8b24-8db2140b6bd6" Title="ResourceSummaryDisplay Class" Url="html/b1f576cb-43f5-a0e3-aa84-97f8e6633e6c.htm">
+      <HelpTOCNode Title="ResourceSummaryDisplay Constructor " Url="html/f7af6312-1819-6975-1959-c9409d1f216d.htm" />
+      <HelpTOCNode Id="499eaaff-31cd-499e-ade9-39e8de929ca2" Title="ResourceSummaryDisplay Methods" Url="html/ee794a11-ccd5-af8b-99df-b946bb87c289.htm">
+        <HelpTOCNode Title="DisplaySummary Method " Url="html/3811d5f6-d61a-a70b-f206-6789b41825d1.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/0dc473c5-a6a3-5044-e06c-e8a680d82f87.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b391de56-9768-4be4-862f-a49f147bf219" Title="SignalBuilderUtility Class" Url="html/82730a46-f8a2-c65d-72aa-0e967e0b7323.htm">
+      <HelpTOCNode Id="f8e318eb-c3eb-41ee-a362-3781a7a9892f" Title="SignalBuilderUtility Methods" Url="html/01d837cb-162a-956f-5077-0be24362332c.htm">
+        <HelpTOCNode Title="BuildMouseDeselectedSignal Method " Url="html/89adb259-c105-e8e8-f0f8-f16bfad12c0a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="61510154-4995-42ac-8b08-7fa0e851d13e" Title="Assets.UI.Cities" Url="html/b4c8ef7d-6f0e-2ac8-6713-61e06f5128b9.htm">
+    <HelpTOCNode Id="27604d6c-8562-4914-a29e-d2a4339d6762" Title="CityDisplayBase Class" Url="html/12c44a6a-146f-9e58-28e8-3a01aa266adf.htm">
+      <HelpTOCNode Title="CityDisplayBase Constructor " Url="html/5c12e859-2c21-5978-504b-7e7cde619a9d.htm" />
+      <HelpTOCNode Title="CityDisplayBase Properties" Url="html/04296f6d-0557-9a1f-6145-5b32289426a9.htm" />
+      <HelpTOCNode Title="CityDisplayBase Methods" Url="html/29be1716-520d-af1b-b31f-f9855b9bfba0.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="443bf9da-f4b1-4cf8-af1c-c1874c64fd67" Title="CityUIConfig Class" Url="html/2dae0bcb-0add-a910-73f4-19676fafeea0.htm">
+      <HelpTOCNode Title="CityUIConfig Constructor " Url="html/cc48c12a-9099-b07f-52d3-2fffcd1bb58d.htm" />
+      <HelpTOCNode Id="fe4fa58d-1535-492c-b345-9b8e0028b155" Title="CityUIConfig Properties" Url="html/381bec6c-ce8c-e15f-1035-b71d06cba2aa.htm">
+        <HelpTOCNode Title="LockedSlotMaterial Property " Url="html/d34daf86-7c48-6763-eb1f-5ff2291904fd.htm" />
+        <HelpTOCNode Title="OccupiedSlotMaterial Property " Url="html/8150d1a3-c8cb-9abe-8cc1-bc94780a9b6b.htm" />
+        <HelpTOCNode Title="UnoccupiedSlotMaterial Property " Url="html/509d5e3a-1db3-3cf2-538a-3211b5ff9fa1.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="CityUIConfig Methods" Url="html/0451d46e-f151-815b-4e94-dad339947522.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="67b0e933-8896-474e-9d1d-840344e5c93b" Title="CityUIInstaller Class" Url="html/c5a0e7f6-0a94-5bc4-2813-69c02cf0f7d5.htm">
+      <HelpTOCNode Title="CityUIInstaller Constructor " Url="html/0c5a6906-49d6-91e4-96e2-06e359c4a30c.htm" />
+      <HelpTOCNode Title="CityUIInstaller Properties" Url="html/a123e3d8-3bbe-bc28-1e16-2fbde78e6a54.htm" />
+      <HelpTOCNode Id="61a5cfc5-83d1-4d27-99e9-0cae99e39121" Title="CityUIInstaller Methods" Url="html/f2c2abae-b600-9129-0c0d-b23c25aecb3f.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/7952cf06-2627-1382-8e2c-d7bc561127cb.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="fd882233-0bb2-4b3b-a029-db7710327867" Title="ICityUIConfig Interface" Url="html/011f030f-cc0c-133d-28a4-1fe814a06cfb.htm">
+      <HelpTOCNode Id="b67a852b-de68-4ab8-892e-853e2e33ef50" Title="ICityUIConfig Properties" Url="html/8643ad07-543b-f40e-bf28-b5d7d467f413.htm">
+        <HelpTOCNode Title="LockedSlotMaterial Property " Url="html/9b2abc86-fc49-6ba8-f101-6154c83ba7ac.htm" />
+        <HelpTOCNode Title="OccupiedSlotMaterial Property " Url="html/5922dd78-80e7-d23f-9677-bd71e16539cf.htm" />
+        <HelpTOCNode Title="UnoccupiedSlotMaterial Property " Url="html/04ad3190-4464-47ae-a91e-fc5dfdb2e0ff.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="70cc8ef0-c264-43c3-9b4e-90a202d31c38" Title="IWorkerSlotDisplay Interface" Url="html/856c1f2a-bae7-65d1-73c5-2bcf12ffe895.htm">
+      <HelpTOCNode Id="af4fe9cb-2e48-4a75-ae86-892abdcac8a2" Title="IWorkerSlotDisplay Properties" Url="html/9e546bed-b271-e67e-f58d-e136753dce85.htm">
+        <HelpTOCNode Title="gameObject Property " Url="html/b03cc180-d07d-dc64-b751-ff7393687f42.htm" />
+        <HelpTOCNode Title="SlotToDisplay Property " Url="html/19f9b554-9b64-197d-4455-f6ea6c7866a3.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8eef74a7-bc5c-4679-8374-1f6b51f7699e" Title="IWorkerSlotDisplay Methods" Url="html/a5e445b3-ccae-1ece-dbc7-f3f8a523400f.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/2f6f1d6c-ad7a-9830-78af-7e21afcea190.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="cc689f0d-7db2-4fd4-a748-c5e7db9b6000" Title="SlotDisplayClickedSignal Class" Url="html/7888305b-3708-3f40-9aa3-df834e61a134.htm">
+      <HelpTOCNode Title="SlotDisplayClickedSignal Constructor " Url="html/659a2a4d-1cb2-43a6-8aae-bd8a251a7270.htm" />
+      <HelpTOCNode Title="SlotDisplayClickedSignal Properties" Url="html/0d804338-c3c0-8d60-cbd9-c77c885a8ea7.htm" />
+      <HelpTOCNode Title="SlotDisplayClickedSignal Methods" Url="html/031d85e7-1407-4170-084c-9b04d9ba68d2.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="522cf8fc-ac19-4d4b-adf5-a446fb4ad631" Title="WorkerSlotDisplay Class" Url="html/cd36b089-344e-12b3-bb11-b4c963d951ff.htm">
+      <HelpTOCNode Title="WorkerSlotDisplay Constructor " Url="html/c32c43e0-d078-db57-bd4e-0e2742ecb713.htm" />
+      <HelpTOCNode Id="b441c0cd-3d77-4497-9bfc-a9d8e6341f12" Title="WorkerSlotDisplay Properties" Url="html/e874caa8-8295-0e49-f06d-b089002a22fa.htm">
+        <HelpTOCNode Title="SlotToDisplay Property " Url="html/245428e0-72b2-cff0-32ac-732dd2393939.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="d6badd3e-65bd-4a49-beb8-1faee8419cf8" Title="WorkerSlotDisplay Methods" Url="html/319e6e2a-ebee-f960-df09-9db08b1bc183.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/51078e6c-b022-4c24-358e-0683288fe1ae.htm" />
+        <HelpTOCNode Title="OnPointerClick Method " Url="html/8f7ead25-c3aa-595c-1f49-21f4642bcc97.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/47315ec6-d025-4774-44a4-4b232802efd3.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="42ced1fc-05ff-4e33-80db-502d1ffe3e07" Title="WorkerSlotDisplayFactory Class" Url="html/12885388-8d2c-9a53-0805-f1a27edfb216.htm">
+      <HelpTOCNode Title="WorkerSlotDisplayFactory Constructor " Url="html/f433868d-361d-9518-b4a5-9cb1babb8932.htm" />
+      <HelpTOCNode Title="WorkerSlotDisplayFactory Properties" Url="html/7986f08f-f59d-cdf7-56f6-0a0198540a64.htm" />
+      <HelpTOCNode Title="WorkerSlotDisplayFactory Methods" Url="html/7f740a9f-fa27-b573-95f6-9634bd8f50f4.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="7609da59-2e5d-4476-93b1-13f624984662" Title="Assets.UI.Cities.Buildings" Url="html/391db4ea-9628-3b97-2bb2-833f9f0e72a9.htm">
+    <HelpTOCNode Id="db2a891b-e949-4023-9390-b8d243d6f929" Title="BuildingDisplay Class" Url="html/9f1a85bd-7e8f-521f-188b-5f66e16195d0.htm">
+      <HelpTOCNode Title="BuildingDisplay Constructor " Url="html/d8833f69-0b01-0720-5ee6-2f2ec90d652c.htm" />
+      <HelpTOCNode Id="42bcb07a-ddbf-46aa-9d99-f2355ce586dd" Title="BuildingDisplay Properties" Url="html/e4e98df3-fed4-f96f-856f-75ca1a63f5d7.htm">
+        <HelpTOCNode Title="BuildingToDisplay Property " Url="html/21741622-39ee-55c6-75f3-ca825cada477.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="5a07fb2f-a613-40a4-b97b-63a1e797abe8" Title="BuildingDisplay Methods" Url="html/cf7931de-e030-4b2e-6e40-08fbc72918a6.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/a9ef7b4f-06cd-1909-67d0-21ed82176c38.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/06cdb0df-96ef-0f4e-32af-613ba65e703c.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="1f4567ee-aa44-4238-a2a9-295bbbea1285" Title="BuildingDisplayFactory Class" Url="html/6b942029-24aa-1931-7817-443f0fe68504.htm">
+      <HelpTOCNode Title="BuildingDisplayFactory Constructor " Url="html/1ddd396a-ddcc-7652-fbe7-26b261129206.htm" />
+      <HelpTOCNode Title="BuildingDisplayFactory Properties" Url="html/58dba80f-a213-492a-d0c6-d05ab4f7a237.htm" />
+      <HelpTOCNode Title="BuildingDisplayFactory Methods" Url="html/9c5690c4-a68b-be8c-4ee3-b6697f9ca99d.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="0c7f5ca3-1a38-4bdd-aea8-0f1e7ebb05bb" Title="CityBuildingDisplay Class" Url="html/39a04152-5754-8bb1-2193-e6d9fe646fe5.htm">
+      <HelpTOCNode Title="CityBuildingDisplay Constructor " Url="html/c5f41698-b70b-4d0d-1474-13ef40925c4b.htm" />
+      <HelpTOCNode Title="CityBuildingDisplay Properties" Url="html/35a30369-c8ae-6ddc-bf08-edb8f09758d5.htm" />
+      <HelpTOCNode Id="eb06685b-43ab-4db8-a06a-fd7dea361dab" Title="CityBuildingDisplay Methods" Url="html/080e846f-991d-4f7a-f4e3-26ecc5e425e8.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/9bb5d18d-5272-e800-34c1-62deb65cf0c0.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/2b0e18af-824f-bab3-34b9-c7434a1bcb7f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="a6f61dd5-6b79-4926-97b3-2835e946246f" Title="IBuildingDisplay Interface" Url="html/1e07c2cd-512e-3f94-390c-e7de2896be5c.htm">
+      <HelpTOCNode Id="c6bad56b-0298-489b-9062-f83f2faa480f" Title="IBuildingDisplay Properties" Url="html/2b467e01-c726-52d3-312a-91d1e4b09fa6.htm">
+        <HelpTOCNode Title="BuildingToDisplay Property " Url="html/63c2e424-d8f4-b94c-c481-5a3599dbd73b.htm" />
+        <HelpTOCNode Title="gameObject Property " Url="html/fbfbaef2-86ad-384d-4b42-6104e748de91.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="367ca5fd-2c8d-4287-84f5-adf89025a072" Title="IBuildingDisplay Methods" Url="html/756c4796-11f2-17ff-e0dc-f94416e547e4.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/84f052ae-499a-16a4-765d-e38f4acd57aa.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="4731e286-b0a5-4f38-a400-c11589923a82" Title="Assets.UI.Cities.Distribution" Url="html/c4acbdc1-2318-7e49-6d1f-ae5e40d16bf8.htm">
+    <HelpTOCNode Id="4413240a-b9df-40c5-bbe1-864fc40ad596" Title="CitySlotChoosingDisplay Class" Url="html/bc387b7d-6ab1-a698-72bc-4ebb2395e283.htm">
+      <HelpTOCNode Title="CitySlotChoosingDisplay Constructor " Url="html/d519c5bf-f062-7d73-c340-ff19bf5c5f3e.htm" />
+      <HelpTOCNode Title="CitySlotChoosingDisplay Properties" Url="html/2fc90c52-6523-7266-4f16-01669e454ff2.htm" />
+      <HelpTOCNode Id="956c8db0-ebb2-4510-b900-43d84d7799fb" Title="CitySlotChoosingDisplay Methods" Url="html/9d48277e-1cb2-511b-be92-1a09e76769f8.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/35ea8873-91a6-9515-a7db-6e9bb80cd687.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="af11ba5e-b139-45c5-ba75-d25767d767b4" Title="CityUnemploymentDisplay Class" Url="html/74e489c9-2976-8b6a-413f-d0da1099835b.htm">
+      <HelpTOCNode Title="CityUnemploymentDisplay Constructor " Url="html/65f24a40-22d9-677e-0725-ff8e9963100d.htm" />
+      <HelpTOCNode Title="CityUnemploymentDisplay Properties" Url="html/9c2bf3a6-9218-d639-0f2f-654cf062c4eb.htm" />
+      <HelpTOCNode Id="a6756a8d-a811-4a83-8ee3-947dc2441bb2" Title="CityUnemploymentDisplay Methods" Url="html/f580788a-e325-e71b-0418-386d5baf3bef.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/25723d57-15d1-72f1-ceaf-4c91eb3d7ea3.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/9b24cd4d-37e9-26c5-473d-15b1d0a1c2f2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="69b807fc-901b-4d41-891a-6d078850871b" Title="DistributionPreferencesDisplay Class" Url="html/8ca24e92-4457-b6c5-1810-92b23afee9c0.htm">
+      <HelpTOCNode Title="DistributionPreferencesDisplay Constructor " Url="html/fe9a9668-8422-74d4-44ba-d5885da6398c.htm" />
+      <HelpTOCNode Title="DistributionPreferencesDisplay Properties" Url="html/93f81232-4d91-2948-23c3-a9a2d516ba42.htm" />
+      <HelpTOCNode Id="3801a32e-7b7b-48b0-a1dc-0e06c0b3f1a0" Title="DistributionPreferencesDisplay Methods" Url="html/a8a53ad1-93ff-1095-6928-243a3c134246.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/cc6498d4-3753-0fdb-0d93-b8841a332a4d.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/5d44e49e-a06f-d320-b4eb-99f968e2afbd.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="8cbb732b-d762-4345-b864-f4c6141995da" Title="Assets.UI.Cities.Growth" Url="html/4a0915c6-a7fc-fd12-3656-cc51dca27e3d.htm">
+    <HelpTOCNode Id="bef46c06-bbd7-4a78-b2c3-5e8b12ce0705" Title="CityGrowthDisplay Class" Url="html/8811138c-e64d-155d-6414-a7376a5f0a87.htm">
+      <HelpTOCNode Title="CityGrowthDisplay Constructor " Url="html/785c27db-d1dd-7204-1276-ea8a52c61e5f.htm" />
+      <HelpTOCNode Id="5cff47e4-6fe9-4020-aff1-3ee82e9470d4" Title="CityGrowthDisplay Properties" Url="html/fb827d2e-c44f-f1ad-f03c-7c961d5b001b.htm">
+        <HelpTOCNode Title="ChangeStatusField Property " Url="html/01dd73ae-e6f5-6732-5098-f3cd44726b12.htm" />
+        <HelpTOCNode Title="CurrentFoodStockpileField Property " Url="html/f51a2e5c-5e6d-59aa-45e3-b9752b84140a.htm" />
+        <HelpTOCNode Title="CurrentPopulationField Property " Url="html/2ac0978a-5781-af12-ad4e-46d31c20320f.htm" />
+        <HelpTOCNode Title="FoodUntilNextGrowthField Property " Url="html/fda556ad-cc44-631e-8d47-28a063486b4c.htm" />
+        <HelpTOCNode Title="GrowthSlider Property " Url="html/3b7919ef-0696-4173-0db1-51906872db0b.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8d27e49d-041a-4b29-9a39-b7e8e40fd776" Title="CityGrowthDisplay Methods" Url="html/9efd63f2-18c9-7f9d-8c08-12e944c42617.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/4febfa24-dfb0-d187-9d09-c5c098902a55.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/1842ad53-085b-7c77-afbe-91a37301abd5.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="d742424a-b5d1-46d9-8eb9-897a9d5e01f7" Title="Assets.UI.Cities.Production" Url="html/0f656c35-c271-191e-ac49-743f53609663.htm">
+    <HelpTOCNode Id="89b86f42-133c-4317-a16a-bd44b8ec01fd" Title="CityProjectChooser Class" Url="html/fb883904-a317-c02b-aff1-f94769469c84.htm">
+      <HelpTOCNode Title="CityProjectChooser Constructor " Url="html/f85684f5-be15-1f0c-759b-6bacfa4733c8.htm" />
+      <HelpTOCNode Title="CityProjectChooser Properties" Url="html/fcb922e5-fb0d-1535-c54c-afacef93bc3b.htm" />
+      <HelpTOCNode Id="ee2860aa-3c40-49f4-ab9a-cfb26f7bb550" Title="CityProjectChooser Methods" Url="html/309ae33e-c610-c5fd-8354-b06af664b5bf.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/1924e172-0c2b-f6c2-a302-dc9849e27519.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/36fda6d8-7859-ce6b-b35c-7b068ffd9fd2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="711256b1-c7c8-40ee-939c-2b2d6f291f1c" Title="CityProjectDisplay Class" Url="html/4ebaf164-ac89-d9be-5fb9-6c32b640a668.htm">
+      <HelpTOCNode Title="CityProjectDisplay Constructor " Url="html/d8e9eb4c-7f32-3a0a-c4b5-5b30fc24ab4e.htm" />
+      <HelpTOCNode Title="CityProjectDisplay Properties" Url="html/cf85f659-1aa9-0141-0e83-ddb144a10cc4.htm" />
+      <HelpTOCNode Id="09879a8e-2f16-4646-8484-a43d61c3fc41" Title="CityProjectDisplay Methods" Url="html/c4908496-85d9-51dd-573c-02a5838c9cec.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/cb3942fe-e7fa-5512-b4cd-df2bd35630bc.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/98d9a6de-84f7-3ce0-4234-fc72816c967d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="0607a24b-d363-4e35-abc8-6dada2c39586" Title="Assets.UI.Cities.ResourceGeneration" Url="html/96d97d8d-d965-64b2-8612-14cd929d50be.htm">
+    <HelpTOCNode Id="b4fa44d0-4c9a-4988-ada1-678c3da5475a" Title="CityYieldDisplay Class" Url="html/837cdd70-964e-eed2-09e8-1f975379f22d.htm">
+      <HelpTOCNode Title="CityYieldDisplay Constructor " Url="html/85bef11f-295d-df0d-49f5-1eb76732bbc3.htm" />
+      <HelpTOCNode Title="CityYieldDisplay Properties" Url="html/bae45f05-3375-9743-f8e7-162cb5572fd2.htm" />
+      <HelpTOCNode Id="744ec7f9-c21c-4568-96fe-5f218f55f16d" Title="CityYieldDisplay Methods" Url="html/bcfe82fe-26a7-cf5d-cf2f-e5a36c79df39.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/a5227c0f-6b36-93a6-9326-eaeee8fb0e2e.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/86bdd610-769f-53b5-1bd0-2f5ce4707dea.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="c5f4d9fb-63bf-4241-a31b-b46bac72620c" Title="Assets.UI.Cities.Territory" Url="html/fa7614d3-6633-afd0-831a-5a787c725529.htm">
+    <HelpTOCNode Id="b8a1571a-eb17-4585-87da-1a498d72a4e0" Title="CityExpansionDisplay Class" Url="html/6875b3b9-bd91-1695-e9c0-1cf2f240c882.htm">
+      <HelpTOCNode Title="CityExpansionDisplay Constructor " Url="html/0ede3e02-42ea-dc05-cf13-993fb30b6f23.htm" />
+      <HelpTOCNode Title="CityExpansionDisplay Properties" Url="html/f1a0d78d-6df1-2fdf-b7f0-929f801c1f08.htm" />
+      <HelpTOCNode Id="b3fa8b37-2f25-4b4e-91ab-6c65a2426213" Title="CityExpansionDisplay Methods" Url="html/82034230-dd76-d1b8-8016-8064fd4c640a.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/fca621bf-9389-e4f6-ef9f-0caa5a3640ba.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/6fedb966-0afe-ec18-f8bd-eb86bc046797.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4a68ed75-af09-44c4-93bc-a89480eb0402" Title="CityTileDisplay Class" Url="html/b7b78c40-c1f6-f5ff-e9ad-cef036270591.htm">
+      <HelpTOCNode Title="CityTileDisplay Constructor " Url="html/9d82b946-1d59-9784-2e53-4f985f19fa4f.htm" />
+      <HelpTOCNode Title="CityTileDisplay Properties" Url="html/a32d1696-9ae7-8ebc-24b0-e4995e22ead4.htm" />
+      <HelpTOCNode Id="3c802d85-8a14-4263-b291-ca3a9fc64b4b" Title="CityTileDisplay Methods" Url="html/541f96db-6e52-341e-d2b0-d33939603b0e.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/d4204de0-f114-7da3-58b9-3c5775ea1f83.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/e2ab8ce7-fa7d-b65b-3535-b851a91cfaaf.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="087346b3-6c2a-41a5-be9c-6edabdd4cdbe" Title="Assets.UI.Civilizations" Url="html/d2277ba4-e594-eed3-f9e6-430d91b0ae1e.htm">
+    <HelpTOCNode Id="b93881b8-f0b4-4d14-85e1-a09fe4e0bea6" Title="CivilizationDisplayBase Class" Url="html/e5978ed4-5e6c-75da-cc94-28d4dacc95dd.htm">
+      <HelpTOCNode Title="CivilizationDisplayBase Constructor " Url="html/f80c63f4-fbc6-dafd-29b4-7c105b4bbed2.htm" />
+      <HelpTOCNode Title="CivilizationDisplayBase Properties" Url="html/0b3cfa2d-4fbb-fdc0-a7eb-97d3086f443b.htm" />
+      <HelpTOCNode Title="CivilizationDisplayBase Methods" Url="html/b8e7abc4-2153-aa63-f4eb-eb3207c62811.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="b15e60f9-2dbd-4a57-afc5-bd1164d82ec0" Title="CivilizationStockpileDisplay Class" Url="html/e5bcd262-d1c4-d7c0-d46c-be7ab5f4a7d4.htm">
+      <HelpTOCNode Title="CivilizationStockpileDisplay Constructor " Url="html/34301667-27d1-5607-90cd-869b3bca4252.htm" />
+      <HelpTOCNode Title="CivilizationStockpileDisplay Properties" Url="html/5b754ff5-dabf-54e3-bba4-d7fb6ec654d7.htm" />
+      <HelpTOCNode Id="4ef2dd2d-5042-4a45-9e37-e9b6943310c8" Title="CivilizationStockpileDisplay Methods" Url="html/8feedd69-83ff-da8a-e222-a788db163a31.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/90cacfff-1f4e-6251-61ff-9b987c118310.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="7de4438e-4546-45b4-a5c2-eccd35689d08" Title="Assets.UI.Core" Url="html/ec7cc93d-856d-e8cc-1fdd-5590f8f2ae52.htm">
+    <HelpTOCNode Id="6fd2ec3b-448a-45eb-a0f2-c3fdf1e562bd" Title="CoreUIInstaller Class" Url="html/21076bd3-a8fa-6d20-24e5-ffec6ce6c6fc.htm">
+      <HelpTOCNode Title="CoreUIInstaller Constructor " Url="html/81708e5a-3565-54fb-4ee4-759c0d7f78bb.htm" />
+      <HelpTOCNode Title="CoreUIInstaller Properties" Url="html/8e3530a3-02c9-3ded-96a4-880027fc609a.htm" />
+      <HelpTOCNode Id="a102aa5b-beaf-4725-a901-643e7501261d" Title="CoreUIInstaller Methods" Url="html/52ac5560-d126-6fb0-4d5b-55676cf6f52b.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/27a65532-1a5a-7b3a-31ef-ec1afc55b219.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="e420991f-1e0b-4f8c-a405-cd8c97640781" Title="EndTurnDisplay Class" Url="html/c6ed8e46-1106-116e-7562-850d8779d618.htm">
+      <HelpTOCNode Title="EndTurnDisplay Constructor " Url="html/3e7ae0b1-9781-2773-7acf-b260a336d57f.htm" />
+      <HelpTOCNode Title="EndTurnDisplay Properties" Url="html/550ef843-e32d-1ad6-28e7-6104d5f06578.htm" />
+      <HelpTOCNode Id="806323fa-b5a8-486c-8b57-9da26f7e32db" Title="EndTurnDisplay Methods" Url="html/88c56778-2c23-172a-aedd-3e44bc9c7420.htm">
+        <HelpTOCNode Title="DoOnUpdate Method " Url="html/e13e1fe6-77b5-4e2a-0b1d-99ddd023396e.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/4d3956b3-598c-4ca6-163a-bcc0a1744b58.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="22fb61e7-8485-4089-8c7b-5c502821aaea" Title="Assets.UI.HexMap" Url="html/cf6c57c7-b4e5-d805-0c77-dc8a0a5f92d8.htm">
+    <HelpTOCNode Title="CellOverlayType Enumeration" Url="html/e348281f-3241-14fd-fcb8-c2eca3b568df.htm" />
+    <HelpTOCNode Id="d4a9ce62-ce92-4d7a-aaa3-74b08d9cec93" Title="HexCellOverlay Class" Url="html/3a2651cc-3fda-e790-2e3b-f0ef73711e11.htm">
+      <HelpTOCNode Title="HexCellOverlay Constructor " Url="html/fbfbae23-1c73-b6cb-709c-38ced15cded2.htm" />
+      <HelpTOCNode Id="78be0a04-bd57-4d67-a309-fdf5f2a26e8f" Title="HexCellOverlay Properties" Url="html/90506931-b1dd-3226-4e5d-970ebebf8530.htm">
+        <HelpTOCNode Title="Parent Property " Url="html/4cea6353-113d-839f-ec31-47045d65ecd8.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="23b118ec-070d-4548-9e6e-44da938e5f5d" Title="HexCellOverlay Methods" Url="html/714a57e6-05cf-c847-33c1-da0ab25c261a.htm">
+        <HelpTOCNode Title="Clear Method " Url="html/8ca57c7a-5a02-e2cf-aa79-8d3eb969251b.htm" />
+        <HelpTOCNode Title="Hide Method " Url="html/7e6bc4ba-5d38-8e5d-9bcd-5ab14684af46.htm" />
+        <HelpTOCNode Title="SetDisplayType Method " Url="html/539e8a90-51e1-e93c-d02a-2bd8548b2fcb.htm" />
+        <HelpTOCNode Title="Show Method " Url="html/9d4144b7-b391-c81f-0110-eedb197aabc7.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9947e91d-e73f-4f14-99da-c4d41dfb2b79" Title="HexCellSignalLogic Class" Url="html/b55d283f-b8a7-b72c-b80f-3a56662b19a6.htm">
+      <HelpTOCNode Title="HexCellSignalLogic Constructor " Url="html/06a2da92-b9db-1ea7-e6ff-bcfd31a20e95.htm" />
+      <HelpTOCNode Id="34f564ce-0c22-479b-91cd-da6fa49c6a38" Title="HexCellSignalLogic Properties" Url="html/fafae667-2a63-dc8b-0a0d-d1471919d50b.htm">
+        <HelpTOCNode Title="BeginHoverSignal Property " Url="html/0833d03a-edd0-8882-5022-336a0cd519a1.htm" />
+        <HelpTOCNode Title="EndHoverSignal Property " Url="html/7f1cedf3-9880-e6fe-700a-c05489cfe7ca.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Title="HexCellSignalLogic Methods" Url="html/9c7000fe-61d3-f531-52ca-54face6669fe.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="c7e6cc2e-0868-42a0-8a3e-4c567b276b25" Title="HexMapUIInstaller Class" Url="html/b47edb7b-d12d-15be-496c-33e1ef759cd8.htm">
+      <HelpTOCNode Title="HexMapUIInstaller Constructor " Url="html/e15a1b7d-10cd-18cc-9888-f5b2ae7c0373.htm" />
+      <HelpTOCNode Title="HexMapUIInstaller Properties" Url="html/11efc360-6cea-b4a2-cae7-01c3e1ae58e6.htm" />
+      <HelpTOCNode Id="4144736a-a1c8-4fcb-a4bc-aab774f27afb" Title="HexMapUIInstaller Methods" Url="html/0417ff79-38d5-e7af-d3fc-05593bb5f536.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/f6c9aa4a-ef5f-1a1e-6f62-ad01fcaf0464.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="c0edf40a-e776-4269-9bdf-8626924b448d" Title="IHexCellOverlay Interface" Url="html/87002d5b-351d-3a24-79d6-0ab28df6a49d.htm">
+      <HelpTOCNode Id="9599b55b-df09-4640-bba2-ca43ba66e82f" Title="IHexCellOverlay Methods" Url="html/499a5f60-496b-8d7c-11f5-37f3d84380ec.htm">
+        <HelpTOCNode Title="Clear Method " Url="html/15c7fef9-d120-8149-3388-49318c6481cb.htm" />
+        <HelpTOCNode Title="Hide Method " Url="html/fe4f678d-0cfe-0937-e85a-45322d456d33.htm" />
+        <HelpTOCNode Title="SetDisplayType Method " Url="html/3c1a1680-c19a-d6c8-4cad-e52ea8aa20ac.htm" />
+        <HelpTOCNode Title="Show Method " Url="html/63bb6a08-1af3-d35d-3c12-c5828cb5ff1d.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="9f513eca-3af4-4e2d-b6dd-80afb5c18ae5" Title="IHexCellSignalLogic Interface" Url="html/d3967cf6-e120-20c8-b390-e94d8d3da182.htm">
+      <HelpTOCNode Id="0811ace7-b6c8-47f5-982f-6c038012d19b" Title="IHexCellSignalLogic Properties" Url="html/761e4c72-49b6-43db-8c92-d48942574ddf.htm">
+        <HelpTOCNode Title="BeginHoverSignal Property " Url="html/fbd5b647-b0c3-d1cd-c85d-3a87ede40783.htm" />
+        <HelpTOCNode Title="EndHoverSignal Property " Url="html/55730104-d554-b9be-4286-3a179533bca2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="ca161a4c-77bb-4702-8e39-01a3f8ac7cdc" Title="ITilePathDrawer Interface" Url="html/db6742ee-8295-958f-fde8-35a2c016ba9a.htm">
+      <HelpTOCNode Id="0a830d11-6389-4ae3-b459-9bb171a73f4b" Title="ITilePathDrawer Methods" Url="html/196ac482-831a-70ea-357f-6cccd9916d7d.htm">
+        <HelpTOCNode Title="ClearPath Method " Url="html/282965ac-3ba0-c7c3-84ab-ca696c01af56.htm" />
+        <HelpTOCNode Title="DrawPath Method " Url="html/95ddaba1-7f9f-4d7a-e5be-cb957798904a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="0c80a397-a8ce-48d9-b7dd-609f8a51f052" Title="MapTileDisplay Class" Url="html/35489eda-63e1-349d-c9f6-7ac08310597c.htm">
+      <HelpTOCNode Title="MapTileDisplay Constructor " Url="html/e92d5e4b-846d-0365-60dd-2465a688f433.htm" />
+      <HelpTOCNode Title="MapTileDisplay Properties" Url="html/c5c67d95-689d-a1f0-8b5c-b5e3b304b1af.htm" />
+      <HelpTOCNode Id="902d5034-5eb5-4832-b86f-73a4898c4965" Title="MapTileDisplay Methods" Url="html/a70b9219-c4ff-36da-c3bf-c8f3d537ba1c.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/5eea984b-cc39-8ecf-c70d-8df4c2be40b9.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7ec39a04-af6c-43f2-a567-ec9c53924e0b" Title="TileDisplayBase Class" Url="html/3660848d-a0ed-8305-6003-f3c4c3299fbe.htm">
+      <HelpTOCNode Title="TileDisplayBase Constructor " Url="html/72889d63-55a5-a004-50c8-ee94627369b5.htm" />
+      <HelpTOCNode Title="TileDisplayBase Properties" Url="html/e075dac0-4432-6229-b06b-04540ce403ca.htm" />
+      <HelpTOCNode Title="TileDisplayBase Methods" Url="html/430f3ebe-092d-a66b-2528-618b72a2e6e0.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="81b398e0-205d-4816-9f97-4bd4d10ff0fe" Title="TileHoverDisplay Class" Url="html/26a4d3ef-d434-a9b0-2a17-fa9f867f171f.htm">
+      <HelpTOCNode Title="TileHoverDisplay Constructor " Url="html/f171b5f4-bb0c-14e0-41da-c8fc61161cf4.htm" />
+      <HelpTOCNode Id="020d69e4-e7ba-4d7f-a71d-2e26c9a169ba" Title="TileHoverDisplay Methods" Url="html/1e83b735-9014-7c07-69df-c455b4a76fa7.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/7842e3d8-780e-3ab5-6fc8-6561b5d52eac.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4cff48b8-b901-40a5-8da0-8c4e7e1dd519" Title="TilePathDrawer Class" Url="html/aab58d46-c8e9-0233-2378-20da3177dd62.htm">
+      <HelpTOCNode Title="TilePathDrawer Constructor " Url="html/6c9f4ef8-2518-706c-e3cb-4993d813ffad.htm" />
+      <HelpTOCNode Id="fec1ef64-ab7a-469f-896e-37f6d0b46656" Title="TilePathDrawer Methods" Url="html/ea5a4cb9-d090-1d94-68ce-27c70d7dfc0d.htm">
+        <HelpTOCNode Title="ClearPath Method " Url="html/22bd6500-e913-3d62-4417-9b03dc74c8ca.htm" />
+        <HelpTOCNode Title="DrawPath Method " Url="html/fd62a1a6-f65b-12fc-fb58-a275ef832a20.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="67411fce-4325-41ff-9e4c-39f65fecf73c" Title="Assets.UI.StateMachine" Url="html/946ee6fe-fb0e-bf6f-d791-6c21677ba9d6.htm">
+    <HelpTOCNode Id="bbdbcb53-600c-4d1e-bf3d-4274b2c35ffa" Title="StateMachineInstaller Class" Url="html/e9caf965-1fb0-0b7d-f707-fc4d248f9a9e.htm">
+      <HelpTOCNode Title="StateMachineInstaller Constructor " Url="html/ce3a29a9-39f5-e662-f4f2-2024c6eafa7b.htm" />
+      <HelpTOCNode Title="StateMachineInstaller Properties" Url="html/749c2636-b1cb-a5ae-0d58-9429665b795d.htm" />
+      <HelpTOCNode Id="3f3cbb60-c9d3-43b5-9302-116996b968e8" Title="StateMachineInstaller Methods" Url="html/e9dcacad-e2d8-4faf-49d2-49ec32cccc93.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/515c83cc-adf4-dcb6-8708-f4e306952d14.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="23443a49-cb3b-4c43-8bbf-2e2b5ece3886" Title="Assets.UI.StateMachine.States" Url="html/c17ba3ea-fee7-a3dd-f0a3-23e517c21c14.htm">
+    <HelpTOCNode Id="9ace8b0c-d436-4ab5-a58d-855b67d2bfba" Title="CityUIState Class" Url="html/a9926cf6-0c77-2c8c-3e72-f6bd3e5ab3ae.htm">
+      <HelpTOCNode Title="CityUIState Constructor " Url="html/9f8d92b2-5683-170f-ad94-b59609654ccc.htm" />
+      <HelpTOCNode Id="38ebceec-6ab2-4f49-820d-14aa17dbc06a" Title="CityUIState Properties" Url="html/930b736f-5365-f6e6-e228-cb39dd7c667b.htm">
+        <HelpTOCNode Title="CityToDisplay Property " Url="html/9cfbf097-0085-dbdf-3dce-e9b6c4d297be.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="8352123c-4789-4105-b3a9-fcecdb6b6cbe" Title="CityUIState Methods" Url="html/1a9138a9-b2d0-0669-ce0b-a5e06cb254bb.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/eea1d523-fcfe-e743-746b-3f9b33174c7d.htm" />
+        <HelpTOCNode Title="OnStateEnter Method " Url="html/b89b10d1-2132-7455-f1f8-f1dd40917243.htm" />
+        <HelpTOCNode Title="OnStateExit Method " Url="html/0d83a0bb-435f-e71a-b1fd-17a9128430ff.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="7e2c2da8-126d-4ef3-a5f6-a342e91bf476" Title="DefaultUIState Class" Url="html/1c6230e7-4770-cfc3-5f99-164b21653173.htm">
+      <HelpTOCNode Title="DefaultUIState Constructor " Url="html/8a340ea2-6aca-b4f4-d7a1-89122cacd393.htm" />
+      <HelpTOCNode Id="98fbae41-6d18-4d49-80f0-9557d37d5f40" Title="DefaultUIState Methods" Url="html/298d32b5-a1f7-a9bc-3f7e-4aa6f059c05e.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/f0064ec6-f594-7bd7-5811-3b06eb2976b3.htm" />
+        <HelpTOCNode Title="OnStateEnter Method " Url="html/16988025-2c18-c897-d869-cbd62f50498c.htm" />
+        <HelpTOCNode Title="OnStateExit Method " Url="html/96f78b00-765e-ec42-405c-314a0ff7595c.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="734619f5-4878-4a85-893a-e2fc40e94f78" Title="MapEditorState Class" Url="html/f40d78de-fea8-157b-2da6-a7de2cf71cca.htm">
+      <HelpTOCNode Title="MapEditorState Constructor " Url="html/37d8a29b-42d4-9892-fd2d-36488c54c918.htm" />
+      <HelpTOCNode Id="590267af-c4da-4c06-8c46-a923e0e98464" Title="MapEditorState Methods" Url="html/df8b8c77-7524-37f3-b918-24ebf6023548.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/0a75f3e9-69db-2045-1a04-2579d596cbcf.htm" />
+        <HelpTOCNode Title="OnStateEnter Method " Url="html/b7c00426-c66c-825e-1441-5648f911d50c.htm" />
+        <HelpTOCNode Title="OnStateExit Method " Url="html/c8a1ce71-a2f4-4090-0e4e-711ea1dd1846.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="4b045f81-746f-4c80-a5a3-4b49e0742e46" Title="TileUIState Class" Url="html/61bb21c6-28bf-f9c1-892a-3b5033e9f0a2.htm">
+      <HelpTOCNode Title="TileUIState Constructor " Url="html/fedb428b-cd82-fd9a-d54f-5fa00eb802bb.htm" />
+      <HelpTOCNode Id="b24be84e-80cd-47f1-98a4-a9b4e57d722a" Title="TileUIState Properties" Url="html/c3eb6959-cf5a-9c1c-065e-0508b8aec826.htm">
+        <HelpTOCNode Title="TileToDisplay Property " Url="html/fbd56902-0ffe-e877-ee88-96ba3268e1cd.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="a0ffff21-e5ac-4027-b285-2fc41650648f" Title="TileUIState Methods" Url="html/c900c6d7-fd6d-4126-ab43-3e77e9de5030.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/df87293f-9e4c-36b1-65cd-620cf2120dbe.htm" />
+        <HelpTOCNode Title="OnStateEnter Method " Url="html/f1409a41-4b6f-69a9-6bf6-552cfd4a1460.htm" />
+        <HelpTOCNode Title="OnStateExit Method " Url="html/765c3537-8be9-5d86-550b-fe9c9c7a295a.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="b00ffe6e-072a-44d0-af29-0814709de070" Title="UnitUIState Class" Url="html/8cf16e3e-b51f-42b2-6609-1f1d2cb92a54.htm">
+      <HelpTOCNode Title="UnitUIState Constructor " Url="html/d3d62984-aeca-900c-7578-6569fe6f9e20.htm" />
+      <HelpTOCNode Id="1e8d76fe-0bc1-454d-81f9-3cae85f53648" Title="UnitUIState Properties" Url="html/fe46c625-0e07-d6b8-399a-910bf18e462c.htm">
+        <HelpTOCNode Title="UnitToDisplay Property " Url="html/acae46e8-e758-6897-d660-c1e20799322f.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="2c6b3993-413c-4f0d-8392-2f49c3e6b431" Title="UnitUIState Methods" Url="html/08df8429-8067-0dd8-99d8-056883568679.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/aca53b17-b8a9-210b-7527-9307532286f7.htm" />
+        <HelpTOCNode Title="OnStateEnter Method " Url="html/31266500-4d0b-6ba0-b47c-dc7a78e0e21f.htm" />
+        <HelpTOCNode Title="OnStateExit Method " Url="html/a29213f8-8faf-d08c-76eb-dd888b174012.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="2292a345-3d56-4bd4-9900-ced19cbf2dc2" Title="Assets.UI.StateMachine.Transitions" Url="html/54bf37f3-1080-0025-54cd-5ec574bb91e4.htm">
+    <HelpTOCNode Id="cc757c69-ebee-4426-8e54-79235b45ccf6" Title="CityTransitionLogic Class" Url="html/f02fab99-108a-2330-356b-c297a7dbae9d.htm">
+      <HelpTOCNode Title="CityTransitionLogic Constructor " Url="html/56c40fd2-4597-bce8-3b03-1843b10b065a.htm" />
+      <HelpTOCNode Title="CityTransitionLogic Methods" Url="html/6bd3b112-a940-e6ed-b905-6a6c7ceda6bb.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="3bc07d8b-8a25-4974-939d-95e53b86591f" Title="DefaultTransitionLogic Class" Url="html/9c2c4b59-df54-7293-6b94-59f2c7680676.htm">
+      <HelpTOCNode Title="DefaultTransitionLogic Constructor " Url="html/6eee6351-e948-1485-2396-a48b6c62f7e0.htm" />
+      <HelpTOCNode Title="DefaultTransitionLogic Methods" Url="html/aee8f226-9d73-110a-d8ef-3087626cb5fd.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="a4b9f19c-4ab2-4c3b-95cd-cd73fc7eb671" Title="MapEditingTransitionLogic Class" Url="html/4da4c4c3-f725-cf18-701d-79cea1400b76.htm">
+      <HelpTOCNode Title="MapEditingTransitionLogic Constructor " Url="html/9275caa0-0116-67f8-067c-ebedd322407c.htm" />
+      <HelpTOCNode Title="MapEditingTransitionLogic Methods" Url="html/898f5e4d-45aa-699b-b015-ed96c692f10d.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="c86a9c74-7df2-4848-9789-71a39862eff9" Title="MapTileTransitionLogic Class" Url="html/87b06935-6fb6-c537-3756-dd73430cdcb2.htm">
+      <HelpTOCNode Title="MapTileTransitionLogic Constructor " Url="html/2a0bacb7-20b6-7be2-9aa3-bb690ad1fc3b.htm" />
+      <HelpTOCNode Title="MapTileTransitionLogic Methods" Url="html/38acc60d-d19d-d59b-4098-2bf0474133ac.htm" />
+    </HelpTOCNode>
+    <HelpTOCNode Id="007aa7ca-250d-4e79-b71d-6808562d1b90" Title="UnitTransitionLogic Class" Url="html/74ad8190-6d77-f6cc-a305-4bf47c9dbc72.htm">
+      <HelpTOCNode Title="UnitTransitionLogic Constructor " Url="html/f65b5931-badc-c9fb-71e5-da0f83b871db.htm" />
+      <HelpTOCNode Title="UnitTransitionLogic Methods" Url="html/43398ba1-a218-8198-3ae2-f0af1d53fc61.htm" />
+    </HelpTOCNode>
+  </HelpTOCNode>
+  <HelpTOCNode Id="f1bde6b6-9b59-4a44-be01-1ba266125857" Title="Assets.UI.Units" Url="html/210d247c-ecd5-7983-e30b-a65cb6756e16.htm">
+    <HelpTOCNode Id="08e44118-764c-43b3-9710-6caff8153c0e" Title="AbilityDisplay Class" Url="html/fdb9db5e-6c70-15d1-f92e-3212898a278a.htm">
+      <HelpTOCNode Title="AbilityDisplay Constructor " Url="html/a1b6bd53-0626-b2a2-c7c2-6f8094c18a7c.htm" />
+      <HelpTOCNode Id="34d4c44b-edba-4a39-a61b-f49a2f85a179" Title="AbilityDisplay Properties" Url="html/ee558b25-3fb0-bf40-fb35-dc48f43ab904.htm">
+        <HelpTOCNode Title="AbilityToDisplay Property " Url="html/16ae6c8c-ab5c-b34a-b76f-c7fc75fbe63f.htm" />
+        <HelpTOCNode Title="UnitToInvokeOn Property " Url="html/80df13a4-6441-8cc2-686c-203c0ee99ab9.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="345207c4-c985-48f8-b335-8a41fd17a091" Title="AbilityDisplay Methods" Url="html/36b6fa9a-865d-8bd3-3470-816901b90125.htm">
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/6b7dd22f-b317-4bec-9f98-ca26121e5478.htm" />
+        <HelpTOCNode Title="Refresh Method " Url="html/56f99f58-c939-db43-f5ce-dfbd5586049c.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="2bf3142d-e4d0-41a9-8a88-40e44e2b4b4a" Title="AbilityDisplayMemoryPool Class" Url="html/02c985db-3ac8-3da2-449b-20c1ac360bc9.htm">
+      <HelpTOCNode Title="AbilityDisplayMemoryPool Constructor " Url="html/3f5594ed-9ad6-7492-fc5c-b2c9c194a429.htm" />
+      <HelpTOCNode Title="AbilityDisplayMemoryPool Properties" Url="html/baad151c-064f-0022-7dfe-41c949071c3a.htm" />
+      <HelpTOCNode Id="d93196c7-bc93-4436-9dae-e492391cadcf" Title="AbilityDisplayMemoryPool Methods" Url="html/5afb68a2-8534-aa56-4007-f6813fbca9be.htm">
+        <HelpTOCNode Title="OnCreated Method " Url="html/eec4d1fa-ebe3-f5c1-d668-d585596b4f21.htm" />
+        <HelpTOCNode Title="OnDespawned Method " Url="html/fb90a135-74b0-2811-96a8-6e35e2c0778a.htm" />
+        <HelpTOCNode Title="OnSpawned Method " Url="html/abc226ac-b187-ae2b-fd91-f2e252494f8e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="18b6dab5-645e-41ed-a114-b331894a7cf1" Title="IAbilityDisplay Interface" Url="html/d170b56b-3d6c-c7df-baec-519144f5fa62.htm">
+      <HelpTOCNode Id="f9c77b71-6a8f-4382-8d46-198b87775b5c" Title="IAbilityDisplay Properties" Url="html/8db4a4fe-9d8e-2be8-0f7c-ba63ba864389.htm">
+        <HelpTOCNode Title="AbilityToDisplay Property " Url="html/1ab490c6-d1f6-7d44-61ac-a39791370380.htm" />
+        <HelpTOCNode Title="transform Property " Url="html/4b0530c2-8bca-d1f2-ee2b-08782648f8e6.htm" />
+        <HelpTOCNode Title="UnitToInvokeOn Property " Url="html/d27e8c60-989c-830f-3b9e-f04ba84cdf19.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="c5ffeaf8-6e27-4692-a7b3-8578d01f563f" Title="IAbilityDisplay Methods" Url="html/d7a9dd5e-3999-8a3c-7147-7528bdf42009.htm">
+        <HelpTOCNode Title="Refresh Method " Url="html/a73e976d-a58d-6b6b-9685-38d2ea6cc57e.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="72f83925-44e1-4e7d-8c17-dd34e2888820" Title="UnitAbilitiesDisplay Class" Url="html/482b4ed6-0575-9bc6-807a-e0ffd520debe.htm">
+      <HelpTOCNode Title="UnitAbilitiesDisplay Constructor " Url="html/438ef662-1568-7107-52e1-b9dd3e5eeda2.htm" />
+      <HelpTOCNode Title="UnitAbilitiesDisplay Properties" Url="html/205a5c05-574d-37ae-dde1-201aafc58e9a.htm" />
+      <HelpTOCNode Id="9c2b5578-9e17-40ba-851d-855dc1e63476" Title="UnitAbilitiesDisplay Methods" Url="html/0268ab6b-ea6e-7acc-afb7-a6af3aadf8b5.htm">
+        <HelpTOCNode Id="588bab05-db81-45b9-83c9-ea4d349efb13" Title="InjectDependencies Method " Url="html/cdaf78f0-f8c6-88b2-76b1-096cb983ba41.htm">
+          <HelpTOCNode Title="InjectDependencies Method (AbilityDisplayMemoryPool)" Url="html/822c56b3-d5be-f5cd-2966-a3c982024937.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Refresh Method " Url="html/9a55b8fc-6644-b9e9-54f5-38ea118b863b.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="dc0c17ef-5a91-4494-9b72-3b98d7cddd13" Title="UnitDisplayBase Class" Url="html/41a9693a-5887-ccc4-7a42-e163d655d1d0.htm">
+      <HelpTOCNode Title="UnitDisplayBase Constructor " Url="html/e2bf4f50-2faa-44f5-2e15-1cc5d2bfa933.htm" />
+      <HelpTOCNode Title="UnitDisplayBase Properties" Url="html/587ccde0-fa62-242f-f6fb-be9ba250447c.htm" />
+      <HelpTOCNode Id="293ec7fc-1ee7-4e2d-bdd3-f0c4cfc9068f" Title="UnitDisplayBase Methods" Url="html/01c66627-c0fc-ac1e-6dbe-0955c5c60eef.htm">
+        <HelpTOCNode Title="DoOnDisable Method " Url="html/b40eec18-619b-5231-d12b-3ebb26f5ad9a.htm" />
+        <HelpTOCNode Title="DoOnEnable Method " Url="html/ff37bac1-9aa5-4f83-a2c9-487b1d9acd59.htm" />
+        <HelpTOCNode Title="InjectDependencies Method " Url="html/d2127c13-9f86-f42e-66c8-01a8af8e6d90.htm" />
+        <HelpTOCNode Title="OnDisable Method " Url="html/7e4bd910-8d24-c276-8074-8de91470be4f.htm" />
+        <HelpTOCNode Title="OnEnable Method " Url="html/c21d24b4-46c4-12c5-38b2-f1680fa1596f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="63cef5fd-0d8a-44fe-88c8-94cf7cbe310e" Title="UnitMovementDisplay Class" Url="html/35dba6ff-de6f-7eb2-fc2a-ee63cbecfa03.htm">
+      <HelpTOCNode Title="UnitMovementDisplay Constructor " Url="html/78d6ad27-9430-7884-f371-0b3d0008672c.htm" />
+      <HelpTOCNode Id="a9543a1d-8ce9-4113-ba72-2e409ee4c779" Title="UnitMovementDisplay Properties" Url="html/adeeef82-d39e-5a26-4124-0a092f7045ac.htm">
+        <HelpTOCNode Title="ProspectivePath Property " Url="html/c690fea0-a059-5d6a-fcae-6206f6826918.htm" />
+        <HelpTOCNode Title="ProspectiveTravelGoal Property " Url="html/6e15778a-48a6-36b5-25f2-a2e14439af4a.htm" />
+      </HelpTOCNode>
+      <HelpTOCNode Id="85bd6860-28a5-432a-8d33-dbeffa0d4681" Title="UnitMovementDisplay Methods" Url="html/5b2e5826-f52f-b79d-b2f1-711c45891c0e.htm">
+        <HelpTOCNode Title="DoOnDisable Method " Url="html/c962e7d4-beb3-a6f7-8106-3872188588a9.htm" />
+        <HelpTOCNode Title="DoOnEnable Method " Url="html/af8bfc9a-11e8-4b07-cc12-e66ab363be04.htm" />
+        <HelpTOCNode Id="546a87e9-95cf-4080-9cf7-290ecba6a461" Title="InjectDependencies Method " Url="html/5ea3b0b5-d3c3-0ec7-daf9-b53ea8e64eb0.htm">
+          <HelpTOCNode Title="InjectDependencies Method (UnitSignals, HexCellSignals, ITilePathDrawer, IHexGrid, IUnitPositionCanon, IUnitTerrainCostLogic)" Url="html/267b63ab-179a-4696-ac7c-e18f5fbf4bb0.htm" />
+        </HelpTOCNode>
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="d76d59b6-f89a-412d-a95e-9a9c36ff8213" Title="UnitSummaryDisplay Class" Url="html/8b1e43d9-a744-8fc4-b363-0eb707af52b8.htm">
+      <HelpTOCNode Title="UnitSummaryDisplay Constructor " Url="html/0ca3bb35-ecbb-6532-0957-b2a30c866ea6.htm" />
+      <HelpTOCNode Title="UnitSummaryDisplay Properties" Url="html/fee3777d-d6d3-5936-e92f-3437f1ea2e2e.htm" />
+      <HelpTOCNode Id="c8d5b5e5-bba2-4b5b-80d4-ed9acf12e562" Title="UnitSummaryDisplay Methods" Url="html/db62fb61-bc0f-3ebc-d4c4-b207ad6335aa.htm">
+        <HelpTOCNode Id="adc65854-0c71-49b5-a32d-40dabbb07b0a" Title="InjectDependencies Method " Url="html/5dedb8e9-66e7-1044-8ee9-5af5d4dce9ab.htm">
+          <HelpTOCNode Title="InjectDependencies Method (IUnitConfig, Text, Text, Text, Text, Slider)" Url="html/56b35e0b-2cb2-a150-649f-b1eca897acf3.htm" />
+        </HelpTOCNode>
+        <HelpTOCNode Title="Refresh Method " Url="html/7bf07a94-cd22-14f9-1d20-c459910ef4f2.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+    <HelpTOCNode Id="6853f54b-9e9c-4700-ac1e-6b3b9ecf6ace" Title="UnitUIInstaller Class" Url="html/0a5e1749-411c-8494-2fe9-bd9218d0b64e.htm">
+      <HelpTOCNode Title="UnitUIInstaller Constructor " Url="html/ab09aeea-f4da-3336-a8e0-2ae9a25cbdac.htm" />
+      <HelpTOCNode Title="UnitUIInstaller Properties" Url="html/71a8574b-e7db-e4d1-1ac9-6fd1b2731dce.htm" />
+      <HelpTOCNode Id="e050838f-555c-4128-8b6c-9afb82e5338b" Title="UnitUIInstaller Methods" Url="html/6b405fa3-baef-207e-50ed-4a378690a4ac.htm">
+        <HelpTOCNode Title="InstallBindings Method " Url="html/d3d92d64-78a1-b24f-5684-4b03a662507f.htm" />
+      </HelpTOCNode>
+    </HelpTOCNode>
+  </HelpTOCNode>
+</HelpTOC>

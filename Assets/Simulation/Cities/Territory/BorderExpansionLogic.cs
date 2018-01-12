@@ -14,13 +14,16 @@ using Assets.Simulation.Cities.ResourceGeneration;
 
 namespace Assets.Simulation.Cities.Territory {
 
+    /// <summary>
+    /// The standard implementation of IBorderExpansionLogic.
+    /// </summary>
     public class BorderExpansionLogic : IBorderExpansionLogic {
 
         #region instance fields and properties
 
         private IHexGrid HexGrid;
 
-        private ITilePossessionCanon PossessionCanon;
+        private ICellPossessionCanon PossessionCanon;
         
         private ICityConfig Config;
 
@@ -30,8 +33,15 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="hexGrid"></param>
+        /// <param name="possessionCanon"></param>
+        /// <param name="config"></param>
+        /// <param name="resourceGenerationLogic"></param>
         [Inject]
-        public BorderExpansionLogic(IHexGrid hexGrid, ITilePossessionCanon possessionCanon,
+        public BorderExpansionLogic(IHexGrid hexGrid, ICellPossessionCanon possessionCanon,
             ICityConfig config, IResourceGenerationLogic resourceGenerationLogic) {
 
             HexGrid = hexGrid;
@@ -47,13 +57,14 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region from ICulturalExpansionLogic
 
-        public IEnumerable<IHexCell> GetAllTilesAvailableToCity(ICity city) {
+        /// <inheritdoc/>
+        public IEnumerable<IHexCell> GetAllCellsAvailableToCity(ICity city) {
             var retval = new HashSet<IHexCell>();
 
             foreach(var tile in PossessionCanon.GetTilesOfCity(city)) {
                 foreach(var neighbor in HexGrid.GetNeighbors(tile)) {
 
-                    if(IsTileAvailable(city, neighbor)) {
+                    if(IsCellAvailable(city, neighbor)) {
                         retval.Add(neighbor);
                     }
 
@@ -63,18 +74,20 @@ namespace Assets.Simulation.Cities.Territory {
             return retval;
         }
 
-        public IHexCell GetNextTileToPursue(ICity city) {
+        /// <inheritdoc/>
+        public IHexCell GetNextCellToPursue(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
-            var availableTiles = GetAllTilesAvailableToCity(city).ToList();
+            var availableTiles = GetAllCellsAvailableToCity(city).ToList();
 
-            availableTiles.Sort(TileComparisonUtil.BuildComparisonAscending(city, city.ResourceFocus, ResourceGenerationLogic));
+            availableTiles.Sort(CellComparisonUtil.BuildComparisonAscending(city, city.ResourceFocus, ResourceGenerationLogic));
 
             return availableTiles.LastOrDefault();
         }
 
-        public bool IsTileAvailable(ICity city, IHexCell tile) {
+        /// <inheritdoc/>
+        public bool IsCellAvailable(ICity city, IHexCell tile) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }else if(tile == null){
@@ -88,7 +101,8 @@ namespace Assets.Simulation.Cities.Territory {
             return isUnowned && isWithinRange && isNeighborOfPossession;
         }
 
-        public int GetCultureCostOfAcquiringTile(ICity city, IHexCell tile) {
+        /// <inheritdoc/>
+        public int GetCultureCostOfAcquiringCell(ICity city, IHexCell tile) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }else if(tile == null) {
@@ -106,8 +120,9 @@ namespace Assets.Simulation.Cities.Territory {
             );
         }
 
-        public int GetGoldCostOfAcquiringTile(ICity city, IHexCell tile) {
-            return GetCultureCostOfAcquiringTile(city, tile);
+        /// <inheritdoc/>
+        public int GetGoldCostOfAcquiringCell(ICity city, IHexCell tile) {
+            return GetCultureCostOfAcquiringCell(city, tile);
         }
 
         #endregion

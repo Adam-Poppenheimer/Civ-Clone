@@ -8,6 +8,9 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Cities.Buildings {
 
+    /// <summary>
+    /// the standard implementation for IBuildingPossessionCanon.
+    /// </summary>
     public class BuildingPossessionCanon : IBuildingPossessionCanon {
 
         #region instance fields and properties
@@ -22,6 +25,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IBuildingPossessionCanon
 
+        /// <inheritdoc/>
         public bool CanPlaceBuildingInCity(IBuilding building, ICity city) {
             if(building == null) {
                 throw new ArgumentNullException("building");
@@ -32,6 +36,7 @@ namespace Assets.Simulation.Cities.Buildings {
             return !CityOfBuilding.ContainsKey(building);
         }
 
+        /// <inheritdoc/>
         public ReadOnlyCollection<IBuilding> GetBuildingsInCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -40,6 +45,7 @@ namespace Assets.Simulation.Cities.Buildings {
             return BuildingsInCity[city].AsReadOnly();
         }
 
+        /// <inheritdoc/>
         public ICity GetCityOfBuilding(IBuilding building) {
             if(building == null) {
                 throw new ArgumentNullException("building");
@@ -50,6 +56,7 @@ namespace Assets.Simulation.Cities.Buildings {
             return retval;
         }
 
+        /// <inheritdoc/>
         public void PlaceBuildingInCity(IBuilding building, ICity city) {
             if(!CanPlaceBuildingInCity(building, city)) {
                 throw new InvalidOperationException("CanPlaceBuildingInCity must return true on the given arguments");
@@ -59,6 +66,7 @@ namespace Assets.Simulation.Cities.Buildings {
             CityOfBuilding[building] = city;
         }
 
+        /// <inheritdoc/>
         public void RemoveBuildingFromCurrentCity(IBuilding building) {
             if(building == null) {
                 throw new ArgumentNullException("building");

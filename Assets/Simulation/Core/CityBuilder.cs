@@ -23,7 +23,7 @@ namespace Assets.Simulation.Core {
 
         private ICityFactory CityFactory;
 
-        private ITilePossessionCanon PossessionCanon;
+        private ICellPossessionCanon PossessionCanon;
 
         private IHexGrid HexGrid;
 
@@ -35,7 +35,7 @@ namespace Assets.Simulation.Core {
 
         [Inject]
         public void InjectDependencies(ICityFactory cityFactory,
-            ITilePossessionCanon possessionCanon, IHexGrid hexGrid,
+            ICellPossessionCanon possessionCanon, IHexGrid hexGrid,
             GameCore gameCore
         ){
             CityFactory = cityFactory;

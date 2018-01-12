@@ -58,7 +58,7 @@ namespace Assets.UI.HexMap {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private ITilePossessionCanon TilePossessionCanon;
+        private ICellPossessionCanon TilePossessionCanon;
 
         #endregion
 
@@ -68,7 +68,7 @@ namespace Assets.UI.HexMap {
         public void InjectDependencies(
             [Inject(Id = "Tile Hover Yield Display")] IResourceSummaryDisplay yieldDisplay,
             IHexCellSignalLogic signalLogic, IResourceGenerationLogic generationLogic,
-            ITilePossessionCanon tilePossessionCanon
+            ICellPossessionCanon tilePossessionCanon
         ){
             YieldDisplay = yieldDisplay;
 

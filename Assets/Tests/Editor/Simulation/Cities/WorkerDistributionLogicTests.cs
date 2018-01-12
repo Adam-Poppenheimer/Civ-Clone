@@ -26,7 +26,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IResourceGenerationLogic> GenerationLogicMock;
 
         private Mock<IBuildingPossessionCanon> BuildingCanonMock;
-        private Mock<ITilePossessionCanon> TileCanonMock;
+        private Mock<ICellPossessionCanon> TileCanonMock;
 
         private List<IWorkerSlot> AllSlots = new List<IWorkerSlot>();
 
@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.Cities {
                         .Aggregate((x, y) => x + y)
                 );
 
-            TileCanonMock = new Mock<ITilePossessionCanon>();
+            TileCanonMock = new Mock<ICellPossessionCanon>();
             TileCanonMock
                 .Setup(canon => canon.GetTilesOfCity(It.IsAny<ICity>()))
                 .Returns(() => AllTiles);
@@ -69,7 +69,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPopulationGrowthLogic>()  .FromInstance(GrowthLogicMock.Object);
             Container.Bind<IResourceGenerationLogic>().FromInstance(GenerationLogicMock.Object);
-            Container.Bind<ITilePossessionCanon>()    .FromInstance(TileCanonMock.Object);
+            Container.Bind<ICellPossessionCanon>()    .FromInstance(TileCanonMock.Object);
             Container.Bind<IBuildingPossessionCanon>().FromInstance(BuildingCanonMock.Object);
 
             var mockCity = new Mock<ICity>();

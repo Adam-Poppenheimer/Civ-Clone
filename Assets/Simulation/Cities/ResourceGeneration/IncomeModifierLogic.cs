@@ -12,6 +12,9 @@ using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 
+    /// <summary>
+    /// The standard implementation of IIncomeModifierLogic.
+    /// </summary>
     public class IncomeModifierLogic : IIncomeModifierLogic {
 
         #region instance fields and properties
@@ -28,6 +31,13 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="buildingPossessionCanon"></param>
+        /// <param name="cityPossessionCanon"></param>
+        /// <param name="improvementLocationCanon"></param>
+        /// <param name="map"></param>
         [Inject]
         public IncomeModifierLogic(
             IBuildingPossessionCanon buildingPossessionCanon,
@@ -47,6 +57,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region from IIncomeModifierLogic
 
+        /// <inheritdoc/>
         public ResourceSummary GetRealBaseYieldForSlot(IWorkerSlot slot) {
             if(slot == null) {
                 throw new ArgumentNullException("slot");
@@ -66,6 +77,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return baseYield;
         }
 
+        /// <inheritdoc/>
         public ResourceSummary GetYieldMultipliersForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
@@ -80,6 +92,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return  baseModifier;
         }
 
+        /// <inheritdoc/>
         public ResourceSummary GetYieldMultipliersForCivilization(ICivilization civilization) {
             if(civilization == null) {
                 throw new ArgumentNullException("civilization");
@@ -96,6 +109,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return  baseModifier;
         }
 
+        /// <inheritdoc/>
         public ResourceSummary GetYieldMultipliersForSlot(IWorkerSlot slot) {
             if(slot == null) {
                 throw new ArgumentNullException("slot");
