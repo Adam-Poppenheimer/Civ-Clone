@@ -14,6 +14,10 @@ using Assets.Simulation.Cities.Territory;
 
 namespace Assets.Simulation.Core {
 
+    /// <summary>
+    /// A temporary utility used to build cities to empty maps. Should not remain in the build
+    /// much longer.
+    /// </summary>
     public class CityBuilder : MonoBehaviour {
 
         #region instance fields and properties

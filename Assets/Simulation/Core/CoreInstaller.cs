@@ -13,15 +13,18 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
 
+    /// <summary>
+    /// The installer that managed dependency injection for all classes and signals
+    /// associated with the Core namespace
+    /// </summary>
     public class CoreInstaller : MonoInstaller {
 
         #region instance methods
 
         #region from MonoInstaller
 
+        /// <inheritdoc/>
         public override void InstallBindings() {
-            Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();
-
             Container.Bind<ITurnExecuter>().To<TurnExecuter>().AsSingle();
 
             Container.DeclareSignal<TurnBeganSignal>();

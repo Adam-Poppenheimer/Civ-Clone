@@ -30,7 +30,7 @@ namespace Assets.Simulation.Civilizations {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
-            Container.Bind<CivilizationFactory>().AsSingle();
+            Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();
 
             Container.Bind<ICivilizationConfig>().To<CivilizationConfig>().FromInstance(Config);
 

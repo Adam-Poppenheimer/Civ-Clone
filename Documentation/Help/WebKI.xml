@@ -2651,8 +2651,8 @@
     <HelpKINode Title="UnitTemplate.Name Property " Url="html/391efafb-bd39-d497-2f98-a53ce0ccc088.htm" />
   </HelpKINode>
   <HelpKINode Title="name property">
-    <HelpKINode Title="IBuildingTemplate.name Property " Url="html/2d656234-d879-b4b8-5e14-1fdf5705671f.htm" />
     <HelpKINode Title="IImprovementTemplate.name Property " Url="html/10dcb7a4-73bc-ee1c-0314-cb43a3ddc2de.htm" />
+    <HelpKINode Title="IBuildingTemplate.name Property " Url="html/2d656234-d879-b4b8-5e14-1fdf5705671f.htm" />
     <HelpKINode Title="IUnitAbilityDefinition.name Property " Url="html/5d7fd5f8-c515-e036-105e-3c6e930cd705.htm" />
   </HelpKINode>
   <HelpKINode Title="NE enumeration member" Url="html/68dcf947-a694-5066-4f1f-6a06dd3a4b46.htm" />

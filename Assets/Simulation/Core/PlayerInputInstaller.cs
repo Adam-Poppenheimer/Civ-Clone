@@ -11,12 +11,17 @@ using UniRx;
 
 namespace Assets.Simulation.Core {
 
+    /// <summary>
+    /// The installer that initializes and binds all player input signals,
+    /// which mostly includes events that can't be caught or heard by other classes.
+    /// </summary>
     public class PlayerInputInstaller : MonoInstaller {
 
         #region instance methods
 
         #region from MonoInstaller
 
+        /// <inheritdoc/>
         public override void InstallBindings() {
             var clickedAnywhereSignal = Observable.EveryUpdate().Where(ClickedAnywhereFilter).Select(ClickedAnywhereSelector);
 
@@ -48,5 +53,10 @@ namespace Assets.Simulation.Core {
         #endregion
 
     }
+
+    /// <summary>
+    /// A signal that fires whenever the current turn should be ended and a new one began.
+    /// </summary>
+    public class EndTurnRequestedSignal : Signal<EndTurnRequestedSignal> { }
 
 }

@@ -14,10 +14,17 @@ using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Core {
 
+    /// <summary>
+    /// Controls the chronological progression and other core elements of the game. Currently, that means handling
+    /// turn incrementation and keeping a reference to the player civilization.
+    /// </summary>
     public class GameCore {
 
         #region instance fields and properties
 
+        /// <summary>
+        /// The civilization the player controls.
+        /// </summary>
         public ICivilization PlayerCivilization { get; private set; }
 
         private ICityFactory         CityFactory;
@@ -34,6 +41,17 @@ namespace Assets.Simulation.Core {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="cityFactory"></param>
+        /// <param name="civilizationFactory"></param>
+        /// <param name="unitFactory"></param>
+        /// <param name="abilityExecuter"></param>
+        /// <param name="turnExecuter"></param>
+        /// <param name="turnBeganSignal"></param>
+        /// <param name="turnEndedSignal"></param>
+        /// <param name="endTurnRequestedSignal"></param>
         [Inject]
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
@@ -60,6 +78,9 @@ namespace Assets.Simulation.Core {
 
         #region instance methods
 
+        /// <summary>
+        /// Performs all activites that should happen at the beginning of a new round.
+        /// </summary>
         public void BeginRound() {
             foreach(var unit in UnitFactory.AllUnits) {
                 TurnExecuter.BeginTurnOnUnit(unit);
@@ -76,6 +97,9 @@ namespace Assets.Simulation.Core {
             TurnBeganSignal.Fire(0);
         }
 
+        /// <summary>
+        /// Performs all activities that should happen at the end of a round.
+        /// </summary>
         public void EndRound() {
             foreach(var unit in UnitFactory.AllUnits) {
                 TurnExecuter.EndTurnOnUnit(unit);

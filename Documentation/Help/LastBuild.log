@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<shfbBuild product="Sandcastle Help File Builder and Tools" version="2017.5.15.0" projectFile="C:\Games\Civ-Clone\Documentation\Documentation.shfbproj" started="1/12/2018 1:52:38 PM">
+<shfbBuild product="Sandcastle Help File Builder and Tools" version="2017.5.15.0" projectFile="C:\Games\Civ-Clone\Documentation\Documentation.shfbproj" started="1/12/2018 2:11:42 PM">
 <buildStep step="Initializing">
 Finding tools...
 The Sandcastle tools are located in &#39;C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\&#39;
@@ -51,12 +51,12 @@ Generating shared content files (en-US, English (United States))...
 </buildStep>
 <buildStep step="GenerateApiFilter">
 Generating API filter for MRefBuilder...
-    Last step completed in 00:00:00.0020
+    Last step completed in 00:00:00.0010
 </buildStep>
 <buildStep step="GenerateReflectionInfo">
 Generating reflection information...
 [C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe - GenerateRefInfo.proj]
-Build started 1/12/2018 1:52:39 PM.
+Build started 1/12/2018 2:11:44 PM.
 Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\GenerateRefInfo.proj&quot; on node 1 (default targets).
 PrepareForBuild:
   Creating directory &quot;obj\Debug\&quot;.
@@ -76,13 +76,13 @@ Done Building Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\Genera
 
 Build succeeded.
 
-Time Elapsed 00:00:00.91
-    Last step completed in 00:00:01.0311
+Time Elapsed 00:00:00.93
+    Last step completed in 00:00:01.0691
 </buildStep>
 <buildStep step="TransformReflectionInfo">
 Transforming reflection output...
 [C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe - TransformManifest.proj]
-Build started 1/12/2018 1:52:40 PM.
+Build started 1/12/2018 2:11:45 PM.
 Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\TransformManifest.proj&quot; on node 1 (default targets).
 TransformManifest:
   XslTransform (v2017.5.15.0)
@@ -102,12 +102,12 @@ Done Building Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\Transf
 
 Build succeeded.
 
-Time Elapsed 00:00:00.84
-    Last step completed in 00:00:00.9181
+Time Elapsed 00:00:01.12
+    Last step completed in 00:00:01.1991
 </buildStep>
 <buildStep step="GenerateNamespaceSummaries">
 Generating namespace summary information...
-    Last step completed in 00:00:00.1240
+    Last step completed in 00:00:00.1340
 </buildStep>
 <buildStep step="GenerateInheritedDocumentation">
 Generating inherited documentation...
@@ -132,7 +132,7 @@ Indexing C:\Games\Civ-Clone\Documentation\Help\Working\UnityEngine.Networking.xm
 Indexing C:\Games\Civ-Clone\Documentation\Help\Working\UnityEngine.UI.xml
 Indexing C:\Games\Civ-Clone\Documentation\Help\Working\UnityEngine.xml
 Indexing C:\Games\Civ-Clone\Documentation\Help\Working\Assembly-CSharp.XML
-Indexed 144807 members in 111 file(s).  11 file(s) to scan for &lt;inheritdoc /&gt; tags.
+Indexed 144834 members in 111 file(s).  11 file(s) to scan for &lt;inheritdoc /&gt; tags.
 Merging inherited documentation...
 
 SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Cities.CityFactory.Validate&#39;
@@ -140,9 +140,11 @@ SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Cit
 SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Civilizations.CivilizationFactory.Create(System.String)&#39;
 SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Civilizations.CivilizationFactory.Validate&#39;
 SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Civilizations.CivilizationInstaller.InstallBindings&#39;
+SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Core.CoreInstaller.InstallBindings&#39;
+SHFB: Warning GID0004: No comments found for member &#39;M:Assets.Simulation.Core.PlayerInputInstaller.InstallBindings&#39;
 
 Documentation merged successfully
-    Last step completed in 00:00:01.7311
+    Last step completed in 00:00:01.7961
 </buildStep>
 <buildStep step="CopyConceptualContent">
 Copying conceptual content...
@@ -151,29 +153,29 @@ Checking for other token files...
 Checking for code snippets files...
 Copying images and creating the media map file...
 Generating conceptual topic files
-    Last step completed in 00:00:00.0100
+    Last step completed in 00:00:00.0160
 </buildStep>
 <buildStep step="CreateConceptualTopicConfigs">
 Creating conceptual topic configuration files...
     Companion files
     _ContentMetadata_.xml
     Merging topic IDs into manifest.xml
-    Last step completed in 00:00:00.0070
+    Last step completed in 00:00:00.0080
 </buildStep>
 <buildStep step="CopyAdditionalContent">
 Copying additional content files...
 C:\Games\Civ-Clone\Documentation\icons\Help.png -&gt; C:\Games\Civ-Clone\Documentation\Help\Working\Output\HtmlHelp1\icons\Help.png
 C:\Games\Civ-Clone\Documentation\icons\Help.png -&gt; C:\Games\Civ-Clone\Documentation\Help\Working\Output\Website\icons\Help.png
-    Last step completed in 00:00:00.0130
+    Last step completed in 00:00:00.0060
 </buildStep>
 <buildStep step="MergeTablesOfContents">
 Merging conceptual and additional tables of contents...
-    Last step completed in 00:00:00.0010
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateIntermediateTableOfContents">
 Generating intermediate table of contents file...
 [C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe - GenerateIntermediateTOC.proj]
-Build started 1/12/2018 1:52:43 PM.
+Build started 1/12/2018 2:11:48 PM.
 Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\GenerateIntermediateTOC.proj&quot; on node 1 (default targets).
 GenerateIntermediateTOC:
   XslTransform (v2017.5.15.0)
@@ -186,12 +188,12 @@ Build succeeded.
 
 Time Elapsed 00:00:00.17
 Generating conceptual content intermediate TOC file...
-    Last step completed in 00:00:00.2540
+    Last step completed in 00:00:00.2520
 </buildStep>
 <buildStep step="CreateBuildAssemblerConfigs">
 Creating Sandcastle configuration files...
     sandcastle.config
-    Last step completed in 00:00:00.2920
+    Last step completed in 00:00:00.2980
 </buildStep>
 <buildStep step="MergeCustomConfigs">
 Merging custom build component configurations
@@ -199,12 +201,12 @@ C:\Games\Civ-Clone\Documentation\Help\Working\sandcastle.config
   Updating reference topic configurations.
   Updating conceptual topic configurations.
     Removing unused ExampleComponent.
-    Last step completed in 00:00:00.0050
+    Last step completed in 00:00:00.0040
 </buildStep>
 <buildStep step="BuildTopics">
 Building help topics...
 [C:\Program Files (x86)\MSBuild\14.0\bin\MSBuild.exe - BuildTopics.proj]
-Build started 1/12/2018 1:52:43 PM.
+Build started 1/12/2018 2:11:49 PM.
 Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj&quot; on node 1 (default targets).
 BuildTopics:
   BuildAssembler (v2017.5.15.0)
@@ -694,7 +696,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Methods.T:Assets.Sim
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Methods.T:Assets.Simulation.Civilizations.ICivilizationFactory] Unknown reference link target &#39;T:Zenject.IFactory`2&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Methods.T:Assets.Simulation.Civilizations.ICivilizationFactory] Unknown reference link target &#39;M:Zenject.IFactory`2.Create(`0)&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Methods.T:Assets.Simulation.Civilizations.ICivilizationFactory] Unknown reference link target &#39;T:Zenject.IFactory`2&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.CityBuilder] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CityBuilder] Unknown reference link target &#39;T:UnityEngine.Object&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CityBuilder] Unknown reference link target &#39;T:UnityEngine.Component&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CityBuilder] Unknown reference link target &#39;T:UnityEngine.Behaviour&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -710,7 +711,6 @@ BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.CityB
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.CityBuilder.InjectDependencies(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Cities.Territory.ICellPossessionCanon,Assets.Simulation.HexMap.IHexGrid,Assets.Simulation.Core.GameCore)] Missing &lt;param name=&quot;possessionCanon&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.CityBuilder.InjectDependencies(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Cities.Territory.ICellPossessionCanon,Assets.Simulation.HexMap.IHexGrid,Assets.Simulation.Core.GameCore)] Missing &lt;param name=&quot;hexGrid&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.CityBuilder.InjectDependencies(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Cities.Territory.ICellPossessionCanon,Assets.Simulation.HexMap.IHexGrid,Assets.Simulation.Core.GameCore)] Missing &lt;param name=&quot;gameCore&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.CoreInstaller] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CoreInstaller] Unknown reference link target &#39;T:UnityEngine.Object&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CoreInstaller] Unknown reference link target &#39;T:UnityEngine.Component&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.CoreInstaller] Unknown reference link target &#39;T:UnityEngine.Behaviour&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -754,7 +754,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.CoreInstaller.InstallBindings] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.Simulation.Core.CoreInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.Simulation.Core.CoreInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.EndTurnRequestedSignal] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;T:Zenject.Signal`1&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;P:Zenject.Signal`1.AsObservable&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -839,7 +838,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;P:Zenject.SignalBase.SignalId&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.EndTurnRequestedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.GameCore] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;cityFactory&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;civilizationFactory&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;unitFactory&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -848,10 +846,6 @@ BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameC
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;turnBeganSignal&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;turnEndedSignal&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.#ctor(Assets.Simulation.Cities.ICityFactory,Assets.Simulation.Civilizations.ICivilizationFactory,Assets.Simulation.Units.IUnitFactory,Assets.Simulation.Units.Abilities.IUnitAbilityExecuter,Assets.Simulation.Core.ITurnExecuter,Assets.Simulation.Core.TurnBeganSignal,Assets.Simulation.Core.TurnEndedSignal,Assets.Simulation.Core.EndTurnRequestedSignal)] Missing &lt;param name=&quot;endTurnRequestedSignal&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.BeginRound] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.GameCore.EndRound] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [P:Assets.Simulation.Core.GameCore.PlayerCivilization] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.ITurnExecuter] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.BeginTurnOnCity(Assets.Simulation.Cities.ICity)] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.BeginTurnOnCity(Assets.Simulation.Cities.ICity)] Missing &lt;param name=&quot;city&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.BeginTurnOnCivilization(Assets.Simulation.Civilizations.ICivilization)] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -864,7 +858,6 @@ BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurn
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.EndTurnOnCivilization(Assets.Simulation.Civilizations.ICivilization)] Missing &lt;param name=&quot;civilization&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.EndTurnOnUnit(Assets.Simulation.Units.IUnit)] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.ITurnExecuter.EndTurnOnUnit(Assets.Simulation.Units.IUnit)] Missing &lt;param name=&quot;unit&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.PlayerInputInstaller] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.PlayerInputInstaller] Unknown reference link target &#39;T:UnityEngine.Object&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.PlayerInputInstaller] Unknown reference link target &#39;T:UnityEngine.Component&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.PlayerInputInstaller] Unknown reference link target &#39;T:UnityEngine.Behaviour&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -908,7 +901,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.PlayerInputInstaller.InstallBindings] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.Simulation.Core.PlayerInputInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.Simulation.Core.PlayerInputInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.TurnBeganSignal] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;T:Zenject.Signal`2&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;P:Zenject.Signal`2.AsObservable&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -993,7 +985,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;P:Zenject.SignalBase.SignalId&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnBeganSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.TurnEndedSignal] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;T:Zenject.Signal`2&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;P:Zenject.Signal`2.AsObservable&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -1078,7 +1069,6 @@ BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;P:Zenject.SignalBase.SignalId&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [Properties.T:Assets.Simulation.Core.TurnEndedSignal] Unknown reference link target &#39;T:Zenject.SignalBase&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
-BuildAssembler : warning : ShowMissingComponent: [T:Assets.Simulation.Core.TurnExecuter] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.TurnExecuter.BeginTurnOnCity(Assets.Simulation.Cities.ICity)] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.TurnExecuter.BeginTurnOnCity(Assets.Simulation.Cities.ICity)] Missing &lt;param name=&quot;city&quot;/&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ShowMissingComponent: [M:Assets.Simulation.Core.TurnExecuter.BeginTurnOnCivilization(Assets.Simulation.Civilizations.ICivilization)] Missing &lt;summary&gt; documentation [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
@@ -4121,7 +4111,7 @@ BuildAssembler : warning : ShowMissingComponent: [M:Assets.UI.Units.UnitUIInstal
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.UI.Units.UnitUIInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
 BuildAssembler : warning : ResolveReferenceLinksComponent: [M:Assets.UI.Units.UnitUIInstaller.InstallBindings] Unknown reference link target &#39;M:Zenject.IInstaller.InstallBindings&#39;. [C:\Games\Civ-Clone\Documentation\Help\Working\BuildTopics.proj]
   Processed 1435 topic(s)
-  3908 warning(s)
+  3896 warning(s)
   CopyFromIndexComponent: &quot;metadata&quot; in-memory cache entries used: 0 of 15.
   ResolveArtLinksComponent: Copying media files...
   ResolveArtLinksComponent: Copying media files...
@@ -4131,8 +4121,8 @@ Done Building Project &quot;C:\Games\Civ-Clone\Documentation\Help\Working\BuildT
 
 Build succeeded.
 
-Time Elapsed 00:00:20.78
-    Last step completed in 00:00:20.8712
+Time Elapsed 00:00:20.94
+    Last step completed in 00:00:21.0272
 </buildStep>
 <buildStep step="CombiningIntermediateTocFiles">
 Combining conceptual and API intermediate TOC files...
@@ -4158,7 +4148,7 @@ Processed 1435 HTML files
 Sorting keywords and generating See Also indices
 Saving website keyword index to C:\Games\Civ-Clone\Documentation\Help\Working\WebKI.xml
 Saving website table of contents to C:\Games\Civ-Clone\Documentation\Help\Working\WebTOC.xml
-    Last step completed in 00:00:01.4641
+    Last step completed in 00:00:01.3751
 </buildStep>
 <buildStep step="CopyStandardHelpContent">
 Copying standard help content...
@@ -4302,19 +4292,19 @@ C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyle
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\branding-Website.js -&gt; C:\Games\Civ-Clone\Documentation\Help\Working\Output\Website\scripts\branding-Website.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\clipboard.min.js -&gt; C:\Games\Civ-Clone\Documentation\Help\Working\Output\Website\scripts\clipboard.min.js
 C:\Program Files (x86)\EWSoftware\Sandcastle Help File Builder\PresentationStyles\VS2013\Web\scripts\jquery-1.11.0.min.js -&gt; C:\Games\Civ-Clone\Documentation\Help\Working\Output\Website\scripts\jquery-1.11.0.min.js
-    Last step completed in 00:00:04.7383
+    Last step completed in 00:00:06.4914
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating HTML Help 1 table of contents file...
-    Last step completed in 00:00:00.0000
+    Last step completed in 00:00:00.0010
 </buildStep>
 <buildStep step="GenerateHelpFileIndex">
 Generating HTML Help 1 index file...
-    Last step completed in 00:00:00.0010
+    Last step completed in 00:00:00.0000
 </buildStep>
 <buildStep step="GenerateHelpProject">
 Generating HTML Help 1 project file...
-    Last step completed in 00:00:00.0150
+    Last step completed in 00:00:00.0180
 </buildStep>
 <buildStep step="CompilingHelpFile">
 Compiling HTML Help 1 file...
@@ -4329,7 +4319,7 @@ Compiling HTML Help 1 file...
   
   
   
-  Compile time: 0 minutes, 26 seconds
+  Compile time: 0 minutes, 27 seconds
   
   1,437	Topics
   
@@ -4343,11 +4333,11 @@ Compiling HTML Help 1 file...
   
   
   
-  Created c:\Games\Civ-Clone\Documentation\Help\Working\Output\HtmlHelp1\CivCloneDocumentation.chm, 1,724,571 bytes
+  Created c:\Games\Civ-Clone\Documentation\Help\Working\Output\HtmlHelp1\CivCloneDocumentation.chm, 1,726,771 bytes
   
-  Compression decreased file by 10,597,969 bytes.
+  Compression decreased file by 10,598,576 bytes.
   
-    Last step completed in 00:00:31.9888
+    Last step completed in 00:00:33.0629
 </buildStep>
 <buildStep step="GenerateHelpFormatTableOfContents">
 Generating website table of contents file...
@@ -4358,7 +4348,7 @@ Generating full-text index for the website...
 
 <plugIn name="Lightweight Website Style" behavior="After" priority="1000">
 Adding lightweight search and TOC elements to each topic...
-</plugIn>    Last step completed in 00:00:04.2582
+</plugIn>    Last step completed in 00:00:02.4791
 </buildStep>
 <buildStep step="CopyingWebsiteFiles">
 Copying website files to output folder...
@@ -4367,15 +4357,15 @@ Copied 500 files
 Copied 1000 files
 Copied 1500 files
 Copied 1999 files for the website content
-    Last step completed in 00:00:20.6662
+    Last step completed in 00:00:12.1287
 </buildStep>
 <buildStep step="CleanIntermediates">
 Removing intermediate files...
-    Last step completed in 00:00:09.8676
+    Last step completed in 00:00:04.7773
 </buildStep>
 <buildStep step="Completed">
 
-Build completed successfully at 1/12/2018 1:54:17 PM.  Total time: 00:01:39.6097
+Build completed successfully at 1/12/2018 2:13:10 PM.  Total time: 00:01:28.0000
 
 </buildStep>
 </shfbBuild>
