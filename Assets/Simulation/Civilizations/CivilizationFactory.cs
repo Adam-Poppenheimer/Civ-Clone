@@ -9,12 +9,16 @@ using Zenject;
 
 namespace Assets.Simulation.Civilizations {
 
+    /// <summary>
+    /// The standard implementation of ICivilizationFactory
+    /// </summary>
     public class CivilizationFactory : ICivilizationFactory, IValidatable {
 
         #region instance fields and properties
 
         #region from ICivilizationFactory
 
+        /// <inheritdoc/>
         public IEnumerable<ICivilization> AllCivilizations {
             get { return allCivilizations.AsReadOnly(); }
         }
@@ -28,6 +32,10 @@ namespace Assets.Simulation.Civilizations {
 
         #region constructors
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="container"></param>
         [Inject]
         public CivilizationFactory(DiContainer container) {
             Container = container;
@@ -39,6 +47,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IFactory<ICivilization>
 
+        /// <inheritdoc/>
         public ICivilization Create(string name) {
             if(name == null) {
                 throw new ArgumentNullException("name");
@@ -55,6 +64,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IValidatable
 
+        /// <inheritdoc/>
         public void Validate() {
             Container.Instantiate<Civilization>();
         }

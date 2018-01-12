@@ -12,6 +12,10 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Civilizations {
 
+    /// <summary>
+    /// The installer that manages dependency injection for all classes and signals
+    /// associated with the Civilizations namespace.
+    /// </summary>
     public class CivilizationInstaller : MonoInstaller {
 
         #region instance fields and properties
@@ -24,6 +28,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from MonoInstaller
 
+        /// <inheritdoc/>
         public override void InstallBindings() {
             Container.Bind<CivilizationFactory>().AsSingle();
 

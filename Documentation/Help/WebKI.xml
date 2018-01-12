@@ -2641,19 +2641,19 @@
   </HelpKINode>
   <HelpKINode Title="Mountains enumeration member" Url="html/4431bb79-fb1b-d90b-c0a9-2187a0f69623.htm" />
   <HelpKINode Title="Multiply operator" Url="html/cba2f84e-c56f-5ecc-7cd6-9f46f7248fab.htm" />
-  <HelpKINode Title="name property">
-    <HelpKINode Title="IBuildingTemplate.name Property " Url="html/2d656234-d879-b4b8-5e14-1fdf5705671f.htm" />
-    <HelpKINode Title="IImprovementTemplate.name Property " Url="html/10dcb7a4-73bc-ee1c-0314-cb43a3ddc2de.htm" />
-    <HelpKINode Title="IUnitAbilityDefinition.name Property " Url="html/5d7fd5f8-c515-e036-105e-3c6e930cd705.htm" />
-  </HelpKINode>
   <HelpKINode Title="Name property">
+    <HelpKINode Title="BuildingProductionProject.Name Property " Url="html/0a460d1b-9a7b-e975-9dea-3cc70465a3e8.htm" />
     <HelpKINode Title="Civilization.Name Property " Url="html/6abe3704-0d04-aba9-3b5e-4f7eb637acf2.htm" />
     <HelpKINode Title="ICivilization.Name Property " Url="html/1d3ec502-25e3-2d22-b2e4-5fc6fcc61393.htm" />
     <HelpKINode Title="IProductionProject.Name Property " Url="html/5a7fd3b9-529d-95dd-195a-afeac2514c75.htm" />
     <HelpKINode Title="IUnitTemplate.Name Property " Url="html/d012059e-2e11-1ab0-0d37-792a34c222da.htm" />
-    <HelpKINode Title="UnitTemplate.Name Property " Url="html/391efafb-bd39-d497-2f98-a53ce0ccc088.htm" />
-    <HelpKINode Title="BuildingProductionProject.Name Property " Url="html/0a460d1b-9a7b-e975-9dea-3cc70465a3e8.htm" />
     <HelpKINode Title="UnitProductionProject.Name Property " Url="html/88b9c667-4aa8-a8bb-0517-7745e8860fdb.htm" />
+    <HelpKINode Title="UnitTemplate.Name Property " Url="html/391efafb-bd39-d497-2f98-a53ce0ccc088.htm" />
+  </HelpKINode>
+  <HelpKINode Title="name property">
+    <HelpKINode Title="IBuildingTemplate.name Property " Url="html/2d656234-d879-b4b8-5e14-1fdf5705671f.htm" />
+    <HelpKINode Title="IImprovementTemplate.name Property " Url="html/10dcb7a4-73bc-ee1c-0314-cb43a3ddc2de.htm" />
+    <HelpKINode Title="IUnitAbilityDefinition.name Property " Url="html/5d7fd5f8-c515-e036-105e-3c6e930cd705.htm" />
   </HelpKINode>
   <HelpKINode Title="NE enumeration member" Url="html/68dcf947-a694-5066-4f1f-6a06dd3a4b46.htm" />
   <HelpKINode Title="NegativeUnemploymentException class">

@@ -7,10 +7,16 @@ using Zenject;
 
 namespace Assets.Simulation.Civilizations {
 
+    /// <summary>
+    /// Defines a factory capable of creating civilizations of a particular name.
+    /// </summary>
     public interface ICivilizationFactory : IFactory<string, ICivilization> {
 
         #region properties
 
+        /// <summary>
+        /// All civilizations created or recognized by this factory.
+        /// </summary>
         IEnumerable<ICivilization> AllCivilizations { get; }
 
         #endregion
