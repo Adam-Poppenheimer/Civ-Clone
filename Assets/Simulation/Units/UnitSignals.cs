@@ -26,6 +26,8 @@ namespace Assets.Simulation.Units {
         public ISubject<Tuple<IUnit, IHexCell>>               UnitLocationChangedSignal  { get; private set; }
         public ISubject<Tuple<IUnit, IUnitAbilityDefinition>> UnitActivatedAbilitySignal { get; private set; }
 
+        public ISubject<IUnit> UnitBeingDestroyedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -40,6 +42,8 @@ namespace Assets.Simulation.Units {
 
             UnitLocationChangedSignal  = new Subject<Tuple<IUnit, IHexCell>>();
             UnitActivatedAbilitySignal = new Subject<Tuple<IUnit, IUnitAbilityDefinition>>();
+
+            UnitBeingDestroyedSignal   = new Subject<IUnit>();
         }
 
         #endregion

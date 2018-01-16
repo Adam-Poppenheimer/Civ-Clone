@@ -60,6 +60,14 @@ namespace Assets.Simulation.Units {
             PositionCanon    = positionCanon;
         }
 
+        #region Unity messages
+
+        private void OnDestroy() {
+            Signals.UnitBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
+
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {

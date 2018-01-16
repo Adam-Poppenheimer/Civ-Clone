@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
@@ -36,6 +37,8 @@ namespace Assets.Simulation.Units {
             ImpassableTerrainShapes = impassableTerrainShapes;
             CityFactory             = cityFactory;
             Signals                 = signals;
+
+            Signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
 
         #endregion
@@ -88,6 +91,10 @@ namespace Assets.Simulation.Units {
 
         private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
             return GetPossessionsOfOwner(owner).Select(unit => unit.Template.Type).Contains(type);
+        }
+
+        private void OnUnitBeingDestroyed(IUnit unit) {
+            ChangeOwnerOfPossession(unit, null);
         }
 
         #endregion

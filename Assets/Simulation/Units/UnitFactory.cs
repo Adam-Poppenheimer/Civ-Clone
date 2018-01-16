@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
@@ -40,12 +41,15 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitFactory(DiContainer container, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            [Inject(Id = "Unit Prefab")] GameObject unitPrefab
+            [Inject(Id = "Unit Prefab")] GameObject unitPrefab,
+            UnitSignals signals
         ){
             Container           = container;
             UnitPositionCanon   = unitPositionCanon;
             UnitPossessionCanon = unitPossessionCanon;
             UnitPrefab          = unitPrefab;
+
+            signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
 
         #endregion
@@ -93,6 +97,10 @@ namespace Assets.Simulation.Units {
         }
 
         #endregion
+
+        private void OnUnitBeingDestroyed(IUnit unit) {
+            allUnits.Remove(unit);
+        }
 
         #endregion
 

@@ -161,16 +161,12 @@ namespace Assets.UI.MapEditor {
 
         private void TryRemoveUnit(IHexCell location) {
             foreach(var unit in new List<IUnit>(UnitPositionCanon.GetPossessionsOfOwner(location))) {
-                UnitPositionCanon.ChangeOwnerOfPossession(unit, null);
                 Destroy(unit.gameObject);
             }
         }
 
         private void OnUnitClicked(IUnit unit) {
             if(!IsAdding) {
-                if(UnitPositionCanon.GetOwnerOfPossession(unit) != null) {
-                    UnitPositionCanon.ChangeOwnerOfPossession(unit, null);
-                }
                 Destroy(unit.gameObject);
             }
         }
