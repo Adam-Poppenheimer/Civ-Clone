@@ -35,9 +35,9 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IProductionLogic>          ProductionMock;
         private Mock<IResourceGenerationLogic>  ResourceGenerationMock;
         private Mock<IBorderExpansionLogic>     ExpansionMock;
-        private Mock<ICellPossessionCanon>      TilePossessionCanonMock;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> TilePossessionCanonMock;
         private Mock<IWorkerDistributionLogic>  DistributionMock;
-        private Mock<IBuildingPossessionCanon>  BuildingPossessionCanonMock;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>  BuildingPossessionCanonMock;
         private Mock<IProductionProjectFactory> ProjectFactoryMock;
 
         [SetUp]
@@ -46,19 +46,19 @@ namespace Assets.Tests.Simulation.Cities {
             ProductionMock              = new Mock<IProductionLogic>();
             ResourceGenerationMock      = new Mock<IResourceGenerationLogic>();
             ExpansionMock               = new Mock<IBorderExpansionLogic>();
-            TilePossessionCanonMock     = new Mock<ICellPossessionCanon>();
+            TilePossessionCanonMock     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
-            BuildingPossessionCanonMock = new Mock<IBuildingPossessionCanon>();
+            BuildingPossessionCanonMock = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
 
-            Container.Bind<IPopulationGrowthLogic>   ().FromInstance(GrowthMock                 .Object);
-            Container.Bind<IProductionLogic>         ().FromInstance(ProductionMock             .Object);
-            Container.Bind<IResourceGenerationLogic> ().FromInstance(ResourceGenerationMock     .Object);
-            Container.Bind<IBorderExpansionLogic>    ().FromInstance(ExpansionMock              .Object);
-            Container.Bind<ICellPossessionCanon>     ().FromInstance(TilePossessionCanonMock    .Object);
-            Container.Bind<IWorkerDistributionLogic> ().FromInstance(DistributionMock           .Object);
-            Container.Bind<IBuildingPossessionCanon> ().FromInstance(BuildingPossessionCanonMock.Object);
-            Container.Bind<IProductionProjectFactory>().FromInstance(ProjectFactoryMock         .Object);
+            Container.Bind<IPopulationGrowthLogic>()                   .FromInstance(GrowthMock                 .Object);
+            Container.Bind<IProductionLogic>()                         .FromInstance(ProductionMock             .Object);
+            Container.Bind<IResourceGenerationLogic>()                 .FromInstance(ResourceGenerationMock     .Object);
+            Container.Bind<IBorderExpansionLogic>()                    .FromInstance(ExpansionMock              .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>() .FromInstance(TilePossessionCanonMock    .Object);
+            Container.Bind<IWorkerDistributionLogic>()                 .FromInstance(DistributionMock           .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(BuildingPossessionCanonMock.Object);
+            Container.Bind<IProductionProjectFactory>()                .FromInstance(ProjectFactoryMock         .Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -270,7 +270,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             city.PerformExpansion();
 
-            TilePossessionCanonMock.Verify(canon => canon.CanChangeOwnerOfTile(tile, city), Times.AtLeastOnce, 
+            TilePossessionCanonMock.Verify(canon => canon.CanChangeOwnerOfPossession(tile, city), Times.AtLeastOnce, 
                 "PossessionCanon's CanChangeOwnerOfTile method was never called");
         }
 
@@ -287,7 +287,7 @@ namespace Assets.Tests.Simulation.Cities {
             ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(7);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -306,11 +306,11 @@ namespace Assets.Tests.Simulation.Cities {
             ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(0);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(tile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
-            TilePossessionCanonMock.Verify(canon => canon.ChangeOwnerOfTile(tile, city), Times.Once, 
+            TilePossessionCanonMock.Verify(canon => canon.ChangeOwnerOfPossession(tile, city), Times.Once, 
                 "Did not receive the expected ChangeOwnerOfTile call on PossessionCanon");
         }
 
@@ -330,7 +330,7 @@ namespace Assets.Tests.Simulation.Cities {
             ExpansionMock.Setup(logic => logic.IsCellAvailable(city, firstTile)).Returns(true);
             ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, firstTile)).Returns(0);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfTile(firstTile, city)).Returns(true);
+            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(firstTile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -358,10 +358,10 @@ namespace Assets.Tests.Simulation.Cities {
             city.Population = 7;
             city.ResourceFocus = ResourceFocusType.TotalYield;
 
-            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city))
+            TilePossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
 
-            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
+            BuildingPossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             city.PerformDistribution();
 
@@ -432,9 +432,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tiles = new List<IHexCell>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
 
-            TilePossessionCanonMock.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
+            TilePossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(tiles);
 
-            BuildingPossessionCanonMock.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
+            BuildingPossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             DistributionMock.Setup(
                 logic => logic.DistributeWorkersIntoSlots(
@@ -467,11 +467,11 @@ namespace Assets.Tests.Simulation.Cities {
             var tiles = new List<IHexCell>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
 
             TilePossessionCanonMock
-                .Setup(canon => canon.GetTilesOfCity(city))
+                .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(tiles);
 
             BuildingPossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(city))
+                .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IBuilding>().AsReadOnly());
 
             DistributionMock.Setup(

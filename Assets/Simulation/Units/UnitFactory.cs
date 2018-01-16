@@ -89,7 +89,10 @@ namespace Assets.Simulation.Units {
                 throw new UnitCreationException("The newly created unit cannot be assigned to its owner");
             }
             
-            newUnit.GetComponentInChildren<MeshRenderer>().material.color = owner.Color;
+            var meshRenderer = newUnit.GetComponentInChildren<MeshRenderer>();
+            if(meshRenderer != null) {
+                meshRenderer.material.color = owner.Color;
+            }
 
             allUnits.Add(newUnit);
 

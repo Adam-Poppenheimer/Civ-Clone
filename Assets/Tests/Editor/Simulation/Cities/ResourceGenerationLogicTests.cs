@@ -15,7 +15,6 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
-using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Cities {
@@ -26,8 +25,8 @@ namespace Assets.Tests.Simulation.Cities {
         #region instance fields and properties
 
         private Mock<ICityConfig>                                   MockConfig;
-        private Mock<ICellPossessionCanon>                          MockTileCanon;
-        private Mock<IBuildingPossessionCanon>                      MockBuildingCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>      MockTileCanon;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
@@ -40,8 +39,8 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockConfig              = new Mock<ICityConfig>();
-            MockTileCanon           = new Mock<ICellPossessionCanon>();
-            MockBuildingCanon       = new Mock<IBuildingPossessionCanon>();     
+            MockTileCanon           = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockBuildingCanon       = new Mock<IPossessionRelationship<ICity, IBuilding>>();     
             MockIncomeLogic         = new Mock<IIncomeModifierLogic>();   
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();    
 
@@ -58,8 +57,8 @@ namespace Assets.Tests.Simulation.Cities {
                 .Returns(ResourceSummary.Empty);
 
             Container.Bind<ICityConfig>()                                  .FromInstance(MockConfig             .Object);
-            Container.Bind<ICellPossessionCanon>()                         .FromInstance(MockTileCanon          .Object);
-            Container.Bind<IBuildingPossessionCanon>()                     .FromInstance(MockBuildingCanon      .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>()     .FromInstance(MockTileCanon          .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>()    .FromInstance(MockBuildingCanon      .Object);
             Container.Bind<IIncomeModifierLogic>()                         .FromInstance(MockIncomeLogic        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
 
@@ -205,8 +204,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(BuildTile(BuildSlot(ResourceSummary.Empty, false), true), tiles, buildings);
 
-            MockTileCanon.Setup(canon => canon.GetTilesOfCity(city)).Returns(tiles);
-            MockBuildingCanon.Setup(canon => canon.GetBuildingsInCity(city)).Returns(new List<IBuilding>().AsReadOnly());
+            MockTileCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(tiles);
+            MockBuildingCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             var logic = Container.Resolve<ResourceGenerationLogic>();
 
@@ -363,9 +362,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             cityMock.SetupAllProperties();
             cityMock.Setup(city => city.Location).Returns(location);
-            MockTileCanon.Setup(canon => canon.GetTilesOfCity(cityMock.Object)).Returns(tiles);
+            MockTileCanon.Setup(canon => canon.GetPossessionsOfOwner(cityMock.Object)).Returns(tiles);
 
-            MockBuildingCanon.Setup(canon => canon.GetBuildingsInCity(cityMock.Object)).Returns(buildings.ToList().AsReadOnly());
+            MockBuildingCanon.Setup(canon => canon.GetPossessionsOfOwner(cityMock.Object)).Returns(buildings.ToList().AsReadOnly());
 
             return cityMock.Object;
         }

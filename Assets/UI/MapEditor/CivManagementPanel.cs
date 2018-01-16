@@ -48,7 +48,7 @@ namespace Assets.UI.MapEditor {
         #endregion
 
         public void CreateNewCivilization() {
-            ICivilization newCivilization = CivilizationFactory.Create("New Civilization");
+            ICivilization newCivilization = CivilizationFactory.Create("New Civilization", Color.gray);
 
             Refresh();
         }

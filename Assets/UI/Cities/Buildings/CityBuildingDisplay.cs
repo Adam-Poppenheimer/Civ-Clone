@@ -9,6 +9,7 @@ using Zenject;
 
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 
@@ -31,7 +32,7 @@ namespace Assets.UI.Cities.Buildings {
 
         private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
 
-        private IBuildingPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
 
         private BuildingDisplayFactory DisplayFactory;
 
@@ -40,7 +41,7 @@ namespace Assets.UI.Cities.Buildings {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IBuildingPossessionCanon possessionCanon, BuildingDisplayFactory displayFactory) {
+        public void InjectDependencies(IPossessionRelationship<ICity, IBuilding> possessionCanon, BuildingDisplayFactory displayFactory) {
             PossessionCanon = possessionCanon;
             DisplayFactory = displayFactory;
         }
@@ -51,7 +52,7 @@ namespace Assets.UI.Cities.Buildings {
             if(ObjectToDisplay == null) {
                 return;
             }
-            DisplayBuildings(PossessionCanon.GetBuildingsInCity(ObjectToDisplay));
+            DisplayBuildings(PossessionCanon.GetPossessionsOfOwner(ObjectToDisplay));
         }
 
         #endregion

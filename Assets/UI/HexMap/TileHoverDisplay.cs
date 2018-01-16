@@ -11,9 +11,10 @@ using UniRx;
 
 using Assets.UI;
 
+using Assets.Simulation;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.ResourceGeneration;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.Cities;
 
 namespace Assets.UI.HexMap {
 
@@ -58,7 +59,7 @@ namespace Assets.UI.HexMap {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private ICellPossessionCanon TilePossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
         #endregion
 
@@ -68,7 +69,7 @@ namespace Assets.UI.HexMap {
         public void InjectDependencies(
             [Inject(Id = "Tile Hover Yield Display")] IResourceSummaryDisplay yieldDisplay,
             IHexCellSignalLogic signalLogic, IResourceGenerationLogic generationLogic,
-            ICellPossessionCanon tilePossessionCanon
+            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon
         ){
             YieldDisplay = yieldDisplay;
 
@@ -76,7 +77,7 @@ namespace Assets.UI.HexMap {
             signalLogic.EndHoverSignal.Subscribe(OnEndHoverFired);
 
             GenerationLogic = generationLogic;
-            TilePossessionCanon = tilePossessionCanon;
+            CellPossessionCanon = tilePossessionCanon;
         }
 
         private void OnBeginHoverFired(IHexCell hoveredTile) {
@@ -84,10 +85,10 @@ namespace Assets.UI.HexMap {
             TerrainShapeField.text = hoveredTile.Shape.ToString();
             TerrainFeatureField.text = hoveredTile.Feature.ToString();
 
-            var tileOwner = TilePossessionCanon.GetCityOfTile(hoveredTile);
+            var cellOwner = CellPossessionCanon.GetOwnerOfPossession(hoveredTile);
 
-            if(tileOwner != null) {
-                YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfSlotForCity(hoveredTile.WorkerSlot, tileOwner));
+            if(cellOwner != null) {
+                YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfSlotForCity(hoveredTile.WorkerSlot, cellOwner));
             }else {
                 YieldDisplay.DisplaySummary(hoveredTile.WorkerSlot.BaseYield);
             }

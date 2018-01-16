@@ -8,7 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
 
@@ -25,9 +25,9 @@ namespace Assets.Simulation.Cities.Distribution {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private IBuildingPossessionCanon BuildingCanon;
+        private IPossessionRelationship<ICity, IBuilding> BuildingCanon;
 
-        private ICellPossessionCanon TileCanon;
+        private IPossessionRelationship<ICity, IHexCell> TileCanon;
 
         #endregion
 
@@ -41,9 +41,10 @@ namespace Assets.Simulation.Cities.Distribution {
         /// <param name="buildingCanon"></param>
         /// <param name="tileCanon"></param>
         [Inject]
-        public WorkerDistributionLogic(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic,
-            IBuildingPossessionCanon buildingCanon, ICellPossessionCanon tileCanon) {
-
+        public WorkerDistributionLogic(
+            IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic,
+            IPossessionRelationship<ICity, IBuilding> buildingCanon, IPossessionRelationship<ICity, IHexCell> tileCanon
+        ){
             GrowthLogic     = growthLogic;
             GenerationLogic = generationLogic;
             BuildingCanon   = buildingCanon;
@@ -75,10 +76,10 @@ namespace Assets.Simulation.Cities.Distribution {
 
         /// <inheritdoc/>
         public int GetUnemployedPeopleInCity(ICity city) {
-            int occupiedTiles = TileCanon.GetTilesOfCity(city).Where(tile => tile.WorkerSlot.IsOccupied).Count();
+            int occupiedTiles = TileCanon.GetPossessionsOfOwner(city).Where(tile => tile.WorkerSlot.IsOccupied).Count();
 
             int occupiedBuildingSlots = 0;
-            foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
+            foreach(var building in BuildingCanon.GetPossessionsOfOwner(city)) {
                 occupiedBuildingSlots += building.Slots.Where(slot => slot.IsOccupied).Count();
             }
 
@@ -93,9 +94,9 @@ namespace Assets.Simulation.Cities.Distribution {
         public IEnumerable<IWorkerSlot> GetSlotsAvailableToCity(ICity city) {
             var retval = new List<IWorkerSlot>();
 
-            retval.AddRange(TileCanon.GetTilesOfCity(city).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
+            retval.AddRange(TileCanon.GetPossessionsOfOwner(city).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
 
-            foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
+            foreach(var building in BuildingCanon.GetPossessionsOfOwner(city)) {
                 retval.AddRange(building.Slots);
             }
 

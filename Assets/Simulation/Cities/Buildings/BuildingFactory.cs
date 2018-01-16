@@ -12,14 +12,16 @@ namespace Assets.Simulation.Cities.Buildings {
         #region instance fields and properties
 
         private IBuildingProductionValidityLogic ValidityLogic;
-        private IBuildingPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public BuildingFactory(IBuildingProductionValidityLogic validityLogic, IBuildingPossessionCanon possessionCanon) {
+        public BuildingFactory(IBuildingProductionValidityLogic validityLogic,
+            IPossessionRelationship<ICity, IBuilding> possessionCanon
+        ){
             ValidityLogic = validityLogic;
             PossessionCanon = possessionCanon;
         }
@@ -47,7 +49,7 @@ namespace Assets.Simulation.Cities.Buildings {
             }
 
             var templateIsValid = ValidityLogic.IsTemplateValidForCity(template, city);
-            var buildingAlreadyExists = PossessionCanon.GetBuildingsInCity(city).Any(building => building.Template == template);
+            var buildingAlreadyExists = PossessionCanon.GetPossessionsOfOwner(city).Any(building => building.Template == template);
 
             return templateIsValid && !buildingAlreadyExists;
         }
@@ -74,10 +76,10 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var newBuilding = new Building(template);
 
-            if(!PossessionCanon.CanPlaceBuildingInCity(newBuilding, city)) {
+            if(!PossessionCanon.CanChangeOwnerOfPossession(newBuilding, city)) {
                 throw new BuildingCreationException("The building produced from this template cannot be placed into this city");
             }
-            PossessionCanon.PlaceBuildingInCity(newBuilding, city);
+            PossessionCanon.ChangeOwnerOfPossession(newBuilding, city);
 
             return newBuilding;
         }        

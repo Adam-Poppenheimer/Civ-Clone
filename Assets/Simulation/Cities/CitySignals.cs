@@ -34,6 +34,8 @@ namespace Assets.Simulation.Cities {
         /// </summary>
         public CityDistributionPerformedSignal DistributionPerformedSignal { get; private set; }
 
+        public ISubject<ICity> CityBeingDestroyedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -41,18 +43,18 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="cityClickedSignal"></param>
         /// <param name="projectChangedSignal"></param>
         /// <param name="distributionPerformedSignal"></param>
         [Inject]
         public CitySignals(
-            [Inject(Id = "City Clicked Subject")] ISubject<ICity> cityClickedSignal,
             CityProjectChangedSignal projectChangedSignal,
             CityDistributionPerformedSignal distributionPerformedSignal
         ){
-            CityClickedSignal           = cityClickedSignal;
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
+
+            CityClickedSignal        = new Subject<ICity>();
+            CityBeingDestroyedSignal = new Subject<ICity>();
         }
 
         #endregion

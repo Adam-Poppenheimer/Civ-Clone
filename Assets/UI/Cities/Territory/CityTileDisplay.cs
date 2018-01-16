@@ -9,8 +9,9 @@ using UnityEngine.UI;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.HexMap;
 
 namespace Assets.UI.Cities.Territory {
 
@@ -20,7 +21,7 @@ namespace Assets.UI.Cities.Territory {
 
         private List<IWorkerSlotDisplay> InstantiatedDisplays = new List<IWorkerSlotDisplay>();
 
-        private ICellPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> PossessionCanon;
 
         private WorkerSlotDisplayFactory SlotFactory;
 
@@ -29,8 +30,10 @@ namespace Assets.UI.Cities.Territory {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICellPossessionCanon possessionCanon, WorkerSlotDisplayFactory slotFactory,
-            CitySignals signals) {
+        public void InjectDependencies(
+            IPossessionRelationship<ICity, IHexCell> possessionCanon,
+            WorkerSlotDisplayFactory slotFactory, CitySignals signals
+        ){
 
             PossessionCanon = possessionCanon;
             SlotFactory     = slotFactory;
@@ -59,7 +62,7 @@ namespace Assets.UI.Cities.Territory {
 
             int slotDisplayIndex = 0;
 
-            foreach(var tile in PossessionCanon.GetTilesOfCity(ObjectToDisplay)) {
+            foreach(var tile in PossessionCanon.GetPossessionsOfOwner(ObjectToDisplay)) {
                 if(tile.SuppressSlot) {
                     continue;
                 }

@@ -35,7 +35,7 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<ICivilizationConfig>().To<CivilizationConfig>().FromInstance(Config);
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>()
-                     .To<PossessionRelationship<ICivilization, ICity>>()
+                     .To<CityPossessionCanon>()
                      .AsSingle();
 
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>()

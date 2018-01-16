@@ -22,7 +22,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IBuildingPossessionCanon> MockBuildingPossession;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossession;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossession;
         private Mock<IImprovementLocationCanon> MockImprovementPositionCanon;
 
@@ -40,14 +40,14 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             AllTiles.Clear();
 
-            MockBuildingPossession       = new Mock<IBuildingPossessionCanon>();
+            MockBuildingPossession       = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityPossession           = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockImprovementPositionCanon = new Mock<IImprovementLocationCanon>();
             MockGrid                      = new Mock<IHexGrid>();
 
             MockGrid.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
 
-            Container.Bind<IBuildingPossessionCanon>                     ().FromInstance(MockBuildingPossession      .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossession      .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession          .Object);
             Container.Bind<IImprovementLocationCanon>                    ().FromInstance(MockImprovementPositionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                    .Object);
@@ -221,7 +221,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = new Mock<ICity>().Object;
 
             MockBuildingPossession
-                .Setup(canon => canon.GetBuildingsInCity(city))
+                .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(buildings.ToList().AsReadOnly());
 
             return city;

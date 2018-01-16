@@ -19,7 +19,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        private IBuildingPossessionCanon BuildingPossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
@@ -40,7 +40,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         /// <param name="map"></param>
         [Inject]
         public IncomeModifierLogic(
-            IBuildingPossessionCanon buildingPossessionCanon,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IImprovementLocationCanon improvementLocationCanon,
             IHexGrid map
@@ -85,7 +85,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             var baseModifier = ResourceSummary.Empty;
 
-            foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(city)) {
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                 baseModifier += building.Template.CityYieldModifier;
             }
 
@@ -101,7 +101,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             var baseModifier = ResourceSummary.Empty;            
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
-                foreach(var building in BuildingPossessionCanon.GetBuildingsInCity(city)) {
+                foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                     baseModifier += building.Template.CivilizationYieldModifier;
                 }
             }

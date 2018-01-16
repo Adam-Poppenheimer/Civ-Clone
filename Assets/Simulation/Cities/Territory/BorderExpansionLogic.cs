@@ -23,7 +23,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         private IHexGrid HexGrid;
 
-        private ICellPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> PossessionCanon;
         
         private ICityConfig Config;
 
@@ -41,7 +41,7 @@ namespace Assets.Simulation.Cities.Territory {
         /// <param name="config"></param>
         /// <param name="resourceGenerationLogic"></param>
         [Inject]
-        public BorderExpansionLogic(IHexGrid hexGrid, ICellPossessionCanon possessionCanon,
+        public BorderExpansionLogic(IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
             ICityConfig config, IResourceGenerationLogic resourceGenerationLogic) {
 
             HexGrid = hexGrid;
@@ -61,7 +61,7 @@ namespace Assets.Simulation.Cities.Territory {
         public IEnumerable<IHexCell> GetAllCellsAvailableToCity(ICity city) {
             var retval = new HashSet<IHexCell>();
 
-            foreach(var tile in PossessionCanon.GetTilesOfCity(city)) {
+            foreach(var tile in PossessionCanon.GetPossessionsOfOwner(city)) {
                 foreach(var neighbor in HexGrid.GetNeighbors(tile)) {
 
                     if(IsCellAvailable(city, neighbor)) {
@@ -94,9 +94,9 @@ namespace Assets.Simulation.Cities.Territory {
                 throw new ArgumentNullException("tile");
             }
 
-            bool isUnowned = PossessionCanon.GetCityOfTile(tile) == null;
+            bool isUnowned = PossessionCanon.GetOwnerOfPossession(tile) == null;
             bool isWithinRange = HexGrid.GetDistance(city.Location, tile) <= Config.MaxBorderRange;
-            bool isNeighborOfPossession = HexGrid.GetNeighbors(tile).Exists(neighbor => PossessionCanon.GetCityOfTile(neighbor) == city);
+            bool isNeighborOfPossession = HexGrid.GetNeighbors(tile).Exists(neighbor => PossessionCanon.GetOwnerOfPossession(neighbor) == city);
 
             return isUnowned && isWithinRange && isNeighborOfPossession;
         }
@@ -109,7 +109,7 @@ namespace Assets.Simulation.Cities.Territory {
                 throw new ArgumentNullException("tile");
             }
 
-            var tileCount = PossessionCanon.GetTilesOfCity(city).Count();
+            var tileCount = PossessionCanon.GetPossessionsOfOwner(city).Count();
 
             return Mathf.FloorToInt(
                 Config.TileCostBase + 

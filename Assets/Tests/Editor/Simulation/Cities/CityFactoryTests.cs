@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IHexGrid> MockGrid;
 
-        private Mock<ICellPossessionCanon> MockTilePossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockTilePossessionCanon;
 
         private Mock<IWorkerDistributionLogic> MockDistributionLogic;
 
@@ -61,12 +61,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGrid                 = new Mock<IHexGrid>();
-            MockTilePossessionCanon = new Mock<ICellPossessionCanon>();
+            MockTilePossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<ICellPossessionCanon>                         ().FromInstance(MockTilePossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>                         ().FromInstance(MockTilePossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
 
             Container.Bind<IPopulationGrowthLogic>   ().FromMock();
@@ -155,18 +155,18 @@ namespace Assets.Tests.Simulation.Cities {
 
             var cityWithValidNeighbors = factory.Create(location, civilization);
 
-            MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfTile(location, cityWithValidNeighbors), Times.AtLeastOnce,
-                "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfTile on its location");
+            MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.AtLeastOnce,
+                "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfPossession on its location");
 
-            MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfTile(location, cityWithValidNeighbors), Times.Once,
-                "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfTile on its location");
+            MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.Once,
+                "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfPossession on its location");
 
             foreach(var neighbor in validNeighbors) {
-                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfTile(neighbor, cityWithValidNeighbors), Times.AtLeastOnce,
-                "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfTile on one of its neighbors");
+                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.AtLeastOnce,
+                "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfPossession on one of its neighbors");
 
-                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfTile(neighbor, cityWithValidNeighbors), Times.Once,
-                    "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfTile on a valid neighbor");
+                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.Once,
+                    "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfPossession on a valid neighbor");
             }
 
             var invalidNeighbors = BuildNeighborsFor(location, 3, false);
@@ -174,10 +174,10 @@ namespace Assets.Tests.Simulation.Cities {
             var cityWithInvalidNeighbors = factory.Create(location, civilization);
 
             foreach(var neighbor in invalidNeighbors) {
-                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfTile(neighbor, cityWithInvalidNeighbors), Times.AtLeastOnce,
+                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.AtLeastOnce,
                 "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfTile on one of its neighbors");
 
-                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfTile(neighbor, cityWithInvalidNeighbors), Times.Never,
+                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.Never,
                     "CityFactory unexpectedly called TilePossessionCanon.ChangeOwnerOfTile on and invalid neighbor");
             }
         }
@@ -290,7 +290,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
 
-            MockTilePossessionCanon.Setup(canon => canon.CanChangeOwnerOfTile(mockTile.Object, It.IsAny<ICity>()))
+            MockTilePossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(mockTile.Object, It.IsAny<ICity>()))
                 .Returns(canBeAssigned);
 
             return mockTile.Object;

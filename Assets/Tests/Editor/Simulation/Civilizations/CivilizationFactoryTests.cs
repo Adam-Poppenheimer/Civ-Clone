@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using NUnit.Framework;
 using Moq;
@@ -37,7 +39,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CivilizationCreated_NameInitialized() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            var newCivilization = factory.Create("Civilization One");
+            var newCivilization = factory.Create("Civilization One", Color.black);
 
             Assert.AreEqual("Civilization One", newCivilization.Name,
                 "newCivilization did not have the expected name");
@@ -48,7 +50,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CivilizationCreated_AddedToAllCivilizations() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            var newCivilization = factory.Create("Civilization One");
+            var newCivilization = factory.Create("Civilization One", Color.black);
 
             CollectionAssert.Contains(factory.AllCivilizations, newCivilization,
                 "newCivilization did not appear in CivilizationFactory.AllCivilizations");
@@ -59,7 +61,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void Create_ThrowsOnNullArgument() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null),
+            Assert.Throws<ArgumentNullException>(() => factory.Create(null, Color.black),
                 "Create did not throw on a null name as expected");
         }
 

@@ -10,6 +10,7 @@ using NUnit.Framework;
 using Moq;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Core;
@@ -27,7 +28,7 @@ namespace Assets.Tests.UI.Cities {
 
         private Transform BuildingDisplayParent;
 
-        private Mock<IBuildingPossessionCanon> MockPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> MockPossessionCanon;
 
         private List<IBuilding> AllBuildings = new List<IBuilding>();
 
@@ -46,10 +47,10 @@ namespace Assets.Tests.UI.Cities {
 
             BuildingDisplayParent = new GameObject().transform;
 
-            MockPossessionCanon = new Mock<IBuildingPossessionCanon>();
+            MockPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
             MockPossessionCanon
-                .Setup(canon => canon.GetBuildingsInCity(It.IsAny<ICity>()))
+                .Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICity>()))
                 .Returns(() => AllBuildings.AsReadOnly());
 
             Container.BindFactory<IBuildingDisplay, BuildingDisplayFactory>().FromMethod(delegate(DiContainer container) {
@@ -63,7 +64,7 @@ namespace Assets.Tests.UI.Cities {
                 return mockDisplay.Object;
             });
 
-            Container.Bind<IBuildingPossessionCanon>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockPossessionCanon.Object);
 
             Container.Bind<Transform>().WithId("Building Display Parent").FromInstance(BuildingDisplayParent);
 

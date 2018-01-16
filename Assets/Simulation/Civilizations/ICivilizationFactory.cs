@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 namespace Assets.Simulation.Civilizations {
@@ -11,7 +13,7 @@ namespace Assets.Simulation.Civilizations {
     /// <summary>
     /// Defines a factory capable of creating civilizations of a particular name.
     /// </summary>
-    public interface ICivilizationFactory : IFactory<string, ICivilization> {
+    public interface ICivilizationFactory : IFactory<string, Color, ICivilization> {
 
         #region properties
 

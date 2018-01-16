@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
@@ -40,7 +41,7 @@ namespace Assets.Simulation.Cities {
 
         private IHexGrid Grid;
 
-        private ICellPossessionCanon CellPossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
         #endregion
 
@@ -57,13 +58,15 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
-            ICellPossessionCanon cellPossessionCanon
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals
         ){
             Container           = container;
             CityPrefab          = cityPrefab;
             CityPossessionCanon = cityPossessionCanon;
             Grid                = grid;
             CellPossessionCanon = cellPossessionCanon;
+
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion
@@ -101,15 +104,15 @@ namespace Assets.Simulation.Cities {
             newCity.Location = location;
             location.SuppressSlot = true;
 
-            if(CellPossessionCanon.CanChangeOwnerOfTile(location, newCity)) {
-                CellPossessionCanon.ChangeOwnerOfTile(location, newCity);
+            if(CellPossessionCanon.CanChangeOwnerOfPossession(location, newCity)) {
+                CellPossessionCanon.ChangeOwnerOfPossession(location, newCity);
             }else {
                 throw new CityCreationException("Cannot assign the given location to the newly created city");
             }
             
             foreach(var neighbor in Grid.GetNeighbors(location)) {
-                if(CellPossessionCanon.CanChangeOwnerOfTile(neighbor, newCity)) {
-                    CellPossessionCanon.ChangeOwnerOfTile(neighbor, newCity);
+                if(CellPossessionCanon.CanChangeOwnerOfPossession(neighbor, newCity)) {
+                    CellPossessionCanon.ChangeOwnerOfPossession(neighbor, newCity);
                 }                
             }
             
@@ -140,6 +143,10 @@ namespace Assets.Simulation.Cities {
         }
 
         #endregion
+
+        private void OnCityBeingDestroyed(ICity city) {
+            allCities.Remove(city);
+        }
 
         #endregion
 

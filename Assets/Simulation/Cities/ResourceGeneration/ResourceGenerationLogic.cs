@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Civilizations;
 
@@ -21,8 +21,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private ICityConfig Config;
 
-        private ICellPossessionCanon TileCanon;
-        private IBuildingPossessionCanon BuildingCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellCanon;
+        private IPossessionRelationship<ICity, IBuilding> BuildingCanon;
 
         private IIncomeModifierLogic IncomeModifierLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
@@ -40,11 +40,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         /// <param name="incomeModifierLogic"></param>
         /// <param name="cityPossessionCanon"></param>
         [Inject]
-        public ResourceGenerationLogic(ICityConfig config, ICellPossessionCanon tileCanon,
-            IBuildingPossessionCanon buildingCanon, IIncomeModifierLogic incomeModifierLogic,
+        public ResourceGenerationLogic(ICityConfig config, IPossessionRelationship<ICity, IHexCell> tileCanon,
+            IPossessionRelationship<ICity, IBuilding> buildingCanon, IIncomeModifierLogic incomeModifierLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
             Config = config;
-            TileCanon = tileCanon;
+            CellCanon = tileCanon;
             BuildingCanon = buildingCanon;
             IncomeModifierLogic = incomeModifierLogic;
             CityPossessionCanon = cityPossessionCanon;
@@ -66,7 +66,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             int employedPops = 0;
 
-            foreach(var tile in TileCanon.GetTilesOfCity(city)) {
+            foreach(var tile in CellCanon.GetPossessionsOfOwner(city)) {
                 if(tile.SuppressSlot || !tile.WorkerSlot.IsOccupied) {
                     continue;
                 }
@@ -77,7 +77,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 }
             }
 
-            foreach(var building in BuildingCanon.GetBuildingsInCity(city)) {
+            foreach(var building in BuildingCanon.GetPossessionsOfOwner(city)) {
                 foreach(var slot in building.Slots) {
                     if(!slot.IsOccupied) {
                         continue;

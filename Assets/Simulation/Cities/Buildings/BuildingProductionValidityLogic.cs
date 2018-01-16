@@ -16,7 +16,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         private List<IBuildingTemplate> AvailableTemplates;
 
-        private IBuildingPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
 
         #endregion
 
@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities.Buildings {
         /// <param name="possessionCanon"></param>
         [Inject]
         public BuildingProductionValidityLogic(List<IBuildingTemplate> availableTemplates,
-            IBuildingPossessionCanon possessionCanon
+            IPossessionRelationship<ICity, IBuilding> possessionCanon
         ){
             AvailableTemplates = availableTemplates;
             PossessionCanon = possessionCanon;
@@ -58,7 +58,7 @@ namespace Assets.Simulation.Cities.Buildings {
                 throw new ArgumentNullException("city");
             }
 
-            var templatesAlreadyThere = PossessionCanon.GetBuildingsInCity(city).Select(building => building.Template);
+            var templatesAlreadyThere = PossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
             return AvailableTemplates.Contains(template) && !templatesAlreadyThere.Contains(template);
         }
 

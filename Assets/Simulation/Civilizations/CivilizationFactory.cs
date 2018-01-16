@@ -49,12 +49,15 @@ namespace Assets.Simulation.Civilizations {
         #region from IFactory<ICivilization>
 
         /// <inheritdoc/>
-        public ICivilization Create(string name) {
+        public ICivilization Create(string name, Color color) {
             if(name == null) {
                 throw new ArgumentNullException("name");
             }
 
-            var newCivilization = Container.Instantiate<Civilization>(new List<object>() { name });
+            var newCivilization = Container.Instantiate<Civilization>();
+
+            newCivilization.Name = name;
+            newCivilization.Color = color;
 
             allCivilizations.Add(newCivilization);
 

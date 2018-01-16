@@ -7,6 +7,7 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 
@@ -17,7 +18,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private List<IBuildingTemplate> Templates;
 
-        private Mock<IBuildingPossessionCanon> PossessionCanonMock;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> PossessionCanonMock;
 
         [SetUp]
         public void CommonInstall() {
@@ -27,14 +28,14 @@ namespace Assets.Tests.Simulation.Cities {
                 new Mock<IBuildingTemplate>().Object
             };
 
-            PossessionCanonMock = new Mock<IBuildingPossessionCanon>();
+            PossessionCanonMock = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             PossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(It.IsAny<ICity>()))
+                .Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICity>()))
                 .Returns(new List<IBuilding>().AsReadOnly());
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(Templates);
 
-            Container.Bind<IBuildingPossessionCanon>().FromInstance(PossessionCanonMock.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(PossessionCanonMock.Object);
 
             Container.Bind<BuildingProductionValidityLogic>().AsSingle();
         }
@@ -69,11 +70,11 @@ namespace Assets.Tests.Simulation.Cities {
             buildingMockInCityTwo.Setup(building => building.Template).Returns(Templates[1]);
 
             PossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(cityOne))
+                .Setup(canon => canon.GetPossessionsOfOwner(cityOne))
                 .Returns(new List<IBuilding>() { buildingMockInCityOne.Object }.AsReadOnly());
 
             PossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(cityTwo))
+                .Setup(canon => canon.GetPossessionsOfOwner(cityTwo))
                 .Returns(new List<IBuilding>() { buildingMockInCityTwo.Object }.AsReadOnly());
 
             var logic = Container.Resolve<BuildingProductionValidityLogic>();
@@ -115,11 +116,11 @@ namespace Assets.Tests.Simulation.Cities {
             secondBuildingMockInCityTwo.Setup(building => building.Template).Returns(Templates[2]);
 
             PossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(cityOne))
+                .Setup(canon => canon.GetPossessionsOfOwner(cityOne))
                 .Returns(new List<IBuilding>() { buildingMockInCityOne.Object }.AsReadOnly());
 
             PossessionCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(cityTwo))
+                .Setup(canon => canon.GetPossessionsOfOwner(cityTwo))
                 .Returns(new List<IBuilding>() {
                     firstBuildingMockInCityTwo.Object, secondBuildingMockInCityTwo.Object
                 }.AsReadOnly());

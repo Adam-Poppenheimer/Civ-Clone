@@ -50,16 +50,16 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
 
-            Container.Bind<IPopulationGrowthLogic>          ().To<PopulationGrowthLogic>          ().AsSingle();
-            Container.Bind<IProductionLogic>                ().To<ProductionLogic>                ().AsSingle();
-            Container.Bind<IResourceGenerationLogic>        ().To<ResourceGenerationLogic>        ().AsSingle();
-            Container.Bind<IBorderExpansionLogic>           ().To<BorderExpansionLogic>           ().AsSingle();
-            Container.Bind<IWorkerDistributionLogic>        ().To<WorkerDistributionLogic>        ().AsSingle();
-            Container.Bind<IBuildingProductionValidityLogic>().To<BuildingProductionValidityLogic>().AsSingle();
-            Container.Bind<ICellPossessionCanon>            ().To<CellPossessionCanon>            ().AsSingle();
-            Container.Bind<IBuildingPossessionCanon>        ().To<BuildingPossessionCanon>        ().AsSingle();
-            Container.Bind<IIncomeModifierLogic>            ().To<IncomeModifierLogic>            ().AsSingle();
-            Container.Bind<ICityValidityLogic>              ().To<CityValidityLogic>              ().AsSingle();
+            Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>          ().AsSingle();
+            Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                ().AsSingle();
+            Container.Bind<IResourceGenerationLogic>                 ().To<ResourceGenerationLogic>        ().AsSingle();
+            Container.Bind<IBorderExpansionLogic>                    ().To<BorderExpansionLogic>           ().AsSingle();
+            Container.Bind<IWorkerDistributionLogic>                 ().To<WorkerDistributionLogic>        ().AsSingle();
+            Container.Bind<IBuildingProductionValidityLogic>         ().To<BuildingProductionValidityLogic>().AsSingle();
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().To<CellPossessionCanon>            ().AsSingle();
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().To<BuildingPossessionCanon>        ().AsSingle();
+            Container.Bind<IIncomeModifierLogic>                     ().To<IncomeModifierLogic>            ().AsSingle();
+            Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>              ().AsSingle();
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();

@@ -81,7 +81,7 @@ namespace Assets.Simulation.Cities {
 
         private IBorderExpansionLogic ExpansionLogic;
 
-        private ICellPossessionCanon TilePossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> TilePossessionCanon;
 
         private IWorkerDistributionLogic DistributionLogic;
 
@@ -108,7 +108,7 @@ namespace Assets.Simulation.Cities {
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
-            ICellPossessionCanon tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
+            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
             IProductionProjectFactory projectFactory, CitySignals signals
         ){
             GrowthLogic             = growthLogic;
@@ -120,6 +120,14 @@ namespace Assets.Simulation.Cities {
             ProjectFactory          = projectFactory;
             Signals                 = signals;
         }
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            Signals.CityBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
 
         #region EventSystem handler implementations
 
@@ -184,10 +192,12 @@ namespace Assets.Simulation.Cities {
 
             var costOfPursuit = ExpansionLogic.GetCultureCostOfAcquiringCell(this, CellBeingPursued);
 
-            if(CellBeingPursued != null && costOfPursuit <= CultureStockpile && TilePossessionCanon.CanChangeOwnerOfTile(CellBeingPursued, this)) {
-
+            if( CellBeingPursued != null &&
+                costOfPursuit <= CultureStockpile &&
+                TilePossessionCanon.CanChangeOwnerOfPossession(CellBeingPursued, this)
+            ) {
                 CultureStockpile -= costOfPursuit;
-                TilePossessionCanon.ChangeOwnerOfTile(CellBeingPursued, this);
+                TilePossessionCanon.ChangeOwnerOfPossession(CellBeingPursued, this);
 
                 CellBeingPursued = ExpansionLogic.GetNextCellToPursue(this);
             }

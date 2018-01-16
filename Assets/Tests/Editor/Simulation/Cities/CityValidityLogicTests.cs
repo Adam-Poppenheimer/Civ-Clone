@@ -8,7 +8,7 @@ using NUnit.Framework;
 using Moq;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Cities {
@@ -18,7 +18,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<ICellPossessionCanon> MockPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockPossessionCanon;
 
         private Mock<IHexGrid> MockHexGrid;
 
@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockPossessionCanon = new Mock<ICellPossessionCanon>();
+            MockPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockHexGrid         = new Mock<IHexGrid>();
             MockCityFactory     = new Mock<ICityFactory>();
             MockConfig          = new Mock<ICityConfig>();
@@ -48,7 +48,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
-            Container.Bind<ICellPossessionCanon>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockPossessionCanon.Object);
             Container.Bind<IHexGrid>()            .FromInstance(MockHexGrid.Object);
             Container.Bind<ICityFactory>()        .FromInstance(MockCityFactory.Object);
             Container.Bind<ICityConfig>()         .FromInstance(MockConfig.Object);
@@ -140,7 +140,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             mockCell.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
 
-            MockPossessionCanon.Setup(canon => canon.GetCityOfTile(mockCell.Object)).Returns(owner);
+            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(mockCell.Object)).Returns(owner);
 
             MockRiverCanon.Setup(canon => canon.HasRiver(mockCell.Object)).Returns(hasRiver);
 

@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Cities {
         #region instance fields and properties
 
         private Mock<IBuildingProductionValidityLogic> MockValidityLogic;
-        private Mock<IBuildingPossessionCanon>         MockPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> MockPossessionCanon;
 
         #endregion
 
@@ -51,10 +51,10 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockValidityLogic   = new Mock<IBuildingProductionValidityLogic>();
-            MockPossessionCanon = new Mock<IBuildingPossessionCanon>();
+            MockPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
             Container.Bind<IBuildingProductionValidityLogic>().FromInstance(MockValidityLogic  .Object);
-            Container.Bind<IBuildingPossessionCanon>        ().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockPossessionCanon.Object);
 
             Container.Bind<BuildingFactory>().AsSingle();
         }
@@ -109,12 +109,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             var newBuilding = factory.Create(template, city);
 
-            MockPossessionCanon.Verify(canon => canon.CanPlaceBuildingInCity(newBuilding, city),
+            MockPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newBuilding, city),
                 Times.AtLeastOnce, "BuildingFactory did not check BuildingPossessionCanon before " +
                 "placing newBuilding into the argued city"
             );
 
-            MockPossessionCanon.Verify(canon => canon .PlaceBuildingInCity(newBuilding, city),
+            MockPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(newBuilding, city),
                 Times.Once, "BuildingFactory did not place newBuilding into the argued city as expected");
         }
 
@@ -152,14 +152,14 @@ namespace Assets.Tests.Simulation.Cities {
                 "BuildingFactory.Create failed to throw as expected");
         }
 
-        [Test(Description = "If Create is called and BuildingPossessionCanon.CanPlaceBuildingInCity" +
+        [Test(Description = "If Create is called and BuildingPossessionCanon.CanChangeOwnerOfPossession" +
             "would return false, CityFactory should throw a BuildingConstructionException")]
         public void CreateCalled_ThrowsIfCityLocationInvalid() {
             var template = BuildTemplate("Template", true);
 
             ICity city = BuildCity();
 
-            MockPossessionCanon.Setup(canon => canon.CanPlaceBuildingInCity(It.IsAny<IBuilding>(), city)).Returns(false);
+            MockPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IBuilding>(), city)).Returns(false);
 
             var factory = Container.Resolve<BuildingFactory>();
 
@@ -194,10 +194,10 @@ namespace Assets.Tests.Simulation.Cities {
         private ICity BuildCity(params IBuilding[] buildings) {
             var newCity = new Mock<ICity>().Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetBuildingsInCity(newCity))
+            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCity))
                 .Returns(buildings.ToList().AsReadOnly());
 
-            MockPossessionCanon.Setup(canon => canon.CanPlaceBuildingInCity(It.IsAny<IBuilding>(), newCity))
+            MockPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IBuilding>(), newCity))
                 .Returns(true);
 
             return newCity;

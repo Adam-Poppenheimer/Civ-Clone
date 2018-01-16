@@ -25,8 +25,8 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPopulationGrowthLogic> GrowthLogicMock;
         private Mock<IResourceGenerationLogic> GenerationLogicMock;
 
-        private Mock<IBuildingPossessionCanon> BuildingCanonMock;
-        private Mock<ICellPossessionCanon> TileCanonMock;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> BuildingCanonMock;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> TileCanonMock;
 
         private List<IWorkerSlot> AllSlots = new List<IWorkerSlot>();
 
@@ -57,20 +57,20 @@ namespace Assets.Tests.Simulation.Cities {
                         .Aggregate((x, y) => x + y)
                 );
 
-            TileCanonMock = new Mock<ICellPossessionCanon>();
+            TileCanonMock = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             TileCanonMock
-                .Setup(canon => canon.GetTilesOfCity(It.IsAny<ICity>()))
+                .Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICity>()))
                 .Returns(() => AllTiles);
 
-            BuildingCanonMock = new Mock<IBuildingPossessionCanon>();
+            BuildingCanonMock = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             BuildingCanonMock
-                .Setup(canon => canon.GetBuildingsInCity(It.IsAny<ICity>()))
+                .Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICity>()))
                 .Returns(() => AllBuildings.AsReadOnly());
 
-            Container.Bind<IPopulationGrowthLogic>()  .FromInstance(GrowthLogicMock.Object);
-            Container.Bind<IResourceGenerationLogic>().FromInstance(GenerationLogicMock.Object);
-            Container.Bind<ICellPossessionCanon>()    .FromInstance(TileCanonMock.Object);
-            Container.Bind<IBuildingPossessionCanon>().FromInstance(BuildingCanonMock.Object);
+            Container.Bind<IPopulationGrowthLogic>()                   .FromInstance(GrowthLogicMock.Object);
+            Container.Bind<IResourceGenerationLogic>()                 .FromInstance(GenerationLogicMock.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>() .FromInstance(TileCanonMock.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(BuildingCanonMock.Object);
 
             var mockCity = new Mock<ICity>();
             mockCity.SetupAllProperties();

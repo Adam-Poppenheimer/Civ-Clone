@@ -35,7 +35,7 @@ namespace Assets.Tests.UI.GameMap {
         private Mock<IHexCellSignalLogic>      MockSignalLogic;
 
         private Mock<IResourceGenerationLogic> MockResourceLogic;
-        private Mock<ICellPossessionCanon>     MockPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>     MockPossessionCanon;
 
         private ISubject<IHexCell> BeginHoverSubject;
         private ISubject<IHexCell> EndHoverSubject;
@@ -60,7 +60,7 @@ namespace Assets.Tests.UI.GameMap {
             MockSignalLogic     = new Mock<IHexCellSignalLogic>();
 
             MockResourceLogic   = new Mock<IResourceGenerationLogic>();
-            MockPossessionCanon = new Mock<ICellPossessionCanon>();            
+            MockPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();            
 
             BeginHoverSubject = new Subject<IHexCell>();
             EndHoverSubject   = new Subject<IHexCell>();
@@ -72,7 +72,7 @@ namespace Assets.Tests.UI.GameMap {
             Container.Bind<IHexCellSignalLogic>()                                       .FromInstance(MockSignalLogic.Object);
 
             Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceLogic.Object);
-            Container.Bind<ICellPossessionCanon>()    .FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>()    .FromInstance(MockPossessionCanon.Object);
 
             Container.Bind<TileHoverDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -206,7 +206,7 @@ namespace Assets.Tests.UI.GameMap {
             newTile.Shape = shape;
             newTile.Feature = feature;
 
-            MockPossessionCanon.Setup(canon => canon.GetCityOfTile(newTile)).Returns(owner);
+            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newTile)).Returns(owner);
 
             return newTile;
         }

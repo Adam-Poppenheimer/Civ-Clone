@@ -27,7 +27,7 @@ namespace Assets.Simulation.Core {
 
         private ICityFactory CityFactory;
 
-        private ICellPossessionCanon PossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> PossessionCanon;
 
         private IHexGrid HexGrid;
 
@@ -39,7 +39,7 @@ namespace Assets.Simulation.Core {
 
         [Inject]
         public void InjectDependencies(ICityFactory cityFactory,
-            ICellPossessionCanon possessionCanon, IHexGrid hexGrid,
+            IPossessionRelationship<ICity, IHexCell> possessionCanon, IHexGrid hexGrid,
             GameCore gameCore
         ){
             CityFactory = cityFactory;
@@ -54,8 +54,8 @@ namespace Assets.Simulation.Core {
             newCity.Population = StartingPopulation;
 
             foreach(var nearbyTile in HexGrid.GetCellsInRadius(newCity.Location, StartingTerritoryRadius)) {
-                if(PossessionCanon.CanChangeOwnerOfTile(nearbyTile, newCity)) {
-                    PossessionCanon.ChangeOwnerOfTile(nearbyTile, newCity);
+                if(PossessionCanon.CanChangeOwnerOfPossession(nearbyTile, newCity)) {
+                    PossessionCanon.ChangeOwnerOfPossession(nearbyTile, newCity);
                 }
             }
         }

@@ -20,7 +20,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        private ICellPossessionCanon CellPossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
         private IHexGrid HexGrid;
 
@@ -44,7 +44,7 @@ namespace Assets.Simulation.Cities {
         /// <param name="riverCanon"></param>
         [Inject]
         public CityValidityLogic(
-            ICellPossessionCanon tilePossessionCanon, IHexGrid hexGrid,
+            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IHexGrid hexGrid,
             ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon
         ){
             CellPossessionCanon = tilePossessionCanon;
@@ -65,7 +65,7 @@ namespace Assets.Simulation.Cities {
         /// Check CityValidityLogicTests to learn exactly what constitutes a valid city placement.
         /// </remarks>
         public bool IsCellValidForCity(IHexCell cell) {
-            if(CellPossessionCanon.GetCityOfTile(cell) != null) {
+            if(CellPossessionCanon.GetOwnerOfPossession(cell) != null) {
                 return false;
             }
 
