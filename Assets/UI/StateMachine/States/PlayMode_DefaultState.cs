@@ -14,7 +14,7 @@ using Assets.UI.Civilizations;
 
 namespace Assets.UI.StateMachine.States {
 
-    public class DefaultUIState : StateMachineBehaviour {
+    public class PlayMode_DefaultState : StateMachineBehaviour {
 
         #region instance fields and properties
 
@@ -31,7 +31,7 @@ namespace Assets.UI.StateMachine.States {
         [Inject]
         public void InjectDependencies(
             List<CivilizationDisplayBase> civilizationDisplays,
-            [Inject(Id = "Default Panels")] List<RectTransform> defaultPanels,
+            [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
             GameCore gameCore
         ){
             CivilizationDisplays = civilizationDisplays;
@@ -63,7 +63,7 @@ namespace Assets.UI.StateMachine.States {
                 panel.gameObject.SetActive(false);
             }
 
-            animator.ResetTrigger("Default State Requested");
+            animator.ResetTrigger("Play Mode Default State Requested");
             animator.ResetTrigger("Map Editing Return Requested");
         }
 

@@ -8,27 +8,27 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
 
-using Assets.UI.HexMap;
+using Assets.UI.Cities;
 
 namespace Assets.UI.StateMachine.States {
 
-    public class TileUIState : StateMachineBehaviour {
+    public class PlayMode_CityState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        public IHexCell TileToDisplay { get; set; }
+        public ICity CityToDisplay { get; set; }
 
-        private List<TileDisplayBase> DisplaysToManage;
+        private List<CityDisplayBase> DisplaysToManage;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(List<TileDisplayBase> allTileDisplays) {
-            DisplaysToManage = allTileDisplays;
+        public void InjectDependencies(List<CityDisplayBase> displaysToManage){
+            DisplaysToManage = displaysToManage;
         }
 
         #region from StateMachineBehaviour
@@ -36,7 +36,7 @@ namespace Assets.UI.StateMachine.States {
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             foreach(var display in DisplaysToManage) {
                 display.gameObject.SetActive(true);
-                display.ObjectToDisplay = TileToDisplay;
+                display.ObjectToDisplay = CityToDisplay;
                 display.Refresh();
             }
         }
@@ -47,7 +47,7 @@ namespace Assets.UI.StateMachine.States {
                 display.ObjectToDisplay = null;
             }
 
-            animator.ResetTrigger("Tile State Requested");
+            animator.ResetTrigger("City State Requested");
         }
 
         #endregion

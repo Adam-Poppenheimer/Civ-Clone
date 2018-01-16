@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,7 +20,7 @@ namespace Assets.Simulation.Civilizations {
         #region from ICivilizationFactory
 
         /// <inheritdoc/>
-        public IEnumerable<ICivilization> AllCivilizations {
+        public ReadOnlyCollection<ICivilization> AllCivilizations {
             get { return allCivilizations.AsReadOnly(); }
         }
         private List<ICivilization> allCivilizations = new List<ICivilization>();

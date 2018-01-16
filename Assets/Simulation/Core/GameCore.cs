@@ -72,6 +72,7 @@ namespace Assets.Simulation.Core {
             endTurnRequestedSignal.Listen(OnEndTurnRequested);
 
             PlayerCivilization = CivilizationFactory.Create("Player Civilization");
+            PlayerCivilization.Color = Color.red;
         }
 
         #endregion

@@ -18,7 +18,7 @@ namespace Assets.UI.StateMachine.Transitions {
 
         #region instance fields and properties
 
-        private TileUIState TileUIState;
+        private PlayMode_TileState TileUIState;
 
         private Animator StateMachineAnimator;
 
@@ -27,7 +27,7 @@ namespace Assets.UI.StateMachine.Transitions {
         #region constructors
 
         [Inject]
-        public MapTileTransitionLogic(HexCellSignals tileSignals, TileUIState tileUIState,
+        public MapTileTransitionLogic(HexCellSignals tileSignals, PlayMode_TileState tileUIState,
             [Inject(Id = "UI State Machine Animator")] Animator stateMachineAnimator) {
 
             tileSignals.ClickedSignal.Listen(OnTileClickedFired);

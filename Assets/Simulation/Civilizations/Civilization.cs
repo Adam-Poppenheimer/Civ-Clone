@@ -21,7 +21,10 @@ namespace Assets.Simulation.Civilizations {
         #region from ICivilization
 
         /// <inheritdoc/>
-        public string Name { get; private set; }
+        public string Name { get; set; }
+
+        /// <inheritdoc/>
+        public Color Color { get; set; }
 
         /// <inheritdoc/>
         public int GoldStockpile    { get; set; }

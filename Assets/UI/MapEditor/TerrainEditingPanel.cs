@@ -9,9 +9,11 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
-namespace Assets.Simulation.HexMap {
+using Assets.Simulation.HexMap;
 
-    public class HexMapEditor : MonoBehaviour {
+namespace Assets.UI.MapEditor {
+
+    public class TerrainEditingPanel : MonoBehaviour {
 
         #region internal types
 

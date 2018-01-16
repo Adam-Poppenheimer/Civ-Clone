@@ -34,7 +34,7 @@ namespace Assets.UI.StateMachine.Transitions {
         #region instance methods
 
         private void OnCancelPressedFired(Unit unit) {
-            StateMachineAnimator.SetTrigger("Map Editing Return Requested");
+            StateMachineAnimator.SetTrigger("Map Editing Default State Requested");
         }
 
         #endregion

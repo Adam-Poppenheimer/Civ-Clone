@@ -62,11 +62,11 @@ namespace Assets.UI.StateMachine.Transitions {
                 }
             }
             
-            StateMachineAnimator.SetTrigger("Default State Requested");
+            StateMachineAnimator.SetTrigger("Play Mode Default State Requested");
         }
 
         private void OnCancelPressedFired(UniRx.Unit unit) {
-            StateMachineAnimator.SetTrigger("Default State Requested");
+            StateMachineAnimator.SetTrigger("Play Mode Default State Requested");
         }
 
         #endregion

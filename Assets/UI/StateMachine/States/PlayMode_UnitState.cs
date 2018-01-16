@@ -12,7 +12,7 @@ using Assets.UI.Units;
 
 namespace Assets.UI.StateMachine.States {
 
-    public class UnitUIState : StateMachineBehaviour {
+    public class PlayMode_UnitState : StateMachineBehaviour {
 
         #region instance fields and properties
 

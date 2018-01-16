@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace Assets.Simulation.Civilizations {
 
     /// <summary>
@@ -17,7 +19,12 @@ namespace Assets.Simulation.Civilizations {
         /// <summary>
         /// The civilization's non-ID name.
         /// </summary>
-        string Name { get; }
+        string Name { get; set; }
+
+        /// <summary>
+        /// The color of the civilization's borders, cities, and units.
+        /// </summary>
+        Color Color { get; set; }
 
         /// <summary>
         /// The current amount of gold the civilization has to spend.

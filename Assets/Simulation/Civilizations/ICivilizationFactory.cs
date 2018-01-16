@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -17,7 +18,7 @@ namespace Assets.Simulation.Civilizations {
         /// <summary>
         /// All civilizations created or recognized by this factory.
         /// </summary>
-        IEnumerable<ICivilization> AllCivilizations { get; }
+        ReadOnlyCollection<ICivilization> AllCivilizations { get; }
 
         #endregion
 

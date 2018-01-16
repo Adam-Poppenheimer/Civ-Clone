@@ -18,7 +18,7 @@ namespace Assets.UI.StateMachine.Transitions {
 
         #region instance fields and properties
 
-        private UnitUIState UnitUIState;
+        private PlayMode_UnitState UnitUIState;
 
         private Animator StateMachineAnimator;
 
@@ -27,7 +27,7 @@ namespace Assets.UI.StateMachine.Transitions {
         #region constructors
 
         [Inject]
-        public UnitTransitionLogic(UnitSignals unitSignals, UnitUIState unitUIState,
+        public UnitTransitionLogic(UnitSignals unitSignals, PlayMode_UnitState unitUIState,
             [Inject(Id = "UI State Machine Animator")] Animator stateMachineAnimator
         ) {
             unitSignals.UnitClickedSignal.Subscribe(OnUnitClickedFired);

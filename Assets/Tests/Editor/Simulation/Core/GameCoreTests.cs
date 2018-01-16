@@ -43,7 +43,7 @@ namespace Assets.Tests.Simulation.Core {
             CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
 
             CivilizationFactoryMock = new Mock<ICivilizationFactory>();
-            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>());
+            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
 
             UnitFactoryMock = new Mock<IUnitFactory>();
             UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
@@ -104,7 +104,7 @@ namespace Assets.Tests.Simulation.Core {
                 new Mock<ICivilization>().Object
             };
 
-            CivilizationFactoryMock.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations);
+            CivilizationFactoryMock.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
 
             var gameCore = Container.Resolve<GameCore>();
 
@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Core {
             var unit         = new Mock<IUnit>()        .Object;
 
             CityFactoryMock        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
-            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization });
+            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization }.AsReadOnly());
             UnitFactoryMock        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
 
             var executionSequence = new MockSequence();
@@ -206,7 +206,7 @@ namespace Assets.Tests.Simulation.Core {
                 new Mock<ICivilization>().Object
             };
 
-            CivilizationFactoryMock.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations);
+            CivilizationFactoryMock.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
 
             var gameCore = Container.Resolve<GameCore>();
 
@@ -247,7 +247,7 @@ namespace Assets.Tests.Simulation.Core {
             var unit = new Mock<IUnit>().Object;
 
             CityFactoryMock        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
-            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization });
+            CivilizationFactoryMock.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization }.AsReadOnly());
             UnitFactoryMock        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
 
             var executionSequence = new MockSequence();
