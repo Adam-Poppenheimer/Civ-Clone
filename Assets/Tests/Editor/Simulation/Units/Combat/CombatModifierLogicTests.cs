@@ -20,48 +20,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region internal types
 
-        private class MockUnitConfig : IUnitConfig {
-
-            #region instance fields and properties
-
-            public ReadOnlyCollection<float> FeatureMeleeDefensiveness {
-                get { return _featureMeleeDefensiveness.AsReadOnly(); }
-            }
-            private List<float> _featureMeleeDefensiveness = new List<float>() {
-                1f, 2f
-            };
-
-            public ReadOnlyCollection<float> FeatureRangedDefensiveness {
-                get { return _featureRangedDefensiveness.AsReadOnly(); }
-            }
-            private List<float> _featureRangedDefensiveness = new List<float>() {
-                10f, 20f
-            };
-
-            public int MaxHealth { get; set; }
-
-            public float RiverCrossingAttackModifier {
-                get { return -0.5f; }
-            }
-
-            public ReadOnlyCollection<float> TerrainMeleeDefensiveness {
-                get { return _terrainMeleeDefensiveness.AsReadOnly(); }
-            }
-            private List<float> _terrainMeleeDefensiveness = new List<float>() {
-                1.5f, 2.5f, 3.5f, 4.5f, 6.5f
-            };
-
-            public ReadOnlyCollection<float> TerrainRangedDefensiveness {
-                get { return _terrainRangedDefensiveness.AsReadOnly(); }
-            }
-            private List<float> _terrainRangedDefensiveness = new List<float>() {
-                10.5f, 20.5f, 30.5f, 40.5f, 50.5f
-            };
-
-            #endregion
-            
-        }
-
         public class ModifierTestArgs {
 
             public TerrainType Terrain;
@@ -229,7 +187,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             Container.Bind<IRiverCanon>().FromInstance(MockRiverCanon.Object);
 
-            Container.Bind<IUnitConfig>().To<MockUnitConfig>().AsSingle();
+            Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Modifier Logic UI Config").AsSingle();
 
             Container.Bind<CombatModifierLogic>().AsSingle();
         }

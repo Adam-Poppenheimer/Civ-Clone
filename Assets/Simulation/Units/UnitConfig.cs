@@ -45,6 +45,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private float _riverCrossingAttackModifier;
 
+        public float CombatBaseDamage {
+            get { return _combatBaseDamage; }
+        }
+        [SerializeField] private float _combatBaseDamage;
+
         #endregion
 
         #endregion

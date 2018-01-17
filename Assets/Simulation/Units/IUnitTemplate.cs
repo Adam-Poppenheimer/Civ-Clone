@@ -23,6 +23,12 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<IUnitAbilityDefinition> Abilities { get; }
 
+        int AttackRange { get; }
+
+        int CombatStrength { get; }
+
+        int RangedAttackStrength { get; }
+
         #endregion
 
     }

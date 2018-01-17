@@ -20,6 +20,8 @@ namespace Assets.Simulation.Units {
 
         float RiverCrossingAttackModifier { get; }
 
+        float CombatBaseDamage { get; }
+
         #endregion
 
     }

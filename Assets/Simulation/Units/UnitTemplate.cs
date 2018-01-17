@@ -45,6 +45,21 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<UnitAbilityDefinition> _abilities;
 
+        public int AttackRange {
+            get { return _attackRange; }
+        }
+        [SerializeField] private int _attackRange;
+
+        public int CombatStrength {
+            get { return _combatStrength; }
+        }
+        [SerializeField] private int _combatStrength;
+
+        public int RangedAttackStrength {
+            get { return _rangedAttackStrength; }
+        }
+        [SerializeField] private int _rangedAttackStrength;
+
         #endregion
 
         #endregion
