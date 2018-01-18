@@ -17,8 +17,6 @@ namespace Assets.Simulation.Units {
 
         private List<TerrainType> LandTerrainTypes;
 
-        private List<TerrainShape> ImpassableTerrainShapes;
-
         private ICityFactory CityFactory;
 
         private UnitSignals Signals;
@@ -30,11 +28,9 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitPositionCanon(
             [Inject(Id = "Land Terrain Types")] List<TerrainType> landTerrainTypes,
-            [Inject(Id = "Impassable Terrain Types")] List<TerrainShape> impassableTerrainShapes,
             ICityFactory cityFactory, UnitSignals signals
         ){
             LandTerrainTypes        = landTerrainTypes;
-            ImpassableTerrainShapes = impassableTerrainShapes;
             CityFactory             = cityFactory;
             Signals                 = signals;
 
@@ -48,7 +44,7 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IHexCell location) {
-            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location);            
+            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location, false);            
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
@@ -69,24 +65,31 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location) {
+        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location, bool ignoreOccupancy) {
             if(location == null) {
                 return true;
+            }
+            
+            if(!ignoreOccupancy && AlreadyHasUnitOfType(location, type)) {
+                return false;
+            }
+            
+            if(type == UnitType.LandCivilian || type == UnitType.LandMilitary) {
+                return !location.IsUnderwater;
             }else {
-                return !AlreadyHasUnitOfType(location, type);
+                return location.IsUnderwater;
             }
         }
 
-        private bool IsValidForWaterUnit(IHexCell tile) {
+        private bool IsValidForWaterUnit(IHexCell cell) {
             return (
-                !LandTerrainTypes.Contains(tile.Terrain)
-                || CityFactory.AllCities.Where(city => city.Location == tile).LastOrDefault() != null
-            ) && !ImpassableTerrainShapes.Contains(tile.Shape);
+                cell.IsUnderwater
+                || CityFactory.AllCities.Where(city => city.Location == cell).LastOrDefault() != null
+            );
         }
 
-        private bool IsValidForLandUnit(IHexCell tile) {
-            return LandTerrainTypes.Contains(tile.Terrain)
-                && !ImpassableTerrainShapes.Contains(tile.Shape);
+        private bool IsValidForLandUnit(IHexCell cell) {
+            return !cell.IsUnderwater;
         }
 
         private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {

@@ -41,7 +41,7 @@ namespace Assets.Simulation.Units {
         }
 
         public bool IsTemplateValidForCity(IUnitTemplate template, ICity city) {
-            return UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location);
+            return UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location, false);
         }
 
         #endregion

@@ -6,11 +6,14 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
+
+using Assets.UI.Core;
 
 namespace Assets.Simulation.Core {
 
@@ -57,7 +60,7 @@ namespace Assets.Simulation.Core {
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
             IUnitFactory unitFactory, IUnitAbilityExecuter abilityExecuter,
             ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
-            TurnEndedSignal turnEndedSignal, EndTurnRequestedSignal endTurnRequestedSignal
+            TurnEndedSignal turnEndedSignal, PlayerSignals playerSignals
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
@@ -69,7 +72,7 @@ namespace Assets.Simulation.Core {
             TurnBeganSignal = turnBeganSignal;
             TurnEndedSignal = turnEndedSignal;
             
-            endTurnRequestedSignal.Listen(OnEndTurnRequested);
+            playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
             PlayerCivilization = CivilizationFactory.Create("Player Civilization", Color.red);
         }
@@ -118,7 +121,7 @@ namespace Assets.Simulation.Core {
             TurnEndedSignal.Fire(0);
         }
 
-        private void OnEndTurnRequested() {
+        private void OnEndTurnRequested(Unit unit) {
             EndRound();
             BeginRound();
         }

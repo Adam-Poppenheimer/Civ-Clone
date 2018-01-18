@@ -16,7 +16,6 @@ using Assets.UI.Units;
 using Assets.UI.MapEditor;
 
 using Assets.UI.StateMachine.States;
-using Assets.UI.StateMachine.Transitions;
 
 namespace Assets.UI.StateMachine {
 
@@ -38,11 +37,6 @@ namespace Assets.UI.StateMachine {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<DefaultTransitionLogic>   ().AsSingle().NonLazy();
-            Container.Bind<CityTransitionLogic>      ().AsSingle().NonLazy();
-            Container.Bind<MapTileTransitionLogic>   ().AsSingle().NonLazy();
-            Container.Bind<UnitTransitionLogic>      ().AsSingle().NonLazy();
-
             Container.Bind<List<CityDisplayBase>>        ().FromInstance(AllCityDisplays);
             Container.Bind<List<CivilizationDisplayBase>>().FromInstance(AllCivilizationDisplays);
             Container.Bind<List<TileDisplayBase>>        ().FromInstance(AllTileDisplays);

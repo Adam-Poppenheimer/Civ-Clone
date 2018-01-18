@@ -12,3 +12,23 @@ MonoBehaviour:
   m_Name: Unit
   m_EditorClassIdentifier: 
   _maxHealth: 100
+  _terrainMeleeDefensiveness:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  _terrainRangedDefensiveness:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  _featureMeleeDefensiveness:
+  - 0
+  - 0.25
+  _featureRangedDefensiveness:
+  - 0
+  - 0.25
+  _riverCrossingAttackModifier: -0.5
+  _combatBaseDamage: 30

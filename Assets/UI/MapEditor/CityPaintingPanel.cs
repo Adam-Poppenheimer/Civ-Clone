@@ -64,7 +64,7 @@ namespace Assets.UI.MapEditor {
 
             CellSignals.ClickedSignal.Listen(OnCellClicked);
 
-            CityClickedSubscription = CitySignals.CityClickedSignal.Subscribe(OnCityClicked);
+            CityClickedSubscription = CitySignals.ClickedSignal.Subscribe(OnCityClicked);
 
             IsAddingToggle.onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);

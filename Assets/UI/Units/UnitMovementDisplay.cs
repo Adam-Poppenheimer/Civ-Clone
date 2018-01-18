@@ -18,7 +18,8 @@ namespace Assets.UI.Units {
 
     public class UnitMovementDisplay : UnitDisplayBase {
 
-        #region instance fields and properties 
+        #region instance fields and properties
+
         private IDisposable UnitBeginDragSubscription;
         private IDisposable UnitEndDragSubscription;
 
@@ -58,8 +59,8 @@ namespace Assets.UI.Units {
         #region Unity message methods
 
         protected override void DoOnEnable() {
-            UnitBeginDragSubscription = UnitSignals.UnitBeginDragSignal.Subscribe(OnUnitBeginDragFired);
-            UnitEndDragSubscription   = UnitSignals.UnitEndDragSignal  .Subscribe(OnUnitEndDragFired);
+            UnitBeginDragSubscription = UnitSignals.BeginDragSignal.Subscribe(OnUnitBeginDragFired);
+            UnitEndDragSubscription   = UnitSignals.EndDragSignal  .Subscribe(OnUnitEndDragFired);
 
             MapTileSignals.PointerEnterSignal.Listen(OnTilePointerEnterFired);
             MapTileSignals.PointerExitSignal .Listen(OnTilePointerExitFired);
@@ -102,7 +103,7 @@ namespace Assets.UI.Units {
                 var unitLocation = PositionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
                 if( unitLocation == ProspectiveTravelGoal ||
-                    !PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, ProspectiveTravelGoal)
+                    !PositionCanon.CanPlaceUnitOfTypeAtLocation(ObjectToDisplay.Template.Type, ProspectiveTravelGoal, false)
                 ){
                     ProspectivePath = null;
                 }else {

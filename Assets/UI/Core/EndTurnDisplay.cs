@@ -7,10 +7,11 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using BetterUI;
 
-using Assets.Simulation.Cities;
+using Assets.UI.Core;
 using Assets.Simulation.Core;
 
 namespace Assets.UI.Core {
@@ -25,15 +26,15 @@ namespace Assets.UI.Core {
 
         private ITurnExecuter TurnExecuter;
 
-        private EndTurnRequestedSignal EndTurnRequestedSignal;
+        private PlayerSignals PlayerSignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(EndTurnRequestedSignal endTurnRequestedSignal) {
-            EndTurnRequestedSignal = endTurnRequestedSignal;
+        public void InjectDependencies(PlayerSignals playerSignals) {
+            PlayerSignals = playerSignals;
         }
 
         #region Unity message methods
@@ -44,14 +45,14 @@ namespace Assets.UI.Core {
 
         protected override void DoOnUpdate() {
             if(Input.GetButtonDown("Submit")) {
-                EndTurnRequestedSignal.Fire();
+                PlayerSignals.EndTurnRequestedSignal.OnNext(Unit.Default);
             }
         }
 
         #endregion
 
         private void OnEndTurnButtonClicked() {
-            EndTurnRequestedSignal.Fire();
+            PlayerSignals.EndTurnRequestedSignal.OnNext(Unit.Default);
         }
 
         #endregion

@@ -10,7 +10,6 @@ using Zenject;
 using Assets.UI.MapEditor;
 
 using Assets.UI.StateMachine.States;
-using Assets.UI.StateMachine.Transitions;
 
 namespace Assets.UI.StateMachine {
 
@@ -37,9 +36,7 @@ namespace Assets.UI.StateMachine {
         public override void InstallBindings() {
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
-            Container.Bind<CivManagementPanel>().FromInstance(CivPanel);
-
-            Container.Bind<MapEditingTransitionLogic>().AsSingle().NonLazy();            
+            Container.Bind<CivManagementPanel>().FromInstance(CivPanel);          
 
             Container.Bind<TerrainEditingPanel>().FromInstance(TerrainEditor);
 

@@ -8,13 +8,7 @@ AnimatorController:
   m_Name: UI State Controller
   serializedVersion: 5
   m_AnimatorParameters:
-  - m_Name: Play Mode Default State Requested
-    m_Type: 9
-    m_DefaultFloat: 0
-    m_DefaultInt: 0
-    m_DefaultBool: 0
-    m_Controller: {fileID: 0}
-  - m_Name: Tile State Requested
+  - m_Name: Cell State Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -32,43 +26,49 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Map Editing State Requested
+  - m_Name: Map Editor Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Map Editing Return Requested
+  - m_Name: Play Mode Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Civ Managing State Requested
+  - m_Name: Civ Management Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Terrain Editing State Requested
+  - m_Name: Terrain Editing Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Map Editing Default State Requested
+  - m_Name: Unit Painting Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: Unit Painting State Requested
+  - m_Name: City Painting Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
-  - m_Name: City Painting State Requested
+  - m_Name: Ranged Attack Requested
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
+  - m_Name: Return Requested
     m_Type: 9
     m_DefaultFloat: 0
     m_DefaultInt: 0
@@ -87,6 +87,28 @@ AnimatorController:
     m_IKPass: 0
     m_SyncedLayerAffectsTiming: 0
     m_Controller: {fileID: 9100000}
+--- !u!114 &114019615879337910
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: adc86bbd06db43c4cad51fb9a67ebfce, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114070193238679660
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2eaf41db5e30b3143aacb3cea46b1925, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114109212719068154
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -96,6 +118,61 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6dee71eb3e772174fae571fe19154d90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114239429068700064
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 852557c7d9ce1d14192eaa89ce63ac99, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114304083965255718
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6420c0019a2bbf248abbb825135ae5b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114354950657715198
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f81ff41ca9ad29d438f8a6b185d1b3e3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114378159300799698
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e720063fc953f4a419d1d4a58d80ecae, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114385832082688810
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4189b00329e469e4f8be2798307965dc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114423956293506312
@@ -120,15 +197,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f57d29702db33dd4bab3fe2b6514e4ad, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &114529573014431546
+--- !u!114 &114610571440196640
 MonoBehaviour:
-  m_ObjectHideFlags: 3
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f9adcad32bac09f4187bbca145ca6225, type: 3}
+  m_Script: {fileID: 11500000, guid: 11080de5a230d6742807668648489aea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114654473926743740
@@ -153,6 +230,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad518227b9891514ca81227c8f826828, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114784242130820586
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4cf2b189c9df70c4494073c2159ae650, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114859456365874718
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -175,6 +263,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 838e546e66d98be49bd3ed7f7832a14b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &114924754137884592
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 119705639e41c5b43be72ae1114c1185, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!114 &114983403918477786
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -186,6 +285,30 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 028cfef30b611fb4fb4ef572051869b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1101 &1101015075792409044
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Return Requested
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102254978444817082}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &1101076960119261568
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -194,7 +317,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Tile State Requested
+    m_ConditionEvent: Cell State Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102000237140996994}
@@ -218,7 +341,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Play Mode Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102254978444817082}
@@ -242,7 +365,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: City Painting State Requested
+    m_ConditionEvent: City Painting Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102560929436043976}
@@ -258,31 +381,7 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &1101163075018673846
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Play Mode Default State Requested
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102254978444817082}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101168361359348020
+--- !u!1101 &1101212986360010386
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -293,55 +392,7 @@ AnimatorStateTransition:
     m_ConditionEvent: Unit State Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102668385070339946}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101242664382317608
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Tile State Requested
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102000237140996994}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101259461689272476
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Unit State Requested
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102668385070339946}
+  m_DstState: {fileID: 1102224177052707528}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -362,7 +413,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102187900368565522}
@@ -386,10 +437,34 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Tile State Requested
+    m_ConditionEvent: Cell State Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102000237140996994}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &1101299595040403762
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: City State Requested
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102742908313118988}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -410,7 +485,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Civ Managing State Requested
+    m_ConditionEvent: Civ Management Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102877318330453188}
@@ -434,7 +509,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing Return Requested
+    m_ConditionEvent: Play Mode Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102254978444817082}
@@ -474,7 +549,7 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &1101413546501126222
+--- !u!1101 &1101437621674635878
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -482,18 +557,18 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: City State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102742908313118988}
+  m_DstState: {fileID: 1102224177052707528}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
   serializedVersion: 3
-  m_TransitionDuration: 0
+  m_TransitionDuration: 0.25
   m_TransitionOffset: 0
   m_ExitTime: 0.75
-  m_HasExitTime: 0
+  m_HasExitTime: 1
   m_HasFixedDuration: 1
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
@@ -506,7 +581,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing State Requested
+    m_ConditionEvent: Map Editor Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 1107082953125486070}
   m_DstState: {fileID: 0}
@@ -530,58 +605,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Unit Painting State Requested
+    m_ConditionEvent: Unit Painting Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102855711654800200}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101572216562941372
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: City State Requested
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102742908313118988}
-  m_Solo: 0
-  m_Mute: 0
-  m_IsExit: 0
-  serializedVersion: 3
-  m_TransitionDuration: 0
-  m_TransitionOffset: 0
-  m_ExitTime: 0.75
-  m_HasExitTime: 0
-  m_HasFixedDuration: 1
-  m_InterruptionSource: 0
-  m_OrderedInterruption: 1
-  m_CanTransitionToSelf: 1
---- !u!1101 &1101652863694575614
-AnimatorStateTransition:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_Name: 
-  m_Conditions:
-  - m_ConditionMode: 1
-    m_ConditionEvent: Unit State Requested
-    m_EventTreshold: 0
-  m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102668385070339946}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -602,7 +629,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102187900368565522}
@@ -626,7 +653,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102187900368565522}
@@ -642,7 +669,7 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
---- !u!1101 &1101694509079007264
+--- !u!1101 &1101706577580777636
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -650,10 +677,10 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Tile State Requested
+    m_ConditionEvent: City State Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
-  m_DstState: {fileID: 1102000237140996994}
+  m_DstState: {fileID: 1102742908313118988}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -674,10 +701,34 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Terrain Editing State Requested
+    m_ConditionEvent: Terrain Editing Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102748291188613984}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &1101921736706048526
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Unit State Requested
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102224177052707528}
   m_Solo: 0
   m_Mute: 0
   m_IsExit: 0
@@ -698,7 +749,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Play Mode Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102254978444817082}
@@ -722,7 +773,7 @@ AnimatorStateTransition:
   m_Name: 
   m_Conditions:
   - m_ConditionMode: 1
-    m_ConditionEvent: Map Editing Default State Requested
+    m_ConditionEvent: Return Requested
     m_EventTreshold: 0
   m_DstStateMachine: {fileID: 0}
   m_DstState: {fileID: 1102187900368565522}
@@ -744,16 +795,14 @@ AnimatorState:
   m_ObjectHideFlags: 3
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Tile Display
+  m_Name: Cell Selected
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 1101413546501126222}
   - {fileID: 1101982261262339094}
-  - {fileID: 1101168361359348020}
   - {fileID: 1101292461260579062}
   m_StateMachineBehaviours:
-  - {fileID: 114859456365874718}
+  - {fileID: 114784242130820586}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 0
@@ -772,7 +821,7 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Default State
+  m_Name: Default
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
@@ -782,7 +831,34 @@ AnimatorState:
   - {fileID: 1101452281300950162}
   - {fileID: 1101159664209633200}
   m_StateMachineBehaviours:
-  - {fileID: 114109212719068154}
+  - {fileID: 114385832082688810}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
+--- !u!1102 &1102224177052707528
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Default State
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 1101015075792409044}
+  - {fileID: 1101212986360010386}
+  - {fileID: 1101299595040403762}
+  m_StateMachineBehaviours:
+  - {fileID: 114239429068700064}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -801,16 +877,16 @@ AnimatorState:
   m_ObjectHideFlags: 3
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Default Display
+  m_Name: Default
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 1101259461689272476}
   - {fileID: 1101076960119261568}
   - {fileID: 1101383107398950602}
   - {fileID: 1101448805215947870}
+  - {fileID: 1101921736706048526}
   m_StateMachineBehaviours:
-  - {fileID: 114983403918477786}
+  - {fileID: 114924754137884592}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 0
@@ -829,13 +905,13 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: City Painting State
+  m_Name: City Painting
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101665220120099278}
   m_StateMachineBehaviours:
-  - {fileID: 114654473926743740}
+  - {fileID: 114378159300799698}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -848,21 +924,19 @@ AnimatorState:
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
---- !u!1102 &1102668385070339946
+--- !u!1102 &1102563645951043586
 AnimatorState:
   serializedVersion: 5
-  m_ObjectHideFlags: 3
+  m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Unit State
+  m_Name: Ranged Attack State
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
-  - {fileID: 1101163075018673846}
-  - {fileID: 1101572216562941372}
-  - {fileID: 1101242664382317608}
+  - {fileID: 1101437621674635878}
   m_StateMachineBehaviours:
-  - {fileID: 114529573014431546}
+  - {fileID: 114019615879337910}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -881,15 +955,14 @@ AnimatorState:
   m_ObjectHideFlags: 3
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: City Display
+  m_Name: City Selected
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101146419083021076}
-  - {fileID: 1101694509079007264}
-  - {fileID: 1101652863694575614}
+  - {fileID: 1101706577580777636}
   m_StateMachineBehaviours:
-  - {fileID: 114448291672738708}
+  - {fileID: 114070193238679660}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 0
@@ -908,13 +981,13 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Terrain Editing State
+  m_Name: Terrain Editing
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101280756099068638}
   m_StateMachineBehaviours:
-  - {fileID: 114894248669268354}
+  - {fileID: 114304083965255718}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -933,13 +1006,13 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Unit Painting State
+  m_Name: Unit Painting
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101995222112343380}
   m_StateMachineBehaviours:
-  - {fileID: 114423956293506312}
+  - {fileID: 114610571440196640}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -958,13 +1031,13 @@ AnimatorState:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: Civ Managing State
+  m_Name: Civ Managing
   m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 1101679431950086848}
   m_StateMachineBehaviours:
-  - {fileID: 114745101535676042}
+  - {fileID: 114354950657715198}
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 1
@@ -1027,13 +1100,16 @@ AnimatorStateMachine:
   - serializedVersion: 1
     m_State: {fileID: 1102000237140996994}
     m_Position: {x: 0, y: 0, z: 0}
+  m_ChildStateMachines:
   - serializedVersion: 1
-    m_State: {fileID: 1102668385070339946}
-    m_Position: {x: -108, y: -144, z: 0}
-  m_ChildStateMachines: []
+    m_StateMachine: {fileID: 1107639837750173572}
+    m_Position: {x: -228, y: -96, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
-  m_StateMachineTransitions: {}
+  m_StateMachineTransitions:
+    data:
+      first: {fileID: 1107639837750173572}
+      second: []
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 468, y: -132, z: 0}
   m_EntryPosition: {x: 120, y: -288, z: 0}
@@ -1070,3 +1146,27 @@ AnimatorStateMachine:
   m_ExitPosition: {x: 800, y: 120, z: 0}
   m_ParentStateMachinePosition: {x: 800, y: 20, z: 0}
   m_DefaultState: {fileID: 1102254978444817082}
+--- !u!1107 &1107639837750173572
+AnimatorStateMachine:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Unit Selected
+  m_ChildStates:
+  - serializedVersion: 1
+    m_State: {fileID: 1102224177052707528}
+    m_Position: {x: 168, y: 12, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 1102563645951043586}
+    m_Position: {x: 420, y: 12, z: 0}
+  m_ChildStateMachines: []
+  m_AnyStateTransitions: []
+  m_EntryTransitions: []
+  m_StateMachineTransitions: {}
+  m_StateMachineBehaviours: []
+  m_AnyStatePosition: {x: -108, y: -84, z: 0}
+  m_EntryPosition: {x: -108, y: 12, z: 0}
+  m_ExitPosition: {x: 564, y: 180, z: 0}
+  m_ParentStateMachinePosition: {x: 168, y: -132, z: 0}
+  m_DefaultState: {fileID: 1102224177052707528}

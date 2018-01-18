@@ -10,6 +10,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units {
 
@@ -17,16 +18,21 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        public ISubject<IUnit> UnitClickedSignal { get; private set; }
+        public ISubject<IUnit> ClickedSignal { get; private set; }
 
-        public ISubject<Tuple<IUnit, PointerEventData>> UnitBeginDragSignal { get; private set; }
-        public ISubject<Tuple<IUnit, PointerEventData>> UnitDragSignal      { get; private set; }
-        public ISubject<Tuple<IUnit, PointerEventData>> UnitEndDragSignal   { get; private set; }
+        public ISubject<IUnit> PointerEnteredSignal { get; private set; }
+        public ISubject<IUnit> PointerExitedSignal  { get; private set; }
+
+        public ISubject<Tuple<IUnit, PointerEventData>> BeginDragSignal { get; private set; }
+        public ISubject<Tuple<IUnit, PointerEventData>> DragSignal      { get; private set; }
+        public ISubject<Tuple<IUnit, PointerEventData>> EndDragSignal   { get; private set; }
 
         public ISubject<Tuple<IUnit, IHexCell>>               UnitLocationChangedSignal  { get; private set; }
         public ISubject<Tuple<IUnit, IUnitAbilityDefinition>> UnitActivatedAbilitySignal { get; private set; }
 
         public ISubject<IUnit> UnitBeingDestroyedSignal { get; private set; }
+
+        public ISubject<CombatResultData> CombatEventOccurredSignal { get; private set; }
 
         #endregion
 
@@ -34,16 +40,20 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitSignals() {
-            UnitClickedSignal          = new Subject<IUnit>();
+            ClickedSignal    = new Subject<IUnit>();
+            PointerEnteredSignal = new Subject<IUnit>();
+            PointerExitedSignal  = new Subject<IUnit>();
 
-            UnitBeginDragSignal        = new Subject<Tuple<IUnit, PointerEventData>>();
-            UnitDragSignal             = new Subject<Tuple<IUnit, PointerEventData>>();
-            UnitEndDragSignal          = new Subject<Tuple<IUnit, PointerEventData>>();
+            BeginDragSignal        = new Subject<Tuple<IUnit, PointerEventData>>();
+            DragSignal             = new Subject<Tuple<IUnit, PointerEventData>>();
+            EndDragSignal          = new Subject<Tuple<IUnit, PointerEventData>>();
 
             UnitLocationChangedSignal  = new Subject<Tuple<IUnit, IHexCell>>();
             UnitActivatedAbilitySignal = new Subject<Tuple<IUnit, IUnitAbilityDefinition>>();
 
             UnitBeingDestroyedSignal   = new Subject<IUnit>();
+
+            CombatEventOccurredSignal = new Subject<CombatResultData>();
         }
 
         #endregion

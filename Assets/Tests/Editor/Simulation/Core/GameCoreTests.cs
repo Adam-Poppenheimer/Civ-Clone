@@ -14,6 +14,8 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 
+using Assets.UI.Core;
+
 namespace Assets.Tests.Simulation.Core {
 
     [TestFixture]
@@ -61,7 +63,6 @@ namespace Assets.Tests.Simulation.Core {
 
             Container.DeclareSignal<TurnBeganSignal>();
             Container.DeclareSignal<TurnEndedSignal>();
-            Container.DeclareSignal<EndTurnRequestedSignal>();
 
             Container.Bind<GameCore>().AsSingle();
         }
@@ -283,7 +284,7 @@ namespace Assets.Tests.Simulation.Core {
 
             CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>() { city }.AsReadOnly());
 
-            var signal = Container.Resolve<EndTurnRequestedSignal>();
+            var playerSignals = Container.Resolve<PlayerSignals>();
 
             Container.Resolve<GameCore>();
 
@@ -291,7 +292,7 @@ namespace Assets.Tests.Simulation.Core {
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity(city));
             TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCity(city));
 
-            signal.Fire();
+            playerSignals.EndTurnRequestedSignal.OnNext(UniRx.Unit.Default);
 
             TurnExecuterMock.VerifyAll();
         }

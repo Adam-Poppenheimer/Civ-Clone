@@ -22,7 +22,7 @@ namespace Assets.UI.Core {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            
+            Container.Bind<PlayerSignals>().AsSingle();
         }
 
         #endregion

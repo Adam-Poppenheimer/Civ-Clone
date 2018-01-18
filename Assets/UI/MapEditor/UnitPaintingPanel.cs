@@ -77,7 +77,7 @@ namespace Assets.UI.MapEditor {
 
             CellSignals.ClickedSignal.Listen(OnCellClicked);
 
-            UnitClickedSubscription = UnitSignals.UnitClickedSignal.Subscribe(OnUnitClicked);
+            UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
 
             IsAddingToggle.onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);
@@ -153,7 +153,7 @@ namespace Assets.UI.MapEditor {
 
         private void TryAddUnit(IHexCell location) {
             if( ActiveCivilization != null && ActiveTemplate != null &&
-                UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(ActiveTemplate.Type, location)
+                UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(ActiveTemplate.Type, location, false)
             ){
                 UnitFactory.Create(location, ActiveTemplate, ActiveCivilization);
             }

@@ -11,6 +11,7 @@ using UniRx;
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.UI.Units {
 
@@ -21,8 +22,8 @@ namespace Assets.UI.Units {
         private UnitSignals Signals;
 
         private IDisposable UnitLocationChangedSubscription;
-
         private IDisposable UnitActivatedAbilitySubscription;
+        private IDisposable CombatEventOccurredSubscription;
 
         #endregion
 
@@ -36,14 +37,18 @@ namespace Assets.UI.Units {
         #region Unity message methods
 
         public void OnEnable() {
-            UnitLocationChangedSubscription  = Signals.UnitLocationChangedSignal .Subscribe(OnUnitLocationChangedFired);
-            UnitActivatedAbilitySubscription = Signals.UnitActivatedAbilitySignal.Subscribe(OnUnitActivatedAbilityFired);
+            UnitLocationChangedSubscription  = Signals.UnitLocationChangedSignal .Subscribe(OnUnitLocationChanged);
+            UnitActivatedAbilitySubscription = Signals.UnitActivatedAbilitySignal.Subscribe(OnUnitActivatedAbility);
+            CombatEventOccurredSubscription  = Signals.CombatEventOccurredSignal .Subscribe(OnCombatEventOccurred);
+
             DoOnEnable();
         }
 
         public void OnDisable() {
             UnitLocationChangedSubscription .Dispose();
             UnitActivatedAbilitySubscription.Dispose();
+            CombatEventOccurredSubscription .Dispose();
+
             DoOnDisable();
         }
 
@@ -52,14 +57,20 @@ namespace Assets.UI.Units {
 
         #endregion
 
-        private void OnUnitLocationChangedFired(Tuple<IUnit, IHexCell> dataTuple) {
+        private void OnUnitLocationChanged(Tuple<IUnit, IHexCell> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }
         }
 
-        private void OnUnitActivatedAbilityFired(Tuple<IUnit, IUnitAbilityDefinition> dataTuple) {
+        private void OnUnitActivatedAbility(Tuple<IUnit, IUnitAbilityDefinition> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
+                Refresh();
+            }
+        }
+
+        private void OnCombatEventOccurred(CombatResultData results) {
+            if(results.Attacker == ObjectToDisplay || results.Defender == ObjectToDisplay) {
                 Refresh();
             }
         }

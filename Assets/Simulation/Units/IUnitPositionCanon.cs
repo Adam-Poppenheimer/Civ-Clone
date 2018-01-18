@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location);
+        bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location, bool ignoreOccupancy);
 
         #endregion
 

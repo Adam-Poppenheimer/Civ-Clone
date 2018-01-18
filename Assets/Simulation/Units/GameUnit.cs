@@ -16,7 +16,7 @@ using UnityCustomUtilities.Extensions;
 namespace Assets.Simulation.Units {
 
     public class GameUnit : MonoBehaviour, IUnit, IPointerClickHandler, IBeginDragHandler,
-        IDragHandler, IEndDragHandler {
+        IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler {
 
         #region instance fields and properties
 
@@ -58,6 +58,8 @@ namespace Assets.Simulation.Units {
             Signals          = signals;
             TerrainCostLogic = terrainCostLogic;
             PositionCanon    = positionCanon;
+
+            Health = Config.MaxHealth;
         }
 
         #region Unity messages
@@ -71,19 +73,27 @@ namespace Assets.Simulation.Units {
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {
-            Signals.UnitClickedSignal.OnNext(this);
+            Signals.ClickedSignal.OnNext(this);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            Signals.PointerEnteredSignal.OnNext(this);
+        }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            Signals.PointerExitedSignal.OnNext(this);
         }
 
         public void OnBeginDrag(PointerEventData eventData) {
-            Signals.UnitBeginDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.BeginDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         public void OnDrag(PointerEventData eventData) {
-            Signals.UnitDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.DragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         public void OnEndDrag(PointerEventData eventData) {
-            Signals.UnitEndDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.EndDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         #endregion

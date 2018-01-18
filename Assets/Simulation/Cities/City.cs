@@ -133,7 +133,7 @@ namespace Assets.Simulation.Cities {
 
         /// <inheritdoc/>
         public void OnPointerClick(PointerEventData eventData) {
-            Signals.CityClickedSignal.OnNext(this);
+            Signals.ClickedSignal.OnNext(this);
         }
 
         #endregion

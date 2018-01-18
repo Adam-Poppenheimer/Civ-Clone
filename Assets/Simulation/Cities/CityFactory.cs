@@ -65,8 +65,10 @@ namespace Assets.Simulation.Cities {
             CityPossessionCanon = cityPossessionCanon;
             Grid                = grid;
             CellPossessionCanon = cellPossessionCanon;
-
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            
+            if(citySignals != null) {
+                citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            }
         }
 
         #endregion

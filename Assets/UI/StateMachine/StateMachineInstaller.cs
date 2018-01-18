@@ -22,7 +22,9 @@ namespace Assets.UI.StateMachine {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<Animator>().WithId("UI State Machine Animator").FromInstance(StateMachineAnimator);
+            Container.Bind<Animator>().WithId("UI Animator").FromInstance(StateMachineAnimator);
+
+            Container.Bind<UIStateMachineBrain>().AsSingle();
 
             foreach(var behaviour in StateMachineAnimator.GetBehaviours<StateMachineBehaviour>()) {
                 Container.Rebind(behaviour.GetType()).FromInstance(behaviour);

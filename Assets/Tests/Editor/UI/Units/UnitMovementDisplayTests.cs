@@ -85,7 +85,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -111,7 +111,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -138,7 +138,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -209,7 +209,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
@@ -235,13 +235,13 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             var tileEnterSignal = Container.Resolve<CellPointerEnterSignal>();
 
             tileEnterSignal.Fire(enteredTile);
 
-            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(unit.Template.Type, enteredTile)).Returns(false);
+            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(unit.Template.Type, enteredTile, false)).Returns(false);
 
             tileEnterSignal.Fire(enteredTile);
 
@@ -264,7 +264,7 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
@@ -295,13 +295,13 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unit.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
             MockPathDrawer.ResetCalls();
 
-            UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
+            UnitSignals.EndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unit, eventData));
 
             MockPathDrawer.Verify(drawer => drawer.ClearPath(), Times.Once, "PathDrawer.ClearAllPaths was not called");
         }
@@ -329,11 +329,11 @@ namespace Assets.Tests.UI.Units {
 
             var eventData = new PointerEventData(EventSystem.current) { dragging = true, pointerDrag = unitMock.Object.gameObject };
 
-            UnitSignals.UnitBeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
+            UnitSignals.BeginDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
 
             Container.Resolve<CellPointerEnterSignal>().Fire(enteredTile);
 
-            UnitSignals.UnitEndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
+            UnitSignals.EndDragSignal.OnNext(new Tuple<IUnit, PointerEventData>(unitMock.Object, eventData));
 
             unitMock.VerifyAll();
 
@@ -359,7 +359,7 @@ namespace Assets.Tests.UI.Units {
             mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 
             MockPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
-            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(type, It.IsAny<IHexCell>())).Returns(true);
+            MockPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(type, It.IsAny<IHexCell>(), false)).Returns(true);
 
             return mockUnit;
         }

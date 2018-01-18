@@ -621,6 +621,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
             Container.Bind<ILineOfSightLogic>   ().FromInstance(MockLineOfSightLogic   .Object);
             Container.Bind<ICombatModifierLogic>().FromInstance(MockCombatModifierLogic.Object);
+            
+            Container.Bind<UnitSignals>().AsSingle();
 
             Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Executer Unit Config").AsSingle();
 
@@ -693,7 +695,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>()))
                 .Returns(distanceBetween);
 
-            MockUnitPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), It.IsAny<IHexCell>()))
+            MockUnitPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(It.IsAny<UnitType>(), It.IsAny<IHexCell>(), true))
                 .Returns(attackerCanMoveTo);
 
             MockLineOfSightLogic.Setup(logic => logic.CanUnitSeeCell(It.IsAny<IUnit>(), It.IsAny<IHexCell>()))

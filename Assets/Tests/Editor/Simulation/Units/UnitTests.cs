@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Units {
         public void OnPointerClick_SignalFired() {
             var unitToTest = Container.Resolve<GameUnit>();
 
-            Container.Resolve<UnitSignals>().UnitClickedSignal.Subscribe(delegate(IUnit clickedUnit) {
+            Container.Resolve<UnitSignals>().ClickedSignal.Subscribe(delegate(IUnit clickedUnit) {
                 Assert.AreEqual(unitToTest, clickedUnit, "Unit Clicked Signal received an incorrect clickedUnit");
                 Assert.Pass();
             });
@@ -142,7 +142,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.Resolve<UnitSignals>().UnitBeginDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().BeginDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Begin Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Begin Drag Signal was passed an incorrect EventData");
                     Assert.Pass();
@@ -158,7 +158,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.Resolve<UnitSignals>().UnitDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().DragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Drag Signal was passed an incorrect EventData");
                     Assert.Pass();
@@ -174,7 +174,7 @@ namespace Assets.Tests.Simulation.Units {
             var unitToTest = Container.Resolve<GameUnit>();
             var eventData = new PointerEventData(EventSystem.current);
 
-            Container.Resolve<UnitSignals>().UnitEndDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
+            Container.Resolve<UnitSignals>().EndDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
                     Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit End Drag Signal was passed an incorrect Unit");
                     Assert.AreEqual(eventData,  dataTuple.Item2, "Unit End Drag Signal was passed an incorrect EventData");
                     Assert.Pass();

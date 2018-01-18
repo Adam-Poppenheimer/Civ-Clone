@@ -10,7 +10,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units {
 
@@ -51,6 +51,9 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
             Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
+            Container.Bind<ILineOfSightLogic>           ().To<LineOfSightLogic>           ().AsSingle();
+            Container.Bind<ICombatModifierLogic>        ().To<CombatModifierLogic>        ().AsSingle();
+            Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
             Container.Bind<UnitSignals>().AsSingle();
         }

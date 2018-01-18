@@ -22,7 +22,7 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// Signal that fires whenever a city is clicked.
         /// </summary>
-        public ISubject<ICity>                 CityClickedSignal           { get; private set; }
+        public ISubject<ICity>                 ClickedSignal           { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city's ActiveProject is changed.
@@ -53,7 +53,7 @@ namespace Assets.Simulation.Cities {
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
 
-            CityClickedSignal        = new Subject<ICity>();
+            ClickedSignal            = new Subject<ICity>();
             CityBeingDestroyedSignal = new Subject<ICity>();
         }
 

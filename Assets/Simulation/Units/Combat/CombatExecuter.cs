@@ -25,6 +25,8 @@ namespace Assets.Simulation.Units.Combat {
 
         private IUnitConfig UnitConfig;
 
+        private UnitSignals UnitSignals;
+
         #endregion
 
         #region constructors
@@ -32,13 +34,14 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public CombatExecuter(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, ILineOfSightLogic lineOfSightLogic,
-            ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig
+            ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals
         ){
             UnitPositionCanon   = unitPositionCanon;
             Grid                = grid;
             LineOfSightLogic    = lineOfSightLogic;
             CombatModifierLogic = combatModifierLogic;
             UnitConfig          = unitConfig;
+            UnitSignals         = unitSignals;
         }
 
         #endregion
@@ -66,7 +69,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!UnitPositionCanon.CanChangeOwnerOfPossession(attacker, defenderLocation)) {
+            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(attacker.Template.Type, defenderLocation, true)) {
                 return false;
             }
 
@@ -154,31 +157,37 @@ namespace Assets.Simulation.Units.Combat {
             bool attackerReceivesDamage
         ){
             attacker.CurrentMovement = 0;
+            int attackerDamage = 0, defenderDamage = 0;
+
 
             if(attackerStrength == 0) {
-                InflictDamage(attacker, UnitConfig.MaxHealth);
+                defenderDamage = attacker.Health;
 
             }else if(defenderStrength == 0) {
-                InflictDamage(defender, UnitConfig.MaxHealth);
+                attackerDamage = defender.Health;
 
             }else {
                 float attackerDefenderRatio = attackerStrength / defenderStrength;
                 float defenderAttackerRatio = defenderStrength / attackerStrength;
 
-                int attackerDamage = Mathf.RoundToInt(
+                attackerDamage = Mathf.RoundToInt(
                     attackerDefenderRatio * UnitConfig.CombatBaseDamage
                 );
 
-                int defenderDamage = Mathf.RoundToInt(
+                defenderDamage = Mathf.RoundToInt(
                     defenderAttackerRatio * UnitConfig.CombatBaseDamage
                 );
-
-                InflictDamage(defender, attackerDamage);
-
-                if(attackerReceivesDamage) {
-                    InflictDamage(attacker, defenderDamage);
-                }
             }
+
+            if(attackerReceivesDamage) {
+                InflictDamage(attacker, defenderDamage);
+            }
+            
+            InflictDamage(defender, attackerDamage);
+
+            UnitSignals.CombatEventOccurredSignal.OnNext(
+                new CombatResultData(attacker, defender, defenderDamage, attackerDamage)
+            );
         }
 
         private void InflictDamage(IUnit unit, int damage) {
