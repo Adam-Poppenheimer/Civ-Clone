@@ -58,6 +58,10 @@ namespace Assets.Simulation.Units.Combat {
                 throw new ArgumentNullException("defender");
             }
 
+            if(attacker == defender) {
+                return false;
+            }
+
             var attackerLocation = UnitPositionCanon.GetOwnerOfPossession(attacker);
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
@@ -94,6 +98,10 @@ namespace Assets.Simulation.Units.Combat {
             }
             if(defender == null) {
                 throw new ArgumentNullException("defender");
+            }
+
+            if(attacker == defender) {
+                return false;
             }
 
             var attackerLocation = UnitPositionCanon.GetOwnerOfPossession(attacker);

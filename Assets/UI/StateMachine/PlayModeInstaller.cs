@@ -30,6 +30,8 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
 
+        [SerializeField] private RectTransform CombatSummaryPanel;
+
         #endregion
 
         #region instance methods
@@ -43,6 +45,8 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<UnitDisplayBase>>        ().FromInstance(AllUnitDisplays);
 
             Container.Bind<List<RectTransform>>().WithId("Play Mode Default Panels").FromInstance(PlayModeDefaultPanels);
+
+            Container.Bind<RectTransform>().WithId("Combat Summary Panel").FromInstance(CombatSummaryPanel);
         }
 
         #endregion

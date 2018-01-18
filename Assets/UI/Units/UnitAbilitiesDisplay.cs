@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+using UnityEngine.UI;
+
 using Zenject;
 
 using Assets.Simulation.Units;
@@ -13,6 +16,8 @@ namespace Assets.UI.Units {
     public class UnitAbilitiesDisplay : UnitDisplayBase {
 
         #region instance fields and properties
+
+        [SerializeField] private Button RangedAttackButton;
 
         private AbilityDisplayMemoryPool AbilityDisplayPool;
 
@@ -49,6 +54,8 @@ namespace Assets.UI.Units {
 
                 ActiveAbilityDisplays.Add(newDisplay);
             }
+
+            RangedAttackButton.gameObject.SetActive(ObjectToDisplay.Template.RangedAttackStrength > 0);
         }
 
         #endregion
