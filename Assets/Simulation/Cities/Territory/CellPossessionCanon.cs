@@ -40,6 +40,14 @@ namespace Assets.Simulation.Cities.Territory {
             }
         }
 
+        protected override void DoOnPossessionBroken(IHexCell possession, ICity oldOwner) {
+            possession.Refresh();
+        }
+
+        protected override void DoOnPossessionEstablished(IHexCell possession, ICity newOwner) {
+            possession.Refresh();
+        }
+
         #endregion
 
         private void OnCityBeingDestroyed(ICity city) {

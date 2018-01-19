@@ -93,6 +93,11 @@ namespace Assets.Simulation.HexMap {
             return Color.Lerp(a, b, h);
         }
 
+        public static float TerraceLerp(float a, float b, int step) {
+            float h = step * HexMetrics.HorizontalTerraceStepSize;
+            return Mathf.Lerp(a, b, h);
+        }
+
         public static HexEdgeType GetEdgeType(int elevationOne, int elevationTwo) {
             if(elevationOne == elevationTwo) {
                 return HexEdgeType.Flat;
