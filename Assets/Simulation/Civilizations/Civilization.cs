@@ -39,7 +39,7 @@ namespace Assets.Simulation.Civilizations {
 
         private ICivilizationConfig Config;
 
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private ICivilizationYieldLogic YieldLogic;
 
         #endregion
 
@@ -49,17 +49,15 @@ namespace Assets.Simulation.Civilizations {
         /// 
         /// </summary>
         /// <param name="config"></param>
-        /// <param name="cityPossessionCanon"></param>
         /// <param name="name"></param>
         [Inject]
         public Civilization(
-            ICivilizationConfig config,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
             string name = ""
         ){
-            Config              = config;
-            CityPossessionCanon = cityPossessionCanon;
-            Name                = name;
+            Config     = config;
+            YieldLogic = yieldLogic;
+            Name       = name;
 
             TechQueue = new Queue<ITechDefinition>();
         }
@@ -70,10 +68,10 @@ namespace Assets.Simulation.Civilizations {
 
         /// <inheritdoc/>
         public void PerformIncome() {
-            foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(this)) {
-                GoldStockpile    += Mathf.FloorToInt(city.LastIncome[ResourceType.Gold]);
-                CultureStockpile += Mathf.FloorToInt(city.LastIncome[ResourceType.Culture]);
-            }
+            var yield = YieldLogic.GetYieldOfCivilization(this);
+
+            GoldStockpile    += Mathf.FloorToInt(yield[ResourceType.Gold]);
+            CultureStockpile += Mathf.FloorToInt(yield[ResourceType.Culture]);
         }
 
         #endregion
