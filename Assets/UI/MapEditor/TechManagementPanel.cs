@@ -21,13 +21,13 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private Dropdown CivilizationDropdown;
 
-        [SerializeField] private TechnologyRecord TechRecordPrefab;
+        [SerializeField] private MapEditorTechRecord TechRecordPrefab;
 
         [SerializeField] private RectTransform TechRecordContainer;
 
         private ICivilization ActiveCivilization;
 
-        private List<TechnologyRecord> InstantiatedTechRecords = new List<TechnologyRecord>();
+        private List<MapEditorTechRecord> InstantiatedTechRecords = new List<MapEditorTechRecord>();
 
 
 
@@ -96,24 +96,24 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void ConfigureRecord(TechnologyRecord record, ITechDefinition techToDisplay) {
+        private void ConfigureRecord(MapEditorTechRecord record, ITechDefinition techToDisplay) {
             record.TechToDisplay = techToDisplay;
 
             if(TechCanon.IsTechDiscoveredByCiv(techToDisplay, ActiveCivilization)) {
-                record.TechStatus = TechnologyRecord.StatusType.Discovered;
+                record.TechStatus = MapEditorTechRecord.StatusType.Discovered;
 
             }else if(TechCanon.IsTechAvailableToCiv(techToDisplay, ActiveCivilization)) {
-                record.TechStatus = TechnologyRecord.StatusType.Available;
+                record.TechStatus = MapEditorTechRecord.StatusType.Available;
 
             }else {
-                record.TechStatus = TechnologyRecord.StatusType.Unavailable;
+                record.TechStatus = MapEditorTechRecord.StatusType.Unavailable;
             }
 
             record.Refresh();
         }
 
         private void TechRecord_ToggleClicked(object sender, EventArgs e) {
-            var clickedRecord = sender as TechnologyRecord;
+            var clickedRecord = sender as MapEditorTechRecord;
             var tech = clickedRecord.TechToDisplay;
 
             if(TechCanon.IsTechDiscoveredByCiv(tech, ActiveCivilization)) {

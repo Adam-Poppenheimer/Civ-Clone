@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -35,6 +36,8 @@ namespace Assets.Simulation.Civilizations {
         /// The current amount of culture the civilization has to spend.
         /// </summary>
         int CultureStockpile { get; set; }
+
+        Queue<ITechDefinition> TechQueue { get; }
 
         #endregion
 

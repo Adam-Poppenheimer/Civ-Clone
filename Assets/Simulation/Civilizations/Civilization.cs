@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -32,6 +33,8 @@ namespace Assets.Simulation.Civilizations {
         /// <inheritdoc/>
         public int CultureStockpile { get; set; }
 
+        public Queue<ITechDefinition> TechQueue { get; set; }
+
         #endregion
 
         private ICivilizationConfig Config;
@@ -49,11 +52,16 @@ namespace Assets.Simulation.Civilizations {
         /// <param name="cityPossessionCanon"></param>
         /// <param name="name"></param>
         [Inject]
-        public Civilization(ICivilizationConfig config, IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            string name = "") {
-            Config = config;
+        public Civilization(
+            ICivilizationConfig config,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            string name = ""
+        ){
+            Config              = config;
             CityPossessionCanon = cityPossessionCanon;
-            Name = name;
+            Name                = name;
+
+            TechQueue = new Queue<ITechDefinition>();
         }
 
         #endregion

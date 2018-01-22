@@ -6,7 +6,12 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Zenject;
+
 using Assets.Simulation.Technology;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.Technology {
 
@@ -14,58 +19,95 @@ namespace Assets.UI.Technology {
 
         #region internal types
 
-        public enum StatusType {
-            Available, Unavailable,Discovered
+        public enum TechStatus {
+            Available, Discovered, BeingResearched, InQueue
         }
 
         #endregion
 
         #region instance fields and properties
 
+        public Vector2 BackwardConnectionPoint {
+            get {
+                return new Vector2(
+                    RectTransform.rect.x,
+                    RectTransform.rect.y + RectTransform.rect.height / 2f
+                ) + (Vector2)RectTransform.localPosition;
+            }
+        }
+
+        public Vector2 ForwardConnectionPoint {
+            get {
+                return new Vector2(
+                    RectTransform.rect.x + RectTransform.rect.width,
+                    RectTransform.rect.y + RectTransform.rect.height / 2f
+                ) + (Vector2)RectTransform.localPosition;
+            }
+        }
+
         public ITechDefinition TechToDisplay { get; set; }
 
-        public StatusType TechStatus { get; set; }
+        public TechStatus Status { get; set; }
+
+        public Button SelectionButton {
+            get {
+                if(_selectionButton == null) {
+                    _selectionButton = GetComponentInChildren<Button>();
+                }
+                return _selectionButton;
+            }
+        }
+        private Button _selectionButton;
+
+        private RectTransform RectTransform {
+            get {
+                if(_rectTransform == null) {
+                    _rectTransform = GetComponent<RectTransform>();
+                }
+                return _rectTransform;
+            }
+        }
+        private RectTransform _rectTransform;
+
+        [SerializeField] private Text NameField;
+        [SerializeField] private Text CostField;
+        [SerializeField] private Text TurnsToResearchField;
 
         [SerializeField] private Color DiscoveredColor;
         [SerializeField] private Color AvailableColor;
-        [SerializeField] private Color UnavailableColor;
-
-        [SerializeField] private Button StatusButton;
-
-        [SerializeField] private Text NameField;
-
-        #endregion
-
-        #region events
-
-        public event EventHandler<EventArgs> RecordClicked;
+        [SerializeField] private Color BeingResearchedColor;
+        [SerializeField] private Color InQueueColor;
 
         #endregion
 
         #region instance methods
 
         public void Refresh() {
-            if(TechToDisplay != null) {
-                NameField.text = TechToDisplay.Name;
-
-                if(TechStatus == StatusType.Available) {
-                    StatusButton.image.color = AvailableColor;
-                    StatusButton.interactable = true;
-
-                }else if(TechStatus == StatusType.Unavailable) {
-                    StatusButton.image.color = UnavailableColor;
-                    StatusButton.interactable = false;
-
-                }else if(TechStatus == StatusType.Discovered) {
-                    StatusButton.image.color = DiscoveredColor;
-                    StatusButton.interactable = true;
-                }
+            if(TechToDisplay == null) {
+                return;
             }
-        }
 
-        public void OnButtonClicked() {
-            if(RecordClicked != null) {
-                RecordClicked(this, EventArgs.Empty);
+            NameField.text = TechToDisplay.Name;
+            CostField.text = TechToDisplay.Cost.ToString();
+            TurnsToResearchField.text = "--";
+
+            if(SelectionButton != null) {
+                if(Status == TechStatus.Discovered) {
+                    SelectionButton.image.color = DiscoveredColor;
+                    SelectionButton.interactable = false;
+
+                }else if(Status == TechStatus.Available){
+                    SelectionButton.image.color = AvailableColor;
+                    SelectionButton.interactable = true;
+
+                }else if(Status == TechStatus.BeingResearched) {
+                    SelectionButton.image.color = BeingResearchedColor;
+                    SelectionButton.interactable = true;
+
+                }else if(Status == TechStatus.InQueue) {
+                    SelectionButton.image.color = InQueueColor;
+                    SelectionButton.interactable = true;
+                }
             }
         }
 

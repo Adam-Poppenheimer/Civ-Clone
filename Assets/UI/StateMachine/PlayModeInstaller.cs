@@ -13,7 +13,7 @@ using Assets.UI.Cities;
 using Assets.UI.Civilizations;
 using Assets.UI.HexMap;
 using Assets.UI.Units;
-using Assets.UI.MapEditor;
+using Assets.UI.Technology;
 
 using Assets.UI.StateMachine.States;
 
@@ -32,6 +32,8 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private RectTransform CombatSummaryPanel;
 
+        [SerializeField] private TechTreeDisplay TechTreeDisplay;
+
         #endregion
 
         #region instance methods
@@ -47,6 +49,8 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<RectTransform>>().WithId("Play Mode Default Panels").FromInstance(PlayModeDefaultPanels);
 
             Container.Bind<RectTransform>().WithId("Combat Summary Panel").FromInstance(CombatSummaryPanel);
+
+            Container.Bind<TechTreeDisplay>().FromInstance(TechTreeDisplay);
         }
 
         #endregion

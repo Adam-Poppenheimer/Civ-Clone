@@ -14,7 +14,7 @@ MonoBehaviour:
   _cost: 20
   _prerequisites:
   - {fileID: 11400000, guid: e930a11e5f847324ba113ebe57f5042c, type: 2}
-  _techScreenPosition: {x: 0, y: 0}
+  _techScreenPosition: {x: 300, y: -150}
   _buildingsEnabled:
   - {fileID: 11400000, guid: b392a53cf08debc44ad6ad5aa3ca32a9, type: 2}
   _unitsEnabled:
