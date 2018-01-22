@@ -8,9 +8,12 @@ using UnityEngine.UI;
 
 using Zenject;
 
+using Assets.Simulation;
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units;
+using Assets.Simulation.Technology;
 
 namespace Assets.UI.Cities.Production {
 
@@ -18,94 +21,83 @@ namespace Assets.UI.Cities.Production {
 
         #region instance fields and properties
 
-        [InjectOptional(Id = "Project Dropdown")]
-        private Dropdown ProjectDropdown {
-            get { return _projectDropdown; }
-            set {
-                if(value != null) {
-                    _projectDropdown = value;
-                    _projectDropdown.onValueChanged.AddListener(OnProjectDropdownChanged);
-                }
-            }
-        }
-        [SerializeField] private Dropdown _projectDropdown;
+        [SerializeField] private RectTransform ProjectRecordContainer;
+
+        [SerializeField] private CityProjectRecord ProjectRecordPrefab;
+
+        private List<CityProjectRecord> InstantiatedProjectRecords = new List<CityProjectRecord>();
+
+
 
         private IBuildingProductionValidityLogic BuildingValidityLogic;
 
         private IUnitProductionValidityLogic UnitValidityLogic;
+
+        private ITechCanon TechCanon;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IBuildingProductionValidityLogic templateValidityLogic,
-            IUnitProductionValidityLogic unitValidityLogic
+        public void InjectDependencies(IBuildingProductionValidityLogic buildingValidityLogic,
+            IUnitProductionValidityLogic unitValidityLogic, ITechCanon techCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ){
-            BuildingValidityLogic = templateValidityLogic;
-            UnitValidityLogic = unitValidityLogic;
+            BuildingValidityLogic = buildingValidityLogic;
+            UnitValidityLogic     = unitValidityLogic;
+            TechCanon             = techCanon;
+            CityPossessionCanon   = cityPossessionCanon;
         }
-
-        #region Unity message methods
-
-        private void Start() {
-            ProjectDropdown.onValueChanged.AddListener(OnProjectDropdownChanged);
-        }
-
-        #endregion
 
         #region from CityDisplayBase
 
         public override void Refresh() {
+            foreach(var projectRecord in new List<CityProjectRecord>(InstantiatedProjectRecords)) {
+                Destroy(projectRecord.gameObject);
+            }
+            InstantiatedProjectRecords.Clear();
+
             if(ObjectToDisplay == null) {
                 return;
             }
 
-            ProjectDropdown.ClearOptions();
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
-            ProjectDropdown.options.Add(new Dropdown.OptionData("None"));
+            foreach(var unitTemplate in TechCanon.GetResearchedUnits(cityOwner)) {
+                var newRecord = Instantiate(ProjectRecordPrefab);
 
-            var validBuildingTemplates = BuildingValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
-            var validUnitTemplates     = UnitValidityLogic    .GetTemplatesValidForCity(ObjectToDisplay);
+                newRecord.transform.SetParent(ProjectRecordContainer);
+                newRecord.gameObject.SetActive(true);
 
-            var buildingOptions = validBuildingTemplates.Select(template => new Dropdown.OptionData(template.name));
-            var unitOptions     = validUnitTemplates    .Select(template => new Dropdown.OptionData(template.Name));
+                newRecord.UnitTemplate = unitTemplate;
+                newRecord.SelectionButton.interactable = UnitValidityLogic.IsTemplateValidForCity(unitTemplate, ObjectToDisplay);
+                newRecord.SelectionButton.onClick.AddListener(() => ObjectToDisplay.SetActiveProductionProject(unitTemplate));
 
-            ProjectDropdown.AddOptions(buildingOptions.Concat(unitOptions).ToList());
+                newRecord.Refresh();
 
-            if(ObjectToDisplay.ActiveProject == null) {
-                ProjectDropdown.value = 0;
-            }else {
-                var activeOptionData = ProjectDropdown.options.Where(option => option.text.Equals(ObjectToDisplay.ActiveProject.Name)).FirstOrDefault();
-                if(activeOptionData == null) {
-                    ProjectDropdown.value = 0;
-                }else {
-                    ProjectDropdown.value = ProjectDropdown.options.IndexOf(activeOptionData);
-                }
+                InstantiatedProjectRecords.Add(newRecord);
+            }
+
+            foreach(var buildingTemplate in TechCanon.GetResearchedBuildings(cityOwner)) {
+                var newRecord = Instantiate(ProjectRecordPrefab);
+
+                newRecord.transform.SetParent(ProjectRecordContainer);
+                newRecord.gameObject.SetActive(true);
+
+                newRecord.BuildingTemplate = buildingTemplate;
+                newRecord.SelectionButton.interactable = BuildingValidityLogic.IsTemplateValidForCity(buildingTemplate, ObjectToDisplay);
+                newRecord.SelectionButton.onClick.AddListener(() => ObjectToDisplay.SetActiveProductionProject(buildingTemplate));
+
+                newRecord.Refresh();
+
+                InstantiatedProjectRecords.Add(newRecord);
             }
         }
 
         #endregion
-
-        private void OnProjectDropdownChanged(int newValue) {
-            if(ObjectToDisplay == null) {
-                return;
-            }
-
-            var selectedTemplateName = ProjectDropdown.options[newValue].text;
-
-            var validBuildings = BuildingValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
-            var selectedBuilding = validBuildings.Where(template => template.name.Equals(selectedTemplateName)).FirstOrDefault();
-
-            var validUnits = UnitValidityLogic.GetTemplatesValidForCity(ObjectToDisplay);
-            var selectedUnit = validUnits.Where(template => template.Name.Equals(selectedTemplateName)).FirstOrDefault();
-            
-            if(selectedBuilding != null) {
-                ObjectToDisplay.SetActiveProductionProject(selectedBuilding);
-            }else {
-                ObjectToDisplay.SetActiveProductionProject(selectedUnit);
-            }
-        }
 
         #endregion
 

@@ -22,7 +22,7 @@ namespace Assets.UI.StateMachine {
         TerrainEditing,
         UnitPainting,
         CityPainting,
-        CivManaging
+        CivManaging,
     }
 
 }

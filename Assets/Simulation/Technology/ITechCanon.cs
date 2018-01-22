@@ -37,7 +37,8 @@ namespace Assets.Simulation.Technology {
         
         List<ITechDefinition> GetPrerequisiteChainToResearchTech(ITechDefinition tech, ICivilization civilization);
 
-        void SetTechAsResearchedForCiv(ITechDefinition tech, ICivilization civilization);
+        void SetTechAsDiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
+        void SetTechAsUndiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
 
         #endregion
 

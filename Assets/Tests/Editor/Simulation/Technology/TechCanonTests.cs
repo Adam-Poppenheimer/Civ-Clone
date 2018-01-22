@@ -101,14 +101,14 @@ namespace Assets.Tests.Simulation.Technology {
 
             var techCanon = Container.Resolve<TechCanon>();
 
-            techCanon.SetTechAsResearchedForCiv(techOne, civOne);
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civOne);
             Assert.IsTrue(techCanon.IsTechDiscoveredByCiv(techOne, civOne),  "TechOne's discovery by CivOne not acknowledged");
             Assert.IsFalse(techCanon.IsTechDiscoveredByCiv(techOne, civTwo), "TechOne's discovery by CivTwo falsely acknowledged");
 
             CollectionAssert.Contains(techCanon.GetTechsDiscoveredByCiv(civOne), techOne, "GetTechsDiscoveredByCiv on CivOne does not contain TechOne");
             CollectionAssert.DoesNotContain(techCanon.GetTechsDiscoveredByCiv(civTwo), techOne, "GetTechsDiscoveredByCiv on CivTwo falsely contains TechOne");
 
-            techCanon.SetTechAsResearchedForCiv(techTwo, civOne);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civOne);
 
             Assert.IsTrue(techCanon.IsTechDiscoveredByCiv(techTwo, civOne), "TechTwo's discovery by CivOne not acknowledged");
 
@@ -147,8 +147,8 @@ namespace Assets.Tests.Simulation.Technology {
             var civ = BuildCivilization();
 
             var techCanon = Container.Resolve<TechCanon>();
-            techCanon.SetTechAsResearchedForCiv(techOne, civ);
-            techCanon.SetTechAsResearchedForCiv(techTwo, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
 
             CollectionAssert.AreEquivalent(
                 new List<ITechDefinition>() { techThree, techFour },
@@ -179,8 +179,8 @@ namespace Assets.Tests.Simulation.Technology {
             var civ = BuildCivilization();
 
             var techCanon = Container.Resolve<TechCanon>();
-            techCanon.SetTechAsResearchedForCiv(techOne, civ);
-            techCanon.SetTechAsResearchedForCiv(techTwo, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
 
             CollectionAssert.AreEquivalent(
                 techOne.BuildingsEnabled.Concat(techTwo.BuildingsEnabled),
@@ -206,8 +206,8 @@ namespace Assets.Tests.Simulation.Technology {
             var civ = BuildCivilization();
 
             var techCanon = Container.Resolve<TechCanon>();
-            techCanon.SetTechAsResearchedForCiv(techOne, civ);
-            techCanon.SetTechAsResearchedForCiv(techTwo, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
 
             CollectionAssert.AreEquivalent(
                 techOne.UnitsEnabled.Concat(techTwo.UnitsEnabled),
@@ -233,8 +233,8 @@ namespace Assets.Tests.Simulation.Technology {
             var civ = BuildCivilization();
 
             var techCanon = Container.Resolve<TechCanon>();
-            techCanon.SetTechAsResearchedForCiv(techOne, civ);
-            techCanon.SetTechAsResearchedForCiv(techTwo, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
 
             CollectionAssert.AreEquivalent(
                 techOne.ImprovementsEnabled.Concat(techTwo.ImprovementsEnabled),

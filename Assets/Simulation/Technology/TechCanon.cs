@@ -211,12 +211,26 @@ namespace Assets.Simulation.Technology {
             return GetResearchedUnits(civilization).Contains(template);
         }
 
-        public void SetTechAsResearchedForCiv(ITechDefinition tech, ICivilization civilization) {
-            if(IsTechDiscoveredByCiv(tech, civilization)) {
-                throw new InvalidOperationException("This tech is already researched by this civilization");
+        public void SetTechAsDiscoveredForCiv(ITechDefinition tech, ICivilization civilization) {
+            if(tech == null) {
+                throw new ArgumentNullException("tech");
+            }else if(civilization == null) {
+                throw new ArgumentNullException("civilization");
             }
 
-            TechsResearchedByCiv[civilization].Add(tech);
+            if(!IsTechDiscoveredByCiv(tech, civilization)) {
+                TechsResearchedByCiv[civilization].Add(tech);
+            }
+        }
+
+        public void SetTechAsUndiscoveredForCiv(ITechDefinition tech, ICivilization civilization) {
+            if(tech == null) {
+                throw new ArgumentNullException("tech");
+            }else if(civilization == null) {
+                throw new ArgumentNullException("civilization");
+            }
+
+            TechsResearchedByCiv[civilization].Remove(tech);
         }
 
         #endregion
