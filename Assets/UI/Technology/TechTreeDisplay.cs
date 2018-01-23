@@ -10,6 +10,7 @@ using UnityEngine.UI.Extensions;
 using Zenject;
 
 using Assets.Simulation.Technology;
+using Assets.Simulation.Civilizations;
 
 using Assets.UI.Civilizations;
 
@@ -25,44 +26,57 @@ namespace Assets.UI.Technology {
 
         [SerializeField] private UILineRenderer PrerequisiteLines;
 
-        private List<TechnologyRecord> TechRecords = new List<TechnologyRecord>();
+        private List<TechnologyRecord> TechRecords;
 
 
         private ITechCanon TechCanon;
+
+        private ICivilizationYieldLogic YieldLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITechCanon techCanon) {
-            TechCanon = techCanon;
+        public void InjectDependencies(ITechCanon techCanon, ICivilizationYieldLogic yieldLogic) {
+            TechCanon  = techCanon;
+            YieldLogic = yieldLogic;
         }
-
-        #region Unity messages
-
-        private void Start() {
-            SetUpTechTree();
-        }
-
-        #endregion
 
         #region from CivilizationDisplayBase
 
         public override void Refresh() {
+            if(TechRecords == null) {
+                SetUpTechTree();
+            }
+
             foreach(var techRecord in TechRecords) {
+                var recordedTech = techRecord.TechToDisplay;
+
+                techRecord.CurrentProgress = TechCanon.GetProgressOnTechByCiv(recordedTech, ObjectToDisplay);
+
                 if(TechCanon.IsTechDiscoveredByCiv(techRecord.TechToDisplay, ObjectToDisplay)) {
+
                     techRecord.Status = TechnologyRecord.TechStatus.Discovered;
 
                 }else if(ObjectToDisplay.TechQueue.Contains(techRecord.TechToDisplay)) {
+
                     if(ObjectToDisplay.TechQueue.Peek() == techRecord.TechToDisplay) {
                         techRecord.Status = TechnologyRecord.TechStatus.BeingResearched;
                     }else {
                         techRecord.Status = TechnologyRecord.TechStatus.InQueue;
                     }
+
                 }else {
+
                     techRecord.Status = TechnologyRecord.TechStatus.Available;
+
                 }
+
+                techRecord.TurnsToResearch = (int)Math.Ceiling(
+                    (techRecord.TechToDisplay.Cost - techRecord.CurrentProgress) /
+                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.ResourceType.Science]
+                );
 
                 techRecord.Refresh();
             }
@@ -71,6 +85,8 @@ namespace Assets.UI.Technology {
         #endregion
 
         private void SetUpTechTree() {
+            TechRecords = new List<TechnologyRecord>();
+
             foreach(var technology in TechCanon.AllTechs) {
                 var newTechRecord = Instantiate(TechRecordPrefab);
 
@@ -105,7 +121,9 @@ namespace Assets.UI.Technology {
             }
 
             foreach(var tech in TechCanon.GetPrerequisiteChainToResearchTech(techRecord.TechToDisplay, ObjectToDisplay)) {
-                ObjectToDisplay.TechQueue.Enqueue(tech);
+                if(!ObjectToDisplay.TechQueue.Contains(tech)) {
+                    ObjectToDisplay.TechQueue.Enqueue(tech);
+                }
             }
 
             Refresh();

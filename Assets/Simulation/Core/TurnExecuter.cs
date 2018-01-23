@@ -34,6 +34,7 @@ namespace Assets.Simulation.Core {
         /// <inheritdoc/>
         public void BeginTurnOnCivilization(ICivilization civilization) {
             civilization.PerformIncome();
+            civilization.PerformResearch();
         }
 
         /// <inheritdoc/>

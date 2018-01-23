@@ -31,6 +31,9 @@ namespace Assets.Simulation.Technology {
         private DictionaryOfLists<ICivilization, ITechDefinition> TechsResearchedByCiv =
             new DictionaryOfLists<ICivilization, ITechDefinition>();
 
+        private Dictionary<ICivilization, Dictionary<ITechDefinition, int>> ProgressByCivAndTech =
+            new Dictionary<ICivilization, Dictionary<ITechDefinition, int>>();
+
         #endregion
 
         #region constructors
@@ -233,7 +236,33 @@ namespace Assets.Simulation.Technology {
             TechsResearchedByCiv[civilization].Remove(tech);
         }
 
+        public int GetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization) {
+            if(!ProgressByCivAndTech.ContainsKey(civilization)) {
+                ProgressByCivAndTech[civilization] = new Dictionary<ITechDefinition, int>();
+            }
+
+            var civProgressDict = ProgressByCivAndTech[civilization];
+
+            if(!civProgressDict.ContainsKey(tech)) {
+                civProgressDict[tech] = 0;
+            }
+
+            return civProgressDict[tech];
+        }
+
+        public void SetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization, int newProgress) {
+            if(!ProgressByCivAndTech.ContainsKey(civilization)) {
+                ProgressByCivAndTech[civilization] = new Dictionary<ITechDefinition, int>();
+            }
+
+            var civProgressDict = ProgressByCivAndTech[civilization];
+
+            civProgressDict[tech] = newProgress;
+        }
+
         #endregion
+
+        
 
         #endregion
 

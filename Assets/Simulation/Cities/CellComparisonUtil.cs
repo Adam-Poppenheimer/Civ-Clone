@@ -110,6 +110,7 @@ namespace Assets.Simulation.Cities {
                 case ResourceFocusType.Gold:       return BuildResourceComparisonAscending(ResourceType.Gold,       sourceCity, generationLogic);
                 case ResourceFocusType.Production: return BuildResourceComparisonAscending(ResourceType.Production, sourceCity, generationLogic);
                 case ResourceFocusType.Culture:    return BuildResourceComparisonAscending(ResourceType.Culture,    sourceCity, generationLogic);
+                case ResourceFocusType.Science:    return BuildResourceComparisonAscending(ResourceType.Science,    sourceCity, generationLogic);
                 case ResourceFocusType.TotalYield: return BuildTotalYieldComparisonAscending(sourceCity, generationLogic);
                 default: return null;
             }

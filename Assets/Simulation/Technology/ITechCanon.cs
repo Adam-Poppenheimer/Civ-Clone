@@ -37,6 +37,9 @@ namespace Assets.Simulation.Technology {
         
         List<ITechDefinition> GetPrerequisiteChainToResearchTech(ITechDefinition tech, ICivilization civilization);
 
+        int  GetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization);
+        void SetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization, int newProgress);
+
         void SetTechAsDiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
         void SetTechAsUndiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
 

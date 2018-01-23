@@ -9,7 +9,8 @@ namespace Assets.Simulation {
         Food = 0,
         Production = 1,
         Gold = 2,
-        Culture = 3
+        Culture = 3,
+        Science = 4,
     }
 
 }

@@ -41,6 +41,8 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>()
                      .To<UnitPossessionCanon>()
                      .AsSingle();
+
+            Container.Bind<ICivilizationYieldLogic>().To<CivilizationYieldLogic>().AsSingle();
         }
 
         #endregion

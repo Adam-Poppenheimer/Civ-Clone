@@ -320,6 +320,25 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(ResourceSummary.Empty, totalYield, "GetTotalYieldForCity returned an unexpected value");
         }
 
+        [Test(Description = "GetTotalYieldOfCity should provide 1 science for every citizen in the city passed.")]
+        public void GetTotalYieldOfCity_ScienceFromAllCitizens() {
+            var city = BuildCity(
+                BuildTile(BuildSlot(ResourceSummary.Empty, false), true),
+                new List<IHexCell>(),
+                new List<IBuilding>(),
+                5
+            );
+
+            BuildCivilization(city);
+
+            var logic = Container.Resolve<ResourceGenerationLogic>();
+
+            Assert.AreEqual(
+                5, logic.GetTotalYieldForCity(city)[ResourceType.Science],
+                "GetTotalYieldForCity had an unexpected Science value"
+            );
+        }
+
         [Test(Description = "All methods should throw an ArgumentNullException when passed " + 
             "any null argument")]
         public void AllMethods_ThrowExceptionsOnNullArguments() {
@@ -357,7 +376,10 @@ namespace Assets.Tests.Simulation.Cities {
             return mockCivilization.Object;
         }
 
-        private ICity BuildCity(IHexCell location, IEnumerable<IHexCell> tiles, IEnumerable<IBuilding> buildings) {
+        private ICity BuildCity(
+            IHexCell location, IEnumerable<IHexCell> tiles,
+            IEnumerable<IBuilding> buildings, int population = 0
+        ){
             var cityMock = new Mock<ICity>();
 
             cityMock.SetupAllProperties();
@@ -366,7 +388,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockBuildingCanon.Setup(canon => canon.GetPossessionsOfOwner(cityMock.Object)).Returns(buildings.ToList().AsReadOnly());
 
-            return cityMock.Object;
+            var newCity = cityMock.Object;
+            newCity.Population = population;
+
+            return newCity;
         }
 
         private IHexCell BuildTile(IWorkerSlot slot, bool suppressSlot) {

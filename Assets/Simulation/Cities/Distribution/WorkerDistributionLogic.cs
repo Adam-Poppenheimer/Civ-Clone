@@ -69,6 +69,7 @@ namespace Assets.Simulation.Cities.Distribution {
                 case ResourceFocusType.Gold:       PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Gold);       break;
                 case ResourceFocusType.Production: PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Production); break;
                 case ResourceFocusType.Culture:    PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Culture);    break;
+                case ResourceFocusType.Science:    PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Science);    break;
                 case ResourceFocusType.TotalYield: PerformUnfocusedDistribution(workerCount, slots, sourceCity); break;
                 default: break;
             } 

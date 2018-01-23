@@ -20,6 +20,7 @@ namespace Assets.UI {
         [SerializeField] private Text GoldField;
         [SerializeField] private Text ProductionField;
         [SerializeField] private Text CultureField;
+        [SerializeField] private Text ScienceField;
 
         #endregion
 
@@ -30,12 +31,14 @@ namespace Assets.UI {
             [InjectOptional(Id = "Food Field")]       Text foodField,
             [InjectOptional(Id = "Gold Field")]       Text goldField,
             [InjectOptional(Id = "Production Field")] Text productionField,
-            [InjectOptional(Id = "Culture Field")]    Text cultureField
+            [InjectOptional(Id = "Culture Field")]    Text cultureField,
+            [InjectOptional(Id = "Science Field")]    Text scienceField
         ) {
             FoodField       = foodField       == null ? FoodField       : foodField;
             GoldField       = goldField       == null ? GoldField       : goldField;
             ProductionField = productionField == null ? ProductionField : productionField;
             CultureField    = cultureField    == null ? CultureField    : cultureField;
+            ScienceField    = scienceField    == null ? ScienceField    : scienceField;
         }
 
         #region from IResourceSummaryDisplay
@@ -45,6 +48,7 @@ namespace Assets.UI {
             GoldField      .text = summary[ResourceType.Gold      ].ToString();
             ProductionField.text = summary[ResourceType.Production].ToString();
             CultureField   .text = summary[ResourceType.Culture   ].ToString();
+            ScienceField   .text = summary[ResourceType.Science   ].ToString();
         }
 
         #endregion

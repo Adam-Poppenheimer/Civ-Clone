@@ -34,7 +34,9 @@ namespace Assets.Simulation.Cities.Distribution {
         /// <summary>
         /// Attempts to maximize the culture yield of the slot or cell.
         /// </summary>
-        Culture
+        Culture,
+
+        Science,
     }
 
 }

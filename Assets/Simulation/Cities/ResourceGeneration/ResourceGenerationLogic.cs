@@ -92,6 +92,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             retval += GetYieldOfUnemployedForCity(city) * Math.Max(0, city.Population - employedPops);
 
+            retval[ResourceType.Science] = retval[ResourceType.Science] +  city.Population;
+
             return retval;
         }
 

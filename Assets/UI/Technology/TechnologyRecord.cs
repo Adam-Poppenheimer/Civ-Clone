@@ -49,6 +49,10 @@ namespace Assets.UI.Technology {
 
         public TechStatus Status { get; set; }
 
+        public int TurnsToResearch { get; set; }
+
+        public int CurrentProgress { get; set; }
+
         public Button SelectionButton {
             get {
                 if(_selectionButton == null) {
@@ -69,9 +73,10 @@ namespace Assets.UI.Technology {
         }
         private RectTransform _rectTransform;
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private Text CostField;
-        [SerializeField] private Text TurnsToResearchField;
+        [SerializeField] private Text   NameField;
+        [SerializeField] private Text   CostField;
+        [SerializeField] private Text   TurnsToResearchField;
+        [SerializeField] private Slider ProgressSlider;
 
         [SerializeField] private Color DiscoveredColor;
         [SerializeField] private Color AvailableColor;
@@ -83,13 +88,33 @@ namespace Assets.UI.Technology {
         #region instance methods
 
         public void Refresh() {
+            ClearDisplay();
             if(TechToDisplay == null) {
                 return;
             }
 
-            NameField.text = TechToDisplay.Name;
-            CostField.text = TechToDisplay.Cost.ToString();
-            TurnsToResearchField.text = "--";
+            if(NameField != null) {
+                NameField.text = TechToDisplay.Name;
+            }
+            
+            if(CostField != null) {
+                CostField.text = TechToDisplay.Cost.ToString();
+            }
+            
+            if(TurnsToResearchField != null) {
+                if(Status == TechStatus.Discovered) {
+                    TurnsToResearchField.gameObject.SetActive(false);
+                }else {
+                    TurnsToResearchField.gameObject.SetActive(true);
+                    TurnsToResearchField.text = string.Format("{0} Turns", TurnsToResearch);
+                }
+            }
+
+            if(ProgressSlider != null) {
+                ProgressSlider.minValue = 0;
+                ProgressSlider.maxValue = TechToDisplay.Cost;
+                ProgressSlider.value    = CurrentProgress;
+            }
 
             if(SelectionButton != null) {
                 if(Status == TechStatus.Discovered) {
@@ -108,6 +133,30 @@ namespace Assets.UI.Technology {
                     SelectionButton.image.color = InQueueColor;
                     SelectionButton.interactable = true;
                 }
+            }
+        }
+
+        private void ClearDisplay() {
+            if(NameField != null) {
+                NameField.text = "--";
+            }
+
+            if(CostField != null) {
+                CostField.text = "--";
+            }
+
+            if(TurnsToResearchField != null) {
+                TurnsToResearchField.text = "--";
+            }
+
+            if(ProgressSlider != null) {
+                ProgressSlider.minValue = 0;
+                ProgressSlider.maxValue = 0;
+                ProgressSlider.value = 0;
+            }
+
+            if(SelectionButton != null) {
+                SelectionButton.interactable = false;
             }
         }
 

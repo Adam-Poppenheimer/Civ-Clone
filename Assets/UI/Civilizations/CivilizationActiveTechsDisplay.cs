@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
 
@@ -18,18 +20,44 @@ namespace Assets.UI.Civilizations {
 
         [SerializeField] private TechnologyRecord CurrentTechRecord;
 
+
+        private ICivilizationYieldLogic YieldLogic;
+
+        private ITechCanon TechCanon;
+
         #endregion
 
         #region instance methods
 
+        [Inject]
+        public void InjectDependencies(ICivilizationYieldLogic yieldLogic, ITechCanon techCanon) {
+            YieldLogic = yieldLogic;
+            TechCanon  = techCanon;
+        }
+
         #region from CivilizationDisplayBase
 
         public override void Refresh() {
-            if(ObjectToDisplay != null && ObjectToDisplay.TechQueue.Count > 0) {
-                CurrentTechRecord.TechToDisplay = ObjectToDisplay.TechQueue.Peek();
-                CurrentTechRecord.Status = TechnologyRecord.TechStatus.BeingResearched;
-                CurrentTechRecord.Refresh();
+            if(ObjectToDisplay == null) {
+                return;
             }
+
+            if(ObjectToDisplay.TechQueue.Count > 0) {
+                var activeTech = ObjectToDisplay.TechQueue.Peek();
+
+                CurrentTechRecord.TechToDisplay   = activeTech;
+                CurrentTechRecord.Status          = TechnologyRecord.TechStatus.BeingResearched;
+                CurrentTechRecord.CurrentProgress = TechCanon.GetProgressOnTechByCiv(activeTech, ObjectToDisplay);
+
+                CurrentTechRecord.TurnsToResearch = (int)Math.Ceiling(
+                    (activeTech.Cost - CurrentTechRecord.CurrentProgress) /
+                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.ResourceType.Science]
+                );
+            }else {
+                CurrentTechRecord.TechToDisplay = null;
+            }
+
+            CurrentTechRecord.Refresh();
         }
 
         #endregion

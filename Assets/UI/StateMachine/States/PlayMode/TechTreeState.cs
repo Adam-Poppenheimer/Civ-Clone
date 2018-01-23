@@ -43,6 +43,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             TechTreeDisplay.ObjectToDisplay = GameCore.PlayerCivilization;
             TechTreeDisplay.gameObject.SetActive(true);
+            TechTreeDisplay.Refresh();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -49,6 +49,8 @@ namespace Assets.Simulation.Civilizations {
         /// </summary>
         void PerformIncome();
 
+        void PerformResearch();
+
         #endregion
 
     }

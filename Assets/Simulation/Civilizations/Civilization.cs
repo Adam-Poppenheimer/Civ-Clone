@@ -33,6 +33,8 @@ namespace Assets.Simulation.Civilizations {
         /// <inheritdoc/>
         public int CultureStockpile { get; set; }
 
+        public int LastScienceYield { get; set; }
+
         public Queue<ITechDefinition> TechQueue { get; set; }
 
         #endregion
@@ -40,6 +42,8 @@ namespace Assets.Simulation.Civilizations {
         private ICivilizationConfig Config;
 
         private ICivilizationYieldLogic YieldLogic;
+
+        private ITechCanon TechCanon;
 
         #endregion
 
@@ -53,10 +57,12 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public Civilization(
             ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
+            ITechCanon techCanon,
             string name = ""
         ){
             Config     = config;
             YieldLogic = yieldLogic;
+            TechCanon  = techCanon;
             Name       = name;
 
             TechQueue = new Queue<ITechDefinition>();
@@ -72,6 +78,25 @@ namespace Assets.Simulation.Civilizations {
 
             GoldStockpile    += Mathf.FloorToInt(yield[ResourceType.Gold]);
             CultureStockpile += Mathf.FloorToInt(yield[ResourceType.Culture]);
+
+            LastScienceYield = Mathf.FloorToInt(yield[ResourceType.Science]);
+        }
+
+        public void PerformResearch() {
+            if(TechQueue.Count > 0) {
+                var activeTech = TechQueue.Peek();
+
+                int techProgress = TechCanon.GetProgressOnTechByCiv(activeTech, this);
+                techProgress += LastScienceYield;                
+
+                if(techProgress >= activeTech.Cost && TechCanon.IsTechAvailableToCiv(activeTech, this)) {
+                    TechCanon.SetTechAsDiscoveredForCiv(activeTech, this);
+                    TechQueue.Dequeue();
+
+                }else {
+                    TechCanon.SetProgressOnTechByCiv(activeTech, this, techProgress);
+                }
+            }
         }
 
         #endregion

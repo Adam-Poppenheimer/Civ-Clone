@@ -17,7 +17,7 @@ namespace Assets.Simulation {
         }
 
         public static ResourceSummary Ones {
-            get { return new ResourceSummary(food: 1, production: 1, gold: 1, culture: 1); }
+            get { return new ResourceSummary(food: 1, production: 1, gold: 1, culture: 1, science: 1); }
         }
 
         #endregion
@@ -25,13 +25,14 @@ namespace Assets.Simulation {
         #region instance fields and properties
 
         public float Total {
-            get { return Food + Production + Gold + Culture; }
+            get { return Food + Production + Gold + Culture + Science; }
         }
 
         [SerializeField] private float Food;
         [SerializeField] private float Production;
         [SerializeField] private float Gold;
         [SerializeField] private float Culture;
+        [SerializeField] private float Science;
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace Assets.Simulation {
                     case ResourceType.Production: return Production;
                     case ResourceType.Gold:       return Gold;
                     case ResourceType.Culture:    return Culture;
+                    case ResourceType.Science:    return Science;
                     default: throw new IndexOutOfRangeException();
                 }
             }
@@ -53,6 +55,7 @@ namespace Assets.Simulation {
                     case ResourceType.Production: Production = value; break;
                     case ResourceType.Gold:       Gold       = value; break;
                     case ResourceType.Culture:    Culture    = value; break;
+                    case ResourceType.Science:    Science    = value; break;
                     default: throw new IndexOutOfRangeException();
                 }
             }
@@ -62,18 +65,23 @@ namespace Assets.Simulation {
 
         #region constructors
 
-        public ResourceSummary(float food = 0, float production = 0, float gold = 0, float culture = 0) {
-            Food = food;
+        public ResourceSummary(
+            float food = 0, float production = 0, float gold = 0,
+            float culture = 0, float science = 0
+        ){
+            Food       = food;
             Production = production;
-            Gold = gold;
-            Culture = culture;
+            Gold       = gold;
+            Culture    = culture;
+            Science    = science;
         }
 
         public ResourceSummary(ResourceSummary other) {
-            Food = other.Food;
+            Food       = other.Food;
             Production = other.Production;
-            Gold = other.Gold;
-            Culture = other.Culture;
+            Gold       = other.Gold;
+            Culture    = other.Culture;
+            Science    = other.Science;
         }
 
         #endregion
@@ -85,7 +93,8 @@ namespace Assets.Simulation {
                 food:       firstSummary.Food       + secondSummary.Food,
                 production: firstSummary.Production + secondSummary.Production,
                 gold:       firstSummary.Gold       + secondSummary.Gold,
-                culture:    firstSummary.Culture    + secondSummary.Culture
+                culture:    firstSummary.Culture    + secondSummary.Culture,
+                science:    firstSummary.Science    + secondSummary.Science
             );
         }
 
@@ -94,7 +103,8 @@ namespace Assets.Simulation {
                 food:       firstSummary.Food       - secondSummary.Food,
                 production: firstSummary.Production - secondSummary.Production,
                 gold:       firstSummary.Gold       - secondSummary.Gold,
-                culture:    firstSummary.Culture    - secondSummary.Culture
+                culture:    firstSummary.Culture    - secondSummary.Culture,
+                science:    firstSummary.Science    - secondSummary.Science
             );
         }
 
@@ -103,7 +113,8 @@ namespace Assets.Simulation {
                 food:       -summary.Food,
                 production: -summary.Production,
                 gold:       -summary.Gold,
-                culture:    -summary.Culture
+                culture:    -summary.Culture,
+                science:    -summary.Science
             );
         }
 
@@ -112,7 +123,8 @@ namespace Assets.Simulation {
                 food:       summary.Food       * coefficient,
                 production: summary.Production * coefficient,
                 gold:       summary.Gold       * coefficient,
-                culture:    summary.Culture    * coefficient
+                culture:    summary.Culture    * coefficient,
+                science:    summary.Science    * coefficient
             );
         }
 
@@ -121,7 +133,8 @@ namespace Assets.Simulation {
                 food:       summary.Food       * coefficient,
                 production: summary.Production * coefficient,
                 gold:       summary.Gold       * coefficient,
-                culture:    summary.Culture    * coefficient
+                culture:    summary.Culture    * coefficient,
+                science:    summary.Science    * coefficient
             );
         }
 
@@ -130,7 +143,8 @@ namespace Assets.Simulation {
                 food:       firstSummary.Food       * secondSummary.Food,
                 production: firstSummary.Production * secondSummary.Production,
                 gold:       firstSummary.Gold       * secondSummary.Gold,
-                culture:    firstSummary.Culture    * secondSummary.Culture
+                culture:    firstSummary.Culture    * secondSummary.Culture,
+                science:    firstSummary.Science    * secondSummary.Science
             );
         }
 
@@ -139,7 +153,8 @@ namespace Assets.Simulation {
                 food:       summary.Food       / divisor,
                 production: summary.Production / divisor,
                 gold:       summary.Gold       / divisor,
-                culture:    summary.Culture    / divisor
+                culture:    summary.Culture    / divisor,
+                science:    summary.Science    / divisor
             );
         }
 
@@ -150,8 +165,9 @@ namespace Assets.Simulation {
         #region from Object
 
         public override string ToString() {
-            return string.Format("Food: {0} | Production: {1} | Gold: {2} | Culture: {3}",
-                Food, Production, Gold, Culture);
+            return string.Format("Food: {0} | Production: {1} | Gold: {2} | Culture: {3} | Science {4}",
+                Food, Production, Gold, Culture, Science
+            );
         }
 
         #endregion
