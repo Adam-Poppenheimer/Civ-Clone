@@ -22,6 +22,8 @@ namespace Assets.UI.HexMap {
 
         [SerializeField] private RectTransform UnreachableIndicator;
 
+        [SerializeField] private RectTransform SelectedIndicator;
+
         public IHexCell Parent { get; set; }
 
         #endregion
@@ -35,6 +37,7 @@ namespace Assets.UI.HexMap {
             PathIndicator       .gameObject.SetActive(false);
             AttackIndicator     .gameObject.SetActive(false);
             UnreachableIndicator.gameObject.SetActive(false);
+            SelectedIndicator   .gameObject.SetActive(false);
         }
 
         public void SetDisplayType(CellOverlayType type) {
@@ -52,6 +55,9 @@ namespace Assets.UI.HexMap {
 
             }else if(type == CellOverlayType.UnreachableIndicator) {
                 UnreachableIndicator.gameObject.SetActive(true);
+
+            }else if(type == CellOverlayType.SelectedIndicator) {
+                SelectedIndicator.gameObject.SetActive(true);
             }
         }
 

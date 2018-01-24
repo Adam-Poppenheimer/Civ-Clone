@@ -24,6 +24,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private IUnit SelectedUnit;
 
+        private IHexCell SelectedUnitPosition {
+            get { return UnitPositionCanon.GetOwnerOfPossession(SelectedUnit); }
+        }
+
         private List<IDisposable> EventSubscriptions = new List<IDisposable>();
 
         private IUnit UnitToAttack;
@@ -94,6 +98,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick);
 
             AttachEvents();
+
+            Clear();
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -110,7 +116,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             DetachEvents();
 
+            SelectedUnit = null;
+
             RequestReturn = false;
+
+            Clear();
         }
 
         #endregion
@@ -200,6 +210,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private void Clear() {
             OverlayManager.ClearAllOverlays();
+            if(SelectedUnit != null) {
+                OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);
+            }
 
             UnitToAttack = null;
             CityToAttack = null;

@@ -25,6 +25,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         
         private IUnit SelectedUnit;
 
+        private IHexCell SelectedUnitPosition {
+            get { return UnitPositionCanon.GetOwnerOfPossession(SelectedUnit); }
+        }
+
         private IUnit UnitToAttack;
 
         private ICity CityToAttack;
@@ -97,8 +101,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         #region from UnitUIState
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            Clear();
-
             foreach(var display in DisplaysToManage) {
                 display.gameObject.SetActive(true);
                 display.ObjectToDisplay = Brain.LastUnitClicked;
@@ -111,6 +113,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 TransitionType.ToUnitSelected, TransitionType.ToCitySelected);
 
             AttachEvents();
+
+            Clear();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -120,6 +124,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }
 
             DetachEvents();
+
+            SelectedUnit = null;
 
             Clear();
         }
@@ -295,6 +301,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }
 
             OverlayManager.ClearAllOverlays();
+            if(SelectedUnit != null) {
+                OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);
+            }
 
             UnitToAttack = null;
             CityToAttack = null;
