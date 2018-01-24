@@ -24,6 +24,7 @@ namespace Assets.Simulation.Core {
             city.PerformGrowth();
             city.PerformExpansion();
             city.PerformDistribution();
+            city.PerformHealing();
         }
 
         /// <inheritdoc/>
@@ -44,7 +45,7 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public void BeginTurnOnUnit(IUnit unit) {
-            unit.CurrentMovement = unit.Template.MaxMovement;
+            unit.CurrentMovement = unit.MaxMovement;
         }
 
         /// <inheritdoc/>

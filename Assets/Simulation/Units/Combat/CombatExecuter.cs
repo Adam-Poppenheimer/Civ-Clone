@@ -6,8 +6,10 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -73,7 +75,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(attacker.Template.Type, defenderLocation, true)) {
+            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(attacker.Type, defenderLocation, true)) {
                 return false;
             }
 
@@ -85,11 +87,15 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.Template.CombatStrength <= 0) {
+            if(attacker.CombatStrength <= 0) {
                 return false;
             }
 
             return true;
+        }
+
+        public bool CanPerformMeleeAttack(IUnit attacker, ICity city) {
+            return CanPerformMeleeAttack(attacker, city.CombatFacade);
         }
 
         public bool CanPerformRangedAttack(IUnit attacker, IUnit defender) {
@@ -107,7 +113,7 @@ namespace Assets.Simulation.Units.Combat {
             var attackerLocation = UnitPositionCanon.GetOwnerOfPossession(attacker);
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            if(Grid.GetDistance(attackerLocation, defenderLocation) > attacker.Template.AttackRange) {
+            if(Grid.GetDistance(attackerLocation, defenderLocation) > attacker.AttackRange) {
                 return false;
             }
 
@@ -119,14 +125,48 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.Template.RangedAttackStrength <= 0) {
+            if(attacker.RangedAttackStrength <= 0) {
                 return false;
             }
 
             return true;
         }
 
+        public bool CanPerformRangedAttack(IUnit attacker, ICity city) {
+            return CanPerformRangedAttack(attacker, city.CombatFacade);
+        }
+
         public void PerformMeleeAttack(IUnit attacker, IUnit defender) {
+            int attackerStartingHealth = attacker.Health;
+            int defenderStartingHealth = defender.Health;
+
+            PerformMeleeAttack_NoEvent(attacker, defender);
+
+            UnitSignals.MeleeCombatWithUnitSignal.OnNext(
+                new UnitUnitCombatData(
+                    attacker, defender,
+                    attackerStartingHealth - attacker.Health,
+                    defenderStartingHealth - defender.Health
+                )
+            );
+        }
+
+        public void PerformMeleeAttack(IUnit attacker, ICity city) {
+            int attackerStartingHealth = attacker.Health;
+            int defenderStartingHealth = city.CombatFacade.Health;
+
+            PerformMeleeAttack_NoEvent(attacker, city.CombatFacade);
+
+            UnitSignals.MeleeCombatWithCitySignal.OnNext(
+                new UnitCityCombatData(
+                    attacker, city,
+                    attackerStartingHealth - attacker.Health,
+                    defenderStartingHealth - city.CombatFacade.Health
+                )
+            );
+        }
+
+        private void PerformMeleeAttack_NoEvent(IUnit attacker, IUnit defender) {
             if(!CanPerformMeleeAttack(attacker, defender)) {
                 throw new InvalidOperationException("CanPerformMeleeCombat must return true");
             }
@@ -136,13 +176,43 @@ namespace Assets.Simulation.Units.Combat {
             var attackerModifier = CombatModifierLogic.GetMeleeOffensiveModifierAtLocation(attacker, defender, defenderLocation);
             var defenderModifier = CombatModifierLogic.GetMeleeDefensiveModifierAtLocation(attacker, defender, defenderLocation);
 
-            var attackerStrength = attacker.Template.CombatStrength * (1f + attackerModifier);
-            var defenderStrength = defender.Template.CombatStrength * (1f + defenderModifier);
+            var attackerStrength = attacker.CombatStrength * (1f + attackerModifier);
+            var defenderStrength = defender.CombatStrength * (1f + defenderModifier);
 
             PerformCombat(attacker, attackerStrength, defender, defenderStrength, true);
         }
 
         public void PerformRangedAttack(IUnit attacker, IUnit defender) {
+            int attackerStartingHealth = attacker.Health;
+            int defenderStartingHealth = defender.Health;
+
+            PerformRangedAttack_NoEvent(attacker, defender);
+
+            UnitSignals.RangedCombatWithUnitSignal.OnNext(
+                new UnitUnitCombatData(
+                    attacker, defender,
+                    attackerStartingHealth - attacker.Health,
+                    defenderStartingHealth - defender.Health
+                )
+            );
+        }
+
+        public void PerformRangedAttack(IUnit attacker, ICity city) {
+            int attackerStartingHealth = attacker.Health;
+            int defenderStartingHealth = city.CombatFacade.Health;
+
+            PerformRangedAttack_NoEvent(attacker, city.CombatFacade);
+
+            UnitSignals.RangedCombatWithCitySignal.OnNext(
+                new UnitCityCombatData(
+                    attacker, city,
+                    attackerStartingHealth - attacker.Health,
+                    defenderStartingHealth - city.CombatFacade.Health
+                )
+            );
+        }
+
+        private void PerformRangedAttack_NoEvent(IUnit attacker, IUnit defender) {
             if(!CanPerformRangedAttack(attacker, defender)) {
                 throw new InvalidOperationException("CanPerformRangedCombat must return true");
             }
@@ -152,8 +222,8 @@ namespace Assets.Simulation.Units.Combat {
             var attackerModifier = CombatModifierLogic.GetRangedOffensiveModifierAtLocation(attacker, defender, defenderLocation);
             var defenderModifier = CombatModifierLogic.GetRangedDefensiveModifierAtLocation(attacker, defender, defenderLocation);
 
-            var attackerStrength = attacker.Template.RangedAttackStrength * (1f + attackerModifier);
-            var defenderStrength = defender.Template.CombatStrength       * (1f + defenderModifier);
+            var attackerStrength = attacker.RangedAttackStrength * (1f + attackerModifier);
+            var defenderStrength = defender.CombatStrength       * (1f + defenderModifier);
 
             PerformCombat(attacker, attackerStrength, defender, defenderStrength, false);
         }
@@ -166,7 +236,6 @@ namespace Assets.Simulation.Units.Combat {
         ){
             attacker.CurrentMovement = 0;
             int attackerDamage = 0, defenderDamage = 0;
-
 
             if(attackerStrength == 0) {
                 defenderDamage = attacker.Health;
@@ -188,22 +257,14 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             if(attackerReceivesDamage) {
-                InflictDamage(attacker, defenderDamage);
+                attacker.Health -= Math.Min(defenderDamage, attacker.Health);
             }
             
-            InflictDamage(defender, attackerDamage);
-
-            UnitSignals.CombatEventOccurredSignal.OnNext(
-                new CombatResultData(attacker, defender, defenderDamage, attackerDamage)
-            );
-        }
-
-        private void InflictDamage(IUnit unit, int damage) {
-            unit.Health -= Math.Min(damage, unit.Health);
+            defender.Health -= Math.Min(attackerDamage, defender.Health);
         }
 
         #endregion
-        
+
     }
 
 }

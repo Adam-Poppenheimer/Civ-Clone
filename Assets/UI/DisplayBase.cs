@@ -17,7 +17,11 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        public T ObjectToDisplay { get; set; }      
+        public T ObjectToDisplay { get; set; }     
+        
+        
+        
+        private TurnBeganSignal TurnBeginSignal; 
 
         #endregion
 
@@ -25,8 +29,17 @@ namespace Assets.UI {
 
         [Inject]
         private void InjectSignals(TurnBeganSignal turnBeganSignal) {
+            TurnBeginSignal = turnBeganSignal;
             turnBeganSignal.Listen(OnTurnBegan);
         }
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            TurnBeginSignal.Unlisten(OnTurnBegan);
+        }
+
+        #endregion
 
         #region signal responses
 

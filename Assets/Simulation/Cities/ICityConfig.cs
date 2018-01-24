@@ -22,19 +22,19 @@ namespace Assets.Simulation.Cities {
         /// The base cost of all tiles.
         /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
         /// </summary>
-        int   TileCostBase                 { get; }
+        int TileCostBase { get; }
 
         /// <summary>
         /// A coefficient that modifies the cost of acquiring new tiles.
         /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
         /// </summary>
-        int   PreviousTileCountCoefficient { get; }
+        int PreviousTileCountCoefficient { get; }
 
         /// <summary>
         /// An exponent that modifies the cost of acquiring new tiles.
         /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
         /// </summary>
-        float PreviousTileCountExponent    { get; }
+        float PreviousTileCountExponent { get; }
 
         /// <summary>
         /// The yield of all unemployed citizens.
@@ -56,24 +56,40 @@ namespace Assets.Simulation.Cities {
         /// The base amount of food required to grow a city's population.
         /// Used by <ref>PopulationGrowthLogic.GetFoodStockpileToGrow</ref>
         /// </summary>
-        int   BaseGrowthStockpile                 { get; }
+        int BaseGrowthStockpile { get; }
 
         /// <summary>
         /// A coefficient that modifies the food required to grow a city's population.
         /// Used by <ref>PopulationGrowthLogic.GetFoodStockpileToGrow</ref>
         /// </summary>
-        int   GrowthPreviousPopulationCoefficient { get; }
+        int GrowthPreviousPopulationCoefficient { get; }
 
         /// <summary>
         /// An exponent that modifies the food required to grow a city's population.
         /// Used by <ref>PopulationGrowthLogic.GetFoodStockpileToGrow</ref>
         /// </summary>
-        float GrowthPreviousPopulationExponent    { get; }
+        float GrowthPreviousPopulationExponent { get; }
 
         /// <summary>
         /// The minimum distance that must be maintained between any two cities.
         /// </summary>
         int MinimumSeparation { get; }
+
+        int CityAttackRange { get; }
+
+        int BaseCombatStrength { get; }
+
+        float CombatStrengthPerPopulation { get; }
+
+        int BaseMaxHealth { get; }
+
+        float MaxHealthPerPopulation { get; }
+
+        int BaseRangedAttackStrength { get; }
+
+        float RangedAttackStrengthPerPopulation { get; }
+
+        int HealthRegenPerRound { get; }
 
         #endregion
 

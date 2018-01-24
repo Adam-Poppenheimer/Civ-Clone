@@ -44,7 +44,7 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IHexCell location) {
-            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Template.Type, location, false);            
+            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Type, location, false);            
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
@@ -74,7 +74,7 @@ namespace Assets.Simulation.Units {
                 return false;
             }
             
-            if(type == UnitType.LandCivilian || type == UnitType.LandMilitary) {
+            if(type == UnitType.LandCivilian || type == UnitType.LandMilitary || type == UnitType.City) {
                 return !location.IsUnderwater;
             }else {
                 return location.IsUnderwater;
@@ -93,7 +93,7 @@ namespace Assets.Simulation.Units {
         }
 
         private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
-            return GetPossessionsOfOwner(owner).Select(unit => unit.Template.Type).Contains(type);
+            return GetPossessionsOfOwner(owner).Select(unit => unit.Type).Contains(type);
         }
 
         private void OnUnitBeingDestroyed(IUnit unit) {

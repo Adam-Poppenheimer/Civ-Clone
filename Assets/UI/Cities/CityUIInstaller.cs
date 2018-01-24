@@ -28,6 +28,10 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private GameObject CityDisplayRoot;
 
+        [SerializeField] CitySummaryDisplay CitySummaryPrefab;
+
+        [SerializeField] RectTransform CitySummaryContainer;
+
         #endregion
 
         #region instance methods
@@ -48,6 +52,12 @@ namespace Assets.UI.Cities {
                 .BindFactory<IBuildingDisplay, BuildingDisplayFactory>()
                 .To<BuildingDisplay>()
                 .FromComponentInNewPrefab(BuildingDisplayPrefab);
+
+            Container.Bind<CitySummaryDisplay>().FromInstance(CitySummaryPrefab);
+
+            Container.Bind<RectTransform>().WithId("City Summary Container").FromInstance(CitySummaryContainer);
+
+            Container.Bind<CitySummaryManager>().AsSingle();
 
             Container.DeclareSignal<SlotDisplayClickedSignal>();
         }

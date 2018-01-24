@@ -10,11 +10,9 @@ using UniRx;
 
 using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Cities;
-using Assets.Simulation.Units;
-using Assets.Simulation.HexMap;
 
 using Assets.UI.Civilizations;
+using Assets.UI.Cities;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -30,6 +28,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         private UIStateMachineBrain Brain;
 
+        private CitySummaryManager CitySummaryManager;
+
         #endregion
 
         #region instance methods
@@ -38,12 +38,13 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             List<CivilizationDisplayBase> civilizationDisplays,
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
-            GameCore gameCore, UIStateMachineBrain brain
+            GameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager
         ){
             CivilizationDisplays = civilizationDisplays;
             DefaultPanels        = defaultPanels;
             PlayerCivilization   = gameCore.PlayerCivilization;
             Brain                = brain;
+            CitySummaryManager   = citySummaryManager;
         }
 
         #region from StateMachineBehaviour
@@ -63,6 +64,12 @@ namespace Assets.UI.StateMachine.States.PlayMode {
                 TransitionType.ToCitySelected, TransitionType.ToCellSelected,
                 TransitionType.ToUnitSelected
             );
+
+            CitySummaryManager.BuildSummaries();
+        }
+
+        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+            CitySummaryManager.RefreshSummaries();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -74,6 +81,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             foreach(var panel in DefaultPanels) {
                 panel.gameObject.SetActive(false);
             }
+
+            CitySummaryManager.ClearSummaries();
         }
 
         #endregion

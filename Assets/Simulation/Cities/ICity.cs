@@ -68,6 +68,8 @@ namespace Assets.Simulation.Cities {
         /// </summary>
         IHexCell CellBeingPursued { get; }
 
+        IUnit CombatFacade { get; }
+
         #endregion
 
         #region instance methods
@@ -140,6 +142,8 @@ namespace Assets.Simulation.Cities {
         /// issues.
         /// </remarks>
         void PerformIncome();
+
+        void PerformHealing();
 
         #endregion
 

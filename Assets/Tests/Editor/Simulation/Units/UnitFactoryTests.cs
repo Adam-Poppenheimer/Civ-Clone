@@ -84,7 +84,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var newUnit = factory.Create(tile, template, civilization);
 
-            Assert.AreEqual(template, newUnit.Template, "newUnit.Template was not initialized correctly");
+            Assert.AreEqual(template, (newUnit as GameUnit).Template, "newUnit.Template was not initialized correctly");
         }
 
         [Test(Description = "Whenever a unit is created, its CurrentMovement should be " + 

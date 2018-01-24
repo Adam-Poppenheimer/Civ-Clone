@@ -6,7 +6,7 @@ using System.Text;
 namespace Assets.UI.HexMap {
 
     public enum CellOverlayType {
-        Labels, PathIndicator
+        Labels, PathIndicator, AttackIndicator, UnreachableIndicator
     }
 
 }

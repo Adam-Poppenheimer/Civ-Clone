@@ -25,4 +25,13 @@ MonoBehaviour:
     Production: 1
     Gold: 0
     Culture: 0
+    Science: 0
   _minimumSeparation: 3
+  _cityAttackRange: 2
+  _baseCombatStrength: 10
+  _combatStrengthPerPopulation: 0
+  _baseMaxHealth: 200
+  _maxHealthPerPopulation: 0
+  _baseRangedAttackStrength: 15
+  _rangedAttackStrengthPerPopulation: 0
+  _healthRegenPerRound: 20

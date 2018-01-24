@@ -719,13 +719,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             mockUnit.SetupAllProperties();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.CombatStrength).Returns(combatStrength);
-            mockTemplate.Setup(template => template.RangedAttackStrength).Returns(rangedAttackStrength);
-            mockTemplate.Setup(template => template.AttackRange).Returns(attackRange);
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
-            mockUnit.Setup(unit => unit.CurrentMovement).Returns(currentMovement);            
+            mockUnit.Setup(unit => unit.CombatStrength)      .Returns(combatStrength);
+            mockUnit.Setup(unit => unit.RangedAttackStrength).Returns(rangedAttackStrength);
+            mockUnit.Setup(unit => unit.AttackRange)         .Returns(attackRange);
+            mockUnit.Setup(unit => unit.CurrentMovement)     .Returns(currentMovement);            
 
             var newUnit = mockUnit.Object;
 

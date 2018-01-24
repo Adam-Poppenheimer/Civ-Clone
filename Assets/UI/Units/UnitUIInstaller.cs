@@ -15,6 +15,8 @@ namespace Assets.UI.Units {
 
         [SerializeField] private GameObject AbilityDisplayPrefab;
 
+        [SerializeField] private CombatSummaryDisplay CombatSummaryDisplay;
+
         #endregion
 
         #region instance methods
@@ -25,6 +27,8 @@ namespace Assets.UI.Units {
             Container.BindMemoryPool<IAbilityDisplay, AbilityDisplayMemoryPool>()
                 .To<AbilityDisplay>()
                 .FromComponentInNewPrefab(AbilityDisplayPrefab);
+
+            Container.Bind<CombatSummaryDisplay>().WithId("Combat Summary Display").FromInstance(CombatSummaryDisplay);
         }
 
         #endregion

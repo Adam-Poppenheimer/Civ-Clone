@@ -16,6 +16,6 @@ MonoBehaviour:
   _productionCost: 40
   _type: 0
   _abilities: []
-  _attackRange: 0
+  _attackRange: 2
   _combatStrength: 5
   _rangedAttackStrength: 20

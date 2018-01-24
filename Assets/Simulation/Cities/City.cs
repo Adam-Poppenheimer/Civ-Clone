@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities {
     /// calling into various logic- and canon-suffixed classes that handle the bulk of 
     /// behavior. Bugs are more likely to emerge from those classes rather than this one.
     /// </remarks>
-    public class City : MonoBehaviour, ICity, IPointerClickHandler {
+    public class City : MonoBehaviour, ICity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
         #region instance fields and properties
 
@@ -71,6 +71,8 @@ namespace Assets.Simulation.Cities {
         /// <inheritdoc/>
         public IHexCell CellBeingPursued { get; private set; }
 
+        public IUnit CombatFacade { get; set; } 
+
         #endregion
 
         private IPopulationGrowthLogic GrowthLogic;
@@ -88,6 +90,8 @@ namespace Assets.Simulation.Cities {
         private CitySignals Signals;
 
         private IProductionProjectFactory ProjectFactory;
+
+        private ICityConfig Config;
 
         #endregion
 
@@ -109,7 +113,7 @@ namespace Assets.Simulation.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IProductionProjectFactory projectFactory, CitySignals signals
+            IProductionProjectFactory projectFactory, CitySignals signals, ICityConfig config
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -119,6 +123,7 @@ namespace Assets.Simulation.Cities {
             DistributionLogic       = distributionLogic;
             ProjectFactory          = projectFactory;
             Signals                 = signals;
+            Config                  = config;
         }
 
         #region Unity messages
@@ -133,7 +138,15 @@ namespace Assets.Simulation.Cities {
 
         /// <inheritdoc/>
         public void OnPointerClick(PointerEventData eventData) {
-            Signals.ClickedSignal.OnNext(this);
+            Signals.PointerClickedSignal.OnNext(this);
+        }
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            Signals.PointerEnteredSignal.OnNext(this);
+        }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            Signals.PointerExitedSignal.OnNext(this);
         }
 
         #endregion
@@ -221,10 +234,15 @@ namespace Assets.Simulation.Cities {
             LastIncome = ResourceGenerationLogic.GetTotalYieldForCity(this);
 
             CultureStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Culture]);
-            FoodStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Food]) - GrowthLogic.GetFoodConsumptionPerTurn(this);
+            FoodStockpile    += Mathf.FloorToInt(LastIncome[ResourceType.Food]) - GrowthLogic.GetFoodConsumptionPerTurn(this);
         }
 
-        #endregion 
+        public void PerformHealing() {
+            CombatFacade.Health += Config.HealthRegenPerRound;
+            CombatFacade.CurrentMovement = 1;
+        }
+
+        #endregion
 
         #endregion
 

@@ -226,10 +226,7 @@ namespace Assets.Tests.Simulation.Units {
         private IUnit BuildUnit(bool isAquatic) {
             var unitMock = new Mock<IUnit>();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.IsAquatic).Returns(isAquatic);
-
-            unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+            unitMock.Setup(unit => unit.IsAquatic).Returns(isAquatic);
 
             return unitMock.Object;
         }

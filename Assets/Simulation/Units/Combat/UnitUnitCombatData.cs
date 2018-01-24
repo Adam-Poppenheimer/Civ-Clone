@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public struct CombatResultData {
+    public struct UnitUnitCombatData {
 
         #region instance fields and properties
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region constructors
 
-        public CombatResultData(IUnit attacker, IUnit defender,
+        public UnitUnitCombatData(IUnit attacker, IUnit defender,
             int damageToAttacker, int damageToDefender
         ){
             Attacker = attacker;

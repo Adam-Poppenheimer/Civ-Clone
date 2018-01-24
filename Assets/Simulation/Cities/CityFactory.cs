@@ -102,9 +102,12 @@ namespace Assets.Simulation.Cities {
             newCityGameObject.transform.SetParent(location.transform, false);
 
             var newCity = newCityGameObject.GetComponent<City>();
+
             newCity.Population = 1;
             newCity.Location = location;
             location.SuppressSlot = true;
+
+            newCity.CombatFacade = Container.Instantiate<CityCombatFacadeUnit>(new object[] { newCity });
 
             if(CellPossessionCanon.CanChangeOwnerOfPossession(location, newCity)) {
                 CellPossessionCanon.ChangeOwnerOfPossession(location, newCity);

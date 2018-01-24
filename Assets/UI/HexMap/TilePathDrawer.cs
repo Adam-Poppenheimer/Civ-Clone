@@ -39,12 +39,14 @@ namespace Assets.UI.HexMap {
                     cell.Overlay.Clear();
                     cell.Overlay.Hide();
                 }
+
+                LastPath.Clear();
             }
         }
 
         public void DrawPath(List<IHexCell> path) {
             ClearPath();
-            LastPath = path;
+            LastPath = new List<IHexCell>(path);
 
             foreach(var cell in path) {
                 cell.Overlay.SetDisplayType(CellOverlayType.PathIndicator);

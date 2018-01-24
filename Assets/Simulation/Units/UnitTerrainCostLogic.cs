@@ -39,7 +39,7 @@ namespace Assets.Simulation.Units {
         #region from IUnitTerrainCostLogic
 
         public int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            if(unit.Template.IsAquatic) {
+            if(unit.IsAquatic) {
                 return GetAquaticTraversalCost(currentCell, nextCell);
             }else {
                 return GetNonAquaticTraversalCost(currentCell, nextCell);

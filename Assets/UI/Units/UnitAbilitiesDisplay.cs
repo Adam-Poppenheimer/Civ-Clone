@@ -44,7 +44,7 @@ namespace Assets.UI.Units {
             }
             ActiveAbilityDisplays.Clear();
 
-            foreach(var ability in ObjectToDisplay.Template.Abilities) {
+            foreach(var ability in ObjectToDisplay.Abilities) {
                 var newDisplay = AbilityDisplayPool.Spawn();
 
                 newDisplay.transform.SetParent(transform, false);
@@ -55,7 +55,7 @@ namespace Assets.UI.Units {
                 ActiveAbilityDisplays.Add(newDisplay);
             }
 
-            RangedAttackButton.gameObject.SetActive(ObjectToDisplay.Template.RangedAttackStrength > 0);
+            RangedAttackButton.gameObject.SetActive(ObjectToDisplay.RangedAttackStrength > 0);
         }
 
         #endregion

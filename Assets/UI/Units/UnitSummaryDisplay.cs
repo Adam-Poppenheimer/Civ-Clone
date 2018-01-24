@@ -56,9 +56,9 @@ namespace Assets.UI.Units {
                 return;
             }
 
-            NameField           .text = ObjectToDisplay.Template.Name;
-            MaxMovementField    .text = ObjectToDisplay.Template.MaxMovement.ToString();
-            TypeField           .text = ObjectToDisplay.Template.Type       .ToString();
+            NameField           .text = ObjectToDisplay.Name;
+            MaxMovementField    .text = ObjectToDisplay.MaxMovement.ToString();
+            TypeField           .text = ObjectToDisplay.Type       .ToString();
 
             CurrentMovementField.text = ObjectToDisplay.CurrentMovement.ToString();
 

@@ -207,14 +207,11 @@ namespace Assets.Tests.Simulation.Units {
             var mockUnit = new Mock<IUnit>();
             mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.Name).Returns(name);
-            mockTemplate.Setup(template => template.Type).Returns(type);
+            mockUnit.Setup(unit => unit.Name).Returns(name);
+            mockUnit.Setup(unit => unit.Type).Returns(type);
 
-            mockTemplate.Setup(template => template.IsAquatic)
+            mockUnit.Setup(unit => unit.IsAquatic)
                 .Returns(type == UnitType.WaterCivilian || type == UnitType.WaterMilitary);
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
             return mockUnit.Object;
         }
 

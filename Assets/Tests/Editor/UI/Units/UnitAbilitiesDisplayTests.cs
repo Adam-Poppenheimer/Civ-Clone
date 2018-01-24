@@ -118,10 +118,7 @@ namespace Assets.Tests.UI.Units {
         private IUnit BuildUnit(List<IUnitAbilityDefinition> abilities) {
             var mockUnit = new Mock<IUnit>();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.Abilities).Returns(abilities);
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.Abilities).Returns(abilities);
 
             return mockUnit.Object;
         }

@@ -87,7 +87,7 @@ namespace Assets.Tests.Simulation.Core {
 
             executer.BeginTurnOnUnit(unit);
 
-            Assert.AreEqual(unit.Template.MaxMovement, unit.CurrentMovement, "unit.CurrentMovement has an unexpected value");
+            Assert.AreEqual(unit.MaxMovement, unit.CurrentMovement, "unit.CurrentMovement has an unexpected value");
         }
 
         [Test(Description = "When EndTurnOnUnit is called on a unit, that " +
@@ -111,10 +111,8 @@ namespace Assets.Tests.Simulation.Core {
             var mockUnit = new Mock<IUnit>();
             mockUnit.SetupAllProperties();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.MaxMovement).Returns(maxMovement);
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.MaxMovement).Returns(maxMovement);
+            mockUnit.Object.CurrentMovement = currentMovement;
 
             return mockUnit.Object;
         }

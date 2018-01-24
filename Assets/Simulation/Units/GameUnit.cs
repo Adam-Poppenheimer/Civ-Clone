@@ -10,6 +10,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Units.Abilities;
 
 using UnityCustomUtilities.Extensions;
 
@@ -22,11 +23,39 @@ namespace Assets.Simulation.Units {
 
         #region from IUnit
 
-        public IUnitTemplate Template { get; set; }
+        public string Name {
+            get { return Template.Name; }
+        }
 
-        public List<IHexCell> CurrentPath { get; set; }
+        public int MaxMovement {
+            get { return Template.MaxMovement; }
+        }
 
-        #endregion
+        public int CurrentMovement { get; set; }
+
+        public UnitType Type {
+            get { return Template.Type; }
+        }
+
+        public bool IsAquatic {
+            get { return Type == UnitType.WaterMilitary || Type == UnitType.WaterCivilian; }
+        }
+
+        public IEnumerable<IUnitAbilityDefinition> Abilities {
+            get { return Template.Abilities; }
+        }
+
+        public int AttackRange {
+            get { return Template.AttackRange; }
+        }
+
+        public int CombatStrength {
+            get { return Template.CombatStrength; }
+        }
+
+        public int RangedAttackStrength {
+            get { return Template.RangedAttackStrength; }
+        }
 
         public int Health {
             get { return _health; }
@@ -36,7 +65,17 @@ namespace Assets.Simulation.Units {
         }
         private int _health;
 
-        public int CurrentMovement { get; set; }
+        public int MaxHealth {
+            get { return Config.MaxHealth; }
+        }
+
+        public List<IHexCell> CurrentPath { get; set; }
+
+        #endregion
+
+        public IUnitTemplate Template { get; set; }
+
+
 
         private IUnitConfig Config;
 

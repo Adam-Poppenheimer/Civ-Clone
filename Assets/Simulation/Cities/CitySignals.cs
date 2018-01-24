@@ -22,12 +22,15 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// Signal that fires whenever a city is clicked.
         /// </summary>
-        public ISubject<ICity>                 ClickedSignal           { get; private set; }
+        public ISubject<ICity> PointerClickedSignal { get; private set; }
+
+        public ISubject<ICity> PointerEnteredSignal { get; private set; }
+        public ISubject<ICity> PointerExitedSignal  { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city's ActiveProject is changed.
         /// </summary>
-        public CityProjectChangedSignal        ProjectChangedSignal        { get; private set; }
+        public CityProjectChangedSignal ProjectChangedSignal { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city has its PerformDistribution method called.
@@ -53,7 +56,10 @@ namespace Assets.Simulation.Cities {
             ProjectChangedSignal        = projectChangedSignal;
             DistributionPerformedSignal = distributionPerformedSignal;
 
-            ClickedSignal            = new Subject<ICity>();
+            PointerClickedSignal        = new Subject<ICity>();
+            PointerEnteredSignal = new Subject<ICity>();
+            PointerExitedSignal  = new Subject<ICity>();
+
             CityBeingDestroyedSignal = new Subject<ICity>();
         }
 

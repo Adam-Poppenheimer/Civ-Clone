@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Units {
 
@@ -13,16 +14,32 @@ namespace Assets.Simulation.Units {
 
         #region properties
 
-        IUnitTemplate Template { get; }
+        string Name { get; }
 
-        int Health { get; set; }
+        int MaxMovement { get; }
 
         int CurrentMovement { get; set; }
 
-        GameObject gameObject { get; }
+        UnitType Type { get; }
+
+        bool IsAquatic { get; }
+
+        IEnumerable<IUnitAbilityDefinition> Abilities { get; }
+
+        int AttackRange { get; }
+
+        int CombatStrength { get; }
+
+        int RangedAttackStrength { get; }
+
+        int Health { get; set; }
+
+        int MaxHealth { get; }
 
         List<IHexCell> CurrentPath { get; set; }
 
+        GameObject gameObject { get; }
+        
         #endregion
 
         #region methods

@@ -39,7 +39,7 @@ namespace Assets.UI.Units {
         public void OnEnable() {
             UnitLocationChangedSubscription  = Signals.UnitLocationChangedSignal .Subscribe(OnUnitLocationChanged);
             UnitActivatedAbilitySubscription = Signals.UnitActivatedAbilitySignal.Subscribe(OnUnitActivatedAbility);
-            CombatEventOccurredSubscription  = Signals.CombatEventOccurredSignal .Subscribe(OnCombatEventOccurred);
+            CombatEventOccurredSubscription  = Signals.MeleeCombatWithUnitSignal .Subscribe(OnCombatEventOccurred);
 
             DoOnEnable();
         }
@@ -69,7 +69,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnCombatEventOccurred(CombatResultData results) {
+        private void OnCombatEventOccurred(UnitUnitCombatData results) {
             if(results.Attacker == ObjectToDisplay || results.Defender == ObjectToDisplay) {
                 Refresh();
             }

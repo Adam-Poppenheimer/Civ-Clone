@@ -55,6 +55,8 @@ namespace Assets.Simulation.Units {
             Container.Bind<ICombatModifierLogic>        ().To<CombatModifierLogic>        ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
+            Container.Bind<CombatResponder>().AsSingle().NonLazy();
+
             Container.Bind<UnitSignals>().AsSingle();
         }
 

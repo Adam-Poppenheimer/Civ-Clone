@@ -553,7 +553,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var citySignals = Container.Resolve<CitySignals>();
 
-            citySignals.ClickedSignal.Subscribe(delegate(ICity city) {
+            citySignals.PointerClickedSignal.Subscribe(delegate(ICity city) {
                 Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
                 Assert.Pass();
             });

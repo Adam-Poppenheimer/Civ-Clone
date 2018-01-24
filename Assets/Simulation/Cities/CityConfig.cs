@@ -83,6 +83,46 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private int _minimumSeparation;
 
+        public int CityAttackRange {
+            get { return _cityAttackRange; }
+        }
+        [SerializeField] private int _cityAttackRange;
+
+        public int BaseCombatStrength {
+            get { return _baseCombatStrength; }
+        }
+        [SerializeField] private int _baseCombatStrength;
+
+        public float CombatStrengthPerPopulation {
+            get { return _combatStrengthPerPopulation; }
+        }
+        [SerializeField] private float _combatStrengthPerPopulation;
+
+        public int BaseMaxHealth {
+            get { return _baseMaxHealth; }
+        }
+        [SerializeField] private int _baseMaxHealth;
+
+        public float MaxHealthPerPopulation {
+            get { return _maxHealthPerPopulation; }
+        }
+        [SerializeField] private float _maxHealthPerPopulation;
+
+        public int BaseRangedAttackStrength {
+            get { return _baseRangedAttackStrength; }
+        }
+        [SerializeField] private int _baseRangedAttackStrength;
+
+        public float RangedAttackStrengthPerPopulation {
+            get { return _rangedAttackStrengthPerPopulation; }
+        }
+        [SerializeField] private float _rangedAttackStrengthPerPopulation;
+
+        public int HealthRegenPerRound {
+            get { return _healthRegenPerRound; }
+        }
+        [SerializeField] private int _healthRegenPerRound;
+
         #endregion
 
         #endregion

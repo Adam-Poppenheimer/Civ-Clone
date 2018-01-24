@@ -31,9 +31,9 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        public ICity    LastCityClicked { get; private set; }
-        public IUnit    LastUnitClicked { get; private set; }
-        public IHexCell LastCellClicked { get; private set; }
+        public ICity    LastCityClicked { get; set; }
+        public IUnit    LastUnitClicked { get; set; }
+        public IHexCell LastCellClicked { get; set; }
 
         private IDisposable CityClickedSubscription;
         private IDisposable UnitClickedSubscription;
@@ -72,7 +72,7 @@ namespace Assets.UI.StateMachine {
 
         public void ClearListeners() {
             if(CancelPressedSubscription   != null) { CancelPressedSubscription  .Dispose(); }
-            if(ClickedAnywhereSubscription != null) { ClickedAnywhereSubscription.Dispose(); };
+            if(ClickedAnywhereSubscription != null) { ClickedAnywhereSubscription.Dispose(); }
 
             if(CityClickedSubscription != null) { CityClickedSubscription.Dispose(); }
             if(UnitClickedSubscription != null) { UnitClickedSubscription.Dispose(); }
@@ -100,7 +100,7 @@ namespace Assets.UI.StateMachine {
                 ClickedAnywhereSubscription = PlayerSignals.ClickedAnywhereSignal.Subscribe(OnClickedAnywhere);
 
             } else if(type == TransitionType.ToCitySelected) {
-                CityClickedSubscription = CitySignals.ClickedSignal.Subscribe(OnCityClicked);
+                CityClickedSubscription = CitySignals.PointerClickedSignal.Subscribe(OnCityClicked);
 
             }else if(type == TransitionType.ToUnitSelected) {
                 UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);

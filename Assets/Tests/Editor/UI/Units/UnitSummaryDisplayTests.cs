@@ -142,13 +142,9 @@ namespace Assets.Tests.UI.Units {
             UnitType type, int currentHealth
         ){
             var mockUnit = new Mock<IUnit>();
-
-            var mockTemplate = new Mock<IUnitTemplate>();
-            mockTemplate.Setup(template => template.MaxMovement).Returns(maxMovement);
-            mockTemplate.Setup(template => template.Type)       .Returns(type);
-            mockTemplate.Setup(template => template.Name)       .Returns(name);
-
-            mockUnit.Setup(unit => unit.Template)       .Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.MaxMovement)    .Returns(maxMovement);
+            mockUnit.Setup(unit => unit.Type)           .Returns(type);
+            mockUnit.Setup(unit => unit.Name)           .Returns(name);
             mockUnit.Setup(unit => unit.Health)         .Returns(currentHealth);
             mockUnit.Setup(unit => unit.CurrentMovement).Returns(currentMovement);
 

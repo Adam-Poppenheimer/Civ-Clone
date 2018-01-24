@@ -30,8 +30,6 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
 
-        [SerializeField] private RectTransform CombatSummaryPanel;
-
         [SerializeField] private TechTreeDisplay TechTreeDisplay;
 
         #endregion
@@ -47,8 +45,6 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<UnitDisplayBase>>        ().FromInstance(AllUnitDisplays);
 
             Container.Bind<List<RectTransform>>().WithId("Play Mode Default Panels").FromInstance(PlayModeDefaultPanels);
-
-            Container.Bind<RectTransform>().WithId("Combat Summary Panel").FromInstance(CombatSummaryPanel);
 
             Container.Bind<TechTreeDisplay>().FromInstance(TechTreeDisplay);
         }

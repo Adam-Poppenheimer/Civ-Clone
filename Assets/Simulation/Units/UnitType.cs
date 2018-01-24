@@ -9,7 +9,8 @@ namespace Assets.Simulation.Units {
         LandMilitary,
         LandCivilian,
         WaterMilitary,
-        WaterCivilian
+        WaterCivilian,
+        City
     }
 
 }
