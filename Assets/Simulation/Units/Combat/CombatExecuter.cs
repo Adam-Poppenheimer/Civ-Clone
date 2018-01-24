@@ -171,13 +171,9 @@ namespace Assets.Simulation.Units.Combat {
                 throw new InvalidOperationException("CanPerformMeleeCombat must return true");
             }
 
-            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
+            float attackerStrength, defenderStrength;
 
-            var attackerModifier = CombatModifierLogic.GetMeleeOffensiveModifierAtLocation(attacker, defender, defenderLocation);
-            var defenderModifier = CombatModifierLogic.GetMeleeDefensiveModifierAtLocation(attacker, defender, defenderLocation);
-
-            var attackerStrength = attacker.CombatStrength * (1f + attackerModifier);
-            var defenderStrength = defender.CombatStrength * (1f + defenderModifier);
+            CalculateMeleeAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
 
             PerformCombat(attacker, attackerStrength, defender, defenderStrength, true);
         }
@@ -217,24 +213,92 @@ namespace Assets.Simulation.Units.Combat {
                 throw new InvalidOperationException("CanPerformRangedCombat must return true");
             }
 
+            float attackerStrength, defenderStrength;
+            CalculateRangedAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
+
+            PerformCombat(attacker, attackerStrength, defender, defenderStrength, false);
+        }
+
+        public UnitUnitCombatData EstimateMeleeAttackResults(IUnit attacker, IUnit defender) {
+            float attackerStrength, defenderStrength;
+            CalculateMeleeAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
+
+            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, true);
+
+            return new UnitUnitCombatData(attacker, defender, results.Item1, results.Item2);
+        }
+
+        public UnitCityCombatData EstimateMeleeAttackResults(IUnit attacker, ICity city) {
+            float attackerStrength, defenderStrength;
+            CalculateMeleeAttackStrengths(attacker, out attackerStrength, city.CombatFacade, out defenderStrength);
+
+            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, city.CombatFacade, defenderStrength, true);
+
+            return new UnitCityCombatData(attacker, city, results.Item1, results.Item2);
+        }
+
+        public UnitUnitCombatData EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
+            float attackerStrength, defenderStrength;
+            CalculateRangedAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
+
+            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, false);
+
+            return new UnitUnitCombatData(attacker, defender, results.Item1, results.Item2);
+        }
+
+        public UnitCityCombatData EstimateRangedAttackResults(IUnit attacker, ICity city) {
+            float attackerStrength, defenderStrength;
+            CalculateRangedAttackStrengths(attacker, out attackerStrength, city.CombatFacade, out defenderStrength);
+
+            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, city.CombatFacade, defenderStrength, false);
+
+            return new UnitCityCombatData(attacker, city, results.Item1, results.Item2);
+        }
+
+        #endregion
+
+        private void CalculateRangedAttackStrengths(
+            IUnit attacker, out float attackerStrength,
+            IUnit defender, out float defenderStrength
+        ){
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
             var attackerModifier = CombatModifierLogic.GetRangedOffensiveModifierAtLocation(attacker, defender, defenderLocation);
             var defenderModifier = CombatModifierLogic.GetRangedDefensiveModifierAtLocation(attacker, defender, defenderLocation);
 
-            var attackerStrength = attacker.RangedAttackStrength * (1f + attackerModifier);
-            var defenderStrength = defender.CombatStrength       * (1f + defenderModifier);
-
-            PerformCombat(attacker, attackerStrength, defender, defenderStrength, false);
+            attackerStrength = attacker.RangedAttackStrength * (1f + attackerModifier);
+            defenderStrength = defender.CombatStrength       * (1f + defenderModifier);
         }
 
-        #endregion
+        private void CalculateMeleeAttackStrengths(
+            IUnit attacker, out float attackerStrength,
+            IUnit defender, out float defenderStrength
+        ) {
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
+
+            var attackerModifier = CombatModifierLogic.GetMeleeOffensiveModifierAtLocation(attacker, defender, defenderLocation);
+            var defenderModifier = CombatModifierLogic.GetMeleeDefensiveModifierAtLocation(attacker, defender, defenderLocation);
+
+            attackerStrength = attacker.CombatStrength * (1f + attackerModifier);
+            defenderStrength = defender.CombatStrength * (1f + defenderModifier);
+        }
 
         private void PerformCombat(
             IUnit attacker, float attackerStrength, IUnit defender, float defenderStrength,
             bool attackerReceivesDamage
-        ){
+        ) {
             attacker.CurrentMovement = 0;
+
+            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, attackerReceivesDamage);
+
+            attacker.Health -= results.Item1;
+            defender.Health -= results.Item2;
+        }
+
+        private Tuple<int, int> CalculateCombat(
+            IUnit attacker, float attackerStrength, IUnit defender, float defenderStrength,
+            bool attackerReceivesDamage
+        ){
             int attackerDamage = 0, defenderDamage = 0;
 
             if(attackerStrength == 0) {
@@ -256,11 +320,10 @@ namespace Assets.Simulation.Units.Combat {
                 );
             }
 
-            if(attackerReceivesDamage) {
-                attacker.Health -= Math.Min(defenderDamage, attacker.Health);
-            }
-            
-            defender.Health -= Math.Min(attackerDamage, defender.Health);
+            return new Tuple<int, int>(
+                attackerReceivesDamage ? Math.Min(defenderDamage, attacker.Health) : 0,
+                Math.Min(attackerDamage, defender.Health)
+            );
         }
 
         #endregion

@@ -23,6 +23,12 @@ namespace Assets.Simulation.Units.Combat {
         void PerformRangedAttack   (IUnit attacker, IUnit defender);
         void PerformRangedAttack   (IUnit attacker, ICity city);
 
+        UnitUnitCombatData EstimateMeleeAttackResults(IUnit attacker, IUnit defender);
+        UnitCityCombatData EstimateMeleeAttackResults(IUnit attacker, ICity city);
+
+        UnitUnitCombatData EstimateRangedAttackResults(IUnit attacker, IUnit defender);
+        UnitCityCombatData EstimateRangedAttackResults(IUnit attacker, ICity city);
+
         #endregion
 
     }

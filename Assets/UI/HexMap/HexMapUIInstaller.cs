@@ -41,6 +41,8 @@ namespace Assets.UI.HexMap {
                 .FromInstance(MapTileHoverYieldDisplay);
 
             Container.Bind<ITilePathDrawer>().To<TilePathDrawer>().AsSingle();
+
+            Container.Bind<HexCellOverlayManager>().AsSingle();
         }
 
         #endregion

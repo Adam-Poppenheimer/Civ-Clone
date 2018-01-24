@@ -32,6 +32,8 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private TechTreeDisplay TechTreeDisplay;
 
+        [SerializeField] private List<UnitDisplayBase> RangedAttackStateDisplays;
+
         #endregion
 
         #region instance methods
@@ -47,6 +49,8 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<RectTransform>>().WithId("Play Mode Default Panels").FromInstance(PlayModeDefaultPanels);
 
             Container.Bind<TechTreeDisplay>().FromInstance(TechTreeDisplay);
+
+            Container.Bind<List<UnitDisplayBase>>().WithId("Ranged Attack State Displays").FromInstance(RangedAttackStateDisplays);
         }
 
         #endregion

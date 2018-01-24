@@ -62,6 +62,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private HexCellSignals CellSignals;
 
+        private HexCellOverlayManager OverlayManager;
+
         private CombatSummaryDisplay CombatSummaryDisplay;
 
         #endregion
@@ -74,7 +76,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             ICombatExecuter combatExecuter, IUnitPositionCanon unitPositionCanon,
             ICityFactory cityFactory, IHexGrid grid, IUnitTerrainCostLogic terrainCostLogic,
             ITilePathDrawer pathDrawer, CitySignals citySignals, UnitSignals unitSignals,
-            HexCellSignals cellSignals,
+            HexCellSignals cellSignals, HexCellOverlayManager overlayManager,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay
         ){
             DisplaysToManage     = displaysToManage;
@@ -88,6 +90,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CitySignals          = citySignals;
             UnitSignals          = unitSignals;
             CellSignals          = cellSignals;
+            OverlayManager       = overlayManager;
             CombatSummaryDisplay = combatSummaryDisplay;
         }
 
@@ -180,6 +183,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void OnUnitPointerEntered(IUnit unit) {
+            if(!IsDragging) {
+                return;
+            }
+
             if(CombatExecuter.CanPerformMeleeAttack(SelectedUnit, unit)) {
                 SetUnitToAttack(unit);
             }else {
@@ -188,10 +195,16 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void OnUnitPointerExited(IUnit unit) {
-            Clear();
+            if(IsDragging) {
+                Clear();
+            }
         }
 
         private void OnCityPointerEntered(ICity city) {
+            if(!IsDragging) {
+                return;
+            }
+
             if(CombatExecuter.CanPerformMeleeAttack(SelectedUnit, city)) {
                 SetCityToAttack(city);
             }else {
@@ -200,7 +213,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void OnCityPointerExited(ICity city) {
-            Clear();
+            if(IsDragging) {
+                Clear();
+            }
         }
 
         private void SetUnitToAttack(IUnit unit) {
@@ -210,16 +225,22 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CombatSummaryDisplay.gameObject.SetActive(true);
 
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
-            unitLocation.Overlay.SetDisplayType(CellOverlayType.AttackIndicator);
-            unitLocation.Overlay.Show();
+            OverlayManager.ShowOverlayOfCell(unitLocation, CellOverlayType.AttackIndicator);
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = unit;
+            CombatSummaryDisplay.IsMeleeAttack = true;
         }
 
         private void SetCityToAttack(ICity city) {
             Clear();
             CityToAttack = city;
 
-            CityToAttack.Location.Overlay.SetDisplayType(CellOverlayType.AttackIndicator);
-            CityToAttack.Location.Overlay.Show();
+            OverlayManager.ShowOverlayOfCell(CityToAttack.Location, CellOverlayType.AttackIndicator);
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
+            CombatSummaryDisplay.IsMeleeAttack = true;
         }
 
         private void SetProspectiveTravelGoal(IHexCell unitLocation, IHexCell goal) {
@@ -238,8 +259,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             if(ProspectivePath != null) {
                 PathDrawer.DrawPath(ProspectivePath);
             }else {
-                ProspectiveTravelGoal.Overlay.SetDisplayType(CellOverlayType.UnreachableIndicator);
-                ProspectiveTravelGoal.Overlay.Show();
+                OverlayManager.ShowOverlayOfCell(ProspectiveTravelGoal, CellOverlayType.UnreachableIndicator);
             }
         }
 
@@ -272,19 +292,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private void Clear() {
             if(UnitToAttack != null) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
-                unitLocation.Overlay.Clear();
-                unitLocation.Overlay.Hide();
             }
 
-            if(CityToAttack != null) {
-                CityToAttack.Location.Overlay.Clear();
-                CityToAttack.Location.Overlay.Hide();
-            }
-
-            if(ProspectiveTravelGoal != null) {
-                ProspectiveTravelGoal.Overlay.Clear();
-                ProspectiveTravelGoal.Overlay.Hide();
-            }
+            OverlayManager.ClearAllOverlays();
 
             UnitToAttack = null;
             CityToAttack = null;

@@ -14,6 +14,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
 using Assets.UI.Units;
+using Assets.UI.HexMap;
 
 namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
@@ -51,6 +52,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private ICityFactory CityFactory;
 
+        private HexCellOverlayManager OverlayManager;
+
         #endregion
 
         #region instance methods
@@ -59,9 +62,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         public void InjectDependencies(
             UnitSignals unitSignals, HexCellSignals cellSignals, CitySignals citySignals,
             IUnitPositionCanon unitPositionCanon, ICombatExecuter combatExecuter,
-            UIStateMachineBrain brain, List<UnitDisplayBase> displaysToManage,
+            UIStateMachineBrain brain,
+            [Inject(Id = "Ranged Attack State Displays")] List<UnitDisplayBase> displaysToManage,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
-            ICityFactory cityFactory
+            ICityFactory cityFactory, HexCellOverlayManager overlayManager
         ){
             UnitSignals          = unitSignals;
             CellSignals          = cellSignals;
@@ -72,6 +76,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             DisplaysToManage     = displaysToManage;
             CombatSummaryDisplay = combatSummaryDisplay;
             CityFactory          = cityFactory;
+            OverlayManager       = overlayManager;
         }
 
         #region from StateMachineBehaviour
@@ -194,16 +199,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         #endregion
 
         private void Clear() {
-            if(UnitToAttack != null) {
-                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
-                unitLocation.Overlay.Clear();
-                unitLocation.Overlay.Hide();
-            }
-
-            if(CityToAttack != null) {
-                CityToAttack.Location.Overlay.Clear();
-                CityToAttack.Location.Overlay.Hide();
-            }
+            OverlayManager.ClearAllOverlays();
 
             UnitToAttack = null;
             CityToAttack = null;
@@ -218,12 +214,12 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-            unitLocation.Overlay.SetDisplayType(HexMap.CellOverlayType.AttackIndicator);
-            unitLocation.Overlay.Show();
+            OverlayManager.ShowOverlayOfCell(unitLocation, CellOverlayType.AttackIndicator);
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = UnitToAttack;
             CombatSummaryDisplay.gameObject.SetActive(true);
+            CombatSummaryDisplay.Refresh();
         }
 
         private void SetCityToAttack(ICity city) {
@@ -231,8 +227,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             CityToAttack = city;
 
-            city.Location.Overlay.SetDisplayType(HexMap.CellOverlayType.AttackIndicator);
-            city.Location.Overlay.Show();
+            OverlayManager.ShowOverlayOfCell(city.Location, CellOverlayType.AttackIndicator);
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = city.CombatFacade;

@@ -18,13 +18,17 @@ namespace Assets.UI.HexMap {
 
         private List<IHexCell> LastPath;
 
+
+
+        private HexCellOverlayManager OverlayManager;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public TilePathDrawer(){
-
+        public TilePathDrawer(HexCellOverlayManager overlayManager){
+            OverlayManager = overlayManager;
         }
 
         #endregion
@@ -36,8 +40,7 @@ namespace Assets.UI.HexMap {
         public void ClearPath() {
             if(LastPath != null) {
                 foreach(var cell in LastPath) {
-                    cell.Overlay.Clear();
-                    cell.Overlay.Hide();
+                    OverlayManager.ClearOverlay(cell);
                 }
 
                 LastPath.Clear();
@@ -49,8 +52,7 @@ namespace Assets.UI.HexMap {
             LastPath = new List<IHexCell>(path);
 
             foreach(var cell in path) {
-                cell.Overlay.SetDisplayType(CellOverlayType.PathIndicator);
-                cell.Overlay.Show();
+                OverlayManager.ShowOverlayOfCell(cell, CellOverlayType.PathIndicator);
             }
         }
 
