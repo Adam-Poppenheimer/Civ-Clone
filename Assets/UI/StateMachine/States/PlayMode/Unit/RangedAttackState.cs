@@ -25,25 +25,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private List<IDisposable> EventSubscriptions = new List<IDisposable>();
 
-        private IUnit UnitToAttack {
-            get { return _unitToAttack; }
-            set {
-                if(_unitToAttack != null) {
-                    var unitPosition = UnitPositionCanon.GetOwnerOfPossession(_unitToAttack);
-                    unitPosition.Overlay.Clear();
-                    unitPosition.Overlay.Hide();
-                }
-
-                _unitToAttack = value;
-
-                if(_unitToAttack != null) {
-                    var unitPosition = UnitPositionCanon.GetOwnerOfPossession(_unitToAttack);
-                    unitPosition.Overlay.SetDisplayType(HexMap.CellOverlayType.AttackIndicator);
-                    unitPosition.Overlay.Show();
-                }
-            }
-        }
-        private IUnit _unitToAttack;
+        private IUnit UnitToAttack;
 
         private ICity CityToAttack;
 
@@ -67,6 +49,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private CombatSummaryDisplay CombatSummaryDisplay;
 
+        private ICityFactory CityFactory;
+
         #endregion
 
         #region instance methods
@@ -76,7 +60,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             UnitSignals unitSignals, HexCellSignals cellSignals, CitySignals citySignals,
             IUnitPositionCanon unitPositionCanon, ICombatExecuter combatExecuter,
             UIStateMachineBrain brain, List<UnitDisplayBase> displaysToManage,
-            [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay
+            [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
+            ICityFactory cityFactory
         ){
             UnitSignals          = unitSignals;
             CellSignals          = cellSignals;
@@ -86,6 +71,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Brain                = brain;
             DisplaysToManage     = displaysToManage;
             CombatSummaryDisplay = combatSummaryDisplay;
+            CityFactory          = cityFactory;
         }
 
         #region from StateMachineBehaviour
@@ -99,20 +85,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 display.Refresh();
             }
 
-            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal.Subscribe(OnUnitPointerEntered));
-            EventSubscriptions.Add(UnitSignals.PointerExitedSignal .Subscribe(OnUnitPointerExited));
-            EventSubscriptions.Add(UnitSignals.ClickedSignal       .Subscribe(OnUnitClicked));
-
-            CellSignals.PointerEnterSignal.Listen(OnCellPointerEnter);
-            CellSignals.PointerExitSignal .Listen(OnCellPointerExit);
-            CellSignals.ClickedSignal     .Listen(OnCellClicked);
-
-            EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
-            EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
-            EventSubscriptions.Add(CitySignals.PointerClickedSignal.Subscribe(OnCityPointerClicked));
-
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick);
+
+            AttachEvents();
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -127,14 +103,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 display.ObjectToDisplay = null;
             }
 
-            foreach(var subscription in EventSubscriptions) {
-                subscription.Dispose();
-            }
-            EventSubscriptions.Clear();
-
-            CellSignals.PointerEnterSignal.Unlisten(OnCellPointerEnter);
-            CellSignals.PointerExitSignal .Unlisten(OnCellPointerExit);
-            CellSignals.ClickedSignal     .Unlisten(OnCellClicked);
+            DetachEvents();
 
             RequestReturn = false;
         }
@@ -144,112 +113,147 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         #region Event responses
 
         private void OnCellPointerEnter(IHexCell cell) {
-            UnitToAttack = null;
-            CityToAttack = null;
+            var cityOnTile = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
 
-            var unitsOnTile = UnitPositionCanon.GetPossessionsOfOwner(cell);
+            if(cityOnTile != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, cityOnTile)) {
+                SetCityToAttack(cityOnTile);
+                return;
+            }
+
+            var unitsOnTile = UnitPositionCanon.GetPossessionsOfOwner(cell).Where(unit => unit.Type != UnitType.City);
 
             if(unitsOnTile.Count() > 0) {
                 var attackCandidate = GetUnitToAttackFromStack(unitsOnTile);
                 if(attackCandidate != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, attackCandidate)) {
-                    UnitToAttack = attackCandidate;
+                    SetUnitToAttack(attackCandidate);
+                    return;
                 }
             }
 
-            RefreshSummaryPanel();
+            Clear();
         }
 
         private void OnCellPointerExit(IHexCell cell) {
-            UnitToAttack = null;
-            CityToAttack = null;
-
-            RefreshSummaryPanel();
+            Clear();
         }
 
         private void OnCellClicked(IHexCell cell, Vector3 location) {
-            if(UnitToAttack != null) {
-                CombatExecuter.PerformRangedAttack(SelectedUnit, UnitToAttack);
+            if(IsAttackValid()) {
+                PerformAttack();
             }
 
-            if(CityToAttack != null) {
-                CombatExecuter.PerformRangedAttack(SelectedUnit, CityToAttack);
-            }
+            Clear();
 
             RequestReturn = true;
         }
 
         private void OnUnitPointerEntered(IUnit unit) {
-            CityToAttack = null;
-
             if(CombatExecuter.CanPerformRangedAttack(SelectedUnit, unit)) {
-                UnitToAttack = unit;
+                SetUnitToAttack(unit);
             }else {
-                UnitToAttack = null;
+                Clear();
             }
-
-            RefreshSummaryPanel();
         }
 
         private void OnUnitPointerExited(IUnit unit) {
-            UnitToAttack = null;
-            CityToAttack = null;
-
-            RefreshSummaryPanel();
+            Clear();
         }
 
         private void OnUnitClicked(IUnit unit) {
-            if(UnitToAttack == null) {
-                return;
+            if(IsAttackValid()) {
+                PerformAttack();
             }
 
-            CombatExecuter.PerformRangedAttack(SelectedUnit, UnitToAttack);
+            Clear();
 
             RequestReturn = true;
         }
 
         private void OnCityPointerEntered(ICity city) {
             if(CombatExecuter.CanPerformRangedAttack(SelectedUnit, city)) {
-                CityToAttack = city;
+                SetCityToAttack(city);
+            }else {
+                Clear();
             }
-
-            UnitToAttack = null;
-
-            RefreshSummaryPanel();
         }
 
         private void OnCityPointerExited(ICity city) {
-            UnitToAttack = null;
-            CityToAttack = null;
-
-            RefreshSummaryPanel();
+            Clear();
         }
 
         private void OnCityPointerClicked(ICity city) {
-            if(CityToAttack == null) {
-                return;
+            if(IsAttackValid()) {
+                PerformAttack();
             }
 
-            CombatExecuter.PerformRangedAttack(SelectedUnit, CityToAttack);
+            Clear();
 
             RequestReturn = true;
         }
 
         #endregion
 
-        private void RefreshSummaryPanel() {
+        private void Clear() {
             if(UnitToAttack != null) {
-                CombatSummaryDisplay.AttackingUnit = SelectedUnit;
-                CombatSummaryDisplay.DefendingUnit = UnitToAttack;
-                CombatSummaryDisplay.gameObject.SetActive(true);
+                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
+                unitLocation.Overlay.Clear();
+                unitLocation.Overlay.Hide();
+            }
 
-            }else if(CityToAttack != null) {
-                CombatSummaryDisplay.AttackingUnit = SelectedUnit;
-                CombatSummaryDisplay.DefendingUnit = CityToAttack.CombatFacade;
-                CombatSummaryDisplay.gameObject.SetActive(true);
+            if(CityToAttack != null) {
+                CityToAttack.Location.Overlay.Clear();
+                CityToAttack.Location.Overlay.Hide();
+            }
 
+            UnitToAttack = null;
+            CityToAttack = null;
+
+            CombatSummaryDisplay.gameObject.SetActive(false);
+        }
+
+        private void SetUnitToAttack(IUnit unit) {
+            Clear();
+
+            UnitToAttack = unit;
+
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            unitLocation.Overlay.SetDisplayType(HexMap.CellOverlayType.AttackIndicator);
+            unitLocation.Overlay.Show();
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = UnitToAttack;
+            CombatSummaryDisplay.gameObject.SetActive(true);
+        }
+
+        private void SetCityToAttack(ICity city) {
+            Clear();
+
+            CityToAttack = city;
+
+            city.Location.Overlay.SetDisplayType(HexMap.CellOverlayType.AttackIndicator);
+            city.Location.Overlay.Show();
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
+            CombatSummaryDisplay.gameObject.SetActive(true);
+        }
+
+        private bool IsAttackValid() {
+            if(UnitToAttack != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, UnitToAttack)) {
+                return true;
             }else {
-                CombatSummaryDisplay.gameObject.SetActive(false);
-            }  
+                return CityToAttack != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, CityToAttack);
+            }
+        }
+
+        private void PerformAttack() {
+            if(CityToAttack != null) {
+                CombatExecuter.PerformRangedAttack(SelectedUnit, CityToAttack);
+
+            }else if(UnitToAttack != null) {
+                CombatExecuter.PerformRangedAttack(SelectedUnit, UnitToAttack);
+            }
         }
 
         private IUnit GetUnitToAttackFromStack(IEnumerable<IUnit> stack) {
@@ -263,6 +267,31 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }else {
                 return stack.First();
             }
+        }
+
+        private void AttachEvents() {
+            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal.Subscribe(OnUnitPointerEntered));
+            EventSubscriptions.Add(UnitSignals.PointerExitedSignal .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.ClickedSignal       .Subscribe(OnUnitClicked));
+
+            CellSignals.PointerEnterSignal.Listen(OnCellPointerEnter);
+            CellSignals.PointerExitSignal .Listen(OnCellPointerExit);
+            CellSignals.ClickedSignal     .Listen(OnCellClicked);
+
+            EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
+            EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
+            EventSubscriptions.Add(CitySignals.PointerClickedSignal.Subscribe(OnCityPointerClicked));
+        }
+
+        private void DetachEvents() {
+            foreach(var subscription in EventSubscriptions) {
+                subscription.Dispose();
+            }
+            EventSubscriptions.Clear();
+
+            CellSignals.PointerEnterSignal.Unlisten(OnCellPointerEnter);
+            CellSignals.PointerExitSignal .Unlisten(OnCellPointerExit);
+            CellSignals.ClickedSignal     .Unlisten(OnCellClicked);
         }
 
         #endregion
