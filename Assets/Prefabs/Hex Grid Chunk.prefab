@@ -625,6 +625,8 @@ MonoBehaviour:
   - {fileID: 4000012315276196, guid: 81161b1629145e944b8abaf86c3be617, type: 2}
   - {fileID: 4000010181493276, guid: 105539f0c24dd8b458e80f7a778ebca3, type: 2}
   - {fileID: 4000014025775786, guid: d70b0686fd8663240b4d36dbf9394485, type: 2}
+  BuildingPrefabs:
+  - {fileID: 400002, guid: b8beb0b1c5ecc86428ecf58aa1c1a42d, type: 2}
 --- !u!114 &114270732117973604
 MonoBehaviour:
   m_ObjectHideFlags: 1

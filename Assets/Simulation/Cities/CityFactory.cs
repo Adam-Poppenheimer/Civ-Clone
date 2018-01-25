@@ -105,7 +105,9 @@ namespace Assets.Simulation.Cities {
 
             newCity.Population = 1;
             newCity.Location = location;
+
             location.SuppressSlot = true;
+            location.Feature = TerrainFeature.None;
 
             newCity.CombatFacade = Container.Instantiate<CityCombatFacadeUnit>(new object[] { newCity });
 

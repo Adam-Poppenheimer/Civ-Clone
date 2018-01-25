@@ -112,12 +112,13 @@ namespace Assets.Simulation.HexMap {
                 Triangulate(direction, cell);
             }
 
-            if( cell.Feature == TerrainFeature.Forest &&
-                !RiverCanon.HasRiver(cell) &&
-                !CityFactory.AllCities.Exists(city => city.Location == cell)
-            ){
+            var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+            if(cityAtLocation != null) {
+                Features.AddCityFeature(cityAtLocation, cell.transform.localPosition);
+
+            }else if( cell.Feature == TerrainFeature.Forest && !RiverCanon.HasRiver(cell)){
                 Features.AddFeature(cell.transform.localPosition, cell.Feature);
-            }            
+            }
         }
 
         private void Triangulate(HexDirection direction, IHexCell cell) {
@@ -162,6 +163,10 @@ namespace Assets.Simulation.HexMap {
             if(cellOwner != null) {
                 ICivilization cityOwner = CityPossessionCanon.GetOwnerOfPossession(cellOwner);
                 TriangulateCulture(direction, cell, cityOwner);
+
+                if(cellOwner.Location == cell) {
+                    Features.AddCityFeature(cellOwner, (center + edge.V1 + edge.V5) * (1f / 3f));
+                }                
             }
         }
 

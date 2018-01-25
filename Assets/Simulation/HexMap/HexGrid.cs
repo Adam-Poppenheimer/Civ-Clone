@@ -156,7 +156,20 @@ namespace Assets.Simulation.HexMap {
         }
 
         public List<IHexCell> GetCellsInLine(IHexCell start, IHexCell end) {
-            throw new NotImplementedException();
+            var retval = new List<IHexCell>();
+
+            var coordinateLine = HexCoordinates.GetCoordinatesInLine(
+                start.Coordinates, start.transform.position,
+                end.Coordinates, end.transform.position
+            );
+
+            foreach(var coordinates in coordinateLine){
+                if(HasCellAtCoordinates(coordinates)) {
+                    retval.Add(GetCellAtCoordinates(coordinates));
+                }
+            }
+            
+            return retval;
         }
 
         public List<IHexCell> GetCellsInRing(IHexCell center, int radius) {

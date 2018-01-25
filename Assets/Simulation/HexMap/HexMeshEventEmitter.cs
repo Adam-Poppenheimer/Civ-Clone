@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 
 using Zenject;
 
+using Assets.Simulation.Cities;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexMeshEventEmitter : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
@@ -20,17 +22,30 @@ namespace Assets.Simulation.HexMap {
 
         private bool ShouldEmitEnterExitMessages;
 
+
+
+
         private HexCellSignals CellSignals;
+
         private IHexGrid Grid;
+
+        private ICityFactory CityFactory;
+
+        private CitySignals CitySignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(HexCellSignals cellSignals, IHexGrid grid) {
+        public void InjectDependencies(
+            HexCellSignals cellSignals, IHexGrid grid, ICityFactory cityFactory,
+            CitySignals citySignals
+        ){
             CellSignals = cellSignals;
-            Grid = grid;
+            Grid        = grid;
+            CityFactory = cityFactory;
+            CitySignals = citySignals;
         }
 
         #region Unity messages
@@ -55,7 +70,13 @@ namespace Assets.Simulation.HexMap {
                 if(hit.collider == Collider) {
                     var coordinates = HexCoordinates.FromPosition(hit.point);
                     var clickedCell = Grid.GetCellAtCoordinates(coordinates);
-                    CellSignals.ClickedSignal.Fire(clickedCell, Input.mousePosition);
+
+                    var cityAtLocation = GetCityAtLocation(clickedCell);
+                    if(cityAtLocation != null) {
+                        CitySignals.PointerClickedSignal.OnNext(cityAtLocation);
+                    }else {
+                        CellSignals.ClickedSignal.Fire(clickedCell, Input.mousePosition);
+                    }
                 }
             }
         }
@@ -67,7 +88,14 @@ namespace Assets.Simulation.HexMap {
         public void OnPointerExit(PointerEventData eventData) {
             ShouldEmitEnterExitMessages = false;
             if(LastCellEntered != null) {
-                EmitExitMessage(LastCellEntered);
+                var cityAtLocation = GetCityAtLocation(LastCellEntered);
+
+                if(cityAtLocation != null) {
+                    EmitExitMessage(cityAtLocation);
+                }else {
+                    EmitExitMessage(LastCellEntered);
+                }
+
                 LastCellEntered = null;
             }
         }
@@ -95,13 +123,25 @@ namespace Assets.Simulation.HexMap {
                 var cellUnderMouse = GetCellUnderPosition(Input.mousePosition);
                 if(cellUnderMouse != LastCellEntered) {
                     if(LastCellEntered != null) {
-                        EmitExitMessage(LastCellEntered);
+                        var cityAtLocation = GetCityAtLocation(LastCellEntered);
+
+                        if(cityAtLocation != null) {
+                            EmitExitMessage(cityAtLocation);
+                        }else {
+                            EmitExitMessage(LastCellEntered);
+                        }
                     }
 
                     LastCellEntered = cellUnderMouse;
 
                     if(LastCellEntered != null) {
-                        EmitEnterMessage(LastCellEntered);
+                        var cityAtLocation = GetCityAtLocation(LastCellEntered);
+
+                        if(cityAtLocation != null) {
+                            EmitEnterMessage(cityAtLocation);
+                        }else {
+                            EmitEnterMessage(LastCellEntered);
+                        }
                     }
                 }
             }
@@ -113,6 +153,18 @@ namespace Assets.Simulation.HexMap {
 
         private void EmitExitMessage(IHexCell cell) {
             CellSignals.PointerExitSignal.Fire(cell);
+        }
+
+        private void EmitEnterMessage(ICity city) {
+            CitySignals.PointerEnteredSignal.OnNext(city);
+        }
+
+        private void EmitExitMessage(ICity city) {
+            CitySignals.PointerExitedSignal.OnNext(city);
+        }
+
+        private ICity GetCityAtLocation(IHexCell location) {
+            return CityFactory.AllCities.Where(city => city.Location == location).FirstOrDefault();
         }
 
         #endregion

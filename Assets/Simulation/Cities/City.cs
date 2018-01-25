@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities {
     /// calling into various logic- and canon-suffixed classes that handle the bulk of 
     /// behavior. Bugs are more likely to emerge from those classes rather than this one.
     /// </remarks>
-    public class City : MonoBehaviour, ICity, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class City : MonoBehaviour, ICity{
 
         #region instance fields and properties
 
@@ -130,23 +130,6 @@ namespace Assets.Simulation.Cities {
 
         private void OnDestroy() {
             Signals.CityBeingDestroyedSignal.OnNext(this);
-        }
-
-        #endregion
-
-        #region EventSystem handler implementations
-
-        /// <inheritdoc/>
-        public void OnPointerClick(PointerEventData eventData) {
-            Signals.PointerClickedSignal.OnNext(this);
-        }
-
-        public void OnPointerEnter(PointerEventData eventData) {
-            Signals.PointerEnteredSignal.OnNext(this);
-        }
-
-        public void OnPointerExit(PointerEventData eventData) {
-            Signals.PointerExitedSignal.OnNext(this);
         }
 
         #endregion

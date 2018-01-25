@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Cities;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexFeatureManager : MonoBehaviour {
@@ -16,6 +18,8 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private Transform FeaturePrefab;
 
         [SerializeField] private List<Transform> TreePrefabs;
+
+        [SerializeField] private List<Transform> BuildingPrefabs;
 
         private INoiseGenerator NoiseGenerator;
 
@@ -55,6 +59,17 @@ namespace Assets.Simulation.HexMap {
             instance.SetParent(Container, false);
         }
 
+        public void AddCityFeature(ICity city, Vector3 position) {
+            HexHash hash = NoiseGenerator.SampleHashGrid(position);
+
+            Transform prefabToUse = GetCityPrefab(hash);
+
+            Transform instance = Instantiate(prefabToUse);
+            instance.localPosition = NoiseGenerator.Perturb(position);
+            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
+            instance.SetParent(Container, false);
+        }
+
         private Transform GetFeaturePrefab(TerrainFeature featureType, HexHash hash) {
             if(featureType == TerrainFeature.Forest) {
                 int treeIndex = (int)(hash.C * TreePrefabs.Count);
@@ -62,6 +77,11 @@ namespace Assets.Simulation.HexMap {
             }else {
                 return FeaturePrefab;
             }
+        }
+
+        private Transform GetCityPrefab(HexHash hash) {
+            int buildingIndex = (int)(hash.C * BuildingPrefabs.Count);
+            return BuildingPrefabs[buildingIndex];
         }
 
         #endregion

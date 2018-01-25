@@ -544,24 +544,6 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(1, city.FoodStockpile, "City did not correctly update its FoodStockpile");
         }
 
-        [Test(Description = "When OnPointerClick is called, City should fire the CityClicked signal with " +
-            "the appropriate arguments")]
-        public void OnPointerClickCalled_FiresClickedSignal() {
-            var cityToTest = Container.Resolve<City>();
-
-            var dataToPass = new PointerEventData(EventSystem.current);
-
-            var citySignals = Container.Resolve<CitySignals>();
-
-            citySignals.PointerClickedSignal.Subscribe(delegate(ICity city) {
-                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
-                Assert.Pass();
-            });
-
-            cityToTest.OnPointerClick(dataToPass);
-            Assert.Fail("ClickedSignal was never fired");
-        }
-
         [Test(Description = "When SetActiveProductionProject is called on an IBuildingTemplate, " +
             "City should fire ProjectChangedSignal with the appropriate arguments")]
         public void SetActiveProductionProject_OnBuildingTemplate_FiresProjectChangedSignal() {

@@ -151,6 +151,24 @@ namespace Assets.Simulation.HexMap {
 			return results;
         }
 
+        public static List<HexCoordinates> GetCoordinatesInLine(
+            HexCoordinates start, Vector3 startPosition,
+            HexCoordinates end, Vector3 endPosition
+        ){
+            int distanceBetween = HexCoordinates.GetDistanceBetween(start, end);
+
+            var results = new List<HexCoordinates>();
+            float step = 1.0f / Mathf.Max(distanceBetween, 1);
+
+            for(int i = 0; i < distanceBetween; i++) {
+                results.Add(FromPosition(
+                    Vector3.Lerp(startPosition, endPosition, step * i)
+                ));
+            }
+
+            return results;
+        }
+
         #endregion
 
         #region instance methods
