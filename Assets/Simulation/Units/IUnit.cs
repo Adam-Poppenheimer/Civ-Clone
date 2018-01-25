@@ -38,6 +38,8 @@ namespace Assets.Simulation.Units {
 
         List<IHexCell> CurrentPath { get; set; }
 
+        int VisionRange { get; }
+
         GameObject gameObject { get; }
         
         #endregion

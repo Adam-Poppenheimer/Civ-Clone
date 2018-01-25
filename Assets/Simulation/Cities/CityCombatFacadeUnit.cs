@@ -72,6 +72,10 @@ namespace Assets.Simulation.Cities {
             get { return UnitType.City; }
         }
 
+        public int VisionRange {
+            get { return Config.VisionRange; }
+        }
+
         #endregion
 
 

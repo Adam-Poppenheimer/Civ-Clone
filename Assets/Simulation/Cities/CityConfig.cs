@@ -123,6 +123,11 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private int _healthRegenPerRound;
 
+        public int VisionRange {
+            get { return _visionRange; }
+        }
+        [SerializeField] private int _visionRange;
+
         #endregion
 
         #endregion

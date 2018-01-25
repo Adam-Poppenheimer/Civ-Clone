@@ -91,6 +91,8 @@ namespace Assets.Simulation.Cities {
 
         int HealthRegenPerRound { get; }
 
+        int VisionRange { get; }
+
         #endregion
 
     }

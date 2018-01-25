@@ -71,6 +71,10 @@ namespace Assets.Simulation.Units {
 
         public List<IHexCell> CurrentPath { get; set; }
 
+        public int VisionRange {
+            get { return Config.VisionRange; }
+        }
+
         #endregion
 
         public IUnitTemplate Template { get; set; }
