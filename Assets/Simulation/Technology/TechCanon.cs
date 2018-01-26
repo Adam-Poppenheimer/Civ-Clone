@@ -8,8 +8,8 @@ using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Improvements;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
 
 using UnityCustomUtilities.Extensions;
 
@@ -21,10 +21,10 @@ namespace Assets.Simulation.Technology {
 
         #region from ITechCanon
 
-        public ReadOnlyCollection<ITechDefinition> AllTechs {
-            get { return _allTechs.AsReadOnly(); }
+        public ReadOnlyCollection<ITechDefinition> AvailableTechs {
+            get { return _availableTechs.AsReadOnly(); }
         }
-        private List<ITechDefinition> _allTechs;
+        private List<ITechDefinition> _availableTechs;
 
         #endregion
 
@@ -34,15 +34,23 @@ namespace Assets.Simulation.Technology {
         private Dictionary<ICivilization, Dictionary<ITechDefinition, int>> ProgressByCivAndTech =
             new Dictionary<ICivilization, Dictionary<ITechDefinition, int>>();
 
+
+
+
+        private IEnumerable<IAbilityDefinition> AvailableAbilities;
+
         #endregion
 
         #region constructors
 
         [Inject]
         public TechCanon(
-            [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs
+            [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
+            [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities
         ){
-            _allTechs = availableTechs;
+            _availableTechs = availableTechs;
+
+            AvailableAbilities = availableAbilities;
         }
 
         #endregion
@@ -106,22 +114,6 @@ namespace Assets.Simulation.Technology {
             return retval;
         }
 
-        public IEnumerable<IImprovementTemplate> GetResearchedImprovements(ICivilization civilization) {
-            if(civilization == null) {
-                throw new ArgumentNullException("civilization");
-            }
-
-            var retval = new HashSet<IImprovementTemplate>();
-
-            foreach(var tech in GetTechsDiscoveredByCiv(civilization)) {
-                foreach(var improvement in tech.ImprovementsEnabled) {
-                    retval.Add(improvement);
-                }
-            }
-
-            return retval;
-        }
-
         public IEnumerable<IUnitTemplate> GetResearchedUnits(ICivilization civilization) {
             if(civilization == null) {
                 throw new ArgumentNullException("civilization");
@@ -138,6 +130,36 @@ namespace Assets.Simulation.Technology {
             return retval;
         }
 
+        public IEnumerable<IAbilityDefinition> GetResearchedAbilities(ICivilization civilization) {
+            if(civilization == null) {
+                throw new ArgumentNullException("civilization");
+            }
+
+            var retval = new HashSet<IAbilityDefinition>();
+
+            var requiresTechDict = new Dictionary<IAbilityDefinition, bool>();
+
+            foreach(var tech in AvailableTechs) {
+                if(IsTechDiscoveredByCiv(tech, civilization)) {
+                    foreach(var ability in tech.AbilitiesEnabled) {
+                        retval.Add(ability);
+                    }
+                }else {
+                    foreach(var ability in tech.AbilitiesEnabled) {
+                        requiresTechDict[ability] = true;
+                    }
+                }                
+            }
+
+            foreach(var ability in AvailableAbilities) {
+                if(!requiresTechDict.ContainsKey(ability)) {
+                    retval.Add(ability);
+                }
+            }
+
+            return retval;
+        }
+
         public IEnumerable<ITechDefinition> GetTechsAvailableToCiv(ICivilization civilization) {
             if(civilization == null) {
                 throw new ArgumentNullException("civilization");
@@ -145,7 +167,7 @@ namespace Assets.Simulation.Technology {
 
             var techsDiscovered = GetTechsDiscoveredByCiv(civilization);
             
-            return AllTechs.Except(techsDiscovered).Where(delegate(ITechDefinition tech) {
+            return AvailableTechs.Except(techsDiscovered).Where(delegate(ITechDefinition tech) {
                 foreach(var prerequisite in tech.Prerequisites) {
                     if(!techsDiscovered.Contains(prerequisite)) {
                         return false;
@@ -174,16 +196,6 @@ namespace Assets.Simulation.Technology {
             return GetResearchedBuildings(civilization).Contains(template);
         }
 
-        public bool IsImprovementResearchedForCiv(IImprovementTemplate template, ICivilization civilization) {
-            if(template == null) {
-                throw new ArgumentNullException("template");
-            }else if(civilization == null) {
-                throw new ArgumentNullException("civilization");
-            }
-
-            return GetResearchedImprovements(civilization).Contains(template);
-        }
-
         public bool IsTechAvailableToCiv(ITechDefinition tech, ICivilization civilization) {
             if(tech == null) {
                 throw new ArgumentNullException("tech");
@@ -194,16 +206,6 @@ namespace Assets.Simulation.Technology {
             return GetTechsAvailableToCiv(civilization).Contains(tech);
         }
 
-        public bool IsTechDiscoveredByCiv(ITechDefinition tech, ICivilization civilization) {
-            if(tech == null) {
-                throw new ArgumentNullException("tech");
-            }else if(civilization == null) {
-                throw new ArgumentNullException("civilization");
-            }
-
-            return GetTechsDiscoveredByCiv(civilization).Contains(tech);
-        }
-
         public bool IsUnitResearchedForCiv(IUnitTemplate template, ICivilization civilization) {
             if(template == null) {
                 throw new ArgumentNullException("template");
@@ -212,6 +214,20 @@ namespace Assets.Simulation.Technology {
             }
 
             return GetResearchedUnits(civilization).Contains(template);
+        }
+
+        public bool IsAbilityResearchedForCiv(IAbilityDefinition ability, ICivilization civilization) {
+            return GetResearchedAbilities(civilization).Contains(ability);
+        }
+
+        public bool IsTechDiscoveredByCiv(ITechDefinition tech, ICivilization civilization) {
+            if(tech == null) {
+                throw new ArgumentNullException("tech");
+            }else if(civilization == null) {
+                throw new ArgumentNullException("civilization");
+            }
+
+            return GetTechsDiscoveredByCiv(civilization).Contains(tech);
         }
 
         public void SetTechAsDiscoveredForCiv(ITechDefinition tech, ICivilization civilization) {
@@ -261,8 +277,6 @@ namespace Assets.Simulation.Technology {
         }
 
         #endregion
-
-        
 
         #endregion
 

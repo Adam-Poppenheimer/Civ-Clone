@@ -6,9 +6,9 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Improvements;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.Technology {
 
@@ -48,10 +48,10 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private List<UnitTemplate> _unitsEnabled;
 
-        public IEnumerable<IImprovementTemplate> ImprovementsEnabled {
-            get { return _improvementsEnabled.Cast<IImprovementTemplate>(); }
+        public IEnumerable<IAbilityDefinition> AbilitiesEnabled {
+            get { return _abilitiesEnabled.Cast<IAbilityDefinition>(); }
         }
-        [SerializeField] private List<ImprovementTemplate> _improvementsEnabled;
+        [SerializeField] private List<AbilityDefinition> _abilitiesEnabled;
 
         #endregion
 

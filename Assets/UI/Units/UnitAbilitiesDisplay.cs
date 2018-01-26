@@ -8,8 +8,10 @@ using UnityEngine.UI;
 
 using Zenject;
 
+using Assets.Simulation;
+using Assets.Simulation.Technology;
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
-using Assets.Simulation.Units.Abilities;
 
 namespace Assets.UI.Units {
 
@@ -19,17 +21,28 @@ namespace Assets.UI.Units {
 
         [SerializeField] private Button RangedAttackButton;
 
+        private List<IAbilityDisplay> ActiveAbilityDisplays = new List<IAbilityDisplay>();
+
+
+
         private AbilityDisplayMemoryPool AbilityDisplayPool;
 
-        private List<IAbilityDisplay> ActiveAbilityDisplays = new List<IAbilityDisplay>();
+        private ITechCanon TechCanon;
+
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(AbilityDisplayMemoryPool abilityDisplayPool) {
-            AbilityDisplayPool = abilityDisplayPool;
+        public void InjectDependencies(
+            AbilityDisplayMemoryPool abilityDisplayPool, ITechCanon techCanon,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+        ){
+            AbilityDisplayPool  = abilityDisplayPool;
+            TechCanon           = techCanon;
+            UnitPossessionCanon = unitPossessionCanon;
         }
 
         #region from UnitDisplayBase
@@ -44,7 +57,13 @@ namespace Assets.UI.Units {
             }
             ActiveAbilityDisplays.Clear();
 
+            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
+
             foreach(var ability in ObjectToDisplay.Abilities) {
+                if(!TechCanon.IsAbilityResearchedForCiv(ability, unitOwner)) {
+                    continue;
+                }
+
                 var newDisplay = AbilityDisplayPool.Spawn();
 
                 newDisplay.transform.SetParent(transform, false);

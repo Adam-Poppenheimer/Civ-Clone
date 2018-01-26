@@ -23,6 +23,10 @@ namespace Assets.Simulation.Units.Abilities {
                 }
             );
 
+            var availableAbilities = Resources.LoadAll<AbilityDefinition>("Unit Abilities");
+
+            Container.Bind<IEnumerable<IAbilityDefinition>>().WithId("Available Abilities").FromInstance(availableAbilities);
+
             Container.Bind<IAbilityExecuter>().To<AbilityExecuter>().AsSingle();
         }
 

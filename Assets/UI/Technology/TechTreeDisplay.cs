@@ -87,7 +87,7 @@ namespace Assets.UI.Technology {
         private void SetUpTechTree() {
             TechRecords = new List<TechnologyRecord>();
 
-            foreach(var technology in TechCanon.AllTechs) {
+            foreach(var technology in TechCanon.AvailableTechs) {
                 var newTechRecord = Instantiate(TechRecordPrefab);
 
                 newTechRecord.gameObject.SetActive(true);

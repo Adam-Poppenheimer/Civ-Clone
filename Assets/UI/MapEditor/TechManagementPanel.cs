@@ -80,7 +80,7 @@ namespace Assets.UI.MapEditor {
             }
             InstantiatedTechRecords.Clear();
 
-            foreach(var technology in TechCanon.AllTechs) {
+            foreach(var technology in TechCanon.AvailableTechs) {
                 var cachedTech = technology;
 
                 var newRecord = Instantiate(TechRecordPrefab);

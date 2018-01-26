@@ -7,8 +7,8 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
@@ -28,7 +28,7 @@ namespace Assets.Simulation.Technology {
 
         IEnumerable<IUnitTemplate> UnitsEnabled { get; }
 
-        IEnumerable<IImprovementTemplate> ImprovementsEnabled { get; }
+        IEnumerable<IAbilityDefinition> AbilitiesEnabled { get; }
 
         #endregion
 

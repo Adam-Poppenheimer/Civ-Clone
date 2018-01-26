@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Technology;
 
 namespace Assets.Tests.Simulation.Technology {
@@ -216,18 +216,18 @@ namespace Assets.Tests.Simulation.Technology {
             );
         }
 
-        [Test(Description = "SetTechAsResearchedForCiv should modify what improvements are " + 
-            "considered researched by GetResearchedImprovements and IsImprovementResearchedForCity")]
-        public void SetTechAsResearchedForCiv_ReflectedInImprovementQueries() {
-            var techOne = BuildTech("Tech One", improvements: new List<IImprovementTemplate>() {
-                BuildImprovementTemplate(),
-                BuildImprovementTemplate(),
+        [Test(Description = "SetTechAsResearchedForCiv should modify what abilities are " + 
+            "considered researched by GetResearchedAbilities and IsAbilityResearchedForCity")]
+        public void SetTechAsResearchedForCiv_ReflectedInAbilityQueries() {
+            var techOne = BuildTech("Tech One", abilities: new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
             });
 
-            var techTwo = BuildTech("Tech Two", improvements: new List<IImprovementTemplate>() {
-                BuildImprovementTemplate(),
-                BuildImprovementTemplate(),
-                BuildImprovementTemplate(),
+            var techTwo = BuildTech("Tech Two", abilities: new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
             });
 
             var civ = BuildCivilization();
@@ -237,9 +237,9 @@ namespace Assets.Tests.Simulation.Technology {
             techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
 
             CollectionAssert.AreEquivalent(
-                techOne.ImprovementsEnabled.Concat(techTwo.ImprovementsEnabled),
-                techCanon.GetResearchedImprovements(civ),
-                "GetResearchedImprovements returned an unexpected set of templates"
+                techOne.AbilitiesEnabled.Concat(techTwo.AbilitiesEnabled),
+                techCanon.GetResearchedAbilities(civ),
+                "GetResearchedAbilities returned an unexpected set of definitions"
             );
         }
 
@@ -252,17 +252,17 @@ namespace Assets.Tests.Simulation.Technology {
             List<ITechDefinition> prerequisities = null,
             List<IBuildingTemplate> buildings = null,
             List<IUnitTemplate> units = null,
-            List<IImprovementTemplate> improvements = null
+            List<IAbilityDefinition> abilities = null
         ){
             var mockTech = new Mock<ITechDefinition>();
             mockTech.Name = name;
 
             mockTech.Setup(tech => tech.Name).Returns(name);
 
-            mockTech.Setup(tech => tech.Prerequisites)      .Returns(prerequisities != null ? prerequisities : new List<ITechDefinition>());
-            mockTech.Setup(tech => tech.BuildingsEnabled)   .Returns(buildings      != null ? buildings      : new List<IBuildingTemplate>());
-            mockTech.Setup(tech => tech.UnitsEnabled)       .Returns(units          != null ? units          : new List<IUnitTemplate>());
-            mockTech.Setup(tech => tech.ImprovementsEnabled).Returns(improvements   != null ? improvements   : new List<IImprovementTemplate>());
+            mockTech.Setup(tech => tech.Prerequisites)   .Returns(prerequisities != null ? prerequisities : new List<ITechDefinition>());
+            mockTech.Setup(tech => tech.BuildingsEnabled).Returns(buildings      != null ? buildings      : new List<IBuildingTemplate>());
+            mockTech.Setup(tech => tech.UnitsEnabled)    .Returns(units          != null ? units          : new List<IUnitTemplate>());
+            mockTech.Setup(tech => tech.AbilitiesEnabled).Returns(abilities      != null ? abilities      : new List<IAbilityDefinition>());
 
             AvailableTechs.Add(mockTech.Object);
 
@@ -281,8 +281,8 @@ namespace Assets.Tests.Simulation.Technology {
             return new Mock<IUnitTemplate>().Object;
         }
 
-        private IImprovementTemplate BuildImprovementTemplate() {
-            return new Mock<IImprovementTemplate>().Object;
+        private IAbilityDefinition BuildAbilityDefinition() {
+            return new Mock<IAbilityDefinition>().Object;
         }
 
         #endregion

@@ -8,6 +8,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Technology {
 
@@ -15,7 +16,7 @@ namespace Assets.Simulation.Technology {
 
         #region properties
 
-        ReadOnlyCollection<ITechDefinition> AllTechs { get; }
+        ReadOnlyCollection<ITechDefinition> AvailableTechs { get; }
 
         #endregion
 
@@ -23,11 +24,11 @@ namespace Assets.Simulation.Technology {
 
         IEnumerable<IBuildingTemplate>    GetResearchedBuildings   (ICivilization civilization);
         IEnumerable<IUnitTemplate>        GetResearchedUnits       (ICivilization civilization);
-        IEnumerable<IImprovementTemplate> GetResearchedImprovements(ICivilization civilization);
+        IEnumerable<IAbilityDefinition>   GetResearchedAbilities   (ICivilization civilization);
 
-        bool IsBuildingResearchedForCiv   (IBuildingTemplate template,    ICivilization civilization);
-        bool IsUnitResearchedForCiv       (IUnitTemplate template,        ICivilization civilization);
-        bool IsImprovementResearchedForCiv(IImprovementTemplate template, ICivilization civilization);
+        bool IsBuildingResearchedForCiv   (IBuildingTemplate    template, ICivilization civilization);
+        bool IsUnitResearchedForCiv       (IUnitTemplate        template, ICivilization civilization);
+        bool IsAbilityResearchedForCiv    (IAbilityDefinition   ability,  ICivilization civilization);
 
         IEnumerable<ITechDefinition> GetTechsDiscoveredByCiv(ICivilization civilization);
         IEnumerable<ITechDefinition> GetTechsAvailableToCiv (ICivilization civilization);
