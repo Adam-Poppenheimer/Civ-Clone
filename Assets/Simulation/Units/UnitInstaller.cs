@@ -18,15 +18,11 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private UnitConfig UnitConfig;
-
         [SerializeField] private GameObject UnitPrefab;
 
         [SerializeField] private List<TerrainType> LandTerrainTypes;
 
         [SerializeField] private List<TerrainShape> ImpassableTerrainShapes;
-
-        [SerializeField] private List<UnitTemplate> AvailableTemplates;
 
         #endregion
 
@@ -35,13 +31,17 @@ namespace Assets.Simulation.Units {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IUnitConfig>().To<UnitConfig>().FromInstance(UnitConfig);
+            Container.Bind<IUnitConfig>().To<UnitConfig>().FromResource("Units");
 
-            Container.Bind<GameObject>().WithId("Unit Prefab").FromInstance(UnitPrefab);
+            Container.Bind<GameObject>().WithId("Unit Prefab").FromResource("Units/Unit Prefab");
+
+            var unitTemplates = new List<IUnitTemplate>();
+
+            unitTemplates.AddRange(Resources.LoadAll<UnitTemplate>("Units"));
 
             Container.Bind<IEnumerable<IUnitTemplate>>()
                 .WithId("Available Unit Templates")
-                .FromInstance(AvailableTemplates.Cast<IUnitTemplate>());
+                .FromInstance(unitTemplates);
 
             Container.Bind<List<TerrainType>> ().WithId("Land Terrain Types")       .FromInstance(LandTerrainTypes);
             Container.Bind<List<TerrainShape>>().WithId("Impassable Terrain Shapes").FromInstance(ImpassableTerrainShapes);

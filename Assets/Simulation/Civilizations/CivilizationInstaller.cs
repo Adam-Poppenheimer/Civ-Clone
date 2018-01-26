@@ -20,7 +20,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private CivilizationConfig Config;
+        
 
         #endregion
 
@@ -32,7 +32,7 @@ namespace Assets.Simulation.Civilizations {
         public override void InstallBindings() {
             Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();
 
-            Container.Bind<ICivilizationConfig>().To<CivilizationConfig>().FromInstance(Config);
+            Container.Bind<ICivilizationConfig>().To<CivilizationConfig>().FromResource("Civilizations");
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>()
                      .To<CityPossessionCanon>()

@@ -35,3 +35,4 @@ MonoBehaviour:
   _baseRangedAttackStrength: 15
   _rangedAttackStrengthPerPopulation: 0
   _healthRegenPerRound: 20
+  _visionRange: 0

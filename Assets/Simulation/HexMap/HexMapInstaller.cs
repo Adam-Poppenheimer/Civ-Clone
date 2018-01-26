@@ -15,8 +15,6 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexGrid Grid;
 
-        [SerializeField] private HexGridConfig Config;
-
         [SerializeField] private Texture2D NoiseSource;
 
         #endregion
@@ -28,12 +26,14 @@ namespace Assets.Simulation.HexMap {
         public override void InstallBindings() {
             Container.Bind<IHexGrid>().To<HexGrid>().FromInstance(Grid);
 
-            Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(Config);
+            var config = Resources.Load<HexGridConfig>("Hex Map/Hex Grid Config");
+
+            Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(config);
 
             Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
 
             Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
-            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(Config.RandomSeed);
+            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(config.RandomSeed);
 
             Container.Bind<INoiseGenerator>().To<NoiseGenerator>().AsSingle();
 

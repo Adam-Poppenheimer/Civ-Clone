@@ -13,7 +13,7 @@ namespace Assets.Simulation.Technology {
 
         #region instance fields and properties
 
-        [SerializeField] private List<TechDefinition> AvailableTechs;
+        
 
         #endregion
 
@@ -22,7 +22,9 @@ namespace Assets.Simulation.Technology {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs.Cast<ITechDefinition>().ToList());
+            var allTechs = new List<ITechDefinition>(Resources.LoadAll<TechDefinition>("Techs"));
+
+            Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(allTechs);
 
             Container.Bind<ITechCanon>().To<TechCanon>().AsSingle();
         }

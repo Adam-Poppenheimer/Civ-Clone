@@ -32,10 +32,6 @@ namespace Assets.Simulation.Cities {
 
         [SerializeField] private GameObject CityPrefab;
 
-        [SerializeField] private CityConfig CityConfig;
-
-        [SerializeField] private List<BuildingTemplate> AvailableBuildingTemplates;
-
         #endregion
 
         #region instance methods
@@ -46,9 +42,11 @@ namespace Assets.Simulation.Cities {
         public override void InstallBindings() {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
-            Container.Bind<ICityConfig>().To<CityConfig>().FromInstance(CityConfig);
+            Container.Bind<ICityConfig>().To<CityConfig>().FromResource("Cities");
 
-            Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates.Cast<IBuildingTemplate>().ToList());
+            var allBuildings = new List<IBuildingTemplate>(Resources.LoadAll<BuildingTemplate>("Cities/Buildings"));
+
+            Container.Bind<List<IBuildingTemplate>>().FromInstance(allBuildings);
 
             Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>          ().AsSingle();
             Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                ().AsSingle();

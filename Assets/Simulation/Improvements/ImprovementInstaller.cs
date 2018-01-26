@@ -17,8 +17,6 @@ namespace Assets.Simulation.Improvements {
 
         [SerializeField] private GameObject ImprovementPrefab;
 
-        [SerializeField] private List<ImprovementTemplate> AvailableTemplates;
-
         #endregion
 
         #region instance methods
@@ -30,9 +28,11 @@ namespace Assets.Simulation.Improvements {
 
             Container.Bind<IImprovementLocationCanon>().To<ImprovementLocationCanon>().AsSingle();
 
+            var allImprovements = new List<IImprovementTemplate>(Resources.LoadAll<ImprovementTemplate>("Improvements"));
+
             Container.Bind<IEnumerable<IImprovementTemplate>>()
                 .WithId("Available Improvement Templates")
-                .FromInstance(AvailableTemplates.Cast<IImprovementTemplate>());
+                .FromInstance(allImprovements);
 
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
 

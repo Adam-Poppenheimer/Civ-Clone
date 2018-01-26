@@ -8,10 +8,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cfe007e83ba54f440a43f5c5fda21e35, type: 3}
-  m_Name: Camera
+  m_Script: {fileID: 11500000, guid: 1fac23f31431a574ab18a238dacb2156, type: 3}
+  m_Name: Civilization Config
   m_EditorClassIdentifier: 
-  _panningSpeed: 1
-  _zoomingSpeed: 40
-  _minFOV: 30
-  _maxFOV: 100

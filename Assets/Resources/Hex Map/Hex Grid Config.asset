@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a3877a431fcd2546b439a69e11818cc, type: 3}
-  m_Name: Hex Grid
+  m_Name: Hex Grid Config
   m_EditorClassIdentifier: 
   _randomSeed: 2659
   _colorOfTerrains:
@@ -23,31 +23,38 @@ MonoBehaviour:
     Production: 0
     Gold: 0
     Culture: 0
+    Science: 0
   - Food: 1
     Production: 1
     Gold: 0
     Culture: 0
+    Science: 0
   - Food: 0
     Production: 0
     Gold: 0
     Culture: 0
+    Science: 0
   - Food: 1
     Production: 0
     Gold: 0
     Culture: 0
+    Science: 0
   - Food: 0
     Production: 0
     Gold: 0
     Culture: 0
+    Science: 0
   _featureYields:
   - Food: 0
     Production: 0
     Gold: 0
     Culture: 0
+    Science: 0
   - Food: 1
     Production: 1
     Gold: 0
     Culture: 0
+    Science: 0
   _baseLandMoveCost: 1
   _featureMoveCosts: ffffffff01000000
   _waterMoveCost: 0

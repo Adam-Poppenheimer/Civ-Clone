@@ -18,8 +18,6 @@ namespace Assets.UI.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private CityUIConfig UIConfig;
-
         [SerializeField] private GameObject SlotDisplayPrefab;
 
         [SerializeField] private GameObject BuildingDisplayPrefab;
@@ -39,7 +37,7 @@ namespace Assets.UI.Cities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<ICityUIConfig>().To<CityUIConfig>().FromInstance(UIConfig);
+            Container.Bind<ICityUIConfig>().To<CityUIConfig>().FromResource("Cities");
 
             Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").To<ResourceSummaryDisplay>().FromInstance(CityYieldDisplay);
 
