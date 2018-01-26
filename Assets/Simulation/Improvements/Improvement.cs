@@ -15,22 +15,16 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovement
 
-        public bool IsComplete {
-            get {
-                return WorkInvested >= Template.WorkToComplete;
-            }
-        }
-
-        public IImprovementTemplate Template { get; set; }
-
-        public float WorkInvested {
-            get { return _workInvested; }
+        public IImprovementTemplate Template {
+            get { return _improvementTemplate; }
             set {
-                _workInvested = value;
-                Debug.LogFormat("Work invested: {0}", _workInvested);
+                _improvementTemplate = value;
+
+                var appearancePrefab = Instantiate(_improvementTemplate.AppearancePrefab);
+                appearancePrefab.transform.SetParent(transform, false);
             }
         }
-        private float _workInvested;
+        private IImprovementTemplate _improvementTemplate;
 
         #endregion
 

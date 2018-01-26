@@ -33617,6 +33617,7 @@ MonoBehaviour:
   AvailableTemplates:
   - {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
   - {fileID: 11400000, guid: de08c5dd70339824cb2f33f9865f2d3b, type: 2}
+  - {fileID: 11400000, guid: 204925ee10a6d664ea740bf9efdf36b9, type: 2}
 --- !u!4 &1763748232
 Transform:
   m_ObjectHideFlags: 0

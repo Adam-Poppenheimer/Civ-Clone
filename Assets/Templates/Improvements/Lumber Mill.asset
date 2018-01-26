@@ -9,17 +9,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
-  m_Name: Farm
+  m_Name: Lumber Mill
   m_EditorClassIdentifier: 
   _bonusYield:
-    Food: 1
-    Production: 0
+    Food: 0
+    Production: 1
     Gold: 0
     Culture: 0
     Science: 0
-  _validFeatures: 0000000001000000
-  _validTerrains: 0000000001000000
+  _validFeatures: 01000000
+  _validTerrains: 00000000010000000200000003000000
   _requiresAdjacentUpwardCliff: 0
-  _clearsForestsWhenBuilt: 1
-  _appearancePrefab: {fileID: 4814062064803488, guid: 9f1238ff02204e040bdb510ea717ae94,
+  _clearsForestsWhenBuilt: 0
+  _appearancePrefab: {fileID: 4946165858268716, guid: d51b158503c558949970e94b98d8c53e,
     type: 2}

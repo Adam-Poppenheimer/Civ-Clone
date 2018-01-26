@@ -69,7 +69,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             if(tileOfSlot != null) {
                 var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();
-                if(improvementOnTile != null && improvementOnTile.IsComplete) {
+                if(improvementOnTile != null) {
                     baseYield += improvementOnTile.Template.BonusYield;
                 }
             }

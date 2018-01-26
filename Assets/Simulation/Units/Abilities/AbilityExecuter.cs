@@ -3,17 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class UnitAbilityExecuter : IUnitAbilityExecuter {
+    public class AbilityExecuter : IAbilityExecuter {
 
         #region instance fields and properties
 
         private UnitSignals Signals;
 
-        private IEnumerable<IUnitAbilityHandler> AbilityHandlers;
+        private IEnumerable<IAbilityHandler> AbilityHandlers;
 
         public IEnumerable<IOngoingAbility> OngoingAbilities {
             get { return ongoingAbilities; }
@@ -25,8 +27,8 @@ namespace Assets.Simulation.Units.Abilities {
         #region constructors
 
         [Inject]
-        public UnitAbilityExecuter(UnitSignals signals,
-            [Inject(Id = "Unit Ability Handlers")] IEnumerable<IUnitAbilityHandler> abilityHandlers
+        public AbilityExecuter(UnitSignals signals,
+            [Inject(Id = "Unit Ability Handlers")] IEnumerable<IAbilityHandler> abilityHandlers
         ){
             Signals         = signals;
             AbilityHandlers = abilityHandlers;
@@ -38,7 +40,11 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IUnitAbilityExecuter
 
-        public bool CanExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public bool CanExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
+            if(ability.RequiresMovement && unit.CurrentMovement <= 0) {
+                return false;
+            }
+
             foreach(var handler in AbilityHandlers) {
                 if(handler.CanHandleAbilityOnUnit(ability, unit)) {
                     return true;
@@ -48,15 +54,32 @@ namespace Assets.Simulation.Units.Abilities {
             return false;
         }
 
-        public void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public void ExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             foreach(var handler in AbilityHandlers) {
+                if(!CanExecuteAbilityOnUnit(ability, unit)) {
+                    throw new InvalidOperationException("CanExecuterAbilityOnUnit must return true on the arguments");
+                }
+
                 var results = handler.TryHandleAbilityOnUnit(ability, unit);
                 if(results.AbilityHandled) {
+
+                    if(ability.ConsumesMovement) {
+                        unit.CurrentMovement = 0;
+                    }
+
+                    if(ability.DestroysUnit) {
+                        if(Application.isPlaying) {
+                            GameObject.Destroy(unit.gameObject);
+                        }else {
+                            GameObject.DestroyImmediate(unit.gameObject);
+                        }  
+                    }
+
                     if(results.NewAbilityActivated != null) {
                         results.NewAbilityActivated.BeginExecution();
                         ongoingAbilities.Add(results.NewAbilityActivated);
                     }
-                    Signals.UnitActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IUnitAbilityDefinition>(unit, ability));
+                    Signals.UnitActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
                     return;
                 }
             }

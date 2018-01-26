@@ -197,8 +197,8 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region utilities
 
-        private IUnitAbilityDefinition BuildAbility(string name, IEnumerable<AbilityCommandRequest> commandRequests) {
-            var mockAbility = new Mock<IUnitAbilityDefinition>();
+        private IAbilityDefinition BuildAbility(string name, IEnumerable<AbilityCommandRequest> commandRequests) {
+            var mockAbility = new Mock<IAbilityDefinition>();
 
             mockAbility.Setup(ability => ability.name).Returns(name);
             mockAbility.Setup(ability => ability.CommandRequests).Returns(commandRequests);

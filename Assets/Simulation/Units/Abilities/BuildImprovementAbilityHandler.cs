@@ -10,8 +10,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class BuildImprovementAbilityHandler : IUnitAbilityHandler {
-
+    public class BuildImprovementAbilityHandler : IAbilityHandler {
 
         #region instance fields and properties
 
@@ -47,21 +46,18 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IUnitAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
             var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
             var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
             return templateOfName != null
-                && ValidityLogic.IsTemplateValidForTile(templateOfName, unitLocation)
-                && (
-                    improvementOnTile == null || 
-                    (improvementOnTile.Template == templateOfName && !improvementOnTile.IsComplete)
-                );
+                && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation)
+                && improvementOnTile == null;
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
@@ -72,10 +68,7 @@ namespace Assets.Simulation.Units.Abilities {
                     improvementOfTemplate = ImprovementFactory.Create(templateOfName, unitLocation);
                 }
 
-                return new AbilityExecutionResults(
-                    true,
-                    new BuildImprovementOngoingAbility(improvementOfTemplate, unit, UnitPositionCanon, ImprovementLocationCanon)
-                );
+                return new AbilityExecutionResults(true, null);
             }else {
                 return new AbilityExecutionResults(false, null);
             }
@@ -87,7 +80,7 @@ namespace Assets.Simulation.Units.Abilities {
             return name == null ? null : AvailableTemplates.Where(template => template.name.Equals(name)).FirstOrDefault();
         }
 
-        private string GetRequestedImprovementName(IUnitAbilityDefinition ability) {
+        private string GetRequestedImprovementName(IAbilityDefinition ability) {
             var improvementCommands = ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.BuildImprovement);
 
             if(improvementCommands.Count() != 1) {

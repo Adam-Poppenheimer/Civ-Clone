@@ -117,7 +117,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.ObjectToDisplay = unit;
             displayToTest.OnEnable();
 
-            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IUnitAbilityDefinition>(unit, newAbility));
+            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
 
             Assert.Fail("Refresh was never called");
         }
@@ -132,7 +132,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.RefreshFired += (sender, args) => Assert.Fail("DisplayToTest refreshed on an invalid signal");
             displayToTest.OnEnable();
 
-            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IUnitAbilityDefinition>(unit, newAbility));
+            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
         }
 
         #endregion
@@ -149,8 +149,8 @@ namespace Assets.Tests.UI.Units {
             return new Mock<IHexCell>().Object;
         }
 
-        private IUnitAbilityDefinition BuildAbility() {
-            return new Mock<IUnitAbilityDefinition>().Object;
+        private IAbilityDefinition BuildAbility() {
+            return new Mock<IAbilityDefinition>().Object;
         }
 
         #endregion

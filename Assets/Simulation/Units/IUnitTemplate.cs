@@ -19,7 +19,7 @@ namespace Assets.Simulation.Units {
 
         UnitType Type { get; }
 
-        IEnumerable<IUnitAbilityDefinition> Abilities { get; }
+        IEnumerable<IAbilityDefinition> Abilities { get; }
 
         int AttackRange { get; }
 

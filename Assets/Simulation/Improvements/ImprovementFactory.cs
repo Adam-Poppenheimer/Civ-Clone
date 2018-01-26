@@ -56,6 +56,10 @@ namespace Assets.Simulation.Improvements {
             var newImprovement = newGameObject.GetComponent<Improvement>();
             newImprovement.Template = template;
 
+            if(template.ClearsForestsWhenBuilt && location.Feature == TerrainFeature.Forest) {
+                location.Feature = TerrainFeature.None;
+            }
+
             if(!ImprovementLocationCanon.CanChangeOwnerOfPossession(newImprovement, location)) {
                 throw new ImprovementCreationException("Cannot assign the new improvement to its intended location");
             }

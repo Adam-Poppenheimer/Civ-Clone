@@ -28,7 +28,7 @@ namespace Assets.Simulation.Units {
         public ISubject<Tuple<IUnit, PointerEventData>> EndDragSignal   { get; private set; }
 
         public ISubject<Tuple<IUnit, IHexCell>>               UnitLocationChangedSignal  { get; private set; }
-        public ISubject<Tuple<IUnit, IUnitAbilityDefinition>> UnitActivatedAbilitySignal { get; private set; }
+        public ISubject<Tuple<IUnit, IAbilityDefinition>> UnitActivatedAbilitySignal { get; private set; }
 
         public ISubject<IUnit> UnitBeingDestroyedSignal { get; private set; }
 
@@ -53,7 +53,7 @@ namespace Assets.Simulation.Units {
             EndDragSignal          = new Subject<Tuple<IUnit, PointerEventData>>();
 
             UnitLocationChangedSignal  = new Subject<Tuple<IUnit, IHexCell>>();
-            UnitActivatedAbilitySignal = new Subject<Tuple<IUnit, IUnitAbilityDefinition>>();
+            UnitActivatedAbilitySignal = new Subject<Tuple<IUnit, IAbilityDefinition>>();
 
             UnitBeingDestroyedSignal   = new Subject<IUnit>();
 

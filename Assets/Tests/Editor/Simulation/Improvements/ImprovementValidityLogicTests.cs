@@ -26,7 +26,6 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(
                     TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland },
-                    new List<TerrainShape>      () { TerrainShape.Flat },
                     new List<TerrainFeature>() { TerrainFeature.None })
                 .SetName("All aspects are valid")
                 .Returns(true);
@@ -34,7 +33,6 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(
                     TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Plains },
-                    new List<TerrainShape>      () { TerrainShape.Flat },
                     new List<TerrainFeature>() { TerrainFeature.None })
                 .SetName("Only terrain is invalid")
                 .Returns(false);
@@ -42,15 +40,6 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(
                     TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland },
-                    new List<TerrainShape>      () { TerrainShape.Hills },
-                    new List<TerrainFeature>() { TerrainFeature.None })
-                .SetName("Only shape is invalid")
-                .Returns(false);
-
-                yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
-                    new List<TerrainType>       () { TerrainType.Grassland },
-                    new List<TerrainShape>      () { TerrainShape.Hills },
                     new List<TerrainFeature>() { TerrainFeature.Forest })
                 .SetName("Only feature is invalid")
                 .Returns(false);
@@ -58,7 +47,6 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(
                     TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland, TerrainType.Plains },
-                    new List<TerrainShape>      () { TerrainShape.Hills, TerrainShape.Flat },
                     new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.None })
                 .SetName("All aspects are valid, and template has options not represented by tile")
                 .Returns(true);
@@ -103,15 +91,14 @@ namespace Assets.Tests.Simulation.Improvements {
         [TestCaseSource("ValidityTestCases")]
         public bool IsTemplateValidForTile_ConsidersTerrain_Shape_AndFeatures(
             TerrainType tileTerrain, TerrainShape tileShape, TerrainFeature tileFeature,
-            IEnumerable<TerrainType> validTerrains, IEnumerable<TerrainShape> validShapes,
-            IEnumerable<TerrainFeature> validFeatures
+            IEnumerable<TerrainType> validTerrains, IEnumerable<TerrainFeature> validFeatures
         ){
-            var template = BuildTemplate(validTerrains, validShapes, validFeatures);
+            var template = BuildTemplate(validTerrains, validFeatures);
             var tile = BuildTile(tileTerrain, tileShape, tileFeature);            
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
-            return validityLogic.IsTemplateValidForTile(template, tile);
+            return validityLogic.IsTemplateValidForCell(template, tile);
         }
 
         [Test(Description = "IsTemplateValidForTile should return false when the " +
@@ -119,7 +106,6 @@ namespace Assets.Tests.Simulation.Improvements {
         public void IsTemplateValidForTile_FalseIfTileHasCity() {
             var template = BuildTemplate(
                 new List<TerrainType>       () { TerrainType.Grassland },
-                new List<TerrainShape>      () { TerrainShape.Flat },
                 new List<TerrainFeature>() { TerrainFeature.Forest }
             );
 
@@ -129,23 +115,28 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
-            Assert.IsFalse(validityLogic.IsTemplateValidForTile(template, tile),
+            Assert.IsFalse(validityLogic.IsTemplateValidForCell(template, tile),
                 "IsTemplateValidForTile falsely returns true on a tile with a city");
         }
         
         [Test(Description = "IsTemplateValidForTile should throw an ArgumentNullException " +
             "whenever passed a null argument")]
         public void IsTemplateValidForTile_ThrowsOnNullArguments() {
-            var template = BuildTemplate(null, null, null);
+            var template = BuildTemplate(null, null);
             var tile = BuildTile(TerrainType.Desert, TerrainShape.Flat, TerrainFeature.Forest);
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
-            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForTile(null, tile),
+            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForCell(null, tile),
                 "IsTemplateValidForTile did not throw on a null template argument");
 
-            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForTile(template, null),
+            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForCell(template, null),
                 "IsTemplateValidForTile did not throw on a null tile argument");
+        }
+
+        [Test(Description = "")]
+        public void MissingCliffRequirementTests() {
+            throw new NotImplementedException();
         }
 
         #endregion
@@ -166,12 +157,11 @@ namespace Assets.Tests.Simulation.Improvements {
         }
 
         private IImprovementTemplate BuildTemplate(IEnumerable<TerrainType> validTerrains,
-            IEnumerable<TerrainShape> validShapes, IEnumerable<TerrainFeature> validFeatures
+            IEnumerable<TerrainFeature> validFeatures
         ){
             var mockTemplate = new Mock<IImprovementTemplate>();
 
             mockTemplate.Setup(template => template.ValidTerrains).Returns(validTerrains);
-            mockTemplate.Setup(template => template.ValidShapes  ).Returns(validShapes);
             mockTemplate.Setup(template => template.ValidFeatures).Returns(validFeatures);
 
             return mockTemplate.Object;

@@ -16,13 +16,16 @@ namespace Assets.Simulation.Improvements {
 
         private ICityFactory CityFactory;
 
+        private IHexGrid Grid;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public ImprovementValidityLogic(ICityFactory cityFactory) {
+        public ImprovementValidityLogic(ICityFactory cityFactory, IHexGrid grid) {
             CityFactory = cityFactory;
+            Grid        = grid;
         }
 
         #endregion
@@ -31,20 +34,36 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementValidityLogic
 
-        public bool IsTemplateValidForTile(IImprovementTemplate template, IHexCell tile) {
+        public bool IsTemplateValidForCell(IImprovementTemplate template, IHexCell cell) {
             if(template == null) {
                 throw new ArgumentNullException("template");
-            }else if(tile == null) {
-                throw new ArgumentNullException("tile");
+            }else if(cell == null) {
+                throw new ArgumentNullException("cell");
             }
 
-            if(CityFactory.AllCities.Where(city => city.Location == tile).Count() != 0) {
+            if(CityFactory.AllCities.Where(city => city.Location == cell).Count() != 0) {
                 return false;
             }
 
-            return template.ValidTerrains.Contains(tile.Terrain)
-                && template.ValidShapes  .Contains(tile.Shape  )
-                && template.ValidFeatures.Contains(tile.Feature);
+            if(template.RequiresAdjacentUpwardCliff) {
+
+                bool hasAdjacentUpwardCliff = false;
+                foreach(var neighbor in Grid.GetNeighbors(cell)) {
+                    if( cell.Elevation < neighbor.Elevation &&
+                        HexMetrics.GetEdgeType(cell.Elevation, neighbor.Elevation) == HexEdgeType.Cliff
+                    ){
+                        hasAdjacentUpwardCliff = true;
+                        break;
+                    }
+                }
+                
+                if(!hasAdjacentUpwardCliff) {
+                    return false;
+                }
+            }
+
+            return template.ValidTerrains.Contains(cell.Terrain)
+                && template.ValidFeatures.Contains(cell.Feature);
         }
 
         #endregion

@@ -244,7 +244,6 @@ namespace Assets.Tests.Simulation.Cities {
             mockTemplate.Setup(template => template.BonusYield).Returns(bonusYield);
 
             mockImprovment.Setup(improvement => improvement.Template  ).Returns(mockTemplate.Object);
-            mockImprovment.Setup(improvement => improvement.IsComplete).Returns(isComplete);
 
             MockImprovementPositionCanon
                 .Setup(canon => canon.GetPossessionsOfOwner(location))

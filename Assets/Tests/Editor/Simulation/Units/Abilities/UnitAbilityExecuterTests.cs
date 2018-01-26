@@ -18,7 +18,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
-        private List<IUnitAbilityHandler> AllAbilityHandlers = new List<IUnitAbilityHandler>();
+        private List<IAbilityHandler> AllAbilityHandlers = new List<IAbilityHandler>();
 
         #endregion
 
@@ -30,11 +30,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         public void CommonInstall() {
             AllAbilityHandlers.Clear();
 
-            Container.Bind<IEnumerable<IUnitAbilityHandler>>().WithId("Unit Ability Handlers").FromInstance(AllAbilityHandlers);
+            Container.Bind<IEnumerable<IAbilityHandler>>().WithId("Unit Ability Handlers").FromInstance(AllAbilityHandlers);
 
             Container.Bind<UnitSignals>().AsSingle();
 
-            Container.Bind<UnitAbilityExecuter>().AsSingle();
+            Container.Bind<AbilityExecuter>().AsSingle();
         }
 
         #endregion
@@ -53,10 +53,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var thirdFalseHandler = BuildMockHandler(false);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             abilityExecuter.CanExecuteAbilityOnUnit(ability, unit);
 
@@ -80,10 +80,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             "for which CanHandleAbilityOnUnit returns true for the arguments, UnitAbilityExecuter " +
             "should return false")]
         public void CanExecuteAbilityOnUnit_ReturnsFalseIfNoValidHandlers() {
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             Assert.IsFalse(abilityExecuter.CanExecuteAbilityOnUnit(ability, unit),
                 "CanExecuteAbilityOnUnit returned an unexpected value");
@@ -102,10 +102,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var thirdFalseHandler = BuildMockHandler(false);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             abilityExecuter.ExecuteAbilityOnUnit(ability, unit);
 
@@ -133,10 +133,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var handler = BuildMockHandler(true, ongoingAbilityMock.Object);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             abilityExecuter.ExecuteAbilityOnUnit(ability, unit);
 
@@ -152,12 +152,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         public void ExecuteAbilityOnUnit_FiresSignal() {
             var handler = BuildMockHandler(true, null);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
-            Container.Resolve<UnitSignals>().UnitActivatedAbilitySignal.Subscribe(delegate(Tuple<IUnit, IUnitAbilityDefinition> dataTuple) {
+            Container.Resolve<UnitSignals>().UnitActivatedAbilitySignal.Subscribe(delegate(Tuple<IUnit, IAbilityDefinition> dataTuple) {
                 Assert.AreEqual(unit, dataTuple.Item1, "UnitActivatedAbilitySignal passed an unexpected unit");
                 Assert.AreEqual(ability, dataTuple.Item2, "UnitActivatedAbilitySignal passed an unexpected unit");
                 Assert.Pass();
@@ -177,10 +177,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var handler = BuildMockHandler(true, ongoingMockOne.Object);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             abilityExecuter.ExecuteAbilityOnUnit(ability, unit);
 
@@ -210,10 +210,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var handler = BuildMockHandler(true, ongoingAbilityMock.Object);
 
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             abilityExecuter.ExecuteAbilityOnUnit(ability, unit);
 
@@ -230,10 +230,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             "that can handle the argued ability on the argued unit, UnitAbilityExecuter should " +
             "throw a AbilityNotHandledException")]
         public void ExecuteAbilityOnUnit_ThrowsWhenNoValidHandler() {
-            var ability = new Mock<IUnitAbilityDefinition>().Object;
+            var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
 
-            var abilityExecuter = Container.Resolve<UnitAbilityExecuter>();
+            var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
             Assert.Throws<AbilityNotHandledException>(() => abilityExecuter.ExecuteAbilityOnUnit(ability, unit));
         }
@@ -242,15 +242,15 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region utilities
 
-        private Mock<IUnitAbilityHandler> BuildMockHandler(bool canHandle, IOngoingAbility ongoingAbility = null) {
-            var mockHandler = new Mock<IUnitAbilityHandler>();
+        private Mock<IAbilityHandler> BuildMockHandler(bool canHandle, IOngoingAbility ongoingAbility = null) {
+            var mockHandler = new Mock<IAbilityHandler>();
 
             mockHandler.Setup(handler => handler.TryHandleAbilityOnUnit(
-                It.IsAny<IUnitAbilityDefinition>(), It.IsAny<IUnit>())
+                It.IsAny<IAbilityDefinition>(), It.IsAny<IUnit>())
             ).Returns(new AbilityExecutionResults(canHandle, ongoingAbility));
 
             mockHandler.Setup(handler => handler.CanHandleAbilityOnUnit(
-                It.IsAny<IUnitAbilityDefinition>(), It.IsAny<IUnit>()
+                It.IsAny<IAbilityDefinition>(), It.IsAny<IUnit>()
             )).Returns(canHandle);
 
             AllAbilityHandlers.Add(mockHandler.Object);

@@ -9,7 +9,7 @@ using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Units {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Unit Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Unit")]
     public class UnitTemplate : ScriptableObject, IUnitTemplate {
 
         #region instance fields and properties
@@ -36,10 +36,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private UnitType _type;
 
-        public IEnumerable<IUnitAbilityDefinition> Abilities {
-            get { return _abilities.Cast<IUnitAbilityDefinition>(); }
+        public IEnumerable<IAbilityDefinition> Abilities {
+            get { return _abilities.Cast<IAbilityDefinition>(); }
         }
-        [SerializeField] private List<UnitAbilityDefinition> _abilities;
+        [SerializeField] private List<AbilityDefinition> _abilities;
 
         public int AttackRange {
             get { return _attackRange; }

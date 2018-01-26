@@ -41,7 +41,7 @@ namespace Assets.Simulation.Units {
             get { return Type == UnitType.WaterMilitary || Type == UnitType.WaterCivilian; }
         }
 
-        public IEnumerable<IUnitAbilityDefinition> Abilities {
+        public IEnumerable<IAbilityDefinition> Abilities {
             get { return Template.Abilities; }
         }
 

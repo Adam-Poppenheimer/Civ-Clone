@@ -29,7 +29,7 @@ namespace Assets.Tests.Simulation.Core {
 
         private Mock<ITurnExecuter> TurnExecuterMock;
 
-        private Mock<IUnitAbilityExecuter> MockAbilityExecuter;
+        private Mock<IAbilityExecuter> MockAbilityExecuter;
 
         #endregion
 
@@ -50,12 +50,12 @@ namespace Assets.Tests.Simulation.Core {
             UnitFactoryMock = new Mock<IUnitFactory>();
             UnitFactoryMock.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
 
-            MockAbilityExecuter = new Mock<IUnitAbilityExecuter>();
+            MockAbilityExecuter = new Mock<IAbilityExecuter>();
 
             Container.Bind<ICityFactory>        ().FromInstance(CityFactoryMock        .Object);
             Container.Bind<ICivilizationFactory>().FromInstance(CivilizationFactoryMock.Object);
             Container.Bind<IUnitFactory>        ().FromInstance(UnitFactoryMock        .Object);
-            Container.Bind<IUnitAbilityExecuter>().FromInstance(MockAbilityExecuter    .Object);
+            Container.Bind<IAbilityExecuter>().FromInstance(MockAbilityExecuter    .Object);
 
             Container.Bind<ITurnExecuter>().FromInstance(TurnExecuterMock.Object);
 

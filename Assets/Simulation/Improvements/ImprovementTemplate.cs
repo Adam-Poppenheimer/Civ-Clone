@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Improvement Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Improvement")]
     public class ImprovementTemplate : ScriptableObject, IImprovementTemplate {
 
         #region instance fields and properties
@@ -26,20 +26,25 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private List<TerrainFeature> _validFeatures;
 
-        public IEnumerable<TerrainShape> ValidShapes {
-            get { return _validShapes; }
-        }
-        [SerializeField] private List<TerrainShape> _validShapes;
-
         public IEnumerable<TerrainType> ValidTerrains {
             get { return _validTerrains; }
         }
         [SerializeField] private List<TerrainType> _validTerrains;
 
-        public float WorkToComplete {
-            get { return _workToComplete; }
+        public bool RequiresAdjacentUpwardCliff {
+            get { return _requiresAdjacentUpwardCliff; }
         }
-        [SerializeField] private float _workToComplete;
+        [SerializeField] private bool _requiresAdjacentUpwardCliff;
+
+        public bool ClearsForestsWhenBuilt {
+            get { return _clearsForestsWhenBuilt; }
+        }
+        [SerializeField] private bool _clearsForestsWhenBuilt;
+
+        public Transform AppearancePrefab {
+            get { return _appearancePrefab; }
+        }
+        [SerializeField] private Transform _appearancePrefab;
 
         #endregion
 

@@ -62,7 +62,7 @@ namespace Assets.Tests.UI.Units {
             "display all of ObjectToDisplay's abilities, and then place each ability " +
             "into exactly one display")]
         public void Refresh_DisplaysSpawnedAndInitalized() {
-            var abilities = new List<IUnitAbilityDefinition>() {
+            var abilities = new List<IAbilityDefinition>() {
                 BuildAbility(), BuildAbility(), BuildAbility()
             };
 
@@ -90,9 +90,9 @@ namespace Assets.Tests.UI.Units {
         [Test(Description = "When Refresh is called multiple times, UnitAbilitiesDisplay will despawn unused " +
             "IAbilityDisplays and only hold just enough active displays to handle its current needs")]
         public void RefreshMultipleTimes_DespawnsUnusedDisplays() {
-            var unitOne   = BuildUnit(new List<IUnitAbilityDefinition>() { BuildAbility(), BuildAbility(), BuildAbility()                 });
-            var unitTwo   = BuildUnit(new List<IUnitAbilityDefinition>() { BuildAbility(), BuildAbility(), BuildAbility(), BuildAbility() });
-            var unitThree = BuildUnit(new List<IUnitAbilityDefinition>() { BuildAbility(), BuildAbility()                                 });
+            var unitOne   = BuildUnit(new List<IAbilityDefinition>() { BuildAbility(), BuildAbility(), BuildAbility()                 });
+            var unitTwo   = BuildUnit(new List<IAbilityDefinition>() { BuildAbility(), BuildAbility(), BuildAbility(), BuildAbility() });
+            var unitThree = BuildUnit(new List<IAbilityDefinition>() { BuildAbility(), BuildAbility()                                 });
 
             var abilitiesDisplay = Container.Resolve<UnitAbilitiesDisplay>();
 
@@ -115,7 +115,7 @@ namespace Assets.Tests.UI.Units {
 
         #region utilities
 
-        private IUnit BuildUnit(List<IUnitAbilityDefinition> abilities) {
+        private IUnit BuildUnit(List<IAbilityDefinition> abilities) {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.Setup(unit => unit.Abilities).Returns(abilities);
@@ -123,8 +123,8 @@ namespace Assets.Tests.UI.Units {
             return mockUnit.Object;
         }
 
-        private IUnitAbilityDefinition BuildAbility() {
-            return new Mock<IUnitAbilityDefinition>().Object;
+        private IAbilityDefinition BuildAbility() {
+            return new Mock<IAbilityDefinition>().Object;
         }
 
         #endregion

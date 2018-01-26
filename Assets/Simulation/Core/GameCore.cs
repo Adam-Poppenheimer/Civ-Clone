@@ -33,7 +33,7 @@ namespace Assets.Simulation.Core {
         private ICityFactory         CityFactory;
         private ICivilizationFactory CivilizationFactory;
         private IUnitFactory         UnitFactory;
-        private IUnitAbilityExecuter AbilityExecuter;
+        private IAbilityExecuter AbilityExecuter;
 
         private ITurnExecuter TurnExecuter;
 
@@ -58,7 +58,7 @@ namespace Assets.Simulation.Core {
         [Inject]
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
-            IUnitFactory unitFactory, IUnitAbilityExecuter abilityExecuter,
+            IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
             ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
             TurnEndedSignal turnEndedSignal, PlayerSignals playerSignals
         ){

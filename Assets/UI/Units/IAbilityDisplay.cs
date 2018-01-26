@@ -16,7 +16,7 @@ namespace Assets.UI.Units {
 
         #region properties
 
-        IUnitAbilityDefinition AbilityToDisplay { get; set; }
+        IAbilityDefinition AbilityToDisplay { get; set; }
 
         IUnit UnitToInvokeOn { get; set; }
 

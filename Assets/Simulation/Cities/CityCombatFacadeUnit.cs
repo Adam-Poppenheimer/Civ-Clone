@@ -21,10 +21,10 @@ namespace Assets.Simulation.Cities {
 
         #region from IUnit
 
-        public IEnumerable<IUnitAbilityDefinition> Abilities {
+        public IEnumerable<IAbilityDefinition> Abilities {
             get { return _emptyList; }
         }
-        private List<IUnitAbilityDefinition> _emptyList = new List<IUnitAbilityDefinition>();
+        private List<IAbilityDefinition> _emptyList = new List<IAbilityDefinition>();
 
         public int AttackRange {
             get { return Config.CityAttackRange; }

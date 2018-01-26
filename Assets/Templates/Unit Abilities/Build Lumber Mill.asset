@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8a3fd6b2a3501ff418947e0f73f0a5b0, type: 3}
-  m_Name: Build Farm
+  m_Name: Build Lumber Mill
   m_EditorClassIdentifier: 
   _requiresMovement: 1
   _consumesMovement: 1
@@ -17,4 +17,4 @@ MonoBehaviour:
   _commandRequests:
   - CommandType: 0
     ArgsToPass:
-    - Farm
+    - Lumber Mill

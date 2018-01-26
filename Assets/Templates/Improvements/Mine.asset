@@ -12,11 +12,14 @@ MonoBehaviour:
   m_Name: Mine
   m_EditorClassIdentifier: 
   _bonusYield:
-    Food: 0
+    Food: -1
     Production: 2
     Gold: 0
     Culture: 0
-  _validFeatures: 00000000
-  _validShapes: 01000000
+    Science: 0
+  _validFeatures: 0000000001000000
   _validTerrains: 000000000100000002000000
-  _workToComplete: 0
+  _requiresAdjacentUpwardCliff: 1
+  _clearsForestsWhenBuilt: 1
+  _appearancePrefab: {fileID: 4946165858268716, guid: cecb02ed8cbe58247af45a7ea51bf682,
+    type: 2}

@@ -63,7 +63,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnUnitActivatedAbility(Tuple<IUnit, IUnitAbilityDefinition> dataTuple) {
+        private void OnUnitActivatedAbility(Tuple<IUnit, IAbilityDefinition> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }

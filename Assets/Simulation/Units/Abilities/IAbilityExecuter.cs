@@ -5,13 +5,13 @@ using System.Text;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public interface IUnitAbilityExecuter {
+    public interface IAbilityExecuter {
 
         #region methods
 
-        bool CanExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
+        bool CanExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit);
 
-        void ExecuteAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit);
+        void ExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit);
 
         void PerformOngoingAbilities();
 

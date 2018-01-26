@@ -12,7 +12,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class FoundCityAbilityHandler : IUnitAbilityHandler {
+    public class FoundCityAbilityHandler : IAbilityHandler {
 
         #region instance fields and properties
 
@@ -45,7 +45,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IUnitAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.FoundCity).Count() != 0) {
 
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
@@ -56,15 +56,9 @@ namespace Assets.Simulation.Units.Abilities {
             }
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IUnitAbilityDefinition ability, IUnit unit) {
+        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
-                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), UnitOwnershipCanon.GetOwnerOfPossession(unit));
-
-                if(Application.isPlaying) {
-                    GameObject.Destroy(unit.gameObject);
-                }else {
-                    GameObject.DestroyImmediate(unit.gameObject);
-                }                
+                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), UnitOwnershipCanon.GetOwnerOfPossession(unit));              
 
                 return new AbilityExecutionResults(true, null);
             }else {

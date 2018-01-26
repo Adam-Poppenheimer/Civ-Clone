@@ -16,14 +16,14 @@ namespace Assets.Simulation.Units.Abilities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IEnumerable<IUnitAbilityHandler>>().WithId("Unit Ability Handlers").FromMethod(
-                context => new List<IUnitAbilityHandler>() {
+            Container.Bind<IEnumerable<IAbilityHandler>>().WithId("Unit Ability Handlers").FromMethod(
+                context => new List<IAbilityHandler>() {
                     context.Container.Instantiate<FoundCityAbilityHandler>(),
                     context.Container.Instantiate<BuildImprovementAbilityHandler>(),
                 }
             );
 
-            Container.Bind<IUnitAbilityExecuter>().To<UnitAbilityExecuter>().AsSingle();
+            Container.Bind<IAbilityExecuter>().To<AbilityExecuter>().AsSingle();
         }
 
         #endregion

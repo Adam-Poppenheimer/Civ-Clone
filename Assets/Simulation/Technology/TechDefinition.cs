@@ -12,7 +12,7 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Technology {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Technology Definition")]
+    [CreateAssetMenu(menuName = "Civ Clone/Technology")]
     public class TechDefinition : ScriptableObject, ITechDefinition {
 
         #region instance fields and properties

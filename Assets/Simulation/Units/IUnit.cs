@@ -24,7 +24,7 @@ namespace Assets.Simulation.Units {
 
         bool IsAquatic { get; }
 
-        IEnumerable<IUnitAbilityDefinition> Abilities { get; }
+        IEnumerable<IAbilityDefinition> Abilities { get; }
 
         int AttackRange { get; }
 

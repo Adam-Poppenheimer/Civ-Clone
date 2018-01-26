@@ -79,7 +79,7 @@ namespace Assets.Tests.UI.Units {
 
         private Button ExecuteButton;
 
-        private Mock<IUnitAbilityExecuter> MockAbilityExecuter;
+        private Mock<IAbilityExecuter> MockAbilityExecuter;
 
         #endregion
 
@@ -89,9 +89,9 @@ namespace Assets.Tests.UI.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockAbilityExecuter = new Mock<IUnitAbilityExecuter>();
+            MockAbilityExecuter = new Mock<IAbilityExecuter>();
 
-            Container.Bind<IUnitAbilityExecuter>().FromInstance(MockAbilityExecuter.Object);
+            Container.Bind<IAbilityExecuter>().FromInstance(MockAbilityExecuter.Object);
 
             NameField     = Container.InstantiateComponentOnNewGameObject<Text>();
             ExecuteButton = Container.InstantiateComponentOnNewGameObject<Button>();
@@ -185,8 +185,8 @@ namespace Assets.Tests.UI.Units {
             return new Mock<IUnit>().Object;
         }
 
-        private IUnitAbilityDefinition BuildAbility(string name) {
-            var mockAbility = new Mock<IUnitAbilityDefinition>();
+        private IAbilityDefinition BuildAbility(string name) {
+            var mockAbility = new Mock<IAbilityDefinition>();
 
             mockAbility.Setup(ability => ability.name).Returns(name);
 

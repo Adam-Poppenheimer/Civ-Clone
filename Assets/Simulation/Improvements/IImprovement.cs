@@ -11,10 +11,6 @@ namespace Assets.Simulation.Improvements {
 
         #region properties
 
-        bool IsComplete { get; }
-
-        float WorkInvested { get; set; }
-
         IImprovementTemplate Template { get; }
 
         Transform transform { get; }

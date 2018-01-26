@@ -122,13 +122,13 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             var templateTwo = BuildImprovementTemplate("Improvement Two", true);
 
             var validTile = BuildTile();
-            BuildImprovement(templateOne, validTile, false);
+            BuildImprovement(templateOne, validTile);
 
             var invalidTile_ImprovementOfWrongTemplate = BuildTile();
-            BuildImprovement(templateTwo, invalidTile_ImprovementOfWrongTemplate, false);
+            BuildImprovement(templateTwo, invalidTile_ImprovementOfWrongTemplate);
 
             var invalidTile_ImprovementCompleted = BuildTile();
-            BuildImprovement(templateOne, invalidTile_ImprovementCompleted, true);
+            BuildImprovement(templateOne, invalidTile_ImprovementCompleted);
 
             var abilityToTest = BuildDefinition(new List<AbilityCommandRequest>() {
                 new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
@@ -164,7 +164,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockImprovementFactory
                 .Setup(factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IHexCell>()))
                 .Returns<IImprovementTemplate, IHexCell>(delegate(IImprovementTemplate template, IHexCell location) {
-                    constructedImprovement = BuildImprovement(template, location, true);
+                    constructedImprovement = BuildImprovement(template, location);
                     return constructedImprovement;
                 })
                 .Callback(delegate(IImprovementTemplate template, IHexCell tile) {
@@ -173,47 +173,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                 });
 
             var results = handlerToTest.TryHandleAbilityOnUnit(ability, unit);
-
-            Assert.That(results.NewAbilityActivated is BuildImprovementOngoingAbility, "TryHandleAbilityOnUnit returned an unexpected ability type");
-
-            var ongoingAbility = results.NewAbilityActivated as BuildImprovementOngoingAbility;
-
-            Assert.AreEqual(unit, ongoingAbility.SourceUnit, "OngoingAbility had an unexpected SourceUnit");
-            Assert.AreEqual(constructedImprovement, ongoingAbility.ImprovementToConstruct, "OngoingAbility had an unexpected ImprovementToConstruct");
-        }
-
-        [Test(Description = "TryHandleAbilityOnUnit should, in valid cases, return a new " +
-            "BuildImprovementOngoingAbility with the improvement already there and the argued unit")]
-        public void TryHandleAbilityOnUnit_UsesExistingUnit() {
-            var templateOne = BuildImprovementTemplate("Improvement One", true);
-
-            var ability = BuildDefinition(new List<AbilityCommandRequest>(){
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
-            });            
-
-            var unitLocation = BuildTile();
-            var unit = BuildUnit(unitLocation);
-
-            var existingImprovement = BuildImprovement(templateOne, unitLocation, false);
-
-            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
-
-            var results = handlerToTest.TryHandleAbilityOnUnit(ability, unit);
-
-            Assert.That(results.NewAbilityActivated is BuildImprovementOngoingAbility, "TryHandleAbilityOnUnit returned an unexpected ability type");
-
-            var ongoingAbility = results.NewAbilityActivated as BuildImprovementOngoingAbility;
-
-            Assert.AreEqual(unit, ongoingAbility.SourceUnit, "OngoingAbility had an unexpected SourceUnit");
-            Assert.AreEqual(existingImprovement, ongoingAbility.ImprovementToConstruct, "OngoingAbility had an unexpected ImprovementToConstruct");
         }
 
         #endregion
 
         #region utilities
 
-        private IUnitAbilityDefinition BuildDefinition(IEnumerable<AbilityCommandRequest> commandRequests) {
-            var mockDefinition = new Mock<IUnitAbilityDefinition>();
+        private IAbilityDefinition BuildDefinition(IEnumerable<AbilityCommandRequest> commandRequests) {
+            var mockDefinition = new Mock<IAbilityDefinition>();
 
             mockDefinition.Setup(definition => definition.CommandRequests).Returns(commandRequests);
 
@@ -226,7 +193,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             mockTemplate.Setup(template => template.name).Returns(name);            
 
-            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForTile(newTemplate, It.IsAny<IHexCell>()))
+            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForCell(newTemplate, It.IsAny<IHexCell>()))
                 .Returns(isValid);
 
             AllTemplates.Add(newTemplate);
@@ -247,12 +214,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockTile.Object;
         }
 
-        private IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location, bool isComplete) {
+        private IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location) {
             var mockImprovement = new Mock<IImprovement>();
             var newImprovement = mockImprovement.Object;
 
             mockImprovement.Setup(improvement => improvement.Template).Returns(template);
-            mockImprovement.Setup(improvement => improvement.IsComplete).Returns(isComplete);
 
             MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement)).Returns(location);
             MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))

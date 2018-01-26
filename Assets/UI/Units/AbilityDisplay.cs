@@ -19,7 +19,7 @@ namespace Assets.UI.Units {
 
         #region from IAbilityDisplay
 
-        public IUnitAbilityDefinition AbilityToDisplay { get; set; }
+        public IAbilityDefinition AbilityToDisplay { get; set; }
 
         public IUnit UnitToInvokeOn { get; set; }
 
@@ -47,14 +47,14 @@ namespace Assets.UI.Units {
         }
         [SerializeField] private Button _executeButton;
         
-        private IUnitAbilityExecuter AbilityExecuter;
+        private IAbilityExecuter AbilityExecuter;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IUnitAbilityExecuter abilityExecuter) {
+        public void InjectDependencies(IAbilityExecuter abilityExecuter) {
             AbilityExecuter = abilityExecuter;
         }
 
