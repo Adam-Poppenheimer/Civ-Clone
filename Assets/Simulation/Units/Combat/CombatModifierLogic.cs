@@ -2,7 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -14,13 +16,19 @@ namespace Assets.Simulation.Units.Combat {
 
         private IRiverCanon RiverCanon;
 
+        private IImprovementLocationCanon ImprovementLocationCanon;
+
         #endregion
 
         #region constructors
 
-        public CombatModifierLogic(IUnitConfig config, IRiverCanon riverCanon) {
-            Config     = config;
-            RiverCanon = riverCanon;
+        public CombatModifierLogic(
+            IUnitConfig config, IRiverCanon riverCanon,
+            IImprovementLocationCanon improvementLocationCanon
+        ) {
+            Config                   = config;
+            RiverCanon               = riverCanon;
+            ImprovementLocationCanon = improvementLocationCanon;
         }
 
         #endregion
@@ -34,6 +42,11 @@ namespace Assets.Simulation.Units.Combat {
 
             baseModifier += Config.TerrainMeleeDefensiveness[(int)location.Terrain];
             baseModifier += Config.FeatureMeleeDefensiveness[(int)location.Feature];
+
+            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+            if(improvementAtLocation != null) {
+                baseModifier += improvementAtLocation.Template.DefensiveBonus;
+            }
             
             return baseModifier;
         }

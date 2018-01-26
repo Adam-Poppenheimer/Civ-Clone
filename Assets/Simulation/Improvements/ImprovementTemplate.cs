@@ -41,6 +41,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private bool _clearsForestsWhenBuilt;
 
+        public float DefensiveBonus {
+            get { return _defensiveBonus; }
+        }
+        [SerializeField] private float _defensiveBonus;
+
         public Transform AppearancePrefab {
             get { return _appearancePrefab; }
         }

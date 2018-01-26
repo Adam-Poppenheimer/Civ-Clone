@@ -3482,7 +3482,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 796ea4285a9949a4fb68700605065351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UIConfig: {fileID: 11400000, guid: a6d63f85a10d1d242a9ce6c6e4d9c43f, type: 2}
   SlotDisplayPrefab: {fileID: 882659052}
   BuildingDisplayPrefab: {fileID: 2118610802}
   CityYieldDisplay: {fileID: 1779240452}
@@ -8355,11 +8354,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CityPrefab: {fileID: 1974995633884560, guid: 16d91cd461118634e9351255c1792c04, type: 2}
-  CityConfig: {fileID: 11400000, guid: 4c89e417b5c22e544a8e7a71f9446000, type: 2}
-  AvailableBuildingTemplates:
-  - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}
-  - {fileID: 11400000, guid: b392a53cf08debc44ad6ad5aa3ca32a9, type: 2}
-  - {fileID: 11400000, guid: b7ce9b7952687ca4887e14f8a3e6e5f7, type: 2}
 --- !u!4 &422400749
 Transform:
   m_ObjectHideFlags: 0
@@ -8493,12 +8487,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f6c385921732ab448ec01f1c950ac1e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  AvailableTechs:
-  - {fileID: 11400000, guid: e930a11e5f847324ba113ebe57f5042c, type: 2}
-  - {fileID: 11400000, guid: 9948551e92873d04daf15067115df065, type: 2}
-  - {fileID: 11400000, guid: 1c1db4f17ca1cb64aae51dc3583c43ee, type: 2}
-  - {fileID: 11400000, guid: 5130968aa0b5f434bb88121b358789bd, type: 2}
-  - {fileID: 11400000, guid: 99baa8bfb06e8454db47964f35651922, type: 2}
 --- !u!4 &440342843
 Transform:
   m_ObjectHideFlags: 0
@@ -29122,17 +29110,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebc9a20b335559645912e1d7390678c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnitConfig: {fileID: 11400000, guid: dcfb132f01170994f81d6f6f70f4f471, type: 2}
   UnitPrefab: {fileID: 1781144805398786, guid: 38125fef92767314ab8cd8b10d75f319, type: 2}
   LandTerrainTypes: 000000000100000002000000
   ImpassableTerrainShapes: 02000000
-  AvailableTemplates:
-  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
-  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
-  - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}
-  - {fileID: 11400000, guid: 20dbf2b2ba42ecd46a948873c021d8f4, type: 2}
-  - {fileID: 11400000, guid: ae5a9942e138c69488d2edf06631c402, type: 2}
-  - {fileID: 11400000, guid: ef6573fb065af374aab907e85e9ec5c9, type: 2}
 --- !u!1 &1564887612
 GameObject:
   m_ObjectHideFlags: 0
@@ -33614,10 +33594,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ImprovementPrefab: {fileID: 1218240267054208, guid: af9a69ddc87b1324e92922880ecaca6a,
     type: 2}
-  AvailableTemplates:
-  - {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
-  - {fileID: 11400000, guid: de08c5dd70339824cb2f33f9865f2d3b, type: 2}
-  - {fileID: 11400000, guid: 204925ee10a6d664ea740bf9efdf36b9, type: 2}
 --- !u!4 &1763748232
 Transform:
   m_ObjectHideFlags: 0
@@ -35571,7 +35547,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c317033ca45fb4cbec73078256a82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Config: {fileID: 11400000, guid: 2e0718ac5ebb0b048aef9d4259d5b58a, type: 2}
 --- !u!4 &1899176768
 Transform:
   m_ObjectHideFlags: 0
@@ -35613,7 +35588,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Grid: {fileID: 3764550}
-  Config: {fileID: 11400000, guid: d4c127d5765fb774a9524aeb3549eeb4, type: 2}
   NoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
 --- !u!4 &1903147045
 Transform:

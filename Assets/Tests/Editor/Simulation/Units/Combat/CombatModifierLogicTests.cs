@@ -217,6 +217,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
             };
         }
 
+        [Test(Description = "")]
+        public void MissingImprovementTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

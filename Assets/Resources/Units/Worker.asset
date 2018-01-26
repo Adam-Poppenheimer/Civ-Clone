@@ -19,6 +19,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 55849e5c6d2df0d41ad9f3cfff6ced97, type: 2}
   - {fileID: 11400000, guid: 889583ea605a058488b9537000452202, type: 2}
   - {fileID: 11400000, guid: f528d4860e79cc6448e5b8b1f7ecee92, type: 2}
+  - {fileID: 11400000, guid: aae893c8c39b9964dbbb54f1f4b5a8b5, type: 2}
   _attackRange: 0
   _combatStrength: 0
   _rangedAttackStrength: 0

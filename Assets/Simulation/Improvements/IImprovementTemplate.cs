@@ -25,6 +25,8 @@ namespace Assets.Simulation.Improvements {
 
         bool ClearsForestsWhenBuilt { get; }
 
+        float DefensiveBonus { get; }
+
         Transform AppearancePrefab { get; }
 
         #endregion
