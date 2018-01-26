@@ -61,6 +61,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
         private Mock<ICityFactory> MockCityFactory;
 
+        private Mock<IHexGrid> MockGrid;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -74,9 +76,12 @@ namespace Assets.Tests.Simulation.Improvements {
             AllCities.Clear();
 
             MockCityFactory = new Mock<ICityFactory>();
+            MockGrid        = new Mock<IHexGrid>();
+
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
             Container.Bind<ICityFactory>().FromInstance(MockCityFactory.Object);
+            Container.Bind<IHexGrid>    ().FromInstance(MockGrid       .Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }
@@ -94,7 +99,7 @@ namespace Assets.Tests.Simulation.Improvements {
             IEnumerable<TerrainType> validTerrains, IEnumerable<TerrainFeature> validFeatures
         ){
             var template = BuildTemplate(validTerrains, validFeatures);
-            var tile = BuildTile(tileTerrain, tileShape, tileFeature);            
+            var tile = BuildCell(tileTerrain, tileShape, tileFeature);            
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
@@ -105,11 +110,11 @@ namespace Assets.Tests.Simulation.Improvements {
             "given tile has a city on it")]
         public void IsTemplateValidForTile_FalseIfTileHasCity() {
             var template = BuildTemplate(
-                new List<TerrainType>       () { TerrainType.Grassland },
+                new List<TerrainType>   () { TerrainType.Grassland },
                 new List<TerrainFeature>() { TerrainFeature.Forest }
             );
 
-            var tile = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.Forest);
+            var tile = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.Forest);
 
             BuildCity(tile);
 
@@ -123,7 +128,7 @@ namespace Assets.Tests.Simulation.Improvements {
             "whenever passed a null argument")]
         public void IsTemplateValidForTile_ThrowsOnNullArguments() {
             var template = BuildTemplate(null, null);
-            var tile = BuildTile(TerrainType.Desert, TerrainShape.Flat, TerrainFeature.Forest);
+            var tile = BuildCell(TerrainType.Desert, TerrainShape.Flat, TerrainFeature.Forest);
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
@@ -134,35 +139,64 @@ namespace Assets.Tests.Simulation.Improvements {
                 "IsTemplateValidForTile did not throw on a null tile argument");
         }
 
-        [Test(Description = "")]
-        public void MissingCliffRequirementTests() {
-            throw new NotImplementedException();
+        [Test(Description = "IsTemplateValidForTile should return false if the template " +
+            "requires cliffs and the cell isn't at the bottom of one")]
+        public void IsTemplateValidForTile_ProperlyConsidersCliffRequirements() {
+            var template = BuildTemplate(
+                new List<TerrainType>   () { TerrainType.Grassland },
+                new List<TerrainFeature>() { TerrainFeature.Forest },
+                true
+            );
+
+            var cellOne = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.Forest);
+
+            var cellTwo = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None, 2);
+
+            MockGrid.Setup(grid => grid.GetNeighbors(cellOne)).Returns(new List<IHexCell>() { cellTwo });
+            MockGrid.Setup(grid => grid.GetNeighbors(cellTwo)).Returns(new List<IHexCell>() { cellOne });
+
+            var validityLogic = Container.Resolve<ImprovementValidityLogic>();
+
+            Assert.IsTrue(
+                validityLogic.IsTemplateValidForCell(template, cellOne),
+                "Logic fails to permit a cliff-requiring improvement on cellOne"
+            );
+
+            Assert.IsFalse(
+                validityLogic.IsTemplateValidForCell(template, cellTwo),
+                "Logic falsely permits a cliff-requiring improvement on cellTwo"
+            );
         }
 
         #endregion
 
         #region utilities
 
-        private IHexCell BuildTile(TerrainType terrain, TerrainShape shape, TerrainFeature feature) {
-            var mockTile = new Mock<IHexCell>();
-            mockTile.SetupAllProperties();
+        private IHexCell BuildCell(TerrainType terrain, TerrainShape shape, TerrainFeature feature, int elevation = 0) {
+            var mockCell = new Mock<IHexCell>();
+            mockCell.SetupAllProperties();
 
-            var newTile = mockTile.Object;
+            var newcell = mockCell.Object;
 
-            newTile.Terrain = terrain;
-            newTile.Shape   = shape;
-            newTile.Feature = feature;
+            newcell.Terrain   = terrain;
+            newcell.Shape     = shape;
+            newcell.Feature   = feature;
+            newcell.Elevation = elevation;
 
-            return newTile;
+            return newcell;
         }
 
-        private IImprovementTemplate BuildTemplate(IEnumerable<TerrainType> validTerrains,
-            IEnumerable<TerrainFeature> validFeatures
+        private IImprovementTemplate BuildTemplate(
+            IEnumerable<TerrainType> validTerrains,
+            IEnumerable<TerrainFeature> validFeatures,
+            bool requiresAdjacentUpwardCliff = false
         ){
             var mockTemplate = new Mock<IImprovementTemplate>();
 
             mockTemplate.Setup(template => template.ValidTerrains).Returns(validTerrains);
             mockTemplate.Setup(template => template.ValidFeatures).Returns(validFeatures);
+            
+            mockTemplate.Setup(template => template.RequiresAdjacentUpwardCliff).Returns(requiresAdjacentUpwardCliff);
 
             return mockTemplate.Object;
         }

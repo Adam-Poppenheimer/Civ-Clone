@@ -64,6 +64,8 @@ namespace Assets.Tests.Simulation.Core {
             Container.DeclareSignal<TurnBeganSignal>();
             Container.DeclareSignal<TurnEndedSignal>();
 
+            Container.Bind<PlayerSignals>().AsSingle();
+
             Container.Bind<GameCore>().AsSingle();
         }
 

@@ -280,7 +280,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var totalYield = logic.GetTotalYieldForCity(city);
 
-            Assert.AreEqual(new ResourceSummary(production: 2), totalYield, "GetTotalYieldForCity returned an unexpected value");
+            Assert.AreEqual(2, totalYield[ResourceType.Production], "GetTotalYieldForCity returned an unexpected value");
         }
 
         [Test(Description = "GetTotalYieldOfCity should always consider the yield of the " +

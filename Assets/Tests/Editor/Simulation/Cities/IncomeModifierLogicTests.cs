@@ -94,19 +94,6 @@ namespace Assets.Tests.Simulation.Cities {
             );
         }
 
-        [Test(Description = "GetRealBaseYieldForSlot should not consider bonus yield from improvements " +
-            "that are not complete")]
-        public void GetRealBaseYieldForSlot_IgnoresIncompleteImprovements() {
-            var tile = BuildTile(BuildSlot(ResourceSummary.Empty));
-
-            var improvement = BuildImprovement(tile, new ResourceSummary(food: 4), false);
-
-            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
-
-            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetRealBaseYieldForSlot(tile.WorkerSlot),
-                "GetRealBaseYieldForSlot returned an unexpected value");
-        }
-
         [Test(Description = "When GetYieldMultipliersForCivilization is called, " +
             "it should return ResourceSummary.Empty as a default value")]
         public void GetYieldMultipliersForCivilization_StartsAtEmpty() {

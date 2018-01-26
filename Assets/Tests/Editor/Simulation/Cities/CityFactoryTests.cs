@@ -60,19 +60,21 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGrid                 = new Mock<IHexGrid>();
+            MockGrid                = new Mock<IHexGrid>();
             MockTilePossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>                         ().FromInstance(MockTilePossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockTilePossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
 
-            Container.Bind<IPopulationGrowthLogic>   ().FromMock();
-            Container.Bind<IProductionLogic>         ().FromMock();
-            Container.Bind<IResourceGenerationLogic> ().FromMock();
-            Container.Bind<IBorderExpansionLogic>    ().FromMock();
+            Container.Bind<IPopulationGrowthLogic>  ().FromMock();
+            Container.Bind<IProductionLogic>        ().FromMock();
+            Container.Bind<IResourceGenerationLogic>().FromMock();
+            Container.Bind<IBorderExpansionLogic>   ().FromMock();
+            Container.Bind<ICityCombatLogic>        ().FromMock();
+            Container.Bind<IUnitPositionCanon>      ().FromMock();
             
             Container.Bind<IProductionProjectFactory>().FromMock();
 
@@ -84,6 +86,8 @@ namespace Assets.Tests.Simulation.Cities {
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
             Container.Bind<CitySignals>().AsSingle();
+
+            Container.Bind<ICityConfig>().FromMock();
 
             Container.Bind<CityFactory>().AsSingle();
         }

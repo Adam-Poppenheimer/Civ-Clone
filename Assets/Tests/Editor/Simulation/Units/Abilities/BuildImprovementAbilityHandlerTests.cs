@@ -113,38 +113,6 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_InvalidTemplateArgument, unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_InvalidTemplateArgument was not handled correctly");
         }
 
-        [Test(Description = "If there is already an improvement at the argued unit's location, " +
-            "CanHandleAbilityOnUnit should return true only if that improvement has the same " +
-            "template as specified by the ability and is unfinished. TryHandleAbilityOnUnit " +
-            "should also return an AbilityExecutionResults that reflects CanHandleAbilityOnUnit")]
-        public void CanHandleAbilityOnUnit_AndExistingImprovement_MustBeSimilarAndUnfinished() {
-            var templateOne = BuildImprovementTemplate("Improvement One", true);
-            var templateTwo = BuildImprovementTemplate("Improvement Two", true);
-
-            var validTile = BuildTile();
-            BuildImprovement(templateOne, validTile);
-
-            var invalidTile_ImprovementOfWrongTemplate = BuildTile();
-            BuildImprovement(templateTwo, invalidTile_ImprovementOfWrongTemplate);
-
-            var invalidTile_ImprovementCompleted = BuildTile();
-            BuildImprovement(templateOne, invalidTile_ImprovementCompleted);
-
-            var abilityToTest = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
-            });            
-
-            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
-
-            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(validTile)),                              "validTile was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementOfWrongTemplate)), "invalidTile_ImprovementOfWrongTemplate was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementCompleted)),       "invalidTile_ImprovementCompleted was not handled correctly");
-
-            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(validTile))                             .AbilityHandled, "validTile was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementOfWrongTemplate)).AbilityHandled, "invalidTile_ImprovementOfWrongTemplate was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(abilityToTest, BuildUnit(invalidTile_ImprovementCompleted))      .AbilityHandled, "invalidTile_ImprovementCompleted was not handled correctly");
-        }
-
         [Test(Description = "TryHandleAbilityOnUnit should, in its valid cases, produce a new " +
             "improvement of the specified template and return a new BuildImprovementOngoingAbility " +
             "with the new improvement and the argued unit")]

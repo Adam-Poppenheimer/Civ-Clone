@@ -12,6 +12,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Technology;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -24,8 +25,10 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            Container.Bind<ICivilizationConfig>().FromMock();
+            Container.Bind<ICivilizationConfig>                          ().FromMock();
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromMock();
+            Container.Bind<ICivilizationYieldLogic>                      ().FromMock();
+            Container.Bind<ITechCanon>                                   ().FromMock();
 
             Container.Bind<CivilizationFactory>().AsSingle();
         }

@@ -20,8 +20,10 @@ namespace Assets.Simulation.Improvements {
             set {
                 _improvementTemplate = value;
 
-                var appearancePrefab = Instantiate(_improvementTemplate.AppearancePrefab);
-                appearancePrefab.transform.SetParent(transform, false);
+                if(_improvementTemplate.AppearancePrefab != null) {
+                    var appearancePrefab = Instantiate(_improvementTemplate.AppearancePrefab);
+                    appearancePrefab.transform.SetParent(transform, false);
+                }
             }
         }
         private IImprovementTemplate _improvementTemplate;

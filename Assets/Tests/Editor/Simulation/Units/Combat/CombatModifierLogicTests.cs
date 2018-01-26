@@ -11,7 +11,7 @@ using Moq;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.HexMap;
-using System.Collections.ObjectModel;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
@@ -175,6 +175,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private Mock<IRiverCanon> MockRiverCanon;
 
+        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+
         #endregion
 
         #region instance methods
@@ -183,9 +185,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockRiverCanon = new Mock<IRiverCanon>();
+            MockRiverCanon               = new Mock<IRiverCanon>();
+            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
-            Container.Bind<IRiverCanon>().FromInstance(MockRiverCanon.Object);
+            Container.Bind<IRiverCanon>              ().FromInstance(MockRiverCanon              .Object);
+            Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
 
             Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Modifier Logic UI Config").AsSingle();
 
@@ -217,9 +221,23 @@ namespace Assets.Tests.Simulation.Units.Combat {
             };
         }
 
-        [Test(Description = "")]
-        public void MissingImprovementTests() {
-            throw new NotImplementedException();
+        [Test(Description = "Defensive ranged and melee combat modifiers should be affected by " +
+            "the DefensiveBonus of any improvements at the argued location")]
+        public void DefensiveCombatModifiers_ModifiedByImprovements() {
+            var location = BuildCell(TerrainType.Grassland, TerrainFeature.None, false);
+
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
+
+            BuildImprovement(location, 0.5f);
+
+            var modifierLogic = Container.Resolve<CombatModifierLogic>();
+
+            Assert.AreEqual(3f, modifierLogic.GetMeleeDefensiveModifierAtLocation(attacker, defender, location),
+                "Melee defense did not take improvements into account");
+
+            Assert.AreEqual(21f, modifierLogic.GetRangedDefensiveModifierAtLocation(attacker, defender, location),
+                "Ranged defense did not take improvements into account");
         }
 
         #endregion
@@ -243,6 +261,22 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private IUnit BuildUnit() {
             return new Mock<IUnit>().Object;
+        }
+
+        private IImprovement BuildImprovement(IHexCell location, float defensiveBonus) {
+            var mockImprovement = new Mock<IImprovement>();
+
+            var mockTemplate = new Mock<IImprovementTemplate>();
+            mockTemplate.Setup(template => template.DefensiveBonus).Returns(defensiveBonus);
+
+            mockImprovement.Setup(improvement => improvement.Template).Returns(mockTemplate.Object);
+
+            var newImprovement = mockImprovement.Object;
+
+            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
+                .Returns(new List<IImprovement>() { newImprovement });
+
+            return newImprovement;
         }
 
         #endregion

@@ -35,6 +35,7 @@ namespace Assets.Tests.Simulation.Core {
             mockCity.InSequence(executionSequence).Setup(city => city.PerformGrowth());
             mockCity.InSequence(executionSequence).Setup(city => city.PerformExpansion());
             mockCity.InSequence(executionSequence).Setup(city => city.PerformDistribution());
+            mockCity.InSequence(executionSequence).Setup(city => city.PerformHealing());
 
             var executer = new TurnExecuter();
             executer.BeginTurnOnCity(mockCity.Object);
@@ -65,6 +66,7 @@ namespace Assets.Tests.Simulation.Core {
             var executionSequence = new MockSequence();
 
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
+            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
 
             var executer = new TurnExecuter();
             executer.EndTurnOnCivilization(mockCivilization.Object);

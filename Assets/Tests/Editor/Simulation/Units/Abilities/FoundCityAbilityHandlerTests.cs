@@ -168,31 +168,6 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return handleResponse.AbilityHandled;
         }
 
-        [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
-            "but should also destroy the argued unit when it returns true")]
-        [TestCaseSource("TestCases")]
-        public bool TryHandleAbilityOnUnit_UnitDestroyedWhenValid(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
-            bool unitTileValidForCity
-        ){
-            var ability = BuildAbility(abilityName, commandRequests);
-
-            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
-
-            var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
-
-            var handleResponse = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
-
-            if(handleResponse.AbilityHandled) {
-                Assert.That(unit.gameObject == null, "Unit.gameObject was not destroyed as expected");
-            }else {
-                Assert.That(unit.gameObject != null, "Unit.gameObject was unexpectedly destroyed");
-            }
-
-            return handleResponse.AbilityHandled;
-        }
-
-
-
         #endregion
 
         #region utilities

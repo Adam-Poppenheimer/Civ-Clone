@@ -141,7 +141,7 @@ namespace Assets.Tests.Simulation.Units {
 
             MockPositionCanon
                 .Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(It.IsAny<UnitType>(), mockTile.Object, false))
-                .Returns<UnitType, IHexCell>((type, tile) => !typesNotPermitted.Contains(type));
+                .Returns<UnitType, IHexCell, bool>((type, tile, ignoreOccupancy) => !typesNotPermitted.Contains(type));
 
             var mockCity = new Mock<ICity>();
             mockCity.Setup(city => city.Location).Returns(mockTile.Object);

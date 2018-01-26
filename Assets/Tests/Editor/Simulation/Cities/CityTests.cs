@@ -31,14 +31,36 @@ namespace Assets.Tests.Simulation.Cities {
     [TestFixture]
     public class CityTests : ZenjectUnitTestFixture {
 
-        private Mock<IPopulationGrowthLogic>    GrowthMock;
-        private Mock<IProductionLogic>          ProductionMock;
-        private Mock<IResourceGenerationLogic>  ResourceGenerationMock;
-        private Mock<IBorderExpansionLogic>     ExpansionMock;
-        private Mock<IPossessionRelationship<ICity, IHexCell>> TilePossessionCanonMock;
-        private Mock<IWorkerDistributionLogic>  DistributionMock;
-        private Mock<IPossessionRelationship<ICity, IBuilding>>  BuildingPossessionCanonMock;
-        private Mock<IProductionProjectFactory> ProjectFactoryMock;
+        #region internal types
+
+        private struct TileMockData {
+
+            public bool SuppressSlot;
+            public bool SlotIsLocked;
+            public bool SlotIsOccupied;
+            public ResourceSummary BaseYield;
+
+        }
+
+        #endregion
+
+        #region instance fields and properties
+
+        private Mock<IPopulationGrowthLogic>                    GrowthMock;
+        private Mock<IProductionLogic>                          ProductionMock;
+        private Mock<IResourceGenerationLogic>                  ResourceGenerationMock;
+        private Mock<IBorderExpansionLogic>                     ExpansionMock;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>  TilePossessionCanonMock;
+        private Mock<IWorkerDistributionLogic>                  DistributionMock;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> BuildingPossessionCanonMock;
+        private Mock<IProductionProjectFactory>                 ProjectFactoryMock;
+        private Mock<ICityConfig>                               CityConfigMock;
+
+        #endregion
+
+        #region instance methods
+
+        #region setup
 
         [SetUp]
         public void CommonInstall() {
@@ -50,15 +72,18 @@ namespace Assets.Tests.Simulation.Cities {
             DistributionMock            = new Mock<IWorkerDistributionLogic>();
             BuildingPossessionCanonMock = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
+            CityConfigMock              = new Mock<ICityConfig>();
 
-            Container.Bind<IPopulationGrowthLogic>()                   .FromInstance(GrowthMock                 .Object);
-            Container.Bind<IProductionLogic>()                         .FromInstance(ProductionMock             .Object);
-            Container.Bind<IResourceGenerationLogic>()                 .FromInstance(ResourceGenerationMock     .Object);
-            Container.Bind<IBorderExpansionLogic>()                    .FromInstance(ExpansionMock              .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>() .FromInstance(TilePossessionCanonMock    .Object);
-            Container.Bind<IWorkerDistributionLogic>()                 .FromInstance(DistributionMock           .Object);
+
+            Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(GrowthMock                 .Object);
+            Container.Bind<IProductionLogic>                         ().FromInstance(ProductionMock             .Object);
+            Container.Bind<IResourceGenerationLogic>                 ().FromInstance(ResourceGenerationMock     .Object);
+            Container.Bind<IBorderExpansionLogic>                    ().FromInstance(ExpansionMock              .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(TilePossessionCanonMock    .Object);
+            Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(DistributionMock           .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(BuildingPossessionCanonMock.Object);
-            Container.Bind<IProductionProjectFactory>()                .FromInstance(ProjectFactoryMock         .Object);
+            Container.Bind<IProductionProjectFactory>                ().FromInstance(ProjectFactoryMock         .Object);
+            Container.Bind<ICityConfig>                              ().FromInstance(CityConfigMock             .Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -71,6 +96,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
+
+        #endregion
+
+        #region tests
 
         [Test(Description = "When PerformGrowth is called on a city with a negative food stockpile " +
             "and more than one person, its population should decrease by 1")]
@@ -594,16 +623,25 @@ namespace Assets.Tests.Simulation.Cities {
             cityToTest.SetActiveProductionProject(newTemplateMock.Object);
         }
 
-        #region utilities
+        [Test(Description = "When PerformHealing is called, CombatFacade should be healed by an amount " +
+            "configured in CityConfig and have its current movement set to 1")]
+        public void PerformHealing_FacadeHealedAndGivenMovement() {
+            CityConfigMock.Setup(config => config.HealthRegenPerRound).Returns(20);
 
-        private struct TileMockData {
+            var city = Container.Resolve<City>();
+            city.CombatFacade = BuildUnit();
+            city.CombatFacade.Health = 0;
+            city.CombatFacade.CurrentMovement = 0;
 
-            public bool SuppressSlot;
-            public bool SlotIsLocked;
-            public bool SlotIsOccupied;
-            public ResourceSummary BaseYield;
+            city.PerformHealing();
 
+            Assert.AreEqual(20, city.CombatFacade.Health, "CombatFacade was not healed properly");
+            Assert.AreEqual(1, city.CombatFacade.CurrentMovement, "CombatFacade's movement wasn't restored properly");
         }
+
+        #endregion
+
+        #region utilities
 
         private IHexCell BuildMockTile(TileMockData mockData) {
             var mockTile = new Mock<IHexCell>();
@@ -619,6 +657,16 @@ namespace Assets.Tests.Simulation.Cities {
 
             return mockTile.Object;
         }
+
+        private IUnit BuildUnit() {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.SetupAllProperties();
+
+            return mockUnit.Object;
+        }
+
+        #endregion
 
         #endregion
 

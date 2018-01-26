@@ -64,6 +64,11 @@ namespace Assets.Simulation.Units.Combat {
 
             baseModifier += Config.TerrainRangedDefensiveness[(int)location.Terrain];
             baseModifier += Config.FeatureRangedDefensiveness[(int)location.Feature];
+
+            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+            if(improvementAtLocation != null) {
+                baseModifier += improvementAtLocation.Template.DefensiveBonus;
+            }
             
             return baseModifier;
         }

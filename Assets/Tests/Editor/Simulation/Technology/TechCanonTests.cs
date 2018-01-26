@@ -34,6 +34,9 @@ namespace Assets.Tests.Simulation.Technology {
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
 
+            Container.Bind<IEnumerable<IAbilityDefinition>>().WithId("Available Abilities")
+                .FromInstance(new List<IAbilityDefinition>());
+
             Container.Bind<TechCanon>().AsSingle();
         }
 
