@@ -39,9 +39,7 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _chunkCountZ;
 
-        #endregion        
-
-        [SerializeField] private Color DefaultColor;
+        #endregion
 
         [SerializeField] private HexCell CellPrefab;
 
@@ -54,10 +52,6 @@ namespace Assets.Simulation.HexMap {
 
         private HexGridChunk[] Chunks;
 
-        private HexCellSignals CellSignals;
-
-        private IHexGridConfig TileConfig;
-
         private DiContainer Container;
 
         #endregion
@@ -65,9 +59,7 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(HexCellSignals cellSignals, IHexGridConfig tileConfig, DiContainer container) {
-            CellSignals = cellSignals;
-            TileConfig = tileConfig;
+        public void InjectDependencies(DiContainer container) {
             Container = container;
         }
 
@@ -290,9 +282,7 @@ namespace Assets.Simulation.HexMap {
 
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             newCell.Terrain     = TerrainType.Grassland;
-            newCell.Shape       = TerrainShape.Flat;
             newCell.Feature     = TerrainFeature.None;
-            newCell.Color       = TileConfig.ColorsOfTerrains[(int)newCell.Terrain];
             newCell.Elevation   = 0;
 
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);

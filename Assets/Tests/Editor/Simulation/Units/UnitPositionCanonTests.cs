@@ -88,11 +88,6 @@ namespace Assets.Tests.Simulation.Units {
                 .WithId("Land Terrain Types")
                 .FromInstance(new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains, TerrainType.Desert });
 
-            Container
-                .Bind<List<TerrainShape>>()
-                .WithId("Impassable Terrain Types")
-                .FromInstance(new List<TerrainShape>() { TerrainShape.Mountains });
-
             Container.Bind<UnitPositionCanon>().AsSingle();
 
             UnitSignals = new UnitSignals();
@@ -110,7 +105,7 @@ namespace Assets.Tests.Simulation.Units {
             Tuple<string, UnitType> consideredUnitData,
             List<Tuple<string, UnitType>> presentUnitsData
         ){
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainFeature.None);
 
             var consideredUnit = BuildUnit(consideredUnitData);
 
@@ -133,7 +128,7 @@ namespace Assets.Tests.Simulation.Units {
             Tuple<string, UnitType> consideredUnitData,
             List<Tuple<string, UnitType>> presentUnitsData
         ){
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainFeature.None);
 
             var consideredUnit = BuildUnit(consideredUnitData);
 
@@ -152,7 +147,7 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "ChangeOwnerOfPossession should set the parent of the relocated unit " +
             "to the transform of its new location, or null if its new location is null")]
         public void ChangeOwnerOfPossession_SetsParentToOwnerTransform() {
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainFeature.None);
 
             var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
 
@@ -171,7 +166,7 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "Whenever a unit has its possession changed, UnitPositionCanon should fire " +
             "UnitSignals.UnitLocationChangedSignal with the unit and its new location")]
         public void ChangeOwnerOfPossession_LocationChangedSignalFired() {
-            var location = BuildTile(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None);
+            var location = BuildTile(TerrainType.Grassland, TerrainFeature.None);
 
             var unit = BuildUnit("Test Unit", UnitType.LandMilitary);
 
@@ -215,7 +210,7 @@ namespace Assets.Tests.Simulation.Units {
             return mockUnit.Object;
         }
 
-        private IHexCell BuildTile(TerrainType terrain, TerrainShape shape, TerrainFeature feature) {
+        private IHexCell BuildTile(TerrainType terrain, TerrainFeature feature) {
             var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
@@ -224,7 +219,6 @@ namespace Assets.Tests.Simulation.Units {
             var newTile = mockTile.Object;
 
             newTile.Terrain = terrain;
-            newTile.Shape   = shape;
             newTile.Feature = feature;
 
             return newTile;

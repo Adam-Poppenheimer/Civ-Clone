@@ -90,9 +90,9 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                 new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement Three" } }
             });            
 
-            var templateOne   = BuildImprovementTemplate("Improvement One",   true);
-            var templateTwo   = BuildImprovementTemplate("Improvement Two",   true);
-            var templateThree = BuildImprovementTemplate("Improvement Three", false);
+            BuildImprovementTemplate("Improvement One",   true);
+            BuildImprovementTemplate("Improvement Two",   true);
+            BuildImprovementTemplate("Improvement Three", false);
 
             var unit = BuildUnit(BuildTile());
 
@@ -140,7 +140,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                     Assert.AreEqual(unitLocation, tile, "ImprovementFactory.Create was called with an unexpected tile");
                 });
 
-            var results = handlerToTest.TryHandleAbilityOnUnit(ability, unit);
+            handlerToTest.TryHandleAbilityOnUnit(ability, unit);
         }
 
         #endregion

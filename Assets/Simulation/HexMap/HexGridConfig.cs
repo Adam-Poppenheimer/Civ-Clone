@@ -13,25 +13,36 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
+        #region from IHexGridConfig
+
         public int RandomSeed {
             get { return _randomSeed; }
         }
         [SerializeField] private int _randomSeed;
 
-        public ReadOnlyCollection<Color> ColorsOfTerrains {
-            get { return _colorOfTerrains.AsReadOnly(); }
-        }
-        [SerializeField] private List<Color> _colorOfTerrains;
-
         public ReadOnlyCollection<ResourceSummary> TerrainYields {
-            get { return _terrainYields.AsReadOnly(); }
+            get {
+                if(_terrainYields == null) {
+                    _terrainYields = new List<ResourceSummary>() {
+                        GrasslandYield, PlainsYield, DesertYield, RockYield, SnowYield
+                    };
+                }
+                return _terrainYields.AsReadOnly();
+            }
         }
-        [SerializeField] private List<ResourceSummary> _terrainYields;
+        private List<ResourceSummary> _terrainYields;
 
         public ReadOnlyCollection<ResourceSummary> FeatureYields {
-            get { return _featureYields.AsReadOnly(); }
+            get {
+                if(_featureYields == null) {
+                    _featureYields = new List<ResourceSummary>() {
+                        NoFeatureYield, ForestYield
+                    };
+                }
+                return _featureYields.AsReadOnly();
+            }
         }
-        [SerializeField] private List<ResourceSummary> _featureYields;
+        private List<ResourceSummary> _featureYields;
 
         public int BaseLandMoveCost {
             get { return _baseLandMoveCost; }
@@ -39,9 +50,16 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private int _baseLandMoveCost;
 
         public ReadOnlyCollection<int> FeatureMoveCosts {
-            get { return _featureMoveCosts.AsReadOnly(); }
+            get {
+                if(_featureMoveCosts == null) {
+                    _featureMoveCosts = new List<int>() {
+                        NoFeatureMoveCost, ForestMoveCost
+                    };
+                }
+                return _featureMoveCosts.AsReadOnly();
+            }
         }
-        [SerializeField] private List<int> _featureMoveCosts;
+        private List<int> _featureMoveCosts;
 
         public int WaterMoveCost {
             get { return _waterMoveCost; }
@@ -52,6 +70,20 @@ namespace Assets.Simulation.HexMap {
             get { return _slopeMoveCost; }
         }
         [SerializeField] private int _slopeMoveCost;
+
+        #endregion
+
+        [SerializeField] private ResourceSummary GrasslandYield = ResourceSummary.Empty;
+        [SerializeField] private ResourceSummary PlainsYield    = ResourceSummary.Empty;
+        [SerializeField] private ResourceSummary DesertYield    = ResourceSummary.Empty;
+        [SerializeField] private ResourceSummary RockYield      = ResourceSummary.Empty;
+        [SerializeField] private ResourceSummary SnowYield      = ResourceSummary.Empty;
+
+        [SerializeField] private ResourceSummary NoFeatureYield = ResourceSummary.Empty;
+        [SerializeField] private ResourceSummary ForestYield    = ResourceSummary.Empty;
+
+        [SerializeField] private int NoFeatureMoveCost = 0;
+        [SerializeField] private int ForestMoveCost    = 0;
 
         #endregion
 

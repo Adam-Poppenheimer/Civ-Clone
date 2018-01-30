@@ -15,8 +15,6 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private List<TerrainType> LandTerrainTypes;
-
         private ICityFactory CityFactory;
 
         private UnitSignals Signals;
@@ -26,11 +24,7 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitPositionCanon(
-            [Inject(Id = "Land Terrain Types")] List<TerrainType> landTerrainTypes,
-            ICityFactory cityFactory, UnitSignals signals
-        ){
-            LandTerrainTypes        = landTerrainTypes;
+        public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals){
             CityFactory             = cityFactory;
             Signals                 = signals;
 

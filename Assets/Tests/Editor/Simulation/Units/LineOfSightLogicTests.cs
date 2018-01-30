@@ -471,8 +471,6 @@ namespace Assets.Tests.Simulation.Units {
         #region utilities
 
         private void ConfigureCellChain(IHexCell start, List<IHexCell> intermediates, IHexCell end) {
-            int distance = intermediates.Count + 1;
-
             var cellLine = new List<IHexCell>();
             cellLine.Add(start);
             cellLine.AddRange(intermediates);

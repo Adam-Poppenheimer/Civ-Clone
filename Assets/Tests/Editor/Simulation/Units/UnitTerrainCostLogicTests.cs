@@ -216,7 +216,6 @@ namespace Assets.Tests.Simulation.Units {
             var newCell = mockCell.Object;
 
             newCell.Terrain = terrain;
-            newCell.Shape   = TerrainShape.Flat;
             newCell.Feature = feature;
             newCell.Elevation = elevation;
 

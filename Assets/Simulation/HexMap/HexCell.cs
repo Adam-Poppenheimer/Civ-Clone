@@ -34,12 +34,6 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private TerrainType _terrain;
 
-        public TerrainShape Shape {
-            get { return _shape; }
-            set { _shape = value; }
-        }
-        [SerializeField] private TerrainShape _shape;
-
         public TerrainFeature Feature {
             get { return _feature; }
             set {
@@ -128,19 +122,6 @@ namespace Assets.Simulation.HexMap {
         private WorkerSlot workerSlot = new WorkerSlot(ResourceSummary.Empty);
 
         public bool SuppressSlot { get; set; }
-
-        public Color Color {
-            get { return _color; }
-            set {
-                if(_color == value) {
-                    return;
-                }
-
-                _color = value;
-                Refresh();
-            }
-        }
-        private Color _color;
 
         public HexGridChunk Chunk { get; set; }
 

@@ -46,7 +46,6 @@ namespace Assets.UI.MapEditor {
         private IDisposable CellEnterSubscription;
 
         private IHexGrid HexGrid;
-        private IHexGridConfig TileConfig;
         private HexCellSignals CellSignals;
 
         private IRiverCanon RiverCanon;
@@ -57,11 +56,9 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            IHexGrid hexGrid, IHexGridConfig tileConfig,
-            HexCellSignals cellSignals, IRiverCanon riverCanon
+            IHexGrid hexGrid, HexCellSignals cellSignals, IRiverCanon riverCanon
         ){
             HexGrid = hexGrid;
-            TileConfig = tileConfig;
             CellSignals = cellSignals;
             RiverCanon = riverCanon;
         }
@@ -184,7 +181,6 @@ namespace Assets.UI.MapEditor {
 
             if(ApplyTerrain) {
                 cell.Terrain = ActiveTerrain;
-                cell.Color = TileConfig.ColorsOfTerrains[(int)cell.Terrain];
             }
 
             if(ApplyFeatures && !cell.IsUnderwater) {

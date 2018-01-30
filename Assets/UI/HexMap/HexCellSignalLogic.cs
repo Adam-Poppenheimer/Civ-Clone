@@ -35,8 +35,6 @@ namespace Assets.UI.HexMap {
 
         private Coroutine HoverTimerCoroutine;
 
-        private HexCellSignals CellSignals;
-
         private MonoBehaviour CoroutineInvoker;
 
         #endregion
@@ -50,8 +48,6 @@ namespace Assets.UI.HexMap {
         ){
             BeginHoverSubject = new Subject<IHexCell>();
             EndHoverSubject = new Subject<IHexCell>();
-
-            CellSignals = cellSignals;
 
             cellSignals.PointerEnterSignal.Listen(OnEnterSignal);
             cellSignals.PointerExitSignal .Listen(OnExitSignal);

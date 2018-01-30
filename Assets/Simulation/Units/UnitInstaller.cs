@@ -22,8 +22,6 @@ namespace Assets.Simulation.Units {
 
         [SerializeField] private List<TerrainType> LandTerrainTypes;
 
-        [SerializeField] private List<TerrainShape> ImpassableTerrainShapes;
-
         #endregion
 
         #region instance methods
@@ -42,9 +40,6 @@ namespace Assets.Simulation.Units {
             Container.Bind<IEnumerable<IUnitTemplate>>()
                 .WithId("Available Unit Templates")
                 .FromInstance(unitTemplates);
-
-            Container.Bind<List<TerrainType>> ().WithId("Land Terrain Types")       .FromInstance(LandTerrainTypes);
-            Container.Bind<List<TerrainShape>>().WithId("Impassable Terrain Shapes").FromInstance(ImpassableTerrainShapes);
 
             Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
 

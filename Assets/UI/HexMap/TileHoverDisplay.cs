@@ -22,40 +22,11 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [InjectOptional(Id = "Terrain Type Field")]
-        private Text TerrainTypeField {
-            get { return _terrainTypeField; }
-            set {
-                if(value != null) {
-                    _terrainTypeField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _terrainTypeField;
+        [SerializeField] private Text TerrainTypeField;
 
-        [InjectOptional(Id = "Terrain Shape Field")]
-        private Text TerrainShapeField {
-            get { return _terrainShapeField; }
-            set {
-                if(value != null) {
-                    _terrainShapeField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _terrainShapeField;
+        [SerializeField] private Text TerrainFeatureField;
 
-        [InjectOptional(Id = "Terrain Feature Field")]
-        private Text TerrainFeatureField {
-            get { return _terrainFeatureField; }
-            set {
-                if(value != null) {
-                    _terrainFeatureField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _terrainFeatureField;
-
-        private IResourceSummaryDisplay YieldDisplay;
+        [SerializeField] private ResourceSummaryDisplay YieldDisplay;
 
         private IResourceGenerationLogic GenerationLogic;
 
@@ -67,12 +38,9 @@ namespace Assets.UI.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            [Inject(Id = "Tile Hover Yield Display")] IResourceSummaryDisplay yieldDisplay,
             IHexCellSignalLogic signalLogic, IResourceGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon
         ){
-            YieldDisplay = yieldDisplay;
-
             signalLogic.BeginHoverSignal.Subscribe(OnBeginHoverFired);
             signalLogic.EndHoverSignal.Subscribe(OnEndHoverFired);
 
@@ -81,8 +49,7 @@ namespace Assets.UI.HexMap {
         }
 
         private void OnBeginHoverFired(IHexCell hoveredTile) {
-            TerrainTypeField.text = hoveredTile.Terrain.ToString();
-            TerrainShapeField.text = hoveredTile.Shape.ToString();
+            TerrainTypeField   .text = hoveredTile.Terrain.ToString();
             TerrainFeatureField.text = hoveredTile.Feature.ToString();
 
             var cellOwner = CellPossessionCanon.GetOwnerOfPossession(hoveredTile);

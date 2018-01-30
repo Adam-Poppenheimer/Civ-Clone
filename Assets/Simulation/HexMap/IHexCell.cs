@@ -19,7 +19,6 @@ namespace Assets.Simulation.HexMap {
         Transform transform { get; }
 
         TerrainType    Terrain { get; set; }
-        TerrainShape   Shape   { get; set; }
         TerrainFeature Feature { get; set; }
 
         int Elevation { get; set; }
@@ -34,8 +33,6 @@ namespace Assets.Simulation.HexMap {
         float WaterSurfaceY { get; }
 
         bool IsUnderwater { get; }
-
-        Color Color { get; set; }
 
         IWorkerSlot WorkerSlot { get; }
 

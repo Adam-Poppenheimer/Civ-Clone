@@ -125,7 +125,7 @@ namespace Assets.Tests.Simulation.Technology {
             var techTwo   = BuildTech("Tech Two");
             var techThree = BuildTech("Tech Three");
 
-            var techFour = BuildTech("Tech Four", prerequisities: new List<ITechDefinition>() { techOne, techTwo });
+            BuildTech("Tech Four", prerequisities: new List<ITechDefinition>() { techOne, techTwo });
 
             var civ = BuildCivilization();
 

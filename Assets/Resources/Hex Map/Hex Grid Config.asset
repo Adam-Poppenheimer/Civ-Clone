@@ -12,50 +12,50 @@ MonoBehaviour:
   m_Name: Hex Grid Config
   m_EditorClassIdentifier: 
   _randomSeed: 2659
-  _colorOfTerrains:
-  - {r: 0.10437007, g: 0.8014706, b: 0.047145326, a: 1}
-  - {r: 1, g: 0.6827587, b: 0, a: 1}
-  - {r: 0.89705884, g: 0.878408, b: 0.626622, a: 1}
-  - {r: 0.5536332, g: 0.58823526, b: 0.55959904, a: 1}
-  - {r: 0.9411765, g: 0.9411765, b: 0.9411765, a: 1}
-  _terrainYields:
-  - Food: 2
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-  - Food: 1
-    Production: 1
-    Gold: 0
-    Culture: 0
-    Science: 0
-  - Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-  - Food: 1
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-  - Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-  _featureYields:
-  - Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-  - Food: 1
-    Production: 1
-    Gold: 0
-    Culture: 0
-    Science: 0
   _baseLandMoveCost: 1
-  _featureMoveCosts: ffffffff01000000
-  _waterMoveCost: 0
-  _slopeMoveCost: 0
+  _waterMoveCost: 1
+  _slopeMoveCost: 2
+  GrasslandYield:
+    Food: 2
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  PlainsYield:
+    Food: 1
+    Production: 1
+    Gold: 0
+    Culture: 0
+    Science: 0
+  DesertYield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  RockYield:
+    Food: 0
+    Production: 2
+    Gold: 0
+    Culture: 0
+    Science: 0
+  SnowYield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 1
+  NoFeatureYield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  ForestYield:
+    Food: 1
+    Production: 1
+    Gold: 0
+    Culture: 0
+    Science: 0
+  NoFeatureMoveCost: 0
+  ForestMoveCost: 1

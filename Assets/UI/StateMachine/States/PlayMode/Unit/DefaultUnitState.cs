@@ -296,10 +296,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void Clear() {
-            if(UnitToAttack != null) {
-                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
-            }
-
             OverlayManager.ClearAllOverlays();
             if(SelectedUnit != null) {
                 OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);

@@ -47,8 +47,6 @@ namespace Assets.UI.Cities {
 
         private ICombatExecuter CombatExecuter;
 
-        private UnitSignals UnitSignals;
-
         private UIStateMachineBrain Brain;
 
         private IPopulationGrowthLogic GrowthLogic;
@@ -66,16 +64,15 @@ namespace Assets.UI.Cities {
         [Inject]
         public void InjectDependencies(
             IHexGrid grid, ICityConfig config, IUnitPositionCanon unitPositionCanon,
-            ICombatExecuter combatExecuter, UnitSignals unitSignals,
-            UIStateMachineBrain brain, IPopulationGrowthLogic growthLogic,
-            IProductionLogic productionLogic, IResourceGenerationLogic resourceGenerationLogic,
+            ICombatExecuter combatExecuter, UIStateMachineBrain brain,
+            PopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
+            IResourceGenerationLogic resourceGenerationLogic,
             [Inject(Id = "UI Animator")] Animator uiAnimator
         ) {
             Grid                    = grid;
             Config                  = config;
             UnitPositionCanon       = unitPositionCanon;
             CombatExecuter          = combatExecuter;
-            UnitSignals             = unitSignals;
             Brain                   = brain;
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;

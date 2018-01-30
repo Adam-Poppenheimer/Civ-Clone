@@ -131,7 +131,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         public void ExecuteAbilityOnUnit_DealsWithOngoingAbility() {
             var ongoingAbilityMock = new Mock<IOngoingAbility>();
 
-            var handler = BuildMockHandler(true, ongoingAbilityMock.Object);
+            BuildMockHandler(true, ongoingAbilityMock.Object);
 
             var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
@@ -150,7 +150,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         [Test(Description = "When ExecuteAbilityOnUnit is called and reaches a valid handler, it should " +
             "fire UnitSignals.UnitActivatedAbilitySignal on the argued unit and ability")]
         public void ExecuteAbilityOnUnit_FiresSignal() {
-            var handler = BuildMockHandler(true, null);
+            BuildMockHandler(true, null);
 
             var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            
@@ -208,7 +208,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             var ongoingAbilityMock = new Mock<IOngoingAbility>();
             ongoingAbilityMock.Setup(ongoing => ongoing.IsReadyToTerminate()).Returns(true);
 
-            var handler = BuildMockHandler(true, ongoingAbilityMock.Object);
+            BuildMockHandler(true, ongoingAbilityMock.Object);
 
             var ability = new Mock<IAbilityDefinition>().Object;
             var unit = new Mock<IUnit>().Object;            

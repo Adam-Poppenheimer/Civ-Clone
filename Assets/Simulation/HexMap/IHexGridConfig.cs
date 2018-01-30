@@ -9,8 +9,6 @@ namespace Assets.Simulation.HexMap {
 
         int RandomSeed { get; }
 
-        ReadOnlyCollection<Color> ColorsOfTerrains { get; }
-
         ReadOnlyCollection<ResourceSummary> TerrainYields { get; }
 
         ReadOnlyCollection<ResourceSummary> FeatureYields { get; }

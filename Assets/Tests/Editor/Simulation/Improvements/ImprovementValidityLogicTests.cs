@@ -24,28 +24,28 @@ namespace Assets.Tests.Simulation.Improvements {
         private static IEnumerable ValidityTestCases {
             get {
                 yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
+                    TerrainType.Grassland, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland },
                     new List<TerrainFeature>() { TerrainFeature.None })
                 .SetName("All aspects are valid")
                 .Returns(true);
 
                 yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
+                    TerrainType.Grassland, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Plains },
                     new List<TerrainFeature>() { TerrainFeature.None })
                 .SetName("Only terrain is invalid")
                 .Returns(false);
 
                 yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
+                    TerrainType.Grassland, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland },
                     new List<TerrainFeature>() { TerrainFeature.Forest })
                 .SetName("Only feature is invalid")
                 .Returns(false);
 
                 yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None,
+                    TerrainType.Grassland, TerrainFeature.None,
                     new List<TerrainType>       () { TerrainType.Grassland, TerrainType.Plains },
                     new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.None })
                 .SetName("All aspects are valid, and template has options not represented by tile")
@@ -94,12 +94,12 @@ namespace Assets.Tests.Simulation.Improvements {
             "tile has a terrain type, shape, and feature that the template considers " +
             "valid and should return false otherwise")]
         [TestCaseSource("ValidityTestCases")]
-        public bool IsTemplateValidForTile_ConsidersTerrain_Shape_AndFeatures(
-            TerrainType tileTerrain, TerrainShape tileShape, TerrainFeature tileFeature,
+        public bool IsTemplateValidForTile_ConsidersTerrainAndFeatures(
+            TerrainType tileTerrain, TerrainFeature tileFeature,
             IEnumerable<TerrainType> validTerrains, IEnumerable<TerrainFeature> validFeatures
         ){
             var template = BuildTemplate(validTerrains, validFeatures);
-            var tile = BuildCell(tileTerrain, tileShape, tileFeature);            
+            var tile = BuildCell(tileTerrain, tileFeature);            
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
@@ -114,7 +114,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 new List<TerrainFeature>() { TerrainFeature.Forest }
             );
 
-            var tile = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.Forest);
+            var tile = BuildCell(TerrainType.Grassland, TerrainFeature.Forest);
 
             BuildCity(tile);
 
@@ -128,7 +128,7 @@ namespace Assets.Tests.Simulation.Improvements {
             "whenever passed a null argument")]
         public void IsTemplateValidForTile_ThrowsOnNullArguments() {
             var template = BuildTemplate(null, null);
-            var tile = BuildCell(TerrainType.Desert, TerrainShape.Flat, TerrainFeature.Forest);
+            var tile = BuildCell(TerrainType.Desert, TerrainFeature.Forest);
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
@@ -148,9 +148,9 @@ namespace Assets.Tests.Simulation.Improvements {
                 true
             );
 
-            var cellOne = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.Forest);
+            var cellOne = BuildCell(TerrainType.Grassland, TerrainFeature.Forest);
 
-            var cellTwo = BuildCell(TerrainType.Grassland, TerrainShape.Flat, TerrainFeature.None, 2);
+            var cellTwo = BuildCell(TerrainType.Grassland, TerrainFeature.None, 2);
 
             MockGrid.Setup(grid => grid.GetNeighbors(cellOne)).Returns(new List<IHexCell>() { cellTwo });
             MockGrid.Setup(grid => grid.GetNeighbors(cellTwo)).Returns(new List<IHexCell>() { cellOne });
@@ -172,14 +172,13 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region utilities
 
-        private IHexCell BuildCell(TerrainType terrain, TerrainShape shape, TerrainFeature feature, int elevation = 0) {
+        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, int elevation = 0) {
             var mockCell = new Mock<IHexCell>();
             mockCell.SetupAllProperties();
 
             var newcell = mockCell.Object;
 
             newcell.Terrain   = terrain;
-            newcell.Shape     = shape;
             newcell.Feature   = feature;
             newcell.Elevation = elevation;
 

@@ -26,13 +26,13 @@ namespace Assets.Tests.Simulation.HexMap {
                 yield return new TestCaseData(TerrainType.Grassland, TerrainFeature.None).Returns(TerrainYields[0]).SetName("Grassland/None");
                 yield return new TestCaseData(TerrainType.Plains,    TerrainFeature.None).Returns(TerrainYields[1]).SetName("Plans/None");
                 yield return new TestCaseData(TerrainType.Desert,    TerrainFeature.None).Returns(TerrainYields[2]).SetName("Desert/None");
-                yield return new TestCaseData(TerrainType.Tundra,    TerrainFeature.None).Returns(TerrainYields[3]).SetName("Tundra/None");
+                yield return new TestCaseData(TerrainType.Rock,    TerrainFeature.None).Returns(TerrainYields[3]).SetName("Tundra/None");
                 yield return new TestCaseData(TerrainType.Snow,      TerrainFeature.None).Returns(TerrainYields[4]).SetName("Snow/None");
 
                 yield return new TestCaseData(TerrainType.Grassland, TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Grassland/Forest");
                 yield return new TestCaseData(TerrainType.Plains,    TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Plans/Forest");
                 yield return new TestCaseData(TerrainType.Desert,    TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Desert/Forest");
-                yield return new TestCaseData(TerrainType.Tundra,    TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Tundra/Forest");
+                yield return new TestCaseData(TerrainType.Rock,    TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Tundra/Forest");
                 yield return new TestCaseData(TerrainType.Snow,      TerrainFeature.Forest).Returns(FeatureYields[1]).SetName("Snow/Forest");
             }
         }

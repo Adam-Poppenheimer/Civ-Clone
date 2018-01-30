@@ -19,6 +19,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private bool UseColors;
         [SerializeField] private bool UseUVCoordinates;
         [SerializeField] private bool UseUV2Coordinates;
+        [SerializeField] private bool UseTerrainTypes;
 
         private Mesh ManagedMesh;
         public MeshCollider Collider { get; private set; }
@@ -28,6 +29,7 @@ namespace Assets.Simulation.HexMap {
         [NonSerialized] private List<Color>   Colors;
         [NonSerialized] private List<Vector2> UVs;
         [NonSerialized] private List<Vector2> UV2s;
+        [NonSerialized] private List<Vector3> TerrainTypes;
 
         private INoiseGenerator NoiseGenerator;
 
@@ -69,6 +71,10 @@ namespace Assets.Simulation.HexMap {
             if(UseUV2Coordinates) {
                 UV2s = ListPool<Vector2>.Get();
             }
+
+            if(UseTerrainTypes) {
+                TerrainTypes = ListPool<Vector3>.Get();
+            }
         }
 
         public void Apply() {
@@ -91,6 +97,11 @@ namespace Assets.Simulation.HexMap {
             if(UseUV2Coordinates) {
                 ManagedMesh.SetUVs(1, UV2s);
                 ListPool<Vector2>.Add(UV2s);
+            }
+
+            if(UseTerrainTypes) {
+                ManagedMesh.SetUVs(2, TerrainTypes);
+                ListPool<Vector3>.Add(TerrainTypes);
             }
 
             ManagedMesh.RecalculateNormals();
@@ -228,6 +239,19 @@ namespace Assets.Simulation.HexMap {
             UV2s.Add(new Vector2(uMax, vMin));
             UV2s.Add(new Vector2(uMin, vMax));
             UV2s.Add(new Vector2(uMax, vMax));
+        }
+
+        public void AddTriangleTerrainTypes(Vector3 types) {
+            TerrainTypes.Add(types);
+            TerrainTypes.Add(types);
+            TerrainTypes.Add(types);
+        }
+
+        public void AddQuadTerrainTypes(Vector3 types) {
+            TerrainTypes.Add(types);
+            TerrainTypes.Add(types);
+            TerrainTypes.Add(types);
+            TerrainTypes.Add(types);
         }
 
         #endregion
