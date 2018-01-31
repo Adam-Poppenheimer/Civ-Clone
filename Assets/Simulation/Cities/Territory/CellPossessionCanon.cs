@@ -8,6 +8,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Civilizations;
 
 using UnityCustomUtilities.Extensions;
 
@@ -18,10 +19,18 @@ namespace Assets.Simulation.Cities.Territory {
     /// </summary>
     public class CellPossessionCanon : PossessionRelationship<ICity, IHexCell> {
 
+        #region instance fields and properties
+
+        private CitySignals CitySignals;
+
+        #endregion
+
         #region constructors
 
         [Inject]
-        public CellPossessionCanon(CitySignals citySignals) {
+        public CellPossessionCanon(CitySignals citySignals){
+            CitySignals = citySignals;
+
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
 
@@ -41,10 +50,18 @@ namespace Assets.Simulation.Cities.Territory {
         }
 
         protected override void DoOnPossessionBroken(IHexCell possession, ICity oldOwner) {
+            if(oldOwner != null) {
+                CitySignals.LostCellFromBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(oldOwner, possession));
+            }
+
             possession.Refresh();
         }
 
         protected override void DoOnPossessionEstablished(IHexCell possession, ICity newOwner) {
+            if(newOwner != null) {
+                CitySignals.GainedCellToBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(newOwner, possession));
+            }
+
             possession.Refresh();
         }
 

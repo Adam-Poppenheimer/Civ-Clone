@@ -30,6 +30,7 @@ namespace Assets.Simulation.HexMap {
             set {
                 _terrain = value;
                 workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
+                ShaderData.RefreshTerrain(this);
             }
         }
         [SerializeField] private TerrainType _terrain;
@@ -124,6 +125,10 @@ namespace Assets.Simulation.HexMap {
         public bool SuppressSlot { get; set; }
 
         public HexGridChunk Chunk { get; set; }
+
+        public HexCellShaderData ShaderData { get; set; }
+
+        public int Index { get; set; }
 
         public IHexCellOverlay Overlay {
             get { return overlay; }
@@ -229,6 +234,10 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshSelfOnly() {
             Chunk.Refresh();
+        }
+
+        public void RefreshVisibility() {
+            ShaderData.RefreshVisibility(this);
         }
 
         #endregion

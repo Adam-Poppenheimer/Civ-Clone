@@ -40,6 +40,8 @@ namespace Assets.Simulation.HexMap {
 
         HexGridChunk Chunk { get; }
 
+        int Index { get; }
+
         IHexCellOverlay Overlay { get; }
 
         #endregion
@@ -58,6 +60,8 @@ namespace Assets.Simulation.HexMap {
 
         void Refresh();
         void RefreshSelfOnly();
+
+        void RefreshVisibility();
 
         #endregion
 

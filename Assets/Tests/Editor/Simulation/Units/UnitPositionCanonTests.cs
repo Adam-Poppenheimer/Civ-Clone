@@ -172,7 +172,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
-            UnitSignals.UnitLocationChangedSignal.Subscribe(delegate(Tuple<IUnit, IHexCell> dataTuple) {
+            UnitSignals.EnteredLocationSignal.Subscribe(delegate(Tuple<IUnit, IHexCell> dataTuple) {
                 Assert.AreEqual(dataTuple.Item1, unit,     "UnitLocationChangedSignal was fired on an unexpected unit");
                 Assert.AreEqual(dataTuple.Item2, location, "UnitLocationChangedSignal was fired on an unexpected location");
 

@@ -157,7 +157,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
-            Container.Resolve<UnitSignals>().UnitActivatedAbilitySignal.Subscribe(delegate(Tuple<IUnit, IAbilityDefinition> dataTuple) {
+            Container.Resolve<UnitSignals>().ActivatedAbilitySignal.Subscribe(delegate(Tuple<IUnit, IAbilityDefinition> dataTuple) {
                 Assert.AreEqual(unit, dataTuple.Item1, "UnitActivatedAbilitySignal passed an unexpected unit");
                 Assert.AreEqual(ability, dataTuple.Item2, "UnitActivatedAbilitySignal passed an unexpected unit");
                 Assert.Pass();

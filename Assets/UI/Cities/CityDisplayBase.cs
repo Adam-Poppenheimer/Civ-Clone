@@ -24,7 +24,7 @@ namespace Assets.UI.Cities {
             get { return _slotClickedSignal; }
             set {
                 _slotClickedSignal = value;
-                _slotClickedSignal.Listen(OnDisplayClickedFired);
+                _slotClickedSignal.Listen(OnSlotDisplayClicked);
             }
         }
         private SlotDisplayClickedSignal _slotClickedSignal;
@@ -33,7 +33,15 @@ namespace Assets.UI.Cities {
 
         #region instance methods
 
-        private void OnDisplayClickedFired(IWorkerSlotDisplay slotDisplay) {
+        #region Unity messages
+
+        private void OnDestroy() {
+            SlotClickedSignal.Unlisten(OnSlotDisplayClicked);
+        }
+
+        #endregion
+
+        private void OnSlotDisplayClicked(IWorkerSlotDisplay slotDisplay) {
             Refresh();
         }
 

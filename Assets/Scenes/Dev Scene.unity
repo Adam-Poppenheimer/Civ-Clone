@@ -230,7 +230,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _chunkCountX: 4
   _chunkCountZ: 3
-  DefaultColor: {r: 1, g: 1, b: 1, a: 1}
   CellPrefab: {fileID: 114287632469189624, guid: 18e8accca100eb548bc4d8a368598c70,
     type: 2}
   ChunkPrefab: {fileID: 114137592705337108, guid: 3543181dd3150494d8af40abab06a3cd,
@@ -2550,7 +2549,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 112.5, y: -12.525}
+  m_AnchoredPosition: {x: 121.5, y: -12.525}
   m_SizeDelta: {x: 10, y: 25.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &138168844
@@ -6779,80 +6778,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 335787596}
---- !u!1 &343363784
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 343363785}
-  - component: {fileID: 343363787}
-  - component: {fileID: 343363786}
-  m_Layer: 5
-  m_Name: Terrain Shape Field
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &343363785
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 343363784}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 828148199}
-  m_RootOrder: 2
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 130.5, y: -12.525}
-  m_SizeDelta: {x: 10, y: 25.05}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &343363786
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 343363784}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: --
---- !u!222 &343363787
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 343363784}
 --- !u!1 &346815419
 GameObject:
   m_ObjectHideFlags: 0
@@ -10223,9 +10148,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 618bf2dc82ad6604ab229b75fd7d774b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _terrainTypeField: {fileID: 138168844}
-  _terrainShapeField: {fileID: 343363786}
-  _terrainFeatureField: {fileID: 703716734}
+  TerrainTypeField: {fileID: 138168844}
+  TerrainFeatureField: {fileID: 703716734}
+  YieldDisplay: {fileID: 385197837}
 --- !u!1 &529919041
 GameObject:
   m_ObjectHideFlags: 0
@@ -13312,11 +13237,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 828148199}
-  m_RootOrder: 3
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 139.5, y: -12.525}
+  m_AnchoredPosition: {x: 130.5, y: -12.525}
   m_SizeDelta: {x: 8, y: 25.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &696392562
@@ -13386,11 +13311,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 828148199}
-  m_RootOrder: 4
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 148.5, y: -12.525}
+  m_AnchoredPosition: {x: 139.5, y: -12.525}
   m_SizeDelta: {x: 10, y: 25.05}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &703716734
@@ -15004,80 +14929,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 792547957}
---- !u!1 &797014203
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 797014204}
-  - component: {fileID: 797014206}
-  - component: {fileID: 797014205}
-  m_Layer: 5
-  m_Name: Comma
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &797014204
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 797014203}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 828148199}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 1}
-  m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 121.5, y: -12.525}
-  m_SizeDelta: {x: 8, y: 25.05}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &797014205
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 797014203}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
-  m_RaycastTarget: 0
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
-      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
-  m_FontData:
-    m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 14
-    m_FontStyle: 0
-    m_BestFit: 0
-    m_MinSize: 10
-    m_MaxSize: 40
-    m_Alignment: 4
-    m_AlignByGeometry: 0
-    m_RichText: 1
-    m_HorizontalOverflow: 0
-    m_VerticalOverflow: 0
-    m_LineSpacing: 1
-  m_Text: ', '
---- !u!222 &797014206
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 797014203}
 --- !u!1 &802319634
 GameObject:
   m_ObjectHideFlags: 0
@@ -15367,8 +15218,6 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 138168843}
-  - {fileID: 797014204}
-  - {fileID: 343363785}
   - {fileID: 696392561}
   - {fileID: 703716733}
   m_Father: {fileID: 528707094}
@@ -29252,7 +29101,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitPrefab: {fileID: 1781144805398786, guid: 38125fef92767314ab8cd8b10d75f319, type: 2}
   LandTerrainTypes: 000000000100000002000000
-  ImpassableTerrainShapes: 02000000
 --- !u!1 &1564887612
 GameObject:
   m_ObjectHideFlags: 0

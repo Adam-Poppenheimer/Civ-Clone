@@ -111,6 +111,12 @@ namespace Assets.Simulation.Cities {
 
             newCity.CombatFacade = Container.Instantiate<CityCombatFacadeUnit>(new object[] { newCity });
 
+            if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
+                CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
+            }else {
+                throw new CityCreationException("Cannot assign the newly created city to its intended civilization");
+            }
+
             if(CellPossessionCanon.CanChangeOwnerOfPossession(location, newCity)) {
                 CellPossessionCanon.ChangeOwnerOfPossession(location, newCity);
             }else {
@@ -122,13 +128,6 @@ namespace Assets.Simulation.Cities {
                     CellPossessionCanon.ChangeOwnerOfPossession(neighbor, newCity);
                 }                
             }
-            
-            if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
-                CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
-            }else {
-                throw new CityCreationException("Cannot assign the newly created city to its intended civilization");
-            }
-            
 
             newCity.ResourceFocus = ResourceFocusType.TotalYield;
             newCity.PerformDistribution();

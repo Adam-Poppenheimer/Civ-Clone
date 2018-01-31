@@ -52,6 +52,10 @@ namespace Assets.Simulation.HexMap {
 
         private HexGridChunk[] Chunks;
 
+        private HexCellShaderData CellShaderData;
+
+
+
         private DiContainer Container;
 
         #endregion
@@ -69,8 +73,13 @@ namespace Assets.Simulation.HexMap {
             CellCountX = ChunkCountX * HexMetrics.ChunkSizeX;
             CellCountZ = ChunkCountZ * HexMetrics.ChunkSizeZ;
 
+            CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
+            CellShaderData.Initialize(CellCountX, CellCountZ);
+
             CreateChunks();
             CreateCells();
+
+            CellShaderData.enabled = true;
 
             ToggleUI(false);
         }
@@ -280,6 +289,8 @@ namespace Assets.Simulation.HexMap {
 
             newCell.transform.localPosition = position;
 
+            newCell.ShaderData  = CellShaderData;
+            newCell.Index       = i;
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             newCell.Terrain     = TerrainType.Grassland;
             newCell.Feature     = TerrainFeature.None;

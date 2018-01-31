@@ -30,7 +30,7 @@ namespace Assets.Simulation.HexMap {
                 return _terrainYields.AsReadOnly();
             }
         }
-        private List<ResourceSummary> _terrainYields;
+        [NonSerialized] private List<ResourceSummary> _terrainYields;
 
         public ReadOnlyCollection<ResourceSummary> FeatureYields {
             get {
@@ -42,7 +42,7 @@ namespace Assets.Simulation.HexMap {
                 return _featureYields.AsReadOnly();
             }
         }
-        private List<ResourceSummary> _featureYields;
+        [NonSerialized] private List<ResourceSummary> _featureYields;
 
         public int BaseLandMoveCost {
             get { return _baseLandMoveCost; }
@@ -59,7 +59,7 @@ namespace Assets.Simulation.HexMap {
                 return _featureMoveCosts.AsReadOnly();
             }
         }
-        private List<int> _featureMoveCosts;
+        [NonSerialized] private List<int> _featureMoveCosts;
 
         public int WaterMoveCost {
             get { return _waterMoveCost; }

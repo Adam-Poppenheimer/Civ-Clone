@@ -79,7 +79,7 @@ namespace Assets.Simulation.Units.Abilities {
                         results.NewAbilityActivated.BeginExecution();
                         ongoingAbilities.Add(results.NewAbilityActivated);
                     }
-                    Signals.UnitActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
+                    Signals.ActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
                     return;
                 }
             }

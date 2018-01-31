@@ -37,9 +37,9 @@ namespace Assets.UI.Units {
         #region Unity message methods
 
         public void OnEnable() {
-            UnitLocationChangedSubscription  = Signals.UnitLocationChangedSignal .Subscribe(OnUnitLocationChanged);
-            UnitActivatedAbilitySubscription = Signals.UnitActivatedAbilitySignal.Subscribe(OnUnitActivatedAbility);
-            CombatEventOccurredSubscription  = Signals.MeleeCombatWithUnitSignal .Subscribe(OnCombatEventOccurred);
+            UnitLocationChangedSubscription  = Signals.EnteredLocationSignal    .Subscribe(OnUnitEnteredLocation);
+            UnitActivatedAbilitySubscription = Signals.ActivatedAbilitySignal   .Subscribe(OnUnitActivatedAbility);
+            CombatEventOccurredSubscription  = Signals.MeleeCombatWithUnitSignal.Subscribe(OnCombatEventOccurred);
 
             DoOnEnable();
         }
@@ -57,7 +57,7 @@ namespace Assets.UI.Units {
 
         #endregion
 
-        private void OnUnitLocationChanged(Tuple<IUnit, IHexCell> dataTuple) {
+        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }

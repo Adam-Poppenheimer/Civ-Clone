@@ -30,14 +30,13 @@ namespace Assets.Simulation.HexMap {
 
             Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(config);
 
-            Container.Bind<ITileResourceLogic>().To<TileResourceLogic>().AsSingle();
-
             Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
             Container.Bind<int>()      .WithId("Random Seed") .FromInstance(config.RandomSeed);
 
-            Container.Bind<INoiseGenerator>().To<NoiseGenerator>().AsSingle();
-
-            Container.Bind<IRiverCanon>().To<RiverCanon>().AsSingle();
+            Container.Bind<ITileResourceLogic>  ().To<TileResourceLogic>  ().AsSingle();
+            Container.Bind<INoiseGenerator>     ().To<NoiseGenerator>     ().AsSingle();
+            Container.Bind<IRiverCanon>         ().To<RiverCanon>         ().AsSingle();
+            Container.Bind<ICellVisibilityCanon>().To<CellVisibilityCanon>().AsSingle();
 
             Container.DeclareSignal<CellClickedSignal>();
             Container.DeclareSignal<CellPointerEnterSignal>();

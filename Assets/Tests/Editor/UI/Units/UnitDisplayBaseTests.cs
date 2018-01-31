@@ -87,7 +87,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.ObjectToDisplay = unit;
             displayToTest.OnEnable();
 
-            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
+            UnitSignals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
 
             Assert.Fail("Refresh was never called");
         }
@@ -102,7 +102,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.RefreshFired += (sender, args) => Assert.Fail("DisplayToTest refreshed on an invalid signal");
             displayToTest.OnEnable();
 
-            UnitSignals.UnitLocationChangedSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
+            UnitSignals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(unit, newLocation));
         }
 
         [Test(Description = "When UnitSignals.UnitActivatedAbilitySignal is fired, UnitDisplayBase " +
@@ -117,7 +117,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.ObjectToDisplay = unit;
             displayToTest.OnEnable();
 
-            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
+            UnitSignals.ActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
 
             Assert.Fail("Refresh was never called");
         }
@@ -132,7 +132,7 @@ namespace Assets.Tests.UI.Units {
             displayToTest.RefreshFired += (sender, args) => Assert.Fail("DisplayToTest refreshed on an invalid signal");
             displayToTest.OnEnable();
 
-            UnitSignals.UnitActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
+            UnitSignals.ActivatedAbilitySignal.OnNext(new Tuple<IUnit, IAbilityDefinition>(unit, newAbility));
         }
 
         #endregion

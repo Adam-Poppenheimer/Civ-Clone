@@ -65,7 +65,7 @@ namespace Assets.UI.Cities {
         public void InjectDependencies(
             IHexGrid grid, ICityConfig config, IUnitPositionCanon unitPositionCanon,
             ICombatExecuter combatExecuter, UIStateMachineBrain brain,
-            PopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
+            IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
             IResourceGenerationLogic resourceGenerationLogic,
             [Inject(Id = "UI Animator")] Animator uiAnimator
         ) {

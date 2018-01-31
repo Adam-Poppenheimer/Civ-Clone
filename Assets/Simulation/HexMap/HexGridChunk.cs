@@ -18,9 +18,9 @@ namespace Assets.Simulation.HexMap {
 
         #region static fields and properties
 
-        private static Color Color1 = new Color(1f, 0f, 0f);
-        private static Color Color2 = new Color(0f, 1f, 0f);
-        private static Color Color3 = new Color(0f, 0f, 1f);
+        private static Color Weights1 = new Color(1f, 0f, 0f);
+        private static Color Weights2 = new Color(0f, 1f, 0f);
+        private static Color Weights3 = new Color(0f, 0f, 1f);
 
         #endregion
 
@@ -181,7 +181,7 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateWithoutRiver(
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices e
         ){
-            TriangulateEdgeFan(center, e, (int)cell.Terrain);
+            TriangulateEdgeFan(center, e, cell.Index);
 
             if(cell.HasRoads) {
                 Vector2 interpolators = GetRoadInterpolators(direction, cell);
@@ -190,7 +190,8 @@ namespace Assets.Simulation.HexMap {
                     center,
                     Vector3.Lerp(center, e.V1, interpolators.x),
                     Vector3.Lerp(center, e.V5, interpolators.y),
-                    e, cell.HasRoadThroughEdge(direction)
+                    e, cell.HasRoadThroughEdge(direction),
+                    cell.Index
                 );
             }
         }
@@ -234,30 +235,31 @@ namespace Assets.Simulation.HexMap {
 
             middle.V3.y = center.y = edge.V3.y;
 
-            TriangulateEdgeStrip(middle, Color1, (int)cell.Terrain, edge, Color1, (int)cell.Terrain);
+            TriangulateEdgeStrip(middle, Weights1, cell.Index, edge, Weights1, cell.Index);
 
             Terrain.AddTriangle(centerLeft, middle.V1, middle.V2);
             Terrain.AddQuad(centerLeft, center, middle.V2, middle.V3);
             Terrain.AddQuad(center, centerRight, middle.V3, middle.V4);
             Terrain.AddTriangle(centerRight, middle.V4, middle.V5);
 
-            Terrain.AddTriangleColor(Color1);
-            Terrain.AddQuadColor(Color1);
-            Terrain.AddQuadColor(Color1);
-            Terrain.AddTriangleColor(Color1);
-
-            Vector3 types;
-            types.x = types.y = types.z = (int)cell.Terrain;
-            Terrain.AddTriangleTerrainTypes(types);
-            Terrain.AddQuadTerrainTypes(types);
-            Terrain.AddQuadTerrainTypes(types);
-            Terrain.AddTriangleTerrainTypes(types);
+            Vector3 indices;
+            indices.x = indices.y = indices.z = cell.Index;
+            Terrain.AddTriangleCellData(indices, Weights1);
+            Terrain.AddQuadCellData(indices, Weights1);
+            Terrain.AddQuadCellData(indices, Weights1);
+            Terrain.AddTriangleCellData(indices, Weights1);
 
             if(!cell.IsUnderwater) {
                 bool isReversed = RiverCanon.GetIncomingRiver(cell) == direction;
 
-                TriangulateRiverQuad(centerLeft, centerRight, middle.V2, middle.V4, cell.RiverSurfaceY, 0.4f, isReversed);
-                TriangulateRiverQuad(middle.V2,  middle.V4,   edge.V2,   edge.V4,   cell.RiverSurfaceY, 0.6f, isReversed);
+                TriangulateRiverQuad(
+                    centerLeft, centerRight, middle.V2, middle.V4,
+                    cell.RiverSurfaceY, 0.4f, isReversed, indices
+                );
+                TriangulateRiverQuad(
+                    middle.V2,  middle.V4, edge.V2, edge.V4,
+                    cell.RiverSurfaceY, 0.6f, isReversed, indices
+                );
             }
         }
 
@@ -271,12 +273,19 @@ namespace Assets.Simulation.HexMap {
 
             middle.V3.y = e.V3.y;
 
-            TriangulateEdgeStrip(middle, Color1, (int)cell.Terrain, e, Color1, (int)cell.Terrain);
-            TriangulateEdgeFan(center, middle, (int)cell.Terrain);
+            TriangulateEdgeStrip(middle, Weights1, cell.Index, e, Weights1, cell.Index);
+            TriangulateEdgeFan(center, middle, cell.Index);
 
             if(!cell.IsUnderwater) {
                 bool reversed = RiverCanon.HasIncomingRiver(cell);
-                TriangulateRiverQuad(middle.V2, middle.V4, e.V2, e.V4, cell.RiverSurfaceY, 0.6f, reversed);
+
+                Vector3 indices;
+                indices.x = indices.y = indices.z = cell.Index;
+
+                TriangulateRiverQuad(
+                    middle.V2, middle.V4, e.V2, e.V4,
+                    cell.RiverSurfaceY, 0.6f, reversed, indices
+                );
 
                 center.y = middle.V2.y = middle.V4.y = cell.RiverSurfaceY;
                 Rivers.AddTriangle(center, middle.V2, middle.V4);
@@ -293,6 +302,8 @@ namespace Assets.Simulation.HexMap {
                         new Vector2(1f, 0.6f)
                     );
                 }
+
+                Rivers.AddTriangleCellData(indices, Weights1);
             }            
         }
 
@@ -323,8 +334,8 @@ namespace Assets.Simulation.HexMap {
                 Vector3.Lerp(center, e.V5, 0.5f)
             );
 
-            TriangulateEdgeStrip(middle, Color1, (int)cell.Terrain, e, Color1, (int)cell.Terrain);
-            TriangulateEdgeFan(center, middle, (int)cell.Terrain);
+            TriangulateEdgeStrip(middle, Weights1, cell.Index, e, Weights1, cell.Index);
+            TriangulateEdgeFan(center, middle, cell.Index);
         }
 
         private void TriangulateConnection(
@@ -347,25 +358,30 @@ namespace Assets.Simulation.HexMap {
             if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
                 edgeTwo.V3.y = neighbor.StreamBedY;
 
+                Vector3 indices;
+                indices.x = indices.z = cell.Index;
+                indices.y = neighbor.Index;
+
                 if(!cell.IsUnderwater) {
                     if(!neighbor.IsUnderwater) {
                         TriangulateRiverQuad(
                             edgeOne.V2, edgeOne.V4, edgeTwo.V2, edgeTwo.V4,
                             cell.RiverSurfaceY, neighbor.RiverSurfaceY, 0.8f,
-                            RiverCanon.HasIncomingRiver(cell) && RiverCanon.GetIncomingRiver(cell) == direction
+                            RiverCanon.HasIncomingRiver(cell) && RiverCanon.GetIncomingRiver(cell) == direction,
+                            indices
                         );
                     }else if(cell.Elevation > neighbor.WaterLevel){
                         TriangulateWaterfallInWater(
                             edgeOne.V2, edgeOne.V4, edgeTwo.V2, edgeTwo.V4,
                             cell.RiverSurfaceY, neighbor.RiverSurfaceY,
-                            neighbor.WaterSurfaceY
+                            neighbor.WaterSurfaceY, indices
                         );
                     }
                 }else if(!neighbor.IsUnderwater && neighbor.Elevation > cell.WaterLevel) {
                     TriangulateWaterfallInWater(
                         edgeTwo.V4, edgeTwo.V2, edgeOne.V4, edgeOne.V2,
                         neighbor.RiverSurfaceY, cell.RiverSurfaceY,
-                        cell.WaterSurfaceY
+                        cell.WaterSurfaceY, indices
                     );
                 }
             }
@@ -377,8 +393,8 @@ namespace Assets.Simulation.HexMap {
                 );
             }else {
                 TriangulateEdgeStrip(
-                    edgeOne, Color1, (int)cell.Terrain,
-                    edgeTwo, Color2, (int)neighbor.Terrain,
+                    edgeOne, Weights1, cell.Index,
+                    edgeTwo, Weights2, neighbor.Index,
                     cell.HasRoadThroughEdge(direction)
                 );
             }
@@ -412,69 +428,59 @@ namespace Assets.Simulation.HexMap {
             bool hasRoad
         ) {
             EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
-            Color c2 = HexMetrics.TerraceLerp(Color1, Color2, 1);
-            float t1 = (int)beginCell.Terrain;
-            float t2 = (int)endCell.Terrain;
+            Color w2 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
+            float i1 = beginCell.Index;
+            float i2 = endCell.Index;
 
-            TriangulateEdgeStrip(begin, Color1, t1, e2, c2, t2, hasRoad);
+            TriangulateEdgeStrip(begin, Weights1, i1, e2, w2, i2, hasRoad);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 EdgeVertices e1 = e2;
-                Color c1 = c2;
+                Color c1 = w2;
 
                 e2 = EdgeVertices.TerraceLerp(begin, end, i);
-                c2 = HexMetrics.TerraceLerp(Color1, Color2, i);
+                w2 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
 
-                TriangulateEdgeStrip(e1, c1, t1, e2, c2, t2, hasRoad);
+                TriangulateEdgeStrip(e1, c1, i1, e2, w2, i2, hasRoad);
             }
 
-            TriangulateEdgeStrip(e2, c2, t1, end, Color2, t2, hasRoad);
+            TriangulateEdgeStrip(e2, w2, i1, end, Weights2, i2, hasRoad);
         }
 
-        private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float type) {
+        private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index) {
             Terrain.AddTriangle(center, edge.V1, edge.V2);
             Terrain.AddTriangle(center, edge.V2, edge.V3);
             Terrain.AddTriangle(center, edge.V3, edge.V4);
             Terrain.AddTriangle(center, edge.V4, edge.V5);
 
-            Terrain.AddTriangleColor(Color1);
-            Terrain.AddTriangleColor(Color1);
-            Terrain.AddTriangleColor(Color1);
-            Terrain.AddTriangleColor(Color1);
-
-            Vector3 types;
-            types.x = types.y = types.z = type;
-            Terrain.AddTriangleTerrainTypes(types);
-            Terrain.AddTriangleTerrainTypes(types);
-            Terrain.AddTriangleTerrainTypes(types);
-            Terrain.AddTriangleTerrainTypes(types);
+            Vector3 indices;
+            indices.x = indices.y = indices.z = index;
+            Terrain.AddTriangleCellData(indices, Weights1);
+            Terrain.AddTriangleCellData(indices, Weights1);
+            Terrain.AddTriangleCellData(indices, Weights1);
+            Terrain.AddTriangleCellData(indices, Weights1);
         }
 
         private void TriangulateEdgeStrip(
-            EdgeVertices e1, Color c1, float typeOne,
-            EdgeVertices e2, Color c2, float typeTwo,
+            EdgeVertices e1, Color w1, float index1,
+            EdgeVertices e2, Color w2, float index2,
             bool hasRoad = false
         ) {
             Terrain.AddQuad(e1.V1, e1.V2, e2.V1, e2.V2);
             Terrain.AddQuad(e1.V2, e1.V3, e2.V2, e2.V3);
             Terrain.AddQuad(e1.V3, e1.V4, e2.V3, e2.V4);
-            Terrain.AddQuad(e1.V4, e1.V5, e2.V4, e2.V5);		    
+            Terrain.AddQuad(e1.V4, e1.V5, e2.V4, e2.V5);
 
-            Terrain.AddQuadColor(c1, c2);
-            Terrain.AddQuadColor(c1, c2);
-            Terrain.AddQuadColor(c1, c2);
-            Terrain.AddQuadColor(c1, c2);
-
-            Vector3 types;
-            types.x = types.z = typeOne;
-            types.y = typeTwo;
-            Terrain.AddQuadTerrainTypes(types);
-            Terrain.AddQuadTerrainTypes(types);
-            Terrain.AddQuadTerrainTypes(types);
-            Terrain.AddQuadTerrainTypes(types);
+            Vector3 indices;
+            indices.x = indices.z = index1;
+            indices.y = index2;
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
 
             if(hasRoad) {
-                TriangulateRoadSegment(e1.V2, e1.V3, e1.V4, e2.V2, e2.V3, e2.V4);
+                TriangulateRoadSegment(e1.V2, e1.V3, e1.V4, e2.V2, e2.V3, e2.V4, w1, w2, indices);
             }
         }
 
@@ -515,14 +521,13 @@ namespace Assets.Simulation.HexMap {
 
             }else {
                 Terrain.AddTriangle(bottom, left, right);
-                Terrain.AddTriangleColor(Color1, Color2, Color3);
 
-                Vector3 types;
-                types.x = (int)bottomCell.Terrain;
-                types.y = (int)leftCell  .Terrain;
-                types.z = (int)rightCell .Terrain;
+                Vector3 indices;
+                indices.x = bottomCell.Index;
+                indices.y = leftCell  .Index;
+                indices.z = rightCell .Index;
 
-                Terrain.AddTriangleTerrainTypes(types);
+                Terrain.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
             }            
         }
 
@@ -534,36 +539,34 @@ namespace Assets.Simulation.HexMap {
             Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
             Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
 
-            Color c3 = HexMetrics.TerraceLerp(Color1, Color2, 1);
-            Color c4 = HexMetrics.TerraceLerp(Color1, Color3, 1);
+            Color w3 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
+            Color w4 = HexMetrics.TerraceLerp(Weights1, Weights3, 1);
 
-            Vector3 types;
-            types.x = (int)beginCell.Terrain;
-            types.y = (int)leftCell.Terrain;
-            types.z = (int)rightCell.Terrain;
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
             Terrain.AddTriangle(begin, v3, v4);
-            Terrain.AddTriangleTerrainTypes(types);
+            Terrain.AddTriangleCellData(indices, Weights1, w3, w4);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v3;
                 Vector3 v2 = v4;
-                Color c1 = c3;
-                Color c2 = c4;
+                Color w1 = w3;
+                Color w2 = w4;
 
                 v3 = HexMetrics.TerraceLerp(begin, left, i);
                 v4 = HexMetrics.TerraceLerp(begin, right, i);
-                c3 = HexMetrics.TerraceLerp(Color1, Color2, i);
-                c4 = HexMetrics.TerraceLerp(Color1, Color3, i);
+                w3 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
+                w4 = HexMetrics.TerraceLerp(Weights1, Weights3, i);
 
                 Terrain.AddQuad(v1, v2, v3, v4);
-                Terrain.AddQuadColor(c1, c2, c3, c4);
-                Terrain.AddQuadTerrainTypes(types);
+                Terrain.AddQuadCellData(indices, w1, w2, w3, w4);
             }
 
             Terrain.AddQuad(v3, v4, left, right);
-            Terrain.AddQuadColor(c3, c4, Color2, Color3);
-            Terrain.AddQuadTerrainTypes(types);
+            Terrain.AddQuadCellData(indices, w3, w4, Weights2, Weights3);
         }
 
         private void TriangulateCornerTerracesCliff(
@@ -574,21 +577,20 @@ namespace Assets.Simulation.HexMap {
             float b = Mathf.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
 
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(right), b);
-            Color boundaryColor = Color.Lerp(Color1, Color3, b);
+            Color boundaryWeights = Color.Lerp(Weights1, Weights3, b);
 
-            Vector3 types;
-            types.x = (int)beginCell.Terrain;
-            types.y = (int)leftCell.Terrain;
-            types.z = (int)rightCell.Terrain;
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
-            TriangulateBoundaryTriangle(begin, Color1, left, Color2, boundary, boundaryColor, types);
+            TriangulateBoundaryTriangle(begin, Weights1, left, Weights2, boundary, boundaryWeights, indices);
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
-                TriangulateBoundaryTriangle(left, Color2, right, Color3, boundary, boundaryColor, types);
+                TriangulateBoundaryTriangle(left, Weights2, right, Weights3, boundary, boundaryWeights, indices);
             }else {
                 Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(left), NoiseGenerator.Perturb(right), boundary);
-                Terrain.AddTriangleColor(Color2, Color3, boundaryColor);
-                Terrain.AddTriangleTerrainTypes(types);
+                Terrain.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
@@ -599,62 +601,59 @@ namespace Assets.Simulation.HexMap {
         ){
             float b = Mathf.Abs(1f / (leftCell.Elevation - beginCell.Elevation));
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(left), b);
-            Color boundaryColor = Color.Lerp(Color1, Color2, b);
+            Color boundaryWeights = Color.Lerp(Weights1, Weights2, b);
 
-            Vector3 types;
-            types.x = (int)beginCell.Terrain;
-            types.y = (int)leftCell.Terrain;
-            types.z = (int)rightCell.Terrain;
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
 
-            TriangulateBoundaryTriangle(right, Color3, begin, Color1, boundary, boundaryColor, types);
+            TriangulateBoundaryTriangle(right, Weights3, begin, Weights1, boundary, boundaryWeights, indices);
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
-                TriangulateBoundaryTriangle(left, Color2, right, Color3, boundary, boundaryColor, types);
+                TriangulateBoundaryTriangle(left, Weights2, right, Weights3, boundary, boundaryWeights, indices);
             }else {
                 Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(left), NoiseGenerator.Perturb(right), boundary);
-                Terrain.AddTriangleColor(Color2, Color3, boundaryColor);
-                Terrain.AddTriangleTerrainTypes(types);
+                Terrain.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateBoundaryTriangle(
-            Vector3 begin, Color beginColor,
-            Vector3 left, Color leftColor,
-            Vector3 boundary, Color boundaryColor,
-            Vector3 types
+            Vector3 begin, Color beginWeights,
+            Vector3 left, Color leftWeights,
+            Vector3 boundary, Color boundaryWeights,
+            Vector3 indices
         ) {
             Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-            Color c2 = HexMetrics.TerraceLerp(beginColor, leftColor, 1);
+            Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
 
             Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(begin), v2, boundary);
-            Terrain.AddTriangleColor(beginColor, c2, boundaryColor);
-            Terrain.AddTriangleTerrainTypes(types);
+            Terrain.AddTriangleCellData(indices, beginWeights, w2, boundaryWeights);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v2;
-                Color c1 = c2;
+                Color w1 = w2;
                 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
-                c2 = HexMetrics.TerraceLerp(beginColor, leftColor, i);
+                w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
                 Terrain.AddTriangleUnperturbed(v1, v2, boundary);
-                Terrain.AddTriangleColor(c1, c2, boundaryColor);
-                Terrain.AddTriangleTerrainTypes(types);
+                Terrain.AddTriangleCellData(indices, w1, w2, boundaryWeights);
             }
 
             Terrain.AddTriangleUnperturbed(v2, NoiseGenerator.Perturb(left), boundary);
-            Terrain.AddTriangleColor(c2, leftColor, boundaryColor);
-            Terrain.AddTriangleTerrainTypes(types);
+            Terrain.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
         }
 
         private void TriangulateRiverQuad(
             Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
-            float y, float v, bool isReversed
+            float y, float v, bool isReversed, Vector3 indices
         ) {
-            TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, isReversed);
+            TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, isReversed, indices);
         }
 
         private void TriangulateRiverQuad(
             Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
-            float y1, float y2, float v, bool isReversed
+            float y1, float y2, float v, bool isReversed,
+            Vector3 indices
         ) {
             v1.y = v2.y = y1;
             v3.y = v4.y = y2;
@@ -665,26 +664,40 @@ namespace Assets.Simulation.HexMap {
             }else {
                 Rivers.AddQuadUV(0f, 1f,v, v + 0.2f);
             }
+
+            Rivers.AddQuadCellData(indices, Weights1, Weights2);
         }
 
         private void TriangulateRoadSegment(
             Vector3 v1, Vector3 v2, Vector3 v3,
-            Vector3 v4, Vector3 v5, Vector3 v6
+            Vector3 v4, Vector3 v5, Vector3 v6,
+            Color w1, Color w2, Vector3 indices
         ) {
             Roads.AddQuad(v1, v2, v4, v5);
             Roads.AddQuad(v2, v3, v5, v6);
+
             Roads.AddQuadUV(0f, 1f, 0f, 0f);
             Roads.AddQuadUV(1f, 0f, 0f, 0f);
+
+            Roads.AddQuadCellData(indices, w1, w2);
+            Roads.AddQuadCellData(indices, w1, w2);
         }
 
         private void TriangulateRoad(
             Vector3 center, Vector3 middleLeft, Vector3 middleRight, EdgeVertices e,
-            bool hasRoadThroughCellEdge
+            bool hasRoadThroughCellEdge, float index
         ) {
             if(hasRoadThroughCellEdge) {
                 Vector3 middleCenter = Vector3.Lerp(middleLeft, middleRight, 0.5f);
 
-                TriangulateRoadSegment(middleLeft, middleCenter, middleRight, e.V2, e.V3, e.V4);
+                Vector3 indices;
+                indices.x = indices.y = indices.z = index;
+
+                TriangulateRoadSegment(
+                    middleLeft, middleCenter, middleRight,
+                    e.V2, e.V3, e.V4,
+                    Weights1, Weights2, indices
+                );
 
                 Roads.AddTriangle(center, middleLeft, middleCenter);
                 Roads.AddTriangle(center, middleCenter, middleRight);
@@ -694,16 +707,23 @@ namespace Assets.Simulation.HexMap {
                 Roads.AddTriangleUV(
                     new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(0f, 0f)
                 );
+
+                Roads.AddTriangleCellData(indices, Weights1);
+                Roads.AddTriangleCellData(indices, Weights1);
             }else {
-                TriangulateRoadEdge(center, middleLeft, middleRight);
+                TriangulateRoadEdge(center, middleLeft, middleRight, index);
             }            
         }
 
-        private void TriangulateRoadEdge(Vector3 center, Vector3 middleLeft, Vector3 middleRight) {
+        private void TriangulateRoadEdge(Vector3 center, Vector3 middleLeft, Vector3 middleRight, float index) {
             Roads.AddTriangle(center, middleLeft, middleRight);
             Roads.AddTriangleUV(
                 new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f)
             );
+
+            Vector3 indices;
+            indices.x = indices.y = indices.z = index;
+            Roads.AddTriangleCellData(indices, Weights1);
         }
 
         private void TriangulateRoadsAdjacentToRiver(
@@ -779,13 +799,13 @@ namespace Assets.Simulation.HexMap {
 
             Vector3 middleLeft  = Vector3.Lerp(roadCenter, e.V1, interpolators.x);
             Vector3 middleRight = Vector3.Lerp(roadCenter, e.V5, interpolators.y);
-            TriangulateRoad(roadCenter, middleLeft, middleRight, e, hasRoadThroughEdge);
+            TriangulateRoad(roadCenter, middleLeft, middleRight, e, hasRoadThroughEdge, cell.Index);
 
             if(previousHasRiver) {
-                TriangulateRoadEdge(roadCenter, center, middleLeft);
+                TriangulateRoadEdge(roadCenter, center, middleLeft, cell.Index);
             }
             if(nextHasRiver) {
-                TriangulateRoadEdge(roadCenter, middleRight, center);
+                TriangulateRoadEdge(roadCenter, middleRight, center, cell.Index);
             }
         }
 
@@ -829,6 +849,14 @@ namespace Assets.Simulation.HexMap {
             Water.AddTriangle(center, edgeOne.V3, edgeOne.V4);
             Water.AddTriangle(center, edgeOne.V4, edgeOne.V5);
 
+            Vector3 indices;
+            indices.x = indices.z = cell.Index;
+            indices.y = neighbor.Index;
+            Water.AddTriangleCellData(indices, Weights1);
+            Water.AddTriangleCellData(indices, Weights1);
+            Water.AddTriangleCellData(indices, Weights1);
+            Water.AddTriangleCellData(indices, Weights1);
+
             Vector3 centerTwo = neighbor.transform.localPosition;
             centerTwo.y = center.y;
 
@@ -838,7 +866,7 @@ namespace Assets.Simulation.HexMap {
             );
 
             if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
-                TriangulateEstuary(edgeOne, edgeTwo, RiverCanon.GetIncomingRiver(cell) == direction);
+                TriangulateEstuary(edgeOne, edgeTwo, RiverCanon.GetIncomingRiver(cell) == direction, indices);
             }else {
                 WaterShore.AddQuad(edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2);
                 WaterShore.AddQuad(edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3);
@@ -849,6 +877,11 @@ namespace Assets.Simulation.HexMap {
                 WaterShore.AddQuadUV(0f, 0f, 0f, 1f);
                 WaterShore.AddQuadUV(0f, 0f, 0f, 1f);
                 WaterShore.AddQuadUV(0f, 0f, 0f, 1f);
+
+                WaterShore.AddQuadCellData(indices, Weights1, Weights2);
+                WaterShore.AddQuadCellData(indices, Weights1, Weights2);
+                WaterShore.AddQuadCellData(indices, Weights1, Weights2);
+                WaterShore.AddQuadCellData(indices, Weights1, Weights2);
             }
 
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
@@ -867,6 +900,9 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(0f, 1f),
                     new Vector2(0f, nextNeighbor.IsUnderwater ? 0f : 1f)
                 );
+
+                indices.z = nextNeighbor.Index;
+                WaterShore.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
             }
         }
 
@@ -878,12 +914,19 @@ namespace Assets.Simulation.HexMap {
 
             Water.AddTriangle(center, c1, c2);
 
+            Vector3 indices;
+            indices.x = indices.y = indices.z = cell.Index;
+            Water.AddTriangleCellData(indices, Weights1);
+
             if(direction <= HexDirection.SE && neighbor != null) {
                 Vector3 bridge = HexMetrics.GetWaterBridge(direction);
                 Vector3 e1 = c1 + bridge;
                 Vector3 e2 = c2 + bridge;
 
                 Water.AddQuad(c1, c2, e1, e2);
+
+                indices.y = neighbor.Index;
+                Water.AddQuadCellData(indices, Weights1, Weights2);
 
                 if(direction <= HexDirection.E && Grid.HasNeighbor(cell, direction.Next())) {
                     var nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
@@ -892,13 +935,16 @@ namespace Assets.Simulation.HexMap {
                     }
 
                     Water.AddTriangle(c2, e2, c2 + HexMetrics.GetWaterBridge(direction.Next()));
+
+                    indices.z = nextNeighbor.Index;
+                    Water.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
                 }
             }
         }
 
         private void TriangulateWaterfallInWater(
             Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
-            float y1, float y2, float waterY
+            float y1, float y2, float waterY, Vector3 indices
         ) {
             v1.y = v2.y = y1;
             v3.y = v4.y = y2;
@@ -914,9 +960,14 @@ namespace Assets.Simulation.HexMap {
 
             Rivers.AddQuadUnperturbed(v1, v2, v3, v4);
             Rivers.AddQuadUV(0f, 1f, 0.8f, 1f);
+
+            Rivers.AddQuadCellData(indices, Weights1, Weights2);
         }
 
-        private void TriangulateEstuary(EdgeVertices edgeOne, EdgeVertices edgeTwo, bool incomingRiver) {
+        private void TriangulateEstuary(
+            EdgeVertices edgeOne, EdgeVertices edgeTwo,
+            bool incomingRiver, Vector3 indices
+        ) {
             WaterShore.AddTriangle(edgeTwo.V1, edgeOne.V2, edgeOne.V1);
             WaterShore.AddTriangle(edgeTwo.V5, edgeOne.V5, edgeOne.V4);
 
@@ -927,9 +978,12 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, 1f), new Vector2(0f, 0f), new Vector2(0f, 0f)
             );
 
-            Estuaries.AddQuad(edgeTwo.V1, edgeOne.V2, edgeTwo.V2, edgeOne.V3);
+            WaterShore.AddTriangleCellData(indices, Weights2, Weights1, Weights1);
+            WaterShore.AddTriangleCellData(indices, Weights2, Weights1, Weights1);
+
+            Estuaries.AddQuad    (edgeTwo.V1, edgeOne.V2, edgeTwo.V2, edgeOne.V3);
             Estuaries.AddTriangle(edgeOne.V3, edgeTwo.V2, edgeTwo.V4);
-            Estuaries.AddQuad(edgeOne.V3, edgeOne.V4, edgeTwo.V4, edgeTwo.V5);
+            Estuaries.AddQuad    (edgeOne.V3, edgeOne.V4, edgeTwo.V4, edgeTwo.V5);
 
             Estuaries.AddQuadUV(
                 new Vector2(0f, 1f), new Vector2(0f, 0f),
@@ -942,6 +996,10 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, 0f), new Vector2(0f, 0f),
                 new Vector2(1f, 1f), new Vector2(0f, 1f)
             );
+
+            Estuaries.AddQuadCellData    (indices, Weights2, Weights1, Weights2, Weights1);
+            Estuaries.AddTriangleCellData(indices, Weights1, Weights2, Weights2);
+            Estuaries.AddQuadCellData    (indices, Weights1, Weights2);
 
             if(incomingRiver) {
                 Estuaries.AddQuadUV2(
@@ -1012,6 +1070,13 @@ namespace Assets.Simulation.HexMap {
                     edgeOne, cell, edgeTwo, neighbor, owner
                 );
             }else {
+                TriangulateCultureEdgeStrip(
+                    edgeOne, Weights1, cell.Index, 
+                    edgeTwo, Weights2, neighbor.Index,
+                    owner, 0f, 1f
+                );
+
+                /*
                 Culture.AddQuad(edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2);
 		        Culture.AddQuad(edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3);
 		        Culture.AddQuad(edgeOne.V3, edgeOne.V4, edgeTwo.V3, edgeTwo.V4);
@@ -1026,6 +1091,9 @@ namespace Assets.Simulation.HexMap {
                 Culture.AddQuadUV(0f, 0f, 0f, 1f);
                 Culture.AddQuadUV(0f, 0f, 0f, 1f);
                 Culture.AddQuadUV(0f, 0f, 0f, 1f);
+
+                Culture.AddQuadCellData();
+                */
             }
 
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
@@ -1063,41 +1131,55 @@ namespace Assets.Simulation.HexMap {
         ) {
             EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
             float uv2 = HexMetrics.TerraceLerp(0f, 1f, 1);
+            Color w2 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
+            float i1 = beginCell.Index;
+            float i2 = endCell.Index;
 
-            TriangulateCultureEdgeStrip(begin, e2, owner, 0f, uv2);
+            TriangulateCultureEdgeStrip(begin, Weights1, i1, e2, w2, i2, owner, 0f, uv2);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 EdgeVertices e1 = e2;
                 float uv1 = uv2;
+                Color w1 = w2;
 
                 e2 = EdgeVertices.TerraceLerp(begin, end, i);
                 uv2 = HexMetrics.TerraceLerp(0f, 1f, i);
+                w2 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
 
-                TriangulateCultureEdgeStrip(e1, e2, owner, uv1, uv2);
+                TriangulateCultureEdgeStrip(e1, w1, i1, e2, w2, i2, owner, uv1, uv2);
             }
 
-            TriangulateCultureEdgeStrip(e2, end, owner, uv2, 1f);
+            TriangulateCultureEdgeStrip(e2, w2, i1, end, Weights2, i2, owner, uv2, 1f);
         }
 
         private void TriangulateCultureEdgeStrip(
-            EdgeVertices edgeOne, EdgeVertices edgeTwo,
+            EdgeVertices edgeOne, Color w1, float index1,
+            EdgeVertices edgeTwo, Color w2, float index2,
             ICivilization owner, float vMin, float vMax
         ) {
             Culture.AddQuad(edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2);
-            Culture.AddQuadColor(owner.Color);
-            Culture.AddQuadUV(0f, 0f, vMin, vMax);
-
-		    Culture.AddQuad(edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3);
-		    Culture.AddQuadColor(owner.Color);
-            Culture.AddQuadUV(0f, 0f, vMin, vMax);
-
+            Culture.AddQuad(edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3);
             Culture.AddQuad(edgeOne.V3, edgeOne.V4, edgeTwo.V3, edgeTwo.V4);
-		    Culture.AddQuadColor(owner.Color);
+            Culture.AddQuad(edgeOne.V4, edgeOne.V5, edgeTwo.V4, edgeTwo.V5);
+
+            Culture.AddQuadColor(owner.Color);
+            Culture.AddQuadColor(owner.Color);
+            Culture.AddQuadColor(owner.Color);
+            Culture.AddQuadColor(owner.Color);
+
+            Culture.AddQuadUV(0f, 0f, vMin, vMax);
+            Culture.AddQuadUV(0f, 0f, vMin, vMax);
+            Culture.AddQuadUV(0f, 0f, vMin, vMax);
             Culture.AddQuadUV(0f, 0f, vMin, vMax);
 
-		    Culture.AddQuad(edgeOne.V4, edgeOne.V5, edgeTwo.V4, edgeTwo.V5);
-		    Culture.AddQuadColor(owner.Color);
-            Culture.AddQuadUV(0f, 0f, vMin, vMax);
+            Vector3 indices;
+            indices.x = indices.z = index1;
+            indices.y = index2;
+
+            Culture.AddQuadCellData(indices, w1, w2);
+            Culture.AddQuadCellData(indices, w1, w2);
+            Culture.AddQuadCellData(indices, w1, w2);
+            Culture.AddQuadCellData(indices, w1, w2);
         }
 
         private void TriangulateCultureCorner(
@@ -1159,6 +1241,14 @@ namespace Assets.Simulation.HexMap {
             float uv3 = HexMetrics.TerraceLerp(uvMin, leftUVMax, 1);
             float uv4 = HexMetrics.TerraceLerp(uvMin, rightUVMax, 1);
 
+            Color w3 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
+            Color w4 = HexMetrics.TerraceLerp(Weights1, Weights3, 1);
+
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
+
             Culture.AddTriangle(begin, v3, v4);
             Culture.AddTriangleColor(owner.Color);
             Culture.AddTriangleUV(
@@ -1167,16 +1257,22 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, uv4)
             );
 
+            Culture.AddTriangleCellData(indices, Weights1, w3, w4);
+
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v3;
                 Vector3 v2 = v4;
                 float uv1 = uv3;
                 float uv2 = uv4;
+                Color w1 = w3;
+                Color w2 = w4;
 
                 v3 = HexMetrics.TerraceLerp(begin, left, i);
                 v4 = HexMetrics.TerraceLerp(begin, right, i);
                 uv3 = HexMetrics.TerraceLerp(uvMin, leftUVMax, i);
                 uv4 = HexMetrics.TerraceLerp(uvMin, rightUVMax, i);
+                w3 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
+                w4 = HexMetrics.TerraceLerp(Weights1, Weights3, i);
 
                 Culture.AddQuad(v1, v2, v3, v4);
                 Culture.AddQuadColor(owner.Color);
@@ -1184,6 +1280,8 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(0f, uv1), new Vector2(0f, uv2),
                     new Vector2(0f, uv3), new Vector2(0f, uv4)
                 );
+
+                Culture.AddQuadCellData(indices, w1, w2, w3, w4);
             }
 
             Culture.AddQuad(v3, v4, left, right);
@@ -1192,6 +1290,7 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, uv3), new Vector2(0f, uv4),
                 new Vector2(0f, leftUVMax), new Vector2(0f, rightUVMax)
             );
+            Culture.AddQuadCellData(indices, w3, w4, Weights2, Weights3);
         }
 
         private bool IsOwnedByCivilization(IHexCell cell, ICivilization civilization) {
@@ -1216,18 +1315,26 @@ namespace Assets.Simulation.HexMap {
 
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(right), b);
 
+            Color boundaryWeights = Color.Lerp(Weights1, Weights3, b);
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell .Index;
+            indices.z = rightCell.Index;
+
             TriangulateCultureBoundaryTriangle(
-                begin, beginCell, uvMin,
-                left, leftCell, leftUVMax,
+                begin, beginCell, uvMin,     Weights1,
+                left, leftCell,   leftUVMax, Weights2,
                 boundary, boundaryUV,
+                boundaryWeights, indices,
                 owner
             );
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
-                    left, leftCell, leftUVMax,
-                    right, rightCell, rightUVMax,
+                    left,  leftCell,  leftUVMax,  Weights2,
+                    right, rightCell, rightUVMax, Weights3,
                     boundary, boundaryUV,
+                    boundaryWeights, indices,
                     owner
                 );
             }else {
@@ -1238,6 +1345,8 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(0f, rightUVMax),
                     new Vector2(0f, boundaryUV)
                 );
+
+                Culture.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
@@ -1258,18 +1367,26 @@ namespace Assets.Simulation.HexMap {
 
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(left), b);
 
+            Color boundaryWeights = Color.Lerp(Weights1, Weights2, b);
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
+
             TriangulateCultureBoundaryTriangle(
-                right, rightCell, rightUVMax,
-                begin, beginCell, uvMin,
+                right, rightCell, rightUVMax, Weights3,
+                begin, beginCell, uvMin,      Weights1,
                 boundary, boundaryUV,
+                boundaryWeights, indices,
                 owner
             );
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
-                    left, leftCell, leftUVMax,
-                    right, rightCell, rightUVMax,
+                    left,  leftCell,  leftUVMax,  Weights2,
+                    right, rightCell, rightUVMax, Weights3,
                     boundary, boundaryUV,
+                    boundaryWeights, indices,
                     owner
                 );
             }else {
@@ -1280,17 +1397,20 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(0f, rightUVMax),
                     new Vector2(0f, boundaryUV)
                 );
+                Culture.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateCultureBoundaryTriangle(
-            Vector3 begin, IHexCell beginCell, float beginUV,
-            Vector3 left, IHexCell leftCell, float leftUV,
-            Vector3 boundary, float boundaryUV,
+            Vector3 begin, IHexCell beginCell, float beginUV, Color beginWeights,
+            Vector3 left,  IHexCell leftCell,  float leftUV,  Color leftWeights,
+            Vector3 boundary, float boundaryUV, Color boundaryWeights,
+            Vector3 indices,
             ICivilization owner
         ) {
             Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
             float uv2 = HexMetrics.TerraceLerp(beginUV, leftUV, 1);
+            Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
 
             Culture.AddTriangleUnperturbed(NoiseGenerator.Perturb(begin), v2, boundary);
             Culture.AddTriangleColor(owner.Color);
@@ -1299,13 +1419,16 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, uv2),
                 new Vector2(0f, boundaryUV)
             );
+            Culture.AddTriangleCellData(indices, beginWeights, w2, boundaryWeights);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v2;
                 float uv1 = uv2;
+                Color w1 = w2;
 
                 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
                 uv2 = HexMetrics.TerraceLerp(beginUV, leftUV, i);
+                w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
 
                 Culture.AddTriangleUnperturbed(v1, v2, boundary);
                 Culture.AddTriangleColor(owner.Color);
@@ -1314,6 +1437,7 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(0f, uv2),
                     new Vector2(0f, boundaryUV)
                 );
+                Culture.AddTriangleCellData(indices, w1, w2, boundaryWeights);
             }
 
             Culture.AddTriangleUnperturbed(v2, NoiseGenerator.Perturb(left), boundary);
@@ -1323,6 +1447,7 @@ namespace Assets.Simulation.HexMap {
                 new Vector2(0f, leftUV),
                 new Vector2(0f, boundaryUV)
             );
+            Culture.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
         }
 
         private void TriangulateCultureCornerSimple(
@@ -1343,6 +1468,12 @@ namespace Assets.Simulation.HexMap {
             Culture.AddTriangleUV(
                 new Vector2(0f, uvMin), new Vector2(0f, leftUVMax), new Vector2(0f, rightUVMax)
             );
+
+            Vector3 indices;
+            indices.x = beginCell.Index;
+            indices.y = leftCell.Index;
+            indices.z = rightCell.Index;
+            Culture.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
         }
 
         private void CalculateCultureUVs(

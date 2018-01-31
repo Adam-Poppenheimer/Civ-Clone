@@ -8,6 +8,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -25,8 +26,8 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals){
-            CityFactory             = cityFactory;
-            Signals                 = signals;
+            CityFactory         = cityFactory;
+            Signals             = signals;
 
             Signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
@@ -43,18 +44,23 @@ namespace Assets.Simulation.Units {
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
             possession.gameObject.transform.SetParent(null, false);
+
+            Signals.LeftLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, oldOwner));
         }
 
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
             possession.gameObject.transform.SetParent(newOwner != null ? newOwner.transform : null, false);
 
             if(newOwner != null && newOwner.IsUnderwater) {
-                var unitLocation = possession.gameObject.transform.localPosition;
-                unitLocation.y = newOwner.WaterSurfaceY;
-                possession.gameObject.transform.localPosition = unitLocation;
+
+                if(newOwner.IsUnderwater) {
+                    var unitLocation = possession.gameObject.transform.localPosition;
+                    unitLocation.y = newOwner.WaterSurfaceY;
+                    possession.gameObject.transform.localPosition = unitLocation;
+                }
             }
 
-            Signals.UnitLocationChangedSignal.OnNext(new UniRx.Tuple<IUnit, IHexCell>(possession, newOwner));
+            Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }
 
         #endregion

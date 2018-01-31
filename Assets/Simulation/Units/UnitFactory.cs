@@ -77,16 +77,16 @@ namespace Assets.Simulation.Units {
 
             newUnit.CurrentMovement = template.MaxMovement;
 
-            if(UnitPositionCanon.CanChangeOwnerOfPossession(newUnit, location)) {
-                UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
-            }else {
-                throw new UnitCreationException("The newly created unit cannot be placed at its location");
-            }
-            
             if(UnitPossessionCanon.CanChangeOwnerOfPossession(newUnit, owner)) {
                 UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);
             }else {
                 throw new UnitCreationException("The newly created unit cannot be assigned to its owner");
+            }
+
+            if(UnitPositionCanon.CanChangeOwnerOfPossession(newUnit, location)) {
+                UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
+            }else {
+                throw new UnitCreationException("The newly created unit cannot be placed at its location");
             }
             
             var meshRenderer = newUnit.GetComponentInChildren<MeshRenderer>();

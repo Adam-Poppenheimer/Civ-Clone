@@ -43,6 +43,8 @@ namespace Assets.Simulation.Civilizations {
                      .AsSingle();
 
             Container.Bind<ICivilizationYieldLogic>().To<CivilizationYieldLogic>().AsSingle();
+
+            Container.Bind<VisibilityResponder>().AsSingle().NonLazy();
         }
 
         #endregion

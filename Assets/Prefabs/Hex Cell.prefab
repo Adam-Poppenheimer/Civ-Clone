@@ -257,7 +257,6 @@ MonoBehaviour:
     _x: 0
     _z: 0
   _terrain: 0
-  _shape: 0
   _feature: 0
   _elevation: 0
   overlay: {fileID: 114687170947816028}
