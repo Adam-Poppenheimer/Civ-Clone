@@ -88,7 +88,7 @@ namespace Assets.Tests.UI.Cities {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<TurnBeganSignal>();
+            Container.Bind<CoreSignals>().AsSingle();
             Container.DeclareSignal<SlotDisplayClickedSignal>();
 
             Container.Bind<CityExpansionDisplay>().FromNewComponentOnNewGameObject().AsSingle();

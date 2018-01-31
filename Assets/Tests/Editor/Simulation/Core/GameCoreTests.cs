@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation.Core;
 
@@ -27,7 +28,7 @@ namespace Assets.Tests.Simulation.Core {
         private Mock<ICivilizationFactory> CivilizationFactoryMock;
         private Mock<IUnitFactory>         UnitFactoryMock;
 
-        private Mock<ITurnExecuter> TurnExecuterMock;
+        private Mock<IRoundExecuter> TurnExecuterMock;
 
         private Mock<IAbilityExecuter> MockAbilityExecuter;
 
@@ -39,7 +40,7 @@ namespace Assets.Tests.Simulation.Core {
 
         [SetUp]
         public void CommonInstall() {
-            TurnExecuterMock = new Mock<ITurnExecuter>();
+            TurnExecuterMock = new Mock<IRoundExecuter>();
 
             CityFactoryMock = new Mock<ICityFactory>();
             CityFactoryMock.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
@@ -57,12 +58,9 @@ namespace Assets.Tests.Simulation.Core {
             Container.Bind<IUnitFactory>        ().FromInstance(UnitFactoryMock        .Object);
             Container.Bind<IAbilityExecuter>().FromInstance(MockAbilityExecuter    .Object);
 
-            Container.Bind<ITurnExecuter>().FromInstance(TurnExecuterMock.Object);
+            Container.Bind<IRoundExecuter>().FromInstance(TurnExecuterMock.Object);
 
-            Container.Bind<SignalManager>().AsSingle();
-
-            Container.DeclareSignal<TurnBeganSignal>();
-            Container.DeclareSignal<TurnEndedSignal>();
+            Container.Bind<CoreSignals>().AsSingle();
 
             Container.Bind<PlayerSignals>().AsSingle();
 
@@ -91,7 +89,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.BeginRound();
 
             foreach(var city in allCities) {
-                TurnExecuterMock.Verify(executer => executer.BeginTurnOnCity(city),
+                TurnExecuterMock.Verify(executer => executer.BeginRoundOnCity(city),
                     "TurnExecuter was not called to begin a city's turn");
             }
         }
@@ -114,7 +112,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.BeginRound();
 
             foreach(var civilization in allCivilizations) {
-                TurnExecuterMock.Verify(executer => executer.BeginTurnOnCivilization(civilization),
+                TurnExecuterMock.Verify(executer => executer.BeginRoundOnCivilization(civilization),
                     "TurnExecuter was not called to begin a civilization's turn");
             }
         }
@@ -135,7 +133,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.BeginRound();
 
             foreach(var unit in allUnits) {
-                TurnExecuterMock.Verify(executer => executer.BeginTurnOnUnit(unit),
+                TurnExecuterMock.Verify(executer => executer.BeginRoundOnUnit(unit),
                     "TurnExecuter was not called to begin a unit's turn");
             }
         }
@@ -153,9 +151,9 @@ namespace Assets.Tests.Simulation.Core {
 
             var executionSequence = new MockSequence();
 
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCity        (city));
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCivilization(civilization));
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnUnit        (unit));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity        (city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCivilization(civilization));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnUnit        (unit));
 
             var gameCore = Container.Resolve<GameCore>();
             gameCore.BeginRound();
@@ -164,12 +162,12 @@ namespace Assets.Tests.Simulation.Core {
         }
 
         [Test(Description = "When BeginRound is called, after all objects have been passed " +
-            "to TurnExecuter, GameCore should fire TurnBeganSignal")]
-        public void BeginRound_FiresTurnBeganSignal() {
+            "to TurnExecuter, GameCore should fire RoundBeganSignal")]
+        public void BeginRound_FiresRoundBeganSignal() {
             var gameCore = Container.Resolve<GameCore>();
 
-            var beganSignal = Container.Resolve<TurnBeganSignal>();
-            beganSignal.Listen(turn => Assert.Pass());
+            var coreSignals = Container.Resolve<CoreSignals>();
+            coreSignals.RoundBeganSignal.Subscribe(turn => Assert.Pass());
 
             gameCore.BeginRound();
             Assert.Fail("TurnBeganSignal was never fired");
@@ -193,7 +191,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.EndRound();
 
             foreach(var city in allCities) {
-                TurnExecuterMock.Verify(executer => executer.EndTurnOnCity(city),
+                TurnExecuterMock.Verify(executer => executer.EndRoundOnCity(city),
                     "TurnExecuter was not called to end a city's turn");
             }
         }
@@ -216,7 +214,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.EndRound();
 
             foreach(var civilization in allCivilizations) {
-                TurnExecuterMock.Verify(executer => executer.EndTurnOnCivilization(civilization),
+                TurnExecuterMock.Verify(executer => executer.EndRoundOnCivilization(civilization),
                     "TurnExecuter was not called to end a civilization's turn");
             }
         }
@@ -237,7 +235,7 @@ namespace Assets.Tests.Simulation.Core {
             gameCore.EndRound();
 
             foreach(var unit in allUnits) {
-                TurnExecuterMock.Verify(executer => executer.EndTurnOnUnit(unit),
+                TurnExecuterMock.Verify(executer => executer.EndRoundOnUnit(unit),
                     "TurnExecuter was not called to begin a unit's turn");
             }
         }
@@ -255,9 +253,9 @@ namespace Assets.Tests.Simulation.Core {
 
             var executionSequence = new MockSequence();
 
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity        (city));
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCivilization(civilization));
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnUnit        (unit));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity        (city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCivilization(civilization));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndRoundOnUnit        (unit));
 
             MockAbilityExecuter.InSequence(executionSequence).Setup(executer => executer.PerformOngoingAbilities());
 
@@ -272,8 +270,8 @@ namespace Assets.Tests.Simulation.Core {
         public void EndRound_FiresRoundEndedSignal() {
             var gameCore = Container.Resolve<GameCore>();
 
-            var endedSignal = Container.Resolve<TurnEndedSignal>();
-            endedSignal.Listen(turn => Assert.Pass());
+            var coreSignals = Container.Resolve<CoreSignals>();
+            coreSignals.RoundEndedSignal.Subscribe(turn => Assert.Pass());
 
             gameCore.EndRound();
             Assert.Fail("TurnEndedSignal was never fired");
@@ -291,8 +289,8 @@ namespace Assets.Tests.Simulation.Core {
             Container.Resolve<GameCore>();
 
             var executionSequence = new MockSequence();
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndTurnOnCity(city));
-            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginTurnOnCity(city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity(city));
+            TurnExecuterMock.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity(city));
 
             playerSignals.EndTurnRequestedSignal.OnNext(UniRx.Unit.Default);
 

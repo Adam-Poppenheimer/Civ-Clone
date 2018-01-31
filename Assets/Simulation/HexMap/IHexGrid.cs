@@ -12,7 +12,7 @@ namespace Assets.Simulation.HexMap {
 
         #region properties
 
-        ReadOnlyCollection<IHexCell> Tiles { get; }
+        ReadOnlyCollection<IHexCell> AllCells { get; }
 
         int ChunkCountX { get; }
         int ChunkCountZ { get; }

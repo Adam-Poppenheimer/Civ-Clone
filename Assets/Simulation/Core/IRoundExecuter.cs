@@ -10,7 +10,7 @@ namespace Assets.Simulation.Core {
     /// Performs the tasks that must occur at the beginning and end of turns 
     /// for various classes.
     /// </summary>
-    public interface ITurnExecuter {
+    public interface IRoundExecuter {
 
         #region methods
 
@@ -18,37 +18,37 @@ namespace Assets.Simulation.Core {
         /// 
         /// </summary>
         /// <param name="city"></param>
-        void BeginTurnOnCity(ICity city);
+        void BeginRoundOnCity(ICity city);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="city"></param>
-        void EndTurnOnCity  (ICity city);
+        void EndRoundOnCity  (ICity city);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="civilization"></param>
-        void BeginTurnOnCivilization(ICivilization civilization);
+        void BeginRoundOnCivilization(ICivilization civilization);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="civilization"></param>
-        void EndTurnOnCivilization  (ICivilization civilization);
+        void EndRoundOnCivilization  (ICivilization civilization);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="unit"></param>
-        void BeginTurnOnUnit(IUnit unit);
+        void BeginRoundOnUnit(IUnit unit);
 
         /// <summary>
         /// 
         /// </summary>
         /// <param name="unit"></param>
-        void EndTurnOnUnit  (IUnit unit);
+        void EndRoundOnUnit  (IUnit unit);
 
         #endregion
 

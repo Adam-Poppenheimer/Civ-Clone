@@ -12,14 +12,14 @@ namespace Assets.Simulation.Core {
     /// <summary>
     /// The standard implementation of ITurnExecuter.
     /// </summary>
-    public class TurnExecuter : ITurnExecuter {
+    public class RoundExecuter : IRoundExecuter {
 
         #region instance methods
 
         #region from ITurnExecuter
 
         /// <inheritdoc/>
-        public void BeginTurnOnCity(ICity city) {
+        public void BeginRoundOnCity(ICity city) {
             city.PerformProduction();
             city.PerformGrowth();
             city.PerformExpansion();
@@ -28,28 +28,28 @@ namespace Assets.Simulation.Core {
         }
 
         /// <inheritdoc/>
-        public void EndTurnOnCity(ICity city) {
+        public void EndRoundOnCity(ICity city) {
             city.PerformIncome();
         }
 
         /// <inheritdoc/>
-        public void BeginTurnOnCivilization(ICivilization civilization) {
+        public void BeginRoundOnCivilization(ICivilization civilization) {
             civilization.PerformIncome();
             civilization.PerformResearch();
         }
 
         /// <inheritdoc/>
-        public void EndTurnOnCivilization(ICivilization civilization) {
+        public void EndRoundOnCivilization(ICivilization civilization) {
             
         }
 
         /// <inheritdoc/>
-        public void BeginTurnOnUnit(IUnit unit) {
+        public void BeginRoundOnUnit(IUnit unit) {
             unit.CurrentMovement = unit.MaxMovement;
         }
 
         /// <inheritdoc/>
-        public void EndTurnOnUnit(IUnit unit) {
+        public void EndRoundOnUnit(IUnit unit) {
             unit.PerformMovement();
         }
 

@@ -65,7 +65,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             var baseYield = slot.BaseYield;
 
-            var tileOfSlot = Map.Tiles.Where(tile => tile.WorkerSlot == slot).FirstOrDefault();
+            var tileOfSlot = Map.AllCells.Where(tile => tile.WorkerSlot == slot).FirstOrDefault();
 
             if(tileOfSlot != null) {
                 var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();

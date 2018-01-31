@@ -80,7 +80,7 @@ namespace Assets.Tests.UI.Units {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.DeclareSignal<TurnBeganSignal>();
+            Container.Bind<CoreSignals>().AsSingle();
 
             Container.Bind<UnitSignals>().AsSingle();
 

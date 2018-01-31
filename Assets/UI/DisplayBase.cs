@@ -19,31 +19,30 @@ namespace Assets.UI {
 
         public T ObjectToDisplay { get; set; }     
         
-        
-        
-        private TurnBeganSignal TurnBeginSignal; 
+        private IDisposable RoundBeganSubscription;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        private void InjectSignals(TurnBeganSignal turnBeganSignal) {
-            TurnBeginSignal = turnBeganSignal;
-            turnBeganSignal.Listen(OnTurnBegan);
+        private void InjectSignals(CoreSignals coreSignals) {
+            RoundBeganSubscription = coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan);
         }
 
         #region Unity messages
 
         private void OnDestroy() {
-            TurnBeginSignal.Unlisten(OnTurnBegan);
+            RoundBeganSubscription.Dispose();
         }
+
+        protected virtual void DoOnDestroy() { }
 
         #endregion
 
         #region signal responses
 
-        private void OnTurnBegan(int turnCount) {
+        private void OnRoundBegan(int turnCount) {
             if(gameObject.activeInHierarchy) {
                 Refresh();
             }

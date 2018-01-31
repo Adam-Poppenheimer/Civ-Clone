@@ -68,7 +68,7 @@ namespace Assets.Tests.UI.Units {
 
             Container.Bind<SignalManager>().AsSingle();
 
-            Container.Bind<TurnBeganSignal>().FromMock();
+            Container.Bind<CoreSignals>().AsSingle();
 
             Container.Bind<TestDisplay>().FromNewComponentOnNewGameObject().AsSingle();
         }

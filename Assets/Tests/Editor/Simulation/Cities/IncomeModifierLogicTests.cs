@@ -45,7 +45,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockImprovementPositionCanon = new Mock<IImprovementLocationCanon>();
             MockGrid                      = new Mock<IHexGrid>();
 
-            MockGrid.Setup(map => map.Tiles).Returns(AllTiles.AsReadOnly());
+            MockGrid.Setup(map => map.AllCells).Returns(AllTiles.AsReadOnly());
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossession      .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession          .Object);

@@ -12,13 +12,14 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.HexMap;
 
 using Assets.UI.Core;
 
 namespace Assets.Simulation.Core {
 
     /// <summary>
-    /// Controls the chronological progression and other core elements of the game. Currently, that means handling
+    /// Controls chronological progression and other core elements of the game. Currently, that means handling
     /// turn incrementation and keeping a reference to the player civilization.
     /// </summary>
     public class GameCore : IGameCore {
@@ -30,47 +31,37 @@ namespace Assets.Simulation.Core {
         /// </summary>
         public ICivilization ActiveCivilization { get; set; }
 
+        public int CurrentRound { get; private set; }
+
         private ICityFactory         CityFactory;
         private ICivilizationFactory CivilizationFactory;
         private IUnitFactory         UnitFactory;
         private IAbilityExecuter     AbilityExecuter;
 
-        private ITurnExecuter TurnExecuter;
+        private IRoundExecuter TurnExecuter;
 
-        private TurnBeganSignal TurnBeganSignal;
-        private TurnEndedSignal TurnEndedSignal;        
+        private CoreSignals CoreSignals;
+
+        private IHexGrid Grid;
 
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="cityFactory"></param>
-        /// <param name="civilizationFactory"></param>
-        /// <param name="unitFactory"></param>
-        /// <param name="abilityExecuter"></param>
-        /// <param name="turnExecuter"></param>
-        /// <param name="turnBeganSignal"></param>
-        /// <param name="turnEndedSignal"></param>
-        /// <param name="endTurnRequestedSignal"></param>
         [Inject]
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
             IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
-            ITurnExecuter turnExecuter, TurnBeganSignal turnBeganSignal,
-            TurnEndedSignal turnEndedSignal, PlayerSignals playerSignals
+            IRoundExecuter turnExecuter, PlayerSignals playerSignals,
+            CoreSignals coreSignals, IHexGrid grid
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             UnitFactory         = unitFactory;
             AbilityExecuter     = abilityExecuter;
-
-            TurnExecuter = turnExecuter;
-
-            TurnBeganSignal = turnBeganSignal;
-            TurnEndedSignal = turnEndedSignal;
+            TurnExecuter        = turnExecuter;
+            CoreSignals         = coreSignals;
+            Grid                = grid;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
@@ -81,49 +72,72 @@ namespace Assets.Simulation.Core {
 
         #region instance methods
 
-        /// <summary>
-        /// Performs all activites that should happen at the beginning of a new round.
-        /// </summary>
+        #region from IGameCore
+
+        public void EndTurn() {
+            PerformEndOfTurnActions();
+
+            var allCivs = CivilizationFactory.AllCivilizations;
+
+            if(ActiveCivilization == allCivs.Last()) {
+                EndRound();
+                BeginRound();
+                ActiveCivilization = allCivs.First();
+            }else {
+                ActiveCivilization = allCivs[allCivs.IndexOf(ActiveCivilization) + 1];
+            }
+
+            PerformBeginningOfTurnActions();
+        }
+        
         public void BeginRound() {
             foreach(var unit in UnitFactory.AllUnits) {
-                TurnExecuter.BeginTurnOnUnit(unit);
+                TurnExecuter.BeginRoundOnUnit(unit);
             }
 
             foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.BeginTurnOnCity(city);
+                TurnExecuter.BeginRoundOnCity(city);
             }
 
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                TurnExecuter.BeginTurnOnCivilization(civilization);
+                TurnExecuter.BeginRoundOnCivilization(civilization);
             }
 
-            TurnBeganSignal.Fire(0);
+            CoreSignals.RoundBeganSignal.OnNext(++CurrentRound);
         }
 
-        /// <summary>
-        /// Performs all activities that should happen at the end of a round.
-        /// </summary>
         public void EndRound() {
             foreach(var unit in UnitFactory.AllUnits) {
-                TurnExecuter.EndTurnOnUnit(unit);
+                TurnExecuter.EndRoundOnUnit(unit);
             }
 
             foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.EndTurnOnCity(city);
+                TurnExecuter.EndRoundOnCity(city);
             }
 
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                TurnExecuter.EndTurnOnCivilization(civilization);
+                TurnExecuter.EndRoundOnCivilization(civilization);
             }
 
             AbilityExecuter.PerformOngoingAbilities();
 
-            TurnEndedSignal.Fire(0);
+            CoreSignals.RoundEndedSignal.OnNext(CurrentRound);
         }
 
+        #endregion
+
         private void OnEndTurnRequested(Unit unit) {
-            EndRound();
-            BeginRound();
+            EndTurn();
+        }
+
+        private void PerformBeginningOfTurnActions() {
+            foreach(var cell in Grid.AllCells) {
+                cell.RefreshVisibility();
+            }
+        }
+
+        private void PerformEndOfTurnActions() {
+
         }
 
         #endregion

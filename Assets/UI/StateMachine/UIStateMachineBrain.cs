@@ -12,6 +12,8 @@ using UniRx;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Core;
+using Assets.Simulation.Civilizations;
 
 using Assets.UI.Core;
 
@@ -57,13 +59,15 @@ namespace Assets.UI.StateMachine {
         public UIStateMachineBrain(
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, HexCellSignals cellSignals,
-            PlayerSignals playerSignals
+            PlayerSignals playerSignals, CoreSignals coreSignals
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
             CompositeUnitSignals = compositeUnitSignals;
             CellSignals          = cellSignals;
             PlayerSignals        = playerSignals;
+            
+            coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
         }
 
         #endregion
@@ -133,6 +137,14 @@ namespace Assets.UI.StateMachine {
         private void OnCellClicked(IHexCell cell, Vector3 position) {
             LastCellClicked = cell;
             Animator.SetTrigger(CellTriggerName);
+        }
+
+        private void OnTurnBegan(ICivilization activeCiv) {
+            foreach(var parameter in Animator.parameters) {
+                if(parameter.type == AnimatorControllerParameterType.Trigger) {
+                    Animator.ResetTrigger(parameter.name);
+                }
+            }
         }
 
         #endregion

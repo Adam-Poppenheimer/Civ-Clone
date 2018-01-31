@@ -35,7 +35,7 @@ namespace Assets.UI.Cities {
 
         #region Unity messages
 
-        private void OnDestroy() {
+        protected override void DoOnDestroy() {
             SlotClickedSignal.Unlisten(OnSlotDisplayClicked);
         }
 

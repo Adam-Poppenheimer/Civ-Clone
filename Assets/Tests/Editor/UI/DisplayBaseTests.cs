@@ -51,9 +51,7 @@ namespace Assets.Tests.UI {
 
         #region instance fields and properties
 
-        private Subject<Foo> OpenDisplayRequestedSignal;
-        private Subject<Foo> CloseDisplayRequestedSignal;
-        private TurnBeganSignal TurnBeganSignal;
+        private CoreSignals CoreSignals;
 
         #endregion
 
@@ -63,12 +61,11 @@ namespace Assets.Tests.UI {
 
         [SetUp]
         public void CommonInstall() {
-            Container.Bind<SignalManager>().AsSingle();
-            Container.DeclareSignal<TurnBeganSignal>();
+            CoreSignals = new CoreSignals();
+
+            Container.Bind<CoreSignals>().FromInstance(CoreSignals);
 
             Container.Bind<TestDisplayBase>().FromNewComponentOnNewGameObject().AsSingle();
-
-            TurnBeganSignal = Container.Resolve<TurnBeganSignal>();
         }
 
         #endregion
@@ -83,11 +80,11 @@ namespace Assets.Tests.UI {
             bool refreshedWhenInactive = false;
 
             testDisplay.RefreshCalled += (x, y) => refreshedWhenActive = true;
-            TurnBeganSignal.Fire(0);
+            CoreSignals.RoundBeganSignal.OnNext(0);
 
             testDisplay.gameObject.SetActive(false);
             testDisplay.RefreshCalled += (x, y) => refreshedWhenInactive = true;
-            TurnBeganSignal.Fire(0);
+            CoreSignals.RoundBeganSignal.OnNext(0);
 
             Assert.IsTrue(refreshedWhenActive, "Refresh was not called on DisplayBase when " + 
                 "OnTurnBegan fired and DisplayBase was active");

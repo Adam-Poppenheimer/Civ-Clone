@@ -25,10 +25,9 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
-            Container.Bind<ITurnExecuter>().To<TurnExecuter>().AsSingle();
+            Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();
 
-            Container.DeclareSignal<TurnBeganSignal>();
-            Container.DeclareSignal<TurnEndedSignal>();
+            Container.Bind<CoreSignals>().AsSingle();
 
             Container.Bind<IGameCore>().To<GameCore>().AsSingle().NonLazy();
         }

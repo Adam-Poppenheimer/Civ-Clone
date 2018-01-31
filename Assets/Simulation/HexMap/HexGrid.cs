@@ -19,15 +19,15 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexGrid
 
-        public ReadOnlyCollection<IHexCell> Tiles {
+        public ReadOnlyCollection<IHexCell> AllCells {
             get {
-                if(_tiles == null) {
-                    _tiles = GetComponentsInChildren<IHexCell>().ToList();
+                if(_allCells == null) {
+                    _allCells = new List<IHexCell>(Cells.Cast<IHexCell>());
                 }
-                return _tiles.AsReadOnly();
+                return _allCells.AsReadOnly();
             }
         }
-        private List<IHexCell> _tiles;
+        private List<IHexCell> _allCells;
 
         public int ChunkCountX {
             get { return _chunkCountX; }

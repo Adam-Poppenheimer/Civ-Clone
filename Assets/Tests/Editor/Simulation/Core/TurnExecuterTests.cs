@@ -37,8 +37,8 @@ namespace Assets.Tests.Simulation.Core {
             mockCity.InSequence(executionSequence).Setup(city => city.PerformDistribution());
             mockCity.InSequence(executionSequence).Setup(city => city.PerformHealing());
 
-            var executer = new TurnExecuter();
-            executer.BeginTurnOnCity(mockCity.Object);
+            var executer = new RoundExecuter();
+            executer.BeginRoundOnCity(mockCity.Object);
 
             mockCity.VerifyAll();
         }
@@ -52,8 +52,8 @@ namespace Assets.Tests.Simulation.Core {
 
             mockCity.InSequence(executionSequence).Setup(city => city.PerformIncome());
 
-            var executer = new TurnExecuter();
-            executer.EndTurnOnCity(mockCity.Object);
+            var executer = new RoundExecuter();
+            executer.EndRoundOnCity(mockCity.Object);
 
             mockCity.VerifyAll();
         }
@@ -68,8 +68,8 @@ namespace Assets.Tests.Simulation.Core {
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
 
-            var executer = new TurnExecuter();
-            executer.EndTurnOnCivilization(mockCivilization.Object);
+            var executer = new RoundExecuter();
+            executer.EndRoundOnCivilization(mockCivilization.Object);
 
             mockCivilization.VerifyAll();
         }
@@ -85,9 +85,9 @@ namespace Assets.Tests.Simulation.Core {
         public void BeginTurnOnUnit_CurrentMovementRefreshed() {
             var unit = BuildUnit(currentMovement: 0, maxMovement: 5);
 
-            var executer = new TurnExecuter();
+            var executer = new RoundExecuter();
 
-            executer.BeginTurnOnUnit(unit);
+            executer.BeginRoundOnUnit(unit);
 
             Assert.AreEqual(unit.MaxMovement, unit.CurrentMovement, "unit.CurrentMovement has an unexpected value");
         }
@@ -97,9 +97,9 @@ namespace Assets.Tests.Simulation.Core {
         public void EndTurnOnUnit_PerformanceHappensInOrder() {
             var mockUnit = new Mock<IUnit>();
 
-            var executer = new TurnExecuter();
+            var executer = new RoundExecuter();
 
-            executer.EndTurnOnUnit(mockUnit.Object);
+            executer.EndRoundOnUnit(mockUnit.Object);
 
             mockUnit.Verify(unit => unit.PerformMovement(), Times.Once,
                 "unit.PerformMovement was not called as expected");

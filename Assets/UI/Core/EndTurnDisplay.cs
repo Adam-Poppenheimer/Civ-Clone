@@ -24,7 +24,7 @@ namespace Assets.UI.Core {
 
         [SerializeField] private string EndTurnKeyName;
 
-        private ITurnExecuter TurnExecuter;
+        private IRoundExecuter TurnExecuter;
 
         private PlayerSignals PlayerSignals;
 
