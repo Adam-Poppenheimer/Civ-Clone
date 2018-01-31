@@ -51,6 +51,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
             Container.Bind<CombatResponder>().AsSingle().NonLazy();
+            Container.Bind<UnitResponder>  ().AsSingle().NonLazy();
 
             Container.Bind<CompositeUnitSignals>().AsSingle().NonLazy();
             Container.Bind<UnitSignals>().AsSingle();

@@ -37,8 +37,6 @@ namespace Assets.Simulation.Units {
             Signals             = signals;
             CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
-
-            Signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
 
         #endregion
@@ -116,10 +114,6 @@ namespace Assets.Simulation.Units {
 
         private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
             return GetPossessionsOfOwner(owner).Select(unit => unit.Type).Contains(type);
-        }
-
-        private void OnUnitBeingDestroyed(IUnit unit) {
-            ChangeOwnerOfPossession(unit, null);
         }
 
         #endregion

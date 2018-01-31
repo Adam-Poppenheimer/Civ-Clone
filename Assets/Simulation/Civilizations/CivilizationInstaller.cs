@@ -39,7 +39,7 @@ namespace Assets.Simulation.Civilizations {
                      .AsSingle();
 
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>()
-                     .To<UnitPossessionCanon>()
+                     .To  <PossessionRelationship<ICivilization, IUnit>>()
                      .AsSingle();
 
             Container.Bind<ICivilizationYieldLogic>().To<CivilizationYieldLogic>().AsSingle();
