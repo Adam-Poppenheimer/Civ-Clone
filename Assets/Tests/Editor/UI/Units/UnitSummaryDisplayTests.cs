@@ -12,6 +12,7 @@ using NUnit.Framework;
 using Moq;
 
 using Assets.UI.Units;
+
 using Assets.Simulation.Units;
 using Assets.Simulation.Core;
 
@@ -81,7 +82,7 @@ namespace Assets.Tests.UI.Units {
 
             Container.DeclareSignal<TurnBeganSignal>();
 
-            Container.Bind<UnitSignals>().FromMock();
+            Container.Bind<UnitSignals>().AsSingle();
 
             Container.Bind<UnitSummaryDisplay>().FromNewComponentOnNewGameObject().AsSingle();            
         }

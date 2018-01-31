@@ -12,7 +12,7 @@ using UniRx;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Distribution;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
@@ -43,6 +43,8 @@ namespace Assets.Simulation.Cities {
 
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
         #endregion
 
         #region constructors
@@ -58,13 +60,15 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
         ){
             Container           = container;
             CityPrefab          = cityPrefab;
             CityPossessionCanon = cityPossessionCanon;
             Grid                = grid;
             CellPossessionCanon = cellPossessionCanon;
+            UnitPossessionCanon = unitPossessionCanon;
             
             if(citySignals != null) {
                 citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
@@ -110,6 +114,8 @@ namespace Assets.Simulation.Cities {
             location.Feature = TerrainFeature.None;
 
             newCity.CombatFacade = Container.Instantiate<CityCombatFacadeUnit>(new object[] { newCity });
+
+            UnitPossessionCanon.ChangeOwnerOfPossession(newCity.CombatFacade, owner);
 
             if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
                 CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);

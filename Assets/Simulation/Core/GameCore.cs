@@ -21,19 +21,19 @@ namespace Assets.Simulation.Core {
     /// Controls the chronological progression and other core elements of the game. Currently, that means handling
     /// turn incrementation and keeping a reference to the player civilization.
     /// </summary>
-    public class GameCore {
+    public class GameCore : IGameCore {
 
         #region instance fields and properties
 
         /// <summary>
         /// The civilization the player controls.
         /// </summary>
-        public ICivilization PlayerCivilization { get; private set; }
+        public ICivilization ActiveCivilization { get; set; }
 
         private ICityFactory         CityFactory;
         private ICivilizationFactory CivilizationFactory;
         private IUnitFactory         UnitFactory;
-        private IAbilityExecuter AbilityExecuter;
+        private IAbilityExecuter     AbilityExecuter;
 
         private ITurnExecuter TurnExecuter;
 
@@ -74,7 +74,7 @@ namespace Assets.Simulation.Core {
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
-            PlayerCivilization = CivilizationFactory.Create("Player Civilization", Color.red);
+            ActiveCivilization = CivilizationFactory.Create("Player Civilization", Color.red);
         }
 
         #endregion

@@ -20,7 +20,7 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private GameCore             GameCore;
+        private IGameCore            GameCore;
         private ICellVisibilityCanon VisibilityCanon;
 
         #endregion
@@ -28,7 +28,7 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(GameCore gameCore, ICellVisibilityCanon visibilityCanon) {
+        public void InjectDependencies(IGameCore gameCore, ICellVisibilityCanon visibilityCanon) {
             GameCore        = gameCore;
             VisibilityCanon = visibilityCanon;
         }
@@ -77,7 +77,7 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility(IHexCell cell) {
             CellTextureData[cell.Index].r = 
-                VisibilityCanon.IsCellVisibleToCiv(cell, GameCore.PlayerCivilization) ? (byte)255 : (byte)0;
+                VisibilityCanon.IsCellVisibleToCiv(cell, GameCore.ActiveCivilization) ? (byte)255 : (byte)0;
             enabled = true;
         }
 

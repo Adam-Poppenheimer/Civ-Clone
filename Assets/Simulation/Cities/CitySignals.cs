@@ -10,6 +10,7 @@ using UniRx;
 
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities {
 
@@ -43,6 +44,8 @@ namespace Assets.Simulation.Cities {
         public ISubject<Tuple<ICity, IHexCell>> LostCellFromBoundariesSignal { get; private set; }
         public ISubject<Tuple<ICity, IHexCell>> GainedCellToBoundariesSignal { get; private set; }
 
+        public ISubject<Tuple<ICity, ICivilization>> OwnershipChangedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -68,6 +71,8 @@ namespace Assets.Simulation.Cities {
 
             LostCellFromBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
             GainedCellToBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
+
+            OwnershipChangedSignal = new Subject<Tuple<ICity, ICivilization>>();
         }
 
         #endregion

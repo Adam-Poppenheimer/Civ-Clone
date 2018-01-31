@@ -31,7 +31,7 @@ namespace Assets.Simulation.Core {
 
         private IHexGrid HexGrid;
 
-        private GameCore GameCore;
+        private IGameCore GameCore;
 
         #endregion
 
@@ -40,7 +40,7 @@ namespace Assets.Simulation.Core {
         [Inject]
         public void InjectDependencies(ICityFactory cityFactory,
             IPossessionRelationship<ICity, IHexCell> possessionCanon, IHexGrid hexGrid,
-            GameCore gameCore
+            IGameCore gameCore
         ){
             CityFactory = cityFactory;
             PossessionCanon = possessionCanon;
@@ -49,7 +49,7 @@ namespace Assets.Simulation.Core {
         }
 
         public void BuildFullCityOnTile(IHexCell tile) {
-            var newCity = CityFactory.Create(tile, GameCore.PlayerCivilization);
+            var newCity = CityFactory.Create(tile, GameCore.ActiveCivilization);
 
             newCity.Population = StartingPopulation;
 

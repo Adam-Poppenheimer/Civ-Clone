@@ -84,21 +84,6 @@ namespace Assets.Tests.Simulation.Units {
 
             Container.Bind<ISubject<IUnit>>().WithId("Unit Clicked Signal").To<Subject<IUnit>>().AsSingle();
 
-            Container.Bind<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .WithId("Unit Begin Drag Signal")
-                .To<Subject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .AsSingle();
-
-            Container.Bind<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .WithId("Unit Drag Signal")
-                .To<Subject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .AsSingle();
-
-            Container.Bind<ISubject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .WithId("Unit End Drag Signal")
-                .To<Subject<UniRx.Tuple<IUnit, PointerEventData>>>()
-                .AsSingle();
-
             Container.Bind<UnitSignals>().AsSingle();
         }
 

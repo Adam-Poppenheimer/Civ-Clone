@@ -44,7 +44,8 @@ namespace Assets.Simulation.Civilizations {
 
             Container.Bind<ICivilizationYieldLogic>().To<CivilizationYieldLogic>().AsSingle();
 
-            Container.Bind<VisibilityResponder>().AsSingle().NonLazy();
+            Container.Bind<VisibilityResponder>    ().AsSingle().NonLazy();
+            Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
         }
 
         #endregion

@@ -20,14 +20,23 @@ namespace Assets.Simulation.Units {
 
         private UnitSignals Signals;
 
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals){
+        public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+        ){
             CityFactory         = cityFactory;
             Signals             = signals;
+            CityPossessionCanon = cityPossessionCanon;
+            UnitPossessionCanon = unitPossessionCanon;
 
             Signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
@@ -39,7 +48,27 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IHexCell location) {
-            return location == null || CanPlaceUnitOfTypeAtLocation(unit.Type, location, false);            
+            if(location == null) {
+                return true;
+            }
+
+            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
+            foreach(var unitAtLocation in GetPossessionsOfOwner(location)) {
+                var unitAtLocationOwner = UnitPossessionCanon.GetOwnerOfPossession(unitAtLocation);
+
+                if(unitOwner != unitAtLocationOwner) {
+                    return false;
+                }
+            }
+
+            var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == location).FirstOrDefault();
+
+            if(cityAtLocation != null && unitOwner != CityPossessionCanon.GetOwnerOfPossession(cityAtLocation)) {
+                return false;
+            }
+
+            return CanPlaceUnitOfTypeAtLocation(unit.Type, location, false); 
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
@@ -65,32 +94,25 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
+        #region from IUnitPositionCanon
+
         public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location, bool ignoreOccupancy) {
             if(location == null) {
                 return true;
             }
-            
+
             if(!ignoreOccupancy && AlreadyHasUnitOfType(location, type)) {
                 return false;
-            }
-            
-            if(type == UnitType.LandCivilian || type == UnitType.LandMilitary || type == UnitType.City) {
+            }else if(CityFactory.AllCities.Any(city => city.Location == location)) {
+                return true;
+            }else if(type == UnitType.LandCivilian || type == UnitType.LandMilitary || type == UnitType.City) {
                 return !location.IsUnderwater;
             }else {
                 return location.IsUnderwater;
             }
         }
 
-        private bool IsValidForWaterUnit(IHexCell cell) {
-            return (
-                cell.IsUnderwater
-                || CityFactory.AllCities.Where(city => city.Location == cell).LastOrDefault() != null
-            );
-        }
-
-        private bool IsValidForLandUnit(IHexCell cell) {
-            return !cell.IsUnderwater;
-        }
+        #endregion
 
         private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
             return GetPossessionsOfOwner(owner).Select(unit => unit.Type).Contains(type);

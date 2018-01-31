@@ -8,9 +8,11 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.Core;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Combat;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -45,8 +47,8 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitSignals() {
-            ClickedSignal    = new Subject<IUnit>();
+        public UnitSignals(){
+            ClickedSignal        = new Subject<IUnit>();
             PointerEnteredSignal = new Subject<IUnit>();
             PointerExitedSignal  = new Subject<IUnit>();
 

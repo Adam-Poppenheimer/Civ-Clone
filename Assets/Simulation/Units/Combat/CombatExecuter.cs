@@ -10,6 +10,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -29,6 +30,8 @@ namespace Assets.Simulation.Units.Combat {
 
         private UnitSignals UnitSignals;
 
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
         #endregion
 
         #region constructors
@@ -36,7 +39,8 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public CombatExecuter(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, ILineOfSightLogic lineOfSightLogic,
-            ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals
+            ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
         ){
             UnitPositionCanon   = unitPositionCanon;
             Grid                = grid;
@@ -44,6 +48,7 @@ namespace Assets.Simulation.Units.Combat {
             CombatModifierLogic = combatModifierLogic;
             UnitConfig          = unitConfig;
             UnitSignals         = unitSignals;
+            UnitPossessionCanon = unitPossessionCanon;
         }
 
         #endregion
@@ -61,6 +66,10 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             if(attacker == defender) {
+                return false;
+            }
+
+            if(UnitPossessionCanon.GetOwnerOfPossession(attacker) == UnitPossessionCanon.GetOwnerOfPossession(defender)) {
                 return false;
             }
 
@@ -107,6 +116,10 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             if(attacker == defender) {
+                return false;
+            }
+
+            if(UnitPossessionCanon.GetOwnerOfPossession(attacker) == UnitPossessionCanon.GetOwnerOfPossession(defender)) {
                 return false;
             }
 

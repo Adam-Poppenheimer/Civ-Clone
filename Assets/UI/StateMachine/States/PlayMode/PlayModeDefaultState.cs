@@ -38,11 +38,11 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             List<CivilizationDisplayBase> civilizationDisplays,
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
-            GameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager
+            IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager
         ){
             CivilizationDisplays = civilizationDisplays;
             DefaultPanels        = defaultPanels;
-            PlayerCivilization   = gameCore.PlayerCivilization;
+            PlayerCivilization   = gameCore.ActiveCivilization;
             Brain                = brain;
             CitySummaryManager   = citySummaryManager;
         }

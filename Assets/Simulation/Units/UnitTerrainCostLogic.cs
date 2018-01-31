@@ -22,14 +22,19 @@ namespace Assets.Simulation.Units {
 
         private ICityFactory CityFactory;
 
+        private IUnitPositionCanon UnitPositionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitTerrainCostLogic(IHexGridConfig config, ICityFactory cityFactory) {
-            Config      = config;
-            CityFactory = cityFactory;
+        public UnitTerrainCostLogic(IHexGridConfig config, ICityFactory cityFactory,
+            IUnitPositionCanon unitPositionCanon
+        ){
+            Config            = config;
+            CityFactory       = cityFactory;
+            UnitPositionCanon = unitPositionCanon;
         }
 
         #endregion
@@ -39,7 +44,9 @@ namespace Assets.Simulation.Units {
         #region from IUnitTerrainCostLogic
 
         public int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            if(unit.IsAquatic) {
+            if(!UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
+                return -1;
+            }else if(unit.IsAquatic) {
                 return GetAquaticTraversalCost(currentCell, nextCell);
             }else {
                 return GetNonAquaticTraversalCost(currentCell, nextCell);
@@ -49,17 +56,13 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private int GetAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
-            if(nextCell.IsUnderwater || CityFactory.AllCities.Exists(city => city.Location == nextCell)) {
-                return Config.WaterMoveCost;
-            }else {
-                return -1;
-            }
+            return Config.WaterMoveCost;
         }
 
         private int GetNonAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
             var edgeType = HexMetrics.GetEdgeType(currentCell.Elevation, nextCell.Elevation);
 
-            if( nextCell.IsUnderwater || edgeType == HexEdgeType.Cliff){
+            if(edgeType == HexEdgeType.Cliff){
                 return -1;
             }
 

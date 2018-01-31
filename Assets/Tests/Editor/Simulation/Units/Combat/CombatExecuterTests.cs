@@ -10,9 +10,11 @@ using NUnit.Framework;
 using Zenject;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
@@ -54,6 +56,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             public TerrainFeature DefenderLocationFeature;
 
             public int DefenderLocationElevation;
+
+            public bool UnitsHaveSameOwner;
 
         }
 
@@ -587,6 +591,36 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     RangedAttackerHealthLeft = 100,
                     RangedDefenderHealthLeft = 100
                 });
+
+                yield return new TestCaseData(new CombatTestInput() {
+                    AttackerCombatStrength = 100,
+                    AttackerRangedAttackStrength = 100,
+                    AttackerCurrentMovement = 1,
+                    AttackerRange = 1,
+                    AttackerLocationElevation = 0,
+                    AttackerDistanceFromDefender = 1,
+                    AttackerCanMoveToDefender = true,
+                    AttackerCanSeeDefender = true,
+                    AttackerCombatModifier = 0f,
+
+                    DefenderCombatStrength = 100,
+                    DefenderLocationElevation = 0,
+                    DefenderLocationTerrain = TerrainType.Grassland,
+                    DefenderLocationFeature = TerrainFeature.None,
+                    DefenderCombatModifier = 0f,
+
+                    UnitsHaveSameOwner = true
+
+                }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/same owner")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = false,
+                    MeleeAttackerHealthLeft = 100,
+                    MeleeDefenderHealthLeft = 100,
+                    
+                    CanPerformRangedAttack = false,
+                    RangedAttackerHealthLeft = 100,
+                    RangedDefenderHealthLeft = 100
+                });
             }
         }
 
@@ -602,6 +636,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private Mock<ICombatModifierLogic> MockCombatModifierLogic;
 
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+
         private IUnitConfig UnitConfig;
 
         #endregion
@@ -616,12 +652,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockGrid                = new Mock<IHexGrid>();
             MockLineOfSightLogic    = new Mock<ILineOfSightLogic>();
             MockCombatModifierLogic = new Mock<ICombatModifierLogic>();
+            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
 
-            Container.Bind<IUnitPositionCanon>  ().FromInstance(MockUnitPositionCanon  .Object);
-            Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
-            Container.Bind<ILineOfSightLogic>   ().FromInstance(MockLineOfSightLogic   .Object);
-            Container.Bind<ICombatModifierLogic>().FromInstance(MockCombatModifierLogic.Object);
-            
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
+            Container.Bind<ILineOfSightLogic>                            ().FromInstance(MockLineOfSightLogic   .Object);
+            Container.Bind<ICombatModifierLogic>                         ().FromInstance(MockCombatModifierLogic.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+
             Container.Bind<UnitSignals>().AsSingle();
 
             Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Executer Unit Config").AsSingle();
@@ -659,7 +697,27 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 defenderLocation, input.DefenderCombatStrength, 0f, input.DefenderCombatModifier
             );
 
-            SetCombatConditions(input.AttackerDistanceFromDefender, input.AttackerCanMoveToDefender, input.AttackerCanSeeDefender);
+            SetCombatConditions(
+                input.AttackerDistanceFromDefender, input.AttackerCanMoveToDefender,
+                input.AttackerCanSeeDefender
+            );
+
+            if(input.UnitsHaveSameOwner) {
+                var owner = BuildCivilization();
+
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeAttacker )).Returns(owner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedAttacker)).Returns(owner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(owner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(owner);
+            }else {
+                var attackerOwner = BuildCivilization();
+                var defenderOwner = BuildCivilization();
+
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeAttacker )).Returns(attackerOwner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedAttacker)).Returns(attackerOwner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(defenderOwner);
+                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(defenderOwner);
+            }
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
 
@@ -773,6 +831,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
             newCell.Elevation = elevation;
 
             return newCell;
+        }
+
+        private ICivilization BuildCivilization() {
+            return new Mock<ICivilization>().Object;
         }
 
         #endregion

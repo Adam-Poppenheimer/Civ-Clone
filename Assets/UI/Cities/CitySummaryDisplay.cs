@@ -16,6 +16,8 @@ using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
+using Assets.Simulation.Core;
+using Assets.Simulation.Civilizations;
 
 using Assets.UI.StateMachine;
 
@@ -55,6 +57,10 @@ namespace Assets.UI.Cities {
 
         private IResourceGenerationLogic ResourceGenerationLogic;
 
+        private IGameCore GameCore;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         private Animator UIAnimator;
 
         #endregion
@@ -66,7 +72,8 @@ namespace Assets.UI.Cities {
             IHexGrid grid, ICityConfig config, IUnitPositionCanon unitPositionCanon,
             ICombatExecuter combatExecuter, UIStateMachineBrain brain,
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
-            IResourceGenerationLogic resourceGenerationLogic,
+            IResourceGenerationLogic resourceGenerationLogic, IGameCore gameCore,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             [Inject(Id = "UI Animator")] Animator uiAnimator
         ) {
             Grid                    = grid;
@@ -77,6 +84,8 @@ namespace Assets.UI.Cities {
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
             ResourceGenerationLogic = resourceGenerationLogic;
+            GameCore                = gameCore;
+            CityPossessionCanon     = cityPossessionCanon;
             UIAnimator              = uiAnimator;
         }
 
@@ -89,7 +98,7 @@ namespace Assets.UI.Cities {
 
             DisplayData();
 
-            RangedAttackButton.gameObject.SetActive(HasRangedAttackTarget());
+            RangedAttackButton.gameObject.SetActive(HasRangedAttackTarget() && IsCityOwnedByActiveCiv());
 
             transform.position = Camera.main.WorldToScreenPoint(ObjectToDisplay.transform.position);
         }
@@ -111,6 +120,10 @@ namespace Assets.UI.Cities {
             }
 
             return false;
+        }
+
+        private bool IsCityOwnedByActiveCiv() {
+            return CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay) == GameCore.ActiveCivilization;
         }
 
         private void DisplayData() {   

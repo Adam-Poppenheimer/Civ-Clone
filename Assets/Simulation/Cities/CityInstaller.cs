@@ -62,17 +62,14 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
-            Container.Bind<ICityFactory>().To<CityFactory>().AsSingle();        
-
-            var cityClickedSignal = new Subject<ICity>();
-
-            Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromInstance(cityClickedSignal);
-            Container.Bind<IObservable<ICity>>().WithId("City Clicked Signal").FromInstance(cityClickedSignal);
+            Container.Bind<ICityFactory>().To<CityFactory>().AsSingle();
 
             Container.DeclareSignal<CityProjectChangedSignal>();
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
             Container.Bind<CitySignals>().AsSingle();
+
+            Container.Bind<CompositeCitySignals>().AsSingle();
         }
 
         #endregion

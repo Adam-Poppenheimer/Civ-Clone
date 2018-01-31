@@ -44,10 +44,10 @@ namespace Assets.UI.StateMachine {
 
         private Animator Animator;
 
-        private CitySignals    CitySignals;
-        private UnitSignals    UnitSignals;
-        private HexCellSignals CellSignals;
-        private PlayerSignals  PlayerSignals;
+        private CompositeCitySignals CompositeCitySignals;
+        private CompositeUnitSignals CompositeUnitSignals;
+        private HexCellSignals       CellSignals;
+        private PlayerSignals        PlayerSignals;
 
         #endregion
 
@@ -55,15 +55,15 @@ namespace Assets.UI.StateMachine {
 
         [Inject]
         public UIStateMachineBrain(
-            [Inject(Id = "UI Animator")] Animator animator,
-            CitySignals citySignals, UnitSignals unitSignals, HexCellSignals cellSignals,
+            [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
+            CompositeUnitSignals compositeUnitSignals, HexCellSignals cellSignals,
             PlayerSignals playerSignals
         ) {
-            Animator      = animator;
-            CitySignals   = citySignals;
-            UnitSignals   = unitSignals;
-            CellSignals   = cellSignals;
-            PlayerSignals = playerSignals;
+            Animator             = animator;
+            CompositeCitySignals = compositeCitySignals;
+            CompositeUnitSignals = compositeUnitSignals;
+            CellSignals          = cellSignals;
+            PlayerSignals        = playerSignals;
         }
 
         #endregion
@@ -100,10 +100,10 @@ namespace Assets.UI.StateMachine {
                 ClickedAnywhereSubscription = PlayerSignals.ClickedAnywhereSignal.Subscribe(OnClickedAnywhere);
 
             } else if(type == TransitionType.ToCitySelected) {
-                CityClickedSubscription = CitySignals.PointerClickedSignal.Subscribe(OnCityClicked);
+                CityClickedSubscription = CompositeCitySignals.ActiveCivCityClickedSignal.Subscribe(OnCityClicked);
 
             }else if(type == TransitionType.ToUnitSelected) {
-                UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
+                UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);
 
             }else if(type == TransitionType.ToCellSelected) {
                 CellSignals.ClickedSignal.Listen(OnCellClicked);

@@ -20,7 +20,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         private TechTreeDisplay TechTreeDisplay;
 
-        private GameCore GameCore;
+        private IGameCore GameCore;
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, TechTreeDisplay techTreeDisplay, GameCore gameCore
+            UIStateMachineBrain brain, TechTreeDisplay techTreeDisplay, IGameCore gameCore
         ){
             Brain           = brain;
             TechTreeDisplay = techTreeDisplay;
@@ -41,7 +41,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
 
-            TechTreeDisplay.ObjectToDisplay = GameCore.PlayerCivilization;
+            TechTreeDisplay.ObjectToDisplay = GameCore.ActiveCivilization;
             TechTreeDisplay.gameObject.SetActive(true);
             TechTreeDisplay.Refresh();
         }

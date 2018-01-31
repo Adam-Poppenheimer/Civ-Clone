@@ -30,7 +30,7 @@ namespace Assets.Simulation.Core {
             Container.DeclareSignal<TurnBeganSignal>();
             Container.DeclareSignal<TurnEndedSignal>();
 
-            Container.Bind<GameCore>().AsSingle().NonLazy();
+            Container.Bind<IGameCore>().To<GameCore>().AsSingle().NonLazy();
         }
 
         #endregion
