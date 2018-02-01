@@ -98,15 +98,15 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _combatStrengthPerPopulation;
 
-        public int BaseMaxHealth {
-            get { return _baseMaxHealth; }
+        public int BaseMaxHitPoints {
+            get { return _baseMaxHitPoints; }
         }
-        [SerializeField] private int _baseMaxHealth;
+        [SerializeField] private int _baseMaxHitPoints;
 
-        public float MaxHealthPerPopulation {
-            get { return _maxHealthPerPopulation; }
+        public float MaxHitPointsPerPopulation {
+            get { return _maxHitPointsPerPopulation; }
         }
-        [SerializeField] private float _maxHealthPerPopulation;
+        [SerializeField] private float _maxHitPointsPerPopulation;
 
         public int BaseRangedAttackStrength {
             get { return _baseRangedAttackStrength; }
@@ -118,15 +118,20 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _rangedAttackStrengthPerPopulation;
 
-        public int HealthRegenPerRound {
-            get { return _healthRegenPerRound; }
+        public int HitPointRegenPerRound {
+            get { return _hitPointRegenPerRound; }
         }
-        [SerializeField] private int _healthRegenPerRound;
+        [SerializeField] private int _hitPointRegenPerRound;
 
         public int VisionRange {
             get { return _visionRange; }
         }
         [SerializeField] private int _visionRange;
+
+        public int BaseHealth {
+            get { return _baseHealth; }
+        }
+        [SerializeField] private int _baseHealth;
 
         #endregion
 

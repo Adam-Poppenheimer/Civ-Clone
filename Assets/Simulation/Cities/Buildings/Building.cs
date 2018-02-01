@@ -21,7 +21,30 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         private List<IWorkerSlot> _slots;
 
-        /// <inheritdoc/>
+        public string name {
+            get { return Template.name; }
+        }
+
+        public int Maintenance {
+            get { return Template.Maintenance; }
+        }
+
+        public ResourceSummary StaticYield {
+            get { return Template.StaticYield; }
+        }
+
+        public ResourceSummary CivilizationYieldModifier {
+            get { return Template.CivilizationYieldModifier; }
+        }
+
+        public ResourceSummary CityYieldModifier {
+            get { return Template.CityYieldModifier; }
+        }
+
+        public int Health {
+            get { return Template.Health; }
+        }
+
         public IBuildingTemplate Template { get; private set; }
 
         #endregion

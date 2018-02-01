@@ -27,6 +27,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private IIncomeModifierLogic IncomeModifierLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private IHealthLogic HealthLogic;
+
         #endregion
 
         #region constructors
@@ -40,14 +42,17 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         /// <param name="incomeModifierLogic"></param>
         /// <param name="cityPossessionCanon"></param>
         [Inject]
-        public ResourceGenerationLogic(ICityConfig config, IPossessionRelationship<ICity, IHexCell> tileCanon,
+        public ResourceGenerationLogic(
+            ICityConfig config, IPossessionRelationship<ICity, IHexCell> tileCanon,
             IPossessionRelationship<ICity, IBuilding> buildingCanon, IIncomeModifierLogic incomeModifierLogic,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon) {
-            Config = config;
-            CellCanon = tileCanon;
-            BuildingCanon = buildingCanon;
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHealthLogic healthLogic
+        ){
+            Config              = config;
+            CellCanon           = tileCanon;
+            BuildingCanon       = buildingCanon;
             IncomeModifierLogic = incomeModifierLogic;
             CityPossessionCanon = cityPossessionCanon;
+            HealthLogic         = healthLogic;
         }
 
         #endregion
@@ -87,12 +92,15 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                     employedPops++;
                 }
 
-                retval += building.Template.StaticYield;
+                retval += building.StaticYield;
             }
 
             retval += GetYieldOfUnemployedForCity(city) * Math.Max(0, city.Population - employedPops);
 
-            retval[ResourceType.Science] = retval[ResourceType.Science] +  city.Population;
+            retval[ResourceType.Science] = retval[ResourceType.Science] + city.Population;
+
+            int cityHealth = HealthLogic.GetHealthOfCity(city);
+            retval[ResourceType.Food] = retval[ResourceType.Food] + (cityHealth < 0 ? cityHealth : 0);
 
             return retval;
         }

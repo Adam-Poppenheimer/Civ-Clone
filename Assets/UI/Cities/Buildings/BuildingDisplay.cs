@@ -44,10 +44,10 @@ namespace Assets.UI.Cities.Buildings {
                 slotDisplay.gameObject.SetActive(false);
             }
 
-            NameField       .text = BuildingToDisplay.Template.name;
-            MaintenanceField.text = BuildingToDisplay.Template.Maintenance.ToString();
+            NameField       .text = BuildingToDisplay.name;
+            MaintenanceField.text = BuildingToDisplay.Maintenance.ToString();
 
-            StaticYieldDisplay.DisplaySummary(BuildingToDisplay.Template.StaticYield);
+            StaticYieldDisplay.DisplaySummary(BuildingToDisplay.StaticYield);
 
             int slotDisplayIndex = 0;
             foreach(var slot in BuildingToDisplay.Slots) {

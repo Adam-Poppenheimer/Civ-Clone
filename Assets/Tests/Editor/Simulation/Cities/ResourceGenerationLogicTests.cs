@@ -29,6 +29,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<IHealthLogic>                              MockHealthLogic;
 
         #endregion
 
@@ -42,7 +43,8 @@ namespace Assets.Tests.Simulation.Cities {
             MockTileCanon           = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockBuildingCanon       = new Mock<IPossessionRelationship<ICity, IBuilding>>();     
             MockIncomeLogic         = new Mock<IIncomeModifierLogic>();   
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();    
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockHealthLogic         = new Mock<IHealthLogic>();
 
             MockIncomeLogic
                 .Setup(logic => logic.GetYieldMultipliersForCity(It.IsAny<ICity>()))
@@ -56,11 +58,12 @@ namespace Assets.Tests.Simulation.Cities {
                 .Setup(logic => logic.GetYieldMultipliersForSlot(It.IsAny<IWorkerSlot>()))
                 .Returns(ResourceSummary.Empty);
 
-            Container.Bind<ICityConfig>()                                  .FromInstance(MockConfig             .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>()     .FromInstance(MockTileCanon          .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>()    .FromInstance(MockBuildingCanon      .Object);
-            Container.Bind<IIncomeModifierLogic>()                         .FromInstance(MockIncomeLogic        .Object);
+            Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig             .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockTileCanon          .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingCanon      .Object);
+            Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeLogic        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IHealthLogic>                             ().FromInstance(MockHealthLogic        .Object);
 
             Container.Bind<ResourceGenerationLogic>().AsSingle();
         }
@@ -339,6 +342,29 @@ namespace Assets.Tests.Simulation.Cities {
             );
         }
 
+        [Test(Description = "GetTotalYieldOfCity should reduce the amount of food generated in a city " +
+            "by that city's health (determined by ICityHealthLogic) if it's negative")]
+        public void GetTotalYieldOfCity_NegativeHealthReducesFood() {
+            var location = BuildTile(BuildSlot(ResourceSummary.Empty, false), true);
+
+            var tileOne   = BuildTile(BuildSlot(new ResourceSummary(food: 5, production: 2), true), false);
+
+            var tiles = new List<IHexCell>() { tileOne };
+            var buildings = new List<IBuilding>();
+
+            var city = BuildCity(location, tiles, buildings);
+
+            BuildCivilization(city);
+
+            MockHealthLogic.Setup(logic => logic.GetHealthOfCity(city)).Returns(-3);
+
+            var generationLogic = Container.Resolve<ResourceGenerationLogic>();
+
+            var totalYield = generationLogic.GetTotalYieldForCity(city);
+
+            Assert.AreEqual(2, totalYield[ResourceType.Food], "Yield has an unexpected amount of food");
+        }
+
         [Test(Description = "All methods should throw an ArgumentNullException when passed " + 
             "any null argument")]
         public void AllMethods_ThrowExceptionsOnNullArguments() {
@@ -420,12 +446,8 @@ namespace Assets.Tests.Simulation.Cities {
         private IBuilding BuildBuilding(ResourceSummary staticYield, IEnumerable<IWorkerSlot> slots) {
             var buildingMock = new Mock<IBuilding>();
 
-            var mockTemplate = new Mock<IBuildingTemplate>();
-
-            mockTemplate.Setup(template => template.StaticYield).Returns(staticYield);
-
+            buildingMock.Setup(building => building.StaticYield).Returns(staticYield);
             buildingMock.Setup(building => building.Slots).Returns(slots.ToList().AsReadOnly());
-            buildingMock.Setup(building => building.Template).Returns(mockTemplate.Object);
 
             return buildingMock.Object;
         }

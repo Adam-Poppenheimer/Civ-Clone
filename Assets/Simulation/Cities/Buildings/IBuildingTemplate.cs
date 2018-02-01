@@ -49,6 +49,8 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         ResourceSummary CityYieldModifier { get; }
 
+        int Health { get; }
+
         #endregion
 
     }

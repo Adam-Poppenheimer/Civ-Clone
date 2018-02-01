@@ -54,6 +54,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private ResourceSummary _cityYieldModifier;
 
+        public int Health {
+            get { return _health; }
+        }
+        [SerializeField] private int _health;
+
         #endregion
 
         #endregion

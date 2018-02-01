@@ -195,11 +195,8 @@ namespace Assets.Tests.Simulation.Cities {
         private IBuilding BuildBuilding(ResourceSummary civilizationModifier, ResourceSummary cityModifier) {
             var mockBuilding = new Mock<IBuilding>();
 
-            var mockTemplate = new Mock<IBuildingTemplate>();
-            mockTemplate.Setup(template => template.CivilizationYieldModifier).Returns(civilizationModifier);
-            mockTemplate.Setup(template => template.CityYieldModifier        ).Returns(cityModifier);
-
-            mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
+            mockBuilding.Setup(building => building.CivilizationYieldModifier).Returns(civilizationModifier);
+            mockBuilding.Setup(building => building.CityYieldModifier        ).Returns(cityModifier);
 
             return mockBuilding.Object;
         }

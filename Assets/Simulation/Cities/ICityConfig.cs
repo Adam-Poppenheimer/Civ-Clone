@@ -81,17 +81,19 @@ namespace Assets.Simulation.Cities {
 
         float CombatStrengthPerPopulation { get; }
 
-        int BaseMaxHealth { get; }
+        int BaseMaxHitPoints { get; }
 
-        float MaxHealthPerPopulation { get; }
+        float MaxHitPointsPerPopulation { get; }
 
         int BaseRangedAttackStrength { get; }
 
         float RangedAttackStrengthPerPopulation { get; }
 
-        int HealthRegenPerRound { get; }
+        int HitPointRegenPerRound { get; }
 
         int VisionRange { get; }
+
+        int BaseHealth { get; }
 
         #endregion
 

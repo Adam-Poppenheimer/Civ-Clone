@@ -626,7 +626,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When PerformHealing is called, CombatFacade should be healed by an amount " +
             "configured in CityConfig and have its current movement set to 1")]
         public void PerformHealing_FacadeHealedAndGivenMovement() {
-            CityConfigMock.Setup(config => config.HealthRegenPerRound).Returns(20);
+            CityConfigMock.Setup(config => config.HitPointRegenPerRound).Returns(20);
 
             var city = Container.Resolve<City>();
             city.CombatFacade = BuildUnit();

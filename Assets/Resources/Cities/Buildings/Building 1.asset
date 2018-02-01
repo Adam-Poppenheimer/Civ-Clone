@@ -18,8 +18,23 @@ MonoBehaviour:
     Production: 1
     Gold: 1
     Culture: 1
+    Science: 0
   _staticYield:
     Food: 1
     Production: 1
     Gold: 1
     Culture: 1
+    Science: 0
+  _civilizationYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _cityYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _health: -5

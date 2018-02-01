@@ -14,16 +14,21 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region properties
 
-        /// <summary>
-        /// The template this building is based off of, and which defines most
-        /// of its properties.
-        /// </summary>
-        IBuildingTemplate Template { get; }
+        string name { get; }
 
-        /// <summary>
-        /// The slots this building provides to its city.
-        /// </summary>
+        int Maintenance { get; }
+
+        ResourceSummary StaticYield { get; }
+
         ReadOnlyCollection<IWorkerSlot> Slots { get; }
+
+        ResourceSummary CivilizationYieldModifier { get; }
+
+        ResourceSummary CityYieldModifier { get; }
+
+        int Health { get; }
+
+        IBuildingTemplate Template { get; }
 
         #endregion
 

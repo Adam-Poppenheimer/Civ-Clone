@@ -86,7 +86,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             var baseModifier = ResourceSummary.Empty;
 
             foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
-                baseModifier += building.Template.CityYieldModifier;
+                baseModifier += building.CityYieldModifier;
             }
 
             return  baseModifier;
@@ -102,7 +102,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
-                    baseModifier += building.Template.CivilizationYieldModifier;
+                    baseModifier += building.CivilizationYieldModifier;
                 }
             }
 

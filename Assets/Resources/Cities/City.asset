@@ -28,11 +28,12 @@ MonoBehaviour:
     Science: 0
   _minimumSeparation: 3
   _cityAttackRange: 2
-  _baseCombatStrength: 10
-  _combatStrengthPerPopulation: 0
-  _baseMaxHealth: 200
-  _maxHealthPerPopulation: 0
+  _baseCombatStrength: 20
+  _combatStrengthPerPopulation: 5
+  _baseMaxHitPoints: 200
+  _maxHitPointsPerPopulation: 10
   _baseRangedAttackStrength: 15
-  _rangedAttackStrengthPerPopulation: 0
-  _healthRegenPerRound: 20
-  _visionRange: 0
+  _rangedAttackStrengthPerPopulation: 3
+  _hitPointRegenPerRound: 20
+  _visionRange: 2
+  _baseHealth: 4

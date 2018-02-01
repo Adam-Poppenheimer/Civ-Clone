@@ -32,7 +32,7 @@ namespace Assets.Simulation.Cities {
         }
 
         public int GetMaxHealthOfCity(ICity city) {
-            return Config.BaseMaxHealth + Mathf.RoundToInt(Config.MaxHealthPerPopulation * city.Population);
+            return Config.BaseMaxHitPoints + Mathf.RoundToInt(Config.MaxHitPointsPerPopulation * city.Population);
         }
 
         public int GetRangedAttackStrengthOfCity(ICity city) {
