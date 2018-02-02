@@ -29,7 +29,7 @@ namespace Assets.Simulation.HexMap {
             get { return _terrain; }
             set {
                 _terrain = value;
-                workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
+                RefreshSlot();
                 ShaderData.RefreshTerrain(this);
             }
         }
@@ -43,7 +43,7 @@ namespace Assets.Simulation.HexMap {
                 }
 
                 _feature = value;
-                workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
+                RefreshSlot();
                 RefreshSelfOnly();
             }
         }
@@ -238,6 +238,10 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility() {
             ShaderData.RefreshVisibility(this);
+        }
+
+        public void RefreshSlot() {
+            workerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
         }
 
         #endregion

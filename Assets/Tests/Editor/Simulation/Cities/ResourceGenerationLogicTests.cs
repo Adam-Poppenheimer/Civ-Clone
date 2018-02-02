@@ -29,7 +29,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<IHealthLogic>                              MockHealthLogic;
+        private Mock<IHealthLogic>                                  MockHealthLogic;
 
         #endregion
 
@@ -432,7 +432,7 @@ namespace Assets.Tests.Simulation.Cities {
             var slotMock = new Mock<IWorkerSlot>();
 
             slotMock.SetupAllProperties();
-            MockIncomeLogic.Setup(logic => logic.GetRealBaseYieldForSlot(slotMock.Object)).Returns(yield);
+            slotMock.Setup(slot => slot.BaseYield).Returns(yield);
 
             slotMock.Object.IsOccupied = isOccupied;
 

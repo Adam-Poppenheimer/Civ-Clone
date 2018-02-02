@@ -63,7 +63,7 @@ namespace Assets.UI.MapEditor {
             RiverCanon = riverCanon;
         }
 
-        #region Unity message methods
+        #region Unity messages
 
         private void Awake() {
             SelectTerrain(0);

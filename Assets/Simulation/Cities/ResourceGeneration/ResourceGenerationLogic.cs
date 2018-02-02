@@ -67,7 +67,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            var retval = IncomeModifierLogic.GetRealBaseYieldForSlot(city.Location.WorkerSlot);
+            var retval = city.Location.WorkerSlot.BaseYield;
 
             int employedPops = 0;
 
@@ -113,8 +113,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            var realBaseYield = IncomeModifierLogic.GetRealBaseYieldForSlot(slot);
-
             var multiplier = ResourceSummary.Ones +
                 IncomeModifierLogic.GetYieldMultipliersForSlot(slot) +
                 IncomeModifierLogic.GetYieldMultipliersForCity(city);   
@@ -124,7 +122,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
             }              
 
-            return realBaseYield * multiplier;
+            return slot.BaseYield * multiplier;
         }
 
         /// <inheritdoc/>

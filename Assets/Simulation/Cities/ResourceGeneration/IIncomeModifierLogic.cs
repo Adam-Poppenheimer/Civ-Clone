@@ -18,14 +18,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region methods
 
         /// <summary>
-        /// Gets the real base yield of a particular slot, taking into account any improvements
-        /// or base modifiers that might be altering its yield.
-        /// </summary>
-        /// <param name="slot">The slot in question.</param>
-        /// <returns>The real yield of that slot for its city.</returns>
-        ResourceSummary GetRealBaseYieldForSlot(IWorkerSlot slot);
-
-        /// <summary>
         /// Retrieves the yield modifiers that are applying specifically to the slot in question,
         /// disregarding other modifiers from that slot's city or its civilization.
         /// </summary>

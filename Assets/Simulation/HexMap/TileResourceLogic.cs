@@ -5,6 +5,9 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Improvements;
+
 namespace Assets.Simulation.HexMap {
 
     public class TileResourceLogic : ITileResourceLogic {
@@ -13,13 +16,22 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGridConfig Config;
 
+        private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
+
+        private IImprovementLocationCanon ImprovementLocationCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public TileResourceLogic(IHexGridConfig config) {
-            Config = config;
+        public TileResourceLogic(IHexGridConfig config,
+            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
+            IImprovementLocationCanon improvementLocationCanon
+        ){
+            Config                   = config;
+            NodePositionCanon        = nodePositionCanon;
+            ImprovementLocationCanon = improvementLocationCanon;
         }
 
         #endregion
@@ -28,17 +40,30 @@ namespace Assets.Simulation.HexMap {
 
         #region from ITileResourceLogic
 
-        public ResourceSummary GetYieldOfCell(IHexCell tile) {
-            if(tile == null) {
-                throw new ArgumentNullException("tile");
+        public ResourceSummary GetYieldOfCell(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
             }
 
-            if(tile.Feature != TerrainFeature.None) {
-                return Config.FeatureYields[(int)tile.Feature];
+            ResourceSummary retval;
 
+            if(cell.Feature != TerrainFeature.None) {
+                retval = Config.FeatureYields[(int)cell.Feature];
             }else {
-                return Config.TerrainYields[(int)tile.Terrain];
+                retval = Config.TerrainYields[(int)cell.Terrain];
             }
+
+            var nodeAtLocation = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            if(nodeAtLocation != null) {
+                retval += nodeAtLocation.Resource.BonusYield;
+            }
+
+            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            if(improvementOnCell != null) {
+                retval += improvementOnCell.Template.BonusYield;
+            }
+
+            return retval;
         }
 
         #endregion

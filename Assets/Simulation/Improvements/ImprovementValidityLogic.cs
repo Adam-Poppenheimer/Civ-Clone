@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Improvements {
 
@@ -18,14 +19,19 @@ namespace Assets.Simulation.Improvements {
 
         private IHexGrid Grid;
 
+        private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public ImprovementValidityLogic(ICityFactory cityFactory, IHexGrid grid) {
-            CityFactory = cityFactory;
-            Grid        = grid;
+        public ImprovementValidityLogic(ICityFactory cityFactory, IHexGrid grid,
+            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
+        ){
+            CityFactory       = cityFactory;
+            Grid              = grid;
+            NodePositionCanon = nodePositionCanon;
         }
 
         #endregion
@@ -43,6 +49,11 @@ namespace Assets.Simulation.Improvements {
 
             if(CityFactory.AllCities.Where(city => city.Location == cell).Count() != 0) {
                 return false;
+            }
+
+            var nodeAtCell = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            if(nodeAtCell != null && nodeAtCell.Resource.Extractor == template) {
+                return true;
             }
 
             if(template.RequiresAdjacentUpwardCliff) {

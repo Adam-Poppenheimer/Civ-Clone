@@ -17,6 +17,14 @@ namespace Assets.Simulation.Improvements {
             return GetPossessionsOfOwner(owner).Count() == 0;
         }
 
+        protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
+            oldOwner.RefreshSlot();
+        }
+
+        protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
+            newOwner.RefreshSlot();
+        }
+
         #endregion
 
         #region from IImprovementLocationCanon

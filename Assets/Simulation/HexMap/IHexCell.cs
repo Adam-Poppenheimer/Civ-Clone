@@ -62,6 +62,7 @@ namespace Assets.Simulation.HexMap {
         void RefreshSelfOnly();
 
         void RefreshVisibility();
+        void RefreshSlot();
 
         #endregion
 

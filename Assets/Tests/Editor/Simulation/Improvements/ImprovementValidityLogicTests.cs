@@ -8,14 +8,59 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Tests.Simulation.Improvements {
 
     [TestFixture]
     public class ImprovementValidityLogicTests : ZenjectUnitTestFixture {
+
+        #region internal types
+
+        public struct IsTemplateValidForCellData {
+
+            public HexCellTestData Cell;
+
+            public List<HexCellTestData> Neighbors;
+
+            public bool CellHasCity;
+
+            public ImprovementTemplateTestData ImprovementTemplate;
+
+            public ResourceNodeTestData NodeOnCell;
+
+        }
+
+        public struct HexCellTestData {
+
+            public TerrainType Terrain;
+            public TerrainFeature Feature;
+
+            public int Elevation;
+
+        }
+
+        public struct ImprovementTemplateTestData {
+
+            public List<TerrainType> ValidTerrains;
+
+            public List<TerrainFeature> ValidFeatures;
+
+            public bool RequiresNearbyCliff;
+
+        }
+
+        public class ResourceNodeTestData {
+
+            public bool TemplateToTestIsExtractor;
+
+        }
+
+        #endregion
 
         #region static fields and properties
 
@@ -23,33 +68,134 @@ namespace Assets.Tests.Simulation.Improvements {
 
         private static IEnumerable ValidityTestCases {
             get {
-                yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainFeature.None,
-                    new List<TerrainType>       () { TerrainType.Grassland },
-                    new List<TerrainFeature>() { TerrainFeature.None })
-                .SetName("All aspects are valid")
-                .Returns(true);
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = false,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Everything is valid").Returns(true);
 
-                yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainFeature.None,
-                    new List<TerrainType>       () { TerrainType.Plains },
-                    new List<TerrainFeature>() { TerrainFeature.None })
-                .SetName("Only terrain is invalid")
-                .Returns(false);
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = false,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Invalid terrain").Returns(false);
 
-                yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainFeature.None,
-                    new List<TerrainType>       () { TerrainType.Grassland },
-                    new List<TerrainFeature>() { TerrainFeature.Forest })
-                .SetName("Only feature is invalid")
-                .Returns(false);
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = false,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest }
+                    }
+                }).SetName("Invalid feature").Returns(false);
 
-                yield return new TestCaseData(
-                    TerrainType.Grassland, TerrainFeature.None,
-                    new List<TerrainType>       () { TerrainType.Grassland, TerrainType.Plains },
-                    new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.None })
-                .SetName("All aspects are valid, and template has options not represented by tile")
-                .Returns(true);
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Elevation = 2 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = true,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Template requires cliff and cliff exists").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Elevation = 0 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = true,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Template requires cliff and no cliff exists").Returns(false);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 2
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Elevation = 0 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = true,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Template requires cliff and cell at top of cliff").Returns(false);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = true,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = false,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("City on otherwise valid cell").Returns(false);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = true,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None }
+                    },
+                    NodeOnCell = new ResourceNodeTestData() {
+                        TemplateToTestIsExtractor = true
+                    }
+                }).SetName("City on otherwise invalid cell, but node with valid extractor").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RequiresNearbyCliff = true,
+                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None }
+                    },
+                    NodeOnCell = new ResourceNodeTestData() {
+                        TemplateToTestIsExtractor = false
+                    }
+                }).SetName("City on otherwise invalid cell, but node with invalid extractor").Returns(false);
             }
         }
 
@@ -63,6 +209,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
         private Mock<IHexGrid> MockGrid;
 
+        private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -75,13 +223,15 @@ namespace Assets.Tests.Simulation.Improvements {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockCityFactory = new Mock<ICityFactory>();
-            MockGrid        = new Mock<IHexGrid>();
+            MockCityFactory       = new Mock<ICityFactory>();
+            MockGrid              = new Mock<IHexGrid>();
+            MockNodePositionCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
-            Container.Bind<ICityFactory>().FromInstance(MockCityFactory.Object);
-            Container.Bind<IHexGrid>    ().FromInstance(MockGrid       .Object);
+            Container.Bind<ICityFactory>                                    ().FromInstance(MockCityFactory      .Object);
+            Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid             .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon.Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }
@@ -90,114 +240,48 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region tests
 
-        [Test(Description = "IsTemplateValidForTile should return true when the given " +
-            "tile has a terrain type, shape, and feature that the template considers " +
-            "valid and should return false otherwise")]
+        [Test(Description = "IsTemplateValidForCell should consider the terrain, features, and " +
+            "edge types of the cell in question. It should always forbid placement on cities but allow " +
+            "templates on ResourceNodes regardless of other properties if the node requires that " +
+            "template as an extractor")]
         [TestCaseSource("ValidityTestCases")]
-        public bool IsTemplateValidForTile_ConsidersTerrainAndFeatures(
-            TerrainType tileTerrain, TerrainFeature tileFeature,
-            IEnumerable<TerrainType> validTerrains, IEnumerable<TerrainFeature> validFeatures
-        ){
-            var template = BuildTemplate(validTerrains, validFeatures);
-            var tile = BuildCell(tileTerrain, tileFeature);            
+        public bool IsTemplateValidForCell_ConsidersTerrainAndFeatures(IsTemplateValidForCellData data){
+            var cellToTest = BuildCell(data.Cell);
+
+            if(data.CellHasCity) {
+                BuildCity(cellToTest);
+            }
+
+            MockGrid.Setup(grid => grid.GetNeighbors(cellToTest))
+                .Returns(data.Neighbors.Select(neighbor => BuildCell(neighbor)).ToList());
+
+            var templateToTest = BuildTemplate(data.ImprovementTemplate);
+
+            if(data.NodeOnCell != null) {
+                BuildResourceNode(cellToTest, data.NodeOnCell.TemplateToTestIsExtractor ? templateToTest : null);
+            }
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
-            return validityLogic.IsTemplateValidForCell(template, tile);
-        }
-
-        [Test(Description = "IsTemplateValidForTile should return false when the " +
-            "given tile has a city on it")]
-        public void IsTemplateValidForTile_FalseIfTileHasCity() {
-            var template = BuildTemplate(
-                new List<TerrainType>   () { TerrainType.Grassland },
-                new List<TerrainFeature>() { TerrainFeature.Forest }
-            );
-
-            var tile = BuildCell(TerrainType.Grassland, TerrainFeature.Forest);
-
-            BuildCity(tile);
-
-            var validityLogic = Container.Resolve<ImprovementValidityLogic>();
-
-            Assert.IsFalse(validityLogic.IsTemplateValidForCell(template, tile),
-                "IsTemplateValidForTile falsely returns true on a tile with a city");
-        }
-        
-        [Test(Description = "IsTemplateValidForTile should throw an ArgumentNullException " +
-            "whenever passed a null argument")]
-        public void IsTemplateValidForTile_ThrowsOnNullArguments() {
-            var template = BuildTemplate(null, null);
-            var tile = BuildCell(TerrainType.Desert, TerrainFeature.Forest);
-
-            var validityLogic = Container.Resolve<ImprovementValidityLogic>();
-
-            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForCell(null, tile),
-                "IsTemplateValidForTile did not throw on a null template argument");
-
-            Assert.Throws<ArgumentNullException>(() => validityLogic.IsTemplateValidForCell(template, null),
-                "IsTemplateValidForTile did not throw on a null tile argument");
-        }
-
-        [Test(Description = "IsTemplateValidForTile should return false if the template " +
-            "requires cliffs and the cell isn't at the bottom of one")]
-        public void IsTemplateValidForTile_ProperlyConsidersCliffRequirements() {
-            var template = BuildTemplate(
-                new List<TerrainType>   () { TerrainType.Grassland },
-                new List<TerrainFeature>() { TerrainFeature.Forest },
-                true
-            );
-
-            var cellOne = BuildCell(TerrainType.Grassland, TerrainFeature.Forest);
-
-            var cellTwo = BuildCell(TerrainType.Grassland, TerrainFeature.None, 2);
-
-            MockGrid.Setup(grid => grid.GetNeighbors(cellOne)).Returns(new List<IHexCell>() { cellTwo });
-            MockGrid.Setup(grid => grid.GetNeighbors(cellTwo)).Returns(new List<IHexCell>() { cellOne });
-
-            var validityLogic = Container.Resolve<ImprovementValidityLogic>();
-
-            Assert.IsTrue(
-                validityLogic.IsTemplateValidForCell(template, cellOne),
-                "Logic fails to permit a cliff-requiring improvement on cellOne"
-            );
-
-            Assert.IsFalse(
-                validityLogic.IsTemplateValidForCell(template, cellTwo),
-                "Logic falsely permits a cliff-requiring improvement on cellTwo"
-            );
+            return validityLogic.IsTemplateValidForCell(templateToTest, cellToTest);
         }
 
         #endregion
 
         #region utilities
 
-        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, int elevation = 0) {
+        private IHexCell BuildCell(HexCellTestData data) {
             var mockCell = new Mock<IHexCell>();
+
             mockCell.SetupAllProperties();
 
-            var newcell = mockCell.Object;
+            var newCell = mockCell.Object;
 
-            newcell.Terrain   = terrain;
-            newcell.Feature   = feature;
-            newcell.Elevation = elevation;
+            newCell.Terrain   = data.Terrain;
+            newCell.Feature   = data.Feature;
+            newCell.Elevation = data.Elevation;
 
-            return newcell;
-        }
-
-        private IImprovementTemplate BuildTemplate(
-            IEnumerable<TerrainType> validTerrains,
-            IEnumerable<TerrainFeature> validFeatures,
-            bool requiresAdjacentUpwardCliff = false
-        ){
-            var mockTemplate = new Mock<IImprovementTemplate>();
-
-            mockTemplate.Setup(template => template.ValidTerrains).Returns(validTerrains);
-            mockTemplate.Setup(template => template.ValidFeatures).Returns(validFeatures);
-            
-            mockTemplate.Setup(template => template.RequiresAdjacentUpwardCliff).Returns(requiresAdjacentUpwardCliff);
-
-            return mockTemplate.Object;
+            return newCell;
         }
 
         private ICity BuildCity(IHexCell location) {
@@ -209,6 +293,33 @@ namespace Assets.Tests.Simulation.Improvements {
             AllCities.Add(newCity);
 
             return newCity;
+        }
+
+        private IImprovementTemplate BuildTemplate(ImprovementTemplateTestData data){
+            var mockTemplate = new Mock<IImprovementTemplate>();
+
+            mockTemplate.Setup(template => template.ValidTerrains).Returns(data.ValidTerrains);
+            mockTemplate.Setup(template => template.ValidFeatures).Returns(data.ValidFeatures);
+            
+            mockTemplate.Setup(template => template.RequiresAdjacentUpwardCliff).Returns(data.RequiresNearbyCliff);
+
+            return mockTemplate.Object;
+        }
+
+        private IResourceNode BuildResourceNode(IHexCell location, IImprovementTemplate extractor) {
+            var mockNode = new Mock<IResourceNode>();
+
+            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+            mockDefinition.Setup(definition => definition.Extractor).Returns(extractor);
+
+            mockNode.Setup(node => node.Resource).Returns(mockDefinition.Object);
+
+            var newNode = mockNode.Object;
+
+            MockNodePositionCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
+                .Returns(new List<IResourceNode>() { newNode });
+
+            return newNode;
         }
 
         #endregion

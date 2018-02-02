@@ -17,17 +17,14 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private TerrainEditingPanel TerrainEditor;
-
         [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
 
-        [SerializeField] private CivManagementPanel CivPanel;
-
-        [SerializeField] private UnitPaintingPanel UnitPaintingPanel;
-
-        [SerializeField] private CityPaintingPanel CityPaintingPanel;
-
-        [SerializeField] private TechManagementPanel TechManagementPanel;
+        [SerializeField] private TerrainEditingPanel   TerrainEditingPanel;
+        [SerializeField] private CivManagementPanel    CivManagementPanel;
+        [SerializeField] private UnitPaintingPanel     UnitPaintingPanel;
+        [SerializeField] private CityPaintingPanel     CityPaintingPanel;
+        [SerializeField] private TechManagementPanel   TechManagementPanel;
+        [SerializeField] private ResourcePaintingPanel ResourcePaintingPanel;
 
         #endregion
 
@@ -38,15 +35,12 @@ namespace Assets.UI.StateMachine {
         public override void InstallBindings() {
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
-            Container.Bind<CivManagementPanel>().FromInstance(CivPanel);          
-
-            Container.Bind<TerrainEditingPanel>().FromInstance(TerrainEditor);
-
-            Container.Bind<UnitPaintingPanel>().FromInstance(UnitPaintingPanel);
-
-            Container.Bind<CityPaintingPanel>().FromInstance(CityPaintingPanel);
-
-            Container.Bind<TechManagementPanel>().FromInstance(TechManagementPanel);
+            Container.Bind<CivManagementPanel>   ().FromInstance(CivManagementPanel);
+            Container.Bind<TerrainEditingPanel>  ().FromInstance(TerrainEditingPanel);
+            Container.Bind<UnitPaintingPanel>    ().FromInstance(UnitPaintingPanel);
+            Container.Bind<CityPaintingPanel>    ().FromInstance(CityPaintingPanel);
+            Container.Bind<TechManagementPanel>  ().FromInstance(TechManagementPanel);
+            Container.Bind<ResourcePaintingPanel>().FromInstance(ResourcePaintingPanel);
         }
 
         #endregion

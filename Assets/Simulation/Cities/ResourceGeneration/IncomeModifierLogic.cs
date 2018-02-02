@@ -25,29 +25,18 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IHexGrid Map;
 
-        private IImprovementLocationCanon ImprovementLocationCanon;
-
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="buildingPossessionCanon"></param>
-        /// <param name="cityPossessionCanon"></param>
-        /// <param name="improvementLocationCanon"></param>
-        /// <param name="map"></param>
         [Inject]
         public IncomeModifierLogic(
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IImprovementLocationCanon improvementLocationCanon,
             IHexGrid map
         ){
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;
-            ImprovementLocationCanon = improvementLocationCanon;
             Map                      = map;
         }
 
@@ -56,26 +45,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region instance methods
 
         #region from IIncomeModifierLogic
-
-        /// <inheritdoc/>
-        public ResourceSummary GetRealBaseYieldForSlot(IWorkerSlot slot) {
-            if(slot == null) {
-                throw new ArgumentNullException("slot");
-            }
-
-            var baseYield = slot.BaseYield;
-
-            var tileOfSlot = Map.AllCells.Where(tile => tile.WorkerSlot == slot).FirstOrDefault();
-
-            if(tileOfSlot != null) {
-                var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(tileOfSlot).FirstOrDefault();
-                if(improvementOnTile != null) {
-                    baseYield += improvementOnTile.Template.BonusYield;
-                }
-            }
-
-            return baseYield;
-        }
 
         /// <inheritdoc/>
         public ResourceSummary GetYieldMultipliersForCity(ICity city) {
