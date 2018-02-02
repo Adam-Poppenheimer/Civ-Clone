@@ -37,3 +37,4 @@ MonoBehaviour:
   _hitPointRegenPerRound: 20
   _visionRange: 2
   _baseHealth: 4
+  _baseHappiness: 4

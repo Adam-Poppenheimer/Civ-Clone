@@ -95,6 +95,8 @@ namespace Assets.Simulation.Cities {
 
         int BaseHealth { get; }
 
+        int BaseHappiness { get; }
+
         #endregion
 
     }

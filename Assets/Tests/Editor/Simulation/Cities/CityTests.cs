@@ -532,6 +532,12 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Fail("CityDistributionPerformedSignal was never fired");
         }
 
+        [Test(Description = "City should reduce the number of active workers it distributes by " +
+            "its happiness if its happiness is negative.")]
+        public void PerformDistribution_ConsidersHappiness() {
+            throw new NotImplementedException();
+        }
+
         [Test(Description = "When PerformIncome is called on a city, that city should " +
             "call into ResourceGenerationLogic to determine its LastIncome and update its " +
             "culture and food stockpiles")]

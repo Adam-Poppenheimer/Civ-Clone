@@ -93,6 +93,8 @@ namespace Assets.Simulation.Cities {
 
         private ICityConfig Config;
 
+        private IHappinessLogic HappinessLogic;
+
         #endregion
 
         #region instance methods
@@ -113,7 +115,8 @@ namespace Assets.Simulation.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IProductionProjectFactory projectFactory, CitySignals signals, ICityConfig config
+            IProductionProjectFactory projectFactory, CitySignals signals, ICityConfig config,
+            IHappinessLogic happinessLogic
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -124,6 +127,7 @@ namespace Assets.Simulation.Cities {
             ProjectFactory          = projectFactory;
             Signals                 = signals;
             Config                  = config;
+            HappinessLogic          = happinessLogic;
         }
 
         #region Unity messages
@@ -204,7 +208,12 @@ namespace Assets.Simulation.Cities {
             var allSlots = DistributionLogic.GetSlotsAvailableToCity(this);
             var occupiedAndLockedSlots = allSlots.Where(slot => slot.IsOccupied && slot.IsLocked);
 
-            int populationToAssign = Population - occupiedAndLockedSlots.Count();
+            int populationToAssign =
+                Population - occupiedAndLockedSlots.Count()
+                + Math.Min(0, HappinessLogic.GetHappinessOfCity(this));
+
+            populationToAssign = Math.Max(0, populationToAssign);
+
             var slotsToAssign = allSlots.Where(slot => !slot.IsLocked);
 
             DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, ResourceFocus);

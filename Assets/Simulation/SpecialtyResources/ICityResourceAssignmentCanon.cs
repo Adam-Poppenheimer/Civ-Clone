@@ -8,7 +8,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.SpecialtyResources {
 
-    interface ICityResourceAssignmentCanon {
+    public interface ICityResourceAssignmentCanon {
 
         #region instance methods
 

@@ -45,6 +45,10 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return Template.Health; }
         }
 
+        public int Happiness {
+            get { return Template.Happiness; }
+        }
+
         public IBuildingTemplate Template { get; private set; }
 
         #endregion

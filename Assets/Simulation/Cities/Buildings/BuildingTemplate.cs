@@ -59,6 +59,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _health;
 
+        public int Happiness {
+            get { return _happiness; }
+        }
+        [SerializeField] private int _happiness;
+
         #endregion
 
         #endregion

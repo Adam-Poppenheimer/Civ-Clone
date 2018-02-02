@@ -28,6 +28,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int Health { get; }
 
+        int Happiness { get; }
+
         IBuildingTemplate Template { get; }
 
         #endregion
