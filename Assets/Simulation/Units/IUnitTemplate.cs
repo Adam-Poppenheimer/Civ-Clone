@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Units {
 
@@ -26,6 +27,8 @@ namespace Assets.Simulation.Units {
         int CombatStrength { get; }
 
         int RangedAttackStrength { get; }
+
+        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
         #endregion
 

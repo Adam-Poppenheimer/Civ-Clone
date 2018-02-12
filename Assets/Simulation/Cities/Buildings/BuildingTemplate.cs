@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-
+using Assets.Simulation.SpecialtyResources;
 using UnityEngine;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -63,6 +63,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return _happiness; }
         }
         [SerializeField] private int _happiness;
+
+        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+            get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }
+        }
+        [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
 
         #endregion
 

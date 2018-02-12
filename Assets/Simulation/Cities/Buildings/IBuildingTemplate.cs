@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.SpecialtyResources;
+
 namespace Assets.Simulation.Cities.Buildings {
 
     /// <summary>
@@ -52,6 +54,8 @@ namespace Assets.Simulation.Cities.Buildings {
         int Health { get; }
 
         int Happiness { get; }
+
+        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
         #endregion
 

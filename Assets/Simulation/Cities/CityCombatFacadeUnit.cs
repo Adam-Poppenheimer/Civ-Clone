@@ -12,6 +12,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 
 using UnityCustomUtilities.Extensions;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Cities {
 
@@ -74,6 +75,10 @@ namespace Assets.Simulation.Cities {
 
         public int VisionRange {
             get { return Config.VisionRange; }
+        }
+
+        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+            get { return new List<ISpecialtyResourceDefinition>(); }
         }
 
         #endregion

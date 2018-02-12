@@ -7,6 +7,9 @@ using System.Text;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.SpecialtyResources;
+
 using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -16,11 +19,25 @@ namespace Assets.Simulation.Cities.Buildings {
     /// </summary>
     public class BuildingPossessionCanon : PossessionRelationship<ICity, IBuilding> {
 
+        #region instance fields and properties
+
+        private IResourceAssignmentCanon ResourceAssignmentCanon;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;        
+
+        #endregion
+
         #region constructors
-        
+
         [Inject]
-        public BuildingPossessionCanon(CitySignals signals) {
+        public BuildingPossessionCanon(
+            CitySignals signals, IResourceAssignmentCanon resourceAssignmentCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossesionCanon
+            ){
             signals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+
+            ResourceAssignmentCanon = resourceAssignmentCanon;
+            CityPossessionCanon     = cityPossesionCanon;
         }
 
         #endregion
@@ -34,6 +51,30 @@ namespace Assets.Simulation.Cities.Buildings {
                 return true;
             }else {
                 return !GetPossessionsOfOwner(owner).Contains(possession) && GetOwnerOfPossession(possession) == null;
+            }
+        }
+
+        protected override void DoOnPossessionEstablished(IBuilding building, ICity newOwner) {
+            if(newOwner == null) {
+                return;
+            }
+
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(newOwner);
+
+            foreach(var resource in building.Template.RequiredResources) {
+                ResourceAssignmentCanon.ReserveCopyOfResourceForCiv(resource, cityOwner);
+            }
+        }
+
+        protected override void DoOnPossessionBroken(IBuilding building, ICity oldOwner) {
+            if(oldOwner == null) {
+                return;
+            }
+
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(oldOwner);
+
+            foreach(var resource in building.Template.RequiredResources) {
+                ResourceAssignmentCanon.UnreserveCopyOfResourceForCiv(resource, cityOwner);
             }
         }
 

@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Units {
 
@@ -55,6 +56,11 @@ namespace Assets.Simulation.Units {
             get { return _rangedAttackStrength; }
         }
         [SerializeField] private int _rangedAttackStrength;
+
+        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+            get { return _requiredResources; }
+        }
+        [SerializeField] private List<ISpecialtyResourceDefinition> _requiredResources;
 
         #endregion
 

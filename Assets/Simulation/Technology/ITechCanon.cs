@@ -22,13 +22,13 @@ namespace Assets.Simulation.Technology {
 
         #region methods
 
-        IEnumerable<IBuildingTemplate>    GetResearchedBuildings   (ICivilization civilization);
-        IEnumerable<IUnitTemplate>        GetResearchedUnits       (ICivilization civilization);
-        IEnumerable<IAbilityDefinition>   GetResearchedAbilities   (ICivilization civilization);
+        IEnumerable<IBuildingTemplate>    GetResearchedBuildings(ICivilization civilization);
+        IEnumerable<IUnitTemplate>        GetResearchedUnits    (ICivilization civilization);
+        IEnumerable<IAbilityDefinition>   GetResearchedAbilities(ICivilization civilization);
 
-        bool IsBuildingResearchedForCiv   (IBuildingTemplate    template, ICivilization civilization);
-        bool IsUnitResearchedForCiv       (IUnitTemplate        template, ICivilization civilization);
-        bool IsAbilityResearchedForCiv    (IAbilityDefinition   ability,  ICivilization civilization);
+        bool IsBuildingResearchedForCiv(IBuildingTemplate    template, ICivilization civilization);
+        bool IsUnitResearchedForCiv    (IUnitTemplate        template, ICivilization civilization);
+        bool IsAbilityResearchedForCiv (IAbilityDefinition   ability,  ICivilization civilization);
 
         IEnumerable<ITechDefinition> GetTechsDiscoveredByCiv(ICivilization civilization);
         IEnumerable<ITechDefinition> GetTechsAvailableToCiv (ICivilization civilization);
@@ -41,7 +41,7 @@ namespace Assets.Simulation.Technology {
         int  GetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization);
         void SetProgressOnTechByCiv(ITechDefinition tech, ICivilization civilization, int newProgress);
 
-        void SetTechAsDiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
+        void SetTechAsDiscoveredForCiv  (ITechDefinition tech, ICivilization civilization);
         void SetTechAsUndiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
 
         #endregion

@@ -11,6 +11,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.SpecialtyResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -73,6 +74,10 @@ namespace Assets.Simulation.Units {
 
         public int VisionRange {
             get { return Config.VisionRange; }
+        }
+
+        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+            get { return Template.RequiredResources; }
         }
 
         #endregion

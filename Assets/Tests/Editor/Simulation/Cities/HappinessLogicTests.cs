@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<ICityConfig> MockConfig;
 
-        private Mock<ICityResourceAssignmentCanon> MockResourceAssignmentCanon;
+        private Mock<IResourceAssignmentCanon> MockResourceAssignmentCanon;
 
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
 
@@ -140,11 +140,11 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockConfig                  = new Mock<ICityConfig>();
-            MockResourceAssignmentCanon = new Mock<ICityResourceAssignmentCanon>();
+            MockResourceAssignmentCanon = new Mock<IResourceAssignmentCanon>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
             Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
-            Container.Bind<ICityResourceAssignmentCanon>             ().FromInstance(MockResourceAssignmentCanon.Object);
+            Container.Bind<IResourceAssignmentCanon>             ().FromInstance(MockResourceAssignmentCanon.Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
 
             Container.Bind<HappinessLogic>().AsSingle();

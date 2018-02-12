@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Units.Abilities;
 
 namespace Assets.Simulation.Units {
@@ -35,6 +36,8 @@ namespace Assets.Simulation.Units {
         int Health { get; set; }
 
         int MaxHealth { get; }
+
+        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
         List<IHexCell> CurrentPath { get; set; }
 

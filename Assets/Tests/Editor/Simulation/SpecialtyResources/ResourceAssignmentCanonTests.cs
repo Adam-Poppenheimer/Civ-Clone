@@ -15,7 +15,7 @@ using Assets.Simulation.SpecialtyResources;
 namespace Assets.Tests.Simulation.SpecialtyResources {
 
     [TestFixture]
-    public class CityResourceAssignmentCanonTests : ZenjectUnitTestFixture {
+    public class ResourceAssignmentCanonTests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
 
@@ -37,7 +37,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             Container.Bind<ISpecialtyResourcePossessionCanon>            ().FromInstance(MockResourcePossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
 
-            Container.Bind<CityResourceAssignmentCanon>().AsSingle();
+            Container.Bind<ResourceAssignmentCanon>().AsSingle();
         }
 
         #endregion
@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             MockResourcePossessionCanon.Setup(canon => canon.GetCopiesOfResourceBelongingToCiv(resource, civilization))
                 .Returns(0);
 
-            var assignmentCanon = Container.Resolve<CityResourceAssignmentCanon>();
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
 
             Assert.IsFalse(assignmentCanon.CanAssignResourceToCity(resource, testCity),
                 "CanAssignResourceToCity did not forbid assignment when no copies of the resource were available");
@@ -85,7 +85,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             MockResourcePossessionCanon.Setup(canon => canon.GetCopiesOfResourceBelongingToCiv(resource, civilization))
                 .Returns(2);
 
-            var assignmentCanon = Container.Resolve<CityResourceAssignmentCanon>();
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
 
             assignmentCanon.AssignResourceToCity(resource, city);
 
@@ -106,7 +106,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             MockResourcePossessionCanon.Setup(canon => canon.GetCopiesOfResourceBelongingToCiv(resource, civilization))
                 .Returns(2);
 
-            var assignmentCanon = Container.Resolve<CityResourceAssignmentCanon>();
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
 
             assignmentCanon.AssignResourceToCity(resource, city);
 
@@ -134,7 +134,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             MockResourcePossessionCanon.Setup(canon => canon.GetCopiesOfResourceBelongingToCiv(resource, civilization))
                 .Returns(2);
 
-            var assignmentCanon = Container.Resolve<CityResourceAssignmentCanon>();
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
 
             Assert.IsFalse(assignmentCanon.CanUnassignResourceFromCity(resource, city),
                 "CanUnassignResourceFromCity falsely permits unassignment of a resource that hasn't been assigned");
@@ -156,7 +156,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             MockResourcePossessionCanon.Setup(canon => canon.GetCopiesOfResourceBelongingToCiv(resource, civilization))
                 .Returns(2);
 
-            var assignmentCanon = Container.Resolve<CityResourceAssignmentCanon>();
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
 
             assignmentCanon.AssignResourceToCity(resource, city);
 
@@ -172,6 +172,68 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
             Assert.AreEqual(2, assignmentCanon.GetFreeCopiesOfResourceForCiv(resource, civilization),
                 "GetFreeCopiesOfResourceForCiv does not reflect the resource unassignment");
+        }
+
+        [Test(Description = "CanReserveCopyOfResourceForCiv should be true even when GetFreeCopiesOfResourceForCiv " +
+            "returns a zero or negative value. That means a civilization can reserve resources beyond the number of " +
+            "copies it has")]
+        public void CanReserveCopyOfResourceForCiv_TrueEvenWhenNoFreeCopiesExist() {
+            var resource = BuildDefinition();
+
+            var civilization = BuildCivilization(new List<ICity>());
+
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
+
+            Assert.IsTrue(assignmentCanon.CanReserveCopyOfResourceForCiv(resource, civilization),
+                "CanReserveCopyOfResourceForCiv returned an unexpected value");
+        }
+
+        [Test(Description = "ReserveCopyOfResourceForCiv should reduce by one the number returned by " +
+            "GetFreeCopiesOfResourceForCiv when called on the same arguments")]
+        public void ReserveCopyOfResourceForCiv_ReflectedInFreeCopies() {
+            var resource = BuildDefinition();
+
+            var civilization = BuildCivilization(new List<ICity>());
+
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
+
+            assignmentCanon.ReserveCopyOfResourceForCiv(resource, civilization);
+
+            Assert.AreEqual(-1, assignmentCanon.GetFreeCopiesOfResourceForCiv(resource, civilization));
+        }
+
+        [Test(Description = "CanUnreserveCopyOfResourceForCiv should only return true if more than one copy " +
+            "of the argued resource has been reserved by the argued civilization")]
+        public void CanUnreserveCopyOfResourceForCiv_TrueOnlyIfCopyIsReserved() {
+            var resource = BuildDefinition();
+
+            var civilization = BuildCivilization(new List<ICity>());
+
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
+
+            Assert.IsFalse(assignmentCanon.CanUnreserveCopyOfResourceForCiv(resource, civilization),
+                "CanUnreserveCopyOfResourceForCiv returned true when no copy of the resource had been reserved");
+
+            assignmentCanon.ReserveCopyOfResourceForCiv(resource, civilization);
+
+            Assert.IsTrue(assignmentCanon.CanUnreserveCopyOfResourceForCiv(resource, civilization),
+                "CanUnreserveCopyOfResourceForCiv returned false when a copy of the resource had been reserved");
+        }
+        
+        [Test(Description = "UnreserveCopyOfResourceForCiv should increase by one the number " +
+            "returned by GetFreeCopiesOfResourceForCiv when called on the same arguments")]
+        public void UnreserveCopyOfResourceForCiv_ReflectedInFreeCopies() {
+            var resource = BuildDefinition();
+
+            var civilization = BuildCivilization(new List<ICity>());
+
+            var assignmentCanon = Container.Resolve<ResourceAssignmentCanon>();
+
+            assignmentCanon.ReserveCopyOfResourceForCiv(resource, civilization);
+            assignmentCanon.UnreserveCopyOfResourceForCiv(resource, civilization);
+
+            Assert.AreEqual(0, assignmentCanon.GetFreeCopiesOfResourceForCiv(resource, civilization),
+                "GetFreeCopiesOfResourceForCiv returned an unexpected value");
         }
 
         #endregion

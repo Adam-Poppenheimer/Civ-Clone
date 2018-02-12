@@ -6,7 +6,8 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -16,6 +17,10 @@ namespace Assets.Simulation.Units {
 
         private IUnitPositionCanon UnitPositionCanon;
 
+        private IResourceAssignmentCanon ResourceAssignmentCanon;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         private IEnumerable<IUnitTemplate> AvailableUnitTemplates;
 
         #endregion
@@ -24,10 +29,14 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitProductionValidityLogic(IUnitPositionCanon unitPositionCanon,
+            IResourceAssignmentCanon resourceAssignmentCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
         ){
-            UnitPositionCanon = unitPositionCanon;
-            AvailableUnitTemplates = availableUnitTemplates;
+            UnitPositionCanon       = unitPositionCanon;
+            ResourceAssignmentCanon = resourceAssignmentCanon;
+            CityPossessionCanon     = cityPossessionCanon;
+            AvailableUnitTemplates  = availableUnitTemplates;
         }
 
         #endregion
@@ -41,7 +50,18 @@ namespace Assets.Simulation.Units {
         }
 
         public bool IsTemplateValidForCity(IUnitTemplate template, ICity city) {
-            return UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location, false);
+            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location, false)) {
+                return false;
+            }
+
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+            foreach(var resource in template.RequiredResources) {
+                if(ResourceAssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
+                    return false;
+                }
+            }
+
+            return true;
         }
 
         #endregion

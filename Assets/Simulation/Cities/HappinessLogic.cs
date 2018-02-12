@@ -16,7 +16,7 @@ namespace Assets.Simulation.Cities {
 
         private ICityConfig Config;
 
-        private ICityResourceAssignmentCanon ResourceAssignmentCanon;
+        private IResourceAssignmentCanon ResourceAssignmentCanon;
 
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
@@ -25,7 +25,7 @@ namespace Assets.Simulation.Cities {
         #region constructors
 
         [Inject]
-        public HappinessLogic(ICityConfig config, ICityResourceAssignmentCanon resourceAssignmentCanon,
+        public HappinessLogic(ICityConfig config, IResourceAssignmentCanon resourceAssignmentCanon,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
         ){
             Config                  = config;

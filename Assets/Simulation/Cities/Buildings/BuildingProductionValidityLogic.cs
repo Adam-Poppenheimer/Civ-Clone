@@ -5,6 +5,9 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.SpecialtyResources;
+
 namespace Assets.Simulation.Cities.Buildings {
 
     /// <summary>
@@ -16,7 +19,11 @@ namespace Assets.Simulation.Cities.Buildings {
 
         private List<IBuildingTemplate> AvailableTemplates;
 
-        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
+        private IResourceAssignmentCanon ResourceAssignmentCanon;
 
         #endregion
 
@@ -26,13 +33,18 @@ namespace Assets.Simulation.Cities.Buildings {
         /// 
         /// </summary>
         /// <param name="availableTemplates"></param>
-        /// <param name="possessionCanon"></param>
+        /// <param name="buildingPossessionCanon"></param>
         [Inject]
-        public BuildingProductionValidityLogic(List<IBuildingTemplate> availableTemplates,
-            IPossessionRelationship<ICity, IBuilding> possessionCanon
+        public BuildingProductionValidityLogic(
+            List<IBuildingTemplate> availableTemplates,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IResourceAssignmentCanon resourceAssignmentCanon
         ){
-            AvailableTemplates = availableTemplates;
-            PossessionCanon = possessionCanon;
+            AvailableTemplates      = availableTemplates;
+            BuildingPossessionCanon = buildingPossessionCanon;
+            CityPossessionCanon     = cityPossessionCanon;
+            ResourceAssignmentCanon = resourceAssignmentCanon;
         }
 
         #endregion
@@ -58,8 +70,15 @@ namespace Assets.Simulation.Cities.Buildings {
                 throw new ArgumentNullException("city");
             }
 
-            var templatesAlreadyThere = PossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
-            return AvailableTemplates.Contains(template) && !templatesAlreadyThere.Contains(template);
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+            foreach(var resource in template.RequiredResources) {
+                if(ResourceAssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
+                    return false;
+                }
+            }
+
+            var templatesAlreadyThere = BuildingPossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
+            return !templatesAlreadyThere.Contains(template);
         }
 
         #endregion

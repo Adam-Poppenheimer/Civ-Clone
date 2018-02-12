@@ -12,12 +12,15 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.SpecialtyResources {
 
-    public class CityResourceAssignmentCanon : ICityResourceAssignmentCanon {
+    public class ResourceAssignmentCanon : IResourceAssignmentCanon {
 
         #region instance fields and properties
 
         private DictionaryOfLists<ICity, ISpecialtyResourceDefinition> ResourcesAssignedToCity =
             new DictionaryOfLists<ICity, ISpecialtyResourceDefinition>();
+
+        private Dictionary<ICivilization, Dictionary<ISpecialtyResourceDefinition, int>> CopiesOfResourceReservedByCiv = 
+            new Dictionary<ICivilization, Dictionary<ISpecialtyResourceDefinition, int>>();
 
 
 
@@ -31,7 +34,7 @@ namespace Assets.Simulation.SpecialtyResources {
         #region constructors
 
         [Inject]
-        public CityResourceAssignmentCanon(
+        public ResourceAssignmentCanon(
             ISpecialtyResourcePossessionCanon resourcePossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ){
@@ -62,7 +65,31 @@ namespace Assets.Simulation.SpecialtyResources {
                 }
             }
 
+            freeCopies -= CopiesOfResourceReservedByCiv.GetNestedDict(civ, resource);
+
             return freeCopies;
+        }
+
+        public bool CanReserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+            return true;
+        }
+
+        public void ReserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+            if(!CanReserveCopyOfResourceForCiv(resource, civ)) {
+                throw new InvalidOperationException("CanReserveCopyOfResourceForCiv must return true on the given arguments");
+            }
+            CopiesOfResourceReservedByCiv.SetNestedDict(civ, resource, CopiesOfResourceReservedByCiv.GetNestedDict(civ, resource) + 1);
+        }
+
+        public bool CanUnreserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+            return CopiesOfResourceReservedByCiv.GetNestedDict(civ, resource) > 0;
+        }
+
+        public void UnreserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+            if(!CanUnreserveCopyOfResourceForCiv(resource, civ)) {
+                throw new InvalidOperationException("CanUnreserveCopyOfResourceForCiv must return true on the given arguments");
+            }
+            CopiesOfResourceReservedByCiv.SetNestedDict(civ, resource, CopiesOfResourceReservedByCiv.GetNestedDict(civ, resource) - 1);
         }
 
         public bool CanAssignResourceToCity(ISpecialtyResourceDefinition resource, ICity city) {

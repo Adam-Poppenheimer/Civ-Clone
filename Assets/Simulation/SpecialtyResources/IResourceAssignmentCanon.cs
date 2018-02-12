@@ -8,7 +8,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.SpecialtyResources {
 
-    public interface ICityResourceAssignmentCanon {
+    public interface IResourceAssignmentCanon {
 
         #region instance methods
 
@@ -17,6 +17,12 @@ namespace Assets.Simulation.SpecialtyResources {
         IEnumerable<ISpecialtyResourceDefinition> GetAllResourcesAssignedToCity(ICity city);
 
         int GetFreeCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        
+        bool CanReserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        void ReserveCopyOfResourceForCiv   (ISpecialtyResourceDefinition resource, ICivilization civ);
+
+        bool CanUnreserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        void UnreserveCopyOfResourceForCiv   (ISpecialtyResourceDefinition resource, ICivilization civ);
 
         bool CanUnassignResourceFromCity(ISpecialtyResourceDefinition resource, ICity city);
         void UnassignResourceFromCity   (ISpecialtyResourceDefinition resource, ICity city);
