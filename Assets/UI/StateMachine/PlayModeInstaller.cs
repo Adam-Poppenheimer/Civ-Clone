@@ -14,6 +14,7 @@ using Assets.UI.Civilizations;
 using Assets.UI.HexMap;
 using Assets.UI.Units;
 using Assets.UI.Technology;
+using Assets.UI.SpecialtyResources;
 
 using Assets.UI.StateMachine.States;
 
@@ -30,7 +31,8 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
 
-        [SerializeField] private TechTreeDisplay TechTreeDisplay;
+        [SerializeField] private TechTreeDisplay                 TechTreeDisplay;
+        [SerializeField] private SpecialtyResourceSummaryDisplay SpecialtyResourceSummaryDisplay;
 
         [SerializeField] private List<UnitDisplayBase> RangedAttackStateDisplays;
 
@@ -48,7 +50,8 @@ namespace Assets.UI.StateMachine {
 
             Container.Bind<List<RectTransform>>().WithId("Play Mode Default Panels").FromInstance(PlayModeDefaultPanels);
 
-            Container.Bind<TechTreeDisplay>().FromInstance(TechTreeDisplay);
+            Container.Bind<TechTreeDisplay>                ().FromInstance(TechTreeDisplay);
+            Container.Bind<SpecialtyResourceSummaryDisplay>().FromInstance(SpecialtyResourceSummaryDisplay);
 
             Container.Bind<List<UnitDisplayBase>>().WithId("Ranged Attack State Displays").FromInstance(RangedAttackStateDisplays);
         }

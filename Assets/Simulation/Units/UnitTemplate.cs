@@ -58,9 +58,9 @@ namespace Assets.Simulation.Units {
         [SerializeField] private int _rangedAttackStrength;
 
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
-            get { return _requiredResources; }
+            get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }
         }
-        [SerializeField] private List<ISpecialtyResourceDefinition> _requiredResources;
+        [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
 
         #endregion
 

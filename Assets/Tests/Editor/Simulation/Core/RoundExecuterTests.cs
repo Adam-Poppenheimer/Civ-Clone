@@ -18,7 +18,7 @@ using Assets.Simulation.Units;
 namespace Assets.Tests.Simulation.Core {
 
     [TestFixture]
-    public class TurnExecuterTests : ZenjectUnitTestFixture {
+    public class RoundExecuterTests : ZenjectUnitTestFixture {
 
         #region instance methods
 
@@ -65,6 +65,7 @@ namespace Assets.Tests.Simulation.Core {
 
             var executionSequence = new MockSequence();
 
+            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformDistribution());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
 

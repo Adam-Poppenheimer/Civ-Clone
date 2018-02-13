@@ -42,7 +42,8 @@ namespace Assets.Simulation.Civilizations {
                      .To<UnitPossessionCanon>()
                      .AsSingle();
 
-            Container.Bind<ICivilizationYieldLogic>().To<CivilizationYieldLogic>().AsSingle();
+            Container.Bind<ICivilizationYieldLogic>            ().To<CivilizationYieldLogic>            ().AsSingle();
+            Container.Bind<ISpecialtyResourceDistributionLogic>().To<SpecialtyResourceDistributionLogic>().AsSingle();
 
             Container.Bind<VisibilityResponder>    ().AsSingle().NonLazy();
             Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();

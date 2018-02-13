@@ -103,8 +103,8 @@ namespace Assets.UI.Cities.Growth {
             int foodUntilNextGrowth) {
 
             CurrentPopulationField.text = currentPopulation.ToString();
-            CurrentFoodStockpileField.text = currentFoodStockpile.ToString();
-            FoodUntilNextGrowthField.text = foodUntilNextGrowth.ToString();
+            if(CurrentFoodStockpileField != null) { CurrentFoodStockpileField.text = currentFoodStockpile.ToString(); }
+            if(FoodUntilNextGrowthField  != null) { FoodUntilNextGrowthField.text  = foodUntilNextGrowth .ToString(); }
 
             GrowthSlider.minValue = 0;
             GrowthSlider.maxValue = foodUntilNextGrowth;

@@ -45,6 +45,8 @@ namespace Assets.Simulation.Civilizations {
 
         private ITechCanon TechCanon;
 
+        private ISpecialtyResourceDistributionLogic DistributionLogic;
+
         #endregion
 
         #region constructors
@@ -57,13 +59,15 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public Civilization(
             ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
-            ITechCanon techCanon,
+            ITechCanon techCanon, ISpecialtyResourceDistributionLogic distributionLogic,
             string name = ""
         ){
-            Config     = config;
-            YieldLogic = yieldLogic;
-            TechCanon  = techCanon;
-            Name       = name;
+            Config            = config;
+            YieldLogic        = yieldLogic;
+            TechCanon         = techCanon;
+            DistributionLogic = distributionLogic;
+
+            Name = name;
 
             TechQueue = new Queue<ITechDefinition>();
         }
@@ -97,6 +101,10 @@ namespace Assets.Simulation.Civilizations {
                     TechCanon.SetProgressOnTechByCiv(activeTech, this, techProgress);
                 }
             }
+        }
+
+        public void PerformDistribution() {
+            DistributionLogic.DistributeResourcesOfCiv(this);
         }
 
         #endregion

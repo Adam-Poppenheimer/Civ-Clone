@@ -69,8 +69,8 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
-        public void SetActiveCopies(float newValue) {
-            ActiveCopies = (int)newValue;
+        public void SetActiveCopies(string newValue) {
+            ActiveCopies = Int32.Parse(newValue);
         }
 
         public void SetIsDeleting(bool newValue) {
