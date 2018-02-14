@@ -32,12 +32,12 @@ namespace Assets.Simulation.Cities.Buildings {
         [Inject]
         public BuildingPossessionCanon(
             CitySignals signals, IResourceAssignmentCanon resourceAssignmentCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossesionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
             ){
             signals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
 
             ResourceAssignmentCanon = resourceAssignmentCanon;
-            CityPossessionCanon     = cityPossesionCanon;
+            CityPossessionCanon     = cityPossessionCanon;
         }
 
         #endregion
@@ -45,14 +45,6 @@ namespace Assets.Simulation.Cities.Buildings {
         #region instance methods
 
         #region from PossessionRelationship<ICity, IBuilding>
-
-        protected override bool IsPossessionValid(IBuilding possession, ICity owner) {
-            if(owner == null) {
-                return true;
-            }else {
-                return !GetPossessionsOfOwner(owner).Contains(possession) && GetOwnerOfPossession(possession) == null;
-            }
-        }
 
         protected override void DoOnPossessionEstablished(IBuilding building, ICity newOwner) {
             if(newOwner == null) {

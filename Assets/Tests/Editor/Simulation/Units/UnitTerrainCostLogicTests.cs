@@ -50,20 +50,6 @@ namespace Assets.Tests.Simulation.Units {
                 }).Returns(1).SetName("Non-aquatic into empty grassland, no elevation change, no water");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 0,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = true
-                }).Returns(-1).SetName("Aquatic into empty grassland, no water");
-
-                yield return new TestCaseData(new TestData() {
-                    NextCellIsUnderwater = true,
-                    UnitIsAquatic        = false
-                }).Returns(-1).SetName("Non-aquatic into underwater tile");
-
-                yield return new TestCaseData(new TestData() {
                     NextCellIsUnderwater = true,
                     UnitIsAquatic        = true
                 }).Returns(1).SetName("Aquatic into underwater tile");
@@ -138,6 +124,8 @@ namespace Assets.Tests.Simulation.Units {
 
         private Mock<ICityFactory> MockCityFactory;
 
+        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -150,8 +138,9 @@ namespace Assets.Tests.Simulation.Units {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockConfig      = new Mock<IHexGridConfig>();
-            MockCityFactory = new Mock<ICityFactory>();
+            MockConfig            = new Mock<IHexGridConfig>();
+            MockCityFactory       = new Mock<ICityFactory>();
+            MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
 
             MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
             MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
@@ -164,8 +153,9 @@ namespace Assets.Tests.Simulation.Units {
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
 
-            Container.Bind<IHexGridConfig>().FromInstance(MockConfig.Object);
-            Container.Bind<ICityFactory>  ().FromInstance(MockCityFactory.Object);
+            Container.Bind<IHexGridConfig>    ().FromInstance(MockConfig           .Object);
+            Container.Bind<ICityFactory>      ().FromInstance(MockCityFactory      .Object);
+            Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -218,6 +208,10 @@ namespace Assets.Tests.Simulation.Units {
             newCell.Terrain = terrain;
             newCell.Feature = feature;
             newCell.Elevation = elevation;
+
+            MockUnitPositionCanon
+                .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))
+                .Returns(true);
 
             return newCell;
         }

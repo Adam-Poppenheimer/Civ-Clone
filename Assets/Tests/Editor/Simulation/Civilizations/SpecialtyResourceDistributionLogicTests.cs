@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             get {
                 yield return new TestCaseData(new DistributeResourcesOfCivIntoCitiesTestData() {
 
-                }).SetName("");
+                }).SetName("Needs policies");
             }
         }
 
@@ -81,7 +81,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         [Test(Description = "")]
         [TestCaseSource("DistributeResourcesOfCivIntoCitiesTestCases")]
         public void DistributeResourcesOfCivIntoCitiesTests(DistributeResourcesOfCivIntoCitiesTestData testData) {
-            throw new NotImplementedException();
+            Assert.Ignore("It's not yet clear how this class should perform. Ignore until there's a clear design policy");
         }
 
         #endregion

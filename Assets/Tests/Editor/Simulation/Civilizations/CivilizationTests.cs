@@ -20,9 +20,9 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private Mock<ICivilizationYieldLogic> YieldLogicMock;
-
-        private Mock<ITechCanon> TechCanonMock;
+        private Mock<ICivilizationYieldLogic>             MockYieldLogic;
+        private Mock<ITechCanon>                          MockTechCanon;
+        private Mock<ISpecialtyResourceDistributionLogic> MockResourceDistributionLogic;
 
         #endregion
 
@@ -32,12 +32,14 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            YieldLogicMock = new Mock<ICivilizationYieldLogic>();
-            TechCanonMock  = new Mock<ITechCanon>();
+            MockYieldLogic                = new Mock<ICivilizationYieldLogic>();
+            MockTechCanon                 = new Mock<ITechCanon>();
+            MockResourceDistributionLogic = new Mock<ISpecialtyResourceDistributionLogic>();
 
-            Container.Bind<ICivilizationConfig>    ().FromMock();
-            Container.Bind<ICivilizationYieldLogic>().FromInstance(YieldLogicMock.Object);
-            Container.Bind<ITechCanon>             ().FromInstance(TechCanonMock .Object);
+            Container.Bind<ICivilizationConfig>                ().FromMock();
+            Container.Bind<ICivilizationYieldLogic>            ().FromInstance(MockYieldLogic               .Object);
+            Container.Bind<ITechCanon>                         ().FromInstance(MockTechCanon                .Object);
+            Container.Bind<ISpecialtyResourceDistributionLogic>().FromInstance(MockResourceDistributionLogic.Object);
 
             Container.Bind<Civilization>().AsSingle();
         }
@@ -52,7 +54,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void PerformIncome_StockpilesAndYieldsChanged() {
             var civilization = Container.Resolve<Civilization>();
 
-            YieldLogicMock.Setup(logic => logic.GetYieldOfCivilization(civilization))
+            MockYieldLogic.Setup(logic => logic.GetYieldOfCivilization(civilization))
                 .Returns(new ResourceSummary(gold: 2, production: 4, culture: 5, science: 10));
 
             civilization.PerformIncome();
@@ -76,13 +78,13 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             civilization.PerformResearch();
 
-            TechCanonMock.Verify(
+            MockTechCanon.Verify(
                 canon => canon.GetProgressOnTechByCiv(technology, civilization),
                 Times.Once,
                 "Civilization did not tech TechCanon for the progress of its active tech"
             );
 
-            TechCanonMock.Verify(
+            MockTechCanon.Verify(
                 canon => canon.SetProgressOnTechByCiv(technology, civilization, 10),
                 Times.Once,
                 "Civilization did not set its active tech's progress correctly"
@@ -103,13 +105,13 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             civilization.PerformResearch();
 
-            TechCanonMock.Verify(
+            MockTechCanon.Verify(
                 canon => canon.IsTechAvailableToCiv(technology, civilization),
                 Times.AtLeastOnce,
                 "Civilization did not check to make sure its active tech was available"
             );
 
-            TechCanonMock.Verify(
+            MockTechCanon.Verify(
                 canon => canon.SetTechAsDiscoveredForCiv(technology, civilization),
                 Times.AtLeastOnce,
                 "Civilization did not set its finished tech as discovered"
@@ -117,6 +119,18 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CollectionAssert.DoesNotContain(civilization.TechQueue, technology,
                 "TechQueue still contains the discovered tech");
+        }
+
+        [Test(Description = "When PerformDistribution is called, the civilization should " +
+            "simply call into SpecialtyResourceDistributionLogic's DistributeResourcesOfCiv " +
+            "method.")]
+        public void PerformDistribution_CallsIntoResourceDistributionLogic() {
+            var civilization = Container.Resolve<Civilization>();
+
+            civilization.PerformDistribution();
+
+            MockResourceDistributionLogic.Verify(logic => logic.DistributeResourcesOfCiv(civilization),
+                Times.AtLeastOnce, "DistributeResourcesOfCiv was not called as expected");
         }
 
         #endregion
@@ -127,7 +141,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var mockTech = new Mock<ITechDefinition>();
 
             mockTech.Setup(tech => tech.Cost).Returns(cost);
-            TechCanonMock.Setup(
+            MockTechCanon.Setup(
                 canon => canon.IsTechAvailableToCiv(mockTech.Object, It.IsAny<ICivilization>())
             ).Returns(true);
 

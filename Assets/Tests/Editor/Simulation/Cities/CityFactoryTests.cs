@@ -40,9 +40,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IHexGrid> MockGrid;
 
-        private Mock<IPossessionRelationship<ICity, IHexCell>> MockTilePossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockCellPossessionCanon;
 
         private Mock<IWorkerDistributionLogic> MockDistributionLogic;
+
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
 
         #endregion
 
@@ -61,13 +63,15 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGrid                = new Mock<IHexGrid>();
-            MockTilePossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockCellPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
+            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockTilePossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
 
             Container.Bind<IPopulationGrowthLogic>  ().FromMock();
             Container.Bind<IProductionLogic>        ().FromMock();
@@ -75,6 +79,8 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IBorderExpansionLogic>   ().FromMock();
             Container.Bind<ICityCombatLogic>        ().FromMock();
             Container.Bind<IUnitPositionCanon>      ().FromMock();
+            Container.Bind<IHealthLogic>            ().FromMock();
+            Container.Bind<IHappinessLogic>         ().FromMock();
             
             Container.Bind<IProductionProjectFactory>().FromMock();
 
@@ -159,17 +165,17 @@ namespace Assets.Tests.Simulation.Cities {
 
             var cityWithValidNeighbors = factory.Create(location, civilization);
 
-            MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.AtLeastOnce,
+            MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.AtLeastOnce,
                 "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfPossession on its location");
 
-            MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.Once,
+            MockCellPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.Once,
                 "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfPossession on its location");
 
             foreach(var neighbor in validNeighbors) {
-                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.AtLeastOnce,
+                MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.AtLeastOnce,
                 "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfPossession on one of its neighbors");
 
-                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.Once,
+                MockCellPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithValidNeighbors), Times.Once,
                     "CityFactory failed to call TilePossessionCanon.ChangeOwnerOfPossession on a valid neighbor");
             }
 
@@ -178,10 +184,10 @@ namespace Assets.Tests.Simulation.Cities {
             var cityWithInvalidNeighbors = factory.Create(location, civilization);
 
             foreach(var neighbor in invalidNeighbors) {
-                MockTilePossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.AtLeastOnce,
+                MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.AtLeastOnce,
                 "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfTile on one of its neighbors");
 
-                MockTilePossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.Never,
+                MockCellPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.Never,
                     "CityFactory unexpectedly called TilePossessionCanon.ChangeOwnerOfTile on and invalid neighbor");
             }
         }
@@ -254,6 +260,27 @@ namespace Assets.Tests.Simulation.Cities {
             CollectionAssert.Contains(factory.AllCities, newCity, "AllCities does not contain the newly created factory");
         }
 
+        [Test(Description = "")]
+        public void CityCreated_CombatFacadeAddedAndAssigned() {
+            var tile = BuildTile(true);
+            var civilization = BuildCivilization();
+
+            BuildNeighborsFor(tile, 1, true);
+
+            var factory = Container.Resolve<CityFactory>();
+
+            var newCity = factory.Create(tile, civilization);
+
+            Assert.NotNull(newCity.CombatFacade, "The new city's CombatFacade is null");
+            Assert.That(newCity.CombatFacade is CityCombatFacadeUnit, 
+                "The new city's CombatFacade has an unexpected type");
+
+            MockUnitPossessionCanon.Verify(
+                canon => canon.ChangeOwnerOfPossession(newCity.CombatFacade, civilization),
+                Times.Once, "The new city's combat facade wasn't assigned as expected"
+            );
+        }
+
         [Test(Description = "Create should throw an ArgumentNullException on any null argument")]
         public void CreateCalled_ThrowsOnNullArguments() {
             var tile = BuildTile(true);
@@ -294,7 +321,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
 
-            MockTilePossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(mockTile.Object, It.IsAny<ICity>()))
+            MockCellPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(mockTile.Object, It.IsAny<ICity>()))
                 .Returns(canBeAssigned);
 
             return mockTile.Object;

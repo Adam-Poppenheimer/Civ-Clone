@@ -196,7 +196,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
 
-        private Mock<IPossessionRelationship<IHexCell, IImprovement>> MockImprovementLocationCanon;
+        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
 
         #endregion
 
@@ -208,14 +208,14 @@ namespace Assets.Tests.Simulation.HexMap {
         public void CommonInstall() {
             MockConfig                   = new Mock<IHexGridConfig>();
             MockNodePositionCanon        = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
-            MockImprovementLocationCanon = new Mock<IPossessionRelationship<IHexCell, IImprovement>>();
+            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
             MockConfig.Setup(config => config.TerrainYields).Returns(TerrainYields.AsReadOnly());
             MockConfig.Setup(config => config.FeatureYields).Returns(FeatureYields.AsReadOnly());
 
             Container.Bind<IHexGridConfig>                                  ().FromInstance(MockConfig                  .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon       .Object);
-            Container.Bind<IPossessionRelationship<IHexCell, IImprovement>> ().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IImprovementLocationCanon>                       ().FromInstance(MockImprovementLocationCanon.Object);
 
             Container.Bind<TileResourceLogic>().AsSingle();
         }

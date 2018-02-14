@@ -46,15 +46,17 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IPopulationGrowthLogic>                    GrowthMock;
-        private Mock<IProductionLogic>                          ProductionMock;
-        private Mock<IResourceGenerationLogic>                  ResourceGenerationMock;
-        private Mock<IBorderExpansionLogic>                     ExpansionMock;
-        private Mock<IPossessionRelationship<ICity, IHexCell>>  TilePossessionCanonMock;
-        private Mock<IWorkerDistributionLogic>                  DistributionMock;
-        private Mock<IPossessionRelationship<ICity, IBuilding>> BuildingPossessionCanonMock;
-        private Mock<IProductionProjectFactory>                 ProjectFactoryMock;
-        private Mock<ICityConfig>                               CityConfigMock;
+        private Mock<IPopulationGrowthLogic>                    MockGrowthLogic;
+        private Mock<IProductionLogic>                          MockProductionLogic;
+        private Mock<IResourceGenerationLogic>                  MockResourceGenerationLogic;
+        private Mock<IBorderExpansionLogic>                     MockExpansionLogic;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>  MockCellPossessionCanon;
+        private Mock<IWorkerDistributionLogic>                  MockDistributionLogic;
+        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<IProductionProjectFactory>                 MockProjectFactory;
+        private Mock<ICityConfig>                               MockCityConfig;
+        private Mock<IHealthLogic>                              MockHealthLogic;
+        private Mock<IHappinessLogic>                           MockHappinessLogic;
 
         #endregion
 
@@ -64,26 +66,30 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            GrowthMock                  = new Mock<IPopulationGrowthLogic>();
-            ProductionMock              = new Mock<IProductionLogic>();
-            ResourceGenerationMock      = new Mock<IResourceGenerationLogic>();
-            ExpansionMock               = new Mock<IBorderExpansionLogic>();
-            TilePossessionCanonMock     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
-            DistributionMock            = new Mock<IWorkerDistributionLogic>();
-            BuildingPossessionCanonMock = new Mock<IPossessionRelationship<ICity, IBuilding>>();
-            ProjectFactoryMock          = new Mock<IProductionProjectFactory>();
-            CityConfigMock              = new Mock<ICityConfig>();
+            MockGrowthLogic             = new Mock<IPopulationGrowthLogic>();
+            MockProductionLogic         = new Mock<IProductionLogic>();
+            MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
+            MockExpansionLogic          = new Mock<IBorderExpansionLogic>();
+            MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockDistributionLogic       = new Mock<IWorkerDistributionLogic>();
+            MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockProjectFactory          = new Mock<IProductionProjectFactory>();
+            MockCityConfig              = new Mock<ICityConfig>();
+            MockHealthLogic             = new Mock<IHealthLogic>();
+            MockHappinessLogic          = new Mock<IHappinessLogic>();
 
 
-            Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(GrowthMock                 .Object);
-            Container.Bind<IProductionLogic>                         ().FromInstance(ProductionMock             .Object);
-            Container.Bind<IResourceGenerationLogic>                 ().FromInstance(ResourceGenerationMock     .Object);
-            Container.Bind<IBorderExpansionLogic>                    ().FromInstance(ExpansionMock              .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(TilePossessionCanonMock    .Object);
-            Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(DistributionMock           .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(BuildingPossessionCanonMock.Object);
-            Container.Bind<IProductionProjectFactory>                ().FromInstance(ProjectFactoryMock         .Object);
-            Container.Bind<ICityConfig>                              ().FromInstance(CityConfigMock             .Object);
+            Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic            .Object);
+            Container.Bind<IProductionLogic>                         ().FromInstance(MockProductionLogic        .Object);
+            Container.Bind<IResourceGenerationLogic>                 ().FromInstance(MockResourceGenerationLogic.Object);
+            Container.Bind<IBorderExpansionLogic>                    ().FromInstance(MockExpansionLogic         .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon    .Object);
+            Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic      .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<IProductionProjectFactory>                ().FromInstance(MockProjectFactory         .Object);
+            Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
+            Container.Bind<IHealthLogic>                             ().FromInstance(MockHealthLogic            .Object);
+            Container.Bind<IHappinessLogic>                          ().FromInstance(MockHappinessLogic         .Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -122,11 +128,11 @@ namespace Assets.Tests.Simulation.Cities {
             city.Population = 2;
             city.FoodStockpile = -1;
 
-            GrowthMock.Setup(logic => logic.GetFoodStockpileAfterStarvation(city)).Returns(9);
+            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileAfterStarvation(city)).Returns(9);
 
             city.PerformGrowth();
 
-            GrowthMock.Verify(logic => logic.GetFoodStockpileAfterStarvation(city), Times.AtLeastOnce, 
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileAfterStarvation(city), Times.AtLeastOnce, 
                 "GrowthLogic did not have its GetFoodStockpileAfterStarvation method called");
 
             Assert.AreEqual(9, city.FoodStockpile, "After starvation, City has an unexpected food stockpile");
@@ -138,9 +144,9 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformGrowth_SinglePopulationDoesntCauseNegativeFood() {
             var city = Container.Resolve<City>();
             
-            GrowthMock.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(10);
+            MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(10);
 
-            ResourceGenerationMock.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
+            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
 
             city.Population = 1;
 
@@ -157,7 +163,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             city.PerformGrowth();
 
-            GrowthMock.Verify(logic => logic.GetFoodStockpileToGrow(city), Times.AtLeastOnce, 
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileToGrow(city), Times.AtLeastOnce, 
                 "GrowthLogic did not have its GetFoodStockpileToGrow method called");
         }
 
@@ -168,7 +174,7 @@ namespace Assets.Tests.Simulation.Cities {
             city.Population = 1;
             city.FoodStockpile = 15;
 
-            GrowthMock.Setup(logic => logic.GetFoodStockpileToGrow(city)).Returns(14);
+            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileToGrow(city)).Returns(14);
 
             city.PerformGrowth();
             Assert.AreEqual(2, city.Population, "Population did not increase as expected");
@@ -182,11 +188,11 @@ namespace Assets.Tests.Simulation.Cities {
             city.Population = 1;
             city.FoodStockpile = 15;
 
-            GrowthMock.Setup(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city)).Returns(9);
+            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city)).Returns(9);
 
             city.PerformGrowth();
 
-            GrowthMock.Verify(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city), Times.AtLeastOnce, 
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city), Times.AtLeastOnce, 
                 "GrowthLogic did not have its GetFoodStockpileSubtractionAfterGrowth method called");
 
             Assert.AreEqual(6, city.FoodStockpile, "After growth, City has an unexpected food stockpile");
@@ -200,17 +206,17 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(30);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
                 .Returns(mockProject.Object);
 
             var city = Container.Resolve<City>();
             city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
 
-            ProductionMock.Setup(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object)).Returns(9);
+            MockProductionLogic.Setup(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object)).Returns(9);
 
             city.PerformProduction();
 
-            ProductionMock.Verify(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object),
+            MockProductionLogic.Verify(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object),
                 "ProductionLogic did not have its GetProductionProgressPerTurnOnProject method called");
 
             Assert.AreEqual(14, mockProject.Object.Progress, "CurrentProject has an incorrect Progress");
@@ -224,7 +230,7 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
                 .Returns(mockProject.Object);
 
             var city = Container.Resolve<City>();
@@ -243,7 +249,7 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
+            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
                 .Returns(mockProject.Object);
 
             var city = Container.Resolve<City>();
@@ -261,11 +267,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
 
             city.PerformExpansion();
 
-            ExpansionMock.Verify(logic => logic.GetNextCellToPursue(city), Times.AtLeastOnce,
+            MockExpansionLogic.Verify(logic => logic.GetNextCellToPursue(city), Times.AtLeastOnce,
                 "ExpansionLogic's GetNextTileToPursue method was never called");
             Assert.AreEqual(tile, city.CellBeingPursued, "City has an incorrect TileBeingPursued");
         }
@@ -278,11 +284,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
 
             city.PerformExpansion();
 
-            ExpansionMock.Verify(logic => logic.GetCultureCostOfAcquiringCell(city, tile), Times.AtLeastOnce,
+            MockExpansionLogic.Verify(logic => logic.GetCultureCostOfAcquiringCell(city, tile), Times.AtLeastOnce,
                 "ExpansionLogic's GetCultureCostOfAcquiringTile method was never called");
         }
 
@@ -294,12 +300,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            MockExpansionLogic.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
 
             city.PerformExpansion();
 
-            TilePossessionCanonMock.Verify(canon => canon.CanChangeOwnerOfPossession(tile, city), Times.AtLeastOnce, 
+            MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(tile, city), Times.AtLeastOnce, 
                 "PossessionCanon's CanChangeOwnerOfTile method was never called");
         }
 
@@ -312,11 +318,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(7);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            MockExpansionLogic.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
+            MockExpansionLogic.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(7);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
+            MockCellPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -331,15 +337,15 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
-            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(0);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
+            MockExpansionLogic.Setup(logic => logic.IsCellAvailable(city, tile)).Returns(true);
+            MockExpansionLogic.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, tile)).Returns(0);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
+            MockCellPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(tile, city)).Returns(true);
 
             city.PerformExpansion();
 
-            TilePossessionCanonMock.Verify(canon => canon.ChangeOwnerOfPossession(tile, city), Times.Once, 
+            MockCellPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(tile, city), Times.Once, 
                 "Did not receive the expected ChangeOwnerOfTile call on PossessionCanon");
         }
 
@@ -352,14 +358,14 @@ namespace Assets.Tests.Simulation.Cities {
             var firstTile = new Mock<IHexCell>().Object;
             var secondTile = new Mock<IHexCell>().Object;
 
-            ExpansionMock.SetupSequence(logic => logic.GetNextCellToPursue(city))
+            MockExpansionLogic.SetupSequence(logic => logic.GetNextCellToPursue(city))
                 .Returns(firstTile)
                 .Returns(secondTile);
 
-            ExpansionMock.Setup(logic => logic.IsCellAvailable(city, firstTile)).Returns(true);
-            ExpansionMock.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, firstTile)).Returns(0);
+            MockExpansionLogic.Setup(logic => logic.IsCellAvailable(city, firstTile)).Returns(true);
+            MockExpansionLogic.Setup(logic => logic.GetCultureCostOfAcquiringCell(city, firstTile)).Returns(0);
 
-            TilePossessionCanonMock.Setup(canon => canon.CanChangeOwnerOfPossession(firstTile, city)).Returns(true);
+            MockCellPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(firstTile, city)).Returns(true);
 
             city.PerformExpansion();
 
@@ -372,7 +378,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_DoesNotThrowOnNullPursuit() {
             var city = Container.Resolve<City>();
 
-            ExpansionMock.Setup(logic => logic.GetNextCellToPursue(city)).Returns<IHexCell>(null);
+            MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns<IHexCell>(null);
 
             Assert.DoesNotThrow(() => city.PerformExpansion(),
                 "An exception was thrown when calling PerformExpansion on a null TileToPursue, even though this should be valid");
@@ -387,14 +393,14 @@ namespace Assets.Tests.Simulation.Cities {
             city.Population = 7;
             city.ResourceFocus = ResourceFocusType.TotalYield;
 
-            TilePossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city))
+            MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
 
-            BuildingPossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
+            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
             city.PerformDistribution();
 
-            DistributionMock.Verify(
+            MockDistributionLogic.Verify(
                 logic => logic.DistributeWorkersIntoSlots(
                     city.Population, It.IsAny<IEnumerable<IWorkerSlot>>(), city, city.ResourceFocus
                 ),
@@ -423,9 +429,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             var allSlots = new List<IWorkerSlot>(firstSlots.Concat(secondSlots).Concat(thirdSlots));
 
-            DistributionMock.Setup(logic => logic.GetSlotsAvailableToCity(city)).Returns(allSlots);
+            MockDistributionLogic.Setup(logic => logic.GetSlotsAvailableToCity(city)).Returns(allSlots);
 
-            DistributionMock.Setup(
+            MockDistributionLogic.Setup(
                 logic => logic.DistributeWorkersIntoSlots(
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
@@ -440,7 +446,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             city.PerformDistribution();
 
-            DistributionMock.Verify(logic => logic.GetSlotsAvailableToCity(city), Times.Once,
+            MockDistributionLogic.Verify(logic => logic.GetSlotsAvailableToCity(city), Times.Once,
                 "DistributionLogic.GetSlotsAvailableToCity was not called");
         }
 
@@ -461,11 +467,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tiles = new List<IHexCell>() {tileMockOne.Object, tileMockTwo.Object, tileMockThree.Object};
 
-            TilePossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(tiles);
+            MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(tiles);
 
-            BuildingPossessionCanonMock.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
+            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
-            DistributionMock.Setup(
+            MockDistributionLogic.Setup(
                 logic => logic.DistributeWorkersIntoSlots(
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
@@ -495,15 +501,15 @@ namespace Assets.Tests.Simulation.Cities {
 
             var tiles = new List<IHexCell>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
 
-            TilePossessionCanonMock
+            MockCellPossessionCanon
                 .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(tiles);
 
-            BuildingPossessionCanonMock
+            MockBuildingPossessionCanon
                 .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IBuilding>().AsReadOnly());
 
-            DistributionMock.Setup(
+            MockDistributionLogic.Setup(
                 logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), city, It.IsAny<ResourceFocusType>())
             ).Callback(
                 delegate(int workerCount, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
@@ -535,7 +541,34 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "City should reduce the number of active workers it distributes by " +
             "its happiness if its happiness is negative.")]
         public void PerformDistribution_ConsidersHappiness() {
-            throw new NotImplementedException();
+            var city = Container.Resolve<City>();
+
+            city.Population = 5;
+            MockHappinessLogic.Setup(logic => logic.GetHappinessOfCity(city)).Returns(-3);
+
+            city.PerformDistribution();
+
+            MockDistributionLogic.Verify(
+                logic => logic.DistributeWorkersIntoSlots(
+                    2, It.IsAny<IEnumerable<IWorkerSlot>>(),
+                    city, ResourceFocusType.TotalYield
+                ),
+                Times.Once, "DistributeWorkersIntoSlots was not called as expected"
+            );
+
+            MockDistributionLogic.ResetCalls();
+
+            MockHappinessLogic.Setup(logic => logic.GetHappinessOfCity(city)).Returns(3);
+
+            city.PerformDistribution();
+
+            MockDistributionLogic.Verify(
+                logic => logic.DistributeWorkersIntoSlots(
+                    5, It.IsAny<IEnumerable<IWorkerSlot>>(),
+                    city, ResourceFocusType.TotalYield
+                ),
+                Times.Once, "DistributeWorkersIntoSlots was not called as expected"
+            );
         }
 
         [Test(Description = "When PerformIncome is called on a city, that city should " +
@@ -548,11 +581,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var income = new ResourceSummary(food: -2, production: 1, gold: 7, culture: 2);
 
-            ResourceGenerationMock.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(income);
+            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(income);
 
             city.PerformIncome();
 
-            ResourceGenerationMock.Verify(logic => logic.GetTotalYieldForCity(city), Times.AtLeastOnce,
+            MockResourceGenerationLogic.Verify(logic => logic.GetTotalYieldForCity(city), Times.AtLeastOnce,
                 "ResourceGenerationLogic's GetTotalYieldForCity was not called as expected");
 
             Assert.AreEqual(income, city.LastIncome, "City did not correctly update its LastIncome");
@@ -567,13 +600,13 @@ namespace Assets.Tests.Simulation.Cities {
             var city = Container.Resolve<City>();
             city.FoodStockpile = 5;
 
-            ResourceGenerationMock.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
+            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
 
-            GrowthMock.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(4);
+            MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(4);
 
             city.PerformIncome();
 
-            GrowthMock.Verify(logic => logic.GetFoodConsumptionPerTurn(city), Times.AtLeastOnce,
+            MockGrowthLogic.Verify(logic => logic.GetFoodConsumptionPerTurn(city), Times.AtLeastOnce,
                 "GrowthLogic's GetFoodConsumptionPerTurn was not called as expected");
 
             Assert.AreEqual(1, city.FoodStockpile, "City did not correctly update its FoodStockpile");
@@ -590,7 +623,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructBuildingProject(newTemplateMock.Object)).Returns(mockProject.Object);
+            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(newTemplateMock.Object)).Returns(mockProject.Object);
 
             var citySignals = Container.Resolve<CitySignals>();
 
@@ -615,7 +648,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            ProjectFactoryMock.Setup(factory => factory.ConstructUnitProject(newTemplateMock.Object)).Returns(mockProject.Object);
+            MockProjectFactory.Setup(factory => factory.ConstructUnitProject(newTemplateMock.Object)).Returns(mockProject.Object);
 
             var citySignals = Container.Resolve<CitySignals>();
 
@@ -632,7 +665,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When PerformHealing is called, CombatFacade should be healed by an amount " +
             "configured in CityConfig and have its current movement set to 1")]
         public void PerformHealing_FacadeHealedAndGivenMovement() {
-            CityConfigMock.Setup(config => config.HitPointRegenPerRound).Returns(20);
+            MockCityConfig.Setup(config => config.HitPointRegenPerRound).Returns(20);
 
             var city = Container.Resolve<City>();
             city.CombatFacade = BuildUnit();
