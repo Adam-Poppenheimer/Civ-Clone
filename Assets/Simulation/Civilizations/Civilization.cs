@@ -15,7 +15,7 @@ namespace Assets.Simulation.Civilizations {
     /// <summary>
     /// The standard implementation of ICivilization.
     /// </summary>
-    public class Civilization : ICivilization {
+    public class Civilization : MonoBehaviour, ICivilization {
 
         #region instance fields and properties
 
@@ -47,34 +47,36 @@ namespace Assets.Simulation.Civilizations {
 
         private ISpecialtyResourceDistributionLogic DistributionLogic;
 
+        private CivilizationSignals Signals;
+
         #endregion
 
-        #region constructors
+        #region instance methods
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="name"></param>
         [Inject]
-        public Civilization(
+        public void InjectDependencies(
             ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
             ITechCanon techCanon, ISpecialtyResourceDistributionLogic distributionLogic,
-            string name = ""
+            CivilizationSignals signals, string name = ""
         ){
             Config            = config;
             YieldLogic        = yieldLogic;
             TechCanon         = techCanon;
             DistributionLogic = distributionLogic;
+            Signals           = signals;
 
             Name = name;
 
             TechQueue = new Queue<ITechDefinition>();
         }
 
-        #endregion
+        #region Unity messages
 
-        #region instance methods
+        private void OnDestroy() {
+            Signals.CivilizationBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
 
         /// <inheritdoc/>
         public void PerformIncome() {

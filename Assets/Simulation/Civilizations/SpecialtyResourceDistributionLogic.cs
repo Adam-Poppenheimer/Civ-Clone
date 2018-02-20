@@ -13,7 +13,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private ISpecialtyResourcePossessionCanon ResourcePossessionCanon;
+        private ISpecialtyResourcePossessionLogic ResourcePossessionCanon;
 
         private IResourceAssignmentCanon AssignmentCanon;
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.Civilizations {
         #region constructors
 
         public SpecialtyResourceDistributionLogic(
-            ISpecialtyResourcePossessionCanon resourcePossessionCanon,
+            ISpecialtyResourcePossessionLogic resourcePossessionCanon,
             IResourceAssignmentCanon assignmentCanon,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             IHealthLogic healthLogic, IHappinessLogic happinessLogic,

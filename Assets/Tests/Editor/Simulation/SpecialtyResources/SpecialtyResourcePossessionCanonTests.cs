@@ -59,7 +59,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
                 .WithId("All Speciality Resources")
                 .FromInstance(AllResourceDefinitions);
 
-            Container.Bind<SpecialtyResourcePossessionCanon>().AsSingle();
+            Container.Bind<SpecialtyResourcePossessionLogic>().AsSingle();
         }
 
         #endregion
@@ -81,7 +81,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
             var civilization = BuildCivilization(new List<ICity>() { cityOne, cityTwo });
 
-            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionCanon>();
+            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionLogic>();
 
             Assert.AreEqual(7, resourceCanon.GetCopiesOfResourceBelongingToCiv(resource, civilization),
                 "GetCopiesOfResourceBelongingToCiv returned an unexpected value");
@@ -105,7 +105,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
             var civilization = BuildCivilization(new List<ICity>() { cityOne, cityTwo });
 
-            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionCanon>();
+            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionLogic>();
 
             var summaryDict = resourceCanon.GetFullResourceSummaryForCiv(civilization);
 
@@ -136,7 +136,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
             var civilization = BuildCivilization(new List<ICity>() { cityOne, cityTwo });
 
-            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionCanon>();
+            var resourceCanon = Container.Resolve<SpecialtyResourcePossessionLogic>();
 
             Assert.AreEqual(2, resourceCanon.GetCopiesOfResourceBelongingToCiv(resource, civilization));
         }

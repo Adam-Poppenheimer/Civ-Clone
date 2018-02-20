@@ -105,14 +105,14 @@ namespace Assets.UI.MapEditor {
             }else {
                 var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
                 if(cityAtLocation != null) {
-                    Destroy(cityAtLocation.transform.gameObject);
+                    Destroy(cityAtLocation.gameObject.gameObject);
                 }
             }
         }
 
         private void OnCityClicked(ICity city) {
             if(!IsAdding) {
-                Destroy(city.transform.gameObject);
+                Destroy(city.gameObject.gameObject);
             }
         }
 

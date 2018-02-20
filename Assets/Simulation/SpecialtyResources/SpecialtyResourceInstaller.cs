@@ -27,8 +27,8 @@ namespace Assets.Simulation.SpecialtyResources {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().To<ResourceNodeLocationCanon>().AsSingle();
 
             Container
-                .Bind<ISpecialtyResourcePossessionCanon>()
-                .To  <SpecialtyResourcePossessionCanon >()
+                .Bind<ISpecialtyResourcePossessionLogic>()
+                .To  <SpecialtyResourcePossessionLogic >()
                 .AsSingle();
 
             Container

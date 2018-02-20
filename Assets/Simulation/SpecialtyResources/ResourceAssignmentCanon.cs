@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
@@ -25,7 +26,7 @@ namespace Assets.Simulation.SpecialtyResources {
 
 
 
-        private ISpecialtyResourcePossessionCanon ResourcePossessionCanon;
+        private ISpecialtyResourcePossessionLogic ResourcePossessionCanon;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
@@ -35,11 +36,14 @@ namespace Assets.Simulation.SpecialtyResources {
 
         [Inject]
         public ResourceAssignmentCanon(
-            ISpecialtyResourcePossessionCanon resourcePossessionCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            ISpecialtyResourcePossessionLogic resourcePossessionCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            CivilizationSignals civSignals
         ){
             ResourcePossessionCanon = resourcePossessionCanon;
             CityPossessionCanon     = cityPossessionCanon;
+
+            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -125,6 +129,14 @@ namespace Assets.Simulation.SpecialtyResources {
         }
 
         #endregion
+
+        private void OnCivilizationBeingDestroyed(ICivilization civ) {
+            foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civ)) {
+                UnassignAllResourcesFromCity(city);
+            }
+
+            CopiesOfResourceReservedByCiv.Remove(civ);
+        }
 
         #endregion
 

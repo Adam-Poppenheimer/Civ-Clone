@@ -7,13 +7,14 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 namespace Assets.Simulation.Civilizations {
 
     /// <summary>
     /// The standard implementation of ICivilizationFactory
     /// </summary>
-    public class CivilizationFactory : ICivilizationFactory, IValidatable {
+    public class CivilizationFactory : ICivilizationFactory {
 
         #region instance fields and properties
 
@@ -33,13 +34,11 @@ namespace Assets.Simulation.Civilizations {
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="container"></param>
         [Inject]
-        public CivilizationFactory(DiContainer container) {
+        public CivilizationFactory(DiContainer container, CivilizationSignals signals) {
             Container = container;
+
+            signals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -54,7 +53,7 @@ namespace Assets.Simulation.Civilizations {
                 throw new ArgumentNullException("name");
             }
 
-            var newCivilization = Container.Instantiate<Civilization>();
+            var newCivilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             newCivilization.Name = name;
             newCivilization.Color = color;
@@ -66,14 +65,9 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        #region from IValidatable
-
-        /// <inheritdoc/>
-        public void Validate() {
-            Container.Instantiate<Civilization>();
+        private void OnCivilizationBeingDestroyed(ICivilization civ) {
+            allCivilizations.Remove(civ);
         }
-
-        #endregion
 
         #endregion
 

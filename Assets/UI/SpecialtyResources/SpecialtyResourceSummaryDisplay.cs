@@ -28,7 +28,7 @@ namespace Assets.UI.SpecialtyResources {
 
         private IResourceAssignmentCanon AssignmentCanon;
 
-        private ISpecialtyResourcePossessionCanon ResourcePossessionCanon;
+        private ISpecialtyResourcePossessionLogic ResourcePossessionCanon;
 
         #endregion
 
@@ -36,7 +36,7 @@ namespace Assets.UI.SpecialtyResources {
 
         [Inject]
         public void InjectDependencies(IGameCore gameCore, IResourceAssignmentCanon assignmentCanon,
-            ISpecialtyResourcePossessionCanon resourcePossessionCanon
+            ISpecialtyResourcePossessionLogic resourcePossessionCanon
         ){
             GameCore                = gameCore;
             AssignmentCanon         = assignmentCanon;

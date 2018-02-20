@@ -40,7 +40,7 @@ namespace Assets.Simulation.Cities {
         public List<IHexCell> CurrentPath { get; set; }
 
         public GameObject gameObject {
-            get { return UnderlyingCity.transform.gameObject; }
+            get { return UnderlyingCity == null ? null : UnderlyingCity.gameObject; }
         }
 
         public int Health {

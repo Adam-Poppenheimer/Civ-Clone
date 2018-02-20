@@ -31,10 +31,10 @@ namespace Assets.Simulation.Cities.Buildings {
 
         [Inject]
         public BuildingPossessionCanon(
-            CitySignals signals, IResourceAssignmentCanon resourceAssignmentCanon,
+            CitySignals citySignals, IResourceAssignmentCanon resourceAssignmentCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
             ){
-            signals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
 
             ResourceAssignmentCanon = resourceAssignmentCanon;
             CityPossessionCanon     = cityPossessionCanon;

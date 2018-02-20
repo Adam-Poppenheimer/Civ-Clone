@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using UniRx;
 
@@ -22,8 +24,12 @@ namespace Assets.Simulation.Civilizations {
         #region constructors
 
         [Inject]
-        public CityPossessionCanon(CitySignals citySignals, IPossessionRelationship<ICity, IHexCell> cellPossessionCanon) {
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+        public CityPossessionCanon(
+            CitySignals citySignals, CivilizationSignals civSignals,
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
+        ) {
+            citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
+            civSignals .CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
 
             CellPossessionCanon = cellPossessionCanon;
         }
@@ -44,6 +50,12 @@ namespace Assets.Simulation.Civilizations {
 
         private void OnCityBeingDestroyed(ICity city) {
             ChangeOwnerOfPossession(city, null);
+        }
+
+        private void OnCivilizationBeingDestroyed(ICivilization civ) {
+            foreach(var city in GetPossessionsOfOwner(civ)) {
+                GameObject.Destroy(city.gameObject.gameObject);
+            }
         }
 
         #endregion

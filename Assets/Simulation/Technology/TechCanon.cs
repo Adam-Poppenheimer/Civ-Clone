@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
@@ -46,11 +47,13 @@ namespace Assets.Simulation.Technology {
         [Inject]
         public TechCanon(
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
-            [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities
+            [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities,
+            CivilizationSignals civSignals
         ){
-            _availableTechs = availableTechs;
-
+            _availableTechs    = availableTechs;
             AvailableAbilities = availableAbilities;
+
+            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -277,6 +280,11 @@ namespace Assets.Simulation.Technology {
         }
 
         #endregion
+
+        private void OnCivilizationBeingDestroyed(ICivilization civ) {
+            TechsResearchedByCiv.RemoveList(civ);
+            ProgressByCivAndTech.Remove(civ);
+        }
 
         #endregion
 

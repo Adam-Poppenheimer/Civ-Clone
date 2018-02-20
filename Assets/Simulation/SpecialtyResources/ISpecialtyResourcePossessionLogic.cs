@@ -7,7 +7,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.SpecialtyResources {
 
-    public interface ISpecialtyResourcePossessionCanon {
+    public interface ISpecialtyResourcePossessionLogic {
 
         #region methods
 

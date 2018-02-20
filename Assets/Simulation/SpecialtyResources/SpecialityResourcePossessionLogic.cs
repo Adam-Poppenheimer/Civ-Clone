@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities;
@@ -12,7 +13,7 @@ using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.SpecialtyResources {
 
-    public class SpecialtyResourcePossessionCanon : ISpecialtyResourcePossessionCanon {
+    public class SpecialtyResourcePossessionLogic : ISpecialtyResourcePossessionLogic {
 
         #region instance fields and properties
 
@@ -31,7 +32,7 @@ namespace Assets.Simulation.SpecialtyResources {
         #region constructors
 
         [Inject]
-        public SpecialtyResourcePossessionCanon(
+        public SpecialtyResourcePossessionLogic(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, 
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon, 

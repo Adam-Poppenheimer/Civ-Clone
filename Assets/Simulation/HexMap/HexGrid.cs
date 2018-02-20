@@ -20,14 +20,8 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid
 
         public ReadOnlyCollection<IHexCell> AllCells {
-            get {
-                if(_allCells == null) {
-                    _allCells = new List<IHexCell>(Cells.Cast<IHexCell>());
-                }
-                return _allCells.AsReadOnly();
-            }
+            get { return Cells.AsReadOnly(); }
         }
-        private List<IHexCell> _allCells;
 
         public int ChunkCountX {
             get { return _chunkCountX; }
@@ -48,7 +42,7 @@ namespace Assets.Simulation.HexMap {
         private int CellCountX;
         private int CellCountZ;
 
-        private HexCell[] Cells;
+        private List<IHexCell> Cells;
 
         private HexGridChunk[] Chunks;
 
@@ -76,8 +70,7 @@ namespace Assets.Simulation.HexMap {
             CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
             CellShaderData.Initialize(CellCountX, CellCountZ);
 
-            CreateChunks();
-            CreateCells();
+            Build();
 
             CellShaderData.enabled = true;
 
@@ -88,18 +81,36 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexGrid        
 
+        public void Build() {
+            CreateChunks();
+            CreateCells();
+        }
+
+        public void Clear() {
+            for(int i = Cells.Count - 1; i >= 0; i--) {
+                Destroy(Cells[i].transform.gameObject);
+            }
+
+            for(int i = Chunks.Length - 1; i >= 0; i--) {
+                Destroy(Chunks[i].gameObject);
+            }
+
+            Cells  = null;
+            Chunks = null;
+        }
+
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
             int expectedIndex = coordinates.X + coordinates.Z * CellCountX + coordinates.Z / 2;
 
             return expectedIndex >= 0
-                && expectedIndex < Cells.Length
+                && expectedIndex < Cells.Count
                 && Cells[expectedIndex].Coordinates == coordinates;
         }
 
         public IHexCell GetCellAtCoordinates(HexCoordinates coordinates) {
             int index = coordinates.X + coordinates.Z * CellCountX + coordinates.Z / 2;
 
-            if(index < 0 || index >= Cells.Length) {
+            if(index < 0 || index >= Cells.Count) {
                 throw new IndexOutOfRangeException("The given coordinates represent a cell that's not in the grid");
             }
 
@@ -269,23 +280,25 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateCells() {
-            Cells = new HexCell[CellCountX * CellCountZ];
+            var newCells = new HexCell[CellCountX * CellCountZ];
 
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
-                    CreateCell(x, z, i++);
+                    CreateCell(x, z, i++, newCells);
                 }
             }
+
+            Cells = newCells.Cast<IHexCell>().ToList();
         }
 
-        private void CreateCell(int x, int z, int i) {
+        private void CreateCell(int x, int z, int i, HexCell[] newCells) {
             var position = new Vector3(
                 (x + z * 0.5f - z / 2) * HexMetrics.InnerRadius * 2f,
                 0f,
                 z * HexMetrics.OuterRadius * 1.5f
             );
 
-            var newCell = Cells[i] = Container.InstantiatePrefabForComponent<HexCell>(CellPrefab);
+            var newCell = newCells[i] = Container.InstantiatePrefabForComponent<HexCell>(CellPrefab);
 
             newCell.transform.localPosition = position;
 

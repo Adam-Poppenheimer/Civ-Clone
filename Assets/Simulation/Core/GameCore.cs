@@ -52,8 +52,9 @@ namespace Assets.Simulation.Core {
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
             IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
-            IRoundExecuter turnExecuter, PlayerSignals playerSignals,
-            CoreSignals coreSignals, IHexGrid grid
+            IRoundExecuter turnExecuter, CoreSignals coreSignals, IHexGrid grid,
+            PlayerSignals playerSignals,  CivilizationSignals civSignals
+            
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
@@ -64,6 +65,7 @@ namespace Assets.Simulation.Core {
             Grid                = grid;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
+            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
 
             ActiveCivilization = CivilizationFactory.Create("Player Civilization", Color.red);
         }
@@ -75,6 +77,10 @@ namespace Assets.Simulation.Core {
         #region from IGameCore
 
         public void EndTurn() {
+            if(ActiveCivilization == null) {
+                return;
+            }
+
             PerformEndOfTurnActions();
 
             var allCivs = CivilizationFactory.AllCivilizations;
@@ -126,10 +132,6 @@ namespace Assets.Simulation.Core {
 
         #endregion
 
-        private void OnEndTurnRequested(Unit unit) {
-            EndTurn();
-        }
-
         private void PerformBeginningOfTurnActions() {
             foreach(var cell in Grid.AllCells) {
                 cell.RefreshVisibility();
@@ -138,6 +140,20 @@ namespace Assets.Simulation.Core {
 
         private void PerformEndOfTurnActions() {
 
+        }
+
+        private void OnEndTurnRequested(Unit unit) {
+            EndTurn();
+        }
+
+        private void OnCivilizationBeingDestroyed(ICivilization civ) {
+            if(ActiveCivilization == civ) {
+                if(CivilizationFactory.AllCivilizations.Count > 0) {
+                    EndTurn();
+                }else {
+                    ActiveCivilization = null;
+                }
+            }
         }
 
         #endregion

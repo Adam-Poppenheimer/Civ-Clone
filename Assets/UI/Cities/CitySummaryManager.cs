@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 
@@ -36,12 +37,15 @@ namespace Assets.UI.Cities {
         public CitySummaryManager(
             CitySummaryDisplay summaryPrefab, ICityFactory cityFactory,
             DiContainer container,
-            [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer
+            [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer,
+            CitySignals citySignals
         ){
             SummaryPrefab        = summaryPrefab;
             CityFactory          = cityFactory;
             Container            = container;
             CitySummaryContainer = citySummaryContainer;
+
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion
@@ -74,6 +78,14 @@ namespace Assets.UI.Cities {
             }
 
             InstantiatedSummaries.Clear();
+        }
+
+        private void OnCityBeingDestroyed(ICity city) {
+            var summaryDisplayingCity = InstantiatedSummaries.Where(summary => summary.ObjectToDisplay == city).FirstOrDefault();
+            if(summaryDisplayingCity != null) {
+                GameObject.Destroy(summaryDisplayingCity.gameObject);
+                InstantiatedSummaries.Remove(summaryDisplayingCity);
+            }            
         }
 
         #endregion

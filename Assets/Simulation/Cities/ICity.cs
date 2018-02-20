@@ -27,9 +27,8 @@ namespace Assets.Simulation.Cities {
         /// </summary>
         IHexCell Location { get; }
 
-        /// <summary>
-        /// The transform that controls the city's orientation in physical space.
-        /// </summary>
+        GameObject gameObject { get; }
+
         Transform transform { get; }
 
         /// <summary>

@@ -45,6 +45,8 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<ICivilizationYieldLogic>            ().To<CivilizationYieldLogic>            ().AsSingle();
             Container.Bind<ISpecialtyResourceDistributionLogic>().To<SpecialtyResourceDistributionLogic>().AsSingle();
 
+            Container.Bind<CivilizationSignals>().AsSingle();
+
             Container.Bind<VisibilityResponder>    ().AsSingle().NonLazy();
             Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
         }

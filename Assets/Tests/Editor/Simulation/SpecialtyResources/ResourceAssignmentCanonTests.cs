@@ -19,7 +19,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
         #region instance fields and properties
 
-        private Mock<ISpecialtyResourcePossessionCanon> MockResourcePossessionCanon;
+        private Mock<ISpecialtyResourcePossessionLogic> MockResourcePossessionCanon;
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
@@ -31,10 +31,10 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
         [SetUp]
         public void CommonInstall() {
-            MockResourcePossessionCanon = new Mock<ISpecialtyResourcePossessionCanon>();
+            MockResourcePossessionCanon = new Mock<ISpecialtyResourcePossessionLogic>();
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
-            Container.Bind<ISpecialtyResourcePossessionCanon>            ().FromInstance(MockResourcePossessionCanon.Object);
+            Container.Bind<ISpecialtyResourcePossessionLogic>            ().FromInstance(MockResourcePossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
 
             Container.Bind<ResourceAssignmentCanon>().AsSingle();

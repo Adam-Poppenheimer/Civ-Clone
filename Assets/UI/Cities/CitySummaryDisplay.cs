@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Cities;

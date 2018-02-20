@@ -21,6 +21,9 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
+        void Build();
+        void Clear();
+
         bool     HasCellAtCoordinates(HexCoordinates coords);
         IHexCell GetCellAtCoordinates(HexCoordinates coords);
 
