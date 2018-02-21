@@ -37,6 +37,8 @@ namespace Assets.Simulation.Improvements {
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
 
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
+
+            Container.Bind<ImprovementSignals>().AsSingle();
         }
 
         #endregion

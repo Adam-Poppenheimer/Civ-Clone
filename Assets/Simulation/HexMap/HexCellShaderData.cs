@@ -76,8 +76,13 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RefreshVisibility(IHexCell cell) {
-            CellTextureData[cell.Index].r = 
-                VisibilityCanon.IsCellVisibleToCiv(cell, GameCore.ActiveCivilization) ? (byte)255 : (byte)0;
+            if(GameCore.ActiveCivilization != null) {
+                CellTextureData[cell.Index].r = 
+                    VisibilityCanon.IsCellVisibleToCiv(cell, GameCore.ActiveCivilization) ? (byte)255 : (byte)0;
+            }else {
+                CellTextureData[cell.Index].r = 0;
+            }
+            
             enabled = true;
         }
 

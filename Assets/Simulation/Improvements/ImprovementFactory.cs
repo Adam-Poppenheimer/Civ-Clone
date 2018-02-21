@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 
@@ -14,6 +15,15 @@ namespace Assets.Simulation.Improvements {
     public class ImprovementFactory : IImprovementFactory {
 
         #region instance fields and properties
+
+        #region from IImprovementFactory
+
+        public IEnumerable<IImprovement> AllImprovements {
+            get { return allImprovements; }
+        }
+        private List<IImprovement> allImprovements = new List<IImprovement>();
+
+        #endregion
 
         private DiContainer Container;
 
@@ -28,11 +38,14 @@ namespace Assets.Simulation.Improvements {
         [Inject]
         public ImprovementFactory(DiContainer container,
             IImprovementLocationCanon improvementLocationCanon,
-            [Inject(Id = "Improvement Prefab")] GameObject improvementPrefab
+            [Inject(Id = "Improvement Prefab")] GameObject improvementPrefab,
+            ImprovementSignals signals
         ){
             Container = container;
             ImprovementLocationCanon = improvementLocationCanon;
             ImprovementPrefab = improvementPrefab;
+
+            signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
         }
 
         #endregion
@@ -65,10 +78,16 @@ namespace Assets.Simulation.Improvements {
             }
             ImprovementLocationCanon.ChangeOwnerOfPossession(newImprovement, location);
 
+            allImprovements.Add(newImprovement);
+
             return newImprovement;
         }
 
         #endregion
+
+        private void OnImprovementBeingDestroyed(IImprovement improvement) {
+            allImprovements.Remove(improvement);
+        }
 
         #endregion
         

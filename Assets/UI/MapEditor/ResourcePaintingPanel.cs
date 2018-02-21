@@ -32,7 +32,7 @@ namespace Assets.UI.MapEditor {
 
         private IResourceNodeFactory ResourceNodeFactory;
 
-        private IEnumerable<ISpecialtyResourceDefinition> AllResources;
+        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
 
         private HexCellSignals CellSignals;
 
@@ -44,11 +44,11 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(IResourceNodeFactory resourceNodeFactory,
-            [Inject(Id = "All Speciality Resources")] IEnumerable<ISpecialtyResourceDefinition> allResources,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources,
             HexCellSignals cellSignals, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
         ){
             ResourceNodeFactory = resourceNodeFactory;
-            AllResources        = allResources;
+            AvailableResources        = availableResources;
             CellSignals         = cellSignals;
             NodePositionCanon   = nodePositionCanon;
         }
@@ -78,7 +78,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void BuildResourceRecords() {
-            var sortedResources = new List<ISpecialtyResourceDefinition>(AllResources);
+            var sortedResources = new List<ISpecialtyResourceDefinition>(AvailableResources);
             sortedResources.Sort(ResourceSorter);
 
             foreach(var resource in sortedResources) {

@@ -10,6 +10,13 @@ using Assets.Simulation.HexMap;
 namespace Assets.Simulation.Improvements {
 
     public interface IImprovementFactory : IFactory<IImprovementTemplate, IHexCell, IImprovement> {
+
+        #region properties
+
+        IEnumerable<IImprovement> AllImprovements { get; }
+
+        #endregion
+
     }
 
 }

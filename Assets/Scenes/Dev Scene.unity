@@ -321,6 +321,46 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 13831289}
+--- !u!1 &19250390
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 19250392}
+  - component: {fileID: 19250391}
+  m_Layer: 0
+  m_Name: Map Management Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &19250391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19250390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 912ef2ce7d816774788345603a4ca45a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!4 &19250392
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 19250390}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &19347476
 GameObject:
   m_ObjectHideFlags: 0
@@ -39047,6 +39087,7 @@ MonoBehaviour:
   - {fileID: 1469069762}
   - {fileID: 440342842}
   - {fileID: 322894997}
+  - {fileID: 19250391}
   - {fileID: 1407166314}
   - {fileID: 657315974}
   - {fileID: 1662255531}
@@ -39078,6 +39119,7 @@ Transform:
   - {fileID: 1469069761}
   - {fileID: 440342843}
   - {fileID: 322894998}
+  - {fileID: 19250392}
   m_Father: {fileID: 0}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -40399,7 +40441,6 @@ GameObject:
   - component: {fileID: 1974420295}
   - component: {fileID: 1974420294}
   - component: {fileID: 1974420293}
-  - component: {fileID: 1974420292}
   - component: {fileID: 1974420297}
   m_Layer: 5
   m_Name: Test Display
@@ -40425,20 +40466,9 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -356, y: -183.5}
+  m_AnchoredPosition: {x: -356, y: -96}
   m_SizeDelta: {x: -739, y: -399}
   m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &1974420292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 1974420290}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfa4689455fc4fc439a370148f337d81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &1974420293
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -40516,7 +40546,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cdc4f9ca09e981c47abc9316b2c41d6a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapManager: {fileID: 1974420292}
 --- !u!1 &1975028699
 GameObject:
   m_ObjectHideFlags: 0

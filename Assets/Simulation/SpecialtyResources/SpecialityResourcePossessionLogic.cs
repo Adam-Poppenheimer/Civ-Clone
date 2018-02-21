@@ -25,7 +25,7 @@ namespace Assets.Simulation.SpecialtyResources {
 
         private IImprovementLocationCanon ImprovementLocationCanon;
 
-        private IEnumerable<ISpecialtyResourceDefinition> AllResourceDefinitions;
+        private IEnumerable<ISpecialtyResourceDefinition> AvailableResourceDefinitions;
 
         #endregion
 
@@ -37,13 +37,13 @@ namespace Assets.Simulation.SpecialtyResources {
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, 
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon, 
             IImprovementLocationCanon improvementLocationCanon,
-            [Inject(Id = "All Speciality Resources")] IEnumerable<ISpecialtyResourceDefinition> allResourceDefinitions
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResourceDefinitions
         ){
             CityPossessionCanon      = cityPossessionCanon;
             CellPossessionCanon      = cellPossessionCanon;
             NodePositionCanon        = nodePositionCanon;
             ImprovementLocationCanon = improvementLocationCanon;
-            AllResourceDefinitions   = allResourceDefinitions;
+            AvailableResourceDefinitions   = availableResourceDefinitions;
         }
 
         #endregion
@@ -83,7 +83,7 @@ namespace Assets.Simulation.SpecialtyResources {
         public Dictionary<ISpecialtyResourceDefinition, int> GetFullResourceSummaryForCiv(ICivilization civ) {
             var retval = new Dictionary<ISpecialtyResourceDefinition, int>();
 
-            foreach(var resourceDefinition in AllResourceDefinitions) {
+            foreach(var resourceDefinition in AvailableResourceDefinitions) {
                 retval[resourceDefinition] = GetCopiesOfResourceBelongingToCiv(resourceDefinition, civ);
             }
 

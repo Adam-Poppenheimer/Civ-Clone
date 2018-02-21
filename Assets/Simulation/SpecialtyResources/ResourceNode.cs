@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 namespace Assets.Simulation.SpecialtyResources {
 
     public class ResourceNode : MonoBehaviour, IResourceNode {
@@ -19,8 +21,27 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #endregion
 
+        private SpecialtyResourceSignals Signals;
+
         #endregion
-        
+
+        #region instance methods
+
+        [Inject]
+        public void InjectDependencies(SpecialtyResourceSignals signals) {
+            Signals = signals;
+        }
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            Signals.ResourceNodeBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
+
+        #endregion
+
     }
 
 }

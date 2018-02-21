@@ -43,6 +43,8 @@ namespace Assets.Simulation.Units {
 
         int VisionRange { get; }
 
+        IUnitTemplate Template { get; }
+
         GameObject gameObject { get; }
         
         #endregion

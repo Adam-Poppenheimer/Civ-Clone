@@ -81,14 +81,21 @@ namespace Assets.Simulation.Cities {
             get { return new List<ISpecialtyResourceDefinition>(); }
         }
 
-        #endregion
+        public IUnitTemplate Template {
+            get {
+                throw new NotImplementedException();
+            }
+        }
 
+        #endregion
 
         public ICity UnderlyingCity { get; private set; }
 
         private ICityConfig Config;
 
         private ICityCombatLogic CombatLogic;
+
+        private UnitSignals Signals;
 
         #endregion
 
@@ -97,11 +104,12 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public CityCombatFacadeUnit(
             ICity underlyingCity, ICityConfig config, ICityCombatLogic combatLogic,
-            IUnitPositionCanon unitPositionCanon
+            IUnitPositionCanon unitPositionCanon, UnitSignals signals
         ) {
             UnderlyingCity = underlyingCity;
             Config         = config;
             CombatLogic    = combatLogic;
+            Signals        = signals;
 
             Health = MaxHealth;
 
@@ -114,17 +122,24 @@ namespace Assets.Simulation.Cities {
 
         #region instance methods
 
+        #region Unity messages
+
+        private void OnDestroy() {
+            Signals.UnitBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
+
         #region from IUnit
-
-
-
-        #endregion
-
-        #endregion
 
         public void PerformMovement() {
             throw new NotImplementedException();
         }
+
+        #endregion
+
+        #endregion
+        
     }
 
 }

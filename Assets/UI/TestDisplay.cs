@@ -5,22 +5,36 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.MapManagement;
 
 namespace Assets.UI {
 
     public class TestDisplay : Civilizations.CivilizationDisplayBase {
 
-        private SerializableMapData MapData;
+        private IMapComposer MapManager;
 
-        [SerializeField] private MapManager MapManager;
+        private IFileSystemLiaison FileSystemLiaison;
+
+        [Inject]
+        public void InjectDependencies(IMapComposer mapManager, IFileSystemLiaison fileSystemLiaison) {
+            MapManager        = mapManager;
+            FileSystemLiaison = fileSystemLiaison;
+        }
 
         public void Serialize() {
-            MapData = MapManager.ComposeRuntimeIntoData();
+            var mapData = MapManager.ComposeRuntimeIntoData();
+
+            FileSystemLiaison.WriteMapDataAsSavedGameToFile(mapData, "Test Saved Game");
         }
 
         public void Deserialize() {
-            MapManager.DecomposeDataIntoRuntime(MapData);
+            FileSystemLiaison.RefreshSavedGames();
+
+            var mapData = FileSystemLiaison.SavedGames.First();
+
+            MapManager.DecomposeDataIntoRuntime(mapData);
         }
 
     }

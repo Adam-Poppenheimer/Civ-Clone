@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 
@@ -15,20 +16,34 @@ namespace Assets.Simulation.SpecialtyResources{
 
         #region instance fields and properties
 
-		private DiContainer Container;
+        #region from IResourceNodeFactory
+
+        public IEnumerable<IResourceNode> AllNodes {
+            get { return allNodes; }
+        }
+        private List<IResourceNode> allNodes = new List<IResourceNode>();
+
+        #endregion
+
+        private DiContainer Container;
 
 		private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
+
+        
 
         #endregion
 
         #region constructors
 
-		[Inject]
+        [Inject]
 		public ResourceNodeFactory(DiContainer container,
-			IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon
+			IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
+             SpecialtyResourceSignals signals
 		){
-			Container = container;
+			Container                 = container;
 			ResourceNodeLocationCanon = resourceNodeLocationCanon;
+
+            signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
         }
 
         #endregion
@@ -64,10 +79,16 @@ namespace Assets.Simulation.SpecialtyResources{
 
 			ResourceNodeLocationCanon.ChangeOwnerOfPossession(newNode, location);
 
+            allNodes.Add(newNode);
+
 			return newNode;
         }
 
         #endregion
+
+        private void OnNodeBeingDestroyed(IResourceNode node) {
+            allNodes.Remove(node);
+        }
 
         #endregion
         

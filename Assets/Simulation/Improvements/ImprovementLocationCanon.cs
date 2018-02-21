@@ -3,26 +3,40 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UniRx;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
     public class ImprovementLocationCanon : PossessionRelationship<IHexCell, IImprovement>, IImprovementLocationCanon {
 
+        #region constructors
+
+        public ImprovementLocationCanon(ImprovementSignals signals) {
+            signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
+        }
+
+        #endregion
+
         #region instance methods
 
         #region from PossessionRelationship<IMapTile, IImprovement>
 
         protected override bool IsPossessionValid(IImprovement possession, IHexCell owner) {
-            return GetPossessionsOfOwner(owner).Count() == 0;
+            return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
-            oldOwner.RefreshSlot();
+            if(oldOwner != null) {
+                oldOwner.RefreshSlot();
+            }
         }
 
         protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
-            newOwner.RefreshSlot();
+            if(newOwner != null) {
+                newOwner.RefreshSlot();
+            }
         }
 
         #endregion
@@ -34,6 +48,10 @@ namespace Assets.Simulation.Improvements {
         }
 
         #endregion
+
+        private void OnImprovementBeingDestroyed(IImprovement improvement) {
+            ChangeOwnerOfPossession(improvement, null);
+        }
 
         #endregion
 

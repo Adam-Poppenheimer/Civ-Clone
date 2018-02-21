@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -29,6 +30,10 @@ namespace Assets.Simulation.Cities.Production {
         /// How much progress is required to complete the project.
         /// </summary>
         int ProductionToComplete { get; }
+
+        IBuildingTemplate BuildingToConstruct { get; }
+
+        IUnitTemplate UnitToConstruct { get; }
 
         #endregion
 

@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -17,11 +18,11 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
-        private DiContainer Container;
-
         private IBuildingFactory BuildingFactory;
 
         private IUnitFactory UnitFactory;
+
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -34,10 +35,13 @@ namespace Assets.Simulation.Cities.Production {
         /// <param name="buildingFactory"></param>
         /// <param name="unitFactory"></param>
         [Inject]
-        public ProductionProjectFactory(DiContainer container, IBuildingFactory buildingFactory, IUnitFactory unitFactory) {
-            Container       = container;
-            BuildingFactory = buildingFactory;
-            UnitFactory     = unitFactory;
+        public ProductionProjectFactory(
+            IBuildingFactory buildingFactory, IUnitFactory unitFactory,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+        ){
+            BuildingFactory     = buildingFactory;
+            UnitFactory         = unitFactory;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -48,12 +52,12 @@ namespace Assets.Simulation.Cities.Production {
 
         /// <inheritdoc/>
         public IProductionProject ConstructBuildingProject(IBuildingTemplate template) {
-            return new BuildingProductionProject(template, BuildingFactory);
+            return new ProductionProject(template, BuildingFactory);
         }
 
         /// <inheritdoc/>
         public IProductionProject ConstructUnitProject(IUnitTemplate template) {
-            return Container.Instantiate<UnitProductionProject>( new List<object>() { template, UnitFactory } );
+            return new ProductionProject(template, UnitFactory, CityPossessionCanon);
         }
 
         #endregion

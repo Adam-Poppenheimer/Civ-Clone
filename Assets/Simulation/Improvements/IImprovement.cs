@@ -15,6 +15,8 @@ namespace Assets.Simulation.Improvements {
 
         Transform transform { get; }
 
+        GameObject gameObject { get; }
+
         #endregion
 
     }

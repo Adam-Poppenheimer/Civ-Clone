@@ -30,14 +30,24 @@ namespace Assets.Simulation.Improvements {
 
         #endregion
 
+        private ImprovementSignals Signals;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies() {
-
+        public void InjectDependencies(ImprovementSignals signals) {
+            Signals = signals;
         }
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            Signals.ImprovementBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
 
         #endregion
 

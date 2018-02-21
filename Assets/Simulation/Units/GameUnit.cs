@@ -80,11 +80,9 @@ namespace Assets.Simulation.Units {
             get { return Template.RequiredResources; }
         }
 
-        #endregion
-
         public IUnitTemplate Template { get; set; }
 
-
+        #endregion
 
         private IUnitConfig Config;
 

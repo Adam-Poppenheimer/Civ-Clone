@@ -44,7 +44,7 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<ICityConfig>().To<CityConfig>().FromResource("Cities");
 
-            var allBuildings = new List<IBuildingTemplate>(Resources.LoadAll<BuildingTemplate>("Cities/Buildings"));
+            var allBuildings = new List<IBuildingTemplate>(Resources.LoadAll<BuildingTemplate>("Buildings"));
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(allBuildings);
 

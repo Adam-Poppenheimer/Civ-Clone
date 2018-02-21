@@ -39,10 +39,12 @@ namespace Assets.Simulation.SpecialtyResources {
             var allResources = new List<ISpecialtyResourceDefinition>(Resources.LoadAll<SpecialtyResourceDefinition>("Specialty Resources"));
 
             Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
-                .WithId("All Speciality Resources")
+                .WithId("Available Specialty Resources")
                 .FromInstance(allResources.Cast<ISpecialtyResourceDefinition>());
 
             Container.Bind<IResourceNodeFactory>().To<ResourceNodeFactory>().AsSingle();
+
+            Container.Bind<SpecialtyResourceSignals>().AsSingle();
         }
 
         #endregion

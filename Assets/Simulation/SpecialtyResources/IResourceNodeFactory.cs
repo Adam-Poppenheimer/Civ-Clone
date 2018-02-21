@@ -9,6 +9,12 @@ namespace Assets.Simulation.SpecialtyResources {
 
     public interface IResourceNodeFactory {
 
+        #region properties
+
+        IEnumerable<IResourceNode> AllNodes { get; }
+
+        #endregion
+
         #region methods
 
         bool CanBuildNode(IHexCell location, ISpecialtyResourceDefinition definition);
