@@ -17,6 +17,8 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
+        [SerializeField] private RectTransform MapEditorContainer;
+
         [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
 
         [SerializeField] private TerrainEditingPanel   TerrainEditingPanel;
@@ -33,6 +35,10 @@ namespace Assets.UI.StateMachine {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<RectTransform>()
+                .WithId("Map Editor Container")
+                .FromInstance(MapEditorContainer);
+
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
             Container.Bind<CivManagementPanel>   ().FromInstance(CivManagementPanel);

@@ -29,6 +29,8 @@ namespace Assets.UI.StateMachine {
         private static string UnitTriggerName = "Unit State Requested";
         private static string CellTriggerName = "Cell State Requested";
 
+        private static string EscapeMenuTriggerName = "Escape Menu Requested";
+
         #endregion
 
         #region instance fields and properties
@@ -43,6 +45,10 @@ namespace Assets.UI.StateMachine {
         private IDisposable CancelPressedSubscription;
         private IDisposable ClickedAnywhereSubscription;
 
+        private IDisposable EscapeMenuRequestedSubscription;
+
+
+
 
         private Animator Animator;
 
@@ -50,6 +56,8 @@ namespace Assets.UI.StateMachine {
         private CompositeUnitSignals CompositeUnitSignals;
         private HexCellSignals       CellSignals;
         private PlayerSignals        PlayerSignals;
+
+        private GameCamera GameCamera;
 
         #endregion
 
@@ -59,13 +67,14 @@ namespace Assets.UI.StateMachine {
         public UIStateMachineBrain(
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, HexCellSignals cellSignals,
-            PlayerSignals playerSignals, CoreSignals coreSignals
+            PlayerSignals playerSignals, GameCamera gameCamera, CoreSignals coreSignals
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
             CompositeUnitSignals = compositeUnitSignals;
             CellSignals          = cellSignals;
             PlayerSignals        = playerSignals;
+            GameCamera           = gameCamera;
             
             coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
         }
@@ -80,6 +89,8 @@ namespace Assets.UI.StateMachine {
 
             if(CityClickedSubscription != null) { CityClickedSubscription.Dispose(); }
             if(UnitClickedSubscription != null) { UnitClickedSubscription.Dispose(); }
+
+            if(EscapeMenuRequestedSubscription != null) { EscapeMenuRequestedSubscription.Dispose(); }
 
             CellSignals.ClickedSignal.Unlisten(OnCellClicked);
 
@@ -111,7 +122,18 @@ namespace Assets.UI.StateMachine {
 
             }else if(type == TransitionType.ToCellSelected) {
                 CellSignals.ClickedSignal.Listen(OnCellClicked);
+
+            }else if(type == TransitionType.ToEscapeMenu) {
+                EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
             }
+        }
+
+        public void EnableCameraMovement() {
+            GameCamera.enabled = true;
+        }
+
+        public void DisableCameraMovement() {
+            GameCamera.enabled = false;
         }
 
         private void OnCancelPressed(UniRx.Unit unit) {
@@ -137,6 +159,10 @@ namespace Assets.UI.StateMachine {
         private void OnCellClicked(IHexCell cell, Vector3 position) {
             LastCellClicked = cell;
             Animator.SetTrigger(CellTriggerName);
+        }
+
+        private void OnEscapeMenuRequested(UniRx.Unit unit) {
+            Animator.SetTrigger(EscapeMenuTriggerName);
         }
 
         private void OnTurnBegan(ICivilization activeCiv) {

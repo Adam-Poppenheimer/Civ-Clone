@@ -70,11 +70,7 @@ namespace Assets.Simulation.HexMap {
             CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
             CellShaderData.Initialize(CellCountX, CellCountZ);
 
-            Build();
-
             CellShaderData.enabled = true;
-
-            ToggleUI(false);
         }
 
         #endregion
@@ -84,6 +80,7 @@ namespace Assets.Simulation.HexMap {
         public void Build() {
             CreateChunks();
             CreateCells();
+            ToggleUI(false);
         }
 
         public void Clear() {

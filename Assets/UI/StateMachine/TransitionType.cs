@@ -17,6 +17,7 @@ namespace Assets.UI.StateMachine {
         ToUnitSelected,
         ToCellSelected,
         ToRangedAttack,
+        ToEscapeMenu,
         
         //MapEditor
         TerrainEditing,

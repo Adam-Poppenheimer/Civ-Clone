@@ -62,7 +62,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             Brain.ListenForTransitions(
                 TransitionType.ToCitySelected, TransitionType.ToCellSelected,
-                TransitionType.ToUnitSelected
+                TransitionType.ToUnitSelected, TransitionType.ToEscapeMenu
             );
 
             CitySummaryManager.BuildSummaries();
