@@ -32,9 +32,9 @@ namespace Assets.UI {
         public void Deserialize() {
             FileSystemLiaison.RefreshSavedGames();
 
-            var mapData = FileSystemLiaison.SavedGames.First();
+            var mapFile = FileSystemLiaison.SavedGames.First();
 
-            MapManager.DecomposeDataIntoRuntime(mapData);
+            MapManager.DecomposeDataIntoRuntime(mapFile.MapData);
         }
 
     }

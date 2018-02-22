@@ -28,6 +28,8 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private TechManagementPanel   TechManagementPanel;
         [SerializeField] private ResourcePaintingPanel ResourcePaintingPanel;
 
+        [SerializeField] private GameObject SaveMapDisplay;
+
         #endregion
 
         #region instance methods
@@ -47,6 +49,10 @@ namespace Assets.UI.StateMachine {
             Container.Bind<CityPaintingPanel>    ().FromInstance(CityPaintingPanel);
             Container.Bind<TechManagementPanel>  ().FromInstance(TechManagementPanel);
             Container.Bind<ResourcePaintingPanel>().FromInstance(ResourcePaintingPanel);
+
+            Container.Bind<GameObject>()
+                .WithId("Save Map Display")
+                .FromInstance(SaveMapDisplay);
         }
 
         #endregion

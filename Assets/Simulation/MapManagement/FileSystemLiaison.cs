@@ -26,15 +26,15 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        public ReadOnlyCollection<SerializableMapData> SavedGames {
+        public ReadOnlyCollection<MapFileData> SavedGames {
             get { return savedGames.AsReadOnly(); }
         }
-        private List<SerializableMapData> savedGames = new List<SerializableMapData>();
+        private List<MapFileData> savedGames = new List<MapFileData>();
 
-        public ReadOnlyCollection<SerializableMapData> AvailableMaps {
+        public ReadOnlyCollection<MapFileData> AvailableMaps {
             get { return availableMaps.AsReadOnly(); }
         }
-        private List<SerializableMapData> availableMaps = new List<SerializableMapData>();
+        private List<MapFileData> availableMaps = new List<MapFileData>();
 
         private DirectoryInfo MapDirectory {
             get {
@@ -119,7 +119,7 @@ namespace Assets.Simulation.MapManagement {
             foreach(var file in MapDirectory.GetFiles()) {
                 if(file.Extension.Equals(".xml")) {
                     var mapOfFile = ReadMapFromFile(file);
-                    availableMaps.Add(mapOfFile);
+                    availableMaps.Add(new MapFileData(mapOfFile, file.Name, file.LastWriteTime));
                 }
             }
         }
@@ -130,7 +130,7 @@ namespace Assets.Simulation.MapManagement {
             foreach(var file in SavedGameDirectory.GetFiles()) {
                 if(file.Extension.Equals(".xml")) {
                     var savedGameOfFile = ReadMapFromFile(file);
-                    savedGames.Add(savedGameOfFile);
+                    savedGames.Add(new MapFileData(savedGameOfFile, file.Name, file.LastWriteTime));
                 }
             }
         }

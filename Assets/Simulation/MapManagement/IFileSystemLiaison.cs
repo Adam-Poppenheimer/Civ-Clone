@@ -10,8 +10,8 @@ namespace Assets.Simulation.MapManagement {
 
         #region properties
 
-        ReadOnlyCollection<SerializableMapData> SavedGames    { get; }
-        ReadOnlyCollection<SerializableMapData> AvailableMaps { get; }
+        ReadOnlyCollection<MapFileData> SavedGames    { get; }
+        ReadOnlyCollection<MapFileData> AvailableMaps { get; }
 
         #endregion
 

@@ -37,7 +37,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region from StateMachineBehaviour
 
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
             MapEditorContainer.gameObject.SetActive(true);
 
             Brain.ClearListeners();
@@ -46,7 +46,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Grid.Build();
         }
 
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             MapEditorContainer.gameObject.SetActive(false);
 
             Grid.Clear();

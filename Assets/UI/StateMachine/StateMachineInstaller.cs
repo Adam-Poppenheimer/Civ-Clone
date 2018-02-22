@@ -19,6 +19,8 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private GameCamera GameCamera;
 
+        [SerializeField] private GameMapFileRecord FileRecordPrefab;
+
         #endregion
 
         #region instance methods
@@ -39,6 +41,8 @@ namespace Assets.UI.StateMachine {
             Container.Bind<GameCamera>().FromInstance(GameCamera);
 
             Container.Bind<UIStateMachineBrain>().AsSingle();
+
+            Container.Bind<GameMapFileRecord>().FromInstance(FileRecordPrefab);
 
             foreach(var behaviour in StateMachineAnimator.GetBehaviours<StateMachineBehaviour>()) {
                 Container.Rebind(behaviour.GetType()).FromInstance(behaviour);

@@ -37,7 +37,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region from StateMachineBehaviour
 
-        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
+            Debug.Log("Entered Play Mode");
             Grid.Build();
 
             PlayModeContainer.gameObject.SetActive(true);
@@ -46,7 +47,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.EnableCameraMovement();
         }
 
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
+            Debug.Log("Left Play Mode");
+
             Grid.Clear();
 
             PlayModeContainer.gameObject.SetActive(false);
