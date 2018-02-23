@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapManagement;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -19,6 +20,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         private IHexGrid Grid;
 
+        private IMapComposer MapComposer;
+
         private RectTransform PlayModeContainer;
 
         #endregion
@@ -27,20 +30,18 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, IHexGrid grid,
+            UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             [Inject(Id = "Play Mode Container")] RectTransform playModeContainer
         ) {
             Brain             = brain;
             Grid              = grid;
+            MapComposer       = mapComposer;
             PlayModeContainer = playModeContainer;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
-            Debug.Log("Entered Play Mode");
-            Grid.Build();
-
             PlayModeContainer.gameObject.SetActive(true);
 
             Brain.ClearListeners();
@@ -48,9 +49,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            Debug.Log("Left Play Mode");
-
-            Grid.Clear();
+            MapComposer.ClearRuntime();
 
             PlayModeContainer.gameObject.SetActive(false);
         }

@@ -65,9 +65,9 @@ namespace Assets.Simulation.Core {
             Grid                = grid;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
-            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
 
-            ActiveCivilization = CivilizationFactory.Create("Player Civilization", Color.red);
+            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.NewCivilizationCreatedSignal    .Subscribe(OnNewCivilizationCreated);
         }
 
         #endregion
@@ -144,6 +144,12 @@ namespace Assets.Simulation.Core {
 
         private void OnEndTurnRequested(Unit unit) {
             EndTurn();
+        }
+
+        private void OnNewCivilizationCreated(ICivilization civ) {
+            if(ActiveCivilization == null) {
+                ActiveCivilization = civ;
+            }
         }
 
         private void OnCivilizationBeingDestroyed(ICivilization civ) {

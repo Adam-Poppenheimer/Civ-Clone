@@ -84,6 +84,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void Clear() {
+            if(Cells == null) {
+                return;
+            }
+
             for(int i = Cells.Count - 1; i >= 0; i--) {
                 Destroy(Cells[i].transform.gameObject);
             }

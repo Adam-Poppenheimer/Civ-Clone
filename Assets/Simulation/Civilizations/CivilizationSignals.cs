@@ -14,6 +14,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
+        public ISubject<ICivilization> NewCivilizationCreatedSignal     { get; private set; }
         public ISubject<ICivilization> CivilizationBeingDestroyedSignal { get; private set; }
 
         #endregion
@@ -21,6 +22,7 @@ namespace Assets.Simulation.Civilizations {
         #region constructors
 
         public CivilizationSignals() {
+            NewCivilizationCreatedSignal     = new Subject<ICivilization>();
             CivilizationBeingDestroyedSignal = new Subject<ICivilization>();
         }
 

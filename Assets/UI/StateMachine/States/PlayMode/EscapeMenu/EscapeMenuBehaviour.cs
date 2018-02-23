@@ -41,6 +41,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             EscapeMenuContainer.gameObject.SetActive(false);
+
+            Brain.EnableCameraMovement();
         }
 
         #endregion

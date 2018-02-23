@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapManagement;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -19,6 +20,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         private IHexGrid Grid;
 
+        private IMapComposer MapComposer;
+
         private RectTransform MapEditorContainer;
 
         #endregion
@@ -27,11 +30,12 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, IHexGrid grid,
+            UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             [Inject(Id = "Map Editor Container")] RectTransform mapEditorContainer
         ) {
             Brain              = brain;
             Grid               = grid;
+            MapComposer        = mapComposer;
             MapEditorContainer = mapEditorContainer;
         }
 
@@ -49,7 +53,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             MapEditorContainer.gameObject.SetActive(false);
 
-            Grid.Clear();
+            MapComposer.ClearRuntime();
         }
 
         #endregion

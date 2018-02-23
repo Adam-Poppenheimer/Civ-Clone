@@ -11,23 +11,16 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 
-namespace Assets.UI {
+namespace Assets.UI.MapManagement {
 
     public class SaveGameDisplay : MonoBehaviour {
 
-        #region internal types
-
-        public enum MapSaveMode {
-            AsSavedGame, AsMap
-        }
-
-        #endregion
-
         #region instance fields and properties
 
-        [SerializeField] private RectTransform FileRecordContainer;
-        [SerializeField] private InputField    NewFileNameInput;
-        [SerializeField] private MapSaveMode   SaveMode;
+        [SerializeField] private RectTransform     FileRecordContainer;
+        [SerializeField] private InputField        NewFileNameInput;
+        [SerializeField] private MapFileType       SaveMode;
+        [SerializeField] private GameMapFileRecord FileRecordPrefab;
 
         private List<GameMapFileRecord> InstantiatedFileRecords =
             new List<GameMapFileRecord>();
@@ -36,20 +29,15 @@ namespace Assets.UI {
 
         private IMapComposer       MapComposer;
         private IFileSystemLiaison FileSystemLiaison;
-        private GameMapFileRecord  FileRecordPrefab;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison,
-            GameMapFileRecord fileRecordPrefab
-        ){
+        public void InjectDependencies(IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison){
             MapComposer       = mapComposer;
             FileSystemLiaison = fileSystemLiaison;
-            FileRecordPrefab  = fileRecordPrefab;
         }
 
         #region Unity messages
@@ -57,7 +45,7 @@ namespace Assets.UI {
         private void OnEnable() {
             IEnumerable<MapFileData> filesToDisplay;
 
-            if(SaveMode == MapSaveMode.AsMap) {
+            if(SaveMode == MapFileType.Map) {
                 FileSystemLiaison.RefreshMaps();
                 filesToDisplay = FileSystemLiaison.AvailableMaps;
             }else {
@@ -89,7 +77,7 @@ namespace Assets.UI {
 
             var mapToSave = MapComposer.ComposeRuntimeIntoData();
 
-            if(SaveMode == MapSaveMode.AsMap) {
+            if(SaveMode == MapFileType.Map) {
                 FileSystemLiaison.WriteMapDataAsMapToFile(mapToSave, fileName);
                 FileSystemLiaison.RefreshMaps();
             }else {

@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 using Assets.Simulation.MapManagement;
 
-namespace Assets.UI {
+namespace Assets.UI.MapManagement {
 
     public class GameMapFileRecord : MonoBehaviour {
 
@@ -18,15 +18,37 @@ namespace Assets.UI {
         [SerializeField] private Text DateModifiedField;
         [SerializeField] private Text TimeModifiedField;
 
+        [SerializeField] private Toggle SelectionToggle;
+
+        private MapFileData DataToDisplay;
+
         #endregion
 
         #region instance methods
 
         public void Refresh(MapFileData fileData) {
+            DataToDisplay = fileData;
+
             NameField.text = fileData.FileName;
 
             DateModifiedField.text = fileData.LastModified.ToString("M/d/yy");
             TimeModifiedField.text = fileData.LastModified.ToString("h:m tt");
+        }
+
+        public void BindSelectionToggle(ToggleGroup group, Action<MapFileData> callback) {
+            if(SelectionToggle == null) {
+                return;
+            }
+
+            SelectionToggle.isOn = false;
+
+            group.RegisterToggle(SelectionToggle);
+
+            SelectionToggle.onValueChanged.AddListener(delegate(bool isOn) {
+                if(isOn) {
+                    callback(DataToDisplay);
+                }
+            });
         }
 
         #endregion

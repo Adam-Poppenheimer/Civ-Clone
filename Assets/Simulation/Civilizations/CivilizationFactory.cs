@@ -28,7 +28,9 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private DiContainer Container;        
+        private DiContainer Container;
+
+        private CivilizationSignals Signals;
 
         #endregion
 
@@ -37,6 +39,7 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public CivilizationFactory(DiContainer container, CivilizationSignals signals) {
             Container = container;
+            Signals   = signals;
 
             signals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
@@ -59,6 +62,8 @@ namespace Assets.Simulation.Civilizations {
             newCivilization.Color = color;
 
             allCivilizations.Add(newCivilization);
+
+            Signals.NewCivilizationCreatedSignal.OnNext(newCivilization);
 
             return newCivilization;
         }        
