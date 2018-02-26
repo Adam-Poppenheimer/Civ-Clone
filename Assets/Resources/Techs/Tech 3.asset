@@ -19,4 +19,19 @@ MonoBehaviour:
   - {fileID: 11400000, guid: b7ce9b7952687ca4887e14f8a3e6e5f7, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: ef6573fb065af374aab907e85e9ec5c9, type: 2}
-  _improvementsEnabled: []
+  _abilitiesEnabled: []
+  _improvementYieldModifications:
+  - _improvement: {fileID: 11400000, guid: ed4c86b01f88c6e4aa80d18a707994dd, type: 2}
+    _bonusYield:
+      Food: 1
+      Production: 1
+      Gold: 0
+      Culture: 0
+      Science: 0
+  - _improvement: {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
+    _bonusYield:
+      Food: 1
+      Production: 0
+      Gold: 0
+      Culture: 0
+      Science: 0

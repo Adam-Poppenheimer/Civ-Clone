@@ -57,6 +57,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
+        IEnumerable<IResourceYieldModificationData> ResourceYieldModifications { get; }
+
         #endregion
 
     }

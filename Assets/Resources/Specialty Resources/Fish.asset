@@ -11,13 +11,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d29e05e822867b1418e0253483b73785, type: 3}
   m_Name: Fish
   m_EditorClassIdentifier: 
-  _bonusYield:
-    Food: 2
+  _bonusYieldBase:
+    Food: 1
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _bonusYieldWhenImproved:
+    Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
   _type: 0
-  _extractor: {fileID: 0}
-  _appearancePrefab: {fileID: 1658622796988686, guid: faed4be857995544090cfda797314737,
+  _extractor: {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
+  _appearancePrefab: {fileID: 4285154389039604, guid: b9d3f64aa4914c14594f17f0632eefd2,
     type: 2}
+  _icon: {fileID: 21300000, guid: d06412ae3b4af204fae36b7103093f03, type: 3}

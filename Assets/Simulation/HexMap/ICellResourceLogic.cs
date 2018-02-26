@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public interface ITileResourceLogic {
+    public interface ICellResourceLogic {
 
         #region methods
 

@@ -139,7 +139,7 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private bool[] Roads;
 
-        private ITileResourceLogic ResourceLogic;
+        private ICellResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
         private IHexGrid Grid;
         private IRiverCanon RiverCanon;
@@ -149,7 +149,7 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITileResourceLogic resourceLogic,
+        public void InjectDependencies(ICellResourceLogic resourceLogic,
             INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon
         ){
             ResourceLogic = resourceLogic;

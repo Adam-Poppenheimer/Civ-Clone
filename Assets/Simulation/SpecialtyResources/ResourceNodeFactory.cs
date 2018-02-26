@@ -73,10 +73,6 @@ namespace Assets.Simulation.SpecialtyResources{
 			newNode.Resource = definition;
 			newNode.Copies   = copies;
 
-			var appearanceElement = Container.InstantiatePrefab(definition.AppearancePrefab);
-
-			appearanceElement.transform.SetParent(newNode.transform, false);
-
 			ResourceNodeLocationCanon.ChangeOwnerOfPossession(newNode, location);
 
             allNodes.Add(newNode);

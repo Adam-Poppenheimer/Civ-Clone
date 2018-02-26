@@ -8,6 +8,9 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.SpecialtyResources;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.HexMap {
 
@@ -15,23 +18,35 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private Transform FeaturePrefab;
+        private Transform Container;
 
-        [SerializeField] private List<Transform> TreePrefabs;
+        private DictionaryOfLists<IHexCell, Vector3> FeaturePositionsForCell =
+            new DictionaryOfLists<IHexCell, Vector3>();
 
-        [SerializeField] private List<Transform> BuildingPrefabs;
+
+
 
         private INoiseGenerator NoiseGenerator;
 
-        private Transform Container;
+        private IFeatureConfig Config;
+
+        private ICityFactory CityFactory;
+
+        private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(INoiseGenerator noiseGenerator) {
-            NoiseGenerator = noiseGenerator;
+        public void InjectDependencies(
+            INoiseGenerator noiseGenerator, IFeatureConfig config, ICityFactory cityFactory,
+            IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon
+        ){
+            NoiseGenerator            = noiseGenerator;
+            Config                    = config;
+            CityFactory               = cityFactory;
+            ResourceNodeLocationCanon = resourceNodeLocationCanon;
         }
 
         public void Clear() {
@@ -43,45 +58,98 @@ namespace Assets.Simulation.HexMap {
             Container.SetParent(transform, false);
         }
 
-        public void Apply() { }
-
-        public void AddFeature(Vector3 position, TerrainFeature featureType) {
-            HexHash hash = NoiseGenerator.SampleHashGrid(position);
-            if(hash.A >= 0.5f) {
-                return;
+        public void Apply() {
+            foreach(var cellWithFeatures in FeaturePositionsForCell.Keys) {
+                ApplyFeaturesToCell(cellWithFeatures, FeaturePositionsForCell[cellWithFeatures]);
             }
 
-            Transform prefabToUse = GetFeaturePrefab(featureType, hash);
-
-            Transform instance = Instantiate(prefabToUse);
-            instance.localPosition = NoiseGenerator.Perturb(position);
-            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
-            instance.SetParent(Container, false);
+            FeaturePositionsForCell.Clear();
         }
 
-        public void AddCityFeature(ICity city, Vector3 position) {
-            HexHash hash = NoiseGenerator.SampleHashGrid(position);
-
-            Transform prefabToUse = GetCityPrefab(hash);
-
-            Transform instance = Instantiate(prefabToUse);
-            instance.localPosition = NoiseGenerator.Perturb(position);
-            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
-            instance.SetParent(Container, false);
+        public void FlagLocationForFeatures(Vector3 location, IHexCell cell) {
+            FeaturePositionsForCell[cell].Add(location);
         }
 
-        private Transform GetFeaturePrefab(TerrainFeature featureType, HexHash hash) {
-            if(featureType == TerrainFeature.Forest) {
-                int treeIndex = (int)(hash.C * TreePrefabs.Count);
-                return TreePrefabs[treeIndex];
-            }else {
-                return FeaturePrefab;
+        private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {
+            var cityOnCell = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+            var nodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+
+            if(cityOnCell != null) {
+                ApplyCityFeaturesToCell(cell, locations);
+
+            }else if(nodeOnCell != null) {
+                ApplyResourceNodeToCell(cell, locations, nodeOnCell);
+
+            }else if(cell.Feature == TerrainFeature.Forest) {
+                ApplyForestToCell(cell, locations);
+
             }
         }
 
-        private Transform GetCityPrefab(HexHash hash) {
-            int buildingIndex = (int)(hash.C * BuildingPrefabs.Count);
-            return BuildingPrefabs[buildingIndex];
+        private void ApplyCityFeaturesToCell(IHexCell cell, List<Vector3> locations) {
+            foreach(var location in locations) {
+                ApplyBuildingToLocation(location, location == locations.First());
+            }
+        }
+
+        private void ApplyResourceNodeToCell(IHexCell cell, List<Vector3> locations, IResourceNode node) {
+            foreach(var location in locations) {
+                if(!ApplyResourceNodeToLocation(location, node, location == locations.First())) {
+                    
+                    if(cell.Feature == TerrainFeature.Forest) {
+                        ApplyForestToLocation(location);
+                    }
+                }
+            }
+        }
+
+        private void ApplyForestToCell(IHexCell cell, List<Vector3> locations) {
+            foreach(var location in locations) {
+                ApplyForestToLocation(location, location == locations.First());
+            }
+        }
+
+
+        private bool ApplyBuildingToLocation(Vector3 location, bool forcePopulate = false) {
+            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            if(!forcePopulate && hash.A >= Config.BuildingAppearanceChance) {
+                return false;
+            }
+
+            int buildingIndex = (int)(hash.C * Config.BuildingPrefabs.Count);
+            AddFeature(Config.BuildingPrefabs[buildingIndex], location, hash);
+
+            return true;
+        }
+
+        private bool ApplyForestToLocation(Vector3 location, bool forcePopulate = false) {
+            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            if(!forcePopulate && hash.A >= Config.TreeAppearanceChance) {
+                return false;
+            }
+
+            int treeIndex = (int)(hash.C * Config.TreePrefabs.Count);
+            AddFeature(Config.TreePrefabs[treeIndex], location, hash);
+
+            return true;
+        }
+
+        private bool ApplyResourceNodeToLocation(Vector3 location, IResourceNode node, bool forcePopulate = false) {
+            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            if(!forcePopulate && hash.A >= Config.ResourceAppearanceChance) {
+                return false;
+            }
+
+            AddFeature(node.Resource.AppearancePrefab, location, hash);
+            return true;
+        }
+
+
+        private void AddFeature(Transform prefab, Vector3 location, HexHash hash) {
+            Transform instance = Instantiate(prefab);
+            instance.localPosition = NoiseGenerator.Perturb(location);
+            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
+            instance.SetParent(Container, false);
         }
 
         #endregion

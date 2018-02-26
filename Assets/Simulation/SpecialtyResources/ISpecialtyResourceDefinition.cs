@@ -15,13 +15,17 @@ namespace Assets.Simulation.SpecialtyResources {
 
         string name { get; }
 
-        ResourceSummary BonusYield { get; }
+        ResourceSummary BonusYieldBase { get; }
+
+        ResourceSummary BonusYieldWhenImproved { get; }
 
         SpecialtyResourceType Type { get; }
 
         IImprovementTemplate Extractor { get; }
 
-        GameObject AppearancePrefab { get; }
+        Transform AppearancePrefab { get; }
+
+        Sprite Icon { get; }
 
         #endregion
 

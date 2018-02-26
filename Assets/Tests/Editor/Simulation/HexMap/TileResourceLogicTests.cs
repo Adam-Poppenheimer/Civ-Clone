@@ -13,6 +13,10 @@ using Assets.Simulation;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Cities;
+using Assets.Simulation.Cities.Buildings;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Tests.Simulation.HexMap {
 
@@ -30,6 +34,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public ImprovementData ImprovementOnCell;
 
+            public CityData CityOwningCell;
+
         }
 
         public class ResourceNodeData {
@@ -40,7 +46,19 @@ namespace Assets.Tests.Simulation.HexMap {
 
         public class ImprovementData {
 
-            public ResourceSummary BonusYield;
+            public ResourceSummary Yield;
+
+        }
+
+        public class CityData {
+
+            public List<BuildingData> Buildings;
+
+        }
+
+        public class BuildingData {
+
+            public List<Tuple<ResourceSummary, bool>> ResourceYieldModifications;
 
         }
 
@@ -138,7 +156,7 @@ namespace Assets.Tests.Simulation.HexMap {
                     Terrain = TerrainType.Grassland,
                     Feature = TerrainFeature.None,
                     ImprovementOnCell = new ImprovementData() {
-                        BonusYield = new ResourceSummary(0f, 0f, 3f)
+                        Yield = new ResourceSummary(0f, 0f, 3f)
                     }
                 }).SetName("Grassland/no feature/Has an improvement").Returns(new ResourceSummary(1f, 0f, 3f));
 
@@ -146,7 +164,7 @@ namespace Assets.Tests.Simulation.HexMap {
                     Terrain = TerrainType.Grassland,
                     Feature = TerrainFeature.Forest,
                     ImprovementOnCell = new ImprovementData() {
-                        BonusYield = new ResourceSummary(0f, 0f, 3f)
+                        Yield = new ResourceSummary(0f, 0f, 3f)
                     }
                 }).SetName("Grassland/Forest/Has an improvement").Returns(new ResourceSummary(2f, 0f, 3f));
 
@@ -158,7 +176,7 @@ namespace Assets.Tests.Simulation.HexMap {
                         BonusYield = new ResourceSummary(0f, 2f)
                     },
                     ImprovementOnCell = new ImprovementData() {
-                        BonusYield = new ResourceSummary(0f, 0f, 3f)
+                        Yield = new ResourceSummary(0f, 0f, 3f)
                     }
                 }).SetName("Grassland/no feature/Has a resource and an improvement").Returns(new ResourceSummary(1f, 2f, 3f));
 
@@ -169,9 +187,34 @@ namespace Assets.Tests.Simulation.HexMap {
                         BonusYield = new ResourceSummary(0f, 2f)
                     },
                     ImprovementOnCell = new ImprovementData() {
-                        BonusYield = new ResourceSummary(0f, 0f, 3f)
+                        Yield = new ResourceSummary(0f, 0f, 3f)
                     }
                 }).SetName("Grassland/Forest/Has a resource and an improvement").Returns(new ResourceSummary(2f, 2f, 3f));
+
+
+                yield return new TestCaseData(new GetYieldOfCellTestData() {
+                    Terrain = TerrainType.Grassland,
+                    Feature = TerrainFeature.None,
+                    ResourceNodeOnCell = new ResourceNodeData() {
+                        BonusYield = new ResourceSummary(food: 2)
+                    },
+                    CityOwningCell = new CityData() {
+                        Buildings = new List<BuildingData>() {
+                            new BuildingData() {
+                                ResourceYieldModifications = new List<Tuple<ResourceSummary, bool>>() {
+                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(production: 2), true),
+                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(gold: 2), false),
+                                }
+                            },
+                            new BuildingData() {
+                                ResourceYieldModifications = new List<Tuple<ResourceSummary, bool>>() {
+                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(culture: 2), false),
+                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(science: 2), true),
+                                }
+                            }
+                        }
+                    }
+                }).SetName("Grassland/No feature/Has resource and modifying buildings").Returns(new ResourceSummary(food: 3, production: 2, science: 2));
             }
         }
 
@@ -198,6 +241,12 @@ namespace Assets.Tests.Simulation.HexMap {
 
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
 
+        private Mock<IImprovementYieldLogic> MockImprovementYieldLogic;
+
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockCellPossessionCanon;
+
+        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+
         #endregion
 
         #region instance methods
@@ -209,6 +258,9 @@ namespace Assets.Tests.Simulation.HexMap {
             MockConfig                   = new Mock<IHexGridConfig>();
             MockNodePositionCanon        = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockImprovementYieldLogic    = new Mock<IImprovementYieldLogic>();
+            MockCellPossessionCanon      = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockBuildingPossessionCanon  = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
             MockConfig.Setup(config => config.TerrainYields).Returns(TerrainYields.AsReadOnly());
             MockConfig.Setup(config => config.FeatureYields).Returns(FeatureYields.AsReadOnly());
@@ -216,8 +268,11 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IHexGridConfig>                                  ().FromInstance(MockConfig                  .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon       .Object);
             Container.Bind<IImprovementLocationCanon>                       ().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IImprovementYieldLogic>                          ().FromInstance(MockImprovementYieldLogic   .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCellPossessionCanon     .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>       ().FromInstance(MockBuildingPossessionCanon .Object);
 
-            Container.Bind<TileResourceLogic>().AsSingle();
+            Container.Bind<CellResourceLogic>().AsSingle();
         }
 
         #endregion
@@ -232,14 +287,17 @@ namespace Assets.Tests.Simulation.HexMap {
             var cell = BuildCell(data.Terrain, data.Feature);
 
             if(data.ResourceNodeOnCell != null) {
-                BuildResourceNode(cell, data.ResourceNodeOnCell.BonusYield);
+                var node = BuildResourceNode(cell, data.ResourceNodeOnCell.BonusYield);
+                if(data.CityOwningCell != null) {
+                    BuildCity(cell, data.CityOwningCell, node.Resource);
+                }
             }
 
             if(data.ImprovementOnCell != null) {
-                BuildImprovement(cell, data.ImprovementOnCell.BonusYield);
+                BuildImprovement(cell, data.ImprovementOnCell.Yield);
             }
 
-            var resourceLogic = Container.Resolve<TileResourceLogic>();
+            var resourceLogic = Container.Resolve<CellResourceLogic>();
 
             return resourceLogic.GetYieldOfCell(cell);
         }
@@ -281,10 +339,9 @@ namespace Assets.Tests.Simulation.HexMap {
         private IImprovement BuildImprovement(IHexCell location, ResourceSummary bonusYield) {
             var mockImprovement = new Mock<IImprovement>();
 
-            var mockTemplate = new Mock<IImprovementTemplate>();
-            mockTemplate.Setup(template => template.BonusYieldNormal).Returns(bonusYield);
-
-            mockImprovement.Setup(improvement => improvement.Template).Returns(mockTemplate.Object);
+            
+            MockImprovementYieldLogic
+                .Setup(logic => logic.GetYieldOfImprovement(mockImprovement.Object)).Returns(bonusYield);
 
             var newImprovement = mockImprovement.Object;
 
@@ -292,6 +349,56 @@ namespace Assets.Tests.Simulation.HexMap {
                 .Returns(new List<IImprovement>() { newImprovement });
             
             return newImprovement;
+        }
+
+        private ICity BuildCity(IHexCell territory, CityData cityData,
+            ISpecialtyResourceDefinition candidateResource
+        ) {
+            var newCity = new Mock<ICity>().Object;
+
+            MockCellPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(territory)).Returns(newCity);
+
+            MockBuildingPossessionCanon
+                .Setup(canon => canon.GetPossessionsOfOwner(newCity))
+                .Returns(cityData.Buildings.Select(
+                    buildingData => BuildBuilding(newCity, buildingData, candidateResource)
+                ));
+
+
+            return newCity;
+        }
+
+        private IBuilding BuildBuilding(
+            ICity city, BuildingData buildingData,
+            ISpecialtyResourceDefinition candidateResource
+        ){
+            var mockBuilding = new Mock<IBuilding>();
+
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.ResourceYieldModifications)
+                .Returns(buildingData.ResourceYieldModifications.Select(
+                    tuple => BuildModificationData(tuple, candidateResource)
+                ));
+            
+            mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
+
+            return mockBuilding.Object;
+        }
+
+        private IResourceYieldModificationData BuildModificationData(
+            Tuple<ResourceSummary, bool> dataTuple,
+            ISpecialtyResourceDefinition candidateResource
+        ) {
+            var mockData = new Mock<IResourceYieldModificationData>();
+
+            mockData.Setup(data => data.BonusYield).Returns(dataTuple.Item1);
+
+            if(dataTuple.Item2) {
+                mockData.Setup(data => data.Resource).Returns(candidateResource);
+            }
+
+            return mockData.Object;
         }
 
         #endregion

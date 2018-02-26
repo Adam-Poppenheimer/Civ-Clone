@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
+  m_Name: Camp
+  m_EditorClassIdentifier: 
+  _bonusYield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _validFeatures: 
+  _validTerrains: 
+  _requiresAdjacentUpwardCliff: 0
+  _clearsForestsWhenBuilt: 0
+  _defensiveBonus: 0
+  _appearancePrefab: {fileID: 0}

@@ -116,16 +116,12 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void Triangulate(IHexCell cell) {
-            for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
-                Triangulate(direction, cell);
+            if(!RiverCanon.HasRiver(cell)){
+                Features.FlagLocationForFeatures(cell.transform.localPosition, cell);
             }
 
-            var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
-            if(cityAtLocation != null) {
-                Features.AddCityFeature(cityAtLocation, cell.transform.localPosition);
-
-            }else if(cell.Feature == TerrainFeature.Forest && !RiverCanon.HasRiver(cell)){
-                Features.AddFeature(cell.transform.localPosition, cell.Feature);
+            for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
+                Triangulate(direction, cell);
             }
         }
 
@@ -147,16 +143,12 @@ namespace Assets.Simulation.HexMap {
                 }else {
                     TriangulateAdjacentToRiver(direction, cell, center, edge);
 
-                    if(cell.Feature == TerrainFeature.Forest) {
-                        Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f), cell.Feature);
-                    }
+                    Features.FlagLocationForFeatures((center + edge.V1 + edge.V5) * (1f / 3f), cell);
                 }
             }else {
                 TriangulateWithoutRiver(direction, cell, center, edge);
 
-                if(cell.Feature == TerrainFeature.Forest) {
-                    Features.AddFeature((center + edge.V1 + edge.V5) * (1f / 3f), cell.Feature);
-                }
+                Features.FlagLocationForFeatures((center + edge.V1 + edge.V5) * (1f / 3f), cell);
             }            
 
             if(direction <= HexDirection.SE) {
@@ -170,11 +162,7 @@ namespace Assets.Simulation.HexMap {
             ICity cellOwner = CellPossessionCanon.GetOwnerOfPossession(cell);
             if(cellOwner != null) {
                 ICivilization cityOwner = CityPossessionCanon.GetOwnerOfPossession(cellOwner);
-                TriangulateCulture(direction, cell, cityOwner);
-
-                if(cellOwner.Location == cell) {
-                    Features.AddCityFeature(cellOwner, (center + edge.V1 + edge.V5) * (1f / 3f));
-                }                
+                TriangulateCulture(direction, cell, cityOwner);               
             }
         }
 

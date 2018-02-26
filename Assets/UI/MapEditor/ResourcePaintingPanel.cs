@@ -114,6 +114,8 @@ namespace Assets.UI.MapEditor {
             }else if(ActiveResource != null && ResourceNodeFactory.CanBuildNode(cell, ActiveResource)){
                 ResourceNodeFactory.BuildNode(cell, ActiveResource, ActiveCopies);
             }
+
+            cell.RefreshSelfOnly();
         }
 
         private int ResourceSorter(ISpecialtyResourceDefinition a, ISpecialtyResourceDefinition b) {

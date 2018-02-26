@@ -26,14 +26,16 @@ namespace Assets.Simulation.HexMap {
         public override void InstallBindings() {
             Container.Bind<IHexGrid>().To<HexGrid>().FromInstance(Grid);
 
-            var config = Resources.Load<HexGridConfig>("Hex Map/Hex Grid Config");
-
-            Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(config);
+            var hexConfig = Resources.Load<HexGridConfig>("Hex Map/Hex Grid Config");
+            Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(hexConfig);
+            
+            var featureConfig = Resources.Load<FeatureConfig>("Hex Map/Feature Config");
+            Container.Bind<IFeatureConfig>().To<FeatureConfig>().FromInstance(featureConfig);
 
             Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
-            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(config.RandomSeed);
+            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(hexConfig.RandomSeed);
 
-            Container.Bind<ITileResourceLogic>  ().To<TileResourceLogic>  ().AsSingle();
+            Container.Bind<ICellResourceLogic>  ().To<CellResourceLogic>  ().AsSingle();
             Container.Bind<INoiseGenerator>     ().To<NoiseGenerator>     ().AsSingle();
             Container.Bind<IRiverCanon>         ().To<RiverCanon>         ().AsSingle();
             Container.Bind<ICellVisibilityCanon>().To<CellVisibilityCanon>().AsSingle();

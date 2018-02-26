@@ -16,10 +16,15 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #region from ISpecialtyResourceDefinition
 
-        public ResourceSummary BonusYield {
-            get { return _bonusYield; }
+        public ResourceSummary BonusYieldBase {
+            get { return _bonusYieldBase; }
         }
-        [SerializeField] private ResourceSummary _bonusYield;
+        [SerializeField] private ResourceSummary _bonusYieldBase;
+
+        public ResourceSummary BonusYieldWhenImproved {
+            get { return _bonusYieldWhenImproved; }
+        }
+        [SerializeField] private ResourceSummary _bonusYieldWhenImproved;
 
         public SpecialtyResourceType Type {
             get { return _type; }
@@ -31,10 +36,15 @@ namespace Assets.Simulation.SpecialtyResources {
         }
         [SerializeField] private ImprovementTemplate _extractor;
 
-        public GameObject AppearancePrefab {
+        public Transform AppearancePrefab {
             get { return _appearancePrefab; }
         }
-        [SerializeField] private GameObject _appearancePrefab;
+        [SerializeField] private Transform _appearancePrefab;
+
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
 
         #endregion
 
