@@ -9,6 +9,9 @@ using UnityEngine;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Improvements;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Technology {
 
@@ -52,6 +55,11 @@ namespace Assets.Simulation.Technology {
             get { return _abilitiesEnabled.Cast<IAbilityDefinition>(); }
         }
         [SerializeField] private List<AbilityDefinition> _abilitiesEnabled;
+
+        public IEnumerable<IImprovementModificationData> ImprovementYieldModifications {
+            get { return _improvementYieldModifications.Cast<IImprovementModificationData>(); }
+        }
+        [SerializeField] private List<ImprovementModificationData> _improvementYieldModifications;
 
         #endregion
 

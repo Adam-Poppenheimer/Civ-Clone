@@ -16,7 +16,7 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementTemplate
 
-        public ResourceSummary BonusYield {
+        public ResourceSummary BonusYieldNormal {
             get { return _bonusYield; }
         }
         [SerializeField] private ResourceSummary _bonusYield;

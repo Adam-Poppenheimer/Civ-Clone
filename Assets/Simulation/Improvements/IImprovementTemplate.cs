@@ -19,7 +19,7 @@ namespace Assets.Simulation.Improvements {
 
         IEnumerable<TerrainFeature> ValidFeatures { get; }
 
-        ResourceSummary BonusYield { get; }
+        ResourceSummary BonusYieldNormal { get; }
 
         bool RequiresAdjacentUpwardCliff { get; }
 

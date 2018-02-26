@@ -35,6 +35,7 @@ namespace Assets.Simulation.Improvements {
                 .FromInstance(allImprovements);
 
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
+            Container.Bind<IImprovementYieldLogic>   ().To<ImprovementYieldLogic>   ().AsSingle();;
 
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
 

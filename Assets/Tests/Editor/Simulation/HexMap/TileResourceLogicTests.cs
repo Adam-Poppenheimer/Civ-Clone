@@ -266,7 +266,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
 
-            mockDefinition.Setup(resource => resource.BonusYield).Returns(bonusYield);
+            mockDefinition.Setup(resource => resource.BonusYieldBase).Returns(bonusYield);
 
             mockNode.Setup(node => node.Resource).Returns(mockDefinition.Object);
 
@@ -282,7 +282,7 @@ namespace Assets.Tests.Simulation.HexMap {
             var mockImprovement = new Mock<IImprovement>();
 
             var mockTemplate = new Mock<IImprovementTemplate>();
-            mockTemplate.Setup(template => template.BonusYield).Returns(bonusYield);
+            mockTemplate.Setup(template => template.BonusYieldNormal).Returns(bonusYield);
 
             mockImprovement.Setup(improvement => improvement.Template).Returns(mockTemplate.Object);
 
