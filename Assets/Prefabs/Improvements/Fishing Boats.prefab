@@ -9,31 +9,31 @@ Prefab:
     m_Modifications: []
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 0}
-  m_RootGameObject: {fileID: 1025038319894884}
+  m_RootGameObject: {fileID: 1106942410283426}
   m_IsPrefabParent: 1
---- !u!1 &1025038319894884
+--- !u!1 &1106942410283426
 GameObject:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
   serializedVersion: 5
   m_Component:
-  - component: {fileID: 4423793641234264}
-  - component: {fileID: 33041973894480148}
-  - component: {fileID: 23732558054222238}
+  - component: {fileID: 4946165858268716}
+  - component: {fileID: 33467759301475512}
+  - component: {fileID: 23925247060017540}
   m_Layer: 0
-  m_Name: Fortress
+  m_Name: Fishing Boats
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &4423793641234264
+--- !u!4 &4946165858268716
 Transform:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1025038319894884}
+  m_GameObject: {fileID: 1106942410283426}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0.5, z: 0}
   m_LocalScale: {x: 7, y: 1, z: 7}
@@ -41,12 +41,12 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!23 &23732558054222238
+--- !u!23 &23925247060017540
 MeshRenderer:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1025038319894884}
+  m_GameObject: {fileID: 1106942410283426}
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
@@ -54,7 +54,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: ac47639e274cf0648aa412ace82a2f87, type: 2}
+  - {fileID: 2100000, guid: 9e934736f5f871b4db56814446a95d13, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -73,10 +73,10 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!33 &33041973894480148
+--- !u!33 &33467759301475512
 MeshFilter:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1025038319894884}
+  m_GameObject: {fileID: 1106942410283426}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}

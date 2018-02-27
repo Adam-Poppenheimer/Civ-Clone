@@ -22,4 +22,5 @@ MonoBehaviour:
   _requiresAdjacentUpwardCliff: 0
   _clearsForestsWhenBuilt: 0
   _defensiveBonus: 0
-  _appearancePrefab: {fileID: 0}
+  _appearancePrefab: {fileID: 4946165858268716, guid: 12a4eb53cde4c684a9348073d6a1b561,
+    type: 2}

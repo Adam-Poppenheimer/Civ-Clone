@@ -20,7 +20,7 @@ MonoBehaviour:
   _validFeatures: 0000000001000000
   _validTerrains: 0000000001000000020000000300000004000000
   _requiresAdjacentUpwardCliff: 0
-  _clearsForestsWhenBuilt: 0
+  _clearsForestsWhenBuilt: 1
   _defensiveBonus: 0.5
   _appearancePrefab: {fileID: 4423793641234264, guid: 1078928380bbd114e85da6c5a66348c9,
     type: 2}
