@@ -86,8 +86,8 @@ namespace Assets.Simulation.Units {
                 return;
             }
 
-            possession.gameObject.transform.SetParent(newOwner.transform, false);
             possession.gameObject.transform.position = Grid.PerformIntersectionWithTerrainSurface(newOwner.transform.position);
+            possession.gameObject.transform.SetParent(newOwner.transform, true);            
 
             Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }
