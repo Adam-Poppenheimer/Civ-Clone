@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -22,6 +23,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         private IMapComposer MapComposer;
 
+        private ICivilizationFactory CivFactory;
+
         private RectTransform MapEditorContainer;
 
         #endregion
@@ -31,11 +34,13 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
+            ICivilizationFactory civFactory,
             [Inject(Id = "Map Editor Container")] RectTransform mapEditorContainer
         ) {
             Brain              = brain;
             Grid               = grid;
             MapComposer        = mapComposer;
+            CivFactory         = civFactory;
             MapEditorContainer = mapEditorContainer;
         }
 
@@ -48,6 +53,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Brain.EnableCameraMovement();
 
             Grid.Build();
+
+            CivFactory.Create("Player Civilization", Color.red);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
