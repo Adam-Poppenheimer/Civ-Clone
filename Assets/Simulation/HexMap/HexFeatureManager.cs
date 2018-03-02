@@ -71,7 +71,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void FlagLocationForFeatures(Vector3 location, IHexCell cell) {
-            FeaturePositionsForCell[cell].Add(Grid.PerformIntersectionWithTerrainSurface(location));
+            FeaturePositionsForCell[cell].Add(location);
         }
 
         private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {
@@ -115,36 +115,42 @@ namespace Assets.Simulation.HexMap {
 
 
         private bool ApplyBuildingToLocation(Vector3 location, bool forcePopulate = false) {
-            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
+
+            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
             if(!forcePopulate && hash.A >= Config.BuildingAppearanceChance) {
                 return false;
             }
 
             int buildingIndex = (int)(hash.C * Config.BuildingPrefabs.Count);
-            AddFeature(Config.BuildingPrefabs[buildingIndex], location, hash);
+            AddFeature(Config.BuildingPrefabs[buildingIndex], meshCorrectedLocation, hash);
 
             return true;
         }
 
         private bool ApplyForestToLocation(Vector3 location, bool forcePopulate = false) {
-            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
+
+            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
             if(!forcePopulate && hash.A >= Config.TreeAppearanceChance) {
                 return false;
             }
 
             int treeIndex = (int)(hash.C * Config.TreePrefabs.Count);
-            AddFeature(Config.TreePrefabs[treeIndex], location, hash);
+            AddFeature(Config.TreePrefabs[treeIndex], meshCorrectedLocation, hash);
 
             return true;
         }
 
         private bool ApplyResourceNodeToLocation(Vector3 location, IResourceNode node, bool forcePopulate = false) {
-            HexHash hash = NoiseGenerator.SampleHashGrid(location);
+            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
+
+            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
             if(!forcePopulate && hash.A >= Config.ResourceAppearanceChance) {
                 return false;
             }
 
-            AddFeature(node.Resource.AppearancePrefab, location, hash);
+            AddFeature(node.Resource.AppearancePrefab, meshCorrectedLocation, hash);
             return true;
         }
 
