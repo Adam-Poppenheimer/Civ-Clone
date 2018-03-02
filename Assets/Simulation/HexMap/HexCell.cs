@@ -49,7 +49,18 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private TerrainFeature _feature;
 
-        public int Elevation {
+        public TerrainShape Shape {
+            get { return _shape; }
+            set {
+                _shape = value;
+                Refresh();
+                RefreshSlot();
+                ShaderData.RefreshTerrain(this);
+            }
+        }
+        [SerializeField] private TerrainShape _shape;
+
+        public int FoundationElevation {
             get { return _elevation; }
             set {
                 if(_elevation == value) {
@@ -77,15 +88,37 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _elevation = int.MinValue;
 
+        public int EdgeElevation {
+            get {
+                switch(Shape) {
+                    case TerrainShape.Flatlands: return FoundationElevation;
+                    case TerrainShape.Hills:     return FoundationElevation + Mathf.RoundToInt(HexMetrics.HillEdgeElevation);
+                    case TerrainShape.Mountains: return FoundationElevation + Mathf.RoundToInt(HexMetrics.MountainEdgeElevation);
+                    default:                     return FoundationElevation;
+                }
+            }
+        }
+
+        public int PeakElevation {
+            get {
+                switch(Shape) {
+                    case TerrainShape.Flatlands: return FoundationElevation;
+                    case TerrainShape.Hills:     return FoundationElevation + Mathf.RoundToInt(HexMetrics.HillPeakElevation);
+                    case TerrainShape.Mountains: return FoundationElevation + Mathf.RoundToInt(HexMetrics.MountainPeakElevation);
+                    default:                     return FoundationElevation;
+                }
+            }
+        }
+
         public float StreamBedY {
             get {
-                return (Elevation + HexMetrics.StreamBedElevationOffset) * HexMetrics.ElevationStep;
+                return (FoundationElevation + HexMetrics.StreamBedElevationOffset) * HexMetrics.ElevationStep;
             }
         }
 
         public float RiverSurfaceY {
             get {
-                return (Elevation + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
+                return (FoundationElevation + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
             }
         }
 
@@ -108,7 +141,7 @@ namespace Assets.Simulation.HexMap {
         private int _waterLevel;
 
         public bool IsUnderwater {
-            get { return WaterLevel > Elevation; }
+            get { return WaterLevel > FoundationElevation; }
         }
 
         public float WaterSurfaceY {
@@ -177,7 +210,7 @@ namespace Assets.Simulation.HexMap {
         #region from IHexCell
 
         public HexEdgeType GetEdgeType(IHexCell otherCell) {
-            return HexMetrics.GetEdgeType(Elevation, otherCell.Elevation);
+            return HexMetrics.GetEdgeType(this, otherCell);
         }
 
         public bool HasRoadThroughEdge(HexDirection direction) {
@@ -203,7 +236,7 @@ namespace Assets.Simulation.HexMap {
         public int GetElevationDifference(HexDirection direction) {
             if(Grid.HasNeighbor(this, direction)) {
                 var neighbor = Grid.GetNeighbor(this, direction);
-                return Math.Abs(Elevation - neighbor.Elevation);
+                return Math.Abs(FoundationElevation - neighbor.FoundationElevation);
             }else {
                 return 0;
             }

@@ -80,7 +80,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(HexMetrics.GetEdgeType(attackerLocation.Elevation, defenderLocation.Elevation) == HexEdgeType.Cliff) {
+            if(HexMetrics.GetEdgeType(attackerLocation, defenderLocation) == HexEdgeType.Cliff) {
                 return false;
             }
 

@@ -92,7 +92,7 @@ GameObject:
   - component: {fileID: 33969381285377944}
   - component: {fileID: 23984730175875422}
   - component: {fileID: 114157243756510432}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Water Shore
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -110,7 +110,7 @@ GameObject:
   - component: {fileID: 33538464998106996}
   - component: {fileID: 23465669490984132}
   - component: {fileID: 114700860226082344}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -163,7 +163,7 @@ GameObject:
   - component: {fileID: 23147990319181082}
   - component: {fileID: 114749892619900210}
   - component: {fileID: 114432045013604670}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Terrain
   m_TagString: Untagged
   m_Icon: {fileID: 0}

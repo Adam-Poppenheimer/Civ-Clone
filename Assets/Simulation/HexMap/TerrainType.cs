@@ -9,7 +9,7 @@ namespace Assets.Simulation.HexMap {
         Grassland = 0,
         Plains    = 1,
         Desert    = 2,
-        Rock      = 3,
+        Tundra    = 3,
         Snow      = 4,
     }
 

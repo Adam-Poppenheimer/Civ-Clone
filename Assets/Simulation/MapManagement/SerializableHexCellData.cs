@@ -18,6 +18,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public HexCoordinates Coordinates;
         [DataMember()] public TerrainType    Terrain;
         [DataMember()] public TerrainFeature Feature;
+        [DataMember()] public TerrainShape   Shape;
         [DataMember()] public int            Elevation;
         [DataMember()] public int            WaterLevel;
         [DataMember()] public bool           SuppressSlot;

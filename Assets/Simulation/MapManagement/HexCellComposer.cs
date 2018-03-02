@@ -45,7 +45,8 @@ namespace Assets.Simulation.MapManagement {
                     Coordinates = cell.Coordinates,
                     Terrain      = cell.Terrain,
                     Feature      = cell.Feature,
-                    Elevation    = cell.Elevation,
+                    Shape        = cell.Shape,
+                    Elevation    = cell.FoundationElevation,
                     WaterLevel   = cell.WaterLevel,
                     SuppressSlot = cell.SuppressSlot,
 
@@ -70,11 +71,12 @@ namespace Assets.Simulation.MapManagement {
             foreach(var cellData in mapData.HexCells) {
                 var cellToModify = Grid.GetCellAtCoordinates(cellData.Coordinates);
 
-                cellToModify.Terrain      = cellData.Terrain;
-                cellToModify.Feature      = cellData.Feature;
-                cellToModify.Elevation    = cellData.Elevation;
-                cellToModify.WaterLevel   = cellData.WaterLevel;
-                cellToModify.SuppressSlot = cellData.SuppressSlot;
+                cellToModify.Terrain             = cellData.Terrain;
+                cellToModify.Feature             = cellData.Feature;
+                cellToModify.Shape               = cellData.Shape;
+                cellToModify.FoundationElevation = cellData.Elevation;
+                cellToModify.WaterLevel          = cellData.WaterLevel;
+                cellToModify.SuppressSlot        = cellData.SuppressSlot;
 
                 foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
                     if(cellData.Roads[(int)direction]) {

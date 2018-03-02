@@ -8,7 +8,7 @@ namespace Assets.Simulation.HexMap {
 
         Vector4 SampleNoise(Vector3 position);
 
-        Vector3 Perturb(Vector3 position);
+        Vector3 Perturb(Vector3 position, bool includeY = false);
 
         HexHash SampleHashGrid(Vector3 position);
 

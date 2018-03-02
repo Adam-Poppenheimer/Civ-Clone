@@ -17,10 +17,11 @@ namespace Assets.Simulation.HexMap {
         public const float OuterRadius = 10f;
         public const float InnerRadius = OuterRadius * OuterToInner;
 
-        public const float SolidFactor = 0.8f;
-        public const float BlendFactor = 1f - SolidFactor;
+        public const float OuterSolidFactor = 0.85f;
+        public const float InnerSolidFactor = 0.45f;
+        public const float BlendFactor = 1f - OuterSolidFactor;
 
-        public const float ElevationStep = 3f;
+        public const float ElevationStep = 2f;
 
         public const int TerracesPerSlope = 2;
 
@@ -30,7 +31,10 @@ namespace Assets.Simulation.HexMap {
 
         public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
 
-        public const float CellPerturbStrength = 4f;
+        public const float CellPerturbStrengthXZ = 4f;
+        public const float CellPerturbStrengthY  = 4f;
+
+        public const float MinHillPerturbation = 0f;
 
         public const float ElevationPerturbStrength = 1.5f;
 
@@ -42,6 +46,12 @@ namespace Assets.Simulation.HexMap {
 
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
+
+        public const int MountainPeakElevation = 5;
+        public const int MountainEdgeElevation = 1;
+
+        public const int HillPeakElevation     = 2;
+        public const int HillEdgeElevation     = 1;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
@@ -65,12 +75,20 @@ namespace Assets.Simulation.HexMap {
             return Corners[(int)direction + 1];
         }
 
-        public static Vector3 GetFirstSolidCorner(HexDirection direction) {
-            return Corners[(int)direction] * SolidFactor;
+        public static Vector3 GetFirstOuterSolidCorner(HexDirection direction) {
+            return Corners[(int)direction] * OuterSolidFactor;
         }
 
-        public static Vector3 GetSecondSolidCorner(HexDirection direction) {
-            return Corners[(int)direction + 1] * SolidFactor;
+        public static Vector3 GetSecondOuterSolidCorner(HexDirection direction) {
+            return Corners[(int)direction + 1] * OuterSolidFactor;
+        }
+
+        public static Vector3 GetFirstInnerSolidCorner(HexDirection direction) {
+            return Corners[(int)direction] * InnerSolidFactor;
+        }
+
+        public static Vector3 GetSecondInnerSolidCorner(HexDirection direction) {
+            return Corners[(int)direction + 1] * InnerSolidFactor;
         }
 
         public static Vector3 GetBridge(HexDirection direction) {
@@ -98,7 +116,10 @@ namespace Assets.Simulation.HexMap {
             return Mathf.Lerp(a, b, h);
         }
 
-        public static HexEdgeType GetEdgeType(int elevationOne, int elevationTwo) {
+        public static HexEdgeType GetEdgeType(IHexCell cellOne, IHexCell cellTwo) {
+            int elevationOne = cellOne.EdgeElevation;
+            int elevationTwo = cellTwo.EdgeElevation;
+
             if(elevationOne == elevationTwo) {
                 return HexEdgeType.Flat;
             }else if(Math.Abs(elevationOne - elevationTwo) == 1) {
@@ -109,7 +130,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public static Vector3 GetSolidEdgeMiddle(HexDirection direction) {
-            return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f * SolidFactor;
+            return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f * OuterSolidFactor;
         }
 
         public static Vector3 GetFirstWaterCorner(HexDirection direction) {

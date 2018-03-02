@@ -20,8 +20,11 @@ namespace Assets.Simulation.HexMap {
 
         TerrainType    Terrain { get; set; }
         TerrainFeature Feature { get; set; }
+        TerrainShape   Shape   { get; set; }
 
-        int Elevation { get; set; }
+        int FoundationElevation { get; set; }
+        int EdgeElevation { get; }
+        int PeakElevation { get; }
 
         float StreamBedY { get; }
         float RiverSurfaceY { get; }

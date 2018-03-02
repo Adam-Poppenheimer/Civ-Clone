@@ -56,25 +56,10 @@ namespace Assets.Simulation.Improvements {
                 return true;
             }
 
-            if(template.RequiresAdjacentUpwardCliff) {
-
-                bool hasAdjacentUpwardCliff = false;
-                foreach(var neighbor in Grid.GetNeighbors(cell)) {
-                    if( cell.Elevation < neighbor.Elevation &&
-                        HexMetrics.GetEdgeType(cell.Elevation, neighbor.Elevation) == HexEdgeType.Cliff
-                    ){
-                        hasAdjacentUpwardCliff = true;
-                        break;
-                    }
-                }
-                
-                if(!hasAdjacentUpwardCliff) {
-                    return false;
-                }
-            }
-
-            return template.ValidTerrains.Contains(cell.Terrain)
-                && template.ValidFeatures.Contains(cell.Feature);
+            return 
+                (template.RestrictedToTerrains.Count() == 0 || template.RestrictedToTerrains.Contains(cell.Terrain)) &&
+                (template.RestrictedToFeatures.Count() == 0 || template.RestrictedToFeatures.Contains(cell.Feature)) && 
+                (template.RestrictedToShapes  .Count() == 0 || template.RestrictedToShapes  .Contains(cell.Shape  ));
         }
 
         #endregion

@@ -27,11 +27,13 @@ namespace Assets.UI.MapEditor {
 
         private bool ApplyTerrain;
         private bool ApplyFeatures;
+        private bool ApplyShape;
         private bool ApplyElevation;
         private bool ApplyWaterLevel;
 
         private TerrainType    ActiveTerrain;
         private TerrainFeature ActiveFeature;
+        private TerrainShape   ActiveShape;
         private int            ActiveElevation;
         private int            ActiveWaterLevel;
 
@@ -102,6 +104,13 @@ namespace Assets.UI.MapEditor {
             ApplyFeatures = index >= 0;
             if(ApplyFeatures) {
                 ActiveFeature = (TerrainFeature)index;
+            }
+        }
+
+        public void SelectShape(int index) {
+            ApplyShape = index >= 0;
+            if(ApplyShape) {
+                ActiveShape = (TerrainShape)index;
             }
         }
 
@@ -187,8 +196,12 @@ namespace Assets.UI.MapEditor {
                 cell.Feature = ActiveFeature;
             }
 
+            if(ApplyShape) {
+                cell.Shape = ActiveShape;
+            }
+
             if(ApplyElevation) {
-                cell.Elevation = ActiveElevation;
+                cell.FoundationElevation = ActiveElevation;
             }
 
             if(ApplyWaterLevel) {

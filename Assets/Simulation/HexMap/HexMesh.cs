@@ -116,12 +116,12 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
+        public void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, bool perturbY = false) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(NoiseGenerator.Perturb(vertexOne));
-            Vertices.Add(NoiseGenerator.Perturb(vertexTwo));
-            Vertices.Add(NoiseGenerator.Perturb(vertexThree));
+            Vertices.Add(NoiseGenerator.Perturb(vertexOne,   perturbY));
+            Vertices.Add(NoiseGenerator.Perturb(vertexTwo,   perturbY));
+            Vertices.Add(NoiseGenerator.Perturb(vertexThree, perturbY));
 
             Triangles.Add(vertexIndex);
             Triangles.Add(vertexIndex + 1);
@@ -140,13 +140,13 @@ namespace Assets.Simulation.HexMap {
 		    Triangles.Add(vertexIndex + 2);
         }
 
-        public void AddQuad(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour) {
+        public void AddQuad(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour, bool perturbY = false) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(NoiseGenerator.Perturb(vertexOne));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexTwo));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexThree));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexFour));
+            Vertices.Add(NoiseGenerator.Perturb(vertexOne,   perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(vertexTwo,   perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(vertexThree, perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(vertexFour,  perturbY));
 
 		    Triangles.Add(vertexIndex);
 		    Triangles.Add(vertexIndex + 2);

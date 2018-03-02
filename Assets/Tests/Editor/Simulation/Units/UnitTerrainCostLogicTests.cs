@@ -21,16 +21,30 @@ namespace Assets.Tests.Simulation.Units {
 
         public struct TestData {
 
-            public TerrainType NextCellTerrain;
-            public TerrainFeature NextCellFeature;
-            public int NextCellElevation;
-            public bool NextCellIsUnderwater;
+            public HexCellTestData CurrentCell;
 
-            public int CurrentCellElevation;
+            public HexCellTestData NextCell;
 
-            public bool UnitIsAquatic;
+            public UnitTestData Unit;
 
-            public bool NextHasCity;
+        }
+
+        public struct HexCellTestData {
+
+            public TerrainType    Terrain;
+            public TerrainFeature Feature;
+            public TerrainShape   Shape;
+
+            public int  Elevation;
+            public bool IsUnderwater;
+
+            public bool HasCity;
+
+        }
+
+        public struct UnitTestData {
+
+            public bool IsAquatic;
 
         }
 
@@ -41,78 +55,188 @@ namespace Assets.Tests.Simulation.Units {
         private static IEnumerable TestCases {
             get {
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 0,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = false
-                }).Returns(1).SetName("Non-aquatic into empty grassland, no elevation change, no water");
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(1).SetName("Non-aquatic into flat empty grassland, no elevation change, no water");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellIsUnderwater = true,
-                    UnitIsAquatic        = true
-                }).Returns(1).SetName("Aquatic into underwater tile");
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        IsUnderwater = true
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = true
+                    }
+                }).Returns(1).SetName("Aquatic into underwater cell");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellIsUnderwater = false,
-                    UnitIsAquatic        = true,
-                    NextHasCity          = true
-                }).Returns(1).SetName("Aquatic into land tile with city");
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = true
+                    },
+                }).Returns(-1).SetName("Aquatic into land cell");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.Forest,
-                    NextCellElevation    = 0,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = false
-                }).Returns(2).SetName("Non-aquatic into forested grassland, no elevation change, no water");
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        IsUnderwater = true,
+                        HasCity = true
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = true
+                    }
+                }).Returns(1).SetName("Aquatic into land cell with city");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 1,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = false
-                }).Returns(3).SetName("Non-aquatic into empty grassland, elevation increase of 1, no water");
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        IsUnderwater = true
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(-1).SetName("Non-aquatic into underwater cell");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 2,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = false
-                }).Returns(-1).SetName("Non-aquatic into empty grassland, elevation increase of 2, no water");
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Elevation = 0, IsUnderwater = false, Shape = TerrainShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(2).SetName("Non-aquatic into flat forested grassland, no elevation change, no water");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 0,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 1,
-                    UnitIsAquatic        = false
-                }).Returns(1).SetName("Non-aquatic into empty grassland, elevation decrease of 1, no water");
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 1, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(2).SetName("Non-aquatic into flat empty grassland, up a slope, no water");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.None,
-                    NextCellElevation    = 0,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 2,
-                    UnitIsAquatic        = false
-                }).Returns(-1).SetName("Non-aquatic into empty grassland, elevation decrease of 2, no water");
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 2, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(-1).SetName("Non-aquatic into flat empty grassland, up a cliff, no water");
 
                 yield return new TestCaseData(new TestData() {
-                    NextCellTerrain      = TerrainType.Grassland,
-                    NextCellFeature      = TerrainFeature.Forest,
-                    NextCellElevation    = 1,
-                    NextCellIsUnderwater = false,
-                    CurrentCellElevation = 0,
-                    UnitIsAquatic        = false
-                }).Returns(4).SetName("Non-aquatic into forest, elevation increase of 1, no water");
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 1
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(1).SetName("Non-aquatic into flat empty grassland, down a slope, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 2
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(-1).SetName("Non-aquatic into flat empty grassland, down a cliff, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Flatlands, Elevation = 1, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(3).SetName("Non-aquatic into flat forest, up a slope, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(2).SetName("Non-aquatic into empty hills, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(3).SetName("Non-aquatic into forested hills, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Mountains, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(-1).SetName("Non-aquatic into empty mountains, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, Elevation = 1, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false
+                    }
+                }).Returns(-1).SetName("Non-aquatic into forested hills, up a slope, no water");
             }
         }
 
@@ -144,11 +268,17 @@ namespace Assets.Tests.Simulation.Units {
 
             MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
             MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.SlopeMoveCost)   .Returns(2);
+            MockConfig.Setup(config => config.SlopeMoveCost)   .Returns(1);
 
             MockConfig.Setup(config => config.FeatureMoveCosts).Returns(new List<int>() {
-                -1, //None cost
-                1,  //Forest cost
+                0, //None cost
+                1, //Forest cost
+            }.AsReadOnly());
+
+            MockConfig.Setup(config => config.ShapeMoveCosts).Returns(new List<int>() {
+                0, //Flatland cost
+                1, // Hills cost
+                -1 // Mountains cost
             }.AsReadOnly());
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
@@ -169,21 +299,11 @@ namespace Assets.Tests.Simulation.Units {
             "the EdgeType between currentCell and nextCell and whether the argued unit is aquatic or not")]
         [TestCaseSource("TestCases")]
         public int GetTraversalCostForUnitTests(TestData data){
-            var currentCell = BuildCell(
-                TerrainType.Grassland, TerrainFeature.None,
-                data.CurrentCellElevation, false
-            );
+            var currentCell = BuildCell(data.CurrentCell);
 
-            var nextCell = BuildCell(
-                data.NextCellTerrain, data.NextCellFeature,
-                data.NextCellElevation, data.NextCellIsUnderwater
-            );
+            var nextCell = BuildCell(data.NextCell);
 
-            var unit = BuildUnit(data.UnitIsAquatic);
-
-            if(data.NextHasCity) {
-                BuildCity(nextCell);
-            }
+            var unit = BuildUnit(data.Unit);
 
             var costLogic = Container.Resolve<UnitTerrainCostLogic>();
 
@@ -194,32 +314,34 @@ namespace Assets.Tests.Simulation.Units {
 
         #region utilities
 
-        private IHexCell BuildCell(
-            TerrainType terrain, TerrainFeature feature,
-            int elevation, bool isUnderwater
-        ){
+        private IHexCell BuildCell(HexCellTestData testData){
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
+            mockCell.Setup(cell => cell.IsUnderwater).Returns(testData.IsUnderwater);
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain = terrain;
-            newCell.Feature = feature;
-            newCell.Elevation = elevation;
+            newCell.Terrain = testData.Terrain;
+            newCell.Feature = testData.Feature;
+            newCell.Shape   = testData.Shape;
+            newCell.FoundationElevation = testData.Elevation;
 
             MockUnitPositionCanon
                 .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))
                 .Returns(true);
 
+            if(testData.HasCity) {
+                BuildCity(newCell);
+            }
+
             return newCell;
         }
 
-        private IUnit BuildUnit(bool isAquatic) {
+        private IUnit BuildUnit(UnitTestData testData) {
             var unitMock = new Mock<IUnit>();
 
-            unitMock.Setup(unit => unit.IsAquatic).Returns(isAquatic);
+            unitMock.Setup(unit => unit.IsAquatic).Returns(testData.IsAquatic);
 
             return unitMock.Object;
         }

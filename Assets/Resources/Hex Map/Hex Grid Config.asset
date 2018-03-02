@@ -12,50 +12,61 @@ MonoBehaviour:
   m_Name: Hex Grid Config
   m_EditorClassIdentifier: 
   _randomSeed: 2659
-  _baseLandMoveCost: 1
-  _waterMoveCost: 1
-  _slopeMoveCost: 2
-  GrasslandYield:
-    Food: 2
+  _terrainYields:
+  - Food: 2
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  PlainsYield:
-    Food: 1
+  - Food: 1
     Production: 1
     Gold: 0
     Culture: 0
     Science: 0
-  DesertYield:
-    Food: 0
+  - Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  RockYield:
-    Food: 0
+  - Food: 1
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  - Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _featureYields:
+  - Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  - Food: 1
+    Production: 1
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _shapeYields:
+  - Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  - Food: 0
     Production: 2
     Gold: 0
     Culture: 0
     Science: 0
-  SnowYield:
-    Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 1
-  NoFeatureYield:
-    Food: 0
+  - Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  ForestYield:
-    Food: 1
-    Production: 1
-    Gold: 0
-    Culture: 0
-    Science: 0
-  NoFeatureMoveCost: 0
-  ForestMoveCost: 1
+  _baseLandMoveCost: 1
+  _featureMoveCosts: 0000000001000000
+  _shapeMoveCosts: 0000000001000000ffffffff
+  _waterMoveCost: 1
+  _slopeMoveCost: 1

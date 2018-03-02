@@ -828,7 +828,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             newCell.Terrain   = terrain;
             newCell.Feature   = feature;
-            newCell.Elevation = elevation;
+            newCell.FoundationElevation = elevation;
 
             return newCell;
         }

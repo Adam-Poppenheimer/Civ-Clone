@@ -47,11 +47,15 @@ namespace Assets.Simulation.HexMap {
             );
         }
 
-        public Vector3 Perturb(Vector3 position) {
+        public Vector3 Perturb(Vector3 position, bool perturbY = false) {
             Vector4 sample = SampleNoise(position);
 
-            position.x += (sample.x * 2f - 1f) * HexMetrics.CellPerturbStrength;
-            position.z += (sample.z * 2f - 1f) * HexMetrics.CellPerturbStrength;
+            position.x += (sample.x * 2f - 1f) * HexMetrics.CellPerturbStrengthXZ;
+            position.z += (sample.z * 2f - 1f) * HexMetrics.CellPerturbStrengthXZ;
+
+            if(perturbY) {
+                position.y += Mathf.Max(sample.y * 2f - 1f, HexMetrics.MinHillPerturbation) * HexMetrics.CellPerturbStrengthY;
+            }
 
             return position;
         }

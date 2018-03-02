@@ -47,6 +47,8 @@ namespace Assets.Simulation.HexMap {
 
         List<IHexCell> GetNeighbors(IHexCell center);
 
+        Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition);
+
         void ToggleUI(bool isVisible);
 
         #endregion

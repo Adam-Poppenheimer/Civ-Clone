@@ -15,6 +15,12 @@ namespace Assets.Simulation.HexMap {
 
     public class HexGrid : MonoBehaviour, IHexGrid {
 
+        #region static fields and properties
+
+        private static Vector3 MapIntersector = new Vector3(0f, 20f, 0f);
+
+        #endregion
+
         #region instance fields and properties
 
         #region from IHexGrid
@@ -38,6 +44,8 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexCell CellPrefab;
 
         [SerializeField] private HexGridChunk ChunkPrefab;
+
+        [SerializeField] private LayerMask TerrainCollisionMask;
 
         private int CellCountX;
         private int CellCountZ;
@@ -256,6 +264,14 @@ namespace Assets.Simulation.HexMap {
             return GetCellsInRadius(center, 1);
         }
 
+        public Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition) {
+            RaycastHit results;
+
+            Physics.Raycast(xzPosition + MapIntersector, Vector3.down, out results, TerrainCollisionMask);
+
+            return results.point;
+        }
+
         public void ToggleUI(bool isVisible) {
             foreach(var cell in Cells) {
                 cell.Overlay.SetDisplayType(UI.HexMap.CellOverlayType.Labels);
@@ -308,7 +324,7 @@ namespace Assets.Simulation.HexMap {
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             newCell.Terrain     = TerrainType.Grassland;
             newCell.Feature     = TerrainFeature.None;
-            newCell.Elevation   = 0;
+            newCell.FoundationElevation   = 0;
 
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
 

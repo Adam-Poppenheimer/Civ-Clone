@@ -482,7 +482,7 @@ namespace Assets.Tests.Simulation.Units {
         private IHexCell BuildCell(CellData data) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.Elevation   ).Returns(data.Elevation);
+            mockCell.Setup(cell => cell.FoundationElevation   ).Returns(data.Elevation);
             mockCell.Setup(cell => cell.Feature     ).Returns(data.Feature);
             mockCell.Setup(cell => cell.IsUnderwater).Returns(data.IsUnderwater);
 

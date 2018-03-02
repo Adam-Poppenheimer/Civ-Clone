@@ -60,8 +60,8 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private bool CanUnitSeeCell_AdjacentCase(IHexCell location, IHexCell cellToSee) {
-            return location.Elevation >= cellToSee.Elevation
-                || cellToSee.Elevation - location.Elevation < 3;
+            return location.FoundationElevation >= cellToSee.FoundationElevation
+                || cellToSee.FoundationElevation - location.FoundationElevation < 3;
         }
 
         private bool CanUnitSeeCell_WithinVisionRangeCase(List<IHexCell> cellLine){
@@ -71,28 +71,28 @@ namespace Assets.Simulation.Units {
             for(int i = 1; i <= cellLine.Count - 2; i++) {
                 var intermediate = cellLine[i];
 
-                int intermediateEffectiveElevation = intermediate.Elevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
+                int intermediateEffectiveElevation = intermediate.FoundationElevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
 
-                if(intermediateEffectiveElevation > location.Elevation) {
+                if(intermediateEffectiveElevation > location.FoundationElevation) {
                     return false;
                 }
             }            
 
-            return location.Elevation >= cellToSee.Elevation
-                || cellToSee.Elevation - location.Elevation < 4;
+            return location.FoundationElevation >= cellToSee.FoundationElevation
+                || cellToSee.FoundationElevation - location.FoundationElevation < 4;
         }
 
         private bool CanUnitSeeCell_JustBeyondVisionRangeCase(List<IHexCell> cellLine){
             IHexCell location = cellLine[0];
             IHexCell cellToSee = cellLine.Last();
 
-            if(location.Elevation >= cellToSee.Elevation) {
+            if(location.FoundationElevation >= cellToSee.FoundationElevation) {
                 for(int i = 1; i <= cellLine.Count - 2; i++) {
                     var intermediate = cellLine[i];
 
-                    int intermediateEffectiveElevation = intermediate.Elevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
+                    int intermediateEffectiveElevation = intermediate.FoundationElevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
 
-                    if(!intermediate.IsUnderwater || intermediateEffectiveElevation > location.Elevation) {
+                    if(!intermediate.IsUnderwater || intermediateEffectiveElevation > location.FoundationElevation) {
                         return false;
                     }
                 }
@@ -102,15 +102,15 @@ namespace Assets.Simulation.Units {
                 for(int i = 1; i <= cellLine.Count - 2; i++) {
                     var intermediate = cellLine[i];
 
-                    int intermediateEffectiveElevation = intermediate.Elevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
+                    int intermediateEffectiveElevation = intermediate.FoundationElevation + intermediate.Feature == TerrainFeature.Forest ? 1 : 0;
 
-                    if(intermediateEffectiveElevation > location.Elevation) {
+                    if(intermediateEffectiveElevation > location.FoundationElevation) {
                         return false;
                     }
                 }
-                return location.Elevation >= cellToSee.Elevation || (
-                    cellToSee.Elevation - location.Elevation > 1 &&
-                    cellToSee.Elevation - location.Elevation < 5
+                return location.FoundationElevation >= cellToSee.FoundationElevation || (
+                    cellToSee.FoundationElevation - location.FoundationElevation > 1 &&
+                    cellToSee.FoundationElevation - location.FoundationElevation < 5
                 );
             }
         }

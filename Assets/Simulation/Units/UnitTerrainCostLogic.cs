@@ -56,11 +56,21 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private int GetAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
-            return Config.WaterMoveCost;
+            if(nextCell.IsUnderwater) {
+                return Config.WaterMoveCost;
+            }else if(CityFactory.AllCities.Exists(city => city.Location == nextCell)) {
+                return Config.WaterMoveCost;
+            }else {
+                return -1;
+            }
         }
 
         private int GetNonAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
-            var edgeType = HexMetrics.GetEdgeType(currentCell.Elevation, nextCell.Elevation);
+            if(nextCell.IsUnderwater) {
+                return -1;
+            }
+
+            var edgeType = HexMetrics.GetEdgeType(currentCell, nextCell);
 
             if(edgeType == HexEdgeType.Cliff){
                 return -1;
@@ -68,16 +78,23 @@ namespace Assets.Simulation.Units {
 
             int moveCost = Config.BaseLandMoveCost;
 
-            if(edgeType == HexEdgeType.Slope && nextCell.Elevation > currentCell.Elevation) {
+            if(edgeType == HexEdgeType.Slope && nextCell.FoundationElevation > currentCell.FoundationElevation) {
                 moveCost += Config.SlopeMoveCost;
             }
 
             var featureCost = Config.FeatureMoveCosts[(int)nextCell.Feature];
-            if(nextCell.Feature != TerrainFeature.None) {
-                if(featureCost == -1) {
+            if(featureCost == -1) {
+                return -1;
+            }else {
+                moveCost += featureCost;
+            }
+
+            var shapeCost = Config.ShapeMoveCosts[(int)nextCell.Shape];
+            if(nextCell.Shape != TerrainShape.Flatlands) {
+                if(shapeCost == -1) {
                     return -1;
                 }else {
-                    moveCost += featureCost;
+                    moveCost += shapeCost;
                 }
             }
 

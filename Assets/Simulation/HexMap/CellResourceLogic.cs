@@ -63,6 +63,8 @@ namespace Assets.Simulation.HexMap {
 
             if(cell.Feature != TerrainFeature.None) {
                 retval = Config.FeatureYields[(int)cell.Feature];
+            }else if(cell.Shape != TerrainShape.Flatlands) {
+                retval = Config.ShapeYields[(int)cell.Shape];
             }else {
                 retval = Config.TerrainYields[(int)cell.Terrain];
             }

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using UniRx;
 
@@ -24,6 +26,8 @@ namespace Assets.Simulation.Units {
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
+        private IHexGrid Grid;
+
         #endregion
 
         #region constructors
@@ -31,12 +35,14 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            IHexGrid grid
         ){
             CityFactory         = cityFactory;
             Signals             = signals;
             CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
+            Grid                = grid;
         }
 
         #endregion
@@ -76,16 +82,12 @@ namespace Assets.Simulation.Units {
         }
 
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
-            possession.gameObject.transform.SetParent(newOwner != null ? newOwner.transform : null, false);
-
-            if(newOwner != null && newOwner.IsUnderwater) {
-
-                if(newOwner.IsUnderwater) {
-                    var unitLocation = possession.gameObject.transform.localPosition;
-                    unitLocation.y = newOwner.WaterSurfaceY;
-                    possession.gameObject.transform.localPosition = unitLocation;
-                }
+            if(newOwner == null) {
+                return;
             }
+
+            possession.gameObject.transform.SetParent(newOwner.transform, false);
+            possession.gameObject.transform.position = Grid.PerformIntersectionWithTerrainSurface(newOwner.transform.position);
 
             Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }

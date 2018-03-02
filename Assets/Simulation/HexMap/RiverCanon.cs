@@ -84,8 +84,8 @@ namespace Assets.Simulation.HexMap {
             var neighbor = Grid.GetNeighbor(cell, direction);
 
             if(neighbor != null) {
-                bool validElevation = cell.Elevation >= neighbor.Elevation;
-                bool validWaterLevel = cell.WaterLevel == neighbor.Elevation;
+                bool validElevation = cell.FoundationElevation >= neighbor.FoundationElevation;
+                bool validWaterLevel = cell.WaterLevel == neighbor.FoundationElevation;
 
                 return validElevation || validWaterLevel;
             }
@@ -96,8 +96,8 @@ namespace Assets.Simulation.HexMap {
             var neighbor = Grid.GetNeighbor(cell, direction);
 
             if(neighbor != null) {
-                bool validElevation = cell.Elevation <= neighbor.Elevation;
-                bool validWaterLevel = cell.WaterLevel == neighbor.Elevation && neighbor.IsUnderwater;
+                bool validElevation = cell.FoundationElevation <= neighbor.FoundationElevation;
+                bool validWaterLevel = cell.WaterLevel == neighbor.FoundationElevation && neighbor.IsUnderwater;
 
                 return validElevation || validWaterLevel;
             }

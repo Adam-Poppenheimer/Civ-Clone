@@ -34,6 +34,8 @@ namespace Assets.Simulation.HexMap {
 
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
 
+        private IHexGrid Grid;
+
         #endregion
 
         #region instance methods
@@ -41,12 +43,14 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             INoiseGenerator noiseGenerator, IFeatureConfig config, ICityFactory cityFactory,
-            IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon
+            IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
+            IHexGrid grid
         ){
             NoiseGenerator            = noiseGenerator;
             Config                    = config;
             CityFactory               = cityFactory;
             ResourceNodeLocationCanon = resourceNodeLocationCanon;
+            Grid                      = grid;
         }
 
         public void Clear() {
@@ -67,7 +71,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void FlagLocationForFeatures(Vector3 location, IHexCell cell) {
-            FeaturePositionsForCell[cell].Add(location);
+            FeaturePositionsForCell[cell].Add(Grid.PerformIntersectionWithTerrainSurface(location));
         }
 
         private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {

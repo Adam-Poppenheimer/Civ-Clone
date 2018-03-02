@@ -15,13 +15,13 @@ namespace Assets.Simulation.Improvements {
 
         string name { get; }
 
-        IEnumerable<TerrainType> ValidTerrains { get; }
+        IEnumerable<TerrainType> RestrictedToTerrains { get; }
 
-        IEnumerable<TerrainFeature> ValidFeatures { get; }
+        IEnumerable<TerrainFeature> RestrictedToFeatures { get; }
+
+        IEnumerable<TerrainShape> RestrictedToShapes { get; }
 
         ResourceSummary BonusYieldNormal { get; }
-
-        bool RequiresAdjacentUpwardCliff { get; }
 
         bool ClearsForestsWhenBuilt { get; }
 

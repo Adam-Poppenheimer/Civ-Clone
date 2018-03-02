@@ -127,10 +127,36 @@ namespace Assets.Simulation.HexMap {
 
         private void Triangulate(HexDirection direction, IHexCell cell) {
             Vector3 center = cell.transform.localPosition;
+
             EdgeVertices edge = new EdgeVertices(
-                center + HexMetrics.GetFirstSolidCorner(direction),
-                center + HexMetrics.GetSecondSolidCorner(direction)
+                center + HexMetrics.GetFirstOuterSolidCorner(direction),
+                center + HexMetrics.GetSecondOuterSolidCorner(direction)
             );
+
+            if(cell.Shape == TerrainShape.Mountains) {
+                var mountainCenterDelta = HexMetrics.MountainPeakElevation * HexMetrics.ElevationStep;
+                var mountainEdgeDelta   = HexMetrics.MountainEdgeElevation   * HexMetrics.ElevationStep;
+
+                center.y += mountainCenterDelta;
+
+                edge.V1.y += mountainEdgeDelta;
+                edge.V2.y += mountainEdgeDelta;
+                edge.V3.y += mountainEdgeDelta;
+                edge.V4.y += mountainEdgeDelta;
+                edge.V5.y += mountainEdgeDelta;
+
+            }else if(cell.Shape == TerrainShape.Hills) {
+                var hillCenterData = HexMetrics.HillPeakElevation * HexMetrics.ElevationStep;
+                var hillEdgeData   = HexMetrics.HillEdgeElevation   * HexMetrics.ElevationStep;
+
+                center.y += hillCenterData;
+
+                edge.V1.y += hillEdgeData;
+                edge.V2.y += hillEdgeData;
+                edge.V3.y += hillEdgeData;
+                edge.V4.y += hillEdgeData;
+                edge.V5.y += hillEdgeData;
+            }
 
             if(RiverCanon.HasRiver(cell)) {
                 if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
@@ -146,7 +172,11 @@ namespace Assets.Simulation.HexMap {
                     Features.FlagLocationForFeatures((center + edge.V1 + edge.V5) * (1f / 3f), cell);
                 }
             }else {
-                TriangulateWithoutRiver(direction, cell, center, edge);
+                if(cell.Shape == TerrainShape.Hills) {
+                    TriangulateWithoutRiver_Hills(direction, cell, center, edge);
+                }else {
+                    TriangulateWithoutRiver_NotHills(direction, cell, center, edge);
+                }
 
                 Features.FlagLocationForFeatures((center + edge.V1 + edge.V5) * (1f / 3f), cell);
             }            
@@ -166,7 +196,7 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        private void TriangulateWithoutRiver(
+        private void TriangulateWithoutRiver_NotHills(
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices e
         ){
             TriangulateEdgeFan(center, e, cell.Index);
@@ -184,14 +214,29 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        private void TriangulateWithoutRiver_Hills(
+            HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices outerEdge
+        ) {
+            var innerEdge = new EdgeVertices(
+                center + HexMetrics.GetFirstInnerSolidCorner(direction),
+                center + HexMetrics.GetSecondInnerSolidCorner(direction)
+            );
+
+            TriangulateEdgeFan(center, innerEdge, cell.Index, true);
+            TriangulateEdgeStrip_Hills(
+                innerEdge, Weights1, cell.Index, true,
+                outerEdge, Weights1, cell.Index, true
+            );
+        }
+
         private void TriangulateWithRiver(
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices edge
         ) {
             Vector3 centerLeft, centerRight;
             
             if(RiverCanon.HasRiverThroughEdge(cell, direction.Opposite())){
-                centerLeft  = center + HexMetrics.GetFirstSolidCorner (direction.Previous()) * 0.25f;
-                centerRight = center + HexMetrics.GetSecondSolidCorner(direction.Next    ()) * 0.25f;
+                centerLeft  = center + HexMetrics.GetFirstOuterSolidCorner (direction.Previous()) * 0.25f;
+                centerRight = center + HexMetrics.GetSecondOuterSolidCorner(direction.Next    ()) * 0.25f;
 
             }else if (RiverCanon.HasRiverThroughEdge(cell, direction.Next())) {
                 centerLeft = center;
@@ -307,14 +352,14 @@ namespace Assets.Simulation.HexMap {
                     center += HexMetrics.GetSolidEdgeMiddle(direction) * HexMetrics.InnerToOuter * 0.5f;
 
                 }else if(RiverCanon.HasRiverThroughEdge(cell, direction.Previous2())) {
-                    center += HexMetrics.GetFirstSolidCorner(direction) * 0.25f;
+                    center += HexMetrics.GetFirstOuterSolidCorner(direction) * 0.25f;
 
                 }
             }else if(
                 RiverCanon.HasRiverThroughEdge(cell, direction.Previous()) &&
                 RiverCanon.HasRiverThroughEdge(cell, direction.Next2())
             ) {
-                center += HexMetrics.GetSecondSolidCorner(direction) * 0.25f;
+                center += HexMetrics.GetSecondOuterSolidCorner(direction) * 0.25f;
             }
 
             EdgeVertices middle = new EdgeVertices(
@@ -343,6 +388,44 @@ namespace Assets.Simulation.HexMap {
                 edgeOne.V5 + bridge
             );
 
+            if(cell.Shape != TerrainShape.Mountains && neighbor.Shape == TerrainShape.Mountains) {
+                var mountainEdgeDelta = HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
+
+                edgeTwo.V1.y += mountainEdgeDelta;
+                edgeTwo.V2.y += mountainEdgeDelta;
+                edgeTwo.V3.y += mountainEdgeDelta;
+                edgeTwo.V4.y += mountainEdgeDelta;
+                edgeTwo.V5.y += mountainEdgeDelta;
+
+            }else if(cell.Shape == TerrainShape.Mountains && neighbor.Shape != TerrainShape.Mountains) {
+                var mountainEdgeDelta = HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
+
+                edgeTwo.V1.y -= mountainEdgeDelta;
+                edgeTwo.V2.y -= mountainEdgeDelta;
+                edgeTwo.V3.y -= mountainEdgeDelta;
+                edgeTwo.V4.y -= mountainEdgeDelta;
+                edgeTwo.V5.y -= mountainEdgeDelta;
+            }
+
+            if(cell.Shape != TerrainShape.Hills && neighbor.Shape == TerrainShape.Hills) {
+                var hillEdgeDelta = HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
+
+                edgeTwo.V1.y += hillEdgeDelta;
+                edgeTwo.V2.y += hillEdgeDelta;
+                edgeTwo.V3.y += hillEdgeDelta;
+                edgeTwo.V4.y += hillEdgeDelta;
+                edgeTwo.V5.y += hillEdgeDelta;
+
+            }else if(cell.Shape == TerrainShape.Hills && neighbor.Shape != TerrainShape.Hills) {
+                var hillEdgeDelta = HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
+
+                edgeTwo.V1.y -= hillEdgeDelta;
+                edgeTwo.V2.y -= hillEdgeDelta;
+                edgeTwo.V3.y -= hillEdgeDelta;
+                edgeTwo.V4.y -= hillEdgeDelta;
+                edgeTwo.V5.y -= hillEdgeDelta;
+            }
+
             if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
                 edgeTwo.V3.y = neighbor.StreamBedY;
 
@@ -358,14 +441,14 @@ namespace Assets.Simulation.HexMap {
                             RiverCanon.HasIncomingRiver(cell) && RiverCanon.GetIncomingRiver(cell) == direction,
                             indices
                         );
-                    }else if(cell.Elevation > neighbor.WaterLevel){
+                    }else if(cell.FoundationElevation > neighbor.WaterLevel){
                         TriangulateWaterfallInWater(
                             edgeOne.V2, edgeOne.V4, edgeTwo.V2, edgeTwo.V4,
                             cell.RiverSurfaceY, neighbor.RiverSurfaceY,
                             neighbor.WaterSurfaceY, indices
                         );
                     }
-                }else if(!neighbor.IsUnderwater && neighbor.Elevation > cell.WaterLevel) {
+                }else if(!neighbor.IsUnderwater && neighbor.FoundationElevation > cell.WaterLevel) {
                     TriangulateWaterfallInWater(
                         edgeTwo.V4, edgeTwo.V2, edgeOne.V4, edgeOne.V2,
                         neighbor.RiverSurfaceY, cell.RiverSurfaceY,
@@ -374,12 +457,18 @@ namespace Assets.Simulation.HexMap {
                 }
             }
 
-            var edgeType = HexMetrics.GetEdgeType(cell.Elevation, neighbor.Elevation);
+            var edgeType = HexMetrics.GetEdgeType(cell, neighbor);
             if(edgeType == HexEdgeType.Slope) {
                 TriangulateEdgeTerraces(
                     edgeOne, cell, edgeTwo, neighbor, cell.HasRoadThroughEdge(direction)
                 );
-            }else {
+            }else if(cell.Shape == TerrainShape.Hills || neighbor.Shape == TerrainShape.Hills){
+                TriangulateEdgeStrip_Hills(
+                    edgeOne, Weights1, cell.Index, cell.Shape == TerrainShape.Hills,
+                    edgeTwo, Weights2, neighbor.Index, neighbor.Shape == TerrainShape.Hills,
+                    cell.HasRoadThroughEdge(direction)
+                );
+            }else{
                 TriangulateEdgeStrip(
                     edgeOne, Weights1, cell.Index,
                     edgeTwo, Weights2, neighbor.Index,
@@ -390,24 +479,46 @@ namespace Assets.Simulation.HexMap {
             if(direction > HexDirection.E || !Grid.HasNeighbor(cell, direction.Next())) {
                 return;
             }
-
+            
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
 
             Vector3 v5 = edgeOne.V5 + HexMetrics.GetBridge(direction.Next());
             v5.y = nextNeighbor.transform.localPosition.y;
 
-            if(cell.Elevation <= neighbor.Elevation) {
-                if(cell.Elevation <= nextNeighbor.Elevation) {
-                    TriangulateCorner(edgeOne.V5, cell, edgeTwo.V5, neighbor, v5, nextNeighbor);
-                }else {
-                    TriangulateCorner(v5, nextNeighbor, edgeOne.V5, cell, edgeTwo.V5, neighbor);
-                }
-            }else if(neighbor.Elevation <= nextNeighbor.Elevation) {
-                TriangulateCorner(edgeTwo.V5, neighbor, v5, nextNeighbor, edgeOne.V5, cell);
-            }else {
-                TriangulateCorner(v5, nextNeighbor, edgeOne.V5, cell, edgeTwo.V5, neighbor);
+            if(nextNeighbor.Shape == TerrainShape.Mountains) {
+                v5.y += HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
+
+            }else if(nextNeighbor.Shape == TerrainShape.Hills) {
+                v5.y += HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
             }
 
+            if(cell.FoundationElevation <= neighbor.FoundationElevation) {
+                if(cell.FoundationElevation <= nextNeighbor.FoundationElevation) {
+                    TriangulateCorner(
+                        edgeOne.V5, cell,         cell.Shape         == TerrainShape.Hills,
+                        edgeTwo.V5, neighbor,     neighbor.Shape     == TerrainShape.Hills,
+                        v5,         nextNeighbor, nextNeighbor.Shape == TerrainShape.Hills
+                    );
+                }else {
+                    TriangulateCorner(
+                        v5, nextNeighbor,     nextNeighbor.Shape == TerrainShape.Hills,
+                        edgeOne.V5, cell,     cell.Shape         == TerrainShape.Hills,
+                        edgeTwo.V5, neighbor, neighbor.Shape     == TerrainShape.Hills
+                    );
+                }
+            }else if(neighbor.FoundationElevation <= nextNeighbor.FoundationElevation) {
+                TriangulateCorner(
+                    edgeTwo.V5, neighbor,     neighbor.Shape     == TerrainShape.Hills,
+                    v5,         nextNeighbor, nextNeighbor.Shape == TerrainShape.Hills,
+                    edgeOne.V5, cell,         cell.Shape         == TerrainShape.Hills
+                );
+            }else {
+                TriangulateCorner(
+                    v5,         nextNeighbor, nextNeighbor.Shape == TerrainShape.Hills,
+                    edgeOne.V5, cell,         cell.Shape         == TerrainShape.Hills,
+                    edgeTwo.V5, neighbor,     neighbor.Shape     == TerrainShape.Hills
+                );
+            }
         }
 
         private void TriangulateEdgeTerraces(
@@ -415,31 +526,43 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices end, IHexCell endCell,
             bool hasRoad
         ) {
-            EdgeVertices e2 = EdgeVertices.TerraceLerp(begin, end, 1);
-            Color w2 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
+            EdgeVertices edgeTwo = EdgeVertices.TerraceLerp(begin, end, 1);
+            Color weights2 = HexMetrics.TerraceLerp(Weights1, Weights2, 1);
             float i1 = beginCell.Index;
             float i2 = endCell.Index;
 
-            TriangulateEdgeStrip(begin, Weights1, i1, e2, w2, i2, hasRoad);
+            TriangulateEdgeStrip_Hills(
+                begin,   Weights1, i1, beginCell.Shape == TerrainShape.Hills,
+                edgeTwo, weights2, i2, false,
+                hasRoad
+            );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
-                EdgeVertices e1 = e2;
-                Color c1 = w2;
+                EdgeVertices edgeOne = edgeTwo;
+                Color weights1 = weights2;
 
-                e2 = EdgeVertices.TerraceLerp(begin, end, i);
-                w2 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
+                edgeTwo = EdgeVertices.TerraceLerp(begin, end, i);
+                weights2 = HexMetrics.TerraceLerp(Weights1, Weights2, i);
 
-                TriangulateEdgeStrip(e1, c1, i1, e2, w2, i2, hasRoad);
+                TriangulateEdgeStrip_Hills(
+                    edgeOne, weights1, i1, false,
+                    edgeTwo, weights2, i2, false,
+                    hasRoad
+                );
             }
 
-            TriangulateEdgeStrip(e2, w2, i1, end, Weights2, i2, hasRoad);
+            TriangulateEdgeStrip_Hills(
+                edgeTwo, weights2, i1, false,
+                end,     Weights2, i2, endCell.Shape == TerrainShape.Hills,
+                hasRoad
+            );
         }
 
-        private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index) {
-            Terrain.AddTriangle(center, edge.V1, edge.V2);
-            Terrain.AddTriangle(center, edge.V2, edge.V3);
-            Terrain.AddTriangle(center, edge.V3, edge.V4);
-            Terrain.AddTriangle(center, edge.V4, edge.V5);
+        private void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index, bool perturbY = false) {
+            Terrain.AddTriangle(center, edge.V1, edge.V2, perturbY);
+            Terrain.AddTriangle(center, edge.V2, edge.V3, perturbY);
+            Terrain.AddTriangle(center, edge.V3, edge.V4, perturbY);
+            Terrain.AddTriangle(center, edge.V4, edge.V5, perturbY);
 
             Vector3 indices;
             indices.x = indices.y = indices.z = index;
@@ -472,10 +595,44 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        private void TriangulateEdgeStrip_Hills(
+            EdgeVertices e1, Color w1, float index1, bool perturbEdgeOne,
+            EdgeVertices e2, Color w2, float index2, bool perturbEdgeTwo,
+            bool hasRoad = false
+        ) {
+            Terrain.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V1, perturbEdgeOne), NoiseGenerator.Perturb(e1.V2, perturbEdgeOne),
+                NoiseGenerator.Perturb(e2.V1, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V2, perturbEdgeTwo)
+            );
+
+            Terrain.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V2, perturbEdgeOne), NoiseGenerator.Perturb(e1.V3, perturbEdgeOne),
+                NoiseGenerator.Perturb(e2.V2, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V3, perturbEdgeTwo)
+            );
+
+            Terrain.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V3, perturbEdgeOne), NoiseGenerator.Perturb(e1.V4, perturbEdgeOne),
+                NoiseGenerator.Perturb(e2.V3, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V4, perturbEdgeTwo)
+            );
+
+            Terrain.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V4, perturbEdgeOne), NoiseGenerator.Perturb(e1.V5, perturbEdgeOne),
+                NoiseGenerator.Perturb(e2.V4, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V5, perturbEdgeTwo)
+            );
+
+            Vector3 indices;
+            indices.x = indices.z = index1;
+            indices.y = index2;
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
+            Terrain.AddQuadCellData(indices, w1, w2);
+        }
+
         private void TriangulateCorner(
-            Vector3 bottom, IHexCell bottomCell,
-            Vector3 left,   IHexCell leftCell,
-            Vector3 right,  IHexCell rightCell
+            Vector3 bottom, IHexCell bottomCell, bool perturbBottomY,
+            Vector3 left,   IHexCell leftCell,   bool perturbLeftY,
+            Vector3 right,  IHexCell rightCell,  bool perturbRightY
         ) {
             HexEdgeType leftEdgeType  = bottomCell.GetEdgeType(leftCell);
             HexEdgeType rightEdgeType = bottomCell.GetEdgeType(rightCell);
@@ -483,32 +640,64 @@ namespace Assets.Simulation.HexMap {
             if(leftEdgeType == HexEdgeType.Slope) {
 
                 if(rightEdgeType == HexEdgeType.Slope) {
-                    TriangulateCornerTerraces(bottom, bottomCell, left, leftCell, right, rightCell);
+                    TriangulateCornerTerraces(
+                        bottom, bottomCell, perturbBottomY,
+                        left,   leftCell,   perturbLeftY,
+                        right,  rightCell,  perturbRightY
+                    );
 
                 }else if(rightEdgeType == HexEdgeType.Flat) {
-                    TriangulateCornerTerraces(left, leftCell, right, rightCell, bottom, bottomCell);
+                    TriangulateCornerTerraces(
+                        left, leftCell,     perturbLeftY,
+                        right, rightCell,   perturbRightY,
+                        bottom, bottomCell, perturbBottomY
+                    );
                 }else {
-                    TriangulateCornerTerracesCliff(bottom, bottomCell, left, leftCell, right, rightCell);
+                    TriangulateCornerTerracesCliff(
+                        bottom, bottomCell, perturbBottomY,
+                        left,   leftCell,   perturbLeftY,
+                        right,  rightCell,  perturbRightY
+                    );
                 }
 
             }else if(rightEdgeType == HexEdgeType.Slope) {
 
                 if(leftEdgeType == HexEdgeType.Flat) {
-                    TriangulateCornerTerraces(right, rightCell, bottom, bottomCell, left, leftCell);
+                    TriangulateCornerTerraces(
+                        right,  rightCell,  perturbRightY,
+                        bottom, bottomCell, perturbBottomY,
+                        left,   leftCell,   perturbLeftY
+                    );
                 }else {
-                    TriangulateCornerCliffTerraces(bottom, bottomCell, left, leftCell, right, rightCell);
+                    TriangulateCornerCliffTerraces(
+                        bottom, bottomCell, perturbBottomY,
+                        left,   leftCell,   perturbLeftY,
+                        right,  rightCell,  perturbRightY
+                    );
                 }
 
             }else if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
 
-                if(leftCell.Elevation < rightCell.Elevation) {
-                    TriangulateCornerCliffTerraces(right, rightCell, bottom, bottomCell, left, leftCell);
+                if(leftCell.FoundationElevation < rightCell.FoundationElevation) {
+                    TriangulateCornerCliffTerraces(
+                        right,  rightCell,  perturbRightY,
+                        bottom, bottomCell, perturbBottomY,
+                        left,   leftCell,   perturbLeftY
+                    );
                 }else {
-                    TriangulateCornerTerracesCliff(left, leftCell, right, rightCell, bottom, bottomCell);
+                    TriangulateCornerTerracesCliff(
+                        left,   leftCell,   perturbLeftY,
+                        right,  rightCell,  perturbRightY,
+                        bottom, bottomCell, perturbBottomY
+                    );
                 }
 
             }else {
-                Terrain.AddTriangle(bottom, left, right);
+                Terrain.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(bottom, perturbBottomY),
+                    NoiseGenerator.Perturb(left,   perturbLeftY  ),
+                    NoiseGenerator.Perturb(right,  perturbRightY )
+                );
 
                 Vector3 indices;
                 indices.x = bottomCell.Index;
@@ -520,9 +709,9 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void TriangulateCornerTerraces(
-            Vector3 begin, IHexCell beginCell,
-            Vector3 left,  IHexCell leftCell,
-            Vector3 right, IHexCell rightCell
+            Vector3 begin, IHexCell beginCell, bool perturbBeginY,
+            Vector3 left,  IHexCell leftCell,  bool perturbLeftY,
+            Vector3 right, IHexCell rightCell, bool perturbRightY
         ){
             Vector3 v3 = HexMetrics.TerraceLerp(begin, left, 1);
             Vector3 v4 = HexMetrics.TerraceLerp(begin, right, 1);
@@ -535,7 +724,12 @@ namespace Assets.Simulation.HexMap {
             indices.y = leftCell.Index;
             indices.z = rightCell.Index;
 
-            Terrain.AddTriangle(begin, v3, v4);
+            Terrain.AddTriangleUnperturbed(
+                NoiseGenerator.Perturb(begin, perturbBeginY),
+                NoiseGenerator.Perturb(v3),
+                NoiseGenerator.Perturb(v4)
+            );
+
             Terrain.AddTriangleCellData(indices, Weights1, w3, w4);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -550,21 +744,33 @@ namespace Assets.Simulation.HexMap {
                 w4 = HexMetrics.TerraceLerp(Weights1, Weights3, i);
 
                 Terrain.AddQuad(v1, v2, v3, v4);
+
                 Terrain.AddQuadCellData(indices, w1, w2, w3, w4);
             }
 
-            Terrain.AddQuad(v3, v4, left, right);
+            Terrain.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(v3,    false),
+                NoiseGenerator.Perturb(v4,    false),
+                NoiseGenerator.Perturb(left,  perturbLeftY ),
+                NoiseGenerator.Perturb(right, perturbRightY)
+            );
+
             Terrain.AddQuadCellData(indices, w3, w4, Weights2, Weights3);
         }
 
         private void TriangulateCornerTerracesCliff(
-            Vector3 begin, IHexCell beginCell,
-            Vector3 left, IHexCell leftCell,
-            Vector3 right, IHexCell rightCell
+            Vector3 begin, IHexCell beginCell, bool perturbBeginY,
+            Vector3 left,  IHexCell leftCell,  bool perturbLeftY,
+            Vector3 right, IHexCell rightCell, bool perturbRightY
         ){
-            float b = Mathf.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
+            float b = Mathf.Abs(1f / (rightCell.FoundationElevation - beginCell.FoundationElevation));
 
-            Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(right), b);
+            Vector3 boundary = Vector3.Lerp(
+                NoiseGenerator.Perturb(begin, perturbBeginY),
+                NoiseGenerator.Perturb(right, perturbRightY),
+                b
+            );
+
             Color boundaryWeights = Color.Lerp(Weights1, Weights3, b);
 
             Vector3 indices;
@@ -572,23 +778,43 @@ namespace Assets.Simulation.HexMap {
             indices.y = leftCell.Index;
             indices.z = rightCell.Index;
 
-            TriangulateBoundaryTriangle(begin, Weights1, left, Weights2, boundary, boundaryWeights, indices);
+            TriangulateBoundaryTriangle(
+                begin,    Weights1, perturbBeginY,
+                left,     Weights2, perturbLeftY,
+                boundary, boundaryWeights,
+                indices
+            );
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
-                TriangulateBoundaryTriangle(left, Weights2, right, Weights3, boundary, boundaryWeights, indices);
+                TriangulateBoundaryTriangle(
+                    left,     Weights2, perturbLeftY,
+                    right,    Weights3, perturbRightY,
+                    boundary, boundaryWeights,
+                    indices
+                );
             }else {
-                Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(left), NoiseGenerator.Perturb(right), boundary);
+                Terrain.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(left, perturbLeftY),
+                    NoiseGenerator.Perturb(right, perturbRightY),
+                    boundary
+                );
                 Terrain.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateCornerCliffTerraces(
-            Vector3 begin, IHexCell beginCell,
-            Vector3 left,  IHexCell leftCell,
-            Vector3 right, IHexCell rightCell
+            Vector3 begin, IHexCell beginCell, bool perturbBeginY,
+            Vector3 left,  IHexCell leftCell,  bool perturbLeftY,
+            Vector3 right, IHexCell rightCell, bool perturbRightY
         ){
-            float b = Mathf.Abs(1f / (leftCell.Elevation - beginCell.Elevation));
-            Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(left), b);
+            float b = Mathf.Abs(1f / (leftCell.FoundationElevation - beginCell.FoundationElevation));
+
+            Vector3 boundary = Vector3.Lerp(
+                NoiseGenerator.Perturb(begin, perturbBeginY),
+                NoiseGenerator.Perturb(left, perturbLeftY),
+                b
+            );
+
             Color boundaryWeights = Color.Lerp(Weights1, Weights2, b);
 
             Vector3 indices;
@@ -596,26 +822,39 @@ namespace Assets.Simulation.HexMap {
             indices.y = leftCell.Index;
             indices.z = rightCell.Index;
 
-            TriangulateBoundaryTriangle(right, Weights3, begin, Weights1, boundary, boundaryWeights, indices);
+            TriangulateBoundaryTriangle(
+                right, Weights3, perturbRightY,
+                begin, Weights1, perturbBeginY,
+                boundary, boundaryWeights, indices
+            );
 
             if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
-                TriangulateBoundaryTriangle(left, Weights2, right, Weights3, boundary, boundaryWeights, indices);
+                TriangulateBoundaryTriangle(
+                    left,  Weights2, perturbLeftY,
+                    right, Weights3, perturbRightY,
+                    boundary, boundaryWeights, indices
+                );
             }else {
-                Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(left), NoiseGenerator.Perturb(right), boundary);
+                Terrain.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(left,  perturbLeftY),
+                    NoiseGenerator.Perturb(right, perturbRightY),
+                    boundary
+                );
+
                 Terrain.AddTriangleCellData(indices, Weights2, Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateBoundaryTriangle(
-            Vector3 begin, Color beginWeights,
-            Vector3 left, Color leftWeights,
+            Vector3 begin, Color beginWeights, bool perturbBeginY,
+            Vector3 left,  Color leftWeights,  bool perturbLeftY,
             Vector3 boundary, Color boundaryWeights,
             Vector3 indices
         ) {
             Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
             Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
 
-            Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(begin), v2, boundary);
+            Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(begin, perturbBeginY), v2, boundary);
             Terrain.AddTriangleCellData(indices, beginWeights, w2, boundaryWeights);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -627,7 +866,7 @@ namespace Assets.Simulation.HexMap {
                 Terrain.AddTriangleCellData(indices, w1, w2, boundaryWeights);
             }
 
-            Terrain.AddTriangleUnperturbed(v2, NoiseGenerator.Perturb(left), boundary);
+            Terrain.AddTriangleUnperturbed(v2, NoiseGenerator.Perturb(left, perturbLeftY), boundary);
             Terrain.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
         }
 
@@ -737,14 +976,14 @@ namespace Assets.Simulation.HexMap {
                     ) {
                         return;
                     }
-                    corner = HexMetrics.GetSecondSolidCorner(direction);
+                    corner = HexMetrics.GetSecondOuterSolidCorner(direction);
                 }else {
                     if( !hasRoadThroughEdge &&
                         !cell.HasRoadThroughEdge(direction.Previous())
                     ) {
                         return;
                     }
-                    corner = HexMetrics.GetFirstSolidCorner(direction);
+                    corner = HexMetrics.GetFirstOuterSolidCorner(direction);
                 }
                 roadCenter += corner * 0.5f;
                 center += corner * 0.25f;
@@ -849,8 +1088,8 @@ namespace Assets.Simulation.HexMap {
             centerTwo.y = center.y;
 
             EdgeVertices edgeTwo = new EdgeVertices(
-                centerTwo + HexMetrics.GetSecondSolidCorner(direction.Opposite()),
-                centerTwo + HexMetrics.GetFirstSolidCorner (direction.Opposite())
+                centerTwo + HexMetrics.GetSecondOuterSolidCorner(direction.Opposite()),
+                centerTwo + HexMetrics.GetFirstOuterSolidCorner (direction.Opposite())
             );
 
             if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
@@ -877,7 +1116,7 @@ namespace Assets.Simulation.HexMap {
                 Vector3 v3 = nextNeighbor.transform.localPosition + (
                     nextNeighbor.IsUnderwater ? 
                     HexMetrics.GetFirstWaterCorner(direction.Previous()) :
-                    HexMetrics.GetFirstSolidCorner(direction.Previous())
+                    HexMetrics.GetFirstOuterSolidCorner(direction.Previous())
                 );
                 v3.y = center.y;
 
@@ -1024,8 +1263,8 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCulture(HexDirection direction, IHexCell cell, ICivilization owner) {
             Vector3 center = cell.transform.localPosition;
             EdgeVertices edgeOne = new EdgeVertices(
-                center + HexMetrics.GetFirstSolidCorner(direction),
-                center + HexMetrics.GetSecondSolidCorner(direction)
+                center + HexMetrics.GetFirstOuterSolidCorner(direction),
+                center + HexMetrics.GetSecondOuterSolidCorner(direction)
             );
 
             TriangulateCultureConnection(direction, cell, edgeOne, owner);
@@ -1052,7 +1291,7 @@ namespace Assets.Simulation.HexMap {
                 edgeOne.V5 + bridge
             );
 
-            var edgeType = HexMetrics.GetEdgeType(cell.Elevation, neighbor.Elevation);
+            var edgeType = HexMetrics.GetEdgeType(cell, neighbor);
             if(edgeType == HexEdgeType.Slope) {
                 TriangulateCultureTerraces(
                     edgeOne, cell, edgeTwo, neighbor, owner
@@ -1099,13 +1338,13 @@ namespace Assets.Simulation.HexMap {
             Vector3 v5 = edgeOne.V5 + HexMetrics.GetBridge(direction.Next());
             v5.y = nextNeighbor.transform.localPosition.y;
 
-            if(cell.Elevation <= neighbor.Elevation) {
-                if(cell.Elevation <= nextNeighbor.Elevation) {
+            if(cell.FoundationElevation <= neighbor.FoundationElevation) {
+                if(cell.FoundationElevation <= nextNeighbor.FoundationElevation) {
                     TriangulateCultureCorner(edgeOne.V5, cell, edgeTwo.V5, neighbor, v5, nextNeighbor, owner);
                 }else {
                     TriangulateCultureCorner(v5, nextNeighbor, edgeOne.V5, cell, edgeTwo.V5, neighbor, owner);
                 }
-            }else if(neighbor.Elevation <= nextNeighbor.Elevation) {
+            }else if(neighbor.FoundationElevation <= nextNeighbor.FoundationElevation) {
                 TriangulateCultureCorner(edgeTwo.V5, neighbor, v5, nextNeighbor, edgeOne.V5, cell, owner);
             }else {
                 TriangulateCultureCorner(v5, nextNeighbor, edgeOne.V5, cell, edgeTwo.V5, neighbor, owner);
@@ -1200,7 +1439,7 @@ namespace Assets.Simulation.HexMap {
 
             }else if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
 
-                if(leftCell.Elevation < rightCell.Elevation) {
+                if(leftCell.FoundationElevation < rightCell.FoundationElevation) {
                     TriangulateCultureCornerCliffTerraces(right, rightCell, bottom, bottomCell, left, leftCell, owner);
                 }else {
                     TriangulateCultureCornerTerracesCliff(left, leftCell, right, rightCell, bottom, bottomCell, owner);
@@ -1298,7 +1537,7 @@ namespace Assets.Simulation.HexMap {
                 out uvMin, out leftUVMax, out rightUVMax
             );
 
-            float b = Mathf.Abs(1f / (rightCell.Elevation - beginCell.Elevation));
+            float b = Mathf.Abs(1f / (rightCell.FoundationElevation - beginCell.FoundationElevation));
             float boundaryUV = Mathf.Lerp(uvMin, rightUVMax, b);
 
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(right), b);
@@ -1350,7 +1589,7 @@ namespace Assets.Simulation.HexMap {
                 out uvMin, out leftUVMax, out rightUVMax
             );
 
-            float b = Mathf.Abs(1f / (leftCell.Elevation - beginCell.Elevation));
+            float b = Mathf.Abs(1f / (leftCell.FoundationElevation - beginCell.FoundationElevation));
             float boundaryUV = Mathf.Lerp(uvMin, leftUVMax, b);
 
             Vector3 boundary = Vector3.Lerp(NoiseGenerator.Perturb(begin), NoiseGenerator.Perturb(left), b);

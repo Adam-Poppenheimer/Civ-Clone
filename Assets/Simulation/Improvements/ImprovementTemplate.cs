@@ -21,20 +21,20 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private ResourceSummary _bonusYield;
 
-        public IEnumerable<TerrainFeature> ValidFeatures {
-            get { return _validFeatures; }
+        public IEnumerable<TerrainFeature> RestrictedToFeatures {
+            get { return _restrictedToFeatures; }
         }
-        [SerializeField] private List<TerrainFeature> _validFeatures;
+        [SerializeField] private List<TerrainFeature> _restrictedToFeatures;
 
-        public IEnumerable<TerrainType> ValidTerrains {
-            get { return _validTerrains; }
+        public IEnumerable<TerrainType> RestrictedToTerrains {
+            get { return _restrictedToTerrains; }
         }
-        [SerializeField] private List<TerrainType> _validTerrains;
+        [SerializeField] private List<TerrainType> _restrictedToTerrains;
 
-        public bool RequiresAdjacentUpwardCliff {
-            get { return _requiresAdjacentUpwardCliff; }
+        public IEnumerable<TerrainShape> RestrictedToShapes {
+            get { return _restrictedToShapes; }
         }
-        [SerializeField] private bool _requiresAdjacentUpwardCliff;
+        [SerializeField] private List<TerrainShape> _restrictedToShapes;
 
         public bool ClearsForestsWhenBuilt {
             get { return _clearsForestsWhenBuilt; }

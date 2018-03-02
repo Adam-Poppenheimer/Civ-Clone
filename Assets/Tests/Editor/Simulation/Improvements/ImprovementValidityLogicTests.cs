@@ -37,8 +37,9 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public struct HexCellTestData {
 
-            public TerrainType Terrain;
+            public TerrainType    Terrain;
             public TerrainFeature Feature;
+            public TerrainShape   Shape;
 
             public int Elevation;
 
@@ -46,11 +47,11 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public struct ImprovementTemplateTestData {
 
-            public List<TerrainType> ValidTerrains;
+            public List<TerrainType> RestrictedToTerrains;
 
-            public List<TerrainFeature> ValidFeatures;
+            public List<TerrainFeature> RestrictedToFeatures;
 
-            public bool RequiresNearbyCliff;
+            public List<TerrainShape> RestrictedToShapes;
 
         }
 
@@ -70,87 +71,109 @@ namespace Assets.Tests.Simulation.Improvements {
             get {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
                     }
                 }).SetName("Everything is valid").Returns(true);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
                     }
                 }).SetName("Invalid terrain").Returns(false);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.Forest }
                     }
                 }).SetName("Invalid feature").Returns(false);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
-                    },
-                    Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Elevation = 2 }
-                    },
-                    CellHasCity = false,
-                    ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
-                    }
-                }).SetName("Template requires cliff and cliff exists").Returns(true);
-
-                yield return new TestCaseData(new IsTemplateValidForCellData() {
-                    Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Mountains, Elevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
                         new HexCellTestData() { Elevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
                     }
-                }).SetName("Template requires cliff and no cliff exists").Returns(false);
+                }).SetName("Invalid Shape").Returns(false);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None, Elevation = 2
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
                         new HexCellTestData() { Elevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () {  },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
                     }
-                }).SetName("Template requires cliff and cell at top of cliff").Returns(false);
+                }).SetName("Template specifies no terrain types").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Elevation = 0 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes   = new List<TerrainShape>  () {  },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                    }
+                }).SetName("Template specifies no terrain shapes").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Elevation = 0 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() {  }
+                    }
+                }).SetName("Template specifies no terrain features").Returns(true);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
@@ -159,9 +182,9 @@ namespace Assets.Tests.Simulation.Improvements {
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = true,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest }
                     }
                 }).SetName("City on otherwise valid cell").Returns(false);
 
@@ -172,9 +195,9 @@ namespace Assets.Tests.Simulation.Improvements {
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None }
                     },
                     NodeOnCell = new ResourceNodeTestData() {
                         TemplateToTestIsExtractor = true
@@ -188,9 +211,9 @@ namespace Assets.Tests.Simulation.Improvements {
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RequiresNearbyCliff = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.None }
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None }
                     },
                     NodeOnCell = new ResourceNodeTestData() {
                         TemplateToTestIsExtractor = false
@@ -279,7 +302,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             newCell.Terrain   = data.Terrain;
             newCell.Feature   = data.Feature;
-            newCell.Elevation = data.Elevation;
+            newCell.Shape     = data.Shape;
+            newCell.FoundationElevation = data.Elevation;
 
             return newCell;
         }
@@ -298,10 +322,9 @@ namespace Assets.Tests.Simulation.Improvements {
         private IImprovementTemplate BuildTemplate(ImprovementTemplateTestData data){
             var mockTemplate = new Mock<IImprovementTemplate>();
 
-            mockTemplate.Setup(template => template.ValidTerrains).Returns(data.ValidTerrains);
-            mockTemplate.Setup(template => template.ValidFeatures).Returns(data.ValidFeatures);
-            
-            mockTemplate.Setup(template => template.RequiresAdjacentUpwardCliff).Returns(data.RequiresNearbyCliff);
+            mockTemplate.Setup(template => template.RestrictedToTerrains).Returns(data.RestrictedToTerrains);
+            mockTemplate.Setup(template => template.RestrictedToFeatures).Returns(data.RestrictedToFeatures);            
+            mockTemplate.Setup(template => template.RestrictedToShapes  ).Returns(data.RestrictedToShapes  );
 
             return mockTemplate.Object;
         }
