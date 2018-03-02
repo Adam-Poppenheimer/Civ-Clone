@@ -29,7 +29,7 @@ namespace Assets.Simulation.HexMap {
         float StreamBedY { get; }
         float RiverSurfaceY { get; }
 
-        bool HasRoads { get; }
+        bool HasRoads { get; set; }
 
         int WaterLevel { get; set; }
 
@@ -52,12 +52,6 @@ namespace Assets.Simulation.HexMap {
         #region methods
 
         HexEdgeType GetEdgeType(IHexCell otherCell);
-
-        bool HasRoadThroughEdge(HexDirection direction);
-
-        void AddRoad(HexDirection direction);
-
-        void RemoveRoads();
 
         int GetElevationDifference(HexDirection direction);
 

@@ -49,10 +49,7 @@ namespace Assets.Simulation.MapManagement {
                     Elevation    = cell.FoundationElevation,
                     WaterLevel   = cell.WaterLevel,
                     SuppressSlot = cell.SuppressSlot,
-
-                    Roads = EnumUtil.GetValues<HexDirection>().Select(
-                        direction => cell.HasRoadThroughEdge(direction)
-                    ).ToList(),
+                    HasRoads     = cell.HasRoads,
 
                     HasOutgoingRiver = RiverCanon.HasOutgoingRiver(cell),
                     OutgoingRiver    = RiverCanon.GetOutgoingRiver(cell),
@@ -77,12 +74,7 @@ namespace Assets.Simulation.MapManagement {
                 cellToModify.FoundationElevation = cellData.Elevation;
                 cellToModify.WaterLevel          = cellData.WaterLevel;
                 cellToModify.SuppressSlot        = cellData.SuppressSlot;
-
-                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                    if(cellData.Roads[(int)direction]) {
-                        cellToModify.AddRoad(direction);
-                    }
-                }
+                cellToModify.HasRoads            = cellData.HasRoads;
 
                 if(cellData.HasOutgoingRiver) {
                     RiverCanon.SetOutgoingRiver(cellToModify, cellData.OutgoingRiver);

@@ -77,12 +77,6 @@ namespace Assets.Simulation.HexMap {
 
                 RiverCanon.ValidateRivers(this);
 
-                foreach(var direction in EnumUtil.GetValues<HexDirection>()){
-                    if(Roads[(int)direction] && GetElevationDifference(direction) > 1){
-                        SetRoad(direction, false);
-                    }
-                }
-
                 Refresh();
             }
         }
@@ -123,8 +117,15 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool HasRoads {
-            get { return Roads.Contains(true); }
+            get { return _hasRoads; }
+            set {
+                if(_hasRoads != value) {
+                    _hasRoads = value;
+                    Refresh();
+                }
+            }
         }
+        private bool _hasRoads;
 
         public int WaterLevel {
             get { return _waterLevel; }
@@ -170,8 +171,6 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        [SerializeField] private bool[] Roads;
-
         private ICellResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
         private IHexGrid Grid;
@@ -213,26 +212,6 @@ namespace Assets.Simulation.HexMap {
             return HexMetrics.GetEdgeType(this, otherCell);
         }
 
-        public bool HasRoadThroughEdge(HexDirection direction) {
-            return Roads[(int)direction];
-        }
-
-        public void AddRoad(HexDirection direction) {
-            if(!Roads[(int)direction] /*&& !HasRiverThroughEdge(direction)*/ &&
-                GetElevationDifference(direction) <= 1
-            ){
-                SetRoad(direction, true);
-            }
-        }
-
-        public void RemoveRoads() {
-            foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                if(Roads[(int)direction]) {
-                    SetRoad(direction, false);
-                }                
-            }
-        }
-
         public int GetElevationDifference(HexDirection direction) {
             if(Grid.HasNeighbor(this, direction)) {
                 var neighbor = Grid.GetNeighbor(this, direction);
@@ -240,18 +219,6 @@ namespace Assets.Simulation.HexMap {
             }else {
                 return 0;
             }
-        }
-
-        private void SetRoad(HexDirection direction, bool state) {
-            Roads[(int)direction] = state;
-
-            if(Grid.HasNeighbor(this, direction)) {
-                var neighbor = Grid.GetNeighbor(this, direction) as HexCell;
-                neighbor.Roads[(int)direction.Opposite()] = state;
-                neighbor.RefreshSelfOnly();
-            }
-
-            RefreshSelfOnly();
         }
 
         public void Refresh() {

@@ -44,7 +44,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance methods
 
-        #region from IUnitAbilityHandler
+        #region from IAbilityHandler
 
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);

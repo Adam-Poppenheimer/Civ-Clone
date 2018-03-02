@@ -7,7 +7,8 @@ namespace Assets.Simulation.Units.Abilities {
 
     public enum AbilityCommandType {
         BuildImprovement = 0,
-        FoundCity = 1,
+        FoundCity        = 1,
+        BuildRoad        = 2,
     }
 
 }

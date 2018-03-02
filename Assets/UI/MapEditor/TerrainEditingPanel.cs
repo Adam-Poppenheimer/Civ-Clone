@@ -215,7 +215,7 @@ namespace Assets.UI.MapEditor {
                 RiverCanon.RemoveRiver(cell);
             }
             if(RoadMode == OptionalToggle.No) {
-                cell.RemoveRoads();
+                cell.HasRoads = false;
             }
             if(IsDragging && HexGrid.HasNeighbor(cell, DragDirection.Opposite())) {
                 IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
@@ -224,7 +224,7 @@ namespace Assets.UI.MapEditor {
                         RiverCanon.SetOutgoingRiver(otherCell, DragDirection);
                     }
                     if(RoadMode == OptionalToggle.Yes) {
-                        otherCell.AddRoad(DragDirection);
+                        otherCell.HasRoads = true;
                     }
                 }                
             }

@@ -261,7 +261,6 @@ MonoBehaviour:
   _shape: 0
   _elevation: 0
   overlay: {fileID: 114687170947816028}
-  Roads: 000000000000
 --- !u!114 &114446591517605982
 MonoBehaviour:
   m_ObjectHideFlags: 1

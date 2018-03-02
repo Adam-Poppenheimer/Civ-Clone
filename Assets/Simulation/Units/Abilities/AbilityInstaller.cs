@@ -20,6 +20,7 @@ namespace Assets.Simulation.Units.Abilities {
                 context => new List<IAbilityHandler>() {
                     context.Container.Instantiate<FoundCityAbilityHandler>(),
                     context.Container.Instantiate<BuildImprovementAbilityHandler>(),
+                    context.Container.Instantiate<BuildRoadAbilityHandler>()
                 }
             );
 

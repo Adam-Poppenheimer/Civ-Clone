@@ -22,7 +22,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public int            Elevation;
         [DataMember()] public int            WaterLevel;
         [DataMember()] public bool           SuppressSlot;
-        [DataMember()] public List<bool>     Roads;
+        [DataMember()] public bool           HasRoads;
         [DataMember()] public bool           HasOutgoingRiver;
         [DataMember()] public HexDirection   OutgoingRiver;
         [DataMember()] public bool           IsSlotOccupied;
