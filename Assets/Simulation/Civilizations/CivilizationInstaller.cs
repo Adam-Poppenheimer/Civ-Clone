@@ -42,7 +42,9 @@ namespace Assets.Simulation.Civilizations {
                      .To<UnitPossessionCanon>()
                      .AsSingle();
 
-            Container.Bind<ICivilizationYieldLogic>            ().To<CivilizationYieldLogic>            ().AsSingle();
+            Container.Bind<ICivilizationYieldLogic>    ().To<CivilizationYieldLogic>    ().AsSingle();
+            Container.Bind<IResourceAssignmentCanon>   ().To<ResourceAssignmentCanon>   ().AsSingle();
+            Container.Bind<ICivilizationHappinessLogic>().To<CivilizationHappinessLogic>().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
