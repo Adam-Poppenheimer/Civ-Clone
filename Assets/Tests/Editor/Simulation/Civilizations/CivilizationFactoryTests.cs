@@ -33,6 +33,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<ISpecialtyResourceDistributionLogic>          ().FromMock();
 
             Container.Bind<CivilizationFactory>().AsSingle();
+
+            Container.Bind<CivilizationSignals>().AsSingle();
         }
 
         #endregion

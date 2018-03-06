@@ -41,7 +41,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<ITechCanon>                         ().FromInstance(MockTechCanon                .Object);
             Container.Bind<ISpecialtyResourceDistributionLogic>().FromInstance(MockResourceDistributionLogic.Object);
 
-            Container.Bind<Civilization>().AsSingle();
+            Container.Bind<CivilizationSignals>().AsSingle();
         }
 
         #endregion
@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             "CivilizationYieldLogic.GetYieldOfCivilization to inform its stockpile changes " +
             "and LastScienceYield")]
         public void PerformIncome_StockpilesAndYieldsChanged() {
-            var civilization = Container.Resolve<Civilization>();
+            var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             MockYieldLogic.Setup(logic => logic.GetYieldOfCivilization(civilization))
                 .Returns(new ResourceSummary(gold: 2, production: 4, culture: 5, science: 10));
@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void PerformResearch_ChangesProgressOnActiveTech() {
             var technology = BuildTech(20);
 
-            var civilization = Container.Resolve<Civilization>();
+            var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             civilization.LastScienceYield = 10;
 
@@ -97,7 +97,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void PerformResearch_SpendsScienceToResearchTechs() {
             var technology = BuildTech(20);
 
-            var civilization = Container.Resolve<Civilization>();
+            var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             civilization.LastScienceYield = 20;
 
@@ -125,7 +125,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             "simply call into SpecialtyResourceDistributionLogic's DistributeResourcesOfCiv " +
             "method.")]
         public void PerformDistribution_CallsIntoResourceDistributionLogic() {
-            var civilization = Container.Resolve<Civilization>();
+            var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             civilization.PerformDistribution();
 

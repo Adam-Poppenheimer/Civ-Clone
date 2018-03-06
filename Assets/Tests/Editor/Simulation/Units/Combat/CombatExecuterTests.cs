@@ -55,6 +55,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public TerrainFeature DefenderLocationFeature;
 
+            public TerrainShape DefenderLocationShape;
+
             public int DefenderLocationElevation;
 
             public bool UnitsHaveSameOwner;
@@ -678,7 +680,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public CombatTestOutput PerformCombatTests(CombatTestInput input) {
             IHexCell attackerLocation = BuildCell(input.AttackerLocationElevation);
             IHexCell defenderLocation = BuildCell(
-                input.DefenderLocationTerrain, input.DefenderLocationFeature, input.DefenderLocationElevation
+                input.DefenderLocationTerrain, input.DefenderLocationFeature,
+                input.DefenderLocationShape,   input.DefenderLocationElevation
             );
 
             IUnit meleeAttacker = BuildUnit(
@@ -816,19 +819,21 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         private IHexCell BuildCell(int elevation) {
-            return BuildCell(TerrainType.Grassland, TerrainFeature.None, elevation);
+            return BuildCell(TerrainType.Grassland, TerrainFeature.None, TerrainShape.Flatlands, elevation);
         }
 
-        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, int elevation) {
+        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, TerrainShape shape, int elevation) {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
 
+            mockCell.Setup(cell => cell.EdgeElevation).Returns(elevation);
+
             var newCell = mockCell.Object;
 
-            newCell.Terrain   = terrain;
-            newCell.Feature   = feature;
-            newCell.FoundationElevation = elevation;
+            newCell.Terrain = terrain;
+            newCell.Feature = feature;
+            newCell.Shape   = TerrainShape.Flatlands;
 
             return newCell;
         }

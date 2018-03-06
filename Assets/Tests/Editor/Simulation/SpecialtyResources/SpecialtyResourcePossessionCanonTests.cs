@@ -56,7 +56,7 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
 
             Container
                 .Bind<IEnumerable<ISpecialtyResourceDefinition>>()
-                .WithId("All Speciality Resources")
+                .WithId("Available Specialty Resources")
                 .FromInstance(AllResourceDefinitions);
 
             Container.Bind<SpecialtyResourcePossessionLogic>().AsSingle();

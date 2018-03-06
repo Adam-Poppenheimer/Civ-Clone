@@ -91,6 +91,7 @@ namespace Assets.Tests.Simulation.Cities {
             Container.DeclareSignal<CityDistributionPerformedSignal>();
 
             Container.Bind<CitySignals>().AsSingle();
+            Container.Bind<UnitSignals>().AsSingle();
 
             Container.Bind<ICityConfig>().FromMock();
 

@@ -69,6 +69,8 @@ namespace Assets.Tests.Simulation.Core {
 
             Container.Bind<PlayerSignals>().AsSingle();
 
+            Container.Bind<CivilizationSignals>().AsSingle();
+
             Container.Bind<GameCore>().AsSingle();
         }
 
@@ -193,6 +195,8 @@ namespace Assets.Tests.Simulation.Core {
                 .Returns(new List<ICivilization>() { BuildCivilization() }.AsReadOnly());
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
+
+            gameCore.ActiveCivilization = MockCivilizationFactory.Object.AllCivilizations[0];
 
             gameCore.EndTurn();
 

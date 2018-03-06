@@ -78,7 +78,7 @@ namespace Assets.Simulation.Units {
 
             int moveCost = Config.BaseLandMoveCost;
 
-            if(edgeType == HexEdgeType.Slope && nextCell.FoundationElevation > currentCell.FoundationElevation) {
+            if(edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation) {
                 moveCost += Config.SlopeMoveCost;
             }
 

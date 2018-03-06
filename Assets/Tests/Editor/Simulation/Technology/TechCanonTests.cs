@@ -37,6 +37,8 @@ namespace Assets.Tests.Simulation.Technology {
             Container.Bind<IEnumerable<IAbilityDefinition>>().WithId("Available Abilities")
                 .FromInstance(new List<IAbilityDefinition>());
 
+            Container.Bind<CivilizationSignals>().AsSingle();
+
             Container.Bind<TechCanon>().AsSingle();
         }
 

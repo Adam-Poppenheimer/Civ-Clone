@@ -795,6 +795,8 @@ namespace Assets.Tests.Simulation.Units {
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
+        private Mock<IHexGrid> MockGrid;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -810,12 +812,14 @@ namespace Assets.Tests.Simulation.Units {
             MockCityFactory         = new Mock<ICityFactory>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockGrid                = new Mock<IHexGrid>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
             Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
 
             Container.Bind<UnitPositionCanon>().AsSingle();
 
@@ -857,7 +861,7 @@ namespace Assets.Tests.Simulation.Units {
             return positionCanon.CanChangeOwnerOfPossession(unitToTest, cellToTest);
         }
 
-        [Test(Description = "CanPlaceUnitOfTypeAtLocation should ")]
+        [Test(Description = "")]
         [TestCaseSource("CanPlaceUnitOfTypeAtLocationTestCases")]
         public bool CanPlaceUnitOfTypeAtLocationTests(CanPlaceUnitOfTypeTestData data) {
             var cellToTest = BuildCell(data.CellToTest);
@@ -911,6 +915,7 @@ namespace Assets.Tests.Simulation.Units {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.Setup(cell => cell.IsUnderwater).Returns(data.IsUnderwater);
+            mockCell.Setup(cell => cell.transform   ).Returns(new GameObject().transform);
 
             return mockCell.Object;
         }

@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using NUnit.Framework;
 using Moq;
@@ -197,7 +199,7 @@ namespace Assets.Tests.Simulation.Units {
                     Unit = new UnitTestData() {
                         IsAquatic = false
                     }
-                }).Returns(2).SetName("Non-aquatic into empty hills, no water");
+                }).Returns(3).SetName("Non-aquatic into empty hills, no water");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
@@ -210,7 +212,7 @@ namespace Assets.Tests.Simulation.Units {
                     Unit = new UnitTestData() {
                         IsAquatic = false
                     }
-                }).Returns(3).SetName("Non-aquatic into forested hills, no water");
+                }).Returns(4).SetName("Non-aquatic into forested hills, no water");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
@@ -318,13 +320,24 @@ namespace Assets.Tests.Simulation.Units {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(testData.IsUnderwater);
+            mockCell.Setup(cell => cell.IsUnderwater ).Returns(testData.IsUnderwater);
+
+            int edgeElevation;
+
+            switch(testData.Shape) {
+                case TerrainShape.Flatlands: edgeElevation = testData.Elevation;                                                      break;
+                case TerrainShape.Hills:     edgeElevation = testData.Elevation + Mathf.RoundToInt(HexMetrics.HillEdgeElevation);     break;
+                case TerrainShape.Mountains: edgeElevation = testData.Elevation + Mathf.RoundToInt(HexMetrics.MountainEdgeElevation); break;
+                default:                     edgeElevation = testData.Elevation;                                                      break;
+            }
+
+            mockCell.Setup(cell => cell.EdgeElevation).Returns(edgeElevation);
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain = testData.Terrain;
-            newCell.Feature = testData.Feature;
-            newCell.Shape   = testData.Shape;
+            newCell.Terrain             = testData.Terrain;
+            newCell.Feature             = testData.Feature;
+            newCell.Shape               = testData.Shape;
             newCell.FoundationElevation = testData.Elevation;
 
             MockUnitPositionCanon

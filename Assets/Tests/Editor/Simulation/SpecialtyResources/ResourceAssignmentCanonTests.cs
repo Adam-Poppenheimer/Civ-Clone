@@ -37,6 +37,8 @@ namespace Assets.Tests.Simulation.SpecialtyResources {
             Container.Bind<ISpecialtyResourcePossessionLogic>            ().FromInstance(MockResourcePossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
 
+            Container.Bind<CivilizationSignals>().AsSingle();
+
             Container.Bind<ResourceAssignmentCanon>().AsSingle();
         }
 

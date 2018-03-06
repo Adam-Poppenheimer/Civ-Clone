@@ -40,6 +40,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             Container.Bind<GameObject>().WithId("Improvement Prefab").FromInstance(ImprovementPrefab);
 
+            Container.Bind<ImprovementSignals>().AsSingle();
+
             Container.Bind<ImprovementFactory>().AsSingle();
         }
 

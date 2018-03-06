@@ -70,6 +70,8 @@ namespace Assets.Simulation.Units {
             var newUnitObject = GameObject.Instantiate(UnitPrefab);
             Container.InjectGameObject(newUnitObject);
 
+            newUnitObject.transform.SetParent(location.transform, false);
+
             var newUnit = newUnitObject.GetComponent<GameUnit>();
             newUnit.Template = template;
 

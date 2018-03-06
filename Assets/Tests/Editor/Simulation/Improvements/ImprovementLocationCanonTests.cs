@@ -21,6 +21,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
         [SetUp]
         public void CommonInstall() {
+            Container.Bind<ImprovementSignals>().AsSingle();
+
             Container.Bind<ImprovementLocationCanon>().AsSingle();
         }
 
