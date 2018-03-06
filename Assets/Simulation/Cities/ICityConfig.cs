@@ -93,9 +93,9 @@ namespace Assets.Simulation.Cities {
 
         int VisionRange { get; }
 
-        int BaseHealth { get; }
+        int UnhappinessPerCity { get; }
 
-        int BaseHappiness { get; }
+        float UnhappinessPerPopulation { get; }
 
         #endregion
 

@@ -7,11 +7,11 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.SpecialtyResources;
 
 using UnityCustomUtilities.Extensions;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.Civilizations {
 
     public class ResourceAssignmentCanon : IResourceAssignmentCanon {
 
@@ -73,6 +73,12 @@ namespace Assets.Simulation.SpecialtyResources {
                 throw new InvalidOperationException("CanUnreserveCopyOfResourceForCiv must return true on the given arguments");
             }
             CopiesOfResourceReservedByCiv.SetNestedDict(civ, resource, CopiesOfResourceReservedByCiv.GetNestedDict(civ, resource) - 1);
+        }
+
+        public IEnumerable<ISpecialtyResourceDefinition> GetAllFreeResourcesForCiv(ICivilization civ) {
+            return ResourcePossessionCanon.GetFullResourceSummaryForCiv(civ)
+                .Where(pair => pair.Value > 0)
+                .Select(pair => pair.Key);
         }
 
         #endregion

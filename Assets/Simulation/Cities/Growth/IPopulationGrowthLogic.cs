@@ -46,6 +46,8 @@ namespace Assets.Simulation.Cities.Growth {
         /// <exception cref="ArgumentNullException">Throws whenever city is null</exception>
         int GetFoodStockpileAfterStarvation(ICity city);
 
+        float GetFoodStockpileAdditionFromIncome(ICity city, float foodIncome);
+
         #endregion
 
     }

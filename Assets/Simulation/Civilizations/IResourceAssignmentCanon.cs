@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.SpecialtyResources;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.Civilizations {
 
     public interface IResourceAssignmentCanon {
 
@@ -19,6 +19,8 @@ namespace Assets.Simulation.SpecialtyResources {
 
         bool CanUnreserveCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
         void UnreserveCopyOfResourceForCiv   (ISpecialtyResourceDefinition resource, ICivilization civ);
+
+        IEnumerable<ISpecialtyResourceDefinition> GetAllFreeResourcesForCiv(ICivilization civ);
 
         #endregion
 

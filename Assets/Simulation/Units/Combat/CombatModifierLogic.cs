@@ -5,6 +5,7 @@ using System.Text;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -18,17 +19,29 @@ namespace Assets.Simulation.Units.Combat {
 
         private IImprovementLocationCanon ImprovementLocationCanon;
 
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
+        private ICivilizationHappinessLogic CivilizationHappinessLogic;
+
+        private ICivilizationConfig CivConfig;
+
         #endregion
 
         #region constructors
 
         public CombatModifierLogic(
             IUnitConfig config, IRiverCanon riverCanon,
-            IImprovementLocationCanon improvementLocationCanon
+            IImprovementLocationCanon improvementLocationCanon,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            ICivilizationHappinessLogic civilizationHappinessLogic,
+            ICivilizationConfig civConfig
         ) {
-            Config                   = config;
-            RiverCanon               = riverCanon;
-            ImprovementLocationCanon = improvementLocationCanon;
+            Config                     = config;
+            RiverCanon                 = riverCanon;
+            ImprovementLocationCanon   = improvementLocationCanon;
+            UnitPossessionCanon        = unitPossessionCanon;
+            CivilizationHappinessLogic = civilizationHappinessLogic;
+            CivConfig                  = civConfig;
         }
 
         #endregion
@@ -48,15 +61,17 @@ namespace Assets.Simulation.Units.Combat {
                 baseModifier += improvementAtLocation.Template.DefensiveBonus;
             }
             
-            return baseModifier;
+            return baseModifier - GetUnhappinessPenalty(defender);
         }
 
         public float GetMeleeOffensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
+            float retval = 0f;
+
             if(RiverCanon.HasRiver(location)) {
-                return Config.RiverCrossingAttackModifier;
-            }else {
-                return 0f;
+                retval += Config.RiverCrossingAttackModifier;
             }
+
+            return retval - GetUnhappinessPenalty(attacker);
         }
 
         public float GetRangedDefensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
@@ -70,14 +85,26 @@ namespace Assets.Simulation.Units.Combat {
                 baseModifier += improvementAtLocation.Template.DefensiveBonus;
             }
             
-            return baseModifier;
+            return baseModifier - GetUnhappinessPenalty(defender);
         }
 
         public float GetRangedOffensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
-            return 0f;
+            return -GetUnhappinessPenalty(attacker);
         }
 
         #endregion
+
+        private float GetUnhappinessPenalty(IUnit unit) {
+            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
+            var ownerHappiness = CivilizationHappinessLogic.GetNetHappinessOfCiv(unitOwner);
+
+            if(ownerHappiness < 0) {
+                return ownerHappiness * CivConfig.ModifierLossPerUnhappiness;
+            }else {
+                return 0f;
+            }
+        }
 
         #endregion
         

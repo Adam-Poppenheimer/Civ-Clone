@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using Zenject;
 
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.Core;
 
 namespace Assets.UI.SpecialtyResources {

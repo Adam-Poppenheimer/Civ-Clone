@@ -94,7 +94,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             retval += GetYieldOfUnemployedForCity(city) * Math.Max(0, city.Population - employedPops);
 
-            retval[ResourceType.Science] = retval[ResourceType.Science] + city.Population;
+            retval[ResourceType.Science] += GetScienceFromPopulation(city);
 
             return retval;
         }
@@ -136,6 +136,17 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         }
 
         #endregion
+
+        private float GetScienceFromPopulation(ICity city) {
+            var multiplier = ResourceSummary.Ones + IncomeModifierLogic.GetYieldMultipliersForCity(city);
+
+            var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
+            if(owningCivilization != null) {
+                multiplier += IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
+            }
+
+            return city.Population * multiplier[ResourceType.Science];
+        }
 
         #endregion
 

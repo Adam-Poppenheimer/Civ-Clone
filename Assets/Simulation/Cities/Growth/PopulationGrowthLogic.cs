@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Civilizations;
+
 namespace Assets.Simulation.Cities.Growth {
 
     /// <summary>
@@ -18,6 +20,10 @@ namespace Assets.Simulation.Cities.Growth {
 
         private ICityConfig Config;
 
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
+        private ICivilizationHappinessLogic CivilizationHappinessLogic;
+
         #endregion
 
         #region constructors
@@ -27,8 +33,13 @@ namespace Assets.Simulation.Cities.Growth {
         /// </summary>
         /// <param name="config"></param>
         [Inject]
-        public PopulationGrowthLogic(ICityConfig config) {
-            Config = config;
+        public PopulationGrowthLogic(ICityConfig config,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            ICivilizationHappinessLogic civilizationHappinessLogic
+        ){
+            Config                     = config;
+            CityPossessionCanon        = cityPossessionCanon;
+            CivilizationHappinessLogic = civilizationHappinessLogic;
         }
 
         #endregion
@@ -77,6 +88,22 @@ namespace Assets.Simulation.Cities.Growth {
                 Config.GrowthPreviousPopulationCoefficient * previousPopulation +
                 Mathf.Pow(previousPopulation, Config.GrowthPreviousPopulationExponent)
             );
+        }
+
+        public float GetFoodStockpileAdditionFromIncome(ICity city, float foodIncome) {
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+
+            var ownerHappiness = CivilizationHappinessLogic.GetNetHappinessOfCiv(cityOwner);
+
+            if(ownerHappiness < 0) {
+                if(ownerHappiness > -10) {
+                    return foodIncome / 4f;
+                }else {
+                    return 0;
+                }
+            }else {
+                return foodIncome;
+            }
         }
 
         #endregion

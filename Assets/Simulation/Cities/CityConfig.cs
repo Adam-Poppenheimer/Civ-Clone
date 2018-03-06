@@ -128,15 +128,15 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private int _visionRange;
 
-        public int BaseHealth {
-            get { return _baseHealth; }
+        public int UnhappinessPerCity {
+            get { return _unhappinessPerCity; }
         }
-        [SerializeField] private int _baseHealth;
+        [SerializeField] private int _unhappinessPerCity;
 
-        public int BaseHappiness {
-            get { return _baseHappiness; }
+        public float UnhappinessPerPopulation {
+            get { return _unhappinessPerPopulation; }
         }
-        [SerializeField] private int _baseHappiness;
+        [SerializeField] private float _unhappinessPerPopulation;
 
         #endregion
 

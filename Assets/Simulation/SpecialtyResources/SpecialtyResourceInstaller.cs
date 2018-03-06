@@ -31,11 +31,6 @@ namespace Assets.Simulation.SpecialtyResources {
                 .To  <SpecialtyResourcePossessionLogic >()
                 .AsSingle();
 
-            Container
-                .Bind<IResourceAssignmentCanon>()
-                .To  <ResourceAssignmentCanon >()
-                .AsSingle();
-
             var allResources = new List<ISpecialtyResourceDefinition>(Resources.LoadAll<SpecialtyResourceDefinition>("Specialty Resources"));
 
             Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()

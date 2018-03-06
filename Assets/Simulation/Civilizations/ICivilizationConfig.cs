@@ -13,7 +13,13 @@ namespace Assets.Simulation.Civilizations {
 
         #region properties
 
+        int BaseHappiness { get; }
 
+        int HappinessPerLuxury { get; }
+
+        float YieldLossPerUnhappiness { get; }
+
+        float ModifierLossPerUnhappiness { get; }
 
         #endregion
 

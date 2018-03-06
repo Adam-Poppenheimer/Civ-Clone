@@ -220,7 +220,15 @@ namespace Assets.Simulation.Cities {
             LastIncome = ResourceGenerationLogic.GetTotalYieldForCity(this);
 
             CultureStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Culture]);
-            FoodStockpile    += Mathf.FloorToInt(LastIncome[ResourceType.Food]) - GrowthLogic.GetFoodConsumptionPerTurn(this);
+
+            int foodConsumption = GrowthLogic.GetFoodConsumptionPerTurn(this);
+            if(foodConsumption <= LastIncome[ResourceType.Food]) {
+                FoodStockpile += Mathf.FloorToInt(GrowthLogic.GetFoodStockpileAdditionFromIncome(
+                    this, LastIncome[ResourceType.Food] - foodConsumption
+                ));
+            }else {
+                FoodStockpile -= Mathf.CeilToInt(foodConsumption - LastIncome[ResourceType.Food]);
+            }
         }
 
         public void PerformHealing() {

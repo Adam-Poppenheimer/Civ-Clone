@@ -22,10 +22,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossession;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossession;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossession;
-
-        private Mock<IHexGrid> MockGrid;
+        private Mock<IHexGrid>                                      MockGrid;
+        private Mock<ICivilizationHappinessLogic>                   MockCivHappinessLogic;
+        private Mock<ICivilizationConfig>                           MockCivConfig;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -42,12 +43,16 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossession = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityPossession     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGrid               = new Mock<IHexGrid>();
+            MockCivHappinessLogic  = new Mock<ICivilizationHappinessLogic>();
+            MockCivConfig          = new Mock<ICivilizationConfig>();
 
             MockGrid.Setup(map => map.AllCells).Returns(AllCells.AsReadOnly());
 
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossession      .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession          .Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                    .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossession.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession    .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid              .Object);
+            Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivHappinessLogic .Object);
+            Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig         .Object);
 
             Container.Bind<IncomeModifierLogic>().AsSingle();
         }
@@ -87,6 +92,25 @@ namespace Assets.Tests.Simulation.Cities {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
             Assert.AreEqual(
                 new ResourceSummary(food: 1, gold: 6, production: 8, culture: 6),
+                modifierLogic.GetYieldMultipliersForCivilization(civilization),
+                "GetYieldMultipliersForCivilization returned an unexpected value"
+            );
+        }
+
+        [Test(Description = "GetYieldMultipliersForCivilization should return lower production and gold " +
+            "modifiers if the argued civilization is unhappy. This should be informed by the total unhappiness " +
+            "of the civilization and CivilizationConfig.YieldLossPerUnhappiness")]
+        public void GetYieldMultipliersForCivilization_ConsidersHappiness() {
+            var civilization = BuildCivilization();
+
+            MockCivHappinessLogic.Setup(logic => logic.GetNetHappinessOfCiv(civilization)).Returns(-15);
+
+            MockCivConfig.Setup(config => config.YieldLossPerUnhappiness).Returns(0.02f);
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(
+                new ResourceSummary(food: 0, gold: -15 * 0.02f, production: -15 * 0.02f, culture: 0, science: 0),
                 modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value"
             );

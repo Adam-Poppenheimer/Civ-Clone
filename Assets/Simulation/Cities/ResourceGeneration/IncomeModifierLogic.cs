@@ -23,7 +23,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IHexGrid Map;
+        private IHexGrid Grid;
+
+        private ICivilizationHappinessLogic CivHappinessLogic;
+
+        private ICivilizationConfig CivilizationConfig;
 
         #endregion
 
@@ -33,11 +37,14 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public IncomeModifierLogic(
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IHexGrid map
+            IHexGrid grid, ICivilizationHappinessLogic civHappinessLogic,
+            ICivilizationConfig civilizationConfig
         ){
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;
-            Map                      = map;
+            Grid                     = grid;
+            CivHappinessLogic        = civHappinessLogic;
+            CivilizationConfig       = civilizationConfig;
         }
 
         #endregion
@@ -73,6 +80,15 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                     baseModifier += building.CivilizationYieldModifier;
                 }
+            }
+
+            int civHappiness = CivHappinessLogic.GetNetHappinessOfCiv(civilization);
+
+            if(civHappiness < 0) {
+                var goldAndProductionLoss = civHappiness * CivilizationConfig.YieldLossPerUnhappiness;
+
+                baseModifier[ResourceType.Gold]       += goldAndProductionLoss;
+                baseModifier[ResourceType.Production] += goldAndProductionLoss;
             }
 
             return  baseModifier;

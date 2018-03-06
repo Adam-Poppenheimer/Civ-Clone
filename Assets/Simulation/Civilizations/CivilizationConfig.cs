@@ -17,7 +17,25 @@ namespace Assets.Simulation.Civilizations {
 
         #region from ICivilizationConfig
 
+        public int BaseHappiness {
+            get { return _baseHappiness; }
+        }
+        [SerializeField] private int _baseHappiness;
 
+        public int HappinessPerLuxury {
+            get { return _happinessPerLuxury; }
+        }
+        [SerializeField] private int _happinessPerLuxury;
+
+        public float YieldLossPerUnhappiness {
+            get { return _yieldLossPerUnhappiness; }
+        }
+        [SerializeField] private float _yieldLossPerUnhappiness;
+
+        public float ModifierLossPerUnhappiness {
+            get { return _modifierLossPerUnhappiness; }
+        }
+        [SerializeField] private float _modifierLossPerUnhappiness;
 
         #endregion
 

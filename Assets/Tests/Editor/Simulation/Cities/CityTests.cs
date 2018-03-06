@@ -573,6 +573,39 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(1, city.FoodStockpile, "City did not correctly update its FoodStockpile");
         }
 
+        [Test(Description = "When PerformIncome is called on a city, that city should " +
+            "call GrowthLogic's GetFoodStockpileAdditionFromIncome to determine how much " +
+            "to increase the city's food stockpile by. It should only do this if the " +
+            "city's net food income is positive")]
+        public void PerformIncome_ChecksGrowthLogicForFoodStockpileAddition() {
+            var city = Container.Resolve<City>();
+
+            city.FoodStockpile = 0;
+
+            MockResourceGenerationLogic
+                .Setup(logic => logic.GetTotalYieldForCity(city))
+                .Returns(new ResourceSummary(food: 10));
+
+            MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(8);
+            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileAdditionFromIncome(city, 2)).Returns(2);
+
+            city.PerformIncome();
+
+            Assert.AreEqual(2, city.FoodStockpile, "FoodStockpile has an unexpected value");
+
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileAdditionFromIncome(city, 2), Times.AtLeastOnce,
+                "GetFoodStockpileAdditionFromIncome wasn't called on the expected arguments");
+
+            MockGrowthLogic.ResetCalls();
+
+            MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(12);
+
+            city.PerformIncome();
+
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileAdditionFromIncome(city, It.IsAny<int>()),
+                Times.Never, "GetFoodStockpileAdditionFromIncome was unexpectedly called");
+        }
+
         [Test(Description = "When SetActiveProductionProject is called on an IBuildingTemplate, " +
             "City should fire ProjectChangedSignal with the appropriate arguments")]
         public void SetActiveProductionProject_OnBuildingTemplate_FiresProjectChangedSignal() {

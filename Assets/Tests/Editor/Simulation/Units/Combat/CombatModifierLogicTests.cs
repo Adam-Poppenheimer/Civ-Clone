@@ -8,6 +8,8 @@ using NUnit.Framework;
 using Zenject;
 using Moq;
 
+using Assets.Simulation;
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.HexMap;
@@ -26,6 +28,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
             public TerrainFeature Feature;
 
             public bool HasRiver;
+
+            public int AttackerOwnerNetHappiness;
+            public int DefenderOwnerNetHappiness;
+
+            public float ModifierLossPerUnhappiness;
 
         }
 
@@ -166,6 +173,26 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     DefenderMelee = 4.5f,
                     DefenderRanged = 40.5f,
                 });
+
+
+
+                yield return new TestCaseData(
+                    new ModifierTestArgs() {
+                        Terrain = TerrainType.Grassland,
+                        Feature = TerrainFeature.None,
+                        HasRiver = false,
+                        AttackerOwnerNetHappiness = -10,
+                        DefenderOwnerNetHappiness = -8,
+                        ModifierLossPerUnhappiness = -0.02f
+                    }
+
+                ).SetName("Owning civilization is unhappy")
+                .Returns(new ModifierTestResults() {
+                    AttackerMelee = -0.02f * 10,
+                    AttackerRanged = -0.02f * 10,
+                    DefenderMelee = 2.5f - (0.02f * 8),
+                    DefenderRanged = 20.5f - (0.02f * 8),
+                });
             }
         }
 
@@ -173,9 +200,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private Mock<IRiverCanon> MockRiverCanon;
-
-        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+        private Mock<IRiverCanon>                                   MockRiverCanon;
+        private Mock<IImprovementLocationCanon>                     MockImprovementLocationCanon;
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
+        private Mock<ICivilizationConfig>                           MockCivConfig;
 
         #endregion
 
@@ -185,11 +214,18 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockRiverCanon               = new Mock<IRiverCanon>();
-            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockRiverCanon                 = new Mock<IRiverCanon>();
+            MockImprovementLocationCanon   = new Mock<IImprovementLocationCanon>();
+            MockUnitPossessionCanon        = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
+            MockCivConfig                  = new Mock<ICivilizationConfig>();
 
-            Container.Bind<IRiverCanon>              ().FromInstance(MockRiverCanon              .Object);
-            Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
+
+            Container.Bind<IRiverCanon>                                  ().FromInstance(MockRiverCanon                .Object);
+            Container.Bind<IImprovementLocationCanon>                    ().FromInstance(MockImprovementLocationCanon  .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon       .Object);
+            Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
+            Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig                 .Object);
 
             Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Modifier Logic UI Config").AsSingle();
 
@@ -207,8 +243,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public ModifierTestResults CombatModifierTests(ModifierTestArgs testData) {
             var location = BuildCell(testData.Terrain, testData.Feature, testData.HasRiver);
 
-            var attacker = BuildUnit();
-            var defender = BuildUnit();
+            var attacker = BuildUnit(BuildCivilization(testData.AttackerOwnerNetHappiness));
+            var defender = BuildUnit(BuildCivilization(testData.DefenderOwnerNetHappiness));
+
+            MockCivConfig.Setup(config => config.ModifierLossPerUnhappiness).Returns(testData.ModifierLossPerUnhappiness);
 
             var modifierLogic = Container.Resolve<CombatModifierLogic>();
 
@@ -226,8 +264,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public void DefensiveCombatModifiers_ModifiedByImprovements() {
             var location = BuildCell(TerrainType.Grassland, TerrainFeature.None, false);
 
-            var attacker = BuildUnit();
-            var defender = BuildUnit();
+            var attacker = BuildUnit(BuildCivilization(0));
+            var defender = BuildUnit(BuildCivilization(0));
 
             BuildImprovement(location, 0.5f);
 
@@ -259,8 +297,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return newCell;
         }
 
-        private IUnit BuildUnit() {
-            return new Mock<IUnit>().Object;
+        private IUnit BuildUnit(ICivilization owner) {
+            var newUnit = new Mock<IUnit>().Object;
+
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(owner);
+
+            return newUnit;
         }
 
         private IImprovement BuildImprovement(IHexCell location, float defensiveBonus) {
@@ -277,6 +319,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new List<IImprovement>() { newImprovement });
 
             return newImprovement;
+        }
+
+        private ICivilization BuildCivilization(int netHappiness) {
+            var newCiv = new Mock<ICivilization>().Object;
+
+            MockCivilizationHappinessLogic.Setup(logic => logic.GetNetHappinessOfCiv(newCiv)).Returns(netHappiness);
+
+            return newCiv;
         }
 
         #endregion
