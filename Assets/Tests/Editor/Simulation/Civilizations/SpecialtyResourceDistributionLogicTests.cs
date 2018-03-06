@@ -62,8 +62,6 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<IResourceAssignmentCanon> MockAssignmentCanon;
 
-        private Mock<IHealthLogic> MockHealthLogic;
-
         private Mock<IHappinessLogic> MockHappinessLogic;
 
         #endregion

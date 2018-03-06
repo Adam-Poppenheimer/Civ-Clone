@@ -55,7 +55,6 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
         private Mock<IProductionProjectFactory>                 MockProjectFactory;
         private Mock<ICityConfig>                               MockCityConfig;
-        private Mock<IHealthLogic>                              MockHealthLogic;
         private Mock<IHappinessLogic>                           MockHappinessLogic;
 
         #endregion
@@ -75,7 +74,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockProjectFactory          = new Mock<IProductionProjectFactory>();
             MockCityConfig              = new Mock<ICityConfig>();
-            MockHealthLogic             = new Mock<IHealthLogic>();
             MockHappinessLogic          = new Mock<IHappinessLogic>();
 
 
@@ -88,7 +86,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IProductionProjectFactory>                ().FromInstance(MockProjectFactory         .Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
-            Container.Bind<IHealthLogic>                             ().FromInstance(MockHealthLogic            .Object);
             Container.Bind<IHappinessLogic>                          ().FromInstance(MockHappinessLogic         .Object);
 
             Container.Bind<SignalManager>().AsSingle();

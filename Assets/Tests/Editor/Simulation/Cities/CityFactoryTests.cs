@@ -79,7 +79,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IBorderExpansionLogic>   ().FromMock();
             Container.Bind<ICityCombatLogic>        ().FromMock();
             Container.Bind<IUnitPositionCanon>      ().FromMock();
-            Container.Bind<IHealthLogic>            ().FromMock();
             Container.Bind<IHappinessLogic>         ().FromMock();
             
             Container.Bind<IProductionProjectFactory>().FromMock();

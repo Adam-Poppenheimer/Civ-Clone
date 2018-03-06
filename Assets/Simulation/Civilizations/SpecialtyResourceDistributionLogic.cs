@@ -19,8 +19,6 @@ namespace Assets.Simulation.Civilizations {
 
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
 
-        private IHealthLogic HealthLogic;
-
         private IHappinessLogic HappinessLogic;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
@@ -33,13 +31,12 @@ namespace Assets.Simulation.Civilizations {
             ISpecialtyResourcePossessionLogic resourcePossessionCanon,
             IResourceAssignmentCanon assignmentCanon,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
-            IHealthLogic healthLogic, IHappinessLogic happinessLogic,
+            IHappinessLogic happinessLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ) {
             ResourcePossessionCanon = resourcePossessionCanon;
             AssignmentCanon         = assignmentCanon;
             NodePositionCanon       = nodePositionCanon;
-            HealthLogic             = healthLogic;
             HappinessLogic          = happinessLogic;
             CityPossessionCanon     = cityPossessionCanon;
         }
@@ -93,16 +90,6 @@ namespace Assets.Simulation.Civilizations {
             foreach(var currentResource in availableResources) {
                 while(cityQueue.Count > 0 && AssignmentCanon.GetFreeCopiesOfResourceForCiv(currentResource, civ) > 0) {
                     var currentCity = cityQueue.Dequeue();
-                    var cityHealth = HealthLogic.GetHealthOfCity(currentCity);
-
-                    if(cityHealth < 0) {
-                        if(AssignmentCanon.CanAssignResourceToCity(currentResource, currentCity)) {
-                            AssignmentCanon.AssignResourceToCity(currentResource, currentCity);
-                        }
-                        if(cityHealth < -1) {
-                            cityQueue.Enqueue(currentCity);
-                        }
-                    }
                 }
             }            
         }
