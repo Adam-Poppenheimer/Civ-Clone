@@ -55,7 +55,6 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
         private Mock<IProductionProjectFactory>                 MockProjectFactory;
         private Mock<ICityConfig>                               MockCityConfig;
-        private Mock<IHappinessLogic>                           MockHappinessLogic;
 
         #endregion
 
@@ -74,7 +73,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockProjectFactory          = new Mock<IProductionProjectFactory>();
             MockCityConfig              = new Mock<ICityConfig>();
-            MockHappinessLogic          = new Mock<IHappinessLogic>();
 
 
             Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic            .Object);
@@ -86,7 +84,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IProductionProjectFactory>                ().FromInstance(MockProjectFactory         .Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
-            Container.Bind<IHappinessLogic>                          ().FromInstance(MockHappinessLogic         .Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -533,39 +530,6 @@ namespace Assets.Tests.Simulation.Cities {
 
             city.PerformDistribution();
             Assert.Fail("CityDistributionPerformedSignal was never fired");
-        }
-
-        [Test(Description = "City should reduce the number of active workers it distributes by " +
-            "its happiness if its happiness is negative.")]
-        public void PerformDistribution_ConsidersHappiness() {
-            var city = Container.Resolve<City>();
-
-            city.Population = 5;
-            MockHappinessLogic.Setup(logic => logic.GetHappinessOfCity(city)).Returns(-3);
-
-            city.PerformDistribution();
-
-            MockDistributionLogic.Verify(
-                logic => logic.DistributeWorkersIntoSlots(
-                    2, It.IsAny<IEnumerable<IWorkerSlot>>(),
-                    city, ResourceFocusType.TotalYield
-                ),
-                Times.Once, "DistributeWorkersIntoSlots was not called as expected"
-            );
-
-            MockDistributionLogic.ResetCalls();
-
-            MockHappinessLogic.Setup(logic => logic.GetHappinessOfCity(city)).Returns(3);
-
-            city.PerformDistribution();
-
-            MockDistributionLogic.Verify(
-                logic => logic.DistributeWorkersIntoSlots(
-                    5, It.IsAny<IEnumerable<IWorkerSlot>>(),
-                    city, ResourceFocusType.TotalYield
-                ),
-                Times.Once, "DistributeWorkersIntoSlots was not called as expected"
-            );
         }
 
         [Test(Description = "When PerformIncome is called on a city, that city should " +

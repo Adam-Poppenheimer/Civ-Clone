@@ -45,8 +45,6 @@ namespace Assets.Simulation.Civilizations {
 
         private ITechCanon TechCanon;
 
-        private ISpecialtyResourceDistributionLogic DistributionLogic;
-
         private CivilizationSignals Signals;
 
         #endregion
@@ -56,13 +54,11 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public void InjectDependencies(
             ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
-            ITechCanon techCanon, ISpecialtyResourceDistributionLogic distributionLogic,
-            CivilizationSignals signals, string name = ""
+            ITechCanon techCanon, CivilizationSignals signals, string name = ""
         ){
             Config            = config;
             YieldLogic        = yieldLogic;
             TechCanon         = techCanon;
-            DistributionLogic = distributionLogic;
             Signals           = signals;
 
             Name = name;
@@ -103,10 +99,6 @@ namespace Assets.Simulation.Civilizations {
                     TechCanon.SetProgressOnTechByCiv(activeTech, this, techProgress);
                 }
             }
-        }
-
-        public void PerformDistribution() {
-            DistributionLogic.DistributeResourcesOfCiv(this);
         }
 
         #endregion

@@ -65,7 +65,6 @@ namespace Assets.Tests.Simulation.Core {
 
             var executionSequence = new MockSequence();
 
-            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformDistribution());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
 

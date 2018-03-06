@@ -30,7 +30,6 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromMock();
             Container.Bind<ICivilizationYieldLogic>                      ().FromMock();
             Container.Bind<ITechCanon>                                   ().FromMock();
-            Container.Bind<ISpecialtyResourceDistributionLogic>          ().FromMock();
 
             Container.Bind<CivilizationFactory>().AsSingle();
 

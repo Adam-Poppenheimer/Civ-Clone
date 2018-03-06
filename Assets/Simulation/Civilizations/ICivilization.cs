@@ -53,8 +53,6 @@ namespace Assets.Simulation.Civilizations {
 
         void PerformResearch();
 
-        void PerformDistribution();
-
         #endregion
 
     }

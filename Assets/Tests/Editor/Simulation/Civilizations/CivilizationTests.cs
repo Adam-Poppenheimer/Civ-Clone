@@ -22,7 +22,6 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<ICivilizationYieldLogic>             MockYieldLogic;
         private Mock<ITechCanon>                          MockTechCanon;
-        private Mock<ISpecialtyResourceDistributionLogic> MockResourceDistributionLogic;
 
         #endregion
 
@@ -34,12 +33,10 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CommonInstall() {
             MockYieldLogic                = new Mock<ICivilizationYieldLogic>();
             MockTechCanon                 = new Mock<ITechCanon>();
-            MockResourceDistributionLogic = new Mock<ISpecialtyResourceDistributionLogic>();
 
             Container.Bind<ICivilizationConfig>                ().FromMock();
             Container.Bind<ICivilizationYieldLogic>            ().FromInstance(MockYieldLogic               .Object);
             Container.Bind<ITechCanon>                         ().FromInstance(MockTechCanon                .Object);
-            Container.Bind<ISpecialtyResourceDistributionLogic>().FromInstance(MockResourceDistributionLogic.Object);
 
             Container.Bind<CivilizationSignals>().AsSingle();
         }
@@ -119,18 +116,6 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CollectionAssert.DoesNotContain(civilization.TechQueue, technology,
                 "TechQueue still contains the discovered tech");
-        }
-
-        [Test(Description = "When PerformDistribution is called, the civilization should " +
-            "simply call into SpecialtyResourceDistributionLogic's DistributeResourcesOfCiv " +
-            "method.")]
-        public void PerformDistribution_CallsIntoResourceDistributionLogic() {
-            var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
-
-            civilization.PerformDistribution();
-
-            MockResourceDistributionLogic.Verify(logic => logic.DistributeResourcesOfCiv(civilization),
-                Times.AtLeastOnce, "DistributeResourcesOfCiv was not called as expected");
         }
 
         #endregion

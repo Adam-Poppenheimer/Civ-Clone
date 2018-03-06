@@ -43,7 +43,6 @@ namespace Assets.Simulation.Civilizations {
                      .AsSingle();
 
             Container.Bind<ICivilizationYieldLogic>            ().To<CivilizationYieldLogic>            ().AsSingle();
-            Container.Bind<ISpecialtyResourceDistributionLogic>().To<SpecialtyResourceDistributionLogic>().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
