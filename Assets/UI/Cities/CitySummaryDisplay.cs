@@ -192,6 +192,10 @@ namespace Assets.UI.Cities {
         }
 
         private void DisplayHealth() {
+            if(HealthSlider == null) {
+                return;
+            }
+
             HealthSlider.gameObject.SetActive(true);
 
             HealthSlider.minValue = 0;
@@ -200,6 +204,10 @@ namespace Assets.UI.Cities {
         }
 
         private void ClearHealth() {
+            if(HealthSlider == null) {
+                return;
+            }
+
             HealthSlider.gameObject.SetActive(false);
         }
 

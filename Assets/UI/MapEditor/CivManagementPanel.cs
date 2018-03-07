@@ -20,6 +20,8 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private CivManagementRecord RecordPrefab;
 
+        [SerializeField] private RectTransform RecordContainer;
+
         [SerializeField] private List<Color> Colors;
 
         private List<CivManagementRecord> InstantiatedRecords = new List<CivManagementRecord>();
@@ -68,7 +70,7 @@ namespace Assets.UI.MapEditor {
                 CivManagementRecord newRecord = Instantiate(RecordPrefab);
 
                 newRecord.gameObject.SetActive(true);
-                newRecord.transform.SetParent(this.transform, false);
+                newRecord.transform.SetParent(RecordContainer, false);
 
                 newRecord.NameField.text = civilization.Name;
                 newRecord.NameField.onEndEdit.AddListener(text => civilization.Name = text);

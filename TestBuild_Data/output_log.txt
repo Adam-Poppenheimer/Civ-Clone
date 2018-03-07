@@ -32,12 +32,12 @@ desktop: 1920x1080 60Hz; virtual: 3600x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.300703 ms
+UnloadTime: 1.226377 ms
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 26ec -> priority: 1 
-  Thread -> id: 257c -> priority: 1 
-  Thread -> id: 8f0 -> priority: 1 
-  Thread -> id: 2094 -> priority: 1 
+  Thread -> id: 3db0 -> priority: 1 
+  Thread -> id: 2fbc -> priority: 1 
+  Thread -> id: 1fd8 -> priority: 1 
+  Thread -> id: 33c4 -> priority: 1 
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Runtime.Serialization.dll (this message is harmless)
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Xml.dll (this message is harmless)
 Exiting Game...
