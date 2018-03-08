@@ -25,6 +25,8 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
+            Container.Bind<IYieldConfig>().To<YieldConfig>().FromResource("");
+
             Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();
 
             Container.Bind<CoreSignals>().AsSingle();

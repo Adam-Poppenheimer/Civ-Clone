@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.SpecialtyResources;
 
@@ -29,6 +31,10 @@ namespace Assets.Simulation.Units {
         int RangedAttackStrength { get; }
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
+
+        Sprite Image { get; }
+
+        Sprite Icon { get; }
 
         #endregion
 

@@ -7,8 +7,12 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using TMPro;
 
 using Assets.Simulation;
+using Assets.Simulation.Core;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.UI {
 
@@ -16,39 +20,42 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        [SerializeField] private Text FoodField;
-        [SerializeField] private Text GoldField;
-        [SerializeField] private Text ProductionField;
-        [SerializeField] private Text CultureField;
-        [SerializeField] private Text ScienceField;
+        [SerializeField] private TextMeshProUGUI SummaryField;
+
+
+
+        private IYieldConfig YieldConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            [InjectOptional(Id = "Food Field")]       Text foodField,
-            [InjectOptional(Id = "Gold Field")]       Text goldField,
-            [InjectOptional(Id = "Production Field")] Text productionField,
-            [InjectOptional(Id = "Culture Field")]    Text cultureField,
-            [InjectOptional(Id = "Science Field")]    Text scienceField
-        ) {
-            FoodField       = foodField       == null ? FoodField       : foodField;
-            GoldField       = goldField       == null ? GoldField       : goldField;
-            ProductionField = productionField == null ? ProductionField : productionField;
-            CultureField    = cultureField    == null ? CultureField    : cultureField;
-            ScienceField    = scienceField    == null ? ScienceField    : scienceField;
+        public void InjectDependencies(IYieldConfig yieldConfig) {
+            YieldConfig = yieldConfig;
         }
 
         #region from IResourceSummaryDisplay
 
         public void DisplaySummary(ResourceSummary summary) {
-            FoodField      .text = summary[ResourceType.Food      ].ToString();
-            GoldField      .text = summary[ResourceType.Gold      ].ToString();
-            ProductionField.text = summary[ResourceType.Production].ToString();
-            CultureField   .text = summary[ResourceType.Culture   ].ToString();
-            ScienceField   .text = summary[ResourceType.Science   ].ToString();
+            string summaryString = "";
+
+            var resourceTypes = EnumUtil.GetValues<ResourceType>();
+
+            foreach(var resourceType in resourceTypes) {
+                summaryString += String.Format(
+                    "<sprite index={0}> <color=#{1}>{2}",
+                    (int)resourceType,
+                    ColorUtility.ToHtmlStringRGB(YieldConfig.GetColorForResourceType(resourceType)),
+                    summary[resourceType]
+                );
+
+                if(resourceType != resourceTypes.Last()) {
+                    summaryString += "<color=\"black\">, ";
+                }
+            }
+            
+            SummaryField.text = summaryString;
         }
 
         #endregion

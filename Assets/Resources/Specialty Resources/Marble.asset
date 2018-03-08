@@ -27,4 +27,4 @@ MonoBehaviour:
   _extractor: {fileID: 11400000, guid: 18ab8c2dd04861549850a7bfd64fea88, type: 2}
   _appearancePrefab: {fileID: 4307953511643046, guid: ffa44f00895e71f4a96a57ec0f69788e,
     type: 2}
-  _icon: {fileID: 21300000, guid: d06412ae3b4af204fae36b7103093f03, type: 3}
+  _icon: {fileID: 21300000, guid: cbfb7ad0824d87d4cab8ea04b92f4837, type: 3}

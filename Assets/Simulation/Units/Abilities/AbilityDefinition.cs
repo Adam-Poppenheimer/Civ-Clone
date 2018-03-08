@@ -12,6 +12,11 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         public bool RequiresMovement {
             get { return _requiresMovement; }
         }

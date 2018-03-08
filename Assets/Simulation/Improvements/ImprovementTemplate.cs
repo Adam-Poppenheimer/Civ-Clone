@@ -16,6 +16,11 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementTemplate
 
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         public ResourceSummary BonusYieldNormal {
             get { return _bonusYield; }
         }

@@ -13,6 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cost: 10
   _prerequisites: []
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
   _techScreenPosition: {x: 100, y: -150}
   _buildingsEnabled:
   - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}

@@ -15,6 +15,8 @@ namespace Assets.Simulation.Improvements {
 
         string name { get; }
 
+        Sprite Icon { get; }
+
         IEnumerable<TerrainType> RestrictedToTerrains { get; }
 
         IEnumerable<TerrainFeature> RestrictedToFeatures { get; }

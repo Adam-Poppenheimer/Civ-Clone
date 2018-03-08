@@ -36,6 +36,11 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private List<TechDefinition> _prerequisites;
 
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         public Vector2 TechScreenPosition {
             get { return _techScreenPosition; }
         }

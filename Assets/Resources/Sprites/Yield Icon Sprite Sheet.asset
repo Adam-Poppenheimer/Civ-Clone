@@ -1,0 +1,122 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 2019389346, guid: 89f0137620f6af44b9ba852b4190e64e, type: 3}
+  m_Name: Yield Icon Sprite Sheet
+  m_EditorClassIdentifier: 
+  hashCode: -1542951632
+  material: {fileID: 21378621535897008}
+  materialHashCode: 0
+  spriteSheet: {fileID: 2800000, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  spriteInfoList:
+  - id: 0
+    x: 128
+    y: 0
+    width: 128
+    height: 128
+    xOffset: -64
+    yOffset: 114
+    xAdvance: 128
+    scale: 1
+    name: Food Icon Small
+    hashCode: -799364522
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300002, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 1
+    x: 384
+    y: 0
+    width: 128
+    height: 128
+    xOffset: -64
+    yOffset: 114
+    xAdvance: 128
+    scale: 1
+    name: Production Icon Small
+    hashCode: 1935522423
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300006, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 2
+    x: 256
+    y: 0
+    width: 128
+    height: 128
+    xOffset: -64
+    yOffset: 114
+    xAdvance: 128
+    scale: 1
+    name: Gold Icon Small
+    hashCode: -1198394732
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300004, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 3
+    x: 0
+    y: 0
+    width: 128
+    height: 128
+    xOffset: -64
+    yOffset: 114
+    xAdvance: 128
+    scale: 1
+    name: Culture Icon Small
+    hashCode: -1716710472
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300000, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 4
+    x: 512
+    y: 0
+    width: 128
+    height: 128
+    xOffset: -64
+    yOffset: 114
+    xAdvance: 128
+    scale: 1
+    name: Science Icon Small
+    hashCode: 568889056
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300008, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  fallbackSpriteAssets: []
+--- !u!21 &21378621535897008
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: TextMeshPro/Sprite
+  m_Shader: {fileID: 4800000, guid: 3a1c68c8292caf046bd21158886c5e40, type: 3}
+  m_ShaderKeywords: 
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _ColorMask: 15
+    - _Stencil: 0
+    - _StencilComp: 8
+    - _StencilOp: 0
+    - _StencilReadMask: 255
+    - _StencilWriteMask: 255
+    - _UseUIAlphaClip: 0
+    m_Colors:
+    - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}

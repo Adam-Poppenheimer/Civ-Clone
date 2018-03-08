@@ -77,6 +77,7 @@ namespace Assets.UI.Technology {
         [SerializeField] private Text   CostField;
         [SerializeField] private Text   TurnsToResearchField;
         [SerializeField] private Slider ProgressSlider;
+        [SerializeField] private Image  IconField;
 
         [SerializeField] private Color DiscoveredColor;
         [SerializeField] private Color AvailableColor;
@@ -134,6 +135,10 @@ namespace Assets.UI.Technology {
                     SelectionButton.interactable = true;
                 }
             }
+
+            if(IconField != null) {
+                IconField.sprite = TechToDisplay.Icon;
+            }
         }
 
         private void ClearDisplay() {
@@ -157,6 +162,10 @@ namespace Assets.UI.Technology {
 
             if(SelectionButton != null) {
                 SelectionButton.interactable = false;
+            }
+
+            if(IconField != null) {
+                IconField.sprite = null;
             }
         }
 

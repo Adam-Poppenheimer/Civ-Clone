@@ -15,8 +15,6 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private MapTileDisplay MapTileDisplay;
-
         [SerializeField] private float MapTileHoverDelay;
 
         [SerializeField] private ResourceSummaryDisplay MapTileHoverYieldDisplay;

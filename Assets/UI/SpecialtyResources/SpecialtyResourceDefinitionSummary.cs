@@ -14,18 +14,31 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance fields and properties
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private Text FreeCopiesField;
-        [SerializeField] private Text TotalCopiesField;
+        [SerializeField] private Text  NameField;
+        [SerializeField] private Text  FreeCopiesField;
+        [SerializeField] private Text  TotalCopiesField;
+        [SerializeField] private Image IconField;
 
         #endregion
 
         #region instance methods
 
         public void Initialize(ISpecialtyResourceDefinition resource, int freeCopies, int totalCopies) {
-            NameField       .text = resource.name;
-            FreeCopiesField .text = freeCopies .ToString();
-            TotalCopiesField.text = totalCopies.ToString();
+            if(NameField != null) {
+                NameField.text = resource.name;
+            }
+
+            if(FreeCopiesField != null) {
+                FreeCopiesField .text = freeCopies .ToString();
+            }
+
+            if(TotalCopiesField != null) {
+                TotalCopiesField.text = totalCopies.ToString();
+            }
+
+            if(IconField != null) {
+                IconField.sprite = resource.Icon;
+            }            
         }
 
         #endregion

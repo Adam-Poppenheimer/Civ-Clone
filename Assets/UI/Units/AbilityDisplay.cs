@@ -25,27 +25,9 @@ namespace Assets.UI.Units {
 
         #endregion
 
-        [InjectOptional(Id = "Ability Display Name Field")]
-        private Text NameField {
-            get { return _nameField; }
-            set {
-                if(value != null) {
-                    _nameField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _nameField;
-        
-        [InjectOptional(Id = "Ability Execute Button")]
-        private Button ExecuteButton {
-            get { return _executeButton; }
-            set {
-                if(value != null) {
-                    _executeButton = value;
-                }
-            }
-        }
-        [SerializeField] private Button _executeButton;
+        [SerializeField] private Text   NameField;        
+        [SerializeField] private Button ExecuteButton;
+        [SerializeField] private Image  IconField;
         
         private IAbilityExecuter AbilityExecuter;
 
@@ -67,11 +49,19 @@ namespace Assets.UI.Units {
                 return;
             }
 
-            NameField.text = AbilityToDisplay.name;
+            if(NameField != null) {
+                NameField.text = AbilityToDisplay.name;
+            }
 
-            ExecuteButton.onClick.AddListener(() => AbilityExecuter.ExecuteAbilityOnUnit(AbilityToDisplay, UnitToInvokeOn));
+            if(ExecuteButton != null) {
+                ExecuteButton.onClick.AddListener(() => AbilityExecuter.ExecuteAbilityOnUnit(AbilityToDisplay, UnitToInvokeOn));
 
-            ExecuteButton.interactable = AbilityExecuter.CanExecuteAbilityOnUnit(AbilityToDisplay, UnitToInvokeOn);
+                ExecuteButton.interactable = AbilityExecuter.CanExecuteAbilityOnUnit(AbilityToDisplay, UnitToInvokeOn);
+            }
+            
+            if(IconField != null) {
+                IconField.sprite = AbilityToDisplay.Icon;
+            }
         }
 
         #endregion

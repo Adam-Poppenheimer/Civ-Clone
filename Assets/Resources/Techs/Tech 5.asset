@@ -15,7 +15,9 @@ MonoBehaviour:
   _prerequisites:
   - {fileID: 11400000, guid: e930a11e5f847324ba113ebe57f5042c, type: 2}
   - {fileID: 11400000, guid: 9948551e92873d04daf15067115df065, type: 2}
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
   _techScreenPosition: {x: 650, y: -200}
   _buildingsEnabled: []
   _unitsEnabled: []
-  _improvementsEnabled: []
+  _abilitiesEnabled: []
+  _improvementYieldModifications: []

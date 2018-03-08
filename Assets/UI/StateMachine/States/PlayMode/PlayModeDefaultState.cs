@@ -24,7 +24,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         private List<RectTransform> DefaultPanels;
 
-        private ICivilization PlayerCivilization;
+        private IGameCore GameCore;
 
         private UIStateMachineBrain Brain;
 
@@ -42,7 +42,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         ){
             CivilizationDisplays = civilizationDisplays;
             DefaultPanels        = defaultPanels;
-            PlayerCivilization   = gameCore.ActiveCivilization;
+            GameCore             = gameCore;
             Brain                = brain;
             CitySummaryManager   = citySummaryManager;
         }
@@ -51,8 +51,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             foreach(var display in CivilizationDisplays) {
+                display.ObjectToDisplay = GameCore.ActiveCivilization;
                 display.gameObject.SetActive(true);
-                display.ObjectToDisplay = PlayerCivilization;
                 display.Refresh();
             }
 

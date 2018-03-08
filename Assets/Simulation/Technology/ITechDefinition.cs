@@ -23,6 +23,8 @@ namespace Assets.Simulation.Technology {
 
         int Cost { get; }
 
+        Sprite Icon { get; }
+
         Vector2 TechScreenPosition { get; }
 
         IEnumerable<ITechDefinition> Prerequisites { get; }

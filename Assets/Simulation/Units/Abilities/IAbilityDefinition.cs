@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace Assets.Simulation.Units.Abilities {
 
     public interface IAbilityDefinition {
@@ -10,6 +12,8 @@ namespace Assets.Simulation.Units.Abilities {
         #region properties
 
         string name { get; }
+
+        Sprite Icon { get; }
 
         bool RequiresMovement { get; }
 

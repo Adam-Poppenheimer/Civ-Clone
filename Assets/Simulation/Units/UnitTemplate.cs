@@ -62,6 +62,16 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
 
+        public Sprite Image {
+            get { return _image; }
+        }
+        [SerializeField] private Sprite _image;
+
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         #endregion
 
         #endregion

@@ -6,6 +6,8 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using TMPro;
+
 using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.UI.SpecialtyResources {
@@ -14,16 +16,24 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance fields and properties
 
-        [SerializeField] private Text ResourceNameField;
-        [SerializeField] private Text CopiesField;
+        [SerializeField] private TextMeshProUGUI SummaryField;
 
         #endregion
 
         #region instance methods
 
         public void DisplayNode(IResourceNode node) {
-            ResourceNameField.text = node.Resource.name;
-            CopiesField.text = node.Copies.ToString();
+            if(SummaryField != null) {
+                string summaryText;
+
+                if(node.Resource.Type == SpecialtyResourceType.Strategic) {
+                    summaryText = String.Format(StringFormats.ResourceNodeSummary_Strategic, node.Resource.name, node.Copies);
+                }else {
+                    summaryText = String.Format(StringFormats.ResourceNodeSummary_NonStrategic, node.Resource.name);
+                }
+
+                SummaryField.text = summaryText;
+            }
         }
 
         #endregion
