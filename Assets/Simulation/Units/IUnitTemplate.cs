@@ -16,6 +16,8 @@ namespace Assets.Simulation.Units {
 
         string Name { get; }
 
+        string Description { get; }
+
         int ProductionCost { get; }
 
         int MaxMovement { get; }

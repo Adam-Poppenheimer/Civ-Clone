@@ -18,6 +18,16 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IBuildingTemplate
 
+        public string Description {
+            get { return _description; }
+        }
+        [SerializeField, TextArea(minLines: 5, maxLines: 10)] private string _description;
+
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         /// <inheritdoc/>
         public int Cost {
             get { return _cost; }

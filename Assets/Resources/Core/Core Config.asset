@@ -9,13 +9,15 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 67a6aa4929c72d047915344a50010c10, type: 3}
-  m_Name: Yield Config
+  m_Name: Core Config
   m_EditorClassIdentifier: 
-  _foodIcon: {fileID: 0}
-  _productionIcon: {fileID: 0}
-  _goldIcon: {fileID: 0}
-  _cultureIcon: {fileID: 0}
-  _scienceIcon: {fileID: 0}
+  _foodIcon: {fileID: 21300000, guid: 14cbb66823085184ca263a2b789778e6, type: 3}
+  _productionIcon: {fileID: 21300000, guid: 019b26beff5b5de4d91d9009e9f0bb49, type: 3}
+  _goldIcon: {fileID: 21300000, guid: bf07726956d2167478487c0dba41a56a, type: 3}
+  _cultureIcon: {fileID: 21300000, guid: d027dc15f2d42c8468de79b4ddde48ac, type: 3}
+  _scienceIcon: {fileID: 21300000, guid: 58c28ab76f0014d4a97dcb81424ba3cd, type: 3}
+  _yieldModificationIcon: {fileID: 21300000, guid: 78171f34add42c14e99fd22f32c896c9,
+    type: 3}
   _foodColor: {r: 0, g: 1, b: 0.048275948, a: 1}
   _productionColor: {r: 1, g: 0.6827586, b: 0, a: 1}
   _goldColor: {r: 0.9578094, g: 1, b: 0.2352941, a: 1}

@@ -12,6 +12,11 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
+        public string Description {
+            get { return _description; }
+        }
+        [SerializeField, TextArea(minLines: 5, maxLines: 10)] private string _description;
+
         public Sprite Icon {
             get { return _icon; }
         }

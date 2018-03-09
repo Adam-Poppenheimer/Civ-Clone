@@ -13,6 +13,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         string name { get; }
 
+        string Description { get; }
+
         Sprite Icon { get; }
 
         bool RequiresMovement { get; }

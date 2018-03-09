@@ -22,40 +22,21 @@ namespace Assets.UI {
 
         [SerializeField] private TextMeshProUGUI SummaryField;
 
-
-
-        private IYieldConfig YieldConfig;
+        private IYieldFormatter YieldFormatter;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IYieldConfig yieldConfig) {
-            YieldConfig = yieldConfig;
+        public void InjectDependencies(IYieldFormatter yieldFormatter) {
+            YieldFormatter = yieldFormatter;
         }
 
         #region from IResourceSummaryDisplay
 
         public void DisplaySummary(ResourceSummary summary) {
-            string summaryString = "";
-
-            var resourceTypes = EnumUtil.GetValues<ResourceType>();
-
-            foreach(var resourceType in resourceTypes) {
-                summaryString += String.Format(
-                    "<sprite index={0}> <color=#{1}>{2}",
-                    (int)resourceType,
-                    ColorUtility.ToHtmlStringRGB(YieldConfig.GetColorForResourceType(resourceType)),
-                    summary[resourceType]
-                );
-
-                if(resourceType != resourceTypes.Last()) {
-                    summaryString += "<color=\"black\">, ";
-                }
-            }
-            
-            SummaryField.text = summaryString;
+            SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(summary, false);
         }
 
         #endregion

@@ -11,6 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
   m_Name: Building 2
   m_EditorClassIdentifier: 
+  _description: 
+  _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _cost: 20
   _maintenance: 2
   _slotYields:
@@ -18,12 +20,31 @@ MonoBehaviour:
     Production: 2
     Gold: 2
     Culture: 2
+    Science: 0
   - Food: 2
     Production: 2
     Gold: 2
     Culture: 2
+    Science: 0
   _staticYield:
     Food: 2
     Production: 2
     Gold: 2
     Culture: 2
+    Science: 0
+  _civilizationYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _cityYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _health: 0
+  _happiness: 0
+  _requiredResources: []
+  _resourceYieldModifications: []

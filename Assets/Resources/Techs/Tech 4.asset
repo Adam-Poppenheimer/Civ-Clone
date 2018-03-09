@@ -16,8 +16,15 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9948551e92873d04daf15067115df065, type: 2}
   - {fileID: 11400000, guid: 1c1db4f17ca1cb64aae51dc3583c43ee, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techScreenPosition: {x: 650, y: -100}
+  _techScreenPosition: {x: 1000, y: -100}
   _buildingsEnabled: []
   _unitsEnabled: []
   _abilitiesEnabled: []
-  _improvementYieldModifications: []
+  _improvementYieldModifications:
+  - _improvement: {fileID: 11400000, guid: 0760ef1118d0de64ca1ad761464d28d2, type: 2}
+    _bonusYield:
+      Food: 1
+      Production: -1
+      Gold: 2
+      Culture: -2
+      Science: 0

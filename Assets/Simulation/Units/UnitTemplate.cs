@@ -17,15 +17,20 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitTemplate
 
-        public int MaxMovement {
-            get { return _maxMovement; }
-        }
-        [SerializeField] private int _maxMovement;
-
         public string Name {
             get { return _name; }
         }
         [SerializeField] private string _name;
+
+        public string Description {
+            get { return _description; }
+        }
+        [SerializeField, TextArea(minLines: 5, maxLines: 10)] private string _description;
+
+        public int MaxMovement {
+            get { return _maxMovement; }
+        }
+        [SerializeField] private int _maxMovement;
 
         public int ProductionCost {
             get { return _productionCost; }

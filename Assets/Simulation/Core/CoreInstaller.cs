@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
+using Assets.UI;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
@@ -25,7 +26,7 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
-            Container.Bind<IYieldConfig>().To<YieldConfig>().FromResource("");
+            Container.Bind<ICoreConfig>().To<CoreConfig>().FromResource("Core");
 
             Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();
 

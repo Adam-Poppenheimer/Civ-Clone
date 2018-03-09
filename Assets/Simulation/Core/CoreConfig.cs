@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.Core {
 
     [CreateAssetMenu(menuName = "Civ Clone/Yield Config")]
-    public class YieldConfig : ScriptableObject, IYieldConfig {
+    public class CoreConfig : ScriptableObject, ICoreConfig {
 
         #region instance fields and properties
 
@@ -38,6 +38,12 @@ namespace Assets.Simulation.Core {
             get { return _scienceIcon; }
         }
         [SerializeField] private Sprite _scienceIcon;
+
+        public Sprite YieldModificationIcon {
+            get { return _yieldModificationIcon; }
+        }
+        [SerializeField] private Sprite _yieldModificationIcon;
+
 
         public Color FoodColor {
             get { return _foodColor; }

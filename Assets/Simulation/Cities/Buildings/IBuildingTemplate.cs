@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -21,6 +23,10 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         string name { get; }
         
+        string Description { get; }
+
+        Sprite Icon { get; }
+
         /// <summary>
         /// The production required to construct the template.
         /// </summary>

@@ -33,14 +33,20 @@ namespace Assets.UI.Technology {
 
         private ICivilizationYieldLogic YieldLogic;
 
+        private DiContainer Container;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ITechCanon techCanon, ICivilizationYieldLogic yieldLogic) {
+        public void InjectDependencies(
+            ITechCanon techCanon, ICivilizationYieldLogic yieldLogic,
+            DiContainer container
+        ){
             TechCanon  = techCanon;
             YieldLogic = yieldLogic;
+            Container  = container;
         }
 
         #region from CivilizationDisplayBase
@@ -88,7 +94,7 @@ namespace Assets.UI.Technology {
             TechRecords = new List<TechnologyRecord>();
 
             foreach(var technology in TechCanon.AvailableTechs) {
-                var newTechRecord = Instantiate(TechRecordPrefab);
+                var newTechRecord = Container.InstantiatePrefabForComponent<TechnologyRecord>(TechRecordPrefab);
 
                 newTechRecord.gameObject.SetActive(true);
                 newTechRecord.transform.SetParent(TechRecordContainer, false);

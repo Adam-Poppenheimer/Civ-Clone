@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using Zenject;
 
 using Assets.Simulation.Technology;
+using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
@@ -79,14 +80,32 @@ namespace Assets.UI.Technology {
         [SerializeField] private Slider ProgressSlider;
         [SerializeField] private Image  IconField;
 
+        [SerializeField] private RectTransform        BoonRecordContainer;
+        [SerializeField] private TechnologyBoonRecord BoonRecordPrefab;
+
         [SerializeField] private Color DiscoveredColor;
         [SerializeField] private Color AvailableColor;
         [SerializeField] private Color BeingResearchedColor;
         [SerializeField] private Color InQueueColor;
 
+        private List<TechnologyBoonRecord> InstantiatedBoonRecords = 
+            new List<TechnologyBoonRecord>();
+
+
+
+        private ICoreConfig CoreConfig;
+
+        private IYieldFormatter YieldFormatter;
+
         #endregion
 
         #region instance methods
+
+        [Inject]
+        public void InjectDependencies(ICoreConfig coreConfig, IYieldFormatter yieldFormatter) {
+            CoreConfig     = coreConfig;
+            YieldFormatter = yieldFormatter;
+        }
 
         public void Refresh() {
             ClearDisplay();
@@ -139,6 +158,48 @@ namespace Assets.UI.Technology {
             if(IconField != null) {
                 IconField.sprite = TechToDisplay.Icon;
             }
+
+            if(BoonRecordContainer != null) {
+                PopulateBoons();
+            }
+        }
+
+        private void PopulateBoons() {
+            foreach(var ability in TechToDisplay.AbilitiesEnabled) {
+                BuildBoonRecord(ability.Icon, ability.Description);
+            }
+
+            foreach(var unit in TechToDisplay.UnitsEnabled) {
+                BuildBoonRecord(unit.Icon, unit.Description);
+            }
+
+            foreach(var building in TechToDisplay.BuildingsEnabled) {
+                BuildBoonRecord(building.Icon, building.Description);
+            }
+
+            foreach(var yieldModification in TechToDisplay.ImprovementYieldModifications) {
+                var description = String.Format(
+                    "{0} <color #000000>for all {1} improvements",
+                    YieldFormatter.GetTMProFormattedYieldString(yieldModification.BonusYield, false),
+                    yieldModification.Template.name
+                );
+
+                BuildBoonRecord(CoreConfig.YieldModificationIcon, description);
+            }
+        }
+
+        private TechnologyBoonRecord BuildBoonRecord(Sprite icon, string description) {
+            var newRecord = Instantiate(BoonRecordPrefab);
+
+            newRecord.Icon = icon;
+            newRecord.Description = description;
+
+            newRecord.transform.SetParent(BoonRecordContainer, false);
+            newRecord.gameObject.SetActive(true);
+
+            InstantiatedBoonRecords.Add(newRecord);
+
+            return newRecord;
         }
 
         private void ClearDisplay() {
@@ -167,6 +228,12 @@ namespace Assets.UI.Technology {
             if(IconField != null) {
                 IconField.sprite = null;
             }
+
+            foreach(var boonRecord in new List<TechnologyBoonRecord>(InstantiatedBoonRecords)) {
+                Destroy(boonRecord.gameObject);
+            }
+
+            InstantiatedBoonRecords.Clear();
         }
 
         #endregion

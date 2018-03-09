@@ -11,11 +11,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Archer
   m_EditorClassIdentifier: 
-  _maxMovement: 2
   _name: Archer
+  _description: Archer Description
+  _maxMovement: 2
   _productionCost: 30
   _type: 0
   _abilities: []
   _attackRange: 2
   _combatStrength: 5
   _rangedAttackStrength: 10
+  _requiredResources: []
+  _image: {fileID: 0}
+  _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}

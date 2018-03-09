@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Core {
 
-    public interface IYieldConfig {
+    public interface ICoreConfig {
 
         #region properties
         
@@ -16,6 +16,8 @@ namespace Assets.Simulation.Core {
         Sprite GoldIcon       { get; }
         Sprite CultureIcon    { get; }
         Sprite ScienceIcon    { get; }
+
+        Sprite YieldModificationIcon { get; }
 
         Color FoodColor       { get; }
         Color ProductionColor { get; }

@@ -22,6 +22,8 @@ namespace Assets.UI.Core {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<IYieldFormatter>().To<YieldFormatter>().AsSingle();
+
             Container.Bind<PlayerSignals>().AsSingle();
         }
 
