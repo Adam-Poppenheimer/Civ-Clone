@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.WorkerSlots;
+
 namespace Assets.Simulation.Cities.Buildings {
 
     /// <summary>

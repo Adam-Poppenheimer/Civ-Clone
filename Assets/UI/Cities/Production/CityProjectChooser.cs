@@ -37,6 +37,8 @@ namespace Assets.UI.Cities.Production {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private DiContainer Container;
+
         #endregion
 
         #region instance methods
@@ -44,12 +46,14 @@ namespace Assets.UI.Cities.Production {
         [Inject]
         public void InjectDependencies(IBuildingProductionValidityLogic buildingValidityLogic,
             IUnitProductionValidityLogic unitValidityLogic, ITechCanon techCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            DiContainer container
         ){
             BuildingValidityLogic = buildingValidityLogic;
             UnitValidityLogic     = unitValidityLogic;
             TechCanon             = techCanon;
             CityPossessionCanon   = cityPossessionCanon;
+            Container             = container;
         }
 
         #region from CityDisplayBase
@@ -67,7 +71,7 @@ namespace Assets.UI.Cities.Production {
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
             foreach(var unitTemplate in TechCanon.GetResearchedUnits(cityOwner)) {
-                var newRecord = Instantiate(ProjectRecordPrefab);
+                var newRecord = Container.InstantiatePrefabForComponent<CityProjectRecord>(ProjectRecordPrefab);
 
                 newRecord.transform.SetParent(ProjectRecordContainer);
                 newRecord.gameObject.SetActive(true);

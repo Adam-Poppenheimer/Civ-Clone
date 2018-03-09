@@ -19,16 +19,7 @@ namespace Assets.UI.Cities.Buildings {
 
         #region instance fields and properties
 
-        [InjectOptional(Id = "Building Display Parent")]
-        private Transform BuildingDisplayParent {
-            get { return _buildingDisplayParent; }
-            set {
-                if(value != null) {
-                    _buildingDisplayParent = value;
-                }
-            }
-        }
-        [SerializeField] private Transform _buildingDisplayParent;
+        [SerializeField] private Transform BuildingDisplayContainer;
 
         private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
 
@@ -67,7 +58,8 @@ namespace Assets.UI.Cities.Buildings {
                              
                 var buildingDisplay = GetBuildingDisplay(buildingDisplayIndex++);
 
-                buildingDisplay.BuildingToDisplay = building;
+                buildingDisplay.Owner             = ObjectToDisplay;
+                buildingDisplay.BuildingToDisplay = building;                
 
                 buildingDisplay.gameObject.SetActive(true);
                 buildingDisplay.Refresh();
@@ -78,7 +70,7 @@ namespace Assets.UI.Cities.Buildings {
             if(InstantiatedBuildingDisplays.Count == index) {
                 var newDisplay = DisplayFactory.Create();
 
-                newDisplay.gameObject.transform.SetParent(BuildingDisplayParent, false);
+                newDisplay.gameObject.transform.SetParent(BuildingDisplayContainer, false);
 
                 InstantiatedBuildingDisplays.Add(newDisplay);
             }

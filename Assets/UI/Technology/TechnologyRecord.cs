@@ -97,14 +97,19 @@ namespace Assets.UI.Technology {
 
         private IYieldFormatter YieldFormatter;
 
+        private DiContainer Container;
+
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICoreConfig coreConfig, IYieldFormatter yieldFormatter) {
+        public void InjectDependencies(
+            ICoreConfig coreConfig, IYieldFormatter yieldFormatter, DiContainer container
+        ) {
             CoreConfig     = coreConfig;
             YieldFormatter = yieldFormatter;
+            Container      = container;
         }
 
         public void Refresh() {
@@ -189,7 +194,7 @@ namespace Assets.UI.Technology {
         }
 
         private TechnologyBoonRecord BuildBoonRecord(Sprite icon, string description) {
-            var newRecord = Instantiate(BoonRecordPrefab);
+            var newRecord = Container.InstantiatePrefabForComponent<TechnologyBoonRecord>(BoonRecordPrefab);
 
             newRecord.Icon = icon;
             newRecord.Description = description;

@@ -30,24 +30,31 @@ namespace Assets.UI {
 
         #region instance methods
 
-        public string GetTMProFormattedYieldString(ResourceSummary summary, bool includeEmptyValues = false) {
+        public string GetTMProFormattedYieldString(
+            ResourceSummary summary, bool includeEmptyValues = false,
+            bool plusOnPositiveNumbers = true
+        ){
             if(includeEmptyValues) {
                 return GetTMProFormattedYieldString(
-                    summary, EnumUtil.GetValues<ResourceType>()
+                    summary, EnumUtil.GetValues<ResourceType>(), plusOnPositiveNumbers
                 );
             }else {
                 return GetTMProFormattedYieldString(
-                    summary, EnumUtil.GetValues<ResourceType>().Where(type => summary[type] != 0f)
+                    summary, EnumUtil.GetValues<ResourceType>().Where(type => summary[type] != 0f),
+                    plusOnPositiveNumbers
                 );
             }
         }
 
-        private string GetTMProFormattedYieldString(ResourceSummary summary, IEnumerable<ResourceType> typesToDisplay) {
+        private string GetTMProFormattedYieldString(
+            ResourceSummary summary, IEnumerable<ResourceType> typesToDisplay,
+            bool plusOnPositiveNumbers
+        ){
             string summaryString = "";
 
             foreach(var resourceType in typesToDisplay) {
                 summaryString += String.Format(
-                    "<color=#{0}>{1:+0;-#} <sprite index={2}>",
+                    plusOnPositiveNumbers ? "<color=#{0}>{1:+0;-#} <sprite index={2}>" : "<color=#{0}>{1} <sprite index={2}>",
                     ColorUtility.ToHtmlStringRGB(CoreConfig.GetColorForResourceType(resourceType)),
                     summary[resourceType],
                     (int)resourceType
@@ -59,6 +66,15 @@ namespace Assets.UI {
             }
 
             return summaryString;
+        }
+
+        public string GetTMProFormattedSingleResourceString(ResourceType type, float value) {
+            return String.Format(
+                "<color=#{0}>{1} <sprite index={2}>",
+                ColorUtility.ToHtmlStringRGB(CoreConfig.GetColorForResourceType(type)),
+                value,
+                (int)type
+            );
         }
 
         #endregion

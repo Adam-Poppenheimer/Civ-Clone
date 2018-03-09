@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using TMPro;
 
 namespace Assets.UI.Core {
 
@@ -13,7 +14,7 @@ namespace Assets.UI.Core {
 
         #region instance fields and properties
 
-        
+        [SerializeField] private DescriptionTooltip DescriptionTooltip;
 
         #endregion
 
@@ -23,6 +24,8 @@ namespace Assets.UI.Core {
 
         public override void InstallBindings() {
             Container.Bind<IYieldFormatter>().To<YieldFormatter>().AsSingle();
+
+            Container.Bind<DescriptionTooltip>().FromInstance(DescriptionTooltip);
 
             Container.Bind<PlayerSignals>().AsSingle();
         }

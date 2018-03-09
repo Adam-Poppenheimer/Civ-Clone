@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
+using Zenject;
 using TMPro;
 
 namespace Assets.UI.Technology {
@@ -24,11 +25,19 @@ namespace Assets.UI.Technology {
 
         [SerializeField] private Image IconImage;
 
-        [SerializeField] private GameObject Tooltip;
+
+
+
+        private DescriptionTooltip Tooltip;
 
         #endregion
 
         #region instance methods
+
+        [Inject]
+        public void InjectDependencies(DescriptionTooltip tooltip) {
+            Tooltip = tooltip;
+        }
 
         #region Unity messages
 
@@ -53,12 +62,7 @@ namespace Assets.UI.Technology {
                 Tooltip.gameObject.SetActive(true);
 
                 Tooltip.transform.position = transform.position;
-
-                var tooltipField = Tooltip.GetComponentInChildren<TextMeshProUGUI>();
-
-                if(tooltipField != null) {
-                    tooltipField.text = Description;
-                }
+                Tooltip.SetDescriptionFrom(Description);
             }
         }
 

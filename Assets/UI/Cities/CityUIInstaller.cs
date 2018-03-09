@@ -22,8 +22,6 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private GameObject BuildingDisplayPrefab;
 
-        [SerializeField] private ResourceSummaryDisplay CityYieldDisplay;
-
         [SerializeField] private GameObject CityDisplayRoot;
 
         [SerializeField] CitySummaryDisplay CitySummaryPrefab;
@@ -39,13 +37,6 @@ namespace Assets.UI.Cities {
         public override void InstallBindings() {
             Container.Bind<ICityUIConfig>().To<CityUIConfig>().FromResource("Cities");
 
-            Container.Bind<IResourceSummaryDisplay>().WithId("City Yield Display").To<ResourceSummaryDisplay>().FromInstance(CityYieldDisplay);
-
-            Container
-                .BindFactory<IWorkerSlotDisplay, WorkerSlotDisplayFactory>()
-                .To<WorkerSlotDisplay>()
-                .FromComponentInNewPrefab(SlotDisplayPrefab);
-
             Container
                 .BindFactory<IBuildingDisplay, BuildingDisplayFactory>()
                 .To<BuildingDisplay>()
@@ -56,8 +47,6 @@ namespace Assets.UI.Cities {
             Container.Bind<RectTransform>().WithId("City Summary Container").FromInstance(CitySummaryContainer);
 
             Container.Bind<CitySummaryManager>().AsSingle();
-
-            Container.DeclareSignal<SlotDisplayClickedSignal>();
         }
 
         #endregion

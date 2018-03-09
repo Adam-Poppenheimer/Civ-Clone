@@ -13,7 +13,7 @@ using UniRx;
 using Assets.Simulation;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.WorkerSlots;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Growth;

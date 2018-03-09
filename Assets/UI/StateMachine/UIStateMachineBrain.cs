@@ -59,6 +59,8 @@ namespace Assets.UI.StateMachine {
 
         private GameCamera GameCamera;
 
+        private DescriptionTooltip DescriptionTooltip;
+
         #endregion
 
         #region constructors
@@ -67,7 +69,8 @@ namespace Assets.UI.StateMachine {
         public UIStateMachineBrain(
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, HexCellSignals cellSignals,
-            PlayerSignals playerSignals, GameCamera gameCamera, CoreSignals coreSignals
+            PlayerSignals playerSignals, GameCamera gameCamera, CoreSignals coreSignals,
+            DescriptionTooltip descriptionTooltip
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
@@ -77,6 +80,8 @@ namespace Assets.UI.StateMachine {
             GameCamera           = gameCamera;
             
             coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
+
+            DescriptionTooltip = descriptionTooltip;
         }
 
         #endregion
@@ -84,7 +89,7 @@ namespace Assets.UI.StateMachine {
         #region instance methods
 
         public void ClearListeners() {
-            if(CancelPressedSubscription   != null) { CancelPressedSubscription  .Dispose(); }
+            if(CancelPressedSubscription   != null) { CancelPressedSubscription.Dispose(); }
             if(ClickedAnywhereSubscription != null) { ClickedAnywhereSubscription.Dispose(); }
 
             if(CityClickedSubscription != null) { CityClickedSubscription.Dispose(); }
@@ -99,6 +104,8 @@ namespace Assets.UI.StateMachine {
                     Animator.ResetTrigger(parameter.name);
                 }
             }
+
+            DescriptionTooltip.gameObject.SetActive(false);
         }
 
         public void ListenForTransitions(params TransitionType[] types) {

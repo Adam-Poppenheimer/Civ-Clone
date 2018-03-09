@@ -4,6 +4,8 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.WorkerSlots;
+
 namespace Assets.Simulation.Cities.Buildings {
 
     /// <summary>
@@ -61,9 +63,9 @@ namespace Assets.Simulation.Cities.Buildings {
         /// Constructs a Building object from the given IBuildingTemplate.
         /// </summary>
         /// <param name="template">The template that'll define most of the building's properties</param>
-        public Building(IBuildingTemplate template) {
+        public Building(IBuildingTemplate template, List<IWorkerSlot> slots) {
             Template = template;
-            _slots = template.SlotYields.Select(yield => new WorkerSlot(yield) as IWorkerSlot).ToList();
+            _slots   = slots;
         }
 
         #endregion

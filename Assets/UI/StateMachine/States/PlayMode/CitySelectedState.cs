@@ -44,6 +44,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             }
 
             Brain.ClearListeners();
+            Brain.DisableCameraMovement();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ToCitySelected);
         }
 

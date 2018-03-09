@@ -5,6 +5,7 @@ using System.Text;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 

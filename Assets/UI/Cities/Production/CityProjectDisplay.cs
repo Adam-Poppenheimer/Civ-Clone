@@ -7,11 +7,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using TMPro;
 
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Core;
 
 namespace Assets.UI.Cities.Production {
 
@@ -20,12 +23,15 @@ namespace Assets.UI.Cities.Production {
         #region instance fields and properties
 
         [SerializeField] private Text ProjectNameField;
-        [SerializeField] private Text ProjectCostField;
+        [SerializeField] private TextMeshProUGUI ProjectCostField;
         [SerializeField] private Text TurnsLeftField;
 
         [SerializeField] private Slider ProductionProgressSlider;
+        [SerializeField] private Image ProgressSliderFill;
 
         private IProductionLogic ProductionLogic;
+
+        private IYieldFormatter YieldFormatter;
 
         #endregion
 
@@ -33,20 +39,15 @@ namespace Assets.UI.Cities.Production {
 
         [Inject]
         public void InjectDependencies(
-            IProductionLogic productionLogic, CityProjectChangedSignal projectChangedSignal,
-            [InjectOptional(Id = "Project Name Field"        )] Text projectNameField, 
-            [InjectOptional(Id = "Project Cost Field"        )] Text projectCostField, 
-            [InjectOptional(Id = "Turns Left Field"          )] Text turnsLeftField, 
-            [InjectOptional(Id = "Production Progress Slider")] Slider productionProgressSlider
+            IProductionLogic productionLogic, IYieldFormatter yieldFormatter,
+            CityProjectChangedSignal projectChangedSignal, ICoreConfig coreConfig
         ){
-
             ProductionLogic = productionLogic;
-            projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);
+            YieldFormatter  = yieldFormatter;
 
-            if(projectNameField         != null) { ProjectNameField         = projectNameField;         }
-            if(projectCostField         != null) { ProjectCostField         = projectCostField;         }
-            if(turnsLeftField           != null) { TurnsLeftField           = turnsLeftField;           }
-            if(productionProgressSlider != null) { ProductionProgressSlider = productionProgressSlider; }
+            projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);            
+
+            ProgressSliderFill.color = coreConfig.GetColorForResourceType(ResourceType.Production);
         }
 
         #region from CityDisplayBase
@@ -90,7 +91,9 @@ namespace Assets.UI.Cities.Production {
             TurnsLeftField.text = Mathf.CeilToInt((float)productionLeft / productionPerTurn).ToString();
 
             ProjectNameField.text = project.Name;
-            ProjectCostField.text = project.ProductionToComplete.ToString();            
+            ProjectCostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
+                ResourceType.Production, project.ProductionToComplete
+            );            
 
             ProductionProgressSlider.minValue = 0;
             ProductionProgressSlider.maxValue = project.ProductionToComplete;

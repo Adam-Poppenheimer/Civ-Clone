@@ -4,6 +4,7 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.Cities.Buildings {
@@ -15,6 +16,8 @@ namespace Assets.UI.Cities.Buildings {
         GameObject gameObject { get; }
 
         IBuilding BuildingToDisplay { get; set; }
+
+        ICity Owner { get; set; }
 
         #endregion
 

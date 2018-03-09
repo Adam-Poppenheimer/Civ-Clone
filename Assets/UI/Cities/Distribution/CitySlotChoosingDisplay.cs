@@ -13,6 +13,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.UI.Cities.Distribution {
 
@@ -27,17 +28,15 @@ namespace Assets.UI.Cities.Distribution {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(SlotDisplayClickedSignal displayClickedSignal, IWorkerDistributionLogic distributionLogic){
-            displayClickedSignal.Listen(OnDisplayClicked);
+        public void InjectDependencies(WorkerSlotSignals slotSignals, IWorkerDistributionLogic distributionLogic){
+            slotSignals.SlotClicked.Subscribe(OnSlotClicked);
             DistributionLogic = distributionLogic;
         }
 
-        private void OnDisplayClicked(IWorkerSlotDisplay display) {
+        private void OnSlotClicked(IWorkerSlot slot) {
             if(ObjectToDisplay == null) {
                 return;
             }
-
-            var slot = display.SlotToDisplay;
 
             if(slot.IsOccupied && !slot.IsLocked) {
                 LockOccupiedSlot(slot);
@@ -47,7 +46,6 @@ namespace Assets.UI.Cities.Distribution {
                 AssignAndLockUnoccupiedSlot(slot);
             }
 
-            display.Refresh();
             ObjectToDisplay.PerformDistribution();            
         }
 

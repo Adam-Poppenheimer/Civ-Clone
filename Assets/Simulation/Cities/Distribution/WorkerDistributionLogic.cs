@@ -11,6 +11,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.Cities.Distribution {
 

@@ -6,6 +6,10 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Zenject;
+using TMPro;
+
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 
@@ -27,21 +31,31 @@ namespace Assets.UI.Cities.Production {
         [SerializeField] private Button _selectionButton;
 
         [SerializeField] private Text NameField;
-        [SerializeField] private Text CostField;
+        [SerializeField] private TextMeshProUGUI CostField;
+
+
+
+        private IYieldFormatter YieldFormatter;
 
         #endregion
 
         #region instance methods
 
+        [Inject]
+        public void InjectDependencies(IYieldFormatter yieldFormatter) {
+            YieldFormatter = yieldFormatter;
+        }
+
         public void Refresh() {
             if(UnitTemplate != null) {
                 NameField.text = UnitTemplate.Name;
-                CostField.text = UnitTemplate.ProductionCost.ToString();
+                CostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
+                    ResourceType.Production, UnitTemplate.ProductionCost
+                );
 
             }else if(BuildingTemplate != null) {
                 NameField.text = BuildingTemplate.name;
                 CostField.text = BuildingTemplate.Cost.ToString();
-
             }
         }
 

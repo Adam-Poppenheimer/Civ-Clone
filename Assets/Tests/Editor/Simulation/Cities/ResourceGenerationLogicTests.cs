@@ -16,6 +16,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Tests.Simulation.Cities {
 

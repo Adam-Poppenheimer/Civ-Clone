@@ -60,6 +60,10 @@ namespace Assets.UI.StateMachine.States.PlayMode {
                 panel.gameObject.SetActive(true);
             }
 
+            Brain.ClearListeners();
+
+            Brain.EnableCameraMovement();
+
             Brain.ListenForTransitions(
                 TransitionType.ToCitySelected, TransitionType.ToCellSelected,
                 TransitionType.ToUnitSelected, TransitionType.ToEscapeMenu

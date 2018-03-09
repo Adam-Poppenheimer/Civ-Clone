@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.Cities {
 

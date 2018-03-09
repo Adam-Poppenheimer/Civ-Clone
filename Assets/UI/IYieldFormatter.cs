@@ -6,7 +6,9 @@ namespace Assets.UI {
 
         #region methods
 
-        string GetTMProFormattedYieldString(ResourceSummary summary, bool includeEmptyValues = false);
+        string GetTMProFormattedYieldString(ResourceSummary summary, bool includeEmptyValues = false, bool plusOnPositiveNumbers = false);
+
+        string GetTMProFormattedSingleResourceString(ResourceType type, float value);
 
         #endregion
 

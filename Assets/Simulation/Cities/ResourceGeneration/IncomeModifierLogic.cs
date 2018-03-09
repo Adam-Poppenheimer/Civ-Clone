@@ -8,7 +8,7 @@ using Zenject;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 

@@ -22,6 +22,12 @@ namespace Assets.UI {
 
         [SerializeField] private TextMeshProUGUI SummaryField;
 
+        [SerializeField] private bool DisplayEmptyResources;
+
+        [SerializeField] private bool PlusSignOnPositiveNumbers = true;
+
+
+
         private IYieldFormatter YieldFormatter;
 
         #endregion
@@ -36,7 +42,9 @@ namespace Assets.UI {
         #region from IResourceSummaryDisplay
 
         public void DisplaySummary(ResourceSummary summary) {
-            SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(summary, false);
+            SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
+                summary, DisplayEmptyResources, PlusSignOnPositiveNumbers
+            );
         }
 
         #endregion

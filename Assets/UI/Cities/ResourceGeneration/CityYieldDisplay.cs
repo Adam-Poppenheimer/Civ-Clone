@@ -17,7 +17,10 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        private IResourceSummaryDisplay YieldDisplay;
+        [SerializeField] private ResourceSummaryDisplay YieldDisplay;
+
+
+
 
         private IResourceGenerationLogic ResourceGenerationLogic;
 
@@ -26,10 +29,7 @@ namespace Assets.UI.Cities.ResourceGeneration {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            [Inject(Id = "City Yield Display")] IResourceSummaryDisplay yieldDisplay,
-            IResourceGenerationLogic resourceGenerationLogic) {
-            YieldDisplay = yieldDisplay;
+        public void InjectDependencies(IResourceGenerationLogic resourceGenerationLogic) {
             ResourceGenerationLogic = resourceGenerationLogic;
         }
 

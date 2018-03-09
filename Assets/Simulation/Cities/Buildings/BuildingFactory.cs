@@ -5,14 +5,17 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.WorkerSlots;
+
 namespace Assets.Simulation.Cities.Buildings {
 
     public class BuildingFactory : IBuildingFactory {
 
         #region instance fields and properties
 
-        private IBuildingProductionValidityLogic ValidityLogic;
+        private IBuildingProductionValidityLogic          ValidityLogic;
         private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
+        private IWorkerSlotFactory                        WorkerSlotFactory;
 
         #endregion
 
@@ -20,10 +23,12 @@ namespace Assets.Simulation.Cities.Buildings {
 
         [Inject]
         public BuildingFactory(IBuildingProductionValidityLogic validityLogic,
-            IPossessionRelationship<ICity, IBuilding> possessionCanon
+            IPossessionRelationship<ICity, IBuilding> possessionCanon,
+            IWorkerSlotFactory workerSlotFactory
         ){
-            ValidityLogic = validityLogic;
-            PossessionCanon = possessionCanon;
+            ValidityLogic     = validityLogic;
+            PossessionCanon   = possessionCanon;
+            WorkerSlotFactory = workerSlotFactory;
         }
 
         #endregion
@@ -74,7 +79,9 @@ namespace Assets.Simulation.Cities.Buildings {
                 throw new BuildingCreationException("A building of this template cannot be constructed in this city");
             }
 
-            var newBuilding = new Building(template);
+            var slots = template.SlotYields.Select(yield => WorkerSlotFactory.BuildSlot(yield)).ToList();
+
+            var newBuilding = new Building(template, slots);
 
             if(!PossessionCanon.CanChangeOwnerOfPossession(newBuilding, city)) {
                 throw new BuildingCreationException("The building produced from this template cannot be placed into this city");

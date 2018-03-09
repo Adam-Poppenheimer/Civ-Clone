@@ -13,7 +13,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Tests.Simulation.Cities {
 

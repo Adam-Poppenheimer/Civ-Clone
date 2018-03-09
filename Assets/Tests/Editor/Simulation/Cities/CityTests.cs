@@ -23,6 +23,7 @@ using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.WorkerSlots;
 
 using Assets.Simulation.Units;
 

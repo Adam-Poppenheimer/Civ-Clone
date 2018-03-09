@@ -15,7 +15,7 @@ using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Cities.Territory;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Tests.Simulation.Cities {
 
