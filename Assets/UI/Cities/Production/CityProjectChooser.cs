@@ -71,10 +71,7 @@ namespace Assets.UI.Cities.Production {
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
             foreach(var unitTemplate in TechCanon.GetResearchedUnits(cityOwner)) {
-                var newRecord = Container.InstantiatePrefabForComponent<CityProjectRecord>(ProjectRecordPrefab);
-
-                newRecord.transform.SetParent(ProjectRecordContainer);
-                newRecord.gameObject.SetActive(true);
+                var newRecord = BuildRecord();
 
                 newRecord.UnitTemplate = unitTemplate;
                 newRecord.SelectionButton.interactable = UnitValidityLogic.IsTemplateValidForCity(unitTemplate, ObjectToDisplay);
@@ -86,10 +83,7 @@ namespace Assets.UI.Cities.Production {
             }
 
             foreach(var buildingTemplate in TechCanon.GetResearchedBuildings(cityOwner)) {
-                var newRecord = Instantiate(ProjectRecordPrefab);
-
-                newRecord.transform.SetParent(ProjectRecordContainer);
-                newRecord.gameObject.SetActive(true);
+                var newRecord = BuildRecord();
 
                 newRecord.BuildingTemplate = buildingTemplate;
                 newRecord.SelectionButton.interactable = BuildingValidityLogic.IsTemplateValidForCity(buildingTemplate, ObjectToDisplay);
@@ -102,6 +96,15 @@ namespace Assets.UI.Cities.Production {
         }
 
         #endregion
+
+        private CityProjectRecord BuildRecord() {
+            var newRecord = Container.InstantiatePrefabForComponent<CityProjectRecord>(ProjectRecordPrefab);
+
+            newRecord.transform.SetParent(ProjectRecordContainer);
+            newRecord.gameObject.SetActive(true);
+
+            return newRecord;
+        }
 
         #endregion
 

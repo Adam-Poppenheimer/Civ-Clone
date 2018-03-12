@@ -29,10 +29,10 @@ namespace Assets.Simulation.Cities.Buildings {
         [SerializeField] private Sprite _icon;
 
         /// <inheritdoc/>
-        public int Cost {
-            get { return _cost; }
+        public int ProductionCost {
+            get { return _productionCost; }
         }
-        [SerializeField] private int _cost;
+        [SerializeField] private int _productionCost;
 
         /// <inheritdoc/>
         public int Maintenance {

@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities.Production {
 
         public int ProductionToComplete {
             get {
-                return BuildingToConstruct != null ? BuildingToConstruct.Cost : UnitToConstruct.ProductionCost;
+                return BuildingToConstruct != null ? BuildingToConstruct.ProductionCost : UnitToConstruct.ProductionCost;
             }
         }        
 

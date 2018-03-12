@@ -55,7 +55,9 @@ namespace Assets.UI.Cities.Production {
 
             }else if(BuildingTemplate != null) {
                 NameField.text = BuildingTemplate.name;
-                CostField.text = BuildingTemplate.Cost.ToString();
+                CostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
+                    ResourceType.Production, BuildingTemplate.ProductionCost
+                );
             }
         }
 

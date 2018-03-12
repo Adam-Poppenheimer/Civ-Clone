@@ -30,7 +30,7 @@ namespace Assets.Simulation.Cities.Buildings {
         /// <summary>
         /// The production required to construct the template.
         /// </summary>
-        int Cost { get; }
+        int ProductionCost { get; }
 
         /// <summary>
         /// The maintenance, in gold per turn, of the building.
