@@ -47,15 +47,15 @@ namespace Assets.Simulation.Units {
             if(!UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
                 return -1;
             }else if(unit.IsAquatic) {
-                return GetAquaticTraversalCost(currentCell, nextCell);
+                return GetAquaticTraversalCost(unit, currentCell, nextCell);
             }else {
-                return GetNonAquaticTraversalCost(currentCell, nextCell);
+                return GetNonAquaticTraversalCost(unit, currentCell, nextCell);
             }
         }
 
         #endregion
 
-        private int GetAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
+        private int GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
             if(nextCell.IsUnderwater) {
                 return Config.WaterMoveCost;
             }else if(CityFactory.AllCities.Exists(city => city.Location == nextCell)) {
@@ -65,7 +65,7 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        private int GetNonAquaticTraversalCost(IHexCell currentCell, IHexCell nextCell) {
+        private int GetNonAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
             if(nextCell.IsUnderwater) {
                 return -1;
             }
@@ -78,14 +78,16 @@ namespace Assets.Simulation.Units {
 
             int moveCost = Config.BaseLandMoveCost;
 
-            if(edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation) {
+            if( edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation &&
+                !unit.Template.IgnoresTerrainCosts
+            ) {
                 moveCost += Config.SlopeMoveCost;
             }
 
             var featureCost = Config.FeatureMoveCosts[(int)nextCell.Feature];
             if(featureCost == -1) {
                 return -1;
-            }else {
+            }else if(!unit.Template.IgnoresTerrainCosts){
                 moveCost += featureCost;
             }
 
@@ -93,7 +95,7 @@ namespace Assets.Simulation.Units {
             if(nextCell.Shape != TerrainShape.Flatlands) {
                 if(shapeCost == -1) {
                     return -1;
-                }else {
+                }else if(!unit.Template.IgnoresTerrainCosts){
                     moveCost += shapeCost;
                 }
             }

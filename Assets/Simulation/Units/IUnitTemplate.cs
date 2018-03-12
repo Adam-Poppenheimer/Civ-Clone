@@ -40,6 +40,8 @@ namespace Assets.Simulation.Units {
 
         bool BenefitsFromDefensiveTerrain { get; }
 
+        bool IgnoresTerrainCosts { get; }
+
         
 
         #endregion

@@ -82,6 +82,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private bool _benefitsFromDefensiveTerrain;
 
+        public bool IgnoresTerrainCosts {
+            get { return _ignoresTerrainCosts; }
+        }
+        [SerializeField] private bool _ignoresTerrainCosts;
+
         #endregion
 
         #endregion

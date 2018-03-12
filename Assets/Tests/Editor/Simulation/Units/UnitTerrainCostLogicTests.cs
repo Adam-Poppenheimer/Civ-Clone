@@ -48,6 +48,8 @@ namespace Assets.Tests.Simulation.Units {
 
             public bool IsAquatic;
 
+            public bool IgnoresTerrainCosts;
+
         }
 
         #endregion
@@ -65,7 +67,7 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false
+                        IsAquatic = false,
                     }
                 }).Returns(1).SetName("Non-aquatic into flat empty grassland, no elevation change, no water");
 
@@ -239,6 +241,19 @@ namespace Assets.Tests.Simulation.Units {
                         IsAquatic = false
                     }
                 }).Returns(-1).SetName("Non-aquatic into forested hills, up a slope, no water");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, IgnoresTerrainCosts = true
+                    }
+                }).Returns(1).SetName("Non-aquatic into forested hills, unit ignores terrain costs");
             }
         }
 
@@ -353,6 +368,12 @@ namespace Assets.Tests.Simulation.Units {
 
         private IUnit BuildUnit(UnitTestData testData) {
             var unitMock = new Mock<IUnit>();
+
+            var mockTemplate = new Mock<IUnitTemplate>();
+
+            mockTemplate.Setup(template => template.IgnoresTerrainCosts).Returns(testData.IgnoresTerrainCosts);
+
+            unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 
             unitMock.Setup(unit => unit.IsAquatic).Returns(testData.IsAquatic);
 
