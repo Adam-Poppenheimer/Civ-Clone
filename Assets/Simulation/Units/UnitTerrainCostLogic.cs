@@ -100,7 +100,15 @@ namespace Assets.Simulation.Units {
                 }
             }
 
+            if(IsCellRoughTerrain(nextCell) && unit.Template.HasRoughTerrainPenalty) {
+                return unit.Template.MaxMovement;
+            }
+
             return moveCost;
+        }
+
+        private bool IsCellRoughTerrain(IHexCell cell) {
+            return !cell.HasRoads && (cell.Shape != TerrainShape.Flatlands || cell.Feature != TerrainFeature.None);
         }
 
         #endregion

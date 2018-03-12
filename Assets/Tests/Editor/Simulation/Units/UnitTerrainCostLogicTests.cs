@@ -50,6 +50,10 @@ namespace Assets.Tests.Simulation.Units {
 
             public bool IgnoresTerrainCosts;
 
+            public bool HasRoughTerrainPenalty;
+
+            public int MaxMovement;
+
         }
 
         #endregion
@@ -254,6 +258,50 @@ namespace Assets.Tests.Simulation.Units {
                         IsAquatic = false, IgnoresTerrainCosts = true
                     }
                 }).Returns(1).SetName("Non-aquatic into forested hills, unit ignores terrain costs");
+
+
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, HasRoughTerrainPenalty = true,
+                        MaxMovement = 10
+                    }
+                }).Returns(10).SetName("Non-aquatic into empty hills, unit has rough terrain penalty");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, HasRoughTerrainPenalty = true,
+                        MaxMovement = 10
+                    }
+                }).Returns(10).SetName("Non-aquatic into flat forest, unit has rough terrain penalty");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, HasRoughTerrainPenalty = true,
+                        MaxMovement = 10
+                    }
+                }).Returns(10).SetName("Non-aquatic into forested hills, unit has rough terrain penalty");
             }
         }
 
@@ -371,7 +419,9 @@ namespace Assets.Tests.Simulation.Units {
 
             var mockTemplate = new Mock<IUnitTemplate>();
 
-            mockTemplate.Setup(template => template.IgnoresTerrainCosts).Returns(testData.IgnoresTerrainCosts);
+            mockTemplate.Setup(template => template.IgnoresTerrainCosts   ).Returns(testData.IgnoresTerrainCosts);
+            mockTemplate.Setup(template => template.HasRoughTerrainPenalty).Returns(testData.HasRoughTerrainPenalty);
+            mockTemplate.Setup(template => template.MaxMovement           ).Returns(testData.MaxMovement);
 
             unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 

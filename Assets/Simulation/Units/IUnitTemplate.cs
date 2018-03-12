@@ -42,7 +42,7 @@ namespace Assets.Simulation.Units {
 
         bool IgnoresTerrainCosts { get; }
 
-        
+        bool HasRoughTerrainPenalty { get; }
 
         #endregion
 

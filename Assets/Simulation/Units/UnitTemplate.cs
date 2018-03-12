@@ -87,6 +87,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private bool _ignoresTerrainCosts;
 
+        public bool HasRoughTerrainPenalty {
+            get { return _hasRoughTerrainPenalty; }
+        }
+        [SerializeField] private bool _hasRoughTerrainPenalty;
+
         #endregion
 
         #endregion
