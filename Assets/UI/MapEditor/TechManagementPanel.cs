@@ -86,7 +86,7 @@ namespace Assets.UI.MapEditor {
                 var newRecord = Instantiate(TechRecordPrefab);
                 
                 newRecord.gameObject.SetActive(true);
-                newRecord.transform.SetParent(TechRecordContainer);
+                newRecord.transform.SetParent(TechRecordContainer, false);
 
                 ConfigureRecord(newRecord, cachedTech);
 

@@ -101,7 +101,7 @@ namespace Assets.UI.MapEditor {
                 }
 
                 newRecord.gameObject.SetActive(true);
-                newRecord.transform.SetParent(ResourceRecordContainer);
+                newRecord.transform.SetParent(ResourceRecordContainer, false);
             }
         }
 

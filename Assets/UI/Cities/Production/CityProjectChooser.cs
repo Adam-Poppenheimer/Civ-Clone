@@ -100,7 +100,7 @@ namespace Assets.UI.Cities.Production {
         private CityProjectRecord BuildRecord() {
             var newRecord = Container.InstantiatePrefabForComponent<CityProjectRecord>(ProjectRecordPrefab);
 
-            newRecord.transform.SetParent(ProjectRecordContainer);
+            newRecord.transform.SetParent(ProjectRecordContainer, false);
             newRecord.gameObject.SetActive(true);
 
             return newRecord;

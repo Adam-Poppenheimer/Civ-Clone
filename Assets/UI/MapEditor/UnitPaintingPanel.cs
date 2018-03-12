@@ -123,7 +123,7 @@ namespace Assets.UI.MapEditor {
                 var newRecord = Instantiate(UnitRecordPrefab);
 
                 newRecord.gameObject.SetActive(true);
-                newRecord.transform.SetParent(UnitRecordContainer);
+                newRecord.transform.SetParent(UnitRecordContainer, false);
 
                 newRecord.GetComponentInChildren<Text>().text = unitTemplate.Name;
 
