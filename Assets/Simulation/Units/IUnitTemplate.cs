@@ -18,6 +18,10 @@ namespace Assets.Simulation.Units {
 
         string Description { get; }
 
+        Sprite Image { get; }
+
+        Sprite Icon { get; }
+
         int ProductionCost { get; }
 
         int MaxMovement { get; }
@@ -34,9 +38,9 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
-        Sprite Image { get; }
+        bool BenefitsFromDefensiveTerrain { get; }
 
-        Sprite Icon { get; }
+        
 
         #endregion
 

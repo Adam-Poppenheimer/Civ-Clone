@@ -27,6 +27,16 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField, TextArea(minLines: 5, maxLines: 10)] private string _description;
 
+        public Sprite Image {
+            get { return _image; }
+        }
+        [SerializeField] private Sprite _image;
+
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         public int MaxMovement {
             get { return _maxMovement; }
         }
@@ -67,15 +77,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
 
-        public Sprite Image {
-            get { return _image; }
+        public bool BenefitsFromDefensiveTerrain {
+            get { return _benefitsFromDefensiveTerrain; }
         }
-        [SerializeField] private Sprite _image;
-
-        public Sprite Icon {
-            get { return _icon; }
-        }
-        [SerializeField] private Sprite _icon;
+        [SerializeField] private bool _benefitsFromDefensiveTerrain;
 
         #endregion
 

@@ -53,12 +53,14 @@ namespace Assets.Simulation.Units.Combat {
         public float GetMeleeDefensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
             float baseModifier = 0f;
 
-            baseModifier += Config.TerrainMeleeDefensiveness[(int)location.Terrain];
-            baseModifier += Config.FeatureMeleeDefensiveness[(int)location.Feature];
+            if(defender.Template.BenefitsFromDefensiveTerrain) {
+                baseModifier += Config.TerrainMeleeDefensiveness[(int)location.Terrain];
+                baseModifier += Config.FeatureMeleeDefensiveness[(int)location.Feature];
 
-            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
-            if(improvementAtLocation != null) {
-                baseModifier += improvementAtLocation.Template.DefensiveBonus;
+                var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+                if(improvementAtLocation != null) {
+                    baseModifier += improvementAtLocation.Template.DefensiveBonus;
+                }
             }
             
             return baseModifier - GetUnhappinessPenalty(defender);
@@ -77,12 +79,14 @@ namespace Assets.Simulation.Units.Combat {
         public float GetRangedDefensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
             float baseModifier = 0f;
 
-            baseModifier += Config.TerrainRangedDefensiveness[(int)location.Terrain];
-            baseModifier += Config.FeatureRangedDefensiveness[(int)location.Feature];
+            if(defender.Template.BenefitsFromDefensiveTerrain) {
+                baseModifier += Config.TerrainRangedDefensiveness[(int)location.Terrain];
+                baseModifier += Config.FeatureRangedDefensiveness[(int)location.Feature];
 
-            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
-            if(improvementAtLocation != null) {
-                baseModifier += improvementAtLocation.Template.DefensiveBonus;
+                var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+                if(improvementAtLocation != null) {
+                    baseModifier += improvementAtLocation.Template.DefensiveBonus;
+                }
             }
             
             return baseModifier - GetUnhappinessPenalty(defender);
