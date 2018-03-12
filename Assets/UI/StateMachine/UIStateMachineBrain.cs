@@ -16,6 +16,7 @@ using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
 
 using Assets.UI.Core;
+using Assets.UI.HexMap;
 
 namespace Assets.UI.StateMachine {
 
@@ -61,6 +62,8 @@ namespace Assets.UI.StateMachine {
 
         private DescriptionTooltip DescriptionTooltip;
 
+        private CellHoverDisplay CellHoverDisplay;
+
         #endregion
 
         #region constructors
@@ -70,7 +73,7 @@ namespace Assets.UI.StateMachine {
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, HexCellSignals cellSignals,
             PlayerSignals playerSignals, GameCamera gameCamera, CoreSignals coreSignals,
-            DescriptionTooltip descriptionTooltip
+            DescriptionTooltip descriptionTooltip, CellHoverDisplay cellHoverDisplay
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
@@ -82,6 +85,7 @@ namespace Assets.UI.StateMachine {
             coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
 
             DescriptionTooltip = descriptionTooltip;
+            CellHoverDisplay   = cellHoverDisplay;
         }
 
         #endregion
@@ -106,6 +110,9 @@ namespace Assets.UI.StateMachine {
             }
 
             DescriptionTooltip.gameObject.SetActive(false);
+            
+            DisableCameraMovement();
+            DisableCellHovering();
         }
 
         public void ListenForTransitions(params TransitionType[] types) {
@@ -141,6 +148,15 @@ namespace Assets.UI.StateMachine {
 
         public void DisableCameraMovement() {
             GameCamera.enabled = false;
+        }
+
+        public void EnableCellHovering() {
+            CellHoverDisplay.IsPermittedToActivate = true;
+        }
+
+        public void DisableCellHovering() {
+            CellHoverDisplay.IsPermittedToActivate = false;
+            CellHoverDisplay.gameObject.SetActive(false);
         }
 
         private void OnCancelPressed(UniRx.Unit unit) {

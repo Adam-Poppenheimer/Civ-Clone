@@ -61,8 +61,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             }
 
             Brain.ClearListeners();
-
             Brain.EnableCameraMovement();
+            Brain.EnableCellHovering();
 
             Brain.ListenForTransitions(
                 TransitionType.ToCitySelected, TransitionType.ToCellSelected,

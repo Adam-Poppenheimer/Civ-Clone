@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.UI.MapManagement;
+using Assets.UI.HexMap;
 
 namespace Assets.UI.StateMachine {
 
@@ -20,6 +21,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private GameObject OptionsDisplay;
 
         [SerializeField] private GameCamera GameCamera;
+        [SerializeField] private CellHoverDisplay CellHoverDisplay;
 
         #endregion
 
@@ -39,6 +41,7 @@ namespace Assets.UI.StateMachine {
                 .FromInstance(OptionsDisplay);
 
             Container.Bind<GameCamera>().FromInstance(GameCamera);
+            Container.Bind<CellHoverDisplay>().FromInstance(CellHoverDisplay);
 
             Container.Bind<UIStateMachineBrain>().AsSingle();
 

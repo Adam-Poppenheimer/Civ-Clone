@@ -9,6 +9,6 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.UI.HexMap {
 
-    public class TileDisplayBase : DisplayBase<IHexCell> { }
+    public class CellDisplayBase : DisplayBase<IHexCell> { }
 
 }

@@ -36,6 +36,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
+
+            Brain.EnableCameraMovement();
+            Brain.EnableCellHovering();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -35,7 +35,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivPanel.gameObject.SetActive(true);
 
             Brain.ClearListeners();
+
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
+            Brain.EnableCameraMovement();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -38,7 +38,7 @@ namespace Assets.UI.HexMap {
                 .To<ResourceSummaryDisplay>()
                 .FromInstance(MapTileHoverYieldDisplay);
 
-            Container.Bind<ITilePathDrawer>().To<TilePathDrawer>().AsSingle();
+            Container.Bind<ICellPathDrawer>().To<CellPathDrawer>().AsSingle();
 
             Container.Bind<HexCellOverlayManager>().AsSingle();
         }

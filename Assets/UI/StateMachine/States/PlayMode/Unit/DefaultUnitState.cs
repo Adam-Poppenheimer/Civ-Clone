@@ -58,7 +58,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private IUnitTerrainCostLogic TerrainCostLogic;
 
-        private ITilePathDrawer PathDrawer;
+        private ICellPathDrawer PathDrawer;
 
         private CitySignals CitySignals;
 
@@ -79,7 +79,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             List<UnitDisplayBase> displaysToManage, UIStateMachineBrain brain,
             ICombatExecuter combatExecuter, IUnitPositionCanon unitPositionCanon,
             ICityFactory cityFactory, IHexGrid grid, IUnitTerrainCostLogic terrainCostLogic,
-            ITilePathDrawer pathDrawer, CitySignals citySignals, UnitSignals unitSignals,
+            ICellPathDrawer pathDrawer, CitySignals citySignals, UnitSignals unitSignals,
             HexCellSignals cellSignals, HexCellOverlayManager overlayManager,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay
         ){
@@ -109,8 +109,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             SelectedUnit = Brain.LastUnitClicked;
             Brain.ClearListeners();
+
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick,
                 TransitionType.ToUnitSelected, TransitionType.ToCitySelected);
+            Brain.EnableCameraMovement();
+            Brain.EnableCellHovering();
 
             AttachEvents();
 

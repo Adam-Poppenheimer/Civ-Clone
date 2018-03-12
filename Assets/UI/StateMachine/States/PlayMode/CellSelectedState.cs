@@ -21,7 +21,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region instance fields and properties
 
-        private List<TileDisplayBase> DisplaysToManage;
+        private List<CellDisplayBase> DisplaysToManage;
 
         private UIStateMachineBrain Brain;
 
@@ -30,7 +30,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(List<TileDisplayBase> allTileDisplays,
+        public void InjectDependencies(List<CellDisplayBase> allTileDisplays,
             UIStateMachineBrain brain
         ){
             DisplaysToManage = allTileDisplays;

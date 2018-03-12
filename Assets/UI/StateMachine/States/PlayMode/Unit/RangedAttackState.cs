@@ -95,7 +95,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }
 
             Brain.ClearListeners();
+
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick);
+            Brain.EnableCameraMovement();
 
             AttachEvents();
 

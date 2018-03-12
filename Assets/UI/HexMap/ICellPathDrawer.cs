@@ -11,7 +11,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.UI.HexMap {
 
-    public interface ITilePathDrawer {
+    public interface ICellPathDrawer {
 
         #region methods
 
