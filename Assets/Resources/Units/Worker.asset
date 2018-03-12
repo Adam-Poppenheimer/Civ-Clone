@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Worker
   m_EditorClassIdentifier: 
-  _maxMovement: 2
   _name: Worker
+  _description: Builds improvements on the map
+  _maxMovement: 2
   _productionCost: 10
   _type: 1
   _abilities:
@@ -26,7 +27,12 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ab541495ccd7322428eaa172674cc66c, type: 2}
   - {fileID: 11400000, guid: d2acdc816c63b8641bfdcd87a4232806, type: 2}
   - {fileID: 11400000, guid: bc91d9fc26bb93e45b3c11cc5c2dd31f, type: 2}
+  - {fileID: 11400000, guid: c24a6041877dff94fb082cc7cd4bd8c2, type: 2}
+  - {fileID: 11400000, guid: 8c1421cf82ab28b4da22e5c0bde8e6a2, type: 2}
+  - {fileID: 11400000, guid: a3bc4aa694001894a9e9feb69c9a7573, type: 2}
   _attackRange: 0
   _combatStrength: 0
   _rangedAttackStrength: 0
   _requiredResources: []
+  _image: {fileID: 0}
+  _icon: {fileID: 0}

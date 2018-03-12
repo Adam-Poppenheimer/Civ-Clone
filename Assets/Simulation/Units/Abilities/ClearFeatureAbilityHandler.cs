@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using Zenject;
+
+using Assets.Simulation.HexMap;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class BuildRoadAbilityHandler : IAbilityHandler {
+    public class ClearFeatureAbilityHandler : IAbilityHandler {
 
         #region instance fields and properties
 
@@ -20,7 +22,7 @@ namespace Assets.Simulation.Units.Abilities {
         #region constructors
 
         [Inject]
-        public BuildRoadAbilityHandler(IUnitPositionCanon unitPositionCanon) {
+        public ClearFeatureAbilityHandler(IUnitPositionCanon unitPositionCanon) {
             UnitPositionCanon = unitPositionCanon;
         }
 
@@ -28,15 +30,15 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance methods
 
-        #region from IAbilityHandler
+        #region IAbilityHandler
 
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            var roadBuildingCommands = ability.CommandRequests.Where(command => command.CommandType == AbilityCommandType.BuildRoad);
+            var firstCommand = ability.CommandRequests.FirstOrDefault();
 
-            if(roadBuildingCommands.Count() > 0) {
+            if(ability.CommandRequests.Count() == 1 && firstCommand.CommandType == AbilityCommandType.ClearFeature) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                return unitLocation != null && !unitLocation.HasRoads;
+                return unitLocation.Feature.ToString().Equals(firstCommand.ArgsToPass.FirstOrDefault());
             }else {
                 return false;
             }
@@ -46,7 +48,7 @@ namespace Assets.Simulation.Units.Abilities {
             if(CanHandleAbilityOnUnit(ability, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                unitLocation.HasRoads = true;
+                unitLocation.Feature = TerrainFeature.None;
 
                 return new AbilityExecutionResults(true, null);
             }else {

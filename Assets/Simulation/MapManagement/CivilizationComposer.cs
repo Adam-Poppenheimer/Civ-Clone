@@ -71,10 +71,13 @@ namespace Assets.Simulation.MapManagement {
                 var availableTechs = TechCanon.GetTechsAvailableToCiv(civilization);
 
                 if(availableTechs.Count() > 0) {
-                    civData.ProgressOnTechs = new Dictionary<string, int>();
                     foreach(var availableTech in availableTechs) {
                         int progress = TechCanon.GetProgressOnTechByCiv(availableTech, civilization);
                         if(progress != 0) {
+                            if(civData.ProgressOnTechs == null) {
+                                civData.ProgressOnTechs = new Dictionary<string, int>();
+                            }
+
                             civData.ProgressOnTechs[availableTech.Name] = progress;
                         }
                     }
