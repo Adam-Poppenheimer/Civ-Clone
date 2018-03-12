@@ -65,14 +65,22 @@ namespace Assets.Simulation.MapManagement {
                 if(civilization.TechQueue != null && civilization.TechQueue.Count > 0) {
                     civData.TechQueue = civilization.TechQueue.Select(tech => tech.Name).ToList();
                 }else {
-                    civData.TechQueue = new List<string>();
+                    civData.TechQueue = null;
                 }
 
-                civData.ProgressOnTechs = new Dictionary<string, int>();
-                foreach(var availableTech in TechCanon.GetTechsAvailableToCiv(civilization)) {
-                    int progress = TechCanon.GetProgressOnTechByCiv(availableTech, civilization);
-                    civData.ProgressOnTechs[availableTech.Name] = progress;
-                }
+                var availableTechs = TechCanon.GetTechsAvailableToCiv(civilization);
+
+                if(availableTechs.Count() > 0) {
+                    civData.ProgressOnTechs = new Dictionary<string, int>();
+                    foreach(var availableTech in availableTechs) {
+                        int progress = TechCanon.GetProgressOnTechByCiv(availableTech, civilization);
+                        if(progress != 0) {
+                            civData.ProgressOnTechs[availableTech.Name] = progress;
+                        }
+                    }
+                }else {
+                    civData.ProgressOnTechs = null;
+                }                
 
                 mapData.Civilizations.Add(civData);
             }
@@ -87,36 +95,42 @@ namespace Assets.Simulation.MapManagement {
                 newCiv.GoldStockpile = civData.GoldStockpile;
                 newCiv.CultureStockpile = civData.CultureStockpile;
 
-                for(int i = civData.TechQueue.Count - 1; i >= 0; i--) {
-                    var techName = civData.TechQueue[i];
+                if(civData.TechQueue != null) {
+                    for(int i = civData.TechQueue.Count - 1; i >= 0; i--) {
+                        var techName = civData.TechQueue[i];
 
-                    var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(techName)).FirstOrDefault();
-                    if(techOfName == null) {
-                        throw new InvalidOperationException(string.Format("CivData.TechQueue had invalid tech name {0} in it", techName));
+                        var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(techName)).FirstOrDefault();
+                        if(techOfName == null) {
+                            throw new InvalidOperationException(string.Format("CivData.TechQueue had invalid tech name {0} in it", techName));
+                        }
+                        newCiv.TechQueue.Enqueue(techOfName);
                     }
-                    newCiv.TechQueue.Enqueue(techOfName);
                 }
+                
+                if(civData.DiscoveredTechs != null) {
+                    foreach(var discoveredTechName in civData.DiscoveredTechs) {
+                        var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(discoveredTechName)).FirstOrDefault();
+                        if(techOfName == null) {
+                            throw new InvalidOperationException(
+                                string.Format("CivData.DiscoveredTechs had invalid tech name {0} in it", discoveredTechName)
+                            );
+                        }
 
-                foreach(var discoveredTechName in civData.DiscoveredTechs) {
-                    var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(discoveredTechName)).FirstOrDefault();
-                    if(techOfName == null) {
-                        throw new InvalidOperationException(
-                            string.Format("CivData.DiscoveredTechs had invalid tech name {0} in it", discoveredTechName)
-                        );
+                        TechCanon.SetTechAsDiscoveredForCiv(techOfName, newCiv);
                     }
-
-                    TechCanon.SetTechAsDiscoveredForCiv(techOfName, newCiv);
                 }
+                
+                if(civData.ProgressOnTechs != null) {
+                    foreach(var techInProgressName in civData.ProgressOnTechs.Keys) {
+                        var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(techInProgressName)).FirstOrDefault();
+                        if(techOfName == null) {
+                            throw new InvalidOperationException(
+                                string.Format("CivData.ProgressOnTechs had invalid tech name {0} in it", techInProgressName)
+                            );
+                        }
 
-                foreach(var techInProgressName in civData.ProgressOnTechs.Keys) {
-                    var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(techInProgressName)).FirstOrDefault();
-                    if(techOfName == null) {
-                        throw new InvalidOperationException(
-                            string.Format("CivData.ProgressOnTechs had invalid tech name {0} in it", techInProgressName)
-                        );
+                        TechCanon.SetProgressOnTechByCiv(techOfName, newCiv, civData.ProgressOnTechs[techInProgressName]);
                     }
-
-                    TechCanon.SetProgressOnTechByCiv(techOfName, newCiv, civData.ProgressOnTechs[techInProgressName]);
                 }
             }
 
