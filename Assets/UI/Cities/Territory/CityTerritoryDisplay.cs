@@ -58,8 +58,6 @@ namespace Assets.UI.Cities.Territory {
             }
             InstantiatedDisplays.Clear();
 
-            int slotDisplayIndex = 0;
-
             foreach(var tile in PossessionCanon.GetPossessionsOfOwner(ObjectToDisplay)) {
                 if(tile.SuppressSlot) {
                     continue;

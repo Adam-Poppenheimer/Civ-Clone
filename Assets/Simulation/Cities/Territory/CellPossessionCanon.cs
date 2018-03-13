@@ -23,13 +23,18 @@ namespace Assets.Simulation.Cities.Territory {
 
         private CitySignals CitySignals;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public CellPossessionCanon(CitySignals citySignals){
-            CitySignals = citySignals;
+        public CellPossessionCanon(CitySignals citySignals,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+        ){
+            CitySignals       = citySignals;
+            CityLocationCanon = cityLocationCanon;
 
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
@@ -45,7 +50,8 @@ namespace Assets.Simulation.Cities.Territory {
                 return true;
             }else {
                 var currentOwner = GetOwnerOfPossession(possession);
-                return currentOwner == null || currentOwner.Location != possession;
+
+                return currentOwner == null || CityLocationCanon.GetOwnerOfPossession(currentOwner) != possession;
             }
         }
 

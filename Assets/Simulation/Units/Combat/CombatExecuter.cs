@@ -84,7 +84,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(attacker.Type, defenderLocation, true)) {
+            if(!UnitPositionCanon.CanPlaceUnitAtLocation(attacker, defenderLocation, true)) {
                 return false;
             }
 

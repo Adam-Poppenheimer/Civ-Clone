@@ -25,8 +25,6 @@ namespace Assets.Simulation.Civilizations {
 
         private ICellVisibilityCanon VisibilityCanon;
 
-        private IUnitPositionCanon UnitPositionCanon;
-
         #endregion
 
         #region constructors
@@ -36,7 +34,7 @@ namespace Assets.Simulation.Civilizations {
             UnitSignals unitSignals, CitySignals citySignals, IHexGrid grid,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellVisibilityCanon visibilityCanon, IUnitPositionCanon unitPositionCanon
+            ICellVisibilityCanon visibilityCanon
         ){
             unitSignals.LeftLocationSignal      .Subscribe(OnUnitLeftLocation);
             unitSignals.EnteredLocationSignal   .Subscribe(OnUnitEnteredLocation);
@@ -48,7 +46,6 @@ namespace Assets.Simulation.Civilizations {
             UnitPossessionCanon = unitPossessionCanon;
             CityPossessionCanon = cityPossessionCanon;
             VisibilityCanon     = visibilityCanon;
-            UnitPositionCanon   = unitPositionCanon;
         }
 
         #endregion

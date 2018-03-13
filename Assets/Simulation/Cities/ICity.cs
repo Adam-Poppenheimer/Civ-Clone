@@ -22,11 +22,6 @@ namespace Assets.Simulation.Cities {
 
         #region properties
 
-        /// <summary>
-        /// The IHexCell where the city is placed.
-        /// </summary>
-        IHexCell Location { get; }
-
         GameObject gameObject { get; }
 
         Transform transform { get; }

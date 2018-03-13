@@ -24,6 +24,7 @@ namespace Assets.Simulation.MapManagement {
         private IBuildingFactory                              BuildingFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
+        IPossessionRelationship<IHexCell, ICity>              CityLocationCanon;
         private ICivilizationFactory                          CivilizationFactory;
         private IEnumerable<IBuildingTemplate>                AvailableBuildingTemplates;
         private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
@@ -37,6 +38,7 @@ namespace Assets.Simulation.MapManagement {
             IHexGrid grid, ICityFactory cityFactory, IBuildingFactory buildingFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             ICivilizationFactory civilizationFactory, List<IBuildingTemplate> availableBuildingTemplates, 
             [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
         ) {
@@ -45,6 +47,7 @@ namespace Assets.Simulation.MapManagement {
             BuildingFactory            = buildingFactory;
             CityPossessionCanon        = cityPossessionCanon;
             BuildingPossessionCanon    = buildingPossessionCanon;
+            CityLocationCanon          = cityLocationCanon;
             CivilizationFactory        = civilizationFactory;
             AvailableBuildingTemplates = availableBuildingTemplates;
             AvailableUnitTemplates     = availableUnitTemplates;
@@ -65,7 +68,7 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var city in CityFactory.AllCities) {
                 var cityData = new SerializableCityData() {
-                    Location         = city.Location.Coordinates,
+                    Location         = CityLocationCanon.GetOwnerOfPossession(city).Coordinates,
                     Owner            = CityPossessionCanon.GetOwnerOfPossession(city).Name,
                     Population       = city.Population,
                     FoodStockpile    = city.FoodStockpile,
@@ -80,7 +83,7 @@ namespace Assets.Simulation.MapManagement {
                 if(activeProject != null) {
                     cityData.ActiveProject = new SerializableProjectData() {
                         BuildingToConstruct = activeProject.BuildingToConstruct != null ? activeProject.BuildingToConstruct.name : null,
-                        UnitToConstruct     = activeProject.UnitToConstruct     != null ? activeProject.UnitToConstruct    .Name : null,
+                        UnitToConstruct     = activeProject.UnitToConstruct     != null ? activeProject.UnitToConstruct    .name : null,
 
                         Progress = activeProject.Progress
                     };
@@ -130,7 +133,7 @@ namespace Assets.Simulation.MapManagement {
 
                     }else {
                         var unitTemplate = AvailableUnitTemplates.Where(
-                            template => template.Name.Equals(cityData.ActiveProject.UnitToConstruct)
+                            template => template.name.Equals(cityData.ActiveProject.UnitToConstruct)
                         ).First();
 
                         newCity.SetActiveProductionProject(unitTemplate);

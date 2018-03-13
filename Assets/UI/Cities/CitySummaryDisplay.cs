@@ -62,6 +62,8 @@ namespace Assets.UI.Cities {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         private Animator UIAnimator;
 
         #endregion
@@ -75,6 +77,7 @@ namespace Assets.UI.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
             IResourceGenerationLogic resourceGenerationLogic, IGameCore gameCore,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "UI Animator")] Animator uiAnimator
         ) {
             Grid                    = grid;
@@ -87,6 +90,7 @@ namespace Assets.UI.Cities {
             ResourceGenerationLogic = resourceGenerationLogic;
             GameCore                = gameCore;
             CityPossessionCanon     = cityPossessionCanon;
+            CityLocationCanon       = cityLocationCanon;
             UIAnimator              = uiAnimator;
         }
 
@@ -112,7 +116,9 @@ namespace Assets.UI.Cities {
         }
 
         private bool HasRangedAttackTarget() {
-            foreach(var cell in Grid.GetCellsInRadius(ObjectToDisplay.Location, Config.CityAttackRange)) {
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(ObjectToDisplay);
+
+            foreach(var cell in Grid.GetCellsInRadius(cityLocation, Config.CityAttackRange)) {
                 foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(cell)) {
                     if(CombatExecuter.CanPerformRangedAttack(ObjectToDisplay.CombatFacade, unit)) {
                         return true;

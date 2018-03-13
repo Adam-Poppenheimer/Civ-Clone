@@ -39,8 +39,6 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private ICivilizationConfig Config;
-
         private ICivilizationYieldLogic YieldLogic;
 
         private ITechCanon TechCanon;
@@ -53,10 +51,9 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public void InjectDependencies(
-            ICivilizationConfig config, ICivilizationYieldLogic yieldLogic,
-            ITechCanon techCanon, CivilizationSignals signals, string name = ""
+            ICivilizationYieldLogic yieldLogic, ITechCanon techCanon,
+            CivilizationSignals signals, string name = ""
         ){
-            Config            = config;
             YieldLogic        = yieldLogic;
             TechCanon         = techCanon;
             Signals           = signals;

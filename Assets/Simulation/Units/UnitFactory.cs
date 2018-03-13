@@ -32,8 +32,6 @@ namespace Assets.Simulation.Units {
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
-        private GameObject UnitPrefab;
-
         #endregion
 
         #region constructors
@@ -41,13 +39,11 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitFactory(DiContainer container, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            [Inject(Id = "Unit Prefab")] GameObject unitPrefab,
             UnitSignals signals
         ){
             Container           = container;
             UnitPositionCanon   = unitPositionCanon;
             UnitPossessionCanon = unitPossessionCanon;
-            UnitPrefab          = unitPrefab;
 
             signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
@@ -67,8 +63,7 @@ namespace Assets.Simulation.Units {
                 throw new ArgumentNullException("owner");
             }
 
-            var newUnitObject = GameObject.Instantiate(UnitPrefab);
-            Container.InjectGameObject(newUnitObject);
+            var newUnitObject = Container.InstantiatePrefab(template.Prefab);
 
             newUnitObject.transform.SetParent(location.transform, false);
 

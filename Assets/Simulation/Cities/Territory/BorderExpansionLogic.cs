@@ -21,13 +21,11 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region instance fields and properties
 
-        private IHexGrid HexGrid;
-
-        private IPossessionRelationship<ICity, IHexCell> PossessionCanon;
-        
-        private ICityConfig Config;
-
-        private IResourceGenerationLogic ResourceGenerationLogic;
+        private IHexGrid                                 HexGrid;
+        private IPossessionRelationship<ICity, IHexCell> PossessionCanon;        
+        private ICityConfig                              Config;
+        private IResourceGenerationLogic                 ResourceGenerationLogic;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
@@ -41,14 +39,16 @@ namespace Assets.Simulation.Cities.Territory {
         /// <param name="config"></param>
         /// <param name="resourceGenerationLogic"></param>
         [Inject]
-        public BorderExpansionLogic(IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
-            ICityConfig config, IResourceGenerationLogic resourceGenerationLogic) {
-
-            HexGrid = hexGrid;
-            PossessionCanon = possessionCanon;
-            Config = config;
+        public BorderExpansionLogic(
+            IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
+            ICityConfig config, IResourceGenerationLogic resourceGenerationLogic,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+        ){
+            HexGrid                 = hexGrid;
+            PossessionCanon         = possessionCanon;
+            Config                  = config;
             ResourceGenerationLogic = resourceGenerationLogic;
-
+            CityLocationCanon       = cityLocationCanon;
         }
 
         #endregion
@@ -87,16 +87,18 @@ namespace Assets.Simulation.Cities.Territory {
         }
 
         /// <inheritdoc/>
-        public bool IsCellAvailable(ICity city, IHexCell tile) {
+        public bool IsCellAvailable(ICity city, IHexCell cell) {
             if(city == null) {
                 throw new ArgumentNullException("city");
-            }else if(tile == null){
-                throw new ArgumentNullException("tile");
+            }else if(cell == null){
+                throw new ArgumentNullException("cell");
             }
 
-            bool isUnowned = PossessionCanon.GetOwnerOfPossession(tile) == null;
-            bool isWithinRange = HexGrid.GetDistance(city.Location, tile) <= Config.MaxBorderRange;
-            bool isNeighborOfPossession = HexGrid.GetNeighbors(tile).Exists(neighbor => PossessionCanon.GetOwnerOfPossession(neighbor) == city);
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            bool isUnowned = PossessionCanon.GetOwnerOfPossession(cell) == null;
+            bool isWithinRange = HexGrid.GetDistance(cityLocation, cell) <= Config.MaxBorderRange;
+            bool isNeighborOfPossession = HexGrid.GetNeighbors(cell).Exists(neighbor => PossessionCanon.GetOwnerOfPossession(neighbor) == city);
 
             return isUnowned && isWithinRange && isNeighborOfPossession;
         }

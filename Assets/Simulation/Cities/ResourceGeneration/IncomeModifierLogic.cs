@@ -23,8 +23,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IHexGrid Grid;
-
         private ICivilizationHappinessLogic CivHappinessLogic;
 
         private ICivilizationConfig CivilizationConfig;
@@ -37,12 +35,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public IncomeModifierLogic(
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IHexGrid grid, ICivilizationHappinessLogic civHappinessLogic,
+            ICivilizationHappinessLogic civHappinessLogic,
             ICivilizationConfig civilizationConfig
         ){
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;
-            Grid                     = grid;
             CivHappinessLogic        = civHappinessLogic;
             CivilizationConfig       = civilizationConfig;
         }

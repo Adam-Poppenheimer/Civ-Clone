@@ -18,31 +18,31 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private ICityFactory CityFactory;
-
         private UnitSignals Signals;
+
+        private IHexGrid Grid;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
-        private IHexGrid Grid;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitPositionCanon(ICityFactory cityFactory, UnitSignals signals,
+        public UnitPositionCanon(UnitSignals signals, IHexGrid grid,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IHexGrid grid
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            CityFactory         = cityFactory;
             Signals             = signals;
+            Grid                = grid;
             CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
-            Grid                = grid;
+            CityLocationCanon   = cityLocationCanon;
         }
 
         #endregion
@@ -52,27 +52,7 @@ namespace Assets.Simulation.Units {
         #region from PossessionRelationship<IMapTile, IUnit>
 
         protected override bool IsPossessionValid(IUnit unit, IHexCell location) {
-            if(location == null) {
-                return true;
-            }
-
-            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
-
-            foreach(var unitAtLocation in GetPossessionsOfOwner(location)) {
-                var unitAtLocationOwner = UnitPossessionCanon.GetOwnerOfPossession(unitAtLocation);
-
-                if(unitOwner != unitAtLocationOwner) {
-                    return false;
-                }
-            }
-
-            var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == location).FirstOrDefault();
-
-            if(cityAtLocation != null && unitOwner != CityPossessionCanon.GetOwnerOfPossession(cityAtLocation)) {
-                return false;
-            }
-
-            return CanPlaceUnitOfTypeAtLocation(unit.Type, location, false); 
+             return CanPlaceUnitAtLocation(unit, location, false);
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
@@ -96,26 +76,49 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitPositionCanon
 
-        public bool CanPlaceUnitOfTypeAtLocation(UnitType type, IHexCell location, bool ignoreOccupancy) {
+        public bool CanPlaceUnitAtLocation(IUnit unit, IHexCell location, bool isMeleeAttacking) {
             if(location == null) {
                 return true;
             }
 
-            if(!ignoreOccupancy && AlreadyHasUnitOfType(location, type)) {
+            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
+            foreach(var unitAtLocation in GetPossessionsOfOwner(location)) {
+                var unitAtLocationOwner = UnitPossessionCanon.GetOwnerOfPossession(unitAtLocation);
+
+                if(unitOwner != unitAtLocationOwner && !isMeleeAttacking) {
+                    return false;
+                }
+            }
+
+            var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+
+            if(cityAtLocation != null && !isMeleeAttacking && unitOwner != CityPossessionCanon.GetOwnerOfPossession(cityAtLocation)) {
                 return false;
-            }else if(CityFactory.AllCities.Any(city => city.Location == location)) {
+            }
+
+            return CanPlaceUnitTemplateAtLocation(unit.Template, location, isMeleeAttacking);
+        }
+
+        public bool CanPlaceUnitTemplateAtLocation(IUnitTemplate template, IHexCell location, bool isMeleeAttacking) {
+            if(location == null) {
                 return true;
-            }else if(type == UnitType.LandCivilian || type == UnitType.LandMilitary || type == UnitType.City) {
-                return !location.IsUnderwater;
+
+            }else if(!isMeleeAttacking && LocationHasUnitBlockingType(location, template.Type)) {
+                return false;
+
+            }else if(CityLocationCanon.GetPossessionsOfOwner(location).Count() > 0) {
+                return true;
+
             }else {
-                return location.IsUnderwater;
+                return template.IsAquatic == location.IsUnderwater;
             }
         }
 
         #endregion
 
-        private bool AlreadyHasUnitOfType(IHexCell owner, UnitType type) {
-            return GetPossessionsOfOwner(owner).Select(unit => unit.Type).Contains(type);
+        private bool LocationHasUnitBlockingType(IHexCell location, UnitType type) {
+            return GetPossessionsOfOwner(location).Where(unit => type.HasSameSupertypeAs(unit.Type)).Count() > 0;
         }
 
         #endregion

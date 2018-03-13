@@ -43,7 +43,9 @@ namespace Assets.Simulation.Cities {
 
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
-        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private IUnitFactory UnitFactory;
+
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
@@ -61,14 +63,15 @@ namespace Assets.Simulation.Cities {
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+            IUnitFactory unitFactory, IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            Container           = container;
-            CityPrefab          = cityPrefab;
-            CityPossessionCanon = cityPossessionCanon;
-            Grid                = grid;
-            CellPossessionCanon = cellPossessionCanon;
-            UnitPossessionCanon = unitPossessionCanon;
+            Container             = container;
+            CityPrefab            = cityPrefab;
+            CityPossessionCanon   = cityPossessionCanon;
+            Grid                  = grid;
+            CellPossessionCanon   = cellPossessionCanon;
+            UnitFactory           = unitFactory;
+            CityLocationCanon     = cityLocationCanon;
             
             if(citySignals != null) {
                 citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
@@ -108,14 +111,11 @@ namespace Assets.Simulation.Cities {
             var newCity = newCityGameObject.GetComponent<City>();
 
             newCity.Population = 1;
-            newCity.Location = location;
+
+            CityLocationCanon.ChangeOwnerOfPossession(newCity, location);
 
             location.SuppressSlot = true;
             location.Feature = TerrainFeature.None;
-
-            newCity.CombatFacade = Container.Instantiate<CityCombatFacadeUnit>(new object[] { newCity });
-
-            UnitPossessionCanon.ChangeOwnerOfPossession(newCity.CombatFacade, owner);
 
             if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
                 CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);
@@ -128,6 +128,9 @@ namespace Assets.Simulation.Cities {
             }else {
                 throw new CityCreationException("Cannot assign the given location to the newly created city");
             }
+
+            var combatantTemplate = Container.Instantiate<CityCombatantTemplate>(new object[]{ newCity });
+            newCity.CombatFacade = UnitFactory.Create(location, combatantTemplate, owner);
             
             foreach(var neighbor in Grid.GetNeighbors(location)) {
                 if(CellPossessionCanon.CanChangeOwnerOfPossession(neighbor, newCity)) {

@@ -6,10 +6,14 @@ using System.Text;
 namespace Assets.Simulation.Units {
 
     public enum UnitType {
-        LandMilitary,
-        LandCivilian,
-        WaterMilitary,
-        WaterCivilian,
+        Archery,
+        Civilian,
+        Melee,
+        Recon,
+        NavalMelee,
+        NavalRanged,
+        Siege,
+        Mounted,
         City
     }
 

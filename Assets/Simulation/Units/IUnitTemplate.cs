@@ -14,7 +14,7 @@ namespace Assets.Simulation.Units {
 
         #region properties
 
-        string Name { get; }
+        string name { get; }
 
         string Description { get; }
 
@@ -22,11 +22,15 @@ namespace Assets.Simulation.Units {
 
         Sprite Icon { get; }
 
+        GameObject Prefab { get; }
+
         int ProductionCost { get; }
 
         int MaxMovement { get; }
 
         UnitType Type { get; }
+
+        bool IsAquatic { get; }
 
         IEnumerable<IAbilityDefinition> Abilities { get; }
 
@@ -43,6 +47,8 @@ namespace Assets.Simulation.Units {
         bool IgnoresTerrainCosts { get; }
 
         bool HasRoughTerrainPenalty { get; }
+
+        bool IsImmobile { get; }
 
         #endregion
 

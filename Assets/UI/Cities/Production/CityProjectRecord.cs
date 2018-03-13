@@ -48,7 +48,7 @@ namespace Assets.UI.Cities.Production {
 
         public void Refresh() {
             if(UnitTemplate != null) {
-                NameField.text = UnitTemplate.Name;
+                NameField.text = UnitTemplate.name;
                 CostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
                     ResourceType.Production, UnitTemplate.ProductionCost
                 );

@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
@@ -41,20 +42,24 @@ namespace Assets.UI.MapEditor {
 
         private CitySignals CitySignals;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region instance methods
 
         [Inject]
         public void InjectDependencies(
-            ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
-            ICityValidityLogic cityValidityLogic, HexCellSignals cellSignals, CitySignals citySignals
+            ICivilizationFactory civilizationFactory, ICityValidityLogic cityValidityLogic,
+            HexCellSignals cellSignals, CitySignals citySignals, ICityFactory cityFactory,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             CityValidityLogic   = cityValidityLogic;
             CellSignals         = cellSignals;
             CitySignals         = citySignals;
+            CityFactory         = cityFactory;
+            CityLocationCanon   = cityLocationCanon;
         }
 
         #region Unity messages
@@ -103,9 +108,9 @@ namespace Assets.UI.MapEditor {
                     CityFactory.Create(cell, ActiveCivilization);
                 }
             }else {
-                var cityAtLocation = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+                var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
                 if(cityAtLocation != null) {
-                    Destroy(cityAtLocation.gameObject.gameObject);
+                    Destroy(cityAtLocation.gameObject);
                 }
             }
         }

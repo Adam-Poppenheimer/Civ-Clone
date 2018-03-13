@@ -25,7 +25,7 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public string Name {
-            get { return Template.Name; }
+            get { return Template.name; }
         }
 
         public int MaxMovement {
@@ -39,7 +39,7 @@ namespace Assets.Simulation.Units {
         }
 
         public bool IsAquatic {
-            get { return Type == UnitType.WaterMilitary || Type == UnitType.WaterCivilian; }
+            get { return Template.IsAquatic; }
         }
 
         public IEnumerable<IAbilityDefinition> Abilities {

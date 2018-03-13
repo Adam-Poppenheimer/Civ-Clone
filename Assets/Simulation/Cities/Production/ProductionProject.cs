@@ -6,6 +6,7 @@ using System.Text;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -21,7 +22,7 @@ namespace Assets.Simulation.Cities.Production {
 
         public string Name {
             get {
-                return BuildingToConstruct != null ? BuildingToConstruct.name : UnitToConstruct.Name;
+                return BuildingToConstruct != null ? BuildingToConstruct.name : UnitToConstruct.name;
             }
         }
 
@@ -38,6 +39,7 @@ namespace Assets.Simulation.Cities.Production {
         private IBuildingFactory                              BuildingFactory;
         private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
 
         #endregion
 
@@ -77,8 +79,10 @@ namespace Assets.Simulation.Cities.Production {
             if(BuildingToConstruct != null) {
                 BuildingFactory.Create(BuildingToConstruct, targetCity);
             }else {
-                var cityOwner = CityPossessionCanon.GetOwnerOfPossession(targetCity);
-                UnitFactory.Create(targetCity.Location, UnitToConstruct, cityOwner);
+                var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(targetCity);
+                var cityLocation = CityLocationCanon.GetOwnerOfPossession(targetCity);
+
+                UnitFactory.Create(cityLocation, UnitToConstruct, cityOwner);
             }
         }
 

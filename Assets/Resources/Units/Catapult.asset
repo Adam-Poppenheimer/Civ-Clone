@@ -11,11 +11,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Catapult
   m_EditorClassIdentifier: 
+  _description: 
+  _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
   _maxMovement: 2
-  _name: Catapult
   _productionCost: 40
-  _type: 0
+  _type: 6
+  _isAquatic: 0
   _abilities: []
   _attackRange: 2
   _combatStrength: 5
   _rangedAttackStrength: 20
+  _requiredResources: []
+  _benefitsFromDefensiveTerrain: 0
+  _ignoresTerrainCosts: 0
+  _hasRoughTerrainPenalty: 0
+  _isImmobile: 0

@@ -638,7 +638,7 @@ namespace Assets.Tests.Simulation.Cities {
             var cityToTest = Container.Resolve<City>();
 
             var newTemplateMock = new Mock<IUnitTemplate>();
-            newTemplateMock.Setup(template => template.Name).Returns("New Template");
+            newTemplateMock.Setup(template => template.name).Returns("New Template");
 
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);

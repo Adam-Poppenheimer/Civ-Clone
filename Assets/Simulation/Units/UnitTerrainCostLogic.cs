@@ -20,21 +20,22 @@ namespace Assets.Simulation.Units {
 
         private IHexGridConfig Config;
 
-        private ICityFactory CityFactory;
-
         private IUnitPositionCanon UnitPositionCanon;
+
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitTerrainCostLogic(IHexGridConfig config, ICityFactory cityFactory,
-            IUnitPositionCanon unitPositionCanon
+        public UnitTerrainCostLogic(
+            IHexGridConfig config, IUnitPositionCanon unitPositionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             Config            = config;
-            CityFactory       = cityFactory;
             UnitPositionCanon = unitPositionCanon;
+            CityLocationCanon = cityLocationCanon;
         }
 
         #endregion
@@ -44,7 +45,7 @@ namespace Assets.Simulation.Units {
         #region from IUnitTerrainCostLogic
 
         public int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            if(!UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
+            if(unit.Type == UnitType.City || !UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
                 return -1;
             }else if(unit.IsAquatic) {
                 return GetAquaticTraversalCost(unit, currentCell, nextCell);
@@ -56,9 +57,11 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private int GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+            var cityAtNext = CityLocationCanon.GetPossessionsOfOwner(nextCell).FirstOrDefault();
+
             if(nextCell.IsUnderwater) {
                 return Config.WaterMoveCost;
-            }else if(CityFactory.AllCities.Exists(city => city.Location == nextCell)) {
+            }else if(cityAtNext != null) {
                 return Config.WaterMoveCost;
             }else {
                 return -1;

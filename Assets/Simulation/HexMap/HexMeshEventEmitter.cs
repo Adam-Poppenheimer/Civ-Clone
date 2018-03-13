@@ -33,19 +33,22 @@ namespace Assets.Simulation.HexMap {
 
         private CitySignals CitySignals;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region instance methods
 
         [Inject]
         public void InjectDependencies(
-            HexCellSignals cellSignals, IHexGrid grid, ICityFactory cityFactory,
-            CitySignals citySignals
+            HexCellSignals cellSignals, IHexGrid grid, ICityFactory cityFactory, CitySignals citySignals,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            CellSignals = cellSignals;
-            Grid        = grid;
-            CityFactory = cityFactory;
-            CitySignals = citySignals;
+            CellSignals       = cellSignals;
+            Grid              = grid;
+            CityFactory       = cityFactory;
+            CitySignals       = citySignals;
+            CityLocationCanon = cityLocationCanon;
         }
 
         #region Unity messages
@@ -164,7 +167,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         private ICity GetCityAtLocation(IHexCell location) {
-            return CityFactory.AllCities.Where(city => city.Location == location).FirstOrDefault();
+            return CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
         }
 
         #endregion

@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 namespace Assets.Simulation.Cities {
 
     /// <summary>
@@ -96,6 +98,12 @@ namespace Assets.Simulation.Cities {
         int UnhappinessPerCity { get; }
 
         float UnhappinessPerPopulation { get; }
+
+        Sprite CombatantImage { get; }
+
+        Sprite CombatantIcon { get; }
+
+        GameObject CombatantPrefab { get; }
 
         #endregion
 

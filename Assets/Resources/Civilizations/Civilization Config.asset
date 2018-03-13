@@ -11,3 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1fac23f31431a574ab18a238dacb2156, type: 3}
   m_Name: Civilization Config
   m_EditorClassIdentifier: 
+  _baseHappiness: 10
+  _happinessPerLuxury: 4
+  _yieldLossPerUnhappiness: 0.02
+  _modifierLossPerUnhappiness: 0.02

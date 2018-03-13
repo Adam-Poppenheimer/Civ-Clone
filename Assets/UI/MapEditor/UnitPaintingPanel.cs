@@ -125,7 +125,7 @@ namespace Assets.UI.MapEditor {
                 newRecord.gameObject.SetActive(true);
                 newRecord.transform.SetParent(UnitRecordContainer, false);
 
-                newRecord.GetComponentInChildren<Text>().text = unitTemplate.Name;
+                newRecord.GetComponentInChildren<Text>().text = unitTemplate.name;
 
                 var recordToggle = newRecord.GetComponentInChildren<Toggle>();
 
@@ -153,7 +153,7 @@ namespace Assets.UI.MapEditor {
 
         private void TryAddUnit(IHexCell location) {
             if( ActiveCivilization != null && ActiveTemplate != null &&
-                UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(ActiveTemplate.Type, location, false)
+                UnitPositionCanon.CanPlaceUnitTemplateAtLocation(ActiveTemplate, location, false)
             ){
                 UnitFactory.Create(location, ActiveTemplate, ActiveCivilization);
             }

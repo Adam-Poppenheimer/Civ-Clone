@@ -30,6 +30,8 @@ namespace Assets.Simulation.Cities {
 
         private IRiverCanon RiverCanon;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region constructors
@@ -45,13 +47,15 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public CityValidityLogic(
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IHexGrid hexGrid,
-            ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon
+            ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             CellPossessionCanon = tilePossessionCanon;
             HexGrid             = hexGrid;
             CityFactory         = cityFactory;
             Config              = config;
             RiverCanon          = riverCanon;
+            CityLocationCanon   = cityLocationCanon;
         }
 
         #endregion
@@ -74,7 +78,9 @@ namespace Assets.Simulation.Cities {
             }
 
             foreach(var city in CityFactory.AllCities) {
-                if(HexGrid.GetDistance(cell, city.Location) < Config.MinimumSeparation) {
+                var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+                if(HexGrid.GetDistance(cell, cityLocation) < Config.MinimumSeparation) {
                     return false;
                 }
             }

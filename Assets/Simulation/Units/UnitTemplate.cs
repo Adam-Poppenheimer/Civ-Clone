@@ -17,11 +17,6 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitTemplate
 
-        public string Name {
-            get { return _name; }
-        }
-        [SerializeField] private string _name;
-
         public string Description {
             get { return _description; }
         }
@@ -37,6 +32,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private Sprite _icon;
 
+        public GameObject Prefab {
+            get { return _prefab; }
+        }
+        [SerializeField] private GameObject _prefab;
+
         public int MaxMovement {
             get { return _maxMovement; }
         }
@@ -51,6 +51,11 @@ namespace Assets.Simulation.Units {
             get { return _type; }
         }
         [SerializeField] private UnitType _type;
+
+        public bool IsAquatic {
+            get { return _isAquatic; }
+        }
+        [SerializeField] private bool _isAquatic;
 
         public IEnumerable<IAbilityDefinition> Abilities {
             get { return _abilities.Cast<IAbilityDefinition>(); }
@@ -91,6 +96,11 @@ namespace Assets.Simulation.Units {
             get { return _hasRoughTerrainPenalty; }
         }
         [SerializeField] private bool _hasRoughTerrainPenalty;
+
+        public bool IsImmobile {
+            get { return _isImmobile; }
+        }
+        [SerializeField] private bool _isImmobile;
 
         #endregion
 

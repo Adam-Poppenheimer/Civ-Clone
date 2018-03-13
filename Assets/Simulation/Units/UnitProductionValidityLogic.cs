@@ -8,6 +8,7 @@ using Zenject;
 using Assets.Simulation.Cities;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
@@ -21,6 +22,8 @@ namespace Assets.Simulation.Units {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         private IEnumerable<IUnitTemplate> AvailableUnitTemplates;
 
         #endregion
@@ -31,11 +34,13 @@ namespace Assets.Simulation.Units {
         public UnitProductionValidityLogic(IUnitPositionCanon unitPositionCanon,
             IResourceAssignmentCanon resourceAssignmentCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
         ){
             UnitPositionCanon       = unitPositionCanon;
             ResourceAssignmentCanon = resourceAssignmentCanon;
             CityPossessionCanon     = cityPossessionCanon;
+            CityLocationCanon       = cityLocationCanon;
             AvailableUnitTemplates  = availableUnitTemplates;
         }
 
@@ -50,7 +55,9 @@ namespace Assets.Simulation.Units {
         }
 
         public bool IsTemplateValidForCity(IUnitTemplate template, ICity city) {
-            if(!UnitPositionCanon.CanPlaceUnitOfTypeAtLocation(template.Type, city.Location, false)) {
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            if(!UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, cityLocation, false)) {
                 return false;
             }
 

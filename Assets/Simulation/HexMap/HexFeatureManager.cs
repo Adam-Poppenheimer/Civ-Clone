@@ -30,11 +30,11 @@ namespace Assets.Simulation.HexMap {
 
         private IFeatureConfig Config;
 
-        private ICityFactory CityFactory;
+        private IHexGrid Grid;
 
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
 
-        private IHexGrid Grid;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
@@ -42,15 +42,15 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            INoiseGenerator noiseGenerator, IFeatureConfig config, ICityFactory cityFactory,
+            INoiseGenerator noiseGenerator, IFeatureConfig config, IHexGrid grid,
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-            IHexGrid grid
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             NoiseGenerator            = noiseGenerator;
             Config                    = config;
-            CityFactory               = cityFactory;
-            ResourceNodeLocationCanon = resourceNodeLocationCanon;
             Grid                      = grid;
+            ResourceNodeLocationCanon = resourceNodeLocationCanon;
+            CityLocationCanon         = cityLocationCanon;
         }
 
         public void Clear() {
@@ -75,7 +75,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {
-            var cityOnCell = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+            var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             var nodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
             if(cityOnCell != null) {

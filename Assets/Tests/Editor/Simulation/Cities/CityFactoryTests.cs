@@ -37,14 +37,12 @@ namespace Assets.Tests.Simulation.Cities {
         private DiContainer CityInjectionContainer;
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-
-        private Mock<IHexGrid> MockGrid;
-
-        private Mock<IPossessionRelationship<ICity, IHexCell>> MockCellPossessionCanon;
-
-        private Mock<IWorkerDistributionLogic> MockDistributionLogic;
-
+        private Mock<IHexGrid>                                      MockGrid;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>      MockCellPossessionCanon;
+        private Mock<IWorkerDistributionLogic>                      MockDistributionLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
+        private Mock<IUnitFactory>                                  MockUnitFactory;
 
         #endregion
 
@@ -66,12 +64,16 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockUnitFactory         = new Mock<IUnitFactory>();
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon.Object);
             Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
+            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory        .Object);
 
             Container.Bind<IPopulationGrowthLogic>  ().FromMock();
             Container.Bind<IProductionLogic>        ().FromMock();
@@ -105,7 +107,7 @@ namespace Assets.Tests.Simulation.Cities {
             "should have its transform parented under the argued location's transform. That city " +
             "should preserve the local position of its prefab")]
         public void CityCreated_ParentedToLocation_AndLocalPositionPreserved() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -123,7 +125,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "Every city the factory creates should have a starting population of 1")]
         public void CityCreated_PopulationSetToOne() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -138,24 +140,28 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "Every city the factory creates should have its location initialized " +
             "properly. That location should have its SuppressSlot field set to true")]
         public void CityCreated_LocationSetAndSuppressed() {
-            var tile = BuildTile(true);
+            var cell = BuildCell(true);
             var civilization = BuildCivilization();
 
-            BuildNeighborsFor(tile, 1, true);
+            BuildNeighborsFor(cell, 1, true);
 
             var factory = Container.Resolve<CityFactory>();
 
-            var newCity = factory.Create(tile, civilization);
+            var newCity = factory.Create(cell, civilization);
 
-            Assert.AreEqual(tile, newCity.Location, "newCity.Location has an unexpected value");
-            Assert.IsTrue(newCity.Location.SuppressSlot, "newCity.Location is not suppressed");
+            MockCityLocationCanon.Verify(
+                canon => canon.ChangeOwnerOfPossession(newCity, cell), Times.Once,
+                "The factory did not attempt to locate the created city to its argued cell"
+            );
+
+            Assert.IsTrue(cell.SuppressSlot, "newCity.Location is not suppressed");
         }
 
         [Test(Description = "When Create is called, CityFactory should attempt to assign the " +
             "argued location and all neighboring tiles to the newly created city. It should not " +
             "throw an exception if any of the neighbors cannot be assigned")]
         public void CityCreated_LocationAndNeighborsAssignedIfPossible() { 
-            var location = BuildTile(true);
+            var location = BuildCell(true);
             var civilization = BuildCivilization();
 
             var validNeighbors = BuildNeighborsFor(location, 3, true);
@@ -195,7 +201,7 @@ namespace Assets.Tests.Simulation.Cities {
             "newly created city to the argued civilization. It should throw an exception if " + 
             "this is not possible")]
         public void CityCreated_AssignedToCivilization_AndThrowsIfImpossible() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -226,7 +232,7 @@ namespace Assets.Tests.Simulation.Cities {
             "ResourceFocus initialized to ResourceFocusType.TotalYield, and should then have " +
             "its distribution performed")]
         public void CityCreated_FocusInitializedAndDistributionPerformed() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -247,7 +253,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When Create is called, the newly created city should appear in " +
             "the factory's AllCities collection")]
         public void CityCreated_AddedToAllCities() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -259,30 +265,9 @@ namespace Assets.Tests.Simulation.Cities {
             CollectionAssert.Contains(factory.AllCities, newCity, "AllCities does not contain the newly created factory");
         }
 
-        [Test(Description = "")]
-        public void CityCreated_CombatFacadeAddedAndAssigned() {
-            var tile = BuildTile(true);
-            var civilization = BuildCivilization();
-
-            BuildNeighborsFor(tile, 1, true);
-
-            var factory = Container.Resolve<CityFactory>();
-
-            var newCity = factory.Create(tile, civilization);
-
-            Assert.NotNull(newCity.CombatFacade, "The new city's CombatFacade is null");
-            Assert.That(newCity.CombatFacade is CityCombatFacadeUnit, 
-                "The new city's CombatFacade has an unexpected type");
-
-            MockUnitPossessionCanon.Verify(
-                canon => canon.ChangeOwnerOfPossession(newCity.CombatFacade, civilization),
-                Times.Once, "The new city's combat facade wasn't assigned as expected"
-            );
-        }
-
         [Test(Description = "Create should throw an ArgumentNullException on any null argument")]
         public void CreateCalled_ThrowsOnNullArguments() {
-            var tile = BuildTile(true);
+            var tile = BuildCell(true);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -299,7 +284,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When Create is called and CityFactory cannot assign the argued " +
             "location to the newly created city, it should throw a CityCreationException")]
         public void CreateCalled_ThrowsWhenLocationCannotBeAssigned() {
-            var tile = BuildTile(false);
+            var tile = BuildCell(false);
             var civilization = BuildCivilization();
 
             BuildNeighborsFor(tile, 1, true);
@@ -314,7 +299,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IHexCell BuildTile(bool canBeAssigned) {
+        private IHexCell BuildCell(bool canBeAssigned) {
             var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
@@ -340,7 +325,7 @@ namespace Assets.Tests.Simulation.Cities {
             var retval = new List<IHexCell>();
 
             for(int i = 0; i < neighborCount; ++i) {
-                retval.Add(BuildTile(canBeAssigned));
+                retval.Add(BuildCell(canBeAssigned));
             }
 
             MockGrid.Setup(map => map.GetNeighbors(centeredTile)).Returns(retval);

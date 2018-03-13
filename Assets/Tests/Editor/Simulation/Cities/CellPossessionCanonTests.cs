@@ -9,18 +9,30 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.HexMap;
-
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Territory;
 
 namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
-    public class TilePossessionCanonTests : ZenjectUnitTestFixture {
+    public class CellPossessionCanonTests : ZenjectUnitTestFixture {
+
+        #region instance fields and properties
+
+        private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
+
+        #endregion
+
+        #region instance methods
+
+        #region setup
 
         [SetUp]
         public void CommonInstall() {
+            MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+
             Container.Bind<SignalManager>().AsSingle();
 
             Container.DeclareSignal<CityDistributionPerformedSignal>();
@@ -29,7 +41,13 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<CitySignals>().AsSingle();
 
             Container.Bind<CellPossessionCanon>().AsSingle();
+
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
         }
+
+        #endregion
+
+        #region tests
 
         [Test(Description = "CanChangeOwnerOfTile should return true if GetCityOfTile " +
             "returns a different city than the argued city")]
@@ -77,16 +95,17 @@ namespace Assets.Tests.Simulation.Cities {
         public void CanChangeOwnerOfTile_FalseIfLocationOfDifferentCity() {
             var possessionCanon = Container.Resolve<CellPossessionCanon>();
 
-            var tile = new Mock<IHexCell>().Object;
+            var cell = new Mock<IHexCell>().Object;
 
             var firstCityMock = new Mock<ICity>();
-            firstCityMock.SetupGet(city => city.Location).Returns(tile);
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(firstCityMock.Object)).Returns(cell);
 
             var secondCity = new Mock<ICity>().Object;
 
-            possessionCanon.ChangeOwnerOfPossession(tile, firstCityMock.Object);
+            possessionCanon.ChangeOwnerOfPossession(cell, firstCityMock.Object);
             
-            Assert.IsFalse(possessionCanon.CanChangeOwnerOfPossession(tile, secondCity),
+            Assert.IsFalse(possessionCanon.CanChangeOwnerOfPossession(cell, secondCity),
                 "CanChangeOwnerOfTile falsely permitted the assignment of a city's location to a different city");
         }
 
@@ -180,6 +199,10 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Throws<ArgumentNullException>(() => possessionCanon.GetPossessionsOfOwner(null),
                 "GetTilesOfCity failed to throw an ArgumentNullException on a null city argument");
         }
+
+        #endregion
+
+        #endregion
 
     }
 

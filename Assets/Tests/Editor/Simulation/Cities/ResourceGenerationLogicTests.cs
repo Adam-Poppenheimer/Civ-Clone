@@ -30,6 +30,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingCanon       = new Mock<IPossessionRelationship<ICity, IBuilding>>();     
             MockIncomeLogic         = new Mock<IIncomeModifierLogic>();   
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
             MockIncomeLogic
                 .Setup(logic => logic.GetYieldMultipliersForCity(It.IsAny<ICity>()))
@@ -62,6 +64,7 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingCanon      .Object);
             Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeLogic        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
 
             Container.Bind<ResourceGenerationLogic>().AsSingle();
         }
@@ -384,13 +387,14 @@ namespace Assets.Tests.Simulation.Cities {
             var cityMock = new Mock<ICity>();
 
             cityMock.SetupAllProperties();
-            cityMock.Setup(city => city.Location).Returns(location);
             MockTileCanon.Setup(canon => canon.GetPossessionsOfOwner(cityMock.Object)).Returns(tiles);
 
             MockBuildingCanon.Setup(canon => canon.GetPossessionsOfOwner(cityMock.Object)).Returns(buildings.ToList().AsReadOnly());
 
             var newCity = cityMock.Object;
             newCity.Population = population;
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
 
             return newCity;
         }

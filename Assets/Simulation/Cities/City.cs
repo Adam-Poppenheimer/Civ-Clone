@@ -36,9 +36,6 @@ namespace Assets.Simulation.Cities {
         #region from ICity
 
         /// <inheritdoc/>
-        public IHexCell Location { get; set; }
-
-        /// <inheritdoc/>
         public int Population {
             get { return _population; }
             set { _population = value; }

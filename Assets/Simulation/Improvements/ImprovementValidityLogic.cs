@@ -15,23 +15,24 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private ICityFactory CityFactory;
-
         private IHexGrid Grid;
 
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
+
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ImprovementValidityLogic(ICityFactory cityFactory, IHexGrid grid,
-            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
+        public ImprovementValidityLogic(IHexGrid grid,
+            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            CityFactory       = cityFactory;
             Grid              = grid;
             NodePositionCanon = nodePositionCanon;
+            CityLocationCanon = cityLocationCanon;
         }
 
         #endregion
@@ -47,7 +48,7 @@ namespace Assets.Simulation.Improvements {
                 throw new ArgumentNullException("cell");
             }
 
-            if(CityFactory.AllCities.Where(city => city.Location == cell).Count() != 0) {
+            if(CityLocationCanon.GetPossessionsOfOwner(cell).Count() > 0) {
                 return false;
             }
 

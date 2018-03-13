@@ -23,25 +23,40 @@ namespace Assets.Tests.Simulation.Cities {
     [TestFixture]
     public class BorderExpansionLogicTests : ZenjectUnitTestFixture {
 
-        private Mock<IHexGrid> MockHexGrid;
-        private Mock<IPossessionRelationship<ICity, IHexCell>> MockPossessionCanon;
-        private Mock<ICityConfig> MockConfig;
-        private Mock<IResourceGenerationLogic> MockResourceGenerationLogic;
+        #region instance fields and properties
+
+        private Mock<IHexGrid>                                 MockHexGrid;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockTerritoryPossessionCanon;
+        private Mock<ICityConfig>                              MockConfig;
+        private Mock<IResourceGenerationLogic>                 MockResourceGenerationLogic;
+        private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
+
+        #endregion
+
+        #region instance methods
+
+        #region setup
 
         [SetUp]
         public void CommonInstall() {
-            MockHexGrid                 = new Mock<IHexGrid>();
-            MockPossessionCanon         = new Mock<IPossessionRelationship<ICity, IHexCell>>();
-            MockConfig                  = new Mock<ICityConfig>();
-            MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
+            MockHexGrid                  = new Mock<IHexGrid>();
+            MockTerritoryPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockConfig                   = new Mock<ICityConfig>();
+            MockResourceGenerationLogic  = new Mock<IResourceGenerationLogic>();
+            MockCityLocationCanon        = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
-            Container.Bind<IHexGrid>()                .FromInstance(MockHexGrid.Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockPossessionCanon.Object);
-            Container.Bind<ICityConfig>()             .FromInstance(MockConfig.Object);
-            Container.Bind<IResourceGenerationLogic>().FromInstance(MockResourceGenerationLogic.Object);
+            Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid                 .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockTerritoryPossessionCanon.Object);
+            Container.Bind<ICityConfig>                             ().FromInstance(MockConfig                  .Object);
+            Container.Bind<IResourceGenerationLogic>                ().FromInstance(MockResourceGenerationLogic .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon       .Object);
 
             Container.Bind<BorderExpansionLogic>().AsSingle();
         }
+
+        #endregion
+
+        #region tests
 
         [Test(Description = "When a city expresses a preference for a particular resource type, " + 
             "GetNextTileToPursue should return a tile that maximizes yield on that resource for that city")]
@@ -62,9 +77,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
-            cityMock.SetupGet(city => city.Location).Returns(homeTile);
 
             var homeCity = cityMock.Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCity)).Returns(homeTile);
 
             homeCity.ResourceFocus = ResourceFocusType.Food;
 
@@ -79,8 +95,8 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -107,9 +123,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
-            cityMock.SetupGet(city => city.Location).Returns(homeTile);
 
             var homeCity = cityMock.Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCity)).Returns(homeTile);
 
             homeCity.ResourceFocus = ResourceFocusType.TotalYield;
 
@@ -124,8 +141,8 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -152,9 +169,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var cityMock = new Mock<ICity>();
             cityMock.SetupAllProperties();
-            cityMock.SetupGet(city => city.Location).Returns(homeTile);
 
             var homeCity = cityMock.Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCity)).Returns(homeTile);
 
             homeCity.ResourceFocus = ResourceFocusType.Food;
 
@@ -173,8 +191,8 @@ namespace Assets.Tests.Simulation.Cities {
                 logic => logic.GetYieldOfSlotForCity(neutralTileTwo.WorkerSlot, homeCity)
             ).Returns(new ResourceSummary(food: 3));
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCity)).Returns(new List<IHexCell>() { homeTile });
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -190,10 +208,11 @@ namespace Assets.Tests.Simulation.Cities {
             var farTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
-            mockCity.SetupGet(city => city.Location).Returns(centerTile);
             var homeCity = mockCity.Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(centerTile)).Returns(homeCity);
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCity)).Returns(centerTile);
+
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(centerTile)).Returns(homeCity);
 
             MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
@@ -222,13 +241,14 @@ namespace Assets.Tests.Simulation.Cities {
             var foreignTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
-            mockCity.SetupGet(city => city.Location).Returns(homeTile);
 
             var homeCity = mockCity.Object;
             var foreignCity = mockCity.Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(foreignTile)).Returns(foreignCity);
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCity)).Returns(homeTile);
+
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCity);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(foreignTile)).Returns(foreignCity);
 
             MockHexGrid.Setup(grid => grid.GetNeighbors(neutralTile)).Returns(new List<IHexCell>(){ homeTile });
             MockHexGrid.Setup(grid => grid.GetNeighbors(foreignTile)).Returns(new List<IHexCell>(){ homeTile });
@@ -250,11 +270,12 @@ namespace Assets.Tests.Simulation.Cities {
             var nonNeighboringTile = new Mock<IHexCell>().Object;
 
             var mockCity = new Mock<ICity>();
-            mockCity.SetupGet(city => city.Location).Returns(ownedTile);
 
             var owningCity = mockCity.Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(ownedTile)).Returns(owningCity);
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(owningCity)).Returns(ownedTile);
+
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(ownedTile)).Returns(owningCity);
 
             MockConfig.SetupGet(config => config.MaxBorderRange).Returns(2);
 
@@ -278,7 +299,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = new Mock<ICity>().Object;
             var newTile = new Mock<IHexCell>().Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IHexCell>() {
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IHexCell>() {
                new Mock<IHexCell>().Object,
                new Mock<IHexCell>().Object,
                new Mock<IHexCell>().Object,
@@ -303,7 +324,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = new Mock<ICity>().Object;
             var newTile = new Mock<IHexCell>().Object;
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IHexCell>() {
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IHexCell>() {
                new Mock<IHexCell>().Object,
                new Mock<IHexCell>().Object,
                new Mock<IHexCell>().Object,
@@ -345,15 +366,16 @@ namespace Assets.Tests.Simulation.Cities {
 
             var homeCityMock    = new Mock<ICity>();
             homeCityMock.Name = "Home City";
-            homeCityMock.SetupGet(city => city.Location).Returns(homeTile);
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(homeCityMock.Object)).Returns(homeTile);
 
             var foreignCityMock = new Mock<ICity>();
             foreignCityMock.Name = "Foreign City";
 
-            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCityMock.Object)).Returns(new List<IHexCell>() { homeTile });
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(homeCityMock.Object)).Returns(new List<IHexCell>() { homeTile });
 
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCityMock.Object);
-            MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(nearNeighboringForeignTile)).Returns(foreignCityMock.Object);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(homeTile)).Returns(homeCityMock.Object);
+            MockTerritoryPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(nearNeighboringForeignTile)).Returns(foreignCityMock.Object);
 
             MockHexGrid.Setup(grid => grid.GetNeighbors(homeTile)).Returns(
                 new List<IHexCell>() { nearNeighboringNeutralTile, farNeighboringNeutralTile, nearNeighboringForeignTile }
@@ -416,6 +438,10 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Throws<ArgumentNullException>(() => logic.GetGoldCostOfAcquiringCell(testCity, null),
                 "GetGoldCostOfAcquiringTile failed to throw on a null tile argument");
         }
+
+        #endregion
+
+        #endregion
 
     }
 

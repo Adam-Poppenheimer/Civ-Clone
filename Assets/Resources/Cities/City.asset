@@ -36,5 +36,9 @@ MonoBehaviour:
   _rangedAttackStrengthPerPopulation: 3
   _hitPointRegenPerRound: 20
   _visionRange: 2
-  _baseHealth: 4
-  _baseHappiness: 4
+  _unhappinessPerCity: 3
+  _unhappinessPerPopulation: 1
+  _combatantImage: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _combatantIcon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _combatantPrefab: {fileID: 1032685054468800, guid: 25f9e701644509e4881d1b87e8c8b683,
+    type: 2}

@@ -10,6 +10,7 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
@@ -309,13 +310,9 @@ namespace Assets.Tests.Simulation.Units {
 
         #region instance fields and properties
 
-        private Mock<IHexGridConfig> MockConfig;
-
-        private Mock<ICityFactory> MockCityFactory;
-
-        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
-
-        private List<ICity> AllCities = new List<ICity>();
+        private Mock<IHexGridConfig>                           MockConfig;
+        private Mock<IUnitPositionCanon>                       MockUnitPositionCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
 
         #endregion
 
@@ -325,11 +322,9 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            AllCities.Clear();
-
             MockConfig            = new Mock<IHexGridConfig>();
-            MockCityFactory       = new Mock<ICityFactory>();
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
+            MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
             MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
             MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
@@ -346,11 +341,9 @@ namespace Assets.Tests.Simulation.Units {
                 -1 // Mountains cost
             }.AsReadOnly());
 
-            MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
-
-            Container.Bind<IHexGridConfig>    ().FromInstance(MockConfig           .Object);
-            Container.Bind<ICityFactory>      ().FromInstance(MockCityFactory      .Object);
-            Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
+            Container.Bind<IHexGridConfig>                          ().FromInstance(MockConfig           .Object);
+            Container.Bind<IUnitPositionCanon>                      ().FromInstance(MockUnitPositionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -431,13 +424,11 @@ namespace Assets.Tests.Simulation.Units {
         }
 
         private ICity BuildCity(IHexCell location) {
-            var mockCity = new Mock<ICity>();
+            var newCity = new Mock<ICity>().Object;
 
-            mockCity.Setup(city => city.Location).Returns(location);
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
 
-            AllCities.Add(mockCity.Object);
-
-            return mockCity.Object;
+            return newCity;
         }
 
         #endregion

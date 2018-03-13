@@ -41,8 +41,6 @@ namespace Assets.Tests.Simulation.Units {
             UnitPrefab = new GameObject();
             UnitPrefab.AddComponent<GameUnit>();
 
-            Container.Bind<GameObject>().WithId("Unit Prefab").FromInstance(UnitPrefab);
-
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockPositionCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockPossessionCanon.Object);
 
@@ -217,6 +215,7 @@ namespace Assets.Tests.Simulation.Units {
             var mockTemplate = new Mock<IUnitTemplate>();
 
             mockTemplate.Setup(template => template.MaxMovement).Returns(maxMovement);
+            mockTemplate.Setup(template => template.Prefab     ).Returns(UnitPrefab);
 
             return mockTemplate.Object;
         }

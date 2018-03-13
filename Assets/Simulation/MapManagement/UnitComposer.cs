@@ -57,7 +57,7 @@ namespace Assets.Simulation.MapManagement {
             mapData.Units = new List<SerializableUnitData>();
 
             foreach(var unit in UnitFactory.AllUnits) {
-                if(unit is CityCombatFacadeUnit) {
+                if(unit.Type == UnitType.City) {
                     continue;
                 }
 
@@ -66,7 +66,7 @@ namespace Assets.Simulation.MapManagement {
 
                 var unitData = new SerializableUnitData() {
                     Location        = unitLocation.Coordinates,
-                    Template        = unit.Template.Name,
+                    Template        = unit.Template.name,
                     Owner           = unitOwner.Name,
                     CurrentMovement = unit.CurrentMovement,
                     Health          = unit.Health,
@@ -80,7 +80,7 @@ namespace Assets.Simulation.MapManagement {
         public void DecomposeUnits(SerializableMapData mapData) {
             foreach(var unitData in mapData.Units) {
                 var unitLocation    = Grid.GetCellAtCoordinates(unitData.Location);
-                var templateToBuild = AvailableUnitTemplates.Where(template => template.Name.Equals(unitData.Template)).First();
+                var templateToBuild = AvailableUnitTemplates.Where(template => template.name.Equals(unitData.Template)).First();
                 var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(unitData.Owner)).First();                
 
                 var newUnit = UnitFactory.Create(unitLocation, templateToBuild, unitOwner);

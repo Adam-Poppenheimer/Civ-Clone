@@ -228,11 +228,10 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private Mock<ICityFactory> MockCityFactory;
-
-        private Mock<IHexGrid> MockGrid;
-
+        private Mock<ICityFactory>                                     MockCityFactory;
+        private Mock<IHexGrid>                                         MockGrid;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>         MockCityLocationCanon;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -249,12 +248,14 @@ namespace Assets.Tests.Simulation.Improvements {
             MockCityFactory       = new Mock<ICityFactory>();
             MockGrid              = new Mock<IHexGrid>();
             MockNodePositionCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
+            MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
             Container.Bind<ICityFactory>                                    ().FromInstance(MockCityFactory      .Object);
             Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>        ().FromInstance(MockCityLocationCanon.Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }
@@ -300,9 +301,9 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain   = data.Terrain;
-            newCell.Feature   = data.Feature;
-            newCell.Shape     = data.Shape;
+            newCell.Terrain             = data.Terrain;
+            newCell.Feature             = data.Feature;
+            newCell.Shape               = data.Shape;
             newCell.FoundationElevation = data.Elevation;
 
             return newCell;
@@ -310,9 +311,11 @@ namespace Assets.Tests.Simulation.Improvements {
 
         private ICity BuildCity(IHexCell location) {
             var cityMock = new Mock<ICity>();
-            cityMock.Setup(city => city.Location).Returns(location);
 
             var newCity = cityMock.Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location)).Returns(new List<ICity>() { newCity });
 
             AllCities.Add(newCity);
 

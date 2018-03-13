@@ -10,6 +10,7 @@ using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 
@@ -25,6 +26,8 @@ namespace Assets.Simulation.Units.Combat {
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region constructors
@@ -32,7 +35,8 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public CombatResponder(UnitSignals signals, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon 
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             signals.MeleeCombatWithUnitSignal.Subscribe(OnMeleeCombatWithUnit);
             signals.MeleeCombatWithCitySignal.Subscribe(OnMeleeCombatWithCity);
@@ -43,6 +47,7 @@ namespace Assets.Simulation.Units.Combat {
             UnitPositionCanon   = unitPositionCanon;
             CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
+            CityLocationCanon   = cityLocationCanon;
         }
 
         #endregion
@@ -79,8 +84,10 @@ namespace Assets.Simulation.Units.Combat {
             if(city.CombatFacade.Health <= 0) {
                 var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
 
-                foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(city.Location)) {
-                    if(unit != city.CombatFacade) {
+                var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+                foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(cityLocation)) {
+                    if(unit.Type != UnitType.City) {
                         GameObject.DestroyImmediate(unit.gameObject);
                     }
                 }

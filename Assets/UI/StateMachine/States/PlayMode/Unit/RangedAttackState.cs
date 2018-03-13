@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.HexMap;
@@ -54,9 +55,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private CombatSummaryDisplay CombatSummaryDisplay;
 
-        private ICityFactory CityFactory;
-
         private HexCellOverlayManager OverlayManager;
+
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
@@ -66,10 +67,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         public void InjectDependencies(
             UnitSignals unitSignals, HexCellSignals cellSignals, CitySignals citySignals,
             IUnitPositionCanon unitPositionCanon, ICombatExecuter combatExecuter,
-            UIStateMachineBrain brain,
+            UIStateMachineBrain brain, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "Ranged Attack State Displays")] List<UnitDisplayBase> displaysToManage,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
-            ICityFactory cityFactory, HexCellOverlayManager overlayManager
+            HexCellOverlayManager overlayManager
         ){
             UnitSignals          = unitSignals;
             CellSignals          = cellSignals;
@@ -77,9 +78,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             UnitPositionCanon    = unitPositionCanon;
             CombatExecuter       = combatExecuter;
             Brain                = brain;
+            CityLocationCanon    = cityLocationCanon;
             DisplaysToManage     = displaysToManage;
             CombatSummaryDisplay = combatSummaryDisplay;
-            CityFactory          = cityFactory;
             OverlayManager       = overlayManager;
         }
 
@@ -130,10 +131,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         #region Event responses
 
         private void OnCellPointerEnter(IHexCell cell) {
-            var cityOnTile = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+            var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(cityOnTile != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, cityOnTile)) {
-                SetCityToAttack(cityOnTile);
+            if(cityOnCell != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, cityOnCell)) {
+                SetCityToAttack(cityOnCell);
                 return;
             }
 
@@ -241,8 +242,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Clear();
 
             CityToAttack = city;
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
 
-            OverlayManager.ShowOverlayOfCell(city.Location, CellOverlayType.AttackIndicator);
+            OverlayManager.ShowOverlayOfCell(cityLocation, CellOverlayType.AttackIndicator);
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
@@ -267,8 +269,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private IUnit GetUnitToAttackFromStack(IEnumerable<IUnit> stack) {
-            var landMilitary  = stack.Where(unit => unit.Type == UnitType.LandMilitary) .FirstOrDefault();
-            var waterMilitary = stack.Where(unit => unit.Type == UnitType.WaterMilitary).FirstOrDefault();
+            var landMilitary  = stack.Where(unit => unit.Type.IsLandMilitary()) .FirstOrDefault();
+            var waterMilitary = stack.Where(unit => unit.Type.IsWaterMilitary()).FirstOrDefault();
 
             if(landMilitary != null) {
                 return landMilitary;

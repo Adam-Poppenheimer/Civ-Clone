@@ -138,6 +138,21 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _unhappinessPerPopulation;
 
+        public Sprite CombatantImage {
+            get { return _combatantImage; }
+        }
+        [SerializeField] private Sprite _combatantImage;
+
+        public Sprite CombatantIcon {
+            get { return _combatantIcon; }
+        }
+        [SerializeField] private Sprite _combatantIcon;
+
+        public GameObject CombatantPrefab {
+            get { return _combatantPrefab; }
+        }
+        [SerializeField] private GameObject _combatantPrefab;
+
         #endregion
 
         #endregion

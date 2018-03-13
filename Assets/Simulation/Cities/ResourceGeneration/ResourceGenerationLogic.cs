@@ -26,6 +26,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         private IIncomeModifierLogic IncomeModifierLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
 
         #endregion
 
@@ -43,13 +44,15 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public ResourceGenerationLogic(
             ICityConfig config, IPossessionRelationship<ICity, IHexCell> tileCanon,
             IPossessionRelationship<ICity, IBuilding> buildingCanon, IIncomeModifierLogic incomeModifierLogic,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             Config              = config;
             CellCanon           = tileCanon;
             BuildingCanon       = buildingCanon;
             IncomeModifierLogic = incomeModifierLogic;
             CityPossessionCanon = cityPossessionCanon;
+            CityLocationCanon   = cityLocationCanon;
         }
 
         #endregion
@@ -64,7 +67,9 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            var retval = city.Location.WorkerSlot.BaseYield;
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            var retval = cityLocation.WorkerSlot.BaseYield;
 
             int employedPops = 0;
 

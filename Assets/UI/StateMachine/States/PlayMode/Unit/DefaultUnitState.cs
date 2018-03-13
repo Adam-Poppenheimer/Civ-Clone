@@ -9,6 +9,7 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Cities;
@@ -52,8 +53,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private IUnitPositionCanon UnitPositionCanon;
 
-        private ICityFactory CityFactory;
-
         private IHexGrid Grid;
 
         private IUnitTerrainCostLogic TerrainCostLogic;
@@ -70,6 +69,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private CombatSummaryDisplay CombatSummaryDisplay;
 
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+
         #endregion
 
         #region instance methods
@@ -78,16 +79,16 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         public void InjectDependencies(
             List<UnitDisplayBase> displaysToManage, UIStateMachineBrain brain,
             ICombatExecuter combatExecuter, IUnitPositionCanon unitPositionCanon,
-            ICityFactory cityFactory, IHexGrid grid, IUnitTerrainCostLogic terrainCostLogic,
+            IHexGrid grid, IUnitTerrainCostLogic terrainCostLogic,
             ICellPathDrawer pathDrawer, CitySignals citySignals, UnitSignals unitSignals,
             HexCellSignals cellSignals, HexCellOverlayManager overlayManager,
-            [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay
+            [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             DisplaysToManage     = displaysToManage;
             Brain                = brain;
             CombatExecuter       = combatExecuter;
             UnitPositionCanon    = unitPositionCanon;
-            CityFactory          = cityFactory;
             Grid                 = grid;
             TerrainCostLogic     = terrainCostLogic;
             PathDrawer           = pathDrawer;
@@ -96,6 +97,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CellSignals          = cellSignals;
             OverlayManager       = overlayManager;
             CombatSummaryDisplay = combatSummaryDisplay;
+            CityLocationCanon    = cityLocationCanon;
         }
 
         #region from UnitUIState
@@ -168,7 +170,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 return;
             }
 
-            var cityOnCell = CityFactory.AllCities.Where(city => city.Location == cell).FirstOrDefault();
+            var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
             if(cityOnCell != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, cityOnCell)) {
                 SetCityToAttack(cityOnCell);
@@ -244,8 +246,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private void SetCityToAttack(ICity city) {
             Clear();
             CityToAttack = city;
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
 
-            OverlayManager.ShowOverlayOfCell(CityToAttack.Location, CellOverlayType.AttackIndicator);
+            OverlayManager.ShowOverlayOfCell(cityLocation, CellOverlayType.AttackIndicator);
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = city.CombatFacade;

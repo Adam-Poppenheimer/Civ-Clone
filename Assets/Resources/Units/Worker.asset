@@ -11,11 +11,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Worker
   m_EditorClassIdentifier: 
-  _name: Worker
   _description: Builds improvements on the map
+  _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
   _maxMovement: 2
   _productionCost: 10
   _type: 1
+  _isAquatic: 0
   _abilities:
   - {fileID: 11400000, guid: 0bab56c15298f034abb6814d92ef5589, type: 2}
   - {fileID: 11400000, guid: 55849e5c6d2df0d41ad9f3cfff6ced97, type: 2}
@@ -34,5 +37,7 @@ MonoBehaviour:
   _combatStrength: 0
   _rangedAttackStrength: 0
   _requiredResources: []
-  _image: {fileID: 0}
-  _icon: {fileID: 0}
+  _benefitsFromDefensiveTerrain: 0
+  _ignoresTerrainCosts: 0
+  _hasRoughTerrainPenalty: 0
+  _isImmobile: 0

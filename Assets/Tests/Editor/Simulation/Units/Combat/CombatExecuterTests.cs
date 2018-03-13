@@ -756,7 +756,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>()))
                 .Returns(distanceBetween);
 
-            MockUnitPositionCanon.Setup(canon => canon.CanPlaceUnitOfTypeAtLocation(It.IsAny<UnitType>(), It.IsAny<IHexCell>(), true))
+            MockUnitPositionCanon.Setup(canon => canon.CanPlaceUnitAtLocation(It.IsAny<IUnit>(), It.IsAny<IHexCell>(), true))
                 .Returns(attackerCanMoveTo);
 
             MockLineOfSightLogic.Setup(logic => logic.CanUnitSeeCell(It.IsAny<IUnit>(), It.IsAny<IHexCell>()))
