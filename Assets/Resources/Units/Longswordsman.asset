@@ -9,26 +9,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
-  m_Name: Spearman
+  m_Name: Longswordsman
   m_EditorClassIdentifier: 
-  _description: Spearman description
+  _description: Longswordsman description
   _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
   _maxMovement: 2
-  _productionCost: 56
+  _productionCost: 120
   _type: 2
   _isAquatic: 0
   _abilities: []
   _attackRange: 0
-  _combatStrength: 11
+  _combatStrength: 21
   _rangedAttackStrength: 0
-  _requiredResources: []
+  _requiredResources:
+  - {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
   _benefitsFromDefensiveTerrain: 1
   _ignoresTerrainCosts: 0
   _hasRoughTerrainPenalty: 0
   _isImmobile: 0
   _canMoveAfterAttacking: 0
-  _combatBonusesByType:
-  - _type: 7
-    _bonus: 0.5
+  _combatBonusesByType: []

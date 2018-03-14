@@ -9,22 +9,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
-  m_Name: Galley
+  m_Name: Trebuchet
   m_EditorClassIdentifier: 
-  _description: 
+  _description: Trebuchet
   _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
-  _maxMovement: 3
-  _productionCost: 0
-  _type: 4
-  _isAquatic: 1
-  _abilities: []
-  _attackRange: 0
-  _combatStrength: 0
-  _rangedAttackStrength: 0
+  _maxMovement: 2
+  _productionCost: 120
+  _type: 6
+  _isAquatic: 0
+  _abilities:
+  - {fileID: 11400000, guid: 788ba96daf0d6c741825eb0395d363e9, type: 2}
+  _attackRange: 2
+  _combatStrength: 12
+  _rangedAttackStrength: 14
   _requiredResources: []
   _benefitsFromDefensiveTerrain: 0
   _ignoresTerrainCosts: 0
   _hasRoughTerrainPenalty: 0
   _isImmobile: 0
+  _canMoveAfterAttacking: 0
+  _combatBonusesByType:
+  - _type: 8
+    _bonus: 2
+  _mustSetUpToBombard: 1

@@ -63,11 +63,14 @@ namespace Assets.Simulation.Units {
                 throw new ArgumentNullException("owner");
             }
 
-            var newUnitObject = Container.InstantiatePrefab(template.Prefab);
+            var newUnitObject = GameObject.Instantiate(template.Prefab);
 
-            newUnitObject.transform.SetParent(location.transform, false);
+            Container.InjectGameObject(newUnitObject);
 
             var newUnit = newUnitObject.GetComponent<GameUnit>();
+
+            newUnit.transform.SetParent(location.transform, false);
+
             newUnit.Template = template;
 
             newUnit.CurrentMovement = template.MaxMovement;

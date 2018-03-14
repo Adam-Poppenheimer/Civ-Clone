@@ -48,6 +48,10 @@ namespace Assets.Simulation.Units {
         IUnitTemplate Template { get; }
 
         GameObject gameObject { get; }
+
+        Animator Animator { get; }
+
+        bool PermittedToBombard { get; }
         
         #endregion
 

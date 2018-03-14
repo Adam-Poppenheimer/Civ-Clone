@@ -112,6 +112,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<UnitTypeCombatBonusData> _combatBonusesByType;
 
+        public bool MustSetUpToBombard {
+            get { return _mustSetUpToBombard; }
+        }
+        [SerializeField] private bool _mustSetUpToBombard;
+
         #endregion
 
         #endregion

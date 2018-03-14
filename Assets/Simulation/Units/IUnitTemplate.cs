@@ -54,6 +54,8 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType { get; }
 
+        bool MustSetUpToBombard { get; }
+
         #endregion
 
     }

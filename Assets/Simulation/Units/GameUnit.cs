@@ -84,6 +84,28 @@ namespace Assets.Simulation.Units {
 
         public IUnitTemplate Template { get; set; }
 
+        public Animator Animator {
+            get {
+                if(_stateMachine == null) {
+                    _stateMachine = GetComponent<Animator>();
+                }
+                return _stateMachine;
+            }
+        }
+        private Animator _stateMachine;
+
+        public bool PermittedToBombard {
+            get {
+                if(Template.MustSetUpToBombard) {
+                    var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                    return currentStateInfo.IsName("Set Up To Bombard");
+                }else {
+                    var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                    return currentStateInfo.IsName("Idling");
+                }
+            }
+        }
+
         #endregion
 
         private IUnitConfig Config;
@@ -149,6 +171,8 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
+            Animator.SetTrigger("Moving Requested");
+
             IHexCell currentTile = PositionCanon.GetOwnerOfPossession(this);
             IHexCell tileToTravelTo = null;
 
@@ -171,6 +195,8 @@ namespace Assets.Simulation.Units {
             if(tileToTravelTo != null) {
                 PositionCanon.ChangeOwnerOfPossession(this, tileToTravelTo);
             }
+
+            Animator.SetTrigger("Idling Requested");
         }
 
         #endregion

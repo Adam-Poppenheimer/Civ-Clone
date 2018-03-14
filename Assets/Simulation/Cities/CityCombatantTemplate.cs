@@ -103,6 +103,10 @@ namespace Assets.Simulation.Cities {
         }
         private static List<UnitTypeCombatBonusData> _emptyBonuses = new List<UnitTypeCombatBonusData>();
 
+        public bool MustSetUpToBombard {
+            get { return false; }
+        }
+
         #endregion
 
 

@@ -75,7 +75,6 @@ namespace Assets.UI.Units {
             }
 
             RangedAttackButton.gameObject.SetActive(ObjectToDisplay.RangedAttackStrength > 0);
-            RangedAttackButton.interactable = ObjectToDisplay.CurrentMovement > 0;
         }
 
         #endregion

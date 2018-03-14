@@ -11,20 +11,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
   m_Name: Horseman
   m_EditorClassIdentifier: 
-  _description: 
+  _description: Horseman description
   _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
   _maxMovement: 4
-  _productionCost: 0
+  _productionCost: 75
   _type: 7
   _isAquatic: 0
   _abilities: []
   _attackRange: 0
-  _combatStrength: 0
+  _combatStrength: 12
   _rangedAttackStrength: 0
-  _requiredResources: []
+  _requiredResources:
+  - {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
   _benefitsFromDefensiveTerrain: 0
   _ignoresTerrainCosts: 0
   _hasRoughTerrainPenalty: 0
   _isImmobile: 0
+  _canMoveAfterAttacking: 1
+  _combatBonusesByType:
+  - _type: 8
+    _bonus: -0.33
