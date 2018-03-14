@@ -107,6 +107,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private bool _canMoveAfterAttacking;
 
+        public IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType {
+            get { return _combatBonusesByType; }
+        }
+        [SerializeField] private List<UnitTypeCombatBonusData> _combatBonusesByType;
+
         #endregion
 
         #endregion

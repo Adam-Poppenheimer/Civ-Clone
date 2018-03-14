@@ -63,7 +63,7 @@ namespace Assets.Simulation.Units.Combat {
                 }
             }
             
-            return baseModifier - GetUnhappinessPenalty(defender);
+            return baseModifier + GetTypeSpecificBonuses(defender, attacker.Type) - GetUnhappinessPenalty(defender);
         }
 
         public float GetMeleeOffensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
@@ -73,7 +73,7 @@ namespace Assets.Simulation.Units.Combat {
                 retval += Config.RiverCrossingAttackModifier;
             }
 
-            return retval - GetUnhappinessPenalty(attacker);
+            return retval + GetTypeSpecificBonuses(attacker, defender.Type) - GetUnhappinessPenalty(attacker);
         }
 
         public float GetRangedDefensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
@@ -89,11 +89,11 @@ namespace Assets.Simulation.Units.Combat {
                 }
             }
             
-            return baseModifier - GetUnhappinessPenalty(defender);
+            return baseModifier + GetTypeSpecificBonuses(defender, attacker.Type) - GetUnhappinessPenalty(defender);
         }
 
         public float GetRangedOffensiveModifierAtLocation(IUnit attacker, IUnit defender, IHexCell location) {
-            return -GetUnhappinessPenalty(attacker);
+            return GetTypeSpecificBonuses(attacker, defender.Type) - GetUnhappinessPenalty(attacker);
         }
 
         #endregion
@@ -108,6 +108,18 @@ namespace Assets.Simulation.Units.Combat {
             }else {
                 return 0f;
             }
+        }
+
+        private float GetTypeSpecificBonuses(IUnit attacker, UnitType defenderType) {
+            float retval = 0f;
+
+            foreach(var bonusData in attacker.Template.CombatBonusesByType) {
+                if(bonusData.Type == defenderType) {
+                    retval += bonusData.Bonus;
+                }
+            }
+
+            return retval;
         }
 
         #endregion

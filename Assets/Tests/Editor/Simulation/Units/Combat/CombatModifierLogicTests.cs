@@ -29,12 +29,20 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool HasRiver;
 
-            public int AttackerOwnerNetHappiness;
-            public int DefenderOwnerNetHappiness;
-
-            public bool DefenderBenefitsFromDefensiveTerrain;
+            public UnitTestData Attacker;
+            public UnitTestData Defender;
 
             public float ModifierLossPerUnhappiness;
+        }
+
+        public class UnitTestData {
+
+            public UnitType Type;
+
+            public int  OwnerNetHappiness;
+            public bool BenefitsFromDefensiveTerrain;
+
+            public List<UnitTypeCombatBonusData> BonusesByType = new List<UnitTypeCombatBonusData>();
 
         }
 
@@ -64,7 +72,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.None,
                         HasRiver = false,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Grassland/None/No River")
@@ -82,7 +91,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.None,
                         HasRiver = true,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Grassland/None/River")
@@ -100,7 +110,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.Forest,
                         HasRiver = false,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Grassland/Forest/No River")
@@ -118,7 +129,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.Forest,
                         HasRiver = true,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Grassland/Forest/River")
@@ -136,7 +148,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Plains,
                         Feature = TerrainFeature.None,
                         HasRiver = false,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Plains/None/No River")
@@ -154,7 +167,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Plains,
                         Feature = TerrainFeature.Forest,
                         HasRiver = true,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Plains/Forest/River")
@@ -172,7 +186,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Plains,
                         Feature = TerrainFeature.Forest,
                         HasRiver = false,
-                        DefenderBenefitsFromDefensiveTerrain = true
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = true }
                     }
                 )
                 .SetName("Plains/Forest/No River")
@@ -190,10 +205,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.None,
                         HasRiver = false,
-                        AttackerOwnerNetHappiness = -10,
-                        DefenderOwnerNetHappiness = -8,
+                        Attacker = new UnitTestData() {
+                            OwnerNetHappiness = -10
+                        },
+                        Defender = new UnitTestData() {
+                            OwnerNetHappiness = -8,
+                            BenefitsFromDefensiveTerrain = true
+                        },
                         ModifierLossPerUnhappiness = -0.02f,
-                        DefenderBenefitsFromDefensiveTerrain = true
                     }
 
                 )
@@ -212,7 +231,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Terrain = TerrainType.Grassland,
                         Feature = TerrainFeature.Forest,
                         HasRiver = false,
-                        DefenderBenefitsFromDefensiveTerrain = false
+                        Attacker = new UnitTestData() { },
+                        Defender = new UnitTestData() { BenefitsFromDefensiveTerrain = false }
                     }
                 )
                 .SetName("Template can cause defensive terrain to be ignored")
@@ -220,7 +240,38 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     AttackerMelee = 0f,
                     AttackerRanged = 0f,
                     DefenderMelee = 0f,
-                    DefenderRanged =0f,
+                    DefenderRanged = 0f,
+                });
+
+
+                yield return new TestCaseData(
+                    new ModifierTestArgs() {
+                        Terrain = TerrainType.Grassland,
+                        Feature = TerrainFeature.None,
+                        HasRiver = false,
+                        Attacker = new UnitTestData() {
+                            Type = UnitType.Melee,
+                            BonusesByType = new List<UnitTypeCombatBonusData>() {
+                                new UnitTypeCombatBonusData(UnitType.Archery, 0.4f),
+                                new UnitTypeCombatBonusData(UnitType.Mounted, 0.5f)
+                            }
+                        },
+                        Defender = new UnitTestData() {
+                            Type = UnitType.Archery,
+                            BonusesByType = new List<UnitTypeCombatBonusData>() {
+                                new UnitTypeCombatBonusData(UnitType.Melee, -0.25f),
+                                new UnitTypeCombatBonusData(UnitType.Mounted, -1.25f)
+                            },
+                            BenefitsFromDefensiveTerrain = true
+                        }
+                    }
+                )
+                .SetName("Defenders and attackers can have type-specific bonuses")
+                .Returns(new ModifierTestResults() {
+                    AttackerMelee = 0.4f,
+                    AttackerRanged = 0.4f,
+                    DefenderMelee = 2.25f,
+                    DefenderRanged = 20.25f,
                 });
             }
         }
@@ -272,11 +323,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public ModifierTestResults CombatModifierTests(ModifierTestArgs testData) {
             var location = BuildCell(testData.Terrain, testData.Feature, testData.HasRiver);
 
-            var attacker = BuildUnit(BuildCivilization(testData.AttackerOwnerNetHappiness), true);
-            var defender = BuildUnit(
-                BuildCivilization(testData.DefenderOwnerNetHappiness),
-                testData.DefenderBenefitsFromDefensiveTerrain
-            );
+            var attacker = BuildUnit(BuildCivilization(testData.Attacker.OwnerNetHappiness), testData.Attacker);
+            var defender = BuildUnit(BuildCivilization(testData.Defender.OwnerNetHappiness), testData.Defender);
 
             MockCivConfig.Setup(config => config.ModifierLossPerUnhappiness).Returns(testData.ModifierLossPerUnhappiness);
 
@@ -296,8 +344,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public void DefensiveCombatModifiers_ModifiedByImprovements() {
             var location = BuildCell(TerrainType.Grassland, TerrainFeature.None, false);
 
-            var attacker = BuildUnit(BuildCivilization(0), true);
-            var defender = BuildUnit(BuildCivilization(0), true);
+            var attacker = BuildUnit(
+                BuildCivilization(0),
+                new UnitTestData() { BenefitsFromDefensiveTerrain = true }
+            );
+            var defender = BuildUnit(
+                BuildCivilization(0),
+                new UnitTestData() { BenefitsFromDefensiveTerrain = true }
+            );
 
             BuildImprovement(location, 0.5f);
 
@@ -315,8 +369,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public void DefensiveCombatModifiers_TemplateCanCauseImprovementsToBeIgnored() {
             var location = BuildCell(TerrainType.Grassland, TerrainFeature.None, false);
 
-            var attacker = BuildUnit(BuildCivilization(0), true);
-            var defender = BuildUnit(BuildCivilization(0), false);
+            var attacker = BuildUnit(
+                BuildCivilization(0),
+                new UnitTestData() { BenefitsFromDefensiveTerrain = true }
+            );
+            var defender = BuildUnit(
+                BuildCivilization(0),
+                new UnitTestData() { BenefitsFromDefensiveTerrain = false }
+            );
 
             BuildImprovement(location, 0.5f);
 
@@ -348,14 +408,17 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return newCell;
         }
 
-        private IUnit BuildUnit(ICivilization owner, bool noDefensiveBonusFromTerrain) {
+        private IUnit BuildUnit(ICivilization owner, UnitTestData data) {
             var mockUnit = new Mock<IUnit>();
 
             var mockTemplate = new Mock<IUnitTemplate>();
 
-            mockTemplate.Setup(template => template.BenefitsFromDefensiveTerrain).Returns(noDefensiveBonusFromTerrain);
+            mockTemplate.Setup(template => template.BenefitsFromDefensiveTerrain).Returns(data.BenefitsFromDefensiveTerrain);
+            mockTemplate.Setup(template => template.CombatBonusesByType).Returns(data.BonusesByType);
 
             mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.Type).Returns(data.Type);
+
 
             var newUnit = mockUnit.Object;
 

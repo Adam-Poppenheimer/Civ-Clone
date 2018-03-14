@@ -28,3 +28,5 @@ MonoBehaviour:
   _ignoresTerrainCosts: 0
   _hasRoughTerrainPenalty: 0
   _isImmobile: 0
+  _canMoveAfterAttacking: 0
+  _combatBonusesByType: []

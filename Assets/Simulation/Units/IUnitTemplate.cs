@@ -52,6 +52,8 @@ namespace Assets.Simulation.Units {
 
         bool CanMoveAfterAttacking { get; }
 
+        IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType { get; }
+
         #endregion
 
     }

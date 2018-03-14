@@ -98,6 +98,11 @@ namespace Assets.Simulation.Cities {
             get { return true; }
         }
 
+        public IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType {
+            get { return _emptyBonuses; }
+        }
+        private static List<UnitTypeCombatBonusData> _emptyBonuses = new List<UnitTypeCombatBonusData>();
+
         #endregion
 
 
