@@ -43,6 +43,8 @@ namespace Assets.Simulation.Units {
 
         int VisionRange { get; }
 
+        bool HasAttacked { get; set; }
+
         IUnitTemplate Template { get; }
 
         GameObject gameObject { get; }

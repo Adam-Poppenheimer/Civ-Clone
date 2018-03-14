@@ -51,6 +51,7 @@ namespace Assets.Simulation.Core {
         /// <inheritdoc/>
         public void EndRoundOnUnit(IUnit unit) {
             unit.PerformMovement();
+            unit.HasAttacked = false;
         }
 
         #endregion

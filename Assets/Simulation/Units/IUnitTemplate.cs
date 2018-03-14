@@ -50,6 +50,8 @@ namespace Assets.Simulation.Units {
 
         bool IsImmobile { get; }
 
+        bool CanMoveAfterAttacking { get; }
+
         #endregion
 
     }

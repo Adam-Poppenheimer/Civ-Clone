@@ -103,6 +103,8 @@ namespace Assets.Tests.Simulation.Core {
 
             mockUnit.Verify(unit => unit.PerformMovement(), Times.Once,
                 "unit.PerformMovement was not called as expected");
+            mockUnit.VerifySet(unit => unit.HasAttacked = false, Times.Once,
+                "unit.HasAttacked was not set to false");
         }
 
         #endregion

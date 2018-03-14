@@ -56,6 +56,10 @@ namespace Assets.Simulation.Cities {
             get { return false; }
         }
 
+        public bool CanMoveAfterAttacking {
+            get { return false; }
+        }
+
         public IEnumerable<IAbilityDefinition> Abilities {
             get { return _emptyAbilities; }
         }

@@ -102,6 +102,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private bool _isImmobile;
 
+        public bool CanMoveAfterAttacking {
+            get { return _canMoveAfterAttacking; }
+        }
+        [SerializeField] private bool _canMoveAfterAttacking;
+
         #endregion
 
         #endregion

@@ -88,7 +88,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.CurrentMovement <= 0) {
+            if(attacker.CurrentMovement <= 0 || attacker.HasAttacked) {
                 return false;
             }
 
@@ -130,7 +130,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.CurrentMovement <= 0) {
+            if(attacker.CurrentMovement <= 0 || attacker.HasAttacked) {
                 return false;
             }
 
@@ -300,12 +300,18 @@ namespace Assets.Simulation.Units.Combat {
             IUnit attacker, float attackerStrength, IUnit defender, float defenderStrength,
             bool attackerReceivesDamage
         ) {
-            attacker.CurrentMovement = 0;
+            if(attacker.Template.CanMoveAfterAttacking) {
+                attacker.CurrentMovement--;
+            }else {
+                attacker.CurrentMovement = 0;
+            }
 
             Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, attackerReceivesDamage);
 
             attacker.Health -= results.Item1;
             defender.Health -= results.Item2;
+
+            attacker.HasAttacked = true;
         }
 
         private Tuple<int, int> CalculateCombat(

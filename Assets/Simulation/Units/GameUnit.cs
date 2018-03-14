@@ -76,6 +76,8 @@ namespace Assets.Simulation.Units {
             get { return Config.VisionRange; }
         }
 
+        public bool HasAttacked { get; set; }
+
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
             get { return Template.RequiredResources; }
         }

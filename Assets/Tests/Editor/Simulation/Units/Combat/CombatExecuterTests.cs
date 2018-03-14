@@ -23,43 +23,54 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region internal types
 
-        public class CombatTestInput {
+        public class CombatTestData {
 
-            public int AttackerCombatStrength;
-
-            public int AttackerRangedAttackStrength;
-
-            public int AttackerCurrentMovement;
-
-            public int AttackerRange;
-
-            public int AttackerLocationElevation;
-
-            public int AttackerDistanceFromDefender;
-
-            public bool AttackerCanMoveToDefender = true;
-
-            public bool AttackerCanSeeDefender = true;
-
-            public float AttackerCombatModifier;
-
-            
-
-
-
-            public int DefenderCombatStrength;
-
-            public float DefenderCombatModifier;
-
-            public TerrainType DefenderLocationTerrain;
-
-            public TerrainFeature DefenderLocationFeature;
-
-            public TerrainShape DefenderLocationShape;
-
-            public int DefenderLocationElevation;
+            public AttackerTestData Attacker;
+            public DefenderTestData Defender;
 
             public bool UnitsHaveSameOwner;
+
+        }
+
+        public class AttackerTestData {
+
+            public int CombatStrength;
+
+            public int RangedAttackStrength;
+
+            public int CurrentMovement;
+
+            public int Range;
+
+            public int LocationElevation;
+
+            public int DistanceFromDefender;
+
+            public bool CanMoveToDefender = true;
+
+            public bool CanSeeDefender = true;
+
+            public float CombatModifier;
+
+            public bool HasAttacked = false;
+
+            public bool CanMoveAfterAttacking;
+
+        }
+
+        public class DefenderTestData {
+
+            public int CombatStrength;
+
+            public float CombatModifier;
+
+            public TerrainType LocationTerrain;
+
+            public TerrainFeature LocationFeature;
+
+            public TerrainShape LocationShape;
+
+            public int LocationElevation;
 
         }
 
@@ -67,18 +78,20 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool CanPerformMeleeAttack;
             public int  MeleeAttackerHealthLeft;
+            public int  MeleeAttackerMovementLeft;
             public int  MeleeDefenderHealthLeft;
 
             public bool CanPerformRangedAttack;
             public int  RangedAttackerHealthLeft;
+            public int  RangedAttackerMovementLeft;
             public int  RangedDefenderHealthLeft;
 
             public override string ToString() {
                 return string.Format(
-                    "\nMelee -- CanPerform: {0}, AttackerHealth: {1}, DefenderHealth: {2}\n" + 
-                      "Ranged -- CanPerform: {3}, AttackerHealth: {4}, DefenderHealth: {5}",
-                    CanPerformMeleeAttack, MeleeAttackerHealthLeft, MeleeDefenderHealthLeft,
-                    CanPerformRangedAttack, RangedAttackerHealthLeft, RangedDefenderHealthLeft
+                    "\nMelee -- CanPerform: {0}, AttackerHealth: {1}, AttackerMovement: {2} DefenderHealth: {3}\n" + 
+                      "Ranged -- CanPerform: {4}, AttackerHealth: {5}, AttackerMovement: {6}, DefenderHealth: {7}",
+                    CanPerformMeleeAttack, MeleeAttackerHealthLeft, MeleeAttackerMovementLeft, MeleeDefenderHealthLeft,
+                    CanPerformRangedAttack, RangedAttackerHealthLeft, RangedAttackerMovementLeft, RangedDefenderHealthLeft
                 );
             }
 
@@ -90,538 +103,680 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private static IEnumerable TestCases {
             get {
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 150,
-                    AttackerRangedAttackStrength = 150,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 150,
+                        RangedAttackStrength = 150,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() { 
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f         
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/1.5 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 80,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 55,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 55
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 175,
-                    AttackerRangedAttackStrength = 175,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 175,
+                        RangedAttackStrength = 175,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/1.75 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 83,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 48,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 48
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 200,
-                    AttackerRangedAttackStrength = 200,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 200,
+                        RangedAttackStrength = 200,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/2.0 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 85,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 40,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 40
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 250,
-                    AttackerRangedAttackStrength = 250,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 250,
+                        RangedAttackStrength = 250,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/2.5 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 88,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 25,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 25
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 300,
-                    AttackerRangedAttackStrength = 300,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 300,
+                        RangedAttackStrength = 300,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/3 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 90,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 10,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 10
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 400,
-                    AttackerRangedAttackStrength = 400,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 400,
+                        RangedAttackStrength = 400,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/4 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 92,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 0,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 0
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0.5f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0.5f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/50% attacker modifier")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 80,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 55,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 55
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0.5f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0.5f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/50% defender modifier")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 55,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 80,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 80
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 0,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 0,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no attacker movement/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 100
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 0,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                        HasAttacked = true,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
+                }).SetName("Basic terrain/attacker has already attacked/no modifiers/even strength")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = false,
+                    MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
+                    MeleeDefenderHealthLeft = 100,
+                    
+                    CanPerformRangedAttack = false,
+                    RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 2,
+                    RangedDefenderHealthLeft = 100
+                });
 
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 0,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no attacker range/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 1,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 1,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/attacking up slope/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 2,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 2,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/attacking up cliff/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 2,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 2,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/attacking down cliff/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = false,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = false,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/attacker cannot move to defender/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = false,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = false,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/attacker cannot see defender/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 0,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 0,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength defender")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 0,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 0
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 0,
-                    AttackerRangedAttackStrength = 0,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 0,
+                        RangedAttackStrength = 0,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength attacker")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
+                    RangedAttackerMovementLeft = 2,
+                    RangedDefenderHealthLeft = 100,
                 });
 
-                yield return new TestCaseData(new CombatTestInput() {
-                    AttackerCombatStrength = 100,
-                    AttackerRangedAttackStrength = 100,
-                    AttackerCurrentMovement = 1,
-                    AttackerRange = 1,
-                    AttackerLocationElevation = 0,
-                    AttackerDistanceFromDefender = 1,
-                    AttackerCanMoveToDefender = true,
-                    AttackerCanSeeDefender = true,
-                    AttackerCombatModifier = 0f,
-
-                    DefenderCombatStrength = 100,
-                    DefenderLocationElevation = 0,
-                    DefenderLocationTerrain = TerrainType.Grassland,
-                    DefenderLocationFeature = TerrainFeature.None,
-                    DefenderCombatModifier = 0f,
-
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f,
+                    },
                     UnitsHaveSameOwner = true
 
                 }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/same owner")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
+                    RangedAttackerMovementLeft = 2,
+                    RangedDefenderHealthLeft = 100,
+                });
+
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                        CanMoveAfterAttacking = true,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    }
+                }).SetName("Basic terrain/no inhibitors/no modifiers/attacker can move after attacking")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = true,
+                    MeleeAttackerHealthLeft = 70,
+                    MeleeAttackerMovementLeft = 1,
+                    MeleeDefenderHealthLeft = 70,
+                    
+                    CanPerformRangedAttack = true,
+                    RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 1,
+                    RangedDefenderHealthLeft = 70
                 });
             }
         }
@@ -677,32 +832,22 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test(Description = "")]
         [TestCaseSource("TestCases")]
-        public CombatTestOutput PerformCombatTests(CombatTestInput input) {
-            IHexCell attackerLocation = BuildCell(input.AttackerLocationElevation);
+        public CombatTestOutput PerformCombatTests(CombatTestData input) {
+            IHexCell attackerLocation = BuildCell(input.Attacker.LocationElevation);
             IHexCell defenderLocation = BuildCell(
-                input.DefenderLocationTerrain, input.DefenderLocationFeature,
-                input.DefenderLocationShape,   input.DefenderLocationElevation
+                input.Defender.LocationTerrain, input.Defender.LocationFeature,
+                input.Defender.LocationShape,   input.Defender.LocationElevation
             );
 
-            IUnit meleeAttacker = BuildUnit(
-                attackerLocation, input.AttackerCurrentMovement, input.AttackerCombatStrength,
-                input.AttackerRangedAttackStrength, input.AttackerCombatModifier, 0f, input.AttackerRange
-            );
-            IUnit meleeDefender = BuildUnit(
-                defenderLocation, input.DefenderCombatStrength, 0f, input.DefenderCombatModifier
-            );
+            IUnit meleeAttacker = BuildUnit(attackerLocation, input.Attacker);
+            IUnit meleeDefender = BuildUnit(defenderLocation, input.Defender);
 
-            IUnit rangedAttacker = BuildUnit(
-                attackerLocation, input.AttackerCurrentMovement, input.AttackerCombatStrength,
-                input.AttackerRangedAttackStrength, input.AttackerCombatModifier, 0f, input.AttackerRange
-            );
-            IUnit rangedDefender = BuildUnit(
-                defenderLocation, input.DefenderCombatStrength, 0f, input.DefenderCombatModifier
-            );
+            IUnit rangedAttacker = BuildUnit(attackerLocation, input.Attacker);
+            IUnit rangedDefender = BuildUnit(defenderLocation, input.Defender);
 
             SetCombatConditions(
-                input.AttackerDistanceFromDefender, input.AttackerCanMoveToDefender,
-                input.AttackerCanSeeDefender
+                input.Attacker.DistanceFromDefender, input.Attacker.CanMoveToDefender,
+                input.Attacker.CanSeeDefender
             );
 
             if(input.UnitsHaveSameOwner) {
@@ -732,8 +877,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatExecuter.PerformMeleeAttack(meleeAttacker, meleeDefender);
             }
 
-            results.MeleeAttackerHealthLeft = meleeAttacker.Health;
-            results.MeleeDefenderHealthLeft = meleeDefender.Health;
+            results.MeleeAttackerHealthLeft   = meleeAttacker.Health;
+            results.MeleeAttackerMovementLeft = meleeAttacker.CurrentMovement;
+            results.MeleeDefenderHealthLeft   = meleeDefender.Health;
             
             results.CanPerformRangedAttack = combatExecuter.CanPerformRangedAttack(rangedAttacker, rangedDefender);
 
@@ -741,8 +887,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatExecuter.PerformRangedAttack(rangedAttacker, rangedDefender);
             }
 
-            results.RangedAttackerHealthLeft = rangedAttacker.Health;
-            results.RangedDefenderHealthLeft = rangedDefender.Health;
+            results.RangedAttackerHealthLeft   = rangedAttacker.Health;
+            results.RangedAttackerMovementLeft = rangedAttacker.CurrentMovement;
+            results.RangedDefenderHealthLeft   = rangedDefender.Health;
 
             return results;
         }
@@ -763,27 +910,56 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(defenderCanBeSeen);
         }
 
-        private IUnit BuildUnit(
-            IHexCell location, int combatStrength,
-            float attackModifier, float defenseModifier
-        ){
-            return BuildUnit(location, 0, combatStrength, 0, attackModifier, defenseModifier, 0);
+        private IUnit BuildUnit(IHexCell location, AttackerTestData attackerData) {
+            return BuildUnit(
+                location:              location,
+                currentMovement:       attackerData.CurrentMovement,
+                combatStrength:        attackerData.CombatStrength,
+                rangedAttackStrength:  attackerData.RangedAttackStrength,
+                attackModifier:        attackerData.CombatModifier,
+                defenseModifier:       0f,
+                attackRange:           attackerData.Range,
+                hasAttacked:           attackerData.HasAttacked,
+                canMoveAfterAttacking: attackerData.CanMoveAfterAttacking
+            );
+        }
+
+        private IUnit BuildUnit(IHexCell location, DefenderTestData defenderData) {
+            return BuildUnit(
+                location:              location,
+                currentMovement:       0,
+                combatStrength:        defenderData.CombatStrength,
+                rangedAttackStrength:  0,
+                attackModifier:        0,
+                defenseModifier:       defenderData.CombatModifier,
+                attackRange:           0,
+                hasAttacked:           false,
+                canMoveAfterAttacking: false
+            );
         }
 
         private IUnit BuildUnit(
             IHexCell location, int currentMovement,
             int combatStrength, int rangedAttackStrength,
             float attackModifier, float defenseModifier,
-            int attackRange
+            int attackRange, bool hasAttacked, bool canMoveAfterAttacking
         ){
             var mockUnit = new Mock<IUnit>();
 
+            var mockTemplate = new Mock<IUnitTemplate>();
+
+            mockTemplate.Setup(template => template.CanMoveAfterAttacking).Returns(canMoveAfterAttacking);
+
             mockUnit.SetupAllProperties();
+
+            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 
             mockUnit.Setup(unit => unit.CombatStrength)      .Returns(combatStrength);
             mockUnit.Setup(unit => unit.RangedAttackStrength).Returns(rangedAttackStrength);
             mockUnit.Setup(unit => unit.AttackRange)         .Returns(attackRange);
-            mockUnit.Setup(unit => unit.CurrentMovement)     .Returns(currentMovement);            
+            mockUnit.Setup(unit => unit.HasAttacked)         .Returns(hasAttacked);
+
+            mockUnit.Object.CurrentMovement = currentMovement;
 
             var newUnit = mockUnit.Object;
 
