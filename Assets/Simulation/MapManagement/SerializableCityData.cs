@@ -26,7 +26,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public SerializableProjectData        ActiveProject;
         
         [DataMember()] public int                            CurrentHealth;
-        [DataMember()] public int                            CurrentMovement;
+        [DataMember()] public float                          CurrentMovement;
         [DataMember()] public List<SerializableBuildingData> Buildings;
 
         #endregion

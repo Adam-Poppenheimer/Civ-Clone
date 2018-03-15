@@ -28,11 +28,11 @@ namespace Assets.Simulation.Units {
             get { return Template.name; }
         }
 
-        public int MaxMovement {
+        public float MaxMovement {
             get { return Template.MaxMovement; }
         }
 
-        public int CurrentMovement { get; set; }
+        public float CurrentMovement { get; set; }
 
         public UnitType Type {
             get { return Template.Type; }
@@ -171,7 +171,9 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            Animator.SetTrigger("Moving Requested");
+            if(Animator != null) {
+                Animator.SetTrigger("Moving Requested");
+            }
 
             IHexCell currentTile = PositionCanon.GetOwnerOfPossession(this);
             IHexCell tileToTravelTo = null;
@@ -196,7 +198,9 @@ namespace Assets.Simulation.Units {
                 PositionCanon.ChangeOwnerOfPossession(this, tileToTravelTo);
             }
 
-            Animator.SetTrigger("Idling Requested");
+            if(Animator != null) {
+                Animator.SetTrigger("Idling Requested");
+            }
         }
 
         #endregion

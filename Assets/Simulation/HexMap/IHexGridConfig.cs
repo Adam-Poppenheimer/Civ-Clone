@@ -21,6 +21,8 @@ namespace Assets.Simulation.HexMap {
 
         int SlopeMoveCost { get; }
 
+        float RoadMoveCostMultiplier { get; }
+
         #endregion
 
     }

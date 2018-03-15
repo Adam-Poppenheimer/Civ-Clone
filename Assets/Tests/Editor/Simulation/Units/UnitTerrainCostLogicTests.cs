@@ -43,6 +43,8 @@ namespace Assets.Tests.Simulation.Units {
 
             public bool HasCity;
 
+            public bool HasRoads;
+
         }
 
         public struct UnitTestData {
@@ -303,6 +305,61 @@ namespace Assets.Tests.Simulation.Units {
                         MaxMovement = 10
                     }
                 }).Returns(10).SetName("Non-aquatic into forested hills, unit has rough terrain penalty");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0, Shape = TerrainShape.Hills
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, HasRoughTerrainPenalty = true,
+                        MaxMovement = 10
+                    }
+                }).Returns(10).SetName("Non-aquatic from hills to hills, unit has rough terrain penalty");
+
+
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0, HasRoads = true
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, IsUnderwater = false, HasRoads = true
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, MaxMovement = 2
+                    }
+                }).Returns(1f * 0.5f).SetName("Non-aquatic into forested hills, current and next have roads");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0, HasRoads = true
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, IsUnderwater = false
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, MaxMovement = 2
+                    }
+                }).Returns(4).SetName("Non-aquatic into forested hills, current has roads");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData() {
+                        Elevation = 0
+                    },
+                    NextCell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
+                        Shape = TerrainShape.Hills, IsUnderwater = false, HasRoads = true
+                    },
+                    Unit = new UnitTestData() {
+                        IsAquatic = false, MaxMovement = 2
+                    }
+                }).Returns(4).SetName("Non-aquatic into forested hills, next has roads");
             }
         }
 
@@ -341,6 +398,8 @@ namespace Assets.Tests.Simulation.Units {
                 -1 // Mountains cost
             }.AsReadOnly());
 
+            MockConfig.Setup(config => config.RoadMoveCostMultiplier).Returns(0.5f);
+
             Container.Bind<IHexGridConfig>                          ().FromInstance(MockConfig           .Object);
             Container.Bind<IUnitPositionCanon>                      ().FromInstance(MockUnitPositionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
@@ -356,7 +415,7 @@ namespace Assets.Tests.Simulation.Units {
             "as well as whether that cell is underwater, to determine unit traversal. It should also consider " +
             "the EdgeType between currentCell and nextCell and whether the argued unit is aquatic or not")]
         [TestCaseSource("TestCases")]
-        public int GetTraversalCostForUnitTests(TestData data){
+        public float GetTraversalCostForUnitTests(TestData data){
             var currentCell = BuildCell(data.CurrentCell);
 
             var nextCell = BuildCell(data.NextCell);
@@ -395,6 +454,7 @@ namespace Assets.Tests.Simulation.Units {
             newCell.Feature             = testData.Feature;
             newCell.Shape               = testData.Shape;
             newCell.FoundationElevation = testData.Elevation;
+            newCell.HasRoads            = testData.HasRoads;
 
             MockUnitPositionCanon
                 .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))

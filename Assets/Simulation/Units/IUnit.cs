@@ -17,9 +17,9 @@ namespace Assets.Simulation.Units {
 
         string Name { get; }
 
-        int MaxMovement { get; }
+        float MaxMovement { get; }
 
-        int CurrentMovement { get; set; }
+        float CurrentMovement { get; set; }
 
         UnitType Type { get; }
 

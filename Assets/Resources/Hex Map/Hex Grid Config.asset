@@ -70,3 +70,4 @@ MonoBehaviour:
   _shapeMoveCosts: 0000000001000000ffffffff
   _waterMoveCost: 1
   _slopeMoveCost: 1
+  _roadMoveCostMultiplier: 0.5

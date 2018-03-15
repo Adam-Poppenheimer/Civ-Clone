@@ -44,7 +44,7 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitTerrainCostLogic
 
-        public int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+        public float GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
             if(unit.Type == UnitType.City || !UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
                 return -1;
             }else if(unit.IsAquatic) {
@@ -56,7 +56,7 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        private int GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+        private float GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
             var cityAtNext = CityLocationCanon.GetPossessionsOfOwner(nextCell).FirstOrDefault();
 
             if(nextCell.IsUnderwater) {
@@ -68,7 +68,7 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        private int GetNonAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+        private float GetNonAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
             if(nextCell.IsUnderwater) {
                 return -1;
             }
@@ -80,6 +80,10 @@ namespace Assets.Simulation.Units {
             }
 
             int moveCost = Config.BaseLandMoveCost;
+
+            if(currentCell.HasRoads && nextCell.HasRoads) {
+                return moveCost * Config.RoadMoveCostMultiplier;
+            }
 
             if( edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation &&
                 !unit.Template.IgnoresTerrainCosts

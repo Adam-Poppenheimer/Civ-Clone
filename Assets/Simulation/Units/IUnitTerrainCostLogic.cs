@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        int GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell);
+        float GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell);
 
         #endregion
 

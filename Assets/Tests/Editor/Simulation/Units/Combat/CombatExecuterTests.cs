@@ -76,15 +76,15 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         public struct CombatTestOutput {
 
-            public bool CanPerformMeleeAttack;
-            public int  MeleeAttackerHealthLeft;
-            public int  MeleeAttackerMovementLeft;
-            public int  MeleeDefenderHealthLeft;
+            public bool  CanPerformMeleeAttack;
+            public int   MeleeAttackerHealthLeft;
+            public float MeleeAttackerMovementLeft;
+            public int   MeleeDefenderHealthLeft;
 
-            public bool CanPerformRangedAttack;
-            public int  RangedAttackerHealthLeft;
-            public int  RangedAttackerMovementLeft;
-            public int  RangedDefenderHealthLeft;
+            public bool  CanPerformRangedAttack;
+            public int   RangedAttackerHealthLeft;
+            public float RangedAttackerMovementLeft;
+            public int   RangedDefenderHealthLeft;
 
             public override string ToString() {
                 return string.Format(

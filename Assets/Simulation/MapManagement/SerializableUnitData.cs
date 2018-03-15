@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public string Owner;
 
-        [DataMember()] public int CurrentMovement;
+        [DataMember()] public float CurrentMovement;
 
         [DataMember()] public int Health;
 

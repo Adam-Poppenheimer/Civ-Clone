@@ -206,7 +206,7 @@ namespace Assets.Simulation.HexMap {
             return GetShortestPathBetween(start, end, (a, b) => 1);
         }
 
-        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, int> costFunction) {
+        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, float> costFunction) {
             if(start == null) {
                 throw new ArgumentNullException("start");
             }else if(end == null) {
@@ -218,7 +218,7 @@ namespace Assets.Simulation.HexMap {
             PriorityQueue<HexCoordinates> frontier = new PriorityQueue<HexCoordinates>();
             frontier.Add(startCoords, 0);
             Dictionary<HexCoordinates, HexCoordinates> cameFrom = new Dictionary<HexCoordinates, HexCoordinates>();
-            Dictionary<HexCoordinates, int> costSoFar = new Dictionary<HexCoordinates, int>();
+            Dictionary<HexCoordinates, float> costSoFar = new Dictionary<HexCoordinates, float>();
             cameFrom[startCoords] = null;
             costSoFar[startCoords] = 0;
 
@@ -234,11 +234,11 @@ namespace Assets.Simulation.HexMap {
                     }
                     nextHex = GetCellAtCoordinates(nextCoords);
 
-                    int cost = costFunction(GetCellAtCoordinates(current), nextHex);
+                    float cost = costFunction(GetCellAtCoordinates(current), nextHex);
                     if(cost < 0) {
                         continue;
                     }
-                    int newCost = costSoFar[current] + cost;
+                    float newCost = costSoFar[current] + cost;
 
                     if(!costSoFar.ContainsKey(nextCoords) || newCost < costSoFar[nextCoords]) {
                         costSoFar[nextCoords] = newCost;

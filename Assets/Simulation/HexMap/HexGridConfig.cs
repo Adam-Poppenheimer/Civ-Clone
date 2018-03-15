@@ -60,6 +60,11 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _slopeMoveCost;
 
+        public float RoadMoveCostMultiplier {
+            get { return _roadMoveCostMultiplier; }
+        }
+        [SerializeField] private float _roadMoveCostMultiplier;
+
         #endregion
 
         #endregion
