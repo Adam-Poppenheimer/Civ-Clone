@@ -10,6 +10,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Growth;
+using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Cities {
@@ -22,6 +23,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<ICityConfig>                                   ConfigMock;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
 
         #endregion
 
@@ -34,10 +36,12 @@ namespace Assets.Tests.Simulation.Cities {
             ConfigMock                     = new Mock<ICityConfig>();
             MockCityPossessionCanon        = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
+            MockBuildingPossessionCanon    = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
             Container.Bind<ICityConfig>                                  ().FromInstance(ConfigMock                    .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon       .Object);
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon   .Object);
 
             Container.Bind<PopulationGrowthLogic>().AsSingle();
         }
@@ -67,23 +71,35 @@ namespace Assets.Tests.Simulation.Cities {
                 "GetFoodConsumptionPerTurn on CityThree returned an incorrect value");
         }
 
-        [Test(Description = "GetFoodStockpileSubtractionAfterGrowth should return the food required for " +
-            "the city to grow from its current size")]
-        public void GetFoodStockpileSubtractionAfterGrowth_ReturnsFoodToGrow() {
-            var cityOne = BuildCity(5, BuildCivilization(0));
-            var cityTwo = BuildCity(10, BuildCivilization(0));
+        [Test(Description = "GetFoodStockpileAfterGrowth should return a ratio of the city's " +
+            "current food stockpile based on the FoodStockpilePreservationBonus properties of all " +
+            "the city's buildings. This ratio should be clamped between 0 and 1")]
+        public void GetFoodStockpileAfterGrowth_BasedOnStockpileAndBuildings() {
+            var buildingsOne = new List<IBuilding>() {
+                BuildBuilding(0.5f), BuildBuilding(0.25f)
+            };
 
-            ConfigMock.SetupGet(config => config.BaseGrowthStockpile).Returns(15);
-            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationCoefficient).Returns(6);
-            ConfigMock.SetupGet(config => config.GrowthPreviousPopulationExponent).Returns(1.8f);
+            var buildingsTwo = new List<IBuilding>() {
+                BuildBuilding(1.5f), BuildBuilding(1.25f)
+            };
+
+            var buildingsThree = new List<IBuilding>() {
+                BuildBuilding(0.25f), BuildBuilding(-1f)
+            };
+
+            var cityOne   = BuildCity(1, BuildCivilization(0), buildingsOne);
+            var cityTwo   = BuildCity(1, BuildCivilization(0), buildingsTwo);
+            var cityThree = BuildCity(1, BuildCivilization(0), buildingsThree);
+
+            cityOne  .FoodStockpile = 100;
+            cityTwo  .FoodStockpile = 200;
+            cityThree.FoodStockpile = 300;
 
             var growthLogic = Container.Resolve<PopulationGrowthLogic>();
 
-            Assert.AreEqual(51, growthLogic.GetFoodStockpileSubtractionAfterGrowth(cityOne), 
-                "GetFoodStockpileSubtractionAfterGrowth on a population of 5 returned an incorrect value");
-
-            Assert.AreEqual(121, growthLogic.GetFoodStockpileSubtractionAfterGrowth(cityTwo),
-                "GetFoodStockpileSubtractionAfterGrowth on a population of 10 returned an incorrect value");
+            Assert.AreEqual(100 * (0.25f + 0.5f), growthLogic.GetFoodStockpileAfterGrowth(cityOne),   "Returned incorrect value for cityOne");
+            Assert.AreEqual(200,                  growthLogic.GetFoodStockpileAfterGrowth(cityTwo),   "Returned incorrect value for cityTwo");
+            Assert.AreEqual(0,                    growthLogic.GetFoodStockpileAfterGrowth(cityThree), "Returned incorrect value for cityThree");
         }
 
         [Test(Description = "GetFoodStockpileAfterStarvation should always return zero, regardless " +
@@ -161,7 +177,7 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileToGrow(null),
                 "GetFoodStockpileToGrow fails to throw on a null city");
 
-            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileSubtractionAfterGrowth(null),
+            Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileAfterGrowth(null),
                 "GetFoodStockpileSubtractionAfterGrowth fails to throw on a null city");
 
             Assert.Throws<ArgumentNullException>(() => growthLogic.GetFoodStockpileAfterStarvation(null),
@@ -180,16 +196,32 @@ namespace Assets.Tests.Simulation.Cities {
             return newCiv;
         }
 
-        private ICity BuildCity(int population, ICivilization owner) {
+        private ICity BuildCity(int population, ICivilization owner, List<IBuilding> buildings = null) {
             var mockCity = new Mock<ICity>();
 
-            mockCity.Setup(city => city.Population).Returns(population);
+            mockCity.SetupAllProperties();
 
             var newCity = mockCity.Object;
 
+            newCity.Population = population;
+
             MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
+            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCity)).Returns(buildings);
+
             return newCity;
+        }
+
+        private IBuilding BuildBuilding(float foodStockpilePreservationBonus) {
+            var mockBuilding = new Mock<IBuilding>();
+
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.FoodStockpilePreservationBonus).Returns(foodStockpilePreservationBonus);
+
+            mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
+
+            return mockBuilding.Object;
         }
 
         #endregion

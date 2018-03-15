@@ -94,6 +94,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<CellYieldModificationData> _cellYieldModifications;
 
+        public float FoodStockpilePreservationBonus { 
+            get { return _foodStockpilePreservationBonus; }
+        }
+        [SerializeField] private float _foodStockpilePreservationBonus;
+
         #endregion
 
         #endregion

@@ -160,7 +160,7 @@ namespace Assets.Simulation.Cities {
                 FoodStockpile = GrowthLogic.GetFoodStockpileAfterStarvation(this);
 
             }else if(FoodStockpile >= GrowthLogic.GetFoodStockpileToGrow(this)) {
-                FoodStockpile -= GrowthLogic.GetFoodStockpileSubtractionAfterGrowth(this);
+                FoodStockpile = GrowthLogic.GetFoodStockpileAfterGrowth(this);
                 Population++;
             }
         }

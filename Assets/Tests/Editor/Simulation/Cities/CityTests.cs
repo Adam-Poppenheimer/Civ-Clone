@@ -176,21 +176,21 @@ namespace Assets.Tests.Simulation.Cities {
         }
 
         [Test(Description = "When PerformGrowth is called on a city with a sufficient food stockpile, " + 
-            "GrowthLogic should be called to figure out how much to reduce the current food stockpile")]
+            "GrowthLogic should be called to figure what it's new food stockpile is")]
         public void PerformGrowth_ChecksGrowthLogicForStockpileReduction() {
             var city = Container.Resolve<City>();
 
             city.Population = 1;
             city.FoodStockpile = 15;
 
-            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city)).Returns(9);
+            MockGrowthLogic.Setup(logic => logic.GetFoodStockpileAfterGrowth(city)).Returns(9);
 
             city.PerformGrowth();
 
-            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileSubtractionAfterGrowth(city), Times.AtLeastOnce, 
-                "GrowthLogic did not have its GetFoodStockpileSubtractionAfterGrowth method called");
+            MockGrowthLogic.Verify(logic => logic.GetFoodStockpileAfterGrowth(city), Times.AtLeastOnce, 
+                "GrowthLogic did not have its GetFoodStockpileAfterGrowth method called");
 
-            Assert.AreEqual(6, city.FoodStockpile, "After growth, City has an unexpected food stockpile");
+            Assert.AreEqual(9, city.FoodStockpile, "After growth, City has an unexpected food stockpile");
         }
 
         [Test(Description = "When PerformProduction is called on a city with a non-null CurrentProject, " + 

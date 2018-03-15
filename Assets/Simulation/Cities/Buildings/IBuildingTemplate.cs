@@ -69,6 +69,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<ICellYieldModificationData> CellYieldModifications { get; }
 
+        float FoodStockpilePreservationBonus { get; }
+
         #endregion
 
     }

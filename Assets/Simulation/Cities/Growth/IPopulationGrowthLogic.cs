@@ -36,7 +36,7 @@ namespace Assets.Simulation.Cities.Growth {
         /// <param name="city">The city in question</param>
         /// <returns>The amount to subtract.</returns>
         /// <exception cref="ArgumentNullException">Throws whenever city is null</exception>
-        int GetFoodStockpileSubtractionAfterGrowth(ICity city);
+        int GetFoodStockpileAfterGrowth(ICity city);
 
         /// <summary>
         /// Determines how much food the stockpile should have after the city experiences starvation.

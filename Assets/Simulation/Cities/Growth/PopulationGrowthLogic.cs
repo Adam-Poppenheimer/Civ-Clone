@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.Cities.Growth {
 
@@ -21,8 +22,8 @@ namespace Assets.Simulation.Cities.Growth {
         private ICityConfig Config;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private ICivilizationHappinessLogic CivilizationHappinessLogic;
+        private ICivilizationHappinessLogic                   CivilizationHappinessLogic;
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
 
         #endregion
 
@@ -35,11 +36,13 @@ namespace Assets.Simulation.Cities.Growth {
         [Inject]
         public PopulationGrowthLogic(ICityConfig config,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICivilizationHappinessLogic civilizationHappinessLogic
+            ICivilizationHappinessLogic civilizationHappinessLogic,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
         ){
             Config                     = config;
             CityPossessionCanon        = cityPossessionCanon;
             CivilizationHappinessLogic = civilizationHappinessLogic;
+            BuildingPossessionCanon    = buildingPossessionCanon;
         }
 
         #endregion
@@ -58,12 +61,18 @@ namespace Assets.Simulation.Cities.Growth {
         }
 
         /// <inheritdoc/>
-        public int GetFoodStockpileSubtractionAfterGrowth(ICity city) {
+        public int GetFoodStockpileAfterGrowth(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
 
-            return GetFoodStockpileToGrow(city);
+            var buildingsInCity = BuildingPossessionCanon.GetPossessionsOfOwner(city);
+
+            float stockpilePreservationRatio = Mathf.Clamp01(
+                buildingsInCity.Sum(building => building.Template.FoodStockpilePreservationBonus)
+            );
+
+            return Mathf.RoundToInt(city.FoodStockpile * stockpilePreservationRatio);
         }
 
         /// <inheritdoc/>

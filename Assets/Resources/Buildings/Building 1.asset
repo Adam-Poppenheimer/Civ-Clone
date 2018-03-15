@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: Building 1 Description
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
-  _cost: 10
+  _productionCost: 0
   _maintenance: 1
   _slotYields:
   - Food: 1
@@ -39,7 +39,10 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
-  _health: -5
-  _happiness: 0
+  _localHappiness: 0
+  _globalHappiness: 0
+  _unhappiness: 0
   _requiredResources: []
   _resourceYieldModifications: []
+  _cellYieldModifications: []
+  _foodStockpilePreservationBonus: 0.75
