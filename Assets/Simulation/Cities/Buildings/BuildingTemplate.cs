@@ -64,15 +64,20 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private ResourceSummary _cityYieldModifier;
 
-        public int Health {
-            get { return _health; }
+        public int LocalHappiness {
+            get { return _localHappiness; }
         }
-        [SerializeField] private int _health;
+        [SerializeField] private int _localHappiness;
 
-        public int Happiness {
-            get { return _happiness; }
+        public int GlobalHappiness {
+            get { return _globalHappiness; }
         }
-        [SerializeField] private int _happiness;
+        [SerializeField] private int _globalHappiness;
+
+        public int Unhappiness {
+            get { return _unhappiness; }
+        }
+        [SerializeField] private int _unhappiness;
 
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
             get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }

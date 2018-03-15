@@ -57,9 +57,11 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         ResourceSummary CityYieldModifier { get; }
 
-        int Health { get; }
+        int LocalHappiness { get; }
 
-        int Happiness { get; }
+        int GlobalHappiness { get; }
+
+        int Unhappiness { get; }
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 

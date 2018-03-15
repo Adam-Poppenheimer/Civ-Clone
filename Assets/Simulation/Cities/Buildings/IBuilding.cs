@@ -28,10 +28,6 @@ namespace Assets.Simulation.Cities.Buildings {
 
         ResourceSummary CityYieldModifier { get; }
 
-        int Health { get; }
-
-        int Happiness { get; }
-
         IBuildingTemplate Template { get; }
 
         #endregion

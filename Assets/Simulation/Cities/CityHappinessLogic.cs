@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.Cities {
 
     public class CityHappinessLogic : ICityHappinessLogic {
@@ -15,13 +17,19 @@ namespace Assets.Simulation.Cities {
 
         private ICityConfig Config;
 
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+
         #endregion
 
         #region constructors
         
         [Inject]
-        public CityHappinessLogic(ICityConfig config) {
-            Config = config;
+        public CityHappinessLogic(
+            ICityConfig config,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+        ){
+            Config                  = config;
+            BuildingPossessionCanon = buildingPossessionCanon;
         }
 
         #endregion
@@ -35,7 +43,13 @@ namespace Assets.Simulation.Cities {
                 throw new ArgumentNullException("city");
             }
             
-            return 0;
+            int retval = 0;
+
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                retval += building.Template.LocalHappiness;
+            }
+
+            return retval;
         }
 
         public int GetGlobalHappinessOfCity(ICity city) {
@@ -43,7 +57,13 @@ namespace Assets.Simulation.Cities {
                 throw new ArgumentNullException("city");
             }
 
-            return 0;
+            int retval = 0;
+
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                retval += building.Template.GlobalHappiness;
+            }
+
+            return retval;
         }
 
         public int GetTotalHappinessofCity(ICity city) {
@@ -58,6 +78,10 @@ namespace Assets.Simulation.Cities {
             int retval = Config.UnhappinessPerCity;
 
             retval += Mathf.RoundToInt(Config.UnhappinessPerPopulation * city.Population);
+
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                retval += building.Template.Unhappiness;
+            }
 
             return retval;
         }
