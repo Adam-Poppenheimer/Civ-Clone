@@ -65,6 +65,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<IResourceYieldModificationData> ResourceYieldModifications { get; }
 
+        IEnumerable<ICellYieldModificationData> CellYieldModifications { get; }
+
         #endregion
 
     }

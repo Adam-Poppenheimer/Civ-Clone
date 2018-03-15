@@ -72,9 +72,9 @@ namespace Assets.Simulation.HexMap {
             var nodeAtLocation = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             if(nodeAtLocation != null) {
                 retval += nodeAtLocation.Resource.BonusYieldBase;
-
-                retval += GetContributionFromBuildings(cell, nodeAtLocation);
             }
+
+            retval += GetContributionFromBuildings(cell, nodeAtLocation);
 
             var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             if(improvementOnCell != null) {
@@ -94,12 +94,37 @@ namespace Assets.Simulation.HexMap {
             if(cityOwningCell != null) {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(cityOwningCell)) {
 
-                    foreach(var modification in building.Template.ResourceYieldModifications) {
-                        if(modification.Resource == nodeAtLocation.Resource) {
-                            retval += modification.BonusYield;
+                    foreach(var resourceModification in building.Template.ResourceYieldModifications) {
+                        if(resourceModification.Resource == nodeAtLocation.Resource) {
+                            retval += resourceModification.BonusYield;
                         }
                     }
 
+                    foreach(var cellModification in building.Template.CellYieldModifications) {
+                        if( cellModification.PropertyConsidered == CellPropertyType.Terrain &&
+                            cell.Terrain == cellModification.TerrainRequired
+                        ) {
+                            retval += cellModification.BonusYield;
+
+                        }else if( 
+                            cellModification.PropertyConsidered == CellPropertyType.Shape &&
+                            cell.Shape == cellModification.ShapeRequired
+                        ){
+                            retval += cellModification.BonusYield;
+
+                        }else if(
+                            cellModification.PropertyConsidered == CellPropertyType.Feature &&
+                            cell.Feature == cellModification.FeatureRequired
+                        ) {
+                            retval += cellModification.BonusYield;
+
+                        }else if(
+                            cellModification.PropertyConsidered == CellPropertyType.CellIsUnderwater &&
+                            cell.IsUnderwater == cellModification.MustBeUnderwater
+                        ) {
+                            retval += cellModification.BonusYield;
+                        }
+                    }
                 }
             }
 

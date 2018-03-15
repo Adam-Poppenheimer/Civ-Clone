@@ -27,7 +27,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #endregion
 
         #endregion
-        
+
     }
 
 }

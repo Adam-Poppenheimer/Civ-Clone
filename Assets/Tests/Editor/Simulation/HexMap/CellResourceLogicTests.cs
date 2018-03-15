@@ -59,7 +59,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
         public class BuildingData {
 
-            public List<Tuple<ResourceSummary, bool>> ResourceYieldModifications;
+            public List<Tuple<ResourceSummary, bool>> ResourceYieldModifications = new List<Tuple<ResourceSummary, bool>>();
+
+            public List<CellYieldModificationData> CellYieldModifications = new List<CellYieldModificationData>();
 
         }
 
@@ -255,6 +257,35 @@ namespace Assets.Tests.Simulation.HexMap {
                     Shape   = TerrainShape.Hills,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Hills/Forest").Returns(new ResourceSummary(2f));
+
+
+                yield return new TestCaseData(new GetYieldOfCellTestData() {
+                    Terrain = TerrainType.Grassland,
+                    Feature = TerrainFeature.None,
+                    Shape = TerrainShape.Flatlands,
+                    ResourceNodeOnCell = null,
+                    CityOwningCell = new CityData() {
+                        Buildings = new List<BuildingData>() {
+                            new BuildingData() {
+                                CellYieldModifications = new List<CellYieldModificationData>() {
+                                    new CellYieldModificationData(TerrainType.Grassland, new ResourceSummary(culture: 1)),
+                                    new CellYieldModificationData(TerrainShape.Hills,    new ResourceSummary(culture: 2)),
+                                    new CellYieldModificationData(TerrainFeature.None,   new ResourceSummary(culture: 3)),
+                                    new CellYieldModificationData(true,                  new ResourceSummary(culture: 4))
+                                }
+                            },
+                            new BuildingData() {
+                                CellYieldModifications = new List<CellYieldModificationData>() {
+                                    new CellYieldModificationData(TerrainType.Desert,     new ResourceSummary(gold: 1)),
+                                    new CellYieldModificationData(TerrainShape.Flatlands, new ResourceSummary(gold: 2)),
+                                    new CellYieldModificationData(TerrainFeature.Forest,  new ResourceSummary(gold: 3)),
+                                    new CellYieldModificationData(false,                  new ResourceSummary(gold: 4))
+                                }
+                            }
+                        }
+                    }
+                }).SetName("Grassland/Flat/No feature, has buildings that modify based on cell properties")
+                .Returns(new ResourceSummary(food: 1, gold: 6, culture: 4));
             }
         }
 
@@ -333,11 +364,13 @@ namespace Assets.Tests.Simulation.HexMap {
         public ResourceSummary GetYieldOfCellTests(GetYieldOfCellTestData data) {
             var cell = BuildCell(data.Terrain, data.Feature, data.Shape);
 
+            IResourceNode node = null;
             if(data.ResourceNodeOnCell != null) {
-                var node = BuildResourceNode(cell, data.ResourceNodeOnCell.BonusYield);
-                if(data.CityOwningCell != null) {
-                    BuildCity(cell, data.CityOwningCell, node.Resource);
-                }
+                node = BuildResourceNode(cell, data.ResourceNodeOnCell.BonusYield);
+            }
+
+            if(data.CityOwningCell != null) {
+                BuildCity(cell, data.CityOwningCell, node != null ? node.Resource : null);
             }
 
             if(data.ImprovementOnCell != null) {
@@ -424,10 +457,17 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var mockTemplate = new Mock<IBuildingTemplate>();
 
-            mockTemplate.Setup(template => template.ResourceYieldModifications)
-                .Returns(buildingData.ResourceYieldModifications.Select(
-                    tuple => BuildModificationData(tuple, candidateResource)
-                ));
+            if(candidateResource != null) {
+                mockTemplate
+                    .Setup(template => template.ResourceYieldModifications)
+                    .Returns(buildingData.ResourceYieldModifications.Select(
+                        tuple => BuildModificationData(tuple, candidateResource)
+                    ));
+            }
+
+            mockTemplate
+                .Setup(template => template.CellYieldModifications)
+                .Returns(buildingData.CellYieldModifications.Cast<ICellYieldModificationData>());
             
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 

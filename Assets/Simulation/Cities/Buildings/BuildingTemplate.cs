@@ -84,6 +84,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<ResourceYieldModificationData> _resourceYieldModifications;
 
+        public IEnumerable<ICellYieldModificationData> CellYieldModifications {
+            get { return _cellYieldModifications.Cast<ICellYieldModificationData>(); }
+        }
+        [SerializeField] private List<CellYieldModificationData> _cellYieldModifications;
+
         #endregion
 
         #endregion
