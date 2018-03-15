@@ -33,9 +33,9 @@ namespace Assets.Simulation.Units {
 
         int RangedAttackStrength { get; }
 
-        int Health { get; set; }
+        int Hitpoints { get; set; }
 
-        int MaxHealth { get; }
+        int MaxHitpoints { get; }
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 

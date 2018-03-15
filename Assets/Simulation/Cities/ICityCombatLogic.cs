@@ -13,7 +13,7 @@ namespace Assets.Simulation.Cities {
 
         int GetRangedAttackStrengthOfCity(ICity city);
 
-        int GetMaxHealthOfCity(ICity city);
+        int GetMaxHitpointsOfCity(ICity city);
 
         #endregion
 

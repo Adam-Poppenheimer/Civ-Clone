@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.Cities {
 
     public class CityCombatLogic : ICityCombatLogic {
@@ -13,12 +15,17 @@ namespace Assets.Simulation.Cities {
 
         private ICityConfig Config;
 
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+
         #endregion
 
         #region constructors
 
-        public CityCombatLogic(ICityConfig config) {
-            Config = config;
+        public CityCombatLogic(ICityConfig config,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+        ){
+            Config                  = config;
+            BuildingPossessionCanon = buildingPossessionCanon;
         }
 
         #endregion
@@ -28,11 +35,23 @@ namespace Assets.Simulation.Cities {
         #region from ICityCombatLogic
 
         public int GetCombatStrengthOfCity(ICity city) {
-            return Config.BaseCombatStrength + Mathf.RoundToInt(Config.CombatStrengthPerPopulation * city.Population);
+            int retval = Config.BaseCombatStrength + Mathf.RoundToInt(Config.CombatStrengthPerPopulation * city.Population);
+
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                retval += building.Template.CityCombatStrengthBonus;
+            }
+
+            return retval;
         }
 
-        public int GetMaxHealthOfCity(ICity city) {
-            return Config.BaseMaxHitPoints + Mathf.RoundToInt(Config.MaxHitPointsPerPopulation * city.Population);
+        public int GetMaxHitpointsOfCity(ICity city) {
+            int retval = Config.BaseMaxHitPoints + Mathf.RoundToInt(Config.MaxHitPointsPerPopulation * city.Population);
+
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                retval += building.Template.CityMaxHitpointBonus;
+            }
+
+            return retval;
         }
 
         public int GetRangedAttackStrengthOfCity(ICity city) {

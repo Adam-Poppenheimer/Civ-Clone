@@ -664,12 +664,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = Container.Resolve<City>();
             city.CombatFacade = BuildUnit();
-            city.CombatFacade.Health = 0;
+            city.CombatFacade.Hitpoints = 0;
             city.CombatFacade.CurrentMovement = 0;
 
             city.PerformHealing();
 
-            Assert.AreEqual(20, city.CombatFacade.Health, "CombatFacade was not healed properly");
+            Assert.AreEqual(20, city.CombatFacade.Hitpoints, "CombatFacade was not healed properly");
             Assert.AreEqual(1, city.CombatFacade.CurrentMovement, "CombatFacade's movement wasn't restored properly");
         }
 

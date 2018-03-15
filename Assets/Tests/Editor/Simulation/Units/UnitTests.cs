@@ -98,11 +98,11 @@ namespace Assets.Tests.Simulation.Units {
             MockConfig.Setup(config => config.MaxHealth).Returns(maxHealth);
 
             var unitToTest = Container.Resolve<GameUnit>();
-            unitToTest.Health = newHealthValue;
+            unitToTest.Hitpoints = newHealthValue;
 
             Assert.AreEqual(
                 newHealthValue.Clamp(0, maxHealth),
-                unitToTest.Health,
+                unitToTest.Hitpoints,
                 "UnitToTest.Health has an unexpected value"
             );
         }

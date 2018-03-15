@@ -229,7 +229,7 @@ namespace Assets.Simulation.Cities {
         }
 
         public void PerformHealing() {
-            CombatFacade.Health += Config.HitPointRegenPerRound;
+            CombatFacade.Hitpoints += Config.HitPointRegenPerRound;
             CombatFacade.CurrentMovement = 1;
         }
 

@@ -40,6 +40,8 @@ namespace Assets.Simulation.Units {
 
         int RangedAttackStrength { get; }
 
+        int MaxHitpoints { get; }
+
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
         bool BenefitsFromDefensiveTerrain { get; }

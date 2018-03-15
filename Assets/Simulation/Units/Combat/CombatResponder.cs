@@ -58,16 +58,16 @@ namespace Assets.Simulation.Units.Combat {
             var attacker = combatData.Attacker;
             var defender = combatData.Defender;
 
-            if(attacker.Health <= 0) {
+            if(attacker.Hitpoints <= 0) {
                 GameObject.Destroy(attacker.gameObject);
             }
 
-            if(defender.Health <= 0) {
+            if(defender.Hitpoints <= 0) {
                 var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
                 GameObject.DestroyImmediate(defender.gameObject);
 
-                if(attacker.Health > 0) {
+                if(attacker.Hitpoints > 0) {
                     UnitPositionCanon.ChangeOwnerOfPossession(attacker, defenderLocation);
                 }
             }
@@ -77,11 +77,11 @@ namespace Assets.Simulation.Units.Combat {
             var attacker = combatData.Attacker;
             var city = combatData.City;
 
-            if(attacker.Health <= 0) {
+            if(attacker.Hitpoints <= 0) {
                 GameObject.Destroy(attacker.gameObject);
             }
 
-            if(city.CombatFacade.Health <= 0) {
+            if(city.CombatFacade.Hitpoints <= 0) {
                 var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
 
                 var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
@@ -101,7 +101,7 @@ namespace Assets.Simulation.Units.Combat {
         private void OnRangedCombatWithUnit(UnitUnitCombatData combatData) {
             var defender = combatData.Defender;
 
-            if(defender.Health <= 0) {
+            if(defender.Hitpoints <= 0) {
                 GameObject.Destroy(defender.gameObject);
             }
         }

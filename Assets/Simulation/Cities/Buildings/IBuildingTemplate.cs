@@ -71,6 +71,10 @@ namespace Assets.Simulation.Cities.Buildings {
 
         float FoodStockpilePreservationBonus { get; }
 
+        int CityCombatStrengthBonus { get; }
+
+        int CityMaxHitpointBonus { get; }
+
         #endregion
 
     }

@@ -150,31 +150,31 @@ namespace Assets.Simulation.Units.Combat {
         }
 
         public void PerformMeleeAttack(IUnit attacker, IUnit defender) {
-            int attackerStartingHealth = attacker.Health;
-            int defenderStartingHealth = defender.Health;
+            int attackerStartingHealth = attacker.Hitpoints;
+            int defenderStartingHealth = defender.Hitpoints;
 
             PerformMeleeAttack_NoEvent(attacker, defender);
 
             UnitSignals.MeleeCombatWithUnitSignal.OnNext(
                 new UnitUnitCombatData(
                     attacker, defender,
-                    attackerStartingHealth - attacker.Health,
-                    defenderStartingHealth - defender.Health
+                    attackerStartingHealth - attacker.Hitpoints,
+                    defenderStartingHealth - defender.Hitpoints
                 )
             );
         }
 
         public void PerformMeleeAttack(IUnit attacker, ICity city) {
-            int attackerStartingHealth = attacker.Health;
-            int defenderStartingHealth = city.CombatFacade.Health;
+            int attackerStartingHealth = attacker.Hitpoints;
+            int defenderStartingHealth = city.CombatFacade.Hitpoints;
 
             PerformMeleeAttack_NoEvent(attacker, city.CombatFacade);
 
             UnitSignals.MeleeCombatWithCitySignal.OnNext(
                 new UnitCityCombatData(
                     attacker, city,
-                    attackerStartingHealth - attacker.Health,
-                    defenderStartingHealth - city.CombatFacade.Health
+                    attackerStartingHealth - attacker.Hitpoints,
+                    defenderStartingHealth - city.CombatFacade.Hitpoints
                 )
             );
         }
@@ -192,31 +192,31 @@ namespace Assets.Simulation.Units.Combat {
         }
 
         public void PerformRangedAttack(IUnit attacker, IUnit defender) {
-            int attackerStartingHealth = attacker.Health;
-            int defenderStartingHealth = defender.Health;
+            int attackerStartingHealth = attacker.Hitpoints;
+            int defenderStartingHealth = defender.Hitpoints;
 
             PerformRangedAttack_NoEvent(attacker, defender);
 
             UnitSignals.RangedCombatWithUnitSignal.OnNext(
                 new UnitUnitCombatData(
                     attacker, defender,
-                    attackerStartingHealth - attacker.Health,
-                    defenderStartingHealth - defender.Health
+                    attackerStartingHealth - attacker.Hitpoints,
+                    defenderStartingHealth - defender.Hitpoints
                 )
             );
         }
 
         public void PerformRangedAttack(IUnit attacker, ICity city) {
-            int attackerStartingHealth = attacker.Health;
-            int defenderStartingHealth = city.CombatFacade.Health;
+            int attackerStartingHealth = attacker.Hitpoints;
+            int defenderStartingHealth = city.CombatFacade.Hitpoints;
 
             PerformRangedAttack_NoEvent(attacker, city.CombatFacade);
 
             UnitSignals.RangedCombatWithCitySignal.OnNext(
                 new UnitCityCombatData(
                     attacker, city,
-                    attackerStartingHealth - attacker.Health,
-                    defenderStartingHealth - city.CombatFacade.Health
+                    attackerStartingHealth - attacker.Hitpoints,
+                    defenderStartingHealth - city.CombatFacade.Hitpoints
                 )
             );
         }
@@ -308,8 +308,8 @@ namespace Assets.Simulation.Units.Combat {
 
             Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, attackerReceivesDamage);
 
-            attacker.Health -= results.Item1;
-            defender.Health -= results.Item2;
+            attacker.Hitpoints -= results.Item1;
+            defender.Hitpoints -= results.Item2;
 
             attacker.HasAttacked = true;
         }
@@ -321,10 +321,10 @@ namespace Assets.Simulation.Units.Combat {
             int attackerDamage = 0, defenderDamage = 0;
 
             if(attackerStrength == 0) {
-                defenderDamage = attacker.Health;
+                defenderDamage = attacker.Hitpoints;
 
             }else if(defenderStrength == 0) {
-                attackerDamage = defender.Health;
+                attackerDamage = defender.Hitpoints;
 
             }else {
                 float attackerDefenderRatio = attackerStrength / defenderStrength;
@@ -340,8 +340,8 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             return new Tuple<int, int>(
-                attackerReceivesDamage ? Math.Min(defenderDamage, attacker.Health) : 0,
-                Math.Min(attackerDamage, defender.Health)
+                attackerReceivesDamage ? Math.Min(defenderDamage, attacker.Hitpoints) : 0,
+                Math.Min(attackerDamage, defender.Hitpoints)
             );
         }
 

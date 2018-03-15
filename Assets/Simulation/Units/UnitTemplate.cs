@@ -77,6 +77,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _rangedAttackStrength;
 
+        public int MaxHitpoints {
+            get { return _maxHitpoints; }
+        }
+        [SerializeField] private int _maxHitpoints;
+
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
             get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }
         }

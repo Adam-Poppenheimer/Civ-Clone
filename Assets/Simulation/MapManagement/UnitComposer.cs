@@ -69,7 +69,7 @@ namespace Assets.Simulation.MapManagement {
                     Template        = unit.Template.name,
                     Owner           = unitOwner.Name,
                     CurrentMovement = unit.CurrentMovement,
-                    Health          = unit.Health,
+                    Health          = unit.Hitpoints,
                     CurrentPath     = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
                 };
 
@@ -86,7 +86,7 @@ namespace Assets.Simulation.MapManagement {
                 var newUnit = UnitFactory.Create(unitLocation, templateToBuild, unitOwner);
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
-                newUnit.Health          = unitData.Health;
+                newUnit.Hitpoints          = unitData.Health;
 
                 if(unitData.CurrentPath != null) {
                     newUnit.CurrentPath = unitData.CurrentPath.Select(coord => Grid.GetCellAtCoordinates(coord)).ToList();

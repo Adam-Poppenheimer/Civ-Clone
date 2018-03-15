@@ -70,11 +70,15 @@ namespace Assets.Simulation.Cities {
         }
 
         public int CombatStrength {
-            get { return CombatLogic.GetRangedAttackStrengthOfCity(UnderlyingCity); }
+            get { return CombatLogic.GetCombatStrengthOfCity(UnderlyingCity); }
         }
 
         public int RangedAttackStrength {
             get { return CombatLogic.GetRangedAttackStrengthOfCity(UnderlyingCity); }
+        }
+
+        public int MaxHitpoints {
+            get { return CombatLogic.GetMaxHitpointsOfCity(UnderlyingCity); }
         }
 
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {

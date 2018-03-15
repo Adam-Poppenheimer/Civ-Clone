@@ -63,20 +63,20 @@ namespace Assets.UI.Units {
 
                 AttackerNameField          .text = AttackingUnit.Name;
                 AttackerDamageSufferedField.text = estimatedCombat.DamageToAttacker.ToString();
-                AttackerHealthLeftField    .text = (AttackingUnit.Health - estimatedCombat.DamageToAttacker).ToString();
+                AttackerHealthLeftField    .text = (AttackingUnit.Hitpoints - estimatedCombat.DamageToAttacker).ToString();
 
                 AttackerExpectedHealthSlider.minValue = 0;
-                AttackerExpectedHealthSlider.maxValue = AttackingUnit.MaxHealth;
-                AttackerExpectedHealthSlider.value = AttackingUnit.Health - estimatedCombat.DamageToAttacker;
+                AttackerExpectedHealthSlider.maxValue = AttackingUnit.MaxHitpoints;
+                AttackerExpectedHealthSlider.value = AttackingUnit.Hitpoints - estimatedCombat.DamageToAttacker;
 
 
                 DefenderNameField          .text = DefendingUnit.Name;
                 DefenderDamageSufferedField.text = estimatedCombat.DamageToDefender.ToString();
-                DefenderHealthLeftField    .text = (DefendingUnit.Health - estimatedCombat.DamageToDefender).ToString();
+                DefenderHealthLeftField    .text = (DefendingUnit.Hitpoints - estimatedCombat.DamageToDefender).ToString();
 
                 DefenderExpectedHealthSlider.minValue = 0;
-                DefenderExpectedHealthSlider.maxValue = DefendingUnit.MaxHealth;
-                DefenderExpectedHealthSlider.value = DefendingUnit.Health - estimatedCombat.DamageToDefender;
+                DefenderExpectedHealthSlider.maxValue = DefendingUnit.MaxHitpoints;
+                DefenderExpectedHealthSlider.value = DefendingUnit.Hitpoints - estimatedCombat.DamageToDefender;
             }
         }
 

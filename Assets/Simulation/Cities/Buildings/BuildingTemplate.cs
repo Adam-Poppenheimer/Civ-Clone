@@ -99,6 +99,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _foodStockpilePreservationBonus;
 
+        public int CityCombatStrengthBonus { 
+            get { return _cityCombatStrengthBonus; }
+        }
+        [SerializeField] private int _cityCombatStrengthBonus;
+
+        public int CityMaxHitpointBonus { 
+            get { return _cityMaxHitpointBonus; }
+        }
+        [SerializeField] private int _cityMaxHitpointBonus;
+
         #endregion
 
         #endregion

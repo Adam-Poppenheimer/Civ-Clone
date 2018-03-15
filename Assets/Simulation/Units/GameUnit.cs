@@ -58,16 +58,16 @@ namespace Assets.Simulation.Units {
             get { return Template.RangedAttackStrength; }
         }
 
-        public int Health {
-            get { return _health; }
+        public int Hitpoints {
+            get { return _hitpoints; }
             set {
-                _health = value.Clamp(0, Config.MaxHealth);
+                _hitpoints = value.Clamp(0, MaxHitpoints);
             }
         }
-        private int _health;
+        private int _hitpoints;
 
-        public int MaxHealth {
-            get { return Config.MaxHealth; }
+        public int MaxHitpoints {
+            get { return Template.MaxHitpoints; }
         }
 
         public List<IHexCell> CurrentPath { get; set; }
@@ -129,7 +129,7 @@ namespace Assets.Simulation.Units {
             TerrainCostLogic = terrainCostLogic;
             PositionCanon    = positionCanon;
 
-            Health = Config.MaxHealth;
+            Hitpoints = Config.MaxHealth;
         }
 
         #region Unity messages
