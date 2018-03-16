@@ -75,6 +75,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int CityMaxHitpointBonus { get; }
 
+        ResourceSummary BonusYieldPerPopulation { get; }
+
         #endregion
 
     }

@@ -109,6 +109,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _cityMaxHitpointBonus;
 
+        public ResourceSummary BonusYieldPerPopulation {
+            get { return _bonusYieldPerPopulation; }
+        }
+        [SerializeField] private ResourceSummary _bonusYieldPerPopulation;
+
         #endregion
 
         #endregion
