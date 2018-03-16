@@ -119,6 +119,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<BuildingTemplate> _prerequisiteBuildings;
 
+        public float LandUnitProductionBonus {
+            get { return _landUnitProductionBonus; }
+        }
+        [SerializeField] private float _landUnitProductionBonus;
+
+        public float MountedUnitProductionBonus {
+            get { return _mountedUnitProductionBonus; }
+        }
+        [SerializeField] private float _mountedUnitProductionBonus;
+
         #endregion
 
         #endregion

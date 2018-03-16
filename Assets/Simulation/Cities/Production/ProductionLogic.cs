@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -21,6 +22,8 @@ namespace Assets.Simulation.Cities.Production {
 
         private IResourceGenerationLogic GenerationLogic;
 
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+
         #endregion
 
         #region constructors
@@ -30,9 +33,13 @@ namespace Assets.Simulation.Cities.Production {
         /// </summary>
         /// <param name="config"></param>
         /// <param name="generationLogic"></param>
-        public ProductionLogic(ICityConfig config, IResourceGenerationLogic generationLogic) {
-            Config = config;
-            GenerationLogic = generationLogic;
+        public ProductionLogic(
+            ICityConfig config, IResourceGenerationLogic generationLogic,
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+        ){
+            Config                  = config;
+            GenerationLogic         = generationLogic;
+            BuildingPossessionCanon = buildingPossessionCanon;
         }
 
         #endregion
@@ -60,7 +67,28 @@ namespace Assets.Simulation.Cities.Production {
                 throw new ArgumentNullException("project");
             }
 
-            return Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(city)[ResourceType.Production]);
+            float productionModifier = 0f;
+
+            if(project.UnitToConstruct != null) {
+
+                if(project.UnitToConstruct.Type == UnitType.Mounted) {
+                    foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                        productionModifier += building.Template.MountedUnitProductionBonus;
+                    }
+                }
+                if(project.UnitToConstruct.Type.IsLandMilitary()) {
+                    foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                        productionModifier += building.Template.LandUnitProductionBonus;
+                    }
+                }
+
+            }
+
+            float totalProduction = GenerationLogic.GetTotalYieldForCity(
+                city, new ResourceSummary(production: productionModifier)
+            )[ResourceType.Production];
+
+            return Mathf.FloorToInt(totalProduction);
         }
 
         #endregion

@@ -844,6 +844,29 @@ namespace Assets.Tests.Simulation.Cities {
             return resourceLogic.GetTotalYieldForCity(city);
         }
 
+        [Test(Description = "GetTotalYieldForCity should add any multipliers passed into it " +
+            "to the city's yield multipliers")]
+        public void GetTotalYieldForCity_AddsArguedMultipliers() {
+            var city = BuildCity(new CityTestData() {
+                Location = new CellTestData() { Slot = new SlotTestData() { BaseYield = new ResourceSummary(production: 10f) } },
+                Buildings = new List<BuildingTestData>() { },
+                CityYieldMultipliers = new ResourceSummary(),
+                NonLocationTerritory = new List<CellTestData>() { },
+                OwningCivilization = new CivilizationTestData() {
+                    YieldMultipliers = new ResourceSummary()
+                },
+                Population = 0
+            });
+            
+            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+
+            Assert.AreEqual(
+                new ResourceSummary(production: 30f),
+                resourceLogic.GetTotalYieldForCity(city, new ResourceSummary(production: 2)),
+                "GetTotalYieldForCity did not account for the argued multipliers properly"
+            );
+        }
+
         [TestCaseSource("GetYieldOfSlotForCityTestCases")]
         [Test(Description = "")]
         public ResourceSummary GetYieldOfSlotForCityTests(SlotResourceTestData testData) {

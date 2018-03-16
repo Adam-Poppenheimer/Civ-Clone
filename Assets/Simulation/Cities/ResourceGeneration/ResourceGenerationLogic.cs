@@ -61,11 +61,15 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         /// <inheritdoc/>
         public ResourceSummary GetTotalYieldForCity(ICity city) {
+            return GetTotalYieldForCity(city, ResourceSummary.Empty);
+        } 
+
+        public ResourceSummary GetTotalYieldForCity(ICity city, ResourceSummary additionalBonuses) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
 
-            var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city);
+            var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city) + additionalBonuses;
             var civMultipliers  = IncomeModifierLogic.GetYieldMultipliersForCivilization(CityPossessionCanon.GetOwnerOfPossession(city));
 
             var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);

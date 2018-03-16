@@ -25,6 +25,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         /// <exception cref="ArgumentNullException">Throws when city is null</exception>
         ResourceSummary GetTotalYieldForCity(ICity city);
 
+        ResourceSummary GetTotalYieldForCity(ICity city, ResourceSummary additionalBonuses);
+
         /// <summary>
         /// Determines the total yield per turn of the given slot for the given city, taking into
         /// account base yield and all modifiers.

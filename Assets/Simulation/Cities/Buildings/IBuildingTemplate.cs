@@ -79,6 +79,10 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<IBuildingTemplate> PrerequisiteBuildings { get; }
 
+        float LandUnitProductionBonus { get; }
+
+        float MountedUnitProductionBonus { get; }
+
         #endregion
 
     }
