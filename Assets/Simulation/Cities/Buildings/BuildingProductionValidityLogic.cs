@@ -78,6 +78,13 @@ namespace Assets.Simulation.Cities.Buildings {
             }
 
             var templatesAlreadyThere = BuildingPossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
+
+            foreach(var prequisite in template.PrerequisiteBuildings) {
+                if(!templatesAlreadyThere.Contains(prequisite)) {
+                    return false;
+                }
+            }
+
             return !templatesAlreadyThere.Contains(template);
         }
 

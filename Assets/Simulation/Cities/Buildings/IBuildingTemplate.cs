@@ -77,6 +77,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         ResourceSummary BonusYieldPerPopulation { get; }
 
+        IEnumerable<IBuildingTemplate> PrerequisiteBuildings { get; }
+
         #endregion
 
     }

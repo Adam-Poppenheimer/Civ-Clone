@@ -114,6 +114,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private ResourceSummary _bonusYieldPerPopulation;
 
+        public IEnumerable<IBuildingTemplate> PrerequisiteBuildings {
+            get { return _prerequisiteBuildings.Cast<IBuildingTemplate>(); }
+        }
+        [SerializeField] private List<BuildingTemplate> _prerequisiteBuildings;
+
         #endregion
 
         #endregion

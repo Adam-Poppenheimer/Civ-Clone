@@ -39,6 +39,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             public List<int> RequiredResources = new List<int>();
 
+            public List<int> PrerequisiteBuildings = new List<int>();
+
         }
 
         public class CityTestData {
@@ -141,7 +143,7 @@ namespace Assets.Tests.Simulation.Cities {
                     AvailableTemplates = new List<BuildingTemplateTestData>() {
                         new BuildingTemplateTestData() {
                             Name = "Template1",
-                            RequiredResources = new List<int>() { 0, 1 }
+                            RequiredResources = new List<int>() { 0, 1 },
                         }
                     },
                     TemplateToConsider = 0,
@@ -157,7 +159,8 @@ namespace Assets.Tests.Simulation.Cities {
                     AvailableTemplates = new List<BuildingTemplateTestData>() {
                         new BuildingTemplateTestData() {
                             Name = "Template1",
-                            RequiredResources = new List<int>() { 0, 1 }
+                            RequiredResources = new List<int>() { 0, 1 },
+                            PrerequisiteBuildings = new List<int>() { }
                         }
                     },
                     TemplateToConsider = 0,
@@ -165,6 +168,78 @@ namespace Assets.Tests.Simulation.Cities {
                         ResourcesAvailableToOwner = new List<int>() { }
                     }
                 }).SetName("Template requiring 2 resources in a city with neither resource").Returns(false);
+
+
+                yield return new TestCaseData(new IsTemplateValidForCityTestData() {
+                    AvailableResources = new List<string>() { },
+                    AvailableTemplates = new List<BuildingTemplateTestData>() {
+                        new BuildingTemplateTestData() {
+                            Name = "Template1",
+                            RequiredResources = new List<int>() { },
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template2",
+                            RequiredResources = new List<int>() { }
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template3",
+                            RequiredResources = new List<int>() { },
+                            PrerequisiteBuildings = new List<int>() { 0, 1 }
+                        },
+                    },
+                    TemplateToConsider = 2,
+                    CityToConsider = new CityTestData() {
+                        
+                    }
+                }).SetName("Template with two prerequisites, neither of which is present").Returns(false);
+
+
+                yield return new TestCaseData(new IsTemplateValidForCityTestData() {
+                    AvailableResources = new List<string>() { },
+                    AvailableTemplates = new List<BuildingTemplateTestData>() {
+                        new BuildingTemplateTestData() {
+                            Name = "Template1",
+                            RequiredResources = new List<int>() { },
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template2",
+                            RequiredResources = new List<int>() { }
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template3",
+                            RequiredResources = new List<int>() { },
+                            PrerequisiteBuildings = new List<int>() { 0, 1 }
+                        },
+                    },
+                    TemplateToConsider = 2,
+                    CityToConsider = new CityTestData() {
+                        TemplatesAlreadyConstructed = new List<int>() { 0 }
+                    }
+                }).SetName("Template with two prerequisites, one of which is present").Returns(false);
+
+
+                yield return new TestCaseData(new IsTemplateValidForCityTestData() {
+                    AvailableResources = new List<string>() { },
+                    AvailableTemplates = new List<BuildingTemplateTestData>() {
+                        new BuildingTemplateTestData() {
+                            Name = "Template1",
+                            RequiredResources = new List<int>() { },
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template2",
+                            RequiredResources = new List<int>() { }
+                        },
+                        new BuildingTemplateTestData() {
+                            Name = "Template3",
+                            RequiredResources = new List<int>() { },
+                            PrerequisiteBuildings = new List<int>() { 0, 1 }
+                        },
+                    },
+                    TemplateToConsider = 2,
+                    CityToConsider = new CityTestData() {
+                        TemplatesAlreadyConstructed = new List<int>() { 0, 1 }
+                    }
+                }).SetName("Template with two prerequisites, both of which are present").Returns(true);
             }
         }
 
@@ -212,10 +287,14 @@ namespace Assets.Tests.Simulation.Cities {
         public bool IsTemplateValidForCityTests(IsTemplateValidForCityTestData data) {
             var allResources = data.AvailableResources.Select(name => BuildResourceDefinition(name)).ToList();
 
-            var allTemplates = data.AvailableTemplates.Select(templateData => BuildTemplate(
-                templateData.Name,
-                templateData.RequiredResources.Select(resourceIndex => allResources[resourceIndex])
-            )).ToList();
+            var allTemplates = new List<IBuildingTemplate>();
+            foreach(var templateData in data.AvailableTemplates) {
+                allTemplates.Add(BuildTemplate(
+                    templateData.Name,
+                    templateData.RequiredResources.Select(resourceIndex => allResources[resourceIndex]),
+                    templateData.PrerequisiteBuildings, allTemplates
+                ));
+            }
 
             var templatesInCity = data.CityToConsider.TemplatesAlreadyConstructed.Select(
                 templateIndex => allTemplates[templateIndex]
@@ -245,12 +324,18 @@ namespace Assets.Tests.Simulation.Cities {
             return mockDefinition.Object;
         }
 
-        public IBuildingTemplate BuildTemplate(string name, IEnumerable<ISpecialtyResourceDefinition> requiredResources) {
+        public IBuildingTemplate BuildTemplate(
+            string name, IEnumerable<ISpecialtyResourceDefinition> requiredResources,
+            List<int> prerequisiteIndices, List<IBuildingTemplate> allTemplates
+        ){
             var mockTemplate = new Mock<IBuildingTemplate>();
             mockTemplate.Name = name;
 
             mockTemplate.Setup(template => template.name).Returns(name);
             mockTemplate.Setup(template => template.RequiredResources).Returns(requiredResources);
+
+            mockTemplate.Setup(template => template.PrerequisiteBuildings)
+                .Returns(prerequisiteIndices.Select(index => allTemplates[index]));
 
             AvailableTemplates.Add(mockTemplate.Object);
 
