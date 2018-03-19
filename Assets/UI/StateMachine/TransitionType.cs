@@ -15,7 +15,6 @@ namespace Assets.UI.StateMachine {
         //PlayMode
         ToCitySelected,
         ToUnitSelected,
-        ToCellSelected,
         ToRangedAttack,
         ToEscapeMenu,
         

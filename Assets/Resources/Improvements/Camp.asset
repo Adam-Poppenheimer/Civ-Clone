@@ -11,16 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
   m_Name: Camp
   m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
   _bonusYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  _validFeatures: 
-  _validTerrains: 
-  _requiresAdjacentUpwardCliff: 0
+  _restrictedToFeatures: 
+  _restrictedToTerrains: 
+  _restrictedToShapes: 
   _clearsForestsWhenBuilt: 0
   _defensiveBonus: 0
+  _requiresResourceToExtract: 1
   _appearancePrefab: {fileID: 4946165858268716, guid: 12a4eb53cde4c684a9348073d6a1b561,
     type: 2}

@@ -48,19 +48,19 @@ namespace Assets.Simulation.Cities {
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(allBuildings);
 
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>> ().To<PossessionRelationship<IHexCell, ICity>>().AsSingle();
-            Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>                  ().AsSingle();
-            Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                        ().AsSingle();
-            Container.Bind<IResourceGenerationLogic>                 ().To<ResourceGenerationLogic>                ().AsSingle();
-            Container.Bind<IBorderExpansionLogic>                    ().To<BorderExpansionLogic>                   ().AsSingle();
-            Container.Bind<IWorkerDistributionLogic>                 ().To<WorkerDistributionLogic>                ().AsSingle();
-            Container.Bind<IBuildingProductionValidityLogic>         ().To<BuildingProductionValidityLogic>        ().AsSingle();
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().To<CellPossessionCanon>                    ().AsSingle();
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().To<BuildingPossessionCanon>                ().AsSingle();
-            Container.Bind<IIncomeModifierLogic>                     ().To<IncomeModifierLogic>                    ().AsSingle();
-            Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>                      ().AsSingle();
-            Container.Bind<ICityCombatLogic>                         ().To<CityCombatLogic>                        ().AsSingle();
-            Container.Bind<ICityHappinessLogic>                      ().To<CityHappinessLogic>                     ().AsSingle();
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>> ().To<CityLocationCanon>              ().AsSingle();
+            Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>          ().AsSingle();
+            Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                ().AsSingle();
+            Container.Bind<IResourceGenerationLogic>                 ().To<ResourceGenerationLogic>        ().AsSingle();
+            Container.Bind<IBorderExpansionLogic>                    ().To<BorderExpansionLogic>           ().AsSingle();
+            Container.Bind<IWorkerDistributionLogic>                 ().To<WorkerDistributionLogic>        ().AsSingle();
+            Container.Bind<IBuildingProductionValidityLogic>         ().To<BuildingProductionValidityLogic>().AsSingle();
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().To<CellPossessionCanon>            ().AsSingle();
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().To<BuildingPossessionCanon>        ().AsSingle();
+            Container.Bind<IIncomeModifierLogic>                     ().To<IncomeModifierLogic>            ().AsSingle();
+            Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>              ().AsSingle();
+            Container.Bind<ICityCombatLogic>                         ().To<CityCombatLogic>                ().AsSingle();
+            Container.Bind<ICityHappinessLogic>                      ().To<CityHappinessLogic>             ().AsSingle();
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();

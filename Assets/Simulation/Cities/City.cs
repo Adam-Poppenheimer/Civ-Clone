@@ -126,6 +126,7 @@ namespace Assets.Simulation.Cities {
         #region Unity messages
 
         private void OnDestroy() {
+            DestroyImmediate(CombatFacade.gameObject);
             Signals.CityBeingDestroyedSignal.OnNext(this);
         }
 

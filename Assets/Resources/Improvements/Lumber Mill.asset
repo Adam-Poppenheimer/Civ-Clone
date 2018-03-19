@@ -11,15 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
   m_Name: Lumber Mill
   m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
   _bonusYield:
     Food: 0
     Production: 1
     Gold: 0
     Culture: 0
     Science: 0
-  _validFeatures: 01000000
-  _validTerrains: 00000000010000000200000003000000
-  _requiresAdjacentUpwardCliff: 0
+  _restrictedToFeatures: 01000000
+  _restrictedToTerrains: 
+  _restrictedToShapes: 
   _clearsForestsWhenBuilt: 0
+  _defensiveBonus: 0
+  _requiresResourceToExtract: 0
   _appearancePrefab: {fileID: 4946165858268716, guid: d51b158503c558949970e94b98d8c53e,
     type: 2}

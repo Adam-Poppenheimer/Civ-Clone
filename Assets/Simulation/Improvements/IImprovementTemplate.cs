@@ -29,6 +29,8 @@ namespace Assets.Simulation.Improvements {
 
         float DefensiveBonus { get; }
 
+        bool RequiresResourceToExtract { get; }
+
         Transform AppearancePrefab { get; }
 
         #endregion

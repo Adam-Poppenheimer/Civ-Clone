@@ -369,18 +369,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1516862245}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls:
-      - m_Target: {fileID: 994394905}
-        m_MethodName: Refresh
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
+      m_Calls: []
     m_TypeName: UnityEngine.UI.Button+ButtonClickedEvent, UnityEngine.UI, Version=1.0.0.0,
       Culture=neutral, PublicKeyToken=null
 --- !u!114 &19347479
@@ -422,8 +411,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f01dab539d1b242aa90812844f2af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _executeButton: {fileID: 19347478}
   NameField: {fileID: 1967412879}
-  ExecuteButton: {fileID: 19347478}
   IconField: {fileID: 1516862245}
 --- !u!1 &20952293
 GameObject:
@@ -7956,8 +7945,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d7f01dab539d1b242aa90812844f2af0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _executeButton: {fileID: 0}
   NameField: {fileID: 1179880074}
-  ExecuteButton: {fileID: 319571554}
   IconField: {fileID: 1889308412}
 --- !u!1 &321013195
 GameObject:

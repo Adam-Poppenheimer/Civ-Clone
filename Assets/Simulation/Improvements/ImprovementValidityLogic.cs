@@ -55,6 +55,8 @@ namespace Assets.Simulation.Improvements {
             var nodeAtCell = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             if(nodeAtCell != null && nodeAtCell.Resource.Extractor == template) {
                 return true;
+            }else if(template.RequiresResourceToExtract) {
+                return false;
             }
 
             return 

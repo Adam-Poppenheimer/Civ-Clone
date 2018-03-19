@@ -74,6 +74,7 @@ namespace Assets.Simulation.Units {
             newUnit.Template = template;
 
             newUnit.CurrentMovement = template.MaxMovement;
+            newUnit.Hitpoints       = newUnit.MaxHitpoints;
 
             if(UnitPossessionCanon.CanChangeOwnerOfPossession(newUnit, owner)) {
                 UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);

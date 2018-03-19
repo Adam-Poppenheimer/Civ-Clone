@@ -61,6 +61,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
 
             possession.Refresh();
+            possession.RefreshVisibility();
         }
 
         protected override void DoOnPossessionEstablished(IHexCell possession, ICity newOwner) {
@@ -69,6 +70,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
 
             possession.Refresh();
+            possession.RefreshVisibility();
         }
 
         #endregion

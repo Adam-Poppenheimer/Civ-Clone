@@ -27,11 +27,11 @@ namespace Assets.Simulation.Units.StateMachine {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            Debug.LogFormat("{0}.Enter()", GetType());
+            
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            Debug.LogFormat("{0}.Exit()", GetType());
+            
         }
 
         #endregion

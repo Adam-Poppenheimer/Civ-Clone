@@ -19,8 +19,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bc29bdfa1b7a72242899d223e2db029f, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: 20dbf2b2ba42ecd46a948873c021d8f4, type: 2}
-  _abilitiesEnabled:
-  - {fileID: 11400000, guid: 889583ea605a058488b9537000452202, type: 2}
+  _abilitiesEnabled: []
   _improvementYieldModifications:
   - _improvement: {fileID: 11400000, guid: de08c5dd70339824cb2f33f9865f2d3b, type: 2}
     _bonusYield:

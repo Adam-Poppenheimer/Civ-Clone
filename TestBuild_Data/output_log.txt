@@ -23,21 +23,23 @@ Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\nunit.framework.dll
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\nunit.framework.dll into Unity Child Domain
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\Better UI.dll (this message is harmless)
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\Better UI.dll into Unity Child Domain
+Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll (this message is harmless)
+Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll into Unity Child Domain
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll (this message is harmless)
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll into Unity Child Domain
-- Completed reload, in  0.052 seconds
+- Completed reload, in  0.081 seconds
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3600x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.226377 ms
+UnloadTime: 1.286134 ms
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 3db0 -> priority: 1 
-  Thread -> id: 2fbc -> priority: 1 
-  Thread -> id: 1fd8 -> priority: 1 
-  Thread -> id: 33c4 -> priority: 1 
+  Thread -> id: 1b3c -> priority: 1 
+  Thread -> id: 10fc -> priority: 1 
+  Thread -> id: 3790 -> priority: 1 
+  Thread -> id: 1b70 -> priority: 1 
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Runtime.Serialization.dll (this message is harmless)
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Xml.dll (this message is harmless)
 Exiting Game...

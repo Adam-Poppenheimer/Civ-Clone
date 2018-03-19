@@ -28,7 +28,6 @@ namespace Assets.UI.StateMachine {
 
         private static string CityTriggerName = "City State Requested";
         private static string UnitTriggerName = "Unit State Requested";
-        private static string CellTriggerName = "Cell State Requested";
 
         private static string EscapeMenuTriggerName = "Escape Menu Requested";
 
@@ -38,7 +37,6 @@ namespace Assets.UI.StateMachine {
 
         public ICity    LastCityClicked { get; set; }
         public IUnit    LastUnitClicked { get; set; }
-        public IHexCell LastCellClicked { get; set; }
 
         private IDisposable CityClickedSubscription;
         private IDisposable UnitClickedSubscription;
@@ -101,8 +99,6 @@ namespace Assets.UI.StateMachine {
 
             if(EscapeMenuRequestedSubscription != null) { EscapeMenuRequestedSubscription.Dispose(); }
 
-            CellSignals.ClickedSignal.Unlisten(OnCellClicked);
-
             foreach(var parameter in Animator.parameters) {
                 if(parameter.type == AnimatorControllerParameterType.Trigger) {
                     Animator.ResetTrigger(parameter.name);
@@ -133,9 +129,6 @@ namespace Assets.UI.StateMachine {
 
             }else if(type == TransitionType.ToUnitSelected) {
                 UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);
-
-            }else if(type == TransitionType.ToCellSelected) {
-                CellSignals.ClickedSignal.Listen(OnCellClicked);
 
             }else if(type == TransitionType.ToEscapeMenu) {
                 EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
@@ -177,11 +170,6 @@ namespace Assets.UI.StateMachine {
         private void OnUnitClicked(IUnit unit) {
             LastUnitClicked = unit;
             Animator.SetTrigger(UnitTriggerName);
-        }
-
-        private void OnCellClicked(IHexCell cell, Vector3 position) {
-            LastCellClicked = cell;
-            Animator.SetTrigger(CellTriggerName);
         }
 
         private void OnEscapeMenuRequested(UniRx.Unit unit) {

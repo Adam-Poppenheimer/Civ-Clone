@@ -70,10 +70,10 @@ namespace Assets.Simulation {
 
             if(newOwner != null) {
                 PossessionsOfOwner[newOwner].Add(possession);
-            }
 
-            DoOnPossessionEstablished(possession, newOwner);
-        }                
+                DoOnPossessionEstablished(possession, newOwner);
+            }
+        }
 
         #endregion
 

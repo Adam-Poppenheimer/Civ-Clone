@@ -12,6 +12,7 @@ using Assets.Simulation;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Abilities;
 
 namespace Assets.UI.Units {
 
@@ -25,11 +26,10 @@ namespace Assets.UI.Units {
 
 
 
-        private AbilityDisplayMemoryPool AbilityDisplayPool;
-
-        private ITechCanon TechCanon;
-
+        private AbilityDisplayMemoryPool                      AbilityDisplayPool;
+        private ITechCanon                                    TechCanon;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private IAbilityExecuter                              AbilityExecuter;
 
         #endregion
 
@@ -38,11 +38,13 @@ namespace Assets.UI.Units {
         [Inject]
         public void InjectDependencies(
             AbilityDisplayMemoryPool abilityDisplayPool, ITechCanon techCanon,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            IAbilityExecuter abilityExecuter
         ){
             AbilityDisplayPool  = abilityDisplayPool;
             TechCanon           = techCanon;
             UnitPossessionCanon = unitPossessionCanon;
+            AbilityExecuter     = abilityExecuter;
         }
 
         #region from UnitDisplayBase
@@ -60,16 +62,22 @@ namespace Assets.UI.Units {
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
             foreach(var ability in ObjectToDisplay.Abilities) {
-                if(!TechCanon.IsAbilityResearchedForCiv(ability, unitOwner)) {
+                if( !TechCanon.IsAbilityResearchedForCiv(ability, unitOwner) ||
+                    !AbilityExecuter.CanExecuteAbilityOnUnit(ability, ObjectToDisplay)
+                ) {
                     continue;
                 }
+
+                var cachedAbility = ability;
 
                 var newDisplay = AbilityDisplayPool.Spawn();
 
                 newDisplay.transform.SetParent(transform, false);
                 newDisplay.UnitToInvokeOn = ObjectToDisplay;
-                newDisplay.AbilityToDisplay = ability;
+                newDisplay.AbilityToDisplay = cachedAbility;
                 newDisplay.Refresh();
+
+                newDisplay.ExecuteButton.onClick.AddListener(() => this.Refresh());
 
                 ActiveAbilityDisplays.Add(newDisplay);
             }

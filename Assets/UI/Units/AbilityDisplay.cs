@@ -23,10 +23,14 @@ namespace Assets.UI.Units {
 
         public IUnit UnitToInvokeOn { get; set; }
 
+        public Button ExecuteButton {
+            get { return _executeButton; }
+        }
+        [SerializeField] private Button _executeButton;
+
         #endregion
 
-        [SerializeField] private Text   NameField;        
-        [SerializeField] private Button ExecuteButton;
+        [SerializeField] private Text   NameField;
         [SerializeField] private Image  IconField;
         
         private IAbilityExecuter AbilityExecuter;

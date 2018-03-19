@@ -128,8 +128,6 @@ namespace Assets.Simulation.Units {
             Signals          = signals;
             TerrainCostLogic = terrainCostLogic;
             PositionCanon    = positionCanon;
-
-            Hitpoints = Config.MaxHealth;
         }
 
         #region Unity messages

@@ -53,6 +53,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             public List<TerrainShape> RestrictedToShapes;
 
+            public bool RequiresResourceToExtract;
+
         }
 
         public class ResourceNodeTestData {
@@ -202,7 +204,7 @@ namespace Assets.Tests.Simulation.Improvements {
                     NodeOnCell = new ResourceNodeTestData() {
                         TemplateToTestIsExtractor = true
                     }
-                }).SetName("City on otherwise invalid cell, but node with valid extractor").Returns(true);
+                }).SetName("An otherwise invalid cell, but node with valid extractor").Returns(true);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
@@ -218,7 +220,22 @@ namespace Assets.Tests.Simulation.Improvements {
                     NodeOnCell = new ResourceNodeTestData() {
                         TemplateToTestIsExtractor = false
                     }
-                }).SetName("City on otherwise invalid cell, but node with invalid extractor").Returns(false);
+                }).SetName("An otherwise invalid cell, but node with invalid extractor").Returns(false);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToTerrains = new List<TerrainType>(),
+                        RestrictedToShapes   = new List<TerrainShape>(),
+                        RestrictedToFeatures = new List<TerrainFeature>(),
+                        RequiresResourceToExtract = true
+                    },
+
+                }).SetName("No terrain, shape, or feature restrictions, no resource, and RequiresResourceToExtract is true").Returns(false);
             }
         }
 
@@ -326,8 +343,9 @@ namespace Assets.Tests.Simulation.Improvements {
             var mockTemplate = new Mock<IImprovementTemplate>();
 
             mockTemplate.Setup(template => template.RestrictedToTerrains).Returns(data.RestrictedToTerrains);
-            mockTemplate.Setup(template => template.RestrictedToFeatures).Returns(data.RestrictedToFeatures);            
+            mockTemplate.Setup(template => template.RestrictedToFeatures).Returns(data.RestrictedToFeatures);
             mockTemplate.Setup(template => template.RestrictedToShapes  ).Returns(data.RestrictedToShapes  );
+            mockTemplate.Setup(template => template.RequiresResourceToExtract).Returns(data.RequiresResourceToExtract);
 
             return mockTemplate.Object;
         }

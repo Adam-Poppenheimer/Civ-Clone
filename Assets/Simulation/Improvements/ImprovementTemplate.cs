@@ -51,6 +51,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private float _defensiveBonus;
 
+        public bool RequiresResourceToExtract {
+            get { return _requiresResourceToExtract; }
+        }
+        [SerializeField] private bool _requiresResourceToExtract;
+
         public Transform AppearancePrefab {
             get { return _appearancePrefab; }
         }

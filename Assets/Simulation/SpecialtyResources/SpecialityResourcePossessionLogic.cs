@@ -71,7 +71,11 @@ namespace Assets.Simulation.SpecialtyResources {
                         if( resource.Extractor == null ||
                             (improvementAtLocation != null && improvementAtLocation.Template == resource.Extractor)
                         ) {
-                            retval += nodeOnCell.Copies;
+                            if(resource.Type == SpecialtyResourceType.Strategic) {
+                                retval += nodeOnCell.Copies;
+                            }else if(resource.Type == SpecialtyResourceType.Luxury){
+                                retval++;
+                            }
                         }
                     }
                 }

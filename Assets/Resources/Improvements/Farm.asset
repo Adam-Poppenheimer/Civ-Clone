@@ -11,15 +11,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
   m_Name: Farm
   m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
   _bonusYield:
     Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  _validFeatures: 0000000001000000
-  _validTerrains: 0000000001000000
-  _requiresAdjacentUpwardCliff: 0
+  _restrictedToFeatures: 
+  _restrictedToTerrains: 
+  _restrictedToShapes: 00000000
   _clearsForestsWhenBuilt: 1
+  _defensiveBonus: 0
+  _requiresResourceToExtract: 0
   _appearancePrefab: {fileID: 4814062064803488, guid: 9f1238ff02204e040bdb510ea717ae94,
     type: 2}

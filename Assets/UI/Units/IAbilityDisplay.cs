@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.UI;
 
 using Zenject;
 
@@ -21,6 +22,8 @@ namespace Assets.UI.Units {
         IUnit UnitToInvokeOn { get; set; }
 
         Transform transform { get; }
+
+        Button ExecuteButton { get; }
 
         #endregion
 
