@@ -53,7 +53,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(newOwner);
 
-            foreach(var resource in building.Template.RequiredResources) {
+            foreach(var resource in building.Template.ResourcesConsumed) {
                 ResourceAssignmentCanon.ReserveCopyOfResourceForCiv(resource, cityOwner);
             }
         }
@@ -65,7 +65,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(oldOwner);
 
-            foreach(var resource in building.Template.RequiredResources) {
+            foreach(var resource in building.Template.ResourcesConsumed) {
                 ResourceAssignmentCanon.UnreserveCopyOfResourceForCiv(resource, cityOwner);
             }
         }

@@ -9,33 +9,23 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
-  m_Name: Building 3
+  m_Name: Market
   m_EditorClassIdentifier: 
-  _description: 
+  _description: Market Description
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
-  _cost: 30
-  _maintenance: 3
+  _productionCost: 100
+  _maintenance: 0
   _slotYields:
-  - Food: 3
-    Production: 3
-    Gold: 3
-    Culture: 3
-    Science: 0
-  - Food: 3
-    Production: 3
-    Gold: 3
-    Culture: 3
-    Science: 0
-  - Food: 3
-    Production: 3
-    Gold: 3
-    Culture: 3
+  - Food: 0
+    Production: 0
+    Gold: 2
+    Culture: 0
     Science: 0
   _staticYield:
-    Food: 3
-    Production: 3
-    Gold: 3
-    Culture: 3
+    Food: 0
+    Production: 0
+    Gold: 2
+    Culture: 0
     Science: 0
   _civilizationYieldModifier:
     Food: 0
@@ -46,10 +36,25 @@ MonoBehaviour:
   _cityYieldModifier:
     Food: 0
     Production: 0
+    Gold: 0.25
+    Culture: 0
+    Science: 0
+  _localHappiness: 0
+  _globalHappiness: 0
+  _unhappiness: 0
+  _requiredResources: []
+  _resourceYieldModifications: []
+  _cellYieldModifications: []
+  _foodStockpilePreservationBonus: 0
+  _cityCombatStrengthBonus: 0
+  _cityMaxHitpointBonus: 0
+  _bonusYieldPerPopulation:
+    Food: 0
+    Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  _health: 0
-  _happiness: 0
-  _requiredResources: []
-  _resourceYieldModifications: []
+  _prerequisiteBuildings: []
+  _landUnitProductionBonus: 0
+  _mountedUnitProductionBonus: 0
+  _requiresAdjacentRiver: 0

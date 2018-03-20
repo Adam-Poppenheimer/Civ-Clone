@@ -9,23 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
-  m_Name: Building 1
+  m_Name: Barracks
   m_EditorClassIdentifier: 
-  _description: Building 1 Description
+  _description: Barracks Description
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
-  _productionCost: 0
+  _productionCost: 75
   _maintenance: 1
-  _slotYields:
-  - Food: 1
-    Production: 1
-    Gold: 1
-    Culture: 1
-    Science: 0
+  _slotYields: []
   _staticYield:
-    Food: 1
-    Production: 1
-    Gold: 1
-    Culture: 1
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
     Science: 0
   _civilizationYieldModifier:
     Food: 0
@@ -45,4 +40,16 @@ MonoBehaviour:
   _requiredResources: []
   _resourceYieldModifications: []
   _cellYieldModifications: []
-  _foodStockpilePreservationBonus: 0.75
+  _foodStockpilePreservationBonus: 0
+  _cityCombatStrengthBonus: 0
+  _cityMaxHitpointBonus: 0
+  _bonusYieldPerPopulation:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _prerequisiteBuildings: []
+  _landUnitProductionBonus: 0
+  _mountedUnitProductionBonus: 0
+  _requiresAdjacentRiver: 0

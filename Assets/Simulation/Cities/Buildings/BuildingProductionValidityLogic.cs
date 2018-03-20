@@ -7,6 +7,8 @@ using Zenject;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -17,13 +19,17 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private List<IBuildingTemplate>                       AvailableTemplates;
-        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private IResourceAssignmentCanon                      ResourceAssignmentCanon;
-        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
-        private IHexGrid                                      Grid;
-        private IRiverCanon                                   RiverCanon;
+        private List<IBuildingTemplate>                          AvailableTemplates;
+        private IPossessionRelationship<ICity, IBuilding>        BuildingPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
+        private IResourceAssignmentCanon                         ResourceAssignmentCanon;
+        private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
+        private IHexGrid                                         Grid;
+        private IRiverCanon                                      RiverCanon;
+        private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
+        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
+        private IImprovementLocationCanon                        ImprovementLocationCanon;
+
 
         #endregion
 
@@ -41,15 +47,21 @@ namespace Assets.Simulation.Cities.Buildings {
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IResourceAssignmentCanon resourceAssignmentCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IHexGrid grid, IRiverCanon riverCanon
+            IHexGrid grid, IRiverCanon riverCanon,
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
+            IImprovementLocationCanon improvementLocationCanon
         ){
-            AvailableTemplates      = availableTemplates;
-            BuildingPossessionCanon = buildingPossessionCanon;
-            CityPossessionCanon     = cityPossessionCanon;
-            ResourceAssignmentCanon = resourceAssignmentCanon;
-            CityLocationCanon       = cityLocationCanon;
-            Grid                    = grid;
-            RiverCanon              = riverCanon;
+            AvailableTemplates       = availableTemplates;
+            BuildingPossessionCanon  = buildingPossessionCanon;
+            CityPossessionCanon      = cityPossessionCanon;
+            ResourceAssignmentCanon  = resourceAssignmentCanon;
+            CityLocationCanon        = cityLocationCanon;
+            Grid                     = grid;
+            RiverCanon               = riverCanon;
+            CellPossessionCanon      = cellPossessionCanon;
+            NodeLocationCanon        = nodeLocationCanon;
+            ImprovementLocationCanon = improvementLocationCanon;
         }
 
         #endregion
@@ -76,7 +88,7 @@ namespace Assets.Simulation.Cities.Buildings {
             }
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
-            foreach(var resource in template.RequiredResources) {
+            foreach(var resource in template.ResourcesConsumed) {
                 if(ResourceAssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
                     return false;
                 }
@@ -84,10 +96,53 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var templatesAlreadyThere = BuildingPossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
 
-            foreach(var prequisite in template.PrerequisiteBuildings) {
-                if(!templatesAlreadyThere.Contains(prequisite)) {
+            foreach(var prerequisiteBuilding in template.PrerequisiteBuildings) {
+                if(!templatesAlreadyThere.Contains(prerequisiteBuilding)) {
                     return false;
                 }
+            }
+
+            var cellsOfCity = CellPossessionCanon.GetPossessionsOfOwner(city);
+            bool resourcePrerequisiteMet = template.PrerequisiteResourcesNearCity.Count() == 0;
+
+            foreach(var prerequisiteResource in template.PrerequisiteResourcesNearCity) {
+
+                foreach(var cell in cellsOfCity) {
+                    IResourceNode nodeOnCell = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+                    if(nodeOnCell != null && nodeOnCell.Resource == prerequisiteResource) {
+                        resourcePrerequisiteMet = true;
+                        break;
+                    }
+                }
+
+                if(resourcePrerequisiteMet) {
+                    break;
+                }
+            }
+
+            if(!resourcePrerequisiteMet) {
+                return false;
+            }
+
+            bool improvementPrerequisiteMet = template.PrerequisiteImprovementsNearCity.Count() == 0;
+
+            foreach(IImprovementTemplate improvementPrerequisite in template.PrerequisiteImprovementsNearCity) {
+
+                foreach(var cell in cellsOfCity) {
+                    IImprovement improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+                    if(improvementOnCell != null && improvementOnCell.Template == improvementPrerequisite) {
+                        improvementPrerequisiteMet = true;
+                        break;
+                    }
+                }
+
+                if(improvementPrerequisiteMet) {
+                    break;
+                }
+            }
+
+            if(!improvementPrerequisiteMet) {
+                return false;
             }
 
             if(templatesAlreadyThere.Contains(template)) {
@@ -96,8 +151,16 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
 
-            if(template.RequiresAdjacentRiver) {
-                return Grid.GetNeighbors(cityLocation).Where(neighbor => RiverCanon.HasRiver(neighbor)).Count() > 0;
+            if( template.RequiresAdjacentRiver &&
+                Grid.GetNeighbors(cityLocation).Where(neighbor => RiverCanon.HasRiver(neighbor)).Count() <= 0
+            ){
+                return false;
+            }
+
+            if( template.RequiresCoastalCity && 
+                Grid.GetNeighbors(cityLocation).Where(neighbor => neighbor.IsUnderwater).Count() <= 0
+            ){
+                return false;
             }
 
             return true;

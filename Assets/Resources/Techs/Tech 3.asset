@@ -16,8 +16,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9948551e92873d04daf15067115df065, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
   _techScreenPosition: {x: 500, y: -1000}
-  _buildingsEnabled:
-  - {fileID: 11400000, guid: b7ce9b7952687ca4887e14f8a3e6e5f7, type: 2}
+  _buildingsEnabled: []
   _unitsEnabled:
   - {fileID: 11400000, guid: ef6573fb065af374aab907e85e9ec5c9, type: 2}
   _abilitiesEnabled: []

@@ -7,7 +7,9 @@ namespace Assets.Simulation.HexMap {
 
     public enum TerrainFeature {
         None   = 0,
-        Forest = 1
+        Forest = 1,
+        Jungle = 2,
+        Marsh  = 3
     }
 
 }

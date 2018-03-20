@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Cities {
         private IBuildingTemplate BuildTemplate(params ISpecialtyResourceDefinition[] requiredResources) {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
-            mockTemplate.Setup(template => template.RequiredResources).Returns(requiredResources);
+            mockTemplate.Setup(template => template.ResourcesConsumed).Returns(requiredResources);
 
             return mockTemplate.Object;
         }

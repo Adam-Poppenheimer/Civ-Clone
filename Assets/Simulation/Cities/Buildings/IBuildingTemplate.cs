@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -63,7 +64,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int Unhappiness { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
+        IEnumerable<ISpecialtyResourceDefinition> ResourcesConsumed { get; }
 
         IEnumerable<IResourceYieldModificationData> ResourceYieldModifications { get; }
 
@@ -79,11 +80,17 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<IBuildingTemplate> PrerequisiteBuildings { get; }
 
+        IEnumerable<ISpecialtyResourceDefinition> PrerequisiteResourcesNearCity { get; }
+
+        IEnumerable<IImprovementTemplate> PrerequisiteImprovementsNearCity { get; }
+
         float LandUnitProductionBonus { get; }
 
         float MountedUnitProductionBonus { get; }
 
         bool RequiresAdjacentRiver { get; }
+
+        bool RequiresCoastalCity { get; }
 
         #endregion
 

@@ -3,8 +3,11 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
-using Assets.Simulation.SpecialtyResources;
+
 using UnityEngine;
+
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -79,10 +82,10 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _unhappiness;
 
-        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
-            get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }
+        public IEnumerable<ISpecialtyResourceDefinition> ResourcesConsumed {
+            get { return _resourcesConsumed.Cast<ISpecialtyResourceDefinition>(); }
         }
-        [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
+        [SerializeField] private List<SpecialtyResourceDefinition> _resourcesConsumed;
 
         public IEnumerable<IResourceYieldModificationData> ResourceYieldModifications {
             get { return _resourceYieldModifications.Cast<IResourceYieldModificationData>(); }
@@ -119,6 +122,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<BuildingTemplate> _prerequisiteBuildings;
 
+        public IEnumerable<ISpecialtyResourceDefinition> PrerequisiteResourcesNearCity {
+            get { return _prerequisiteResourcesNearCity.Cast<ISpecialtyResourceDefinition>(); }
+        }
+        [SerializeField] private List<SpecialtyResourceDefinition> _prerequisiteResourcesNearCity;
+
+        public IEnumerable<IImprovementTemplate> PrerequisiteImprovementsNearCity {
+            get { return _prerequisiteImprovementsNearCity.Cast<IImprovementTemplate>(); }
+        }
+        [SerializeField] private List<ImprovementTemplate> _prerequisiteImprovementsNearCity;
+
         public float LandUnitProductionBonus {
             get { return _landUnitProductionBonus; }
         }
@@ -133,6 +146,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return _requiresAdjacentRiver; }
         }
         [SerializeField] private bool _requiresAdjacentRiver;
+
+        public bool RequiresCoastalCity {
+            get { return _requiresCoastalCity; }
+        }
+        [SerializeField] private bool _requiresCoastalCity;
 
         #endregion
 
