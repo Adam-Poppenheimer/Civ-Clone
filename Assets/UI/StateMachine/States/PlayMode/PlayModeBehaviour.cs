@@ -42,16 +42,12 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         #region from StateMachineBehaviour
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
-            PlayModeContainer.gameObject.SetActive(true);
-
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             MapComposer.ClearRuntime();
-
-            PlayModeContainer.gameObject.SetActive(false);
         }
 
         #endregion

@@ -33,14 +33,12 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
         #region from StateMachineBehaviour
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
-            TitleScreenContainer.gameObject.SetActive(true);
-
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            TitleScreenContainer.gameObject.SetActive(false);
+            
         }
 
         #endregion

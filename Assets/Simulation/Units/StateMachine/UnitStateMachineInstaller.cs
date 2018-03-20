@@ -26,6 +26,10 @@ namespace Assets.Simulation.Units.StateMachine {
         public override void InstallBindings() {
             Container.Bind<IUnit>().WithId("Unit To Control").FromInstance(UnitToControl);
 
+            if(UnitStateMachine == null) {
+                return;
+            }
+
             UnitStateMachine.Rebind();
 
             foreach(var behaviour in UnitStateMachine.GetBehaviours<StateMachineBehaviour>()) {

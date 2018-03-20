@@ -47,8 +47,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region from StateMachineBehaviour
 
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
-            MapEditorContainer.gameObject.SetActive(true);
-
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
 
@@ -58,8 +56,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            MapEditorContainer.gameObject.SetActive(false);
-
             MapComposer.ClearRuntime();
         }
 

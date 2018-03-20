@@ -20,7 +20,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4433386242519586}
   - component: {fileID: 114853534447256316}
-  - component: {fileID: 95272539023575076}
+  - component: {fileID: 95862112116381530}
   - component: {fileID: 114616494809797408}
   - component: {fileID: 114144767795173282}
   m_Layer: 0
@@ -114,7 +114,7 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1949385078486908}
   m_Mesh: {fileID: 10208, guid: 0000000000000000e000000000000000, type: 0}
---- !u!95 &95272539023575076
+--- !u!95 &95862112116381530
 Animator:
   serializedVersion: 3
   m_ObjectHideFlags: 1
@@ -123,7 +123,7 @@ Animator:
   m_GameObject: {fileID: 1293392051610162}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 98a06265a0fc48747a44f2c8851f399c, type: 2}
+  m_Controller: {fileID: 0}
   m_CullingMode: 0
   m_UpdateMode: 0
   m_ApplyRootMotion: 0
@@ -143,7 +143,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UnitToControl: {fileID: 114853534447256316}
-  UnitStateMachine: {fileID: 95272539023575076}
+  UnitStateMachine: {fileID: 95862112116381530}
 --- !u!114 &114616494809797408
 MonoBehaviour:
   m_ObjectHideFlags: 1
