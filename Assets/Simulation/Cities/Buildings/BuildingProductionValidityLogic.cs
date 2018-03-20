@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -17,13 +17,13 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private List<IBuildingTemplate> AvailableTemplates;
-
-        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
-
+        private List<IBuildingTemplate>                       AvailableTemplates;
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private IResourceAssignmentCanon ResourceAssignmentCanon;
+        private IResourceAssignmentCanon                      ResourceAssignmentCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IHexGrid                                      Grid;
+        private IRiverCanon                                   RiverCanon;
 
         #endregion
 
@@ -39,12 +39,17 @@ namespace Assets.Simulation.Cities.Buildings {
             List<IBuildingTemplate> availableTemplates,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IResourceAssignmentCanon resourceAssignmentCanon
+            IResourceAssignmentCanon resourceAssignmentCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IHexGrid grid, IRiverCanon riverCanon
         ){
             AvailableTemplates      = availableTemplates;
             BuildingPossessionCanon = buildingPossessionCanon;
             CityPossessionCanon     = cityPossessionCanon;
             ResourceAssignmentCanon = resourceAssignmentCanon;
+            CityLocationCanon       = cityLocationCanon;
+            Grid                    = grid;
+            RiverCanon              = riverCanon;
         }
 
         #endregion
@@ -85,7 +90,17 @@ namespace Assets.Simulation.Cities.Buildings {
                 }
             }
 
-            return !templatesAlreadyThere.Contains(template);
+            if(templatesAlreadyThere.Contains(template)) {
+                return false;
+            }
+
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            if(template.RequiresAdjacentRiver) {
+                return Grid.GetNeighbors(cityLocation).Where(neighbor => RiverCanon.HasRiver(neighbor)).Count() > 0;
+            }
+
+            return true;
         }
 
         #endregion

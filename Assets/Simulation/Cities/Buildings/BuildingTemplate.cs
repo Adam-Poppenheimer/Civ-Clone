@@ -129,6 +129,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _mountedUnitProductionBonus;
 
+        public bool RequiresAdjacentRiver {
+            get { return _requiresAdjacentRiver; }
+        }
+        [SerializeField] private bool _requiresAdjacentRiver;
+
         #endregion
 
         #endregion

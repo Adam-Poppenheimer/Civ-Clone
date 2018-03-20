@@ -13,6 +13,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -37,6 +38,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             public string Name;
 
+            public bool RequiresAdjacentRiver = false;
+
             public List<int> RequiredResources = new List<int>();
 
             public List<int> PrerequisiteBuildings = new List<int>();
@@ -45,9 +48,19 @@ namespace Assets.Tests.Simulation.Cities {
 
         public class CityTestData {
 
+            public HexCellTestData Location = new HexCellTestData();
+
+            public List<HexCellTestData> LocationNeighbors = new List<HexCellTestData>();
+
             public List<int> ResourcesAvailableToOwner = new List<int>();
 
             public List<int> TemplatesAlreadyConstructed = new List<int>();
+
+        }
+
+        public class HexCellTestData {
+
+            public bool HasRiver;
 
         }
 
@@ -240,6 +253,45 @@ namespace Assets.Tests.Simulation.Cities {
                         TemplatesAlreadyConstructed = new List<int>() { 0, 1 }
                     }
                 }).SetName("Template with two prerequisites, both of which are present").Returns(true);
+
+
+                yield return new TestCaseData(new IsTemplateValidForCityTestData() {
+                    AvailableResources = new List<string>() { },
+                    AvailableTemplates = new List<BuildingTemplateTestData>() {
+                        new BuildingTemplateTestData() {
+                            Name = "Template1",
+                            RequiresAdjacentRiver = true,
+                            RequiredResources = new List<int>() { }
+                        }
+                    },
+                    TemplateToConsider = 0,
+                    CityToConsider = new CityTestData() {
+                        Location = new HexCellTestData(),
+                        LocationNeighbors = new List<HexCellTestData>() {
+                            new HexCellTestData() { HasRiver = false },
+                            new HexCellTestData() { HasRiver = true },
+                        }
+                    }
+                }).SetName("Template requires river adjacency, adjacent river is present").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCityTestData() {
+                    AvailableResources = new List<string>() { },
+                    AvailableTemplates = new List<BuildingTemplateTestData>() {
+                        new BuildingTemplateTestData() {
+                            Name = "Template1",
+                            RequiresAdjacentRiver = true,
+                            RequiredResources = new List<int>() { }
+                        }
+                    },
+                    TemplateToConsider = 0,
+                    CityToConsider = new CityTestData() {
+                        Location = new HexCellTestData(),
+                        LocationNeighbors = new List<HexCellTestData>() {
+                            new HexCellTestData() { HasRiver = false },
+                            new HexCellTestData() { HasRiver = false },
+                        }
+                    }
+                }).SetName("Template requires river adjacency, no adjacent river is present").Returns(false);
             }
         }
 
@@ -249,11 +301,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         private List<IBuildingTemplate> AvailableTemplates = new List<IBuildingTemplate>();
 
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
-
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-
-        private Mock<IResourceAssignmentCanon> MockResourceAssignmentCanon;
+        private Mock<IResourceAssignmentCanon>                      MockResourceAssignmentCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
+        private Mock<IHexGrid>                                      MockGrid;
+        private Mock<IRiverCanon>                                   MockRiverCanon;
 
         #endregion
 
@@ -268,12 +321,18 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockResourceAssignmentCanon = new Mock<IResourceAssignmentCanon>();
+            MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockGrid                    = new Mock<IHexGrid>();
+            MockRiverCanon              = new Mock<IRiverCanon>();
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableTemplates);
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
             Container.Bind<IResourceAssignmentCanon>                     ().FromInstance(MockResourceAssignmentCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon      .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
+            Container.Bind<IRiverCanon>                                  ().FromInstance(MockRiverCanon             .Object);
 
             Container.Bind<BuildingProductionValidityLogic>().AsSingle();
         }
@@ -289,11 +348,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var allTemplates = new List<IBuildingTemplate>();
             foreach(var templateData in data.AvailableTemplates) {
-                allTemplates.Add(BuildTemplate(
-                    templateData.Name,
-                    templateData.RequiredResources.Select(resourceIndex => allResources[resourceIndex]),
-                    templateData.PrerequisiteBuildings, allTemplates
-                ));
+                allTemplates.Add(BuildTemplate(templateData, allTemplates, allResources));
             }
 
             var templatesInCity = data.CityToConsider.TemplatesAlreadyConstructed.Select(
@@ -304,7 +359,7 @@ namespace Assets.Tests.Simulation.Cities {
                 data.CityToConsider.ResourcesAvailableToOwner.Select(resourceIndex => allResources[resourceIndex])
             );
 
-            var cityToConsider = BuildCity(civilization, templatesInCity.Select(template => BuildBuilding(template)));
+            var cityToConsider = BuildCity(data.CityToConsider, civilization, templatesInCity.Select(template => BuildBuilding(template)));
 
             var validityLogic = Container.Resolve<BuildingProductionValidityLogic>();
 
@@ -315,7 +370,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        public ISpecialtyResourceDefinition BuildResourceDefinition(string name) {
+        private ISpecialtyResourceDefinition BuildResourceDefinition(string name) {
             var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
 
             mockDefinition.Name = name;
@@ -324,25 +379,32 @@ namespace Assets.Tests.Simulation.Cities {
             return mockDefinition.Object;
         }
 
-        public IBuildingTemplate BuildTemplate(
-            string name, IEnumerable<ISpecialtyResourceDefinition> requiredResources,
-            List<int> prerequisiteIndices, List<IBuildingTemplate> allTemplates
+        private IBuildingTemplate BuildTemplate(
+            BuildingTemplateTestData templateData,
+            List<IBuildingTemplate> allTemplates,
+            List<ISpecialtyResourceDefinition> allResources
         ){
             var mockTemplate = new Mock<IBuildingTemplate>();
-            mockTemplate.Name = name;
+            mockTemplate.Name = templateData.Name;
 
-            mockTemplate.Setup(template => template.name).Returns(name);
-            mockTemplate.Setup(template => template.RequiredResources).Returns(requiredResources);
+            mockTemplate.Setup(template => template.name                 ).Returns(templateData.Name);
+            mockTemplate.Setup(template => template.RequiresAdjacentRiver).Returns(templateData.RequiresAdjacentRiver);
 
-            mockTemplate.Setup(template => template.PrerequisiteBuildings)
-                .Returns(prerequisiteIndices.Select(index => allTemplates[index]));
+            
+            mockTemplate
+                .Setup(template => template.RequiredResources)
+                .Returns(templateData.RequiredResources.Select(index => allResources[index]));
+
+            mockTemplate
+                .Setup(template => template.PrerequisiteBuildings)
+                .Returns(templateData.PrerequisiteBuildings.Select(index => allTemplates[index]));
 
             AvailableTemplates.Add(mockTemplate.Object);
 
             return mockTemplate.Object;
         }
 
-        public IBuilding BuildBuilding(IBuildingTemplate template) {
+        private IBuilding BuildBuilding(IBuildingTemplate template) {
             var mockBuilding = new Mock<IBuilding>();
 
             mockBuilding.Name = template.name;
@@ -351,10 +413,18 @@ namespace Assets.Tests.Simulation.Cities {
             return mockBuilding.Object;
         }
 
-        public ICity BuildCity(ICivilization owner, IEnumerable<IBuilding> buildings) {
+        private ICity BuildCity(
+            CityTestData cityData, ICivilization owner, IEnumerable<IBuilding> buildings
+        ){
             var mockCity = new Mock<ICity>();
 
             var newCity = mockCity.Object;
+
+            var cityLocation     = BuildCell(cityData.Location);
+            var locationNeighbrs = cityData.LocationNeighbors.Select(data => BuildCell(data));
+
+            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(cityLocation);
+            MockGrid             .Setup(grid => grid.GetNeighbors(cityLocation)).Returns(locationNeighbrs.ToList());
 
             MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
@@ -363,7 +433,7 @@ namespace Assets.Tests.Simulation.Cities {
             return newCity;
         }
 
-        public ICivilization BuildCivilization(IEnumerable<ISpecialtyResourceDefinition> availableResources) {
+        private ICivilization BuildCivilization(IEnumerable<ISpecialtyResourceDefinition> availableResources) {
             var newCiv = new Mock<ICivilization>().Object;
 
             foreach(var resource in availableResources) {
@@ -371,6 +441,14 @@ namespace Assets.Tests.Simulation.Cities {
             }
             
             return newCiv;
+        }
+
+        private IHexCell BuildCell(HexCellTestData cellData) {
+            var newCell = new Mock<IHexCell>().Object;
+
+            MockRiverCanon.Setup(canon => canon.HasRiver(newCell)).Returns(cellData.HasRiver);
+
+            return newCell;
         }
 
         #endregion

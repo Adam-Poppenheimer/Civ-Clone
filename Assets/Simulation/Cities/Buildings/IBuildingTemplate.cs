@@ -83,6 +83,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         float MountedUnitProductionBonus { get; }
 
+        bool RequiresAdjacentRiver { get; }
+
         #endregion
 
     }
