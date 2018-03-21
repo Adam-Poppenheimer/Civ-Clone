@@ -25,7 +25,8 @@ namespace Assets.Simulation.Technology {
 
         Sprite Icon { get; }
 
-        Vector2 TechScreenPosition { get; }
+        int TechTableRow    { get; }
+        int TechTableColumn { get; }
 
         IEnumerable<ITechDefinition> Prerequisites { get; }
 

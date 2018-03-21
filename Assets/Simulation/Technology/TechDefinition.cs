@@ -41,10 +41,15 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private Sprite _icon;
 
-        public Vector2 TechScreenPosition {
-            get { return _techScreenPosition; }
+        public int TechTableRow {
+            get { return _techTableRow; }
         }
-        [SerializeField] private Vector2 _techScreenPosition;
+        [SerializeField] private int _techTableRow;
+
+        public int TechTableColumn {
+            get { return _techTableColumn; }
+        }
+        [SerializeField] private int _techTableColumn;
 
         public IEnumerable<IBuildingTemplate> BuildingsEnabled {
             get { return _buildingsEnabled.Cast<IBuildingTemplate>(); }

@@ -1,0 +1,33 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f91a2ce6a4c82b4aa80e7fbcee4ad91, type: 3}
+  m_Name: Compass
+  m_EditorClassIdentifier: 
+  _cost: 375
+  _prerequisites:
+  - {fileID: 11400000, guid: a48f38c23f199a34a96adb5ef42a1144, type: 2}
+  - {fileID: 11400000, guid: b6a9e82434c7e574aa4f5acb1e7b55be, type: 2}
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _techTableRow: 0
+  _techTableColumn: 6
+  _buildingsEnabled:
+  - {fileID: 11400000, guid: c40a96340e746404cb3badd82ef46bfc, type: 2}
+  _unitsEnabled:
+  - {fileID: 11400000, guid: 12ebc4e1dc182584a82757e2f8c878d5, type: 2}
+  _abilitiesEnabled: []
+  _improvementYieldModifications:
+  - _improvement: {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
+    _bonusYield:
+      Food: 0
+      Production: 0
+      Gold: 1
+      Culture: 0
+      Science: 0

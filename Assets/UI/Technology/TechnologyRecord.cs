@@ -30,19 +30,13 @@ namespace Assets.UI.Technology {
 
         public Vector2 BackwardConnectionPoint {
             get {
-                return new Vector2(
-                    RectTransform.rect.x,
-                    RectTransform.rect.y + RectTransform.rect.height / 2f
-                ) + (Vector2)RectTransform.localPosition;
+                return new Vector2(-RectTransform.rect.width / 2f, 0f) + (Vector2)RectTransform.position;
             }
         }
 
         public Vector2 ForwardConnectionPoint {
             get {
-                return new Vector2(
-                    RectTransform.rect.x + RectTransform.rect.width,
-                    RectTransform.rect.y + RectTransform.rect.height / 2f
-                ) + (Vector2)RectTransform.localPosition;
+                return new Vector2(RectTransform.rect.width / 2f, 0f) + (Vector2)RectTransform.position;
             }
         }
 

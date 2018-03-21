@@ -1,0 +1,27 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f91a2ce6a4c82b4aa80e7fbcee4ad91, type: 3}
+  m_Name: Agriculture
+  m_EditorClassIdentifier: 
+  _cost: 20
+  _prerequisites: []
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _techTableRow: 5
+  _techTableColumn: 0
+  _buildingsEnabled: []
+  _unitsEnabled:
+  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
+  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
+  - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}
+  - {fileID: 11400000, guid: 781ccce6fba14494cb15d2298a46f770, type: 2}
+  _abilitiesEnabled:
+  - {fileID: 11400000, guid: 55849e5c6d2df0d41ad9f3cfff6ced97, type: 2}
+  _improvementYieldModifications: []

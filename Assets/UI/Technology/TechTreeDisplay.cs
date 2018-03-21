@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,14 @@ namespace Assets.UI.Technology {
         [SerializeField] private RectTransform TechRecordContainer;
 
         [SerializeField] private UILineRenderer PrerequisiteLines;
+
+
+        [SerializeField] private TableLayoutGroup TechTable;
+
+        [SerializeField] private int TechTableRowCount;
+
+        [SerializeField] private RectTransform TechTableCellPrefab;
+
 
         private List<TechnologyRecord> TechRecords;
 
@@ -53,6 +62,7 @@ namespace Assets.UI.Technology {
 
         public override void Refresh() {
             if(TechRecords == null) {
+                SetUpTechTable();
                 SetUpTechTree();
             }
 
@@ -90,15 +100,34 @@ namespace Assets.UI.Technology {
 
         #endregion
 
+        private void SetUpTechTable() {
+            for(int rowIndex = 0; rowIndex < TechTableRowCount; rowIndex++) {
+                for(int columnIndex = 0; columnIndex < TechTable.ColumnWidths.Length; columnIndex++) {
+                    var tableCell = Instantiate(TechTableCellPrefab);
+
+                    tableCell.gameObject.SetActive(true);
+                    tableCell.transform.SetParent(TechTable.transform, false);
+                    tableCell.name = string.Format("Cell [{0}, {1}]", rowIndex, columnIndex);
+                }
+            }
+
+            PrerequisiteLines.transform.SetAsLastSibling();
+        }
+
         private void SetUpTechTree() {
             TechRecords = new List<TechnologyRecord>();
 
             foreach(var technology in TechCanon.AvailableTechs) {
                 var newTechRecord = Container.InstantiatePrefabForComponent<TechnologyRecord>(TechRecordPrefab);
 
+                newTechRecord.name = string.Format("{0} Record", technology.Name);
                 newTechRecord.gameObject.SetActive(true);
-                newTechRecord.transform.SetParent(TechRecordContainer, false);
-                newTechRecord.transform.localPosition = technology.TechScreenPosition;
+
+                var cellToPlaceInto = TechTable.transform.GetChild(
+                    technology.TechTableColumn + technology.TechTableRow * TechTable.ColumnWidths.Length
+                );
+
+                newTechRecord.transform.SetParent(cellToPlaceInto, false);
 
                 newTechRecord.TechToDisplay = technology;
                 newTechRecord.SelectionButton.onClick.AddListener(() => OnTechRecordClicked(newTechRecord));
@@ -107,14 +136,23 @@ namespace Assets.UI.Technology {
                 TechRecords.Add(newTechRecord);
             }
 
+            StartCoroutine(DrawPrerequisiteLinesCoroutine());
+        }
+
+        private IEnumerator DrawPrerequisiteLinesCoroutine() {
+            yield return new WaitForEndOfFrame();
+
             var lineList = new List<Vector2>();
 
             foreach(var recordOfCurrent in TechRecords) {
                 foreach(var prerequisite in recordOfCurrent.TechToDisplay.Prerequisites) {
                     var recordOfPrerequisite = TechRecords.Where(record => record.TechToDisplay == prerequisite).First();
 
-                    lineList.Add(recordOfPrerequisite.ForwardConnectionPoint);
-                    lineList.Add(recordOfCurrent.BackwardConnectionPoint);
+                    var prerequisiteInTable = TechTable.transform.InverseTransformPoint(recordOfPrerequisite.ForwardConnectionPoint);
+                    var currentInTable      = TechTable.transform.InverseTransformPoint(recordOfCurrent     .BackwardConnectionPoint);
+
+                    lineList.Add(prerequisiteInTable);
+                    lineList.Add(currentInTable);
                 }
             }
 

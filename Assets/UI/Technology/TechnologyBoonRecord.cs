@@ -44,6 +44,7 @@ namespace Assets.UI.Technology {
         private void OnEnable() {
             if(IconImage != null) {
                 IconImage.sprite = Icon;
+                IconImage.preserveAspect = true;
             }
         }
 

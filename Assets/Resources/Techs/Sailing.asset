@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1f91a2ce6a4c82b4aa80e7fbcee4ad91, type: 3}
+  m_Name: Sailing
+  m_EditorClassIdentifier: 
+  _cost: 55
+  _prerequisites:
+  - {fileID: 11400000, guid: de800cb3694be1f439303e32cfe8fb44, type: 2}
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _techTableRow: 0
+  _techTableColumn: 2
+  _buildingsEnabled: []
+  _unitsEnabled:
+  - {fileID: 11400000, guid: 69c732bdc81e68847a36dd87d8b15cfd, type: 2}
+  - {fileID: 11400000, guid: 9433119f741ba4347a37d39d5cc2252e, type: 2}
+  _abilitiesEnabled:
+  - {fileID: 11400000, guid: 1ad40fb588d47f24081dcfda8a027942, type: 2}
+  _improvementYieldModifications: []
