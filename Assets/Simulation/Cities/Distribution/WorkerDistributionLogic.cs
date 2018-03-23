@@ -26,9 +26,9 @@ namespace Assets.Simulation.Cities.Distribution {
 
         private IResourceGenerationLogic GenerationLogic;
 
-        private IPossessionRelationship<ICity, IBuilding> BuildingCanon;
+        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
-        private IPossessionRelationship<ICity, IHexCell> TileCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
         #endregion
 
@@ -48,8 +48,8 @@ namespace Assets.Simulation.Cities.Distribution {
         ){
             GrowthLogic     = growthLogic;
             GenerationLogic = generationLogic;
-            BuildingCanon   = buildingCanon;
-            TileCanon       = tileCanon;
+            BuildingPossessionCanon   = buildingCanon;
+            CellPossessionCanon       = tileCanon;
         }
 
         #endregion
@@ -59,8 +59,10 @@ namespace Assets.Simulation.Cities.Distribution {
         #region from IWorkerDistributionLogic
 
         /// <inheritdoc/>
-        public void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
-            ResourceFocusType focus){  
+        public void DistributeWorkersIntoSlots(
+            int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
+            ResourceFocusType focus
+        ){
             foreach(var slot in slots) {
                 slot.IsOccupied = false;
             }
@@ -77,28 +79,12 @@ namespace Assets.Simulation.Cities.Distribution {
         }
 
         /// <inheritdoc/>
-        public int GetUnemployedPeopleInCity(ICity city) {
-            int occupiedTiles = TileCanon.GetPossessionsOfOwner(city).Where(tile => tile.WorkerSlot.IsOccupied).Count();
-
-            int occupiedBuildingSlots = 0;
-            foreach(var building in BuildingCanon.GetPossessionsOfOwner(city)) {
-                occupiedBuildingSlots += building.Slots.Where(slot => slot.IsOccupied).Count();
-            }
-
-            int unemployedPeople = city.Population - (occupiedTiles + occupiedBuildingSlots);
-            if(unemployedPeople < 0) {
-                throw new NegativeUnemploymentException("This city has more occupied slots than it has people");
-            }
-            return unemployedPeople;
-        }
-
-        /// <inheritdoc/>
         public IEnumerable<IWorkerSlot> GetSlotsAvailableToCity(ICity city) {
             var retval = new List<IWorkerSlot>();
 
-            retval.AddRange(TileCanon.GetPossessionsOfOwner(city).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
+            retval.AddRange(CellPossessionCanon.GetPossessionsOfOwner(city).Where(tile => !tile.SuppressSlot).Select(tile => tile.WorkerSlot));
 
-            foreach(var building in BuildingCanon.GetPossessionsOfOwner(city)) {
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                 retval.AddRange(building.Slots);
             }
 

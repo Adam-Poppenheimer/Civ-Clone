@@ -61,6 +61,8 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>              ().AsSingle();
             Container.Bind<ICityCombatLogic>                         ().To<CityCombatLogic>                ().AsSingle();
             Container.Bind<ICityHappinessLogic>                      ().To<CityHappinessLogic>             ().AsSingle();
+            Container.Bind<IBuildingResourceLogic>                   ().To<BuildingResourceLogic>          ().AsSingle();
+            Container.Bind<IUnemploymentLogic>                       ().To<UnemploymentLogic>              ().AsSingle();
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();

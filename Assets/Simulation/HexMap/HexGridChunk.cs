@@ -38,17 +38,11 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexFeatureManager Features;
 
-        private IHexGrid Grid;
-
-        private INoiseGenerator NoiseGenerator;
-
-        private IRiverCanon RiverCanon;
-
-        private ICityFactory CityFactory;
-
+        private IHexGrid                                      Grid;
+        private INoiseGenerator                               NoiseGenerator;
+        private IRiverCanon                                   RiverCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
+        private IPossessionRelationship<ICity, IHexCell>      CellPossessionCanon;
 
         #endregion
 
@@ -56,15 +50,13 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            IHexGrid grid, INoiseGenerator noiseGenerator,
-            IRiverCanon riverCanon, ICityFactory cityFactory,
+            IHexGrid grid, INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
         ){
             Grid                = grid;
             NoiseGenerator      = noiseGenerator;
             RiverCanon          = riverCanon;
-            CityFactory         = cityFactory;
             CityPossessionCanon = cityPossessionCanon;
             CellPossessionCanon = cellPossessionCanon;
         }

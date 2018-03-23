@@ -7,6 +7,9 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.WorkerSlots {
 
     public class WorkerSlot : IWorkerSlot {
@@ -14,8 +17,6 @@ namespace Assets.Simulation.WorkerSlots {
         #region instance fields and properties
 
         #region from IWorkerSlot
-
-        public ResourceSummary BaseYield { get; set; }
 
         public bool IsOccupied {
             get { return _isOccupied; }
@@ -47,6 +48,10 @@ namespace Assets.Simulation.WorkerSlots {
         }
         private bool _isLocked;
 
+        public IHexCell ParentCell { get; set; }
+
+        public IBuilding ParentBuilding { get; set; }
+
         #endregion
 
         private WorkerSlotSignals Signals;
@@ -67,7 +72,7 @@ namespace Assets.Simulation.WorkerSlots {
         #region from Object
 
         public override string ToString() {
-            return string.Format("Slot: {0}", BaseYield);
+            return string.Format("Slot (IsOccupied: {0}, IsLocked: {1})", IsOccupied, IsLocked);
         }
 
         #endregion

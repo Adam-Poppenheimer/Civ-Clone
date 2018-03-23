@@ -32,8 +32,8 @@ namespace Assets.Simulation.Cities {
             ResourceType focusedResource, IResourceGenerationLogic generationLogic) {
 
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
+                var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
+                var secondYield = GetSlotYield(secondSlot, sourceCity, generationLogic);
 
                 var focusComparison = firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
                 if(focusComparison == 0) {
@@ -64,8 +64,8 @@ namespace Assets.Simulation.Cities {
         public static Comparison<IWorkerSlot> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity,
             IResourceGenerationLogic generationLogic) {
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
+                var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
+                var secondYield = GetSlotYield(secondSlot, sourceCity, generationLogic);
 
                 return firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
             };
@@ -82,12 +82,20 @@ namespace Assets.Simulation.Cities {
             IResourceGenerationLogic generationLogic) {
 
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondSlot, sourceCity);
+                var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
+                var secondYield = GetSlotYield(secondSlot, sourceCity, generationLogic);
 
                 return firstYield.Total.CompareTo(secondYield.Total);
             };
 
+        }
+
+        private static ResourceSummary GetSlotYield(IWorkerSlot slot, ICity city, IResourceGenerationLogic generationLogic) {
+            if(slot.ParentCell != null) {
+                return generationLogic.GetYieldOfCellForCity(slot.ParentCell, city);
+            }else {
+                return generationLogic.GetYieldOfBuildingSlotsForCity(slot.ParentBuilding, city);
+            }
         }
 
         #endregion

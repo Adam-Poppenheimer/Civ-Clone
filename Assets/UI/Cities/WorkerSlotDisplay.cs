@@ -25,6 +25,8 @@ namespace Assets.UI.Cities {
 
         public ICity Owner { get; set; }
 
+        public ResourceSummary SlotYield { get; set; }
+
         [SerializeField] private Image SlotImage;
 
         [SerializeField] private ResourceSummaryDisplay YieldDisplay;
@@ -42,20 +44,14 @@ namespace Assets.UI.Cities {
 
         private WorkerSlotSignals SlotSignals;
 
-        private IResourceGenerationLogic ResourceGenerationLogic;
-
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            ICityUIConfig config, WorkerSlotSignals slotSignals,
-            IResourceGenerationLogic resourceGenerationLogic
-        ){
+        public void InjectDependencies(ICityUIConfig config, WorkerSlotSignals slotSignals){
             Config                  = config;
             SlotSignals             = slotSignals;
-            ResourceGenerationLogic = resourceGenerationLogic;
         }
 
         #region Unity messages
@@ -100,7 +96,7 @@ namespace Assets.UI.Cities {
             }
 
             if(YieldDisplay != null) {
-                YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetYieldOfSlotForCity(SlotToDisplay, Owner));
+                YieldDisplay.DisplaySummary(SlotYield);
             }
         }
 

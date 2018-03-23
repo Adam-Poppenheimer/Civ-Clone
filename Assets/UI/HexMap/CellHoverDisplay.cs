@@ -56,15 +56,12 @@ namespace Assets.UI.HexMap {
 
 
 
-        private IHexCellSignalLogic SignalLogic;
-
-        private IResourceGenerationLogic GenerationLogic;
-
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-
+        private IHexCellSignalLogic                              SignalLogic;
+        private IResourceGenerationLogic                         GenerationLogic;
+        private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodePositionCanon;
-
-        private IImprovementLocationCanon ImprovementLocationCanon;
+        private IImprovementLocationCanon                        ImprovementLocationCanon;
+        private ICellResourceLogic                               CellResourceLogic;
 
         #endregion
 
@@ -75,13 +72,15 @@ namespace Assets.UI.HexMap {
             IHexCellSignalLogic signalLogic, IResourceGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodePositionCanon,
-            IImprovementLocationCanon improvementLocationCanon
+            IImprovementLocationCanon improvementLocationCanon,
+            ICellResourceLogic cellResourceLogic
         ){
             SignalLogic               = signalLogic;
             GenerationLogic           = generationLogic;
             CellPossessionCanon       = cellPossessionCanon;
             ResourceNodePositionCanon = resourceNodePositionCanon;
             ImprovementLocationCanon  = improvementLocationCanon;
+            CellResourceLogic         = cellResourceLogic;
         }
 
         private void OnBeginHoverFired(IHexCell hoveredCell) {
@@ -130,9 +129,9 @@ namespace Assets.UI.HexMap {
             var cellOwner = CellPossessionCanon.GetOwnerOfPossession(cell);
 
             if(cellOwner != null) {
-                YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfSlotForCity(cell.WorkerSlot, cellOwner));
+                YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfCellForCity(cell, cellOwner));
             }else {
-                YieldDisplay.DisplaySummary(cell.WorkerSlot.BaseYield);
+                YieldDisplay.DisplaySummary(CellResourceLogic.GetYieldOfCell(cell));
             }
         }
 

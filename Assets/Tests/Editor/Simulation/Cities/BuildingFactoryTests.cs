@@ -175,7 +175,6 @@ namespace Assets.Tests.Simulation.Cities {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
             mockTemplate.Setup(template => template.name).Returns(name);
-            mockTemplate.Setup(template => template.SlotYields).Returns(new List<ResourceSummary>().AsReadOnly());
 
             MockValidityLogic.Setup(logic => logic.IsTemplateValidForCity(mockTemplate.Object, It.IsAny<ICity>()))
                 .Returns(isValid);

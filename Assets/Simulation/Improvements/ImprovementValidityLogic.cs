@@ -15,8 +15,6 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
-
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
 
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
@@ -26,11 +24,10 @@ namespace Assets.Simulation.Improvements {
         #region constructors
 
         [Inject]
-        public ImprovementValidityLogic(IHexGrid grid,
+        public ImprovementValidityLogic(
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
-            Grid              = grid;
             NodePositionCanon = nodePositionCanon;
             CityLocationCanon = cityLocationCanon;
         }

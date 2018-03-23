@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.WorkerSlots {
 
     public interface IWorkerSlot {
@@ -13,7 +16,9 @@ namespace Assets.Simulation.WorkerSlots {
 
         bool IsLocked { get; set; }
 
-        ResourceSummary BaseYield { get; set; }
+        IHexCell ParentCell { get; }
+
+        IBuilding ParentBuilding { get; }
 
         #endregion
 

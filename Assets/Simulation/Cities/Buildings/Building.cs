@@ -18,10 +18,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #region from IBuilding
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<IWorkerSlot> Slots {
-            get { return _slots.AsReadOnly(); }
-        }
-        private List<IWorkerSlot> _slots;
+        public ReadOnlyCollection<IWorkerSlot> Slots { get; set; }
 
         public string name {
             get { return Template.name; }
@@ -51,13 +48,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region constructors
 
-        /// <summary>
-        /// Constructs a Building object from the given IBuildingTemplate.
-        /// </summary>
-        /// <param name="template">The template that'll define most of the building's properties</param>
-        public Building(IBuildingTemplate template, List<IWorkerSlot> slots) {
+        public Building(IBuildingTemplate template) {
             Template = template;
-            _slots   = slots;
         }
 
         #endregion

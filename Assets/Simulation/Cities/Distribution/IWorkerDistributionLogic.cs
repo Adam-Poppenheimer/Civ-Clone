@@ -29,13 +29,6 @@ namespace Assets.Simulation.Cities.Distribution {
             ICity sourceCity, ResourceFocusType preferences);
 
         /// <summary>
-        /// Gets the total number of unemployed people in the given city.
-        /// </summary>
-        /// <param name="city">The city in question.</param>
-        /// <returns></returns>
-        int GetUnemployedPeopleInCity(ICity city);
-
-        /// <summary>
         /// Retrieves all slots available to the given city.
         /// </summary>
         /// <param name="city">The city in question.</param>

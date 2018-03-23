@@ -43,11 +43,15 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _maintenance;
 
-        /// <inheritdoc/>
-        public ReadOnlyCollection<ResourceSummary> SlotYields {
-            get { return _slotYields.AsReadOnly(); }
+        public int SlotCount {
+            get { return _slotCount; }
         }
-        [SerializeField] private List<ResourceSummary> _slotYields;
+        [SerializeField] private int _slotCount;
+        
+        public ResourceSummary SlotYield {
+            get { return _slotYield; }
+        }
+        [SerializeField] private ResourceSummary _slotYield;
 
         /// <inheritdoc/>
         public ResourceSummary StaticYield {

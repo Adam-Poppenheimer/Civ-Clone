@@ -11,8 +11,7 @@ using UniRx;
 using Assets.Simulation;
 
 using Assets.Simulation.Cities.Distribution;
-using Assets.Simulation.Cities.Territory;
-using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Cities;
 using Assets.Simulation.WorkerSlots;
 
 namespace Assets.UI.Cities.Distribution {
@@ -22,15 +21,21 @@ namespace Assets.UI.Cities.Distribution {
         #region instance fields and properties
 
         private IWorkerDistributionLogic DistributionLogic;
+        private IUnemploymentLogic       UnemploymentLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(WorkerSlotSignals slotSignals, IWorkerDistributionLogic distributionLogic){
+        public void InjectDependencies(
+            WorkerSlotSignals slotSignals, IWorkerDistributionLogic distributionLogic,
+            IUnemploymentLogic unemploymentLogic
+        ){
             slotSignals.SlotClicked.Subscribe(OnSlotClicked);
+
             DistributionLogic = distributionLogic;
+            UnemploymentLogic = unemploymentLogic;
         }
 
         private void OnSlotClicked(IWorkerSlot slot) {
@@ -59,7 +64,7 @@ namespace Assets.UI.Cities.Distribution {
         }
 
         private void AssignAndLockUnoccupiedSlot(IWorkerSlot slot) {
-            if(DistributionLogic.GetUnemployedPeopleInCity(ObjectToDisplay) <= 0) {
+            if(UnemploymentLogic.GetUnemployedPeopleInCity(ObjectToDisplay) <= 0) {
                 FreeUpSomeSlot();
             }
 

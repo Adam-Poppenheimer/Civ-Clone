@@ -25,8 +25,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         private ICivilizationFactory CivFactory;
 
-        private RectTransform MapEditorContainer;
-
         #endregion
 
         #region instance methods
@@ -34,14 +32,12 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory,
-            [Inject(Id = "Map Editor Container")] RectTransform mapEditorContainer
+            ICivilizationFactory civFactory
         ) {
             Brain              = brain;
             Grid               = grid;
             MapComposer        = mapComposer;
             CivFactory         = civFactory;
-            MapEditorContainer = mapEditorContainer;
         }
 
         #region from StateMachineBehaviour

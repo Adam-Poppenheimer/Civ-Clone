@@ -19,7 +19,7 @@ namespace Assets.UI.Cities.Distribution {
 
         [SerializeField] private Text UnemployedPeopleField;
 
-        private IWorkerDistributionLogic DistributionLogic;
+        private IUnemploymentLogic UnemploymentLogic;
 
         #endregion
 
@@ -27,10 +27,10 @@ namespace Assets.UI.Cities.Distribution {
 
         [Inject]
         public void InjectDependencies(
-            IWorkerDistributionLogic distributionLogic,
+            IUnemploymentLogic unemploymentLogic,
             [InjectOptional(Id = "Unemployed People Field")] Text unemployedPeopleField
         ) {
-            DistributionLogic = distributionLogic;
+            UnemploymentLogic = unemploymentLogic;
 
             UnemployedPeopleField = unemployedPeopleField != null ? unemployedPeopleField : UnemployedPeopleField;
         }
@@ -41,7 +41,7 @@ namespace Assets.UI.Cities.Distribution {
             if(ObjectToDisplay == null) {
                 return;
             }
-            UnemployedPeopleField.text = DistributionLogic.GetUnemployedPeopleInCity(ObjectToDisplay).ToString();
+            UnemployedPeopleField.text = UnemploymentLogic.GetUnemployedPeopleInCity(ObjectToDisplay).ToString();
         }
 
         #endregion

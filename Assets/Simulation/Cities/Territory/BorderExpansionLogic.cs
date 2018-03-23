@@ -114,10 +114,10 @@ namespace Assets.Simulation.Cities.Territory {
             var tileCount = PossessionCanon.GetPossessionsOfOwner(city).Count();
 
             return Mathf.FloorToInt(
-                Config.TileCostBase + 
+                Config.CellCostBase + 
                 Mathf.Pow(
-                    Config.PreviousTileCountCoefficient * (tileCount - 1),
-                    Config.PreviousTileCountExponent
+                    Config.PreviousCellCountCoefficient * (tileCount - 1),
+                    Config.PreviousCellCountExponent
                 )
             );
         }

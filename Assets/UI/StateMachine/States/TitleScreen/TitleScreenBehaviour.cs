@@ -15,19 +15,13 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
 
         private UIStateMachineBrain Brain;
 
-        private RectTransform TitleScreenContainer;
-
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            UIStateMachineBrain brain,
-            [Inject(Id = "Title Screen Container")] RectTransform titleScreenContainer
-        ) {
+        public void InjectDependencies(UIStateMachineBrain brain) {
             Brain                = brain;
-            TitleScreenContainer = titleScreenContainer;
         }
 
         #region from StateMachineBehaviour

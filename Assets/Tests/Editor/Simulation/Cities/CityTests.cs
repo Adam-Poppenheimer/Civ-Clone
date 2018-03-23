@@ -34,7 +34,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region internal types
 
-        private struct TileMockData {
+        private struct CellMockData {
 
             public bool SuppressSlot;
             public bool SlotIsLocked;
@@ -389,7 +389,7 @@ namespace Assets.Tests.Simulation.Cities {
             city.ResourceFocus = ResourceFocusType.TotalYield;
 
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
-                .Returns(new List<IHexCell>() { BuildMockTile(new TileMockData()) }.AsReadOnly());
+                .Returns(new List<IHexCell>() { BuildMockCell(new CellMockData()) }.AsReadOnly());
 
             MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
 
@@ -490,9 +490,9 @@ namespace Assets.Tests.Simulation.Cities {
             var city = Container.Resolve<City>();
             city.Population = 2;
 
-            var unlockedSlotTile         = BuildMockTile(new TileMockData());
-            var lockedUnoccupiedSlotTile = BuildMockTile(new TileMockData() { SlotIsLocked = true });
-            var lockedOccupiedSlotTile   = BuildMockTile(new TileMockData() { SlotIsLocked = true, SlotIsOccupied = true });
+            var unlockedSlotTile         = BuildMockCell(new CellMockData());
+            var lockedUnoccupiedSlotTile = BuildMockCell(new CellMockData() { SlotIsLocked = true });
+            var lockedOccupiedSlotTile   = BuildMockCell(new CellMockData() { SlotIsLocked = true, SlotIsOccupied = true });
 
             var tiles = new List<IHexCell>() { unlockedSlotTile, lockedUnoccupiedSlotTile, lockedOccupiedSlotTile };
 
@@ -677,19 +677,22 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IHexCell BuildMockTile(TileMockData mockData) {
-            var mockTile = new Mock<IHexCell>();
+        private IHexCell BuildMockCell(CellMockData mockData) {
+            var mockCell = new Mock<IHexCell>();
 
             var mockSlot = new Mock<IWorkerSlot>();
+
+            mockSlot.Setup(slot => slot.ParentCell).Returns(mockCell.Object);
+
             mockSlot.SetupAllProperties();
+
             mockSlot.Object.IsLocked = mockData.SlotIsLocked;
             mockSlot.Object.IsOccupied = mockData.SlotIsOccupied;
-            mockSlot.Setup(slot => slot.BaseYield).Returns(mockData.BaseYield);
 
-            mockTile.Setup(tile => tile.WorkerSlot).Returns(mockSlot.Object);
-            mockTile.Setup(tile => tile.SuppressSlot).Returns(mockData.SuppressSlot);
+            mockCell.Setup(tile => tile.WorkerSlot  ).Returns(mockSlot.Object);
+            mockCell.Setup(tile => tile.SuppressSlot).Returns(mockData.SuppressSlot);
 
-            return mockTile.Object;
+            return mockCell.Object;
         }
 
         private IUnit BuildUnit() {

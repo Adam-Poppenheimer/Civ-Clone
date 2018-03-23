@@ -324,7 +324,7 @@ namespace Assets.Simulation.HexMap {
 
             newCell.transform.localPosition = position;
 
-            newCell.WorkerSlot = WorkerSlotFactory.BuildSlot(ResourceSummary.Empty);
+            newCell.WorkerSlot = WorkerSlotFactory.BuildSlot(newCell);
 
             newCell.ShaderData  = CellShaderData;
             newCell.Index       = i;
@@ -336,8 +336,6 @@ namespace Assets.Simulation.HexMap {
             
 
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
-
-            newCell.RefreshSlot();
 
             AddCellToChunk(x, z, newCell);
         }

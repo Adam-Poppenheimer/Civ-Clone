@@ -29,8 +29,6 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGrid Grid;
 
-        private ICityFactory CityFactory;
-
         private CitySignals CitySignals;
 
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
@@ -41,12 +39,11 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            HexCellSignals cellSignals, IHexGrid grid, ICityFactory cityFactory, CitySignals citySignals,
+            HexCellSignals cellSignals, IHexGrid grid, CitySignals citySignals,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             CellSignals       = cellSignals;
             Grid              = grid;
-            CityFactory       = cityFactory;
             CitySignals       = citySignals;
             CityLocationCanon = cityLocationCanon;
         }

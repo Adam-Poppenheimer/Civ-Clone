@@ -43,10 +43,9 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         ResourceSummary StaticYield { get; }
 
-        /// <summary>
-        /// The yields of all of the slots the building provides to its city.
-        /// </summary>
-        ReadOnlyCollection<ResourceSummary> SlotYields { get; }
+        int SlotCount { get; }
+
+        ResourceSummary SlotYield { get; }
 
         /// <summary>
         /// The yield modifier the building provides to the civilization of the city it's in.

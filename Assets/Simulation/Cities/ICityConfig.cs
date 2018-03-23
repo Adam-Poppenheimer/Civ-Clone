@@ -20,23 +20,11 @@ namespace Assets.Simulation.Cities {
         /// </summary>
         int MaxBorderRange { get; }
 
-        /// <summary>
-        /// The base cost of all tiles.
-        /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
-        /// </summary>
-        int TileCostBase { get; }
+        int CellCostBase { get; }
 
-        /// <summary>
-        /// A coefficient that modifies the cost of acquiring new tiles.
-        /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
-        /// </summary>
-        int PreviousTileCountCoefficient { get; }
+        int PreviousCellCountCoefficient { get; }
 
-        /// <summary>
-        /// An exponent that modifies the cost of acquiring new tiles.
-        /// Used by <ref>BorderExpansionLogic.GetCultureCostOfAcquiringTile</ref>
-        /// </summary>
-        float PreviousTileCountExponent { get; }
+        float PreviousCellCountExponent { get; }
 
         /// <summary>
         /// The yield of all unemployed citizens.
@@ -98,6 +86,8 @@ namespace Assets.Simulation.Cities {
         int UnhappinessPerCity { get; }
 
         float UnhappinessPerPopulation { get; }
+
+        ResourceSummary LocationYield { get; }
 
         Sprite CombatantImage { get; }
 

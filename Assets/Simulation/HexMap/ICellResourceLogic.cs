@@ -9,7 +9,7 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        ResourceSummary GetYieldOfCell(IHexCell tile);
+        ResourceSummary GetYieldOfCell(IHexCell cell);
 
         #endregion
 

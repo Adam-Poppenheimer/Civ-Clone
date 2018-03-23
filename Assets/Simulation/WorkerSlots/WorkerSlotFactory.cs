@@ -5,6 +5,9 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.WorkerSlots {
 
     public class WorkerSlotFactory : IWorkerSlotFactory {
@@ -28,10 +31,18 @@ namespace Assets.Simulation.WorkerSlots {
 
         #region from IWorkerSlotFactory
 
-        public IWorkerSlot BuildSlot(ResourceSummary baseYield) {
+        public IWorkerSlot BuildSlot(IHexCell parentCell) {
             var newSlot = Container.Instantiate<WorkerSlot>();
 
-            newSlot.BaseYield = baseYield;
+            newSlot.ParentCell = parentCell;
+
+            return newSlot;
+        }
+
+        public IWorkerSlot BuildSlot(IBuilding parentBuilding) {
+            var newSlot = Container.Instantiate<WorkerSlot>();
+
+            newSlot.ParentBuilding = parentBuilding;
 
             return newSlot;
         }

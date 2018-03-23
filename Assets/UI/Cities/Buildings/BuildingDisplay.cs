@@ -34,8 +34,6 @@ namespace Assets.UI.Cities.Buildings {
 
 
 
-        private IYieldFormatter YieldFormatter;
-
         private DiContainer Container;
 
         private DescriptionTooltip Tooltip;
@@ -45,10 +43,7 @@ namespace Assets.UI.Cities.Buildings {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            IYieldFormatter yieldFormatter, DiContainer container, DescriptionTooltip tooltip
-        ){
-            YieldFormatter = yieldFormatter;
+        public void InjectDependencies(DiContainer container, DescriptionTooltip tooltip){
             Container      = container;
             Tooltip        = tooltip;
         }

@@ -54,19 +54,19 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private int _maxBorderRange;
 
         /// <inheritdoc/>
-        public int PreviousTileCountCoefficient {
+        public int PreviousCellCountCoefficient {
             get { return _previousTileCountCoefficient; }
         }
         [SerializeField] private int _previousTileCountCoefficient;
 
         /// <inheritdoc/>
-        public float PreviousTileCountExponent {
+        public float PreviousCellCountExponent {
             get { return _previousTileCountExponent; }
         }
         [SerializeField] private float _previousTileCountExponent;
 
         /// <inheritdoc/>
-        public int TileCostBase {
+        public int CellCostBase {
             get { return _tileCostBase; }
         }
         [SerializeField] private int _tileCostBase;
@@ -137,6 +137,11 @@ namespace Assets.Simulation.Cities {
             get { return _unhappinessPerPopulation; }
         }
         [SerializeField] private float _unhappinessPerPopulation;
+
+        public ResourceSummary LocationYield {
+            get { return _locationYield; }
+        }
+        [SerializeField] private ResourceSummary _locationYield;
 
         public Sprite CombatantImage {
             get { return _combatantImage; }

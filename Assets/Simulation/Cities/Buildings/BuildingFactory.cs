@@ -79,9 +79,14 @@ namespace Assets.Simulation.Cities.Buildings {
                 throw new BuildingCreationException("A building of this template cannot be constructed in this city");
             }
 
-            var slots = template.SlotYields.Select(yield => WorkerSlotFactory.BuildSlot(yield)).ToList();
+            var newBuilding = new Building(template);
 
-            var newBuilding = new Building(template, slots);
+            var slots = new List<IWorkerSlot>();
+            for(int i = 0; i < template.SlotCount; i++) {
+                slots.Add(WorkerSlotFactory.BuildSlot(newBuilding));
+            }
+
+            newBuilding.Slots = slots.AsReadOnly();
 
             if(!PossessionCanon.CanChangeOwnerOfPossession(newBuilding, city)) {
                 throw new BuildingCreationException("The building produced from this template cannot be placed into this city");

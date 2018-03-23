@@ -28,7 +28,6 @@ namespace Assets.Simulation.HexMap {
             get { return _terrain; }
             set {
                 _terrain = value;
-                RefreshSlot();
                 ShaderData.RefreshTerrain(this);
             }
         }
@@ -42,7 +41,6 @@ namespace Assets.Simulation.HexMap {
                 }
 
                 _feature = value;
-                RefreshSlot();
                 RefreshSelfOnly();
             }
         }
@@ -53,7 +51,6 @@ namespace Assets.Simulation.HexMap {
             set {
                 _shape = value;
                 Refresh();
-                RefreshSlot();
                 ShaderData.RefreshTerrain(this);
             }
         }
@@ -167,7 +164,6 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private ICellResourceLogic ResourceLogic;
         private INoiseGenerator NoiseGenerator;
         private IHexGrid Grid;
         private IRiverCanon RiverCanon;
@@ -177,10 +173,9 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICellResourceLogic resourceLogic,
+        public void InjectDependencies(
             INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon
         ){
-            ResourceLogic = resourceLogic;
             NoiseGenerator = noiseGenerator;
             Grid = grid;
             RiverCanon = riverCanon;
@@ -234,10 +229,6 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility() {
             ShaderData.RefreshVisibility(this);
-        }
-
-        public void RefreshSlot() {
-            WorkerSlot.BaseYield = ResourceLogic.GetYieldOfCell(this);
         }
 
         #endregion

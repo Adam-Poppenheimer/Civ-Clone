@@ -30,11 +30,11 @@ namespace Assets.Simulation.SpecialtyResources {
         }
 
         protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
-            oldOwner.RefreshSlot();
+            
         }
 
         protected override void DoOnPossessionEstablished(IResourceNode possession, IHexCell newOwner) {
-            newOwner.RefreshSlot();
+            
         }
 
         #endregion

@@ -207,8 +207,6 @@ namespace Assets.Tests.Simulation.Cities {
         private IWorkerSlot BuildSlot(ResourceSummary baseYield) {
             var mockSlot = new Mock<IWorkerSlot>();
 
-            mockSlot.Setup(slot => slot.BaseYield).Returns(baseYield);
-
             return mockSlot.Object;
         }
 

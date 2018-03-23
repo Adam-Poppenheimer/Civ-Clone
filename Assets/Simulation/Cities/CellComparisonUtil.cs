@@ -34,8 +34,8 @@ namespace Assets.Simulation.Cities {
             ResourceType focusedResource, IResourceGenerationLogic generationLogic) {
 
             return delegate(IHexCell firstCell, IHexCell secondCell) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstCell.WorkerSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondCell.WorkerSlot, sourceCity);
+                var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
+                var secondYield = generationLogic.GetYieldOfCellForCity(secondCell, sourceCity);
 
                 var focusComparison = firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
                 if(focusComparison == 0) {
@@ -67,8 +67,8 @@ namespace Assets.Simulation.Cities {
             IResourceGenerationLogic generationLogic) {
 
             return delegate(IHexCell firstCell, IHexCell secondCell) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstCell.WorkerSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondCell.WorkerSlot, sourceCity);
+                var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
+                var secondYield = generationLogic.GetYieldOfCellForCity(secondCell, sourceCity);
 
                 return firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
             };
@@ -86,8 +86,8 @@ namespace Assets.Simulation.Cities {
             IResourceGenerationLogic generationLogic) {
 
             return delegate(IHexCell firstCell, IHexCell secondCell) {
-                var firstYield = generationLogic.GetYieldOfSlotForCity(firstCell.WorkerSlot, sourceCity);
-                var secondYield = generationLogic.GetYieldOfSlotForCity(secondCell.WorkerSlot, sourceCity);
+                var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
+                var secondYield = generationLogic.GetYieldOfCellForCity(secondCell, sourceCity);
 
                 return firstYield.Total.CompareTo(secondYield.Total);
             };

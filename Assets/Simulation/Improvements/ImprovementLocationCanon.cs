@@ -28,15 +28,11 @@ namespace Assets.Simulation.Improvements {
         }
 
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
-            if(oldOwner != null) {
-                oldOwner.RefreshSlot();
-            }
+            
         }
 
         protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
-            if(newOwner != null) {
-                newOwner.RefreshSlot();
-            }
+            
         }
 
         #endregion
