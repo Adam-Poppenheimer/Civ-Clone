@@ -43,6 +43,9 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private GameObject SaveGameDisplay;
 
+        [SerializeField] private RectTransform ProposalDisplay;
+        [SerializeField] private RectTransform DealsReceivedDisplay;
+
         #endregion
 
         #region instance methods
@@ -50,37 +53,23 @@ namespace Assets.UI.StateMachine {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<RectTransform>()
-                .WithId("Play Mode Container")
-                .FromInstance(PlayModeContainer);
-
-            Container.Bind<RectTransform>()
-                .WithId("Escape Menu Container")
-                .FromInstance(EscapeMenuContainer);
+            Container.Bind<RectTransform>().WithId("Play Mode Container"  ).FromInstance(PlayModeContainer);
+            Container.Bind<RectTransform>().WithId("Escape Menu Container").FromInstance(EscapeMenuContainer);
 
             Container.Bind<List<CityDisplayBase>>        ().FromInstance(AllCityDisplays);
             Container.Bind<List<CivilizationDisplayBase>>().FromInstance(AllCivilizationDisplays);
             Container.Bind<List<CellDisplayBase>>        ().FromInstance(AllTileDisplays);
             Container.Bind<List<UnitDisplayBase>>        ().FromInstance(AllUnitDisplays);
 
-            Container.Bind<List<RectTransform>>()
-                .WithId("Play Mode Default Panels")
-                .FromInstance(PlayModeDefaultPanels);
-
             Container.Bind<TechTreeDisplay>                ().FromInstance(TechTreeDisplay);
             Container.Bind<SpecialtyResourceSummaryDisplay>().FromInstance(SpecialtyResourceSummaryDisplay);
 
-            Container.Bind<List<UnitDisplayBase>>()
-                .WithId("Ranged Attack State Displays")
-                .FromInstance(RangedAttackStateDisplays);
-
-            Container.Bind<GameObject>()
-                .WithId("Escape Menu Options Display")
-                .FromInstance(EscapeMenuOptionsDisplay);
-
-            Container.Bind<GameObject>()
-                .WithId("Save Game Display")
-                .FromInstance(SaveGameDisplay);
+            Container.Bind<List<RectTransform>>  ().WithId("Play Mode Default Panels")    .FromInstance(PlayModeDefaultPanels);
+            Container.Bind<List<UnitDisplayBase>>().WithId("Ranged Attack State Displays").FromInstance(RangedAttackStateDisplays);
+            Container.Bind<GameObject>           ().WithId("Escape Menu Options Display") .FromInstance(EscapeMenuOptionsDisplay);
+            Container.Bind<GameObject>           ().WithId("Save Game Display")           .FromInstance(SaveGameDisplay);
+            Container.Bind<RectTransform>        ().WithId("Proposal Display")            .FromInstance(ProposalDisplay);
+            Container.Bind<RectTransform>        ().WithId("Deals Received Display")      .FromInstance(DealsReceivedDisplay);
         }
 
         #endregion

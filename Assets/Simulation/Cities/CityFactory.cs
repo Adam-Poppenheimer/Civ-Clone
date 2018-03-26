@@ -107,6 +107,7 @@ namespace Assets.Simulation.Cities {
             Container.InjectGameObject(newCityGameObject);
 
             newCityGameObject.transform.SetParent(location.transform, false);
+            newCityGameObject.name = string.Format("City {0}", allCities.Count);
 
             var newCity = newCityGameObject.GetComponent<City>();
 
