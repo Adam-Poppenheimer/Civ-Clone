@@ -45,6 +45,7 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private RectTransform ProposalDisplay;
         [SerializeField] private RectTransform DealsReceivedDisplay;
+        [SerializeField] private RectTransform DeclareWarDisplay;
 
         #endregion
 
@@ -70,6 +71,7 @@ namespace Assets.UI.StateMachine {
             Container.Bind<GameObject>           ().WithId("Save Game Display")           .FromInstance(SaveGameDisplay);
             Container.Bind<RectTransform>        ().WithId("Proposal Display")            .FromInstance(ProposalDisplay);
             Container.Bind<RectTransform>        ().WithId("Deals Received Display")      .FromInstance(DealsReceivedDisplay);
+            Container.Bind<RectTransform>        ().WithId("Declare War Display")         .FromInstance(DeclareWarDisplay);
         }
 
         #endregion

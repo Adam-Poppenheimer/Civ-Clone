@@ -27,6 +27,11 @@ namespace Assets.Simulation.Diplomacy {
         }
         private HashSet<IDiplomaticExchange> demandedOfReceiver = new HashSet<IDiplomaticExchange>();
 
+        public IEnumerable<IDiplomaticExchange> BilateralExchanges {
+            get { return bilateralExchanges; }
+        }
+        private HashSet<IDiplomaticExchange> bilateralExchanges = new HashSet<IDiplomaticExchange>();
+
         #endregion
 
         #endregion
@@ -92,6 +97,30 @@ namespace Assets.Simulation.Diplomacy {
             demandedOfReceiver.Remove(exchange);
         }
 
+        public bool CanAddAsBilateralExchange(IDiplomaticExchange exchange) {
+            if(exchange == null) {
+                throw new ArgumentNullException("exchange");
+            }
+
+            return !HasOverlap(exchange) && exchange.CanExecuteBetweenCivs(Sender, Receiver);
+        }
+
+        public void AddAsBilateralExchange(IDiplomaticExchange exchange) {
+            if(!CanAddAsBilateralExchange(exchange)) {
+                throw new InvalidOperationException("CanAddAsBilateralExchange must return true on the argued exchange");
+            }
+
+            bilateralExchanges.Add(exchange);
+        }
+
+        public void RemoveFromBilateralExchanges(IDiplomaticExchange exchange) {
+            if(exchange == null) {
+                throw new ArgumentNullException("exchange");
+            }
+
+            bilateralExchanges.Remove(exchange);
+        }
+
         public bool CanPerformProposal() {
             foreach(var exchange in offeredBySender) {
                 if(!exchange.CanExecuteBetweenCivs(Sender, Receiver)) {
@@ -101,6 +130,12 @@ namespace Assets.Simulation.Diplomacy {
 
             foreach(var exchange in demandedOfReceiver) {
                 if(!exchange.CanExecuteBetweenCivs(Receiver, Sender)) {
+                    return false;
+                }
+            }
+
+            foreach(var exchange in bilateralExchanges) {
+                if(!exchange.CanExecuteBetweenCivs(Sender, Receiver)) {
                     return false;
                 }
             }
@@ -120,6 +155,10 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var demand in demandedOfReceiver) {
                 demand.ExecuteBetweenCivs(Receiver, Sender);
             }
+
+            foreach(var bilateralExchange in bilateralExchanges) {
+                bilateralExchange.ExecuteBetweenCivs(Sender, Receiver);
+            }
         }
 
         #endregion
@@ -133,6 +172,12 @@ namespace Assets.Simulation.Diplomacy {
 
             foreach(var existingDemand in DemandedOfReceiver) {
                 if(existingDemand.OverlapsWithExchange(exchange)) {
+                    return true;
+                }
+            }
+
+            foreach(var existingBilateral in BilateralExchanges) {
+                if(existingBilateral.OverlapsWithExchange(exchange)) {
                     return true;
                 }
             }

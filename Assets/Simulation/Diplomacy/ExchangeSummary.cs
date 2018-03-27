@@ -10,11 +10,11 @@ namespace Assets.Simulation.Diplomacy {
         #region instance fields and properties
 
         public int MaxOfferableGoldFromSender;
-
         public int MaxDemandableGoldOfReceiver;
 
-        public List<IDiplomaticExchange> AllPossibleOffersFromSender = new List<IDiplomaticExchange>();
+        public List<IDiplomaticExchange> BilateralExchanges = new List<IDiplomaticExchange>();
 
+        public List<IDiplomaticExchange> AllPossibleOffersFromSender  = new List<IDiplomaticExchange>();
         public List<IDiplomaticExchange> AllPossibleDemandsOfReceiver = new List<IDiplomaticExchange>();
 
         #endregion

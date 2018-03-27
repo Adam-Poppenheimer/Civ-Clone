@@ -79,6 +79,11 @@ namespace Assets.UI.Diplomacy {
                 foreach(var demand in SelectedProposal.DemandedOfReceiver) {
                     BuildExchangeRecord(demand, DemandedExchangesContainer);
                 }
+
+                foreach(var bilateralExchange in SelectedProposal.BilateralExchanges) {
+                    BuildExchangeRecord(bilateralExchange, OfferedExchangesContainer);
+                    BuildExchangeRecord(bilateralExchange, DemandedExchangesContainer);
+                }
             }
 
             AcceptDealButton.gameObject.SetActive(SelectedProposal != null);

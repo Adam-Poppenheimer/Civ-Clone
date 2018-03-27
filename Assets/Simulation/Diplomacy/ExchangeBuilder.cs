@@ -15,8 +15,8 @@ namespace Assets.Simulation.Diplomacy {
         #region instance fields and properties
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private DiContainer Container;
+        private IWarCanon                                     WarCanon;
+        private DiContainer                                   Container;
 
         #endregion
 
@@ -25,9 +25,10 @@ namespace Assets.Simulation.Diplomacy {
         [Inject]
         public ExchangeBuilder(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            DiContainer container
+            IWarCanon warCanon, DiContainer container
         ){
             CityPossessionCanon = cityPossessionCanon;
+            WarCanon            = warCanon;
             Container           = container;
         }
 
@@ -40,12 +41,18 @@ namespace Assets.Simulation.Diplomacy {
         public ExchangeSummary BuildAllValidExchangesBetween(ICivilization sender, ICivilization receiver) {
             var retval = new ExchangeSummary();
 
+            if(WarCanon.CanEstablishPeace(sender, receiver)) {
+                retval.BilateralExchanges.Add(Container.Instantiate<EstablishPeaceDiplomaticExchange>());
+            }
+
             if(sender.GoldStockpile > 0) {
                 retval.AllPossibleOffersFromSender.Add(Container.Instantiate<GoldDiplomaticExchange>());
+                retval.MaxOfferableGoldFromSender = sender.GoldStockpile;
             }
 
             if(receiver.GoldStockpile > 0) {
                 retval.AllPossibleDemandsOfReceiver.Add(Container.Instantiate<GoldDiplomaticExchange>());
+                retval.MaxDemandableGoldOfReceiver = receiver.GoldStockpile;
             }
 
             BuildCityExchanges(sender, receiver, retval);

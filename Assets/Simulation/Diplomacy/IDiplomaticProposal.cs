@@ -19,6 +19,8 @@ namespace Assets.Simulation.Diplomacy {
 
         IEnumerable<IDiplomaticExchange> DemandedOfReceiver { get; }
 
+        IEnumerable<IDiplomaticExchange> BilateralExchanges { get; }
+
         #endregion
 
         #region methods
@@ -30,6 +32,10 @@ namespace Assets.Simulation.Diplomacy {
         bool CanAddAsDemand   (IDiplomaticExchange exchange);
         void AddAsDemand      (IDiplomaticExchange exchange);
         void RemoveFromDemands(IDiplomaticExchange exchange);
+
+        bool CanAddAsBilateralExchange   (IDiplomaticExchange exchange);
+        void AddAsBilateralExchange      (IDiplomaticExchange exchange);
+        void RemoveFromBilateralExchanges(IDiplomaticExchange exchange);
 
         bool CanPerformProposal();
 

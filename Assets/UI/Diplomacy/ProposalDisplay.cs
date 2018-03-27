@@ -89,6 +89,10 @@ namespace Assets.UI.Diplomacy {
 
             ActiveProposal = new DiplomaticProposal(sender, Receiver);
 
+            foreach(var bilateralExchange in exchangeSummary.BilateralExchanges) {
+                BuildBilateralExchangeRecordPair(bilateralExchange);
+            }
+
             foreach(var offer in exchangeSummary.AllPossibleOffersFromSender) {
                 BuildExchangeRecord(offer, AvailableOffersContainer, AddToOffers);
             }
@@ -214,6 +218,52 @@ namespace Assets.UI.Diplomacy {
             recordOfExchange.ResetInput();
 
             recordOfExchange.transform.SetParent(AvailableDemandsContainer, false);
+        }
+
+        private void BuildBilateralExchangeRecordPair(IDiplomaticExchange bilateralExchange) {
+            var senderRecord   = Instantiate(ExchangeRecordPrefab);
+            var receiverRecord = Instantiate(ExchangeRecordPrefab);
+
+            senderRecord  .ExchangeToRecord = bilateralExchange;
+            receiverRecord.ExchangeToRecord = bilateralExchange;
+
+            var clickCallback = BuildBilateralClickCallback(senderRecord, receiverRecord);
+
+            senderRecord  .ClickCallback += clickCallback;
+            receiverRecord.ClickCallback += clickCallback;
+
+            senderRecord  .Refresh();
+            receiverRecord.Refresh();
+
+            senderRecord  .gameObject.SetActive(true);
+            receiverRecord.gameObject.SetActive(true);
+
+            senderRecord  .transform.SetParent(AvailableOffersContainer,  false);
+            receiverRecord.transform.SetParent(AvailableDemandsContainer, false);
+        }
+
+        private Action<IDiplomaticExchange> BuildBilateralClickCallback(
+            DiplomaticExchangeRecord senderRecord, DiplomaticExchangeRecord receiverRecord
+        ) {
+            return delegate(IDiplomaticExchange exchange) {
+                if(senderRecord.transform.parent == AvailableOffersContainer) {
+                    senderRecord.transform.SetParent(OffersInProposalContainer, false);
+                    senderRecord.ResetInput();
+
+                    receiverRecord.transform.SetParent(DemandsInProposalContainer, false);
+                    receiverRecord.ResetInput();
+
+                    ActiveProposal.AddAsBilateralExchange(exchange);
+                }else {
+                    senderRecord.transform.SetParent(AvailableOffersContainer, false);
+                    senderRecord.ResetInput();
+
+                    receiverRecord.transform.SetParent(AvailableDemandsContainer, false);
+                    receiverRecord.ResetInput();
+
+                    ActiveProposal.RemoveFromBilateralExchanges(exchange);
+                }
+            };
         }
 
         #endregion
