@@ -11,6 +11,7 @@ using UniRx;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Diplomacy;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -18,19 +19,14 @@ namespace Assets.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private IHexGrid Grid;
-
-        private ILineOfSightLogic LineOfSightLogic;
-
-        private ICombatModifierLogic CombatModifierLogic;
-
-        private IUnitConfig UnitConfig;
-
-        private UnitSignals UnitSignals;
-
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private IHexGrid                                      Grid;
+        private ILineOfSightLogic                             LineOfSightLogic;
+        private ICombatModifierLogic                          CombatModifierLogic;
+        private IUnitConfig                                   UnitConfig;
+        private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private IWarCanon                                     WarCanon;
 
         #endregion
 
@@ -40,7 +36,7 @@ namespace Assets.Simulation.Units.Combat {
         public CombatExecuter(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, ILineOfSightLogic lineOfSightLogic,
             ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon
         ){
             UnitPositionCanon   = unitPositionCanon;
             Grid                = grid;
@@ -49,6 +45,7 @@ namespace Assets.Simulation.Units.Combat {
             UnitConfig          = unitConfig;
             UnitSignals         = unitSignals;
             UnitPossessionCanon = unitPossessionCanon;
+            WarCanon            = warCanon;
         }
 
         #endregion
@@ -69,7 +66,14 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(UnitPossessionCanon.GetOwnerOfPossession(attacker) == UnitPossessionCanon.GetOwnerOfPossession(defender)) {
+            var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
+            var defenderOwner = UnitPossessionCanon.GetOwnerOfPossession(defender);
+
+            if(attackerOwner == defenderOwner) {
+                return false;
+            }
+
+            if(!WarCanon.AreAtWar(attackerOwner, defenderOwner)) {
                 return false;
             }
 
@@ -119,7 +123,14 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(UnitPossessionCanon.GetOwnerOfPossession(attacker) == UnitPossessionCanon.GetOwnerOfPossession(defender)) {
+            var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
+            var defenderOwner = UnitPossessionCanon.GetOwnerOfPossession(defender);
+
+            if(attackerOwner == defenderOwner) {
+                return false;
+            }
+
+            if(!WarCanon.AreAtWar(attackerOwner, defenderOwner)) {
                 return false;
             }
 

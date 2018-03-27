@@ -15,6 +15,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Diplomacy;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
@@ -29,6 +30,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             public DefenderTestData Defender;
 
             public bool UnitsHaveSameOwner;
+
+            public bool OwnersAreAtWar = true;
 
         }
 
@@ -778,6 +781,40 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     RangedAttackerMovementLeft = 1,
                     RangedDefenderHealthLeft = 70
                 });
+
+
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CombatModifier = 0f,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0,
+                        LocationTerrain = TerrainType.Grassland,
+                        LocationFeature = TerrainFeature.None,
+                        CombatModifier = 0f
+                    },
+                    OwnersAreAtWar = false
+                }).SetName("Otherwise valid attack/owners are not at war")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = false,
+                    MeleeAttackerHealthLeft = 100,
+                    MeleeAttackerMovementLeft = 2,
+                    MeleeDefenderHealthLeft = 100,
+                    
+                    CanPerformRangedAttack = false,
+                    RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 2,
+                    RangedDefenderHealthLeft = 100
+                });
             }
         }
 
@@ -785,17 +822,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
-
-        private Mock<IHexGrid> MockGrid;
-
-        private Mock<ILineOfSightLogic> MockLineOfSightLogic;
-
-        private Mock<ICombatModifierLogic> MockCombatModifierLogic;
-
+        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
+        private Mock<IHexGrid>                                      MockGrid;
+        private Mock<ILineOfSightLogic>                             MockLineOfSightLogic;
+        private Mock<ICombatModifierLogic>                          MockCombatModifierLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
-
-        private IUnitConfig UnitConfig;
+        private IUnitConfig                                         UnitConfig;
+        private Mock<IWarCanon>                                     MockWarCanon;
 
         #endregion
 
@@ -810,12 +843,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockLineOfSightLogic    = new Mock<ILineOfSightLogic>();
             MockCombatModifierLogic = new Mock<ICombatModifierLogic>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockWarCanon            = new Mock<IWarCanon>();
 
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
             Container.Bind<ILineOfSightLogic>                            ().FromInstance(MockLineOfSightLogic   .Object);
             Container.Bind<ICombatModifierLogic>                         ().FromInstance(MockCombatModifierLogic.Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon           .Object);
 
             Container.Bind<UnitSignals>().AsSingle();
 
@@ -865,6 +900,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedAttacker)).Returns(attackerOwner);
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(defenderOwner);
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(defenderOwner);
+
+                MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(input.OwnersAreAtWar);
+                MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(input.OwnersAreAtWar);
             }
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
