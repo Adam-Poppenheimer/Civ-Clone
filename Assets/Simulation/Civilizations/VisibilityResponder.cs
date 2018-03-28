@@ -20,6 +20,8 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
+        public bool UpdateVisibility { get; set; }
+
         private Coroutine ResetVisionCoroutine;
 
 
@@ -94,25 +96,25 @@ namespace Assets.Simulation.Civilizations {
         }
 
         private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null) {
+            if(ResetVisionCoroutine == null && UpdateVisibility) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null) {
+            if(ResetVisionCoroutine == null && UpdateVisibility) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
-            if(ResetVisionCoroutine == null) {
+            if(ResetVisionCoroutine == null && UpdateVisibility) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
-            if(ResetVisionCoroutine == null) {
+            if(ResetVisionCoroutine == null && UpdateVisibility) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }

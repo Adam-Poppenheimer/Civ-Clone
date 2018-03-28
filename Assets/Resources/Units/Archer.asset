@@ -23,7 +23,7 @@ MonoBehaviour:
   _attackRange: 2
   _combatStrength: 5
   _rangedAttackStrength: 7
-  _maxHitpoints: 0
+  _maxHitpoints: 100
   _requiredResources: []
   _benefitsFromDefensiveTerrain: 1
   _ignoresTerrainCosts: 0

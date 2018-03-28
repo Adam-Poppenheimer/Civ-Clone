@@ -23,7 +23,7 @@ MonoBehaviour:
   _attackRange: 0
   _combatStrength: 20
   _rangedAttackStrength: 0
-  _maxHitpoints: 0
+  _maxHitpoints: 100
   _requiredResources:
   - {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
   _benefitsFromDefensiveTerrain: 0

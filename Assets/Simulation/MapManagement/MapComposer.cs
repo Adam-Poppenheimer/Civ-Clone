@@ -8,6 +8,7 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapManagement {
@@ -22,6 +23,8 @@ namespace Assets.Simulation.MapManagement {
         private UnitComposer         UnitComposer;
         private ImprovementComposer  ImprovementComposer;
         private ResourceComposer     ResourceComposer;
+        private VisibilityResponder  VisibilityResponder;
+        private ICellVisibilityCanon CellVisibilityCanon;
 
         #endregion
 
@@ -31,7 +34,8 @@ namespace Assets.Simulation.MapManagement {
         public void InjectDependencies(
             HexCellComposer hexCellComposer, CivilizationComposer civilizationComposer,
             CityComposer cityComposer, UnitComposer unitComposer, ImprovementComposer improvementComposer,
-            ResourceComposer resourceComposer
+            ResourceComposer resourceComposer, VisibilityResponder visibilityResponder,
+            ICellVisibilityCanon cellVisibilityCanon
         ) {
             HexCellComposer      = hexCellComposer;
             CivilizationComposer = civilizationComposer;
@@ -39,6 +43,8 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer         = unitComposer;
             ImprovementComposer  = improvementComposer;
             ResourceComposer     = resourceComposer;
+            VisibilityResponder  = visibilityResponder;
+            CellVisibilityCanon  = cellVisibilityCanon;
         }
 
         public SerializableMapData ComposeRuntimeIntoData() {
@@ -65,13 +71,19 @@ namespace Assets.Simulation.MapManagement {
             ImprovementComposer .DecomposeImprovements (mapData);
         }
 
-        public void ClearRuntime() {            
+        public void ClearRuntime() {
+            VisibilityResponder.UpdateVisibility = false;
+
             ImprovementComposer .ClearRuntime();
             UnitComposer        .ClearRuntime();
             CityComposer        .ClearRuntime();
             CivilizationComposer.ClearRuntime();
             ResourceComposer    .ClearRuntime();
             HexCellComposer     .ClearRuntime();
+
+            CellVisibilityCanon.ClearVisibility();
+
+            VisibilityResponder.UpdateVisibility = true;
         }
 
         #endregion

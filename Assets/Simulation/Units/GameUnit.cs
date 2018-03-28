@@ -133,6 +133,8 @@ namespace Assets.Simulation.Units {
         #region Unity messages
 
         private void OnDestroy() {
+            Animator.StopPlayback();
+            Animator.StopRecording();
             Signals.UnitBeingDestroyedSignal.OnNext(this);
         }
 
