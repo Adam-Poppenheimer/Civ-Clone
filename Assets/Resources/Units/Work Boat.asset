@@ -24,6 +24,7 @@ MonoBehaviour:
   _attackRange: 0
   _combatStrength: 0
   _rangedAttackStrength: 0
+  _maxHitpoints: 0
   _requiredResources: []
   _benefitsFromDefensiveTerrain: 0
   _ignoresTerrainCosts: 0
@@ -31,3 +32,6 @@ MonoBehaviour:
   _isImmobile: 0
   _canMoveAfterAttacking: 0
   _combatBonusesByType: []
+  _mustSetUpToBombard: 0
+  _visionRange: 2
+  _ignoresLineOfSight: 0

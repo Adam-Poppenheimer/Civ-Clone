@@ -8,6 +8,7 @@ using NUnit.Framework;
 using Zenject;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 

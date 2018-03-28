@@ -22,8 +22,6 @@ namespace Assets.Simulation.Units {
 
         float CombatBaseDamage { get; }
 
-        int VisionRange { get; }
-
         #endregion
 
     }

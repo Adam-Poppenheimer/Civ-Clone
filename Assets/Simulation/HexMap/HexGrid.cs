@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -60,16 +61,15 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private DiContainer Container;
-
         private IWorkerSlotFactory WorkerSlotFactory;
+        private DiContainer        Container;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(DiContainer container, IWorkerSlotFactory workerSlotFactory) {
+        public void InjectDependencies(DiContainer container, IWorkerSlotFactory workerSlotFactory){
             Container         = container;
             WorkerSlotFactory = workerSlotFactory;
         }
@@ -91,9 +91,15 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build() {
+            var oldVisibilityMode = CellShaderData.ImmediateMode;
+
+            CellShaderData.ImmediateMode = true;
+
             CreateChunks();
             CreateCells();
             ToggleUI(false);
+
+            StartCoroutine(RevertVisibilityMode(oldVisibilityMode));
         }
 
         public void Clear() {
@@ -351,6 +357,11 @@ namespace Assets.Simulation.HexMap {
             chunk.AddCell(localX + localZ * HexMetrics.ChunkSizeX, cell);
 
             cell.Chunk = chunk;
+        }
+
+        private IEnumerator RevertVisibilityMode(bool oldVisibilityMode) {
+            yield return new WaitForEndOfFrame();
+            CellShaderData.ImmediateMode = oldVisibilityMode;
         }
 
         #endregion

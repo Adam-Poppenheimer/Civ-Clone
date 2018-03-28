@@ -76,6 +76,8 @@ namespace Assets.Simulation.Units {
             newUnit.CurrentMovement = template.MaxMovement;
             newUnit.Hitpoints       = newUnit.MaxHitpoints;
 
+            allUnits.Add(newUnit);
+
             if(UnitPossessionCanon.CanChangeOwnerOfPossession(newUnit, owner)) {
                 UnitPossessionCanon.ChangeOwnerOfPossession(newUnit, owner);
             }else {
@@ -92,8 +94,6 @@ namespace Assets.Simulation.Units {
             if(meshRenderer != null) {
                 meshRenderer.material.color = owner.Color;
             }
-
-            allUnits.Add(newUnit);
 
             return newUnit;
         }

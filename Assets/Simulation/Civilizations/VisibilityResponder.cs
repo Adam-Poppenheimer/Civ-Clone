@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using UnityEngine;
 
 using Zenject;
 using UniRx;
@@ -17,13 +20,17 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
+        private Coroutine ResetVisionCoroutine;
+
+
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private ICellVisibilityCanon VisibilityCanon;
+        private ICellVisibilityCanon                          VisibilityCanon;
+        private ILineOfSightLogic                             LineOfSightLogic;
+        private IUnitFactory                                  UnitFactory;
+        private ICityFactory                                  CityFactory;
+        private MonoBehaviour                                 CoroutineInvoker;
 
         #endregion
 
@@ -31,10 +38,12 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public VisibilityResponder(
-            UnitSignals unitSignals, CitySignals citySignals, IHexGrid grid,
+            UnitSignals unitSignals, CitySignals citySignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellVisibilityCanon visibilityCanon
+            ICellVisibilityCanon visibilityCanon, ILineOfSightLogic lineOfSightLogic,
+            IUnitFactory unitFactory,  ICityFactory cityFactory, HexCellSignals cellSignals,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ){
             unitSignals.LeftLocationSignal      .Subscribe(OnUnitLeftLocation);
             unitSignals.EnteredLocationSignal   .Subscribe(OnUnitEnteredLocation);
@@ -42,65 +51,69 @@ namespace Assets.Simulation.Civilizations {
             citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
             citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
 
-            Grid                = grid;
             UnitPossessionCanon = unitPossessionCanon;
             CityPossessionCanon = cityPossessionCanon;
             VisibilityCanon     = visibilityCanon;
+            LineOfSightLogic    = lineOfSightLogic;
+            UnitFactory         = unitFactory;
+            CityFactory         = cityFactory;
+            CoroutineInvoker    = coroutineInvoker;
+
+            cellSignals.FoundationElevationChangedSignal.Subscribe(cell => ResetVisibility());
+            cellSignals.WaterLevelChangedSignal         .Subscribe(cell => ResetVisibility());
+            cellSignals.ShapeChangedSignal              .Subscribe(cell => ResetVisibility());
+            cellSignals.FeatureChangedSignal            .Subscribe(cell => ResetVisibility());
         }
 
         #endregion
 
         #region instance methods
 
-        private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
-            var unit = args.Item1;
-            var oldLocation = args.Item2;
+        private IEnumerator ResetVisibility() {
+            yield return new WaitForEndOfFrame();
 
-            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
+            VisibilityCanon.ClearVisibility();
 
-            if(unitOwner != null && oldLocation != null) {
-                foreach(var cell in Grid.GetCellsInRadius(oldLocation, unit.VisionRange)) {
-                    VisibilityCanon.DecreaseVisibilityToCiv(cell, unitOwner);
+            foreach(var unit in UnitFactory.AllUnits) {
+                var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
+                foreach(var visibleCell in LineOfSightLogic.GetCellsVisibleToUnit(unit)) {
+                    VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, unitOwner);
                 }
+            }
+
+            foreach(var city in CityFactory.AllCities) {
+                var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+
+                foreach(var visibleCell in LineOfSightLogic.GetCellsVisibleToCity(city)) {
+                    VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, cityOwner);
+                }
+            }
+
+            ResetVisionCoroutine = null;
+        }
+
+        private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
+            if(ResetVisionCoroutine == null) {
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
-            var unit = args.Item1;
-            var newLocation = args.Item2;
-
-            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
-
-            if(unitOwner != null && newLocation != null) {
-                foreach(var cell in Grid.GetCellsInRadius(newLocation, unit.VisionRange)) {
-                    VisibilityCanon.IncreaseVisibilityToCiv(cell, unitOwner);
-                }
+            if(ResetVisionCoroutine == null) {
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
-            var city = args.Item1;
-            var oldCell = args.Item2;
-
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
-
-            if(cityOwner != null && oldCell != null) {
-                foreach(var cell in Grid.GetCellsInRadius(oldCell, 1)) {
-                    VisibilityCanon.DecreaseVisibilityToCiv(cell, cityOwner);
-                }
+            if(ResetVisionCoroutine == null) {
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
-            var city = args.Item1;
-            var newCell = args.Item2;
-
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
-
-            if(cityOwner != null && newCell != null) {
-                foreach(var cell in Grid.GetCellsInRadius(newCell, 1)) {
-                    VisibilityCanon.IncreaseVisibilityToCiv(cell, cityOwner);
-                }
+            if(ResetVisionCoroutine == null) {
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 

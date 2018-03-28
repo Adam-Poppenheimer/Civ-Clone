@@ -145,7 +145,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!LineOfSightLogic.CanUnitSeeCell(attacker, defenderLocation)) {
+            if(!attacker.Template.IgnoresLineOfSight && !LineOfSightLogic.CanUnitSeeCell(attacker, defenderLocation)) {
                 return false;
             }
 

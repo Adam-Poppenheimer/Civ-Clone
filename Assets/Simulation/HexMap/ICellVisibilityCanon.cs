@@ -18,6 +18,8 @@ namespace Assets.Simulation.HexMap {
         void IncreaseVisibilityToCiv(IHexCell cell, ICivilization civ);
         void DecreaseVisibilityToCiv(IHexCell cell, ICivilization civ);
 
+        void ClearVisibility();
+
         #endregion
 
     }

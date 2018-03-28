@@ -42,6 +42,7 @@ namespace Assets.Simulation.HexMap {
 
                 _feature = value;
                 RefreshSelfOnly();
+                Signals.FeatureChangedSignal.OnNext(this);
             }
         }
         [SerializeField] private TerrainFeature _feature;
@@ -49,9 +50,14 @@ namespace Assets.Simulation.HexMap {
         public TerrainShape Shape {
             get { return _shape; }
             set {
+                if(_shape == value) {
+                    return;
+                }
+
                 _shape = value;
                 Refresh();
                 ShaderData.RefreshTerrain(this);
+                Signals.ShapeChangedSignal.OnNext(this);
             }
         }
         [SerializeField] private TerrainShape _shape;
@@ -74,6 +80,8 @@ namespace Assets.Simulation.HexMap {
                 RiverCanon.ValidateRivers(this);
 
                 Refresh();
+
+                Signals.FoundationElevationChangedSignal.OnNext(this);
             }
         }
         [SerializeField] private int _elevation = int.MinValue;
@@ -133,6 +141,7 @@ namespace Assets.Simulation.HexMap {
                 _waterLevel = value;
                 RiverCanon.ValidateRivers(this);
                 Refresh();
+                Signals.WaterLevelChangedSignal.OnNext(this);
             }
         }
         private int _waterLevel;
@@ -145,6 +154,10 @@ namespace Assets.Simulation.HexMap {
             get {
                 return (WaterLevel + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
             }
+        }
+
+        public int ViewElevation {
+            get { return PeakElevation >= WaterLevel ? PeakElevation : WaterLevel; }
         }
 
         public IWorkerSlot WorkerSlot { get; set; }
@@ -165,8 +178,9 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         private INoiseGenerator NoiseGenerator;
-        private IHexGrid Grid;
-        private IRiverCanon RiverCanon;
+        private IHexGrid        Grid;
+        private IRiverCanon     RiverCanon;
+        private HexCellSignals  Signals;
 
         #endregion
 
@@ -174,11 +188,13 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon
+            INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon,
+            HexCellSignals signals
         ){
             NoiseGenerator = noiseGenerator;
-            Grid = grid;
-            RiverCanon = riverCanon;
+            Grid           = grid;
+            RiverCanon     = riverCanon;
+            Signals        = signals;
         }
 
         #region Unity messages

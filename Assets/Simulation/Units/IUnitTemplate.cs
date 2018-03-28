@@ -58,6 +58,10 @@ namespace Assets.Simulation.Units {
 
         bool MustSetUpToBombard { get; }
 
+        int VisionRange { get; }
+
+        bool IgnoresLineOfSight { get; }
+
         #endregion
 
     }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.HexMap {
 
@@ -18,14 +20,14 @@ namespace Assets.Simulation.HexMap {
         private Dictionary<IHexCell, Dictionary<ICivilization, int>> VisibilityOfCellToCiv =
             new Dictionary<IHexCell, Dictionary<ICivilization, int>>();
 
+        private Coroutine ResetVisibilityCoroutine;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public CellVisibilityCanon() {
-
-        }
+        public CellVisibilityCanon() { }
 
         #endregion
 
@@ -55,6 +57,10 @@ namespace Assets.Simulation.HexMap {
             if(visibility >= 1) {
                 cell.RefreshVisibility();
             }
+        }
+
+        public void ClearVisibility() {
+            VisibilityOfCellToCiv.Clear();
         }
 
         #endregion

@@ -32,4 +32,4 @@ MonoBehaviour:
   - 0.25
   _riverCrossingAttackModifier: -0.5
   _combatBaseDamage: 30
-  _visionRange: 2
+  _visionRange: 3

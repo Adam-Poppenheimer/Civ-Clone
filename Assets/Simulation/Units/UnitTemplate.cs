@@ -122,6 +122,16 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private bool _mustSetUpToBombard;
 
+        public int VisionRange {
+            get { return _visionRange; }
+        }
+        [SerializeField] private int _visionRange;
+
+        public bool IgnoresLineOfSight {
+            get { return _ignoresLineOfSight; }
+        }
+        [SerializeField] private bool _ignoresLineOfSight;
+
         #endregion
 
         #endregion

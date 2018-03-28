@@ -111,6 +111,14 @@ namespace Assets.Simulation.Cities {
             get { return false; }
         }
 
+        public int VisionRange {
+            get { return 0; }
+        }
+
+        public bool IgnoresLineOfSight {
+            get { return true; }
+        }
+
         #endregion
 
 

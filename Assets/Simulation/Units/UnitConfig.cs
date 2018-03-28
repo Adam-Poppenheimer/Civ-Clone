@@ -50,11 +50,6 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private float _combatBaseDamage;
 
-        public int VisionRange {
-            get { return _visionRange; }
-        }
-        [SerializeField] private int _visionRange;
-
         #endregion
 
         #endregion

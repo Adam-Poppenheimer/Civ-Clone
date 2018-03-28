@@ -36,6 +36,8 @@ namespace Assets.Simulation.HexMap {
 
         bool IsUnderwater { get; }
 
+        int ViewElevation { get; }
+
         IWorkerSlot WorkerSlot { get; }
 
         bool SuppressSlot { get; set; }
