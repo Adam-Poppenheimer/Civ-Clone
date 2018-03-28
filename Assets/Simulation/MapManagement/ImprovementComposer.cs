@@ -40,7 +40,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var improvement in new List<IImprovement>(ImprovementFactory.AllImprovements)) {
-                GameObject.DestroyImmediate(improvement.gameObject);
+                GameObject.Destroy(improvement.gameObject);
             }
         }
 

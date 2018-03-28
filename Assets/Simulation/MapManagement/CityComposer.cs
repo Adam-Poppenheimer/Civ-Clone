@@ -59,7 +59,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var city in new List<ICity>(CityFactory.AllCities)) {
-                GameObject.DestroyImmediate(city.gameObject);
+                GameObject.Destroy(city.gameObject);
             }
         }
 

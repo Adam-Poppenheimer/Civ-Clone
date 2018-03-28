@@ -25,6 +25,7 @@ namespace Assets.Simulation.MapManagement {
         private ResourceComposer     ResourceComposer;
         private VisibilityResponder  VisibilityResponder;
         private ICellVisibilityCanon CellVisibilityCanon;
+        private MonoBehaviour        CoroutineInvoker;
 
         #endregion
 
@@ -35,7 +36,8 @@ namespace Assets.Simulation.MapManagement {
             HexCellComposer hexCellComposer, CivilizationComposer civilizationComposer,
             CityComposer cityComposer, UnitComposer unitComposer, ImprovementComposer improvementComposer,
             ResourceComposer resourceComposer, VisibilityResponder visibilityResponder,
-            ICellVisibilityCanon cellVisibilityCanon
+            ICellVisibilityCanon cellVisibilityCanon,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer      = hexCellComposer;
             CivilizationComposer = civilizationComposer;
@@ -45,6 +47,7 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer     = resourceComposer;
             VisibilityResponder  = visibilityResponder;
             CellVisibilityCanon  = cellVisibilityCanon;
+            CoroutineInvoker     = coroutineInvoker;
         }
 
         public SerializableMapData ComposeRuntimeIntoData() {
@@ -61,7 +64,11 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void DecomposeDataIntoRuntime(SerializableMapData mapData) {
-            ClearRuntime();
+            CoroutineInvoker.StartCoroutine(DecomposeDataIntoRuntimeCoroutine(mapData));
+        }
+
+        private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData) {
+            yield return ClearRuntimeCoroutine();
 
             HexCellComposer     .DecomposeCells        (mapData);
             CivilizationComposer.DecomposeCivilizations(mapData);
@@ -72,14 +79,21 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void ClearRuntime() {
+            CoroutineInvoker.StartCoroutine(ClearRuntimeCoroutine());
+        }
+
+        private IEnumerator ClearRuntimeCoroutine() {
             VisibilityResponder.UpdateVisibility = false;
 
             ImprovementComposer .ClearRuntime();
-            UnitComposer        .ClearRuntime();
             CityComposer        .ClearRuntime();
+            UnitComposer        .ClearRuntime();
             CivilizationComposer.ClearRuntime();
             ResourceComposer    .ClearRuntime();
-            HexCellComposer     .ClearRuntime();
+
+            yield return new WaitForEndOfFrame();
+
+            HexCellComposer.ClearRuntime();
 
             CellVisibilityCanon.ClearVisibility();
 

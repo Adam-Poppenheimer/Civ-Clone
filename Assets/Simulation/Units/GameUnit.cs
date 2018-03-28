@@ -86,13 +86,13 @@ namespace Assets.Simulation.Units {
 
         public Animator Animator {
             get {
-                if(_stateMachine == null) {
-                    _stateMachine = GetComponent<Animator>();
+                if(animator == null) {
+                    animator = GetComponent<Animator>();
                 }
-                return _stateMachine;
+                return animator;
             }
         }
-        private Animator _stateMachine;
+        private Animator animator;
 
         public bool PermittedToBombard {
             get {
@@ -133,8 +133,6 @@ namespace Assets.Simulation.Units {
         #region Unity messages
 
         private void OnDestroy() {
-            Animator.StopPlayback();
-            Animator.StopRecording();
             Signals.UnitBeingDestroyedSignal.OnNext(this);
         }
 

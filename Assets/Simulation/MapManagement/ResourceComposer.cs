@@ -42,7 +42,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var node in new List<IResourceNode>(NodeFactory.AllNodes)) {
-                GameObject.DestroyImmediate(node.gameObject);
+                GameObject.Destroy(node.gameObject);
             }
         }
 

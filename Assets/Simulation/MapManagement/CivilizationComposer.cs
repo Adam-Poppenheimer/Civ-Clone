@@ -46,7 +46,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var civ in new List<ICivilization>(CivilizationFactory.AllCivilizations)) {
-                GameObject.DestroyImmediate(civ.gameObject);
+                GameObject.Destroy(civ.gameObject);
             }
         }
 

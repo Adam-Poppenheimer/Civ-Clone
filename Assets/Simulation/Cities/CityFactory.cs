@@ -161,6 +161,7 @@ namespace Assets.Simulation.Cities {
         #endregion
 
         private void OnCityBeingDestroyed(ICity city) {
+            GameObject.Destroy(city.CombatFacade.gameObject);
             allCities.Remove(city);
         }
 
