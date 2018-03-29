@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Technology;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
@@ -17,13 +18,11 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain Brain;
-
-        private IHexGrid Grid;
-
-        private IMapComposer MapComposer;
-
+        private UIStateMachineBrain  Brain;
+        private IHexGrid             Grid;
+        private IMapComposer         MapComposer;
         private ICivilizationFactory CivFactory;
+        private ITechCanon           TechCanon;
 
         #endregion
 
@@ -32,12 +31,13 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory
+            ICivilizationFactory civFactory, ITechCanon techCanon
         ) {
             Brain              = brain;
             Grid               = grid;
             MapComposer        = mapComposer;
             CivFactory         = civFactory;
+            TechCanon          = techCanon;
         }
 
         #region from StateMachineBehaviour
@@ -49,10 +49,14 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Grid.Build();
 
             CivFactory.Create("Player Civilization", Color.red);
+
+            TechCanon.IgnoreResourceVisibility = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             MapComposer.ClearRuntime();
+
+            TechCanon.IgnoreResourceVisibility = false;
         }
 
         #endregion

@@ -9,7 +9,7 @@ using UnityEngine;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.SpecialtyResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -70,6 +70,11 @@ namespace Assets.Simulation.Technology {
             get { return _improvementYieldModifications.Cast<IImprovementModificationData>(); }
         }
         [SerializeField] private List<ImprovementModificationData> _improvementYieldModifications;
+
+        public IEnumerable<ISpecialtyResourceDefinition> RevealedResources {
+            get { return _revealedResources.Cast<ISpecialtyResourceDefinition>(); }
+        }
+        [SerializeField] private List<SpecialtyResourceDefinition> _revealedResources;
 
         #endregion
 

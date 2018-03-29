@@ -15,6 +15,8 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Technology;
 
 using Assets.UI.Core;
 
@@ -28,12 +30,13 @@ namespace Assets.Tests.Simulation.Core {
         private Mock<ICityFactory>         MockCityFactory;
         private Mock<ICivilizationFactory> MockCivilizationFactory;
         private Mock<IUnitFactory>         MockUnitFactory;
+        private Mock<IAbilityExecuter>     MockAbilityExecuter;
+        private Mock<IRoundExecuter>       MockRoundExecuter;
+        private Mock<IHexGrid>             MockGrid;
+        private Mock<IResourceNodeFactory> MockResourceNodeFactory;
+        private Mock<ITechCanon>           MockTechCanon;
 
-        private Mock<IRoundExecuter> MockRoundExecuter;
-
-        private Mock<IAbilityExecuter> MockAbilityExecuter;
-
-        private Mock<IHexGrid> MockGrid;
+        private List<IResourceNode> AllResourceNodes = new List<IResourceNode>();
 
         #endregion
 
@@ -43,27 +46,30 @@ namespace Assets.Tests.Simulation.Core {
 
         [SetUp]
         public void CommonInstall() {
-            MockRoundExecuter = new Mock<IRoundExecuter>();
+            AllResourceNodes.Clear();
 
-            MockCityFactory = new Mock<ICityFactory>();
-            MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
-
+            MockRoundExecuter       = new Mock<IRoundExecuter>();
+            MockCityFactory         = new Mock<ICityFactory>();
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
+            MockUnitFactory         = new Mock<IUnitFactory>();
+            MockAbilityExecuter     = new Mock<IAbilityExecuter>();
+            MockGrid                = new Mock<IHexGrid>();
+            MockResourceNodeFactory = new Mock<IResourceNodeFactory>();
+            MockTechCanon           = new Mock<ITechCanon>();
+
+            MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>().AsReadOnly());
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
-
-            MockUnitFactory = new Mock<IUnitFactory>();
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
-
-            MockAbilityExecuter = new Mock<IAbilityExecuter>();
-            MockGrid            = new Mock<IHexGrid>();
+            MockUnitFactory        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>());
+            MockResourceNodeFactory.Setup(factory => factory.AllNodes)        .Returns(AllResourceNodes);
 
             Container.Bind<ICityFactory>        ().FromInstance(MockCityFactory        .Object);
             Container.Bind<ICivilizationFactory>().FromInstance(MockCivilizationFactory.Object);
             Container.Bind<IUnitFactory>        ().FromInstance(MockUnitFactory        .Object);
             Container.Bind<IAbilityExecuter>    ().FromInstance(MockAbilityExecuter    .Object);
-
-            Container.Bind<IRoundExecuter>().FromInstance(MockRoundExecuter.Object);
-            Container.Bind<IHexGrid>      ().FromInstance(MockGrid.Object);
+            Container.Bind<IRoundExecuter>      ().FromInstance(MockRoundExecuter      .Object);
+            Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
+            Container.Bind<IResourceNodeFactory>().FromInstance(MockResourceNodeFactory.Object);
+            Container.Bind<ITechCanon>          ().FromInstance(MockTechCanon          .Object);
 
             Container.Bind<CoreSignals>().AsSingle();
 
@@ -181,7 +187,7 @@ namespace Assets.Tests.Simulation.Core {
         }
 
         [Test(Description = "")]
-        public void EndTurn_VisibilityRefreshed() {
+        public void EndTurn_CellVisibilityRefreshed() {
             var cellMocks = new List<Mock<IHexCell>>() {
                 new Mock<IHexCell>(), new Mock<IHexCell>(), new Mock<IHexCell>()
             };
@@ -205,6 +211,52 @@ namespace Assets.Tests.Simulation.Core {
                     "A cell's visibility was not refreshed when BeginRound was called");
             }
         }
+
+        [Test(Description = "When EndTurn is called (and a new turn is subsequently begun) every " +
+            "ResourceNode on the map should have its visibility changed. Whether it is visible or invisible " +
+            "depends on whether its ResourceDefinition is considered visible by TechCanon")]
+        public void EndTurn_ResourceNodeVisibilityRefreshed() {
+            var visibleResource = BuildResourceDefinition();
+            var invisibleResource = BuildResourceDefinition();
+
+            var visibleNodes = new List<IResourceNode>() {
+                BuildResourceNode(visibleResource),
+                BuildResourceNode(visibleResource),
+                BuildResourceNode(visibleResource),
+            };
+
+            var invisibleNodes = new List<IResourceNode>() {
+                BuildResourceNode(invisibleResource),
+                BuildResourceNode(invisibleResource),
+            };
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            var activeCiv = BuildCivilization();
+
+            MockGrid.Setup(grid => grid.AllCells).Returns(new List<IHexCell>().AsReadOnly());
+
+            MockCivilizationFactory
+                .Setup(factory => factory.AllCivilizations)
+                .Returns(new List<ICivilization>() { activeCiv }.AsReadOnly());
+
+            MockTechCanon.Setup(canon => canon.GetResourcesVisibleToCiv(activeCiv))
+                .Returns(new List<ISpecialtyResourceDefinition>() { visibleResource });
+
+            gameCore.ActiveCivilization = activeCiv;
+
+            gameCore.EndTurn();
+
+            foreach(var node in visibleNodes) {
+                Assert.IsTrue(node.IsVisible, "A node with a visible resource in unexpectedly invisible");
+            }
+
+            foreach(var node in invisibleNodes) {
+                Assert.IsFalse(node.IsVisible, "A node with an invisible resource in unexpectedly visible");
+            }
+        }
+
+        
 
         [Test(Description = "When EndRound is called, all cities in CityFactory " +
             "are passed to TurnExecuter properly")]
@@ -343,6 +395,23 @@ namespace Assets.Tests.Simulation.Core {
 
         private ICivilization BuildCivilization() {
             return new Mock<ICivilization>().Object;
+        }
+
+        private IResourceNode BuildResourceNode(ISpecialtyResourceDefinition resource) {
+            var mockNode = new Mock<IResourceNode>();
+
+            mockNode.SetupAllProperties();
+            mockNode.Setup(node => node.Resource).Returns(resource);
+
+            var newNode = mockNode.Object;
+
+            AllResourceNodes.Add(newNode);
+
+            return mockNode.Object;
+        }
+
+        private ISpecialtyResourceDefinition BuildResourceDefinition() {
+            return new Mock<ISpecialtyResourceDefinition>().Object;
         }
 
         #endregion

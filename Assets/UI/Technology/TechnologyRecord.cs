@@ -35,18 +35,6 @@ namespace Assets.UI.Technology {
 
         #region instance fields and properties
 
-        public Vector2 BackwardConnectionPoint {
-            get {
-                return new Vector2(-RectTransform.rect.width / 2f, 0f) + (Vector2)RectTransform.position;
-            }
-        }
-
-        public Vector2 ForwardConnectionPoint {
-            get {
-                return new Vector2(RectTransform.rect.width / 2f, 0f) + (Vector2)RectTransform.position;
-            }
-        }
-
         public ITechDefinition TechToDisplay { get; set; }
 
         public TechStatus Status { get; set; }

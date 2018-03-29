@@ -13,6 +13,8 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Technology;
 
 using Assets.UI.Core;
 
@@ -37,12 +39,11 @@ namespace Assets.Simulation.Core {
         private ICivilizationFactory CivilizationFactory;
         private IUnitFactory         UnitFactory;
         private IAbilityExecuter     AbilityExecuter;
-
-        private IRoundExecuter TurnExecuter;
-
-        private CoreSignals CoreSignals;
-
-        private IHexGrid Grid;
+        private IRoundExecuter       RoundExecuter;
+        private CoreSignals          CoreSignals;
+        private IHexGrid             Grid;
+        private IResourceNodeFactory ResourceNodeFactory;
+        private ITechCanon           TechCanon;
 
         #endregion
 
@@ -53,16 +54,19 @@ namespace Assets.Simulation.Core {
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
             IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
             IRoundExecuter turnExecuter, CoreSignals coreSignals, IHexGrid grid,
-            PlayerSignals playerSignals,  CivilizationSignals civSignals
+            IResourceNodeFactory resourceNodeFactory, ITechCanon techCanon,
+            PlayerSignals playerSignals, CivilizationSignals civSignals
             
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             UnitFactory         = unitFactory;
             AbilityExecuter     = abilityExecuter;
-            TurnExecuter        = turnExecuter;
+            RoundExecuter        = turnExecuter;
             CoreSignals         = coreSignals;
             Grid                = grid;
+            ResourceNodeFactory = resourceNodeFactory;
+            TechCanon           = techCanon;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
@@ -98,15 +102,15 @@ namespace Assets.Simulation.Core {
         
         public void BeginRound() {
             foreach(var unit in UnitFactory.AllUnits) {
-                TurnExecuter.BeginRoundOnUnit(unit);
+                RoundExecuter.BeginRoundOnUnit(unit);
             }
 
             foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.BeginRoundOnCity(city);
+                RoundExecuter.BeginRoundOnCity(city);
             }
 
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                TurnExecuter.BeginRoundOnCivilization(civilization);
+                RoundExecuter.BeginRoundOnCivilization(civilization);
             }
 
             CoreSignals.RoundBeganSignal.OnNext(++CurrentRound);
@@ -114,15 +118,15 @@ namespace Assets.Simulation.Core {
 
         public void EndRound() {
             foreach(var unit in UnitFactory.AllUnits) {
-                TurnExecuter.EndRoundOnUnit(unit);
+                RoundExecuter.EndRoundOnUnit(unit);
             }
 
             foreach(var city in CityFactory.AllCities) {
-                TurnExecuter.EndRoundOnCity(city);
+                RoundExecuter.EndRoundOnCity(city);
             }
 
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                TurnExecuter.EndRoundOnCivilization(civilization);
+                RoundExecuter.EndRoundOnCivilization(civilization);
             }
 
             AbilityExecuter.PerformOngoingAbilities();
@@ -135,6 +139,12 @@ namespace Assets.Simulation.Core {
         private void PerformBeginningOfTurnActions() {
             foreach(var cell in Grid.AllCells) {
                 cell.RefreshVisibility();
+            }
+
+            var visibleResources = TechCanon.GetResourcesVisibleToCiv(ActiveCivilization);
+
+            foreach(var node in ResourceNodeFactory.AllNodes) {
+                node.IsVisible = visibleResources.Contains(node.Resource);
             }
         }
 

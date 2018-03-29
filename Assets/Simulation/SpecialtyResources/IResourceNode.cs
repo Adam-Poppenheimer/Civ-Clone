@@ -15,6 +15,8 @@ namespace Assets.Simulation.SpecialtyResources {
 
         int Copies { get; }
 
+        bool IsVisible { get; set; }
+
         GameObject gameObject { get; }
 
         #endregion

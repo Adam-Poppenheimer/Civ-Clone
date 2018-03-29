@@ -12,6 +12,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Technology;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Tests.Simulation.Technology {
 
@@ -20,7 +21,8 @@ namespace Assets.Tests.Simulation.Technology {
 
         #region instance fields and properties
 
-        private List<ITechDefinition> AvailableTechs = new List<ITechDefinition>();
+        private List<ITechDefinition>              AvailableTechs     = new List<ITechDefinition>();
+        private List<ISpecialtyResourceDefinition> AvailableResources = new List<ISpecialtyResourceDefinition>();
 
         #endregion
 
@@ -30,9 +32,11 @@ namespace Assets.Tests.Simulation.Technology {
 
         [SetUp]
         public void CommonInstall() {
-            AvailableTechs.Clear();
+            AvailableTechs    .Clear();
+            AvailableResources.Clear();
 
-            Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
+            Container.Bind<List<ITechDefinition>>                    ().WithId("Available Techs")              .FromInstance(AvailableTechs);
+            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>().WithId("Available Specialty Resources").FromInstance(AvailableResources);
 
             Container.Bind<IEnumerable<IAbilityDefinition>>().WithId("Available Abilities")
                 .FromInstance(new List<IAbilityDefinition>());
@@ -248,6 +252,52 @@ namespace Assets.Tests.Simulation.Technology {
             );
         }
 
+        [Test(Description = "GetResearchedBuildings should return only building templates " +
+            "enabled by discovered techs. Buildings with no technology should be unavailable")]
+        public void GetResearchedBuildings_GetsBuildingsFromDiscoveredTechs() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "GetResearchedUnits should return only unit templates " +
+            "enabled by discovered techs. Units with no technology should be unavailable")]
+        public void GetResearchedUnits_GetsUnitsFromDiscoveredTechs() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "GetResearchedAbilities should include all abilities except " +
+            "those enabled by undiscovered techs. This includes abilities enabled by no tech")]
+        public void GetResearchedAbilities_ExcludesAbilitiesFromUndiscoveredTechs() {
+            throw new NotImplementedException();
+        }
+
+        [Test(Description = "GetVisibleResources should include all resources except " +
+            "those made visible by undiscovered techs. This includes resources made visible by no tech")]
+        public void GetVisibleResources_ExcludesResourcesFromUndiscoveredTechs() {
+            var discoveredResources = new List<ISpecialtyResourceDefinition>() {
+                BuildResourceDefinition(), BuildResourceDefinition()
+            };
+
+            var undiscoveredResources = new List<ISpecialtyResourceDefinition>() {
+                BuildResourceDefinition(), BuildResourceDefinition(), BuildResourceDefinition()
+            };
+            
+            var unassociatedResources = new List<ISpecialtyResourceDefinition>() {
+                BuildResourceDefinition(), BuildResourceDefinition()
+            };
+
+            var visibleResources = discoveredResources.Concat(unassociatedResources);
+
+            var discoveredTech = BuildTech("Discovered tech", resources: discoveredResources);
+            var undiscoveredTech = BuildTech("Undiscovered tech", resources: undiscoveredResources);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(discoveredTech, civ);
+
+            CollectionAssert.AreEquivalent(visibleResources, techCanon.GetResourcesVisibleToCiv(civ));
+        }
+
         #endregion
 
         #region utilities
@@ -257,17 +307,19 @@ namespace Assets.Tests.Simulation.Technology {
             List<ITechDefinition> prerequisities = null,
             List<IBuildingTemplate> buildings = null,
             List<IUnitTemplate> units = null,
-            List<IAbilityDefinition> abilities = null
+            List<IAbilityDefinition> abilities = null,
+            List<ISpecialtyResourceDefinition> resources = null
         ){
             var mockTech = new Mock<ITechDefinition>();
             mockTech.Name = name;
 
             mockTech.Setup(tech => tech.Name).Returns(name);
 
-            mockTech.Setup(tech => tech.Prerequisites)   .Returns(prerequisities != null ? prerequisities : new List<ITechDefinition>());
-            mockTech.Setup(tech => tech.BuildingsEnabled).Returns(buildings      != null ? buildings      : new List<IBuildingTemplate>());
-            mockTech.Setup(tech => tech.UnitsEnabled)    .Returns(units          != null ? units          : new List<IUnitTemplate>());
-            mockTech.Setup(tech => tech.AbilitiesEnabled).Returns(abilities      != null ? abilities      : new List<IAbilityDefinition>());
+            mockTech.Setup(tech => tech.Prerequisites)    .Returns(prerequisities != null ? prerequisities : new List<ITechDefinition>());
+            mockTech.Setup(tech => tech.BuildingsEnabled) .Returns(buildings      != null ? buildings      : new List<IBuildingTemplate>());
+            mockTech.Setup(tech => tech.UnitsEnabled)     .Returns(units          != null ? units          : new List<IUnitTemplate>());
+            mockTech.Setup(tech => tech.AbilitiesEnabled) .Returns(abilities      != null ? abilities      : new List<IAbilityDefinition>());
+            mockTech.Setup(tech => tech.RevealedResources).Returns(resources      != null ? resources      : new List<ISpecialtyResourceDefinition>());
 
             AvailableTechs.Add(mockTech.Object);
 
@@ -288,6 +340,14 @@ namespace Assets.Tests.Simulation.Technology {
 
         private IAbilityDefinition BuildAbilityDefinition() {
             return new Mock<IAbilityDefinition>().Object;
+        }
+
+        private ISpecialtyResourceDefinition BuildResourceDefinition() {
+            var newResource = new Mock<ISpecialtyResourceDefinition>().Object;
+
+            AvailableResources.Add(newResource);
+
+            return newResource;
         }
 
         #endregion

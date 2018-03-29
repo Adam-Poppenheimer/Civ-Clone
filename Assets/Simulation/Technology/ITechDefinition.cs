@@ -9,7 +9,7 @@ using UnityEngine;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.SpecialtyResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -37,6 +37,8 @@ namespace Assets.Simulation.Technology {
         IEnumerable<IAbilityDefinition> AbilitiesEnabled { get; }
 
         IEnumerable<IImprovementModificationData> ImprovementYieldModifications { get; }
+
+        IEnumerable<ISpecialtyResourceDefinition> RevealedResources { get; }
 
         #endregion
 

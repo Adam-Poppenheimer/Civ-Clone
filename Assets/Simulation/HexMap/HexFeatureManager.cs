@@ -143,6 +143,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         private bool ApplyResourceNodeToLocation(Vector3 location, IResourceNode node, bool forcePopulate = false) {
+            if(!node.IsVisible) {
+                return false;
+            }
+
             var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
 
             HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);

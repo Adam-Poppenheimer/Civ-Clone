@@ -23,3 +23,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: ae5a9942e138c69488d2edf06631c402, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources:
+  - {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
