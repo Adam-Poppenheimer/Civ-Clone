@@ -39,6 +39,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<INoiseGenerator>     ().To<NoiseGenerator>     ().AsSingle();
             Container.Bind<IRiverCanon>         ().To<RiverCanon>         ().AsSingle();
             Container.Bind<ICellVisibilityCanon>().To<CellVisibilityCanon>().AsSingle();
+            Container.Bind<IFreshWaterCanon>    ().To<FreshWaterCanon>    ().AsSingle();
 
             Container.DeclareSignal<CellClickedSignal>();
             Container.DeclareSignal<CellPointerEnterSignal>();

@@ -30,6 +30,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             public ResourceNodeTestData ResourceNodeAtCell;
 
+            public bool CellHasAccessToFreshWater;
+
             public CityTestData CityOwningCell;
 
             public CivilizationTestData CivOwningCity;
@@ -64,7 +66,17 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public class TechTestData {
 
-            public List<Tuple<ResourceSummary, bool>> ImprovementModifications;
+            public List<ImprovementModificationTestData> ImprovementModifications;
+
+        }
+
+        public class ImprovementModificationTestData {
+
+            public ResourceSummary BonusYield;
+
+            public bool AppliesToImprovement;
+
+            public bool RequiresFreshWater;
 
         }
 
@@ -118,14 +130,20 @@ namespace Assets.Tests.Simulation.Improvements {
                     CivOwningCity = new CivilizationTestData() {
                         TechsDiscovered = new List<TechTestData>() {
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(gold: 1), true),
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(culture: 2), true),
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true
+                                    },
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true
+                                    }
                                 }
                             },
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(science: 3), true)
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true
+                                    },
                                 }
                             }
                         }
@@ -146,14 +164,20 @@ namespace Assets.Tests.Simulation.Improvements {
                     CivOwningCity = new CivilizationTestData() {
                         TechsDiscovered = new List<TechTestData>() {
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(gold: 1), false),
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(culture: 2), false),
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = false
+                                    },
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(culture: 2f), AppliesToImprovement = false
+                                    }
                                 }
                             },
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(science: 3), false)
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = false
+                                    }
                                 }
                             }
                         }
@@ -174,20 +198,102 @@ namespace Assets.Tests.Simulation.Improvements {
                     CivOwningCity = new CivilizationTestData() {
                         TechsDiscovered = new List<TechTestData>() {
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(gold: 1), false),
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(culture: 2), true),
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = false
+                                    },
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(culture: 2f), AppliesToImprovement = true
+                                    }
                                 }
                             },
                             new TechTestData() {
-                                ImprovementModifications = new List<Tuple<ResourceSummary, bool>>() {
-                                    new Tuple<ResourceSummary, bool>(new ResourceSummary(science: 3), false)
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(science: 3f), AppliesToImprovement = false
+                                    }
                                 }
                             }
                         }
                     }
                 }).SetName("Non-extracting improvement, only some tech modifications affect template").Returns(
                     new ResourceSummary(food: 1, culture: 2)
+                );
+
+                yield return new TestCaseData(new GetExpectedYieldTestData() {
+                    Improvement = new ImprovementTemplateTestData() {
+                        BonusYieldNormal = new ResourceSummary(food: 1)
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = false
+                    },
+                    CellHasAccessToFreshWater = true,
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>() {
+                            new TechTestData() {
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    },
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    }
+                                }
+                            },
+                            new TechTestData() {
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }).SetName("Non-extracting improvement, fresh water, tech modifications require fresh water").Returns(
+                    new ResourceSummary(food: 1, gold: 1, culture: 2, science: 3)
+                );
+
+                yield return new TestCaseData(new GetExpectedYieldTestData() {
+                    Improvement = new ImprovementTemplateTestData() {
+                        BonusYieldNormal = new ResourceSummary(food: 1)
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = false
+                    },
+                    CellHasAccessToFreshWater = false,
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>() {
+                            new TechTestData() {
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    },
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    }
+                                }
+                            },
+                            new TechTestData() {
+                                ImprovementModifications = new List<ImprovementModificationTestData>() {
+                                    new ImprovementModificationTestData() {
+                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true,
+                                        RequiresFreshWater = true
+                                    },
+                                }
+                            }
+                        }
+                    }
+                }).SetName("Non-extracting improvement, no fresh water, tech modifications require fresh water").Returns(
+                    new ResourceSummary(food: 1, gold: 0, culture: 0, science: 0)
                 );
             }
         }
@@ -201,6 +307,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private Mock<ITechCanon>                                       MockTechCanon;
         private Mock<IPossessionRelationship<ICity, IHexCell>>         MockCellPossessionCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>>    MockCityPossessionCanon;
+        private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
 
         #endregion
 
@@ -215,12 +322,14 @@ namespace Assets.Tests.Simulation.Improvements {
             MockTechCanon                 = new Mock<ITechCanon>();
             MockCellPossessionCanon       = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockCityPossessionCanon       = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockFreshWaterCanon           = new Mock<IFreshWaterCanon>();
 
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockResourceNodeLocationCanon.Object);
             Container.Bind<IImprovementLocationCanon>                       ().FromInstance(MockImprovementLocationCanon .Object);
             Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon                .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCellPossessionCanon      .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon      .Object);
+            Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon          .Object);
 
             Container.Bind<ImprovementYieldLogic>().AsSingle();
         }
@@ -232,7 +341,7 @@ namespace Assets.Tests.Simulation.Improvements {
         [Test(Description = "")]
         [TestCaseSource("GetExpectedYieldTestCases")]
         public ResourceSummary GetExpectedYieldTests(GetExpectedYieldTestData testData) {
-            var location = BuildHexCell();
+            var location = BuildHexCell(testData.CellHasAccessToFreshWater);
 
             var improvementTemplate = BuildImprovementTemplate(testData.Improvement);
 
@@ -257,8 +366,12 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region utilities
 
-        private IHexCell BuildHexCell() {
-            return new Mock<IHexCell>().Object;
+        private IHexCell BuildHexCell(bool hasAccessToFreshWater = false) {
+            var newCell = new Mock<IHexCell>().Object;
+
+            MockFreshWaterCanon.Setup(canon => canon.DoesCellHaveAccessToFreshWater(newCell)).Returns(hasAccessToFreshWater);
+
+            return newCell;
         }
 
         private IImprovementTemplate BuildImprovementTemplate(ImprovementTemplateTestData testData) {
@@ -322,21 +435,22 @@ namespace Assets.Tests.Simulation.Improvements {
             mockTech
                 .Setup(tech => tech.ImprovementYieldModifications)
                 .Returns(testData.ImprovementModifications.Select(
-                    tuple => BuildModificationData(tuple, candidateImprovementTemplate)
+                    yieldModData => BuildModificationData(yieldModData, candidateImprovementTemplate)
                 ));
 
             return mockTech.Object;
         }
 
         private IImprovementModificationData BuildModificationData(
-            Tuple<ResourceSummary, bool> dataTuple,
+            ImprovementModificationTestData modData,
             IImprovementTemplate candidateImprovementTemplate
         ) {
             var mockData = new Mock<IImprovementModificationData>();
 
-            mockData.Setup(data => data.BonusYield).Returns(dataTuple.Item1);
+            mockData.Setup(data => data.BonusYield).Returns(modData.BonusYield);
+            mockData.Setup(data => data.RequiresFreshWater).Returns(modData.RequiresFreshWater);
 
-            if(dataTuple.Item2) {
+            if(modData.AppliesToImprovement) {
                 mockData.Setup(data => data.Template).Returns(candidateImprovementTemplate);
             }
 

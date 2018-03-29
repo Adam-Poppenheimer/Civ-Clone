@@ -9,6 +9,8 @@ namespace Assets.Simulation.Technology {
         ResourceSummary      BonusYield { get; }
         IImprovementTemplate Template   { get; }
 
+        bool RequiresFreshWater { get; }
+
         #endregion
 
     }

@@ -24,10 +24,11 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 12ebc4e1dc182584a82757e2f8c878d5, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications:
-  - _improvement: {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
+  - _template: {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
     _bonusYield:
       Food: 0
       Production: 0
       Gold: 1
       Culture: 0
       Science: 0
+    _requiresFreshWater: 0

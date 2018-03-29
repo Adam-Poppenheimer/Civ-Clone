@@ -16,14 +16,11 @@ namespace Assets.Simulation.Improvements {
         #region instance fields and properties
 
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-
-        private IImprovementLocationCanon ImprovementLocationCanon;
-
-        private ITechCanon TechCanon;
-
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IImprovementLocationCanon                        ImprovementLocationCanon;
+        private ITechCanon                                       TechCanon;
+        private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
+        private IFreshWaterCanon                                 FreshWaterCanon;
 
         #endregion
 
@@ -33,13 +30,15 @@ namespace Assets.Simulation.Improvements {
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
             IImprovementLocationCanon improvementLocationCanon, ITechCanon techCanon,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IFreshWaterCanon freshWaterCanon
         ) {
             ResourceNodeLocationCanon = resourceNodeLocationCanon;
             ImprovementLocationCanon  = improvementLocationCanon;
             TechCanon                 = techCanon;
             CellPossessionCanon       = cellPossessionCanon;
             CityPossessionCanon       = cityPossessionCanon;
+            FreshWaterCanon           = freshWaterCanon;
         }
 
         #endregion
@@ -64,13 +63,17 @@ namespace Assets.Simulation.Improvements {
             if(cityOwningCell != null) {
                 var civOwningTile = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
 
-                foreach(var techModifyingYield in TechCanon.GetTechsDiscoveredByCiv(civOwningTile)) {
-                    var yieldChangesFromTech = techModifyingYield.ImprovementYieldModifications
-                        .Where(tuple => tuple.Template == template)
-                        .Select(tuple => tuple.BonusYield);
+                var applicableTechMods = new List<IImprovementModificationData>();
 
-                    if(yieldChangesFromTech.Count() > 0) {                        
-                        retval += yieldChangesFromTech.Aggregate((a, b) => a + b);
+                foreach(var techModifyingYield in TechCanon.GetTechsDiscoveredByCiv(civOwningTile)) {
+                    applicableTechMods.AddRange(
+                        techModifyingYield.ImprovementYieldModifications.Where(tuple => tuple.Template == template)
+                    );
+                }
+
+                foreach(IImprovementModificationData mod in applicableTechMods) {
+                    if(!mod.RequiresFreshWater || FreshWaterCanon.DoesCellHaveAccessToFreshWater(cell)) {
+                        retval += mod.BonusYield;
                     }
                 }
             }

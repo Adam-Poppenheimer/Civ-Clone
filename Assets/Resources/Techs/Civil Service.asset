@@ -23,4 +23,12 @@ MonoBehaviour:
   _unitsEnabled:
   - {fileID: 11400000, guid: 337b80ff2749a7d4eae751565588fd56, type: 2}
   _abilitiesEnabled: []
-  _improvementYieldModifications: []
+  _improvementYieldModifications:
+  - _template: {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
+    _bonusYield:
+      Food: 1
+      Production: 0
+      Gold: 0
+      Culture: 0
+      Science: 0
+    _requiresFreshWater: 1

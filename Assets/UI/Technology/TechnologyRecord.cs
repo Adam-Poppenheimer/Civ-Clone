@@ -26,6 +26,13 @@ namespace Assets.UI.Technology {
 
         #endregion
 
+        #region static fields and properties
+
+        private static string DoesNotRequireFreshWaterFormat =  "{0} <color #000000>for all {1} improvements with access to fresh water";
+        private static string RequiresFreshWaterFormat       =  "{0} <color #000000>for all {1} improvements";
+
+        #endregion
+
         #region instance fields and properties
 
         public Vector2 BackwardConnectionPoint {
@@ -178,7 +185,7 @@ namespace Assets.UI.Technology {
 
             foreach(var yieldModification in TechToDisplay.ImprovementYieldModifications) {
                 var description = String.Format(
-                    "{0} <color #000000>for all {1} improvements",
+                    yieldModification.RequiresFreshWater ? RequiresFreshWaterFormat : DoesNotRequireFreshWaterFormat,
                     YieldFormatter.GetTMProFormattedYieldString(yieldModification.BonusYield, false),
                     yieldModification.Template.name
                 );

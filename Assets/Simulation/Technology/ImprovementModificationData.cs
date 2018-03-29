@@ -15,14 +15,19 @@ namespace Assets.Simulation.Technology {
         #region instance fields and properties
 
         public IImprovementTemplate Template {
-            get { return _improvement; }
+            get { return _template; }
         }
-        [SerializeField] private ImprovementTemplate _improvement;
+        [SerializeField] private ImprovementTemplate _template;
 
         public ResourceSummary BonusYield {
             get { return _bonusYield; }
         }
         [SerializeField] private ResourceSummary _bonusYield;
+
+        public bool RequiresFreshWater {
+            get { return _requiresFreshWater; }
+        }
+        [SerializeField] private bool _requiresFreshWater;
 
         #endregion
 
