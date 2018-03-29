@@ -110,8 +110,6 @@ namespace Assets.UI.Technology {
                     tableCell.name = string.Format("Cell [{0}, {1}]", rowIndex, columnIndex);
                 }
             }
-
-            PrerequisiteLines.transform.SetAsLastSibling();
         }
 
         private void SetUpTechTree() {
@@ -145,14 +143,20 @@ namespace Assets.UI.Technology {
             var lineList = new List<Vector2>();
 
             foreach(var recordOfCurrent in TechRecords) {
+                var currentCellTransform = recordOfCurrent.transform.parent.GetComponent<RectTransform>();
+
+                var currentConnectionPoint = currentCellTransform.localPosition
+                    - new Vector3(currentCellTransform.rect.width / 2f, 0f, 0f);
+
                 foreach(var prerequisite in recordOfCurrent.TechToDisplay.Prerequisites) {
                     var recordOfPrerequisite = TechRecords.Where(record => record.TechToDisplay == prerequisite).First();
 
-                    var prerequisiteInTable = TechTable.transform.InverseTransformPoint(recordOfPrerequisite.ForwardConnectionPoint);
-                    var currentInTable      = TechTable.transform.InverseTransformPoint(recordOfCurrent     .BackwardConnectionPoint);
+                    var prerequisiteCellTransform = recordOfPrerequisite.transform.parent.GetComponent<RectTransform>();
+                    var prerequisiteConnectionPoint = prerequisiteCellTransform.localPosition
+                        + new Vector3(prerequisiteCellTransform.rect.width / 2f, 0f, 0f);
 
-                    lineList.Add(prerequisiteInTable);
-                    lineList.Add(currentInTable);
+                    lineList.Add(prerequisiteConnectionPoint);
+                    lineList.Add(currentConnectionPoint);
                 }
             }
 

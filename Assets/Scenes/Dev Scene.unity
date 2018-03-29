@@ -16305,7 +16305,7 @@ MonoBehaviour:
   lineThickness: 5
   relativeSize: 0
   lineList: 1
-  lineCaps: 0
+  lineCaps: 1
   bezierSegmentsPerCurve: 10
   LineJoins: 0
   BezierMode: 0
