@@ -17,6 +17,9 @@ using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.Technology;
+using Assets.Simulation.Core;
 
 using Assets.UI.SpecialtyResources;
 
@@ -62,6 +65,9 @@ namespace Assets.UI.HexMap {
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodePositionCanon;
         private IImprovementLocationCanon                        ImprovementLocationCanon;
         private ICellResourceLogic                               CellResourceLogic;
+        private ITechCanon                                       TechCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
+        private IGameCore                                        GameCore;
 
         #endregion
 
@@ -73,7 +79,9 @@ namespace Assets.UI.HexMap {
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodePositionCanon,
             IImprovementLocationCanon improvementLocationCanon,
-            ICellResourceLogic cellResourceLogic
+            ICellResourceLogic cellResourceLogic, ITechCanon techCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IGameCore gameCore
         ){
             SignalLogic               = signalLogic;
             GenerationLogic           = generationLogic;
@@ -81,6 +89,9 @@ namespace Assets.UI.HexMap {
             ResourceNodePositionCanon = resourceNodePositionCanon;
             ImprovementLocationCanon  = improvementLocationCanon;
             CellResourceLogic         = cellResourceLogic;
+            TechCanon                 = techCanon;
+            CityPossessionCanon       = cityPossessionCanon;
+            GameCore                  = gameCore;
         }
 
         private void OnBeginHoverFired(IHexCell hoveredCell) {
@@ -137,9 +148,28 @@ namespace Assets.UI.HexMap {
 
         private void SetResourceNodeDisplay(IHexCell cell) {
             var resourceNodeAt = ResourceNodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+
             if(resourceNodeAt != null) {
-                ResourceNodeDisplay.gameObject.SetActive(true);
-                ResourceNodeDisplay.DisplayNode(resourceNodeAt);
+                ICity cityOwningCell = null;
+                ICivilization civOwningCell = null;
+
+                cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
+
+                if(cityOwningCell != null) {
+                    civOwningCell = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
+                }
+
+                if(civOwningCell != null && TechCanon.IsResourceVisibleToCiv(resourceNodeAt.Resource, civOwningCell)) {
+                    ResourceNodeDisplay.gameObject.SetActive(true);
+                    ResourceNodeDisplay.DisplayNode(resourceNodeAt);
+
+                }else if(
+                    GameCore.ActiveCivilization != null &&
+                    TechCanon.IsResourceVisibleToCiv(resourceNodeAt.Resource, GameCore.ActiveCivilization)
+                ){
+                    ResourceNodeDisplay.gameObject.SetActive(true);
+                    ResourceNodeDisplay.DisplayNode(resourceNodeAt);
+                }
             }else {
                 ResourceNodeDisplay.gameObject.SetActive(false);
             }

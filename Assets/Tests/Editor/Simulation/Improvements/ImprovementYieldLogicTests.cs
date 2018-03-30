@@ -50,6 +50,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             public bool IsExtractedByImprovement;
 
+            public bool IsVisible;
+
         }
 
         public class CityTestData {
@@ -108,13 +110,31 @@ namespace Assets.Tests.Simulation.Improvements {
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
-                        IsExtractedByImprovement = true
+                        IsExtractedByImprovement = true,
+                        IsVisible = false
                     },
                     CityOwningCell = new CityTestData(),
                     CivOwningCity = new CivilizationTestData() {
                         TechsDiscovered = new List<TechTestData>()
                     }
-                }).SetName("Extracting improvement, no techs").Returns(
+                }).SetName("Extracting improvement, invisible resource, no techs").Returns(
+                    new ResourceSummary(food: 1)
+                );
+
+                yield return new TestCaseData(new GetExpectedYieldTestData() {
+                    Improvement = new ImprovementTemplateTestData() {
+                        BonusYieldNormal = new ResourceSummary(food: 1)
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = true,
+                        IsVisible = true
+                    },
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>()
+                    }
+                }).SetName("Extracting improvement, visible resource, no techs").Returns(
                     new ResourceSummary(production: 2)
                 );
 
@@ -392,6 +412,10 @@ namespace Assets.Tests.Simulation.Improvements {
 
             mockDefinition.Setup(definition => definition.BonusYieldWhenImproved)
                 .Returns(testData.DefinitionImprovementYield);
+
+            MockTechCanon.Setup(
+                canon => canon.IsResourceVisibleToCiv(mockDefinition.Object, It.IsAny<ICivilization>())
+            ).Returns(testData.IsVisible);
 
             if(testData.IsExtractedByImprovement) {
                 mockDefinition.Setup(definition => definition.Extractor).Returns(extractorCandidate);

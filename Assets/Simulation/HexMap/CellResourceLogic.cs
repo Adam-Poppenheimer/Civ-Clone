@@ -9,6 +9,9 @@ using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Technology;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.HexMap {
 
@@ -16,17 +19,15 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGridConfig Config;
-
+        private IHexGridConfig                                   Config;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
-
-        private IImprovementLocationCanon ImprovementLocationCanon;
-
-        private IImprovementYieldLogic ImprovementYieldLogic;
-
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-
-        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+        private IImprovementLocationCanon                        ImprovementLocationCanon;
+        private IImprovementYieldLogic                           ImprovementYieldLogic;
+        private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding>        BuildingPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
+        private ITechCanon                                       TechCanon;
+        private IGameCore                                        GameCore;
 
         #endregion
 
@@ -38,7 +39,9 @@ namespace Assets.Simulation.HexMap {
             IImprovementLocationCanon improvementLocationCanon,
             IImprovementYieldLogic improvementYieldLogic,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            ITechCanon techCanon, IGameCore gameCore
         ){
             Config                   = config;
             NodePositionCanon        = nodePositionCanon;
@@ -46,6 +49,9 @@ namespace Assets.Simulation.HexMap {
             ImprovementYieldLogic    = improvementYieldLogic;
             CellPossessionCanon      = cellPossessionCanon;
             BuildingPossessionCanon  = buildingPossessionCanon;
+            CityPossessionCanon      = cityPossessionCanon;
+            TechCanon                = techCanon;
+            GameCore                 = gameCore;
         }
 
         #endregion
@@ -60,6 +66,14 @@ namespace Assets.Simulation.HexMap {
             }
 
             ResourceSummary retval;
+            ICity cityOwningCell = null;
+            ICivilization civOwningCell = null;
+
+            cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
+
+            if(cityOwningCell != null) {
+                civOwningCell = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
+            }
 
             if(cell.Feature != TerrainFeature.None) {
                 retval = Config.FeatureYields[(int)cell.Feature];
@@ -71,7 +85,16 @@ namespace Assets.Simulation.HexMap {
 
             var nodeAtLocation = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             if(nodeAtLocation != null) {
-                retval += nodeAtLocation.Resource.BonusYieldBase;
+                if( civOwningCell != null &&
+                    TechCanon.IsResourceVisibleToCiv(nodeAtLocation.Resource, civOwningCell)
+                ){
+                    retval += nodeAtLocation.Resource.BonusYieldBase;
+                }else if(
+                    GameCore.ActiveCivilization != null &&
+                    TechCanon.IsResourceVisibleToCiv(nodeAtLocation.Resource, GameCore.ActiveCivilization)
+                ){
+                    retval += nodeAtLocation.Resource.BonusYieldBase;
+                }
             }
 
             retval += GetContributionFromBuildings(cell, nodeAtLocation);

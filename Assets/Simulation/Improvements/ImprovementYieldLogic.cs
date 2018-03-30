@@ -49,23 +49,29 @@ namespace Assets.Simulation.Improvements {
 
         public ResourceSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell) {
             ResourceSummary retval;
+            ICity cityOwningCell = null;
+            ICivilization civOwningCell = null;
+
+            cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
+
+            if(cityOwningCell != null) {
+                civOwningCell = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
+            }
 
             var resourceNodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(resourceNodeOnCell != null && resourceNodeOnCell.Resource.Extractor == template) {
-                retval = resourceNodeOnCell.Resource.BonusYieldWhenImproved;
+            if( resourceNodeOnCell != null && resourceNodeOnCell.Resource.Extractor == template &&
+                (civOwningCell == null || TechCanon.IsResourceVisibleToCiv(resourceNodeOnCell.Resource, civOwningCell))
+            ){
+                retval = resourceNodeOnCell.Resource.BonusYieldWhenImproved;               
             }else {
                 retval = template.BonusYieldNormal;
             }
 
-            var cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
-
-            if(cityOwningCell != null) {
-                var civOwningTile = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
-
+            if(civOwningCell != null) {
                 var applicableTechMods = new List<IImprovementModificationData>();
 
-                foreach(var techModifyingYield in TechCanon.GetTechsDiscoveredByCiv(civOwningTile)) {
+                foreach(var techModifyingYield in TechCanon.GetTechsDiscoveredByCiv(civOwningCell)) {
                     applicableTechMods.AddRange(
                         techModifyingYield.ImprovementYieldModifications.Where(tuple => tuple.Template == template)
                     );

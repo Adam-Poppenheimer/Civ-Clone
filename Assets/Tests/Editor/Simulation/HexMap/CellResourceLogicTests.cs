@@ -15,6 +15,9 @@ using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.Core;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -37,11 +40,21 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public CityData CityOwningCell;
 
+            public CivilizationData CivOwningCell;
+
         }
 
         public class ResourceNodeData {
 
+            public ResourceDefinitionData Resource;            
+
+        }
+
+        public class ResourceDefinitionData {
+
             public ResourceSummary BonusYield;
+
+            public bool IsVisible;
 
         }
 
@@ -53,7 +66,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
         public class CityData {
 
-            public List<BuildingData> Buildings;
+            public List<BuildingData> Buildings = new List<BuildingData>();
 
         }
 
@@ -62,6 +75,12 @@ namespace Assets.Tests.Simulation.HexMap {
             public List<Tuple<ResourceSummary, bool>> ResourceYieldModifications = new List<Tuple<ResourceSummary, bool>>();
 
             public List<CellYieldModificationData> CellYieldModifications = new List<CellYieldModificationData>();
+
+        }
+
+        public class CivilizationData {
+
+
 
         }
 
@@ -151,18 +170,50 @@ namespace Assets.Tests.Simulation.HexMap {
                     Feature = TerrainFeature.None,
                     Shape   = TerrainShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
-                        BonusYield = new ResourceSummary(0f, 2f)
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
+                        }
+                    },
+                    CityOwningCell = new CityData(),
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/no feature/Has a visible resource").Returns(new ResourceSummary(1f, 2f));
+
+                yield return new TestCaseData(new GetYieldOfCellTestData() {
+                    Terrain = TerrainType.Grassland,
+                    Feature = TerrainFeature.None,
+                    Shape   = TerrainShape.Flatlands,
+                    ResourceNodeOnCell = new ResourceNodeData() {
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = false
+                        }
+                    },
+                    CityOwningCell = new CityData(),
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/no feature/Has an invisible resource").Returns(new ResourceSummary(1f));
+
+                yield return new TestCaseData(new GetYieldOfCellTestData() {
+                    Terrain = TerrainType.Grassland,
+                    Feature = TerrainFeature.None,
+                    Shape   = TerrainShape.Flatlands,
+                    ResourceNodeOnCell = new ResourceNodeData() {
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
+                        }
                     }
-                }).SetName("Grassland/Flat/no feature/Has a resource").Returns(new ResourceSummary(1f, 2f));
+                }).SetName("Grassland/Flat/no feature/Has a visible resource but no civ").Returns(new ResourceSummary(1f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
                     Terrain = TerrainType.Grassland,
                     Feature = TerrainFeature.Forest,
                     Shape   = TerrainShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
-                        BonusYield = new ResourceSummary(0f, 2f)
-                    }
-                }).SetName("Grassland/Flat/Forest/Has a resource").Returns(new ResourceSummary(2f, 2f));
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
+                        }
+                    },
+                    CityOwningCell = new CityData(),
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/Forest/Has a visible resource").Returns(new ResourceSummary(2f, 2f));
 
 
 
@@ -191,24 +242,32 @@ namespace Assets.Tests.Simulation.HexMap {
                     Feature = TerrainFeature.None,
                     Shape   = TerrainShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
-                        BonusYield = new ResourceSummary(0f, 2f)
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
+                        }
                     },
                     ImprovementOnCell = new ImprovementData() {
                         Yield = new ResourceSummary(0f, 0f, 3f)
-                    }
-                }).SetName("Grassland/Flat/no feature/Has a resource and an improvement").Returns(new ResourceSummary(1f, 2f, 3f));
+                    },
+                    CityOwningCell = new CityData(),
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/no feature/Has a visible resource and an improvement").Returns(new ResourceSummary(1f, 2f, 3f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
                     Terrain = TerrainType.Grassland,
                     Feature = TerrainFeature.Forest,
                     Shape   = TerrainShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
-                        BonusYield = new ResourceSummary(0f, 2f)
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
+                        }
                     },
                     ImprovementOnCell = new ImprovementData() {
                         Yield = new ResourceSummary(0f, 0f, 3f)
-                    }
-                }).SetName("Grassland/Flat/Forest/Has a resource and an improvement").Returns(new ResourceSummary(2f, 2f, 3f));
+                    },
+                    CityOwningCell = new CityData(),
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/Forest/Has a visible resource and an improvement").Returns(new ResourceSummary(2f, 2f, 3f));
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
@@ -216,7 +275,9 @@ namespace Assets.Tests.Simulation.HexMap {
                     Feature = TerrainFeature.None,
                     Shape   = TerrainShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
-                        BonusYield = new ResourceSummary(food: 2)
+                        Resource = new ResourceDefinitionData() {
+                            BonusYield = new ResourceSummary(food: 2), IsVisible = true
+                        }
                     },
                     CityOwningCell = new CityData() {
                         Buildings = new List<BuildingData>() {
@@ -233,8 +294,10 @@ namespace Assets.Tests.Simulation.HexMap {
                                 }
                             }
                         }
-                    }
-                }).SetName("Grassland/Flat/No feature/Has resource and modifying buildings").Returns(new ResourceSummary(food: 3, production: 2, science: 2));
+                    },
+                    CivOwningCell = new CivilizationData()
+                }).SetName("Grassland/Flat/No feature/Has visible resource and modifying buildings")
+                .Returns(new ResourceSummary(food: 3, production: 2, science: 2));
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
@@ -312,17 +375,15 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private Mock<IHexGridConfig> MockConfig;
-
+        private Mock<IHexGridConfig>                                   MockConfig;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
-
-        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
-
-        private Mock<IImprovementYieldLogic> MockImprovementYieldLogic;
-
-        private Mock<IPossessionRelationship<ICity, IHexCell>> MockCellPossessionCanon;
-
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<IImprovementLocationCanon>                        MockImprovementLocationCanon;
+        private Mock<IImprovementYieldLogic>                           MockImprovementYieldLogic;
+        private Mock<IPossessionRelationship<ICity, IHexCell>>         MockCellPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>        MockBuildingPossessionCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>>    MockCityPossessionCanon;
+        private Mock<ITechCanon>                                       MockTechCanon;
+        private Mock<IGameCore>                                        MockGameCore;
 
         #endregion
 
@@ -338,6 +399,9 @@ namespace Assets.Tests.Simulation.HexMap {
             MockImprovementYieldLogic    = new Mock<IImprovementYieldLogic>();
             MockCellPossessionCanon      = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockBuildingPossessionCanon  = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockCityPossessionCanon      = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockTechCanon                = new Mock<ITechCanon>();
+            MockGameCore                 = new Mock<IGameCore>();
 
             MockConfig.Setup(config => config.TerrainYields).Returns(TerrainYields.AsReadOnly());
             MockConfig.Setup(config => config.FeatureYields).Returns(FeatureYields.AsReadOnly());
@@ -349,6 +413,9 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IImprovementYieldLogic>                          ().FromInstance(MockImprovementYieldLogic   .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCellPossessionCanon     .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>       ().FromInstance(MockBuildingPossessionCanon .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon     .Object);
+            Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon               .Object);
+            Container.Bind<IGameCore>                                       ().FromInstance(MockGameCore                .Object);
 
             Container.Bind<CellResourceLogic>().AsSingle();
         }
@@ -366,11 +433,16 @@ namespace Assets.Tests.Simulation.HexMap {
 
             IResourceNode node = null;
             if(data.ResourceNodeOnCell != null) {
-                node = BuildResourceNode(cell, data.ResourceNodeOnCell.BonusYield);
+                var resource = BuildResourceDefinition(data.ResourceNodeOnCell.Resource);
+                node = BuildResourceNode(cell, resource);
             }
 
             if(data.CityOwningCell != null) {
                 BuildCity(cell, data.CityOwningCell, node != null ? node.Resource : null);
+            }
+
+            if(data.CivOwningCell != null) {
+                BuildCivilization(data.CivOwningCell);
             }
 
             if(data.ImprovementOnCell != null) {
@@ -400,21 +472,33 @@ namespace Assets.Tests.Simulation.HexMap {
             return newCell;
         }
 
-        private IResourceNode BuildResourceNode(IHexCell location, ResourceSummary bonusYield) {
+        private IResourceNode BuildResourceNode(
+            IHexCell location, ISpecialtyResourceDefinition resource
+        ) {
             var mockNode = new Mock<IResourceNode>();
 
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
-
-            mockDefinition.Setup(resource => resource.BonusYieldBase).Returns(bonusYield);
-
-            mockNode.Setup(node => node.Resource).Returns(mockDefinition.Object);
+            mockNode.Setup(node => node.Resource).Returns(resource);
 
             var newNode = mockNode.Object;
 
             MockNodePositionCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
                 .Returns(new List<IResourceNode>() { newNode });
 
+            
+
             return newNode;
+        }
+
+        private ISpecialtyResourceDefinition BuildResourceDefinition(ResourceDefinitionData resourceData) {
+            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+
+            mockDefinition.Setup(resource => resource.BonusYieldBase).Returns(resourceData.BonusYield);
+
+            var newDefinition = mockDefinition.Object;
+
+            MockTechCanon.Setup(canon => canon.IsResourceVisibleToCiv(newDefinition, It.IsAny<ICivilization>())).Returns(resourceData.IsVisible);
+
+            return newDefinition;
         }
 
         private IImprovement BuildImprovement(IHexCell location, ResourceSummary bonusYield) {
@@ -472,6 +556,14 @@ namespace Assets.Tests.Simulation.HexMap {
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 
             return mockBuilding.Object;
+        }
+
+        private ICivilization BuildCivilization(CivilizationData civData) {
+            var newCivilization = new Mock<ICivilization>().Object;
+
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(It.IsAny<ICity>())).Returns(newCivilization);
+
+            return newCivilization;
         }
 
         private IResourceYieldModificationData BuildModificationData(
