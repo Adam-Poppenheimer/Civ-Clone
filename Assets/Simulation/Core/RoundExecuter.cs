@@ -6,6 +6,8 @@ using System.Text;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Improvements;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Core {
 
@@ -13,6 +15,22 @@ namespace Assets.Simulation.Core {
     /// The standard implementation of ITurnExecuter.
     /// </summary>
     public class RoundExecuter : IRoundExecuter {
+
+        #region instance fields and properties
+
+        private IUnitPositionCanon        UnitPositionCanon;
+        private IImprovementLocationCanon ImprovementLocationCanon;
+
+        #endregion
+
+        #region constructors
+
+        public RoundExecuter(IUnitPositionCanon unitPositionCanon, IImprovementLocationCanon improvementLocationCanon){
+            UnitPositionCanon        = unitPositionCanon;
+            ImprovementLocationCanon = improvementLocationCanon;
+        }
+
+        #endregion
 
         #region instance methods
 
@@ -51,10 +69,28 @@ namespace Assets.Simulation.Core {
         /// <inheritdoc/>
         public void EndRoundOnUnit(IUnit unit) {
             unit.PerformMovement();
-            unit.HasAttacked = false;
+            PerformConstruction(unit);
+            unit.HasAttacked = false;            
         }
 
         #endregion
+
+        private void PerformConstruction(IUnit unit) {
+            if(unit.LockedIntoConstruction && unit.CurrentMovement > 0) {
+                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+                
+                var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+                if(improvementAtLocation != null && !improvementAtLocation.IsConstructed) {
+                    improvementAtLocation.WorkInvested++;
+                    unit.CurrentMovement = 0f;
+
+                    if(improvementAtLocation.IsReadyToConstruct) {
+                        improvementAtLocation.Construct();
+                    }
+                }
+            }
+        }
 
         #endregion
 

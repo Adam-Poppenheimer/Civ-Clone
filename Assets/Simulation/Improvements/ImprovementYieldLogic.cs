@@ -88,9 +88,13 @@ namespace Assets.Simulation.Improvements {
         }
 
         public ResourceSummary GetYieldOfImprovement(IImprovement improvement) {
-            return GetExpectedYieldOfImprovementOnCell(
-                improvement.Template, ImprovementLocationCanon.GetOwnerOfPossession(improvement)
-            );
+            if(improvement.IsConstructed && !improvement.IsPillaged) {
+                return GetExpectedYieldOfImprovementOnCell(
+                    improvement.Template, ImprovementLocationCanon.GetOwnerOfPossession(improvement)
+                );
+            }else {
+                return ResourceSummary.Empty;
+            }            
         }
 
         #endregion

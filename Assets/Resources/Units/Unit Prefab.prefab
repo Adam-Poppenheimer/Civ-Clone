@@ -19,10 +19,10 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4433386242519586}
-  - component: {fileID: 95933380790746598}
+  - component: {fileID: 114144767795173282}
   - component: {fileID: 114853534447256316}
   - component: {fileID: 114616494809797408}
-  - component: {fileID: 114144767795173282}
+  - component: {fileID: 95933380790746598}
   m_Layer: 0
   m_Name: Unit Prefab
   m_TagString: Untagged
@@ -172,6 +172,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86f89b76300ab054e9b45b0076d7b86f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Animator: {fileID: 95933380790746598}
 --- !u!136 &136509561788426556
 CapsuleCollider:
   m_ObjectHideFlags: 1

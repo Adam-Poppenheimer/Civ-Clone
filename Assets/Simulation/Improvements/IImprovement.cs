@@ -13,9 +13,25 @@ namespace Assets.Simulation.Improvements {
 
         IImprovementTemplate Template { get; }
 
+        bool IsConstructed { get; }
+
+        bool IsPillaged { get; }
+
+        bool IsReadyToConstruct { get; }
+
+        int WorkInvested { get; set; }
+
         Transform transform { get; }
 
         GameObject gameObject { get; }
+
+        #endregion
+
+        #region methods
+
+        void Construct();
+
+        void Pillage();
 
         #endregion
 

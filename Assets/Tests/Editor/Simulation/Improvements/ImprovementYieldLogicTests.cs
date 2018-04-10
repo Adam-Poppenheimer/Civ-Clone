@@ -24,9 +24,9 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region internal types
 
-        public class GetExpectedYieldTestData {
+        public class ImprovementYieldTestData {
 
-            public ImprovementTemplateTestData Improvement;
+            public ImprovementTestData Improvement;
 
             public ResourceNodeTestData ResourceNodeAtCell;
 
@@ -35,6 +35,16 @@ namespace Assets.Tests.Simulation.Improvements {
             public CityTestData CityOwningCell;
 
             public CivilizationTestData CivOwningCity;
+
+        }
+
+        public class ImprovementTestData {
+
+            public ImprovementTemplateTestData Template;
+
+            public bool IsConstructed = true;
+
+            public bool IsPillaged = false;
 
         }
 
@@ -88,10 +98,12 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public static IEnumerable GetExpectedYieldTestCases {
             get {
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
-                    },
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
+                    },                    
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
                         IsExtractedByImprovement = false
@@ -104,9 +116,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -121,9 +135,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -138,9 +154,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(production: 2)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -172,9 +190,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1, gold: 1, culture: 2, science: 3)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -206,9 +226,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -240,9 +262,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1, culture: 2)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -278,9 +302,11 @@ namespace Assets.Tests.Simulation.Improvements {
                     new ResourceSummary(food: 1, gold: 1, culture: 2, science: 3)
                 );
 
-                yield return new TestCaseData(new GetExpectedYieldTestData() {
-                    Improvement = new ImprovementTemplateTestData() {
-                        BonusYieldNormal = new ResourceSummary(food: 1)
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
                         DefinitionImprovementYield = new ResourceSummary(production: 2),
@@ -314,6 +340,67 @@ namespace Assets.Tests.Simulation.Improvements {
                     }
                 }).SetName("Non-extracting improvement, no fresh water, tech modifications require fresh water").Returns(
                     new ResourceSummary(food: 1, gold: 0, culture: 0, science: 0)
+                );
+            }
+        }
+
+        public static IEnumerable GetYieldOfImprovementTestCases {
+            get {
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
+                        IsConstructed = true
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = false
+                    },
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>()
+                    }
+                }).SetName("Improvement is constructed").Returns(
+                    new ResourceSummary(food: 1)
+                );
+
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
+                        IsConstructed = false
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = false
+                    },
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>()
+                    }
+                }).SetName("Improvement is not constructed").Returns(
+                    ResourceSummary.Empty
+                );
+
+                yield return new TestCaseData(new ImprovementYieldTestData() {
+                    Improvement = new ImprovementTestData() {
+                        Template = new ImprovementTemplateTestData() {
+                            BonusYieldNormal = new ResourceSummary(food: 1)
+                        },
+                        IsConstructed = true, IsPillaged = true
+                    },
+                    ResourceNodeAtCell = new ResourceNodeTestData() {
+                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        IsExtractedByImprovement = false
+                    },
+                    CityOwningCell = new CityTestData(),
+                    CivOwningCity = new CivilizationTestData() {
+                        TechsDiscovered = new List<TechTestData>()
+                    }
+                }).SetName("Improvement is constructed but pillaged").Returns(
+                    ResourceSummary.Empty
                 );
             }
         }
@@ -358,12 +445,12 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region tests
 
-        [Test(Description = "")]
         [TestCaseSource("GetExpectedYieldTestCases")]
-        public ResourceSummary GetExpectedYieldTests(GetExpectedYieldTestData testData) {
+        [Test(Description = "")]
+        public ResourceSummary GetExpectedYieldTests(ImprovementYieldTestData testData) {
             var location = BuildHexCell(testData.CellHasAccessToFreshWater);
 
-            var improvementTemplate = BuildImprovementTemplate(testData.Improvement);
+            var improvementTemplate = BuildImprovementTemplate(testData.Improvement.Template);
 
             if(testData.ResourceNodeAtCell != null) {
                 BuildResourceNode(testData.ResourceNodeAtCell, location, improvementTemplate);
@@ -382,6 +469,32 @@ namespace Assets.Tests.Simulation.Improvements {
             return yieldLogic.GetExpectedYieldOfImprovementOnCell(improvementTemplate, location);
         }
 
+        [TestCaseSource("GetYieldOfImprovementTestCases")]
+        [Test(Description = "")]
+        public ResourceSummary GetYieldOfImprovementTests(ImprovementYieldTestData testData) {
+            var location = BuildHexCell(testData.CellHasAccessToFreshWater);
+
+            var improvementTemplate = BuildImprovementTemplate(testData.Improvement.Template);
+
+            var improvement = BuildImprovement(testData.Improvement, location, improvementTemplate);
+
+            if(testData.ResourceNodeAtCell != null) {
+                BuildResourceNode(testData.ResourceNodeAtCell, location, improvementTemplate);
+            }
+
+            if(testData.CityOwningCell != null) {
+                var city = BuildCity(testData.CityOwningCell);
+
+                MockCellPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(location)).Returns(city);
+
+                BuildCivilization(testData.CivOwningCity, city, improvementTemplate);
+            }
+
+            var yieldLogic = Container.Resolve<ImprovementYieldLogic>();
+
+            return yieldLogic.GetYieldOfImprovement(improvement);
+        }
+
         #endregion
 
         #region utilities
@@ -392,6 +505,20 @@ namespace Assets.Tests.Simulation.Improvements {
             MockFreshWaterCanon.Setup(canon => canon.DoesCellHaveAccessToFreshWater(newCell)).Returns(hasAccessToFreshWater);
 
             return newCell;
+        }
+
+        private IImprovement BuildImprovement(ImprovementTestData testData, IHexCell location, IImprovementTemplate template) {
+            var mockImprovement = new Mock<IImprovement>();
+
+            mockImprovement.Setup(improvement => improvement.IsConstructed).Returns(testData.IsConstructed);
+            mockImprovement.Setup(improvement => improvement.IsPillaged)   .Returns(testData.IsPillaged);
+            mockImprovement.Setup(improvement => improvement.Template)     .Returns(template);
+
+            var newImprovement = mockImprovement.Object;
+
+            MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement)).Returns(location);
+
+            return newImprovement;
         }
 
         private IImprovementTemplate BuildImprovementTemplate(ImprovementTemplateTestData testData) {

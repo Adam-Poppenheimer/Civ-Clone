@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Improvements;
@@ -14,22 +16,19 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
-        private IImprovementValidityLogic ValidityLogic;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
+        private IImprovementValidityLogic         ValidityLogic;
+        private IUnitPositionCanon                UnitPositionCanon;
         private IEnumerable<IImprovementTemplate> AvailableTemplates;
-
-        private IImprovementFactory ImprovementFactory;
-
-        private IImprovementLocationCanon ImprovementLocationCanon;
+        private IImprovementFactory               ImprovementFactory;
+        private IImprovementLocationCanon         ImprovementLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public BuildImprovementAbilityHandler(IImprovementValidityLogic validityLogic, IUnitPositionCanon unitPositionCanon,
+        public BuildImprovementAbilityHandler(
+            IImprovementValidityLogic validityLogic, IUnitPositionCanon unitPositionCanon,
             [Inject(Id = "Available Improvement Templates")] IEnumerable<IImprovementTemplate> availableTemplates,
             IImprovementFactory improvementFactory, IImprovementLocationCanon improvementLocationCanon
         ){
@@ -47,25 +46,67 @@ namespace Assets.Simulation.Units.Abilities {
         #region from IAbilityHandler
 
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
+            return CanHandleWithExistingSite(ability, unit) || CanHandleWithNewSite(ability, unit);
+        }
+
+        private bool CanHandleWithExistingSite(IAbilityDefinition ability, IUnit unit) {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
             var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
-            var improvementOnTile = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+            return templateOfName != null
+                && improvementOnCell != null
+                && templateOfName == improvementOnCell.Template
+                && !improvementOnCell.IsConstructed
+                && !improvementOnCell.IsPillaged;
+        }
+
+        private bool CanHandleWithNewSite(IAbilityDefinition ability, IUnit unit) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
+            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
             return templateOfName != null
                 && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation)
-                && improvementOnTile == null;
+                && (improvementOnCell == null || improvementOnCell.Template != templateOfName);
         }
 
         public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+            if(CanHandleWithExistingSite(ability, unit)) {
+                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+                unit.LockIntoConstruction();
+
+                var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+                improvementOnCell.WorkInvested++;
+
+                if(improvementOnCell.IsReadyToConstruct) {
+                    improvementOnCell.Construct();
+                }
+
+                return new AbilityExecutionResults(true, null);
+
+            }else if(CanHandleWithNewSite(ability, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
                 var improvementOfTemplate = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
-                if(improvementOfTemplate == null) {
-                    improvementOfTemplate = ImprovementFactory.Create(templateOfName, unitLocation);
+                if(improvementOfTemplate != null) {
+                    GameObject.Destroy(improvementOfTemplate.gameObject);
+                }
+
+                var newImprovement = ImprovementFactory.BuildImprovement(templateOfName, unitLocation);
+
+                unit.LockIntoConstruction();
+
+                newImprovement.WorkInvested++;
+
+                if(newImprovement.IsReadyToConstruct) {
+                    newImprovement.Construct();
                 }
 
                 return new AbilityExecutionResults(true, null);

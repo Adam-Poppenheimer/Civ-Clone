@@ -16,6 +16,7 @@ namespace Assets.Simulation.Improvements {
         #region instance fields and properties
 
         [SerializeField] private GameObject ImprovementPrefab;
+        [SerializeField] private GameObject ImprovementSitePrefab;
 
         #endregion
 
@@ -24,7 +25,8 @@ namespace Assets.Simulation.Improvements {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<GameObject>().WithId("Improvement Prefab").FromInstance(ImprovementPrefab);
+            Container.Bind<GameObject>().WithId("Improvement Prefab")     .FromInstance(ImprovementPrefab);
+            Container.Bind<GameObject>().WithId("Improvement Site Prefab").FromInstance(ImprovementSitePrefab);
 
             Container.Bind<IImprovementLocationCanon>().To<ImprovementLocationCanon>().AsSingle();
 
@@ -35,7 +37,7 @@ namespace Assets.Simulation.Improvements {
                 .FromInstance(allImprovements);
 
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
-            Container.Bind<IImprovementYieldLogic>   ().To<ImprovementYieldLogic>   ().AsSingle();;
+            Container.Bind<IImprovementYieldLogic>   ().To<ImprovementYieldLogic>   ().AsSingle();
 
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
 

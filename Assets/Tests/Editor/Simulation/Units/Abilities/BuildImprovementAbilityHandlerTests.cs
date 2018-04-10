@@ -9,6 +9,7 @@ using NUnit.Framework;
 using Moq;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
@@ -18,6 +19,376 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
     [TestFixture]
     public class BuildImprovementAbilityHandlerTests : ZenjectUnitTestFixture {
+
+        #region internal types
+
+        public class CanHandleAbilityOnUnitTestData {
+
+            public AbilityTestData Ability;
+
+            public UnitTestData Unit;
+
+            public List<ImprovementTemplateTestData> ImprovementTemplates = new List<ImprovementTemplateTestData>();
+
+        }
+
+        public class TryHandleAbilityOnUnitTestData {
+
+            public AbilityTestData Ability;
+
+            public UnitTestData Unit;
+
+            public List<ImprovementTemplateTestData> ImprovementTemplates = new List<ImprovementTemplateTestData>();
+
+            public bool ExpectNewSite;
+
+            public bool ExpectAttachmentToExistingSite;
+
+            public bool ExpectLockingOfUnit;
+
+        }
+
+        public class AbilityTestData {
+
+            public string Name;
+
+            public List<AbilityCommandRequest> CommandRequests = new List<AbilityCommandRequest>();
+
+        }
+
+        public class UnitTestData {
+
+            public HexCellTestData Location = new HexCellTestData();
+
+        }
+
+        public class HexCellTestData {
+
+            public List<ImprovementTestData> Improvements = new List<ImprovementTestData>();
+
+        }
+
+        public class ImprovementTemplateTestData {
+
+            public string Name;
+
+            public bool IsValid;
+
+            public int TurnsToConstruct;
+
+        }
+
+        public class ImprovementTestData {
+
+            public int TemplateIndex;
+
+            public int WorkInvested;
+
+            public bool IsConstructed;
+
+            public bool IsPillaged;
+
+        }
+
+        #endregion
+
+        #region static fields and properties
+
+        public static IEnumerable CanHandleAbilityOnUnitTestCases {
+            get {
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability flagging valid template on empty cell").Returns(true);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Invalid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability flagging invalid template on empty cell").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true },
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Invalid Template", "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability flagging valid template but in wrong args slot").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true },
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.ClearFeature,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability flagging valid template but with wrong command type").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true },
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.ClearFeature,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            },
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Invalid Template" }
+                            },
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability has mix of valid and invalid requests").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true },
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            },
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() { }
+                }).SetName("Ability has multiple valid requests").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 0, IsConstructed = false }
+                            }
+                        }
+                    }
+                }).SetName("Unit location has unconstructed improvement").Returns(true);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 0, IsConstructed = true }
+                            }
+                        }
+                    }
+                }).SetName("Unit location has constructed improvement").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 0, IsConstructed = false, IsPillaged = true }
+                            }
+                        }
+                    }
+                }).SetName("Unit location has unconstructed and pillaged improvement").Returns(false);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 0 }
+                            }
+                        }
+                    }
+                }).SetName("Unit location has an improvement of the flagged template").Returns(true);
+
+                yield return new TestCaseData(new CanHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Template 1", IsValid = true },
+                        new ImprovementTemplateTestData() { Name = "Template 2", IsValid = true }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability One",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Template 1" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 1 }
+                            }
+                        }
+                    }
+                }).SetName("Unit location has an improvement of a different template").Returns(true);
+            }
+        }
+
+        public static IEnumerable TryHandleAbilityOnUnitTestCases {
+            get {
+                yield return new TestCaseData(new TryHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true, TurnsToConstruct = 2 }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability 1",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                 CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() { }
+                    },
+                    ExpectNewSite = true,
+                    ExpectLockingOfUnit = true
+                }).SetName("Valid ability on unit with empty location").Returns(new AbilityExecutionResults(true, null));
+
+                yield return new TestCaseData(new TryHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Invalid Template", IsValid = false, TurnsToConstruct = 2 }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability 1",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                 CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Invalid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() { }
+                    },
+                    ExpectLockingOfUnit = false
+                }).SetName("Invalid ability").Returns(new AbilityExecutionResults(false, null));
+
+                yield return new TestCaseData(new TryHandleAbilityOnUnitTestData() {
+                    ImprovementTemplates = new List<ImprovementTemplateTestData>() {
+                        new ImprovementTemplateTestData() { Name = "Valid Template", IsValid = true, TurnsToConstruct = 2 }
+                    },
+                    Ability = new AbilityTestData() {
+                        Name = "Ability 1",
+                        CommandRequests = new List<AbilityCommandRequest>() {
+                            new AbilityCommandRequest() {
+                                 CommandType = AbilityCommandType.BuildImprovement,
+                                ArgsToPass = new List<string>() { "Valid Template" }
+                            }
+                        }
+                    },
+                    Unit = new UnitTestData() {
+                        Location = new HexCellTestData() {
+                            Improvements = new List<ImprovementTestData>() {
+                                new ImprovementTestData() { TemplateIndex = 0 }
+                            }
+                        }
+                    },
+                    ExpectAttachmentToExistingSite = true,
+                    ExpectLockingOfUnit = true
+                }).SetName("Valid ability on unit whose location has a valid site").Returns(new AbilityExecutionResults(true, null));
+            }
+        }
+
+        #endregion
 
         #region instance fields and properties
 
@@ -46,6 +417,10 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<IHexCell>()))
                 .Returns(new List<IImprovement>());
 
+            MockImprovementFactory
+                .Setup(factory => factory.BuildImprovement(It.IsAny<IImprovementTemplate>(), It.IsAny<IHexCell>()))
+                .Returns<IImprovementTemplate, IHexCell>((template, cell) => BuildImprovement(template, cell));
+
             Container.Bind<IEnumerable<IImprovementTemplate>>().WithId("Available Improvement Templates").FromInstance(AllTemplates);
 
             Container.Bind<IImprovementValidityLogic>().FromInstance(MockImprovementValidityLogic.Object);
@@ -60,137 +435,150 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region tests
 
-        [Test(Description = "CanHandleAbilityOnUnit can only return true if the argued ability " +
-            "has a single BuildImprovement command whose first argument is a valid template name. " + 
-            "TryHandleAbilityOnUnit should also return an AbilityExecutionResults that reflects " +
-            "CanHandleAbilityOnUnit")]
-        public void CanHandleAbilityOnUnit_RequiresProperlyFormedDefinition() {
-            var validAbility = BuildDefinition(new List<AbilityCommandRequest>(){
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
-            });
+        [TestCaseSource("CanHandleAbilityOnUnitTestCases")]
+        [Test(Description = "")]
+        public bool CanHandleAbilityOnUnitTests(CanHandleAbilityOnUnitTestData testData) {
+            var allImprovementTemplates = testData.ImprovementTemplates.Select(data => BuildImprovementTemplate(data)).ToList();
+            
+            var ability = BuildAbility(testData.Ability);
+            var unit    = BuildUnit(testData.Unit, allImprovementTemplates);
 
-            var validAbility_RedundantArguments = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One", "Improvement Three" } }
-            });
+            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
 
-            var invalidAbility_Duplicates = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
-            });
-
-            var invalidAbility_WrongType = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity, ArgsToPass = new List<string>() { "Improvement One" } }
-            });
-
-            var invalidAbility_NonTemplateArgument = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Not An Improvement" } }
-            });
-
-            var invalidAbility_InvalidTemplateArgument = BuildDefinition(new List<AbilityCommandRequest>() {
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement Three" } }
-            });            
-
-            BuildImprovementTemplate("Improvement One",   true);
-            BuildImprovementTemplate("Improvement Two",   true);
-            BuildImprovementTemplate("Improvement Three", false);
-
-            var unit = BuildUnit(BuildTile());
-
-            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
-
-            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(validAbility,                           unit), "CanHandleAbilityOnUnit invoked on validAbility was not handled correctly");
-            Assert.IsTrue (handlerToTest.CanHandleAbilityOnUnit(validAbility_RedundantArguments,        unit), "CanHandleAbilityOnUnit invoked on validAbility_RedundantArguments was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_Duplicates,              unit), "CanHandleAbilityOnUnit invoked on invalidAbility_Duplicates was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_WrongType,               unit), "CanHandleAbilityOnUnit invoked on invalidAbility_WrongType was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_NonTemplateArgument,     unit), "CanHandleAbilityOnUnit invoked on invalidAbility_NonTemplateArgument was not handled correctly");
-            Assert.IsFalse(handlerToTest.CanHandleAbilityOnUnit(invalidAbility_InvalidTemplateArgument, unit), "CanHandleAbilityOnUnit invoked on invalidAbility_InvalidTemplateArgument was not handled correctly");
-
-            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(validAbility,                           unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on validAbility was not handled correctly");
-            Assert.IsTrue (handlerToTest.TryHandleAbilityOnUnit(validAbility_RedundantArguments,        unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on validAbility_RedundantArguments was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_Duplicates,              unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_Duplicates was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_WrongType,               unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_WrongType was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_NonTemplateArgument,     unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_NonTemplateArgument was not handled correctly");
-            Assert.IsFalse(handlerToTest.TryHandleAbilityOnUnit(invalidAbility_InvalidTemplateArgument, unit).AbilityHandled, "TryHandleAbilityOnUnit invoked on invalidAbility_InvalidTemplateArgument was not handled correctly");
+            return abilityHandler.CanHandleAbilityOnUnit(ability, unit);
         }
 
-        [Test(Description = "TryHandleAbilityOnUnit should, in its valid cases, produce a new " +
-            "improvement of the specified template and return a new BuildImprovementOngoingAbility " +
-            "with the new improvement and the argued unit")]
-        public void TryHandleAbilityOnUnit_BuildsNewImprovement() {
-            var templateOne = BuildImprovementTemplate("Improvement One", true);
+        [TestCaseSource("TryHandleAbilityOnUnitTestCases")]
+        [Test(Description = "")]
+        public AbilityExecutionResults TryHandleAbilityOnUnitTests(TryHandleAbilityOnUnitTestData testData) {
+            var allImprovementTemplates = testData.ImprovementTemplates.Select(data => BuildImprovementTemplate(data)).ToList();
+            
+            Mock<IUnit> mockUnit;
 
-            var ability = BuildDefinition(new List<AbilityCommandRequest>(){
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement, ArgsToPass = new List<string>() { "Improvement One" } }
-            });            
+            var ability  = BuildAbility(testData.Ability);
+            var testUnit = BuildUnit(testData.Unit, allImprovementTemplates, out mockUnit);
 
-            var unitLocation = BuildTile();
-            var unit = BuildUnit(unitLocation);
+            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
 
-            var handlerToTest = Container.Resolve<BuildImprovementAbilityHandler>();
+            var retval = abilityHandler.TryHandleAbilityOnUnit(ability, testUnit);
 
-            IImprovement constructedImprovement = null;
-            MockImprovementFactory
-                .Setup(factory => factory.Create(It.IsAny<IImprovementTemplate>(), It.IsAny<IHexCell>()))
-                .Returns<IImprovementTemplate, IHexCell>(delegate(IImprovementTemplate template, IHexCell location) {
-                    constructedImprovement = BuildImprovement(template, location);
-                    return constructedImprovement;
-                })
-                .Callback(delegate(IImprovementTemplate template, IHexCell tile) {
-                    Assert.AreEqual(templateOne, template, "ImprovementFactory.Create was called with an unexpected template");
-                    Assert.AreEqual(unitLocation, tile, "ImprovementFactory.Create was called with an unexpected tile");
-                });
+            var unitLocation = MockUnitPositionCanon.Object.GetOwnerOfPossession(testUnit);
 
-            handlerToTest.TryHandleAbilityOnUnit(ability, unit);
+            if(testData.ExpectNewSite) {
+                MockImprovementFactory.Verify(
+                    factory => factory.BuildImprovement(It.IsAny<IImprovementTemplate>(), unitLocation),
+                    Times.Once, "A new improvement construction site was not created at the expected location"
+                );
+            }
+
+            if(testData.ExpectAttachmentToExistingSite) {
+                MockImprovementFactory.Verify(
+                    factory => factory.BuildImprovement(It.IsAny<IImprovementTemplate>(), unitLocation),
+                    Times.Never, "A new improvement construction site was unexpectedly created"
+                );
+            }
+
+            if(testData.ExpectLockingOfUnit) {
+                mockUnit.Verify(
+                    unit => unit.LockIntoConstruction(), Times.Once, "Unit was not locked into construction as expected"
+                );
+            }else {
+                mockUnit.Verify(
+                    unit => unit.LockIntoConstruction(), Times.Never, "Unit was unexpectedly locked into construction"
+                );
+            }
+
+            return retval;
         }
 
         #endregion
 
         #region utilities
 
-        private IAbilityDefinition BuildDefinition(IEnumerable<AbilityCommandRequest> commandRequests) {
+        private IAbilityDefinition BuildAbility(AbilityTestData abilityData) {
             var mockDefinition = new Mock<IAbilityDefinition>();
 
-            mockDefinition.Setup(definition => definition.CommandRequests).Returns(commandRequests);
+            mockDefinition.Setup(definition => definition.name).Returns(abilityData.Name);
+            mockDefinition.Setup(definition => definition.CommandRequests).Returns(abilityData.CommandRequests);
 
             return mockDefinition.Object;
         }
 
-        private IImprovementTemplate BuildImprovementTemplate(string name, bool isValid) {
+        private IImprovementTemplate BuildImprovementTemplate(ImprovementTemplateTestData templateData) {
             var mockTemplate = new Mock<IImprovementTemplate>();
+
+            mockTemplate.Setup(template => template.name)            .Returns(templateData.Name);    
+            mockTemplate.Setup(template => template.TurnsToConstruct).Returns(templateData.TurnsToConstruct);        
+
             var newTemplate = mockTemplate.Object;
 
-            mockTemplate.Setup(template => template.name).Returns(name);            
-
-            MockImprovementValidityLogic.Setup(logic => logic.IsTemplateValidForCell(newTemplate, It.IsAny<IHexCell>()))
-                .Returns(isValid);
+            MockImprovementValidityLogic
+                .Setup(logic => logic.IsTemplateValidForCell(newTemplate, It.IsAny<IHexCell>()))
+                .Returns(templateData.IsValid);
 
             AllTemplates.Add(newTemplate);
             return newTemplate;
         }
 
-        private IUnit BuildUnit(IHexCell location) {
-            var mockUnit = new Mock<IUnit>();
+        private IUnit BuildUnit(UnitTestData unitData, List<IImprovementTemplate> availableTemplates) {
+            Mock<IUnit> mock;
 
-            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
-
-            return mockUnit.Object;
+            return BuildUnit(unitData, availableTemplates, out mock);
         }
 
-        private IHexCell BuildTile() {
-            var mockTile = new Mock<IHexCell>();
+        private IUnit BuildUnit(UnitTestData unitData, List<IImprovementTemplate> availableTemplates, out Mock<IUnit> mockUnit) {
+            mockUnit = new Mock<IUnit>();
+            var newUnit = mockUnit.Object;
 
-            return mockTile.Object;
+            var unitLocation = BuildCell(unitData.Location, availableTemplates);
+
+            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(unitLocation);
+
+            return newUnit;
         }
 
-        private IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location) {
+        private IHexCell BuildCell(HexCellTestData cellData, List<IImprovementTemplate> availableTemplates) {
+            var newCell = new Mock<IHexCell>().Object;
+
+            var improvements = cellData.Improvements.Select(data => BuildImprovement(data, availableTemplates));
+
+            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(newCell)).Returns(improvements);
+            
+            return newCell;
+        }
+
+        private IImprovement BuildImprovement(
+            ImprovementTestData improvementData, List<IImprovementTemplate> validTemplates
+        ){
             var mockImprovement = new Mock<IImprovement>();
+
+            mockImprovement.SetupAllProperties();
+
+            mockImprovement.Setup(improvement => improvement.Template)     .Returns(validTemplates[improvementData.TemplateIndex]);
+            mockImprovement.Setup(improvament => improvament.IsConstructed).Returns(improvementData.IsConstructed);
+            mockImprovement.Setup(improvament => improvament.IsPillaged)   .Returns(improvementData.IsPillaged);
+
+            return mockImprovement.Object;
+        }
+
+        private IImprovement BuildImprovement(
+            IImprovementTemplate template, IHexCell location, int workInvested = 0,
+            bool isConstructed = false, bool isPillaged = false
+        ) {
+            var mockImprovement = new Mock<IImprovement>();
+
+            mockImprovement.SetupAllProperties();
+
+            mockImprovement.Setup(improvement => improvement.Template)     .Returns(template);
+            mockImprovement.Setup(improvement => improvement.IsConstructed).Returns(isConstructed);
+            mockImprovement.Setup(improvement => improvement.IsPillaged)   .Returns(isPillaged);
+
             var newImprovement = mockImprovement.Object;
 
-            mockImprovement.Setup(improvement => improvement.Template).Returns(template);
+            newImprovement.WorkInvested = workInvested;
 
-            MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement)).Returns(location);
-            MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
-                .Returns(new List<IImprovement>() { newImprovement });
+            MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement))
+                .Returns(location);
 
             return newImprovement;
         }

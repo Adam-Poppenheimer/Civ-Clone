@@ -51,8 +51,11 @@ namespace Assets.Simulation.MapManagement {
                 var improvementLocation = ImprovementLocationCanon.GetOwnerOfPossession(improvement);
 
                 var newImprovementData = new SerializableImprovementData() {
-                    Location = improvementLocation.Coordinates,
-                    Template = improvement.Template.name
+                    Location      = improvementLocation.Coordinates,
+                    Template      = improvement.Template.name,
+                    WorkInvested  = improvement.WorkInvested,
+                    IsConstructed = improvement.IsConstructed,
+                    IsPillaged    = improvement.IsPillaged
                 };
 
                 mapData.Improvements.Add(newImprovementData);
@@ -67,7 +70,10 @@ namespace Assets.Simulation.MapManagement {
                 ).First();
                 var locationToBuild = Grid.GetCellAtCoordinates(improvementData.Location);                
 
-                ImprovementFactory.Create(templateToBuild, locationToBuild);
+                ImprovementFactory.BuildImprovement(
+                    templateToBuild, locationToBuild, improvementData.WorkInvested,
+                    improvementData.IsConstructed, improvementData.IsPillaged
+                );
             }
         }
 

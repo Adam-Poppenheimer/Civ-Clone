@@ -28,7 +28,31 @@ namespace Assets.Simulation.Improvements {
         }
         private IImprovementTemplate _improvementTemplate;
 
+        public bool IsConstructed {
+            get {
+                var currentStateInfo = StateMachine.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Constructed");
+            }
+        }
+
+        public bool IsPillaged {
+            get {
+                var currentStateInfo = StateMachine.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Pillaged");
+            }
+        }
+
+        public bool IsReadyToConstruct {
+            get {
+                return !IsConstructed && WorkInvested >= Template.TurnsToConstruct;
+            }
+        }
+
+        public int WorkInvested { get; set; }
+
         #endregion
+
+        [SerializeField] public Animator StateMachine;
 
         private ImprovementSignals Signals;
 
@@ -45,6 +69,24 @@ namespace Assets.Simulation.Improvements {
 
         private void OnDestroy() {
             Signals.ImprovementBeingDestroyedSignal.OnNext(this);
+        }
+
+        #endregion
+
+        #region from IImprovement
+
+        public void Construct() {
+            if(!IsConstructed) {
+                StateMachine.SetTrigger("Constructed Requested");
+            }
+        }
+
+        public void Pillage() {
+            if(IsConstructed) {
+                StateMachine.SetTrigger("Pillaged Requested");
+            }else if(!IsPillaged) {
+                Destroy(gameObject);
+            }
         }
 
         #endregion

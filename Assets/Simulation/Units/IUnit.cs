@@ -49,15 +49,18 @@ namespace Assets.Simulation.Units {
 
         GameObject gameObject { get; }
 
-        Animator Animator { get; }
+        bool IsPermittedToBombard { get; }
 
-        bool PermittedToBombard { get; }
+        bool LockedIntoConstruction { get; }
         
         #endregion
 
         #region methods
 
         void PerformMovement();
+
+        void SetUpToBombard();
+        void LockIntoConstruction();
 
         #endregion
 

@@ -11,16 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
   m_Name: Fortress
   m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
   _bonusYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
-  _validFeatures: 0000000001000000
-  _validTerrains: 0000000001000000020000000300000004000000
-  _requiresAdjacentUpwardCliff: 0
+  _restrictedToFeatures: 
+  _restrictedToTerrains: 
+  _restrictedToShapes: 
   _clearsForestsWhenBuilt: 1
   _defensiveBonus: 0.5
+  _requiresResourceToExtract: 0
   _appearancePrefab: {fileID: 4423793641234264, guid: 1078928380bbd114e85da6c5a66348c9,
     type: 2}
+  _turnsToConstruct: 5

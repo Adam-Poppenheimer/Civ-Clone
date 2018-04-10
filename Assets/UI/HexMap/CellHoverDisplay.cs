@@ -119,11 +119,7 @@ namespace Assets.UI.HexMap {
                 cellDataString += ", " + cell.Feature.ToString();
             }
 
-            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
-
-            if(improvementAtLocation != null) {
-                cellDataString += ", " + improvementAtLocation.Template.name;
-            }
+            cellDataString += GetImprovementString(cell);
 
             CellDataField.text = cellDataString;
         }
@@ -134,6 +130,27 @@ namespace Assets.UI.HexMap {
             }else {
                 return cell.Terrain.ToString();
             }
+        }
+
+        private string GetImprovementString(IHexCell cell) {
+            string retval = "";
+
+            var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+
+            if(improvementAtLocation != null) {
+                retval += ", " + improvementAtLocation.Template.name;
+
+                if(!improvementAtLocation.IsConstructed) {
+                    retval += string.Format(
+                        " (unfinished: {0}/{1})",
+                        improvementAtLocation.WorkInvested, improvementAtLocation.Template.TurnsToConstruct
+                    );
+                }else if(improvementAtLocation.IsPillaged) {
+                    retval += string.Format(" (pillaged)");
+                }
+            }
+
+            return retval;
         }
 
         private void SetYieldDisplay(IHexCell cell) {

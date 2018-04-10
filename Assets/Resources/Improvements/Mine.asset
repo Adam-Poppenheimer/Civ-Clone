@@ -26,3 +26,4 @@ MonoBehaviour:
   _requiresResourceToExtract: 0
   _appearancePrefab: {fileID: 4946165858268716, guid: cecb02ed8cbe58247af45a7ea51bf682,
     type: 2}
+  _turnsToConstruct: 5

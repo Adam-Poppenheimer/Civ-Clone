@@ -61,6 +61,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private Transform _appearancePrefab;
 
+        public int TurnsToConstruct {
+            get { return _turnsToConstruct; }
+        }
+        [SerializeField] private int _turnsToConstruct;
+
         #endregion
 
         #endregion

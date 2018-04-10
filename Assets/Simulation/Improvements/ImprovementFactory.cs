@@ -54,7 +54,14 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementFactory
 
-        public IImprovement Create(IImprovementTemplate template, IHexCell location) {
+        public IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location) {
+            return (BuildImprovement(template, location, 0, false, false));
+        }
+
+        public IImprovement BuildImprovement(
+            IImprovementTemplate template, IHexCell location, int workInvested,
+            bool isConstructed, bool isPillaged
+        ){
             if(template == null) {
                 throw new ArgumentNullException("template");
             }else if(location == null) {
@@ -77,6 +84,12 @@ namespace Assets.Simulation.Improvements {
                 throw new ImprovementCreationException("Cannot assign the new improvement to its intended location");
             }
             ImprovementLocationCanon.ChangeOwnerOfPossession(newImprovement, location);
+
+            if(isConstructed) {
+                newImprovement.StateMachine.SetTrigger("Constructed Requested");
+            }else if(isPillaged) {
+                newImprovement.StateMachine.SetTrigger("Pillaged Requested");
+            }
 
             allImprovements.Add(newImprovement);
 

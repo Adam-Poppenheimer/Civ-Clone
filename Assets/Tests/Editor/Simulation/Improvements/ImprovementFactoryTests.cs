@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var factory = Container.Resolve<ImprovementFactory>();
 
-            var newImprovement = factory.Create(template, location);
+            var newImprovement = factory.BuildImprovement(template, location);
 
             Assert.AreEqual(location.transform, newImprovement.transform.parent,
                 "newImprovement's transform has an unexpected parent");
@@ -71,7 +71,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var factory = Container.Resolve<ImprovementFactory>();
 
-            var newImprovement = factory.Create(template, location);
+            var newImprovement = factory.BuildImprovement(template, location);
 
             Assert.AreEqual(template, newImprovement.Template,
                 "newImprovement.Template has an unexpected value");
@@ -85,7 +85,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var factory = Container.Resolve<ImprovementFactory>();
 
-            var newImprovement = factory.Create(template, location);
+            var newImprovement = factory.BuildImprovement(template, location);
 
             MockLocationCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newImprovement, location),
                 "ImprovementFactory didn't check the assignment for validity before attempting it");
@@ -101,10 +101,10 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var factory = Container.Resolve<ImprovementFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null, location),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildImprovement(null, location),
                 "Create failed to throw on a null template argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(template, null),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildImprovement(template, null),
                 "Create failed to throw on a null location argument");
         }
 
@@ -116,7 +116,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var factory = Container.Resolve<ImprovementFactory>();
 
-            Assert.Throws<ImprovementCreationException>(() => factory.Create(template, location),
+            Assert.Throws<ImprovementCreationException>(() => factory.BuildImprovement(template, location),
                 "Create did not throw correctly when passed a location invalid for the new improvement");
         }
 

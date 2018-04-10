@@ -12,6 +12,7 @@ using UniRx;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.Improvements;
 
 using UnityCustomUtilities.Extensions;
 
@@ -84,17 +85,7 @@ namespace Assets.Simulation.Units {
 
         public IUnitTemplate Template { get; set; }
 
-        public Animator Animator {
-            get {
-                if(animator == null) {
-                    animator = GetComponent<Animator>();
-                }
-                return animator;
-            }
-        }
-        private Animator animator;
-
-        public bool PermittedToBombard {
+        public bool IsPermittedToBombard {
             get {
                 if(Template.MustSetUpToBombard) {
                     var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
@@ -106,28 +97,37 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public bool LockedIntoConstruction {
+            get {
+                var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Locked Into Construction");
+            }
+        }
+
         #endregion
 
-        private IUnitConfig Config;
+        [SerializeField] private Animator Animator;
 
-        private UnitSignals Signals;
 
+
+        private IUnitConfig           Config;
+        private UnitSignals           Signals;
         private IUnitTerrainCostLogic TerrainCostLogic;
-
-        private IUnitPositionCanon PositionCanon;
+        private IUnitPositionCanon    PositionCanon;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IUnitConfig config, UnitSignals signals,
-            IUnitTerrainCostLogic terrainCostLogic, IUnitPositionCanon positionCanon
+        public void InjectDependencies(
+            IUnitConfig config, UnitSignals signals,  IUnitTerrainCostLogic terrainCostLogic,
+            IUnitPositionCanon positionCanon
         ){
-            Config           = config;
-            Signals          = signals;
-            TerrainCostLogic = terrainCostLogic;
-            PositionCanon    = positionCanon;
+            Config                   = config;
+            Signals                  = signals;
+            TerrainCostLogic         = terrainCostLogic;
+            PositionCanon            = positionCanon;
         }
 
         #region Unity messages
@@ -169,7 +169,9 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            if(Animator != null) {
+            bool shouldExecuteMovement = CurrentMovement >= 0 && CurrentPath != null && CurrentPath.Count > 0;
+
+            if(shouldExecuteMovement) {
                 Animator.SetTrigger("Moving Requested");
             }
 
@@ -196,8 +198,20 @@ namespace Assets.Simulation.Units {
                 PositionCanon.ChangeOwnerOfPossession(this, tileToTravelTo);
             }
 
-            if(Animator != null) {
+            if(shouldExecuteMovement) {
                 Animator.SetTrigger("Idling Requested");
+            }
+        }
+
+        public void SetUpToBombard() {
+            if(!IsPermittedToBombard) {
+                Animator.SetTrigger("Set Up To Bombard Requested");
+            }
+        }
+
+        public void LockIntoConstruction() {
+            if(!LockedIntoConstruction) {
+                Animator.SetTrigger("Locked Into Construction Requested");
             }
         }
 

@@ -17,6 +17,12 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public string Template;
 
+        [DataMember()] public int WorkInvested;
+
+        [DataMember()] public bool IsPillaged;
+
+        [DataMember()] public bool IsConstructed;
+
         #endregion
 
     }

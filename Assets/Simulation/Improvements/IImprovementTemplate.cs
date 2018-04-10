@@ -33,6 +33,8 @@ namespace Assets.Simulation.Improvements {
 
         Transform AppearancePrefab { get; }
 
+        int TurnsToConstruct { get; }
+
         #endregion
 
     }

@@ -33,7 +33,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
-                unit.Animator.SetTrigger("Set Up To Fire Requested");
+                unit.SetUpToBombard();
                 unit.CurrentMovement -= 1;             
 
                 return new AbilityExecutionResults(true, null);

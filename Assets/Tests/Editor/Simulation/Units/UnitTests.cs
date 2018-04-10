@@ -13,6 +13,7 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Improvements;
 using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
@@ -23,14 +24,6 @@ namespace Assets.Tests.Simulation.Units {
     public class UnitTests : ZenjectUnitTestFixture {
 
         #region static fields and properties
-
-        private static IEnumerable HealthSetTestCases {
-            get {
-                yield return new TestCaseData(100, 140);
-                yield return new TestCaseData(100, 60);
-                yield return new TestCaseData(100, -20);
-            }
-        }
 
         private static IEnumerable TotalMovementTestCases {
             get {
@@ -56,11 +49,10 @@ namespace Assets.Tests.Simulation.Units {
 
         #region instance fields and properties
 
-        private static Mock<IUnitConfig> MockConfig;
-
-        private static Mock<IUnitTerrainCostLogic> MockTerrainCostLogic;
-
-        private static Mock<IUnitPositionCanon> MockPositionCanon;
+        private Mock<IUnitConfig>               MockConfig;
+        private Mock<IUnitTerrainCostLogic>     MockTerrainCostLogic;
+        private Mock<IUnitPositionCanon>        MockPositionCanon;
+        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
 
         #endregion
 
@@ -70,13 +62,15 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig           = new Mock<IUnitConfig>();
-            MockTerrainCostLogic = new Mock<IUnitTerrainCostLogic>();
-            MockPositionCanon    = new Mock<IUnitPositionCanon>();
+            MockConfig                   = new Mock<IUnitConfig>();
+            MockTerrainCostLogic         = new Mock<IUnitTerrainCostLogic>();
+            MockPositionCanon            = new Mock<IUnitPositionCanon>();
+            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
-            Container.Bind<IUnitConfig>()          .FromInstance(MockConfig.Object);
-            Container.Bind<IUnitTerrainCostLogic>().FromInstance(MockTerrainCostLogic.Object);
-            Container.Bind<IUnitPositionCanon>()   .FromInstance(MockPositionCanon.Object);
+            Container.Bind<IUnitConfig>              ().FromInstance(MockConfig.Object);
+            Container.Bind<IUnitTerrainCostLogic>    ().FromInstance(MockTerrainCostLogic.Object);
+            Container.Bind<IUnitPositionCanon>       ().FromInstance(MockPositionCanon.Object);
+            Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
 
             Container.Bind<GameUnit>().FromNewComponentOnNewGameObject().AsSingle();
 
@@ -90,22 +84,6 @@ namespace Assets.Tests.Simulation.Units {
         #endregion
 
         #region tests
-
-        [Test(Description = "When Health is set, its value is always kept between 0 and " +
-            "Config.MaxHealth inclusive")]
-        [TestCaseSource("HealthSetTestCases")]
-        public void HealthSet_StaysWithinProperBounds(int maxHealth, int newHealthValue) {
-            MockConfig.Setup(config => config.MaxHealth).Returns(maxHealth);
-
-            var unitToTest = Container.Resolve<GameUnit>();
-            unitToTest.Hitpoints = newHealthValue;
-
-            Assert.AreEqual(
-                newHealthValue.Clamp(0, maxHealth),
-                unitToTest.Hitpoints,
-                "UnitToTest.Health has an unexpected value"
-            );
-        }
 
         [Test(Description = "When OnPointerClick is called, Unit should fire Unit Clicked Signal " +
             "with itself as an argument")]

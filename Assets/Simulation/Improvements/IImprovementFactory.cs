@@ -9,11 +9,22 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
-    public interface IImprovementFactory : IFactory<IImprovementTemplate, IHexCell, IImprovement> {
+    public interface IImprovementFactory {
 
         #region properties
 
         IEnumerable<IImprovement> AllImprovements { get; }
+
+        #endregion
+
+        #region methods
+
+        IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location);
+
+        IImprovement BuildImprovement(
+            IImprovementTemplate template, IHexCell location, int workInvested,
+            bool isConstructed, bool isPillaged
+        );
 
         #endregion
 

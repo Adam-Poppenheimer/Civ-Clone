@@ -50212,6 +50212,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ImprovementPrefab: {fileID: 1218240267054208, guid: af9a69ddc87b1324e92922880ecaca6a,
     type: 2}
+  ImprovementSitePrefab: {fileID: 1635520604812674, guid: 906d711c1cfbb1c488d92341b3e4a27a,
+    type: 2}
 --- !u!4 &1763748232
 Transform:
   m_ObjectHideFlags: 0
