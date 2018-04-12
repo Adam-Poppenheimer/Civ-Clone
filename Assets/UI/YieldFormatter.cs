@@ -77,6 +77,16 @@ namespace Assets.UI {
             );
         }
 
+        public string GetTMProFormattedHappinessString(int netHappiness) {
+            var color = netHappiness >= 0 ? CoreConfig.PositiveHappinessColor : CoreConfig.NegativeHappinessColor;
+            int index = netHappiness >= 0 ? CoreConfig.HappinessIconIndex     : CoreConfig.UnhappinessIconIndex;
+
+            return String.Format(
+                "<color=#{0}>{1} <sprite index={2}>",
+                ColorUtility.ToHtmlStringRGB(color), netHappiness, index
+            );
+        }
+
         #endregion
 
     }

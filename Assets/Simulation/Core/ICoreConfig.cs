@@ -25,6 +25,12 @@ namespace Assets.Simulation.Core {
         Color CultureColor    { get; }
         Color ScienceColor    { get; }
 
+        Color PositiveHappinessColor { get; }
+        Color NegativeHappinessColor { get; }
+
+        int HappinessIconIndex   { get; }
+        int UnhappinessIconIndex { get; }
+
         #endregion
 
         #region methods

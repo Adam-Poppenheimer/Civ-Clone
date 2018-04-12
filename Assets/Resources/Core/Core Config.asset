@@ -23,3 +23,7 @@ MonoBehaviour:
   _goldColor: {r: 0.9578094, g: 1, b: 0.2352941, a: 1}
   _cultureColor: {r: 1, g: 0, b: 0.972414, a: 1}
   _scienceColor: {r: 0.45588237, g: 0.6397567, b: 1, a: 1}
+  _positiveHappinessColor: {r: 0.05233564, g: 0.8897059, b: 0.19670984, a: 1}
+  _negativeHappinessColor: {r: 1, g: 0.32048684, b: 0.014705896, a: 1}
+  _happinessIconIndex: 0
+  _unhappinessIconIndex: 1

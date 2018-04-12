@@ -10,6 +10,8 @@ namespace Assets.UI {
 
         string GetTMProFormattedSingleResourceString(ResourceType type, float value);
 
+        string GetTMProFormattedHappinessString(int netHappiness);
+
         #endregion
 
     }

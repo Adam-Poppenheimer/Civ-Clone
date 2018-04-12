@@ -70,6 +70,27 @@ namespace Assets.Simulation.Core {
         }
         [SerializeField] private Color _scienceColor;
 
+
+        public Color PositiveHappinessColor {
+            get { return _positiveHappinessColor; }
+        }
+        [SerializeField] private Color _positiveHappinessColor;
+
+        public Color NegativeHappinessColor {
+            get { return _negativeHappinessColor; }
+        }
+        [SerializeField] private Color _negativeHappinessColor;
+
+        public int HappinessIconIndex {
+            get { return _happinessIconIndex; }
+        }
+        [SerializeField] private int _happinessIconIndex;
+
+        public int UnhappinessIconIndex {
+            get { return _unhappinessIconIndex; }
+        }
+        [SerializeField] private int _unhappinessIconIndex;
+
         #endregion
 
         #endregion
