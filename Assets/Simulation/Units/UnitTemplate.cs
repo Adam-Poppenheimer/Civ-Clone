@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Units {
@@ -87,35 +88,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
 
-        public bool BenefitsFromDefensiveTerrain {
-            get { return _benefitsFromDefensiveTerrain; }
-        }
-        [SerializeField] private bool _benefitsFromDefensiveTerrain;
-
-        public bool IgnoresTerrainCosts {
-            get { return _ignoresTerrainCosts; }
-        }
-        [SerializeField] private bool _ignoresTerrainCosts;
-
-        public bool HasRoughTerrainPenalty {
-            get { return _hasRoughTerrainPenalty; }
-        }
-        [SerializeField] private bool _hasRoughTerrainPenalty;
-
         public bool IsImmobile {
             get { return _isImmobile; }
         }
         [SerializeField] private bool _isImmobile;
-
-        public bool CanMoveAfterAttacking {
-            get { return _canMoveAfterAttacking; }
-        }
-        [SerializeField] private bool _canMoveAfterAttacking;
-
-        public IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType {
-            get { return _combatBonusesByType; }
-        }
-        [SerializeField] private List<UnitTypeCombatBonusData> _combatBonusesByType;
 
         public bool MustSetUpToBombard {
             get { return _mustSetUpToBombard; }
@@ -131,6 +107,11 @@ namespace Assets.Simulation.Units {
             get { return _ignoresLineOfSight; }
         }
         [SerializeField] private bool _ignoresLineOfSight;
+
+        public IEnumerable<IPromotion> StartingPromotions {
+            get { return _startingPromotions.Cast<IPromotion>(); }
+        }
+        [SerializeField] private List<Promotion> _startingPromotions;
 
         #endregion
 

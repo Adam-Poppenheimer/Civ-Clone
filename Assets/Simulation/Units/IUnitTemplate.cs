@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Units {
@@ -44,23 +45,15 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
 
-        bool BenefitsFromDefensiveTerrain { get; }
-
-        bool IgnoresTerrainCosts { get; }
-
-        bool HasRoughTerrainPenalty { get; }
-
         bool IsImmobile { get; }
-
-        bool CanMoveAfterAttacking { get; }
-
-        IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType { get; }
 
         bool MustSetUpToBombard { get; }
 
         int VisionRange { get; }
 
         bool IgnoresLineOfSight { get; }
+
+        IEnumerable<IPromotion> StartingPromotions { get; }
 
         #endregion
 

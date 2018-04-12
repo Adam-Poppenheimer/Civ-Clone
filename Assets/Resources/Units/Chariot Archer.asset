@@ -26,12 +26,10 @@ MonoBehaviour:
   _maxHitpoints: 100
   _requiredResources:
   - {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
-  _benefitsFromDefensiveTerrain: 0
-  _ignoresTerrainCosts: 0
-  _hasRoughTerrainPenalty: 1
   _isImmobile: 0
-  _canMoveAfterAttacking: 0
-  _combatBonusesByType: []
   _mustSetUpToBombard: 0
   _visionRange: 2
   _ignoresLineOfSight: 0
+  _startingPromotions:
+  - {fileID: 11400000, guid: 22344b2f389c7bc4bac574b8ed6d6f99, type: 2}
+  - {fileID: 11400000, guid: 595dd3d9205644749aeb81492155cf3c, type: 2}

@@ -10,7 +10,7 @@ using Zenject;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
-
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Cities {
 
@@ -118,6 +118,11 @@ namespace Assets.Simulation.Cities {
         public bool IgnoresLineOfSight {
             get { return true; }
         }
+
+        public IEnumerable<IPromotion> StartingPromotions {
+            get { return _startingPromotions; }
+        }
+        private List<IPromotion> _startingPromotions = new List<IPromotion>();
 
         #endregion
 

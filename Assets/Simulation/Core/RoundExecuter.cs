@@ -70,7 +70,7 @@ namespace Assets.Simulation.Core {
         public void EndRoundOnUnit(IUnit unit) {
             unit.PerformMovement();
             PerformConstruction(unit);
-            unit.HasAttacked = false;            
+            unit.CanAttack = true;            
         }
 
         #endregion

@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Units.Promotions;
 
 using UnityCustomUtilities.Extensions;
 
@@ -18,11 +19,10 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private IHexGridConfig Config;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
+        private IHexGridConfig                           Config;
+        private IUnitPositionCanon                       UnitPositionCanon;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPromotionParser                         PromotionParser;
 
         #endregion
 
@@ -31,11 +31,13 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitTerrainCostLogic(
             IHexGridConfig config, IUnitPositionCanon unitPositionCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPromotionParser promotionParser
         ){
             Config            = config;
             UnitPositionCanon = unitPositionCanon;
             CityLocationCanon = cityLocationCanon;
+            PromotionParser   = promotionParser;
         }
 
         #endregion
@@ -79,6 +81,8 @@ namespace Assets.Simulation.Units {
                 return -1;
             }
 
+            var movementInfo = PromotionParser.GetMovementInfo(unit);
+
             int moveCost = Config.BaseLandMoveCost;
 
             if(currentCell.HasRoads && nextCell.HasRoads) {
@@ -86,7 +90,7 @@ namespace Assets.Simulation.Units {
             }
 
             if( edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation &&
-                !unit.Template.IgnoresTerrainCosts
+                !movementInfo.IgnoresTerrainCosts
             ) {
                 moveCost += Config.SlopeMoveCost;
             }
@@ -94,7 +98,7 @@ namespace Assets.Simulation.Units {
             var featureCost = Config.FeatureMoveCosts[(int)nextCell.Feature];
             if(featureCost == -1) {
                 return -1;
-            }else if(!unit.Template.IgnoresTerrainCosts){
+            }else if(!movementInfo.IgnoresTerrainCosts){
                 moveCost += featureCost;
             }
 
@@ -102,12 +106,12 @@ namespace Assets.Simulation.Units {
             if(nextCell.Shape != TerrainShape.Flatlands) {
                 if(shapeCost == -1) {
                     return -1;
-                }else if(!unit.Template.IgnoresTerrainCosts){
+                }else if(!movementInfo.IgnoresTerrainCosts){
                     moveCost += shapeCost;
                 }
             }
 
-            if(IsCellRoughTerrain(nextCell) && unit.Template.HasRoughTerrainPenalty) {
+            if(IsCellRoughTerrain(nextCell) && movementInfo.HasRoughTerrainPenalty) {
                 return unit.Template.MaxMovement;
             }
 

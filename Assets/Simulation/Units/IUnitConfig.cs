@@ -12,11 +12,9 @@ namespace Assets.Simulation.Units {
 
         int MaxHealth { get; }
 
-        ReadOnlyCollection<float> TerrainMeleeDefensiveness { get; }
-        ReadOnlyCollection<float> TerrainRangedDefensiveness { get; }
-
-        ReadOnlyCollection<float> FeatureMeleeDefensiveness { get; }
-        ReadOnlyCollection<float> FeatureRangedDefensiveness { get; }
+        ReadOnlyCollection<float> TerrainDefensiveness { get; }
+        ReadOnlyCollection<float> FeatureDefensiveness { get; }
+        ReadOnlyCollection<float> ShapeDefensiveness   { get; }
 
         float RiverCrossingAttackModifier { get; }
 

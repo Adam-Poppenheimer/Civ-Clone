@@ -172,7 +172,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(cityOnCell != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, cityOnCell)) {
+            if(cityOnCell != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, cityOnCell.CombatFacade)) {
                 SetCityToAttack(cityOnCell);
                 return;
             }
@@ -216,7 +216,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 return;
             }
 
-            if(CombatExecuter.CanPerformMeleeAttack(SelectedUnit, city)) {
+            if(CombatExecuter.CanPerformMeleeAttack(SelectedUnit, city.CombatFacade)) {
                 SetCityToAttack(city);
             }else {
                 Clear();
@@ -279,7 +279,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             if(UnitToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, UnitToAttack)) {
                 return true;
             }else {
-                return CityToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, CityToAttack);
+                return CityToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
             }
         }
 
@@ -289,7 +289,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private void PerformCombat() {
             if(CityToAttack != null) {
-                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack);
+                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
 
             }else if(UnitToAttack != null) {
                 CombatExecuter.PerformMeleeAttack(SelectedUnit, UnitToAttack);

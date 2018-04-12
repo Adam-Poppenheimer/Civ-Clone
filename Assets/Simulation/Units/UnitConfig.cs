@@ -20,25 +20,20 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _maxHealth;
 
-        public ReadOnlyCollection<float> TerrainMeleeDefensiveness {
-            get { return _terrainMeleeDefensiveness.AsReadOnly(); }
+        public ReadOnlyCollection<float> TerrainDefensiveness {
+            get { return _terrainDefensiveness.AsReadOnly(); }
         }
-        [SerializeField] private List<float> _terrainMeleeDefensiveness;
+        [SerializeField] private List<float> _terrainDefensiveness;
 
-        public ReadOnlyCollection<float> TerrainRangedDefensiveness {
-            get { return _terrainRangedDefensiveness.AsReadOnly(); }
+        public ReadOnlyCollection<float> FeatureDefensiveness {
+            get { return _featureDefensiveness.AsReadOnly(); }
         }
-        [SerializeField] private List<float> _terrainRangedDefensiveness;
+        [SerializeField] private List<float> _featureDefensiveness;
 
-        public ReadOnlyCollection<float> FeatureMeleeDefensiveness {
-            get { return _featureMeleeDefensiveness.AsReadOnly(); }
+        public ReadOnlyCollection<float> ShapeDefensiveness {
+            get { return _shapeDefensiveness.AsReadOnly(); }
         }
-        [SerializeField] private List<float> _featureMeleeDefensiveness;
-
-        public ReadOnlyCollection<float> FeatureRangedDefensiveness {
-            get { return _featureRangedDefensiveness.AsReadOnly(); }
-        }
-        [SerializeField] private List<float> _featureRangedDefensiveness;
+        [SerializeField] private List<float> _shapeDefensiveness;
 
         public float RiverCrossingAttackModifier {
             get { return _riverCrossingAttackModifier; }

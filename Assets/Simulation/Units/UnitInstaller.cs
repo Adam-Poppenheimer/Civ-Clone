@@ -47,7 +47,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
             Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
             Container.Bind<ILineOfSightLogic>           ().To<LineOfSightLogic>           ().AsSingle();
-            Container.Bind<ICombatModifierLogic>        ().To<CombatModifierLogic>        ().AsSingle();
+            Container.Bind<ICombatInfoLogic>        ().To<CombatInfoLogic>        ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
             Container.Bind<CombatResponder>().AsSingle().NonLazy();

@@ -12,7 +12,7 @@ using UniRx;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.SpecialtyResources;
-using Assets.Simulation.Improvements;
+using Assets.Simulation.Units.Promotions;
 
 using UnityCustomUtilities.Extensions;
 
@@ -77,7 +77,7 @@ namespace Assets.Simulation.Units {
             get { return Template.VisionRange; }
         }
 
-        public bool HasAttacked { get; set; }
+        public bool CanAttack { get; set; }
 
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
             get { return Template.RequiredResources; }
@@ -102,6 +102,10 @@ namespace Assets.Simulation.Units {
                 var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
                 return currentStateInfo.IsName("Locked Into Construction");
             }
+        }
+
+        public IEnumerable<IPromotion> Promotions {
+            get { return Template.StartingPromotions; }
         }
 
         #endregion

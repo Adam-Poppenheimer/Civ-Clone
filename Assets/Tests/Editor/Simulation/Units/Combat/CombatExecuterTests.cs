@@ -33,6 +33,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool OwnersAreAtWar = true;
 
+            public CombatInfo MeleeCombatInfo  = new CombatInfo() { CombatType = CombatType.Melee  };
+            public CombatInfo RangedCombatInfo = new CombatInfo() { CombatType = CombatType.Ranged };
+
         }
 
         public class AttackerTestData {
@@ -53,25 +56,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool CanSeeDefender = true;
 
-            public float CombatModifier;
-
-            public bool HasAttacked = false;
-
-            public bool CanMoveAfterAttacking;
+            public bool CanAttack = true;
 
         }
 
         public class DefenderTestData {
 
             public int CombatStrength;
-
-            public float CombatModifier;
-
-            public TerrainType LocationTerrain;
-
-            public TerrainFeature LocationFeature;
-
-            public TerrainShape LocationShape;
 
             public int LocationElevation;
 
@@ -116,14 +107,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
                         CanSeeDefender = true,
-                        CombatModifier = 0f,
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -147,15 +134,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() { 
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f         
+                        LocationElevation = 0      
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/1.5 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -179,15 +162,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/1.75 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -211,15 +190,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/2.0 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -243,15 +218,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/2.5 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -275,15 +246,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/3 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -307,15 +274,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/4 attacker strength advantage")
                 .Returns(new CombatTestOutput() {
@@ -339,17 +302,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0.5f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
+                    },
+                    MeleeCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Melee, AttackerCombatModifier = 0.5f
+                    },
+                    RangedCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Ranged, AttackerCombatModifier = 0.5f
                     }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/50% attacker modifier")
+                }).SetName("Basic terrain/no inhibitors/even strength/50% attacker modifier")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 80,
@@ -371,17 +336,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0.5f
+                        LocationElevation = 0
+                    },
+                    MeleeCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Melee, DefenderCombatModifier = 0.5f
+                    },
+                    RangedCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Ranged, DefenderCombatModifier = 0.5f
                     }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/50% defender modifier")
+                }).SetName("Basic terrain/no inhibitors/even strength/50% defender modifier")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 55,
@@ -403,17 +370,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
-                }).SetName("Basic terrain/no attacker movement/no modifiers/even strength")
+                }).SetName("No attacker movement")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
@@ -436,17 +399,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
                         CanSeeDefender = true,
-                        CombatModifier = 0f,
-                        HasAttacked = true,
+                        CanAttack = false,
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
-                }).SetName("Basic terrain/attacker has already attacked/no modifiers/even strength")
+                }).SetName("Attacker CanAttack field is false")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
@@ -468,15 +427,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no attacker range/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -500,15 +455,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 1,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 1
                     }
                 }).SetName("Basic terrain/attacking up slope/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -532,15 +483,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 2,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 2
                     }
                 }).SetName("Basic terrain/attacking up cliff/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -564,15 +511,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 2,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/attacking down cliff/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -596,15 +539,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = false,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/attacker cannot move to defender/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -628,15 +567,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = false,
-                        CombatModifier = 0f,
+                        CanSeeDefender = false
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/attacker cannot see defender/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -660,15 +595,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 0,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength defender")
                 .Returns(new CombatTestOutput() {
@@ -692,15 +623,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength attacker")
                 .Returns(new CombatTestOutput() {
@@ -724,15 +651,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f,
+                        LocationElevation = 0
                     },
                     UnitsHaveSameOwner = true
 
@@ -758,16 +681,17 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
-                        CanMoveAfterAttacking = true,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
+                    },
+                    MeleeCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Melee, AttackerCanMoveAfterAttacking = true
+                    },
+                    RangedCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Ranged, AttackerCanMoveAfterAttacking = true
                     }
                 }).SetName("Basic terrain/no inhibitors/no modifiers/attacker can move after attacking")
                 .Returns(new CombatTestOutput() {
@@ -792,15 +716,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CombatModifier = 0f,
+                        CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
-                        LocationElevation = 0,
-                        LocationTerrain = TerrainType.Grassland,
-                        LocationFeature = TerrainFeature.None,
-                        CombatModifier = 0f
+                        LocationElevation = 0
                     },
                     OwnersAreAtWar = false
                 }).SetName("Otherwise valid attack/owners are not at war")
@@ -815,6 +735,41 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
+
+
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0
+                    },
+                    MeleeCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Melee, AttackerCanAttackAfterAttacking = true
+                    },
+                    RangedCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Ranged, AttackerCanAttackAfterAttacking = true
+                    },
+                }).SetName("Attacker can attack after attacking")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = true,
+                    MeleeAttackerHealthLeft = 70,
+                    MeleeAttackerMovementLeft = 0,
+                    MeleeDefenderHealthLeft = 70,
+                    
+                    CanPerformRangedAttack = true,
+                    RangedAttackerHealthLeft = 100,
+                    RangedAttackerMovementLeft = 0,
+                    RangedDefenderHealthLeft = 70
+                });
             }
         }
 
@@ -825,7 +780,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
         private Mock<IHexGrid>                                      MockGrid;
         private Mock<ILineOfSightLogic>                             MockLineOfSightLogic;
-        private Mock<ICombatModifierLogic>                          MockCombatModifierLogic;
+        private Mock<ICombatInfoLogic>                              MockCombatInfoLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private IUnitConfig                                         UnitConfig;
         private Mock<IWarCanon>                                     MockWarCanon;
@@ -841,14 +796,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
             MockGrid                = new Mock<IHexGrid>();
             MockLineOfSightLogic    = new Mock<ILineOfSightLogic>();
-            MockCombatModifierLogic = new Mock<ICombatModifierLogic>();
+            MockCombatInfoLogic = new Mock<ICombatInfoLogic>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockWarCanon            = new Mock<IWarCanon>();
 
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
             Container.Bind<ILineOfSightLogic>                            ().FromInstance(MockLineOfSightLogic   .Object);
-            Container.Bind<ICombatModifierLogic>                         ().FromInstance(MockCombatModifierLogic.Object);
+            Container.Bind<ICombatInfoLogic>                         ().FromInstance(MockCombatInfoLogic.Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
             Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon           .Object);
 
@@ -867,25 +822,22 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test(Description = "")]
         [TestCaseSource("TestCases")]
-        public CombatTestOutput PerformCombatTests(CombatTestData input) {
-            IHexCell attackerLocation = BuildCell(input.Attacker.LocationElevation);
-            IHexCell defenderLocation = BuildCell(
-                input.Defender.LocationTerrain, input.Defender.LocationFeature,
-                input.Defender.LocationShape,   input.Defender.LocationElevation
-            );
+        public CombatTestOutput PerformCombatTests(CombatTestData testData) {
+            IHexCell attackerLocation = BuildCell(testData.Attacker.LocationElevation);
+            IHexCell defenderLocation = BuildCell(testData.Defender.LocationElevation);
 
-            IUnit meleeAttacker = BuildUnit(attackerLocation, input.Attacker);
-            IUnit meleeDefender = BuildUnit(defenderLocation, input.Defender);
+            IUnit meleeAttacker = BuildUnit(attackerLocation, testData.Attacker);
+            IUnit meleeDefender = BuildUnit(defenderLocation, testData.Defender);
 
-            IUnit rangedAttacker = BuildUnit(attackerLocation, input.Attacker);
-            IUnit rangedDefender = BuildUnit(defenderLocation, input.Defender);
+            IUnit rangedAttacker = BuildUnit(attackerLocation, testData.Attacker);
+            IUnit rangedDefender = BuildUnit(defenderLocation, testData.Defender);
 
             SetCombatConditions(
-                input.Attacker.DistanceFromDefender, input.Attacker.CanMoveToDefender,
-                input.Attacker.CanSeeDefender
+                testData.Attacker.DistanceFromDefender, testData.Attacker.CanMoveToDefender,
+                testData.Attacker.CanSeeDefender
             );
 
-            if(input.UnitsHaveSameOwner) {
+            if(testData.UnitsHaveSameOwner) {
                 var owner = BuildCivilization();
 
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeAttacker )).Returns(owner);
@@ -901,9 +853,17 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(defenderOwner);
                 MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(defenderOwner);
 
-                MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(input.OwnersAreAtWar);
-                MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(input.OwnersAreAtWar);
+                MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(testData.OwnersAreAtWar);
+                MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(testData.OwnersAreAtWar);
             }
+
+            MockCombatInfoLogic.Setup(
+                logic => logic.GetMeleeAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>())
+            ).Returns(testData.MeleeCombatInfo);
+
+            MockCombatInfoLogic.Setup(
+                logic => logic.GetRangedAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>())
+            ).Returns(testData.RangedCombatInfo);
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
 
@@ -928,6 +888,20 @@ namespace Assets.Tests.Simulation.Units.Combat {
             results.RangedAttackerHealthLeft   = rangedAttacker.Hitpoints;
             results.RangedAttackerMovementLeft = rangedAttacker.CurrentMovement;
             results.RangedDefenderHealthLeft   = rangedDefender.Hitpoints;
+
+            if(results.CanPerformMeleeAttack) {
+                Assert.AreEqual(
+                    meleeAttacker.CanAttack, testData.MeleeCombatInfo.AttackerCanAttackAfterAttacking,
+                    "MeleeAttacker.CanAttack has an unexpected value"
+                );
+            }
+            
+            if(results.CanPerformRangedAttack) {
+                Assert.AreEqual(
+                    rangedAttacker.CanAttack, testData.RangedCombatInfo.AttackerCanAttackAfterAttacking,
+                    "RangedAttacker.CanAttack has an unexpected value"
+                );
+            }
 
             return results;
         }
@@ -954,11 +928,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 currentMovement:       attackerData.CurrentMovement,
                 combatStrength:        attackerData.CombatStrength,
                 rangedAttackStrength:  attackerData.RangedAttackStrength,
-                attackModifier:        attackerData.CombatModifier,
-                defenseModifier:       0f,
                 attackRange:           attackerData.Range,
-                hasAttacked:           attackerData.HasAttacked,
-                canMoveAfterAttacking: attackerData.CanMoveAfterAttacking
+                canAttack:             attackerData.CanAttack
             );
         }
 
@@ -968,25 +939,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 currentMovement:       0,
                 combatStrength:        defenderData.CombatStrength,
                 rangedAttackStrength:  0,
-                attackModifier:        0,
-                defenseModifier:       defenderData.CombatModifier,
                 attackRange:           0,
-                hasAttacked:           false,
-                canMoveAfterAttacking: false
+                canAttack:             true
             );
         }
 
         private IUnit BuildUnit(
             IHexCell location, int currentMovement,
             int combatStrength, int rangedAttackStrength,
-            float attackModifier, float defenseModifier,
-            int attackRange, bool hasAttacked, bool canMoveAfterAttacking
+            int attackRange, bool canAttack
         ){
             var mockUnit = new Mock<IUnit>();
 
             var mockTemplate = new Mock<IUnitTemplate>();
-
-            mockTemplate.Setup(template => template.CanMoveAfterAttacking).Returns(canMoveAfterAttacking);
 
             mockUnit.SetupAllProperties();
 
@@ -995,61 +960,27 @@ namespace Assets.Tests.Simulation.Units.Combat {
             mockUnit.Setup(unit => unit.CombatStrength)      .Returns(combatStrength);
             mockUnit.Setup(unit => unit.RangedAttackStrength).Returns(rangedAttackStrength);
             mockUnit.Setup(unit => unit.AttackRange)         .Returns(attackRange);
-            mockUnit.Setup(unit => unit.HasAttacked)         .Returns(hasAttacked);
 
             mockUnit.Object.CurrentMovement = currentMovement;
 
             var newUnit = mockUnit.Object;
 
             newUnit.Hitpoints = UnitConfig.MaxHealth;
+            newUnit.CanAttack = canAttack;
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
-
-            MockCombatModifierLogic
-                .Setup(logic => logic.GetMeleeOffensiveModifierAtLocation(
-                    newUnit, It.IsAny<IUnit>(), It.IsAny<IHexCell>()
-                ))
-                .Returns(attackModifier);
-
-            MockCombatModifierLogic
-                .Setup(logic => logic.GetRangedOffensiveModifierAtLocation(
-                    newUnit, It.IsAny<IUnit>(), It.IsAny<IHexCell>()
-                ))
-                .Returns(attackModifier);
-
-            MockCombatModifierLogic
-                .Setup(logic => logic.GetMeleeDefensiveModifierAtLocation(
-                    It.IsAny<IUnit>(), newUnit, It.IsAny<IHexCell>()
-                ))
-                .Returns(defenseModifier);
-
-            MockCombatModifierLogic
-                .Setup(logic => logic.GetRangedDefensiveModifierAtLocation(
-                    It.IsAny<IUnit>(), newUnit, It.IsAny<IHexCell>()
-                ))
-                .Returns(defenseModifier);
 
             return newUnit;
         }
 
         private IHexCell BuildCell(int elevation) {
-            return BuildCell(TerrainType.Grassland, TerrainFeature.None, TerrainShape.Flatlands, elevation);
-        }
-
-        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, TerrainShape shape, int elevation) {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
 
             mockCell.Setup(cell => cell.EdgeElevation).Returns(elevation);
 
-            var newCell = mockCell.Object;
-
-            newCell.Terrain = terrain;
-            newCell.Feature = feature;
-            newCell.Shape   = TerrainShape.Flatlands;
-
-            return newCell;
+            return mockCell.Object;
         }
 
         private ICivilization BuildCivilization() {

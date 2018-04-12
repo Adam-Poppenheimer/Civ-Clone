@@ -96,25 +96,25 @@ namespace Assets.Simulation.Civilizations {
         }
 
         private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility) {
+            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility) {
+            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility) {
+            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility) {
+            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }
         }

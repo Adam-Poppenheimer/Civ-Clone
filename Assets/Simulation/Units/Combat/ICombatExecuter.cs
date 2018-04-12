@@ -12,22 +12,13 @@ namespace Assets.Simulation.Units.Combat {
         #region methods
 
         bool CanPerformMeleeAttack(IUnit attacker, IUnit defender);
-        bool CanPerformMeleeAttack(IUnit attacker, ICity city);
-
         void PerformMeleeAttack   (IUnit attacker, IUnit defender);
-        void PerformMeleeAttack   (IUnit attacker, ICity city);
 
         bool CanPerformRangedAttack(IUnit attacker, IUnit defender);
-        bool CanPerformRangedAttack(IUnit attacker, ICity city);
-
         void PerformRangedAttack   (IUnit attacker, IUnit defender);
-        void PerformRangedAttack   (IUnit attacker, ICity city);
 
-        UnitUnitCombatData EstimateMeleeAttackResults(IUnit attacker, IUnit defender);
-        UnitCityCombatData EstimateMeleeAttackResults(IUnit attacker, ICity city);
-
-        UnitUnitCombatData EstimateRangedAttackResults(IUnit attacker, IUnit defender);
-        UnitCityCombatData EstimateRangedAttackResults(IUnit attacker, ICity city);
+        UnitCombatResults EstimateMeleeAttackResults (IUnit attacker, IUnit defender);
+        UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender);
 
         #endregion
 

@@ -48,6 +48,8 @@ namespace Assets.Simulation.HexMap {
 
         IHexCellOverlay Overlay { get; }
 
+        bool IsRoughTerrain { get; }
+
         #endregion
 
         #region methods

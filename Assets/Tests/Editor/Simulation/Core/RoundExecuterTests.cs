@@ -257,8 +257,8 @@ namespace Assets.Tests.Simulation.Core {
 
             mockUnit.Verify(unit => unit.PerformMovement(), Times.Once, "Unit did not have its PerformMovement method called");
             
-            mockUnit.VerifySet(unit => unit.HasAttacked = false, Times.Once,
-                "unit.HasAttacked was not set to false");
+            mockUnit.VerifySet(unit => unit.CanAttack = true, Times.Once,
+                "unit.CanAttack was not set to true");
 
             if(improvementAtLocation != null) {
                 Assert.AreEqual(

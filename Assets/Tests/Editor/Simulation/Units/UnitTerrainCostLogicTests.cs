@@ -12,6 +12,7 @@ using Moq;
 
 using Assets.Simulation;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
@@ -22,7 +23,7 @@ namespace Assets.Tests.Simulation.Units {
 
         #region internal types
 
-        public struct TestData {
+        public class TestData {
 
             public HexCellTestData CurrentCell;
 
@@ -32,7 +33,7 @@ namespace Assets.Tests.Simulation.Units {
 
         }
 
-        public struct HexCellTestData {
+        public class HexCellTestData {
 
             public TerrainType    Terrain;
             public TerrainFeature Feature;
@@ -47,15 +48,13 @@ namespace Assets.Tests.Simulation.Units {
 
         }
 
-        public struct UnitTestData {
+        public class UnitTestData {
 
             public bool IsAquatic;
 
-            public bool IgnoresTerrainCosts;
-
-            public bool HasRoughTerrainPenalty;
-
             public int MaxMovement;
+
+            public MovementInfo MovementInfo = new MovementInfo();
 
         }
 
@@ -258,7 +257,7 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, IgnoresTerrainCosts = true
+                        IsAquatic = false, MovementInfo = new MovementInfo() { IgnoresTerrainCosts = true }
                     }
                 }).Returns(1).SetName("Non-aquatic into forested hills, unit ignores terrain costs");
 
@@ -273,8 +272,8 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, HasRoughTerrainPenalty = true,
-                        MaxMovement = 10
+                        IsAquatic = false, MaxMovement = 10,
+                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
                     }
                 }).Returns(10).SetName("Non-aquatic into empty hills, unit has rough terrain penalty");
 
@@ -287,8 +286,8 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, HasRoughTerrainPenalty = true,
-                        MaxMovement = 10
+                        IsAquatic = false, MaxMovement = 10,
+                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
                     }
                 }).Returns(10).SetName("Non-aquatic into flat forest, unit has rough terrain penalty");
 
@@ -301,8 +300,8 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, HasRoughTerrainPenalty = true,
-                        MaxMovement = 10
+                        IsAquatic = false, MaxMovement = 10,
+                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
                     }
                 }).Returns(10).SetName("Non-aquatic into forested hills, unit has rough terrain penalty");
 
@@ -315,8 +314,8 @@ namespace Assets.Tests.Simulation.Units {
                         Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, HasRoughTerrainPenalty = true,
-                        MaxMovement = 10
+                        IsAquatic = false, MaxMovement = 10,
+                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
                     }
                 }).Returns(10).SetName("Non-aquatic from hills to hills, unit has rough terrain penalty");
 
@@ -370,6 +369,7 @@ namespace Assets.Tests.Simulation.Units {
         private Mock<IHexGridConfig>                           MockConfig;
         private Mock<IUnitPositionCanon>                       MockUnitPositionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
+        private Mock<IPromotionParser>                         MockPromotionParser;
 
         #endregion
 
@@ -382,6 +382,7 @@ namespace Assets.Tests.Simulation.Units {
             MockConfig            = new Mock<IHexGridConfig>();
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
             MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockPromotionParser   = new Mock<IPromotionParser>();
 
             MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
             MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
@@ -403,6 +404,7 @@ namespace Assets.Tests.Simulation.Units {
             Container.Bind<IHexGridConfig>                          ().FromInstance(MockConfig           .Object);
             Container.Bind<IUnitPositionCanon>                      ().FromInstance(MockUnitPositionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
+            Container.Bind<IPromotionParser>                        ().FromInstance(MockPromotionParser  .Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -421,6 +423,8 @@ namespace Assets.Tests.Simulation.Units {
             var nextCell = BuildCell(data.NextCell);
 
             var unit = BuildUnit(data.Unit);
+
+            MockPromotionParser.Setup(parser => parser.GetMovementInfo(unit)).Returns(data.Unit.MovementInfo);
 
             var costLogic = Container.Resolve<UnitTerrainCostLogic>();
 
@@ -472,9 +476,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var mockTemplate = new Mock<IUnitTemplate>();
 
-            mockTemplate.Setup(template => template.IgnoresTerrainCosts   ).Returns(testData.IgnoresTerrainCosts);
-            mockTemplate.Setup(template => template.HasRoughTerrainPenalty).Returns(testData.HasRoughTerrainPenalty);
-            mockTemplate.Setup(template => template.MaxMovement           ).Returns(testData.MaxMovement);
+            mockTemplate.Setup(template => template.MaxMovement).Returns(testData.MaxMovement);
 
             unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 

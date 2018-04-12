@@ -133,7 +133,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private void OnCellPointerEnter(IHexCell cell) {
             var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(cityOnCell != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, cityOnCell)) {
+            if(cityOnCell != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, cityOnCell.CombatFacade)) {
                 SetCityToAttack(cityOnCell);
                 return;
             }
@@ -188,7 +188,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void OnCityPointerEntered(ICity city) {
-            if(CombatExecuter.CanPerformRangedAttack(SelectedUnit, city)) {
+            if(CombatExecuter.CanPerformRangedAttack(SelectedUnit, city.CombatFacade)) {
                 SetCityToAttack(city);
             }else {
                 Clear();
@@ -255,13 +255,13 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             if(UnitToAttack != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, UnitToAttack)) {
                 return true;
             }else {
-                return CityToAttack != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, CityToAttack);
+                return CityToAttack != null && CombatExecuter.CanPerformRangedAttack(SelectedUnit, CityToAttack.CombatFacade);
             }
         }
 
         private void PerformAttack() {
             if(CityToAttack != null) {
-                CombatExecuter.PerformRangedAttack(SelectedUnit, CityToAttack);
+                CombatExecuter.PerformRangedAttack(SelectedUnit, CityToAttack.CombatFacade);
 
             }else if(UnitToAttack != null) {
                 CombatExecuter.PerformRangedAttack(SelectedUnit, UnitToAttack);

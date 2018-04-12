@@ -8,6 +8,7 @@ using UnityEngine;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Units {
 
@@ -43,7 +44,7 @@ namespace Assets.Simulation.Units {
 
         int VisionRange { get; }
 
-        bool HasAttacked { get; set; }
+        bool CanAttack { get; set; }
 
         IUnitTemplate Template { get; }
 
@@ -52,6 +53,8 @@ namespace Assets.Simulation.Units {
         bool IsPermittedToBombard { get; }
 
         bool LockedIntoConstruction { get; }
+
+        IEnumerable<IPromotion> Promotions { get; }
         
         #endregion
 

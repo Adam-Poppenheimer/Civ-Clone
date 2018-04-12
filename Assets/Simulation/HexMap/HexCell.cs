@@ -175,6 +175,10 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private HexCellOverlay overlay;
 
+        public bool IsRoughTerrain {
+            get { return Feature == TerrainFeature.Forest || Feature == TerrainFeature.Jungle || Shape == TerrainShape.Hills; }
+        }
+
         #endregion
 
         private INoiseGenerator NoiseGenerator;

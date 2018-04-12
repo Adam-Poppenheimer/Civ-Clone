@@ -36,11 +36,8 @@ namespace Assets.Simulation.Units {
 
         public ISubject<IUnit> UnitBeingDestroyedSignal { get; private set; }
 
-        public ISubject<UnitUnitCombatData> MeleeCombatWithUnitSignal { get; private set; }
-        public ISubject<UnitCityCombatData> MeleeCombatWithCitySignal { get; private set; }
-
-        public ISubject<UnitUnitCombatData> RangedCombatWithUnitSignal { get; private set; }
-        public ISubject<UnitCityCombatData> RangedCombatWithCitySignal { get; private set; }
+        public ISubject<UnitCombatResults> MeleeCombatWithUnitSignal  { get; private set; }
+        public ISubject<UnitCombatResults> RangedCombatWithUnitSignal { get; private set; }
 
         #endregion
 
@@ -63,11 +60,8 @@ namespace Assets.Simulation.Units {
 
             UnitBeingDestroyedSignal   = new Subject<IUnit>();
 
-            MeleeCombatWithUnitSignal = new Subject<UnitUnitCombatData>();
-            MeleeCombatWithCitySignal = new Subject<UnitCityCombatData>();
-
-            RangedCombatWithUnitSignal = new Subject<UnitUnitCombatData>();
-            RangedCombatWithCitySignal = new Subject<UnitCityCombatData>();
+            MeleeCombatWithUnitSignal  = new Subject<UnitCombatResults>();
+            RangedCombatWithUnitSignal = new Subject<UnitCombatResults>();
         }
 
         #endregion

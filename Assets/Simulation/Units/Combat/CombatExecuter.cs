@@ -22,7 +22,7 @@ namespace Assets.Simulation.Units.Combat {
         private IUnitPositionCanon                            UnitPositionCanon;
         private IHexGrid                                      Grid;
         private ILineOfSightLogic                             LineOfSightLogic;
-        private ICombatModifierLogic                          CombatModifierLogic;
+        private ICombatInfoLogic                          CombatInfoLogic;
         private IUnitConfig                                   UnitConfig;
         private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
@@ -35,13 +35,13 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public CombatExecuter(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, ILineOfSightLogic lineOfSightLogic,
-            ICombatModifierLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
+            ICombatInfoLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon
         ){
             UnitPositionCanon   = unitPositionCanon;
             Grid                = grid;
             LineOfSightLogic    = lineOfSightLogic;
-            CombatModifierLogic = combatModifierLogic;
+            CombatInfoLogic = combatModifierLogic;
             UnitConfig          = unitConfig;
             UnitSignals         = unitSignals;
             UnitPossessionCanon = unitPossessionCanon;
@@ -92,7 +92,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.CurrentMovement <= 0 || attacker.HasAttacked) {
+            if(attacker.CurrentMovement <= 0 || !attacker.CanAttack) {
                 return false;
             }
 
@@ -105,10 +105,6 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             return true;
-        }
-
-        public bool CanPerformMeleeAttack(IUnit attacker, ICity city) {
-            return CanPerformMeleeAttack(attacker, city.CombatFacade);
         }
 
         public bool CanPerformRangedAttack(IUnit attacker, IUnit defender) {
@@ -141,7 +137,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.CurrentMovement <= 0 || attacker.HasAttacked) {
+            if(attacker.CurrentMovement <= 0 || !attacker.CanAttack) {
                 return false;
             }
 
@@ -156,60 +152,22 @@ namespace Assets.Simulation.Units.Combat {
             return true;
         }
 
-        public bool CanPerformRangedAttack(IUnit attacker, ICity city) {
-            return CanPerformRangedAttack(attacker, city.CombatFacade);
-        }
-
         public void PerformMeleeAttack(IUnit attacker, IUnit defender) {
-            int attackerStartingHealth = attacker.Hitpoints;
-            int defenderStartingHealth = defender.Hitpoints;
-
-            PerformMeleeAttack_NoEvent(attacker, defender);
-
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(
-                new UnitUnitCombatData(
-                    attacker, defender,
-                    attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - defender.Hitpoints
-                )
-            );
-        }
-
-        public void PerformMeleeAttack(IUnit attacker, ICity city) {
-            int attackerStartingHealth = attacker.Hitpoints;
-            int defenderStartingHealth = city.CombatFacade.Hitpoints;
-
-            PerformMeleeAttack_NoEvent(attacker, city.CombatFacade);
-
-            UnitSignals.MeleeCombatWithCitySignal.OnNext(
-                new UnitCityCombatData(
-                    attacker, city,
-                    attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - city.CombatFacade.Hitpoints
-                )
-            );
-        }
-
-        private void PerformMeleeAttack_NoEvent(IUnit attacker, IUnit defender) {
             if(!CanPerformMeleeAttack(attacker, defender)) {
                 throw new InvalidOperationException("CanPerformMeleeCombat must return true");
             }
 
-            float attackerStrength, defenderStrength;
-
-            CalculateMeleeAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
-
-            PerformCombat(attacker, attackerStrength, defender, defenderStrength, true);
-        }
-
-        public void PerformRangedAttack(IUnit attacker, IUnit defender) {
             int attackerStartingHealth = attacker.Hitpoints;
             int defenderStartingHealth = defender.Hitpoints;
 
-            PerformRangedAttack_NoEvent(attacker, defender);
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(
-                new UnitUnitCombatData(
+            var combatInfo = CombatInfoLogic.GetMeleeAttackInfo(attacker, defender, defenderLocation);
+
+            PerformCombat(attacker, defender, combatInfo);
+
+            UnitSignals.MeleeCombatWithUnitSignal.OnNext(
+                new UnitCombatResults(
                     attacker, defender,
                     attackerStartingHealth - attacker.Hitpoints,
                     defenderStartingHealth - defender.Hitpoints
@@ -217,118 +175,80 @@ namespace Assets.Simulation.Units.Combat {
             );
         }
 
-        public void PerformRangedAttack(IUnit attacker, ICity city) {
-            int attackerStartingHealth = attacker.Hitpoints;
-            int defenderStartingHealth = city.CombatFacade.Hitpoints;
-
-            PerformRangedAttack_NoEvent(attacker, city.CombatFacade);
-
-            UnitSignals.RangedCombatWithCitySignal.OnNext(
-                new UnitCityCombatData(
-                    attacker, city,
-                    attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - city.CombatFacade.Hitpoints
-                )
-            );
-        }
-
-        private void PerformRangedAttack_NoEvent(IUnit attacker, IUnit defender) {
+        public void PerformRangedAttack(IUnit attacker, IUnit defender) {
             if(!CanPerformRangedAttack(attacker, defender)) {
                 throw new InvalidOperationException("CanPerformRangedCombat must return true");
             }
 
-            float attackerStrength, defenderStrength;
-            CalculateRangedAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
+            int attackerStartingHealth = attacker.Hitpoints;
+            int defenderStartingHealth = defender.Hitpoints;
 
-            PerformCombat(attacker, attackerStrength, defender, defenderStrength, false);
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
+
+            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
+
+            PerformCombat(attacker, defender, combatInfo);
+
+            UnitSignals.RangedCombatWithUnitSignal.OnNext(
+                new UnitCombatResults(
+                    attacker, defender,
+                    attackerStartingHealth - attacker.Hitpoints,
+                    defenderStartingHealth - defender.Hitpoints
+                )
+            );
         }
 
-        public UnitUnitCombatData EstimateMeleeAttackResults(IUnit attacker, IUnit defender) {
-            float attackerStrength, defenderStrength;
-            CalculateMeleeAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
+        public UnitCombatResults EstimateMeleeAttackResults(IUnit attacker, IUnit defender) {
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, true);
+            var combatInfo = CombatInfoLogic.GetMeleeAttackInfo(attacker, defender, defenderLocation);
 
-            return new UnitUnitCombatData(attacker, defender, results.Item1, results.Item2);
+            Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
+
+            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2);
         }
 
-        public UnitCityCombatData EstimateMeleeAttackResults(IUnit attacker, ICity city) {
-            float attackerStrength, defenderStrength;
-            CalculateMeleeAttackStrengths(attacker, out attackerStrength, city.CombatFacade, out defenderStrength);
+        public UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, city.CombatFacade, defenderStrength, true);
+            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
 
-            return new UnitCityCombatData(attacker, city, results.Item1, results.Item2);
-        }
+            Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
-        public UnitUnitCombatData EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
-            float attackerStrength, defenderStrength;
-            CalculateRangedAttackStrengths(attacker, out attackerStrength, defender, out defenderStrength);
-
-            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, false);
-
-            return new UnitUnitCombatData(attacker, defender, results.Item1, results.Item2);
-        }
-
-        public UnitCityCombatData EstimateRangedAttackResults(IUnit attacker, ICity city) {
-            float attackerStrength, defenderStrength;
-            CalculateRangedAttackStrengths(attacker, out attackerStrength, city.CombatFacade, out defenderStrength);
-
-            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, city.CombatFacade, defenderStrength, false);
-
-            return new UnitCityCombatData(attacker, city, results.Item1, results.Item2);
+            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2);
         }
 
         #endregion
 
-        private void CalculateRangedAttackStrengths(
-            IUnit attacker, out float attackerStrength,
-            IUnit defender, out float defenderStrength
-        ){
-            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
-
-            var attackerModifier = CombatModifierLogic.GetRangedOffensiveModifierAtLocation(attacker, defender, defenderLocation);
-            var defenderModifier = CombatModifierLogic.GetRangedDefensiveModifierAtLocation(attacker, defender, defenderLocation);
-
-            attackerStrength = attacker.RangedAttackStrength * (1f + attackerModifier);
-            defenderStrength = defender.CombatStrength       * (1f + defenderModifier);
-        }
-
-        private void CalculateMeleeAttackStrengths(
-            IUnit attacker, out float attackerStrength,
-            IUnit defender, out float defenderStrength
-        ) {
-            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
-
-            var attackerModifier = CombatModifierLogic.GetMeleeOffensiveModifierAtLocation(attacker, defender, defenderLocation);
-            var defenderModifier = CombatModifierLogic.GetMeleeDefensiveModifierAtLocation(attacker, defender, defenderLocation);
-
-            attackerStrength = attacker.CombatStrength * (1f + attackerModifier);
-            defenderStrength = defender.CombatStrength * (1f + defenderModifier);
-        }
-
         private void PerformCombat(
-            IUnit attacker, float attackerStrength, IUnit defender, float defenderStrength,
-            bool attackerReceivesDamage
+            IUnit attacker, IUnit defender, CombatInfo combatInfo
         ) {
-            if(attacker.Template.CanMoveAfterAttacking) {
+            if(combatInfo.AttackerCanMoveAfterAttacking) {
                 attacker.CurrentMovement--;
             }else {
                 attacker.CurrentMovement = 0;
             }
 
-            Tuple<int, int> results = CalculateCombat(attacker, attackerStrength, defender, defenderStrength, attackerReceivesDamage);
+            Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
             attacker.Hitpoints -= results.Item1;
             defender.Hitpoints -= results.Item2;
 
-            attacker.HasAttacked = true;
+            if(combatInfo.AttackerCanAttackAfterAttacking) {
+                attacker.CanAttack = true;
+            }else {
+                attacker.CanAttack = false;
+            }
         }
 
         private Tuple<int, int> CalculateCombat(
-            IUnit attacker, float attackerStrength, IUnit defender, float defenderStrength,
-            bool attackerReceivesDamage
+            IUnit attacker, IUnit defender, CombatInfo combatInfo
         ){
+            float attackerBaseStrength = combatInfo.CombatType == CombatType.Melee ? attacker.CombatStrength : attacker.RangedAttackStrength;
+
+            float attackerStrength = attackerBaseStrength    * (1f + combatInfo.AttackerCombatModifier);
+            float defenderStrength = defender.CombatStrength * (1f + combatInfo.DefenderCombatModifier);
+
             int attackerDamage = 0, defenderDamage = 0;
 
             if(attackerStrength == 0) {
@@ -351,7 +271,7 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             return new Tuple<int, int>(
-                attackerReceivesDamage ? Math.Min(defenderDamage, attacker.Hitpoints) : 0,
+                combatInfo.CombatType == CombatType.Melee ? Math.Min(defenderDamage, attacker.Hitpoints) : 0,
                 Math.Min(attackerDamage, defender.Hitpoints)
             );
         }

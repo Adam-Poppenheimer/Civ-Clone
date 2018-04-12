@@ -20,13 +20,11 @@ namespace Assets.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon UnitPositionCanon;
-
+        private IUnitPositionCanon                            UnitPositionCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private ICityFactory                                  CityFactory;
 
         #endregion
 
@@ -36,25 +34,24 @@ namespace Assets.Simulation.Units.Combat {
         public CombatResponder(UnitSignals signals, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            ICityFactory cityFactory
         ){
-            signals.MeleeCombatWithUnitSignal.Subscribe(OnMeleeCombatWithUnit);
-            signals.MeleeCombatWithCitySignal.Subscribe(OnMeleeCombatWithCity);
-
+            signals.MeleeCombatWithUnitSignal.Subscribe (OnMeleeCombatWithUnit);
             signals.RangedCombatWithUnitSignal.Subscribe(OnRangedCombatWithUnit);
-            signals.RangedCombatWithCitySignal.Subscribe(OnRangedCombatWithCity);
 
             UnitPositionCanon   = unitPositionCanon;
             CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
+            CityFactory         = cityFactory;
         }
 
         #endregion
 
         #region instance methods
 
-        private void OnMeleeCombatWithUnit(UnitUnitCombatData combatData) {
+        private void OnMeleeCombatWithUnit(UnitCombatResults combatData) {
             var attacker = combatData.Attacker;
             var defender = combatData.Defender;
 
@@ -63,51 +60,48 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             if(defender.Hitpoints <= 0) {
-                var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
-
-                GameObject.DestroyImmediate(defender.gameObject);
-
-                if(attacker.Hitpoints > 0) {
-                    UnitPositionCanon.ChangeOwnerOfPossession(attacker, defenderLocation);
-                }
+                if(defender.Type == UnitType.City) {
+                    HandleCityCapture(attacker, defender);
+                }else {
+                    HandleDefenderDeath(attacker, defender);
+                }                
             }
         }
 
-        private void OnMeleeCombatWithCity(UnitCityCombatData combatData) {
-            var attacker = combatData.Attacker;
-            var city = combatData.City;
+        private void HandleCityCapture(IUnit attacker, IUnit cityFacade) {
+            var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
 
-            if(attacker.Hitpoints <= 0) {
-                GameObject.Destroy(attacker.gameObject);
+            var cityCaptured = CityFactory.AllCities.Where(city => city.CombatFacade == cityFacade).FirstOrDefault();
+
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(cityCaptured);
+
+            foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(cityLocation)) {
+                if(unit.Type != UnitType.City) {
+                    GameObject.DestroyImmediate(unit.gameObject);
+                }
             }
 
-            if(city.CombatFacade.Hitpoints <= 0) {
-                var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
+            UnitPossessionCanon.ChangeOwnerOfPossession(cityFacade, attackerOwner);
 
-                var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+            CityPossessionCanon.ChangeOwnerOfPossession(cityCaptured, attackerOwner);
+        }
 
-                foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(cityLocation)) {
-                    if(unit.Type != UnitType.City) {
-                        GameObject.DestroyImmediate(unit.gameObject);
-                    }
-                }
+        private void HandleDefenderDeath(IUnit attacker, IUnit defender) {
+            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-                UnitPossessionCanon.ChangeOwnerOfPossession(city.CombatFacade, attackerOwner);
+            GameObject.DestroyImmediate(defender.gameObject);
 
-                CityPossessionCanon.ChangeOwnerOfPossession(city, attackerOwner);
+            if(attacker.Hitpoints > 0) {
+                UnitPositionCanon.ChangeOwnerOfPossession(attacker, defenderLocation);
             }
         }
 
-        private void OnRangedCombatWithUnit(UnitUnitCombatData combatData) {
+        private void OnRangedCombatWithUnit(UnitCombatResults combatData) {
             var defender = combatData.Defender;
 
             if(defender.Hitpoints <= 0) {
                 GameObject.Destroy(defender.gameObject);
             }
-        }
-
-        private void OnRangedCombatWithCity(UnitCityCombatData combatData) {
-
         }
 
         #endregion

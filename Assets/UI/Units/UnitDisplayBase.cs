@@ -69,7 +69,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnCombatEventOccurred(UnitUnitCombatData results) {
+        private void OnCombatEventOccurred(UnitCombatResults results) {
             if(results.Attacker == ObjectToDisplay || results.Defender == ObjectToDisplay) {
                 Refresh();
             }
