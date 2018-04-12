@@ -20,6 +20,10 @@ namespace Assets.Simulation.Units {
 
         float CombatBaseDamage { get; }
 
+        float TravelSpeedPerSecond { get; }
+
+        float RotationSpeedPerSecond { get; }
+
         #endregion
 
     }

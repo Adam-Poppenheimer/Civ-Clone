@@ -45,6 +45,16 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private float _combatBaseDamage;
 
+        public float TravelSpeedPerSecond {
+            get { return _travelSpeedPerSecond; }
+        }
+        [SerializeField] private float _travelSpeedPerSecond;
+
+        public float RotationSpeedPerSecond {
+            get { return _rotationSpeedPerSecond; }
+        }
+        [SerializeField] private float _rotationSpeedPerSecond;
+
         #endregion
 
         #endregion

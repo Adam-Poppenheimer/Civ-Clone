@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,6 +9,8 @@ using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
+
+using Assets.Util;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
@@ -173,38 +176,71 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            bool shouldExecuteMovement = CurrentMovement >= 0 && CurrentPath != null && CurrentPath.Count > 0;
+            bool shouldExecuteMovement = CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0;
 
             if(shouldExecuteMovement) {
-                Animator.SetTrigger("Moving Requested");
+                StopAllCoroutines();
+                StartCoroutine(PerformMovementCoroutine());
             }
+        }
 
-            IHexCell currentTile = PositionCanon.GetOwnerOfPossession(this);
-            IHexCell tileToTravelTo = null;
+        private IEnumerator PerformMovementCoroutine() {
+            Animator.SetTrigger("Moving Requested");
+
+            IHexCell startingCell = PositionCanon.GetOwnerOfPossession(this);
+            IHexCell currentCell = startingCell;
+
+            Vector3 a, b, c = currentCell.UnitAnchorPoint;
+            yield return LookAt(CurrentPath.First().UnitAnchorPoint);
+
+            float t = Time.deltaTime * Config.TravelSpeedPerSecond;
 
             while(CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0) {
-                var nextTile = CurrentPath.First();
-                if(!PositionCanon.CanChangeOwnerOfPossession(this, nextTile)) {
+                var nextCell = CurrentPath.FirstOrDefault();
+                if(!PositionCanon.CanChangeOwnerOfPossession(this, nextCell) || nextCell == null) {
                     CurrentPath.Clear();
                     break;
                 }
 
-                tileToTravelTo = nextTile;
+                CurrentMovement = Math.Max(0,
+                    CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentCell, nextCell)
+                );
+
+                PositionCanon.ChangeOwnerOfPossession(this, nextCell);
+
                 CurrentPath.RemoveAt(0);
 
-                CurrentMovement = Math.Max(0,
-                    CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentTile, tileToTravelTo)
-                );
-                currentTile = tileToTravelTo;
+                a = c;
+                b = currentCell.UnitAnchorPoint;
+                c = (b + nextCell.UnitAnchorPoint) * 0.5f;
+
+                for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
+                    transform.position = Bezier.GetPoint(a, b, c, t);
+                    Vector3 d = Bezier.GetDerivative(a, b, c, t);
+                    d.y = 0f;
+                    transform.localRotation = Quaternion.LookRotation(d);
+                    yield return null;
+                }
+                t -= 1f;
+
+                currentCell = nextCell;
             }
 
-            if(tileToTravelTo != null) {
-                PositionCanon.ChangeOwnerOfPossession(this, tileToTravelTo);
+            if(currentCell != startingCell) {
+                a = c;
+                b = currentCell.UnitAnchorPoint;
+                c = b;
+
+                for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
+                    transform.position = Bezier.GetPoint(a, b, c, t);
+                    Vector3 d = Bezier.GetDerivative(a, b, c, t);
+                    d.y = 0f;
+                    transform.localRotation = Quaternion.LookRotation(d);
+                    yield return null;
+                }
             }
 
-            if(shouldExecuteMovement) {
-                Animator.SetTrigger("Idling Requested");
-            }
+            Animator.SetTrigger("Idling Requested");
         }
 
         public void SetUpToBombard() {
@@ -216,6 +252,23 @@ namespace Assets.Simulation.Units {
         public void LockIntoConstruction() {
             if(!LockedIntoConstruction) {
                 Animator.SetTrigger("Locked Into Construction Requested");
+            }
+        }
+
+        private IEnumerator LookAt(Vector3 point) {
+            point.y = transform.localPosition.y;
+            Quaternion fromRotation = transform.localRotation;
+            Quaternion toRotation = Quaternion.LookRotation(point - transform.position);
+
+            float angle = Quaternion.Angle(fromRotation, toRotation);
+
+            if(angle > 0f) {
+                float speed = Config.RotationSpeedPerSecond / angle;
+
+                for(float t = Time.deltaTime * speed; t < 1f; t += Time.deltaTime * speed) {
+                    transform.localRotation = Quaternion.Slerp(fromRotation, toRotation, t);
+                    yield return null;
+                }
             }
         }
 

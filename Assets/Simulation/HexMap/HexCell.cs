@@ -179,6 +179,14 @@ namespace Assets.Simulation.HexMap {
             get { return Feature == TerrainFeature.Forest || Feature == TerrainFeature.Jungle || Shape == TerrainShape.Hills; }
         }
 
+        public Vector3 UnitAnchorPoint {
+            get {
+                var retval = transform.position;
+                retval.y += HexMetrics.ElevationStep * (PeakElevation - FoundationElevation);
+                return retval;
+            }
+        }
+
         #endregion
 
         private INoiseGenerator NoiseGenerator;

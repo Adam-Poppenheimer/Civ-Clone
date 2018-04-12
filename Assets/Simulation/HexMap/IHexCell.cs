@@ -50,6 +50,8 @@ namespace Assets.Simulation.HexMap {
 
         bool IsRoughTerrain { get; }
 
+        Vector3 UnitAnchorPoint { get; }
+
         #endregion
 
         #region methods
