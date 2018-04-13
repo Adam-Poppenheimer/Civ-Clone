@@ -18,6 +18,7 @@ namespace Assets.Simulation.Civilizations {
         #region instance fields and properties
 
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
+        private ICapitalCityCanon CapitalCityCanon;
 
         #endregion
 
@@ -26,12 +27,14 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public CityPossessionCanon(
             CitySignals citySignals, CivilizationSignals civSignals,
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
+            ICapitalCityCanon capitalCityCanon
         ) {
             citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
             civSignals .CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
 
             CellPossessionCanon = cellPossessionCanon;
+            CapitalCityCanon    = capitalCityCanon;
         }
 
         #endregion
@@ -40,9 +43,25 @@ namespace Assets.Simulation.Civilizations {
 
         #region from PossessionRelationship<ICivilization, ICity>
 
-        protected override void DoOnPossessionEstablished(ICity possession, ICivilization newOwner) {
-            foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(possession)) {
+        protected override void DoOnPossessionEstablished(ICity city, ICivilization newOwner) {
+            foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
                 cell.RefreshSelfOnly();
+            }
+
+            if(newOwner != null && CapitalCityCanon.GetCapitalOfCiv(newOwner) == null) {
+                CapitalCityCanon.SetCapitalOfCiv(newOwner, city);
+            }
+        }
+
+        protected override void DoOnPossessionBroken(ICity city, ICivilization oldOwner) {
+            foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
+                cell.RefreshSelfOnly();
+            }
+
+            if(oldOwner != null && CapitalCityCanon.GetCapitalOfCiv(oldOwner) == city) {
+                var nextCapital = GetPossessionsOfOwner(oldOwner).FirstOrDefault();
+
+                CapitalCityCanon.SetCapitalOfCiv(oldOwner, nextCapital);
             }
         }
 

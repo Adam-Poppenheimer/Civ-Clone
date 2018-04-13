@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Cities;
@@ -16,6 +18,7 @@ namespace Assets.Simulation.Diplomacy {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IWarCanon                                     WarCanon;
+        private ICivilizationConnectionLogic                  CivilizationConnectionLogic;
         private DiContainer                                   Container;
 
         #endregion
@@ -25,11 +28,13 @@ namespace Assets.Simulation.Diplomacy {
         [Inject]
         public ExchangeBuilder(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IWarCanon warCanon, DiContainer container
+            IWarCanon warCanon, ICivilizationConnectionLogic civilizationConnectionLogic,
+            DiContainer container
         ){
-            CityPossessionCanon = cityPossessionCanon;
-            WarCanon            = warCanon;
-            Container           = container;
+            CityPossessionCanon         = cityPossessionCanon;
+            WarCanon                    = warCanon;
+            Container                   = container;
+            CivilizationConnectionLogic = civilizationConnectionLogic;
         }
 
         #endregion
@@ -56,6 +61,12 @@ namespace Assets.Simulation.Diplomacy {
             }
 
             BuildCityExchanges(sender, receiver, retval);
+
+            if(CivilizationConnectionLogic.AreCivilizationsConnected(sender, receiver)) {
+                Debug.Log("Civilizations are connected");
+            }else {
+                Debug.Log("Civilizations are not connected");
+            }
 
             return retval;
         }

@@ -156,6 +156,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private bool _requiresCoastalCity;
 
+        public bool ProvidesOverseaConnection {
+            get { return _providesOverseaConnection; }
+        }
+        [SerializeField] private bool _providesOverseaConnection;
+
         #endregion
 
         #endregion

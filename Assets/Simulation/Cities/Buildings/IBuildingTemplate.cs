@@ -91,6 +91,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         bool RequiresCoastalCity { get; }
 
+        bool ProvidesOverseaConnection { get; }
+
         #endregion
 
     }
