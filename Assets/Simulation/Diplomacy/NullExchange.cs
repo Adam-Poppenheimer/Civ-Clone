@@ -33,8 +33,8 @@ namespace Assets.Simulation.Diplomacy {
             return true;
         }
 
-        public void ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
-            
+        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+            return null;
         }
 
         public bool OverlapsWithExchange(IDiplomaticExchange exchange) {

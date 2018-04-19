@@ -21,7 +21,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private IResourceAssignmentCanon ResourceAssignmentCanon;
+        private IResourceLockingCanon ResourceLockingCanon;
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;        
 
@@ -31,13 +31,13 @@ namespace Assets.Simulation.Cities.Buildings {
 
         [Inject]
         public BuildingPossessionCanon(
-            CitySignals citySignals, IResourceAssignmentCanon resourceAssignmentCanon,
+            CitySignals citySignals, IResourceLockingCanon resourceLockingCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
             ){
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
 
-            ResourceAssignmentCanon = resourceAssignmentCanon;
-            CityPossessionCanon     = cityPossessionCanon;
+            ResourceLockingCanon = resourceLockingCanon;
+            CityPossessionCanon  = cityPossessionCanon;
         }
 
         #endregion
@@ -54,7 +54,7 @@ namespace Assets.Simulation.Cities.Buildings {
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(newOwner);
 
             foreach(var resource in building.Template.ResourcesConsumed) {
-                ResourceAssignmentCanon.ReserveCopyOfResourceForCiv(resource, cityOwner);
+                ResourceLockingCanon.LockCopyOfResourceForCiv(resource, cityOwner);
             }
         }
 
@@ -66,7 +66,7 @@ namespace Assets.Simulation.Cities.Buildings {
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(oldOwner);
 
             foreach(var resource in building.Template.ResourcesConsumed) {
-                ResourceAssignmentCanon.UnreserveCopyOfResourceForCiv(resource, cityOwner);
+                ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, cityOwner);
             }
         }
 

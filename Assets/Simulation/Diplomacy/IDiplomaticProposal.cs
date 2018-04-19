@@ -39,7 +39,7 @@ namespace Assets.Simulation.Diplomacy {
 
         bool CanPerformProposal();
 
-        void PerformProposal();
+        IOngoingDeal PerformProposal();
         
         #endregion
 

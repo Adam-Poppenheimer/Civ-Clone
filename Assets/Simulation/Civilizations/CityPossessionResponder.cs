@@ -22,21 +22,21 @@ namespace Assets.Simulation.Civilizations {
         #region constructors
 
         [Inject]
-        public CityPossessionResponder(CitySignals citySignals,
+        public CityPossessionResponder(CivilizationSignals civSignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
         ) {
             UnitPossessionCanon = unitPossessionCanon;
 
-            citySignals.OwnershipChangedSignal.Subscribe(OnCityOwnershipChanged);
+            civSignals.CivGainedCitySignal.Subscribe(OnCityOwnershipChanged);
         }
 
         #endregion
 
         #region instance methods
 
-        private void OnCityOwnershipChanged(Tuple<ICity, ICivilization> data) {
-            var city = data.Item1;
-            var newOwner = data.Item2;
+        private void OnCityOwnershipChanged(Tuple<ICivilization, ICity> data) {
+            var newOwner = data.Item1;
+            var city     = data.Item2;
 
             UnitPossessionCanon.ChangeOwnerOfPossession(city.CombatFacade, newOwner);
         }

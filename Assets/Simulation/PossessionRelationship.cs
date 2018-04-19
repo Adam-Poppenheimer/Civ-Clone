@@ -61,6 +61,8 @@ namespace Assets.Simulation {
 
             var oldOwner = GetOwnerOfPossession(possession);
             if(oldOwner != null) {
+                DoOnPossessionBeingBroken(possession, oldOwner);
+
                 PossessionsOfOwner[oldOwner].Remove(possession);
 
                 DoOnPossessionBroken(possession, oldOwner);
@@ -69,6 +71,8 @@ namespace Assets.Simulation {
             OwnerOfPossession[possession] = newOwner;
 
             if(newOwner != null) {
+                DoOnPossessionBeingEstablished(possession, newOwner);
+
                 PossessionsOfOwner[newOwner].Add(possession);
 
                 DoOnPossessionEstablished(possession, newOwner);
@@ -79,9 +83,11 @@ namespace Assets.Simulation {
 
         protected virtual bool IsPossessionValid(TPossession possession, TOwner owner) { return true; }
 
-        protected virtual void DoOnPossessionEstablished(TPossession possession, TOwner newOwner) {  }
+        protected virtual void DoOnPossessionBeingEstablished(TPossession possession, TOwner newOwner) { }
+        protected virtual void DoOnPossessionBeingBroken     (TPossession possession, TOwner oldOwner) { }
 
-        protected virtual void DoOnPossessionBroken(TPossession possession, TOwner oldOwner) { }
+        protected virtual void DoOnPossessionEstablished(TPossession possession, TOwner newOwner) { }
+        protected virtual void DoOnPossessionBroken     (TPossession possession, TOwner oldOwner) { }
 
         #endregion
         

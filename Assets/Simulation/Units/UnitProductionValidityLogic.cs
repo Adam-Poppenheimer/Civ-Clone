@@ -16,15 +16,11 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private IResourceAssignmentCanon ResourceAssignmentCanon;
-
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private IFreeResourcesLogic                           FreeResourcesLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
-
-        private IEnumerable<IUnitTemplate> AvailableUnitTemplates;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
 
         #endregion
 
@@ -32,13 +28,13 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitProductionValidityLogic(IUnitPositionCanon unitPositionCanon,
-            IResourceAssignmentCanon resourceAssignmentCanon,
+            IFreeResourcesLogic freeResourcesLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
         ){
             UnitPositionCanon       = unitPositionCanon;
-            ResourceAssignmentCanon = resourceAssignmentCanon;
+            FreeResourcesLogic      = freeResourcesLogic;
             CityPossessionCanon     = cityPossessionCanon;
             CityLocationCanon       = cityLocationCanon;
             AvailableUnitTemplates  = availableUnitTemplates;
@@ -63,7 +59,7 @@ namespace Assets.Simulation.Units {
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
             foreach(var resource in template.RequiredResources) {
-                if(ResourceAssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
+                if(FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
                     return false;
                 }
             }

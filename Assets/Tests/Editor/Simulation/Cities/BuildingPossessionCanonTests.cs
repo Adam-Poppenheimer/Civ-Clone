@@ -20,7 +20,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IResourceAssignmentCanon>                      MockResourceAssignmentCanon;
+        private Mock<IResourceLockingCanon>                         MockResourceLockingCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
         #endregion
@@ -31,11 +31,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockResourceAssignmentCanon = new Mock<IResourceAssignmentCanon>();
-            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockResourceLockingCanon = new Mock<IResourceLockingCanon>();
+            MockCityPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
-            Container.Bind<IResourceAssignmentCanon>                     ().FromInstance(MockResourceAssignmentCanon.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
+            Container.Bind<IResourceLockingCanon>                        ().FromInstance(MockResourceLockingCanon.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
 
             Container.Bind<SignalManager>().AsSingle();
 
@@ -70,19 +70,19 @@ namespace Assets.Tests.Simulation.Cities {
 
             possessionCanon.ChangeOwnerOfPossession(building, city);
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.ReserveCopyOfResourceForCiv(resourceOne, civilization),
-                Times.Once, "Resource One was not reserved as expected"
+            MockResourceLockingCanon.Verify(
+                canon => canon.LockCopyOfResourceForCiv(resourceOne, civilization),
+                Times.Once, "Resource One was not locked as expected"
             );
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.ReserveCopyOfResourceForCiv(resourceTwo, civilization),
-                Times.Once, "Resource Two was not reserved as expected"
+            MockResourceLockingCanon.Verify(
+                canon => canon.LockCopyOfResourceForCiv(resourceTwo, civilization),
+                Times.Once, "Resource Two was not locked as expected"
             );
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.ReserveCopyOfResourceForCiv(resourceThree, civilization),
-                Times.Never, "Resource Three was reserved unexpectedly"
+            MockResourceLockingCanon.Verify(
+                canon => canon.LockCopyOfResourceForCiv(resourceThree, civilization),
+                Times.Never, "Resource Three was locked unexpectedly"
             );
         }
 
@@ -106,19 +106,19 @@ namespace Assets.Tests.Simulation.Cities {
             possessionCanon.ChangeOwnerOfPossession(building, city);
             possessionCanon.ChangeOwnerOfPossession(building, null);
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.UnreserveCopyOfResourceForCiv(resourceOne, civilization),
-                Times.Once, "Resource One was not unreserved as expected"
+            MockResourceLockingCanon.Verify(
+                canon => canon.UnlockCopyOfResourceForCiv(resourceOne, civilization),
+                Times.Once, "Resource One was not unlocked as expected"
             );
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.UnreserveCopyOfResourceForCiv(resourceTwo, civilization),
-                Times.Once, "Resource Two was not unreserved as expected"
+            MockResourceLockingCanon.Verify(
+                canon => canon.UnlockCopyOfResourceForCiv(resourceTwo, civilization),
+                Times.Once, "Resource Two was not unlocked as expected"
             );
 
-            MockResourceAssignmentCanon.Verify(
-                canon => canon.UnreserveCopyOfResourceForCiv(resourceThree, civilization),
-                Times.Never, "Resource Three was unreserved unexpectedly"
+            MockResourceLockingCanon.Verify(
+                canon => canon.UnlockCopyOfResourceForCiv(resourceThree, civilization),
+                Times.Never, "Resource Three was unlocked unexpectedly"
             );
         }
 

@@ -51,13 +51,15 @@ namespace Assets.Simulation.Diplomacy {
             return fromCiv.GoldStockpile >= IntegerInput;
         }
 
-        public void ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the arguments");
             }
 
             fromCiv.GoldStockpile -= IntegerInput;
             toCiv  .GoldStockpile += IntegerInput;
+
+            return null;
         }
 
         public string GetSummary() {

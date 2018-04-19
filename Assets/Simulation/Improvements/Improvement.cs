@@ -78,11 +78,13 @@ namespace Assets.Simulation.Improvements {
         public void Construct() {
             if(!IsConstructed) {
                 StateMachine.SetTrigger("Constructed Requested");
+                Signals.ImprovementConstructedSignal.OnNext(this);
             }
         }
 
         public void Pillage() {
             if(IsConstructed) {
+                Signals.ImprovementBeingPillagedSignal.OnNext(this);
                 StateMachine.SetTrigger("Pillaged Requested");
             }else if(!IsPillaged) {
                 Destroy(gameObject);

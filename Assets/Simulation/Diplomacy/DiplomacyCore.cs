@@ -12,6 +12,8 @@ namespace Assets.Simulation.Diplomacy {
 
         private List<IDiplomaticProposal> ActiveProposals = new List<IDiplomaticProposal>();
 
+        private List<IOngoingDeal> ActiveDeals = new List<IOngoingDeal>();
+
         #endregion
 
         #region constructors
@@ -26,11 +28,11 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IDiplomacyCore
 
-        public IEnumerable<IDiplomaticProposal> GetProposalsMadeByCiv(ICivilization civ) {
+        public IEnumerable<IDiplomaticProposal> GetProposalsSentFromCiv(ICivilization civ) {
             return ActiveProposals.Where(proposal => proposal.Sender == civ);
         }
 
-        public IEnumerable<IDiplomaticProposal> GetProposalsMadeToCiv(ICivilization civ) {
+        public IEnumerable<IDiplomaticProposal> GetProposalsReceivedByCiv(ICivilization civ) {
             return ActiveProposals.Where(proposal => proposal.Receiver == civ);
         }
 
@@ -39,7 +41,12 @@ namespace Assets.Simulation.Diplomacy {
                 throw new ArgumentNullException("proposal");
             }
             if(proposal.CanPerformProposal()) {
-                proposal.PerformProposal();
+                var ongoingDeal = proposal.PerformProposal();
+
+                if(ongoingDeal != null) {
+                    SubscribeOngoingDeal(ongoingDeal);
+                }
+
                 ActiveProposals.Remove(proposal);
                 return true;
             }else {
@@ -61,7 +68,45 @@ namespace Assets.Simulation.Diplomacy {
             ActiveProposals.Add(proposal);
         }
 
+
+
+        public IEnumerable<IOngoingDeal> GetOngoingDealsReceivedByCiv(ICivilization civ) {
+            return ActiveDeals.Where(deal => deal.Receiver == civ);
+        }
+
+        public IEnumerable<IOngoingDeal> GetOngoingDealsSentFromCiv(ICivilization civ) {
+            return ActiveDeals.Where(deal => deal.Sender == civ);
+        }
+
+        public void SubscribeOngoingDeal(IOngoingDeal deal) {
+            deal.Start();
+
+            deal.TerminationRequested += HandleTerminationRequest;
+
+            ActiveDeals.Add(deal);
+        }
+
+        public void UnsubscribeOngoingDeal(IOngoingDeal deal) {
+            deal.End();
+
+            deal.TerminationRequested -= HandleTerminationRequest;
+
+            ActiveDeals.Remove(deal);
+        }
+
+        public void UpdateOngoingDeals() {
+            foreach(var deal in new List<IOngoingDeal>(ActiveDeals)) {
+                if(--deal.TurnsLeft <= 0) {
+                    UnsubscribeOngoingDeal(deal);
+                }
+            }
+        }
+
         #endregion
+
+        private void HandleTerminationRequest(object sender, OngoingDealEventArgs args) {
+            UnsubscribeOngoingDeal(args.Deal);
+        }
 
         #endregion
         

@@ -17,8 +17,9 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
+        private CivilizationSignals                      CivSignals;
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-        private ICapitalCityCanon CapitalCityCanon;
+        private ICapitalCityCanon                        CapitalCityCanon;
 
         #endregion
 
@@ -30,11 +31,12 @@ namespace Assets.Simulation.Civilizations {
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             ICapitalCityCanon capitalCityCanon
         ) {
-            citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
-            civSignals .CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
-
+            CivSignals          = civSignals;
             CellPossessionCanon = cellPossessionCanon;
             CapitalCityCanon    = capitalCityCanon;
+
+            citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
+            civSignals .CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -42,6 +44,10 @@ namespace Assets.Simulation.Civilizations {
         #region instance methods
 
         #region from PossessionRelationship<ICivilization, ICity>
+
+        protected override void DoOnPossessionBeingBroken(ICity possession, ICivilization oldOwner) {
+            CivSignals.CivLosingCitySignal.OnNext(new Tuple<ICivilization, ICity>(oldOwner, possession));
+        }
 
         protected override void DoOnPossessionEstablished(ICity city, ICivilization newOwner) {
             foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {

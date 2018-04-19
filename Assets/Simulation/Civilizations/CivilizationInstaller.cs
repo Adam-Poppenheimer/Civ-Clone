@@ -43,16 +43,22 @@ namespace Assets.Simulation.Civilizations {
                      .AsSingle();
 
             Container.Bind<ICivilizationYieldLogic>     ().To<CivilizationYieldLogic>     ().AsSingle();
-            Container.Bind<IResourceAssignmentCanon>    ().To<ResourceAssignmentCanon>    ().AsSingle();
+            Container.Bind<IResourceExtractionLogic>    ().To<ResourceExtractionLogic>    ().AsSingle();
+            Container.Bind<IResourceLockingCanon>       ().To<ResourceLockingCanon>       ().AsSingle();
+            Container.Bind<IFreeResourcesLogic>         ().To<FreeResourcesLogic>         ().AsSingle();
+            Container.Bind<IResourceTransferCanon>      ().To<ResourceTransferCanon>      ().AsSingle();
             Container.Bind<ICivilizationHappinessLogic> ().To<CivilizationHappinessLogic> ().AsSingle();
             Container.Bind<ICapitalCityCanon>           ().To<CapitalCityCanon>           ().AsSingle();
             Container.Bind<IConnectionPathCostLogic>    ().To<ConnectionPathCostLogic>    ().AsSingle();
-            Container.Bind<ICivilizationConnectionLogic>().To<CivilizationConnectionLogic>().AsSingle();            
+            Container.Bind<ICivilizationConnectionLogic>().To<CivilizationConnectionLogic>().AsSingle();
+            Container.Bind<ICivilizationTerritoryLogic> ().To<CivilizationTerritoryLogic> ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
             Container.Bind<VisibilityResponder>    ().AsSingle().NonLazy();
             Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
+
+            Container.Bind<ResourceTransferCanonSynchronizer>().AsSingle().NonLazy();
         }
 
         #endregion

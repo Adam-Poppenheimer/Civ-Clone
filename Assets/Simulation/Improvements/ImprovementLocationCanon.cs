@@ -11,9 +11,17 @@ namespace Assets.Simulation.Improvements {
 
     public class ImprovementLocationCanon : PossessionRelationship<IHexCell, IImprovement>, IImprovementLocationCanon {
 
+        #region instance fields and properties
+
+        private ImprovementSignals Signals;
+
+        #endregion
+
         #region constructors
 
         public ImprovementLocationCanon(ImprovementSignals signals) {
+            Signals = signals;
+
             signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
         }
 
@@ -27,12 +35,8 @@ namespace Assets.Simulation.Improvements {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
-        protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
-            
-        }
-
-        protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
-            
+        protected override void DoOnPossessionBeingBroken(IImprovement possession, IHexCell oldOwner) {
+            Signals.ImprovementBeingRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 
         #endregion

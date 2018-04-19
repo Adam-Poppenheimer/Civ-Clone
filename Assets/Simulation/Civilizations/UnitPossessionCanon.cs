@@ -18,17 +18,18 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private IResourceAssignmentCanon ResourceAssignmentCanon;
+        private IResourceLockingCanon ResourceLockingCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitPossessionCanon(IResourceAssignmentCanon resourceAssignmentCanon,
+        public UnitPossessionCanon
+            (IResourceLockingCanon resourceLockingCanon,
             CivilizationSignals civSignals
         ) {
-            ResourceAssignmentCanon = resourceAssignmentCanon;
+            ResourceLockingCanon = resourceLockingCanon;
 
             civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
@@ -41,13 +42,13 @@ namespace Assets.Simulation.Civilizations {
 
         protected override void DoOnPossessionEstablished(IUnit unit, ICivilization newOwner) {
             foreach(var resource in unit.RequiredResources) {
-                ResourceAssignmentCanon.ReserveCopyOfResourceForCiv(resource, newOwner);
+                ResourceLockingCanon.LockCopyOfResourceForCiv(resource, newOwner);
             }
         }
 
         protected override void DoOnPossessionBroken(IUnit unit, ICivilization oldOwner) {
             foreach(var resource in unit.RequiredResources) {
-                ResourceAssignmentCanon.UnreserveCopyOfResourceForCiv(resource, oldOwner);
+                ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, oldOwner);
             }
         }
 

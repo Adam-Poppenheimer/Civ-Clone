@@ -22,7 +22,7 @@ namespace Assets.Simulation.Cities.Buildings {
         private List<IBuildingTemplate>                          AvailableTemplates;
         private IPossessionRelationship<ICity, IBuilding>        BuildingPossessionCanon;
         private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
-        private IResourceAssignmentCanon                         ResourceAssignmentCanon;
+        private IFreeResourcesLogic                              FreeResourcesLogic;
         private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
         private IHexGrid                                         Grid;
         private IRiverCanon                                      RiverCanon;
@@ -45,7 +45,7 @@ namespace Assets.Simulation.Cities.Buildings {
             List<IBuildingTemplate> availableTemplates,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IResourceAssignmentCanon resourceAssignmentCanon,
+            IFreeResourcesLogic freeResourcesLogic,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IHexGrid grid, IRiverCanon riverCanon,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
@@ -55,7 +55,7 @@ namespace Assets.Simulation.Cities.Buildings {
             AvailableTemplates       = availableTemplates;
             BuildingPossessionCanon  = buildingPossessionCanon;
             CityPossessionCanon      = cityPossessionCanon;
-            ResourceAssignmentCanon  = resourceAssignmentCanon;
+            FreeResourcesLogic       = freeResourcesLogic;
             CityLocationCanon        = cityLocationCanon;
             Grid                     = grid;
             RiverCanon               = riverCanon;
@@ -89,7 +89,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
             foreach(var resource in template.ResourcesConsumed) {
-                if(ResourceAssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
+                if(FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
                     return false;
                 }
             }

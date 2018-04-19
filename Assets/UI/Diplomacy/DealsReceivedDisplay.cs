@@ -61,7 +61,7 @@ namespace Assets.UI.Diplomacy {
         public void Refresh() {
             ClearAll();
 
-            var receivedProposals = DiplomacyCore.GetProposalsMadeToCiv(GameCore.ActiveCivilization).ToList();
+            var receivedProposals = DiplomacyCore.GetProposalsReceivedByCiv(GameCore.ActiveCivilization).ToList();
 
             foreach(var proposal in receivedProposals) {
                 if(!proposal.CanPerformProposal()) {

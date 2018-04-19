@@ -26,10 +26,7 @@ namespace Assets.Simulation.SpecialtyResources {
         public override void InstallBindings() {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().To<ResourceNodeLocationCanon>().AsSingle();
 
-            Container
-                .Bind<ISpecialtyResourcePossessionLogic>()
-                .To  <SpecialtyResourcePossessionLogic >()
-                .AsSingle();
+            Container.Bind<IExtractionValidityLogic>().To<ExtractionValidityLogic>().AsSingle();
 
             var allResources = new List<ISpecialtyResourceDefinition>(Resources.LoadAll<SpecialtyResourceDefinition>("Specialty Resources"));
 

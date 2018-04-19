@@ -12,6 +12,8 @@ using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Core;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.UI.SpecialtyResources {
 
     public class SpecialtyResourceSummaryDisplay : MonoBehaviour {
@@ -25,32 +27,40 @@ namespace Assets.UI.SpecialtyResources {
 
 
 
-        private IGameCore GameCore;
-
-        private IResourceAssignmentCanon AssignmentCanon;
-
-        private ISpecialtyResourcePossessionLogic ResourcePossessionCanon;
+        private IGameCore                         GameCore;
+        private IFreeResourcesLogic               FreeResourcesLogic;
+        private IResourceExtractionLogic          ExtractionLogic;
+        private IResourceTransferCanon            ResourceTransferCanon;
+        IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IGameCore gameCore, IResourceAssignmentCanon assignmentCanon,
-            ISpecialtyResourcePossessionLogic resourcePossessionCanon
+        public void InjectDependencies(
+            IGameCore gameCore, IFreeResourcesLogic freeResourcesLogic,
+            IResourceExtractionLogic extractionLogic, IResourceTransferCanon resourceTransferCanon,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
         ){
-            GameCore                = gameCore;
-            AssignmentCanon         = assignmentCanon;
-            ResourcePossessionCanon = resourcePossessionCanon;
+            GameCore              = gameCore;
+            FreeResourcesLogic    = freeResourcesLogic;
+            ExtractionLogic       = extractionLogic;
+            ResourceTransferCanon = resourceTransferCanon;
+            AvailableResources    = availableResources;
         }
 
         #region Unity messages
 
         private void OnEnable() {
-            foreach(KeyValuePair<ISpecialtyResourceDefinition, int> resourcePair in
-                ResourcePossessionCanon.GetFullResourceSummaryForCiv(GameCore.ActiveCivilization)
-            ) {
-                BuildSummary(resourcePair.Key, resourcePair.Value);
+            var activeCiv = GameCore.ActiveCivilization;
+
+            foreach(var resource in AvailableResources) {
+                var extractedCopies = ExtractionLogic      .GetExtractedCopiesOfResourceForCiv(resource, activeCiv);
+                var importedCopies  = ResourceTransferCanon.GetImportedCopiesOfResourceForCiv (resource, activeCiv);
+                var exportedCopies  = ResourceTransferCanon.GetExportedCopiesOfResourceForCiv (resource, activeCiv);
+
+                BuildSummary(resource, extractedCopies + importedCopies - exportedCopies);
             }
         }
 
@@ -65,7 +75,7 @@ namespace Assets.UI.SpecialtyResources {
         #endregion
 
         private void BuildSummary(ISpecialtyResourceDefinition resource, int totalCopies) {
-            int freeCopies = AssignmentCanon.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActiveCivilization);
+            int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActiveCivilization);
 
             var newSummaryPrefab = Instantiate(ResourceSummaryPrefab);
 

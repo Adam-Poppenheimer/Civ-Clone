@@ -58,12 +58,14 @@ namespace Assets.Simulation.Diplomacy {
             return cityOwner == fromCiv && CityPossessionCanon.CanChangeOwnerOfPossession(CityToExchange, toCiv);
         }
 
-        public void ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the given arguments");
             }
 
             CityPossessionCanon.ChangeOwnerOfPossession(CityToExchange, toCiv);
+
+            return null;
         }
 
         public string GetSummary() {

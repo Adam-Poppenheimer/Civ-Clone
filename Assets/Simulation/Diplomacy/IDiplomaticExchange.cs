@@ -23,7 +23,7 @@ namespace Assets.Simulation.Diplomacy {
 
         bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv);
 
-        void ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv);
+        IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv);
 
         string GetSummary();
 

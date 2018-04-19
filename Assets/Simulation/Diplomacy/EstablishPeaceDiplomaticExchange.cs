@@ -40,12 +40,14 @@ namespace Assets.Simulation.Diplomacy {
             return WarCanon.AreAtWar(fromCiv, toCiv);
         }
 
-        public void ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the given arguments");
             }
             
             WarCanon.EstablishPeace(fromCiv, toCiv);
+
+            return null;
         }
 
         public string GetSummary() {

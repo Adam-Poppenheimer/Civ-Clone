@@ -143,21 +143,40 @@ namespace Assets.Simulation.Diplomacy {
             return true;
         }
 
-        public void PerformProposal() {
+        public IOngoingDeal PerformProposal() {
             if(!CanPerformProposal()) {
                 throw new InvalidOperationException("CanPerformProposal must return true");
             }
 
+            var ongoingFromSender = new List<IOngoingDiplomaticExchange>();
+            var ongoingToReceiver = new List<IOngoingDiplomaticExchange>();
+            var ongoingBilateral  = new List<IOngoingDiplomaticExchange>();
+
             foreach(var offer in offeredBySender) {
-                offer.ExecuteBetweenCivs(Sender, Receiver);
+                var ongoingExchange = offer.ExecuteBetweenCivs(Sender, Receiver);
+                if(ongoingExchange != null) {
+                    ongoingFromSender.Add(ongoingExchange);
+                }
             }
 
             foreach(var demand in demandedOfReceiver) {
-                demand.ExecuteBetweenCivs(Receiver, Sender);
+                var ongoingExchange = demand.ExecuteBetweenCivs(Receiver, Sender);
+                if(ongoingExchange != null) {
+                    ongoingToReceiver.Add(ongoingExchange);
+                }
             }
 
             foreach(var bilateralExchange in bilateralExchanges) {
-                bilateralExchange.ExecuteBetweenCivs(Sender, Receiver);
+                var ongoingExchange = bilateralExchange.ExecuteBetweenCivs(Sender, Receiver);
+                if(ongoingExchange != null) {
+                    ongoingBilateral.Add(ongoingExchange);
+                }
+            }
+
+            if(ongoingFromSender.Count > 0 || ongoingToReceiver.Count > 0 || ongoingBilateral.Count > 0) {
+                return new OngoingDeal(ongoingFromSender, ongoingToReceiver, ongoingBilateral);
+            }else {
+                return null;
             }
         }
 

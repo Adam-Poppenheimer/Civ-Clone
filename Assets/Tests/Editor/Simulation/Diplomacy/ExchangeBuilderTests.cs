@@ -23,6 +23,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IWarCanon>                                     MockWarCanon;
+        private Mock<IResourceExchangeBuilder>                      MockResourceExchangeBuilder;
 
         #endregion
 
@@ -32,11 +33,13 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         [SetUp]
         public void CommonInstall() {
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockWarCanon = new Mock<IWarCanon>();
+            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockWarCanon                = new Mock<IWarCanon>();
+            MockResourceExchangeBuilder = new Mock<IResourceExchangeBuilder>();
 
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon           .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
+            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon               .Object);
+            Container.Bind<IResourceExchangeBuilder>                     ().FromInstance(MockResourceExchangeBuilder.Object);
 
             Container.Bind<IYieldFormatter>().FromMock();
 
@@ -162,6 +165,21 @@ namespace Assets.Tests.Simulation.Diplomacy {
                 .Where(demand => demand is CityDiplomaticExchange).Select(demand => demand as CityDiplomaticExchange);
 
             CollectionAssert.AreEquivalent(receiverCities, cityExchanges.Select(demand => demand.CityToExchange));
+        }
+
+        [Test(Description = "")]
+        public void BuildAllExchangesBetween_CallsIntoResourceExchangeBuilderProperly() {
+            var sender   = BuildCivilization(new List<ICity>());
+            var receiver = BuildCivilization(new List<ICity>());
+
+            var exchangeBuilder = Container.Resolve<ExchangeBuilder>();
+
+            exchangeBuilder.BuildAllValidExchangesBetween(sender, receiver);
+
+            MockResourceExchangeBuilder.Verify(
+                builder => builder.BuildResourceExchanges(sender, receiver, It.IsAny<ExchangeSummary>()),
+                "BuildResourceExchanges was not called as expected"
+            );
         }
 
         #endregion

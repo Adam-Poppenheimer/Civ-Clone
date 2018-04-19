@@ -504,7 +504,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IPossessionRelationship<ICity, IBuilding>>        MockBuildingPossessionCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>>    MockCityPossessionCanon;
-        private Mock<IResourceAssignmentCanon>                         MockResourceAssignmentCanon;
+        private Mock<IFreeResourcesLogic>                              MockFreeResourcesLogic;
         private Mock<IPossessionRelationship<IHexCell, ICity>>         MockCityLocationCanon;
         private Mock<IHexGrid>                                         MockGrid;
         private Mock<IRiverCanon>                                      MockRiverCanon;
@@ -524,7 +524,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockBuildingPossessionCanon  = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityPossessionCanon      = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockResourceAssignmentCanon  = new Mock<IResourceAssignmentCanon>();
+            MockFreeResourcesLogic       = new Mock<IFreeResourcesLogic>();
             MockCityLocationCanon        = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             MockGrid                     = new Mock<IHexGrid>();
             MockRiverCanon               = new Mock<IRiverCanon>();
@@ -536,7 +536,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>       ().FromInstance(MockBuildingPossessionCanon .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon     .Object);
-            Container.Bind<IResourceAssignmentCanon>                        ().FromInstance(MockResourceAssignmentCanon .Object);
+            Container.Bind<IFreeResourcesLogic>                             ().FromInstance(MockFreeResourcesLogic      .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>        ().FromInstance(MockCityLocationCanon       .Object);
             Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid                    .Object);
             Container.Bind<IRiverCanon>                                     ().FromInstance(MockRiverCanon              .Object);
@@ -670,7 +670,7 @@ namespace Assets.Tests.Simulation.Cities {
             var newCiv = new Mock<ICivilization>().Object;
 
             foreach(var resource in availableResources) {
-                MockResourceAssignmentCanon.Setup(canon => canon.GetFreeCopiesOfResourceForCiv(resource, newCiv)).Returns(1);
+                MockFreeResourcesLogic.Setup(canon => canon.GetFreeCopiesOfResourceForCiv(resource, newCiv)).Returns(1);
             }
             
             return newCiv;

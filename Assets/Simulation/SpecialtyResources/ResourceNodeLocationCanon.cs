@@ -12,11 +12,19 @@ namespace Assets.Simulation.SpecialtyResources {
 
     public class ResourceNodeLocationCanon : PossessionRelationship<IHexCell, IResourceNode> {
 
+        #region instance fields and properties
+
+        private SpecialtyResourceSignals Signals;
+
+        #endregion
+
         #region constructors
 
         [Inject]
-        public ResourceNodeLocationCanon(SpecialtyResourceSignals resourceSignals) {
-            resourceSignals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
+        public ResourceNodeLocationCanon(SpecialtyResourceSignals signals) {
+            Signals = signals;
+
+            signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
         }
 
         #endregion
@@ -29,12 +37,8 @@ namespace Assets.Simulation.SpecialtyResources {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
-        protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
-            
-        }
-
-        protected override void DoOnPossessionEstablished(IResourceNode possession, IHexCell newOwner) {
-            
+        protected override void DoOnPossessionBeingBroken(IResourceNode possession, IHexCell oldOwner) {
+            Signals.ResourceNodeBeingRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
         }
 
         #endregion

@@ -132,7 +132,7 @@ namespace Assets.Tests.Simulation.Units {
         #region instance fields and properties
 
         private Mock<IUnitPositionCanon>                            MockPositionCanon;
-        private Mock<IResourceAssignmentCanon>                      MockResourceAssignmentCanon;
+        private Mock<IFreeResourcesLogic>                           MockFreeResourcesLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
 
@@ -148,15 +148,15 @@ namespace Assets.Tests.Simulation.Units {
         public void CommonInstall() {
             AllTemplates.Clear();
 
-            MockPositionCanon           = new Mock<IUnitPositionCanon>();
-            MockResourceAssignmentCanon = new Mock<IResourceAssignmentCanon>();
-            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockPositionCanon       = new Mock<IUnitPositionCanon>();
+            MockFreeResourcesLogic  = new Mock<IFreeResourcesLogic>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockPositionCanon          .Object);
-            Container.Bind<IResourceAssignmentCanon>                     ().FromInstance(MockResourceAssignmentCanon.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon      .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockPositionCanon      .Object);
+            Container.Bind<IFreeResourcesLogic>                          ().FromInstance(MockFreeResourcesLogic .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
 
             Container.Bind<IEnumerable<IUnitTemplate>>().WithId("Available Unit Templates").FromInstance(AllTemplates);
 
@@ -211,7 +211,7 @@ namespace Assets.Tests.Simulation.Units {
             MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
             foreach(var resource in resourcesAvailableToOwner) {
-                MockResourceAssignmentCanon
+                MockFreeResourcesLogic
                     .Setup(canon => canon.GetFreeCopiesOfResourceForCiv(resource, owner)).Returns(1);
             }
 

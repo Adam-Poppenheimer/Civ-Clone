@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Diplomacy {
 
@@ -18,8 +19,8 @@ namespace Assets.Simulation.Diplomacy {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IWarCanon                                     WarCanon;
-        private ICivilizationConnectionLogic                  CivilizationConnectionLogic;
         private DiContainer                                   Container;
+        private IResourceExchangeBuilder                      ResourceExchangeBuilder;
 
         #endregion
 
@@ -28,13 +29,13 @@ namespace Assets.Simulation.Diplomacy {
         [Inject]
         public ExchangeBuilder(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IWarCanon warCanon, ICivilizationConnectionLogic civilizationConnectionLogic,
-            DiContainer container
+            IWarCanon warCanon, DiContainer container,
+            IResourceExchangeBuilder resourceExchangeBuilder
         ){
             CityPossessionCanon         = cityPossessionCanon;
             WarCanon                    = warCanon;
             Container                   = container;
-            CivilizationConnectionLogic = civilizationConnectionLogic;
+            ResourceExchangeBuilder     = resourceExchangeBuilder;
         }
 
         #endregion
@@ -62,11 +63,7 @@ namespace Assets.Simulation.Diplomacy {
 
             BuildCityExchanges(sender, receiver, retval);
 
-            if(CivilizationConnectionLogic.AreCivilizationsConnected(sender, receiver)) {
-                Debug.Log("Civilizations are connected");
-            }else {
-                Debug.Log("Civilizations are not connected");
-            }
+            ResourceExchangeBuilder.BuildResourceExchanges(sender, receiver, retval);
 
             return retval;
         }

@@ -169,7 +169,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         #region instance fields and properties
 
         private Mock<ICivilizationConfig>                           MockConfig;
-        private Mock<IResourceAssignmentCanon>                      MockResourceAssignmentCanon;
+        private Mock<IFreeResourcesLogic>                           MockFreeResourcesLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<ICityHappinessLogic>                           MockCityHappinessLogic;
 
@@ -181,15 +181,15 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig                  = new Mock<ICivilizationConfig>();
-            MockResourceAssignmentCanon = new Mock<IResourceAssignmentCanon>();
-            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockCityHappinessLogic      = new Mock<ICityHappinessLogic>();
+            MockConfig              = new Mock<ICivilizationConfig>();
+            MockFreeResourcesLogic  = new Mock<IFreeResourcesLogic>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityHappinessLogic  = new Mock<ICityHappinessLogic>();
 
-            Container.Bind<ICivilizationConfig>                          ().FromInstance(MockConfig                 .Object);
-            Container.Bind<IResourceAssignmentCanon>                     ().FromInstance(MockResourceAssignmentCanon.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<ICityHappinessLogic>                          ().FromInstance(MockCityHappinessLogic     .Object);
+            Container.Bind<ICivilizationConfig>                          ().FromInstance(MockConfig             .Object);
+            Container.Bind<IFreeResourcesLogic>                          ().FromInstance(MockFreeResourcesLogic .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<ICityHappinessLogic>                          ().FromInstance(MockCityHappinessLogic .Object);
 
             Container.Bind<CivilizationHappinessLogic>().AsSingle();
         }
@@ -205,11 +205,15 @@ namespace Assets.Tests.Simulation.Civilizations {
         ){
             var cities = testData.Cities.Select(cityData => BuildCity(cityData));
 
-            var resources = testData.AvailableResources.Select(resourceData => BuildResource(resourceData));
+            var resources = testData.AvailableResources.Select(resourceData => BuildResource(resourceData)).ToList();
 
             civ = BuildCivilization(testData.Civilization, cities, resources);
 
             SetupConfig(testData.Config);
+
+            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+                .WithId("Available Specialty Resources")
+                .FromInstance(resources);
 
             happinessLogic = Container.Resolve<CivilizationHappinessLogic>();
         }
@@ -248,10 +252,17 @@ namespace Assets.Tests.Simulation.Civilizations {
             CivilizationTestData data, IEnumerable<ICity> cities,
             IEnumerable<ISpecialtyResourceDefinition> resources
         ){
-            var newCiv = new Mock<ICivilization>().Object;
+            var mockCiv = new Mock<ICivilization>();
 
-            MockCityPossessionCanon    .Setup(canon => canon.GetPossessionsOfOwner(newCiv)    ).Returns(cities);
-            MockResourceAssignmentCanon.Setup(canon => canon.GetAllFreeResourcesForCiv(newCiv)).Returns(resources);
+            var newCiv = mockCiv.Object;
+
+            MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCiv)).Returns(cities);
+
+            foreach(var resource in resources) {
+                MockFreeResourcesLogic
+                    .Setup(canon => canon.GetFreeCopiesOfResourceForCiv(resource, newCiv))
+                    .Returns(1);
+            }
 
             return newCiv;
         }

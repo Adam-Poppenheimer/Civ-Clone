@@ -14,27 +14,28 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private ICivilizationConfig Config;
-
-        private IResourceAssignmentCanon ResourceAssignmentCanon;
-
+        private ICivilizationConfig                           Config;
+        private IFreeResourcesLogic                           FreeResourcesLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private ICityHappinessLogic CityHappinessLogic;
+        private ICityHappinessLogic                           CityHappinessLogic;
+        private List<ISpecialtyResourceDefinition>            AvailableLuxuries;
 
         #endregion
 
         #region constructors
 
         public CivilizationHappinessLogic(
-            ICivilizationConfig config, IResourceAssignmentCanon resourceAssignmentCanon,
+            ICivilizationConfig config, IFreeResourcesLogic freeResourcesLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICityHappinessLogic cityHappinessLogic
+            ICityHappinessLogic cityHappinessLogic,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
         ){
-            Config                  = config;
-            ResourceAssignmentCanon = resourceAssignmentCanon;
-            CityPossessionCanon     = cityPossessionCanon;
-            CityHappinessLogic      = cityHappinessLogic;
+            Config              = config;
+            FreeResourcesLogic  = freeResourcesLogic;
+            CityPossessionCanon = cityPossessionCanon;
+            CityHappinessLogic  = cityHappinessLogic;
+
+            AvailableLuxuries = availableResources.Where(resource => resource.Type == SpecialtyResourceType.Luxury).ToList();
         }
 
         #endregion
@@ -50,8 +51,9 @@ namespace Assets.Simulation.Civilizations {
 
             int retval = Config.BaseHappiness;
 
-            var freeLuxuries = ResourceAssignmentCanon.GetAllFreeResourcesForCiv(civ)
-                .Where(resource => resource.Type == SpecialtyResourceType.Luxury);
+            var freeLuxuries = AvailableLuxuries.Where(
+                luxury => FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(luxury, civ) > 0
+            );
 
             retval += freeLuxuries.Count() * Config.HappinessPerLuxury;
 

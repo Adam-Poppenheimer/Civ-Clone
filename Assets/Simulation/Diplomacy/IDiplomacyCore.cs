@@ -11,15 +11,27 @@ namespace Assets.Simulation.Diplomacy {
 
         #region methods
 
-        IEnumerable<IDiplomaticProposal> GetProposalsMadeToCiv(ICivilization civ);
+        IEnumerable<IDiplomaticProposal> GetProposalsReceivedByCiv(ICivilization civ);
 
-        IEnumerable<IDiplomaticProposal> GetProposalsMadeByCiv(ICivilization civ);
+        IEnumerable<IDiplomaticProposal> GetProposalsSentFromCiv(ICivilization civ);
 
         bool TryAcceptProposal(IDiplomaticProposal proposal);
 
         void RejectProposal(IDiplomaticProposal proposal);
 
         void SendProposal(IDiplomaticProposal proposal);
+
+
+
+        IEnumerable<IOngoingDeal> GetOngoingDealsReceivedByCiv(ICivilization civ);
+
+        IEnumerable<IOngoingDeal> GetOngoingDealsSentFromCiv(ICivilization civ);
+
+        void SubscribeOngoingDeal(IOngoingDeal exchange);
+
+        void UnsubscribeOngoingDeal(IOngoingDeal exchange);
+
+        void UpdateOngoingDeals();
 
         #endregion
 
