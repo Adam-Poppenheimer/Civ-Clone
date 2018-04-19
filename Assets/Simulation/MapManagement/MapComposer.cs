@@ -88,8 +88,8 @@ namespace Assets.Simulation.MapManagement {
             ImprovementComposer .ClearRuntime();
             CityComposer        .ClearRuntime();
             UnitComposer        .ClearRuntime();
-            CivilizationComposer.ClearRuntime();
             ResourceComposer    .ClearRuntime();
+            CivilizationComposer.ClearRuntime();
 
             yield return new WaitForEndOfFrame();
 

@@ -12,10 +12,17 @@ MonoBehaviour:
   m_Name: Config
   m_EditorClassIdentifier: 
   _maxHealth: 100
-  _terrainDefensiveness: []
-  _featureDefensiveness: []
-  _shapeDefensiveness: []
   _riverCrossingAttackModifier: -0.5
   _combatBaseDamage: 30
   _travelSpeedPerSecond: 3
   _rotationSpeedPerSecond: 180
+  TerrainDefensiveness: []
+  ShapeDefensiveness:
+  - 0
+  - 0.25
+  - 0
+  FeatureDefensiveness:
+  - 0
+  - 0.25
+  - 0.25
+  - 0

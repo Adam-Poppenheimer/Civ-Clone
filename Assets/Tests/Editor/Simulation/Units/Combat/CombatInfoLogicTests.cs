@@ -333,9 +333,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         private void SetUpConfigs(CombatInfoLogicTestData testData) {
-            MockUnitConfig.Setup(config => config.TerrainDefensiveness).Returns(testData.UnitConfig.TerrainDefensiveness.AsReadOnly());
+            throw new NotImplementedException();
+            /*MockUnitConfig.Setup(config => config.TerrainDefensiveness).Returns(testData.UnitConfig.TerrainDefensiveness.AsReadOnly());
             MockUnitConfig.Setup(config => config.FeatureDefensiveness).Returns(testData.UnitConfig.FeatureDefensiveness.AsReadOnly());
-            MockUnitConfig.Setup(config => config.ShapeDefensiveness)  .Returns(testData.UnitConfig.ShapeDefensiveness  .AsReadOnly());
+            MockUnitConfig.Setup(config => config.ShapeDefensiveness)  .Returns(testData.UnitConfig.ShapeDefensiveness  .AsReadOnly());*/
 
             MockUnitConfig.Setup(config => config.RiverCrossingAttackModifier).Returns(testData.UnitConfig.RiverCrossingAttackingModifier);
 

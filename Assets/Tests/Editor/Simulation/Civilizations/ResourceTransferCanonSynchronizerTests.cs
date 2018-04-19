@@ -89,7 +89,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            ImprovementSignals.ImprovementBeingRemovedFromLocationSignal.OnNext(
+            ImprovementSignals.ImprovementRemovedFromLocationSignal.OnNext(
                 new Tuple<IImprovement, IHexCell>(improvement, location)
             );
 
@@ -111,7 +111,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            ImprovementSignals.ImprovementBeingPillagedSignal.OnNext(improvement);
+            ImprovementSignals.ImprovementPillagedSignal.OnNext(improvement);
 
             MockResourceTransferCanon.Verify(
                 canon => canon.SynchronizeResourceForCiv(resource, civ), Times.Once,
@@ -131,7 +131,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            ResourceSignals.ResourceNodeBeingRemovedFromLocationSignal.OnNext(
+            ResourceSignals.ResourceNodeRemovedFromLocationSignal.OnNext(
                 new Tuple<IResourceNode, IHexCell>(node, location)
             );
 

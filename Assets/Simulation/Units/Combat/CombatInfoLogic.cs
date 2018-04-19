@@ -58,9 +58,9 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             if(!combatInfo.DefenderIgnoresDefensiveTerrainBonuses) {
-                combatInfo.DefenderCombatModifier += UnitConfig.TerrainDefensiveness[(int)location.Terrain];
-                combatInfo.DefenderCombatModifier += UnitConfig.FeatureDefensiveness[(int)location.Feature];
-                combatInfo.DefenderCombatModifier += UnitConfig.ShapeDefensiveness  [(int)location.Shape  ];
+                combatInfo.DefenderCombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
                 if(improvementAtLocation != null) {
@@ -80,9 +80,9 @@ namespace Assets.Simulation.Units.Combat {
             combatInfo.CombatType = CombatType.Ranged;
 
             if(!combatInfo.DefenderIgnoresDefensiveTerrainBonuses) {
-                combatInfo.DefenderCombatModifier += UnitConfig.TerrainDefensiveness[(int)location.Terrain];
-                combatInfo.DefenderCombatModifier += UnitConfig.FeatureDefensiveness[(int)location.Feature];
-                combatInfo.DefenderCombatModifier += UnitConfig.ShapeDefensiveness  [(int)location.Shape  ];
+                combatInfo.DefenderCombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
                 if(improvementAtLocation != null) {

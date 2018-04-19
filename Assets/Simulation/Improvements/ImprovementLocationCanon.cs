@@ -35,8 +35,8 @@ namespace Assets.Simulation.Improvements {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
-        protected override void DoOnPossessionBeingBroken(IImprovement possession, IHexCell oldOwner) {
-            Signals.ImprovementBeingRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
+        protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
+            Signals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 
         #endregion
@@ -50,7 +50,9 @@ namespace Assets.Simulation.Improvements {
         #endregion
 
         private void OnImprovementBeingDestroyed(IImprovement improvement) {
-            ChangeOwnerOfPossession(improvement, null);
+            if(GetOwnerOfPossession(improvement) != null) {
+                ChangeOwnerOfPossession(improvement, null);
+            }
         }
 
         #endregion

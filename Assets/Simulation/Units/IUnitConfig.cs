@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.Units {
 
     public interface IUnitConfig {
@@ -12,10 +14,6 @@ namespace Assets.Simulation.Units {
 
         int MaxHealth { get; }
 
-        ReadOnlyCollection<float> TerrainDefensiveness { get; }
-        ReadOnlyCollection<float> FeatureDefensiveness { get; }
-        ReadOnlyCollection<float> ShapeDefensiveness   { get; }
-
         float RiverCrossingAttackModifier { get; }
 
         float CombatBaseDamage { get; }
@@ -23,6 +21,14 @@ namespace Assets.Simulation.Units {
         float TravelSpeedPerSecond { get; }
 
         float RotationSpeedPerSecond { get; }
+
+        #endregion
+
+        #region methods
+
+        float GetTerrainDefensiveness(TerrainType    terrain);        
+        float GetShapeDefensiveness  (TerrainShape   shape);
+        float GetFeatureDefensiveness(TerrainFeature feature);
 
         #endregion
 

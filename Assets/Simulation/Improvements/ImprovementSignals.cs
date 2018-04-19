@@ -14,10 +14,10 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        public ISubject<IImprovement>                  ImprovementConstructedSignal              { get; private set; }
-        public ISubject<IImprovement>                  ImprovementBeingPillagedSignal            { get; private set; }
-        public ISubject<IImprovement>                  ImprovementBeingDestroyedSignal           { get; private set; }
-        public ISubject<Tuple<IImprovement, IHexCell>> ImprovementBeingRemovedFromLocationSignal { get; private set; }
+        public ISubject<IImprovement>                  ImprovementConstructedSignal         { get; private set; }
+        public ISubject<IImprovement>                  ImprovementPillagedSignal            { get; private set; }
+        public ISubject<IImprovement>                  ImprovementBeingDestroyedSignal      { get; private set; }
+        public ISubject<Tuple<IImprovement, IHexCell>> ImprovementRemovedFromLocationSignal { get; private set; }
 
         #endregion
 
@@ -25,9 +25,9 @@ namespace Assets.Simulation.Improvements {
 
         public ImprovementSignals(){
             ImprovementConstructedSignal              = new Subject<IImprovement>();
-            ImprovementBeingPillagedSignal            = new Subject<IImprovement>();
+            ImprovementPillagedSignal            = new Subject<IImprovement>();
             ImprovementBeingDestroyedSignal           = new Subject<IImprovement>();
-            ImprovementBeingRemovedFromLocationSignal = new Subject<Tuple<IImprovement, IHexCell>>();
+            ImprovementRemovedFromLocationSignal = new Subject<Tuple<IImprovement, IHexCell>>();
         }
 
         #endregion

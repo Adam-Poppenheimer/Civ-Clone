@@ -93,10 +93,11 @@ namespace Assets.Simulation.Units.Abilities {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
-                var improvementOfTemplate = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+                var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
-                if(improvementOfTemplate != null) {
-                    GameObject.Destroy(improvementOfTemplate.gameObject);
+                if(improvementAtLocation != null) {
+                    ImprovementLocationCanon.ChangeOwnerOfPossession(improvementAtLocation, null);
+                    GameObject.Destroy(improvementAtLocation.gameObject);
                 }
 
                 var newImprovement = ImprovementFactory.BuildImprovement(templateOfName, unitLocation);

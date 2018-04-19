@@ -84,8 +84,8 @@ namespace Assets.Simulation.Improvements {
 
         public void Pillage() {
             if(IsConstructed) {
-                Signals.ImprovementBeingPillagedSignal.OnNext(this);
                 StateMachine.SetTrigger("Pillaged Requested");
+                Signals.ImprovementPillagedSignal.OnNext(this);
             }else if(!IsPillaged) {
                 Destroy(gameObject);
             }

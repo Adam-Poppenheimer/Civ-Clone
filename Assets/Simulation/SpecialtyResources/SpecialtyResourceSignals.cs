@@ -13,8 +13,8 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #region instance fields and properties
 
-        public ISubject<IResourceNode>                  ResourceNodeBeingDestroyedSignal           { get; private set; }
-        public ISubject<Tuple<IResourceNode, IHexCell>> ResourceNodeBeingRemovedFromLocationSignal { get; private set; }
+        public ISubject<IResourceNode>                  ResourceNodeBeingDestroyedSignal      { get; private set; }
+        public ISubject<Tuple<IResourceNode, IHexCell>> ResourceNodeRemovedFromLocationSignal { get; private set; }
 
         #endregion
 
@@ -22,7 +22,7 @@ namespace Assets.Simulation.SpecialtyResources {
 
         public SpecialtyResourceSignals() {
             ResourceNodeBeingDestroyedSignal           = new Subject<IResourceNode>();
-            ResourceNodeBeingRemovedFromLocationSignal = new Subject<Tuple<IResourceNode, IHexCell>>();
+            ResourceNodeRemovedFromLocationSignal = new Subject<Tuple<IResourceNode, IHexCell>>();
         }
 
         #endregion

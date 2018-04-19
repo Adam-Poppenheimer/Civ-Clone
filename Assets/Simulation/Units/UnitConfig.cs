@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
@@ -19,21 +20,6 @@ namespace Assets.Simulation.Units {
             get { return _maxHealth; }
         }
         [SerializeField] private int _maxHealth;
-
-        public ReadOnlyCollection<float> TerrainDefensiveness {
-            get { return _terrainDefensiveness.AsReadOnly(); }
-        }
-        [SerializeField] private List<float> _terrainDefensiveness;
-
-        public ReadOnlyCollection<float> FeatureDefensiveness {
-            get { return _featureDefensiveness.AsReadOnly(); }
-        }
-        [SerializeField] private List<float> _featureDefensiveness;
-
-        public ReadOnlyCollection<float> ShapeDefensiveness {
-            get { return _shapeDefensiveness.AsReadOnly(); }
-        }
-        [SerializeField] private List<float> _shapeDefensiveness;
 
         public float RiverCrossingAttackModifier {
             get { return _riverCrossingAttackModifier; }
@@ -57,8 +43,50 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
+        [SerializeField] private List<float> TerrainDefensiveness;        
+        [SerializeField] private List<float> ShapeDefensiveness;
+        [SerializeField] private List<float> FeatureDefensiveness;
+
         #endregion
-        
+
+        #region instance methods
+
+        #region from IUnitConfig
+
+        public float GetTerrainDefensiveness(TerrainType terrain) {
+            var index = (int)terrain;
+
+            if(index >= TerrainDefensiveness.Count) {
+                return 0;
+            }else {
+                return TerrainDefensiveness[index];
+            }
+        }
+
+        public float GetShapeDefensiveness(TerrainShape shape) {
+            var index = (int)shape;
+
+            if(index >= ShapeDefensiveness.Count) {
+                return 0;
+            }else {
+                return ShapeDefensiveness[index];
+            }
+        }
+
+        public float GetFeatureDefensiveness(TerrainFeature feature) {
+            var index = (int)feature;
+
+            if(index >= FeatureDefensiveness.Count) {
+                return 0;
+            }else {
+                return FeatureDefensiveness[index];
+            }
+        }
+
+        #endregion
+
+        #endregion
+
     }
 
 }

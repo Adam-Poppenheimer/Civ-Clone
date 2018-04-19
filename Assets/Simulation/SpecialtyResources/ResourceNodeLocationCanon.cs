@@ -37,8 +37,8 @@ namespace Assets.Simulation.SpecialtyResources {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
-        protected override void DoOnPossessionBeingBroken(IResourceNode possession, IHexCell oldOwner) {
-            Signals.ResourceNodeBeingRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
+        protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
+            Signals.ResourceNodeRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
         }
 
         #endregion

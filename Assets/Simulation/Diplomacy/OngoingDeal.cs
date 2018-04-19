@@ -45,14 +45,6 @@ namespace Assets.Simulation.Diplomacy {
             ExchangesFromSender = fromSender;
             ExchangesFromReceiver = fromReceiver;
             BilateralExchanges  = bilateral;
-
-            foreach(var exchange in fromSender.Concat(fromReceiver).Concat(bilateral)) {
-                exchange.TerminationRequested += delegate(object sender, EventArgs e) {
-                    if(TerminationRequested != null) {
-                        TerminationRequested(this, new OngoingDealEventArgs(this));
-                    }
-                };
-            }
         }
 
         #endregion
@@ -63,33 +55,45 @@ namespace Assets.Simulation.Diplomacy {
 
         public void Start() {
             foreach(var exchange in ExchangesFromSender) {
+                exchange.TerminationRequested += OnExchangeTerminationRequested;
                 exchange.Start();
             }
 
             foreach(var exchange in ExchangesFromReceiver) {
+                exchange.TerminationRequested += OnExchangeTerminationRequested;
                 exchange.Start();
             }
 
             foreach(var exchange in BilateralExchanges) {
+                exchange.TerminationRequested += OnExchangeTerminationRequested;
                 exchange.Start();
             }
         }
 
         public void End() {
             foreach(var exchange in ExchangesFromSender) {
+                exchange.TerminationRequested -= OnExchangeTerminationRequested;
                 exchange.End();
             }
 
             foreach(var exchange in ExchangesFromReceiver) {
+                exchange.TerminationRequested -= OnExchangeTerminationRequested;
                 exchange.End();
             }
 
             foreach(var exchange in BilateralExchanges) {
+                exchange.TerminationRequested -= OnExchangeTerminationRequested;
                 exchange.End();
             }
         }
 
         #endregion
+
+        private void OnExchangeTerminationRequested(object sender, EventArgs e) {
+            if(TerminationRequested != null) {
+                TerminationRequested(this, new OngoingDealEventArgs(this));
+            }
+        }
 
         #endregion
 

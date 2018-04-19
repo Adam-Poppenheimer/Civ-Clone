@@ -200,9 +200,6 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         [Test(Description = "")]
         public void SubscribeOngoingDeal_DealStarted() {
-            var sender   = BuildCivilization();
-            var receiver = BuildCivilization();
-
             var ongoingDealMock = new Mock<IOngoingDeal>();
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
@@ -242,9 +239,6 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         [Test(Description = "")]
         public void UnsubscribeOngoingDeal_DealEnded() {
-            var sender   = BuildCivilization();
-            var receiver = BuildCivilization();
-
             var ongoingDealMock = new Mock<IOngoingDeal>();
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
