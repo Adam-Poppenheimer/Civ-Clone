@@ -15,6 +15,9 @@ namespace Assets.UI.Cities {
         Material UnoccupiedSlotMaterial { get; }
         Material LockedSlotMaterial { get; }
 
+        float SummaryVerticalOffsetBase { get; }
+        float SummaryZoomGapReductionStrength { get; }
+
         #endregion
 
     }

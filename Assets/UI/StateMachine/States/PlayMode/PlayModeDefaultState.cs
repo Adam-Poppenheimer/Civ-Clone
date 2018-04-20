@@ -72,7 +72,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            CitySummaryManager.RefreshSummaries();
+            CitySummaryManager.RepositionSummaries();
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

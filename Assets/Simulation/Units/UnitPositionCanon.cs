@@ -20,10 +20,6 @@ namespace Assets.Simulation.Units {
 
         private UnitSignals Signals;
 
-        private IHexGrid Grid;
-
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
 
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
@@ -33,14 +29,11 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitPositionCanon(UnitSignals signals, IHexGrid grid,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+        public UnitPositionCanon(UnitSignals signals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             Signals             = signals;
-            Grid                = grid;
-            CityPossessionCanon = cityPossessionCanon;
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
         }

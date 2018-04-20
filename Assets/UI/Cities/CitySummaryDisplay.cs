@@ -40,6 +40,16 @@ namespace Assets.UI.Cities {
 
         [SerializeField] private Slider HealthSlider;
 
+        public RectTransform RectTransform {
+            get {
+                if(_rectTransform == null) {
+                    _rectTransform = GetComponent<RectTransform>();
+                }
+                return _rectTransform;
+            }
+        }
+        private RectTransform _rectTransform;
+
 
 
         private IHexGrid Grid;
@@ -104,8 +114,6 @@ namespace Assets.UI.Cities {
             DisplayData();
 
             RangedAttackButton.gameObject.SetActive(HasRangedAttackTarget() && IsCityOwnedByActiveCiv());
-
-            transform.position = Camera.main.WorldToScreenPoint(ObjectToDisplay.transform.position);
         }
 
         #endregion

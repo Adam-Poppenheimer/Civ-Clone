@@ -28,7 +28,7 @@ namespace Assets.UI {
 
         private Transform Swivel, Stick;
 
-        private float Zoom = 1f;
+        public float Zoom { get; private set; }
 
         private float RotationAngle;
 
@@ -46,6 +46,7 @@ namespace Assets.UI {
         #region Unity messages
 
         private void Awake() {
+            Zoom = 1f;
             Swivel = transform.GetChild(0);
             Stick  = Swivel.GetChild(0);
         }

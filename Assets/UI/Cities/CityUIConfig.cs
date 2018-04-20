@@ -29,6 +29,16 @@ namespace Assets.UI.Cities {
         }
         [SerializeField] private Material _lockedSlotMaterial;
 
+        public float SummaryVerticalOffsetBase {
+            get { return _summaryVerticalOffsetBase; }
+        }
+        [SerializeField] private float _summaryVerticalOffsetBase;
+
+        public float SummaryZoomGapReductionStrength {
+            get { return _summaryZoomGapReductionStrength; }
+        }
+        [SerializeField] private float _summaryZoomGapReductionStrength;
+
         #endregion
 
         #endregion

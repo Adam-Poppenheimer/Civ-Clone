@@ -27,7 +27,11 @@ namespace Assets.UI.Cities {
 
         private DiContainer Container;
 
-        private RectTransform CitySummaryContainer; 
+        private ICityUIConfig CityUIConfig;
+
+        private GameCamera GameCamera;
+
+        private RectTransform CitySummaryContainer;
 
         #endregion
 
@@ -36,13 +40,15 @@ namespace Assets.UI.Cities {
         [Inject]
         public CitySummaryManager(
             CitySummaryDisplay summaryPrefab, ICityFactory cityFactory,
-            DiContainer container,
+            DiContainer container, ICityUIConfig cityUIConfig, GameCamera gameCamera,
             [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer,
             CitySignals citySignals
         ){
             SummaryPrefab        = summaryPrefab;
             CityFactory          = cityFactory;
             Container            = container;
+            CityUIConfig         = cityUIConfig;
+            GameCamera           = gameCamera;
             CitySummaryContainer = citySummaryContainer;
 
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
@@ -66,9 +72,13 @@ namespace Assets.UI.Cities {
             }
         }
 
-        public void RefreshSummaries() {
+        public void RepositionSummaries() {
             foreach(var summary in InstantiatedSummaries) {
-                summary.Refresh();
+                var cityInScreen = Camera.main.WorldToScreenPoint(summary.ObjectToDisplay.transform.position);
+
+                summary.RectTransform.position = cityInScreen +
+                    new Vector3(0f, CityUIConfig.SummaryVerticalOffsetBase)
+                    * (GameCamera.Zoom / (1 + CityUIConfig.SummaryZoomGapReductionStrength));
             }
         }
 
