@@ -26,6 +26,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockResourceNodeLocationCanon;
         private Mock<ICivilizationTerritoryLogic>                      MockCivTerritoryLogic;
         private Mock<IPossessionRelationship<ICity, IHexCell>>         MockCityTerritoryCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>>    MockCityPossessionCanon;
 
         ImprovementSignals       ImprovementSignals;
         SpecialtyResourceSignals ResourceSignals;
@@ -48,6 +49,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockResourceNodeLocationCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockCivTerritoryLogic         = new Mock<ICivilizationTerritoryLogic>();
             MockCityTerritoryCanon        = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockCityPossessionCanon       = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
             ImprovementSignals = new ImprovementSignals();
             ResourceSignals    = new SpecialtyResourceSignals();
@@ -58,6 +60,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockResourceNodeLocationCanon.Object);
             Container.Bind<ICivilizationTerritoryLogic>                     ().FromInstance(MockCivTerritoryLogic        .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCityTerritoryCanon       .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon      .Object);
 
             Container.Bind<ImprovementSignals>      ().FromInstance(ImprovementSignals);
             Container.Bind<SpecialtyResourceSignals>().FromInstance(ResourceSignals);
@@ -151,7 +154,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             BuildImprovement(location);
             BuildNode(location, resource);
 
-            var city = BuildCity(new List<IHexCell>());
+            var city = BuildCity(new List<IHexCell>(), civ);
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
@@ -183,7 +186,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 cityTerritory.Add(location);
             }
 
-            var city = BuildCity(cityTerritory);
+            var city = BuildCity(cityTerritory, civ);
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
@@ -201,10 +204,12 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region utilities
 
-        private ICity BuildCity(List<IHexCell> territory) {
+        private ICity BuildCity(List<IHexCell> territory, ICivilization owner) {
             var newCity = new Mock<ICity>().Object;
 
             MockCityTerritoryCanon.Setup(canon => canon.GetPossessionsOfOwner(newCity)).Returns(territory);
+
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
             return newCity;
         }

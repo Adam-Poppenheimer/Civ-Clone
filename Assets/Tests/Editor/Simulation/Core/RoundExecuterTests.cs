@@ -55,7 +55,7 @@ namespace Assets.Tests.Simulation.Core {
 
             public int WorkInvested;
 
-            public ImprovementTemplateTestData Template;
+            public bool IsReadyToConstruct;
 
             public bool ExpectsToBeConstructed;
 
@@ -82,11 +82,10 @@ namespace Assets.Tests.Simulation.Core {
                         LockedIntoConstruction = true, MaxMovement = 1
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
-                        Template = new ImprovementTemplateTestData() { TurnsToConstruct = 2 },
-                        WorkInvested = 0, IsConstructed = false,
+                        WorkInvested = 0, IsConstructed = false, IsReadyToConstruct = false,
                         ExpectedWorkInvested = 1, ExpectsToBeConstructed = false
                     }
-                }).SetName("Locked unit with spare movement, unconstructed improvement more than 1 turn from completion");
+                }).SetName("Locked unit with spare movement, unconstructed improvement not ready for construction");
 
                 yield return new TestCaseData(new EndRoundOnUnitTestData() {
                     LocationOfUnit = new HexCellTestData() {  },
@@ -95,11 +94,10 @@ namespace Assets.Tests.Simulation.Core {
                         LockedIntoConstruction = true, MaxMovement = 1
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
-                        Template = new ImprovementTemplateTestData() { TurnsToConstruct = 2 },
-                        WorkInvested = 1, IsConstructed = false,
+                        WorkInvested = 1, IsConstructed = false, IsReadyToConstruct = true,
                         ExpectedWorkInvested = 2, ExpectsToBeConstructed = true
                     }
-                }).SetName("Locked unit with spare movement, unconstructed improvement exactly 1 turn from completion");
+                }).SetName("Locked unit with spare movement, unconstructed improvement ready for construction");
 
                 yield return new TestCaseData(new EndRoundOnUnitTestData() {
                     LocationOfUnit = new HexCellTestData() {  },
@@ -108,7 +106,6 @@ namespace Assets.Tests.Simulation.Core {
                         LockedIntoConstruction = true, MaxMovement = 1
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
-                        Template = new ImprovementTemplateTestData() { TurnsToConstruct = 2 },
                         WorkInvested = 0, IsConstructed = false,
                         ExpectedWorkInvested = 0, ExpectsToBeConstructed = false
                     }
@@ -121,7 +118,6 @@ namespace Assets.Tests.Simulation.Core {
                         LockedIntoConstruction = false, MaxMovement = 1
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
-                        Template = new ImprovementTemplateTestData() { TurnsToConstruct = 2 },
                         WorkInvested = 0, IsConstructed = false,
                         ExpectedWorkInvested = 0, ExpectsToBeConstructed = false
                     }
@@ -134,7 +130,6 @@ namespace Assets.Tests.Simulation.Core {
                         LockedIntoConstruction = true, MaxMovement = 1
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
-                        Template = new ImprovementTemplateTestData() { TurnsToConstruct = 2 },
                         WorkInvested = 0, IsConstructed = true,
                         ExpectedWorkInvested = 0, ExpectsToBeConstructed = false
                     }
@@ -309,8 +304,8 @@ namespace Assets.Tests.Simulation.Core {
 
             mock.SetupAllProperties();
 
-            mock.Setup(improvement => improvement.Template)     .Returns(BuildImprovementTemplate(improvementData.Template));
-            mock.Setup(improvement => improvement.IsConstructed).Returns(improvementData.IsConstructed);
+            mock.Setup(improvement => improvement.IsReadyToConstruct).Returns(improvementData.IsReadyToConstruct);
+            mock.Setup(improvement => improvement.IsConstructed)     .Returns(improvementData.IsConstructed);
 
             var newImprovement = mock.Object;
 
@@ -320,14 +315,6 @@ namespace Assets.Tests.Simulation.Core {
                 .Returns(new List<IImprovement>() { newImprovement });
 
             return newImprovement;
-        }
-
-        private IImprovementTemplate BuildImprovementTemplate(ImprovementTemplateTestData templateData) {
-            var mockTemplate = new Mock<IImprovementTemplate>();
-
-            mockTemplate.Setup(template => template.TurnsToConstruct).Returns(templateData.TurnsToConstruct);
-
-            return mockTemplate.Object;
         }
 
         private IUnit BuildUnit(int currentMovement, int maxMovement) {

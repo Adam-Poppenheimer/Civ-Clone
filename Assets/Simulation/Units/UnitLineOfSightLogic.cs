@@ -6,38 +6,30 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Cities;
-using Assets.Simulation.Units;
 
-namespace Assets.Simulation {
+namespace Assets.Simulation.Units {
 
-    public class LineOfSightLogic : ILineOfSightLogic {
+    public class UnitLineOfSightLogic : IUnitLineOfSightLogic {
 
         #region instance fields and properties
 
-        private IHexGrid                                 Grid;
-        private IUnitPositionCanon                       UnitPositionCanon;
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
+        private IHexGrid           Grid;
+        private IUnitPositionCanon UnitPositionCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public LineOfSightLogic(
-            IHexGrid grid, IUnitPositionCanon unitPositionCanon,
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
-        ){
-            Grid                = grid;
-            UnitPositionCanon   = unitPositionCanon;
-            CellPossessionCanon = cellPossessionCanon;
+        public UnitLineOfSightLogic() {
+
         }
 
         #endregion
 
         #region instance methods
 
-        #region from ILineOfSightLogic
+        #region from IUnitLineOfSightLogic
 
         public IEnumerable<IHexCell> GetCellsVisibleToUnit(IUnit unit) {
             var retval = new List<IHexCell>();
@@ -55,23 +47,6 @@ namespace Assets.Simulation {
             }
 
             return retval;
-        }
-
-        public IEnumerable<IHexCell> GetCellsVisibleToCity(ICity city) {
-            var retval = new HashSet<IHexCell>();
-
-            foreach(var cellInCityBorders in CellPossessionCanon.GetPossessionsOfOwner(city)) {
-                retval.Add(cellInCityBorders);
-                foreach(var neighbor in Grid.GetNeighbors(cellInCityBorders)) {
-                    retval.Add(neighbor);
-                }
-            }
-
-            return retval;
-        }
-
-        public bool CanUnitSeeCell(IUnit unit, IHexCell cell) {
-            return GetCellsVisibleToUnit(unit).Contains(cell);
         }
 
         #endregion
@@ -98,7 +73,7 @@ namespace Assets.Simulation {
         }
 
         #endregion
-
+        
     }
 
 }

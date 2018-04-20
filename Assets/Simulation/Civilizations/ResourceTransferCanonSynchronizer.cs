@@ -22,7 +22,7 @@ namespace Assets.Simulation.Civilizations {
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
         private ICivilizationTerritoryLogic                      CivTerritoryLogic;
         private IPossessionRelationship<ICity, IHexCell>         CityTerritoryCanon;
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
 
         #endregion
 
@@ -34,6 +34,7 @@ namespace Assets.Simulation.Civilizations {
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
             ICivilizationTerritoryLogic                      civTerritoryLogic,
             IPossessionRelationship<ICity, IHexCell>         cityTerritoryCanon,
+            IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
             ImprovementSignals                               improvementSignals,
             SpecialtyResourceSignals                         resourceSignals,
             CitySignals                                      citySignals,
@@ -44,6 +45,7 @@ namespace Assets.Simulation.Civilizations {
             ResourceNodeLocationCanon = resourceNodeLocationCanon;
             CivTerritoryLogic         = civTerritoryLogic;
             CityTerritoryCanon        = cityTerritoryCanon;
+            CityPossessionCanon       = cityPossessionCanon;
 
             improvementSignals.ImprovementRemovedFromLocationSignal .Subscribe(OnImprovementRemovedFromLocation);
             improvementSignals.ImprovementPillagedSignal            .Subscribe(OnImprovementPillaged);

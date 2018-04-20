@@ -21,7 +21,7 @@ using UnityCustomUtilities.Extensions;
 namespace Assets.Tests.Simulation.Units {
 
     [TestFixture]
-    public class UnitTests : ZenjectUnitTestFixture {
+    public class GameUnitTests : ZenjectUnitTestFixture {
 
         #region static fields and properties
 
@@ -106,10 +106,10 @@ namespace Assets.Tests.Simulation.Units {
             var eventData = new PointerEventData(EventSystem.current);
 
             Container.Resolve<UnitSignals>().BeginDragSignal.Subscribe(delegate(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
-                    Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Begin Drag Signal was passed an incorrect Unit");
-                    Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Begin Drag Signal was passed an incorrect EventData");
-                    Assert.Pass();
-                });
+                Assert.AreEqual(unitToTest, dataTuple.Item1, "Unit Begin Drag Signal was passed an incorrect Unit");
+                Assert.AreEqual(eventData,  dataTuple.Item2, "Unit Begin Drag Signal was passed an incorrect EventData");
+                Assert.Pass();
+            });
 
             unitToTest.OnBeginDrag(eventData);
             Assert.Fail("Unit Begin Drag Signal was never fired");
@@ -145,129 +145,6 @@ namespace Assets.Tests.Simulation.Units {
 
             unitToTest.OnEndDrag(eventData);
             Assert.Fail("Unit End Drag Signal was never fired");
-        }
-
-        [Test(Description = "When PerformMovement is called, it shouldn't throw an exception " +
-            "when CurrentPath is null or empty list")]
-        public void PerformMovement_DoesNotThrowOnNullOrEmptyPath() {
-            var unit = BuildUnit(location: BuildCell(1), currentMovement: 2);
-            unit.CurrentPath = null;
-
-            Assert.DoesNotThrow(() => unit.PerformMovement(),
-                "PerformMovement falsely threw an exception when CurrentPath was null");
-
-            unit.CurrentPath = new List<IHexCell>();
-
-            Assert.DoesNotThrow(() => unit.PerformMovement(),
-                "PerformMovement falsely threw an exception when CurrentPath was empty");
-        }
-
-        [Test(Description = "When PerformMovement is called and Unit has enough movement to traverse " +
-            "from its current location through all tiles in its path and reach the end, it should do so. " +
-            "This should result in a single position change to the last location on the path and an empty " +
-            "CurrentPath field")]
-        [TestCaseSource("TotalMovementTestCases")]
-        public void PerformMovement_ReachesEndIfSufficientMovement(int startingMovement, List<int> pathCosts, int endingMovement) {
-            var startingPath = pathCosts.Select(cost => BuildCell(cost)).ToList();
-
-            var unit = Container.Resolve<GameUnit>();
-
-            unit.CurrentPath = new List<IHexCell>(startingPath);
-            unit.CurrentMovement = startingMovement;
-
-            unit.PerformMovement();
-
-            CollectionAssert.IsEmpty(unit.CurrentPath, "CurrentPath is not empty");
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, startingPath.Last()),
-                Times.Once, "Unit was not repositioned to the last element of its starting path");
-
-            foreach(var tile in startingPath) {
-                if(tile != startingPath.Last()) {
-                    MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, tile),
-                        Times.Never, "Unit was falsely repositioned to some intermediate tile on its starting path");
-                }
-            }
-
-            Assert.AreEqual(endingMovement, unit.CurrentMovement);
-        }
-
-        [Test(Description = "When PerformMovement is called but Unit doesn't have enough movement to " +
-            "go all the way through its CurrentPath, it should go as far as it can and stop. This should " +
-            "only result in one location change")]
-        [TestCaseSource("PartialMovementTestCases")]
-        public void PerformMovement_MakesPartialProgress(int startingMovement, List<int> pathCosts, int expectedStopIndex) {
-            var startingPath = pathCosts.Select(cost => BuildCell(cost)).ToList();
-
-            var expectedStopTile = startingPath[expectedStopIndex];
-
-            var expectedEndingPath = new List<IHexCell>(startingPath);
-            expectedEndingPath.RemoveRange(0, expectedStopIndex + 1);
-
-            var unit = Container.Resolve<GameUnit>();
-
-            unit.CurrentPath = new List<IHexCell>(startingPath);
-            unit.CurrentMovement = startingMovement;
-
-            unit.PerformMovement();
-
-            Assert.AreEqual(0, unit.CurrentMovement, "CurrentMovement is nonzero");
-
-            CollectionAssert.AreEqual(expectedEndingPath, unit.CurrentPath, "CurrentPath has an unexpected value");
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, expectedStopTile), Times.Once,
-                "Unit was not relocated to expectedStopTile");
-
-            foreach(var tile in startingPath) {
-                if(tile != expectedStopTile) {
-                    MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, tile), Times.Never,
-                        "Unit was falsely relocated to tiles that weren't expectedStopTile");
-                }
-            }
-        }
-
-        [Test(Description = "When PerformMovement is called and one of the tiles Unit expects to travel into or through " +
-            "cannot accept them, Unit should go as far as it can and then abort, clearing its current path")]
-        public void PerformMovement_AbortsWhenInterrupted() {
-            var startingTile     = BuildCell(1);
-            var interveningTile  = BuildCell(1);
-            var destinationTile  = BuildCell(1);
-
-            var path = new List<IHexCell>() { startingTile, interveningTile, destinationTile };
-
-            var unit = Container.Resolve<GameUnit>();
-            unit.CurrentPath = new List<IHexCell>(path);
-            unit.CurrentMovement = 3;
-
-            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(false);
-
-            unit.PerformMovement();
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, interveningTile), Times.Never,
-                "Unit falsely attempted to move onto an unoccupiable tile");
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, destinationTile), Times.Never,
-                "Unit falsely attempted to move through an unoccupiable tile");
-
-            Assert.That(unit.CurrentPath == null || unit.CurrentPath.Count == 0, "Unit failed to clear its path as expected");
-
-            MockPositionCanon.ResetCalls();
-
-            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, interveningTile)).Returns(true);
-            MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(unit, destinationTile)).Returns(false);
-
-            unit.CurrentPath = new List<IHexCell>(path);
-            unit.CurrentMovement = 3;
-
-            unit.PerformMovement();
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, interveningTile), Times.Once,
-                "Unit failed to move as far along its path as it could");
-
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(unit, destinationTile), Times.Never,
-                "Unit falsely attempted to move onto an unoccupiable tile");
-
-            Assert.That(unit.CurrentPath == null || unit.CurrentPath.Count == 0, "Unit failed to clear its path as expected");
         }
 
         #endregion

@@ -11,6 +11,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -41,6 +42,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IBuildingProductionValidityLogic> MockValidityLogic;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockPossessionCanon;
+        private Mock<IWorkerSlotFactory> MockWorkerSlotFactory;
 
         #endregion
 
@@ -50,11 +52,13 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockValidityLogic   = new Mock<IBuildingProductionValidityLogic>();
-            MockPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockValidityLogic     = new Mock<IBuildingProductionValidityLogic>();
+            MockPossessionCanon   = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockWorkerSlotFactory = new Mock<IWorkerSlotFactory>();
 
-            Container.Bind<IBuildingProductionValidityLogic>().FromInstance(MockValidityLogic  .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IBuildingProductionValidityLogic>         ().FromInstance(MockValidityLogic    .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockPossessionCanon  .Object);
+            Container.Bind<IWorkerSlotFactory>                       ().FromInstance(MockWorkerSlotFactory.Object);
 
             Container.Bind<BuildingFactory>().AsSingle();
         }

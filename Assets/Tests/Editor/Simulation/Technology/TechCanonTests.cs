@@ -23,6 +23,7 @@ namespace Assets.Tests.Simulation.Technology {
 
         private List<ITechDefinition>              AvailableTechs     = new List<ITechDefinition>();
         private List<ISpecialtyResourceDefinition> AvailableResources = new List<ISpecialtyResourceDefinition>();
+        private List<IAbilityDefinition>           AvailableAbilities = new List<IAbilityDefinition>();
 
         #endregion
 
@@ -34,12 +35,11 @@ namespace Assets.Tests.Simulation.Technology {
         public void CommonInstall() {
             AvailableTechs    .Clear();
             AvailableResources.Clear();
+            AvailableAbilities.Clear();
 
             Container.Bind<List<ITechDefinition>>                    ().WithId("Available Techs")              .FromInstance(AvailableTechs);
             Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>().WithId("Available Specialty Resources").FromInstance(AvailableResources);
-
-            Container.Bind<IEnumerable<IAbilityDefinition>>().WithId("Available Abilities")
-                .FromInstance(new List<IAbilityDefinition>());
+            Container.Bind<IEnumerable<IAbilityDefinition>>          ().WithId("Available Abilities")          .FromInstance(AvailableAbilities);
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
@@ -255,19 +255,81 @@ namespace Assets.Tests.Simulation.Technology {
         [Test(Description = "GetResearchedBuildings should return only building templates " +
             "enabled by discovered techs. Buildings with no technology should be unavailable")]
         public void GetResearchedBuildings_GetsBuildingsFromDiscoveredTechs() {
-            throw new NotImplementedException();
+            var discoveredBuildings = new List<IBuildingTemplate>() {
+                BuildBuildingTemplate(), BuildBuildingTemplate()
+            };
+
+            var undiscoveredBuildings = new List<IBuildingTemplate>() {
+                BuildBuildingTemplate(), BuildBuildingTemplate()
+            };
+
+            var unassociatedBuildings = new List<IBuildingTemplate>() {
+                BuildBuildingTemplate(), BuildBuildingTemplate()
+            };
+
+            var discoveredTech   = BuildTech("Discovered tech",   buildings: discoveredBuildings);
+            var undiscoveredTech = BuildTech("Undiscovered tech", buildings: undiscoveredBuildings);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(discoveredTech, civ);
+
+            CollectionAssert.AreEquivalent(discoveredBuildings, techCanon.GetResearchedBuildings(civ));
         }
 
         [Test(Description = "GetResearchedUnits should return only unit templates " +
             "enabled by discovered techs. Units with no technology should be unavailable")]
         public void GetResearchedUnits_GetsUnitsFromDiscoveredTechs() {
-            throw new NotImplementedException();
+            var discoveredUnits = new List<IUnitTemplate>() {
+                BuildUnitTemplate(), BuildUnitTemplate()
+            };
+
+            var undiscoveredUnits = new List<IUnitTemplate>() {
+                BuildUnitTemplate(), BuildUnitTemplate()
+            };
+
+            var unassociatedBuildings = new List<IUnitTemplate>() {
+                BuildUnitTemplate(), BuildUnitTemplate()
+            };
+
+            var discoveredTech   = BuildTech("Discovered tech",   units: discoveredUnits);
+            var undiscoveredTech = BuildTech("Undiscovered tech", units: undiscoveredUnits);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(discoveredTech, civ);
+
+            CollectionAssert.AreEquivalent(discoveredUnits, techCanon.GetResearchedUnits(civ));
         }
 
         [Test(Description = "GetResearchedAbilities should include all abilities except " +
             "those enabled by undiscovered techs. This includes abilities enabled by no tech")]
         public void GetResearchedAbilities_ExcludesAbilitiesFromUndiscoveredTechs() {
-            throw new NotImplementedException();
+            var discoveredAbilities = new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(), BuildAbilityDefinition()
+            };
+
+            var undiscoveredAbilities = new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(), BuildAbilityDefinition()
+            };
+
+            var unassociatedAbilities = new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(), BuildAbilityDefinition()
+            };
+
+            var availableAbilities = discoveredAbilities.Concat(unassociatedAbilities);
+
+            var discoveredTech   = BuildTech("Discovered tech",   abilities: discoveredAbilities);
+            var undiscoveredTech = BuildTech("Undiscovered tech", abilities: undiscoveredAbilities);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(discoveredTech, civ);
+
+            CollectionAssert.AreEquivalent(availableAbilities, techCanon.GetResearchedAbilities(civ));
         }
 
         [Test(Description = "GetVisibleResources should include all resources except " +
@@ -287,7 +349,7 @@ namespace Assets.Tests.Simulation.Technology {
 
             var visibleResources = discoveredResources.Concat(unassociatedResources);
 
-            var discoveredTech = BuildTech("Discovered tech", resources: discoveredResources);
+            var discoveredTech   = BuildTech("Discovered tech",   resources: discoveredResources);
             var undiscoveredTech = BuildTech("Undiscovered tech", resources: undiscoveredResources);
 
             var civ = BuildCivilization();
@@ -339,7 +401,11 @@ namespace Assets.Tests.Simulation.Technology {
         }
 
         private IAbilityDefinition BuildAbilityDefinition() {
-            return new Mock<IAbilityDefinition>().Object;
+            var newAbility = new Mock<IAbilityDefinition>().Object;
+
+            AvailableAbilities.Add(newAbility);
+
+            return newAbility;
         }
 
         private ISpecialtyResourceDefinition BuildResourceDefinition() {

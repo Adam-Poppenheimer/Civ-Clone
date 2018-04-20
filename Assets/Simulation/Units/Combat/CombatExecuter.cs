@@ -21,8 +21,8 @@ namespace Assets.Simulation.Units.Combat {
 
         private IUnitPositionCanon                            UnitPositionCanon;
         private IHexGrid                                      Grid;
-        private ILineOfSightLogic                             LineOfSightLogic;
-        private ICombatInfoLogic                          CombatInfoLogic;
+        private IUnitLineOfSightLogic                         UnitLineOfSightLogic;
+        private ICombatInfoLogic                              CombatInfoLogic;
         private IUnitConfig                                   UnitConfig;
         private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
@@ -34,18 +34,18 @@ namespace Assets.Simulation.Units.Combat {
 
         [Inject]
         public CombatExecuter(
-            IUnitPositionCanon unitPositionCanon, IHexGrid grid, ILineOfSightLogic lineOfSightLogic,
+            IUnitPositionCanon unitPositionCanon, IHexGrid grid, IUnitLineOfSightLogic unitLineOfSightLogic,
             ICombatInfoLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon
         ){
-            UnitPositionCanon   = unitPositionCanon;
-            Grid                = grid;
-            LineOfSightLogic    = lineOfSightLogic;
-            CombatInfoLogic = combatModifierLogic;
-            UnitConfig          = unitConfig;
-            UnitSignals         = unitSignals;
-            UnitPossessionCanon = unitPossessionCanon;
-            WarCanon            = warCanon;
+            UnitPositionCanon    = unitPositionCanon;
+            Grid                 = grid;
+            UnitLineOfSightLogic = unitLineOfSightLogic;
+            CombatInfoLogic      = combatModifierLogic;
+            UnitConfig           = unitConfig;
+            UnitSignals          = unitSignals;
+            UnitPossessionCanon  = unitPossessionCanon;
+            WarCanon             = warCanon;
         }
 
         #endregion
@@ -96,7 +96,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!LineOfSightLogic.CanUnitSeeCell(attacker, defenderLocation)) {
+            if(!UnitLineOfSightLogic.GetCellsVisibleToUnit(attacker).Contains(defenderLocation)) {
                 return false;
             }
 
@@ -141,7 +141,9 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(!attacker.Template.IgnoresLineOfSight && !LineOfSightLogic.CanUnitSeeCell(attacker, defenderLocation)) {
+            if( !attacker.Template.IgnoresLineOfSight &&
+                !UnitLineOfSightLogic.GetCellsVisibleToUnit(attacker).Contains(defenderLocation)
+            ){
                 return false;
             }
 

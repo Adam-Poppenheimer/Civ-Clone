@@ -29,7 +29,8 @@ namespace Assets.Simulation.Civilizations {
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private ICellVisibilityCanon                          VisibilityCanon;
-        private ILineOfSightLogic                             LineOfSightLogic;
+        private ICityLineOfSightLogic                         CityLineOfSightLogic;
+        private IUnitLineOfSightLogic                         UnitLineOfSightLogic;
         private IUnitFactory                                  UnitFactory;
         private ICityFactory                                  CityFactory;
         private MonoBehaviour                                 CoroutineInvoker;
@@ -43,8 +44,9 @@ namespace Assets.Simulation.Civilizations {
             UnitSignals unitSignals, CitySignals citySignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellVisibilityCanon visibilityCanon, ILineOfSightLogic lineOfSightLogic,
-            IUnitFactory unitFactory,  ICityFactory cityFactory, HexCellSignals cellSignals,
+            ICellVisibilityCanon visibilityCanon, ICityLineOfSightLogic cityLineOfSightLogic,
+            IUnitLineOfSightLogic unitLineOfSightLogic, IUnitFactory unitFactory, 
+            ICityFactory cityFactory, HexCellSignals cellSignals,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ){
             unitSignals.LeftLocationSignal      .Subscribe(OnUnitLeftLocation);
@@ -53,13 +55,14 @@ namespace Assets.Simulation.Civilizations {
             citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
             citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
 
-            UnitPossessionCanon = unitPossessionCanon;
-            CityPossessionCanon = cityPossessionCanon;
-            VisibilityCanon     = visibilityCanon;
-            LineOfSightLogic    = lineOfSightLogic;
-            UnitFactory         = unitFactory;
-            CityFactory         = cityFactory;
-            CoroutineInvoker    = coroutineInvoker;
+            UnitPossessionCanon  = unitPossessionCanon;
+            CityPossessionCanon  = cityPossessionCanon;
+            VisibilityCanon      = visibilityCanon;
+            CityLineOfSightLogic = cityLineOfSightLogic;
+            UnitLineOfSightLogic = unitLineOfSightLogic;
+            UnitFactory          = unitFactory;
+            CityFactory          = cityFactory;
+            CoroutineInvoker     = coroutineInvoker;
 
             cellSignals.FoundationElevationChangedSignal.Subscribe(cell => ResetVisibility());
             cellSignals.WaterLevelChangedSignal         .Subscribe(cell => ResetVisibility());
@@ -79,7 +82,7 @@ namespace Assets.Simulation.Civilizations {
             foreach(var unit in UnitFactory.AllUnits) {
                 var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
-                foreach(var visibleCell in LineOfSightLogic.GetCellsVisibleToUnit(unit)) {
+                foreach(var visibleCell in UnitLineOfSightLogic.GetCellsVisibleToUnit(unit)) {
                     VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, unitOwner);
                 }
             }
@@ -87,7 +90,7 @@ namespace Assets.Simulation.Civilizations {
             foreach(var city in CityFactory.AllCities) {
                 var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
 
-                foreach(var visibleCell in LineOfSightLogic.GetCellsVisibleToCity(city)) {
+                foreach(var visibleCell in CityLineOfSightLogic.GetCellsVisibleToCity(city)) {
                     VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, cityOwner);
                 }
             }

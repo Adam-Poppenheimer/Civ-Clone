@@ -109,6 +109,8 @@ namespace Assets.Tests.Simulation.Diplomacy {
                 bilateralMocks   .Select(mock => mock.Object).ToList()
             );
 
+            ongoingDeal.Start();
+
             int terminationRequestsMade = 0;
             ongoingDeal.TerminationRequested += delegate(object sender, OngoingDealEventArgs e) {
                 Assert.AreEqual(ongoingDeal, e.Deal, "TerminationRequested fired on an unexpected deal");

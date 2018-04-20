@@ -77,9 +77,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         public class UnitConfigTestData {
 
-            public List<float> TerrainDefensiveness = new List<float>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            public List<float> FeatureDefensiveness = new List<float>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
-            public List<float> ShapeDefensiveness   = new List<float>() { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+            public float TerrainDefensiveness = 0;
+            public float FeatureDefensiveness = 0;
+            public float ShapeDefensiveness   = 0;
 
             public float RiverCrossingAttackingModifier;
 
@@ -103,9 +103,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                          Feature = TerrainFeature.Jungle
                     },
                     UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = new List<float>() { 1f },
-                        ShapeDefensiveness   = new List<float>() { 0f, 2f },
-                        FeatureDefensiveness = new List<float>() { 0f, 0f, 4f }
+                        TerrainDefensiveness = 1f,
+                        ShapeDefensiveness   = 2f,
+                        FeatureDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee, DefenderCombatModifier = 7f
@@ -118,9 +118,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                          Improvement = new ImprovementTestData() { DefensiveBonus = 2f }
                     },
                     UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = new List<float>() { 1f },
-                        ShapeDefensiveness   = new List<float>() { 0f, 2f },
-                        FeatureDefensiveness = new List<float>() { 0f, 0f, 4f }
+                        TerrainDefensiveness = 1f,
+                        ShapeDefensiveness   = 2f,
+                        FeatureDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
                         DefenderIgnoresDefensiveTerrainBonuses = true
@@ -210,9 +210,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Feature = TerrainFeature.Jungle
                     },
                     UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = new List<float>() { 1f },
-                        ShapeDefensiveness   = new List<float>() { 0f, 2f },
-                        FeatureDefensiveness = new List<float>() { 0f, 0f, 4f }
+                        TerrainDefensiveness = 1f,
+                        ShapeDefensiveness   = 2f,
+                        FeatureDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
                     CombatType = CombatType.Ranged, DefenderCombatModifier = 7f
@@ -225,9 +225,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Improvement = new ImprovementTestData() { DefensiveBonus = 2f }
                     },
                     UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = new List<float>() { 1f },
-                        ShapeDefensiveness   = new List<float>() { 0f, 2f },
-                        FeatureDefensiveness = new List<float>() { 0f, 0f, 4f }
+                        TerrainDefensiveness = 1f,
+                        ShapeDefensiveness   = 2f,
+                        FeatureDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
                         DefenderIgnoresDefensiveTerrainBonuses = true
@@ -333,10 +333,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         private void SetUpConfigs(CombatInfoLogicTestData testData) {
-            throw new NotImplementedException();
-            /*MockUnitConfig.Setup(config => config.TerrainDefensiveness).Returns(testData.UnitConfig.TerrainDefensiveness.AsReadOnly());
-            MockUnitConfig.Setup(config => config.FeatureDefensiveness).Returns(testData.UnitConfig.FeatureDefensiveness.AsReadOnly());
-            MockUnitConfig.Setup(config => config.ShapeDefensiveness)  .Returns(testData.UnitConfig.ShapeDefensiveness  .AsReadOnly());*/
+            MockUnitConfig.Setup(config => config.GetTerrainDefensiveness(It.IsAny<TerrainType>()))
+                          .Returns(testData.UnitConfig.TerrainDefensiveness);
+
+            MockUnitConfig.Setup(config => config.GetShapeDefensiveness(It.IsAny<TerrainShape>()))
+                          .Returns(testData.UnitConfig.ShapeDefensiveness);
+
+            MockUnitConfig.Setup(config => config.GetFeatureDefensiveness(It.IsAny<TerrainFeature>()))
+                          .Returns(testData.UnitConfig.FeatureDefensiveness);
 
             MockUnitConfig.Setup(config => config.RiverCrossingAttackModifier).Returns(testData.UnitConfig.RiverCrossingAttackingModifier);
 

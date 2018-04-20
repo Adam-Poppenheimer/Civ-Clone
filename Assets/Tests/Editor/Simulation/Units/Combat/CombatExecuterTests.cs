@@ -779,7 +779,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
         private Mock<IHexGrid>                                      MockGrid;
-        private Mock<ILineOfSightLogic>                             MockLineOfSightLogic;
+        private Mock<IUnitLineOfSightLogic>                         MockUnitLineOfSightLogic;
         private Mock<ICombatInfoLogic>                              MockCombatInfoLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private IUnitConfig                                         UnitConfig;
@@ -793,19 +793,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
-            MockGrid                = new Mock<IHexGrid>();
-            MockLineOfSightLogic    = new Mock<ILineOfSightLogic>();
-            MockCombatInfoLogic = new Mock<ICombatInfoLogic>();
-            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockWarCanon            = new Mock<IWarCanon>();
+            MockUnitPositionCanon    = new Mock<IUnitPositionCanon>();
+            MockGrid                 = new Mock<IHexGrid>();
+            MockUnitLineOfSightLogic = new Mock<IUnitLineOfSightLogic>();
+            MockCombatInfoLogic      = new Mock<ICombatInfoLogic>();
+            MockUnitPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockWarCanon             = new Mock<IWarCanon>();
 
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<ILineOfSightLogic>                            ().FromInstance(MockLineOfSightLogic   .Object);
-            Container.Bind<ICombatInfoLogic>                         ().FromInstance(MockCombatInfoLogic.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon           .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon   .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                .Object);
+            Container.Bind<IUnitLineOfSightLogic>                        ().FromInstance(MockUnitLineOfSightLogic.Object);
+            Container.Bind<ICombatInfoLogic>                             ().FromInstance(MockCombatInfoLogic     .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon .Object);
+            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon            .Object);
 
             Container.Bind<UnitSignals>().AsSingle();
 
@@ -834,7 +834,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             SetCombatConditions(
                 testData.Attacker.DistanceFromDefender, testData.Attacker.CanMoveToDefender,
-                testData.Attacker.CanSeeDefender
+                testData.Attacker.CanSeeDefender, defenderLocation
             );
 
             if(testData.UnitsHaveSameOwner) {
@@ -906,20 +906,25 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return results;
         }
 
-
         #endregion
 
         #region utilities
 
-        private void SetCombatConditions(int distanceBetween, bool attackerCanMoveTo, bool defenderCanBeSeen) {
+        private void SetCombatConditions(
+            int distanceBetween, bool attackerCanMoveTo, bool defenderCanBeSeen, IHexCell defenderLocation
+        ){
             MockGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>()))
                 .Returns(distanceBetween);
 
             MockUnitPositionCanon.Setup(canon => canon.CanPlaceUnitAtLocation(It.IsAny<IUnit>(), It.IsAny<IHexCell>(), true))
                 .Returns(attackerCanMoveTo);
 
-            MockLineOfSightLogic.Setup(logic => logic.CanUnitSeeCell(It.IsAny<IUnit>(), It.IsAny<IHexCell>()))
-                .Returns(defenderCanBeSeen);
+            MockUnitLineOfSightLogic
+                .Setup(
+                    logic => logic.GetCellsVisibleToUnit(It.IsAny<IUnit>())
+                ).Returns(
+                    defenderCanBeSeen ? new List<IHexCell>() { defenderLocation } : new List<IHexCell>()
+                );
         }
 
         private IUnit BuildUnit(IHexCell location, AttackerTestData attackerData) {
