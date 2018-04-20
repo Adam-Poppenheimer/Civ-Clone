@@ -21,8 +21,9 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitLineOfSightLogic() {
-
+        public UnitLineOfSightLogic(IHexGrid grid, IUnitPositionCanon unitPositionCanon) {
+            Grid              = grid;
+            UnitPositionCanon = unitPositionCanon;
         }
 
         #endregion

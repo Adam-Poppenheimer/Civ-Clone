@@ -90,12 +90,6 @@ namespace Assets.Simulation.Units {
                 }
             }
 
-            var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
-
-            if(cityAtLocation != null && !isMeleeAttacking && unitOwner != CityPossessionCanon.GetOwnerOfPossession(cityAtLocation)) {
-                return false;
-            }
-
             return CanPlaceUnitTemplateAtLocation(unit.Template, location, isMeleeAttacking);
         }
 

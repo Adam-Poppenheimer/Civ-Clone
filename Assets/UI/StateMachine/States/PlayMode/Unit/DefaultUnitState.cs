@@ -163,9 +163,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             IUnit unitOnCell = UnitPositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if( unitOnCell != null && unitOnCell != SelectedUnit &&
-                CombatExecuter.CanPerformMeleeAttack(SelectedUnit, unitOnCell)
-            ) {
+            if(unitOnCell == SelectedUnit) {
+                return;
+            }
+
+            if(unitOnCell != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, unitOnCell)) {
                 SetUnitToAttack(unitOnCell);
                 return;
             }
@@ -218,7 +220,16 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             if(CombatExecuter.CanPerformMeleeAttack(SelectedUnit, city.CombatFacade)) {
                 SetCityToAttack(city);
-            }else {
+                return;
+            }
+
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            if(UnitPositionCanon.CanPlaceUnitAtLocation(SelectedUnit, cityLocation, false)) {
+                var selectedUnitLocation = UnitPositionCanon.GetOwnerOfPossession(SelectedUnit);
+                SetProspectiveTravelGoal(selectedUnitLocation, cityLocation);
+
+            } else {
                 Clear();
             }
         }

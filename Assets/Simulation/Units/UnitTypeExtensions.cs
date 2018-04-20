@@ -14,7 +14,8 @@ namespace Assets.Simulation.Units {
         }
 
         public static bool IsLandMilitary(this UnitType type) {
-            return type != UnitType.Civilian && type != UnitType.NavalMelee && type != UnitType.NavalRanged;
+            return type != UnitType.Civilian    && type != UnitType.NavalMelee
+                && type != UnitType.NavalRanged && type != UnitType.City;
         }
 
         public static bool IsWaterMilitary(this UnitType type) {
