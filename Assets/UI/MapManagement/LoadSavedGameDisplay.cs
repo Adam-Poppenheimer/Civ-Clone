@@ -30,16 +30,21 @@ namespace Assets.UI.MapManagement {
 
 
         private IMapComposer       MapComposer;
-        private IFileSystemLiaison FileSystemLiaison;        
+        private IFileSystemLiaison FileSystemLiaison;
+        private Animator           UIAnimator;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison){
+        public void InjectDependencies(
+            IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison,
+            [Inject(Id = "UI Animator")] Animator uiAnimator
+        ){
             MapComposer       = mapComposer;
             FileSystemLiaison = fileSystemLiaison;
+            UIAnimator        = uiAnimator;
         }
 
         #region Unity messages
@@ -77,7 +82,10 @@ namespace Assets.UI.MapManagement {
 
         public void LoadSelectedFileIntoRuntime() {
             if(CurrentlySelectedFile != null) {
-                MapComposer.DecomposeDataIntoRuntime(CurrentlySelectedFile.MapData);
+                MapComposer.DecomposeDataIntoRuntime(
+                    CurrentlySelectedFile.MapData,
+                    () => UIAnimator.SetTrigger("Play Mode Requested")
+                );
             }
         }
 

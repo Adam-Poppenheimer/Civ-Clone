@@ -59,6 +59,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var city in new List<ICity>(CityFactory.AllCities)) {
+                CityLocationCanon.ChangeOwnerOfPossession(city, null);
                 GameObject.Destroy(city.gameObject);
             }
         }

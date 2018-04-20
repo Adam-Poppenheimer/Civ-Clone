@@ -10,7 +10,7 @@ namespace Assets.Simulation.MapManagement {
 
         SerializableMapData ComposeRuntimeIntoData();
 
-        void DecomposeDataIntoRuntime(SerializableMapData mapData);
+        void DecomposeDataIntoRuntime(SerializableMapData mapData, Action performAfterDecomposition = null);
 
         #endregion
 

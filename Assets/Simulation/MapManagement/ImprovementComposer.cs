@@ -40,6 +40,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var improvement in new List<IImprovement>(ImprovementFactory.AllImprovements)) {
+                ImprovementLocationCanon.ChangeOwnerOfPossession(improvement, null);
                 GameObject.Destroy(improvement.gameObject);
             }
         }

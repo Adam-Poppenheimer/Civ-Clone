@@ -49,6 +49,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var unit in new List<IUnit>(UnitFactory.AllUnits)) {
+                UnitPositionCanon.ChangeOwnerOfPossession(unit, null);
                 GameObject.Destroy(unit.gameObject);
             }
         }

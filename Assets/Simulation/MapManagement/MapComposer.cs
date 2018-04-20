@@ -63,11 +63,11 @@ namespace Assets.Simulation.MapManagement {
             return mapData;
         }
 
-        public void DecomposeDataIntoRuntime(SerializableMapData mapData) {
-            CoroutineInvoker.StartCoroutine(DecomposeDataIntoRuntimeCoroutine(mapData));
+        public void DecomposeDataIntoRuntime(SerializableMapData mapData, Action performAfterDecomposition = null) {
+            CoroutineInvoker.StartCoroutine(DecomposeDataIntoRuntimeCoroutine(mapData, performAfterDecomposition));
         }
 
-        private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData) {
+        private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData, Action performAfterDecomposition) {
             yield return ClearRuntimeCoroutine();
 
             HexCellComposer     .DecomposeCells        (mapData);
@@ -76,6 +76,10 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer        .DecomposeUnits        (mapData);
             ResourceComposer    .DecomposeResources    (mapData);
             ImprovementComposer .DecomposeImprovements (mapData);
+
+            if(performAfterDecomposition != null) {
+                performAfterDecomposition();
+            }
         }
 
         public void ClearRuntime() {
