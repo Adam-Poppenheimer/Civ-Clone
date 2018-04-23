@@ -12,15 +12,30 @@ using Assets.Simulation.MapManagement;
 
 namespace Assets.UI.MapManagement {
 
-    public class LoadSavedGameDisplay : MonoBehaviour {
+    public class LoadGameDisplay : MonoBehaviour {
 
         #region instance fields and properties
 
         [SerializeField] private RectTransform     FileRecordContainer;
         [SerializeField] private Text              FileNameField;
         [SerializeField] private ToggleGroup       SelectionGroup;
-        [SerializeField] private MapFileType       LoadMode;
         [SerializeField] private GameMapFileRecord FileRecordPrefab;
+        [SerializeField] private Text              TitleText;
+        [SerializeField] private Text              LoadButtonText;
+
+        public MapFileType LoadMode { get; set; }
+
+        public string TitleLabel {
+            get { return TitleText.text; }
+            set { TitleText.text = value; }
+        }
+
+        public string AcceptButtonLabel {
+            get { return LoadButtonText.text; }
+            set { LoadButtonText.text = value; }
+        }
+
+        public Action LoadAction { get; set; }
 
         private List<GameMapFileRecord> InstantiatedFileRecords = 
             new List<GameMapFileRecord>();
@@ -31,7 +46,6 @@ namespace Assets.UI.MapManagement {
 
         private IMapComposer       MapComposer;
         private IFileSystemLiaison FileSystemLiaison;
-        private Animator           UIAnimator;
 
         #endregion
 
@@ -39,12 +53,10 @@ namespace Assets.UI.MapManagement {
 
         [Inject]
         public void InjectDependencies(
-            IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison,
-            [Inject(Id = "UI Animator")] Animator uiAnimator
+            IMapComposer mapComposer, IFileSystemLiaison fileSystemLiaison
         ){
             MapComposer       = mapComposer;
             FileSystemLiaison = fileSystemLiaison;
-            UIAnimator        = uiAnimator;
         }
 
         #region Unity messages
@@ -83,8 +95,7 @@ namespace Assets.UI.MapManagement {
         public void LoadSelectedFileIntoRuntime() {
             if(CurrentlySelectedFile != null) {
                 MapComposer.DecomposeDataIntoRuntime(
-                    CurrentlySelectedFile.MapData,
-                    () => UIAnimator.SetTrigger("Play Mode Requested")
+                    CurrentlySelectedFile.MapData, LoadAction
                 );
             }
         }

@@ -14,7 +14,6 @@ namespace Assets.UI.StateMachine {
         #region instance fields and properties
 
         [SerializeField] private GameObject    TitleScreenStateSelectionDisplay;
-        [SerializeField] private GameObject    NewGameDisplay;
         [SerializeField] private RectTransform TitleScreenContainer;
 
         #endregion
@@ -27,10 +26,6 @@ namespace Assets.UI.StateMachine {
             Container.Bind<GameObject>()
                 .WithId("Title Screen State Selection Display")
                 .FromInstance(TitleScreenStateSelectionDisplay);
-
-            Container.Bind<GameObject>()
-                .WithId("New Game Display")
-                .FromInstance(NewGameDisplay);
 
             Container.Bind<RectTransform>()
                 .WithId("Title Screen Container")

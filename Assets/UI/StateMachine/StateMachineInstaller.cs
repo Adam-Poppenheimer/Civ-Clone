@@ -16,9 +16,9 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private Animator   StateMachineAnimator;
-        [SerializeField] private GameObject LoadSavedGameDisplay;
-        [SerializeField] private GameObject OptionsDisplay;
+        [SerializeField] private Animator        StateMachineAnimator;
+        [SerializeField] private LoadGameDisplay LoadGameDisplay;
+        [SerializeField] private GameObject      OptionsDisplay;
 
         [SerializeField] private GameCamera GameCamera;
         [SerializeField] private CellHoverDisplay CellHoverDisplay;
@@ -32,9 +32,7 @@ namespace Assets.UI.StateMachine {
         public override void InstallBindings() {
             Container.Bind<Animator>().WithId("UI Animator").FromInstance(StateMachineAnimator);
 
-            Container.Bind<GameObject>()
-                .WithId("Load Saved Game Display")
-                .FromInstance(LoadSavedGameDisplay);
+            Container.Bind<LoadGameDisplay>().FromInstance(LoadGameDisplay);
 
             Container.Bind<GameObject>()
                 .WithId("Options Display")

@@ -7,15 +7,22 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.UI.MapManagement;
+
 namespace Assets.UI.StateMachine.States.TitleScreen {
 
     public class StartNewGameState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain Brain;
+        private string TitleLabel        = "New Game";
+        private string AcceptButtonLabel = "Start";
+        
 
-        private GameObject NewGameDisplay;
+
+
+        private UIStateMachineBrain Brain;
+        private LoadGameDisplay     LoadGameDisplay;
 
         #endregion
 
@@ -24,23 +31,28 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain,
-            [Inject(Id = "New Game Display")] GameObject newGameDisplay
+            LoadGameDisplay loadGameDisplay
         ){
-            Brain          = brain;
-            NewGameDisplay = newGameDisplay;
+            Brain           = brain;
+            LoadGameDisplay = loadGameDisplay;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            NewGameDisplay.SetActive(true);
+            LoadGameDisplay.LoadMode          = MapFileType.Map;
+            LoadGameDisplay.TitleLabel        = TitleLabel;
+            LoadGameDisplay.AcceptButtonLabel = AcceptButtonLabel;
+            LoadGameDisplay.LoadAction = () => animator.SetTrigger("Play Mode Requested");
+
+            LoadGameDisplay.gameObject.SetActive(true);
 
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            NewGameDisplay.SetActive(false);
+            LoadGameDisplay.gameObject.SetActive(false);
         }
 
         #endregion

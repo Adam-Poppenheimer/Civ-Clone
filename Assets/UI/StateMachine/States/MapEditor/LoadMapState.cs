@@ -9,14 +9,15 @@ using Zenject;
 
 using Assets.UI.MapManagement;
 
-namespace Assets.UI.StateMachine.States {
+namespace Assets.UI.StateMachine.States.MapEditor {
 
-    public class LoadSavedGameState : StateMachineBehaviour {
+    public class LoadMapState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private string TitleLabel        = "Load Game";
+        private string TitleLabel        = "Load Map";
         private string AcceptButtonLabel = "Load";
+
 
 
 
@@ -38,10 +39,10 @@ namespace Assets.UI.StateMachine.States {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            LoadGameDisplay.LoadMode          = MapFileType.SavedGame;
+            LoadGameDisplay.LoadMode          = MapFileType.Map;
             LoadGameDisplay.TitleLabel        = TitleLabel;
             LoadGameDisplay.AcceptButtonLabel = AcceptButtonLabel;
-            LoadGameDisplay.LoadAction = () => animator.SetTrigger("Play Mode Requested");
+            LoadGameDisplay.LoadAction        = () => animator.SetTrigger("Return Requested");
 
             LoadGameDisplay.gameObject.SetActive(true);
 
