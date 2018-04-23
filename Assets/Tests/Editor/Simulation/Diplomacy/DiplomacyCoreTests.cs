@@ -17,7 +17,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         #region instance fields and properties
 
-
+        private Mock<IDiplomacyConfig> MockConfig;
 
         #endregion
 
@@ -27,6 +27,10 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         [SetUp]
         public void CommonInstall() {
+            MockConfig = new Mock<IDiplomacyConfig>();
+
+            Container.Bind<IDiplomacyConfig>().FromInstance(MockConfig.Object);
+
             Container.Bind<DiplomacyCore>().AsSingle();
         }
 
@@ -135,7 +139,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
 
             var proposal = BuildProposal(sender, receiver, true, ongoingDealReturned: ongoingDeal);
 
@@ -214,7 +218,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
@@ -228,13 +232,30 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
             diplomacyCore.SubscribeOngoingDeal(ongoingDeal);
 
             CollectionAssert.Contains(diplomacyCore.GetOngoingDealsReceivedByCiv(receiver), ongoingDeal);
+        }
+
+        [Test(Description = "When SubscribeOngoingDeal is called on an IOngoingDeal, that deal's " +
+            "TurnsLeft field is set to the value in IDiplomacyConfig.TradeDuration")]
+        public void SubscribeOngoingDeal_TurnsLeftSetProperly() {
+            var sender   = BuildCivilization();
+            var receiver = BuildCivilization();
+
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
+
+            MockConfig.Setup(config => config.TradeDuration).Returns(10);
+
+            var diplomacyCore = Container.Resolve<DiplomacyCore>();
+
+            diplomacyCore.SubscribeOngoingDeal(ongoingDeal);
+
+            Assert.AreEqual(10, ongoingDeal.TurnsLeft);
         }
 
         [Test(Description = "")]
@@ -254,7 +275,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
@@ -269,7 +290,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
@@ -284,13 +305,16 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var dealOne = BuildOngoingDeal(sender, receiver, 5);
-            var dealTwo = BuildOngoingDeal(sender, receiver, 3);
+            var dealOne = BuildOngoingDeal(sender, receiver);
+            var dealTwo = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
             diplomacyCore.SubscribeOngoingDeal(dealOne);
             diplomacyCore.SubscribeOngoingDeal(dealTwo);
+
+            dealOne.TurnsLeft = 5;
+            dealTwo.TurnsLeft = 3;
 
             diplomacyCore.UpdateOngoingDeals();
 
@@ -303,13 +327,16 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var sender   = BuildCivilization();
             var receiver = BuildCivilization();
 
-            var dealOne = BuildOngoingDeal(sender, receiver, 2);
-            var dealTwo = BuildOngoingDeal(sender, receiver, 1);
+            var dealOne = BuildOngoingDeal(sender, receiver);
+            var dealTwo = BuildOngoingDeal(sender, receiver);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
             diplomacyCore.SubscribeOngoingDeal(dealOne);
             diplomacyCore.SubscribeOngoingDeal(dealTwo);
+
+            dealOne.TurnsLeft = 2;
+            dealTwo.TurnsLeft = 1;
 
             diplomacyCore.UpdateOngoingDeals();
 
@@ -330,7 +357,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var receiver = BuildCivilization();
 
             Mock<IOngoingDeal> dealMock;
-            var ongoingDeal = BuildOngoingDeal(sender, receiver, 0, out dealMock);
+            var ongoingDeal = BuildOngoingDeal(sender, receiver, out dealMock);
 
             var diplomacyCore = Container.Resolve<DiplomacyCore>();
 
@@ -371,13 +398,13 @@ namespace Assets.Tests.Simulation.Diplomacy {
             return mockProposal.Object;
         }
 
-        private IOngoingDeal BuildOngoingDeal(ICivilization sender, ICivilization receiver, int turnsLeft) {
+        private IOngoingDeal BuildOngoingDeal(ICivilization sender, ICivilization receiver) {
             Mock<IOngoingDeal> mock;
-            return BuildOngoingDeal(sender, receiver, turnsLeft, out mock);
+            return BuildOngoingDeal(sender, receiver, out mock);
         }
 
         private IOngoingDeal BuildOngoingDeal(
-            ICivilization sender, ICivilization receiver, int turnsLeft, out Mock<IOngoingDeal> mock
+            ICivilization sender, ICivilization receiver, out Mock<IOngoingDeal> mock
         ){
             mock = new Mock<IOngoingDeal>();
 
@@ -386,8 +413,6 @@ namespace Assets.Tests.Simulation.Diplomacy {
             mock.Setup(deal => deal.Receiver).Returns(receiver);
 
             var newDeal = mock.Object;
-
-            newDeal.TurnsLeft = turnsLeft;
 
             return newDeal;
         }

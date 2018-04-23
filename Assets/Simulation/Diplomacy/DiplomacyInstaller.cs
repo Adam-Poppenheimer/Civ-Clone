@@ -13,13 +13,14 @@ namespace Assets.Simulation.Diplomacy {
 
         #region instance fields and properties
 
-
+        [SerializeField] private DiplomacyConfig Config;
 
         #endregion
 
         #region instance methods
 
         public override void InstallBindings() {
+            Container.Bind<IDiplomacyConfig>        ().To<DiplomacyConfig>        ().FromInstance(Config);
             Container.Bind<IDiplomacyCore>          ().To<DiplomacyCore>          ().AsSingle();
             Container.Bind<IResourceExchangeBuilder>().To<ResourceExchangeBuilder>().AsSingle();
             Container.Bind<IExchangeBuilder>        ().To<ExchangeBuilder>        ().AsSingle();

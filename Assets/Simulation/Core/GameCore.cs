@@ -15,6 +15,7 @@ using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Technology;
+using Assets.Simulation.Diplomacy;
 
 using Assets.UI.Core;
 
@@ -44,6 +45,7 @@ namespace Assets.Simulation.Core {
         private IHexGrid             Grid;
         private IResourceNodeFactory ResourceNodeFactory;
         private ITechCanon           TechCanon;
+        private IDiplomacyCore       DiplomacyCore;
 
         #endregion
 
@@ -55,8 +57,8 @@ namespace Assets.Simulation.Core {
             IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
             IRoundExecuter turnExecuter, CoreSignals coreSignals, IHexGrid grid,
             IResourceNodeFactory resourceNodeFactory, ITechCanon techCanon,
+            IDiplomacyCore diplomacyCore,
             PlayerSignals playerSignals, CivilizationSignals civSignals
-            
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
@@ -67,6 +69,7 @@ namespace Assets.Simulation.Core {
             Grid                = grid;
             ResourceNodeFactory = resourceNodeFactory;
             TechCanon           = techCanon;
+            DiplomacyCore       = diplomacyCore;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
@@ -130,6 +133,8 @@ namespace Assets.Simulation.Core {
             }
 
             AbilityExecuter.PerformOngoingAbilities();
+
+            DiplomacyCore.UpdateOngoingDeals();
 
             CoreSignals.RoundEndedSignal.OnNext(CurrentRound);
         }

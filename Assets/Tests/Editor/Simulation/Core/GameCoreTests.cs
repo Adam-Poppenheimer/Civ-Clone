@@ -17,6 +17,7 @@ using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Technology;
+using Assets.Simulation.Diplomacy;
 
 using Assets.UI.Core;
 
@@ -35,6 +36,7 @@ namespace Assets.Tests.Simulation.Core {
         private Mock<IHexGrid>             MockGrid;
         private Mock<IResourceNodeFactory> MockResourceNodeFactory;
         private Mock<ITechCanon>           MockTechCanon;
+        private Mock<IDiplomacyCore>       MockDiplomacyCore;
 
         private List<IResourceNode> AllResourceNodes = new List<IResourceNode>();
 
@@ -56,6 +58,7 @@ namespace Assets.Tests.Simulation.Core {
             MockGrid                = new Mock<IHexGrid>();
             MockResourceNodeFactory = new Mock<IResourceNodeFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
+            MockDiplomacyCore       = new Mock<IDiplomacyCore>();
 
             MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>().AsReadOnly());
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
@@ -70,6 +73,7 @@ namespace Assets.Tests.Simulation.Core {
             Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
             Container.Bind<IResourceNodeFactory>().FromInstance(MockResourceNodeFactory.Object);
             Container.Bind<ITechCanon>          ().FromInstance(MockTechCanon          .Object);
+            Container.Bind<IDiplomacyCore>      ().FromInstance(MockDiplomacyCore      .Object);
 
             Container.Bind<CoreSignals>().AsSingle();
 
@@ -343,6 +347,8 @@ namespace Assets.Tests.Simulation.Core {
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnUnit        (unit));
 
             MockAbilityExecuter.InSequence(executionSequence).Setup(executer => executer.PerformOngoingAbilities());
+
+            MockDiplomacyCore.InSequence(executionSequence).Setup(core => core.UpdateOngoingDeals());
 
             var gameCore = Container.Resolve<GameCore>();
             gameCore.EndRound();

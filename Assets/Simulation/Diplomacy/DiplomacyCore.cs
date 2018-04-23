@@ -2,6 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using Zenject;
+
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Diplomacy {
@@ -14,12 +17,17 @@ namespace Assets.Simulation.Diplomacy {
 
         private List<IOngoingDeal> ActiveDeals = new List<IOngoingDeal>();
 
+
+
+        private IDiplomacyConfig Config;
+
         #endregion
 
         #region constructors
 
-        public DiplomacyCore() {
-
+        [Inject]
+        public DiplomacyCore(IDiplomacyConfig config) {
+            Config = config;
         }
 
         #endregion
@@ -80,6 +88,8 @@ namespace Assets.Simulation.Diplomacy {
 
         public void SubscribeOngoingDeal(IOngoingDeal deal) {
             deal.Start();
+            
+            deal.TurnsLeft = Config.TradeDuration;
 
             deal.TerminationRequested += HandleTerminationRequest;
 
