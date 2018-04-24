@@ -14,9 +14,9 @@ namespace Assets.Simulation.Diplomacy {
         ICivilization Sender   { get; }
         ICivilization Receiver { get; }
 
-        IEnumerable<IOngoingDiplomaticExchange> ExchangesFromSender { get; }
+        IEnumerable<IOngoingDiplomaticExchange> ExchangesFromSender   { get; }
         IEnumerable<IOngoingDiplomaticExchange> ExchangesFromReceiver { get; }
-        IEnumerable<IOngoingDiplomaticExchange> BilateralExchanges  { get; }
+        IEnumerable<IOngoingDiplomaticExchange> BilateralExchanges    { get; }
 
         int TurnsLeft { get; set; }
 

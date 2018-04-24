@@ -23,6 +23,7 @@ namespace Assets.Simulation.MapManagement {
         private UnitComposer         UnitComposer;
         private ImprovementComposer  ImprovementComposer;
         private ResourceComposer     ResourceComposer;
+        private DiplomacyComposer    DiplomacyComposer;
         private VisibilityResponder  VisibilityResponder;
         private ICellVisibilityCanon CellVisibilityCanon;
         private MonoBehaviour        CoroutineInvoker;
@@ -33,9 +34,14 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public void InjectDependencies(
-            HexCellComposer hexCellComposer, CivilizationComposer civilizationComposer,
-            CityComposer cityComposer, UnitComposer unitComposer, ImprovementComposer improvementComposer,
-            ResourceComposer resourceComposer, VisibilityResponder visibilityResponder,
+            HexCellComposer      hexCellComposer,
+            CivilizationComposer civilizationComposer,
+            CityComposer         cityComposer,
+            UnitComposer         unitComposer,
+            ImprovementComposer  improvementComposer,
+            ResourceComposer     resourceComposer,
+            DiplomacyComposer    diplomacyComposer,
+            VisibilityResponder  visibilityResponder,
             ICellVisibilityCanon cellVisibilityCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
@@ -45,6 +51,7 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer         = unitComposer;
             ImprovementComposer  = improvementComposer;
             ResourceComposer     = resourceComposer;
+            DiplomacyComposer    = diplomacyComposer;
             VisibilityResponder  = visibilityResponder;
             CellVisibilityCanon  = cellVisibilityCanon;
             CoroutineInvoker     = coroutineInvoker;
@@ -59,6 +66,7 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer        .ComposeUnits        (mapData);
             ImprovementComposer .ComposeImprovements (mapData);
             ResourceComposer    .ComposeResources    (mapData);
+            DiplomacyComposer   .ComposeDiplomacy    (mapData);
 
             return mapData;
         }
@@ -76,6 +84,10 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer        .DecomposeUnits        (mapData);
             ResourceComposer    .DecomposeResources    (mapData);
             ImprovementComposer .DecomposeImprovements (mapData);
+
+            yield return new WaitForEndOfFrame();
+
+            DiplomacyComposer.DecomposeDiplomacy(mapData);
 
             if(performAfterDecomposition != null) {
                 performAfterDecomposition();

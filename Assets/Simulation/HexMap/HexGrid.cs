@@ -124,7 +124,7 @@ namespace Assets.Simulation.HexMap {
 
             return expectedIndex >= 0
                 && expectedIndex < Cells.Count
-                && Cells[expectedIndex].Coordinates == coordinates;
+                && Cells[expectedIndex].Coordinates.Equals(coordinates);
         }
 
         public IHexCell GetCellAtCoordinates(HexCoordinates coordinates) {
@@ -232,7 +232,7 @@ namespace Assets.Simulation.HexMap {
             HexCoordinates current = null;
             while(frontier.Count() > 0) {
                 current = frontier.DeleteMin();
-                if(current == endCoords) break;
+                if(current.Equals(endCoords)) break;
 
                 foreach(var nextCoords in HexCoordinates.GetCoordinatesInRing(current, 1)) {
                     if(!HasCellAtCoordinates(nextCoords)) {

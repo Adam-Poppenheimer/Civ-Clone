@@ -10,21 +10,21 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Diplomacy {
 
-    public class CityDiplomaticExchange : IDiplomaticExchange {
+    public class CityDiplomaticExchange : DiplomaticExchangeBase {
 
         #region instance fields and properties
 
         #region from IDiplomaticExchange
 
-        public bool RequiresIntegerInput {
+        public override ExchangeType Type {
+            get { return ExchangeType.City; }
+        }
+
+        public override bool RequiresIntegerInput {
             get { return false; }
         }
 
-        public int IntegerInput { get; set; }
-
         #endregion
-
-        public ICity CityToExchange { get; set; }
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
@@ -43,33 +43,28 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IDiplomaticExchange
 
-        public bool OverlapsWithExchange(IDiplomaticExchange exchange) {
-            var cityExchange = exchange as CityDiplomaticExchange;
-            return cityExchange != null && cityExchange.CityToExchange == CityToExchange;
-        }
-
-        public bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
-            if(CityToExchange == null) {
+        public override bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+            if(CityInput == null) {
                 return false;
             }
 
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(CityToExchange);
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(CityInput);
 
-            return cityOwner == fromCiv && CityPossessionCanon.CanChangeOwnerOfPossession(CityToExchange, toCiv);
+            return cityOwner == fromCiv && CityPossessionCanon.CanChangeOwnerOfPossession(CityInput, toCiv);
         }
 
-        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the given arguments");
             }
 
-            CityPossessionCanon.ChangeOwnerOfPossession(CityToExchange, toCiv);
+            CityPossessionCanon.ChangeOwnerOfPossession(CityInput, toCiv);
 
             return null;
         }
 
-        public string GetSummary() {
-            return string.Format("{0} ({1})", CityToExchange.gameObject.name, CityToExchange.Population);
+        public override string GetSummary() {
+            return string.Format("{0} ({1})", CityInput.gameObject.name, CityInput.Population);
         }
 
         #endregion

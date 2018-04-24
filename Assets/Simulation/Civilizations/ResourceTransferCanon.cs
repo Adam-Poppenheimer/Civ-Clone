@@ -55,10 +55,11 @@ namespace Assets.Simulation.Civilizations {
         }
 
         public int GetTradeableCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
-            return
-                ExtractionLogic.GetExtractedCopiesOfResourceForCiv(resource, civ) -
-                GetExportedCopiesOfResourceForCiv                 (resource, civ) - 
-                LockingCanon.GetLockedCopiesOfResourceForCiv      (resource, civ);
+            int extractedCopies = ExtractionLogic.GetExtractedCopiesOfResourceForCiv(resource, civ);
+            int exportedCopies  = GetExportedCopiesOfResourceForCiv                 (resource, civ);
+            int lockedCopies    = LockingCanon.GetLockedCopiesOfResourceForCiv      (resource, civ);
+
+            return extractedCopies - exportedCopies - lockedCopies;
         }
 
         public IEnumerable<ResourceTransfer> GetAllExportTransfersFromCiv(ICivilization civ) {

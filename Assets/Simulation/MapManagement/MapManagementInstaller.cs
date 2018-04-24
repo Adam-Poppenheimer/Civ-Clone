@@ -29,6 +29,7 @@ namespace Assets.Simulation.MapManagement {
             Container.Bind<UnitComposer>        ().AsSingle();
             Container.Bind<ImprovementComposer> ().AsSingle();
             Container.Bind<ResourceComposer>    ().AsSingle();
+            Container.Bind<DiplomacyComposer>   ().AsSingle();
 
             Container.Bind<IMapComposer>().To<MapComposer>().AsSingle();
 

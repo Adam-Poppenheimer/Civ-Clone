@@ -12,9 +12,9 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IOngoingDiplomaticExchange
 
-        public ICivilization Receiver { get; set; }
+        public ICivilization Sender { get; private set; }
 
-        public ICivilization Sender { get; set; }
+        public ICivilization Receiver { get; private set; }
 
         public IEnumerable<IOngoingDiplomaticExchange> ExchangesFromSender   { get; set; }
         public IEnumerable<IOngoingDiplomaticExchange> ExchangesFromReceiver { get; set; }
@@ -39,12 +39,14 @@ namespace Assets.Simulation.Diplomacy {
         #region constructors
 
         public OngoingDeal(
-            List<IOngoingDiplomaticExchange> fromSender, List<IOngoingDiplomaticExchange> fromReceiver,
-            List<IOngoingDiplomaticExchange> bilateral
+            ICivilization sender, ICivilization receiver, List<IOngoingDiplomaticExchange> fromSender,
+            List<IOngoingDiplomaticExchange> fromReceiver, List<IOngoingDiplomaticExchange> bilateral
         ) {
-            ExchangesFromSender = fromSender;
+            Sender                = sender;
+            Receiver              = receiver;
+            ExchangesFromSender   = fromSender;
             ExchangesFromReceiver = fromReceiver;
-            BilateralExchanges  = bilateral;
+            BilateralExchanges    = bilateral;
         }
 
         #endregion

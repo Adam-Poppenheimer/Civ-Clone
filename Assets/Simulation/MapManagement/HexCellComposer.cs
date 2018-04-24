@@ -42,7 +42,7 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var cell in Grid.AllCells) {
                 var newCellData = new SerializableHexCellData() {
-                    Coordinates = cell.Coordinates,
+                    Coordinates  = cell.Coordinates,
                     Terrain      = cell.Terrain,
                     Feature      = cell.Feature,
                     Shape        = cell.Shape,

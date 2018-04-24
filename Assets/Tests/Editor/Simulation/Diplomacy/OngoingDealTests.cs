@@ -34,6 +34,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             };
 
             var ongoingDeal = new OngoingDeal(
+                null, null,
                 fromSenderMocks  .Select(mock => mock.Object).ToList(),
                 fromReceiverMocks.Select(mock => mock.Object).ToList(),
                 bilateralMocks   .Select(mock => mock.Object).ToList()
@@ -69,6 +70,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             };
 
             var ongoingDeal = new OngoingDeal(
+                null, null,
                 fromSenderMocks  .Select(mock => mock.Object).ToList(),
                 fromReceiverMocks.Select(mock => mock.Object).ToList(),
                 bilateralMocks   .Select(mock => mock.Object).ToList()
@@ -104,6 +106,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             };
 
             var ongoingDeal = new OngoingDeal(
+                null, null,
                 fromSenderMocks  .Select(mock => mock.Object).ToList(),
                 fromReceiverMocks.Select(mock => mock.Object).ToList(),
                 bilateralMocks   .Select(mock => mock.Object).ToList()

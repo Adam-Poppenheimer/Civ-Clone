@@ -11,17 +11,6 @@ namespace Assets.Simulation.Diplomacy {
 
     public class WarCanon : IWarCanon {
 
-        #region internal types
-
-        private struct WarData {
-
-            public ICivilization Attacker;
-            public ICivilization Defender;
-
-        }
-
-        #endregion
-
         #region instance fields and properties
 
         private List<WarData> ActiveWars = new List<WarData>();
@@ -101,6 +90,10 @@ namespace Assets.Simulation.Diplomacy {
                 (war.Attacker == civOne && war.Defender == civTwo) ||
                 (war.Defender == civOne && war.Attacker == civTwo)
             );
+        }
+
+        public IEnumerable<WarData> GetAllActiveWars() {
+            return ActiveWars;
         }
 
         #endregion

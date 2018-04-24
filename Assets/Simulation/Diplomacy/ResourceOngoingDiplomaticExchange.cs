@@ -15,13 +15,16 @@ namespace Assets.Simulation.Diplomacy {
 
         #region instance fields and properties
 
-        public ISpecialtyResourceDefinition ResourceToTransfer { get; set; }
+        public ExchangeType Type {
+            get { return ExchangeType.Resource; }
+        }
 
-        public int CopiesToTransfer { get; set; }
+        public ICivilization Sender   { get; set; }
+        public ICivilization Receiver { get; set; }
 
-        public ICivilization Exporter { get; set; }
+        public int IntegerInput { get; set; }
 
-        public ICivilization Importer { get; set; }
+        public ISpecialtyResourceDefinition ResourceInput { get; set; }
 
         private ResourceTransfer ActiveTransfer;
 
@@ -61,7 +64,7 @@ namespace Assets.Simulation.Diplomacy {
         #region from IOngoingDiplomaticExchange
 
         public void Start() {
-            ActiveTransfer = ResourceTransferCanon.ExportCopiesOfResource(ResourceToTransfer, CopiesToTransfer, Exporter, Importer);
+            ActiveTransfer = ResourceTransferCanon.ExportCopiesOfResource(ResourceInput, IntegerInput, Sender, Receiver);
 
             CancellationSubscription = CivSignals.ResourceTransferCanceledSignal.Subscribe(OnResourceTransferCanceled);
         }
@@ -73,7 +76,7 @@ namespace Assets.Simulation.Diplomacy {
         }
 
         public string GetSummary() {
-            return string.Format("{0}: {1}", ResourceToTransfer.name, CopiesToTransfer);
+            return string.Format("{0}: {1}", ResourceInput.name, IntegerInput);
         }
 
         #endregion

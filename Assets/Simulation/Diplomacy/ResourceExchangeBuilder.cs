@@ -69,8 +69,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var luxury in tradeableLuxuriesOfSender) {
                 var luxuryExchange = Container.Instantiate<ResourceDiplomaticExchange>();
 
-                luxuryExchange.ResourceToExchange = luxury;
-                luxuryExchange.RequiresIntegerInput = false;
+                luxuryExchange.ResourceInput = luxury;
                 luxuryExchange.IntegerInput = 1;
 
                 summary.AllPossibleOffersFromSender.Add(luxuryExchange);
@@ -79,8 +78,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var strategic in tradeableStrategicsOfSender) {
                 var strategicExchange = Container.Instantiate<ResourceDiplomaticExchange>();
 
-                strategicExchange.ResourceToExchange = strategic;
-                strategicExchange.RequiresIntegerInput = true;
+                strategicExchange.ResourceInput = strategic;
                 strategicExchange.IntegerInput = ResourceTransferCanon.GetTradeableCopiesOfResourceForCiv(strategic, sender);
 
                 summary.AllPossibleOffersFromSender.Add(strategicExchange);
@@ -89,8 +87,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var luxury in tradeableLuxuriesOfReceiver) {
                 var luxuryExchange = Container.Instantiate<ResourceDiplomaticExchange>();
 
-                luxuryExchange.ResourceToExchange = luxury;
-                luxuryExchange.RequiresIntegerInput = false;
+                luxuryExchange.ResourceInput = luxury;
                 luxuryExchange.IntegerInput = 1;
 
                 summary.AllPossibleDemandsOfReceiver.Add(luxuryExchange);
@@ -99,8 +96,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var strategic in tradeableStrategicsOfReceiver) {
                 var strategicExchange = Container.Instantiate<ResourceDiplomaticExchange>();
 
-                strategicExchange.ResourceToExchange = strategic;
-                strategicExchange.RequiresIntegerInput = true;
+                strategicExchange.ResourceInput = strategic;
                 strategicExchange.IntegerInput = ResourceTransferCanon.GetTradeableCopiesOfResourceForCiv(strategic, receiver);
 
                 summary.AllPossibleDemandsOfReceiver.Add(strategicExchange);

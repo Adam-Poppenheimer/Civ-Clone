@@ -12,17 +12,19 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Diplomacy {
 
-    public class GoldDiplomaticExchange : IDiplomaticExchange {
+    public class GoldDiplomaticExchange : DiplomaticExchangeBase {
 
         #region instance fields and properties
 
         #region from IDiplomaticExchange
 
-        public bool RequiresIntegerInput {
-            get { return true; }
+        public override ExchangeType Type {
+            get { return ExchangeType.GoldLumpSum; }
         }
 
-        public int IntegerInput { get; set; }
+        public override bool RequiresIntegerInput {
+            get { return true; }
+        }
 
         #endregion
 
@@ -43,15 +45,11 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IDiplomaticRequest
 
-        public bool OverlapsWithExchange(IDiplomaticExchange exchange) {
-            return exchange is GoldDiplomaticExchange;
-        }
-
-        public bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             return fromCiv.GoldStockpile >= IntegerInput;
         }
 
-        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the arguments");
             }
@@ -62,7 +60,7 @@ namespace Assets.Simulation.Diplomacy {
             return null;
         }
 
-        public string GetSummary() {
+        public  override string GetSummary() {
             return "Gold (Lump Sum)";
         }
 

@@ -24,7 +24,7 @@ namespace Assets.Simulation.MapManagement {
         private IBuildingFactory                              BuildingFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
-        IPossessionRelationship<IHexCell, ICity>              CityLocationCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private ICivilizationFactory                          CivilizationFactory;
         private IEnumerable<IBuildingTemplate>                AvailableBuildingTemplates;
         private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
@@ -120,7 +120,7 @@ namespace Assets.Simulation.MapManagement {
                 newCity.FoodStockpile                = cityData.FoodStockpile;
                 newCity.CultureStockpile             = cityData.CultureStockpile;
                 newCity.ResourceFocus                = cityData.ResourceFocus;
-                newCity.CombatFacade.Hitpoints          = cityData.CurrentHealth;
+                newCity.CombatFacade.Hitpoints       = cityData.CurrentHealth;
                 newCity.CombatFacade.CurrentMovement = cityData.CurrentMovement;
 
                 if(cityData.ActiveProject != null) {

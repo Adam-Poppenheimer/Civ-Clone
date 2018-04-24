@@ -174,7 +174,9 @@ namespace Assets.Simulation.Diplomacy {
             }
 
             if(ongoingFromSender.Count > 0 || ongoingToReceiver.Count > 0 || ongoingBilateral.Count > 0) {
-                return new OngoingDeal(ongoingFromSender, ongoingToReceiver, ongoingBilateral);
+                var ongoingDeal = new OngoingDeal(Sender, Receiver, ongoingFromSender, ongoingToReceiver, ongoingBilateral);
+
+                return ongoingDeal;
             }else {
                 return null;
             }

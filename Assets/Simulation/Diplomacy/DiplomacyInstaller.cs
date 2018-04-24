@@ -20,11 +20,12 @@ namespace Assets.Simulation.Diplomacy {
         #region instance methods
 
         public override void InstallBindings() {
-            Container.Bind<IDiplomacyConfig>        ().To<DiplomacyConfig>        ().FromInstance(Config);
-            Container.Bind<IDiplomacyCore>          ().To<DiplomacyCore>          ().AsSingle();
-            Container.Bind<IResourceExchangeBuilder>().To<ResourceExchangeBuilder>().AsSingle();
-            Container.Bind<IExchangeBuilder>        ().To<ExchangeBuilder>        ().AsSingle();
-            Container.Bind<IWarCanon>               ().To<WarCanon>               ().AsSingle();
+            Container.Bind<IDiplomacyConfig>          ().To<DiplomacyConfig>          ().FromInstance(Config);
+            Container.Bind<IDiplomacyCore>            ().To<DiplomacyCore>            ().AsSingle();
+            Container.Bind<IResourceExchangeBuilder>  ().To<ResourceExchangeBuilder>  ().AsSingle();
+            Container.Bind<IExchangeBuilder>          ().To<ExchangeBuilder>          ().AsSingle();
+            Container.Bind<IWarCanon>                 ().To<WarCanon>                 ().AsSingle();
+            Container.Bind<IDiplomaticExchangeFactory>().To<DiplomaticExchangeFactory>().AsSingle();
         }
 
         #endregion

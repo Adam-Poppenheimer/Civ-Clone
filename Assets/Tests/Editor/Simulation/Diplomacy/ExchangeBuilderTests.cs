@@ -144,7 +144,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var cityExchanges = exchangeSummary.AllPossibleOffersFromSender
                 .Where(offer => offer is CityDiplomaticExchange).Select(offer => offer as CityDiplomaticExchange);
 
-            CollectionAssert.AreEquivalent(senderCities, cityExchanges.Select(offer => offer.CityToExchange));
+            CollectionAssert.AreEquivalent(senderCities, cityExchanges.Select(offer => offer.CityInput));
         }
 
         [Test(Description = "BuildAllExchangesBetween should assign a single demand of type " +
@@ -164,7 +164,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             var cityExchanges = exchangeSummary.AllPossibleDemandsOfReceiver
                 .Where(demand => demand is CityDiplomaticExchange).Select(demand => demand as CityDiplomaticExchange);
 
-            CollectionAssert.AreEquivalent(receiverCities, cityExchanges.Select(demand => demand.CityToExchange));
+            CollectionAssert.AreEquivalent(receiverCities, cityExchanges.Select(demand => demand.CityInput));
         }
 
         [Test(Description = "")]

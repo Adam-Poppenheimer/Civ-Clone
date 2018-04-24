@@ -86,9 +86,9 @@ namespace Assets.Simulation.Improvements {
             ImprovementLocationCanon.ChangeOwnerOfPossession(newImprovement, location);
 
             if(isConstructed) {
-                newImprovement.StateMachine.SetTrigger("Constructed Requested");
+                newImprovement.Construct();
             }else if(isPillaged) {
-                newImprovement.StateMachine.SetTrigger("Pillaged Requested");
+                newImprovement.Pillage();
             }
 
             allImprovements.Add(newImprovement);

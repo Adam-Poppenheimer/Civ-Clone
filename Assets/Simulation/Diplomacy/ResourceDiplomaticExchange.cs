@@ -10,19 +10,21 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Diplomacy {
 
-    public class ResourceDiplomaticExchange : IDiplomaticExchange {
+    public class ResourceDiplomaticExchange : DiplomaticExchangeBase {
 
         #region instance fields and properties
 
         #region from IDiplomaticExchange
 
-        public int IntegerInput { set; get; }
+        public override ExchangeType Type {
+            get { return ExchangeType.Resource; }
+        }
 
-        public bool RequiresIntegerInput { get; set; }
+        public override bool RequiresIntegerInput {
+            get { return ResourceInput.Type == SpecialtyResourceType.Strategic; }
+        }
 
         #endregion
-
-        public ISpecialtyResourceDefinition ResourceToExchange { get; set; }
 
 
 
@@ -47,32 +49,27 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IDiplomaticExchange
 
-        public bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
-            return ResourceTransferCanon.CanExportCopiesOfResource(ResourceToExchange, IntegerInput, fromCiv, toCiv);
+        public override bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+            return ResourceTransferCanon.CanExportCopiesOfResource(ResourceInput, IntegerInput, fromCiv, toCiv);
         }
 
-        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true for the given arguments");
             }
 
             var ongoingExchange = Container.Instantiate<ResourceOngoingDiplomaticExchange>();
 
-            ongoingExchange.ResourceToTransfer = ResourceToExchange;
-            ongoingExchange.CopiesToTransfer   = IntegerInput;
-            ongoingExchange.Exporter           = fromCiv;
-            ongoingExchange.Importer           = toCiv;
+            ongoingExchange.ResourceInput = ResourceInput;
+            ongoingExchange.IntegerInput  = IntegerInput;
+            ongoingExchange.Sender        = fromCiv;
+            ongoingExchange.Receiver      = toCiv;
 
             return ongoingExchange;
         }
 
-        public string GetSummary() {
-            return ResourceToExchange.name;
-        }
-
-        public bool OverlapsWithExchange(IDiplomaticExchange exchange) {
-            var otherResourceExchange = exchange as ResourceDiplomaticExchange;
-            return otherResourceExchange != null && otherResourceExchange.ResourceToExchange == ResourceToExchange;
+        public override string GetSummary() {
+            return ResourceInput.name;
         }
 
         #endregion

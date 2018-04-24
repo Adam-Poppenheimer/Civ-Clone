@@ -76,7 +76,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var cityOfSender in CityPossessionCanon.GetPossessionsOfOwner(sender)) {
                 var cityOffer = Container.Instantiate<CityDiplomaticExchange>();
 
-                cityOffer.CityToExchange = cityOfSender;
+                cityOffer.CityInput = cityOfSender;
 
                 summary.AllPossibleOffersFromSender.Add(cityOffer);
             }
@@ -84,7 +84,7 @@ namespace Assets.Simulation.Diplomacy {
             foreach(var cityOfReceiver in CityPossessionCanon.GetPossessionsOfOwner(receiver)) {
                 var cityOffer = Container.Instantiate<CityDiplomaticExchange>();
 
-                cityOffer.CityToExchange = cityOfReceiver;
+                cityOffer.CityInput = cityOfReceiver;
 
                 summary.AllPossibleDemandsOfReceiver.Add(cityOffer);
             }

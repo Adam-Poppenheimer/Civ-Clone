@@ -2,19 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+
+using Zenject;
+
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Diplomacy {
 
-    public class EstablishPeaceDiplomaticExchange : IDiplomaticExchange {
+    public class EstablishPeaceDiplomaticExchange : DiplomaticExchangeBase {
 
         #region instance fields and properties
 
-        #region from IDiplomaticExchange
+        #region from DiplomaticExchangeBase
 
-        public int IntegerInput { get; set; }
+        public override ExchangeType Type {
+            get { return ExchangeType.Peace; }
+        }
 
-        public bool RequiresIntegerInput {
+        public override bool RequiresIntegerInput {
             get { return false; }
         }
 
@@ -26,6 +31,7 @@ namespace Assets.Simulation.Diplomacy {
 
         #region constructors
 
+        [Inject]
         public EstablishPeaceDiplomaticExchange(IWarCanon warCanon) {
             WarCanon = warCanon;
         }
@@ -36,11 +42,11 @@ namespace Assets.Simulation.Diplomacy {
 
         #region from IDiplomaticExchange
 
-        public bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override bool CanExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             return WarCanon.AreAtWar(fromCiv, toCiv);
         }
 
-        public IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
+        public override IOngoingDiplomaticExchange ExecuteBetweenCivs(ICivilization fromCiv, ICivilization toCiv) {
             if(!CanExecuteBetweenCivs(fromCiv, toCiv)) {
                 throw new InvalidOperationException("CanExecuteBetweenCivs must return true on the given arguments");
             }
@@ -50,12 +56,8 @@ namespace Assets.Simulation.Diplomacy {
             return null;
         }
 
-        public string GetSummary() {
+        public override string GetSummary() {
             return "Peace Treaty";
-        }
-
-        public bool OverlapsWithExchange(IDiplomaticExchange exchange) {
-            return exchange is EstablishPeaceDiplomaticExchange;
         }
 
         #endregion

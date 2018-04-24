@@ -452,7 +452,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 if(senderExpectations.ExpectsExchange) {
                     var exchangeForResource = exchanges
-                        .Where(exchange => exchange.ResourceToExchange == resource)
+                        .Where(exchange => exchange.ResourceInput == resource)
                         .FirstOrDefault();
 
                     Assert.NotNull(exchangeForResource, "There is no exchange serving resource at index " + i);

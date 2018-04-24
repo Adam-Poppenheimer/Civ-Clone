@@ -19,6 +19,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public List<SerializableUnitData>         Units;
         [DataMember()] public List<SerializableImprovementData>  Improvements;
         [DataMember()] public List<SerializableResourceNodeData> ResourceNodes;
+        [DataMember()] public SerializableDiplomacyData          DiplomacyData;
         [DataMember()] public string                             ActiveCivilization;
 
         #endregion

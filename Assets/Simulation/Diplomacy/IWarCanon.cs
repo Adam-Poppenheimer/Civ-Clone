@@ -11,21 +11,19 @@ namespace Assets.Simulation.Diplomacy {
 
         #region methods
 
-        bool AreAtWar(ICivilization civOne, ICivilization civTwo);
-
+        bool AreAtWar  (ICivilization civOne, ICivilization civTwo);
         bool AreAtPeace(ICivilization civOne, ICivilization civTwo);
 
-        IEnumerable<ICivilization> GetCivsAtWarWithCiv(ICivilization civ);
-
+        IEnumerable<ICivilization> GetCivsAtWarWithCiv  (ICivilization civ);
         IEnumerable<ICivilization> GetCivsAtPeaceWithCiv(ICivilization civ);
 
         bool CanDeclareWar(ICivilization attacker, ICivilization defender);
-
-        void DeclareWar(ICivilization attacker, ICivilization defender);
+        void DeclareWar   (ICivilization attacker, ICivilization defender);
 
         bool CanEstablishPeace(ICivilization civOne, ICivilization civTwo);
+        void EstablishPeace   (ICivilization civOne, ICivilization civTwo);
 
-        void EstablishPeace(ICivilization civOne, ICivilization civTwo);
+        IEnumerable<WarData> GetAllActiveWars();
 
         #endregion
 

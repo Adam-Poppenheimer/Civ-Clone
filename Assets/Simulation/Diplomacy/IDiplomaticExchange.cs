@@ -4,6 +4,8 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Cities;
+using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.Diplomacy {
 
@@ -11,9 +13,14 @@ namespace Assets.Simulation.Diplomacy {
 
         #region properties
 
+        ExchangeType Type { get; }
+
         bool RequiresIntegerInput { get; }
 
         int IntegerInput { get; set; }
+
+        ICity                        CityInput     { get; set; }
+        ISpecialtyResourceDefinition ResourceInput { get; set; }
 
         #endregion
 

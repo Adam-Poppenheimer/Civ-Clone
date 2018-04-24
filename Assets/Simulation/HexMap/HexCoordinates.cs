@@ -54,18 +54,6 @@ namespace Assets.Simulation.HexMap {
 
         #region static methods
 
-        #region operators
-
-        public static bool operator ==(HexCoordinates a, HexCoordinates b){
-			return a.Equals(b);
-		}
-
-		public static bool operator !=(HexCoordinates a, HexCoordinates b){
-			return !(a == b);
-		}
-
-        #endregion
-
         public static HexCoordinates FromOffsetCoordinates(int x, int z) {
             return new HexCoordinates(x - z / 2, z);
         }
