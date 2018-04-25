@@ -7922,6 +7922,7 @@ GameObject:
   - component: {fileID: 292120042}
   - component: {fileID: 292120041}
   - component: {fileID: 292120040}
+  - component: {fileID: 292120044}
   m_Layer: 5
   m_Name: Improvement Painting Panel
   m_TagString: Untagged
@@ -8021,6 +8022,17 @@ MonoBehaviour:
   IsAddingToggle: {fileID: 1743272210}
   IsRemovingToggle: {fileID: 1506147288}
   IsPillagingToggle: {fileID: 438387552}
+--- !u!114 &292120044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 292120038}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &293222848
 GameObject:
   m_ObjectHideFlags: 0
@@ -15960,6 +15972,7 @@ GameObject:
   m_Component:
   - component: {fileID: 538172718}
   - component: {fileID: 538172719}
+  - component: {fileID: 538172720}
   m_Layer: 5
   m_Name: Terrain Editing Panel
   m_TagString: Untagged
@@ -15995,6 +16008,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 00f3bfcc9bbb26a4f9ac703d842bb104, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &538172720
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 538172717}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &539863533
@@ -27908,6 +27932,7 @@ GameObject:
   - component: {fileID: 935207445}
   - component: {fileID: 935207444}
   - component: {fileID: 935207447}
+  - component: {fileID: 935207448}
   m_Layer: 5
   m_Name: Civ Management Panel
   m_TagString: Untagged
@@ -28015,6 +28040,17 @@ MonoBehaviour:
   - {r: 1, g: 0, b: 0, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
   - {r: 1, g: 0.9724138, b: 0, a: 1}
+--- !u!114 &935207448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 935207442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &941632860
 GameObject:
   m_ObjectHideFlags: 0
@@ -33172,6 +33208,7 @@ GameObject:
   - component: {fileID: 1162816381}
   - component: {fileID: 1162816380}
   - component: {fileID: 1162816379}
+  - component: {fileID: 1162816383}
   m_Layer: 5
   m_Name: Technology Management Panel
   m_TagString: Untagged
@@ -33269,6 +33306,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1162816377}
+--- !u!114 &1162816383
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1162816377}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1163659866
 GameObject:
   m_ObjectHideFlags: 0
@@ -34616,6 +34664,7 @@ GameObject:
   - component: {fileID: 1213752383}
   - component: {fileID: 1213752382}
   - component: {fileID: 1213752385}
+  - component: {fileID: 1213752386}
   m_Layer: 5
   m_Name: Resource Painting Panel
   m_TagString: Untagged
@@ -34713,6 +34762,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ResourceRecordPrefab: {fileID: 47369516}
   ResourceRecordContainer: {fileID: 210342954}
+--- !u!114 &1213752386
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1213752380}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1216139476
 GameObject:
   m_ObjectHideFlags: 0
@@ -39485,6 +39545,7 @@ GameObject:
   - component: {fileID: 1400320590}
   - component: {fileID: 1400320589}
   - component: {fileID: 1400320592}
+  - component: {fileID: 1400320593}
   m_Layer: 5
   m_Name: City Painting Panel
   m_TagString: Untagged
@@ -39582,6 +39643,17 @@ MonoBehaviour:
   CivilizationDropdown: {fileID: 1296305145}
   IsAddingToggle: {fileID: 858747353}
   IsRemovingToggle: {fileID: 1751719568}
+--- !u!114 &1400320593
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1400320587}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1405210989
 GameObject:
   m_ObjectHideFlags: 0
@@ -43874,7 +43946,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 151.5, y: -19.63501}
+  m_AnchoredPosition: {x: 151.5, y: -19.635044}
   m_SizeDelta: {x: 283, y: 19.270086}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1528899051
@@ -44984,7 +45056,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ebc9a20b335559645912e1d7390678c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UnitPrefab: {fileID: 0}
   LandTerrainTypes: 000000000100000002000000
 --- !u!1 &1563376754
 GameObject:
@@ -51472,6 +51543,7 @@ GameObject:
   - component: {fileID: 1761821286}
   - component: {fileID: 1761821285}
   - component: {fileID: 1761821288}
+  - component: {fileID: 1761821289}
   m_Layer: 5
   m_Name: Unit Painting Panel
   m_TagString: Untagged
@@ -51572,6 +51644,17 @@ MonoBehaviour:
   UnitRecordContainer: {fileID: 915398123}
   IsAddingToggle: {fileID: 715946356}
   IsRemovingToggle: {fileID: 583508128}
+--- !u!114 &1761821289
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1761821283}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fbf4f92b9b706464889aff24fc13c687, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1763748230
 GameObject:
   m_ObjectHideFlags: 0
@@ -54271,11 +54354,11 @@ MonoBehaviour:
   m_Content: {fileID: 334454008}
   m_Horizontal: 1
   m_Vertical: 1
-  m_MovementType: 1
+  m_MovementType: 2
   m_Elasticity: 0.1
-  m_Inertia: 1
+  m_Inertia: 0
   m_DecelerationRate: 0.135
-  m_ScrollSensitivity: 1
+  m_ScrollSensitivity: 30
   m_Viewport: {fileID: 398454045}
   m_HorizontalScrollbar: {fileID: 0}
   m_VerticalScrollbar: {fileID: 1405968664}

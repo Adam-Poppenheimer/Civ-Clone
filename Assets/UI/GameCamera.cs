@@ -30,6 +30,10 @@ namespace Assets.UI {
 
         public float Zoom { get; private set; }
 
+        public bool SuppressZoom      { get; set; }
+        public bool SuppressRotation  { get; set; }
+        public bool SuppressMovemnent { get; set; }
+
         private float RotationAngle;
 
         private IHexGrid Grid;
@@ -53,18 +57,18 @@ namespace Assets.UI {
 
         private void Update() {
             float zoomDelta = Input.GetAxis("Mouse ScrollWheel");
-            if(zoomDelta != 0f) {
+            if(!SuppressZoom && zoomDelta != 0f) {
                 AdjustZoom(zoomDelta);
             }
 
             float rotationDelta = Input.GetAxis("Rotation");
-            if(rotationDelta != 0f) {
+            if(!SuppressRotation && rotationDelta != 0f) {
                 AdjustRotation(rotationDelta);
             }
 
             float xDelta = Input.GetAxis("Horizontal");
             float zDelta = Input.GetAxis("Vertical");
-            if(xDelta != 0f || zDelta != 0f) {
+            if(!SuppressMovemnent && xDelta != 0f || zDelta != 0f) {
                 AdjustPosition(xDelta, zDelta);
             }
         }
