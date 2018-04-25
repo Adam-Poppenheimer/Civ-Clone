@@ -41,8 +41,13 @@ namespace Assets.Simulation.Units {
         #region instance methods
 
         private void OnUnitBeingDestroyed(IUnit unit) {
-            UnitPositionCanon  .ChangeOwnerOfPossession(unit, null);
-            UnitPossessionCanon.ChangeOwnerOfPossession(unit, null);
+            if(UnitPositionCanon.GetOwnerOfPossession(unit) != null) {
+                UnitPositionCanon  .ChangeOwnerOfPossession(unit, null);
+            }
+            
+            if(UnitPossessionCanon.GetOwnerOfPossession(unit) != null) {
+                UnitPossessionCanon.ChangeOwnerOfPossession(unit, null);
+            }
         }
 
         #endregion
