@@ -41,20 +41,19 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public VisibilityResponder(
-            UnitSignals unitSignals, CitySignals citySignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellVisibilityCanon visibilityCanon, ICityLineOfSightLogic cityLineOfSightLogic,
-            IUnitLineOfSightLogic unitLineOfSightLogic, IUnitFactory unitFactory, 
-            ICityFactory cityFactory, HexCellSignals cellSignals,
-            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
+            ICellVisibilityCanon visibilityCanon,
+            ICityLineOfSightLogic cityLineOfSightLogic,
+            IUnitLineOfSightLogic unitLineOfSightLogic,
+            [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
+            IUnitFactory unitFactory, 
+            ICityFactory cityFactory,
+            UnitSignals unitSignals,
+            CitySignals citySignals,
+            HexCellSignals cellSignals,
+            CivilizationSignals civSignals
         ){
-            unitSignals.LeftLocationSignal      .Subscribe(OnUnitLeftLocation);
-            unitSignals.EnteredLocationSignal   .Subscribe(OnUnitEnteredLocation);
-
-            citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
-            citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
-
             UnitPossessionCanon  = unitPossessionCanon;
             CityPossessionCanon  = cityPossessionCanon;
             VisibilityCanon      = visibilityCanon;
@@ -64,10 +63,19 @@ namespace Assets.Simulation.Civilizations {
             CityFactory          = cityFactory;
             CoroutineInvoker     = coroutineInvoker;
 
-            cellSignals.FoundationElevationChangedSignal.Subscribe(cell => ResetVisibility());
-            cellSignals.WaterLevelChangedSignal         .Subscribe(cell => ResetVisibility());
-            cellSignals.ShapeChangedSignal              .Subscribe(cell => ResetVisibility());
-            cellSignals.FeatureChangedSignal            .Subscribe(cell => ResetVisibility());
+            unitSignals.LeftLocationSignal   .Subscribe(OnUnitLeftLocation);
+            unitSignals.EnteredLocationSignal.Subscribe(OnUnitEnteredLocation);
+
+            citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
+            citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
+
+            cellSignals.FoundationElevationChangedSignal.Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.WaterLevelChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.ShapeChangedSignal              .Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.FeatureChangedSignal            .Subscribe(OnHexCellVisibilityPropertiesChanged);
+
+            civSignals.CivLosingCitySignal.Subscribe(OnCivLosingCity);
+            civSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity);
         }
 
         #endregion
@@ -99,24 +107,34 @@ namespace Assets.Simulation.Civilizations {
         }
 
         private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
-                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
-            }
+            TryResetAllVisibility();
         }
 
         private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
-                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
-            }
+            TryResetAllVisibility();
         }
 
         private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
-            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
-                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
-            }
+            TryResetAllVisibility();
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
+            TryResetAllVisibility();
+        }
+
+        private void OnHexCellVisibilityPropertiesChanged(IHexCell cell) {
+            TryResetAllVisibility();
+        }
+
+        private void OnCivLosingCity(Tuple<ICivilization, ICity> data) {
+            TryResetAllVisibility();
+        }
+
+        private void OnCivGainedCity(Tuple<ICivilization, ICity> data) {
+            TryResetAllVisibility();
+        }
+
+        private void TryResetAllVisibility() {
             if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
                 ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
             }

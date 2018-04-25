@@ -54,8 +54,12 @@ namespace Assets.Simulation.Civilizations {
                 cell.RefreshSelfOnly();
             }
 
-            if(newOwner != null && CapitalCityCanon.GetCapitalOfCiv(newOwner) == null) {
-                CapitalCityCanon.SetCapitalOfCiv(newOwner, city);
+            if(newOwner != null) {
+                if(CapitalCityCanon.GetCapitalOfCiv(newOwner) == null) {
+                    CapitalCityCanon.SetCapitalOfCiv(newOwner, city);
+                }
+
+                CivSignals.CivGainedCitySignal.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
             }
         }
 

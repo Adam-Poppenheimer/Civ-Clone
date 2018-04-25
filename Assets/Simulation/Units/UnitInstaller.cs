@@ -18,7 +18,7 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject UnitPrefab;
+        private GameObject UnitPrefab;
 
         [SerializeField] private List<TerrainType> LandTerrainTypes;
 

@@ -124,14 +124,14 @@ namespace Assets.Simulation.Cities {
                 throw new CityCreationException("Cannot assign the newly created city to its intended civilization");
             }
 
+            var combatantTemplate = Container.Instantiate<CityCombatantTemplate>(new object[]{ newCity });
+            newCity.CombatFacade = UnitFactory.Create(location, combatantTemplate, owner);
+
             if(CellPossessionCanon.CanChangeOwnerOfPossession(location, newCity)) {
                 CellPossessionCanon.ChangeOwnerOfPossession(location, newCity);
             }else {
                 throw new CityCreationException("Cannot assign the given location to the newly created city");
             }
-
-            var combatantTemplate = Container.Instantiate<CityCombatantTemplate>(new object[]{ newCity });
-            newCity.CombatFacade = UnitFactory.Create(location, combatantTemplate, owner);
             
             foreach(var neighbor in Grid.GetNeighbors(location)) {
                 if(CellPossessionCanon.CanChangeOwnerOfPossession(neighbor, newCity)) {

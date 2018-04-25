@@ -38,7 +38,9 @@ namespace Assets.Simulation.Civilizations {
             var newOwner = data.Item1;
             var city     = data.Item2;
 
-            UnitPossessionCanon.ChangeOwnerOfPossession(city.CombatFacade, newOwner);
+            if(newOwner != null && city.CombatFacade != null) {
+                UnitPossessionCanon.ChangeOwnerOfPossession(city.CombatFacade, newOwner);
+            }
         }
 
         #endregion
