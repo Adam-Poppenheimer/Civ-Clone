@@ -11,27 +11,27 @@ using Assets.UI.MapEditor;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
-    public class UnitPaintingState : StateMachineBehaviour {
+    public class ImprovementPaintingState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private UnitPaintingPanel   UnitPaintingPanel;
-        private UIStateMachineBrain Brain;
+        private ImprovementPaintingPanel ImprovementPaintingPanel;
+        private UIStateMachineBrain      Brain;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(UnitPaintingPanel unitPaintingPanel, UIStateMachineBrain brain) {
-            UnitPaintingPanel = unitPaintingPanel;
-            Brain             = brain;
+        public void InjectDependencies(ImprovementPaintingPanel improvementPaintingPanel, UIStateMachineBrain brain) {
+            ImprovementPaintingPanel = improvementPaintingPanel;
+            Brain                    = brain;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            UnitPaintingPanel.gameObject.SetActive(true);
+            ImprovementPaintingPanel.gameObject.SetActive(true);
 
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
@@ -41,7 +41,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            UnitPaintingPanel.gameObject.SetActive(false);
+            ImprovementPaintingPanel.gameObject.SetActive(false);
         }
 
         #endregion

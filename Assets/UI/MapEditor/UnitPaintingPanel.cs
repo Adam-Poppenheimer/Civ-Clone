@@ -22,21 +22,21 @@ namespace Assets.UI.MapEditor {
         [SerializeField] private Dropdown CivilizationDropdown;
 
         [SerializeField] private RectTransform UnitRecordPrefab;
-
         [SerializeField] private RectTransform UnitRecordContainer;
 
         [SerializeField] private Toggle IsAddingToggle;
         [SerializeField] private Toggle IsRemovingToggle;
 
-        private IUnitTemplate ActiveTemplate;
-
-        private ICivilization ActiveCivilization;
-
-        private List<RectTransform> InstantiatedRecords = new List<RectTransform>();
-
         private bool IsAdding = true;
 
+        private IUnitTemplate ActiveTemplate;
+        private ICivilization ActiveCivilization;
+
+        private List<RectTransform> InstantiatedRecords = new List<RectTransform>();        
+
         private IDisposable UnitClickedSubscription;
+
+
 
 
         private ICivilizationFactory CivilizationFactory;

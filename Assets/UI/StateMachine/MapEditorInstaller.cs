@@ -21,12 +21,13 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
 
-        [SerializeField] private TerrainEditingPanel   TerrainEditingPanel;
-        [SerializeField] private CivManagementPanel    CivManagementPanel;
-        [SerializeField] private UnitPaintingPanel     UnitPaintingPanel;
-        [SerializeField] private CityPaintingPanel     CityPaintingPanel;
-        [SerializeField] private TechManagementPanel   TechManagementPanel;
-        [SerializeField] private ResourcePaintingPanel ResourcePaintingPanel;
+        [SerializeField] private TerrainEditingPanel      TerrainEditingPanel;
+        [SerializeField] private CivManagementPanel       CivManagementPanel;
+        [SerializeField] private UnitPaintingPanel        UnitPaintingPanel;
+        [SerializeField] private CityPaintingPanel        CityPaintingPanel;
+        [SerializeField] private TechManagementPanel      TechManagementPanel;
+        [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel;
+        [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
 
         [SerializeField] private GameObject SaveMapDisplay;
 
@@ -43,12 +44,13 @@ namespace Assets.UI.StateMachine {
 
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
-            Container.Bind<CivManagementPanel>   ().FromInstance(CivManagementPanel);
-            Container.Bind<TerrainEditingPanel>  ().FromInstance(TerrainEditingPanel);
-            Container.Bind<UnitPaintingPanel>    ().FromInstance(UnitPaintingPanel);
-            Container.Bind<CityPaintingPanel>    ().FromInstance(CityPaintingPanel);
-            Container.Bind<TechManagementPanel>  ().FromInstance(TechManagementPanel);
-            Container.Bind<ResourcePaintingPanel>().FromInstance(ResourcePaintingPanel);
+            Container.Bind<CivManagementPanel>      ().FromInstance(CivManagementPanel);
+            Container.Bind<TerrainEditingPanel>     ().FromInstance(TerrainEditingPanel);
+            Container.Bind<UnitPaintingPanel>       ().FromInstance(UnitPaintingPanel);
+            Container.Bind<CityPaintingPanel>       ().FromInstance(CityPaintingPanel);
+            Container.Bind<TechManagementPanel>     ().FromInstance(TechManagementPanel);
+            Container.Bind<ResourcePaintingPanel>   ().FromInstance(ResourcePaintingPanel);
+            Container.Bind<ImprovementPaintingPanel>().FromInstance(ImprovementPaintingPanel);
 
             Container.Bind<GameObject>()
                 .WithId("Save Map Display")
