@@ -48,7 +48,7 @@ namespace Assets.Simulation.Units {
 
         IUnitTemplate Template { get; }
 
-        bool IsPermittedToBombard { get; }
+        bool PreparedForRangedAttack { get; }
 
         bool LockedIntoConstruction { get; }
 

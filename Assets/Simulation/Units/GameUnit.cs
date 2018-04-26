@@ -88,7 +88,7 @@ namespace Assets.Simulation.Units {
 
         public IUnitTemplate Template { get; set; }
 
-        public bool IsPermittedToBombard {
+        public bool PreparedForRangedAttack {
             get {
                 if(Template.MustSetUpToBombard) {
                     var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
@@ -189,7 +189,7 @@ namespace Assets.Simulation.Units {
         }
 
         public void SetUpToBombard() {
-            if(!IsPermittedToBombard) {
+            if(!PreparedForRangedAttack) {
                 Animator.SetTrigger("Set Up To Bombard Requested");
             }
         }

@@ -7,12 +7,14 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.UI.Units {
 
@@ -39,12 +41,16 @@ namespace Assets.UI.Units {
         public void InjectDependencies(
             AbilityDisplayMemoryPool abilityDisplayPool, ITechCanon techCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IAbilityExecuter abilityExecuter
+            IAbilityExecuter abilityExecuter, UnitSignals unitSignals
         ){
             AbilityDisplayPool  = abilityDisplayPool;
             TechCanon           = techCanon;
             UnitPossessionCanon = unitPossessionCanon;
             AbilityExecuter     = abilityExecuter;
+
+
+            unitSignals.StoppedMovingSignal      .Subscribe(CheckForRefreshCondition);
+            unitSignals.SetUpForBombardmentSignal.Subscribe(CheckForRefreshCondition);
         }
 
         #region from UnitDisplayBase
@@ -82,10 +88,19 @@ namespace Assets.UI.Units {
                 ActiveAbilityDisplays.Add(newDisplay);
             }
 
-            RangedAttackButton.gameObject.SetActive(ObjectToDisplay.RangedAttackStrength > 0);
+            RangedAttackButton.gameObject.SetActive(
+                ObjectToDisplay.CanAttack && ObjectToDisplay.CurrentMovement > 0 &&
+                ObjectToDisplay.PreparedForRangedAttack
+            );
         }
 
         #endregion
+
+        private void CheckForRefreshCondition(IUnit unit) {
+            if(unit == ObjectToDisplay) {
+                Refresh();
+            }
+        }
 
         #endregion
 

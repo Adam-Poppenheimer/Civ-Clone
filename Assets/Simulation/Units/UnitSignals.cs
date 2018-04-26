@@ -34,6 +34,10 @@ namespace Assets.Simulation.Units {
         public ISubject<Tuple<IUnit, IHexCell>> LeftLocationSignal    { get; private set; }
         public ISubject<Tuple<IUnit, IHexCell>> EnteredLocationSignal { get; private set; }
 
+        public ISubject<IUnit> StoppedMovingSignal { get; private set; }
+
+        public ISubject<IUnit> SetUpForBombardmentSignal { get; private set; }
+
         public ISubject<IUnit> UnitBeingDestroyedSignal { get; private set; }
 
         public ISubject<UnitCombatResults> MeleeCombatWithUnitSignal  { get; private set; }
@@ -57,6 +61,10 @@ namespace Assets.Simulation.Units {
 
             LeftLocationSignal    = new Subject<Tuple<IUnit, IHexCell>>();
             EnteredLocationSignal = new Subject<Tuple<IUnit, IHexCell>>();
+
+            StoppedMovingSignal = new Subject<IUnit>();
+
+            SetUpForBombardmentSignal = new Subject<IUnit>();
 
             UnitBeingDestroyedSignal   = new Subject<IUnit>();
 

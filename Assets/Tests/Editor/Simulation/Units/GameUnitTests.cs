@@ -147,6 +147,11 @@ namespace Assets.Tests.Simulation.Units {
             Assert.Fail("Unit End Drag Signal was never fired");
         }
 
+        [Test(Description = "")]
+        public void MissingCanMakeRangedAttackTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

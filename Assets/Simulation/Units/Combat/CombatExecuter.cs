@@ -145,7 +145,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(attacker.CurrentMovement <= 0 || !attacker.CanAttack) {
+            if(attacker.CurrentMovement <= 0 || !attacker.CanAttack || !attacker.PreparedForRangedAttack) {
                 return false;
             }
 

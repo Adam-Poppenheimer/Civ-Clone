@@ -59,6 +59,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool CanAttack = true;
 
+            public bool CanMakeRangedAttack = true;
+
         }
 
         public class DefenderTestData {
@@ -658,6 +660,33 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     RangedAttackerHealthLeft = 100,
                     RangedDefenderHealthLeft = 100
                 });
+
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
+                        CanSeeDefender = true,
+                        CanMakeRangedAttack = false
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0
+                    }
+                }).SetName("Otherwise valid attack/attacker cannot make ranged attack")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = true,
+                    MeleeAttackerHealthLeft = 70,
+                    MeleeDefenderHealthLeft = 70,
+                    
+                    CanPerformRangedAttack = false,
+                    RangedAttackerHealthLeft = 100,
+                    RangedDefenderHealthLeft = 100
+                });
             }
         }
 
@@ -954,7 +983,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatStrength:        attackerData.CombatStrength,
                 rangedAttackStrength:  attackerData.RangedAttackStrength,
                 attackRange:           attackerData.Range,
-                canAttack:             attackerData.CanAttack
+                canAttack:             attackerData.CanAttack,
+                canMakeRangedAttack:   attackerData.CanMakeRangedAttack
             );
         }
 
@@ -965,14 +995,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatStrength:        defenderData.CombatStrength,
                 rangedAttackStrength:  0,
                 attackRange:           0,
-                canAttack:             true
+                canAttack:             true,
+                canMakeRangedAttack:   true
             );
         }
 
         private IUnit BuildUnit(
             IHexCell location, int currentMovement,
             int combatStrength, int rangedAttackStrength,
-            int attackRange, bool canAttack
+            int attackRange, bool canAttack,
+            bool canMakeRangedAttack
         ){
             var mockUnit = new Mock<IUnit>();
 
@@ -985,6 +1017,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             mockUnit.Setup(unit => unit.CombatStrength)      .Returns(combatStrength);
             mockUnit.Setup(unit => unit.RangedAttackStrength).Returns(rangedAttackStrength);
             mockUnit.Setup(unit => unit.AttackRange)         .Returns(attackRange);
+            mockUnit.Setup(unit => unit.PreparedForRangedAttack) .Returns(canMakeRangedAttack);
 
             mockUnit.Object.CurrentMovement = currentMovement;
 
