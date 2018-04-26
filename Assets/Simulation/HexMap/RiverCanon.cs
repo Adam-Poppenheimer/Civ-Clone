@@ -33,6 +33,10 @@ namespace Assets.Simulation.HexMap {
         #region from IRiverCanon        
 
         public HexDirection GetIncomingRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             var riverFlags = KeyIntoIncoming(cell);
 
             for(int i = 0; i < 6; i++) {
@@ -45,6 +49,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public HexDirection GetOutgoingRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             var riverFlags = KeyIntoOutgoing(cell);
 
             for(int i = 0; i < 6; i++) {
@@ -57,30 +65,58 @@ namespace Assets.Simulation.HexMap {
         }
 
         public HexDirection GetRiverBeginOrEndDirection(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return HasIncomingRiver(cell) ? GetIncomingRiver(cell) : GetOutgoingRiver(cell);
         }
 
         public bool HasIncomingRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return KeyIntoIncoming(cell).Exists(flag => flag);
         }
 
         public bool HasOutgoingRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return KeyIntoOutgoing(cell).Exists(flag => flag);
         }
 
         public bool HasRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return HasIncomingRiver(cell) || HasOutgoingRiver(cell);
         }
 
         public bool HasRiverThroughEdge(IHexCell cell, HexDirection direction) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return KeyIntoIncoming(cell, direction) || KeyIntoOutgoing(cell, direction);
         }
 
         public bool HasRiverBeginOrEnd(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             return HasIncomingRiver(cell) != HasOutgoingRiver(cell);
         }
 
         public bool CanAddOutgoingRiverThroughEdge(IHexCell cell, HexDirection direction) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             var neighbor = Grid.GetNeighbor(cell, direction);
 
             if(neighbor != null) {
@@ -93,6 +129,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool CanAddIncomingRiverThroughEdge(IHexCell cell, HexDirection direction) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             var neighbor = Grid.GetNeighbor(cell, direction);
 
             if(neighbor != null) {
@@ -105,6 +145,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void SetOutgoingRiver(IHexCell cell, HexDirection direction) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             if(HasOutgoingRiver(cell) && GetOutgoingRiver(cell) == direction) {
                 return;
             }
@@ -130,6 +174,10 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RemoveOutgoingRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             if(!HasOutgoingRiver(cell)) {
                 return;
             }
@@ -146,11 +194,19 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RemoveRiver(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             RemoveIncomingRiver(cell);
             RemoveOutgoingRiver(cell);
         }
 
         public void ValidateRivers(IHexCell cell) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             if(HasOutgoingRiver(cell) && !CanAddOutgoingRiverThroughEdge(cell, GetOutgoingRiver(cell))) {
                 RemoveOutgoingRiver(cell);
             }

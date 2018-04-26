@@ -130,7 +130,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         ){
             var ability = BuildAbility(abilityName, commandRequests);
 
-            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
+            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization());
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         ){
             var ability = BuildAbility(abilityName, commandRequests);
 
-            var unit = BuildUnit(BuildTile(unitTileValidForCity), BuildCivilization());
+            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization());
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
@@ -184,8 +184,6 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         private IUnit BuildUnit(IHexCell location, ICivilization owner) {
             var mockUnit = new Mock<IUnit>();
 
-            mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject());
-
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
 
             MockUnitOwnershipCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(owner);
@@ -193,12 +191,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockUnit.Object;
         }
 
-        private IHexCell BuildTile(bool validForCity) {
-            var mockTile = new Mock<IHexCell>();
+        private IHexCell BuildHexCell(bool validForCity) {
+            var mockCell = new Mock<IHexCell>();
 
-            MockCityValidityLogic.Setup(logic => logic.IsCellValidForCity(mockTile.Object)).Returns(validForCity);
+            MockCityValidityLogic.Setup(logic => logic.IsCellValidForCity(mockCell.Object)).Returns(validForCity);
 
-            return mockTile.Object;
+            return mockCell.Object;
         }
 
         private ICivilization BuildCivilization() {

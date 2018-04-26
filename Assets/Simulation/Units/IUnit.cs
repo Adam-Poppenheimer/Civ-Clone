@@ -48,8 +48,6 @@ namespace Assets.Simulation.Units {
 
         IUnitTemplate Template { get; }
 
-        GameObject gameObject { get; }
-
         bool IsPermittedToBombard { get; }
 
         bool LockedIntoConstruction { get; }
@@ -61,9 +59,13 @@ namespace Assets.Simulation.Units {
         #region methods
 
         void PerformMovement();
+        void PerformMovement(bool ignoreMoveCosts);
 
         void SetUpToBombard();
         void LockIntoConstruction();
+
+        void Destroy();
+        void SetParent(Transform newParent, bool worldPositionStays);
 
         #endregion
 

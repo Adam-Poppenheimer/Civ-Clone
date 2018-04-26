@@ -68,11 +68,7 @@ namespace Assets.Simulation.Units.Abilities {
                     }
 
                     if(ability.DestroysUnit) {
-                        if(Application.isPlaying) {
-                            GameObject.Destroy(unit.gameObject);
-                        }else {
-                            GameObject.DestroyImmediate(unit.gameObject);
-                        }  
+                        unit.Destroy(); 
                     }
 
                     if(results.NewAbilityActivated != null) {

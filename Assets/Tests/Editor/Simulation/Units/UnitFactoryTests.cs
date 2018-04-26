@@ -56,21 +56,6 @@ namespace Assets.Tests.Simulation.Units {
 
         #region tests
 
-        [Test(Description = "Whenever a unit is created, its transform should have its parent " +
-            "set to the transform of the unit's location")]
-        public void UnitCreated_TransformParentSet() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
-            var civilization = BuildCivilization(true);
-
-            var factory = Container.Resolve<UnitFactory>();
-
-            var newUnit = factory.Create(tile, template, civilization);
-
-            Assert.AreEqual(tile.transform, newUnit.gameObject.transform.parent,
-                "newUnit's transform has an unexpected parent");
-        }
-
         [Test(Description = "Whenever a unit is created, its template should be initialized " +
             "with the argued template")]
         public void UnitCreated_TemplateInitialized() {

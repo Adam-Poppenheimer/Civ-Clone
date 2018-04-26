@@ -16,6 +16,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Diplomacy;
+using Assets.Simulation.Cities;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
@@ -72,20 +73,18 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool  CanPerformMeleeAttack;
             public int   MeleeAttackerHealthLeft;
-            public float MeleeAttackerMovementLeft;
             public int   MeleeDefenderHealthLeft;
 
             public bool  CanPerformRangedAttack;
             public int   RangedAttackerHealthLeft;
-            public float RangedAttackerMovementLeft;
             public int   RangedDefenderHealthLeft;
 
             public override string ToString() {
                 return string.Format(
-                    "\nMelee -- CanPerform: {0}, AttackerHealth: {1}, AttackerMovement: {2} DefenderHealth: {3}\n" + 
-                      "Ranged -- CanPerform: {4}, AttackerHealth: {5}, AttackerMovement: {6}, DefenderHealth: {7}",
-                    CanPerformMeleeAttack, MeleeAttackerHealthLeft, MeleeAttackerMovementLeft, MeleeDefenderHealthLeft,
-                    CanPerformRangedAttack, RangedAttackerHealthLeft, RangedAttackerMovementLeft, RangedDefenderHealthLeft
+                    "\nMelee -- CanPerform: {0}, AttackerHealth: {1}, DefenderHealth: {2}\n" + 
+                      "Ranged -- CanPerform: {3}, AttackerHealth: {4}, DefenderHealth: {5}",
+                    CanPerformMeleeAttack, MeleeAttackerHealthLeft, MeleeDefenderHealthLeft,
+                    CanPerformRangedAttack, RangedAttackerHealthLeft, RangedDefenderHealthLeft
                 );
             }
 
@@ -116,12 +115,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
@@ -144,12 +141,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 80,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 55,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 55
                 });
 
@@ -172,12 +167,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 83,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 48,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 48
                 });
 
@@ -200,12 +193,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 85,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 40,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 40
                 });
 
@@ -228,12 +219,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 88,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 25,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 25
                 });
 
@@ -256,12 +245,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 90,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 10,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 10
                 });
 
@@ -284,12 +271,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 92,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 0,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 0
                 });
 
@@ -318,12 +303,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 80,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 55,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 55
                 });
 
@@ -352,12 +335,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 55,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 80,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 80
                 });
 
@@ -380,12 +361,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 100
                 });
 
@@ -409,12 +388,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
 
@@ -437,12 +414,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
 
@@ -465,12 +440,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 70,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
@@ -493,12 +466,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
@@ -521,12 +492,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
@@ -549,12 +518,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 70
                 });
 
@@ -577,12 +544,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
                 });
 
@@ -605,12 +570,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 0,
                     MeleeDefenderHealthLeft = 0,
                     
                     CanPerformRangedAttack = true,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
                     RangedDefenderHealthLeft = 0
                 });
 
@@ -633,12 +596,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100,
                 });
 
@@ -663,47 +624,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100,
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, AttackerCanMoveAfterAttacking = true
-                    },
-                    RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, AttackerCanMoveAfterAttacking = true
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/attacker can move after attacking")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeAttackerMovementLeft = 1,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 1,
-                    RangedDefenderHealthLeft = 70
                 });
 
 
@@ -727,48 +652,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = false,
                     MeleeAttackerHealthLeft = 100,
-                    MeleeAttackerMovementLeft = 2,
                     MeleeDefenderHealthLeft = 100,
                     
                     CanPerformRangedAttack = false,
                     RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 2,
                     RangedDefenderHealthLeft = 100
-                });
-
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, AttackerCanAttackAfterAttacking = true
-                    },
-                    RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, AttackerCanAttackAfterAttacking = true
-                    },
-                }).SetName("Attacker can attack after attacking")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeAttackerMovementLeft = 0,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedAttackerMovementLeft = 0,
-                    RangedDefenderHealthLeft = 70
                 });
             }
         }
@@ -782,8 +670,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IUnitLineOfSightLogic>                         MockUnitLineOfSightLogic;
         private Mock<ICombatInfoLogic>                              MockCombatInfoLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
-        private IUnitConfig                                         UnitConfig;
         private Mock<IWarCanon>                                     MockWarCanon;
+        private Mock<ICityConquestLogic>                            MockCityConquestLogic;
+        private Mock<IPostCombatMovementLogic>                      MockPostCombatMovementLogic;
+        private Mock<ICombatDestructionLogic>                       MockCombatDestructionLogic;
+
+
+        private IUnitConfig UnitConfig;
+        
 
         #endregion
 
@@ -793,19 +687,25 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPositionCanon    = new Mock<IUnitPositionCanon>();
-            MockGrid                 = new Mock<IHexGrid>();
-            MockUnitLineOfSightLogic = new Mock<IUnitLineOfSightLogic>();
-            MockCombatInfoLogic      = new Mock<ICombatInfoLogic>();
-            MockUnitPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockWarCanon             = new Mock<IWarCanon>();
+            MockUnitPositionCanon       = new Mock<IUnitPositionCanon>();
+            MockGrid                    = new Mock<IHexGrid>();
+            MockUnitLineOfSightLogic    = new Mock<IUnitLineOfSightLogic>();
+            MockCombatInfoLogic         = new Mock<ICombatInfoLogic>();
+            MockUnitPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockWarCanon                = new Mock<IWarCanon>();
+            MockCityConquestLogic       = new Mock<ICityConquestLogic>();
+            MockPostCombatMovementLogic = new Mock<IPostCombatMovementLogic>();
+            MockCombatDestructionLogic  = new Mock<ICombatDestructionLogic>();
 
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon   .Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                .Object);
-            Container.Bind<IUnitLineOfSightLogic>                        ().FromInstance(MockUnitLineOfSightLogic.Object);
-            Container.Bind<ICombatInfoLogic>                             ().FromInstance(MockCombatInfoLogic     .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon .Object);
-            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon            .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon     .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
+            Container.Bind<IUnitLineOfSightLogic>                        ().FromInstance(MockUnitLineOfSightLogic   .Object);
+            Container.Bind<ICombatInfoLogic>                             ().FromInstance(MockCombatInfoLogic        .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon    .Object);
+            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon               .Object);
+            Container.Bind<ICityConquestLogic>                           ().FromInstance(MockCityConquestLogic      .Object);
+            Container.Bind<IPostCombatMovementLogic>                     ().FromInstance(MockPostCombatMovementLogic.Object);
+            Container.Bind<ICombatDestructionLogic>                      ().FromInstance(MockCombatDestructionLogic .Object);
 
             Container.Bind<UnitSignals>().AsSingle();
 
@@ -876,7 +776,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
             }
 
             results.MeleeAttackerHealthLeft   = meleeAttacker.Hitpoints;
-            results.MeleeAttackerMovementLeft = meleeAttacker.CurrentMovement;
             results.MeleeDefenderHealthLeft   = meleeDefender.Hitpoints;
             
             results.CanPerformRangedAttack = combatExecuter.CanPerformRangedAttack(rangedAttacker, rangedDefender);
@@ -886,7 +785,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
             }
 
             results.RangedAttackerHealthLeft   = rangedAttacker.Hitpoints;
-            results.RangedAttackerMovementLeft = rangedAttacker.CurrentMovement;
             results.RangedDefenderHealthLeft   = rangedDefender.Hitpoints;
 
             if(results.CanPerformMeleeAttack) {
@@ -904,6 +802,128 @@ namespace Assets.Tests.Simulation.Units.Combat {
             }
 
             return results;
+        }
+
+        [Test(Description = "When PerformMeleeCombat is called on a valid melee combat, " +
+            "it should call into ICityConquestLogic.HandleCityCaptureFromCombat, " +
+            "ICombatDestructionLogic.HandleUnitDestructionFromCombat, and " +
+            "IPostCombatMovementLogic.HandleAttackerMovementAfterCombat. These methods should " +
+            "be provided with the attacker and defender passed into PerformMeleeCombat as well " +
+            "as the CombatInfo provided by ICombatInfoLogic")]
+        public void PerformMeleeCombat_CallsIntoCombatPerformanceLogicsCorrectly() {
+            var attackerLocation = BuildCell(0);
+            var defenderLocation = BuildCell(0);
+
+            var attacker = BuildUnit(attackerLocation, new AttackerTestData() {
+                CombatStrength = 100, CurrentMovement = 2
+            });
+
+            var defender = BuildUnit(defenderLocation, new DefenderTestData() {
+                CombatStrength = 100,
+            });
+
+            SetCombatConditions(0, true, true, defenderLocation);
+
+            var attackerOwner = BuildCivilization();
+            var defenderOwner = BuildCivilization();
+
+            MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(true);
+            MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(true);
+
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
+
+            var combatInfo = new CombatInfo() {
+                CombatType = CombatType.Melee, AttackerCombatModifier = 1f, DefenderCombatModifier = 1f,
+                AttackerCanMoveAfterAttacking = true
+            };
+
+            MockCombatInfoLogic
+                .Setup(logic => logic.GetMeleeAttackInfo(attacker, defender, defenderLocation))
+                .Returns(combatInfo);
+
+            var combatExecuter = Container.Resolve<CombatExecuter>();
+
+            var executionSequence = new MockSequence();
+
+            MockCityConquestLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleCityCaptureFromCombat(attacker, defender, combatInfo)
+            );
+
+            MockCombatDestructionLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo)
+            );
+
+            MockPostCombatMovementLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo)
+            );
+
+            combatExecuter.PerformMeleeAttack(attacker, defender);
+
+            MockCityConquestLogic      .VerifyAll();
+            MockCombatDestructionLogic .VerifyAll();
+            MockPostCombatMovementLogic.VerifyAll();
+        }
+
+        [Test(Description = "When PerformRangedCombat is called on a valid ranged combat, " +
+            "it should call into ICityConquestLogic.HandleCityCaptureFromCombat, " +
+            "ICombatDestructionLogic.HandleUnitDestructionFromCombat, and " +
+            "IPostCombatMovementLogic.HandleAttackerMovementAfterCombat. These methods should " +
+            "be provided with the attacker and defender passed into PerformRangedCombat as well " +
+            "as the CombatInfo provided by ICombatInfoLogic")]
+        public void PerformRangedCombat_CallsIntoCombatPerformanceLogicsCorrectly() {
+            var attackerLocation = BuildCell(0);
+            var defenderLocation = BuildCell(0);
+
+            var attacker = BuildUnit(attackerLocation, new AttackerTestData() {
+                RangedAttackStrength = 100, CurrentMovement = 2
+            });
+
+            var defender = BuildUnit(defenderLocation, new DefenderTestData() {
+                CombatStrength = 100,
+            });
+
+            SetCombatConditions(0, true, true, defenderLocation);
+
+            var attackerOwner = BuildCivilization();
+            var defenderOwner = BuildCivilization();
+
+            MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(true);
+            MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(true);
+
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
+
+            var combatInfo = new CombatInfo() {
+                CombatType = CombatType.Ranged, AttackerCombatModifier = 1f, DefenderCombatModifier = 1f,
+                AttackerCanMoveAfterAttacking = true
+            };
+
+            MockCombatInfoLogic
+                .Setup(logic => logic.GetMeleeAttackInfo(attacker, defender, defenderLocation))
+                .Returns(combatInfo);
+
+            var combatExecuter = Container.Resolve<CombatExecuter>();
+
+            var executionSequence = new MockSequence();
+
+            MockCityConquestLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleCityCaptureFromCombat(attacker, defender, combatInfo)
+            );
+
+            MockCombatDestructionLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo)
+            );
+
+            MockPostCombatMovementLogic.InSequence(executionSequence).Setup(
+                logic => logic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo)
+            );
+
+            combatExecuter.PerformRangedAttack(attacker, defender);
+
+            MockCityConquestLogic      .VerifyAll();
+            MockCombatDestructionLogic .VerifyAll();
+            MockPostCombatMovementLogic.VerifyAll();
         }
 
         #endregion

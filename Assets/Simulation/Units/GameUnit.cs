@@ -176,15 +176,46 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            bool shouldExecuteMovement = CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0;
+            PerformMovement(false);
+        }
+
+        public void PerformMovement(bool ignoreMoveCosts) {
+            bool shouldExecuteMovement = (ignoreMoveCosts || CurrentMovement > 0) && CurrentPath != null && CurrentPath.Count > 0;
 
             if(shouldExecuteMovement) {
                 StopAllCoroutines();
-                StartCoroutine(PerformMovementCoroutine());
+                StartCoroutine(PerformMovementCoroutine(ignoreMoveCosts));
             }
         }
 
-        private IEnumerator PerformMovementCoroutine() {
+        public void SetUpToBombard() {
+            if(!IsPermittedToBombard) {
+                Animator.SetTrigger("Set Up To Bombard Requested");
+            }
+        }
+
+        public void LockIntoConstruction() {
+            if(!LockedIntoConstruction) {
+                Animator.SetTrigger("Locked Into Construction Requested");
+            }
+        }
+
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
+        }
+
+        public void SetParent(Transform newParent, bool worldPositionStays) {
+            transform.SetParent(newParent, worldPositionStays);
+        }
+
+        #endregion
+
+
+        private IEnumerator PerformMovementCoroutine(bool ignoreMoveCosts) {
             Animator.SetTrigger("Moving Requested");
 
             IHexCell startingCell = PositionCanon.GetOwnerOfPossession(this);
@@ -195,16 +226,18 @@ namespace Assets.Simulation.Units {
 
             float t = Time.deltaTime * Config.TravelSpeedPerSecond;
 
-            while(CurrentMovement > 0 && CurrentPath != null && CurrentPath.Count > 0) {
+            while((ignoreMoveCosts || CurrentMovement > 0) && CurrentPath != null && CurrentPath.Count > 0) {
                 var nextCell = CurrentPath.FirstOrDefault();
                 if(!PositionCanon.CanChangeOwnerOfPossession(this, nextCell) || nextCell == null) {
                     CurrentPath.Clear();
                     break;
                 }
 
-                CurrentMovement = Math.Max(0,
-                    CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentCell, nextCell)
-                );
+                if(!ignoreMoveCosts) {
+                    CurrentMovement = Math.Max(0,
+                        CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentCell, nextCell)
+                    );
+                }                
 
                 PositionCanon.ChangeOwnerOfPossession(this, nextCell);
 
@@ -243,18 +276,6 @@ namespace Assets.Simulation.Units {
             Animator.SetTrigger("Idling Requested");
         }
 
-        public void SetUpToBombard() {
-            if(!IsPermittedToBombard) {
-                Animator.SetTrigger("Set Up To Bombard Requested");
-            }
-        }
-
-        public void LockIntoConstruction() {
-            if(!LockedIntoConstruction) {
-                Animator.SetTrigger("Locked Into Construction Requested");
-            }
-        }
-
         private IEnumerator LookAt(Vector3 point) {
             point.y = transform.localPosition.y;
             Quaternion fromRotation = transform.localRotation;
@@ -271,8 +292,6 @@ namespace Assets.Simulation.Units {
                 }
             }
         }
-
-        #endregion
 
         #endregion
 

@@ -57,7 +57,7 @@ namespace Assets.Simulation.Civilizations {
         private void OnCivilizationBeingDestroyed(ICivilization civ) {
             foreach(var unit in GetPossessionsOfOwner(civ)) {
                 if(!(unit.Type == UnitType.City)) {
-                    GameObject.Destroy(unit.gameObject);
+                    unit.Destroy();
                 }
             }
         }

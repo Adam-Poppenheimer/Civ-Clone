@@ -27,6 +27,9 @@ namespace Assets.Simulation.Units.Combat {
         private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IWarCanon                                     WarCanon;
+        private ICityConquestLogic                            CityConquestLogic;
+        private ICombatDestructionLogic                       CombatDestructionLogic;
+        private IPostCombatMovementLogic                      PostCombatMovementLogic;
 
         #endregion
 
@@ -36,16 +39,21 @@ namespace Assets.Simulation.Units.Combat {
         public CombatExecuter(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, IUnitLineOfSightLogic unitLineOfSightLogic,
             ICombatInfoLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon,
+            ICityConquestLogic cityConquestLogic, ICombatDestructionLogic combatDestructionLogic,
+            IPostCombatMovementLogic postCombatMovementLogic
         ){
-            UnitPositionCanon    = unitPositionCanon;
-            Grid                 = grid;
-            UnitLineOfSightLogic = unitLineOfSightLogic;
-            CombatInfoLogic      = combatModifierLogic;
-            UnitConfig           = unitConfig;
-            UnitSignals          = unitSignals;
-            UnitPossessionCanon  = unitPossessionCanon;
-            WarCanon             = warCanon;
+            UnitPositionCanon       = unitPositionCanon;
+            Grid                    = grid;
+            UnitLineOfSightLogic    = unitLineOfSightLogic;
+            CombatInfoLogic         = combatModifierLogic;
+            UnitConfig              = unitConfig;
+            UnitSignals             = unitSignals;
+            UnitPossessionCanon     = unitPossessionCanon;
+            WarCanon                = warCanon;
+            CityConquestLogic       = cityConquestLogic;
+            CombatDestructionLogic  = combatDestructionLogic;
+            PostCombatMovementLogic = postCombatMovementLogic;
         }
 
         #endregion
@@ -201,6 +209,14 @@ namespace Assets.Simulation.Units.Combat {
         }
 
         public UnitCombatResults EstimateMeleeAttackResults(IUnit attacker, IUnit defender) {
+            if(attacker == null) {
+                throw new ArgumentNullException("attacker");
+            }
+
+            if(defender == null) {
+                throw new ArgumentNullException("defender");
+            }
+
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
             var combatInfo = CombatInfoLogic.GetMeleeAttackInfo(attacker, defender, defenderLocation);
@@ -211,6 +227,14 @@ namespace Assets.Simulation.Units.Combat {
         }
 
         public UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
+            if(attacker == null) {
+                throw new ArgumentNullException("attacker");
+            }
+
+            if(defender == null) {
+                throw new ArgumentNullException("defender");
+            }
+
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
             var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
@@ -225,16 +249,16 @@ namespace Assets.Simulation.Units.Combat {
         private void PerformCombat(
             IUnit attacker, IUnit defender, CombatInfo combatInfo
         ) {
-            if(combatInfo.AttackerCanMoveAfterAttacking) {
-                attacker.CurrentMovement--;
-            }else {
-                attacker.CurrentMovement = 0;
-            }
-
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
             attacker.Hitpoints -= results.Item1;
             defender.Hitpoints -= results.Item2;
+
+            CityConquestLogic.HandleCityCaptureFromCombat(attacker, defender, combatInfo);
+
+            CombatDestructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+
+            PostCombatMovementLogic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo);
 
             if(combatInfo.AttackerCanAttackAfterAttacking) {
                 attacker.CanAttack = true;

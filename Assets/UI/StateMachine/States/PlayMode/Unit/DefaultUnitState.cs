@@ -244,14 +244,14 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Clear();
             UnitToAttack = unit;
 
-            CombatSummaryDisplay.gameObject.SetActive(true);
-
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
             OverlayManager.ShowOverlayOfCell(unitLocation, CellOverlayType.AttackIndicator);
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = unit;
             CombatSummaryDisplay.IsMeleeAttack = true;
+
+            CombatSummaryDisplay.gameObject.SetActive(true);
         }
 
         private void SetCityToAttack(ICity city) {
@@ -264,6 +264,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
             CombatSummaryDisplay.IsMeleeAttack = true;
+
+            CombatSummaryDisplay.gameObject.SetActive(true);
         }
 
         private void SetProspectiveTravelGoal(IHexCell unitLocation, IHexCell goal) {

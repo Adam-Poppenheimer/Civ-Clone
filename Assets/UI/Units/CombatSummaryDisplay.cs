@@ -53,6 +53,11 @@ namespace Assets.UI.Units {
             Refresh();
         }
 
+        private void OnDisable() {
+            AttackingUnit = null;
+            DefendingUnit = null;
+        }
+
         #endregion
 
         public void Refresh() {

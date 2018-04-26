@@ -48,9 +48,11 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
             Container.Bind<IUnitLineOfSightLogic>       ().To<UnitLineOfSightLogic>       ().AsSingle();
             Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();
+            Container.Bind<ICityConquestLogic>          ().To<CityConquestLogic>          ().AsSingle();
+            Container.Bind<IPostCombatMovementLogic>    ().To<PostCombatMovementLogic>    ().AsSingle();
+            Container.Bind<ICombatDestructionLogic>     ().To<CombatDestructionLogic>     ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
-            Container.Bind<CombatResponder>().AsSingle().NonLazy();
             Container.Bind<UnitResponder>  ().AsSingle().NonLazy();
 
             Container.Bind<CompositeUnitSignals>().AsSingle().NonLazy();

@@ -49,6 +49,18 @@ namespace Assets.Simulation.Units.Combat {
         #region from ICombatInfoLogic
 
         public CombatInfo GetMeleeAttackInfo(IUnit attacker, IUnit defender, IHexCell location) {
+            if(attacker == null) {
+                throw new ArgumentNullException("attacker");
+            }
+
+            if(defender == null) {
+                throw new ArgumentNullException("defender");
+            }
+
+            if(location == null) {
+                throw new ArgumentNullException("location");
+            }
+
             var combatInfo = PromotionParser.GetCombatInfo(attacker, defender, location, CombatType.Melee);
 
             combatInfo.CombatType = CombatType.Melee;

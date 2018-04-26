@@ -441,7 +441,6 @@ namespace Assets.Tests.Simulation.Units {
 
             mockUnit.Setup(unit => unit.Name).Returns(data.Name);
             mockUnit.Setup(unit => unit.Type).Returns(data.Type);
-            mockUnit.Setup(unit => unit.gameObject).Returns(new GameObject(data.Name));
 
             var newUnit = mockUnit.Object;
 
