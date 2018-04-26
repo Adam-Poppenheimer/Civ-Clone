@@ -54,7 +54,12 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitFactory
 
-        public IUnit Create(IHexCell location, IUnitTemplate template, ICivilization owner) {
+        public bool CanBuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner) {
+            return UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, location, false)
+                && !DoesCellHaveUnitsForeignTo(location, owner);
+        }
+
+        public IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner) {
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(template == null) {
@@ -99,6 +104,16 @@ namespace Assets.Simulation.Units {
         }
 
         #endregion
+
+        private bool DoesCellHaveUnitsForeignTo(IHexCell cell, ICivilization domesticCiv) {
+            foreach(var unit in UnitPositionCanon.GetPossessionsOfOwner(cell)) {
+                if(UnitPossessionCanon.GetOwnerOfPossession(unit) != domesticCiv) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
 
         private void OnUnitBeingDestroyed(IUnit unit) {
             allUnits.Remove(unit);

@@ -65,7 +65,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.Create(tile, template, civilization);
+            var newUnit = factory.BuildUnit(tile, template, civilization);
 
             Assert.AreEqual(template, (newUnit as GameUnit).Template, "newUnit.Template was not initialized correctly");
         }
@@ -79,7 +79,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.Create(tile, template, civilization);
+            var newUnit = factory.BuildUnit(tile, template, civilization);
 
             Assert.AreEqual(3, newUnit.CurrentMovement, "newUnit.CurrentMovement has an unexpected value");
         }
@@ -93,7 +93,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.Create(tile, template, civilization);
+            var newUnit = factory.BuildUnit(tile, template, civilization);
 
             MockPositionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newUnit, tile),
                 Times.AtLeastOnce, "UnitFactory did not check UnitPositionCanon for placement validity before " +
@@ -113,7 +113,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.Create(tile, template, civilization);
+            var newUnit = factory.BuildUnit(tile, template, civilization);
 
             MockPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newUnit, civilization),
                 Times.AtLeastOnce, "UnitFactory did not check UnitPossessionCanon for ownership validity before " +
@@ -132,7 +132,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.Create(tile, template, civilization);
+            var newUnit = factory.BuildUnit(tile, template, civilization);
 
             CollectionAssert.Contains(factory.AllUnits, newUnit, "AllUnit does not contain the newly-created unit");
         }
@@ -146,7 +146,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            Assert.Throws<UnitCreationException>(() => factory.Create(tile, template, civilization),
+            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(tile, template, civilization),
                 "Create did not throw properly when its created unit could not be placed upon the argued tile");
         }
 
@@ -159,7 +159,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            Assert.Throws<UnitCreationException>(() => factory.Create(tile, template, civilization),
+            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(tile, template, civilization),
                 "Create did not throw properly when its created unit could not be given to the argued civilization");
         }
 
@@ -171,13 +171,13 @@ namespace Assets.Tests.Simulation.Units {
 
             var factory = Container.Resolve<UnitFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null, template, civilization),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(null, template, civilization),
                 "Create failed to throw on a null location argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(tile, null, civilization),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(tile, null, civilization),
                 "Create failed to throw on a null template argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(tile, template, null),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(tile, template, null),
                 "Create failed to throw on a null owner argument");
         }
 

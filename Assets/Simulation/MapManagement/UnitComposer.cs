@@ -84,10 +84,10 @@ namespace Assets.Simulation.MapManagement {
                 var templateToBuild = AvailableUnitTemplates.Where(template => template.name.Equals(unitData.Template)).First();
                 var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(unitData.Owner)).First();                
 
-                var newUnit = UnitFactory.Create(unitLocation, templateToBuild, unitOwner);
+                var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner);
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
-                newUnit.Hitpoints          = unitData.Health;
+                newUnit.Hitpoints       = unitData.Health;
 
                 if(unitData.CurrentPath != null) {
                     newUnit.CurrentPath = unitData.CurrentPath.Select(coord => Grid.GetCellAtCoordinates(coord)).ToList();

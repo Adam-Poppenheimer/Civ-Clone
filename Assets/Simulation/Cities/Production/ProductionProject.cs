@@ -82,7 +82,7 @@ namespace Assets.Simulation.Cities.Production {
                 var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(targetCity);
                 var cityLocation = CityLocationCanon.GetOwnerOfPossession(targetCity);
 
-                UnitFactory.Create(cityLocation, UnitToConstruct, cityOwner);
+                UnitFactory.BuildUnit(cityLocation, UnitToConstruct, cityOwner);
             }
         }
 

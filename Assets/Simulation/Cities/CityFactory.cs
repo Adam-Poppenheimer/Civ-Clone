@@ -125,7 +125,7 @@ namespace Assets.Simulation.Cities {
             }
 
             var combatantTemplate = Container.Instantiate<CityCombatantTemplate>(new object[]{ newCity });
-            newCity.CombatFacade = UnitFactory.Create(location, combatantTemplate, owner);
+            newCity.CombatFacade = UnitFactory.BuildUnit(location, combatantTemplate, owner);
 
             if(CellPossessionCanon.CanChangeOwnerOfPossession(location, newCity)) {
                 CellPossessionCanon.ChangeOwnerOfPossession(location, newCity);

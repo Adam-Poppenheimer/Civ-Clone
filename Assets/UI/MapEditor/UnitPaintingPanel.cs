@@ -153,9 +153,9 @@ namespace Assets.UI.MapEditor {
 
         private void TryAddUnit(IHexCell location) {
             if( ActiveCivilization != null && ActiveTemplate != null &&
-                UnitPositionCanon.CanPlaceUnitTemplateAtLocation(ActiveTemplate, location, false)
+                UnitFactory.CanBuildUnit(location, ActiveTemplate, ActiveCivilization)
             ){
-                UnitFactory.Create(location, ActiveTemplate, ActiveCivilization);
+                UnitFactory.BuildUnit(location, ActiveTemplate, ActiveCivilization);
             }
         }
 

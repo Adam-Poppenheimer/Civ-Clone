@@ -10,11 +10,19 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
-    public interface IUnitFactory : IFactory<IHexCell, IUnitTemplate, ICivilization, IUnit> {
+    public interface IUnitFactory {
 
         #region properties
 
         IEnumerable<IUnit> AllUnits { get; }
+
+        #endregion
+
+        #region methods
+
+        bool CanBuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner);
+
+        IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner);
 
         #endregion
 
