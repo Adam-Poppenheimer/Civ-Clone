@@ -77,11 +77,17 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         [Inject]
         public void InjectDependencies(
-            List<UnitDisplayBase> displaysToManage, UIStateMachineBrain brain,
-            ICombatExecuter combatExecuter, IUnitPositionCanon unitPositionCanon,
-            IHexGrid grid, IUnitTerrainCostLogic terrainCostLogic,
-            ICellPathDrawer pathDrawer, CitySignals citySignals, UnitSignals unitSignals,
-            HexCellSignals cellSignals, HexCellOverlayManager overlayManager,
+            List<UnitDisplayBase> displaysToManage,
+            UIStateMachineBrain brain,
+            ICombatExecuter combatExecuter,
+            IUnitPositionCanon unitPositionCanon,
+            IHexGrid grid,
+            IUnitTerrainCostLogic terrainCostLogic,
+            ICellPathDrawer pathDrawer,
+            CitySignals citySignals,
+            UnitSignals unitSignals,
+            HexCellSignals cellSignals,
+            HexCellOverlayManager overlayManager,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
@@ -120,6 +126,12 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             AttachEvents();
 
             Clear();
+        }
+
+        public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+            if(SelectedUnit == null) {
+                animator.SetTrigger("Return Requested");
+            }
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -210,6 +222,12 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private void OnUnitPointerExited(IUnit unit) {
             if(IsDragging) {
                 Clear();
+            }
+        }
+
+        private void OnUnitBeingDestroyed(IUnit unitBeingDestroyed) {
+            if(unitBeingDestroyed == SelectedUnit) {
+                SelectedUnit = null;
             }
         }
 
@@ -316,7 +334,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private void Clear() {
             OverlayManager.ClearAllOverlays();
-            if(SelectedUnit != null) {
+            if(SelectedUnit != null && SelectedUnitPosition != null) {
                 OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);
             }
 
@@ -331,10 +349,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void AttachEvents() {
-            EventSubscriptions.Add(UnitSignals.BeginDragSignal     .Subscribe(OnUnitBeginDrag));
-            EventSubscriptions.Add(UnitSignals.EndDragSignal       .Subscribe(OnUnitEndDrag));
-            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal.Subscribe(OnUnitPointerEntered));
-            EventSubscriptions.Add(UnitSignals.PointerExitedSignal .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.BeginDragSignal         .Subscribe(OnUnitBeginDrag));
+            EventSubscriptions.Add(UnitSignals.EndDragSignal           .Subscribe(OnUnitEndDrag));
+            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal    .Subscribe(OnUnitPointerEntered));
+            EventSubscriptions.Add(UnitSignals.PointerExitedSignal     .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed));
 
             EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
