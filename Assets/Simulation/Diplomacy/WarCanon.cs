@@ -37,7 +37,7 @@ namespace Assets.Simulation.Diplomacy {
         public bool AreAtWar(ICivilization civOne, ICivilization civTwo) {
             return ActiveWars.Where(data => 
                 (data.Attacker == civOne && data.Defender == civTwo) ||
-                (data.Defender == civOne && data.Attacker == civTwo)
+                (data.Attacker == civTwo && data.Defender == civOne)
             ).Count() > 0;
         }
 

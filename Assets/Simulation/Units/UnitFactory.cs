@@ -80,6 +80,7 @@ namespace Assets.Simulation.Units {
 
             newUnit.CurrentMovement = template.MaxMovement;
             newUnit.Hitpoints       = newUnit.MaxHitpoints;
+            newUnit.CanAttack       = true;
 
             allUnits.Add(newUnit);
 
