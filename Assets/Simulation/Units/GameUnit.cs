@@ -82,13 +82,23 @@ namespace Assets.Simulation.Units {
 
         public bool CanAttack { get; set; }
 
+        public bool IsReadyForRangedAttack {
+            get {
+                if(Template.MustSetUpToBombard) {
+                    return IsSetUpToBombard;
+                }else {
+                    return true;
+                }
+            }
+        }
+
         public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
             get { return Template.RequiredResources; }
         }
 
         public IUnitTemplate Template { get; set; }
 
-        public bool PreparedForRangedAttack {
+        public bool IsSetUpToBombard {
             get {
                 if(Template.MustSetUpToBombard) {
                     var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
@@ -104,6 +114,13 @@ namespace Assets.Simulation.Units {
             get {
                 var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
                 return currentStateInfo.IsName("Locked Into Construction");
+            }
+        }
+
+        public bool IsIdling {
+            get {
+                var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Idling");
             }
         }
 
@@ -188,8 +205,29 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public bool CanRelocate(IHexCell newLocation) {
+            if(newLocation == null) {
+                throw new ArgumentNullException("newLocation");
+            }
+
+            return PositionCanon.CanChangeOwnerOfPossession(this, newLocation);
+        }
+
+        public void Relocate(IHexCell newLocation) {
+            if(!CanRelocate(newLocation)) {
+                throw new InvalidOperationException("CanRelocate must return true on the given arguments");
+            }
+
+            if(CurrentPath != null) {
+                CurrentPath.Clear();
+            }
+            
+            PositionCanon.ChangeOwnerOfPossession(this, newLocation);
+            transform.position = newLocation.transform.position;
+        }
+
         public void SetUpToBombard() {
-            if(!PreparedForRangedAttack) {
+            if(!IsSetUpToBombard) {
                 Animator.SetTrigger("Set Up To Bombard Requested");
             }
         }
@@ -200,16 +238,18 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public void BeginIdling() {
+            if(!IsIdling) {
+                Animator.SetTrigger("Idling Requested");
+            }
+        }
+
         public void Destroy() {
             if(Application.isPlaying) {
                 Destroy(gameObject);
             }else {
                 DestroyImmediate(gameObject);
             }
-        }
-
-        public void SetParent(Transform newParent, bool worldPositionStays) {
-            transform.SetParent(newParent, worldPositionStays);
         }
 
         #endregion

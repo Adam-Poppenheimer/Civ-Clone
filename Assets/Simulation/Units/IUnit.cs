@@ -46,11 +46,13 @@ namespace Assets.Simulation.Units {
 
         bool CanAttack { get; set; }
 
+        bool IsReadyForRangedAttack { get; }
+
         IUnitTemplate Template { get; }
 
-        bool PreparedForRangedAttack { get; }
-
+        bool IsSetUpToBombard       { get; }
         bool LockedIntoConstruction { get; }
+        bool IsIdling               { get; }
 
         IEnumerable<IPromotion> Promotions { get; }
         
@@ -61,11 +63,14 @@ namespace Assets.Simulation.Units {
         void PerformMovement();
         void PerformMovement(bool ignoreMoveCosts);
 
+        bool CanRelocate(IHexCell newLocation);
+        void Relocate   (IHexCell newLocation);
+
         void SetUpToBombard();
         void LockIntoConstruction();
+        void BeginIdling();
 
         void Destroy();
-        void SetParent(Transform newParent, bool worldPositionStays);
 
         #endregion
 

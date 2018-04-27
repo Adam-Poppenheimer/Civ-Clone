@@ -49,17 +49,13 @@ namespace Assets.Simulation.Units {
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
-            possession.SetParent(null, true);
-
             Signals.LeftLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, oldOwner));
         }
 
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
             if(newOwner == null) {
                 return;
-            }
-
-            possession.SetParent(newOwner.transform, true);            
+            }         
 
             Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }

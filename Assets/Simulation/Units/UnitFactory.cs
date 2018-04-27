@@ -26,24 +26,26 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        private DiContainer Container;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
+        private DiContainer                                   Container;
+        private IUnitPositionCanon                            UnitPositionCanon;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private Transform                                     UnitContainer;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitFactory(DiContainer container, IUnitPositionCanon unitPositionCanon,
+        public UnitFactory(
+            DiContainer container, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            [Inject(Id = "Unit Container")] Transform unitContainer,
             UnitSignals signals
         ){
             Container           = container;
             UnitPositionCanon   = unitPositionCanon;
             UnitPossessionCanon = unitPossessionCanon;
+            UnitContainer       = unitContainer;
 
             signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
         }
@@ -74,7 +76,7 @@ namespace Assets.Simulation.Units {
 
             var newUnit = newUnitObject.GetComponent<GameUnit>();
 
-            newUnit.transform.SetParent(location.transform, false);
+            newUnit.transform.SetParent(UnitContainer, false);
 
             newUnit.Template = template;
 
@@ -90,8 +92,8 @@ namespace Assets.Simulation.Units {
                 throw new UnitCreationException("The newly created unit cannot be assigned to its owner");
             }
 
-            if(UnitPositionCanon.CanChangeOwnerOfPossession(newUnit, location)) {
-                UnitPositionCanon.ChangeOwnerOfPossession(newUnit, location);
+            if(newUnit.CanRelocate(location)) {
+                newUnit.Relocate(location);
             }else {
                 throw new UnitCreationException("The newly created unit cannot be placed at its location");
             }

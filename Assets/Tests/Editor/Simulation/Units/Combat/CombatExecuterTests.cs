@@ -984,7 +984,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 rangedAttackStrength:  attackerData.RangedAttackStrength,
                 attackRange:           attackerData.Range,
                 canAttack:             attackerData.CanAttack,
-                canMakeRangedAttack:   attackerData.CanMakeRangedAttack
+                isReadyForRangedAttack:   attackerData.CanMakeRangedAttack
             );
         }
 
@@ -996,7 +996,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 rangedAttackStrength:  0,
                 attackRange:           0,
                 canAttack:             true,
-                canMakeRangedAttack:   true
+                isReadyForRangedAttack:   true
             );
         }
 
@@ -1004,7 +1004,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             IHexCell location, int currentMovement,
             int combatStrength, int rangedAttackStrength,
             int attackRange, bool canAttack,
-            bool canMakeRangedAttack
+            bool isReadyForRangedAttack
         ){
             var mockUnit = new Mock<IUnit>();
 
@@ -1014,10 +1014,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
 
-            mockUnit.Setup(unit => unit.CombatStrength)      .Returns(combatStrength);
-            mockUnit.Setup(unit => unit.RangedAttackStrength).Returns(rangedAttackStrength);
-            mockUnit.Setup(unit => unit.AttackRange)         .Returns(attackRange);
-            mockUnit.Setup(unit => unit.PreparedForRangedAttack) .Returns(canMakeRangedAttack);
+            mockUnit.Setup(unit => unit.CombatStrength)        .Returns(combatStrength);
+            mockUnit.Setup(unit => unit.RangedAttackStrength)  .Returns(rangedAttackStrength);
+            mockUnit.Setup(unit => unit.AttackRange)           .Returns(attackRange);
+            mockUnit.Setup(unit => unit.IsReadyForRangedAttack).Returns(isReadyForRangedAttack);
 
             mockUnit.Object.CurrentMovement = currentMovement;
 

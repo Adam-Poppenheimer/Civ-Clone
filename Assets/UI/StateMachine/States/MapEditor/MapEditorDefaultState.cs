@@ -6,6 +6,9 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
+
+using Assets.Simulation.Units;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -14,7 +17,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region instance fields and properties
 
         private List<RectTransform> DefaultPanels;
-
         private UIStateMachineBrain Brain;
 
         #endregion
@@ -41,6 +43,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Brain.EnableCameraMovement();
             Brain.EnableCellHovering();
+            Brain.ListenForTransition(TransitionType.ToUnitSelected);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -28,6 +28,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private TechManagementPanel      TechManagementPanel;
         [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel;
         [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
+        [SerializeField] private UnitEditingPanel         UnitEditingPanel;
 
         [SerializeField] private GameObject SaveMapDisplay;
 
@@ -51,6 +52,7 @@ namespace Assets.UI.StateMachine {
             Container.Bind<TechManagementPanel>     ().FromInstance(TechManagementPanel);
             Container.Bind<ResourcePaintingPanel>   ().FromInstance(ResourcePaintingPanel);
             Container.Bind<ImprovementPaintingPanel>().FromInstance(ImprovementPaintingPanel);
+            Container.Bind<UnitEditingPanel>        ().FromInstance(UnitEditingPanel);
 
             Container.Bind<GameObject>()
                 .WithId("Save Map Display")

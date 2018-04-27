@@ -25,7 +25,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.SetUpToBombard).Count() != 0) {
-                return unit.CurrentMovement > 0 && !unit.PreparedForRangedAttack;
+                return unit.CurrentMovement > 0 && !unit.IsSetUpToBombard;
             }else {
                 return false;
             }

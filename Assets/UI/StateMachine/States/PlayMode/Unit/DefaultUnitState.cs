@@ -45,30 +45,18 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
 
 
-        private List<UnitDisplayBase> DisplaysToManage;
-
-        private UIStateMachineBrain Brain;
-
-        private ICombatExecuter CombatExecuter;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private IHexGrid Grid;
-
-        private IUnitTerrainCostLogic TerrainCostLogic;
-
-        private ICellPathDrawer PathDrawer;
-
-        private CitySignals CitySignals;
-
-        private UnitSignals UnitSignals;
-
-        private HexCellSignals CellSignals;
-
-        private HexCellOverlayManager OverlayManager;
-
-        private CombatSummaryDisplay CombatSummaryDisplay;
-
+        private List<UnitDisplayBase>                    DisplaysToManage;
+        private UIStateMachineBrain                      Brain;
+        private ICombatExecuter                          CombatExecuter;
+        private IUnitPositionCanon                       UnitPositionCanon;
+        private IHexGrid                                 Grid;
+        private IUnitTerrainCostLogic                    TerrainCostLogic;
+        private ICellPathDrawer                          PathDrawer;
+        private CitySignals                              CitySignals;
+        private UnitSignals                              UnitSignals;
+        private HexCellSignals                           CellSignals;
+        private HexCellOverlayManager                    OverlayManager;
+        private CombatSummaryDisplay                     CombatSummaryDisplay;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
@@ -195,10 +183,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             if(unitLocation != cell && UnitPositionCanon.CanChangeOwnerOfPossession(SelectedUnit, cell)) {
                 SetProspectiveTravelGoal(unitLocation, cell);
-                return;
+            }else {
+                Clear();
             }
-
-            Clear();
         }
 
         private void OnCellPointerExited(IHexCell cell) {

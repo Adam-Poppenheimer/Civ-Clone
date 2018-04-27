@@ -66,12 +66,13 @@ namespace Assets.Simulation.MapManagement {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 var unitData = new SerializableUnitData() {
-                    Location        = unitLocation.Coordinates,
-                    Template        = unit.Template.name,
-                    Owner           = unitOwner.Name,
-                    CurrentMovement = unit.CurrentMovement,
-                    Health          = unit.Hitpoints,
-                    CurrentPath     = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
+                    Location         = unitLocation.Coordinates,
+                    Template         = unit.Template.name,
+                    Owner            = unitOwner.Name,
+                    CurrentMovement  = unit.CurrentMovement,
+                    Hitpoints        = unit.Hitpoints,
+                    CurrentPath      = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
+                    IsSetUpToBombard = unit.IsSetUpToBombard
                 };
 
                 mapData.Units.Add(unitData);
@@ -87,10 +88,14 @@ namespace Assets.Simulation.MapManagement {
                 var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner);
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
-                newUnit.Hitpoints       = unitData.Health;
+                newUnit.Hitpoints       = unitData.Hitpoints;
 
                 if(unitData.CurrentPath != null) {
                     newUnit.CurrentPath = unitData.CurrentPath.Select(coord => Grid.GetCellAtCoordinates(coord)).ToList();
+                }
+
+                if(unitData.IsSetUpToBombard) {
+                    newUnit.SetUpToBombard();
                 }
             }
         }

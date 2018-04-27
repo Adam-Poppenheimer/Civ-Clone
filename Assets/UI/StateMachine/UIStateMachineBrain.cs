@@ -26,8 +26,8 @@ namespace Assets.UI.StateMachine {
 
         private static string ReturnTriggerName = "Return Requested";
 
-        private static string CityTriggerName = "City State Requested";
-        private static string UnitTriggerName = "Unit State Requested";
+        private static string CityTriggerName = "City Clicked";
+        private static string UnitTriggerName = "Unit Clicked";
 
         private static string EscapeMenuTriggerName = "Escape Menu Requested";
 

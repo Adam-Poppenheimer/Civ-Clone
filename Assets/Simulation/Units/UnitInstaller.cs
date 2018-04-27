@@ -18,9 +18,8 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private GameObject UnitPrefab;
-
         [SerializeField] private List<TerrainType> LandTerrainTypes;
+        [SerializeField] private Transform UnitContainer;
 
         #endregion
 
@@ -40,6 +39,8 @@ namespace Assets.Simulation.Units {
             Container.Bind<IEnumerable<IUnitTemplate>>()
                 .WithId("Available Unit Templates")
                 .FromInstance(unitTemplates);
+
+            Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 
             Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
 

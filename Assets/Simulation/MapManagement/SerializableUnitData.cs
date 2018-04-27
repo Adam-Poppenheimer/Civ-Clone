@@ -22,9 +22,11 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public float CurrentMovement;
 
-        [DataMember()] public int Health;
+        [DataMember()] public int Hitpoints;
 
         [DataMember()] public List<HexCoordinates> CurrentPath;
+
+        [DataMember()] public bool IsSetUpToBombard;
 
         #endregion
 
