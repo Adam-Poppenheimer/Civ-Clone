@@ -90,7 +90,7 @@ namespace Assets.UI.Units {
 
             RangedAttackButton.gameObject.SetActive(
                 ObjectToDisplay.CanAttack && ObjectToDisplay.CurrentMovement > 0 &&
-                ObjectToDisplay.PreparedForRangedAttack
+                ObjectToDisplay.PreparedForRangedAttack && ObjectToDisplay.RangedAttackStrength > 0
             );
         }
 

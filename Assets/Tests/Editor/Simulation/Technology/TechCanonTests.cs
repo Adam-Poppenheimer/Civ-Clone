@@ -263,12 +263,11 @@ namespace Assets.Tests.Simulation.Technology {
                 BuildBuildingTemplate(), BuildBuildingTemplate()
             };
 
-            var unassociatedBuildings = new List<IBuildingTemplate>() {
-                BuildBuildingTemplate(), BuildBuildingTemplate()
-            };
+            BuildBuildingTemplate();
+            BuildBuildingTemplate();
 
             var discoveredTech   = BuildTech("Discovered tech",   buildings: discoveredBuildings);
-            var undiscoveredTech = BuildTech("Undiscovered tech", buildings: undiscoveredBuildings);
+            BuildTech("Undiscovered tech", buildings: undiscoveredBuildings);
 
             var civ = BuildCivilization();
 
@@ -289,12 +288,11 @@ namespace Assets.Tests.Simulation.Technology {
                 BuildUnitTemplate(), BuildUnitTemplate()
             };
 
-            var unassociatedBuildings = new List<IUnitTemplate>() {
-                BuildUnitTemplate(), BuildUnitTemplate()
-            };
+            BuildUnitTemplate();
+            BuildUnitTemplate();
 
             var discoveredTech   = BuildTech("Discovered tech",   units: discoveredUnits);
-            var undiscoveredTech = BuildTech("Undiscovered tech", units: undiscoveredUnits);
+            BuildTech("Undiscovered tech", units: undiscoveredUnits);
 
             var civ = BuildCivilization();
 
@@ -322,7 +320,7 @@ namespace Assets.Tests.Simulation.Technology {
             var availableAbilities = discoveredAbilities.Concat(unassociatedAbilities);
 
             var discoveredTech   = BuildTech("Discovered tech",   abilities: discoveredAbilities);
-            var undiscoveredTech = BuildTech("Undiscovered tech", abilities: undiscoveredAbilities);
+            BuildTech("Undiscovered tech", abilities: undiscoveredAbilities);
 
             var civ = BuildCivilization();
 
@@ -350,7 +348,7 @@ namespace Assets.Tests.Simulation.Technology {
             var visibleResources = discoveredResources.Concat(unassociatedResources);
 
             var discoveredTech   = BuildTech("Discovered tech",   resources: discoveredResources);
-            var undiscoveredTech = BuildTech("Undiscovered tech", resources: undiscoveredResources);
+            BuildTech("Undiscovered tech", resources: undiscoveredResources);
 
             var civ = BuildCivilization();
 

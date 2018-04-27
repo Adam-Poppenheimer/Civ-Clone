@@ -46,6 +46,10 @@ namespace Assets.Simulation.Diplomacy {
         public void BuildResourceExchanges(
             ICivilization sender, ICivilization receiver, ExchangeSummary summary
         ) {
+            if(!CivilizationConnectionLogic.AreCivilizationsConnected(sender, receiver)) {
+                return;
+            }
+
             var tradeableOfSender = AvailableResources.Where(
                 resource => ResourceTransferCanon.GetTradeableCopiesOfResourceForCiv(resource, sender) > 0
             ).ToList();

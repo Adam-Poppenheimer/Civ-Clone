@@ -270,6 +270,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CombatSummaryDisplay.IsMeleeAttack = true;
 
             CombatSummaryDisplay.gameObject.SetActive(true);
+
+            CombatSummaryDisplay.Refresh();
         }
 
         private void SetCityToAttack(ICity city) {
@@ -284,6 +286,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CombatSummaryDisplay.IsMeleeAttack = true;
 
             CombatSummaryDisplay.gameObject.SetActive(true);
+
+            CombatSummaryDisplay.Refresh();
         }
 
         private void SetProspectiveTravelGoal(IHexCell unitLocation, IHexCell goal) {

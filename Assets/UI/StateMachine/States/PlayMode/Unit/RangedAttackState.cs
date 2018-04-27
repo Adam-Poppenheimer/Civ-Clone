@@ -234,7 +234,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = UnitToAttack;
+            CombatSummaryDisplay.IsMeleeAttack = false;
+
             CombatSummaryDisplay.gameObject.SetActive(true);
+
             CombatSummaryDisplay.Refresh();
         }
 
@@ -248,7 +251,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             CombatSummaryDisplay.AttackingUnit = SelectedUnit;
             CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
+            CombatSummaryDisplay.IsMeleeAttack = false;
+
             CombatSummaryDisplay.gameObject.SetActive(true);
+
+            CombatSummaryDisplay.Refresh();
         }
 
         private bool IsAttackValid() {
