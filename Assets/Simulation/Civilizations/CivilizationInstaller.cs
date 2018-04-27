@@ -55,7 +55,8 @@ namespace Assets.Simulation.Civilizations {
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
-            Container.Bind<VisibilityResponder>    ().AsSingle().NonLazy();
+            Container.Bind<IVisibilityResponder>().To<VisibilityResponder>().AsSingle().NonLazy();
+
             Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
 
             Container.Bind<ResourceTransferCanonSynchronizer>().AsSingle().NonLazy();

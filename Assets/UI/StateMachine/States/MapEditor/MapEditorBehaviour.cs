@@ -23,6 +23,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IMapComposer         MapComposer;
         private ICivilizationFactory CivFactory;
         private ITechCanon           TechCanon;
+        private IVisibilityResponder VisibilityResponder;
 
         #endregion
 
@@ -31,13 +32,15 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory, ITechCanon techCanon
+            ICivilizationFactory civFactory, ITechCanon techCanon,
+            IVisibilityResponder visibilityResponder
         ) {
-            Brain              = brain;
-            Grid               = grid;
-            MapComposer        = mapComposer;
-            CivFactory         = civFactory;
-            TechCanon          = techCanon;
+            Brain               = brain;
+            Grid                = grid;
+            MapComposer         = mapComposer;
+            CivFactory          = civFactory;
+            TechCanon           = techCanon;
+            VisibilityResponder = visibilityResponder;
         }
 
         #region from StateMachineBehaviour
@@ -50,13 +53,15 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             CivFactory.Create("Player Civilization", Color.red);
 
-            TechCanon.IgnoreResourceVisibility = true;
+            TechCanon.IgnoreResourceVisibility   = true;
+            VisibilityResponder.UpdateVisibility = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            MapComposer.ClearRuntime();
+            TechCanon.IgnoreResourceVisibility   = false;
+            VisibilityResponder.UpdateVisibility = false;
 
-            TechCanon.IgnoreResourceVisibility = false;
+            MapComposer.ClearRuntime();
         }
 
         #endregion

@@ -24,7 +24,7 @@ namespace Assets.Simulation.MapManagement {
         private ImprovementComposer  ImprovementComposer;
         private ResourceComposer     ResourceComposer;
         private DiplomacyComposer    DiplomacyComposer;
-        private VisibilityResponder  VisibilityResponder;
+        private IVisibilityResponder VisibilityResponder;
         private ICellVisibilityCanon CellVisibilityCanon;
         private MonoBehaviour        CoroutineInvoker;
 
@@ -41,7 +41,7 @@ namespace Assets.Simulation.MapManagement {
             ImprovementComposer  improvementComposer,
             ResourceComposer     resourceComposer,
             DiplomacyComposer    diplomacyComposer,
-            VisibilityResponder  visibilityResponder,
+            IVisibilityResponder visibilityResponder,
             ICellVisibilityCanon cellVisibilityCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
@@ -99,6 +99,8 @@ namespace Assets.Simulation.MapManagement {
         }
 
         private IEnumerator ClearRuntimeCoroutine() {
+            var oldVisibility = VisibilityResponder.UpdateVisibility;
+
             VisibilityResponder.UpdateVisibility = false;
 
             ImprovementComposer .ClearRuntime();
@@ -114,7 +116,7 @@ namespace Assets.Simulation.MapManagement {
 
             CellVisibilityCanon.ClearVisibility();
 
-            VisibilityResponder.UpdateVisibility = true;
+            VisibilityResponder.UpdateVisibility = oldVisibility;
         }
 
         #endregion

@@ -16,11 +16,15 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Civilizations {
 
-    public class VisibilityResponder {
+    public class VisibilityResponder : IVisibilityResponder {
 
         #region instance fields and properties
 
+        #region from IVisibilityResponder
+
         public bool UpdateVisibility { get; set; }
+
+        #endregion
 
         private Coroutine ResetVisionCoroutine;
 
@@ -82,6 +86,16 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
+        #region from IVisibilityResponder
+
+        public void TryResetAllVisibility() {
+            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
+            }
+        }
+
+        #endregion
+
         private IEnumerator ResetVisibility() {
             yield return new WaitForEndOfFrame();
 
@@ -132,12 +146,6 @@ namespace Assets.Simulation.Civilizations {
 
         private void OnCivGainedCity(Tuple<ICivilization, ICity> data) {
             TryResetAllVisibility();
-        }
-
-        private void TryResetAllVisibility() {
-            if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
-                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
-            }
         }
 
         #endregion

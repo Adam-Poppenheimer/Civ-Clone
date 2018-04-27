@@ -28,15 +28,13 @@ namespace Assets.Simulation.Diplomacy {
 
         #endregion
 
-        private IYieldFormatter YieldFormatter;
-
         #endregion
 
         #region constructors
 
         [Inject]
-        public GoldDiplomaticExchange(IYieldFormatter yieldFormatter) {
-            YieldFormatter = yieldFormatter;
+        public GoldDiplomaticExchange() {
+            
         }
 
         #endregion

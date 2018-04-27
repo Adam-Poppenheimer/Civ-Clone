@@ -16,15 +16,13 @@ namespace Assets.Simulation.Civilizations {
         private Dictionary<ICivilization, ICity> CapitalDictionary = 
             new Dictionary<ICivilization, ICity>();
 
-        private CivilizationSignals CivSignals;
-
         #endregion
 
         #region constructors
 
         [Inject]
-        public CapitalCityCanon(CivilizationSignals civSignals) {
-            CivSignals = civSignals;
+        public CapitalCityCanon() {
+            
         }
 
         #endregion
