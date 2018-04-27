@@ -112,6 +112,14 @@ namespace Assets.Simulation.Diplomacy {
             }
         }
 
+        public void ClearProposals() {
+            ActiveProposals.Clear();
+        }
+
+        public void ClearOngoingDeals() {
+            ActiveDeals.Clear();
+        }
+
         #endregion
 
         private void HandleTerminationRequest(object sender, OngoingDealEventArgs args) {
@@ -119,7 +127,7 @@ namespace Assets.Simulation.Diplomacy {
         }
 
         #endregion
-        
+
     }
 
 }

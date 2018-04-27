@@ -25,6 +25,8 @@ namespace Assets.Simulation.Diplomacy {
 
         IEnumerable<WarData> GetAllActiveWars();
 
+        void Clear();
+
         #endregion
 
     }

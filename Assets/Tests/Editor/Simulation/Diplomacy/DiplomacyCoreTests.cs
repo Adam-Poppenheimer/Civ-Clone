@@ -371,6 +371,124 @@ namespace Assets.Tests.Simulation.Diplomacy {
             );
         }
 
+        [Test(Description = "")]
+        public void ClearProposals_AllProposalsRemoved() {
+            var civOne   = BuildCivilization();
+            var civTwo   = BuildCivilization();
+            var civThree = BuildCivilization();
+
+            var oneTwoProposal   = BuildProposal(civOne, civTwo,   true);
+            var oneThreeProposal = BuildProposal(civOne, civThree, true);
+
+            var TwoOneProposal   = BuildProposal(civTwo, civOne,   true);
+            var TwoThreeProposal = BuildProposal(civTwo, civThree, true);
+
+            var ThreeOneProposal = BuildProposal(civThree, civOne, true);
+            var ThreeTwoProposal = BuildProposal(civThree, civTwo, true);
+
+            var diplomacyCore = Container.Resolve<DiplomacyCore>();
+
+            diplomacyCore.SendProposal(oneTwoProposal);
+            diplomacyCore.SendProposal(oneThreeProposal);
+
+            diplomacyCore.SendProposal(TwoOneProposal);
+            diplomacyCore.SendProposal(TwoThreeProposal);
+
+            diplomacyCore.SendProposal(ThreeOneProposal);
+            diplomacyCore.SendProposal(ThreeTwoProposal);
+
+            diplomacyCore.ClearProposals();
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsSentFromCiv(civOne),
+                "GetProposalsSentFromCiv(civOne) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsSentFromCiv(civTwo),
+                "GetProposalsSentFromCiv(civTwo) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsSentFromCiv(civThree),
+                "GetProposalsSentFromCiv(civThree) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsReceivedByCiv(civOne),
+                "GetProposalsReceivedByCiv(civOne) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsReceivedByCiv(civTwo),
+                "GetProposalsReceivedByCiv(civTwo) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetProposalsReceivedByCiv(civThree),
+                "GetProposalsReceivedByCiv(civThree) is non-empty"
+            );
+        }
+
+        [Test(Description = "")]
+        public void ClearOngoingDeals_AllDealsCleared() {
+            var civOne   = BuildCivilization();
+            var civTwo   = BuildCivilization();
+            var civThree = BuildCivilization();
+
+            var oneTwoDeal   = BuildOngoingDeal(civOne, civTwo);
+            var oneThreeDeal = BuildOngoingDeal(civOne, civThree);
+
+            var TwoOneDeal   = BuildOngoingDeal(civTwo, civOne);
+            var TwoThreeDeal = BuildOngoingDeal(civTwo, civThree);
+
+            var ThreeOneDeal = BuildOngoingDeal(civThree, civOne);
+            var ThreeTwoDeal = BuildOngoingDeal(civThree, civTwo);
+
+            var diplomacyCore = Container.Resolve<DiplomacyCore>();
+
+            diplomacyCore.SubscribeOngoingDeal(oneTwoDeal);
+            diplomacyCore.SubscribeOngoingDeal(oneThreeDeal);
+
+            diplomacyCore.SubscribeOngoingDeal(TwoOneDeal);
+            diplomacyCore.SubscribeOngoingDeal(TwoThreeDeal);
+
+            diplomacyCore.SubscribeOngoingDeal(ThreeOneDeal);
+            diplomacyCore.SubscribeOngoingDeal(ThreeTwoDeal);
+
+            diplomacyCore.ClearOngoingDeals();
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsSentFromCiv(civOne),
+                "GetOngoingDealsSentFromCiv(civOne) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsSentFromCiv(civTwo),
+                "GetOngoingDealsSentFromCiv(civTwo) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsSentFromCiv(civThree),
+                "GetOngoingDealsSentFromCiv(civThree) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsReceivedByCiv(civOne),
+                "GetOngoingDealsReceivedByCiv(civOne) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsReceivedByCiv(civTwo),
+                "GetOngoingDealsReceivedByCiv(civTwo) is non-empty"
+            );
+
+            CollectionAssert.IsEmpty(
+                diplomacyCore.GetOngoingDealsReceivedByCiv(civThree),
+                "GetOngoingDealsReceivedByCiv(civThree) is non-empty"
+            );
+        }
+
         #endregion
 
         #region utilities

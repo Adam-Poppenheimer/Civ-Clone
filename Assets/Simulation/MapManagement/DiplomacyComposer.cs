@@ -51,6 +51,12 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance methods
 
+        public void ClearRuntime() {
+            WarCanon.Clear();
+            DiplomacyCore.ClearProposals();
+            DiplomacyCore.ClearOngoingDeals();
+        }
+
         public void ComposeDiplomacy(SerializableMapData mapData) {
             var diplomacyData = new SerializableDiplomacyData();
 

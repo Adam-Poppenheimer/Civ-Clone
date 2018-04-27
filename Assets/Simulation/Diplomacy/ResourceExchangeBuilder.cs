@@ -46,6 +46,14 @@ namespace Assets.Simulation.Diplomacy {
         public void BuildResourceExchanges(
             ICivilization sender, ICivilization receiver, ExchangeSummary summary
         ) {
+            if(sender == null) {
+                throw new ArgumentNullException("sender");
+            }
+
+            if(receiver == null) {
+                throw new ArgumentNullException("receiver");
+            }
+
             if(!CivilizationConnectionLogic.AreCivilizationsConnected(sender, receiver)) {
                 return;
             }

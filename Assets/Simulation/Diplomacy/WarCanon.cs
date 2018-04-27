@@ -96,6 +96,10 @@ namespace Assets.Simulation.Diplomacy {
             return ActiveWars;
         }
 
+        public void Clear() {
+            ActiveWars.Clear();
+        }
+
         #endregion
 
         #endregion

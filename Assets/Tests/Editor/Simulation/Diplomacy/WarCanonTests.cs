@@ -395,6 +395,29 @@ namespace Assets.Tests.Simulation.Diplomacy {
             );
         }
 
+        [Test(Description = "")]
+        public void Clear_AllWarRelationsRemoved() {
+            var attackerOne   = BuildCivilization(new CivilizationTestData());
+            var attackerTwo   = BuildCivilization(new CivilizationTestData());
+            var attackerThree = BuildCivilization(new CivilizationTestData());
+
+            var defenderOne   = BuildCivilization(new CivilizationTestData());
+            var defenderTwo   = BuildCivilization(new CivilizationTestData());
+            var defenderThree = BuildCivilization(new CivilizationTestData());
+
+            var warCanon = Container.Resolve<WarCanon>();
+
+            warCanon.DeclareWar(attackerOne,   defenderOne);
+            warCanon.DeclareWar(attackerTwo,   defenderTwo);
+            warCanon.DeclareWar(attackerThree, defenderThree);
+
+            warCanon.Clear();
+
+            Assert.IsFalse(warCanon.AreAtWar(attackerOne,   defenderOne),   "attackerOne and defenderOne are still at war");
+            Assert.IsFalse(warCanon.AreAtWar(attackerTwo,   defenderTwo),   "attackerTwo and defenderTwo are still at war");
+            Assert.IsFalse(warCanon.AreAtWar(attackerThree, defenderThree), "attackerThree and defenderThree are still at war");
+        }
+
         #endregion
 
         #region utilities

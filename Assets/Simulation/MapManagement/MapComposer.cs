@@ -105,6 +105,7 @@ namespace Assets.Simulation.MapManagement {
             CityComposer        .ClearRuntime();
             UnitComposer        .ClearRuntime();
             ResourceComposer    .ClearRuntime();
+            DiplomacyComposer   .ClearRuntime();
             CivilizationComposer.ClearRuntime();
 
             yield return new WaitForEndOfFrame();

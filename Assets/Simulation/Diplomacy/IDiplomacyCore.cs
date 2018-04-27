@@ -21,6 +21,8 @@ namespace Assets.Simulation.Diplomacy {
 
         void SendProposal(IDiplomaticProposal proposal);
 
+        void ClearProposals();
+
 
 
         IEnumerable<IOngoingDeal> GetOngoingDealsReceivedByCiv(ICivilization civ);
@@ -32,6 +34,8 @@ namespace Assets.Simulation.Diplomacy {
         void UnsubscribeOngoingDeal(IOngoingDeal exchange);
 
         void UpdateOngoingDeals();
+
+        void ClearOngoingDeals();
 
         #endregion
 
