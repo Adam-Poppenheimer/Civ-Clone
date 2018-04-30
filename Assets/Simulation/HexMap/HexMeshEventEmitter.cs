@@ -69,6 +69,11 @@ namespace Assets.Simulation.HexMap {
 
                 if(hit.collider == Collider) {
                     var coordinates = HexCoordinates.FromPosition(hit.point);
+
+                    if(!Grid.HasCellAtCoordinates(coordinates)) {
+                        return;
+                    }
+
                     var clickedCell = Grid.GetCellAtCoordinates(coordinates);
 
                     var cityAtLocation = GetCityAtLocation(clickedCell);
@@ -109,7 +114,7 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
                 if(hit.collider == Collider) {
                     var coordinates = HexCoordinates.FromPosition(hit.point);
-                    return Grid.GetCellAtCoordinates(coordinates);
+                    return Grid.HasCellAtCoordinates(coordinates) ? Grid.GetCellAtCoordinates(coordinates) : null;
                 }
             }
 
@@ -121,7 +126,7 @@ namespace Assets.Simulation.HexMap {
                 (Input.GetAxis("Mouse X") != 0 || Input.GetAxis("Mouse Y") != 0)
             ){
                 var cellUnderMouse = GetCellUnderPosition(Input.mousePosition);
-                if(cellUnderMouse != LastCellEntered) {
+                if(cellUnderMouse != null && cellUnderMouse != LastCellEntered) {
                     if(LastCellEntered != null) {
                         var cityAtLocation = GetCityAtLocation(LastCellEntered);
 
