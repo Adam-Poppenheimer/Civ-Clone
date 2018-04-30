@@ -20,19 +20,30 @@ namespace Assets.UI.MapEditor {
 
         private ISpecialtyResourceDefinition ActiveResource;
 
-        private int ActiveCopies;
+        private int ActiveCopies {
+            get { return _activeCopies; }
+            set {
+                _activeCopies = value;
+                CopiesField.text = _activeCopies.ToString();
+                CopiesSlider.value = value;
+            }
+        }
+        private int _activeCopies;
 
         private bool IsDeleting = false;
 
-        [SerializeField] private RectTransform ResourceRecordPrefab;
+        [SerializeField] private RectTransform CopiesSection;
+        [SerializeField] private Text          CopiesField;
+        [SerializeField] private Slider        CopiesSlider;
 
+        [SerializeField] private RectTransform ResourceRecordPrefab;
         [SerializeField] private RectTransform ResourceRecordContainer;
 
 
 
         private IResourceNodeFactory ResourceNodeFactory;
 
-        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
+        private List<ISpecialtyResourceDefinition> AvailableResources;
 
         private HexCellSignals CellSignals;
 
@@ -48,7 +59,7 @@ namespace Assets.UI.MapEditor {
             HexCellSignals cellSignals, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
         ){
             ResourceNodeFactory = resourceNodeFactory;
-            AvailableResources        = availableResources;
+            AvailableResources  = new List<ISpecialtyResourceDefinition>(availableResources);
             CellSignals         = cellSignals;
             NodePositionCanon   = nodePositionCanon;
         }
@@ -69,35 +80,44 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
-        public void SetActiveCopies(string newValue) {
-            ActiveCopies = Int32.Parse(newValue);
+        public void SetActiveCopies(float newValue) {
+            ActiveCopies = Mathf.RoundToInt(newValue);
         }
 
         public void SetIsDeleting(bool newValue) {
             IsDeleting = newValue;
         }
 
-        private void BuildResourceRecords() {
-            var sortedResources = new List<ISpecialtyResourceDefinition>(AvailableResources);
-            sortedResources.Sort(ResourceSorter);
+        public void SetActiveResource(int index) {
+            ActiveResource = AvailableResources[index];
 
-            foreach(var resource in sortedResources) {
-                var cachedResource = resource;
+            var shouldHaveCopies = ActiveResource.Type == SpecialtyResourceType.Strategic;
+
+            CopiesSection.gameObject.SetActive(shouldHaveCopies);
+
+            ActiveCopies = shouldHaveCopies ? ActiveCopies : 1;
+        }
+
+        private void BuildResourceRecords() {
+            AvailableResources.Sort(ResourceSorter);
+
+            for(int i = 0; i < AvailableResources.Count; i++) {
+                var cachedIndex = i;
 
                 var newRecord = Instantiate(ResourceRecordPrefab);
 
                 var recordText   = newRecord.GetComponentInChildren<Text>();
                 var recordToggle = newRecord.GetComponentInChildren<Toggle>();
 
-                recordText.text = cachedResource.name;
+                recordText.text = AvailableResources[i].name;
                 recordToggle.onValueChanged.AddListener(delegate(bool isOn) {
                     if(isOn) {
-                        ActiveResource = cachedResource;
+                        SetActiveResource(cachedIndex);
                     }
                 });
 
                 if(ActiveResource == null && recordToggle.isOn) {
-                    ActiveResource = cachedResource;
+                    SetActiveResource(cachedIndex);
                 }
 
                 newRecord.gameObject.SetActive(true);
