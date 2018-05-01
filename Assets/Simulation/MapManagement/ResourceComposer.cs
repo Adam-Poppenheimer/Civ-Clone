@@ -43,7 +43,7 @@ namespace Assets.Simulation.MapManagement {
         public void ClearRuntime() {
             foreach(var node in new List<IResourceNode>(NodeFactory.AllNodes)) {
                 NodeLocationCanon.ChangeOwnerOfPossession(node, null);
-                GameObject.Destroy(node.gameObject);
+                node.Destroy();
             }
         }
 
@@ -55,7 +55,7 @@ namespace Assets.Simulation.MapManagement {
 
                 var newNodeData = new SerializableResourceNodeData() {
                     Location = nodeLocation.Coordinates,
-                    Resource = node.Resource.name,
+                    ResourceName = node.Resource.name,
                     Copies   = node.Copies
                 };
 
@@ -67,7 +67,7 @@ namespace Assets.Simulation.MapManagement {
             foreach(var nodeData in mapData.ResourceNodes) {
                 var nodeLocation = Grid.GetCellAtCoordinates(nodeData.Location);
                 var nodeResource = AvailableSpecialtyResources.Where(
-                    resource => resource.name.Equals(nodeData.Resource)
+                    resource => resource.name.Equals(nodeData.ResourceName)
                 ).First();
 
                 NodeFactory.BuildNode(nodeLocation, nodeResource, nodeData.Copies);

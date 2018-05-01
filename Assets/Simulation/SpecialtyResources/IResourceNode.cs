@@ -17,7 +17,11 @@ namespace Assets.Simulation.SpecialtyResources {
 
         bool IsVisible { get; set; }
 
-        GameObject gameObject { get; }
+        #endregion
+
+        #region methods
+
+        void Destroy();
 
         #endregion
 

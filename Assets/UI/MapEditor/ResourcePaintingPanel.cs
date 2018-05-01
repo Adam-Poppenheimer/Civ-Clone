@@ -129,7 +129,7 @@ namespace Assets.UI.MapEditor {
             if(IsDeleting) {
                 var nodeOnCell = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
                 if(nodeOnCell != null) {
-                    Destroy(nodeOnCell.gameObject);
+                    nodeOnCell.Destroy();
                 }
             }else if(ActiveResource != null && ResourceNodeFactory.CanBuildNode(cell, ActiveResource)){
                 ResourceNodeFactory.BuildNode(cell, ActiveResource, ActiveCopies);

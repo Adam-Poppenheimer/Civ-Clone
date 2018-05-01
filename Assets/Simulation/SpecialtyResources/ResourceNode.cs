@@ -61,6 +61,18 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #endregion
 
+        #region from IResourceNode
+
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
+        }
+
+        #endregion
+
         #endregion
 
     }

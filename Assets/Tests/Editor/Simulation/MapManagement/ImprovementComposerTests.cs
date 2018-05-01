@@ -201,32 +201,6 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void DecomposeImprovements_ConvertsTemplateProperly() {
-            var mapData = new SerializableMapData() {
-                Improvements = new List<SerializableImprovementData>() {
-                    new SerializableImprovementData() {
-                        Location = new HexCoordinates(0, 0), Template = "Template One"
-                    }
-                }
-            };
-
-            var templateToBuild = BuildImprovementTemplate("Template One");
-
-            BuildHexCell(new HexCoordinates(0, 0));
-
-            var composer = Container.Resolve<ImprovementComposer>();
-
-            composer.DecomposeImprovements(mapData);
-
-            MockImprovementFactory.Verify(
-                factory => factory.BuildImprovement(
-                    templateToBuild, It.IsAny<IHexCell>(), It.IsAny<int>(),
-                    It.IsAny<bool>(), It.IsAny<bool>()
-                ), Times.Once, "BuildImprovement was not called with the expected template argument"
-            );
-        }
-
-        [Test]
         public void DecomposeImprovements_ConvertsLocationProperly() {
             var mapData = new SerializableMapData() {
                 Improvements = new List<SerializableImprovementData>() {
@@ -249,6 +223,32 @@ namespace Assets.Tests.Simulation.MapManagement {
                     It.IsAny<IImprovementTemplate>(), location, It.IsAny<int>(),
                     It.IsAny<bool>(), It.IsAny<bool>()
                 ), Times.Once, "BuildImprovement was not called with the expected location argument"
+            );
+        }
+
+        [Test]
+        public void DecomposeImprovements_ConvertsTemplateProperly() {
+            var mapData = new SerializableMapData() {
+                Improvements = new List<SerializableImprovementData>() {
+                    new SerializableImprovementData() {
+                        Location = new HexCoordinates(0, 0), Template = "Template One"
+                    }
+                }
+            };
+
+            var templateToBuild = BuildImprovementTemplate("Template One");
+
+            BuildHexCell(new HexCoordinates(0, 0));
+
+            var composer = Container.Resolve<ImprovementComposer>();
+
+            composer.DecomposeImprovements(mapData);
+
+            MockImprovementFactory.Verify(
+                factory => factory.BuildImprovement(
+                    templateToBuild, It.IsAny<IHexCell>(), It.IsAny<int>(),
+                    It.IsAny<bool>(), It.IsAny<bool>()
+                ), Times.Once, "BuildImprovement was not called with the expected template argument"
             );
         }
 

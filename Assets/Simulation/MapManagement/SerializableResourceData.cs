@@ -13,7 +13,7 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [DataMember()] public string         Resource;
+        [DataMember()] public string         ResourceName;
         [DataMember()] public HexCoordinates Location;
         [DataMember()] public int            Copies;
 
