@@ -42,14 +42,14 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var cell in Grid.AllCells) {
                 var newCellData = new SerializableHexCellData() {
-                    Coordinates  = cell.Coordinates,
-                    Terrain      = cell.Terrain,
-                    Feature      = cell.Feature,
-                    Shape        = cell.Shape,
-                    Elevation    = cell.FoundationElevation,
-                    WaterLevel   = cell.WaterLevel,
-                    SuppressSlot = cell.SuppressSlot,
-                    HasRoads     = cell.HasRoads,
+                    Coordinates         = cell.Coordinates,
+                    Terrain             = cell.Terrain,
+                    Feature             = cell.Feature,
+                    Shape               = cell.Shape,
+                    FoundationElevation = cell.FoundationElevation,
+                    WaterLevel          = cell.WaterLevel,
+                    SuppressSlot        = cell.SuppressSlot,
+                    HasRoads            = cell.HasRoads,
 
                     HasOutgoingRiver = RiverCanon.HasOutgoingRiver(cell),
                     OutgoingRiver    = RiverCanon.GetOutgoingRiver(cell),
@@ -71,7 +71,7 @@ namespace Assets.Simulation.MapManagement {
                 cellToModify.Terrain             = cellData.Terrain;
                 cellToModify.Feature             = cellData.Feature;
                 cellToModify.Shape               = cellData.Shape;
-                cellToModify.FoundationElevation = cellData.Elevation;
+                cellToModify.FoundationElevation = cellData.FoundationElevation;
                 cellToModify.WaterLevel          = cellData.WaterLevel;
                 cellToModify.SuppressSlot        = cellData.SuppressSlot;
                 cellToModify.HasRoads            = cellData.HasRoads;
