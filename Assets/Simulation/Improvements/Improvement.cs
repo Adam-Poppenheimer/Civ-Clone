@@ -91,6 +91,14 @@ namespace Assets.Simulation.Improvements {
             }
         }
 
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
+        }
+
         #endregion
 
         #endregion

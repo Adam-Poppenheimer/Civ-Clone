@@ -97,7 +97,7 @@ namespace Assets.Simulation.Units.Abilities {
 
                 if(improvementAtLocation != null) {
                     ImprovementLocationCanon.ChangeOwnerOfPossession(improvementAtLocation, null);
-                    GameObject.Destroy(improvementAtLocation.gameObject);
+                    improvementAtLocation.Destroy();
                 }
 
                 var newImprovement = ImprovementFactory.BuildImprovement(templateOfName, unitLocation);

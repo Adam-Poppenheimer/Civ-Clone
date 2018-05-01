@@ -128,7 +128,7 @@ namespace Assets.UI.MapEditor {
 
         private void TryRemoveImprovementsFrom(IHexCell location) {
             foreach(var improvement in new List<IImprovement>(ImprovementLocationCanon.GetPossessionsOfOwner(location))) {
-                Destroy(improvement.gameObject);
+                improvement.Destroy();
             }
         }
 

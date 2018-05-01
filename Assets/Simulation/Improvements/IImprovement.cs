@@ -23,8 +23,6 @@ namespace Assets.Simulation.Improvements {
 
         Transform transform { get; }
 
-        GameObject gameObject { get; }
-
         #endregion
 
         #region methods
@@ -32,6 +30,8 @@ namespace Assets.Simulation.Improvements {
         void Construct();
 
         void Pillage();
+
+        void Destroy();
 
         #endregion
 
