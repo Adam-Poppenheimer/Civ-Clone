@@ -39,8 +39,6 @@ namespace Assets.Simulation.Civilizations {
 
         Queue<ITechDefinition> TechQueue { get; }
 
-        GameObject gameObject { get; }
-
         #endregion
 
         #region methods
@@ -52,6 +50,8 @@ namespace Assets.Simulation.Civilizations {
         void PerformIncome();
 
         void PerformResearch();
+
+        void Destroy();
 
         #endregion
 

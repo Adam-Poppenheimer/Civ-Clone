@@ -71,6 +71,8 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
+        #region from ICivilization
+
         /// <inheritdoc/>
         public void PerformIncome() {
             var yield = YieldLogic.GetYieldOfCivilization(this);
@@ -97,6 +99,16 @@ namespace Assets.Simulation.Civilizations {
                 }
             }
         }
+
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
+        }
+
+        #endregion
 
         #endregion
 

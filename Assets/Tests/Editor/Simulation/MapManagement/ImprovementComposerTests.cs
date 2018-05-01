@@ -210,7 +210,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                 }
             };
 
-            var templateToBuild = BuildImprovementTemplate("Template One");
+            BuildImprovementTemplate("Template One");
 
             var location = BuildHexCell(new HexCoordinates(0, 0));
 
@@ -263,9 +263,9 @@ namespace Assets.Tests.Simulation.MapManagement {
                 }
             };
 
-            var templateToBuild = BuildImprovementTemplate("Template One");
+            BuildImprovementTemplate("Template One");
 
-            var location = BuildHexCell(new HexCoordinates(0, 0));
+            BuildHexCell(new HexCoordinates(0, 0));
 
             var composer = Container.Resolve<ImprovementComposer>();
 

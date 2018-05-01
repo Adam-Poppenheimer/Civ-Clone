@@ -192,7 +192,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                 }
             };
 
-            var resourceInNewnode = BuildResourceDefinition("Resource One");
+            BuildResourceDefinition("Resource One");
 
             var location = BuildHexCell(new HexCoordinates(2, 3));
 
@@ -219,7 +219,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var resourceInNewNode = BuildResourceDefinition("Resource One");
 
-            var location = BuildHexCell(new HexCoordinates(2, 3));
+            BuildHexCell(new HexCoordinates(2, 3));
 
             var composer = Container.Resolve<ResourceComposer>();
 
@@ -242,9 +242,9 @@ namespace Assets.Tests.Simulation.MapManagement {
                 }
             };
 
-            var resourceInNewNode = BuildResourceDefinition("Resource One");
+            BuildResourceDefinition("Resource One");
 
-            var location = BuildHexCell(new HexCoordinates(2, 3));
+            BuildHexCell(new HexCoordinates(2, 3));
 
             var composer = Container.Resolve<ResourceComposer>();
 

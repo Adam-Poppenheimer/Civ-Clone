@@ -18,10 +18,8 @@ namespace Assets.Simulation.MapManagement {
         #region instance fields and properties
 
         private ICivilizationFactory CivilizationFactory;
-
-        private ITechCanon TechCanon;
-
-        private IGameCore GameCore;
+        private ITechCanon           TechCanon;
+        private IGameCore            GameCore;
 
         private List<ITechDefinition> AvailableTechs;
 
@@ -46,7 +44,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var civ in new List<ICivilization>(CivilizationFactory.AllCivilizations)) {
-                GameObject.Destroy(civ.gameObject);
+                civ.Destroy();
             }
         }
 
@@ -99,7 +97,7 @@ namespace Assets.Simulation.MapManagement {
                 newCiv.CultureStockpile = civData.CultureStockpile;
 
                 if(civData.TechQueue != null) {
-                    for(int i = civData.TechQueue.Count - 1; i >= 0; i--) {
+                    for(int i = 0; i < civData.TechQueue.Count; i++) {
                         var techName = civData.TechQueue[i];
 
                         var techOfName = AvailableTechs.Where(tech => tech.Name.Equals(techName)).FirstOrDefault();
