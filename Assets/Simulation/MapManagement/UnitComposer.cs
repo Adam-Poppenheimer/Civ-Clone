@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using Zenject;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.MapManagement {
