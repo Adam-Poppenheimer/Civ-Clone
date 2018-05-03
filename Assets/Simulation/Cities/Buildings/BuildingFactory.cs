@@ -13,6 +13,15 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
+        #region from IBuildingFactory
+
+        public IEnumerable<IBuilding> AllBuildings {
+            get { return allBuildings; }
+        }
+        private List<IBuilding> allBuildings = new List<IBuilding>();
+
+        #endregion
+
         private IBuildingProductionValidityLogic          ValidityLogic;
         private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
         private IWorkerSlotFactory                        WorkerSlotFactory;
@@ -92,6 +101,8 @@ namespace Assets.Simulation.Cities.Buildings {
                 throw new BuildingCreationException("The building produced from this template cannot be placed into this city");
             }
             PossessionCanon.ChangeOwnerOfPossession(newBuilding, city);
+
+            allBuildings.Add(newBuilding);
 
             return newBuilding;
         }        

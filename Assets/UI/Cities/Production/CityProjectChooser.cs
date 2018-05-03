@@ -12,6 +12,7 @@ using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Units;
 using Assets.Simulation.Technology;
 
@@ -29,15 +30,12 @@ namespace Assets.UI.Cities.Production {
 
 
 
-        private IBuildingProductionValidityLogic BuildingValidityLogic;
-
-        private IUnitProductionValidityLogic UnitValidityLogic;
-
-        private ITechCanon TechCanon;
-
+        private IBuildingProductionValidityLogic              BuildingValidityLogic;
+        private IUnitProductionValidityLogic                  UnitValidityLogic;
+        private ITechCanon                                    TechCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private DiContainer Container;
+        private IProductionProjectFactory                     ProjectFactory;
+        private DiContainer                                   Container;
 
         #endregion
 
@@ -75,7 +73,9 @@ namespace Assets.UI.Cities.Production {
 
                 newRecord.UnitTemplate = unitTemplate;
                 newRecord.SelectionButton.interactable = UnitValidityLogic.IsTemplateValidForCity(unitTemplate, ObjectToDisplay);
-                newRecord.SelectionButton.onClick.AddListener(() => ObjectToDisplay.SetActiveProductionProject(unitTemplate));
+                newRecord.SelectionButton.onClick.AddListener(
+                    () => ObjectToDisplay.ActiveProject = ProjectFactory.ConstructProject(unitTemplate)
+                );
 
                 newRecord.Refresh();
 
@@ -87,7 +87,9 @@ namespace Assets.UI.Cities.Production {
 
                 newRecord.BuildingTemplate = buildingTemplate;
                 newRecord.SelectionButton.interactable = BuildingValidityLogic.IsTemplateValidForCity(buildingTemplate, ObjectToDisplay);
-                newRecord.SelectionButton.onClick.AddListener(() => ObjectToDisplay.SetActiveProductionProject(buildingTemplate));
+                newRecord.SelectionButton.onClick.AddListener(
+                    () => ObjectToDisplay.ActiveProject = ProjectFactory.ConstructProject(buildingTemplate)
+                );
 
                 newRecord.Refresh();
 

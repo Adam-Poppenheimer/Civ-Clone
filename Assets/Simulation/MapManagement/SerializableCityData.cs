@@ -14,20 +14,19 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [DataMember()] public HexCoordinates                 Location;
-        [DataMember()] public string                         Owner;
+        [DataMember()] public HexCoordinates Location;
+        [DataMember()] public string         Owner;
 
-        [DataMember()] public int                            Population;
+        [DataMember()] public int Population;
 
-        [DataMember()] public int                            FoodStockpile;
-        [DataMember()] public int                            CultureStockpile;
-        [DataMember()] public ResourceFocusType              ResourceFocus;
+        [DataMember()] public int               FoodStockpile;
+        [DataMember()] public int               CultureStockpile;
+        [DataMember()] public ResourceFocusType ResourceFocus;
 
-        [DataMember()] public SerializableProjectData        ActiveProject;
+        [DataMember()] public SerializableProjectData ActiveProject;
         
-        [DataMember()] public int                            CurrentHealth;
-        [DataMember()] public float                          CurrentMovement;
-        [DataMember()] public List<SerializableBuildingData> Buildings;
+        [DataMember()] public int   Hitpoints;
+        [DataMember()] public float CurrentMovement;
 
         #endregion
 

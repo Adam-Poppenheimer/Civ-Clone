@@ -21,7 +21,7 @@ namespace Assets.Simulation.Cities {
         #region from IUnitTemplate
 
         public string name {
-            get { return UnderlyingCity.gameObject.name; }
+            get { return UnderlyingCity.Name; }
         }
 
         public string Description {

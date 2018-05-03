@@ -64,7 +64,7 @@ namespace Assets.Simulation.Diplomacy {
         }
 
         public override string GetSummary() {
-            return string.Format("{0} ({1})", CityInput.gameObject.name, CityInput.Population);
+            return string.Format("{0} ({1})", CityInput.Name, CityInput.Population);
         }
 
         #endregion

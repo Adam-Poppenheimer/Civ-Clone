@@ -29,11 +29,19 @@ namespace Assets.Simulation.Cities {
     /// calling into various logic- and canon-suffixed classes that handle the bulk of 
     /// behavior. Bugs are more likely to emerge from those classes rather than this one.
     /// </remarks>
-    public class City : MonoBehaviour, ICity{
+    public class City : MonoBehaviour, ICity {
 
         #region instance fields and properties
 
         #region from ICity
+
+        public string Name {
+            get { return gameObject.name; }
+        }
+
+        public Vector3 Position {
+            get { return transform.position; }
+        }
 
         /// <inheritdoc/>
         public int Population {
@@ -60,7 +68,16 @@ namespace Assets.Simulation.Cities {
         public ResourceSummary LastIncome { get; private set; }
 
         /// <inheritdoc/>
-        public IProductionProject ActiveProject { get; private set; }
+        public IProductionProject ActiveProject {
+            get { return _activeProject; }
+            set {
+                if(_activeProject != value) {
+                    _activeProject = value;
+                    Signals.ProjectChangedSignal.Fire(this, _activeProject);
+                }
+            }
+        }
+        private IProductionProject _activeProject;
 
         /// <inheritdoc/>
         public ResourceFocusType ResourceFocus { get; set; }
@@ -72,23 +89,14 @@ namespace Assets.Simulation.Cities {
 
         #endregion
 
-        private IPopulationGrowthLogic GrowthLogic;
-
-        private IProductionLogic ProductionLogic;
-
-        private IResourceGenerationLogic ResourceGenerationLogic;
-
-        private IBorderExpansionLogic ExpansionLogic;
-
+        private IPopulationGrowthLogic                   GrowthLogic;
+        private IProductionLogic                         ProductionLogic;
+        private IResourceGenerationLogic                 ResourceGenerationLogic;
+        private IBorderExpansionLogic                    ExpansionLogic;
         private IPossessionRelationship<ICity, IHexCell> TilePossessionCanon;
-
-        private IWorkerDistributionLogic DistributionLogic;
-
-        private CitySignals Signals;
-
-        private IProductionProjectFactory ProjectFactory;
-
-        private ICityConfig Config;
+        private IWorkerDistributionLogic                 DistributionLogic;
+        private CitySignals                              Signals;
+        private ICityConfig                              Config;
 
         #endregion
 
@@ -110,7 +118,7 @@ namespace Assets.Simulation.Cities {
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            IProductionProjectFactory projectFactory, CitySignals signals, ICityConfig config
+            CitySignals signals, ICityConfig config
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -118,7 +126,6 @@ namespace Assets.Simulation.Cities {
             ExpansionLogic          = expansionLogic;
             TilePossessionCanon     = tilePossessionCanon;
             DistributionLogic       = distributionLogic;
-            ProjectFactory          = projectFactory;
             Signals                 = signals;
             Config                  = config;
         }
@@ -132,26 +139,6 @@ namespace Assets.Simulation.Cities {
         #endregion
 
         #region from ICity
-
-        /// <inheritdoc/>
-        public void SetActiveProductionProject(IBuildingTemplate template) {
-            if(template == null) {
-                ActiveProject = null;
-            }else {
-                ActiveProject = ProjectFactory.ConstructBuildingProject(template);
-            }
-            Signals.ProjectChangedSignal.Fire(this, ActiveProject);
-        }
-
-        /// <inheritdoc/>
-        public void SetActiveProductionProject(IUnitTemplate template) {
-            if(template == null) {
-                ActiveProject = null;
-            }else {
-                ActiveProject = ProjectFactory.ConstructUnitProject(template);
-            }
-            Signals.ProjectChangedSignal.Fire(this, ActiveProject);
-        }
 
         /// <inheritdoc/>
         public void PerformGrowth() {
@@ -231,6 +218,14 @@ namespace Assets.Simulation.Cities {
         public void PerformHealing() {
             CombatFacade.Hitpoints += Config.HitPointRegenPerRound;
             CombatFacade.CurrentMovement = 1;
+        }
+
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
         }
 
         #endregion

@@ -103,26 +103,6 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region tests
 
-        [Test(Description = "When Create is called, the GameObject the new city is attached to " +
-            "should have its transform parented under the argued location's transform. That city " +
-            "should preserve the local position of its prefab")]
-        public void CityCreated_ParentedToLocation_AndLocalPositionPreserved() {
-            var tile = BuildCell(true);
-            var civilization = BuildCivilization();
-
-            BuildNeighborsFor(tile, 1, true);
-
-            var factory = Container.Resolve<CityFactory>();
-
-            var newCity = factory.Create(tile, civilization);
-
-            Assert.AreEqual(tile.transform, newCity.transform.parent,
-                "The new city's transform has an unexpected parent");
-
-            Assert.AreEqual(CityPrefab.transform.localPosition, newCity.transform.localPosition,
-                "The new city's transform has an unexpected local position");
-        }
-
         [Test(Description = "Every city the factory creates should have a starting population of 1")]
         public void CityCreated_PopulationSetToOne() {
             var tile = BuildCell(true);

@@ -51,12 +51,12 @@ namespace Assets.Simulation.Cities.Production {
         #region from IProductionProjectFactory
 
         /// <inheritdoc/>
-        public IProductionProject ConstructBuildingProject(IBuildingTemplate template) {
+        public IProductionProject ConstructProject(IBuildingTemplate template) {
             return new ProductionProject(template, BuildingFactory);
         }
 
         /// <inheritdoc/>
-        public IProductionProject ConstructUnitProject(IUnitTemplate template) {
+        public IProductionProject ConstructProject(IUnitTemplate template) {
             return new ProductionProject(template, UnitFactory, CityPossessionCanon);
         }
 

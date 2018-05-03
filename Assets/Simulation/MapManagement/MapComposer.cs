@@ -20,6 +20,7 @@ namespace Assets.Simulation.MapManagement {
         private HexCellComposer      HexCellComposer;
         private CivilizationComposer CivilizationComposer;
         private CityComposer         CityComposer;
+        private BuildingComposer     BuildingComposer;
         private UnitComposer         UnitComposer;
         private ImprovementComposer  ImprovementComposer;
         private ResourceComposer     ResourceComposer;
@@ -37,6 +38,7 @@ namespace Assets.Simulation.MapManagement {
             HexCellComposer      hexCellComposer,
             CivilizationComposer civilizationComposer,
             CityComposer         cityComposer,
+            BuildingComposer     buildingComposer,
             UnitComposer         unitComposer,
             ImprovementComposer  improvementComposer,
             ResourceComposer     resourceComposer,
@@ -48,6 +50,7 @@ namespace Assets.Simulation.MapManagement {
             HexCellComposer      = hexCellComposer;
             CivilizationComposer = civilizationComposer;
             CityComposer         = cityComposer;
+            BuildingComposer     = buildingComposer;
             UnitComposer         = unitComposer;
             ImprovementComposer  = improvementComposer;
             ResourceComposer     = resourceComposer;
@@ -63,6 +66,7 @@ namespace Assets.Simulation.MapManagement {
             HexCellComposer     .ComposeCells        (mapData);
             CivilizationComposer.ComposeCivilizations(mapData);
             CityComposer        .ComposeCities       (mapData);
+            BuildingComposer    .ComposeBuildings    (mapData);
             UnitComposer        .ComposeUnits        (mapData);
             ImprovementComposer .ComposeImprovements (mapData);
             ResourceComposer    .ComposeResources    (mapData);
@@ -81,6 +85,7 @@ namespace Assets.Simulation.MapManagement {
             HexCellComposer     .DecomposeCells        (mapData);
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);
+            BuildingComposer    .DecomposeBuildings    (mapData);
             UnitComposer        .DecomposeUnits        (mapData);
             ResourceComposer    .DecomposeResources    (mapData);
             ImprovementComposer .DecomposeImprovements (mapData);
@@ -105,6 +110,7 @@ namespace Assets.Simulation.MapManagement {
 
             ImprovementComposer .ClearRuntime();
             CityComposer        .ClearRuntime();
+            BuildingComposer    .ClearRuntime();
             UnitComposer        .ClearRuntime();
             ResourceComposer    .ClearRuntime();
             DiplomacyComposer   .ClearRuntime();

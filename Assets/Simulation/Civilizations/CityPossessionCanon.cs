@@ -83,7 +83,7 @@ namespace Assets.Simulation.Civilizations {
 
         private void OnCivilizationBeingDestroyed(ICivilization civ) {
             foreach(var city in GetPossessionsOfOwner(civ)) {
-                GameObject.Destroy(city.gameObject);   
+                city.Destroy();
             }
         }
 

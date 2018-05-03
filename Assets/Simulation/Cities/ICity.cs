@@ -22,9 +22,9 @@ namespace Assets.Simulation.Cities {
 
         #region properties
 
-        GameObject gameObject { get; }
+        string Name { get; }
 
-        Transform transform { get; }
+        Vector3 Position { get; }
 
         /// <summary>
         /// How many citizens the city has to assign to slots.
@@ -49,7 +49,7 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// The project the city is currently trying to construct.
         /// </summary>
-        IProductionProject ActiveProject { get; }
+        IProductionProject ActiveProject { get; set; }
 
         /// <summary>
         /// The current resource focus of the city, which determines what tiles the city will
@@ -67,20 +67,6 @@ namespace Assets.Simulation.Cities {
         #endregion
 
         #region instance methods
-
-        /// <summary>
-        /// Establishes a new ActiveProject that, when completed, creates the building
-        /// of the argued template in this city.
-        /// </summary>
-        /// <param name="template">The template to be constructed</param>
-        void SetActiveProductionProject(IBuildingTemplate template);
-
-        /// <summary>
-        /// Establishes a new ActiveProject that, when completed, creates a unit of the
-        /// argued template in this city.
-        /// </summary>
-        /// <param name="template">The template to be constructed</param>
-        void SetActiveProductionProject(IUnitTemplate template);
 
         /// <summary>
         /// Performs a single turn's worth of growth and starvation logic, increasing or
@@ -138,6 +124,8 @@ namespace Assets.Simulation.Cities {
         void PerformIncome();
 
         void PerformHealing();
+
+        void Destroy();
 
         #endregion
 

@@ -483,14 +483,14 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeUnits_SetsCurrentMovementProperly() {
-            var cellOne = BuildHexCell(new HexCoordinates(1, 1));
-            var cellTwo = BuildHexCell(new HexCoordinates(2, 2));
+            BuildHexCell(new HexCoordinates(1, 1));
+            BuildHexCell(new HexCoordinates(2, 2));
 
-            var civOne = BuildCivilization("Civ One");
-            var civTwo = BuildCivilization("Civ Two");
+            BuildCivilization("Civ One");
+            BuildCivilization("Civ Two");
 
-            var templateOne = BuildUnitTemplate("Template One");
-            var templateTwo = BuildUnitTemplate("Template Two");
+            BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template Two");
 
             var mapData = new SerializableMapData() {
                 Units = new List<SerializableUnitData>() {
@@ -515,14 +515,14 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeUnits_SetsHitpointsProperly() {
-            var cellOne = BuildHexCell(new HexCoordinates(1, 1));
-            var cellTwo = BuildHexCell(new HexCoordinates(2, 2));
+            BuildHexCell(new HexCoordinates(1, 1));
+            BuildHexCell(new HexCoordinates(2, 2));
 
-            var civOne = BuildCivilization("Civ One");
-            var civTwo = BuildCivilization("Civ Two");
+            BuildCivilization("Civ One");
+            BuildCivilization("Civ Two");
 
-            var templateOne = BuildUnitTemplate("Template One");
-            var templateTwo = BuildUnitTemplate("Template Two");
+            BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template Two");
 
             var mapData = new SerializableMapData() {
                 Units = new List<SerializableUnitData>() {
@@ -551,9 +551,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 2));
             var cellThree = BuildHexCell(new HexCoordinates(3, 3));
 
-            var civOne = BuildCivilization("Civ One");
+            BuildCivilization("Civ One");
 
-            var templateOne = BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template One");
 
             var mapData = new SerializableMapData() {
                 Units = new List<SerializableUnitData>() {
@@ -581,14 +581,14 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeUnits_SetsUpToBombardCorrectly() {
-            var cellOne = BuildHexCell(new HexCoordinates(1, 1));
-            var cellTwo = BuildHexCell(new HexCoordinates(2, 2));
+            BuildHexCell(new HexCoordinates(1, 1));
+            BuildHexCell(new HexCoordinates(2, 2));
 
-            var civOne = BuildCivilization("Civ One");
-            var civTwo = BuildCivilization("Civ Two");
+            BuildCivilization("Civ One");
+            BuildCivilization("Civ Two");
 
-            var templateOne = BuildUnitTemplate("Template One");
-            var templateTwo = BuildUnitTemplate("Template Two");
+            BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template Two");
 
             var mapData = new SerializableMapData() {
                 Units = new List<SerializableUnitData>() {

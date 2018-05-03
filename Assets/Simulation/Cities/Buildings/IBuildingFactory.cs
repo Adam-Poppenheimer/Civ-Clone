@@ -12,6 +12,12 @@ namespace Assets.Simulation.Cities.Buildings {
     /// </summary>
     public interface IBuildingFactory : IFactory<IBuildingTemplate, ICity, IBuilding> {
 
+        #region properties
+
+        IEnumerable<IBuilding> AllBuildings { get; }
+
+        #endregion
+
         #region methods
 
         /// <summary>

@@ -54,7 +54,6 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IHexCell>>  MockCellPossessionCanon;
         private Mock<IWorkerDistributionLogic>                  MockDistributionLogic;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
-        private Mock<IProductionProjectFactory>                 MockProjectFactory;
         private Mock<ICityConfig>                               MockCityConfig;
 
         #endregion
@@ -72,7 +71,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic       = new Mock<IWorkerDistributionLogic>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
-            MockProjectFactory          = new Mock<IProductionProjectFactory>();
             MockCityConfig              = new Mock<ICityConfig>();
 
 
@@ -83,7 +81,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon    .Object);
             Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic      .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
-            Container.Bind<IProductionProjectFactory>                ().FromInstance(MockProjectFactory         .Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
 
             Container.Bind<SignalManager>().AsSingle();
@@ -201,11 +198,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(30);
 
-            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
-                .Returns(mockProject.Object);
-
             var city = Container.Resolve<City>();
-            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
+            city.ActiveProject = mockProject.Object;
 
             MockProductionLogic.Setup(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object)).Returns(9);
 
@@ -225,11 +219,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
-            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
-                .Returns(mockProject.Object);
-
             var city = Container.Resolve<City>();
-            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
+            city.ActiveProject = mockProject.Object;
 
             city.PerformProduction();
 
@@ -244,11 +235,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
-            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(It.IsAny<IBuildingTemplate>()))
-                .Returns(mockProject.Object);
-
             var city = Container.Resolve<City>();
-            city.SetActiveProductionProject(new Mock<IBuildingTemplate>().Object);
+            city.ActiveProject = mockProject.Object;
 
             city.PerformProduction();
 
@@ -618,8 +606,6 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            MockProjectFactory.Setup(factory => factory.ConstructBuildingProject(newTemplateMock.Object)).Returns(mockProject.Object);
-
             var citySignals = Container.Resolve<CitySignals>();
 
             citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
@@ -629,7 +615,7 @@ namespace Assets.Tests.Simulation.Cities {
                 Assert.Pass();
             });
 
-            cityToTest.SetActiveProductionProject(newTemplateMock.Object);
+            cityToTest.ActiveProject = mockProject.Object;
         }
 
         [Test(Description = "When SetActiveProductionProject is called on an IUnitTemplate, " +
@@ -643,8 +629,6 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            MockProjectFactory.Setup(factory => factory.ConstructUnitProject(newTemplateMock.Object)).Returns(mockProject.Object);
-
             var citySignals = Container.Resolve<CitySignals>();
 
             citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
@@ -654,7 +638,7 @@ namespace Assets.Tests.Simulation.Cities {
                 Assert.Pass();
             });
 
-            cityToTest.SetActiveProductionProject(newTemplateMock.Object);
+            cityToTest.ActiveProject = mockProject.Object;
         }
 
         [Test(Description = "When PerformHealing is called, CombatFacade should be healed by an amount " +

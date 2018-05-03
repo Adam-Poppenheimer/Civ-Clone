@@ -3,12 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
@@ -21,13 +20,12 @@ namespace Assets.Simulation.MapManagement {
 
         private IHexGrid                                      Grid;
         private ICityFactory                                  CityFactory;
-        private IBuildingFactory                              BuildingFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private ICivilizationFactory                          CivilizationFactory;
         private IEnumerable<IBuildingTemplate>                AvailableBuildingTemplates;
         private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
+        private IProductionProjectFactory                     ProjectFactory;
 
         #endregion
 
@@ -35,22 +33,23 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public CityComposer(
-            IHexGrid grid, ICityFactory cityFactory, IBuildingFactory buildingFactory,
+            IHexGrid grid,
+            ICityFactory cityFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            ICivilizationFactory civilizationFactory, List<IBuildingTemplate> availableBuildingTemplates, 
-            [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
+            ICivilizationFactory civilizationFactory,
+            List<IBuildingTemplate> availableBuildingTemplates, 
+            [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates,
+            IProductionProjectFactory projectFactory
         ) {
             Grid                       = grid;
             CityFactory                = cityFactory;
-            BuildingFactory            = buildingFactory;
             CityPossessionCanon        = cityPossessionCanon;
-            BuildingPossessionCanon    = buildingPossessionCanon;
             CityLocationCanon          = cityLocationCanon;
             CivilizationFactory        = civilizationFactory;
             AvailableBuildingTemplates = availableBuildingTemplates;
             AvailableUnitTemplates     = availableUnitTemplates;
+            ProjectFactory             = projectFactory;
         }
 
         #endregion
@@ -60,7 +59,7 @@ namespace Assets.Simulation.MapManagement {
         public void ClearRuntime() {
             foreach(var city in new List<ICity>(CityFactory.AllCities)) {
                 CityLocationCanon.ChangeOwnerOfPossession(city, null);
-                GameObject.Destroy(city.gameObject);
+                city.Destroy();
             }
         }
 
@@ -75,7 +74,7 @@ namespace Assets.Simulation.MapManagement {
                     FoodStockpile    = city.FoodStockpile,
                     CultureStockpile = city.CultureStockpile,
                     ResourceFocus    = city.ResourceFocus,
-                    CurrentHealth    = city.CombatFacade.Hitpoints,
+                    Hitpoints        = city.CombatFacade.Hitpoints,
                     CurrentMovement  = city.CombatFacade.CurrentMovement
                 };
 
@@ -88,20 +87,6 @@ namespace Assets.Simulation.MapManagement {
 
                         Progress = activeProject.Progress
                     };
-                }
-
-                var buildingsInCity = BuildingPossessionCanon.GetPossessionsOfOwner(city);
-
-                cityData.Buildings = new List<SerializableBuildingData>();
-
-                foreach(var building in buildingsInCity) {
-                    var newBuildingData = new SerializableBuildingData() {
-                        Template = building.Template.name,
-                        IsSlotLocked   = building.Slots.Select(slot => slot.IsLocked  ).ToList(),
-                        IsSlotOccupied = building.Slots.Select(slot => slot.IsOccupied).ToList()
-                    };
-
-                    cityData.Buildings.Add(newBuildingData);
                 }
 
                 mapData.Cities.Add(cityData);
@@ -120,7 +105,7 @@ namespace Assets.Simulation.MapManagement {
                 newCity.FoodStockpile                = cityData.FoodStockpile;
                 newCity.CultureStockpile             = cityData.CultureStockpile;
                 newCity.ResourceFocus                = cityData.ResourceFocus;
-                newCity.CombatFacade.Hitpoints       = cityData.CurrentHealth;
+                newCity.CombatFacade.Hitpoints       = cityData.Hitpoints;
                 newCity.CombatFacade.CurrentMovement = cityData.CurrentMovement;
 
                 if(cityData.ActiveProject != null) {
@@ -130,30 +115,17 @@ namespace Assets.Simulation.MapManagement {
                             template => template.name.Equals(cityData.ActiveProject.BuildingToConstruct)
                         ).First();
                         
-                        newCity.SetActiveProductionProject(buildingTemplate);
+                        newCity.ActiveProject = ProjectFactory.ConstructProject(buildingTemplate);
 
                     }else {
                         var unitTemplate = AvailableUnitTemplates.Where(
                             template => template.name.Equals(cityData.ActiveProject.UnitToConstruct)
                         ).First();
 
-                        newCity.SetActiveProductionProject(unitTemplate);
+                        newCity.ActiveProject = ProjectFactory.ConstructProject(unitTemplate);
                     }
 
                     newCity.ActiveProject.Progress = cityData.ActiveProject.Progress;
-                }
-
-                foreach(var buildingData in cityData.Buildings) {
-                    var templateToBuild = AvailableBuildingTemplates.Where(template => template.name.Equals(buildingData.Template)).First();
-
-                    var newBuilding = BuildingFactory.Create(templateToBuild, newCity);
-
-                    for(int i = 0; i < newBuilding.Slots.Count; i++) {
-                        var slot = newBuilding.Slots[i];
-                        
-                        slot.IsOccupied = buildingData.IsSlotOccupied[i];
-                        slot.IsLocked   = buildingData.IsSlotLocked  [i];
-                    }
                 }
             }
         }

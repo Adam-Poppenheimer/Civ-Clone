@@ -21,7 +21,7 @@ namespace Assets.Simulation.Cities.Production {
         /// </summary>
         /// <param name="template">The template in question.</param>
         /// <returns>A production project that can create a building of that template.</returns>
-        IProductionProject ConstructBuildingProject(IBuildingTemplate template);
+        IProductionProject ConstructProject(IBuildingTemplate template);
 
         /// <summary>
         /// Constructs a production project that, when executed, creates a unit
@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities.Production {
         /// </summary>
         /// <param name="template">The template in question.</param>
         /// <returns>A production project that can create a unit of that template.</returns>
-        IProductionProject ConstructUnitProject(IUnitTemplate template);
+        IProductionProject ConstructProject(IUnitTemplate template);
 
         #endregion
 

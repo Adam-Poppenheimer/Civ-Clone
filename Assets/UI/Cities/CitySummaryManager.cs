@@ -74,7 +74,7 @@ namespace Assets.UI.Cities {
 
         public void RepositionSummaries() {
             foreach(var summary in InstantiatedSummaries) {
-                var cityInScreen = Camera.main.WorldToScreenPoint(summary.ObjectToDisplay.transform.position);
+                var cityInScreen = Camera.main.WorldToScreenPoint(summary.ObjectToDisplay.Position);
 
                 summary.RectTransform.position = cityInScreen +
                     new Vector3(0f, CityUIConfig.SummaryVerticalOffsetBase)

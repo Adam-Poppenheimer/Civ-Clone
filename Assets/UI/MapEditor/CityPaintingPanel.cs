@@ -110,14 +110,14 @@ namespace Assets.UI.MapEditor {
             }else {
                 var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
                 if(cityAtLocation != null) {
-                    Destroy(cityAtLocation.gameObject);
+                    cityAtLocation.Destroy();
                 }
             }
         }
 
         private void OnCityClicked(ICity city) {
             if(!IsAdding) {
-                Destroy(city.gameObject.gameObject);
+                city.Destroy();
             }
         }
 
