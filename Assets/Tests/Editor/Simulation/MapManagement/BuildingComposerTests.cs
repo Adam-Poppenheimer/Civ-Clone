@@ -26,7 +26,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>  MockCityLocationCanon;
 
-        private List<IBuildingTemplate> AvailableBuildingTemplates = new List<IBuildingTemplate>();
+        private List<IBuildingTemplate> AllBuildingTemplates = new List<IBuildingTemplate>();
 
         private List<IBuilding> AllBuildings = new List<IBuilding>();
 
@@ -38,7 +38,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [SetUp]
         public void CommonInstall() {
-            AvailableBuildingTemplates.Clear();
+            AllBuildingTemplates.Clear();
 
             AllBuildings.Clear();
 
@@ -60,9 +60,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>> ().FromInstance(MockCityLocationCanon      .Object);
 
-            Container.Bind<IEnumerable<IBuildingTemplate>>()
-                     .WithId("Available Building Templates")
-                     .FromInstance(AvailableBuildingTemplates);
+            Container.Bind<List<IBuildingTemplate>>().FromInstance(AllBuildingTemplates);
 
             Container.Bind<BuildingComposer>().AsSingle();
         }
@@ -99,9 +97,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeBuildings_TemplateStoredAsName() {
-            var buildingOne   = BuildBuilding(BuildTemplate("Template One"));
-            var buildingTwo   = BuildBuilding(BuildTemplate("Template Two"));
-            var buildingThree = BuildBuilding(BuildTemplate("Template Three"));
+            BuildBuilding(BuildTemplate("Template One"));
+            BuildBuilding(BuildTemplate("Template Two"));
+            BuildBuilding(BuildTemplate("Template Three"));
 
             var mapData = new SerializableMapData();
 
@@ -116,9 +114,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeBuildings_OwningCityStoredAsLocationCoordinates() {
-            var buildingOne   = BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(0, 1))));
-            var buildingTwo   = BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(2, 3))));
-            var buildingThree = BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(4, 5))));
+            BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(0, 1))));
+            BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(2, 3))));
+            BuildBuilding(BuildTemplate(""), BuildCity(BuildHexCell(new HexCoordinates(4, 5))));
 
             var mapData = new SerializableMapData();
 
@@ -133,9 +131,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeBuildings_LockedStatusOfSlotsStoredAsListOfBools() {
-            var buildingOne   = BuildBuilding(BuildTemplate("Template One", 1));
-            var buildingTwo   = BuildBuilding(BuildTemplate("Template Two", 2));
-            var buildingThree = BuildBuilding(BuildTemplate("Template Three", 0));
+            var buildingOne = BuildBuilding(BuildTemplate("Template One", 1));
+            var buildingTwo = BuildBuilding(BuildTemplate("Template Two", 2));
+            BuildBuilding(BuildTemplate("Template Three", 0));
 
             buildingOne.Slots[0].IsLocked = true;
 
@@ -166,9 +164,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeBuildings_OccupiedStatusOfSlotsStoredAsListOfBools() {
-            var buildingOne   = BuildBuilding(BuildTemplate("Template One", 1));
-            var buildingTwo   = BuildBuilding(BuildTemplate("Template Two", 2));
-            var buildingThree = BuildBuilding(BuildTemplate("Template Three", 0));
+            var buildingOne = BuildBuilding(BuildTemplate("Template One", 1));
+            var buildingTwo = BuildBuilding(BuildTemplate("Template Two", 2));
+            BuildBuilding(BuildTemplate("Template Three", 0));
 
             buildingOne.Slots[0].IsOccupied = true;
 
@@ -237,13 +235,13 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeBuildings_LockedStatusOfSlotsLoadedCorrectly() {
-            var templateOne   = BuildTemplate("Template One", 1);
-            var templateTwo   = BuildTemplate("Template Two", 2);
-            var templateThree = BuildTemplate("Template Three");
+            BuildTemplate("Template One", 1);
+            BuildTemplate("Template Two", 2);
+            BuildTemplate("Template Three");
 
-            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)));
-            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)));
-            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)));
+            BuildCity(BuildHexCell(new HexCoordinates(0, 1)));
+            BuildCity(BuildHexCell(new HexCoordinates(2, 3)));
+            BuildCity(BuildHexCell(new HexCoordinates(4, 5)));
 
             var mapData = new SerializableMapData() {
                 Buildings = new List<SerializableBuildingData>() {
@@ -287,13 +285,13 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeBuildings_OccupiedStatusOfSlotsLoadedCorrectly() {
-            var templateOne   = BuildTemplate("Template One", 1);
-            var templateTwo   = BuildTemplate("Template Two", 2);
-            var templateThree = BuildTemplate("Template Three");
+            BuildTemplate("Template One", 1);
+            BuildTemplate("Template Two", 2);
+            BuildTemplate("Template Three");
 
-            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)));
-            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)));
-            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)));
+            BuildCity(BuildHexCell(new HexCoordinates(0, 1)));
+            BuildCity(BuildHexCell(new HexCoordinates(2, 3)));
+            BuildCity(BuildHexCell(new HexCoordinates(4, 5)));
 
             var mapData = new SerializableMapData() {
                 Buildings = new List<SerializableBuildingData>() {
@@ -348,7 +346,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var newTemplate = mockTemplate.Object;
 
-            AvailableBuildingTemplates.Add(newTemplate);
+            AllBuildingTemplates.Add(newTemplate);
 
             return newTemplate;
         }

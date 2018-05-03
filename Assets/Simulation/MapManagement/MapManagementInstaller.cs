@@ -26,6 +26,7 @@ namespace Assets.Simulation.MapManagement {
             Container.Bind<HexCellComposer>     ().AsSingle();
             Container.Bind<CivilizationComposer>().AsSingle();
             Container.Bind<CityComposer>        ().AsSingle();
+            Container.Bind<BuildingComposer>    ().AsSingle();
             Container.Bind<UnitComposer>        ().AsSingle();
             Container.Bind<ImprovementComposer> ().AsSingle();
             Container.Bind<ResourceComposer>    ().AsSingle();

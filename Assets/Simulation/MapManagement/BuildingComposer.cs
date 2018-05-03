@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapManagement {
         private IBuildingFactory                          BuildingFactory;
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>  CityLocationCanon;
-        private IEnumerable<IBuildingTemplate>            AvailableBuildingTemplates;
+        private List<IBuildingTemplate>                   AllBuildingTemplates;
 
         #endregion
 
@@ -31,13 +31,13 @@ namespace Assets.Simulation.MapManagement {
             IHexGrid grid, IBuildingFactory buildingFactory,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            [Inject(Id = "Available Building Templates")] IEnumerable<IBuildingTemplate> availableBuildingTemplates
+            List<IBuildingTemplate> allBuildingTemplates
         ){
-            Grid                       = grid;
-            BuildingFactory            = buildingFactory;
-            BuildingPossessionCanon    = buildingPossessionCanon;
-            CityLocationCanon          = cityLocationCanon;
-            AvailableBuildingTemplates = availableBuildingTemplates;
+            Grid                    = grid;
+            BuildingFactory         = buildingFactory;
+            BuildingPossessionCanon = buildingPossessionCanon;
+            CityLocationCanon       = cityLocationCanon;
+            AllBuildingTemplates    = allBuildingTemplates;
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace Assets.Simulation.MapManagement {
 
         public void DecomposeBuildings(SerializableMapData mapData) {
             foreach(var buildingData in mapData.Buildings) {
-                var templateToBuild = AvailableBuildingTemplates.Where(template => template.name.Equals(buildingData.Template)).First();
+                var templateToBuild = AllBuildingTemplates.Where(template => template.name.Equals(buildingData.Template)).First();
 
                 var cellAtCoords   = Grid.GetCellAtCoordinates(buildingData.CityLocation);
                 var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(cellAtCoords).First();
