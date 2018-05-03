@@ -7,7 +7,7 @@ using System.Text;
 namespace Assets.Simulation.MapManagement {
 
     [Serializable, DataContract]
-    public class SerializableOngoingDeal {
+    public class SerializableOngoingDealData {
 
         #region instance fields and properties
 

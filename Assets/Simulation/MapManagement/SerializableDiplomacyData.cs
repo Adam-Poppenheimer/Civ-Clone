@@ -15,7 +15,7 @@ namespace Assets.Simulation.MapManagement {
         
         [DataMember()] public List<Tuple<string, string>>    ActiveWars         = new List<Tuple<string, string>>();
         [DataMember()] public List<SerializableProposalData> ActiveProposals    = new List<SerializableProposalData>();
-        [DataMember()] public List<SerializableOngoingDeal>  ActiveOngoingDeals = new List<SerializableOngoingDeal>();
+        [DataMember()] public List<SerializableOngoingDealData>  ActiveOngoingDeals = new List<SerializableOngoingDealData>();
 
         #endregion
 

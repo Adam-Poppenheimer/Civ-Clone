@@ -23,6 +23,11 @@ namespace Assets.Simulation.MapManagement {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<IDiplomaticProposalComposer>       ().To<DiplomaticProposalComposer>       ().AsSingle();
+            Container.Bind<IOngoingDealComposer>              ().To<OngoingDealComposer>              ().AsSingle();
+            Container.Bind<IDiplomaticExchangeComposer>       ().To<DiplomaticExchangeComposer>       ().AsSingle();
+            Container.Bind<IOngoingDiplomaticExchangeComposer>().To<OngoingDiplomaticExchangeComposer>().AsSingle();
+
             Container.Bind<HexCellComposer>     ().AsSingle();
             Container.Bind<CivilizationComposer>().AsSingle();
             Container.Bind<CityComposer>        ().AsSingle();
