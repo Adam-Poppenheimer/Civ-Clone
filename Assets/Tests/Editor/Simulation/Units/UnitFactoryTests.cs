@@ -21,11 +21,12 @@ namespace Assets.Tests.Simulation.Units {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon> MockPositionCanon;
-
+        private Mock<IUnitPositionCanon>                            MockPositionCanon;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockPossessionCanon;
+        private Mock<IHexGrid>                                      MockGrid;
 
-        private GameObject UnitPrefab; 
+        private GameObject UnitPrefab;
+        private Transform  UnitContainer;
 
         #endregion
 
@@ -37,14 +38,20 @@ namespace Assets.Tests.Simulation.Units {
         public void CommonInstall() {
             MockPositionCanon   = new Mock<IUnitPositionCanon>();
             MockPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockGrid            = new Mock<IHexGrid>();
 
             UnitPrefab = new GameObject();
             UnitPrefab.AddComponent<GameUnit>();
 
+            UnitContainer = new GameObject().transform;
+
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockPositionCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockPossessionCanon.Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid           .Object);
 
-            Container.Bind<IUnitConfig>().FromMock();
+            Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
+
+            Container.Bind<IUnitConfig>          ().FromMock();
             Container.Bind<IUnitTerrainCostLogic>().FromMock();
 
             Container.Bind<UnitSignals>().AsSingle();

@@ -18,11 +18,10 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private UnitSignals Signals;
-
+        private UnitSignals                                   Signals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -31,11 +30,13 @@ namespace Assets.Simulation.Units {
         [Inject]
         public UnitPositionCanon(UnitSignals signals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ){
             Signals             = signals;
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -77,6 +78,12 @@ namespace Assets.Simulation.Units {
                 if(unitOwner != unitAtLocationOwner && !isMeleeAttacking) {
                     return false;
                 }
+            }
+
+            var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
+
+            if(cityAtLocation != null && CityPossessionCanon.GetOwnerOfPossession(cityAtLocation) != unitOwner) {
+                return false;
             }
 
             return CanPlaceUnitTemplateAtLocation(unit.Template, location, isMeleeAttacking);

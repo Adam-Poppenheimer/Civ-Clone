@@ -53,6 +53,7 @@ namespace Assets.Tests.Simulation.Units {
         private Mock<IUnitTerrainCostLogic>     MockTerrainCostLogic;
         private Mock<IUnitPositionCanon>        MockPositionCanon;
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+        private Mock<IHexGrid>                  MockGrid;
 
         #endregion
 
@@ -66,11 +67,13 @@ namespace Assets.Tests.Simulation.Units {
             MockTerrainCostLogic         = new Mock<IUnitTerrainCostLogic>();
             MockPositionCanon            = new Mock<IUnitPositionCanon>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockGrid                     = new Mock<IHexGrid>();
 
-            Container.Bind<IUnitConfig>              ().FromInstance(MockConfig.Object);
-            Container.Bind<IUnitTerrainCostLogic>    ().FromInstance(MockTerrainCostLogic.Object);
-            Container.Bind<IUnitPositionCanon>       ().FromInstance(MockPositionCanon.Object);
+            Container.Bind<IUnitConfig>              ().FromInstance(MockConfig                  .Object);
+            Container.Bind<IUnitTerrainCostLogic>    ().FromInstance(MockTerrainCostLogic        .Object);
+            Container.Bind<IUnitPositionCanon>       ().FromInstance(MockPositionCanon           .Object);
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
 
             Container.Bind<GameUnit>().FromNewComponentOnNewGameObject().AsSingle();
 
@@ -145,11 +148,6 @@ namespace Assets.Tests.Simulation.Units {
 
             unitToTest.OnEndDrag(eventData);
             Assert.Fail("Unit End Drag Signal was never fired");
-        }
-
-        [Test(Description = "")]
-        public void MissingCanMakeRangedAttackTests() {
-            throw new NotImplementedException();
         }
 
         #endregion

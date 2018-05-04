@@ -22,6 +22,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private GameObject ImprovementPrefab;
 
         private Mock<IImprovementLocationCanon> MockLocationCanon;
+        private Mock<IHexGrid>                  MockGrid;
 
         #endregion
 
@@ -35,8 +36,10 @@ namespace Assets.Tests.Simulation.Improvements {
             ImprovementPrefab.AddComponent<Improvement>();
 
             MockLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockGrid          = new Mock<IHexGrid>();
 
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockLocationCanon.Object);
+            Container.Bind<IHexGrid>                 ().FromInstance(MockGrid         .Object);
 
             Container.Bind<GameObject>().WithId("Improvement Prefab").FromInstance(ImprovementPrefab);
 
