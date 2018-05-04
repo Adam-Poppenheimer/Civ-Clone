@@ -138,6 +138,7 @@ namespace Assets.Simulation.Units {
         private UnitSignals           Signals;
         private IUnitTerrainCostLogic TerrainCostLogic;
         private IUnitPositionCanon    PositionCanon;
+        private IHexGrid              Grid;
 
         #endregion
 
@@ -146,12 +147,13 @@ namespace Assets.Simulation.Units {
         [Inject]
         public void InjectDependencies(
             IUnitConfig config, UnitSignals signals,  IUnitTerrainCostLogic terrainCostLogic,
-            IUnitPositionCanon positionCanon
+            IUnitPositionCanon positionCanon, IHexGrid grid
         ){
-            Config                   = config;
-            Signals                  = signals;
-            TerrainCostLogic         = terrainCostLogic;
-            PositionCanon            = positionCanon;
+            Config           = config;
+            Signals          = signals;
+            TerrainCostLogic = terrainCostLogic;
+            PositionCanon    = positionCanon;
+            Grid             = grid;
         }
 
         #region Unity messages
@@ -223,7 +225,7 @@ namespace Assets.Simulation.Units {
             }
             
             PositionCanon.ChangeOwnerOfPossession(this, newLocation);
-            transform.position = newLocation.transform.position;
+            transform.position = Grid.PerformIntersectionWithTerrainSurface(newLocation.transform.position);
         }
 
         public void SetUpToBombard() {

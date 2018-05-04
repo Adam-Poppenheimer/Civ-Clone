@@ -25,11 +25,10 @@ namespace Assets.Simulation.Improvements {
 
         #endregion
 
-        private DiContainer Container;
-
+        private DiContainer               Container;
         private IImprovementLocationCanon ImprovementLocationCanon;
-
-        private GameObject ImprovementPrefab;
+        private GameObject                ImprovementPrefab;
+        private IHexGrid                  Grid;
 
         #endregion
 
@@ -39,11 +38,12 @@ namespace Assets.Simulation.Improvements {
         public ImprovementFactory(DiContainer container,
             IImprovementLocationCanon improvementLocationCanon,
             [Inject(Id = "Improvement Prefab")] GameObject improvementPrefab,
-            ImprovementSignals signals
+            IHexGrid grid, ImprovementSignals signals
         ){
-            Container = container;
+            Container                = container;
             ImprovementLocationCanon = improvementLocationCanon;
-            ImprovementPrefab = improvementPrefab;
+            ImprovementPrefab        = improvementPrefab;
+            Grid                     = grid;
 
             signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
         }
@@ -70,6 +70,7 @@ namespace Assets.Simulation.Improvements {
 
             var newGameObject = GameObject.Instantiate(ImprovementPrefab);
             newGameObject.transform.SetParent(location.transform, false);
+            newGameObject.transform.position = Grid.PerformIntersectionWithTerrainSurface(location.transform.position);
 
             Container.InjectGameObject(newGameObject);
 

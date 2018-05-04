@@ -23,7 +23,7 @@ GameObject:
   - component: {fileID: 114853534447256316}
   - component: {fileID: 114616494809797408}
   - component: {fileID: 95933380790746598}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Unit Prefab
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -41,7 +41,7 @@ GameObject:
   - component: {fileID: 33829100189125868}
   - component: {fileID: 136509561788426556}
   - component: {fileID: 23845755735296400}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Display Component
   m_TagString: Untagged
   m_Icon: {fileID: 0}

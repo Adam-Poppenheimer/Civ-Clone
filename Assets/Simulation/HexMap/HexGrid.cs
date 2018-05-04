@@ -278,7 +278,7 @@ namespace Assets.Simulation.HexMap {
         public Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition) {
             RaycastHit results;
 
-            Physics.Raycast(xzPosition + MapIntersector, Vector3.down, out results, TerrainCollisionMask);
+            Physics.Raycast(xzPosition + MapIntersector, Vector3.down, out results, float.MaxValue, layerMask: TerrainCollisionMask);
 
             return results.point;
         }
