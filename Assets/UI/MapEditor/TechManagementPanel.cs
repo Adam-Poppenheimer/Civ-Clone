@@ -117,9 +117,12 @@ namespace Assets.UI.MapEditor {
             var tech = clickedRecord.TechToDisplay;
 
             if(TechCanon.IsTechDiscoveredByCiv(tech, ActiveCivilization)) {
-                TechCanon.SetTechAsUndiscoveredForCiv(tech, ActiveCivilization);                
+
+                var discoveredTechs = new List<ITechDefinition>(TechCanon.GetTechsDiscoveredByCiv(ActiveCivilization));
+                UndiscoverTechAndDescendants(tech, ActiveCivilization, discoveredTechs);
 
             }else if(TechCanon.IsTechAvailableToCiv(tech, ActiveCivilization)) {
+
                 TechCanon.SetTechAsDiscoveredForCiv(tech, ActiveCivilization);
 
             }
@@ -127,6 +130,14 @@ namespace Assets.UI.MapEditor {
             foreach(var record in InstantiatedTechRecords) {
                 ConfigureRecord(record, record.TechToDisplay);
             }
+        }
+
+        private void UndiscoverTechAndDescendants(ITechDefinition techToRemove, ICivilization civ, IEnumerable<ITechDefinition> discoveredTechs) {
+            foreach(var postRequisite in discoveredTechs.Where(tech => tech.Prerequisites.Contains(techToRemove))){
+                UndiscoverTechAndDescendants(postRequisite, civ, discoveredTechs);
+            }
+
+            TechCanon.SetTechAsUndiscoveredForCiv(techToRemove, civ);
         }
 
         #endregion
