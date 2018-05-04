@@ -17,17 +17,17 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private HexCellComposer      HexCellComposer;
-        private CivilizationComposer CivilizationComposer;
-        private CityComposer         CityComposer;
-        private BuildingComposer     BuildingComposer;
-        private UnitComposer         UnitComposer;
-        private ImprovementComposer  ImprovementComposer;
-        private ResourceComposer     ResourceComposer;
-        private DiplomacyComposer    DiplomacyComposer;
-        private IVisibilityResponder VisibilityResponder;
-        private ICellVisibilityCanon CellVisibilityCanon;
-        private MonoBehaviour        CoroutineInvoker;
+        private IHexCellComposer      HexCellComposer;
+        private ICivilizationComposer CivilizationComposer;
+        private ICityComposer         CityComposer;
+        private IBuildingComposer     BuildingComposer;
+        private IUnitComposer         UnitComposer;
+        private IImprovementComposer  ImprovementComposer;
+        private IResourceComposer     ResourceComposer;
+        private IDiplomacyComposer    DiplomacyComposer;
+        private IVisibilityResponder  VisibilityResponder;
+        private ICellVisibilityCanon  CellVisibilityCanon;
+        private MonoBehaviour         CoroutineInvoker;
 
         #endregion
 
@@ -35,16 +35,16 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public void InjectDependencies(
-            HexCellComposer      hexCellComposer,
-            CivilizationComposer civilizationComposer,
-            CityComposer         cityComposer,
-            BuildingComposer     buildingComposer,
-            UnitComposer         unitComposer,
-            ImprovementComposer  improvementComposer,
-            ResourceComposer     resourceComposer,
-            DiplomacyComposer    diplomacyComposer,
-            IVisibilityResponder visibilityResponder,
-            ICellVisibilityCanon cellVisibilityCanon,
+            IHexCellComposer      hexCellComposer,
+            ICivilizationComposer civilizationComposer,
+            ICityComposer         cityComposer,
+            IBuildingComposer     buildingComposer,
+            IUnitComposer         unitComposer,
+            IImprovementComposer  improvementComposer,
+            IResourceComposer     resourceComposer,
+            IDiplomacyComposer    diplomacyComposer,
+            IVisibilityResponder  visibilityResponder,
+            ICellVisibilityCanon  cellVisibilityCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer      = hexCellComposer;

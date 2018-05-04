@@ -13,7 +13,7 @@ using Assets.Simulation.Core;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class CivilizationComposer {
+    public class CivilizationComposer : ICivilizationComposer {
 
         #region instance fields and properties
 

@@ -14,7 +14,7 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class CityComposer {
+    public class CityComposer : ICityComposer {
 
         #region instance fields and properties
 

@@ -11,7 +11,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class ImprovementComposer {
+    public class ImprovementComposer : IImprovementComposer {
 
         #region instance fields and properties
 

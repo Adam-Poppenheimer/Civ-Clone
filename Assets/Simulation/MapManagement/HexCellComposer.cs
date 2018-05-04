@@ -11,7 +11,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class HexCellComposer {
+    public class HexCellComposer : IHexCellComposer {
 
         #region instance fields and properties
 

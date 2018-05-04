@@ -14,7 +14,7 @@ using Assets.Simulation.SpecialtyResources;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class DiplomacyComposer {
+    public class DiplomacyComposer : IDiplomacyComposer {
 
         #region instance fields and properties
 

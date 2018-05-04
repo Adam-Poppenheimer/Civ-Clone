@@ -12,7 +12,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class ResourceComposer {
+    public class ResourceComposer : IResourceComposer {
 
         #region instance fields and properties
 

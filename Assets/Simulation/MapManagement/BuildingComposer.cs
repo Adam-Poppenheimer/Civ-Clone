@@ -12,7 +12,7 @@ using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class BuildingComposer {
+    public class BuildingComposer : IBuildingComposer {
 
         #region instance fields and properties
 

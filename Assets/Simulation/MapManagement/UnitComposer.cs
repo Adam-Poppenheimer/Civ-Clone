@@ -11,7 +11,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.MapManagement {
 
-    public class UnitComposer {
+    public class UnitComposer : IUnitComposer {
 
         #region instance fields and properties
 
