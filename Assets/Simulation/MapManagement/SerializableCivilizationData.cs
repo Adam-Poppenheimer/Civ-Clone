@@ -18,9 +18,9 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public int                     GoldStockpile;
         [DataMember()] public int                     CultureStockpile;
 
-        [DataMember()] public List<string>            TechQueue       = new List<string>();
-        [DataMember()] public List<string>            DiscoveredTechs = new List<string>();
-        [DataMember()] public Dictionary<string, int> ProgressOnTechs = new Dictionary<string, int>();
+        [DataMember()] public List<string>            TechQueue;
+        [DataMember()] public List<string>            DiscoveredTechs;
+        [DataMember()] public Dictionary<string, int> ProgressOnTechs;
 
         #endregion
 
