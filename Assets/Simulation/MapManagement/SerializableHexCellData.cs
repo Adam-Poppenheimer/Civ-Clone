@@ -19,8 +19,6 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public TerrainType    Terrain;
         [DataMember()] public TerrainFeature Feature;
         [DataMember()] public TerrainShape   Shape;
-        [DataMember()] public int            FoundationElevation;
-        [DataMember()] public int            WaterLevel;
         [DataMember()] public bool           SuppressSlot;
         [DataMember()] public bool           HasRoads;
         [DataMember()] public bool           HasOutgoingRiver;

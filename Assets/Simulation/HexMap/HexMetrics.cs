@@ -47,12 +47,6 @@ namespace Assets.Simulation.HexMap {
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
 
-        public const int MountainPeakElevation = 5;
-        public const int MountainEdgeElevation = 1;
-
-        public const int HillPeakElevation     = 2;
-        public const int HillEdgeElevation     = 1;
-
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
             new Vector3(InnerRadius, 0f,  0.5f * OuterRadius),

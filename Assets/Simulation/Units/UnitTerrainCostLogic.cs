@@ -10,8 +10,7 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units.Promotions;
-
-using UnityCustomUtilities.Extensions;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units {
 
@@ -19,10 +18,12 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private IHexGridConfig                           Config;
-        private IUnitPositionCanon                       UnitPositionCanon;
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
-        private IPromotionParser                         PromotionParser;
+        private IHexMapConfig                                 Config;
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private IPromotionParser                              PromotionParser;
 
         #endregion
 
@@ -30,14 +31,18 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitTerrainCostLogic(
-            IHexGridConfig config, IUnitPositionCanon unitPositionCanon,
+            IHexMapConfig config, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPromotionParser promotionParser
         ){
-            Config            = config;
-            UnitPositionCanon = unitPositionCanon;
-            CityLocationCanon = cityLocationCanon;
-            PromotionParser   = promotionParser;
+            Config              = config;
+            UnitPositionCanon   = unitPositionCanon;
+            CityLocationCanon   = cityLocationCanon;
+            CityPossessionCanon = cityPossessionCanon;
+            UnitPossessionCanon = unitPossessionCanon;
+            PromotionParser     = promotionParser;
         }
 
         #endregion
@@ -47,9 +52,14 @@ namespace Assets.Simulation.Units {
         #region from IUnitTerrainCostLogic
 
         public float GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+            var cityAtNext = CityLocationCanon.GetPossessionsOfOwner(nextCell).FirstOrDefault();
+            var ownerOf = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
             if(unit.Type == UnitType.City || !UnitPositionCanon.CanChangeOwnerOfPossession(unit, nextCell)) {
                 return -1;
-            }else if(unit.IsAquatic) {
+            }else if(cityAtNext != null) {
+                return ownerOf == CityPossessionCanon.GetOwnerOfPossession(cityAtNext) ? Config.CityMoveCost : -1;
+            } else if(unit.IsAquatic) {
                 return GetAquaticTraversalCost(unit, currentCell, nextCell);
             }else {
                 return GetNonAquaticTraversalCost(unit, currentCell, nextCell);
@@ -59,12 +69,8 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private float GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            var cityAtNext = CityLocationCanon.GetPossessionsOfOwner(nextCell).FirstOrDefault();
-
             if(nextCell.IsUnderwater) {
-                return Config.WaterMoveCost;
-            }else if(cityAtNext != null) {
-                return Config.WaterMoveCost;
+                return Config.GetBaseMoveCostOfTerrain(nextCell.Terrain);
             }else {
                 return -1;
             }
@@ -83,7 +89,7 @@ namespace Assets.Simulation.Units {
 
             var movementInfo = PromotionParser.GetMovementInfo(unit);
 
-            int moveCost = Config.BaseLandMoveCost;
+            int moveCost = Config.GetBaseMoveCostOfTerrain(nextCell.Terrain);
 
             if(currentCell.HasRoads && nextCell.HasRoads) {
                 return moveCost * Config.RoadMoveCostMultiplier;
@@ -95,14 +101,14 @@ namespace Assets.Simulation.Units {
                 moveCost += Config.SlopeMoveCost;
             }
 
-            var featureCost = Config.FeatureMoveCosts[(int)nextCell.Feature];
+            var featureCost = Config.GetBaseMoveCostOfFeature(nextCell.Feature);
             if(featureCost == -1) {
                 return -1;
             }else if(!movementInfo.IgnoresTerrainCosts){
                 moveCost += featureCost;
             }
 
-            var shapeCost = Config.ShapeMoveCosts[(int)nextCell.Shape];
+            var shapeCost = Config.GetBaseMoveCostOfShape(nextCell.Shape);
             if(nextCell.Shape != TerrainShape.Flatlands) {
                 if(shapeCost == -1) {
                     return -1;

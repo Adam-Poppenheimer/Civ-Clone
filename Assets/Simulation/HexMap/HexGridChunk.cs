@@ -43,6 +43,7 @@ namespace Assets.Simulation.HexMap {
         private IRiverCanon                                   RiverCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<ICity, IHexCell>      CellPossessionCanon;
+        private IHexMapConfig                                 Config;
 
         #endregion
 
@@ -52,13 +53,15 @@ namespace Assets.Simulation.HexMap {
         public void InjectDependencies(
             IHexGrid grid, INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
+            IHexMapConfig config
         ){
             Grid                = grid;
             NoiseGenerator      = noiseGenerator;
             RiverCanon          = riverCanon;
             CityPossessionCanon = cityPossessionCanon;
             CellPossessionCanon = cellPossessionCanon;
+            Config              = config;
         }
 
         #region Unity messages
@@ -125,30 +128,16 @@ namespace Assets.Simulation.HexMap {
                 center + HexMetrics.GetSecondOuterSolidCorner(direction)
             );
 
-            if(cell.Shape == TerrainShape.Mountains) {
-                var mountainCenterDelta = HexMetrics.MountainPeakElevation * HexMetrics.ElevationStep;
-                var mountainEdgeDelta   = HexMetrics.MountainEdgeElevation   * HexMetrics.ElevationStep;
+            var cellCenterDelta = cell.PeakY;
+            var cellEdgeDelta   = cell.EdgeY;
 
-                center.y += mountainCenterDelta;
+            center.y = cellCenterDelta;
 
-                edge.V1.y += mountainEdgeDelta;
-                edge.V2.y += mountainEdgeDelta;
-                edge.V3.y += mountainEdgeDelta;
-                edge.V4.y += mountainEdgeDelta;
-                edge.V5.y += mountainEdgeDelta;
-
-            }else if(cell.Shape == TerrainShape.Hills) {
-                var hillCenterData = HexMetrics.HillPeakElevation * HexMetrics.ElevationStep;
-                var hillEdgeData   = HexMetrics.HillEdgeElevation   * HexMetrics.ElevationStep;
-
-                center.y += hillCenterData;
-
-                edge.V1.y += hillEdgeData;
-                edge.V2.y += hillEdgeData;
-                edge.V3.y += hillEdgeData;
-                edge.V4.y += hillEdgeData;
-                edge.V5.y += hillEdgeData;
-            }
+            edge.V1.y = cellEdgeDelta;
+            edge.V2.y = cellEdgeDelta;
+            edge.V3.y = cellEdgeDelta;
+            edge.V4.y = cellEdgeDelta;
+            edge.V5.y = cellEdgeDelta;
 
             if(RiverCanon.HasRiver(cell)) {
                 if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
@@ -376,49 +365,11 @@ namespace Assets.Simulation.HexMap {
             IHexCell neighbor = Grid.GetNeighbor(cell, direction);
 
             Vector3 bridge = HexMetrics.GetBridge(direction);
-            bridge.y = neighbor.transform.localPosition.y - cell.transform.localPosition.y;
+            bridge.y = neighbor.EdgeY - cell.EdgeY;
             EdgeVertices edgeTwo = new EdgeVertices(
                 edgeOne.V1 + bridge,
                 edgeOne.V5 + bridge
             );
-
-            if(cell.Shape != TerrainShape.Mountains && neighbor.Shape == TerrainShape.Mountains) {
-                var mountainEdgeDelta = HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
-
-                edgeTwo.V1.y += mountainEdgeDelta;
-                edgeTwo.V2.y += mountainEdgeDelta;
-                edgeTwo.V3.y += mountainEdgeDelta;
-                edgeTwo.V4.y += mountainEdgeDelta;
-                edgeTwo.V5.y += mountainEdgeDelta;
-
-            }else if(cell.Shape == TerrainShape.Mountains && neighbor.Shape != TerrainShape.Mountains) {
-                var mountainEdgeDelta = HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
-
-                edgeTwo.V1.y -= mountainEdgeDelta;
-                edgeTwo.V2.y -= mountainEdgeDelta;
-                edgeTwo.V3.y -= mountainEdgeDelta;
-                edgeTwo.V4.y -= mountainEdgeDelta;
-                edgeTwo.V5.y -= mountainEdgeDelta;
-            }
-
-            if(cell.Shape != TerrainShape.Hills && neighbor.Shape == TerrainShape.Hills) {
-                var hillEdgeDelta = HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
-
-                edgeTwo.V1.y += hillEdgeDelta;
-                edgeTwo.V2.y += hillEdgeDelta;
-                edgeTwo.V3.y += hillEdgeDelta;
-                edgeTwo.V4.y += hillEdgeDelta;
-                edgeTwo.V5.y += hillEdgeDelta;
-
-            }else if(cell.Shape == TerrainShape.Hills && neighbor.Shape != TerrainShape.Hills) {
-                var hillEdgeDelta = HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
-
-                edgeTwo.V1.y -= hillEdgeDelta;
-                edgeTwo.V2.y -= hillEdgeDelta;
-                edgeTwo.V3.y -= hillEdgeDelta;
-                edgeTwo.V4.y -= hillEdgeDelta;
-                edgeTwo.V5.y -= hillEdgeDelta;
-            }
 
             if(RiverCanon.HasRiverThroughEdge(cell, direction)) {
                 edgeTwo.V3.y = neighbor.StreamBedY;
@@ -435,14 +386,14 @@ namespace Assets.Simulation.HexMap {
                             RiverCanon.HasIncomingRiver(cell) && RiverCanon.GetIncomingRiver(cell) == direction,
                             indices
                         );
-                    }else if(cell.FoundationElevation > neighbor.WaterLevel){
+                    }else if(cell.FoundationElevation > Config.WaterLevel){
                         TriangulateWaterfallInWater(
                             edgeOne.V2, edgeOne.V4, edgeTwo.V2, edgeTwo.V4,
                             cell.RiverSurfaceY, neighbor.RiverSurfaceY,
                             neighbor.WaterSurfaceY, indices
                         );
                     }
-                }else if(!neighbor.IsUnderwater && neighbor.FoundationElevation > cell.WaterLevel) {
+                }else if(!neighbor.IsUnderwater && neighbor.FoundationElevation > Config.WaterLevel) {
                     TriangulateWaterfallInWater(
                         edgeTwo.V4, edgeTwo.V2, edgeOne.V4, edgeOne.V2,
                         neighbor.RiverSurfaceY, cell.RiverSurfaceY,
@@ -477,14 +428,7 @@ namespace Assets.Simulation.HexMap {
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
 
             Vector3 v5 = edgeOne.V5 + HexMetrics.GetBridge(direction.Next());
-            v5.y = nextNeighbor.transform.localPosition.y;
-
-            if(nextNeighbor.Shape == TerrainShape.Mountains) {
-                v5.y += HexMetrics.MountainEdgeElevation * HexMetrics.ElevationStep;
-
-            }else if(nextNeighbor.Shape == TerrainShape.Hills) {
-                v5.y += HexMetrics.HillEdgeElevation * HexMetrics.ElevationStep;
-            }
+            v5.y = nextNeighbor.EdgeY;
 
             if(cell.FoundationElevation <= neighbor.FoundationElevation) {
                 if(cell.FoundationElevation <= nextNeighbor.FoundationElevation) {

@@ -28,14 +28,10 @@ namespace Assets.UI.MapEditor {
         private bool ApplyTerrain;
         private bool ApplyFeatures;
         private bool ApplyShape;
-        private bool ApplyElevation;
-        private bool ApplyWaterLevel;
 
         private TerrainType    ActiveTerrain;
         private TerrainFeature ActiveFeature;
         private TerrainShape   ActiveShape;
-        private int            ActiveElevation;
-        private int            ActiveWaterLevel;
 
         private int BrushSize;
 
@@ -47,10 +43,12 @@ namespace Assets.UI.MapEditor {
 
         private IDisposable CellEnterSubscription;
 
-        private IHexGrid HexGrid;
-        private HexCellSignals CellSignals;
 
-        private IRiverCanon RiverCanon;
+
+
+        private IHexGrid       HexGrid;
+        private HexCellSignals CellSignals;
+        private IRiverCanon    RiverCanon;
 
         #endregion
 
@@ -60,9 +58,9 @@ namespace Assets.UI.MapEditor {
         public void InjectDependencies(
             IHexGrid hexGrid, HexCellSignals cellSignals, IRiverCanon riverCanon
         ){
-            HexGrid = hexGrid;
+            HexGrid     = hexGrid;
             CellSignals = cellSignals;
-            RiverCanon = riverCanon;
+            RiverCanon  = riverCanon;
         }
 
         #region Unity messages
@@ -112,22 +110,6 @@ namespace Assets.UI.MapEditor {
             if(ApplyShape) {
                 ActiveShape = (TerrainShape)index;
             }
-        }
-
-        public void SetApplyElevation(bool toggle) {
-            ApplyElevation = toggle;
-        }
-
-        public void SetActiveElevation(float level) {
-            ActiveElevation = (int)level;
-        }
-
-        public void SetApplyWaterLevel(bool toggle) {
-            ApplyWaterLevel = toggle;
-        }
-
-        public void SetWaterLevel(float level) {
-            ActiveWaterLevel = (int)level;
         }
 
         public void SelectBrushSize(float size) {
@@ -200,15 +182,8 @@ namespace Assets.UI.MapEditor {
                 cell.Shape = ActiveShape;
             }
 
-            if(ApplyElevation) {
-                cell.FoundationElevation = ActiveElevation;
-            }
-
-            if(ApplyWaterLevel) {
-                cell.WaterLevel = ActiveWaterLevel;
-                if(cell.IsUnderwater) {
-                    cell.Feature = TerrainFeature.None;
-                }
+            if(cell.IsUnderwater) {
+                cell.Feature = TerrainFeature.None;
             }
 
             if(RiverMode == OptionalToggle.No) {

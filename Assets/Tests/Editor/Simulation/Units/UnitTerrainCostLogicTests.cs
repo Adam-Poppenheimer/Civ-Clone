@@ -15,6 +15,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Units {
 
@@ -39,7 +40,7 @@ namespace Assets.Tests.Simulation.Units {
             public TerrainFeature Feature;
             public TerrainShape   Shape;
 
-            public int  Elevation;
+            public int  FoundationElevation;
             public bool IsUnderwater;
 
             public bool HasCity;
@@ -66,11 +67,11 @@ namespace Assets.Tests.Simulation.Units {
             get {
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false,
@@ -120,11 +121,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Elevation = 0, IsUnderwater = false, Shape = TerrainShape.Flatlands
+                        FoundationElevation = 0, IsUnderwater = false, Shape = TerrainShape.Flatlands
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -133,11 +134,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 1, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -146,11 +147,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 2, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 2, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -159,11 +160,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 1
+                        FoundationElevation = 1
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -172,11 +173,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 2
+                        FoundationElevation = 2
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -185,11 +186,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Flatlands, Elevation = 1, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -198,11 +199,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -211,11 +212,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -224,11 +225,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Mountains, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Mountains, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -237,11 +238,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, Elevation = 1, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -250,11 +251,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MovementInfo = new MovementInfo() { IgnoresTerrainCosts = true }
@@ -265,11 +266,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -279,11 +280,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Flatlands, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -293,11 +294,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -307,11 +308,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0, Shape = TerrainShape.Hills
+                        FoundationElevation = 0, Shape = TerrainShape.Hills
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, Elevation = 0, IsUnderwater = false
+                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -323,7 +324,7 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0, HasRoads = true
+                        FoundationElevation = 0, HasRoads = true
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
@@ -336,7 +337,7 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0, HasRoads = true
+                        FoundationElevation = 0, HasRoads = true
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
@@ -349,7 +350,7 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        Elevation = 0
+                        FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
@@ -362,14 +363,27 @@ namespace Assets.Tests.Simulation.Units {
             }
         }
 
+        private Dictionary<TerrainFeature, int> FeatureMoveCosts = new Dictionary<TerrainFeature, int>() {
+            { TerrainFeature.None,   0 },
+            { TerrainFeature.Forest, 1 },
+        };
+
+        private Dictionary<TerrainShape, int> ShapeMoveCosts = new Dictionary<TerrainShape, int>() {
+            { TerrainShape.Flatlands,  0 },
+            { TerrainShape.Hills,      1 },
+            { TerrainShape.Mountains, -1 },
+        };
+
         #endregion
 
         #region instance fields and properties
 
-        private Mock<IHexGridConfig>                           MockConfig;
-        private Mock<IUnitPositionCanon>                       MockUnitPositionCanon;
-        private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
-        private Mock<IPromotionParser>                         MockPromotionParser;
+        private Mock<IHexMapConfig>                                 MockConfig;
+        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<IPromotionParser>                              MockPromotionParser;
 
         #endregion
 
@@ -379,32 +393,31 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig            = new Mock<IHexGridConfig>();
-            MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
-            MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockPromotionParser   = new Mock<IPromotionParser>();
+            MockConfig              = new Mock<IHexMapConfig>();
+            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
+            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockPromotionParser     = new Mock<IPromotionParser>();
 
-            MockConfig.Setup(config => config.BaseLandMoveCost).Returns(1);
-            MockConfig.Setup(config => config.WaterMoveCost)   .Returns(1);
-            MockConfig.Setup(config => config.SlopeMoveCost)   .Returns(1);
+            MockConfig.Setup(config => config.SlopeMoveCost).Returns(1);
 
-            MockConfig.Setup(config => config.FeatureMoveCosts).Returns(new List<int>() {
-                0, //None cost
-                1, //Forest cost
-            }.AsReadOnly());
+            MockConfig.Setup(config => config.GetBaseMoveCostOfTerrain(It.IsAny<TerrainType>())).Returns(1);
 
-            MockConfig.Setup(config => config.ShapeMoveCosts).Returns(new List<int>() {
-                0, //Flatland cost
-                1, // Hills cost
-                -1 // Mountains cost
-            }.AsReadOnly());
+            MockConfig.Setup(config => config.GetBaseMoveCostOfFeature(It.IsAny<TerrainFeature>()))
+                      .Returns<TerrainFeature>(feature => FeatureMoveCosts[feature]);
+
+            MockConfig.Setup(config => config.GetBaseMoveCostOfShape(It.IsAny<TerrainShape>()))
+                      .Returns<TerrainShape>(shape => ShapeMoveCosts[shape]);
 
             MockConfig.Setup(config => config.RoadMoveCostMultiplier).Returns(0.5f);
 
-            Container.Bind<IHexGridConfig>                          ().FromInstance(MockConfig           .Object);
-            Container.Bind<IUnitPositionCanon>                      ().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
-            Container.Bind<IPromotionParser>                        ().FromInstance(MockPromotionParser  .Object);
+            Container.Bind<IHexMapConfig>                                ().FromInstance(MockConfig             .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<IPromotionParser>                             ().FromInstance(MockPromotionParser    .Object);            
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -444,21 +457,19 @@ namespace Assets.Tests.Simulation.Units {
             int edgeElevation;
 
             switch(testData.Shape) {
-                case TerrainShape.Flatlands: edgeElevation = testData.Elevation;                                                      break;
-                case TerrainShape.Hills:     edgeElevation = testData.Elevation + Mathf.RoundToInt(HexMetrics.HillEdgeElevation);     break;
-                case TerrainShape.Mountains: edgeElevation = testData.Elevation + Mathf.RoundToInt(HexMetrics.MountainEdgeElevation); break;
-                default:                     edgeElevation = testData.Elevation;                                                      break;
+                case TerrainShape.Hills: case TerrainShape.Mountains: edgeElevation = testData.FoundationElevation + 1; break;
+                default: edgeElevation = testData.FoundationElevation; break;
             }
 
             mockCell.Setup(cell => cell.EdgeElevation).Returns(edgeElevation);
+            mockCell.Setup(cell => cell.FoundationElevation).Returns(testData.FoundationElevation);
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain             = testData.Terrain;
-            newCell.Feature             = testData.Feature;
-            newCell.Shape               = testData.Shape;
-            newCell.FoundationElevation = testData.Elevation;
-            newCell.HasRoads            = testData.HasRoads;
+            newCell.Terrain  = testData.Terrain;
+            newCell.Feature  = testData.Feature;
+            newCell.Shape    = testData.Shape;
+            newCell.HasRoads = testData.HasRoads;
 
             MockUnitPositionCanon
                 .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))

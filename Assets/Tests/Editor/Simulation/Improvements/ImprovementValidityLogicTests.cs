@@ -41,7 +41,7 @@ namespace Assets.Tests.Simulation.Improvements {
             public TerrainFeature Feature;
             public TerrainShape   Shape;
 
-            public int Elevation;
+            public int FoundationElevation;
 
         }
 
@@ -74,7 +74,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -116,10 +116,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Mountains, Elevation = 0
+                        Shape = TerrainShape.Mountains, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Elevation = 0 }
+                        new HexCellTestData() { FoundationElevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -132,10 +132,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Elevation = 0 }
+                        new HexCellTestData() { FoundationElevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -148,10 +148,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Elevation = 0 }
+                        new HexCellTestData() { FoundationElevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -164,10 +164,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, Elevation = 0
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Elevation = 0 }
+                        new HexCellTestData() { FoundationElevation = 0 }
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -179,7 +179,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = true,
@@ -192,7 +192,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, Elevation = 0
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -208,7 +208,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, Elevation = 0
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.Forest, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -224,7 +224,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, Elevation = 0
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None, FoundationElevation = 0
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -315,13 +315,13 @@ namespace Assets.Tests.Simulation.Improvements {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
+            mockCell.Setup(cell => cell.FoundationElevation).Returns(data.FoundationElevation);
 
             var newCell = mockCell.Object;
 
             newCell.Terrain             = data.Terrain;
             newCell.Feature             = data.Feature;
             newCell.Shape               = data.Shape;
-            newCell.FoundationElevation = data.Elevation;
 
             return newCell;
         }

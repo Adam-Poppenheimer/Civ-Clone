@@ -109,7 +109,7 @@ namespace Assets.UI.HexMap {
         }
 
         private void SetCellDataField(IHexCell cell) {
-            string cellDataString = GetTerrainName(cell);
+            string cellDataString = cell.Terrain.ToString();
 
             if(cell.Shape != TerrainShape.Flatlands) {
                 cellDataString += ", " + cell.Shape.ToString();
@@ -122,14 +122,6 @@ namespace Assets.UI.HexMap {
             cellDataString += GetImprovementString(cell);
 
             CellDataField.text = cellDataString;
-        }
-
-        private string GetTerrainName(IHexCell cell) {
-            if(cell.IsUnderwater) {
-                return "Water";
-            }else {
-                return cell.Terrain.ToString();
-            }
         }
 
         private string GetImprovementString(IHexCell cell) {

@@ -21,16 +21,16 @@ namespace Assets.Simulation.HexMap {
         TerrainFeature Feature { get; set; }
         TerrainShape   Shape   { get; set; }
 
-        int FoundationElevation { get; set; }
-        int EdgeElevation { get; }
-        int PeakElevation { get; }
+        int FoundationElevation { get; }
+        int EdgeElevation       { get; }
+        int PeakElevation       { get; }
 
-        float StreamBedY { get; }
+        float PeakY       { get; }
+        float EdgeY         { get; }
+        float StreamBedY    { get; }
         float RiverSurfaceY { get; }
 
         bool HasRoads { get; set; }
-
-        int WaterLevel { get; set; }
 
         float WaterSurfaceY { get; }
 
@@ -64,6 +64,7 @@ namespace Assets.Simulation.HexMap {
         void RefreshSelfOnly();
 
         void RefreshVisibility();
+        void RefreshElevation();
 
         #endregion
 

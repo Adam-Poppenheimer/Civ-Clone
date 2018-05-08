@@ -16,14 +16,19 @@ namespace Assets.Simulation.HexMap {
         private Dictionary<IHexCell, bool[]> IncomingRivers = new Dictionary<IHexCell, bool[]>();
         private Dictionary<IHexCell, bool[]> OutgoingRivers = new Dictionary<IHexCell, bool[]>();
 
-        private IHexGrid Grid;
+
+
+
+        private IHexGrid      Grid;
+        private IHexMapConfig Config;
 
         #endregion
 
         #region constructors
 
-        public RiverCanon(IHexGrid grid) {
-            Grid = grid;
+        public RiverCanon(IHexGrid grid, IHexMapConfig config) {
+            Grid   = grid;
+            Config = config;
         }
 
         #endregion
@@ -121,7 +126,7 @@ namespace Assets.Simulation.HexMap {
 
             if(neighbor != null) {
                 bool validElevation = cell.FoundationElevation >= neighbor.FoundationElevation;
-                bool validWaterLevel = cell.WaterLevel == neighbor.FoundationElevation;
+                bool validWaterLevel = Config.WaterLevel >= neighbor.FoundationElevation;
 
                 return validElevation || validWaterLevel;
             }
@@ -137,7 +142,7 @@ namespace Assets.Simulation.HexMap {
 
             if(neighbor != null) {
                 bool validElevation = cell.FoundationElevation <= neighbor.FoundationElevation;
-                bool validWaterLevel = cell.WaterLevel == neighbor.FoundationElevation && neighbor.IsUnderwater;
+                bool validWaterLevel = Config.WaterLevel >= cell.FoundationElevation && Config.WaterLevel <= neighbor.FoundationElevation;
 
                 return validElevation || validWaterLevel;
             }

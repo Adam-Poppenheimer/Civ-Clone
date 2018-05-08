@@ -28,7 +28,9 @@ namespace Assets.Simulation.HexMap {
             get { return _terrain; }
             set {
                 _terrain = value;
+
                 ShaderData.RefreshTerrain(this);
+                RefreshElevation();
             }
         }
         [SerializeField] private TerrainType _terrain;
@@ -64,16 +66,15 @@ namespace Assets.Simulation.HexMap {
 
         public int FoundationElevation {
             get { return _elevation; }
-            set {
+            private set {
                 if(_elevation == value) {
                     return;
                 }
                 _elevation = value;
                 var localPosition = transform.localPosition;
 
-                localPosition.y = _elevation * HexMetrics.ElevationStep;
-                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f - 1f) *
-                    HexMetrics.ElevationPerturbStrength;
+                localPosition.y = _elevation * HexMetrics.ElevationStep * HexMetrics.ElevationPerturbStrength;
+                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f - 1f);
 
                 transform.localPosition = localPosition;
 
@@ -88,24 +89,22 @@ namespace Assets.Simulation.HexMap {
 
         public int EdgeElevation {
             get {
-                switch(Shape) {
-                    case TerrainShape.Flatlands: return FoundationElevation;
-                    case TerrainShape.Hills:     return FoundationElevation + Mathf.RoundToInt(HexMetrics.HillEdgeElevation);
-                    case TerrainShape.Mountains: return FoundationElevation + Mathf.RoundToInt(HexMetrics.MountainEdgeElevation);
-                    default:                     return FoundationElevation;
-                }
+                return FoundationElevation + Config.GetEdgeElevationForShape(Shape);
             }
         }
 
         public int PeakElevation {
             get {
-                switch(Shape) {
-                    case TerrainShape.Flatlands: return FoundationElevation;
-                    case TerrainShape.Hills:     return FoundationElevation + Mathf.RoundToInt(HexMetrics.HillPeakElevation);
-                    case TerrainShape.Mountains: return FoundationElevation + Mathf.RoundToInt(HexMetrics.MountainPeakElevation);
-                    default:                     return FoundationElevation;
-                }
+                return FoundationElevation + Config.GetPeakElevationForShape(Shape);
             }
+        }
+
+        public float PeakY {
+            get { return transform.position.y + ((PeakElevation - FoundationElevation) * HexMetrics.ElevationStep); }
+        }
+
+        public float EdgeY {
+            get { return transform.position.y + ((EdgeElevation - FoundationElevation) * HexMetrics.ElevationStep); }
         }
 
         public float StreamBedY {
@@ -131,33 +130,18 @@ namespace Assets.Simulation.HexMap {
         }
         private bool _hasRoads;
 
-        public int WaterLevel {
-            get { return _waterLevel; }
-            set {
-                if(_waterLevel == value) {
-                    return;
-                }
-
-                _waterLevel = value;
-                RiverCanon.ValidateRivers(this);
-                Refresh();
-                Signals.WaterLevelChangedSignal.OnNext(this);
-            }
-        }
-        private int _waterLevel;
-
         public bool IsUnderwater {
-            get { return WaterLevel > FoundationElevation; }
+            get { return Config.WaterLevel > EdgeElevation; }
         }
 
         public float WaterSurfaceY {
             get {
-                return (WaterLevel + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
+                return (Config.WaterLevel + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
             }
         }
 
         public int ViewElevation {
-            get { return PeakElevation >= WaterLevel ? PeakElevation : WaterLevel; }
+            get { return PeakElevation >= Config.WaterLevel ? PeakElevation : Config.WaterLevel; }
         }
 
         public IWorkerSlot WorkerSlot { get; set; }
@@ -193,6 +177,7 @@ namespace Assets.Simulation.HexMap {
         private IHexGrid        Grid;
         private IRiverCanon     RiverCanon;
         private HexCellSignals  Signals;
+        private IHexMapConfig   Config;
 
         #endregion
 
@@ -201,12 +186,13 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon,
-            HexCellSignals signals
+            HexCellSignals signals, IHexMapConfig config
         ){
             NoiseGenerator = noiseGenerator;
             Grid           = grid;
             RiverCanon     = riverCanon;
             Signals        = signals;
+            Config         = config;
         }
 
         #region Unity messages
@@ -257,6 +243,10 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility() {
             ShaderData.RefreshVisibility(this);
+        }
+
+        public void RefreshElevation() {
+            FoundationElevation = Config.GetFoundationElevationForTerrain(Terrain);
         }
 
         #endregion

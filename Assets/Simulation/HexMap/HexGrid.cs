@@ -337,8 +337,9 @@ namespace Assets.Simulation.HexMap {
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
             newCell.Terrain     = TerrainType.Grassland;
             newCell.Feature     = TerrainFeature.None;
-            newCell.FoundationElevation   = 0;
-
+            newCell.Shape       = TerrainShape.Flatlands;
+            
+            newCell.RefreshElevation();
             
 
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);

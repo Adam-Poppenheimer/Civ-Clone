@@ -352,30 +352,30 @@ namespace Assets.Tests.Simulation.HexMap {
             }
         }
 
-        private static List<ResourceSummary> TerrainYields = new List<ResourceSummary>() {
-            new ResourceSummary(1f),
-            new ResourceSummary(1.1f),
-            new ResourceSummary(1.2f),
-            new ResourceSummary(1.3f),
-            new ResourceSummary(1.4f),
+        private static Dictionary<TerrainType, ResourceSummary> TerrainYields = new Dictionary<TerrainType, ResourceSummary>() {
+            { TerrainType.Grassland, new ResourceSummary(1f)   },
+            { TerrainType.Plains,    new ResourceSummary(1.1f) },
+            { TerrainType.Desert,    new ResourceSummary(1.2f) },
+            { TerrainType.Tundra,    new ResourceSummary(1.3f) },
+            { TerrainType.Snow,      new ResourceSummary(1.4f) },
         };
 
-        private static List<ResourceSummary> FeatureYields = new List<ResourceSummary>() {
-            new ResourceSummary(0f),
-            new ResourceSummary(2f)
+        private static Dictionary<TerrainFeature, ResourceSummary> FeatureYields = new Dictionary<TerrainFeature, ResourceSummary>() {
+            { TerrainFeature.None,   new ResourceSummary(0f) },
+            { TerrainFeature.Forest, new ResourceSummary(2f) },
         };
 
-        private static List<ResourceSummary> ShapeYields = new List<ResourceSummary>() {
-            new ResourceSummary(0f),
-            new ResourceSummary(10f),
-            new ResourceSummary(20f)
+        private static Dictionary<TerrainShape, ResourceSummary> ShapeYields = new Dictionary<TerrainShape, ResourceSummary>() {
+            { TerrainShape.Flatlands, new ResourceSummary(0f) },
+            { TerrainShape.Hills,     new ResourceSummary(10f) },
+            { TerrainShape.Mountains, new ResourceSummary(20f) },
         };
 
         #endregion
 
         #region instance fields and properties
 
-        private Mock<IHexGridConfig>                                   MockConfig;
+        private Mock<IHexMapConfig>                                    MockConfig;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
         private Mock<IImprovementLocationCanon>                        MockImprovementLocationCanon;
         private Mock<IImprovementYieldLogic>                           MockImprovementYieldLogic;
@@ -393,7 +393,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig                   = new Mock<IHexGridConfig>();
+            MockConfig                   = new Mock<IHexMapConfig>();
             MockNodePositionCanon        = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
             MockImprovementYieldLogic    = new Mock<IImprovementYieldLogic>();
@@ -403,11 +403,16 @@ namespace Assets.Tests.Simulation.HexMap {
             MockTechCanon                = new Mock<ITechCanon>();
             MockGameCore                 = new Mock<IGameCore>();
 
-            MockConfig.Setup(config => config.TerrainYields).Returns(TerrainYields.AsReadOnly());
-            MockConfig.Setup(config => config.FeatureYields).Returns(FeatureYields.AsReadOnly());
-            MockConfig.Setup(config => config.ShapeYields  ).Returns(ShapeYields  .AsReadOnly());
+            MockConfig.Setup(config => config.GetYieldOfFeature(It.IsAny<TerrainFeature>()))
+                      .Returns<TerrainFeature>(feature => FeatureYields[feature]);
 
-            Container.Bind<IHexGridConfig>                                  ().FromInstance(MockConfig                  .Object);
+            MockConfig.Setup(config => config.GetYieldOfTerrain(It.IsAny<TerrainType>()))
+                      .Returns<TerrainType>(feature => TerrainYields[feature]);
+
+            MockConfig.Setup(config => config.GetYieldOfShape(It.IsAny<TerrainShape>()))
+                      .Returns<TerrainShape>(feature => ShapeYields[feature]);
+
+            Container.Bind<IHexMapConfig>                                  ().FromInstance(MockConfig                  .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon       .Object);
             Container.Bind<IImprovementLocationCanon>                       ().FromInstance(MockImprovementLocationCanon.Object);
             Container.Bind<IImprovementYieldLogic>                          ().FromInstance(MockImprovementYieldLogic   .Object);

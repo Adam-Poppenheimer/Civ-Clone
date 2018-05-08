@@ -190,78 +190,6 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeCells_FoundationElevationRecorded() {
-            var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
-            var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
-            var cellThree = BuildHexCell(new HexCoordinates(4, 5));
-
-            cellOne  .FoundationElevation = 5;
-            cellTwo  .FoundationElevation = 0;
-            cellThree.FoundationElevation = -2;
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            var mapData = new SerializableMapData();
-
-            composer.ComposeCells(mapData);
-
-            var dataLikeCellOne = mapData.HexCells.Where(
-                data => data.Coordinates         == cellOne.Coordinates
-                     && data.FoundationElevation == cellOne.FoundationElevation
-            );
-
-            var dataLikeCellTwo = mapData.HexCells.Where(
-                data => data.Coordinates         == cellTwo.Coordinates
-                     && data.FoundationElevation == cellTwo.FoundationElevation
-            );
-
-            var dataLikeCellThree = mapData.HexCells.Where(
-                data => data.Coordinates         == cellThree.Coordinates
-                     && data.FoundationElevation == cellThree.FoundationElevation
-            );
-
-            Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
-            Assert.AreEqual(1, dataLikeCellTwo.Count(),   "Unexpected number of data representing CellTwo");
-            Assert.AreEqual(1, dataLikeCellThree.Count(), "Unexpected number of data representing CellThree");
-        }
-
-        [Test]
-        public void ComposeCells_WaterLevelRecorded() {
-            var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
-            var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
-            var cellThree = BuildHexCell(new HexCoordinates(4, 5));
-
-            cellOne  .WaterLevel = 5;
-            cellTwo  .WaterLevel = 0;
-            cellThree.WaterLevel = -7;
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            var mapData = new SerializableMapData();
-
-            composer.ComposeCells(mapData);
-
-            var dataLikeCellOne = mapData.HexCells.Where(
-                data => data.Coordinates == cellOne.Coordinates
-                     && data.WaterLevel  == cellOne.WaterLevel
-            );
-
-            var dataLikeCellTwo = mapData.HexCells.Where(
-                data => data.Coordinates == cellTwo.Coordinates
-                     && data.WaterLevel  == cellTwo.WaterLevel
-            );
-
-            var dataLikeCellThree = mapData.HexCells.Where(
-                data => data.Coordinates == cellThree.Coordinates
-                     && data.WaterLevel  == cellThree.WaterLevel
-            );
-
-            Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
-            Assert.AreEqual(1, dataLikeCellTwo.Count(),   "Unexpected number of data representing CellTwo");
-            Assert.AreEqual(1, dataLikeCellThree.Count(), "Unexpected number of data representing CellThree");
-        }
-
-        [Test]
         public void ComposeCells_SuprpessSlotRecorded() {
             var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
@@ -493,54 +421,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             Assert.AreEqual(TerrainShape.Mountains, cellOne.Shape, "CellOne has an unexpected shape");
             Assert.AreEqual(TerrainShape.Flatlands, cellTwo.Shape, "CellTwo has an unexpected shape");
-        }
-
-        [Test]
-        public void DecomposeCells_FoundationElevationSetProperly() {
-            var mapData = new SerializableMapData() {
-                HexCells = new List<SerializableHexCellData>() {
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0), FoundationElevation = 5
-                    },
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1),FoundationElevation = -2
-                    },
-                }
-            };
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            composer.DecomposeCells(mapData);
-
-            var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
-            var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
-
-            Assert.AreEqual(5, cellOne.FoundationElevation, "CellOne has an unexpected foundation elevation");
-            Assert.AreEqual(-2, cellTwo.FoundationElevation, "CellTwo has an unexpected foundation elevation");
-        }
-
-        [Test]
-        public void DecomposeCells_WaterLevelSetProperly() {
-            var mapData = new SerializableMapData() {
-                HexCells = new List<SerializableHexCellData>() {
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0), WaterLevel = 5
-                    },
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), WaterLevel = -2
-                    },
-                }
-            };
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            composer.DecomposeCells(mapData);
-
-            var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
-            var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
-
-            Assert.AreEqual(5, cellOne.WaterLevel, "CellOne has an unexpected water level");
-            Assert.AreEqual(-2, cellTwo.WaterLevel, "CellTwo has an unexpected water level");
         }
 
         [Test]

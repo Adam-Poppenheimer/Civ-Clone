@@ -46,8 +46,6 @@ namespace Assets.Simulation.MapManagement {
                     Terrain             = cell.Terrain,
                     Feature             = cell.Feature,
                     Shape               = cell.Shape,
-                    FoundationElevation = cell.FoundationElevation,
-                    WaterLevel          = cell.WaterLevel,
                     SuppressSlot        = cell.SuppressSlot,
                     HasRoads            = cell.HasRoads,
 
@@ -71,8 +69,6 @@ namespace Assets.Simulation.MapManagement {
                 cellToModify.Terrain             = cellData.Terrain;
                 cellToModify.Feature             = cellData.Feature;
                 cellToModify.Shape               = cellData.Shape;
-                cellToModify.FoundationElevation = cellData.FoundationElevation;
-                cellToModify.WaterLevel          = cellData.WaterLevel;
                 cellToModify.SuppressSlot        = cellData.SuppressSlot;
                 cellToModify.HasRoads            = cellData.HasRoads;
 

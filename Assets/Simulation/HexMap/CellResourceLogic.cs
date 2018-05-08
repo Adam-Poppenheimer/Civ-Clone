@@ -19,7 +19,7 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGridConfig                                   Config;
+        private IHexMapConfig                                    Config;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
         private IImprovementLocationCanon                        ImprovementLocationCanon;
         private IImprovementYieldLogic                           ImprovementYieldLogic;
@@ -34,7 +34,7 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         [Inject]
-        public CellResourceLogic(IHexGridConfig config,
+        public CellResourceLogic(IHexMapConfig config,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             IImprovementLocationCanon improvementLocationCanon,
             IImprovementYieldLogic improvementYieldLogic,
@@ -76,11 +76,11 @@ namespace Assets.Simulation.HexMap {
             }
 
             if(cell.Feature != TerrainFeature.None) {
-                retval = Config.FeatureYields[(int)cell.Feature];
+                retval = Config.GetYieldOfFeature(cell.Feature);
             }else if(cell.Shape != TerrainShape.Flatlands) {
-                retval = Config.ShapeYields[(int)cell.Shape];
+                retval = Config.GetYieldOfShape(cell.Shape);
             }else {
-                retval = Config.TerrainYields[(int)cell.Terrain];
+                retval = Config.GetYieldOfTerrain(cell.Terrain);
             }
 
             var nodeAtLocation = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();

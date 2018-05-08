@@ -26,8 +26,8 @@ namespace Assets.Simulation.HexMap {
         public override void InstallBindings() {
             Container.Bind<IHexGrid>().To<HexGrid>().FromInstance(Grid);
 
-            var hexConfig = Resources.Load<HexGridConfig>("Hex Map/Hex Grid Config");
-            Container.Bind<IHexGridConfig>().To<HexGridConfig>().FromInstance(hexConfig);
+            var hexConfig = Resources.Load<HexMapConfig>("Hex Map/Hex Map Config");
+            Container.Bind<IHexMapConfig>().To<HexMapConfig>().FromInstance(hexConfig);
             
             var featureConfig = Resources.Load<FeatureConfig>("Hex Map/Feature Config");
             Container.Bind<IFeatureConfig>().To<FeatureConfig>().FromInstance(featureConfig);

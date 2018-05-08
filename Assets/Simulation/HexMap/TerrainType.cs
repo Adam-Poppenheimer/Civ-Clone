@@ -6,11 +6,14 @@ using System.Text;
 namespace Assets.Simulation.HexMap {
 
     public enum TerrainType {
-        Grassland = 0,
-        Plains    = 1,
-        Desert    = 2,
-        Tundra    = 3,
-        Snow      = 4,
+        Grassland    = 0,
+        Plains       = 1,
+        Desert       = 2,
+        Tundra       = 3,
+        Snow         = 4,
+        ShallowWater = 5,
+        DeepWater    = 6,
+        FreshWater   = 7
     }
 
 }
