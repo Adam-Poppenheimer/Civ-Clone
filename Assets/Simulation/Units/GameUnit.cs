@@ -125,12 +125,46 @@ namespace Assets.Simulation.Units {
         }
 
         public IEnumerable<IPromotion> Promotions {
-            get { return Template.StartingPromotions; }
+            get { return Template.StartingPromotions.Concat(PromotionTree.GetChosenPromotions()); }
         }
+
+        public IPromotionTree PromotionTree {
+            get {
+                if(_promotionTree == null) {
+                    _promotionTree = new PromotionTree(Template.PromotionTreeData, this, Signals);
+                }
+                return _promotionTree;
+            }
+        }
+        private IPromotionTree _promotionTree;
+
+        public int Experience {
+            get { return _experience; }
+            set {
+                if(_experience != value) {
+                    _experience = value;
+                    Signals.ExperienceChangedSignal.OnNext(this);
+                }
+            }
+        }
+        private int _experience;
+
+        public int Level {
+            get { return _level; }
+            set {
+                if(_level != value) {
+                    _level = value;
+                    Signals.LevelChangedSignal.OnNext(this);
+                }
+            }
+        }
+        private int _level;
 
         #endregion
 
         [SerializeField] private Animator Animator;
+
+        private Coroutine RelocationCoroutine;
 
 
 
@@ -225,7 +259,18 @@ namespace Assets.Simulation.Units {
             }
             
             PositionCanon.ChangeOwnerOfPossession(this, newLocation);
-            transform.position = Grid.PerformIntersectionWithTerrainSurface(newLocation.transform.position);
+
+            if(RelocationCoroutine != null) {
+                StopCoroutine(RelocationCoroutine);
+            }
+
+            RelocationCoroutine = StartCoroutine(PlaceUnitOnGridCoroutine(newLocation.transform.position));            
+        }
+
+        private IEnumerator PlaceUnitOnGridCoroutine(Vector3 xzPosition) {
+            yield return new WaitForEndOfFrame();
+
+            transform.position = Grid.PerformIntersectionWithTerrainSurface(xzPosition);
         }
 
         public void SetUpToBombard() {

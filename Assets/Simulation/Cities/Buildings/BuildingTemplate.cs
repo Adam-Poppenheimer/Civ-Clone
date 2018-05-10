@@ -161,6 +161,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private bool _providesOverseaConnection;
 
+        public int BonusExperience {
+            get { return _bonusExperience; }
+        }
+        [SerializeField] private int _bonusExperience;
+
         #endregion
 
         #endregion

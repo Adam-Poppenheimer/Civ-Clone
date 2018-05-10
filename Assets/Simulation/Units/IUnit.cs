@@ -55,6 +55,11 @@ namespace Assets.Simulation.Units {
         bool IsIdling               { get; }
 
         IEnumerable<IPromotion> Promotions { get; }
+
+        IPromotionTree PromotionTree { get; }
+
+        int Experience { get; set; }
+        int Level      { get; set; }
         
         #endregion
 

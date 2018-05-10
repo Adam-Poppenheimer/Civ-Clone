@@ -25,6 +25,11 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField, TextArea(minLines: 5, maxLines: 10)] private string _description;
 
+        public Sprite Icon {
+            get { return _icon; }
+        }
+        [SerializeField] private Sprite _icon;
+
         #endregion
 
         [SerializeField] private List<PromotionArgType> Args;

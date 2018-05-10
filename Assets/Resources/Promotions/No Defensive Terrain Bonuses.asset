@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: No Defensive Terrain Bonuses
   m_EditorClassIdentifier: 
   _description: This unit does not gain combat bonuses from defensive terrain or improvements
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Args: 0c000000
   Float: 0
   Int: 0

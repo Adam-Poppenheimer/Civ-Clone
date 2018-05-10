@@ -278,7 +278,9 @@ namespace Assets.Simulation.HexMap {
         public Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition) {
             RaycastHit results;
 
-            Physics.Raycast(xzPosition + MapIntersector, Vector3.down, out results, float.MaxValue, layerMask: TerrainCollisionMask);
+            if(!Physics.Raycast(xzPosition + MapIntersector, Vector3.down * 50, out results, Mathf.Infinity, layerMask: TerrainCollisionMask)) {
+                Debug.LogError("PerformIntersectionWithTerrainSurface failed to find a collision for xzPosition " + xzPosition.ToString());
+            }
 
             return results.point;
         }

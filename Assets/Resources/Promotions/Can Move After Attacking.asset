@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Can Move After Attacking
   m_EditorClassIdentifier: 
   _description: 
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Args: 09000000
   Float: 0
   Int: 0

@@ -14,7 +14,9 @@ namespace Assets.Simulation.Units.Promotions {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IPromotionParser>().To<PromotionParser>().AsSingle();
+            Container.Bind<IPromotionParser>        ().To<PromotionParser>        ().AsSingle();
+            Container.Bind<IUnitExperienceLogic>    ().To<UnitExperienceLogic>    ().AsSingle();
+            Container.Bind<IStartingExperienceLogic>().To<StartingExperienceLogic>().AsSingle();
         }
 
         #endregion

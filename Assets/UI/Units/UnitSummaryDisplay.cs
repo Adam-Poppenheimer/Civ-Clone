@@ -10,6 +10,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.UI.Units {
 
@@ -17,14 +18,24 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        private IUnitConfig Config;
-
         [SerializeField] private Text NameField;
+        [SerializeField] private Text TypeField;
         [SerializeField] private Text CurrentMovementField;
         [SerializeField] private Text MaxMovementField;
-        [SerializeField] private Text TypeField;
+        [SerializeField] private Text ExperienceField;
+        [SerializeField] private Text ExperienceForNextLevelField;
 
         [SerializeField] private Slider HealthSlider;
+
+        private IDisposable ExperienceChangedSubscription;
+        private IDisposable LevelChangedSubscription;
+
+
+
+
+        private IUnitConfig          Config;
+        private IUnitExperienceLogic UnitExperienceLogic;
+        private UnitSignals          Signals;
 
         #endregion
 
@@ -32,35 +43,39 @@ namespace Assets.UI.Units {
 
         [Inject]
         public void InjectDependencies(
-            IUnitConfig config,
-            [InjectOptional(Id = "Name Field"            )] Text nameField,
-            [InjectOptional(Id = "Current Movement Field")] Text currentMovementField,
-            [InjectOptional(Id = "Max Movement Field"    )] Text maxMovementField,
-            [InjectOptional(Id = "Type Field"            )] Text typeField,
-            [InjectOptional(Id = "Health Slider"         )] Slider healthSlider
-        ) {
-            Config = config;
-
-            if(nameField            != null) { NameField            = nameField;            }
-            if(currentMovementField != null) { CurrentMovementField = currentMovementField; }
-            if(maxMovementField     != null) { MaxMovementField     = maxMovementField;     }
-            if(typeField            != null) { TypeField            = typeField;            }
-
-            if(healthSlider != null) { HealthSlider = healthSlider; }
+            IUnitConfig config, IUnitExperienceLogic unitExperienceLogic,
+            UnitSignals signals
+        ){
+            Config              = config;
+            UnitExperienceLogic = unitExperienceLogic;
+            Signals             = signals;
         }
 
         #region from UnitDisplayBase
+
+        protected override void DoOnEnable() {
+            ExperienceChangedSubscription = Signals.ExperienceChangedSignal.Subscribe(OnExperienceChanged);
+            LevelChangedSubscription      = Signals.LevelChangedSignal     .Subscribe(OnLevelChanged);
+        }
+
+        protected override void DoOnDisable() {
+            ExperienceChangedSubscription.Dispose();
+            LevelChangedSubscription     .Dispose();
+        }
 
         public override void Refresh() {
             if(ObjectToDisplay == null) {
                 return;
             }
 
-            NameField           .text = ObjectToDisplay.Name;
-            MaxMovementField    .text = ObjectToDisplay.MaxMovement.ToString();
-            TypeField           .text = ObjectToDisplay.Type       .ToString();
+            int experienceForNextLevel = UnitExperienceLogic.GetExperienceForNextLevelOnUnit(ObjectToDisplay);
 
-            CurrentMovementField.text = ObjectToDisplay.CurrentMovement.ToString();
+            NameField                  .text = ObjectToDisplay.Name;
+            TypeField                  .text = ObjectToDisplay.Type           .ToString();
+            CurrentMovementField       .text = ObjectToDisplay.CurrentMovement.ToString();
+            MaxMovementField           .text = ObjectToDisplay.MaxMovement    .ToString();
+            ExperienceField            .text = ObjectToDisplay.Experience     .ToString();
+            ExperienceForNextLevelField.text = experienceForNextLevel         .ToString();
 
             HealthSlider.minValue = 0;
             HealthSlider.maxValue = Config.MaxHealth;
@@ -68,6 +83,18 @@ namespace Assets.UI.Units {
         }
 
         #endregion
+
+        private void OnExperienceChanged(IUnit unit) {
+            if(unit == ObjectToDisplay) {
+                Refresh();
+            }
+        }
+
+        private void OnLevelChanged(IUnit unit) {
+            if(unit == ObjectToDisplay) {
+                Refresh();
+            }
+        }
 
         #endregion
 

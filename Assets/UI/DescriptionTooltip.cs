@@ -9,10 +9,7 @@ using Zenject;
 using TMPro;
 
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.Units;
-using Assets.Simulation.Improvements;
-using Assets.Simulation.SpecialtyResources;
-using Assets.Simulation.Technology;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.UI {
 
@@ -32,6 +29,10 @@ namespace Assets.UI {
 
         public void SetDescriptionFrom(IBuildingTemplate template) {
             DescriptionField.text = template.Description;
+        }
+
+        public void SetDescriptionFrom(IPromotion promotion) {
+            DescriptionField.text = string.Format("{0}\n\n{1}", promotion.name, promotion.Description);
         }
 
         #endregion

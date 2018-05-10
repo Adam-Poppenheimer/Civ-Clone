@@ -9,11 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: b1eb4a0e223fc7d418c4513d13163333, type: 3}
-  m_Name: Rough Terrain Penalty
+  m_Name: Rough Terrain Bonus 25
   m_EditorClassIdentifier: 
-  _description: This unit does not gain combat bonuses from defensive terrain or improvements
-  Args: 0d000000
-  Float: 0
+  _description: 
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  Args: 0000000004000000
+  Float: 0.25
   Int: 0
   Terrain: 0
   Shape: 0

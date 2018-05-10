@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 
@@ -18,11 +19,10 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
-        private IBuildingFactory BuildingFactory;
-
-        private IUnitFactory UnitFactory;
-
+        private IBuildingFactory                              BuildingFactory;
+        private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IStartingExperienceLogic                      StartingExperienceLogic;
 
         #endregion
 
@@ -37,11 +37,13 @@ namespace Assets.Simulation.Cities.Production {
         [Inject]
         public ProductionProjectFactory(
             IBuildingFactory buildingFactory, IUnitFactory unitFactory,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IStartingExperienceLogic startingExperienceLogic
         ){
-            BuildingFactory     = buildingFactory;
-            UnitFactory         = unitFactory;
-            CityPossessionCanon = cityPossessionCanon;
+            BuildingFactory         = buildingFactory;
+            UnitFactory             = unitFactory;
+            CityPossessionCanon     = cityPossessionCanon;
+            StartingExperienceLogic = startingExperienceLogic;
         }
 
         #endregion
@@ -57,7 +59,7 @@ namespace Assets.Simulation.Cities.Production {
 
         /// <inheritdoc/>
         public IProductionProject ConstructProject(IUnitTemplate template) {
-            return new ProductionProject(template, UnitFactory, CityPossessionCanon);
+            return new ProductionProject(template, UnitFactory, CityPossessionCanon, StartingExperienceLogic);
         }
 
         #endregion

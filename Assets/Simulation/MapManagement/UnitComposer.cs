@@ -69,7 +69,9 @@ namespace Assets.Simulation.MapManagement {
                     CurrentMovement  = unit.CurrentMovement,
                     Hitpoints        = unit.Hitpoints,
                     CurrentPath      = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
-                    IsSetUpToBombard = unit.IsSetUpToBombard
+                    IsSetUpToBombard = unit.IsSetUpToBombard,
+                    Experience       = unit.Experience,
+                    Level            = unit.Level
                 };
 
                 mapData.Units.Add(unitData);
@@ -86,6 +88,8 @@ namespace Assets.Simulation.MapManagement {
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
                 newUnit.Hitpoints       = unitData.Hitpoints;
+                newUnit.Experience      = unitData.Experience;
+                newUnit.Level           = unitData.Level;
 
                 if(unitData.CurrentPath != null) {
                     newUnit.CurrentPath = unitData.CurrentPath.Select(coord => Grid.GetCellAtCoordinates(coord)).ToList();

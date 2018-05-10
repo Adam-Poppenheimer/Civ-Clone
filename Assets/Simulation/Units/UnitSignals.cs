@@ -43,6 +43,11 @@ namespace Assets.Simulation.Units {
         public ISubject<UnitCombatResults> MeleeCombatWithUnitSignal  { get; private set; }
         public ISubject<UnitCombatResults> RangedCombatWithUnitSignal { get; private set; }
 
+        public ISubject<IUnit> ExperienceChangedSignal { get; private set; }
+        public ISubject<IUnit> LevelChangedSignal      { get; private set; }
+
+        public ISubject<IUnit> UnitGainedPromotionSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -70,6 +75,11 @@ namespace Assets.Simulation.Units {
 
             MeleeCombatWithUnitSignal  = new Subject<UnitCombatResults>();
             RangedCombatWithUnitSignal = new Subject<UnitCombatResults>();
+
+            ExperienceChangedSignal = new Subject<IUnit>();
+            LevelChangedSignal      = new Subject<IUnit>();
+
+            UnitGainedPromotionSignal = new Subject<IUnit>();
         }
 
         #endregion

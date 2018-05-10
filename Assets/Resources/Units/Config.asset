@@ -16,6 +16,12 @@ MonoBehaviour:
   _combatBaseDamage: 30
   _travelSpeedPerSecond: 3
   _rotationSpeedPerSecond: 180
+  _nextLevelExperienceCoefficient: 10
+  _maxLevel: 10
+  _meleeAttackerExperience: 5
+  _meleeDefenderExperience: 4
+  _rangedAttackerExperience: 2
+  _rangedDefenderExperience: 2
   TerrainDefensiveness: []
   ShapeDefensiveness:
   - 0

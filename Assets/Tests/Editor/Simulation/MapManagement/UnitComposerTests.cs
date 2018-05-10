@@ -439,6 +439,40 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.IsTrue (mapData.Units[2].IsSetUpToBombard, "Unexpected isSetUpToBombard value in data representing unitThree");
         }
 
+        [Test]
+        public void ComposeUnits_StoresExperienceAndLevel() {
+            var unitOne   = BuildUnit(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), BuildUnitTemplate());
+            var unitTwo   = BuildUnit(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnitTemplate());
+            var unitThree = BuildUnit(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnitTemplate());
+
+            unitOne  .Experience = 10;
+            unitTwo  .Experience = 20;
+            unitThree.Experience = 30;
+
+            unitOne  .Level = 1;
+            unitTwo  .Level = 2;
+            unitThree.Level = 3;
+
+            var composer = Container.Resolve<UnitComposer>();
+
+            var mapData = new SerializableMapData();
+
+            composer.ComposeUnits(mapData);
+
+            Assert.AreEqual(10, mapData.Units[0].Experience, "Unexpected Experience value in data representing unitOne");
+            Assert.AreEqual(20, mapData.Units[1].Experience, "Unexpected Experience value in data representing unitTwo");
+            Assert.AreEqual(30, mapData.Units[2].Experience, "Unexpected Experience value in data representing unitThree");
+
+            Assert.AreEqual(1, mapData.Units[0].Level, "Unexpected Level value in data representing unitOne");
+            Assert.AreEqual(2, mapData.Units[1].Level, "Unexpected Level value in data representing unitTwo");
+            Assert.AreEqual(3, mapData.Units[2].Level, "Unexpected Level value in data representing unitThree");
+        }
+
+        [Test]
+        public void ComposeUnits_ComposesChosenPromotionsInPromotionTreeProperly() {
+            throw new NotImplementedException();
+        }
+
 
 
 
@@ -629,6 +663,46 @@ namespace Assets.Tests.Simulation.MapManagement {
                 unit => unit.SetUpToBombard(), Times.Never,
                 "Second unit unexpectedly had its SetUpToBombard() method called"
             );
+        }
+
+        [Test]
+        public void DecomposeUnits_ExperienceAndLevelSetCorrectly() {
+            BuildHexCell(new HexCoordinates(1, 1));
+            BuildHexCell(new HexCoordinates(2, 2));
+
+            BuildCivilization("Civ One");
+            BuildCivilization("Civ Two");
+
+            BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template Two");
+
+            var mapData = new SerializableMapData() {
+                Units = new List<SerializableUnitData>() {
+                    new SerializableUnitData() {
+                        Location = new HexCoordinates(1, 1), Owner = "Civ One",
+                        Template = "Template One", Experience = 10, Level = 1
+                    },
+                    new SerializableUnitData() {
+                        Location = new HexCoordinates(2, 2), Owner = "Civ Two",
+                        Template = "Template Two", Experience = 20, Level = 2
+                    }
+                }
+            };
+
+            var composer = Container.Resolve<UnitComposer>();
+
+            composer.DecomposeUnits(mapData);
+
+            Assert.AreEqual(10, AllUnits[0].Experience, "The first instantiated unit has an unexpected Experience value");
+            Assert.AreEqual(20, AllUnits[1].Experience, "The second instantiated unit has an unexpected Experience value");
+
+            Assert.AreEqual(1, AllUnits[0].Level, "The first instantiated unit has an unexpected Level value");
+            Assert.AreEqual(2, AllUnits[1].Level, "The second instantiated unit has an unexpected Level value");
+        }
+
+        [Test]
+        public void DecomposeUnits_PromotionTreesDecomposedProperly() {
+            throw new NotImplementedException();
         }
 
         #endregion

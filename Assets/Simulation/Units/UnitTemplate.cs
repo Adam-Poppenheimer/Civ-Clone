@@ -113,6 +113,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<Promotion> _startingPromotions;
 
+        public IPromotionTreeData PromotionTreeData {
+            get { return _promotionTreeData; }
+        }
+        [SerializeField] private PromotionTreeData _promotionTreeData;
+
         #endregion
 
         #endregion

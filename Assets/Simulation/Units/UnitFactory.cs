@@ -10,6 +10,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Units {
 
@@ -83,6 +84,7 @@ namespace Assets.Simulation.Units {
             newUnit.CurrentMovement = template.MaxMovement;
             newUnit.Hitpoints       = newUnit.MaxHitpoints;
             newUnit.CanAttack       = true;
+            newUnit.Level           = 1;
 
             allUnits.Add(newUnit);
 

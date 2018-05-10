@@ -55,6 +55,8 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<IPromotion> StartingPromotions { get; }
 
+        IPromotionTreeData PromotionTreeData { get; }
+
         #endregion
 
     }

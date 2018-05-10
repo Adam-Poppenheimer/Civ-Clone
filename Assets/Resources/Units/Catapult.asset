@@ -33,3 +33,4 @@ MonoBehaviour:
   _startingPromotions:
   - {fileID: 11400000, guid: 32aa8816555fc5f4f95b58a99c3bcb10, type: 2}
   - {fileID: 11400000, guid: 595dd3d9205644749aeb81492155cf3c, type: 2}
+  _promotionTreeData: {fileID: 11400000, guid: 653ea27ef8f8dc4478f4d8d41172f8ad, type: 2}

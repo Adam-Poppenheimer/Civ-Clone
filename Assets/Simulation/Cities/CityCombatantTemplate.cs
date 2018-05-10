@@ -16,6 +16,49 @@ namespace Assets.Simulation.Cities {
 
     public class CityCombatantTemplate : IUnitTemplate {
 
+        #region internal types
+
+        private class EmptyPromotionTreeData : IPromotionTreeData {
+
+            #region static fields and properties
+
+            public static EmptyPromotionTreeData Instance {
+                get {
+                    if(_instance == null) {
+                        _instance = new EmptyPromotionTreeData();
+                    }
+                    return _instance;
+                }
+            }
+
+            private static EmptyPromotionTreeData _instance;
+
+            private static List<IPromotionPrerequisiteData> EmptyPromotionPrerequisites = new List<IPromotionPrerequisiteData>();
+
+            #endregion
+
+            #region instance fields and properties
+
+            #region from IPromotionTreeData
+
+            public IEnumerable<IPromotionPrerequisiteData> PrerequisiteData {
+                get { return EmptyPromotionPrerequisites; }
+            }
+
+            #endregion
+
+            #endregion
+
+            #region constructors
+
+            private EmptyPromotionTreeData() { }
+
+            #endregion
+
+        }
+
+        #endregion
+
         #region instance fields and properties
 
         #region from IUnitTemplate
@@ -123,6 +166,10 @@ namespace Assets.Simulation.Cities {
             get { return _startingPromotions; }
         }
         private List<IPromotion> _startingPromotions = new List<IPromotion>();
+
+        public IPromotionTreeData PromotionTreeData {
+            get { return EmptyPromotionTreeData.Instance; }
+        }
 
         #endregion
 

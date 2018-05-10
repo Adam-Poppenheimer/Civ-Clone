@@ -22,6 +22,16 @@ namespace Assets.Simulation.Units {
 
         float RotationSpeedPerSecond { get; }
 
+        int NextLevelExperienceCoefficient { get; }
+
+        int MaxLevel { get; }
+
+        int MeleeAttackerExperience { get; }
+        int MeleeDefenderExperience { get; }
+
+        int RangedAttackerExperience { get; }
+        int RangedDefenderExperience { get; }
+
         #endregion
 
         #region methods

@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Penalty Attacking Cities 33
   m_EditorClassIdentifier: 
   _description: 
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Args: 000000000200000006000000
   Float: 0.33
   Int: 0

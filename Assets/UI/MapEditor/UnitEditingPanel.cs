@@ -27,6 +27,9 @@ namespace Assets.UI.MapEditor {
         [SerializeField] private Text   CurrentMovementField;
         [SerializeField] private Slider CurrentMovementSlider;
 
+        [SerializeField] private Text   ExperienceField;
+        [SerializeField] private Slider ExperienceSlider;
+
         [SerializeField] private Toggle SetUpToBombardToggle;
 
         private IDisposable SetUpForBombardmentSubscription;
@@ -81,6 +84,11 @@ namespace Assets.UI.MapEditor {
             CurrentMovementSlider.maxValue = UnitToEdit.MaxMovement;
             CurrentMovementSlider.value    = UnitToEdit.CurrentMovement;
 
+            ExperienceField.text = UnitToEdit.Experience.ToString();
+
+            ExperienceSlider.minValue = 0;
+            ExperienceSlider.value    = UnitToEdit.Experience;
+
             if(UnitToEdit.Template.MustSetUpToBombard) {
                 SetUpToBombardToggle.gameObject.SetActive(true);
                 SetUpToBombardToggle.isOn = UnitToEdit.IsSetUpToBombard;
@@ -105,6 +113,16 @@ namespace Assets.UI.MapEditor {
             }
 
             UnitToEdit.CurrentMovement = newValue;
+
+            Refresh();
+        }
+
+        public void UpdateExperience(float newValue) {
+            if(UnitToEdit == null) {
+                return;
+            }
+
+            UnitToEdit.Experience = Mathf.RoundToInt(newValue);
 
             Refresh();
         }

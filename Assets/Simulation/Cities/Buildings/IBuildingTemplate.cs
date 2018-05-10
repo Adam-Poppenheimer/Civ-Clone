@@ -93,6 +93,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         bool ProvidesOverseaConnection { get; }
 
+        int BonusExperience { get; }
+
         #endregion
 
     }

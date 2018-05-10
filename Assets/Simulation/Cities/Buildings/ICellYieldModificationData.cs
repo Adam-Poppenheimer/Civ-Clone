@@ -9,6 +9,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
     public interface ICellYieldModificationData {
 
+        #region properties
+
         CellPropertyType PropertyConsidered { get; }
 
         TerrainType      TerrainRequired    { get; }
@@ -18,6 +20,8 @@ namespace Assets.Simulation.Cities.Buildings {
         bool MustBeUnderwater { get; }
 
         ResourceSummary BonusYield { get; }
+
+        #endregion
 
     }
 

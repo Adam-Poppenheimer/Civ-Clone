@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Name: Bonus vs Mounted 50
   m_EditorClassIdentifier: 
   _description: 
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   Args: 0000000006000000
   Float: 0.5
   Int: 0

@@ -28,6 +28,10 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public bool IsSetUpToBombard;
 
+        [DataMember()] public int Experience;
+
+        [DataMember()] public int Level;
+
         #endregion
 
     }

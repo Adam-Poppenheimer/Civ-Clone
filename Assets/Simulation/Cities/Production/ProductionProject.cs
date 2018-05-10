@@ -7,6 +7,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -40,6 +41,7 @@ namespace Assets.Simulation.Cities.Production {
         private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IStartingExperienceLogic                      StartingExperienceLogic;
 
         #endregion
 
@@ -56,15 +58,17 @@ namespace Assets.Simulation.Cities.Production {
 
         public ProductionProject(
             IUnitTemplate unitToConstruct, IUnitFactory unitFactory,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IStartingExperienceLogic startingExperienceLogic
         ){
             if(unitToConstruct == null) {
                 throw new ArgumentNullException("unitToConstruct");
             }
 
-            UnitToConstruct     = unitToConstruct;
-            UnitFactory         = unitFactory;
-            CityPossessionCanon = cityPossessionCanon;
+            UnitToConstruct         = unitToConstruct;
+            UnitFactory             = unitFactory;
+            CityPossessionCanon     = cityPossessionCanon;
+            StartingExperienceLogic = startingExperienceLogic;
         }
 
         private ProductionProject() { }
@@ -82,7 +86,9 @@ namespace Assets.Simulation.Cities.Production {
                 var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(targetCity);
                 var cityLocation = CityLocationCanon.GetOwnerOfPossession(targetCity);
 
-                UnitFactory.BuildUnit(cityLocation, UnitToConstruct, cityOwner);
+                var newUnit = UnitFactory.BuildUnit(cityLocation, UnitToConstruct, cityOwner);
+
+                newUnit.Experience = StartingExperienceLogic.GetStartingExperienceForUnit(newUnit, targetCity);
             }
         }
 

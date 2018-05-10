@@ -144,6 +144,19 @@ namespace Assets.Tests.Simulation.Units {
             CollectionAssert.Contains(factory.AllUnits, newUnit, "AllUnit does not contain the newly-created unit");
         }
 
+        [Test(Description = "")]
+        public void UnitCreated_StartsAtFirstLevel() {
+            var tile = BuildTile(true);
+            var template = BuildTemplate();
+            var civilization = BuildCivilization(true);
+
+            var factory = Container.Resolve<UnitFactory>();
+
+            var newUnit = factory.BuildUnit(tile, template, civilization);
+
+            Assert.AreEqual(1, newUnit.Level);
+        }
+
         [Test(Description = "Create should throw a UnitCreationException when the created unit " +
             "cannot be placed upon the argued tile")]
         public void CreateCalled_ThrowsWhenPositionInvalid() {

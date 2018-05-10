@@ -41,6 +41,36 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private float _rotationSpeedPerSecond;
 
+        public int NextLevelExperienceCoefficient {
+            get { return _nextLevelExperienceCoefficient; }
+        }
+        [SerializeField] private int _nextLevelExperienceCoefficient;
+
+        public int MaxLevel {
+            get { return _maxLevel; }
+        }
+        [SerializeField] private int _maxLevel;
+
+        public int MeleeAttackerExperience {
+            get { return _meleeAttackerExperience; }
+        }
+        [SerializeField] private int _meleeAttackerExperience;
+
+        public int MeleeDefenderExperience {
+            get { return _meleeDefenderExperience; }
+        }
+        [SerializeField] private int _meleeDefenderExperience;
+
+        public int RangedAttackerExperience {
+            get { return _rangedAttackerExperience; }
+        }
+        [SerializeField] private int _rangedAttackerExperience;
+
+        public int RangedDefenderExperience {
+            get { return _rangedDefenderExperience; }
+        }
+        [SerializeField] private int _rangedDefenderExperience;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        
