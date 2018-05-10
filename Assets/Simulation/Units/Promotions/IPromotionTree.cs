@@ -7,6 +7,18 @@ namespace Assets.Simulation.Units.Promotions {
 
     public interface IPromotionTree {
 
+        #region properties
+
+        IPromotionTreeTemplate Template { get; }
+
+        #endregion
+
+        #region events
+
+        event EventHandler<EventArgs> NewPromotionChosen;
+
+        #endregion
+
         #region methods
 
         bool ContainsPromotion(IPromotion promotion);

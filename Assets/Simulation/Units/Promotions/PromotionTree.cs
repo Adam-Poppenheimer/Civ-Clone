@@ -11,20 +11,34 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region instance fields and properties
 
-        private List<IPromotion> ChosenPromotions = new List<IPromotion>();
+        #region from IPromotionTree
 
-        private IEnumerable<IPromotionPrerequisiteData> PrerequisiteData;
-        private IUnit                                   ParentUnit;
-        private UnitSignals                             Signals;
+        public IPromotionTreeTemplate Template { get; private set; }
+
+        #endregion
+
+        private List<IPromotion> ChosenPromotions;
+
+        #endregion
+
+        #region events
+
+        public event EventHandler<EventArgs> NewPromotionChosen;
 
         #endregion
 
         #region constructors
 
-        public PromotionTree(IPromotionTreeData treeData, IUnit parentUnit, UnitSignals signals) {
-            PrerequisiteData = treeData.PrerequisiteData;
-            ParentUnit       = parentUnit;
-            Signals          = signals;
+        public PromotionTree(IPromotionTreeTemplate template) {
+            Template = template;
+
+            ChosenPromotions = new List<IPromotion>();
+        }
+
+        public PromotionTree(IPromotionTreeTemplate template, IEnumerable<IPromotion> chosenPromotions) {
+            Template = template;
+
+            ChosenPromotions = new List<IPromotion>(chosenPromotions);
         }
 
         #endregion
@@ -34,7 +48,7 @@ namespace Assets.Simulation.Units.Promotions {
         #region from IPromotionTree
 
         public bool ContainsPromotion(IPromotion promotion) {
-            return PrerequisiteData.Exists(data => data.Promotion == promotion);
+            return Template.PrerequisiteData.Exists(data => data.Promotion == promotion);
         }
 
         public IEnumerable<IPromotion> GetChosenPromotions() {
@@ -44,7 +58,7 @@ namespace Assets.Simulation.Units.Promotions {
         public IEnumerable<IPromotion> GetAvailablePromotions() {
             var retval = new List<IPromotion>();
 
-            foreach(var prereqData in PrerequisiteData) {
+            foreach(var prereqData in Template.PrerequisiteData) {
                 if(prereqData.Prerequisites.Count() == 0) {
                     retval.Add(prereqData.Promotion);
 
@@ -67,7 +81,9 @@ namespace Assets.Simulation.Units.Promotions {
 
             ChosenPromotions.Add(promotion);
 
-            Signals.UnitGainedPromotionSignal.OnNext(ParentUnit);
+            if(NewPromotionChosen != null) {
+                NewPromotionChosen(this, EventArgs.Empty);
+            }
         }
 
         #endregion

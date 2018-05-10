@@ -9,6 +9,7 @@ using Moq;
 
 using Assets.Simulation;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.MapManagement;
@@ -24,6 +25,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
         private Mock<IHexGrid>                                      MockGrid;
         private Mock<ICivilizationFactory>                          MockCivilizationFactory;
+        private Mock<IPromotionTreeComposer>                        MockPromotionTreeComposer;
 
         private List<IUnitTemplate> AvailableUnitTemplates = new List<IUnitTemplate>();
         private List<IUnit>         AllUnits               = new List<IUnit>();
@@ -41,26 +43,31 @@ namespace Assets.Tests.Simulation.MapManagement {
             AllUnits              .Clear();
             AllCivilizations      .Clear();
 
-            MockUnitFactory         = new Mock<IUnitFactory>();
-            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
-            MockGrid                = new Mock<IHexGrid>();
-            MockCivilizationFactory = new Mock<ICivilizationFactory>();
+            MockUnitFactory           = new Mock<IUnitFactory>();
+            MockUnitPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockUnitPositionCanon     = new Mock<IUnitPositionCanon>();
+            MockGrid                  = new Mock<IHexGrid>();
+            MockCivilizationFactory   = new Mock<ICivilizationFactory>();
+            MockPromotionTreeComposer = new Mock<IPromotionTreeComposer>();
 
             MockUnitFactory        .Setup(factory => factory.AllUnits)        .Returns(AllUnits);
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
             MockUnitFactory.Setup(
-                factory => factory.BuildUnit(It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(), It.IsAny<ICivilization>())
-            ).Returns<IHexCell, IUnitTemplate, ICivilization>(
-                (location, template, owner) => BuildUnit(location, owner, template)
+                factory => factory.BuildUnit(
+                    It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(),
+                    It.IsAny<ICivilization>(), It.IsAny<IPromotionTree>()
+                )
+            ).Returns<IHexCell, IUnitTemplate, ICivilization, IPromotionTree>(
+                (location, template, owner, tree) => BuildUnit(location, owner, template, tree)
             );
 
-            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory        .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivilizationFactory.Object);
+            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory          .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon  .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon    .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                 .Object);
+            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivilizationFactory  .Object);
+            Container.Bind<IPromotionTreeComposer>                       ().FromInstance(MockPromotionTreeComposer.Object);
 
             Container.Bind<IEnumerable<IUnitTemplate>>()
                      .WithId("Available Unit Templates")
@@ -469,8 +476,32 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeUnits_ComposesChosenPromotionsInPromotionTreeProperly() {
-            throw new NotImplementedException();
+        public void ComposeUnits_ComposesPromotionTreeViaPromotionTreeComposer() {
+            var treeOne   = BuildPromotionTree();
+            var treeTwo   = BuildPromotionTree();
+            var treeThree = BuildPromotionTree();
+
+            BuildUnit(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), BuildUnitTemplate(), treeOne);
+            BuildUnit(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnitTemplate(), treeTwo);
+            BuildUnit(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnitTemplate(), treeThree);
+
+            var serialTreeOne   = new SerializablePromotionTreeData();
+            var serialTreeTwo   = new SerializablePromotionTreeData();
+            var serialTreeThree = new SerializablePromotionTreeData();
+
+            MockPromotionTreeComposer.Setup(composer => composer.ComposePromotionTree(treeOne))  .Returns(serialTreeOne);
+            MockPromotionTreeComposer.Setup(composer => composer.ComposePromotionTree(treeTwo))  .Returns(serialTreeTwo);
+            MockPromotionTreeComposer.Setup(composer => composer.ComposePromotionTree(treeThree)).Returns(serialTreeThree);
+
+            var unitComposer = Container.Resolve<UnitComposer>();
+
+            var mapData = new SerializableMapData();
+
+            unitComposer.ComposeUnits(mapData);
+
+            Assert.AreEqual(serialTreeOne,   mapData.Units[0].PromotionTree, "Unexpected PromotionTree value in data representing unitOne");
+            Assert.AreEqual(serialTreeTwo,   mapData.Units[1].PromotionTree, "Unexpected PromotionTree value in data representing unitTwo");
+            Assert.AreEqual(serialTreeThree, mapData.Units[2].PromotionTree, "Unexpected PromotionTree value in data representing unitThree");
         }
 
 
@@ -505,12 +536,12 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.DecomposeUnits(mapData);
 
             MockUnitFactory.Verify(
-                factory => factory.BuildUnit(cellOne, templateOne, civOne), Times.Once,
+                factory => factory.BuildUnit(cellOne, templateOne, civOne, It.IsAny<IPromotionTree>()), Times.Once,
                 "Factory.BuildUnit() was not invoked correctly on the data defining UnitOne"
             );
 
             MockUnitFactory.Verify(
-                factory => factory.BuildUnit(cellTwo, templateTwo, civTwo), Times.Once,
+                factory => factory.BuildUnit(cellTwo, templateTwo, civTwo, It.IsAny<IPromotionTree>()), Times.Once,
                 "Factory.BuildUnit() was not invoked correctly on the data defining UnitTwo"
             );
         }
@@ -640,10 +671,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             var createdUnitMocks = new List<Mock<IUnit>>();
 
             MockUnitFactory.Setup(
-                factory => factory.BuildUnit(It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(), It.IsAny<ICivilization>())
-            ).Returns(delegate(IHexCell location, IUnitTemplate template, ICivilization owner) {
+                factory => factory.BuildUnit(
+                    It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(),
+                    It.IsAny<ICivilization>(), It.IsAny<IPromotionTree>()
+                )
+            ).Returns(delegate(IHexCell location, IUnitTemplate template, ICivilization owner, IPromotionTree tree) {
                 Mock<IUnit> mock;
-                var newUnit = BuildUnit(location, owner, template, out mock);
+                var newUnit = BuildUnit(location, owner, template, out mock, tree);
 
                 createdUnitMocks.Add(mock);
 
@@ -702,7 +736,43 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeUnits_PromotionTreesDecomposedProperly() {
-            throw new NotImplementedException();
+            BuildHexCell(new HexCoordinates(1, 1));
+            BuildHexCell(new HexCoordinates(2, 2));
+
+            BuildCivilization("Civ One");
+            BuildCivilization("Civ Two");
+
+            BuildUnitTemplate("Template One");
+            BuildUnitTemplate("Template Two");
+
+            var serialTreeOne = new SerializablePromotionTreeData();
+            var serialTreeTwo = new SerializablePromotionTreeData();
+
+            var treeOne = BuildPromotionTree();
+            var treeTwo = BuildPromotionTree();
+
+            MockPromotionTreeComposer.Setup(composer => composer.DecomposePromotionTree(serialTreeOne)).Returns(treeOne);
+            MockPromotionTreeComposer.Setup(composer => composer.DecomposePromotionTree(serialTreeTwo)).Returns(treeTwo);
+
+            var mapData = new SerializableMapData() {
+                Units = new List<SerializableUnitData>() {
+                    new SerializableUnitData() {
+                        Location = new HexCoordinates(1, 1), Owner = "Civ One",
+                        Template = "Template One", PromotionTree = serialTreeOne
+                    },
+                    new SerializableUnitData() {
+                        Location = new HexCoordinates(2, 2), Owner = "Civ Two",
+                        Template = "Template Two", PromotionTree = serialTreeTwo
+                    }
+                }
+            };
+
+            var unitComposer = Container.Resolve<UnitComposer>();
+
+            unitComposer.DecomposeUnits(mapData);
+
+            Assert.AreEqual(treeOne, AllUnits[0].PromotionTree, "The first instantiated unit has an unexpected PromotionTree value");
+            Assert.AreEqual(treeTwo, AllUnits[1].PromotionTree, "The second instantiated unit has an unexpected PromotionTree value");
         }
 
         #endregion
@@ -747,28 +817,36 @@ namespace Assets.Tests.Simulation.MapManagement {
             return newTemplate;
         }
 
-        private IUnit BuildUnit(IHexCell location, ICivilization owner, IUnitTemplate template) {
+        private IUnit BuildUnit(
+            IHexCell location, ICivilization owner, IUnitTemplate template,
+            IPromotionTree promotionTree = null
+        ){
             Mock<IUnit> mock;
-            return BuildUnit(location, owner, template, out mock);
+            return BuildUnit(location, owner, template, out mock, promotionTree);
         }
 
         private IUnit BuildUnit(
             IHexCell location, ICivilization owner, IUnitTemplate template,
-            out Mock<IUnit> mock
+            out Mock<IUnit> mock, IPromotionTree promotionTree = null
         ){
             mock = new Mock<IUnit>();
 
             mock.SetupAllProperties();
-            mock.Setup(unit => unit.Template).Returns(template);
+            mock.Setup(unit => unit.Template)     .Returns(template);
+            mock.Setup(unit => unit.PromotionTree).Returns(promotionTree);
 
             var newUnit = mock.Object;
 
-            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
+            MockUnitPositionCanon  .Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(owner);
 
             AllUnits.Add(newUnit);
 
             return newUnit;
+        }
+
+        private IPromotionTree BuildPromotionTree() {
+            return new Mock<IPromotionTree>().Object;
         }
 
         #endregion

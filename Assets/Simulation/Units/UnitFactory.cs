@@ -63,6 +63,14 @@ namespace Assets.Simulation.Units {
         }
 
         public IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner) {
+            if(template == null) {
+                throw new ArgumentNullException("template");
+            }
+
+            return BuildUnit(location, template, owner, new PromotionTree(template.PromotionTreeData));
+        }
+
+        public IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner, IPromotionTree promotionTree) {
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(template == null) {
@@ -85,6 +93,7 @@ namespace Assets.Simulation.Units {
             newUnit.Hitpoints       = newUnit.MaxHitpoints;
             newUnit.CanAttack       = true;
             newUnit.Level           = 1;
+            newUnit.PromotionTree   = promotionTree;
 
             allUnits.Add(newUnit);
 

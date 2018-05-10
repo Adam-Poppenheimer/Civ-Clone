@@ -129,11 +129,17 @@ namespace Assets.Simulation.Units {
         }
 
         public IPromotionTree PromotionTree {
-            get {
-                if(_promotionTree == null) {
-                    _promotionTree = new PromotionTree(Template.PromotionTreeData, this, Signals);
+            get { return _promotionTree; }
+            set {
+                if(_promotionTree != null) {
+                    _promotionTree.NewPromotionChosen -= OnNewPromotionChosen;
                 }
-                return _promotionTree;
+
+                _promotionTree = value;
+
+                if(_promotionTree != null) {
+                    _promotionTree.NewPromotionChosen += OnNewPromotionChosen;
+                }
             }
         }
         private IPromotionTree _promotionTree;
@@ -378,6 +384,10 @@ namespace Assets.Simulation.Units {
                     yield return null;
                 }
             }
+        }
+
+        private void OnNewPromotionChosen(object sender, EventArgs e) {
+            Signals.UnitGainedPromotionSignal.OnNext(this);
         }
 
         #endregion

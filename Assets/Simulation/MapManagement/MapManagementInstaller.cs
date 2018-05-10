@@ -28,6 +28,8 @@ namespace Assets.Simulation.MapManagement {
             Container.Bind<IDiplomaticExchangeComposer>       ().To<DiplomaticExchangeComposer>       ().AsSingle();
             Container.Bind<IOngoingDiplomaticExchangeComposer>().To<OngoingDiplomaticExchangeComposer>().AsSingle();
 
+            Container.Bind<IPromotionTreeComposer>().To<PromotionTreeComposer>().AsSingle();
+
             Container.Bind<IHexCellComposer>     ().To<HexCellComposer>     ().AsSingle();
             Container.Bind<ICivilizationComposer>().To<CivilizationComposer>().AsSingle();
             Container.Bind<ICityComposer>        ().To<CityComposer>        ().AsSingle();

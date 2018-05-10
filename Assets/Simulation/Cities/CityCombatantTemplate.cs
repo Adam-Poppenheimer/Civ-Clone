@@ -18,7 +18,7 @@ namespace Assets.Simulation.Cities {
 
         #region internal types
 
-        private class EmptyPromotionTreeData : IPromotionTreeData {
+        private class EmptyPromotionTreeData : IPromotionTreeTemplate {
 
             #region static fields and properties
 
@@ -40,6 +40,10 @@ namespace Assets.Simulation.Cities {
             #region instance fields and properties
 
             #region from IPromotionTreeData
+
+            public string name {
+                get { return ""; }
+            }
 
             public IEnumerable<IPromotionPrerequisiteData> PrerequisiteData {
                 get { return EmptyPromotionPrerequisites; }
@@ -167,7 +171,7 @@ namespace Assets.Simulation.Cities {
         }
         private List<IPromotion> _startingPromotions = new List<IPromotion>();
 
-        public IPromotionTreeData PromotionTreeData {
+        public IPromotionTreeTemplate PromotionTreeData {
             get { return EmptyPromotionTreeData.Instance; }
         }
 

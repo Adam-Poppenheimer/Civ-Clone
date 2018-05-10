@@ -13,6 +13,7 @@ using Assets.Simulation;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Tests.Simulation.Units {
 
@@ -66,13 +67,13 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "Whenever a unit is created, its template should be initialized " +
             "with the argued template")]
         public void UnitCreated_TemplateInitialized() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
             Assert.AreEqual(template, (newUnit as GameUnit).Template, "newUnit.Template was not initialized correctly");
         }
@@ -80,13 +81,13 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "Whenever a unit is created, its CurrentMovement should be " + 
             "initialized to the MaxMovement of its template")]
         public void UnitCreated_MovementSetToMax() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate(3);
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData(), 3);
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
             Assert.AreEqual(3, newUnit.CurrentMovement, "newUnit.CurrentMovement has an unexpected value");
         }
@@ -94,33 +95,33 @@ namespace Assets.Tests.Simulation.Units {
         [Test(Description = "Whenever a unit is created, it should be assigned to the " +
             "argued tile via UnitPositionCanon")]
         public void UnitCreated_LocationInitialized() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
-            MockPositionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newUnit, tile),
+            MockPositionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newUnit, cell),
                 Times.AtLeastOnce, "UnitFactory did not check UnitPositionCanon for placement validity before " +
                 "placing newUnit at its location"
             );
 
-            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(newUnit, tile),
+            MockPositionCanon.Verify(canon => canon.ChangeOwnerOfPossession(newUnit, cell),
                 Times.Once, "UnitFactory did not initialize newUnit's location properly");
         }
 
         [Test(Description = "Whenever a unit is created, it should be assigned to the " +
             "argued civilization via UnitPossessionCanon")]
         public void UnitCreated_OwnerInitialized() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
             MockPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newUnit, civilization),
                 Times.AtLeastOnce, "UnitFactory did not check UnitPossessionCanon for ownership validity before " +
@@ -133,60 +134,75 @@ namespace Assets.Tests.Simulation.Units {
 
         [Test(Description = "Whenever a unit is created, it should be added to the AllUnits collection")]
         public void UnitCreated_AddedToAllUnits() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
             CollectionAssert.Contains(factory.AllUnits, newUnit, "AllUnit does not contain the newly-created unit");
         }
 
         [Test(Description = "")]
         public void UnitCreated_StartsAtFirstLevel() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            var newUnit = factory.BuildUnit(tile, template, civilization);
+            var newUnit = factory.BuildUnit(cell, template, civilization);
 
             Assert.AreEqual(1, newUnit.Level);
+        }
+
+        [Test]
+        public void UnitCreated_PromotionTreeInitializedFromPassedValue() {
+            var promotionTree = BuildPromotionTree();
+
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
+            var civilization = BuildCivilization(true);
+
+            var factory = Container.Resolve<UnitFactory>();
+
+            var newUnit = factory.BuildUnit(cell, template, civilization, promotionTree);
+
+            Assert.AreEqual(promotionTree, newUnit.PromotionTree);
         }
 
         [Test(Description = "Create should throw a UnitCreationException when the created unit " +
             "cannot be placed upon the argued tile")]
         public void CreateCalled_ThrowsWhenPositionInvalid() {
-            var tile = BuildTile(false);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(false);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(tile, template, civilization),
+            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(cell, template, civilization),
                 "Create did not throw properly when its created unit could not be placed upon the argued tile");
         }
 
         [Test(Description = "Create should throw a UnitCreationException when the created unit " +
             "cannot be given to the argued civilization")]
         public void CreateCalled_ThrowsWhenOwnerInvalid() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(false);
 
             var factory = Container.Resolve<UnitFactory>();
 
-            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(tile, template, civilization),
+            Assert.Throws<UnitCreationException>(() => factory.BuildUnit(cell, template, civilization),
                 "Create did not throw properly when its created unit could not be given to the argued civilization");
         }
 
         [Test(Description = "Create should throw a ArgumentNullException when passed any null argument")]
         public void CreateCalled_ThrowsOnNullArguments() {
-            var tile = BuildTile(true);
-            var template = BuildTemplate();
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
             var civilization = BuildCivilization(true);
 
             var factory = Container.Resolve<UnitFactory>();
@@ -194,10 +210,10 @@ namespace Assets.Tests.Simulation.Units {
             Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(null, template, civilization),
                 "Create failed to throw on a null location argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(tile, null, civilization),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(cell, null, civilization),
                 "Create failed to throw on a null template argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(tile, template, null),
+            Assert.Throws<ArgumentNullException>(() => factory.BuildUnit(cell, template, null),
                 "Create failed to throw on a null owner argument");
         }
 
@@ -205,7 +221,7 @@ namespace Assets.Tests.Simulation.Units {
 
         #region utilities
 
-        private IHexCell BuildTile(bool isValidPlaceForUnit) {
+        private IHexCell BuildHexCell(bool isValidPlaceForUnit) {
             var mockTile = new Mock<IHexCell>();
 
             mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
@@ -216,13 +232,26 @@ namespace Assets.Tests.Simulation.Units {
             return mockTile.Object;
         }
 
-        private IUnitTemplate BuildTemplate(int maxMovement = 0) {
+        private IUnitTemplate BuildTemplate(
+            IPromotionTreeTemplate promotionTreeData, int maxMovement = 0
+        ){
             var mockTemplate = new Mock<IUnitTemplate>();
 
-            mockTemplate.Setup(template => template.MaxMovement).Returns(maxMovement);
-            mockTemplate.Setup(template => template.Prefab     ).Returns(UnitPrefab);
+            mockTemplate.Setup(template => template.MaxMovement)      .Returns(maxMovement);
+            mockTemplate.Setup(template => template.Prefab)           .Returns(UnitPrefab);
+            mockTemplate.Setup(template => template.PromotionTreeData).Returns(promotionTreeData);
 
             return mockTemplate.Object;
+        }
+
+        private IPromotionTreeTemplate BuildPromotionTreeData() {
+            var mockData = new Mock<IPromotionTreeTemplate>();
+
+            return mockData.Object;
+        }
+
+        private IPromotionTree BuildPromotionTree() {
+            return new Mock<IPromotionTree>().Object;
         }
 
         private ICivilization BuildCivilization(bool isValidOwnerOfUnit) {

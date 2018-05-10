@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Units {
 
@@ -23,6 +24,7 @@ namespace Assets.Simulation.Units {
         bool CanBuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner);
 
         IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner);
+        IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner, IPromotionTree promotionTree);
 
         #endregion
 

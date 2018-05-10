@@ -21,6 +21,7 @@ namespace Assets.Simulation.MapManagement {
         private IHexGrid                                      Grid;
         private ICivilizationFactory                          CivilizationFactory;
         private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
+        private IPromotionTreeComposer                        PromotionTreeComposer;
 
         #endregion
 
@@ -30,7 +31,8 @@ namespace Assets.Simulation.MapManagement {
         public UnitComposer(
             IUnitFactory unitFactory, IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, ICivilizationFactory civilizationFactory,
-            [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates
+            [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates,
+            IPromotionTreeComposer promotionTreeComposer
         ) {
             UnitFactory            = unitFactory;
             UnitPossessionCanon    = unitPossessionCanon;
@@ -38,6 +40,7 @@ namespace Assets.Simulation.MapManagement {
             Grid                   = grid;
             CivilizationFactory    = civilizationFactory;
             AvailableUnitTemplates = availableUnitTemplates;
+            PromotionTreeComposer  = promotionTreeComposer;
         }
 
         #endregion
@@ -71,7 +74,8 @@ namespace Assets.Simulation.MapManagement {
                     CurrentPath      = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
                     IsSetUpToBombard = unit.IsSetUpToBombard,
                     Experience       = unit.Experience,
-                    Level            = unit.Level
+                    Level            = unit.Level,
+                    PromotionTree    = PromotionTreeComposer.ComposePromotionTree(unit.PromotionTree)
                 };
 
                 mapData.Units.Add(unitData);
@@ -82,9 +86,10 @@ namespace Assets.Simulation.MapManagement {
             foreach(var unitData in mapData.Units) {
                 var unitLocation    = Grid.GetCellAtCoordinates(unitData.Location);
                 var templateToBuild = AvailableUnitTemplates.Where(template => template.name.Equals(unitData.Template)).First();
-                var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(unitData.Owner)).First();                
+                var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(unitData.Owner)).First();    
+                var promotionTree   = PromotionTreeComposer.DecomposePromotionTree(unitData.PromotionTree);            
 
-                var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner);
+                var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner, promotionTree);
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
                 newUnit.Hitpoints       = unitData.Hitpoints;

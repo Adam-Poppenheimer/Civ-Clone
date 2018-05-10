@@ -16,19 +16,13 @@ namespace Assets.Tests.Simulation.Units.Promotions {
     [TestFixture]
     public class PromotionTreeTests : ZenjectUnitTestFixture {
 
-        #region instance fields and properties
-
-        private UnitSignals UnitSignals;
-
-        #endregion
-
         #region instance methods
 
         #region setup
 
         [SetUp]
         public void CommonInstall() {
-            UnitSignals = new UnitSignals();
+            
         }
 
         #endregion
@@ -44,9 +38,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(BuildPromotion("Promotion Four"),  new List<IPromotion>()),
             };
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(BuildPromotionTreeData(prerequisiteData), unit, UnitSignals);
+            var promotionTree = new PromotionTree(BuildPromotionTreeData(prerequisiteData));
 
             CollectionAssert.AreEquivalent(
                 prerequisiteData.Select(data => data.Promotion),
@@ -66,9 +58,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionThree, new List<IPromotion>() { BuildPromotion("") } ),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             CollectionAssert.AreEquivalent(
                 new List<IPromotion>() { promotionOne, promotionTwo },
@@ -90,9 +80,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionFour,  new List<IPromotion>() { promotionOne, promotionTwo } ),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             promotionTree.ChoosePromotion(promotionOne);
 
@@ -114,9 +102,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionThree, new List<IPromotion>() { promotionOne } ),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             CollectionAssert.DoesNotContain(promotionTree.GetAvailablePromotions(), promotionThree);
         }
@@ -133,9 +119,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionThree, new List<IPromotion>()),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             promotionTree.ChoosePromotion(promotionOne);
             promotionTree.ChoosePromotion(promotionTwo);
@@ -158,9 +142,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionThree, new List<IPromotion>() { BuildPromotion("") } ),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             Assert.IsTrue(
                 promotionTree.CanChoosePromotion(promotionOne),
@@ -185,9 +167,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionThree, new List<IPromotion>() { BuildPromotion("") } ),
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             Assert.IsFalse(
                 promotionTree.CanChoosePromotion(promotionThree),
@@ -205,9 +185,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionTwo, new List<IPromotion>())
             });
 
-            var unit = BuildUnit();
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            var promotionTree = new PromotionTree(treeData);
 
             promotionTree.ChoosePromotion(promotionOne);
 
@@ -218,7 +196,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         }
 
         [Test]
-        public void ChoosePromotion_UnitGainedPromotionSignalFired() {
+        public void ChoosePromotion_NewPromotionChosenEventFired() {
             var promotionOne   = BuildPromotion("Promotion One");
             var promotionTwo   = BuildPromotion("Promotion Two");
 
@@ -227,18 +205,15 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 BuildPrereqData(promotionTwo, new List<IPromotion>())
             });
 
-            var unit = BuildUnit();
+            var promotionTree = new PromotionTree(treeData);
 
-            UnitSignals.UnitGainedPromotionSignal.Subscribe(delegate(IUnit signaledUnit) {
-                Assert.AreEqual(signaledUnit, unit, "Signal was fired on an unexpected unit");
+            promotionTree.NewPromotionChosen += delegate(object sender, EventArgs e) {
                 Assert.Pass();
-            });
-
-            var promotionTree = new PromotionTree(treeData, unit, UnitSignals);
+            };
 
             promotionTree.ChoosePromotion(promotionOne);
 
-            Assert.Fail("UnitGainedPromotionSignal was never fired");
+            Assert.Fail("NewPromotionChosen was never fired");
         }
 
         #endregion
@@ -255,8 +230,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             return mockPromotion.Object;
         }
 
-        private IPromotionTreeData BuildPromotionTreeData(IEnumerable<IPromotionPrerequisiteData> prerequisiteData) {
-            var mockData = new Mock<IPromotionTreeData>();
+        private IPromotionTreeTemplate BuildPromotionTreeData(IEnumerable<IPromotionPrerequisiteData> prerequisiteData) {
+            var mockData = new Mock<IPromotionTreeTemplate>();
 
             mockData.Setup(data => data.PrerequisiteData).Returns(prerequisiteData);
 

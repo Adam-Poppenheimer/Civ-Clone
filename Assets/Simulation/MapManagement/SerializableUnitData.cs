@@ -32,6 +32,8 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public int Level;
 
+        [DataMember()] public SerializablePromotionTreeData PromotionTree;
+
         #endregion
 
     }

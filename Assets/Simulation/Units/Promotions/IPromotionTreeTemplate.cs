@@ -2,9 +2,11 @@
 
 namespace Assets.Simulation.Units.Promotions {
 
-    public interface IPromotionTreeData {
+    public interface IPromotionTreeTemplate {
 
         #region properties
+
+        string name { get; }
 
         IEnumerable<IPromotionPrerequisiteData> PrerequisiteData { get; }
 
