@@ -65,23 +65,23 @@ namespace Assets.Simulation.Units.Combat {
 
             combatInfo.CombatType = CombatType.Melee;
 
-            if(RiverCanon.HasRiver(location) && !combatInfo.AttackerIgnoresAmphibiousPenalty) {
-                combatInfo.AttackerCombatModifier += UnitConfig.RiverCrossingAttackModifier;
+            if(RiverCanon.HasRiver(location) && !combatInfo.Attacker.IgnoresAmphibiousPenalty) {
+                combatInfo.Attacker.CombatModifier += UnitConfig.RiverCrossingAttackModifier;
             }
 
-            if(!combatInfo.DefenderIgnoresDefensiveTerrainBonuses) {
-                combatInfo.DefenderCombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.DefenderCombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
-                combatInfo.DefenderCombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
+            if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
+                combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
                 if(improvementAtLocation != null) {
-                    combatInfo.DefenderCombatModifier += improvementAtLocation.Template.DefensiveBonus;
+                    combatInfo.Defender.CombatModifier += improvementAtLocation.Template.DefensiveBonus;
                 }
             }
 
-            combatInfo.AttackerCombatModifier -= GetUnhappinessPenalty(attacker);
-            combatInfo.DefenderCombatModifier -= GetUnhappinessPenalty(defender);
+            combatInfo.Attacker.CombatModifier -= GetUnhappinessPenalty(attacker);
+            combatInfo.Defender.CombatModifier -= GetUnhappinessPenalty(defender);
 
             return combatInfo;
         }
@@ -91,19 +91,19 @@ namespace Assets.Simulation.Units.Combat {
 
             combatInfo.CombatType = CombatType.Ranged;
 
-            if(!combatInfo.DefenderIgnoresDefensiveTerrainBonuses) {
-                combatInfo.DefenderCombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.DefenderCombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
-                combatInfo.DefenderCombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
+            if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
+                combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
                 if(improvementAtLocation != null) {
-                    combatInfo.DefenderCombatModifier += improvementAtLocation.Template.DefensiveBonus;
+                    combatInfo.Defender.CombatModifier += improvementAtLocation.Template.DefensiveBonus;
                 }
             }
 
-            combatInfo.AttackerCombatModifier -= GetUnhappinessPenalty(attacker);
-            combatInfo.DefenderCombatModifier -= GetUnhappinessPenalty(defender);
+            combatInfo.Attacker.CombatModifier -= GetUnhappinessPenalty(attacker);
+            combatInfo.Defender.CombatModifier -= GetUnhappinessPenalty(defender);
 
             return combatInfo;
         }

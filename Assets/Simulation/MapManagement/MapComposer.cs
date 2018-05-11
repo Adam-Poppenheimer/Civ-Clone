@@ -82,7 +82,10 @@ namespace Assets.Simulation.MapManagement {
         private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData, Action performAfterDecomposition) {
             yield return ClearRuntimeCoroutine();
 
-            HexCellComposer     .DecomposeCells        (mapData);
+            HexCellComposer.DecomposeCells(mapData);
+
+            yield return new WaitForEndOfFrame();
+
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);
             BuildingComposer    .DecomposeBuildings    (mapData);

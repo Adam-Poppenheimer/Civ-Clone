@@ -13,10 +13,27 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 0}
-  Args: 0000000006000000
-  Float: 0.5
-  Int: 0
-  Terrain: 0
-  Shape: 0
-  Feature: 0
-  UnitType: 8
+  RestrictedByTerrains: 0
+  ValidTerrains: 
+  RestrictedByShapes: 0
+  ValidShapes: 
+  RestrictedByFeatures: 0
+  ValidFeatures: 
+  RestrictedByAttackerTypes: 0
+  ValidAttackerTypes: 
+  RestrictedByDefenderTypes: 0
+  ValidDefenderTypes: 08000000
+  RequiresFlatTerrain: 0
+  RequiresRoughTerrain: 0
+  RestrictedByCombatType: 0
+  ValidCombatType: 0
+  AppliesWhileAttacking: 1
+  AppliesWhileDefending: 1
+  CombatModifier: 0.5
+  CanMoveAfterAttacking: 0
+  CanAttackAfterAttacking: 0
+  IgnoresAmphibiousPenalty: 0
+  IgnoresDefensiveTerrainBonuses: 0
+  GoldRaidingPercentage: 0
+  IgnoresLOSWhenAttacking: 0
+  IgnoresTerrainCosts: 0

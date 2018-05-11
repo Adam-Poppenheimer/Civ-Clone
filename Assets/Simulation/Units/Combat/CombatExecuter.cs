@@ -180,7 +180,8 @@ namespace Assets.Simulation.Units.Combat {
                 new UnitCombatResults(
                     attacker, defender,
                     attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - defender.Hitpoints
+                    defenderStartingHealth - defender.Hitpoints,
+                    combatInfo
                 )
             );
         }
@@ -203,7 +204,8 @@ namespace Assets.Simulation.Units.Combat {
                 new UnitCombatResults(
                     attacker, defender,
                     attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - defender.Hitpoints
+                    defenderStartingHealth - defender.Hitpoints,
+                    combatInfo
                 )
             );
         }
@@ -223,7 +225,7 @@ namespace Assets.Simulation.Units.Combat {
 
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
-            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2);
+            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2, combatInfo);
         }
 
         public UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
@@ -241,7 +243,7 @@ namespace Assets.Simulation.Units.Combat {
 
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
-            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2);
+            return new UnitCombatResults(attacker, defender, results.Item1, results.Item2, combatInfo);
         }
 
         #endregion
@@ -260,7 +262,7 @@ namespace Assets.Simulation.Units.Combat {
 
             PostCombatMovementLogic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo);
 
-            if(combatInfo.AttackerCanAttackAfterAttacking) {
+            if(combatInfo.Attacker.CanAttackAfterAttacking) {
                 attacker.CanAttack = true;
             }else {
                 attacker.CanAttack = false;
@@ -272,8 +274,8 @@ namespace Assets.Simulation.Units.Combat {
         ){
             float attackerBaseStrength = combatInfo.CombatType == CombatType.Melee ? attacker.CombatStrength : attacker.RangedAttackStrength;
 
-            float attackerStrength = attackerBaseStrength    * (1f + combatInfo.AttackerCombatModifier);
-            float defenderStrength = defender.CombatStrength * (1f + combatInfo.DefenderCombatModifier);
+            float attackerStrength = attackerBaseStrength    * (1f + combatInfo.Attacker.CombatModifier);
+            float defenderStrength = defender.CombatStrength * (1f + combatInfo.Defender.CombatModifier);
 
             int attackerDamage = 0, defenderDamage = 0;
 

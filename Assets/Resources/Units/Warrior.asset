@@ -30,4 +30,4 @@ MonoBehaviour:
   _visionRange: 2
   _ignoresLineOfSight: 0
   _startingPromotions: []
-  _promotionTreeData: {fileID: 11400000, guid: 653ea27ef8f8dc4478f4d8d41172f8ad, type: 2}
+  _promotionTreeData: {fileID: 11400000, guid: 7cd960090d043224bbcaf385c5a100df, type: 2}

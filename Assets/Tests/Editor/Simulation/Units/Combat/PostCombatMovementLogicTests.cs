@@ -47,7 +47,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 1,
                     CombatInfo = new CombatInfo() {
-                        AttackerCanMoveAfterAttacking = false
+                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = false }
                     }
                 }).SetName("AttackerCanMoveAfterAttacking false | clears movement").Returns(0f);
 
@@ -56,7 +56,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 2,
                     CombatInfo = new CombatInfo() {
-                        AttackerCanMoveAfterAttacking = true, CombatType = CombatType.Melee
+                        CombatType = CombatType.Melee,
+                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
                     }
                 }).SetName("AttackerCanMoveAfterAttacking true and melee combat | reduces movement by travel cost").Returns(1f);
 
@@ -65,7 +66,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 2,
                     CombatInfo = new CombatInfo() {
-                        AttackerCanMoveAfterAttacking = true, CombatType = CombatType.Ranged
+                        CombatType = CombatType.Ranged,
+                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
                     }
                 }).SetName("AttackerCanMoveAfterAttacking true and ranged combat | reduces movement by one").Returns(2f);
 
@@ -74,7 +76,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 10,
                     CombatInfo = new CombatInfo() {
-                        AttackerCanMoveAfterAttacking = true, CombatType = CombatType.Melee
+                        CombatType = CombatType.Melee,
+                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
                     }
                 }).SetName("AttackerCanMoveAfterAttacking true and melee combat | movement floors at 0").Returns(0f);
             }

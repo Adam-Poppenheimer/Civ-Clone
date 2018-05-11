@@ -35,7 +35,7 @@ namespace Assets.Simulation.Units.Combat {
         public void HandleAttackerMovementAfterCombat(
             IUnit attacker, IUnit defender, CombatInfo combatInfo
         ){
-            if(!combatInfo.AttackerCanMoveAfterAttacking) {
+            if(!combatInfo.Attacker.CanMoveAfterAttacking) {
                 attacker.CurrentMovement = 0;
 
             }else if(combatInfo.CombatType == CombatType.Melee) {

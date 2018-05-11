@@ -11,12 +11,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1eb4a0e223fc7d418c4513d13163333, type: 3}
   m_Name: Bombardment 1
   m_EditorClassIdentifier: 
-  _description: -- Unimplemented --
+  _description: 
   _icon: {fileID: 0}
-  Args: 0000000000000000
-  Float: 0.33
-  Int: 0
-  Terrain: 0
-  Shape: 0
-  Feature: 0
-  UnitType: 0
+  RestrictedByTerrains: 0
+  ValidTerrains: 
+  RestrictedByShapes: 0
+  ValidShapes: 
+  RestrictedByFeatures: 0
+  ValidFeatures: 
+  RestrictedByAttackerTypes: 0
+  ValidAttackerTypes: 
+  RestrictedByDefenderTypes: 1
+  ValidDefenderTypes: 0000000002000000030000000600000007000000
+  RequiresFlatTerrain: 0
+  RequiresRoughTerrain: 0
+  RestrictedByCombatType: 0
+  ValidCombatType: 0
+  AppliesWhileAttacking: 1
+  AppliesWhileDefending: 1
+  CombatModifier: 0.33
+  CanMoveAfterAttacking: 0
+  CanAttackAfterAttacking: 0
+  IgnoresAmphibiousPenalty: 0
+  IgnoresDefensiveTerrainBonuses: 0
+  GoldRaidingPercentage: 0

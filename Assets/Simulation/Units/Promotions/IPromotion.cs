@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units.Promotions {
 
@@ -23,14 +24,17 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region methods
 
-        bool HasArg(PromotionArgType arg);
+        void ModifyCombatInfoForAttacker(
+            IUnit attacker, IUnit defender, IHexCell location,
+            CombatType combatType, CombatInfo combatInfo
+        );
 
-        float          GetFloat();
-        int            GetInt();
-        TerrainFeature GetFeature();
-        TerrainType    GetTerrain();
-        TerrainShape   GetShape();
-        UnitType       GetUnitType();
+        void ModifyCombatInfoForDefender(
+            IUnit attacker, IUnit defender, IHexCell location,
+            CombatType combatType, CombatInfo combatInfo
+        );
+
+        void ModifyMovementInfo(IUnit unit, MovementInfo movementInfo);
 
         #endregion
 

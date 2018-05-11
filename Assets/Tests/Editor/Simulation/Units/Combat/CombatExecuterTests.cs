@@ -296,10 +296,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0
                     },
                     MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, AttackerCombatModifier = 0.5f
+                        CombatType = CombatType.Melee, Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                     },
                     RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, AttackerCombatModifier = 0.5f
+                        CombatType = CombatType.Ranged, Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                     }
                 }).SetName("Basic terrain/no inhibitors/even strength/50% attacker modifier")
                 .Returns(new CombatTestOutput() {
@@ -328,10 +328,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0
                     },
                     MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, DefenderCombatModifier = 0.5f
+                        CombatType = CombatType.Melee, Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                     },
                     RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, DefenderCombatModifier = 0.5f
+                        CombatType = CombatType.Ranged, Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                     }
                 }).SetName("Basic terrain/no inhibitors/even strength/50% defender modifier")
                 .Returns(new CombatTestOutput() {
@@ -818,14 +818,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             if(results.CanPerformMeleeAttack) {
                 Assert.AreEqual(
-                    meleeAttacker.CanAttack, testData.MeleeCombatInfo.AttackerCanAttackAfterAttacking,
+                    meleeAttacker.CanAttack, testData.MeleeCombatInfo.Attacker.CanAttackAfterAttacking,
                     "MeleeAttacker.CanAttack has an unexpected value"
                 );
             }
             
             if(results.CanPerformRangedAttack) {
                 Assert.AreEqual(
-                    rangedAttacker.CanAttack, testData.RangedCombatInfo.AttackerCanAttackAfterAttacking,
+                    rangedAttacker.CanAttack, testData.RangedCombatInfo.Attacker.CanAttackAfterAttacking,
                     "RangedAttacker.CanAttack has an unexpected value"
                 );
             }
@@ -863,8 +863,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
 
             var combatInfo = new CombatInfo() {
-                CombatType = CombatType.Melee, AttackerCombatModifier = 1f, DefenderCombatModifier = 1f,
-                AttackerCanMoveAfterAttacking = true
+                CombatType = CombatType.Melee,
+                Attacker = new UnitCombatInfo() { CombatModifier = 1f, CanMoveAfterAttacking = true },
+                Defender = new UnitCombatInfo() { CombatModifier = 1f }
             };
 
             MockCombatInfoLogic
@@ -924,12 +925,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
 
             var combatInfo = new CombatInfo() {
-                CombatType = CombatType.Ranged, AttackerCombatModifier = 1f, DefenderCombatModifier = 1f,
-                AttackerCanMoveAfterAttacking = true
+                Attacker = new UnitCombatInfo() { CombatModifier = 1f, CanMoveAfterAttacking = true },
+                Defender = new UnitCombatInfo() { CombatModifier = 1f }
             };
 
             MockCombatInfoLogic
-                .Setup(logic => logic.GetMeleeAttackInfo(attacker, defender, defenderLocation))
+                .Setup(logic => logic.GetRangedAttackInfo(attacker, defender, defenderLocation))
                 .Returns(combatInfo);
 
             var combatExecuter = Container.Resolve<CombatExecuter>();

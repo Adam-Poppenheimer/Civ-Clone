@@ -54,7 +54,8 @@ namespace Assets.Simulation.Units {
             Container.Bind<ICombatDestructionLogic>     ().To<CombatDestructionLogic>     ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
 
-            Container.Bind<UnitResponder>  ().AsSingle().NonLazy();
+            Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
+            Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();
 
             Container.Bind<CompositeUnitSignals>().AsSingle().NonLazy();
             Container.Bind<UnitSignals>().AsSingle();

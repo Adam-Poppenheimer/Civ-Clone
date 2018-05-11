@@ -417,7 +417,7 @@ namespace Assets.Tests.Simulation.Units {
             var attacker = BuildUnit(testData.Attacker);
             var defender = BuildUnit(testData.Defender);
 
-            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender);
+            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender, null);
 
             Container.Resolve<UnitExperienceLogic>();
 
@@ -436,7 +436,7 @@ namespace Assets.Tests.Simulation.Units {
             var attacker = BuildUnit(testData.Attacker);
             var defender = BuildUnit(testData.Defender);
 
-            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender);
+            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender, null);
 
             Container.Resolve<UnitExperienceLogic>();
 
@@ -455,7 +455,7 @@ namespace Assets.Tests.Simulation.Units {
             var attacker = BuildUnit(testData.Attacker);
             var defender = BuildUnit(testData.Defender);
 
-            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender);
+            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender, null);
 
             Container.Resolve<UnitExperienceLogic>();
 
@@ -474,7 +474,7 @@ namespace Assets.Tests.Simulation.Units {
             var attacker = BuildUnit(testData.Attacker);
             var defender = BuildUnit(testData.Defender);
 
-            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender);
+            var results = new UnitCombatResults(attacker, defender, 0, testData.DamageToDefender, null);
 
             Container.Resolve<UnitExperienceLogic>();
 

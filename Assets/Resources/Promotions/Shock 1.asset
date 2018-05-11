@@ -12,11 +12,28 @@ MonoBehaviour:
   m_Name: Shock 1
   m_EditorClassIdentifier: 
   _description: 
-  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  Args: 0000000003000000
-  Float: 0.15
-  Int: 0
-  Terrain: 0
-  Shape: 0
-  Feature: 0
-  UnitType: 0
+  _icon: {fileID: 0}
+  RestrictedByTerrains: 0
+  ValidTerrains: 
+  RestrictedByShapes: 0
+  ValidShapes: 
+  RestrictedByFeatures: 0
+  ValidFeatures: 
+  RestrictedByAttackerTypes: 0
+  ValidAttackerTypes: 
+  RestrictedByDefenderTypes: 0
+  ValidDefenderTypes: 
+  RequiresFlatTerrain: 1
+  RequiresRoughTerrain: 0
+  RestrictedByCombatType: 0
+  ValidCombatType: 0
+  AppliesWhileAttacking: 1
+  AppliesWhileDefending: 1
+  CombatModifier: 0.15
+  CanMoveAfterAttacking: 0
+  CanAttackAfterAttacking: 0
+  IgnoresAmphibiousPenalty: 0
+  IgnoresDefensiveTerrainBonuses: 0
+  GoldRaidingPercentage: 0
+  IgnoresLOSWhenAttacking: 0
+  IgnoresTerrainCosts: 0

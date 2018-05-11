@@ -31,7 +31,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public HexCellTestData Location = new HexCellTestData();
 
-            public CombatInfo CombatInfoFromPromotions;
+            public CombatInfo CombatInfoFromPromotions = new CombatInfo();
 
             public CivConfigTestData CivConfig = new CivConfigTestData();
 
@@ -108,7 +108,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         FeatureDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, DefenderCombatModifier = 7f
+                    CombatType = CombatType.Melee,
+                    Defender = new UnitCombatInfo() { CombatModifier = 7f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -123,11 +124,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         FeatureDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
-                        DefenderIgnoresDefensiveTerrainBonuses = true
+                        Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
                     }
                 }).SetName("Promotion info suppresses terrain defensiveness | terrain defensiveness not included").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, DefenderCombatModifier = 0f,
-                    DefenderIgnoresDefensiveTerrainBonuses = true
+                    CombatType = CombatType.Melee,
+                    Defender = new UnitCombatInfo() { CombatModifier = 0f, IgnoresDefensiveTerrainBonuses = true }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -137,7 +138,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         }
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from improvements at location").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, DefenderCombatModifier = 5f
+                    CombatType = CombatType.Melee,
+                    Defender = new UnitCombatInfo() { CombatModifier = 5f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -147,19 +149,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         }
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
-                        AttackerCanAttackAfterAttacking = true,
-                        AttackerCanMoveAfterAttacking = true,
-                        AttackerIgnoresAmphibiousPenalty = false,
-                        DefenderCombatModifier = 5,
-                        AttackerCombatModifier = 3
+                        Attacker = new UnitCombatInfo() {
+                            CombatModifier = 3f, CanMoveAfterAttacking = true,
+                            CanAttackAfterAttacking = true, IgnoresAmphibiousPenalty = false
+                        },
+                        Defender = new UnitCombatInfo() { CombatModifier = 5f }
                     }
                 }).SetName("Promotion info is non-empty | fields set from promotions carry through to output").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    AttackerCanAttackAfterAttacking = true,
-                    AttackerCanMoveAfterAttacking = true,
-                    AttackerIgnoresAmphibiousPenalty = false,
-                    DefenderCombatModifier = 10,
-                    AttackerCombatModifier = 3
+                    Attacker = new UnitCombatInfo() {
+                        CombatModifier = 3f, CanMoveAfterAttacking = true,
+                        CanAttackAfterAttacking = true, IgnoresAmphibiousPenalty = false
+                    },
+                    Defender = new UnitCombatInfo() { CombatModifier = 10f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -171,8 +173,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     },
                     CivConfig = new CivConfigTestData() { ModifierLossPerUnhappiness = -2f }
                 }).SetName("Unhappiness reduces attacker and defender modifier by configured amount").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, AttackerCombatModifier = -20f,
-                    DefenderCombatModifier = -30f
+                    CombatType = CombatType.Melee,
+                    Attacker = new UnitCombatInfo() { CombatModifier = -20f },
+                    Defender = new UnitCombatInfo() { CombatModifier = -30f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -181,7 +184,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     },
                     UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f }
                 }).SetName("River crossing inflicts penalty on attacker").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, AttackerCombatModifier = -2f
+                    CombatType = CombatType.Melee,
+                    Attacker = new UnitCombatInfo() { CombatModifier = -2f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -189,9 +193,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         HasRiver = true
                     },
                     UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f },
-                    CombatInfoFromPromotions = new CombatInfo() { AttackerIgnoresAmphibiousPenalty = true }
+                    CombatInfoFromPromotions = new CombatInfo() {
+                        Attacker = new UnitCombatInfo() { IgnoresAmphibiousPenalty = true }
+                    }
                 }).SetName("River crossing penalty ignored if promotions say so").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee, AttackerIgnoresAmphibiousPenalty = true
+                    CombatType = CombatType.Melee,
+                    Attacker = new UnitCombatInfo() { IgnoresAmphibiousPenalty = true }
                 });
             }
         }
@@ -215,7 +222,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         FeatureDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged, DefenderCombatModifier = 7f
+                    CombatType = CombatType.Ranged,
+                    Defender = new UnitCombatInfo() { CombatModifier = 7f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -230,11 +238,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         FeatureDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
-                        DefenderIgnoresDefensiveTerrainBonuses = true
+                        Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
                     }
                 }).SetName("Promotion info suppresses terrain defensiveness | terrain defensiveness not included").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged, DefenderCombatModifier = 0f,
-                    DefenderIgnoresDefensiveTerrainBonuses = true
+                    CombatType = CombatType.Ranged,
+                    Defender = new UnitCombatInfo() { CombatModifier = 0f, IgnoresDefensiveTerrainBonuses = true }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -244,7 +252,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         }
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from improvements at location").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged, DefenderCombatModifier = 5f
+                    CombatType = CombatType.Ranged,
+                    Defender = new UnitCombatInfo() { CombatModifier = 5f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -254,19 +263,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         }
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
-                        AttackerCanAttackAfterAttacking = true,
-                        AttackerCanMoveAfterAttacking = true,
-                        AttackerIgnoresAmphibiousPenalty = false,
-                        DefenderCombatModifier = 5,
-                        AttackerCombatModifier = 3
+                        Attacker = new UnitCombatInfo() {
+                            CanMoveAfterAttacking = true, CanAttackAfterAttacking = true,
+                            IgnoresAmphibiousPenalty = false, CombatModifier = 3f
+                        },
+                        Defender = new UnitCombatInfo() { CombatModifier = 5f }
                     }
                 }).SetName("Promotion info is non-empty | fields set from promotions carry through to output").Returns(new CombatInfo() {
                     CombatType = CombatType.Ranged,
-                    AttackerCanAttackAfterAttacking = true,
-                    AttackerCanMoveAfterAttacking = true,
-                    AttackerIgnoresAmphibiousPenalty = false,
-                    DefenderCombatModifier = 10,
-                    AttackerCombatModifier = 3
+                    Attacker = new UnitCombatInfo() {
+                        CanMoveAfterAttacking = true, CanAttackAfterAttacking = true,
+                        IgnoresAmphibiousPenalty = false, CombatModifier = 3f
+                    },
+                    Defender = new UnitCombatInfo() { CombatModifier = 10f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
@@ -278,8 +287,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     },
                     CivConfig = new CivConfigTestData() { ModifierLossPerUnhappiness = -2f }
                 }).SetName("Unhappiness reduces attacker and defender modifier by configured amount").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged, AttackerCombatModifier = -20f,
-                    DefenderCombatModifier = -30f
+                    CombatType = CombatType.Ranged,
+                    Attacker = new UnitCombatInfo() { CombatModifier = -20f },
+                    Defender = new UnitCombatInfo() { CombatModifier = -30f }
                 });
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {

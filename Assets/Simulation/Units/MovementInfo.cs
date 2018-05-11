@@ -7,7 +7,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
-    public struct MovementInfo {
+    public class MovementInfo {
 
         public bool HasRoughTerrainPenalty;
 
