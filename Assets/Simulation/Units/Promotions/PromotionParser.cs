@@ -12,6 +12,23 @@ namespace Assets.Simulation.Units.Promotions {
 
     public class PromotionParser : IPromotionParser {
 
+        #region instance fields and properties
+
+        private ICombatPromotionParser   CombatParser;
+        private IMovementPromotionParser MovementParser;
+
+        #endregion
+
+        #region constructors
+
+        [Inject]
+        public PromotionParser(ICombatPromotionParser combatParser, IMovementPromotionParser movementParser) {
+            CombatParser   = combatParser;
+            MovementParser = movementParser;
+        }
+
+        #endregion
+
         #region instance methods
 
         #region from IPromotionParser
@@ -22,11 +39,11 @@ namespace Assets.Simulation.Units.Promotions {
             retval.CombatType = combatType;
 
             foreach(var promotion in attacker.Promotions) {
-                promotion.ModifyCombatInfoForAttacker(attacker, defender, location, combatType, retval);
+                CombatParser.ParsePromotionForAttacker(promotion, attacker, defender, location, retval);
             }
 
             foreach(var promotion in defender.Promotions) {
-                promotion.ModifyCombatInfoForDefender(attacker, defender, location, combatType, retval);
+                CombatParser.ParsePromotionForDefender(promotion, attacker, defender, location, retval);
             }
 
             return retval;
@@ -36,7 +53,7 @@ namespace Assets.Simulation.Units.Promotions {
             var retval = new MovementInfo();
 
             foreach(var promotion in unit.Promotions) {
-                promotion.ModifyMovementInfo(unit, retval);
+                MovementParser.ParsePromotionForUnitMovement(promotion, unit, retval);
             }
 
             return retval;

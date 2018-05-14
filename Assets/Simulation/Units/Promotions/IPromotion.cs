@@ -20,21 +20,44 @@ namespace Assets.Simulation.Units.Promotions {
 
         Sprite Icon { get; }
 
-        #endregion
+        bool RestrictedByTerrains              { get; }
+        IEnumerable<TerrainType> ValidTerrains { get; }
 
-        #region methods
+        bool RestrictedByShapes               { get; }
+        IEnumerable<TerrainShape> ValidShapes { get; }
 
-        void ModifyCombatInfoForAttacker(
-            IUnit attacker, IUnit defender, IHexCell location,
-            CombatType combatType, CombatInfo combatInfo
-        );
+        bool RestrictedByFeatures                 { get; }
+        IEnumerable<TerrainFeature> ValidFeatures { get; }
 
-        void ModifyCombatInfoForDefender(
-            IUnit attacker, IUnit defender, IHexCell location,
-            CombatType combatType, CombatInfo combatInfo
-        );
+        bool RestrictedByAttackerTypes           { get; }
+        IEnumerable<UnitType> ValidAttackerTypes { get; }
 
-        void ModifyMovementInfo(IUnit unit, MovementInfo movementInfo);
+        bool RestrictedByDefenderTypes           { get; }
+        IEnumerable<UnitType> ValidDefenderTypes { get; }
+
+        bool RequiresFlatTerrain  { get; }
+        bool RequiresRoughTerrain { get; }
+
+        bool RestrictedByCombatType { get; }
+        CombatType ValidCombatType  { get; }
+
+        bool AppliesWhileAttacking { get; }
+        bool AppliesWhileDefending { get; }
+
+        float CombatModifier { get; }
+
+        bool CanMoveAfterAttacking    { get; }
+        bool CanAttackAfterAttacking  { get; }
+        bool IgnoresAmphibiousPenalty { get; }
+
+        bool IgnoresDefensiveTerrainBonuses { get; }
+
+        float GoldRaidingPercentage { get; }
+
+        bool IgnoresLOSWhenAttacking { get; }
+
+
+        bool IgnoresTerrainCosts { get; }
 
         #endregion
 

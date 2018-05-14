@@ -49,6 +49,19 @@ namespace Assets.Simulation.Units.Combat {
                 && GoldRaidingPercentage          == otherInfo.GoldRaidingPercentage;
         }
 
+        public override int GetHashCode() {
+            int hash = 13;
+
+            hash = (hash * 7) + CombatModifier                .GetHashCode();
+            hash = (hash * 7) + CanMoveAfterAttacking         .GetHashCode();
+            hash = (hash * 7) + CanAttackAfterAttacking       .GetHashCode();
+            hash = (hash * 7) + IgnoresAmphibiousPenalty      .GetHashCode();
+            hash = (hash * 7) + IgnoresDefensiveTerrainBonuses.GetHashCode();
+            hash = (hash * 7) + GoldRaidingPercentage         .GetHashCode();
+
+            return hash;
+        }
+
         #endregion
 
         #endregion

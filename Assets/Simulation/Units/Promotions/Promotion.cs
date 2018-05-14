@@ -32,120 +32,125 @@ namespace Assets.Simulation.Units.Promotions {
 
         #endregion
 
-        [SerializeField] private bool RestrictedByTerrains;
-        [SerializeField] private List<TerrainType> ValidTerrains;
-
-        [SerializeField] private bool RestrictedByShapes;
-        [SerializeField] private List<TerrainShape> ValidShapes;
-
-        [SerializeField] private bool RestrictedByFeatures;
-        [SerializeField] private List<TerrainFeature> ValidFeatures;
-
-        [SerializeField] private bool RestrictedByAttackerTypes;
-        [SerializeField] private List<UnitType> ValidAttackerTypes;
-
-        [SerializeField] private bool RestrictedByDefenderTypes;
-        [SerializeField] private List<UnitType> ValidDefenderTypes;
-
-        [SerializeField] private bool RequiresFlatTerrain;
-        [SerializeField] private bool RequiresRoughTerrain;
-
-        [SerializeField] private bool RestrictedByCombatType;
-        [SerializeField] private CombatType ValidCombatType;
-
-        [SerializeField] private bool AppliesWhileAttacking;
-        [SerializeField] private bool AppliesWhileDefending;
-
-        [SerializeField] private float CombatModifier;
-
-        [SerializeField] private bool CanMoveAfterAttacking;
-        [SerializeField] private bool CanAttackAfterAttacking;
-        [SerializeField] private bool IgnoresAmphibiousPenalty;
-
-        [SerializeField] private bool IgnoresDefensiveTerrainBonuses;
-
-        [SerializeField] private float GoldRaidingPercentage;
-
-        [SerializeField] private bool IgnoresLOSWhenAttacking;
-
-
-        [SerializeField] private bool IgnoresTerrainCosts;
-
-        #endregion
-
-        #region instance methods
-
-        #region from IPromotion
-
-        public void ModifyCombatInfoForAttacker(
-            IUnit attacker, IUnit defender, IHexCell location,
-            CombatType combatType, CombatInfo combatInfo
-        ){
-            if( CombatMeetsGenericConditions (attacker, defender, location, combatType) &&
-                AppliesWhileAttacking
-            ){
-                PerformInfoModification(combatInfo.Attacker);
-            }
+        public bool RestrictedByTerrains {
+            get { return _restrictedByTerrains; }
         }
+        [SerializeField] private bool _restrictedByTerrains;
 
-        public void ModifyCombatInfoForDefender(
-            IUnit attacker, IUnit defender, IHexCell location,
-            CombatType combatType, CombatInfo combatInfo
-        ){
-            if( CombatMeetsGenericConditions (attacker, defender, location, combatType) &&
-                AppliesWhileDefending
-            ){
-                PerformInfoModification(combatInfo.Defender);
-            }
+        public IEnumerable<TerrainType> ValidTerrains {
+            get { return _validTerrains; }
         }
+        [SerializeField] private List<TerrainType> _validTerrains;
 
-        public void ModifyMovementInfo(IUnit unit, MovementInfo movementInfo) {
-            
+        public bool RestrictedByShapes {
+            get { return _restrictedByShapes; }
         }
+        [SerializeField] private bool _restrictedByShapes;
 
-        #endregion
-
-        private bool CombatMeetsGenericConditions(IUnit attacker, IUnit defender, IHexCell location, CombatType combatType) {
-            if(RestrictedByTerrains && !ValidTerrains.Contains(location.Terrain)) {
-                return false;
-
-            }else if(RestrictedByShapes && !ValidShapes.Contains(location.Shape)) {
-                return false;
-
-            }else if(RestrictedByFeatures && !ValidFeatures.Contains(location.Feature)) {
-                return false;
-
-            }else if(RestrictedByAttackerTypes && !ValidAttackerTypes.Contains(attacker.Type)) {
-                return false;
-
-            }else if(RestrictedByDefenderTypes && !ValidDefenderTypes.Contains(defender.Type)) {
-                return false;
-
-            }else if(RequiresFlatTerrain && location.IsRoughTerrain) {
-                return false;
-
-            }else if(RequiresRoughTerrain && !location.IsRoughTerrain) {
-                return false;
-
-            }else if(RestrictedByCombatType && combatType != ValidCombatType) {
-                return false;
-
-            }else {
-                return true;
-            }
+        public IEnumerable<TerrainShape> ValidShapes {
+            get { return _validShapes; }
         }
+        [SerializeField] private List<TerrainShape> _validShapes;
 
-        private void PerformInfoModification(UnitCombatInfo unitInfo) {
-            unitInfo.CombatModifier += CombatModifier;
-
-            unitInfo.CanMoveAfterAttacking    |= CanMoveAfterAttacking;
-            unitInfo.CanAttackAfterAttacking  |= CanAttackAfterAttacking;
-            unitInfo.IgnoresAmphibiousPenalty |= IgnoresAmphibiousPenalty;
-
-            unitInfo.IgnoresDefensiveTerrainBonuses |= IgnoresDefensiveTerrainBonuses;
-
-            unitInfo.GoldRaidingPercentage += GoldRaidingPercentage;
+        public bool RestrictedByFeatures {
+            get { return _restrictedByFeatures; }
         }
+        [SerializeField] private bool _restrictedByFeatures;
+
+        public IEnumerable<TerrainFeature> ValidFeatures {
+            get { return _validFeatures; }
+        }
+        [SerializeField] private List<TerrainFeature> _validFeatures;
+
+        public bool RestrictedByAttackerTypes {
+            get { return _restrictedByAttackerTypes; }
+        }
+        [SerializeField] private bool _restrictedByAttackerTypes;
+
+        public IEnumerable<UnitType> ValidAttackerTypes {
+            get { return _validAttackerTypes; }
+        }
+        [SerializeField] private List<UnitType> _validAttackerTypes;
+
+        public bool RestrictedByDefenderTypes {
+            get { return _restrictedByDefenderTypes; }
+        }
+        [SerializeField] private bool _restrictedByDefenderTypes;
+
+        public IEnumerable<UnitType> ValidDefenderTypes {
+            get { return _validDefenderTypes; }
+        }
+        [SerializeField] private List<UnitType> _validDefenderTypes;
+
+        public bool RequiresFlatTerrain {
+            get { return _requiresFlatTerrain; }
+        }
+        [SerializeField] private bool _requiresFlatTerrain;
+
+        public bool RequiresRoughTerrain {
+            get { return _requiresRoughTerrain; }
+        }
+        [SerializeField] private bool _requiresRoughTerrain;
+
+        public bool RestrictedByCombatType {
+            get { return _restrictedByCombatType; }
+        }
+        [SerializeField] private bool _restrictedByCombatType;
+
+        public CombatType ValidCombatType {
+            get { return _validCombatType; }
+        }
+        [SerializeField] private CombatType _validCombatType;
+
+        public bool AppliesWhileAttacking {
+            get { return _appliesWhileAttacking; }
+        }
+        [SerializeField] private bool _appliesWhileAttacking;
+
+        public bool AppliesWhileDefending {
+            get { return _appliesWhileDefending; }
+        }
+        [SerializeField] private bool _appliesWhileDefending;
+
+        public float CombatModifier {
+            get { return _combatModifier; }
+        }
+        [SerializeField] private float _combatModifier;
+        
+        public bool CanMoveAfterAttacking {
+            get { return _canMoveAfterAttacking; }
+        }
+        [SerializeField] private bool _canMoveAfterAttacking;
+
+        public bool CanAttackAfterAttacking {
+            get { return _canAttackAfterAttacking; }
+        }
+        [SerializeField] private bool _canAttackAfterAttacking;
+
+        public bool IgnoresAmphibiousPenalty {
+            get { return _ignoresAmphibiousPenalty; }
+        }
+        [SerializeField] private bool _ignoresAmphibiousPenalty;
+
+        public bool IgnoresDefensiveTerrainBonuses {
+            get { return _ignoresDefensiveTerrainBonuses; }
+        }
+        [SerializeField] private bool _ignoresDefensiveTerrainBonuses;
+
+        public float GoldRaidingPercentage {
+            get { return _goldRaidingPercentage; }
+        }
+        [SerializeField] private float _goldRaidingPercentage;
+
+        public bool IgnoresLOSWhenAttacking {
+            get { return _ignoresLOSWhenAttacking; }
+        }
+        [SerializeField] private bool _ignoresLOSWhenAttacking;
+
+        public bool IgnoresTerrainCosts {
+            get { return _ignoresTerrainCosts; }
+        }
+        [SerializeField] private bool _ignoresTerrainCosts;
 
         #endregion
 

@@ -19,7 +19,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
         #region instance fields and properties
 
-        
+        private Mock<ICombatPromotionParser>   MockCombatParser;
+        private Mock<IMovementPromotionParser> MockMovementParser;
 
         #endregion
 
@@ -29,6 +30,12 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
         [SetUp]
         public void CommonInstall() {
+            MockCombatParser   = new Mock<ICombatPromotionParser>();
+            MockMovementParser = new Mock<IMovementPromotionParser>();
+
+            Container.Bind<ICombatPromotionParser>  ().FromInstance(MockCombatParser  .Object);
+            Container.Bind<IMovementPromotionParser>().FromInstance(MockMovementParser.Object);
+
             Container.Bind<PromotionParser>().AsSingle();
         }
 
@@ -37,17 +44,15 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         #region tests
 
         [Test]
-        public void GetCombatInfo_CorrectArgumentsPassedToAttackerPromotions() {
-            Mock<IPromotion> mockPromotionOne, mockPromotionTwo, mockPromotionThree, mockPromotionFour;
-
+        public void GetCombatInfo_AttackerPromotionsPassedToCombatParserCorrectly() {
             var attackerPromotions = new List<IPromotion>() {
-                BuildPromotion("Promotion One", out mockPromotionOne),
-                BuildPromotion("Promotion Two", out mockPromotionTwo),
+                BuildPromotion("Promotion One"),
+                BuildPromotion("Promotion Two"),
             };
 
             var defenderPromotions = new List<IPromotion>() {
-                BuildPromotion("Promotion Three", out mockPromotionThree),
-                BuildPromotion("Promotion Four",  out mockPromotionFour),
+                BuildPromotion("Promotion Three"),
+                BuildPromotion("Promotion Four"),
             };
 
             var attacker = BuildUnit(attackerPromotions);
@@ -55,47 +60,31 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             var location = BuildHexCell();
 
-            var parser = Container.Resolve<PromotionParser>();
+            var promotionParser = Container.Resolve<PromotionParser>();
 
-            var returnedInfo = parser.GetCombatInfo(attacker, defender, location, CombatType.Ranged);
+            var returnedInfo = promotionParser.GetCombatInfo(attacker, defender, location, CombatType.Ranged);
 
-            mockPromotionOne.Verify(
-                promotion => promotion.ModifyCombatInfoForAttacker(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Once, "PromotionOne.ModifyCombatInfoForAttacker wasn't called as expected"
+            MockCombatParser.Verify(
+                parser => parser.ParsePromotionForAttacker(attackerPromotions[0], attacker, defender, location, returnedInfo),
+                Times.Once, "CombatParser.ParsePromotionForAttacker wasn't called as expected on attackerPromotions[0]"
             );
 
-            mockPromotionTwo.Verify(
-                promotion => promotion.ModifyCombatInfoForAttacker(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Once, "PromotionTwo.ModifyCombatInfoForAttacker wasn't called as expected"
-            );
-
-            mockPromotionOne.Verify(
-                promotion => promotion.ModifyCombatInfoForDefender(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Never, "PromotionOne.ModifyCombatInfoForDefender was called unexpectedly"
-            );
-
-            mockPromotionTwo.Verify(
-                promotion => promotion.ModifyCombatInfoForDefender(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Never, "PromotionTwo.ModifyCombatInfoForDefender was called unexpectedly"
+            MockCombatParser.Verify(
+                parser => parser.ParsePromotionForAttacker(attackerPromotions[1], attacker, defender, location, returnedInfo),
+                Times.Once, "CombatParser.ParsePromotionForAttacker wasn't called as expected on attackerPromotions[1]"
             );
         }
 
         [Test]
-        public void GetCombatInfo_CorrectArgumentsPassedToDefenderPromotions() {
-            Mock<IPromotion> mockPromotionOne, mockPromotionTwo, mockPromotionThree, mockPromotionFour;
-
+        public void GetCombatInfo_DefenderPromotionsPassedToCombatParserCorrectly() {
             var attackerPromotions = new List<IPromotion>() {
-                BuildPromotion("Promotion One", out mockPromotionOne),
-                BuildPromotion("Promotion Two", out mockPromotionTwo),
+                BuildPromotion("Promotion One"),
+                BuildPromotion("Promotion Two"),
             };
 
             var defenderPromotions = new List<IPromotion>() {
-                BuildPromotion("Promotion Three", out mockPromotionThree),
-                BuildPromotion("Promotion Four",  out mockPromotionFour),
+                BuildPromotion("Promotion Three"),
+                BuildPromotion("Promotion Four"),
             };
 
             var attacker = BuildUnit(attackerPromotions);
@@ -103,56 +92,42 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             var location = BuildHexCell();
 
-            var parser = Container.Resolve<PromotionParser>();
+            var promotionParser = Container.Resolve<PromotionParser>();
 
-            var returnedInfo = parser.GetCombatInfo(attacker, defender, location, CombatType.Ranged);
+            var returnedInfo = promotionParser.GetCombatInfo(attacker, defender, location, CombatType.Ranged);
 
-            mockPromotionThree.Verify(
-                promotion => promotion.ModifyCombatInfoForAttacker(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Never, "PromotionThree.ModifyCombatInfoForAttacker was called unexpectedly"
+            MockCombatParser.Verify(
+                parser => parser.ParsePromotionForDefender(defenderPromotions[0], attacker, defender, location, returnedInfo),
+                Times.Once, "CombatParser.ParsePromotionForDefender wasn't called as expected on defenderPromotions[0]"
             );
 
-            mockPromotionFour.Verify(
-                promotion => promotion.ModifyCombatInfoForAttacker(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Never, "PromotionFour.ModifyCombatInfoForAttacker was called unexpectedly"
-            );
-
-            mockPromotionThree.Verify(
-                promotion => promotion.ModifyCombatInfoForDefender(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Once, "PromotionThree.ModifyCombatInfoForDefender wasn't called as expected"
-            );
-
-            mockPromotionFour.Verify(
-                promotion => promotion.ModifyCombatInfoForDefender(
-                    attacker, defender, location, CombatType.Ranged, returnedInfo
-                ), Times.Once, "PromotionFour.ModifyCombatInfoForDefender wasn't called as expected"
+            MockCombatParser.Verify(
+                parser => parser.ParsePromotionForDefender(defenderPromotions[1], attacker, defender, location, returnedInfo),
+                Times.Once, "CombatParser.ParsePromotionForDefender wasn't called as expected on defenderPromotions[1]"
             );
         }
 
         [Test]
         public void GetMovementInfo_CorrectArgumentsPassedToEveryPromotion() {
-            Mock<IPromotion> mockPromotionOne, mockPromotionTwo;
+            var promotions = new List<IPromotion>() {
+                BuildPromotion("Promotion One"),
+                BuildPromotion("Promotion Two"),
+            };
 
-            var unit = BuildUnit(new List<IPromotion>() {
-                BuildPromotion("Promotion One", out mockPromotionOne),
-                BuildPromotion("Promotion Two", out mockPromotionTwo),
-            });
+            var unit = BuildUnit(promotions);
 
-            var parser = Container.Resolve<PromotionParser>();
+            var promotionParser = Container.Resolve<PromotionParser>();
 
-            var returnedInfo = parser.GetMovementInfo(unit);
+            var returnedInfo = promotionParser.GetMovementInfo(unit);
 
-            mockPromotionOne.Verify(
-                promotion => promotion.ModifyMovementInfo(unit, returnedInfo),
-                Times.Once, "PromotionOne.ModifyMovementInfo wasn't called as expected"
+            MockMovementParser.Verify(
+                parser => parser.ParsePromotionForUnitMovement(promotions[0], unit, returnedInfo),
+                Times.Once, "MovementParser.ParsePromotionForUnitMovement wasn't called as expected on promotions[0]"
             );
 
-            mockPromotionTwo.Verify(
-                promotion => promotion.ModifyMovementInfo(unit, returnedInfo),
-                Times.Once, "PromotionTwo.ModifyMovementInfo wasn't called as expected"
+            MockMovementParser.Verify(
+                parser => parser.ParsePromotionForUnitMovement(promotions[1], unit, returnedInfo),
+                Times.Once, "MovementParser.ParsePromotionForUnitMovement wasn't called as expected on promotions[1]"
             );
         }
 
@@ -160,13 +135,13 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
         #region utilities
 
-        private IPromotion BuildPromotion(string name, out Mock<IPromotion> mock) {
-            mock = new Mock<IPromotion>();
+        private IPromotion BuildPromotion(string name) {
+            var promotionMock = new Mock<IPromotion>();
 
-            mock.Name = name;
-            mock.Setup(promotion => promotion.name).Returns(name);
+            promotionMock.Name = name;
+            promotionMock.Setup(promotion => promotion.name).Returns(name);
 
-            return mock.Object;
+            return promotionMock.Object;
         }
 
         private IUnit BuildUnit(IEnumerable<IPromotion> promotions) {
