@@ -70,6 +70,8 @@ namespace Assets.Simulation.Units {
                 return true;
             }
 
+            isMeleeAttacking &= unit.Type != UnitType.Civilian;
+
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
             foreach(var unitAtLocation in GetPossessionsOfOwner(location)) {
@@ -82,7 +84,7 @@ namespace Assets.Simulation.Units {
 
             var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
 
-            if(cityAtLocation != null && CityPossessionCanon.GetOwnerOfPossession(cityAtLocation) != unitOwner) {
+            if(cityAtLocation != null && CityPossessionCanon.GetOwnerOfPossession(cityAtLocation) != unitOwner && !isMeleeAttacking) {
                 return false;
             }
 

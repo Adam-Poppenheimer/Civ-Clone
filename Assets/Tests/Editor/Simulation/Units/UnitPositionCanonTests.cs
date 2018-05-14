@@ -55,6 +55,8 @@ namespace Assets.Tests.Simulation.Units {
 
             public bool CityBelongsToThisCivilization;
 
+            public bool IsAttacking;
+
         }
 
         public struct CanPlaceUnitOfTypeTestData {
@@ -308,8 +310,21 @@ namespace Assets.Tests.Simulation.Units {
                     UnitsOnCell = new List<UnitTestData>() {
                         new UnitTestData() { Name = "LandCivilian", Type = UnitType.Civilian, BelongsToThisCivilization = false }
                     },
-                    HasCityOnCell = false
-                }).SetName("Land Military supertype on cell with foreign anything").Returns(false);
+                    HasCityOnCell = false, IsAttacking = false
+                }).SetName("Land Military supertype on cell with foreign anything, is not attacking").Returns(false);
+
+                yield return new TestCaseData(new CanChangeOwnerTestData() {
+                    UnitToTest = new UnitTestData() {
+                        Name = "Unit to test",
+                        Type = UnitType.Melee,
+                        BelongsToThisCivilization = true
+                    },
+                    CellToTest = new CellTestData(false),
+                    UnitsOnCell = new List<UnitTestData>() {
+                        new UnitTestData() { Name = "LandCivilian", Type = UnitType.Civilian, BelongsToThisCivilization = false }
+                    },
+                    HasCityOnCell = false, IsAttacking = true
+                }).SetName("Land Military supertype on cell with foreign anything, is attacking").Returns(true);
 
                 yield return new TestCaseData(new CanChangeOwnerTestData() {
                     UnitToTest = new UnitTestData() {
@@ -321,8 +336,21 @@ namespace Assets.Tests.Simulation.Units {
                     UnitsOnCell = new List<UnitTestData>() {
                         new UnitTestData() { Name = "Land Military", Type = UnitType.Melee, BelongsToThisCivilization = false }
                     },
-                    HasCityOnCell = false
-                }).SetName("Civilian on cell with foreign anything").Returns(false);
+                    HasCityOnCell = false, IsAttacking = false
+                }).SetName("Civilian on cell with foreign anything, is not attacking").Returns(false);
+
+                yield return new TestCaseData(new CanChangeOwnerTestData() {
+                    UnitToTest = new UnitTestData() {
+                        Name = "Unit to test",
+                        Type = UnitType.Civilian,
+                        BelongsToThisCivilization = true
+                    },
+                    CellToTest = new CellTestData(false),
+                    UnitsOnCell = new List<UnitTestData>() {
+                        new UnitTestData() { Name = "Land Military", Type = UnitType.Melee, BelongsToThisCivilization = false }
+                    },
+                    HasCityOnCell = false, IsAttacking = true
+                }).SetName("Civilian on cell with foreign anything, is attacking").Returns(false);
 
                 yield return new TestCaseData(new CanChangeOwnerTestData() {
                     UnitToTest = new UnitTestData() {
@@ -337,8 +365,24 @@ namespace Assets.Tests.Simulation.Units {
                             IsAquatic = true, BelongsToThisCivilization = false
                         }
                     },
-                    HasCityOnCell = false
-                }).SetName("WaterMilitary on cell with foreign anything").Returns(false);
+                    HasCityOnCell = false, IsAttacking = false
+                }).SetName("WaterMilitary on cell with foreign anything, is not attacking").Returns(false);
+
+                yield return new TestCaseData(new CanChangeOwnerTestData() {
+                    UnitToTest = new UnitTestData() {
+                        Name = "Unit to test", IsAquatic = true,
+                        Type = UnitType.NavalMelee,
+                        BelongsToThisCivilization = true
+                    },
+                    CellToTest = new CellTestData(true),
+                    UnitsOnCell = new List<UnitTestData>() {
+                        new UnitTestData() {
+                            Name = "Civilian", Type = UnitType.Civilian,
+                            IsAquatic = true, BelongsToThisCivilization = false
+                        }
+                    },
+                    HasCityOnCell = false, IsAttacking = true
+                }).SetName("WaterMilitary on cell with foreign anything, is attacking").Returns(true);
 
             }
         }
@@ -411,7 +455,7 @@ namespace Assets.Tests.Simulation.Units {
                 positionCanon.ChangeOwnerOfPossession(unitAtLocation, cellToTest);
             }
 
-            return positionCanon.CanPlaceUnitAtLocation(unitToTest, cellToTest, false);
+            return positionCanon.CanPlaceUnitAtLocation(unitToTest, cellToTest, data.IsAttacking);
         }
 
         #endregion
