@@ -231,13 +231,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnit());
             var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnit());
 
-            cityOne.CombatFacade.Hitpoints       = 100;
+            cityOne.CombatFacade.CurrentHitpoints       = 100;
             cityOne.CombatFacade.CurrentMovement = 1;
 
-            cityTwo.CombatFacade.Hitpoints       = 200;
+            cityTwo.CombatFacade.CurrentHitpoints       = 200;
             cityTwo.CombatFacade.CurrentMovement = 2;
 
-            cityThree.CombatFacade.Hitpoints       = 300;
+            cityThree.CombatFacade.CurrentHitpoints       = 300;
             cityThree.CombatFacade.CurrentMovement = 3;
 
             var mapData = new SerializableMapData();
@@ -427,9 +427,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(2, AllCities[1].CombatFacade.CurrentMovement, "CityTwo.CombatFacade has an unexpected CurrentMovement");
             Assert.AreEqual(3, AllCities[2].CombatFacade.CurrentMovement, "CityThree.CombatFacade has an unexpected CurrentMovement");
 
-            Assert.AreEqual(100, AllCities[0].CombatFacade.Hitpoints, "CityOne.CombatFacade has an unexpected CurrentMovement");
-            Assert.AreEqual(200, AllCities[1].CombatFacade.Hitpoints, "CityTwo.CombatFacade has an unexpected CurrentMovement");
-            Assert.AreEqual(300, AllCities[2].CombatFacade.Hitpoints, "CityThree.CombatFacade has an unexpected CurrentMovement");
+            Assert.AreEqual(100, AllCities[0].CombatFacade.CurrentHitpoints, "CityOne.CombatFacade has an unexpected CurrentMovement");
+            Assert.AreEqual(200, AllCities[1].CombatFacade.CurrentHitpoints, "CityTwo.CombatFacade has an unexpected CurrentMovement");
+            Assert.AreEqual(300, AllCities[2].CombatFacade.CurrentHitpoints, "CityThree.CombatFacade has an unexpected CurrentMovement");
         }
 
         [Test]

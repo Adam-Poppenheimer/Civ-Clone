@@ -499,7 +499,7 @@ namespace Assets.Tests.Simulation.Units {
             var newUnit = mockUnit.Object;
 
             newUnit.Level     = unitData.Level;
-            newUnit.Hitpoints = unitData.Hitpoints;
+            newUnit.CurrentHitpoints = unitData.Hitpoints;
 
             return newUnit;
         }

@@ -150,7 +150,7 @@ namespace Assets.UI.Cities {
                 ClearProductionData();
             }
 
-            if(ObjectToDisplay.CombatFacade.Hitpoints < ObjectToDisplay.CombatFacade.MaxHitpoints) {
+            if(ObjectToDisplay.CombatFacade.CurrentHitpoints < ObjectToDisplay.CombatFacade.MaxHitpoints) {
                 DisplayHealth();
             }else {
                 ClearHealth();
@@ -214,7 +214,7 @@ namespace Assets.UI.Cities {
 
             HealthSlider.minValue = 0;
             HealthSlider.maxValue = ObjectToDisplay.CombatFacade.MaxHitpoints;
-            HealthSlider.value    = ObjectToDisplay.CombatFacade.Hitpoints;
+            HealthSlider.value    = ObjectToDisplay.CombatFacade.CurrentHitpoints;
         }
 
         private void ClearHealth() {

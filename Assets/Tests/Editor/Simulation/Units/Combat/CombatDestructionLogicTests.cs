@@ -132,7 +132,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
 
-            Assert.AreEqual(1, defender.Hitpoints);
+            Assert.AreEqual(1, defender.CurrentHitpoints);
         }
 
         [Test(Description = "")]
@@ -244,7 +244,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var newUnit = mock.Object;
 
-            newUnit.Hitpoints = hitpoints;
+            newUnit.CurrentHitpoints = hitpoints;
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
 

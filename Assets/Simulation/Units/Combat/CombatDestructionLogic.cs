@@ -31,19 +31,19 @@ namespace Assets.Simulation.Units.Combat {
         #region from ICombatDestructionLogic
 
         public void HandleUnitDestructionFromCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
-            if(attacker.Hitpoints <= 0 && attacker.Type != UnitType.City) {
+            if(attacker.CurrentHitpoints <= 0 && attacker.Type != UnitType.City) {
                 DestroyUnit(attacker);
             }
 
-            if(defender.Hitpoints <= 0) {
+            if(defender.CurrentHitpoints <= 0) {
                 if(defender.Type == UnitType.City) {
-                    defender.Hitpoints = 1;
+                    defender.CurrentHitpoints = 1;
                 }else {
                     var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
                     DestroyUnit(defender);
 
-                    if(attacker.Hitpoints > 0 && combatInfo.CombatType == CombatType.Melee) {
+                    if(attacker.CurrentHitpoints > 0 && combatInfo.CombatType == CombatType.Melee) {
                         attacker.CurrentPath = new List<IHexCell>() { defenderLocation };
                         attacker.PerformMovement(false);
                     }

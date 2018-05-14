@@ -34,7 +34,7 @@ namespace Assets.Simulation.Units {
 
         int RangedAttackStrength { get; }
 
-        int Hitpoints { get; set; }
+        int CurrentHitpoints { get; set; }
 
         int MaxHitpoints { get; }
 
@@ -60,6 +60,8 @@ namespace Assets.Simulation.Units {
 
         int Experience { get; set; }
         int Level      { get; set; }
+
+        bool IsWounded { get; }
         
         #endregion
 

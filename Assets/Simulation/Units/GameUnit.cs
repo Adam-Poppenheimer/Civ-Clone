@@ -62,7 +62,7 @@ namespace Assets.Simulation.Units {
             get { return Template.RangedAttackStrength; }
         }
 
-        public int Hitpoints {
+        public int CurrentHitpoints {
             get { return _hitpoints; }
             set {
                 _hitpoints = value.Clamp(0, MaxHitpoints);
@@ -165,6 +165,10 @@ namespace Assets.Simulation.Units {
             }
         }
         private int _level;
+
+        public bool IsWounded {
+            get { return MaxHitpoints - CurrentHitpoints >= Config.WoundedThreshold; }
+        }
 
         #endregion
 

@@ -71,6 +71,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _rangedDefenderExperience;
 
+        public int WoundedThreshold {
+            get { return _woundedThreshold; }
+        }
+        [SerializeField] private int _woundedThreshold;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        

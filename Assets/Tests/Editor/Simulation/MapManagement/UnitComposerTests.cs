@@ -338,9 +338,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var unitTwo =   BuildUnit(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnitTemplate());
             var unitThree = BuildUnit(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnitTemplate());
 
-            unitOne  .Hitpoints = 2;
-            unitTwo  .Hitpoints = 0;
-            unitThree.Hitpoints = -10;
+            unitOne  .CurrentHitpoints = 2;
+            unitTwo  .CurrentHitpoints = 0;
+            unitThree.CurrentHitpoints = -10;
 
             var composer = Container.Resolve<UnitComposer>();
 
@@ -606,8 +606,8 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             composer.DecomposeUnits(mapData);
 
-            Assert.AreEqual(5,  AllUnits[0].Hitpoints, "The first instantiated unit has an unexpected Hitpoints value");
-            Assert.AreEqual(-2, AllUnits[1].Hitpoints, "The second instantiated unit has an unexpected Hitpoints value");
+            Assert.AreEqual(5,  AllUnits[0].CurrentHitpoints, "The first instantiated unit has an unexpected Hitpoints value");
+            Assert.AreEqual(-2, AllUnits[1].CurrentHitpoints, "The second instantiated unit has an unexpected Hitpoints value");
         }
 
         [Test]

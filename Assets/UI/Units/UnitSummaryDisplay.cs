@@ -79,7 +79,7 @@ namespace Assets.UI.Units {
 
             HealthSlider.minValue = 0;
             HealthSlider.maxValue = Config.MaxHealth;
-            HealthSlider.value    = ObjectToDisplay.Hitpoints;
+            HealthSlider.value    = ObjectToDisplay.CurrentHitpoints;
         }
 
         #endregion

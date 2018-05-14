@@ -804,8 +804,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatExecuter.PerformMeleeAttack(meleeAttacker, meleeDefender);
             }
 
-            results.MeleeAttackerHealthLeft   = meleeAttacker.Hitpoints;
-            results.MeleeDefenderHealthLeft   = meleeDefender.Hitpoints;
+            results.MeleeAttackerHealthLeft   = meleeAttacker.CurrentHitpoints;
+            results.MeleeDefenderHealthLeft   = meleeDefender.CurrentHitpoints;
             
             results.CanPerformRangedAttack = combatExecuter.CanPerformRangedAttack(rangedAttacker, rangedDefender);
 
@@ -813,8 +813,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 combatExecuter.PerformRangedAttack(rangedAttacker, rangedDefender);
             }
 
-            results.RangedAttackerHealthLeft   = rangedAttacker.Hitpoints;
-            results.RangedDefenderHealthLeft   = rangedDefender.Hitpoints;
+            results.RangedAttackerHealthLeft   = rangedAttacker.CurrentHitpoints;
+            results.RangedDefenderHealthLeft   = rangedDefender.CurrentHitpoints;
 
             if(results.CanPerformMeleeAttack) {
                 Assert.AreEqual(
@@ -1024,7 +1024,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var newUnit = mockUnit.Object;
 
-            newUnit.Hitpoints = UnitConfig.MaxHealth;
+            newUnit.CurrentHitpoints = UnitConfig.MaxHealth;
             newUnit.CanAttack = canAttack;
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);

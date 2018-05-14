@@ -273,7 +273,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             unitMock.SetupAllProperties();
 
-            unitMock.Setup(unit => unit.Hitpoints).Returns(hitpoints);
+            unitMock.Setup(unit => unit.CurrentHitpoints).Returns(hitpoints);
             unitMock.Setup(unit => unit.Type)     .Returns(type);
 
             var newUnit = unitMock.Object;

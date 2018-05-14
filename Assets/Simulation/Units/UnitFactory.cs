@@ -90,7 +90,7 @@ namespace Assets.Simulation.Units {
             newUnit.Template = template;
 
             newUnit.CurrentMovement = template.MaxMovement;
-            newUnit.Hitpoints       = newUnit.MaxHitpoints;
+            newUnit.CurrentHitpoints       = newUnit.MaxHitpoints;
             newUnit.CanAttack       = true;
             newUnit.Level           = 1;
             newUnit.PromotionTree   = promotionTree;

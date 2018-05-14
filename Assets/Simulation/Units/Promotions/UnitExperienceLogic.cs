@@ -52,11 +52,11 @@ namespace Assets.Simulation.Units.Promotions {
                 return;
             }
 
-            if(attacker.Type != UnitType.City && attacker.Hitpoints > 0) {
+            if(attacker.Type != UnitType.City && attacker.CurrentHitpoints > 0) {
                 attacker.Experience += Config.MeleeAttackerExperience;
             }
 
-            if(defender.Type != UnitType.City && defender.Hitpoints > 0) {
+            if(defender.Type != UnitType.City && defender.CurrentHitpoints > 0) {
                 defender.Experience += Config.MeleeDefenderExperience;
             }
         }
@@ -69,13 +69,13 @@ namespace Assets.Simulation.Units.Promotions {
                 return;
             }
 
-            if(attacker.Type != UnitType.City && attacker.Hitpoints > 0) {
+            if(attacker.Type != UnitType.City && attacker.CurrentHitpoints > 0) {
                 if(defender.Type != UnitType.City || combatResults.DamageToDefender > 0) {
                     attacker.Experience += Config.RangedAttackerExperience;
                 }
             }
 
-            if(defender.Type != UnitType.City && defender.Hitpoints > 0) {
+            if(defender.Type != UnitType.City && defender.CurrentHitpoints > 0) {
                 defender.Experience += Config.RangedDefenderExperience;
             }
         }

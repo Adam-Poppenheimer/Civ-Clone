@@ -53,6 +53,9 @@ namespace Assets.Simulation.Units.Promotions {
 
         bool IgnoresLOSWhenAttacking { get; }
 
+        bool RestrictedByOpponentWoundedState { get; }
+        bool ValidOpponentWoundedState        { get; }
+
 
         bool IgnoresTerrainCosts { get; }
 

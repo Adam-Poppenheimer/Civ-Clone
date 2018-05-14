@@ -72,7 +72,15 @@ namespace Assets.Simulation.Units.Promotions {
         }
 
         private bool CombatMeetsOpponentConditions(IPromotion promotion, IUnit thisUnit, IUnit opponent) {
-            return !promotion.RestrictedByOpponentTypes || promotion.ValidOpponentTypes.Contains(opponent.Type);
+            if(promotion.RestrictedByOpponentTypes && !promotion.ValidOpponentTypes.Contains(opponent.Type)) {
+                return false;
+
+            }else if(promotion.RestrictedByOpponentWoundedState && promotion.ValidOpponentWoundedState != opponent.IsWounded) {
+                return false;
+
+            }else {
+                return true;
+            }
         }
 
         private void PerformInfoModification(IPromotion promotion, UnitCombatInfo unitInfo) {

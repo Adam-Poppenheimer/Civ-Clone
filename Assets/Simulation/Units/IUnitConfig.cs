@@ -32,6 +32,8 @@ namespace Assets.Simulation.Units {
         int RangedAttackerExperience { get; }
         int RangedDefenderExperience { get; }
 
+        int WoundedThreshold { get; }
+
         #endregion
 
         #region methods

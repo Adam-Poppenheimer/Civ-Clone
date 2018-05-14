@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b1eb4a0e223fc7d418c4513d13163333, type: 3}
   m_Name: Charge
   m_EditorClassIdentifier: 
-  _description: -- Unimplemented --
+  _description: 
   _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
   _restrictedByTerrains: 0
   _validTerrains: 
@@ -25,13 +25,15 @@ MonoBehaviour:
   _requiresRoughTerrain: 0
   _restrictedByCombatType: 0
   _validCombatType: 0
-  _appliesWhileAttacking: 0
-  _appliesWhileDefending: 0
-  _combatModifier: 0.25
+  _appliesWhileAttacking: 1
+  _appliesWhileDefending: 1
+  _combatModifier: 0.33
   _canMoveAfterAttacking: 0
   _canAttackAfterAttacking: 0
   _ignoresAmphibiousPenalty: 0
   _ignoresDefensiveTerrainBonuses: 0
   _goldRaidingPercentage: 0
   _ignoresLOSWhenAttacking: 0
+  _restrictedByOpponentWoundedState: 1
+  _validOpponentWoundedState: 1
   _ignoresTerrainCosts: 0

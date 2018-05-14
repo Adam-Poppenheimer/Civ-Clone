@@ -74,7 +74,7 @@ namespace Assets.Simulation.MapManagement {
                     FoodStockpile    = city.FoodStockpile,
                     CultureStockpile = city.CultureStockpile,
                     ResourceFocus    = city.ResourceFocus,
-                    Hitpoints        = city.CombatFacade.Hitpoints,
+                    Hitpoints        = city.CombatFacade.CurrentHitpoints,
                     CurrentMovement  = city.CombatFacade.CurrentMovement
                 };
 
@@ -105,7 +105,7 @@ namespace Assets.Simulation.MapManagement {
                 newCity.FoodStockpile                = cityData.FoodStockpile;
                 newCity.CultureStockpile             = cityData.CultureStockpile;
                 newCity.ResourceFocus                = cityData.ResourceFocus;
-                newCity.CombatFacade.Hitpoints       = cityData.Hitpoints;
+                newCity.CombatFacade.CurrentHitpoints       = cityData.Hitpoints;
                 newCity.CombatFacade.CurrentMovement = cityData.CurrentMovement;
 
                 if(cityData.ActiveProject != null) {

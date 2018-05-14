@@ -70,7 +70,7 @@ namespace Assets.Simulation.MapManagement {
                     Template         = unit.Template.name,
                     Owner            = unitOwner.Name,
                     CurrentMovement  = unit.CurrentMovement,
-                    Hitpoints        = unit.Hitpoints,
+                    Hitpoints        = unit.CurrentHitpoints,
                     CurrentPath      = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
                     IsSetUpToBombard = unit.IsSetUpToBombard,
                     Experience       = unit.Experience,
@@ -92,7 +92,7 @@ namespace Assets.Simulation.MapManagement {
                 var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner, promotionTree);
 
                 newUnit.CurrentMovement = unitData.CurrentMovement;
-                newUnit.Hitpoints       = unitData.Hitpoints;
+                newUnit.CurrentHitpoints       = unitData.Hitpoints;
                 newUnit.Experience      = unitData.Experience;
                 newUnit.Level           = unitData.Level;
 

@@ -72,11 +72,11 @@ namespace Assets.UI.MapEditor {
 
             NameField .text = UnitToEdit.Name;
 
-            HitpointsField.text = UnitToEdit.Hitpoints.ToString();
+            HitpointsField.text = UnitToEdit.CurrentHitpoints.ToString();
 
             HitpointsSlider.minValue = 0;
             HitpointsSlider.maxValue = UnitToEdit.MaxHitpoints;
-            HitpointsSlider.value    = UnitToEdit.Hitpoints;
+            HitpointsSlider.value    = UnitToEdit.CurrentHitpoints;
 
             CurrentMovementField.text = UnitToEdit.CurrentMovement.ToString();
 
@@ -102,7 +102,7 @@ namespace Assets.UI.MapEditor {
                 return;
             }
 
-            UnitToEdit.Hitpoints = Mathf.RoundToInt(newValue);
+            UnitToEdit.CurrentHitpoints = Mathf.RoundToInt(newValue);
 
             Refresh();
         }

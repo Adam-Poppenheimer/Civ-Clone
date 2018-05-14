@@ -30,8 +30,6 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private Sprite _icon;
 
-        #endregion
-
         public bool RestrictedByTerrains {
             get { return _restrictedByTerrains; }
         }
@@ -137,10 +135,24 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private bool _ignoresLOSWhenAttacking;
 
+        public bool RestrictedByOpponentWoundedState {
+            get { return _restrictedByOpponentWoundedState; }
+        }
+        [SerializeField] private bool _restrictedByOpponentWoundedState;
+
+        public bool ValidOpponentWoundedState {
+            get { return _validOpponentWoundedState; }
+        }
+        [SerializeField] private bool _validOpponentWoundedState;
+
+
+
         public bool IgnoresTerrainCosts {
             get { return _ignoresTerrainCosts; }
         }
         [SerializeField] private bool _ignoresTerrainCosts;
+
+        #endregion
 
         #endregion
 

@@ -69,11 +69,16 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             public bool IgnoresLOSWhenAttacking;
 
+            public bool RestrictedByOpponentWoundedState;
+            public bool ValidOpponentWoundedState;
+
         }
 
         public class UnitTestData {
 
             public UnitType Type;
+
+            public bool IsWounded;
 
         }
 
@@ -400,6 +405,39 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     CombatType = CombatType.Ranged,
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
+                        RestrictedByOpponentWoundedState = true,
+                        ValidOpponentWoundedState = true
+                    },
+                    Defender = new UnitTestData() { IsWounded = false }
+                }).SetName("Promotion restricted by opponent wounded state and wounded state is incorrect | promotion ignored").Returns(new CombatInfo() {
+                    Attacker = new UnitCombatInfo() { CombatModifier = 0f }
+                });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
+                        RestrictedByOpponentWoundedState = false,
+                        ValidOpponentWoundedState = true
+                    },
+                    Defender = new UnitTestData() { IsWounded = false }
+                }).SetName("Promotion not restricted by opponent wounded state and wounded state is incorrect | promotion applied").Returns(new CombatInfo() {
+                    Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
+                });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
+                        RestrictedByOpponentWoundedState = true,
+                        ValidOpponentWoundedState = true
+                    },
+                    Defender = new UnitTestData() { IsWounded = true }
+                }).SetName("Promotion restricted by opponent wounded state and wounded state is correct | promotion applied").Returns(new CombatInfo() {
+                    Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
+                });
             }
         }
 
@@ -708,6 +746,39 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     CombatType = CombatType.Ranged,
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileDefending = true,
+                        RestrictedByOpponentWoundedState = true,
+                        ValidOpponentWoundedState = true
+                    },
+                    Attacker = new UnitTestData() { IsWounded = false }
+                }).SetName("Promotion restricted by opponent wounded state and wounded state is incorrect | promotion ignored").Returns(new CombatInfo() {
+                    Defender = new UnitCombatInfo() { CombatModifier = 0f }
+                });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileDefending = true,
+                        RestrictedByOpponentWoundedState = false,
+                        ValidOpponentWoundedState = true
+                    },
+                    Attacker = new UnitTestData() { IsWounded = false }
+                }).SetName("Promotion not restricted by opponent wounded state and wounded state is incorrect | promotion applied").Returns(new CombatInfo() {
+                    Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
+                });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        CombatModifier = 0.5f, AppliesWhileDefending = true,
+                        RestrictedByOpponentWoundedState = true,
+                        ValidOpponentWoundedState = true
+                    },
+                    Attacker = new UnitTestData() { IsWounded = true }
+                }).SetName("Promotion restricted by opponent wounded state and wounded state is correct | promotion applied").Returns(new CombatInfo() {
+                    Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
+                });
             }
         }
 
@@ -784,7 +855,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         private IUnit BuildUnit(UnitTestData unitData) {
             var mockUnit = new Mock<IUnit>();
 
-            mockUnit.Setup(unit => unit.Type).Returns(unitData.Type);
+            mockUnit.Setup(unit => unit.Type)     .Returns(unitData.Type);
+            mockUnit.Setup(unit => unit.IsWounded).Returns(unitData.IsWounded);
 
             return mockUnit.Object;
         }
@@ -824,6 +896,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             mockPromotion.Setup(promotion => promotion.GoldRaidingPercentage).Returns(promotionData.GoldRaidingPercentage);
 
             mockPromotion.Setup(promotion => promotion.IgnoresLOSWhenAttacking).Returns(promotionData.IgnoresLOSWhenAttacking);
+
+            mockPromotion.Setup(promotion => promotion.RestrictedByOpponentWoundedState).Returns(promotionData.RestrictedByOpponentWoundedState);
+            mockPromotion.Setup(promotion => promotion.ValidOpponentWoundedState)       .Returns(promotionData.ValidOpponentWoundedState);
 
             return mockPromotion.Object;
         }

@@ -167,8 +167,8 @@ namespace Assets.Simulation.Units.Combat {
                 throw new InvalidOperationException("CanPerformMeleeCombat must return true");
             }
 
-            int attackerStartingHealth = attacker.Hitpoints;
-            int defenderStartingHealth = defender.Hitpoints;
+            int attackerStartingHealth = attacker.CurrentHitpoints;
+            int defenderStartingHealth = defender.CurrentHitpoints;
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
@@ -179,8 +179,8 @@ namespace Assets.Simulation.Units.Combat {
             UnitSignals.MeleeCombatWithUnitSignal.OnNext(
                 new UnitCombatResults(
                     attacker, defender,
-                    attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - defender.Hitpoints,
+                    attackerStartingHealth - attacker.CurrentHitpoints,
+                    defenderStartingHealth - defender.CurrentHitpoints,
                     combatInfo
                 )
             );
@@ -191,8 +191,8 @@ namespace Assets.Simulation.Units.Combat {
                 throw new InvalidOperationException("CanPerformRangedCombat must return true");
             }
 
-            int attackerStartingHealth = attacker.Hitpoints;
-            int defenderStartingHealth = defender.Hitpoints;
+            int attackerStartingHealth = attacker.CurrentHitpoints;
+            int defenderStartingHealth = defender.CurrentHitpoints;
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
@@ -203,8 +203,8 @@ namespace Assets.Simulation.Units.Combat {
             UnitSignals.RangedCombatWithUnitSignal.OnNext(
                 new UnitCombatResults(
                     attacker, defender,
-                    attackerStartingHealth - attacker.Hitpoints,
-                    defenderStartingHealth - defender.Hitpoints,
+                    attackerStartingHealth - attacker.CurrentHitpoints,
+                    defenderStartingHealth - defender.CurrentHitpoints,
                     combatInfo
                 )
             );
@@ -253,8 +253,8 @@ namespace Assets.Simulation.Units.Combat {
         ) {
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
-            attacker.Hitpoints -= results.Item1;
-            defender.Hitpoints -= results.Item2;
+            attacker.CurrentHitpoints -= results.Item1;
+            defender.CurrentHitpoints -= results.Item2;
 
             CityConquestLogic.HandleCityCaptureFromCombat(attacker, defender, combatInfo);
 
@@ -280,10 +280,10 @@ namespace Assets.Simulation.Units.Combat {
             int attackerDamage = 0, defenderDamage = 0;
 
             if(attackerStrength == 0) {
-                defenderDamage = attacker.Hitpoints;
+                defenderDamage = attacker.CurrentHitpoints;
 
             }else if(defenderStrength == 0) {
-                attackerDamage = defender.Hitpoints;
+                attackerDamage = defender.CurrentHitpoints;
 
             }else {
                 float attackerDefenderRatio = attackerStrength / defenderStrength;
@@ -299,8 +299,8 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             return new Tuple<int, int>(
-                combatInfo.CombatType == CombatType.Melee ? Math.Min(defenderDamage, attacker.Hitpoints) : 0,
-                Math.Min(attackerDamage, defender.Hitpoints)
+                combatInfo.CombatType == CombatType.Melee ? Math.Min(defenderDamage, attacker.CurrentHitpoints) : 0,
+                Math.Min(attackerDamage, defender.CurrentHitpoints)
             );
         }
 

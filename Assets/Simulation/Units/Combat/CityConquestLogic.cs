@@ -75,7 +75,7 @@ namespace Assets.Simulation.Units.Combat {
         #endregion
 
         private bool ShouldCombatResultInCityCapture(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
-            return defender.Hitpoints <= 0 && defender.Type == UnitType.City && combatInfo.CombatType == CombatType.Melee;
+            return defender.CurrentHitpoints <= 0 && defender.Type == UnitType.City && combatInfo.CombatType == CombatType.Melee;
         }
 
         #endregion
