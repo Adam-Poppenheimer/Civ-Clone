@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public struct UnitCombatInfo {
+    public class UnitCombatInfo {
 
         #region instance fields and properties
 
@@ -35,6 +35,18 @@ namespace Assets.Simulation.Units.Combat {
                 CombatModifier, CanMoveAfterAttacking, CanAttackAfterAttacking,
                 IgnoresAmphibiousPenalty, IgnoresDefensiveTerrainBonuses
             );
+        }
+
+        public override bool Equals(object obj) {
+            var otherInfo = obj as UnitCombatInfo;
+
+            return otherInfo != null
+                && CombatModifier                 == otherInfo.CombatModifier
+                && CanMoveAfterAttacking          == otherInfo.CanMoveAfterAttacking
+                && CanAttackAfterAttacking        == otherInfo.CanAttackAfterAttacking
+                && IgnoresAmphibiousPenalty       == otherInfo.IgnoresAmphibiousPenalty
+                && IgnoresDefensiveTerrainBonuses == otherInfo.IgnoresDefensiveTerrainBonuses
+                && GoldRaidingPercentage          == otherInfo.GoldRaidingPercentage;
         }
 
         #endregion
