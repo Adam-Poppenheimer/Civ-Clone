@@ -27,6 +27,9 @@ namespace Assets.Simulation.Units.Promotions {
                      .WithId("Available Promotions")
                      .FromInstance(promotions.Cast<IPromotion>());
 
+            Container.Bind<ICombatPromotionParser>  ().To<CombatPromotionParser>  ().AsSingle();
+            Container.Bind<IMovementPromotionParser>().To<MovementPromotionParser>().AsSingle();
+
             Container.Bind<IPromotionParser>        ().To<PromotionParser>        ().AsSingle();
             Container.Bind<IUnitExperienceLogic>    ().To<UnitExperienceLogic>    ().AsSingle();
             Container.Bind<IStartingExperienceLogic>().To<StartingExperienceLogic>().AsSingle();

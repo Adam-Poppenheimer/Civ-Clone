@@ -20,7 +20,9 @@ namespace Assets.Simulation.Units.Promotions {
             IPromotion promotion, IUnit attacker, IUnit defender,
             IHexCell location, CombatInfo combatInfo
         ){
-            if( CombatMeetsGenericConditions(promotion, attacker, defender, location, combatInfo.CombatType) &&
+            if( CombatMeetsLocationRestrictions  (promotion, location)           &&
+                CombatMeetsCombatInfoRestrictions(promotion, combatInfo)         &&
+                CombatMeetsOpponentConditions    (promotion, attacker, defender) &&
                 promotion.AppliesWhileAttacking
             ) {
                 PerformInfoModification(promotion, combatInfo.Attacker);
@@ -31,7 +33,9 @@ namespace Assets.Simulation.Units.Promotions {
             IPromotion promotion, IUnit attacker, IUnit defender,
             IHexCell location, CombatInfo combatInfo
         ){
-            if( CombatMeetsGenericConditions(promotion, attacker, defender, location, combatInfo.CombatType) &&
+            if( CombatMeetsLocationRestrictions  (promotion, location)           &&
+                CombatMeetsCombatInfoRestrictions(promotion, combatInfo)         &&
+                CombatMeetsOpponentConditions    (promotion, defender, attacker) &&
                 promotion.AppliesWhileDefending
             ) {
                 PerformInfoModification(promotion, combatInfo.Defender);
@@ -40,9 +44,8 @@ namespace Assets.Simulation.Units.Promotions {
 
         #endregion
 
-        private bool CombatMeetsGenericConditions(
-            IPromotion promotion, IUnit attacker, IUnit defender,
-            IHexCell location, CombatType combatType
+        private bool CombatMeetsLocationRestrictions(
+            IPromotion promotion, IHexCell location
         ){
             if(promotion.RestrictedByTerrains && !promotion.ValidTerrains.Contains(location.Terrain)) {
                 return false;
@@ -53,24 +56,23 @@ namespace Assets.Simulation.Units.Promotions {
             }else if(promotion.RestrictedByFeatures && !promotion.ValidFeatures.Contains(location.Feature)) {
                 return false;
 
-            }else if(promotion.RestrictedByAttackerTypes && !promotion.ValidAttackerTypes.Contains(attacker.Type)) {
-                return false;
-
-            }else if(promotion.RestrictedByDefenderTypes && !promotion.ValidDefenderTypes.Contains(defender.Type)) {
-                return false;
-
             }else if(promotion.RequiresFlatTerrain && location.IsRoughTerrain) {
                 return false;
 
             }else if(promotion.RequiresRoughTerrain && !location.IsRoughTerrain) {
                 return false;
 
-            }else if(promotion.RestrictedByCombatType && combatType != promotion.ValidCombatType) {
-                return false;
-
             }else {
                 return true;
             }
+        }
+
+        private bool CombatMeetsCombatInfoRestrictions(IPromotion promotion, CombatInfo info) {
+            return !promotion.RestrictedByCombatType || promotion.ValidCombatType == info.CombatType;
+        }
+
+        private bool CombatMeetsOpponentConditions(IPromotion promotion, IUnit thisUnit, IUnit opponent) {
+            return !promotion.RestrictedByOpponentTypes || promotion.ValidOpponentTypes.Contains(opponent.Type);
         }
 
         private void PerformInfoModification(IPromotion promotion, UnitCombatInfo unitInfo) {

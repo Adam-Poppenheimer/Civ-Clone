@@ -45,11 +45,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             public bool RestrictedByFeatures;
             public IEnumerable<TerrainFeature> ValidFeatures;
 
-            public bool RestrictedByAttackerTypes;
-            public IEnumerable<UnitType> ValidAttackerTypes;
-
-            public bool RestrictedByDefenderTypes;
-            public IEnumerable<UnitType> ValidDefenderTypes;
+            public bool RestrictedByOpponentTypes;
+            public IEnumerable<UnitType> ValidOpponentTypes;
 
             public bool RequiresFlatTerrain;
             public bool RequiresRoughTerrain;
@@ -300,66 +297,33 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByAttackerTypes = true,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = true,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
-                    Attacker = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion restricted by attacker types and attacker wrong type | promotion ignored").Returns(new CombatInfo() {
+                    Defender = new UnitTestData() { Type = UnitType.Archery }
+                }).SetName("Promotion restricted by opponent types and defender wrong type | promotion ignored").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0f }
                 });
 
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByAttackerTypes = false,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Attacker = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion not restricted by attacker types and attacker wrong type | promotion applied").Returns(new CombatInfo() {
-                    Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByAttackerTypes = true,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Attacker = new UnitTestData() { Type = UnitType.Melee }
-                }).SetName("Promotion restricted by attacker types and attacker valid type | promotion applied").Returns(new CombatInfo() {
-                    Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByDefenderTypes = true,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = false,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
                     Defender = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion restricted by defender types and defender wrong type | promotion ignored").Returns(new CombatInfo() {
-                    Attacker = new UnitCombatInfo() { CombatModifier = 0f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByDefenderTypes = false,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Defender = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion not restricted by defender types and defender wrong type | promotion applied").Returns(new CombatInfo() {
+                }).SetName("Promotion not restricted by opponent types and defender wrong type | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
 
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByDefenderTypes = true,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = true,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
                     Defender = new UnitTestData() { Type = UnitType.Melee }
-                }).SetName("Promotion restricted by defender types and defender valid type | promotion applied").Returns(new CombatInfo() {
+                }).SetName("Promotion restricted by opponent types and defender valid type | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
 
@@ -641,66 +605,33 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByAttackerTypes = true,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = true,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
                     Attacker = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion restricted by attacker types and attacker wrong type | promotion ignored").Returns(new CombatInfo() {
+                }).SetName("Promotion restricted by opponent types and attacker wrong type | promotion ignored").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0f }
                 });
 
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByAttackerTypes = false,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = false,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
                     Attacker = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion not restricted by attacker types and attacker wrong type | promotion applied").Returns(new CombatInfo() {
+                }).SetName("Promotion not restricted by opponent types and attacker wrong type | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
 
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByAttackerTypes = true,
-                        ValidAttackerTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
+                        RestrictedByOpponentTypes = true,
+                        ValidOpponentTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
                     },
                     Attacker = new UnitTestData() { Type = UnitType.Melee }
-                }).SetName("Promotion restricted by attacker types and attacker valid type | promotion applied").Returns(new CombatInfo() {
-                    Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByDefenderTypes = true,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Defender = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion restricted by defender types and defender wrong type | promotion ignored").Returns(new CombatInfo() {
-                    Defender = new UnitCombatInfo() { CombatModifier = 0f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByDefenderTypes = false,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Defender = new UnitTestData() { Type = UnitType.Archery }
-                }).SetName("Promotion not restricted by defender types and defender wrong type | promotion applied").Returns(new CombatInfo() {
-                    Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
-                });
-
-                yield return new TestCaseData(new ParsePromotionTestData() {
-                    Promotion = new PromotionTestData() {
-                        CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByDefenderTypes = true,
-                        ValidDefenderTypes = new List<UnitType>() { UnitType.Melee, UnitType.NavalMelee }
-                    },
-                    Defender = new UnitTestData() { Type = UnitType.Melee }
-                }).SetName("Promotion restricted by defender types and defender valid type | promotion applied").Returns(new CombatInfo() {
+                }).SetName("Promotion restricted by opponent types and attacker valid type | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
 
@@ -870,11 +801,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             mockPromotion.Setup(promotion => promotion.RestrictedByFeatures).Returns(promotionData.RestrictedByFeatures);
             mockPromotion.Setup(promotion => promotion.ValidFeatures)       .Returns(promotionData.ValidFeatures);
 
-            mockPromotion.Setup(promotion => promotion.RestrictedByAttackerTypes).Returns(promotionData.RestrictedByAttackerTypes);
-            mockPromotion.Setup(promotion => promotion.ValidAttackerTypes)       .Returns(promotionData.ValidAttackerTypes);
-
-            mockPromotion.Setup(promotion => promotion.RestrictedByDefenderTypes).Returns(promotionData.RestrictedByDefenderTypes);
-            mockPromotion.Setup(promotion => promotion.ValidDefenderTypes)       .Returns(promotionData.ValidDefenderTypes);
+            mockPromotion.Setup(promotion => promotion.RestrictedByOpponentTypes).Returns(promotionData.RestrictedByOpponentTypes);
+            mockPromotion.Setup(promotion => promotion.ValidOpponentTypes)       .Returns(promotionData.ValidOpponentTypes);
 
             mockPromotion.Setup(promotion => promotion.RequiresFlatTerrain) .Returns(promotionData.RequiresFlatTerrain);
             mockPromotion.Setup(promotion => promotion.RequiresRoughTerrain).Returns(promotionData.RequiresRoughTerrain);

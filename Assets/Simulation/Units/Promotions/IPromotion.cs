@@ -29,11 +29,8 @@ namespace Assets.Simulation.Units.Promotions {
         bool RestrictedByFeatures                 { get; }
         IEnumerable<TerrainFeature> ValidFeatures { get; }
 
-        bool RestrictedByAttackerTypes           { get; }
-        IEnumerable<UnitType> ValidAttackerTypes { get; }
-
-        bool RestrictedByDefenderTypes           { get; }
-        IEnumerable<UnitType> ValidDefenderTypes { get; }
+        bool RestrictedByOpponentTypes           { get; }
+        IEnumerable<UnitType> ValidOpponentTypes { get; }
 
         bool RequiresFlatTerrain  { get; }
         bool RequiresRoughTerrain { get; }

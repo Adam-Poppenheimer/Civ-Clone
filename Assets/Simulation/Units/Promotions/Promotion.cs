@@ -62,25 +62,15 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private List<TerrainFeature> _validFeatures;
 
-        public bool RestrictedByAttackerTypes {
-            get { return _restrictedByAttackerTypes; }
+        public bool RestrictedByOpponentTypes {
+            get { return _restrictedByOpponentTypes; }
         }
-        [SerializeField] private bool _restrictedByAttackerTypes;
+        [SerializeField] private bool _restrictedByOpponentTypes;
 
-        public IEnumerable<UnitType> ValidAttackerTypes {
-            get { return _validAttackerTypes; }
+        public IEnumerable<UnitType> ValidOpponentTypes {
+            get { return _validOpponentTypes; }
         }
-        [SerializeField] private List<UnitType> _validAttackerTypes;
-
-        public bool RestrictedByDefenderTypes {
-            get { return _restrictedByDefenderTypes; }
-        }
-        [SerializeField] private bool _restrictedByDefenderTypes;
-
-        public IEnumerable<UnitType> ValidDefenderTypes {
-            get { return _validDefenderTypes; }
-        }
-        [SerializeField] private List<UnitType> _validDefenderTypes;
+        [SerializeField] private List<UnitType> _validOpponentTypes;
 
         public bool RequiresFlatTerrain {
             get { return _requiresFlatTerrain; }
