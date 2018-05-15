@@ -16,15 +16,20 @@ namespace Assets.Simulation.Units.Promotions {
 
         private ICombatPromotionParser   CombatParser;
         private IMovementPromotionParser MovementParser;
+        private IHealingPromotionParser  HealingParser;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public PromotionParser(ICombatPromotionParser combatParser, IMovementPromotionParser movementParser) {
+        public PromotionParser(
+            ICombatPromotionParser combatParser, IMovementPromotionParser movementParser,
+            IHealingPromotionParser healingParser
+        ){
             CombatParser   = combatParser;
             MovementParser = movementParser;
+            HealingParser  = healingParser;
         }
 
         #endregion
@@ -59,12 +64,18 @@ namespace Assets.Simulation.Units.Promotions {
             return retval;
         }
 
-        public PromotionVisionChanges GetVisionInfo(IUnit unit) {
+        public VisionInfo GetVisionInfo(IUnit unit) {
             throw new NotImplementedException();
         }
 
-        public PromotionHealingChanges GetHealingInfo(IUnit unit) {
-            throw new NotImplementedException();
+        public HealingInfo GetHealingInfo(IUnit unit) {
+            var retval = new HealingInfo();
+
+            foreach(var promotion in unit.Promotions) {
+                HealingParser.ParsePromotionForHealingInfo(promotion, unit, retval);
+            }
+
+            return retval;
         }
 
         #endregion

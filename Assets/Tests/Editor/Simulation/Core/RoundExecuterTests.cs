@@ -143,6 +143,7 @@ namespace Assets.Tests.Simulation.Core {
 
         private Mock<IUnitPositionCanon>        MockUnitPositionCanon;
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+        private Mock<IUnitHealingLogic>         MockHealingLogic;
 
         #endregion
 
@@ -154,9 +155,11 @@ namespace Assets.Tests.Simulation.Core {
         public void CommonInstall() {
             MockUnitPositionCanon        = new Mock<IUnitPositionCanon>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockHealingLogic             = new Mock<IUnitHealingLogic>();
 
             Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon       .Object);
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IUnitHealingLogic>        ().FromInstance(MockHealingLogic            .Object);
 
             Container.Bind<RoundExecuter>().AsSingle();
         }
@@ -176,7 +179,6 @@ namespace Assets.Tests.Simulation.Core {
             mockCity.InSequence(executionSequence).Setup(city => city.PerformGrowth());
             mockCity.InSequence(executionSequence).Setup(city => city.PerformExpansion());
             mockCity.InSequence(executionSequence).Setup(city => city.PerformDistribution());
-            mockCity.InSequence(executionSequence).Setup(city => city.PerformHealing());
 
             var executer = Container.Resolve<RoundExecuter>();
             executer.BeginRoundOnCity(mockCity.Object);
@@ -225,6 +227,20 @@ namespace Assets.Tests.Simulation.Core {
             executer.BeginRoundOnUnit(unit);
 
             Assert.AreEqual(unit.MaxMovement, unit.CurrentMovement, "unit.CurrentMovement has an unexpected value");
+        }
+
+        [Test]
+        public void BeginRoundOnUnit_HealingPerformedOnUnit() {
+            var unit = BuildUnit(0, 0);
+
+            var executer = Container.Resolve<RoundExecuter>();
+
+            executer.BeginRoundOnUnit(unit);
+
+            MockHealingLogic.Verify(
+                logic => logic.PerformHealingOnUnit(unit), Times.Once,
+                "HealingLogic.PerformHealingOnUnit was not called as expected"
+            );
         }
 
         [TestCaseSource("EndRoundOnUnitTestCases")]

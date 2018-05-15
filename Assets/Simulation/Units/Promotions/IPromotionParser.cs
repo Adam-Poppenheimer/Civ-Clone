@@ -16,9 +16,9 @@ namespace Assets.Simulation.Units.Promotions {
 
         MovementInfo GetMovementInfo(IUnit unit);
 
-        PromotionVisionChanges GetVisionInfo(IUnit unit);
+        VisionInfo GetVisionInfo(IUnit unit);
 
-        PromotionHealingChanges GetHealingInfo(IUnit unit);
+        HealingInfo GetHealingInfo(IUnit unit);
 
         #endregion
 

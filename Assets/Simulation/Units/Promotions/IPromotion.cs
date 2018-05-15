@@ -41,6 +41,8 @@ namespace Assets.Simulation.Units.Promotions {
         bool AppliesWhileAttacking { get; }
         bool AppliesWhileDefending { get; }
 
+        bool RequiresForeignTerritory { get; }
+
         float CombatModifier { get; }
 
         bool CanMoveAfterAttacking    { get; }
@@ -58,6 +60,14 @@ namespace Assets.Simulation.Units.Promotions {
 
 
         bool IgnoresTerrainCosts { get; }
+
+
+        bool HealsEveryTurn { get; }
+
+        int BonusHealingToSelf     { get; }
+        int BonusHealingToAdjacent { get; }
+
+        int AlternativeNavalBaseHealing { get; }
 
         #endregion
 

@@ -152,6 +152,33 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private bool _ignoresTerrainCosts;
 
+
+
+        public bool RequiresForeignTerritory {
+            get { return _requiresForeignTerritory; }
+        }
+        [SerializeField] private bool _requiresForeignTerritory;
+
+        public bool HealsEveryTurn {
+            get { return _healsEveryTurn; }
+        }
+        [SerializeField] private bool _healsEveryTurn;
+
+        public int BonusHealingToSelf {
+            get { return _bonusHealingToSelf; }
+        }
+        [SerializeField] private int _bonusHealingToSelf;
+
+        public int BonusHealingToAdjacent {
+            get { return _bonusHealingToAdjacent; }
+        }
+        [SerializeField] private int _bonusHealingToAdjacent;
+
+        public int AlternativeNavalBaseHealing {
+            get { return _alternativeNavalBaseHealing; }
+        }
+        [SerializeField] private int _alternativeNavalBaseHealing;
+
         #endregion
 
         #endregion

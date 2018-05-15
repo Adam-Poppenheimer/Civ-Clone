@@ -34,6 +34,16 @@ namespace Assets.Simulation.Units {
 
         int WoundedThreshold { get; }
 
+        int ForeignLandHealingPerTurn    { get; }
+        int FriendlyLandHealingPerTurn   { get; }
+        int GarrisonedLandHealingPerTurn { get; }
+
+        int ForeignNavalHealingPerTurn    { get; }
+        int FriendlyNavalHealingPerTurn   { get; }
+        int GarrisonedNavalHealingPerTurn { get; }
+
+        float CityRepairPercentPerTurn { get; }
+
         #endregion
 
         #region methods

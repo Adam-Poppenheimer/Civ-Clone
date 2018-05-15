@@ -21,6 +21,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
         private Mock<ICombatPromotionParser>   MockCombatParser;
         private Mock<IMovementPromotionParser> MockMovementParser;
+        private Mock<IHealingPromotionParser>  MockHealingParser;
 
         #endregion
 
@@ -32,9 +33,11 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         public void CommonInstall() {
             MockCombatParser   = new Mock<ICombatPromotionParser>();
             MockMovementParser = new Mock<IMovementPromotionParser>();
+            MockHealingParser  = new Mock<IHealingPromotionParser>();
 
             Container.Bind<ICombatPromotionParser>  ().FromInstance(MockCombatParser  .Object);
             Container.Bind<IMovementPromotionParser>().FromInstance(MockMovementParser.Object);
+            Container.Bind<IHealingPromotionParser> ().FromInstance(MockHealingParser .Object);
 
             Container.Bind<PromotionParser>().AsSingle();
         }
@@ -128,6 +131,30 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             MockMovementParser.Verify(
                 parser => parser.ParsePromotionForUnitMovement(promotions[1], unit, returnedInfo),
                 Times.Once, "MovementParser.ParsePromotionForUnitMovement wasn't called as expected on promotions[1]"
+            );
+        }
+
+        [Test]
+        public void GetHealingInfo_CorrectArgumentsPassedToEveryPromotion() {
+            var promotions = new List<IPromotion>() {
+                BuildPromotion("Promotion One"),
+                BuildPromotion("Promotion Two"),
+            };
+
+            var unit = BuildUnit(promotions);
+
+            var promotionParser = Container.Resolve<PromotionParser>();
+
+            var returnedInfo = promotionParser.GetHealingInfo(unit);
+
+            MockHealingParser.Verify(
+                parser => parser.ParsePromotionForHealingInfo(promotions[0], unit, returnedInfo),
+                Times.Once, "HealingParser.ParsePromotionForHealingInfo wasn't called as expected on promotions[0]"
+            );
+
+            MockHealingParser.Verify(
+                parser => parser.ParsePromotionForHealingInfo(promotions[1], unit, returnedInfo),
+                Times.Once, "HealingParser.ParsePromotionForHealingInfo wasn't called as expected on promotions[1]"
             );
         }
 

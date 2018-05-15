@@ -118,11 +118,6 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _rangedAttackStrengthPerPopulation;
 
-        public int HitPointRegenPerRound {
-            get { return _hitPointRegenPerRound; }
-        }
-        [SerializeField] private int _hitPointRegenPerRound;
-
         public int VisionRange {
             get { return _visionRange; }
         }

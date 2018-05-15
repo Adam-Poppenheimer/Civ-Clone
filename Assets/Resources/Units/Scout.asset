@@ -31,4 +31,4 @@ MonoBehaviour:
   _ignoresLineOfSight: 0
   _startingPromotions:
   - {fileID: 11400000, guid: edf4a363cc6c86140bc9c0590ba9ba9a, type: 2}
-  _promotionTreeData: {fileID: 11400000, guid: 7cd960090d043224bbcaf385c5a100df, type: 2}
+  _promotionTreeData: {fileID: 11400000, guid: 435a32b59695d6145843f12a82174f98, type: 2}

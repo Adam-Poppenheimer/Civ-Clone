@@ -641,22 +641,6 @@ namespace Assets.Tests.Simulation.Cities {
             cityToTest.ActiveProject = mockProject.Object;
         }
 
-        [Test(Description = "When PerformHealing is called, CombatFacade should be healed by an amount " +
-            "configured in CityConfig and have its current movement set to 1")]
-        public void PerformHealing_FacadeHealedAndGivenMovement() {
-            MockCityConfig.Setup(config => config.HitPointRegenPerRound).Returns(20);
-
-            var city = Container.Resolve<City>();
-            city.CombatFacade = BuildUnit();
-            city.CombatFacade.CurrentHitpoints = 0;
-            city.CombatFacade.CurrentMovement = 0;
-
-            city.PerformHealing();
-
-            Assert.AreEqual(20, city.CombatFacade.CurrentHitpoints, "CombatFacade was not healed properly");
-            Assert.AreEqual(1, city.CombatFacade.CurrentMovement, "CombatFacade's movement wasn't restored properly");
-        }
-
         #endregion
 
         #region utilities

@@ -29,6 +29,7 @@ namespace Assets.Simulation.Units.Promotions {
 
             Container.Bind<ICombatPromotionParser>  ().To<CombatPromotionParser>  ().AsSingle();
             Container.Bind<IMovementPromotionParser>().To<MovementPromotionParser>().AsSingle();
+            Container.Bind<IHealingPromotionParser> ().To<HealingPromotionParser> ().AsSingle();
 
             Container.Bind<IPromotionParser>        ().To<PromotionParser>        ().AsSingle();
             Container.Bind<IUnitExperienceLogic>    ().To<UnitExperienceLogic>    ().AsSingle();

@@ -20,14 +20,19 @@ namespace Assets.Simulation.Core {
 
         private IUnitPositionCanon        UnitPositionCanon;
         private IImprovementLocationCanon ImprovementLocationCanon;
+        private IUnitHealingLogic         UnitHealingLogic;
 
         #endregion
 
         #region constructors
 
-        public RoundExecuter(IUnitPositionCanon unitPositionCanon, IImprovementLocationCanon improvementLocationCanon){
+        public RoundExecuter(
+            IUnitPositionCanon unitPositionCanon, IImprovementLocationCanon improvementLocationCanon,
+            IUnitHealingLogic unitHealingLogic
+        ){
             UnitPositionCanon        = unitPositionCanon;
             ImprovementLocationCanon = improvementLocationCanon;
+            UnitHealingLogic         = unitHealingLogic;
         }
 
         #endregion
@@ -42,7 +47,6 @@ namespace Assets.Simulation.Core {
             city.PerformGrowth();
             city.PerformExpansion();
             city.PerformDistribution();
-            city.PerformHealing();
         }
 
         /// <inheritdoc/>
@@ -63,7 +67,8 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public void BeginRoundOnUnit(IUnit unit) {
-            unit.CurrentMovement = unit.MaxMovement;
+            UnitHealingLogic.PerformHealingOnUnit(unit);
+            unit.CurrentMovement = unit.MaxMovement;            
         }
 
         /// <inheritdoc/>

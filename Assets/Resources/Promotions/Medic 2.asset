@@ -13,10 +13,32 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: -- Unimplemented --
   _icon: {fileID: 0}
-  Args: 
-  Float: 0
-  Int: 0
-  Terrain: 0
-  Shape: 0
-  Feature: 0
-  UnitType: 0
+  _restrictedByTerrains: 0
+  _validTerrains: 
+  _restrictedByShapes: 0
+  _validShapes: 
+  _restrictedByFeatures: 0
+  _validFeatures: 
+  _restrictedByOpponentTypes: 0
+  _validOpponentTypes: 
+  _requiresFlatTerrain: 0
+  _requiresRoughTerrain: 0
+  _restrictedByCombatType: 0
+  _validCombatType: 0
+  _appliesWhileAttacking: 0
+  _appliesWhileDefending: 0
+  _combatModifier: 0
+  _canMoveAfterAttacking: 0
+  _canAttackAfterAttacking: 0
+  _ignoresAmphibiousPenalty: 0
+  _ignoresDefensiveTerrainBonuses: 0
+  _goldRaidingPercentage: 0
+  _ignoresLOSWhenAttacking: 0
+  _restrictedByOpponentWoundedState: 0
+  _validOpponentWoundedState: 0
+  _ignoresTerrainCosts: 0
+  _requiresForeignTerritory: 0
+  _healsEveryTurn: 0
+  _bonusHealingToSelf: 5
+  _bonusHealingToAdjacent: 5
+  _alternativeNavalBaseHealing: 0

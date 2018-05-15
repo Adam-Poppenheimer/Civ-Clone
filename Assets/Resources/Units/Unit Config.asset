@@ -23,6 +23,13 @@ MonoBehaviour:
   _rangedAttackerExperience: 2
   _rangedDefenderExperience: 2
   _woundedThreshold: 25
+  _foreignLandHealingPerTurn: 10
+  _friendlyLandHealingPerTurn: 20
+  _garrisonedLandHealingPerTurn: 25
+  _foreignNavalHealingPerTurn: 0
+  _friendlyNavalHealingPerTurn: 20
+  _garrisonedNavalHealingPerTurn: 25
+  _cityRepairPercentPerTurn: 15
   TerrainDefensiveness: []
   ShapeDefensiveness:
   - 0

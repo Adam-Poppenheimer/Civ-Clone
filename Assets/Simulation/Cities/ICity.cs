@@ -123,8 +123,6 @@ namespace Assets.Simulation.Cities {
         /// </remarks>
         void PerformIncome();
 
-        void PerformHealing();
-
         void Destroy();
 
         #endregion

@@ -79,8 +79,6 @@ namespace Assets.Simulation.Cities {
 
         float RangedAttackStrengthPerPopulation { get; }
 
-        int HitPointRegenPerRound { get; }
-
         int VisionRange { get; }
 
         int UnhappinessPerCity { get; }

@@ -96,29 +96,17 @@ namespace Assets.Simulation.Cities {
         private IPossessionRelationship<ICity, IHexCell> TilePossessionCanon;
         private IWorkerDistributionLogic                 DistributionLogic;
         private CitySignals                              Signals;
-        private ICityConfig                              Config;
 
         #endregion
 
         #region instance methods
 
-        /// <summary>
-        /// Constructor-like method to facilitate dependency injection with the Zenject framework.
-        /// </summary>
-        /// <param name="growthLogic"></param>
-        /// <param name="productionLogic"></param>
-        /// <param name="resourceGenerationLogic"></param>
-        /// <param name="expansionLogic"></param>
-        /// <param name="tilePossessionCanon"></param>
-        /// <param name="distributionLogic"></param>
-        /// <param name="projectFactory"></param>
-        /// <param name="signals"></param>
         [Inject]
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
-            CitySignals signals, ICityConfig config
+            CitySignals signals
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
@@ -127,7 +115,6 @@ namespace Assets.Simulation.Cities {
             TilePossessionCanon     = tilePossessionCanon;
             DistributionLogic       = distributionLogic;
             Signals                 = signals;
-            Config                  = config;
         }
 
         #region Unity messages
@@ -213,11 +200,6 @@ namespace Assets.Simulation.Cities {
             }else {
                 FoodStockpile -= Mathf.CeilToInt(foodConsumption - LastIncome[ResourceType.Food]);
             }
-        }
-
-        public void PerformHealing() {
-            CombatFacade.CurrentHitpoints += Config.HitPointRegenPerRound;
-            CombatFacade.CurrentMovement = 1;
         }
 
         public void Destroy() {

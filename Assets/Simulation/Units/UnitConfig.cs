@@ -76,6 +76,41 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _woundedThreshold;
 
+        public int ForeignLandHealingPerTurn {
+            get { return _foreignLandHealingPerTurn; }
+        }
+        [SerializeField] private int _foreignLandHealingPerTurn;
+
+        public int FriendlyLandHealingPerTurn {
+            get { return _friendlyLandHealingPerTurn; }
+        }
+        [SerializeField] private int _friendlyLandHealingPerTurn;
+
+        public int GarrisonedLandHealingPerTurn {
+            get { return _garrisonedLandHealingPerTurn; }
+        }
+        [SerializeField] private int _garrisonedLandHealingPerTurn;
+
+        public int ForeignNavalHealingPerTurn {
+            get { return _foreignNavalHealingPerTurn; }
+        }
+        [SerializeField] private int _foreignNavalHealingPerTurn;
+
+        public int FriendlyNavalHealingPerTurn {
+            get { return _friendlyNavalHealingPerTurn; }
+        }
+        [SerializeField] private int _friendlyNavalHealingPerTurn;
+
+        public int GarrisonedNavalHealingPerTurn {
+            get { return _garrisonedNavalHealingPerTurn; }
+        }
+        [SerializeField] private int _garrisonedNavalHealingPerTurn;
+
+        public float CityRepairPercentPerTurn {
+            get { return _cityRepairPercentPerTurn; }
+        }
+        [SerializeField] private int _cityRepairPercentPerTurn;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        
