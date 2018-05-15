@@ -42,6 +42,8 @@ namespace Assets.UI.MapEditor {
         IHexCell PreviousCell;
 
         private IDisposable CellEnterSubscription;
+        private IDisposable CellPointerDownSubscription;
+        private IDisposable CellClickedSubscription;
 
 
 
@@ -81,12 +83,18 @@ namespace Assets.UI.MapEditor {
                     HandleInput();
                 }
             });
+
+            CellPointerDownSubscription = CellSignals.PointerDownSignal         .Subscribe(data => HandleInput());
+            CellClickedSubscription     = CellSignals.ClickedSignal.AsObservable.Subscribe(data => HandleInput());
         }
 
         private void OnDisable() {
             IsDragging = false;
             PreviousCell = null;
-            CellEnterSubscription.Dispose();
+
+            CellEnterSubscription  .Dispose();
+            CellPointerDownSubscription   .Dispose();
+            CellClickedSubscription.Dispose();
         }
 
         #endregion
@@ -186,20 +194,21 @@ namespace Assets.UI.MapEditor {
                 cell.Feature = TerrainFeature.None;
             }
 
+            if(RoadMode == OptionalToggle.No) {
+                cell.HasRoads = false;
+            }else if(RoadMode == OptionalToggle.Yes) {
+                cell.HasRoads = true;
+            }
+
             if(RiverMode == OptionalToggle.No) {
                 RiverCanon.RemoveRiver(cell);
             }
-            if(RoadMode == OptionalToggle.No) {
-                cell.HasRoads = false;
-            }
+            
             if(IsDragging && HexGrid.HasNeighbor(cell, DragDirection.Opposite())) {
                 IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
                 if(otherCell != null) {
                     if(RiverMode == OptionalToggle.Yes) {
                         RiverCanon.SetOutgoingRiver(otherCell, DragDirection);
-                    }
-                    if(RoadMode == OptionalToggle.Yes) {
-                        otherCell.HasRoads = true;
                     }
                 }                
             }

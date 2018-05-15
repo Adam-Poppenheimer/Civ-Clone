@@ -7,12 +7,14 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.HexMap {
 
-    public class HexMeshEventEmitter : MonoBehaviour, IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+    public class HexMeshEventEmitter : MonoBehaviour, IPointerDownHandler,
+        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
 
         #region instance fields and properties
 
@@ -61,6 +63,25 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         #region EventSystem handler implementations
+
+        public void OnPointerDown(PointerEventData eventData) {
+            var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
+
+                if(hit.collider == Collider) {
+                    var coordinates = HexCoordinates.FromPosition(hit.point);
+
+                    if(!Grid.HasCellAtCoordinates(coordinates)) {
+                        return;
+                    }
+
+                    var clickedCell = Grid.GetCellAtCoordinates(coordinates);
+
+                    CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(clickedCell, eventData));
+                }
+            }
+        }
 
         public void OnPointerClick(PointerEventData eventData) {
             var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
