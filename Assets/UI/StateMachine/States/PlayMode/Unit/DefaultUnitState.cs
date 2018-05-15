@@ -107,7 +107,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Brain.ClearListeners();
 
             Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick,
-                TransitionType.ToUnitSelected, TransitionType.ToCitySelected);
+                TransitionType.UnitSelected, TransitionType.CitySelected);
             Brain.EnableCameraMovement();
             Brain.EnableCellHovering();
 

@@ -28,7 +28,7 @@ namespace Assets.Simulation.Civilizations {
 
         public ISubject<ResourceTransfer> ResourceTransferCanceledSignal { get; private set; }
 
-
+        public ISubject<ICivilization> CivSelectedSignal { get; private set; }
         
 
         #endregion
@@ -43,6 +43,8 @@ namespace Assets.Simulation.Civilizations {
             CivLosingCitySignal = new Subject<Tuple<ICivilization, ICity>>();
 
             ResourceTransferCanceledSignal = new Subject<ResourceTransfer>();
+
+            CivSelectedSignal = new Subject<ICivilization>();
         }
 
         #endregion

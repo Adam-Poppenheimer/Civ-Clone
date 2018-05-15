@@ -11,7 +11,6 @@ using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
-using Assets.Simulation.HexMap;
 using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
 
@@ -31,12 +30,16 @@ namespace Assets.UI.StateMachine {
 
         private static string EscapeMenuTriggerName = "Escape Menu Requested";
 
+        private static string CivTriggerName = "Civ Selected";
+
         #endregion
 
         #region instance fields and properties
 
         public ICity    LastCityClicked { get; set; }
         public IUnit    LastUnitClicked { get; set; }
+
+        public ICivilization LastCivilizationSelected { get; set; }
 
         private IDisposable CityClickedSubscription;
         private IDisposable UnitClickedSubscription;
@@ -46,20 +49,19 @@ namespace Assets.UI.StateMachine {
 
         private IDisposable EscapeMenuRequestedSubscription;
 
+        private IDisposable CivSelectedSubscription;
 
 
 
-        private Animator Animator;
 
+        private Animator             Animator;
         private CompositeCitySignals CompositeCitySignals;
         private CompositeUnitSignals CompositeUnitSignals;
         private PlayerSignals        PlayerSignals;
-
-        private GameCamera GameCamera;
-
-        private DescriptionTooltip DescriptionTooltip;
-
-        private CellHoverDisplay CellHoverDisplay;
+        private GameCamera           GameCamera;
+        private DescriptionTooltip   DescriptionTooltip;
+        private CellHoverDisplay     CellHoverDisplay;
+        private CivilizationSignals  CivSignals;
 
         #endregion
 
@@ -69,18 +71,19 @@ namespace Assets.UI.StateMachine {
         public UIStateMachineBrain(
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, PlayerSignals playerSignals, GameCamera gameCamera,
-            CoreSignals coreSignals, DescriptionTooltip descriptionTooltip, CellHoverDisplay cellHoverDisplay
+            DescriptionTooltip descriptionTooltip, CellHoverDisplay cellHoverDisplay,
+            CivilizationSignals civSignals, CoreSignals coreSignals
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
             CompositeUnitSignals = compositeUnitSignals;
             PlayerSignals        = playerSignals;
             GameCamera           = gameCamera;
+            DescriptionTooltip   = descriptionTooltip;
+            CellHoverDisplay     = cellHoverDisplay;
+            CivSignals           = civSignals;
             
             coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
-
-            DescriptionTooltip = descriptionTooltip;
-            CellHoverDisplay   = cellHoverDisplay;
         }
 
         #endregion
@@ -88,13 +91,12 @@ namespace Assets.UI.StateMachine {
         #region instance methods
 
         public void ClearListeners() {
-            if(CancelPressedSubscription   != null) { CancelPressedSubscription.Dispose(); }
-            if(ClickedAnywhereSubscription != null) { ClickedAnywhereSubscription.Dispose(); }
-
-            if(CityClickedSubscription != null) { CityClickedSubscription.Dispose(); }
-            if(UnitClickedSubscription != null) { UnitClickedSubscription.Dispose(); }
-
+            if(CancelPressedSubscription       != null) { CancelPressedSubscription      .Dispose(); }
+            if(ClickedAnywhereSubscription     != null) { ClickedAnywhereSubscription    .Dispose(); }
+            if(CityClickedSubscription         != null) { CityClickedSubscription        .Dispose(); }
+            if(UnitClickedSubscription         != null) { UnitClickedSubscription        .Dispose(); }
             if(EscapeMenuRequestedSubscription != null) { EscapeMenuRequestedSubscription.Dispose(); }
+            if(CivSelectedSubscription         != null) { CivSelectedSubscription        .Dispose(); }
 
             foreach(var parameter in Animator.parameters) {
                 if(parameter.type == AnimatorControllerParameterType.Trigger) {
@@ -121,14 +123,17 @@ namespace Assets.UI.StateMachine {
             }else if(type == TransitionType.ReturnViaClick) {
                 ClickedAnywhereSubscription = PlayerSignals.ClickedAnywhereSignal.Subscribe(OnClickedAnywhere);
 
-            } else if(type == TransitionType.ToCitySelected) {
+            } else if(type == TransitionType.CitySelected) {
                 CityClickedSubscription = CompositeCitySignals.ActiveCivCityClickedSignal.Subscribe(OnCityClicked);
 
-            }else if(type == TransitionType.ToUnitSelected) {
+            }else if(type == TransitionType.UnitSelected) {
                 UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);
 
             }else if(type == TransitionType.ToEscapeMenu) {
                 EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
+
+            }else if(type == TransitionType.CivSelected) {
+                CivSelectedSubscription = CivSignals.CivSelectedSignal.Subscribe(OnCivSelected);
             }
         }
 
@@ -179,6 +184,11 @@ namespace Assets.UI.StateMachine {
                     Animator.ResetTrigger(parameter.name);
                 }
             }
+        }
+
+        private void OnCivSelected(ICivilization civ) {
+            LastCivilizationSelected = civ;
+            Animator.SetTrigger(CivTriggerName);
         }
 
         #endregion

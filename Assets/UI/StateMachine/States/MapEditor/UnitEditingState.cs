@@ -66,7 +66,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Brain.DisableCellHovering();
 
             Brain.ListenForTransitions(
-                TransitionType.ReturnViaButton, TransitionType.ReturnViaClick, TransitionType.ToUnitSelected
+                TransitionType.ReturnViaButton, TransitionType.ReturnViaClick, TransitionType.UnitSelected
             );
 
             AttachEvents();

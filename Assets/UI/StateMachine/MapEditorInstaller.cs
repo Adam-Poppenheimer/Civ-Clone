@@ -29,6 +29,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel;
         [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
         [SerializeField] private UnitEditingPanel         UnitEditingPanel;
+        [SerializeField] private CivEditingPanel          CivEditingPanel;
 
         [SerializeField] private GameObject SaveMapDisplay;
 
@@ -39,9 +40,7 @@ namespace Assets.UI.StateMachine {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<RectTransform>()
-                .WithId("Map Editor Container")
-                .FromInstance(MapEditorContainer);
+            Container.Bind<RectTransform>().WithId("Map Editor Container").FromInstance(MapEditorContainer);
 
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
@@ -53,10 +52,9 @@ namespace Assets.UI.StateMachine {
             Container.Bind<ResourcePaintingPanel>   ().FromInstance(ResourcePaintingPanel);
             Container.Bind<ImprovementPaintingPanel>().FromInstance(ImprovementPaintingPanel);
             Container.Bind<UnitEditingPanel>        ().FromInstance(UnitEditingPanel);
+            Container.Bind<CivEditingPanel>         ().FromInstance(CivEditingPanel);
 
-            Container.Bind<GameObject>()
-                .WithId("Save Map Display")
-                .FromInstance(SaveMapDisplay);
+            Container.Bind<GameObject>().WithId("Save Map Display").FromInstance(SaveMapDisplay);
         }
 
         #endregion

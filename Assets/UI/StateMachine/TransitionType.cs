@@ -13,8 +13,8 @@ namespace Assets.UI.StateMachine {
         ToPlayMode,
 
         //PlayMode
-        ToCitySelected,
-        ToUnitSelected,
+        CitySelected,
+        UnitSelected,
         ToRangedAttack,
         ToEscapeMenu,
         
@@ -23,6 +23,7 @@ namespace Assets.UI.StateMachine {
         UnitPainting,
         CityPainting,
         CivManaging,
+        CivSelected,
     }
 
 }

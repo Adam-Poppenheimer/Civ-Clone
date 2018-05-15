@@ -26,15 +26,23 @@ namespace Assets.UI.MapEditor {
 
         private List<CivManagementRecord> InstantiatedRecords = new List<CivManagementRecord>();
 
+
+
+
+
         private ICivilizationFactory CivilizationFactory;
+        private CivilizationSignals  CivSignals;
         
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICivilizationFactory civilizationFactory) {
+        public void InjectDependencies(
+            ICivilizationFactory civilizationFactory, CivilizationSignals civSignals
+        ){
             CivilizationFactory = civilizationFactory;
+            CivSignals          = civSignals;
         }
 
         #region Unity messages
@@ -77,6 +85,9 @@ namespace Assets.UI.MapEditor {
 
                 newRecord.ColorDropdown.value = Colors.FindIndex(color => color == civilization.Color);
                 newRecord.ColorDropdown.onValueChanged.AddListener(newColorIndex => civilization.Color = Colors[newColorIndex]);
+
+                var cachedCiv = civilization;
+                newRecord.EditButton.onClick.AddListener(() => CivSignals.CivSelectedSignal.OnNext(cachedCiv));
 
                 InstantiatedRecords.Add(newRecord);
             }

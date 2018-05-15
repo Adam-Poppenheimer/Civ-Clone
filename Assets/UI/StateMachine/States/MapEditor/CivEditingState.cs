@@ -11,12 +11,11 @@ using Assets.UI.MapEditor;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
-    public class CivManagingState : StateMachineBehaviour {
+    public class CivEditingState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private CivManagementPanel CivPanel;
-
+        private CivEditingPanel     CivPanel;
         private UIStateMachineBrain Brain;
 
         #endregion
@@ -24,7 +23,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(CivManagementPanel civPanel, UIStateMachineBrain brain) {
+        public void InjectDependencies(CivEditingPanel civPanel, UIStateMachineBrain brain) {
             CivPanel = civPanel;
             Brain    = brain;
         }
@@ -32,11 +31,12 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+            CivPanel.CivToEdit = Brain.LastCivilizationSelected;
             CivPanel.gameObject.SetActive(true);
 
             Brain.ClearListeners();
 
-            Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.CivSelected);
+            Brain.ListenForTransitions(TransitionType.ReturnViaButton);
             Brain.EnableCameraMovement();
         }
 

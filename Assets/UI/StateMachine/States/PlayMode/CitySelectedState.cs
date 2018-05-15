@@ -45,7 +45,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
-            Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ToCitySelected);
+            Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.CitySelected);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

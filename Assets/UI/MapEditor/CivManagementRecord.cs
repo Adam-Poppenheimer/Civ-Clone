@@ -15,7 +15,8 @@ namespace Assets.UI.MapEditor {
         #region instance fields and properties
 
         public InputField NameField;
-        public Dropdown ColorDropdown;
+        public Dropdown   ColorDropdown;
+        public Button     EditButton;
 
         #endregion
 

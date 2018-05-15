@@ -65,7 +65,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.EnableCellHovering();
 
             Brain.ListenForTransitions(
-                TransitionType.ToCitySelected, TransitionType.ToUnitSelected, TransitionType.ToEscapeMenu
+                TransitionType.CitySelected, TransitionType.UnitSelected, TransitionType.ToEscapeMenu
             );
 
             CitySummaryManager.BuildSummaries();
