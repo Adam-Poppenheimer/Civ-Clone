@@ -205,7 +205,14 @@ namespace Assets.Simulation.HexMap {
         }
 
         public List<IHexCell> GetCellsInRing(IHexCell center, int radius) {
-            throw new NotImplementedException();
+            if(center == null) {
+                throw new ArgumentNullException("center");
+            }
+
+            var coordsInRing = HexCoordinates.GetCoordinatesInRing(center.Coordinates, radius);
+            return coordsInRing.Where (coord => HasCellAtCoordinates(coord))
+                               .Select(coord => GetCellAtCoordinates(coord))
+                               .ToList();
         }
 
         public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end) {

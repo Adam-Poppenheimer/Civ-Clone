@@ -39,10 +39,14 @@ namespace Assets.Simulation.Units {
 
             retval.Add(unitLocation);
 
-            var maxPossibleVisionDistance = unit.VisionRange + unitLocation.ViewElevation;
-
-            foreach(var cell in Grid.GetCellsInRadius(unitLocation, maxPossibleVisionDistance)) {
+            foreach(var cell in Grid.GetCellsInRadius(unitLocation, unit.VisionRange)) {
                 if(!HasObstructionsBetween(unitLocation, cell)) {
+                    retval.Add(cell);
+                }
+            }
+
+            foreach(var cell in Grid.GetCellsInRing(unitLocation, unit.VisionRange + 1)) {
+                if(!HasObstructionsBetween(unitLocation, cell, 1)) {
                     retval.Add(cell);
                 }
             }
@@ -52,13 +56,13 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        private bool HasObstructionsBetween(IHexCell fromCell, IHexCell toCell) {
+        private bool HasObstructionsBetween(IHexCell fromCell, IHexCell toCell, int blockingOffset = 0) {
             if(fromCell != toCell && !Grid.GetNeighbors(fromCell).Contains(toCell)) {
 
                 var cellLine = Grid.GetCellsInLine(fromCell, toCell).Where(cell => cell != fromCell);
 
                 foreach(var intermediateCell in cellLine) {
-                    int blockingHeight = intermediateCell.ViewElevation;
+                    int blockingHeight = intermediateCell.ViewElevation + blockingOffset;
 
                     if(intermediateCell.Feature == TerrainFeature.Forest || intermediateCell.Feature == TerrainFeature.Jungle) {
                         blockingHeight++;

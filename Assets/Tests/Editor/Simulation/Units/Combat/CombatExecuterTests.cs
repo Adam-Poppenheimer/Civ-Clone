@@ -562,6 +562,39 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
+                        CanSeeDefender = false,
+                    },
+                    Defender = new DefenderTestData() {
+                        CombatStrength = 100,
+                        LocationElevation = 0
+                    },
+                    MeleeCombatInfo = new CombatInfo() {
+                        Attacker = new UnitCombatInfo() { IgnoresLineOfSight = true }
+                    },
+                    RangedCombatInfo = new CombatInfo() {
+                        CombatType = CombatType.Ranged,
+                        Attacker = new UnitCombatInfo() { IgnoresLineOfSight = true }
+                    },
+                }).SetName("Basic terrain/attacker cannot see defender/attacker ignores line of sight/no modifiers/even strength")
+                .Returns(new CombatTestOutput() {
+                    CanPerformMeleeAttack = false,
+                    MeleeAttackerHealthLeft = 100,
+                    MeleeDefenderHealthLeft = 100,
+                    
+                    CanPerformRangedAttack = true,
+                    RangedAttackerHealthLeft = 100,
+                    RangedDefenderHealthLeft = 70
+                });
+
+                yield return new TestCaseData(new CombatTestData() {
+                    Attacker = new AttackerTestData() {
+                        CombatStrength = 100,
+                        RangedAttackStrength = 100,
+                        CurrentMovement = 2,
+                        Range = 1,
+                        LocationElevation = 0,
+                        DistanceFromDefender = 1,
+                        CanMoveToDefender = true,
                         CanSeeDefender = true
                     },
                     Defender = new DefenderTestData() {
@@ -677,7 +710,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         CombatStrength = 100,
                         LocationElevation = 0
                     }
-                }).SetName("Otherwise valid attack/attacker cannot make ranged attack")
+                }).SetName("Otherwise valid attack/attacker cannot make ranged attacks")
                 .Returns(new CombatTestOutput() {
                     CanPerformMeleeAttack = true,
                     MeleeAttackerHealthLeft = 70,
@@ -979,25 +1012,25 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         private IUnit BuildUnit(IHexCell location, AttackerTestData attackerData) {
             return BuildUnit(
-                location:              location,
-                currentMovement:       attackerData.CurrentMovement,
-                combatStrength:        attackerData.CombatStrength,
-                rangedAttackStrength:  attackerData.RangedAttackStrength,
-                attackRange:           attackerData.Range,
-                canAttack:             attackerData.CanAttack,
-                isReadyForRangedAttack:   attackerData.CanMakeRangedAttack
+                location:               location,
+                currentMovement:        attackerData.CurrentMovement,
+                combatStrength:         attackerData.CombatStrength,
+                rangedAttackStrength:   attackerData.RangedAttackStrength,
+                attackRange:            attackerData.Range,
+                canAttack:              attackerData.CanAttack,
+                isReadyForRangedAttack: attackerData.CanMakeRangedAttack
             );
         }
 
         private IUnit BuildUnit(IHexCell location, DefenderTestData defenderData) {
             return BuildUnit(
-                location:              location,
-                currentMovement:       0,
-                combatStrength:        defenderData.CombatStrength,
-                rangedAttackStrength:  0,
-                attackRange:           0,
-                canAttack:             true,
-                isReadyForRangedAttack:   true
+                location:               location,
+                currentMovement:        0,
+                combatStrength:         defenderData.CombatStrength,
+                rangedAttackStrength:   0,
+                attackRange:            0,
+                canAttack:              true,
+                isReadyForRangedAttack: true
             );
         }
 

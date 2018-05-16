@@ -53,7 +53,7 @@ namespace Assets.Simulation.Units.Promotions {
 
         float GoldRaidingPercentage { get; }
 
-        bool IgnoresLOSWhenAttacking { get; }
+        bool IgnoresLineOfSight { get; }
 
         bool RestrictedByOpponentWoundedState { get; }
         bool ValidOpponentWoundedState        { get; }

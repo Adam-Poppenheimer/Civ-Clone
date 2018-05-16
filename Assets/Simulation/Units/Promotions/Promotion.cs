@@ -130,10 +130,10 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private float _goldRaidingPercentage;
 
-        public bool IgnoresLOSWhenAttacking {
-            get { return _ignoresLOSWhenAttacking; }
+        public bool IgnoresLineOfSight {
+            get { return _ignoresLineOfSight; }
         }
-        [SerializeField] private bool _ignoresLOSWhenAttacking;
+        [SerializeField] private bool _ignoresLineOfSight;
 
         public bool RestrictedByOpponentWoundedState {
             get { return _restrictedByOpponentWoundedState; }

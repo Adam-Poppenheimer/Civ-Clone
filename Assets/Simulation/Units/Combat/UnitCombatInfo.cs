@@ -19,6 +19,8 @@ namespace Assets.Simulation.Units.Combat {
 
         public float GoldRaidingPercentage;
 
+        public bool IgnoresLineOfSight;
+
         #endregion
 
         #region instance methods
@@ -46,7 +48,8 @@ namespace Assets.Simulation.Units.Combat {
                 && CanAttackAfterAttacking        == otherInfo.CanAttackAfterAttacking
                 && IgnoresAmphibiousPenalty       == otherInfo.IgnoresAmphibiousPenalty
                 && IgnoresDefensiveTerrainBonuses == otherInfo.IgnoresDefensiveTerrainBonuses
-                && GoldRaidingPercentage          == otherInfo.GoldRaidingPercentage;
+                && GoldRaidingPercentage          == otherInfo.GoldRaidingPercentage
+                && IgnoresLineOfSight             == otherInfo.IgnoresLineOfSight;
         }
 
         public override int GetHashCode() {
@@ -58,6 +61,7 @@ namespace Assets.Simulation.Units.Combat {
             hash = (hash * 7) + IgnoresAmphibiousPenalty      .GetHashCode();
             hash = (hash * 7) + IgnoresDefensiveTerrainBonuses.GetHashCode();
             hash = (hash * 7) + GoldRaidingPercentage         .GetHashCode();
+            hash = (hash * 7) + IgnoresLineOfSight            .GetHashCode();
 
             return hash;
         }

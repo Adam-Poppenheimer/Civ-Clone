@@ -149,7 +149,9 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if( !attacker.Template.IgnoresLineOfSight &&
+            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
+
+            if( !combatInfo.Attacker.IgnoresLineOfSight &&
                 !UnitLineOfSightLogic.GetCellsVisibleToUnit(attacker).Contains(defenderLocation)
             ){
                 return false;

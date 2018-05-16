@@ -93,6 +93,8 @@ namespace Assets.Simulation.Units.Promotions {
             unitInfo.IgnoresDefensiveTerrainBonuses |= promotion.IgnoresDefensiveTerrainBonuses;
 
             unitInfo.GoldRaidingPercentage += promotion.GoldRaidingPercentage;
+
+            unitInfo.IgnoresLineOfSight |= promotion.IgnoresLineOfSight;
         }
 
         #endregion

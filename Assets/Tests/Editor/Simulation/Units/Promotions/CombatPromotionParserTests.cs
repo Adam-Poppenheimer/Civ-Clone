@@ -67,7 +67,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             public float GoldRaidingPercentage;
 
-            public bool IgnoresLOSWhenAttacking;
+            public bool IgnoresLineOfSight;
 
             public bool RestrictedByOpponentWoundedState;
             public bool ValidOpponentWoundedState;
@@ -148,6 +148,14 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Attacker = new UnitCombatInfo() { GoldRaidingPercentage = 0.5f }
                 });
 
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        IgnoresLineOfSight = true, AppliesWhileAttacking = true
+                    }
+                }).SetName("Promotion applies while attacking | Sets attacker.IgnoresLineOfSight").Returns(new CombatInfo() {
+                    Attacker = new UnitCombatInfo() { IgnoresLineOfSight = true }
+                });
+
 
 
                 yield return new TestCaseData(new ParsePromotionTestData() {
@@ -196,6 +204,14 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     }
                 }).SetName("Promotion does not apply while attacking | attacker.GoldRaidingPercentage unchanged").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { GoldRaidingPercentage = 0f }
+                });
+
+                yield return new TestCaseData(new ParsePromotionTestData() {
+                    Promotion = new PromotionTestData() {
+                        IgnoresLineOfSight = true, AppliesWhileAttacking = false
+                    }
+                }).SetName("Promotion does not apply while attacking | attacker.IgnoresLineOfSight unchanged").Returns(new CombatInfo() {
+                    Attacker = new UnitCombatInfo() { IgnoresLineOfSight = false }
                 });
 
 
@@ -895,7 +911,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             mockPromotion.Setup(promotion => promotion.GoldRaidingPercentage).Returns(promotionData.GoldRaidingPercentage);
 
-            mockPromotion.Setup(promotion => promotion.IgnoresLOSWhenAttacking).Returns(promotionData.IgnoresLOSWhenAttacking);
+            mockPromotion.Setup(promotion => promotion.IgnoresLineOfSight).Returns(promotionData.IgnoresLineOfSight);
 
             mockPromotion.Setup(promotion => promotion.RestrictedByOpponentWoundedState).Returns(promotionData.RestrictedByOpponentWoundedState);
             mockPromotion.Setup(promotion => promotion.ValidOpponentWoundedState)       .Returns(promotionData.ValidOpponentWoundedState);
