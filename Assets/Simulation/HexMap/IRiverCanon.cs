@@ -11,29 +11,18 @@ namespace Assets.Simulation.HexMap {
 
         bool HasRiver(IHexCell cell);
 
-        bool HasRiverBeginOrEnd(IHexCell cell);
+        bool HasRiverAlongEdge(IHexCell cell, HexDirection edge);
 
-        bool HasIncomingRiver(IHexCell cell);
-        
-        bool HasOutgoingRiver(IHexCell cell);
+        IEnumerable<HexDirection> GetEdgesWithRivers(IHexCell cell);
 
-        HexDirection GetIncomingRiver(IHexCell cell);
+        RiverDirection GetFlowDirectionOfRiverAtEdge(IHexCell cell, HexDirection edge);
 
-        HexDirection GetOutgoingRiver(IHexCell cell);
+        bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverDirection direction);
+        void AddRiverToCell   (IHexCell cell, HexDirection edge, RiverDirection direction);
 
-        HexDirection GetRiverBeginOrEndDirection(IHexCell cell);
+        void RemoveRiverFromCellInDirection(IHexCell cell, HexDirection edge);
 
-        bool HasRiverThroughEdge(IHexCell cell, HexDirection direction);
-
-        bool CanAddOutgoingRiverThroughEdge(IHexCell cell, HexDirection direction);
-
-        bool CanAddIncomingRiverThroughEdge(IHexCell cell, HexDirection direction);
-
-        void SetOutgoingRiver(IHexCell cell, HexDirection direction);
-
-        void RemoveOutgoingRiver(IHexCell cell);
-
-        void RemoveRiver(IHexCell cell);
+        void RemoveAllRiversFromCell(IHexCell cell);
 
         void ValidateRivers(IHexCell cell);
 

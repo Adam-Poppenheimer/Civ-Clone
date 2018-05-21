@@ -31,18 +31,18 @@ namespace Assets.Simulation.HexMap {
 
         public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
 
-        public const float CellPerturbStrengthXZ = 4f;
-        public const float CellPerturbStrengthY  = 4f;
+        public const float CellPerturbStrengthXZ = 0f;//4f;
+        public const float CellPerturbStrengthY  = 0f;//4f;
 
         public const float MinHillPerturbation = 0f;
 
-        public const float ElevationPerturbStrength = 1.5f;
+        public const float ElevationPerturbStrength = 0f;//1.5f;
 
         public const int ChunkSizeX = 5, ChunkSizeZ = 5;
 
         public const float StreamBedElevationOffset = -1.75f;
 
-        public const float WaterElevationOffset = -0.5f;
+        public const float WaterElevationOffset = -0f;
 
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;

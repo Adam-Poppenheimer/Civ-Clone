@@ -11,6 +11,8 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.UI.MapEditor {
 
     public class TerrainEditingPanel : MonoBehaviour {
@@ -201,16 +203,14 @@ namespace Assets.UI.MapEditor {
             }
 
             if(RiverMode == OptionalToggle.No) {
-                RiverCanon.RemoveRiver(cell);
-            }
-            
-            if(IsDragging && HexGrid.HasNeighbor(cell, DragDirection.Opposite())) {
-                IHexCell otherCell = HexGrid.GetNeighbor(cell, DragDirection.Opposite());
-                if(otherCell != null) {
-                    if(RiverMode == OptionalToggle.Yes) {
-                        RiverCanon.SetOutgoingRiver(otherCell, DragDirection);
+                RiverCanon.RemoveAllRiversFromCell(cell);
+
+            }else if(RiverMode == OptionalToggle.Yes) {
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    if(RiverCanon.CanAddRiverToCell(cell, direction, RiverDirection.Clockwise)) {
+                        RiverCanon.AddRiverToCell(cell, direction, RiverDirection.Clockwise);
                     }
-                }                
+                }
             }
         }
 

@@ -5,8 +5,9 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public enum HexEdgeType {
-        Flat, Slope, Cliff, River, Void
+    public enum RiverDirection {
+        Clockwise        = 0,
+        Counterclockwise = 1
     }
 
 }
