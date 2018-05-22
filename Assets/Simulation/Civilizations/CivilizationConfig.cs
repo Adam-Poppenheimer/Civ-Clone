@@ -37,6 +37,26 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private float _modifierLossPerUnhappiness;
 
+        public int BasePolicyCost {
+            get { return _basePolicyCost; }
+        }
+        [SerializeField] private int _basePolicyCost;
+
+        public float PolicyCostPerPolicyCoefficient {
+            get { return _policyCostPerPolicyCoefficient; }
+        }
+        [SerializeField] private float _policyCostPerPolicyCoefficient;
+
+        public float PolicyCostPerPolicyExponent {
+            get { return _policyCostPerPolicyExponent; }
+        }
+        [SerializeField] private float _policyCostPerPolicyExponent;
+
+        public float PolicyCostPerCityCoefficient {
+            get { return _policyCostPerCityCoefficient; }
+        }
+        [SerializeField] private float _policyCostPerCityCoefficient;
+
         #endregion
 
         #endregion

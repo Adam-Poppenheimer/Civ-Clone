@@ -9,6 +9,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.SpecialtyResources;
 using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Simulation.Technology {
 
@@ -24,10 +25,11 @@ namespace Assets.Simulation.Technology {
 
         #region methods
 
-        IEnumerable<IBuildingTemplate>            GetResearchedBuildings(ICivilization civilization);
-        IEnumerable<IUnitTemplate>                GetResearchedUnits    (ICivilization civilization);
-        IEnumerable<IAbilityDefinition>           GetResearchedAbilities(ICivilization civilization);
-        IEnumerable<ISpecialtyResourceDefinition> GetResourcesVisibleToCiv   (ICivilization civilization);
+        IEnumerable<IBuildingTemplate>            GetResearchedBuildings  (ICivilization civilization);
+        IEnumerable<IUnitTemplate>                GetResearchedUnits      (ICivilization civilization);
+        IEnumerable<IAbilityDefinition>           GetResearchedAbilities  (ICivilization civilization);
+        IEnumerable<ISpecialtyResourceDefinition> GetResourcesVisibleToCiv(ICivilization civilization);
+        IEnumerable<IPolicyTreeDefinition>        GetResearchedPolicyTrees (ICivilization civilization);
 
         bool IsBuildingResearchedForCiv(IBuildingTemplate            template, ICivilization civilization);
         bool IsUnitResearchedForCiv    (IUnitTemplate                template, ICivilization civilization);

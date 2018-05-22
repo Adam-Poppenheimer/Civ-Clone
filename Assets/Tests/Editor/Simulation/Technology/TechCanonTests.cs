@@ -13,6 +13,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Technology;
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Tests.Simulation.Technology {
 
@@ -358,28 +359,51 @@ namespace Assets.Tests.Simulation.Technology {
             CollectionAssert.AreEquivalent(visibleResources, techCanon.GetResourcesVisibleToCiv(civ));
         }
 
+        [Test]
+        public void GetResearchedPolicyTrees_GetsPoliciesFromDiscoveredTechs() {
+            var discoveredPolicyTrees = new List<IPolicyTreeDefinition>() {
+                BuildPolicyTree(), BuildPolicyTree(), BuildPolicyTree()
+            };
+
+            var undiscoveredPolicyTrees = new List<IPolicyTreeDefinition>() {
+                BuildPolicyTree(), BuildPolicyTree(), BuildPolicyTree()
+            };
+
+            var discoveredTech = BuildTech("Discovered tech", policyTrees: discoveredPolicyTrees);
+            BuildTech("Undiscovered tech", policyTrees: undiscoveredPolicyTrees);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(discoveredTech, civ);
+
+            CollectionAssert.AreEquivalent(discoveredPolicyTrees, techCanon.GetResearchedPolicyTrees(civ));
+        }
+
         #endregion
 
         #region utilities
 
         private ITechDefinition BuildTech(
             string name,
-            List<ITechDefinition> prerequisities = null,
-            List<IBuildingTemplate> buildings = null,
-            List<IUnitTemplate> units = null,
-            List<IAbilityDefinition> abilities = null,
-            List<ISpecialtyResourceDefinition> resources = null
+            List<ITechDefinition>              prerequisities = null,
+            List<IBuildingTemplate>            buildings      = null,
+            List<IUnitTemplate>                units          = null,
+            List<IAbilityDefinition>           abilities      = null,
+            List<ISpecialtyResourceDefinition> resources      = null,
+            List<IPolicyTreeDefinition>        policyTrees    = null
         ){
             var mockTech = new Mock<ITechDefinition>();
             mockTech.Name = name;
 
             mockTech.Setup(tech => tech.Name).Returns(name);
 
-            mockTech.Setup(tech => tech.Prerequisites)    .Returns(prerequisities != null ? prerequisities : new List<ITechDefinition>());
-            mockTech.Setup(tech => tech.BuildingsEnabled) .Returns(buildings      != null ? buildings      : new List<IBuildingTemplate>());
-            mockTech.Setup(tech => tech.UnitsEnabled)     .Returns(units          != null ? units          : new List<IUnitTemplate>());
-            mockTech.Setup(tech => tech.AbilitiesEnabled) .Returns(abilities      != null ? abilities      : new List<IAbilityDefinition>());
-            mockTech.Setup(tech => tech.RevealedResources).Returns(resources      != null ? resources      : new List<ISpecialtyResourceDefinition>());
+            mockTech.Setup(tech => tech.Prerequisites)     .Returns(prerequisities   != null ? prerequisities : new List<ITechDefinition>());
+            mockTech.Setup(tech => tech.BuildingsEnabled)  .Returns(buildings        != null ? buildings      : new List<IBuildingTemplate>());
+            mockTech.Setup(tech => tech.UnitsEnabled)      .Returns(units            != null ? units          : new List<IUnitTemplate>());
+            mockTech.Setup(tech => tech.AbilitiesEnabled)  .Returns(abilities        != null ? abilities      : new List<IAbilityDefinition>());
+            mockTech.Setup(tech => tech.RevealedResources) .Returns(resources        != null ? resources      : new List<ISpecialtyResourceDefinition>());
+            mockTech.Setup(tech => tech.PolicyTreesEnabled).Returns(policyTrees      != null ? policyTrees    : new List<IPolicyTreeDefinition>());
 
             AvailableTechs.Add(mockTech.Object);
 
@@ -412,6 +436,10 @@ namespace Assets.Tests.Simulation.Technology {
             AvailableResources.Add(newResource);
 
             return newResource;
+        }
+
+        private IPolicyTreeDefinition BuildPolicyTree() {
+            return new Mock<IPolicyTreeDefinition>().Object;
         }
 
         #endregion

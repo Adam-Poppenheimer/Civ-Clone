@@ -21,12 +21,12 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private Mock<ICivilizationFactory> MockCivilizationFactory;
-        private Mock<ITechCanon>           MockTechCanon;
-        private Mock<IGameCore>            MockGameCore;
+        private Mock<ICivilizationFactory>  MockCivilizationFactory;
+        private Mock<ITechCanon>            MockTechCanon;
+        private Mock<IGameCore>             MockGameCore;
+        private Mock<ISocialPolicyComposer> MockPolicyComposer;
 
         private List<ITechDefinition> AvailableTechs = new List<ITechDefinition>();
-
         private List<ICivilization> AllCivilizations = new List<ICivilization>();
 
         #endregion
@@ -43,6 +43,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
             MockGameCore            = new Mock<IGameCore>();
+            MockPolicyComposer      = new Mock<ISocialPolicyComposer>();
 
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
@@ -52,9 +53,10 @@ namespace Assets.Tests.Simulation.MapManagement {
                 (name, color) => BuildCivilization(name, color, 0, 0)
             );
 
-            Container.Bind<ICivilizationFactory>().FromInstance(MockCivilizationFactory.Object);
-            Container.Bind<ITechCanon>          ().FromInstance(MockTechCanon          .Object);
-            Container.Bind<IGameCore>           ().FromInstance(MockGameCore           .Object);
+            Container.Bind<ICivilizationFactory> ().FromInstance(MockCivilizationFactory.Object);
+            Container.Bind<ITechCanon>           ().FromInstance(MockTechCanon          .Object);
+            Container.Bind<IGameCore>            ().FromInstance(MockGameCore           .Object);
+            Container.Bind<ISocialPolicyComposer>().FromInstance(MockPolicyComposer     .Object);
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
 
@@ -80,6 +82,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             mockOne  .Verify(civ => civ.Destroy(), Times.Once, "CivOne was not destroyed as expected");
             mockTwo  .Verify(civ => civ.Destroy(), Times.Once, "CivTwo was not destroyed as expected");
             mockThree.Verify(civ => civ.Destroy(), Times.Once, "CivThree was not destroyed as expected");
+        }
+
+        [Test]
+        public void ClearRuntime_PolicyComposerToldToClearRuntime() {
+            var civComposer = Container.Resolve<CivilizationComposer>();
+
+            civComposer.ClearRuntime();
+
+            MockPolicyComposer.Verify(composer => composer.ClearPolicyRuntime(), Times.Once);
         }
 
         [Test]
@@ -206,6 +217,24 @@ namespace Assets.Tests.Simulation.MapManagement {
                 progressDict.ContainsKey("Tech Four"),
                 "ProgressDict incorrectly records unavailable tech Tech Four"
             );
+        }
+
+        [Test]
+        public void ComposeCivilizations_CallsIntoPolicyComposerForPolicyData() {
+            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+
+            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
+
+            var policyData = new SerializableSocialPolicyData();
+            MockPolicyComposer.Setup(composer => composer.ComposePoliciesFromCiv(civOne)).Returns(policyData);
+
+            var mapData = new SerializableMapData();
+
+            var civComposer = Container.Resolve<CivilizationComposer>();
+
+            civComposer.ComposeCivilizations(mapData);
+
+            Assert.AreEqual(policyData, mapData.Civilizations[0].SocialPolicies);
         }
 
         [Test]
@@ -413,6 +442,43 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockTechCanon.Verify(
                 canon => canon.SetProgressOnTechByCiv(techThree, civTwo, 30),
                 Times.Once, "SetProgressOnTechByCiv was not calld as expected between CivTwo and TechThree"
+            );
+        }
+
+        [Test]
+        public void DecomposeCivilizations_CallsIntoPolicyComposerCorrectly() {
+            var policyDataOne = new SerializableSocialPolicyData();
+            var policyDataTwo = new SerializableSocialPolicyData();
+
+            var mapData = new SerializableMapData() {
+                Civilizations = new List<SerializableCivilizationData>() {
+                    new SerializableCivilizationData() {
+                        Name = "Civ One", SocialPolicies = policyDataOne
+                    },
+                    new SerializableCivilizationData() {
+                        Name = "Civ Two", SocialPolicies = policyDataTwo
+                    }
+                }
+            };
+
+            var civComposer = Container.Resolve<CivilizationComposer>();
+
+            civComposer.DecomposeCivilizations(mapData);
+
+            MockPolicyComposer.Verify(
+                composer => composer.DecomposePoliciesIntoCiv(
+                    policyDataOne, It.Is<ICivilization>(civ => civ.Name.Equals("Civ One"))
+                ),
+                Times.Once,
+                "DecomposePoliciesIntoCiv not called as expected on anticipated civOne and policyDataOne"
+            );
+
+            MockPolicyComposer.Verify(
+                composer => composer.DecomposePoliciesIntoCiv(
+                    policyDataTwo, It.Is<ICivilization>(civ => civ.Name.Equals("Civ Two"))
+                ),
+                Times.Once,
+                "DecomposePoliciesIntoCiv not called as expected on anticipated civTwo and policyDataTwo"
             );
         }
 

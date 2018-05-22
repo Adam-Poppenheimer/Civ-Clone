@@ -12,6 +12,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.SpecialtyResources;
 
 using UnityCustomUtilities.Extensions;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Simulation.Technology {
 
@@ -75,6 +76,11 @@ namespace Assets.Simulation.Technology {
             get { return _revealedResources.Cast<ISpecialtyResourceDefinition>(); }
         }
         [SerializeField] private List<SpecialtyResourceDefinition> _revealedResources;
+
+        public IEnumerable<IPolicyTreeDefinition> PolicyTreesEnabled {
+            get { return _policyTreesEnabled.Cast<IPolicyTreeDefinition>(); }
+        }
+        [SerializeField] private List<PolicyTreeDefinition> _policyTreesEnabled;
 
         #endregion
 

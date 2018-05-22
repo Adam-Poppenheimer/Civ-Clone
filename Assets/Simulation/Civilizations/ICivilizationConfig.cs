@@ -21,6 +21,14 @@ namespace Assets.Simulation.Civilizations {
 
         float ModifierLossPerUnhappiness { get; }
 
+        int BasePolicyCost { get; }
+
+        float PolicyCostPerPolicyCoefficient { get; }
+        float PolicyCostPerPolicyExponent    { get; }
+
+        float PolicyCostPerCityCoefficient { get; }
+
+
         #endregion
 
     }

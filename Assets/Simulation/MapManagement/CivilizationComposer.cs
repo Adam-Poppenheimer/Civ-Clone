@@ -17,9 +17,10 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private ICivilizationFactory CivilizationFactory;
-        private ITechCanon           TechCanon;
-        private IGameCore            GameCore;
+        private ICivilizationFactory  CivilizationFactory;
+        private ITechCanon            TechCanon;
+        private IGameCore             GameCore;
+        private ISocialPolicyComposer PolicyComposer;
 
         private List<ITechDefinition> AvailableTechs;
 
@@ -30,11 +31,13 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public CivilizationComposer(
             ICivilizationFactory civilizationFactory, ITechCanon techCanon, IGameCore gameCore,
+            ISocialPolicyComposer policyComposer,
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs
         ) {
             CivilizationFactory = civilizationFactory;
             TechCanon           = techCanon;
             GameCore            = gameCore;
+            PolicyComposer      = policyComposer;
             AvailableTechs      = availableTechs;
         }
 
@@ -44,8 +47,9 @@ namespace Assets.Simulation.MapManagement {
 
         public void ClearRuntime() {
             foreach(var civ in new List<ICivilization>(CivilizationFactory.AllCivilizations)) {
-                civ.Destroy();
+                civ.Destroy();                
             }
+            PolicyComposer.ClearPolicyRuntime();
         }
 
         public void ComposeCivilizations(SerializableMapData mapData) {
@@ -58,6 +62,7 @@ namespace Assets.Simulation.MapManagement {
                     GoldStockpile    = civilization.GoldStockpile,
                     CultureStockpile = civilization.CultureStockpile,
                     DiscoveredTechs  = TechCanon.GetTechsDiscoveredByCiv(civilization).Select(tech => tech.Name).ToList(),
+                    SocialPolicies   = PolicyComposer.ComposePoliciesFromCiv(civilization)
                 };
 
                 if(civilization.TechQueue != null && civilization.TechQueue.Count > 0) {
@@ -95,6 +100,8 @@ namespace Assets.Simulation.MapManagement {
 
                 newCiv.GoldStockpile = civData.GoldStockpile;
                 newCiv.CultureStockpile = civData.CultureStockpile;
+
+                PolicyComposer.DecomposePoliciesIntoCiv(civData.SocialPolicies, newCiv);
 
                 if(civData.TechQueue != null) {
                     for(int i = 0; i < civData.TechQueue.Count; i++) {

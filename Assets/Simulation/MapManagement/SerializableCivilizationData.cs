@@ -22,6 +22,8 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public List<string>            DiscoveredTechs;
         [DataMember()] public Dictionary<string, int> ProgressOnTechs;
 
+        [DataMember()] public SerializableSocialPolicyData SocialPolicies;
+
         #endregion
 
     }

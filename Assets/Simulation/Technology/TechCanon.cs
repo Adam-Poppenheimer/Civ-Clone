@@ -12,6 +12,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.SocialPolicies;
 
 using UnityCustomUtilities.Extensions;
 
@@ -168,6 +169,12 @@ namespace Assets.Simulation.Technology {
             }
 
             return retval;
+        }
+
+        public IEnumerable<IPolicyTreeDefinition> GetResearchedPolicyTrees(ICivilization civilization) {
+            return new HashSet<IPolicyTreeDefinition>(
+                GetTechsDiscoveredByCiv(civilization).SelectMany(tech => tech.PolicyTreesEnabled)
+            );
         }
 
         public bool IsBuildingResearchedForCiv(IBuildingTemplate template, ICivilization civilization) {
