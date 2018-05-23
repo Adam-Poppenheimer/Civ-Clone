@@ -37,8 +37,8 @@ namespace Assets.Simulation.Units {
             unitTemplates.AddRange(Resources.LoadAll<UnitTemplate>("Units"));
 
             Container.Bind<IEnumerable<IUnitTemplate>>()
-                .WithId("Available Unit Templates")
-                .FromInstance(unitTemplates);
+                     .WithId("Available Unit Templates")
+                     .FromInstance(unitTemplates);
 
             Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 

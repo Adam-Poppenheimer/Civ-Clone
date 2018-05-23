@@ -10,6 +10,7 @@ using TMPro;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.UI {
 
@@ -33,6 +34,10 @@ namespace Assets.UI {
 
         public void SetDescriptionFrom(IPromotion promotion) {
             DescriptionField.text = string.Format("{0}\n\n{1}", promotion.name, promotion.Description);
+        }
+
+        public void SetDescriptionFrom(ISocialPolicyDefinition policy) {
+            DescriptionField.text = string.Format("{0}\n\n{1}", policy.name, policy.Description);
         }
 
         #endregion

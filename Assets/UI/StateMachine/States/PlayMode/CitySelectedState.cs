@@ -4,15 +4,10 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 using Zenject;
-using UniRx;
-
-using Assets.Simulation.Cities;
 
 using Assets.UI.Cities;
-using Assets.UI.Core;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 

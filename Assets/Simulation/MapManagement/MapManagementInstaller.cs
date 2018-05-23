@@ -30,6 +30,8 @@ namespace Assets.Simulation.MapManagement {
 
             Container.Bind<IPromotionTreeComposer>().To<PromotionTreeComposer>().AsSingle();
 
+            Container.Bind<ISocialPolicyComposer>().To<SocialPolicyComposer>().AsSingle();
+
             Container.Bind<IHexCellComposer>     ().To<HexCellComposer>     ().AsSingle();
             Container.Bind<ICivilizationComposer>().To<CivilizationComposer>().AsSingle();
             Container.Bind<ICityComposer>        ().To<CityComposer>        ().AsSingle();

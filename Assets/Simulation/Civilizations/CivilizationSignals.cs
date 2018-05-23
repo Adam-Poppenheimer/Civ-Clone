@@ -8,11 +8,8 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.SpecialtyResources;
-using Assets.Simulation.Improvements;
-using Assets.Simulation.HexMap;
-using Assets.Simulation.Technology;
 using Assets.Simulation.Cities;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -29,7 +26,12 @@ namespace Assets.Simulation.Civilizations {
         public ISubject<ResourceTransfer> ResourceTransferCanceledSignal { get; private set; }
 
         public ISubject<ICivilization> CivSelectedSignal { get; private set; }
-        
+
+        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivUnlockedPolicySignal { get; private set; }
+        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivLockedPolicySignal   { get; private set; }
+
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTreeSignal { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTreeSignal   { get; private set; }
 
         #endregion
 
@@ -45,13 +47,13 @@ namespace Assets.Simulation.Civilizations {
             ResourceTransferCanceledSignal = new Subject<ResourceTransfer>();
 
             CivSelectedSignal = new Subject<ICivilization>();
+
+            CivUnlockedPolicySignal = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
+            CivLockedPolicySignal   = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
+
+            CivUnlockedPolicyTreeSignal = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivLockedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
         }
-
-        #endregion
-
-        #region instance methods
-
-        
 
         #endregion
 

@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.UI.MapManagement;
 using Assets.UI.HexMap;
+using Assets.UI.SocialPolicies;
 
 namespace Assets.UI.StateMachine {
 
@@ -16,11 +17,12 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private Animator         StateMachineAnimator;
-        [SerializeField] private LoadGameDisplay  LoadGameDisplay;
-        [SerializeField] private GameObject       OptionsDisplay;
-        [SerializeField] private GameCamera       GameCamera;
-        [SerializeField] private CellHoverDisplay CellHoverDisplay;
+        [SerializeField] private Animator              StateMachineAnimator;
+        [SerializeField] private LoadGameDisplay       LoadGameDisplay;
+        [SerializeField] private GameObject            OptionsDisplay;
+        [SerializeField] private GameCamera            GameCamera;
+        [SerializeField] private CellHoverDisplay      CellHoverDisplay;
+        [SerializeField] private SocialPoliciesDisplay SocialPoliciesDisplay;
 
         #endregion
 
@@ -37,8 +39,9 @@ namespace Assets.UI.StateMachine {
                 .WithId("Options Display")
                 .FromInstance(OptionsDisplay);
 
-            Container.Bind<GameCamera>().FromInstance(GameCamera);
-            Container.Bind<CellHoverDisplay>().FromInstance(CellHoverDisplay);
+            Container.Bind<GameCamera>           ().FromInstance(GameCamera);
+            Container.Bind<CellHoverDisplay>     ().FromInstance(CellHoverDisplay);
+            Container.Bind<SocialPoliciesDisplay>().FromInstance(SocialPoliciesDisplay);
 
             Container.Bind<UIStateMachineBrain>().AsSingle();
 

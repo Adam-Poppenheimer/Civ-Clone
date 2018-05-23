@@ -25,15 +25,17 @@ namespace Assets.Simulation.SocialPolicies {
 
 
 
-        private ITechCanon TechCanon;
+        private ITechCanon          TechCanon;
+        private CivilizationSignals CivSignals;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public SocialPolicyCanon(ITechCanon techCanon){
-            TechCanon = techCanon;
+        public SocialPolicyCanon(ITechCanon techCanon, CivilizationSignals civSignals){
+            TechCanon  = techCanon;
+            CivSignals = civSignals;
         }
 
         #endregion
@@ -79,6 +81,10 @@ namespace Assets.Simulation.SocialPolicies {
 
             }else {
                 PoliciesUnlockedByCiv[civ].Add(policy);
+
+                CivSignals.CivUnlockedPolicySignal.OnNext(
+                    new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
+                );
             }
         }
 
@@ -88,6 +94,10 @@ namespace Assets.Simulation.SocialPolicies {
 
             }else {
                 PoliciesUnlockedByCiv[civ].Remove(policy);
+
+                CivSignals.CivLockedPolicySignal.OnNext(
+                    new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
+                );
             }
         }
 
@@ -100,6 +110,10 @@ namespace Assets.Simulation.SocialPolicies {
 
             }else {
                 TreesUnlockedByCiv[civ].Add(tree);
+
+                CivSignals.CivUnlockedPolicyTreeSignal.OnNext(
+                    new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, tree)
+                );
             }
         }
 
@@ -112,6 +126,10 @@ namespace Assets.Simulation.SocialPolicies {
                 foreach(var policy in tree.Policies) {
                     SetPolicyAsLockedForCiv(policy, civ);
                 }
+
+                CivSignals.CivLockedPolicyTreeSignal.OnNext(
+                    new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, tree)
+                );
             }
         }
 

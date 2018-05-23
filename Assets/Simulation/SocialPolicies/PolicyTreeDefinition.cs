@@ -7,6 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.SocialPolicies {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Social Policy Tree")]
     public class PolicyTreeDefinition : ScriptableObject, IPolicyTreeDefinition {
 
         #region instance fields and properties
@@ -32,11 +33,6 @@ namespace Assets.Simulation.SocialPolicies {
             get { return _row; }
         }
         [SerializeField] private int _row;
-
-        public int Column {
-            get { return _column; }
-        }
-        [SerializeField] private int _column;
 
         #endregion
 

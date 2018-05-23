@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 052380e6add6af545849ae48797f8420, type: 3}
+  m_Name: Test Policy Tree 2
+  m_EditorClassIdentifier: 
+  _description: Test Policy Tree 2 Description
+  _icon: {fileID: 10907, guid: 0000000000000000f000000000000000, type: 0}
+  _policies:
+  - {fileID: 11400000, guid: 6995035a0b7fc1b4e8e77d07c8835325, type: 2}
+  - {fileID: 11400000, guid: 6bead0b2221a82048b35b60b2beccdb4, type: 2}
+  - {fileID: 11400000, guid: 1ccd2f9e27636d64abe0ad402a7f6c76, type: 2}
+  - {fileID: 11400000, guid: be151d77a00b58142bfc5cdad2b00edb, type: 2}
+  _row: 1

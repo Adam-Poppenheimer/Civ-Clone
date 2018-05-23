@@ -20,7 +20,6 @@ namespace Assets.Simulation.SocialPolicies {
         Sprite Icon { get; }
 
         int Row    { get; }
-        int Column { get; }
 
         #endregion
 

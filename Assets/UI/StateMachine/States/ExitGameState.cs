@@ -23,9 +23,9 @@ namespace Assets.UI.StateMachine.States {
             #endif
         }
 
-#endregion
+        #endregion
 
-#endregion
+        #endregion
 
     }
 

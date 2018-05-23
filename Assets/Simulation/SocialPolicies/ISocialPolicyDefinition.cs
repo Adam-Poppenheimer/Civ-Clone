@@ -19,8 +19,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         Sprite Icon { get; }
 
-        int TreeRow    { get; }
-        int TreeColumn { get; }
+        float TreeNormalizedX { get; }
+        float TreeNormalizedY { get; }
 
         #endregion
 

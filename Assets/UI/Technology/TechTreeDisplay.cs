@@ -5,7 +5,6 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.UI.Extensions;
 
 using Zenject;
@@ -22,8 +21,6 @@ namespace Assets.UI.Technology {
         #region instance fields and properties
 
         [SerializeField] private TechnologyRecord TechRecordPrefab;
-        
-        [SerializeField] private RectTransform TechRecordContainer;
 
         [SerializeField] private UILineRenderer PrerequisiteLines;
 

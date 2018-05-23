@@ -15,3 +15,7 @@ MonoBehaviour:
   _happinessPerLuxury: 4
   _yieldLossPerUnhappiness: 0.02
   _modifierLossPerUnhappiness: 0.02
+  _basePolicyCost: 25
+  _policyCostPerPolicyCoefficient: 21.03
+  _policyCostPerPolicyExponent: 1.7
+  _policyCostPerCityCoefficient: 0.3

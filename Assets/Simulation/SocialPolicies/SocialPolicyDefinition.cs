@@ -29,15 +29,15 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private List<SocialPolicyDefinition> _prerequisites;
 
-        public int TreeRow {
-            get { return _treeRow; }
+        public float TreeNormalizedX {
+            get { return _treeNormalizedX; }
         }
-        [SerializeField] private int _treeRow;
+        [SerializeField] private float _treeNormalizedX;
 
-        public int TreeColumn {
-            get { return _treeColumn; }
+        public float TreeNormalizedY {
+            get { return _treeNormalizedY; }
         }
-        [SerializeField] private int _treeColumn;
+        [SerializeField] private float _treeNormalizedY;
 
         #endregion
 
