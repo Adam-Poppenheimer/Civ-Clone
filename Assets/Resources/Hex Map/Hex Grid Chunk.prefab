@@ -583,6 +583,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Terrain: {fileID: 114749892619900210}
   Roads: {fileID: 114415578841082280}
+  Rivers: {fileID: 114275613597108862}
+  Water: {fileID: 114700860226082344}
 --- !u!114 &114137592705337108
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -44,12 +44,12 @@ namespace Assets.Tests.Simulation.HexMap {
             var riverCanon = Container.Resolve<RiverCanon>();
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)1, RiverDirection.Clockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Clockwise),
                 "CanAddRiverToCell unexpectedly returned true for a clockwise river direction"
             );
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)1, RiverDirection.Counterclockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise),
                 "CanAddRiverToCell unexpectedly returned true fora  counterclockwise river direction"
             );
         }
@@ -61,14 +61,19 @@ namespace Assets.Tests.Simulation.HexMap {
             var riverCanon = Container.Resolve<RiverCanon>();
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise),
                 "CanAddRiverToCell unexpectedly returned true for a clockwise river direction"
             );
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise),
                 "CanAddRiverToCell unexpectedly returned true for a counterclockwise river direction"
             );
+        }
+
+        [Test]
+        public void CanAddRiverToCell_FalseIfCellUnderwater() {
+            throw new NotImplementedException();
         }
 
         [Test]
@@ -77,15 +82,15 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise),
                 "CanAddRiverToCell unexpectedly returned true for a clockwise river direction"
             );
 
             Assert.IsFalse(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise),
                 "CanAddRiverToCell unexpectedly returned true for a counterclockwise river direction"
             );
         }
@@ -97,12 +102,12 @@ namespace Assets.Tests.Simulation.HexMap {
             var riverCanon = Container.Resolve<RiverCanon>();
 
             Assert.IsTrue(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise),
                 "CanAddRiverToCell unexpectedly returned false for a clockwise river direction"
             );
 
             Assert.IsTrue(
-                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise),
+                riverCanon.CanAddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise),
                 "CanAddRiverToCell unexpectedly returned false for a counterclockwise river direction"
             );
         }
@@ -114,7 +119,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             Assert.IsTrue(riverCanon.HasRiverAlongEdge(cellToTest, (HexDirection)0));
         }
@@ -127,7 +132,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             Assert.IsTrue(riverCanon.HasRiverAlongEdge(neighbors[0], ((HexDirection)0).Opposite()));
         }
@@ -138,7 +143,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             CollectionAssert.AreEquivalent(
                 new List<HexDirection>() { (HexDirection)0 }, riverCanon.GetEdgesWithRivers(cellToTest)
@@ -153,7 +158,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             CollectionAssert.AreEquivalent(
                 new List<HexDirection>() { ((HexDirection)0).Opposite() }, riverCanon.GetEdgesWithRivers(neighbors[0])
@@ -166,10 +171,10 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             Assert.AreEqual(
-                RiverDirection.Counterclockwise, riverCanon.GetFlowDirectionOfRiverAtEdge(cellToTest, (HexDirection)0)
+                RiverFlow.Counterclockwise, riverCanon.GetFlowOfRiverAtEdge(cellToTest, (HexDirection)0)
             );
         }
 
@@ -181,10 +186,10 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             Assert.AreEqual(
-                RiverDirection.Clockwise, riverCanon.GetFlowDirectionOfRiverAtEdge(neighbors[0], ((HexDirection)0).Opposite())
+                RiverFlow.Clockwise, riverCanon.GetFlowOfRiverAtEdge(neighbors[0], ((HexDirection)0).Opposite())
             );
         }
 
@@ -202,7 +207,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             mockCellToTest   .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "CellToTest.RefreshSelfOnly was not called");
 
@@ -218,11 +223,11 @@ namespace Assets.Tests.Simulation.HexMap {
             var riverCanon = Container.Resolve<RiverCanon>();
 
             Assert.Throws<InvalidOperationException>(
-                () => riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise)
+                () => riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise)
             );
 
             Assert.Throws<InvalidOperationException>(
-                () => riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise)
+                () => riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise)
             );
         }
 
@@ -233,7 +238,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
 
             Assert.IsTrue(riverCanon.HasRiver(cellToTest));
         }
@@ -254,9 +259,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Clockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
 
-            Assert.Throws<InvalidOperationException>(() => riverCanon.GetFlowDirectionOfRiverAtEdge(cellToTest, (HexDirection)1));
+            Assert.Throws<InvalidOperationException>(() => riverCanon.GetFlowOfRiverAtEdge(cellToTest, (HexDirection)1));
         }
 
 
@@ -266,7 +271,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(cellToTest, (HexDirection)0));
@@ -280,7 +285,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(neighbors[0], ((HexDirection)0).Opposite()));
@@ -292,7 +297,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(cellToTest), (HexDirection)0);
@@ -306,7 +311,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(neighbors[0]), ((HexDirection)0).Opposite());
@@ -326,7 +331,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             mockCellToTest   .ResetCalls();
             mockNeighborOne  .ResetCalls();
@@ -366,9 +371,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverDirection.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
 
             riverCanon.RemoveAllRiversFromCell(cellToTest);
 
@@ -393,9 +398,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverDirection.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverDirection.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverDirection.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
 
             mockNeighborOne  .Setup(cell => cell.IsUnderwater).Returns(true);
             mockNeighborThree.Setup(cell => cell.IsUnderwater).Returns(true);

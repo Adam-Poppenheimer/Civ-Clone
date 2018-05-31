@@ -15,10 +15,10 @@ namespace Assets.Simulation.HexMap {
 
         IEnumerable<HexDirection> GetEdgesWithRivers(IHexCell cell);
 
-        RiverDirection GetFlowDirectionOfRiverAtEdge(IHexCell cell, HexDirection edge);
+        RiverFlow GetFlowOfRiverAtEdge(IHexCell cell, HexDirection edge);
 
-        bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverDirection direction);
-        void AddRiverToCell   (IHexCell cell, HexDirection edge, RiverDirection direction);
+        bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction);
+        void AddRiverToCell   (IHexCell cell, HexDirection edge, RiverFlow direction);
 
         void RemoveRiverFromCellInDirection(IHexCell cell, HexDirection edge);
 

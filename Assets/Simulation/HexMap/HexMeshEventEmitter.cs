@@ -14,7 +14,7 @@ using Assets.Simulation.Cities;
 namespace Assets.Simulation.HexMap {
 
     public class HexMeshEventEmitter : MonoBehaviour, IPointerDownHandler,
-        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler {
+        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler {
 
         #region instance fields and properties
 
@@ -123,6 +123,22 @@ namespace Assets.Simulation.HexMap {
                 }
 
                 LastCellEntered = null;
+            }
+        }
+
+        public void OnDrag(PointerEventData eventData) {
+            var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(pointerRay, out hit) && hit.collider == Collider) {
+                var coordinates = HexCoordinates.FromPosition(hit.point);
+
+                if(!Grid.HasCellAtCoordinates(coordinates)) {
+                    return;
+                }
+
+                var draggedCell = Grid.GetCellAtCoordinates(coordinates);
+
+                CellSignals.DraggedSignal.OnNext(new Tuple<IHexCell, PointerEventData>(draggedCell, eventData));
             }
         }
 

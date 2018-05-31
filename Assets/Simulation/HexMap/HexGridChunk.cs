@@ -145,9 +145,9 @@ namespace Assets.Simulation.HexMap {
             edge.V5.y = cellEdgeDelta;
 
             if(cell.Shape == TerrainShape.Hills) {
-                TriangulateWithoutRiver_Hills(direction, cell, center, edge);
+                TriangulateCenterWithHills(direction, cell, center, edge);
             }else {
-                TriangulateWithoutRiver_NotHills(direction, cell, center, edge);
+                TriangulateCenterWithoutHills(direction, cell, center, edge);
             }
 
             Features.FlagLocationForFeatures((center + edge.V1 + edge.V5) * (1f / 3f), cell);
@@ -169,7 +169,7 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        private void TriangulateWithoutRiver_NotHills(
+        private void TriangulateCenterWithoutHills(
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices e
         ){
             MeshBuilder.TriangulateEdgeFan(center, e, cell.Index);
@@ -189,7 +189,7 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        private void TriangulateWithoutRiver_Hills(
+        private void TriangulateCenterWithHills(
             HexDirection direction, IHexCell cell, Vector3 center, EdgeVertices outerEdge
         ) {
             var innerEdge = new EdgeVertices(
@@ -240,7 +240,7 @@ namespace Assets.Simulation.HexMap {
             }
 
             if( direction > HexDirection.E || !Grid.HasNeighbor(cell, direction.Next()) ||
-                RiverCanon.HasRiverAlongEdge(cell, direction.Next())
+                RiverTriangulator.HasRiverCorner(cell, direction)
             ) {
                 return;
             }
@@ -250,10 +250,7 @@ namespace Assets.Simulation.HexMap {
             Vector3 v5 = edgeOne.V5 + HexMetrics.GetBridge(direction.Next());
             v5.y = nextNeighbor.EdgeY;
 
-            if(RiverCanon.HasRiverAlongEdge(cell, direction.Next()) && neighbor.IsUnderwater) {
-                
-
-            }else if(cell.FoundationElevation <= neighbor.FoundationElevation) {
+            if(cell.FoundationElevation <= neighbor.FoundationElevation) {
                 if(cell.FoundationElevation <= nextNeighbor.FoundationElevation) {
                     TriangulateCorner(
                         edgeOne.V5, cell,         cell.Shape         == TerrainShape.Hills,
@@ -598,31 +595,6 @@ namespace Assets.Simulation.HexMap {
             Terrain.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
         }
 
-        private void TriangulateRiverQuad(
-            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
-            float y, float v, bool isReversed, Vector3 indices
-        ) {
-            TriangulateRiverQuad(v1, v2, v3, v4, y, y, v, isReversed, indices);
-        }
-
-        private void TriangulateRiverQuad(
-            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
-            float y1, float y2, float v, bool isReversed,
-            Vector3 indices
-        ) {
-            v1.y = v2.y = y1;
-            v3.y = v4.y = y2;
-            Rivers.AddQuad(v1, v2, v3, v4);
-
-            if(isReversed) {
-                Rivers.AddQuadUV(1f, 0f, 0.8f - v, 0.6f - v);
-            }else {
-                Rivers.AddQuadUV(0f, 1f,v, v + 0.2f);
-            }
-
-            Rivers.AddQuadCellData(indices, Weights1, Weights2);
-        }
-
         private void TriangulateRoad(
             Vector3 center, Vector3 middleLeft, Vector3 middleRight, EdgeVertices e,
             bool hasRoadThroughCellEdge, float index
@@ -750,23 +722,27 @@ namespace Assets.Simulation.HexMap {
 
             IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
             if(nextNeighbor != null) {
-                Vector3 v3 = nextNeighbor.transform.localPosition + (
-                    nextNeighbor.IsUnderwater ? 
-                    HexMetrics.GetFirstWaterCorner(direction.Previous()) :
-                    HexMetrics.GetFirstOuterSolidCorner(direction.Previous())
-                );
-                v3.y = center.y;
+                if(!RiverCanon.HasRiverAlongEdge(nextNeighbor, direction.Previous())) {
+                    Vector3 v3 = nextNeighbor.transform.localPosition + (
+                        nextNeighbor.IsUnderwater ? 
+                        HexMetrics.GetFirstWaterCorner(direction.Previous()) :
+                        HexMetrics.GetFirstOuterSolidCorner(direction.Previous())
+                    );
+                    v3.y = center.y;
 
-                WaterShore.AddTriangle(edgeOne.V5, edgeTwo.V5, v3);
+                    WaterShore.AddTriangle(edgeOne.V5, edgeTwo.V5, v3);
 
-                WaterShore.AddTriangleUV(
-                    new Vector2(0f, 0f),
-                    new Vector2(0f, 1f),
-                    new Vector2(0f, nextNeighbor.IsUnderwater ? 0f : 1f)
-                );
+                    WaterShore.AddTriangleUV(
+                        new Vector2(0f, 0f),
+                        new Vector2(0f, 1f),
+                        new Vector2(0f, nextNeighbor.IsUnderwater ? 0f : 1f)
+                    );
 
-                indices.z = nextNeighbor.Index;
-                WaterShore.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
+                    indices.z = nextNeighbor.Index;
+                    WaterShore.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
+                }else {
+
+                }
             }
         }
 
@@ -832,68 +808,6 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices edgeOne, EdgeVertices edgeTwo,
             bool incomingRiver, Vector3 indices
         ) {
-            WaterShore.AddTriangle(edgeTwo.V1, edgeOne.V2, edgeOne.V1);
-            WaterShore.AddTriangle(edgeTwo.V5, edgeOne.V5, edgeOne.V4);
-
-            WaterShore.AddTriangleUV(
-                new Vector2(0f, 1f), new Vector2(0f, 0f), new Vector2(0f, 0f)
-            );
-            WaterShore.AddTriangleUV(
-                new Vector2(0f, 1f), new Vector2(0f, 0f), new Vector2(0f, 0f)
-            );
-
-            WaterShore.AddTriangleCellData(indices, Weights2, Weights1, Weights1);
-            WaterShore.AddTriangleCellData(indices, Weights2, Weights1, Weights1);
-
-            Estuaries.AddQuad    (edgeTwo.V1, edgeOne.V2, edgeTwo.V2, edgeOne.V3);
-            Estuaries.AddTriangle(edgeOne.V3, edgeTwo.V2, edgeTwo.V4);
-            Estuaries.AddQuad    (edgeOne.V3, edgeOne.V4, edgeTwo.V4, edgeTwo.V5);
-
-            Estuaries.AddQuadUV(
-                new Vector2(0f, 1f), new Vector2(0f, 0f),
-                new Vector2(1f, 1f), new Vector2(0f, 0f)
-            );
-            Estuaries.AddTriangleUV(
-                new Vector2(0f, 0f), new Vector2(1f, 1f), new Vector2(1f, 1f)
-            );
-            Estuaries.AddQuadUV(
-                new Vector2(0f, 0f), new Vector2(0f, 0f),
-                new Vector2(1f, 1f), new Vector2(0f, 1f)
-            );
-
-            Estuaries.AddQuadCellData    (indices, Weights2, Weights1, Weights2, Weights1);
-            Estuaries.AddTriangleCellData(indices, Weights1, Weights2, Weights2);
-            Estuaries.AddQuadCellData    (indices, Weights1, Weights2);
-
-            if(incomingRiver) {
-                Estuaries.AddQuadUV2(
-                    new Vector2(1.5f, 1f), new Vector2(0.7f, 1.15f),
-                    new Vector2(1f, 0.8f), new Vector2(0.5f, 1.1f)
-                );
-                Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f, 1.1f),
-                    new Vector2(1f, 0.8f),
-                    new Vector2(0f, 0.8f)
-                );
-                Estuaries.AddQuadUV2(
-                    new Vector2(0.5f, 1.1f), new Vector2(0.3f, 1.15f),
-                    new Vector2(0f, 0.8f), new Vector2(-0.5f, 1f)
-                );
-            }else {
-                Estuaries.AddQuadUV2(
-                    new Vector2(-0.5f, -0.2f), new Vector2(0.3f, -0.35f),
-                    new Vector2(0f, 0f), new Vector2(0.5f, -0.3f)
-                );
-                Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f, -0.3f),
-                    new Vector2(0f, 0f),
-                    new Vector2(1f, 0f)
-                );
-                Estuaries.AddQuadUV2(
-                    new Vector2(0.5f, -0.3f), new Vector2(0.7f, -0.35f),
-                    new Vector2(1f, 0f), new Vector2(1.5f, -0.2f)
-                );
-            }
             
         }
 

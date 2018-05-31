@@ -24,7 +24,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public bool             IsSlotOccupied;
         [DataMember()] public bool             IsSlotLocked;
         [DataMember()] public bool[]           HasRiverAtEdge;
-        [DataMember()] public RiverDirection[] DirectionOfRiverAtEdge;
+        [DataMember()] public RiverFlow[] DirectionOfRiverAtEdge;
 
         #endregion
 

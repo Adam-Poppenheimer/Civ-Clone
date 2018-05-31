@@ -15,6 +15,8 @@ namespace Assets.Simulation.HexMap {
             HexDirection direction, IHexCell cell, EdgeVertices nearEdge
         );
 
+        bool HasRiverCorner(IHexCell cell, HexDirection direction);
+
         #endregion
 
     }

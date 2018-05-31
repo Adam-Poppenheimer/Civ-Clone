@@ -50,14 +50,14 @@ namespace Assets.Simulation.MapManagement {
                     IsSlotOccupied         = cell.WorkerSlot.IsOccupied,
                     IsSlotLocked           = cell.WorkerSlot.IsLocked,
                     HasRiverAtEdge         = new bool[6],
-                    DirectionOfRiverAtEdge = new RiverDirection[6]
+                    DirectionOfRiverAtEdge = new RiverFlow[6]
                 };
 
                 foreach(var edgeWithRiver in RiverCanon.GetEdgesWithRivers(cell)) {
                     newCellData.HasRiverAtEdge[(int)edgeWithRiver] = true;
 
                     newCellData.DirectionOfRiverAtEdge[(int)edgeWithRiver]
-                        = RiverCanon.GetFlowDirectionOfRiverAtEdge(cell, edgeWithRiver);
+                        = RiverCanon.GetFlowOfRiverAtEdge(cell, edgeWithRiver);
                 }
 
                 mapData.HexCells.Add(newCellData);

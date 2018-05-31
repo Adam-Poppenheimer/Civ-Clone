@@ -16,8 +16,8 @@ namespace Assets.Simulation.HexMap {
         private Dictionary<IHexCell, bool[]> RiverPresenceDict =
             new Dictionary<IHexCell, bool[]>();
 
-        private Dictionary<IHexCell, RiverDirection[]> RiverDirectionDict =
-            new Dictionary<IHexCell, RiverDirection[]>();
+        private Dictionary<IHexCell, RiverFlow[]> RiverDirectionDict =
+            new Dictionary<IHexCell, RiverFlow[]>();
 
 
 
@@ -51,7 +51,7 @@ namespace Assets.Simulation.HexMap {
             return EnumUtil.GetValues<HexDirection>().Where(direction => HasRiverAlongEdge(cell, direction));
         }
 
-        public RiverDirection GetFlowDirectionOfRiverAtEdge(IHexCell cell, HexDirection edge) {
+        public RiverFlow GetFlowOfRiverAtEdge(IHexCell cell, HexDirection edge) {
             if(!HasRiverAlongEdge(cell, edge)) {
                 throw new InvalidOperationException("The given cell does not have a river along the given edge");
             }
@@ -59,11 +59,11 @@ namespace Assets.Simulation.HexMap {
             return GetDirectionArray(cell)[(int)edge];
         }
 
-        public bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverDirection direction) {
+        public bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction) {
             return RiverMeetsPlacementConditions(cell, edge, direction) && !HasRiverAlongEdge(cell, edge);
         }
 
-        public void AddRiverToCell(IHexCell cell, HexDirection edge, RiverDirection direction) {
+        public void AddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction) {
             if(!CanAddRiverToCell(cell, edge, direction)) {
                 throw new InvalidOperationException("CanAddRiverToCell must return true on the given arguments");
             }
@@ -113,7 +113,7 @@ namespace Assets.Simulation.HexMap {
 
         public void ValidateRivers(IHexCell cell) {
             foreach(var riveredEdge in GetEdgesWithRivers(cell)) {
-                if(!RiverMeetsPlacementConditions(cell, riveredEdge, GetFlowDirectionOfRiverAtEdge(cell, riveredEdge))) {
+                if(!RiverMeetsPlacementConditions(cell, riveredEdge, GetFlowOfRiverAtEdge(cell, riveredEdge))) {
                     RemoveRiverFromCellInDirection(cell, riveredEdge);
                 }
             }
@@ -121,9 +121,9 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private bool RiverMeetsPlacementConditions(IHexCell cell, HexDirection edge, RiverDirection direction) {
+        private bool RiverMeetsPlacementConditions(IHexCell cell, HexDirection edge, RiverFlow direction) {
             var neighbor = Grid.GetNeighbor(cell, edge);
-            return neighbor != null && !neighbor.IsUnderwater;
+            return neighbor != null && !cell.IsUnderwater && !neighbor.IsUnderwater;
         }
 
         private bool[] GetPresenceArray(IHexCell cell) {
@@ -139,11 +139,11 @@ namespace Assets.Simulation.HexMap {
             return retval;
         }
 
-        private RiverDirection[] GetDirectionArray(IHexCell cell) {
-            RiverDirection[] retval;
+        private RiverFlow[] GetDirectionArray(IHexCell cell) {
+            RiverFlow[] retval;
 
             if(!RiverDirectionDict.ContainsKey(cell)) {
-                retval = new RiverDirection[6];
+                retval = new RiverFlow[6];
                 RiverDirectionDict[cell] = retval;
             }else {
                 retval = RiverDirectionDict[cell];

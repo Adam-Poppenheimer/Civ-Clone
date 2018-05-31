@@ -9,8 +9,8 @@ namespace Assets.Simulation.HexMap {
 
         #region static methods
 
-        public static RiverDirection Opposite(this RiverDirection direction) {
-            return (RiverDirection)(((int)direction + 1) % 2);
+        public static RiverFlow Opposite(this RiverFlow direction) {
+            return (RiverFlow)(((int)direction + 1) % 2);
         }
 
         #endregion

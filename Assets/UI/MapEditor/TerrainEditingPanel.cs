@@ -43,9 +43,7 @@ namespace Assets.UI.MapEditor {
         HexDirection DragDirection;
         IHexCell PreviousCell;
 
-        private IDisposable CellEnterSubscription;
-        private IDisposable CellPointerDownSubscription;
-        private IDisposable CellClickedSubscription;
+        private List<IDisposable> CellSignalSubscriptions = new List<IDisposable>();
 
 
 
@@ -80,23 +78,26 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnEnable() {
-            CellEnterSubscription = CellSignals.PointerEnterSignal.AsObservable.Subscribe(delegate(IHexCell cell) {
+            CellSignalSubscriptions.Add(CellSignals.PointerEnterSignal.AsObservable.Subscribe(delegate(IHexCell cell) {
                 if(Input.GetMouseButton(0)) {
                     HandleInput();
                 }
-            });
+            }));
 
-            CellPointerDownSubscription = CellSignals.PointerDownSignal         .Subscribe(data => HandleInput());
-            CellClickedSubscription     = CellSignals.ClickedSignal.AsObservable.Subscribe(data => HandleInput());
+            CellSignalSubscriptions.Add(CellSignals.PointerDownSignal         .Subscribe(data => HandleInput()));
+            CellSignalSubscriptions.Add(CellSignals.ClickedSignal.AsObservable.Subscribe(data => HandleInput()));
+            CellSignalSubscriptions.Add(CellSignals.DraggedSignal             .Subscribe(data => HandleInput()));
         }
 
         private void OnDisable() {
             IsDragging = false;
             PreviousCell = null;
 
-            CellEnterSubscription  .Dispose();
-            CellPointerDownSubscription   .Dispose();
-            CellClickedSubscription.Dispose();
+            foreach(var subscription in CellSignalSubscriptions) {
+                subscription.Dispose();
+            }
+
+            CellSignalSubscriptions.Clear();
         }
 
         #endregion
@@ -150,7 +151,7 @@ namespace Assets.UI.MapEditor {
                     IsDragging = false;
                 }
 
-                EditCells(currentCell);   
+                EditCells(currentCell, hit.point);   
                 PreviousCell = currentCell;                            
             }else {
                 PreviousCell = null;
@@ -169,13 +170,13 @@ namespace Assets.UI.MapEditor {
             IsDragging = false;
         }
 
-        private void EditCells(IHexCell center) {
+        private void EditCells(IHexCell center, Vector3 mouseRayHit) {
             foreach(var cell in HexGrid.GetCellsInRadius(center, BrushSize)) {
-                EditCell(cell);
+                EditCell(cell, mouseRayHit);
             }
         }
 
-        private void EditCell(IHexCell cell) {
+        private void EditCell(IHexCell cell, Vector3 mouseRayHit) {
             if(cell == null) {
                 return;
             }
@@ -202,16 +203,35 @@ namespace Assets.UI.MapEditor {
                 cell.HasRoads = true;
             }
 
+            //This solution has problems when the pointer crosses a chunk boundary,
+            //which is considered acceptable for the time-being.
             if(RiverMode == OptionalToggle.No) {
-                RiverCanon.RemoveAllRiversFromCell(cell);
+                var nearestDirection = GetNearestEdgeOfCellFromPoint(cell, mouseRayHit);
 
+                RiverCanon.RemoveRiverFromCellInDirection(cell, nearestDirection);
             }else if(RiverMode == OptionalToggle.Yes) {
-                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                    if(RiverCanon.CanAddRiverToCell(cell, direction, RiverDirection.Clockwise)) {
-                        RiverCanon.AddRiverToCell(cell, direction, RiverDirection.Clockwise);
-                    }
+                var nearestDirection = GetNearestEdgeOfCellFromPoint(cell, mouseRayHit);
+
+                if(RiverCanon.CanAddRiverToCell(cell, nearestDirection, RiverFlow.Clockwise)) {
+                    RiverCanon.AddRiverToCell(cell, nearestDirection, RiverFlow.Clockwise);
                 }
             }
+
+            RiverCanon.ValidateRivers(cell);
+        }
+
+        private HexDirection GetNearestEdgeOfCellFromPoint(IHexCell cell, Vector3 mouseRayHit) {
+            var directions = EnumUtil.GetValues<HexDirection>().ToList();
+
+            directions.Sort(delegate(HexDirection directionOne, HexDirection directionTwo) {
+                var edgeOneMiddle = cell.transform.position + HexMetrics.GetOuterEdgeMiddle(directionOne);
+                var edgeTwoMiddle = cell.transform.position + HexMetrics.GetOuterEdgeMiddle(directionTwo);
+
+                return Vector3.Distance(mouseRayHit, edgeOneMiddle)
+                    .CompareTo(Vector3.Distance(mouseRayHit, edgeTwoMiddle));
+            });
+
+            return directions.First();
         }
 
         #endregion

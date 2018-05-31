@@ -40,12 +40,19 @@ namespace Assets.Simulation.HexMap {
 
         public const int ChunkSizeX = 5, ChunkSizeZ = 5;
 
-        public const float StreamBedElevationOffset = -1.75f;
+        public const float StreamBedElevationOffset = -1.5f;
 
-        public const float WaterElevationOffset = -0f;
+        public const float OceanElevationOffset = -0.5f;
+        public const float RiverElevationOffset = -0.25f;
 
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
+
+        public const float RiverCurveOffsetDefault = 0.15f;
+
+        public const float RiverSlopedCurveLerp = 0.5f;
+
+        public const float RiverEndpointVMax = 0.25f;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
@@ -125,6 +132,10 @@ namespace Assets.Simulation.HexMap {
 
         public static Vector3 GetSolidEdgeMiddle(HexDirection direction) {
             return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f * OuterSolidFactor;
+        }
+
+        public static Vector3 GetOuterEdgeMiddle(HexDirection direction) {
+            return (Corners[(int)direction] + Corners[(int)direction + 1]) * 0.5f;
         }
 
         public static Vector3 GetFirstWaterCorner(HexDirection direction) {

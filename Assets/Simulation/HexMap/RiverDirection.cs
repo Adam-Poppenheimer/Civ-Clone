@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public enum RiverDirection {
+    public enum RiverFlow {
         Clockwise        = 0,
         Counterclockwise = 1
     }

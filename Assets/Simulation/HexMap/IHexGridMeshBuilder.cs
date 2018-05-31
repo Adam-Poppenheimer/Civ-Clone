@@ -54,6 +54,51 @@ namespace Assets.Simulation.HexMap {
             Vector3 vertexThree, int indexThree, Color weightsThree
         );
 
+        void TriangulateRiverQuad(
+            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
+            float y, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        );
+
+        void TriangulateRiverQuad(
+            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
+            float y1, float y2, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        );
+
+        void TriangulateRiverQuad(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        );
+
+        void TriangulateRiverQuadUnperturbed(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        );
+
+        void TriangulateRiverQuadUnperturbed(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float y1, float y2, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        );
+
+        void AddRiverTriangleUnperturbed(
+            Vector3 v1, Vector3 v2, Vector3 v3,
+            Vector2 uv1, Vector2 uv2, Vector2 uv3,
+            Vector3 indices
+        );
+
+        void AddWaterTriangleUnperturbed(
+            Vector3 vertexOne,   int indexOne,   Color weightsOne,
+            Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
+            Vector3 vertexThree, int indexThree, Color weightsThree
+        );
+
         #endregion
 
     }

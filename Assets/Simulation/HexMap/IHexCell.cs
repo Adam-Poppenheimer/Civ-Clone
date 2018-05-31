@@ -25,10 +25,12 @@ namespace Assets.Simulation.HexMap {
         int EdgeElevation       { get; }
         int PeakElevation       { get; }
 
-        float PeakY       { get; }
+        float PeakY         { get; }
         float EdgeY         { get; }
         float StreamBedY    { get; }
         float RiverSurfaceY { get; }
+
+        bool RequiresYPerturb { get; }
 
         bool HasRoads { get; set; }
 

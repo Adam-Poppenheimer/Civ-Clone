@@ -62,6 +62,8 @@ namespace Assets.Simulation.HexMap {
 
         private HexMesh         Terrain;
         private HexMesh         Roads;
+        private HexMesh         Rivers;
+        private HexMesh         Water;
         private INoiseGenerator NoiseGenerator;
 
         #endregion
@@ -71,10 +73,14 @@ namespace Assets.Simulation.HexMap {
         public HexGridMeshBuilder(
             [Inject(Id = "Terrain")] HexMesh terrain,
             [Inject(Id = "Roads")]   HexMesh roads,
+            [Inject(Id = "Rivers")]  HexMesh rivers,
+            [Inject(Id = "Water")]   HexMesh water,
             INoiseGenerator noiseGenerator
         ) {
             Terrain        = terrain;
             Roads          = roads;
+            Rivers         = rivers;
+            Water          = water;
             NoiseGenerator = noiseGenerator;
         }
 
@@ -196,6 +202,97 @@ namespace Assets.Simulation.HexMap {
             Vector3 indices = new Vector3(indexOne, indexTwo, indexThree);
 
             Terrain.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+        }
+
+        public void TriangulateRiverQuad(
+            Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4,
+            float y, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        ) {
+            TriangulateRiverQuad(v1, v2, v3, v4, y, y, vMin, vMax, isReversed, indices);
+        }
+
+        public void TriangulateRiverQuad(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float y1, float y2, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        ) {
+            bottomLeft.y = bottomRight.y = y1;
+            topLeft   .y = topRight   .y = y2;
+
+            TriangulateRiverQuad(
+                bottomLeft, bottomRight, topLeft, topRight,
+                vMin, vMax, isReversed, indices
+            );
+        }
+
+        public void TriangulateRiverQuad(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        ) {
+            TriangulateRiverQuadUnperturbed(
+                NoiseGenerator.Perturb(bottomLeft), NoiseGenerator.Perturb(bottomRight),
+                NoiseGenerator.Perturb(topLeft),    NoiseGenerator.Perturb(topRight),
+                vMin, vMax, isReversed, indices
+            );
+        }
+
+        public void TriangulateRiverQuadUnperturbed(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        ) {
+            Rivers.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            if(isReversed) {
+                Rivers.AddQuadUV(0f, 1f, 1f - vMin, 1f - vMax);
+            }else {
+                Rivers.AddQuadUV(0f, 1f, vMin, vMax);
+            }
+
+            Rivers.AddQuadCellData(indices, Weights1, Weights2);
+        }
+
+        public void TriangulateRiverQuadUnperturbed(
+            Vector3 bottomLeft, Vector3 bottomRight,
+            Vector3 topLeft, Vector3 topRight,
+            float y1, float y2, float vMin, float vMax,
+            bool isReversed, Vector3 indices
+        ) {
+            bottomLeft.y = bottomRight.y = y1;
+            topLeft   .y = topRight   .y = y2;
+
+            TriangulateRiverQuadUnperturbed(
+                bottomLeft, bottomRight, topLeft, topRight,
+                vMin, vMax, isReversed, indices
+            );
+        }
+
+        public void AddRiverTriangleUnperturbed(
+            Vector3 v1, Vector3 v2, Vector3 v3,
+            Vector2 uv1, Vector2 uv2, Vector2 uv3,
+            Vector3 indices
+        ) {
+            Rivers.AddTriangleUnperturbed(v1,  v2,  v3);
+            Rivers.AddTriangleUV(uv1, uv2, uv3);
+
+            Rivers.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
+        }
+
+        public void AddWaterTriangleUnperturbed(
+            Vector3 vertexOne,   int indexOne,   Color weightsOne,
+            Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
+            Vector3 vertexThree, int indexThree, Color weightsThree
+        ) {
+            Water.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
+
+            Vector3 indices = new Vector3(indexOne, indexTwo, indexThree);
+
+            Water.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
         }
 
         #endregion

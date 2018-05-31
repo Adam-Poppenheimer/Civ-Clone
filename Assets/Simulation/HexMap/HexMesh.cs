@@ -140,13 +140,13 @@ namespace Assets.Simulation.HexMap {
 		    Triangles.Add(vertexIndex + 2);
         }
 
-        public void AddQuad(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour, bool perturbY = false) {
+        public void AddQuad(Vector3 bottomLeft, Vector3 bottomRight, Vector3 topLeft, Vector3 topRight, bool perturbY = false) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(NoiseGenerator.Perturb(vertexOne,   perturbY));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexTwo,   perturbY));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexThree, perturbY));
-		    Vertices.Add(NoiseGenerator.Perturb(vertexFour,  perturbY));
+            Vertices.Add(NoiseGenerator.Perturb(bottomLeft,  perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(bottomRight, perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(topLeft,     perturbY));
+		    Vertices.Add(NoiseGenerator.Perturb(topRight,    perturbY));
 
 		    Triangles.Add(vertexIndex);
 		    Triangles.Add(vertexIndex + 2);
@@ -156,13 +156,13 @@ namespace Assets.Simulation.HexMap {
 		    Triangles.Add(vertexIndex + 3);
         }
 
-        public void AddQuadUnperturbed(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, Vector3 vertexFour) {
+        public void AddQuadUnperturbed(Vector3 bottomLeft, Vector3 bottomRight, Vector3 topLeft, Vector3 topRight) {
             int vertexIndex = Vertices.Count;
 
-            Vertices.Add(vertexOne);
-		    Vertices.Add(vertexTwo);
-		    Vertices.Add(vertexThree);
-		    Vertices.Add(vertexFour);
+            Vertices.Add(bottomLeft);
+		    Vertices.Add(bottomRight);
+		    Vertices.Add(topLeft);
+		    Vertices.Add(topRight);
 
 		    Triangles.Add(vertexIndex);
 		    Triangles.Add(vertexIndex + 2);
