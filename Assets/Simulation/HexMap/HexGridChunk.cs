@@ -359,8 +359,8 @@ namespace Assets.Simulation.HexMap {
             Vector3 left,   IHexCell leftCell,
             Vector3 right,  IHexCell rightCell
         ) {
-            HexEdgeType leftEdgeType  = bottomCell.GetEdgeType(leftCell);
-            HexEdgeType rightEdgeType = bottomCell.GetEdgeType(rightCell);
+            HexEdgeType leftEdgeType  = HexMetrics.GetEdgeType(bottomCell, leftCell);
+            HexEdgeType rightEdgeType = HexMetrics.GetEdgeType(bottomCell, rightCell);
 
             if(leftEdgeType == HexEdgeType.Slope) {
 
@@ -401,9 +401,9 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
 
-            }else if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            }else if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
 
-                if(leftCell.FoundationElevation < rightCell.FoundationElevation) {
+                if(leftCell.EdgeElevation < rightCell.EdgeElevation) {
                     TriangulateCornerCliffTerraces(
                         right,  rightCell,
                         bottom, bottomCell,
@@ -488,11 +488,11 @@ namespace Assets.Simulation.HexMap {
             Vector3 left,  IHexCell leftCell,
             Vector3 right, IHexCell rightCell
         ){
-            float b = Mathf.Abs(1f / (rightCell.FoundationElevation - beginCell.FoundationElevation));
+            float b = Mathf.Abs(1f / (rightCell.EdgeElevation - beginCell.EdgeElevation));
 
             Vector3 boundary = Vector3.Lerp(
                 NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb),
-                NoiseGenerator.Perturb(right, rightCell.RequiresYPerturb),
+                NoiseGenerator.Perturb(right, rightCell.RequiresYPerturb), 
                 b
             );
 
@@ -510,7 +510,7 @@ namespace Assets.Simulation.HexMap {
                 indices
             );
 
-            if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
                 TriangulateBoundaryTriangle(
                     left,     Weights2, leftCell .RequiresYPerturb,
                     right,    Weights3, rightCell.RequiresYPerturb,
@@ -532,11 +532,11 @@ namespace Assets.Simulation.HexMap {
             Vector3 left,  IHexCell leftCell,
             Vector3 right, IHexCell rightCell
         ){
-            float b = Mathf.Abs(1f / (leftCell.FoundationElevation - beginCell.FoundationElevation));
+            float b = Mathf.Abs(1f / (leftCell.EdgeElevation - beginCell.EdgeElevation));
 
             Vector3 boundary = Vector3.Lerp(
                 NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb),
-                NoiseGenerator.Perturb(left,  leftCell .RequiresYPerturb),
+                NoiseGenerator.Perturb(left,  leftCell .RequiresYPerturb), 
                 b
             );
 
@@ -553,7 +553,7 @@ namespace Assets.Simulation.HexMap {
                 boundary, boundaryWeights, indices
             );
 
-            if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
                 TriangulateBoundaryTriangle(
                     left,  Weights2, leftCell .RequiresYPerturb,
                     right, Weights3, rightCell.RequiresYPerturb,
@@ -962,8 +962,8 @@ namespace Assets.Simulation.HexMap {
             Vector3 right,  IHexCell rightCell,
             ICivilization owner
         ){
-            HexEdgeType leftEdgeType  = bottomCell.GetEdgeType(leftCell);
-            HexEdgeType rightEdgeType = bottomCell.GetEdgeType(rightCell);
+            HexEdgeType leftEdgeType  = HexMetrics.GetEdgeType(bottomCell, leftCell);
+            HexEdgeType rightEdgeType = HexMetrics.GetEdgeType(bottomCell, rightCell);
 
             if(leftEdgeType == HexEdgeType.Slope) {
 
@@ -984,7 +984,7 @@ namespace Assets.Simulation.HexMap {
                     TriangulateCultureCornerCliffTerraces(bottom, bottomCell, left, leftCell, right, rightCell, owner);
                 }
 
-            }else if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            }else if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
 
                 if(leftCell.FoundationElevation < rightCell.FoundationElevation) {
                     TriangulateCultureCornerCliffTerraces(right, rightCell, bottom, bottomCell, left, leftCell, owner);
@@ -1103,7 +1103,7 @@ namespace Assets.Simulation.HexMap {
                 owner
             );
 
-            if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
                     left,  leftCell,  leftUVMax,  Weights2,
                     right, rightCell, rightUVMax, Weights3,
@@ -1155,7 +1155,7 @@ namespace Assets.Simulation.HexMap {
                 owner
             );
 
-            if(leftCell.GetEdgeType(rightCell) == HexEdgeType.Slope) {
+            if(HexMetrics.GetEdgeType(leftCell, rightCell) == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
                     left,  leftCell,  leftUVMax,  Weights2,
                     right, rightCell, rightUVMax, Weights3,

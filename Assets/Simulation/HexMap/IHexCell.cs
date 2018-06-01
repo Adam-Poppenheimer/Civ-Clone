@@ -58,8 +58,6 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        HexEdgeType GetEdgeType(IHexCell otherCell);
-
         int GetElevationDifference(HexDirection direction);
 
         void Refresh();

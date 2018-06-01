@@ -217,10 +217,6 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexCell
 
-        public HexEdgeType GetEdgeType(IHexCell otherCell) {
-            return HexMetrics.GetEdgeType(this, otherCell);
-        }
-
         public int GetElevationDifference(HexDirection direction) {
             if(Grid.HasNeighbor(this, direction)) {
                 var neighbor = Grid.GetNeighbor(this, direction);
