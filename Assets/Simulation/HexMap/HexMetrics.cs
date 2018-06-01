@@ -31,8 +31,8 @@ namespace Assets.Simulation.HexMap {
 
         public const float VerticalTerraceStepSize = 1f / (TerracesPerSlope + 1);
 
-        public const float CellPerturbStrengthXZ = 0f;//4f;
-        public const float CellPerturbStrengthY  = 0f;//4f;
+        public const float CellPerturbStrengthXZ = 2f;
+        public const float CellPerturbStrengthY  = 2f;
 
         public const float MinHillPerturbation = 0f;
 

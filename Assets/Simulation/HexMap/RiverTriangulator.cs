@@ -46,68 +46,84 @@ namespace Assets.Simulation.HexMap {
         public void TriangulateConnectionAsRiver(
             HexDirection direction, IHexCell cell, EdgeVertices nearEdge
         ) {
-            HexEdgeType thisToNeighborEdgeType, thisToPreviousNeighborEdgeType, previousNeighborToNeighborEdgeType;
-
             IHexCell previousNeighbor = Grid.GetNeighbor(cell, direction.Previous());
             IHexCell neighbor         = Grid.GetNeighbor(cell, direction);            
             IHexCell nextNeighbor     = Grid.GetNeighbor(cell, direction.Next());
 
-            var thisCornerData = new RiverData(cell, previousNeighbor, neighbor,     direction,        NoiseGenerator);
-            var nextCornerData = new RiverData(cell, neighbor,         nextNeighbor, direction.Next(), NoiseGenerator);            
+            var thisCornerData = new RiverData(cell, previousNeighbor, neighbor,     direction,        NoiseGenerator, RiverCanon);
+            var nextCornerData = new RiverData(cell, neighbor,         nextNeighbor, direction.Next(), NoiseGenerator, RiverCanon);            
 
-            if(neighbor == null) {
-                thisToNeighborEdgeType             = HexEdgeType.Void;
-                previousNeighborToNeighborEdgeType = HexEdgeType.Void;
-
-            }else if(RiverCanon.HasRiverAlongEdge(cell, direction)){
-                thisToNeighborEdgeType = HexEdgeType.River;
-
-            }else {
-                thisToNeighborEdgeType = HexMetrics.GetEdgeType(cell, neighbor);
+            if(direction > HexDirection.SE) {
+                return;
             }
 
-            if(previousNeighbor == null) {
-                thisToPreviousNeighborEdgeType     = HexEdgeType.Void;
-                previousNeighborToNeighborEdgeType = HexEdgeType.Void;
-
-            }else if(RiverCanon.HasRiverAlongEdge(cell, direction.Previous())) {
-                thisToPreviousNeighborEdgeType = HexEdgeType.River;
-
-            }else {
-                thisToPreviousNeighborEdgeType = HexMetrics.GetEdgeType(cell, previousNeighbor);
+            //Creates river edge troughs and surfaces in the direction if needed
+            if(thisCornerData.CenterToRightEdgeType == HexEdgeType.River) {
+                CreateRiverTrough_Edge(thisCornerData);
+                CreateRiverSurface_EdgesAndCorners(thisCornerData, nextCornerData);
             }
 
-            if(previousNeighbor != null && neighbor != null) {
-                if(RiverCanon.HasRiverAlongEdge(neighbor, direction.Opposite().Next())) {
-                    previousNeighborToNeighborEdgeType = HexEdgeType.River;
+            if(direction > HexDirection.E) {
+                return;
+            }
+
+            //Creates river corner troughs and surfaces at the previous corner if needed
+            if( thisCornerData.CenterToRightEdgeType == HexEdgeType.River ||
+                thisCornerData.CenterToLeftEdgeType  == HexEdgeType.River ||
+                thisCornerData.LeftToRightEdgeType   == HexEdgeType.River
+            ) {
+                CreateRiverTrough_Corner(thisCornerData);
+            }
+        }
+
+        private void CreateRiverTrough_Corner(RiverData data) {
+            if(data.AllEdgesHaveRivers) {
+                //There is a confluence at the corner
+                CreateRiverTrough_Confluence (data);
+                CreateRiverSurface_Confluence(data);
+
+            }else if(data.TwoEdgesHaveRivers) {
+                if(data.CenterToLeftEdgeType != HexEdgeType.River) {
+                    //There is a river corner and Right is on its inside edge. Since
+                    //CreateRiverTrough_Curve draws relative to the inside of the curve,
+                    //We rotate our river data so that Right is in the center, Center
+                    //is on the left, and Left is on the right
+                    CreateRiverTrough_Curve(new RiverData(
+                        data.Right, data.Center, data.Left, data.Direction.Opposite().Next(),
+                        NoiseGenerator, RiverCanon
+                    ));
+                }else if(data.CenterToRightEdgeType != HexEdgeType.River) {
+                    //There is a river corner and Left is on its inside edge. We must
+                    //rotate so that Left is in the center, Right is on the left, and
+                    //Center is on the right
+                    CreateRiverTrough_Curve(new RiverData(
+                        data.Left, data.Right, data.Center, data.Direction.Next2(),
+                        NoiseGenerator, RiverCanon
+                    ));
                 }else {
-                    previousNeighborToNeighborEdgeType = HexMetrics.GetEdgeType(previousNeighbor, neighbor);
-                }
-            }else {
-                previousNeighborToNeighborEdgeType = HexEdgeType.Void;
-            }
-
-            if(thisToNeighborEdgeType == HexEdgeType.River) {
-                EdgeVertices farEdge    = GetYAdjustedEdge(neighbor, direction.Opposite());
-                EdgeVertices troughEdge = GetRiverTroughEdge(nearEdge, farEdge, false);
-
-                CreateRiverTrough_Edge(direction, cell, nearEdge, neighbor, troughEdge);
-
-                if(direction <= HexDirection.SE) {
-                    CreateRiverSurface_EdgesAndCorners(thisCornerData, nextCornerData);
+                    //There is a river corner and Center is on its inside edge
+                    CreateRiverTrough_Curve(data);
                 }
 
-                if(thisToPreviousNeighborEdgeType == HexEdgeType.River) {
+            //We need to rotate endpoint cases to make sure that the endpoint is always
+            //pointing towards Left
+            }else if(data.CenterToLeftEdgeType == HexEdgeType.River) {
+                //There is an endpoint pointing towards Right
+                CreateRiverTrough_Endpoint(new RiverData(
+                    data.Left, data.Right, data.Center, data.Direction.Next2(),
+                    NoiseGenerator, RiverCanon
+                ));
 
-                    if(previousNeighborToNeighborEdgeType == HexEdgeType.River) {
-                        CreateRiverTrough_Confluence (thisCornerData);
-                        CreateRiverSurface_Confluence(thisCornerData);
-                    }else {
-                        CreateRiverTrough_Curve(thisCornerData);
-                    }
-                }else if(previousNeighborToNeighborEdgeType != HexEdgeType.River){
-                    CreateRiverTrough_Endpoint(thisCornerData);
-                }
+            }else if(data.CenterToRightEdgeType == HexEdgeType.River) {
+                //There is an endpoint pointing towards Left
+                CreateRiverTrough_Endpoint(data);
+
+            }else if(data.LeftToRightEdgeType == HexEdgeType.River) {
+                //There is an endpoint pointing towards Center
+                CreateRiverTrough_Endpoint(new RiverData(
+                    data.Right, data.Center, data.Left, data.Direction.Opposite().Next(),
+                    NoiseGenerator, RiverCanon
+                ));
             }
         }
 
@@ -133,16 +149,16 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private void CreateRiverTrough_Edge(
-            HexDirection direction, IHexCell cell, EdgeVertices nearEdge,
-            IHexCell neighbor, EdgeVertices troughEdge
-        ){
-            Color troughWeights = Color.Lerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 0.5f);
+        private void CreateRiverTrough_Edge(RiverData data){
+            MeshBuilder.TriangulateEdgeStrip(
+                data.CenterToRightEdge, MeshBuilder.Weights1,  data.Center.Index, data.Center.RequiresYPerturb,
+                data.CenterRightTrough, MeshBuilder.Weights12, data.Right.Index,  false,
+                false
+            );
 
             MeshBuilder.TriangulateEdgeStrip(
-                nearEdge,   MeshBuilder.Weights1, cell.Index,     cell.Shape == TerrainShape.Hills,
-                troughEdge, troughWeights,        neighbor.Index, false,
-                false
+                data.CenterRightTrough, MeshBuilder.Weights12, data.Center.Index, false,
+                data.RightToCenterEdge, MeshBuilder.Weights2,  data.Right .Index, data.Right.RequiresYPerturb
             );
         }
 
@@ -151,16 +167,23 @@ namespace Assets.Simulation.HexMap {
         //Resolving the corners independently led to problems that I couldn't resolve.
         //In order to handle rivers of different elevation, this method averages the Y values
         //of nearby river edges. This can sometimes cause rivers to flow uphill, though
-        //the effect is usually unnoticeable as long as elevation perturbation is small
-        //and the terrain is flat.
+        //the effect is usually unnoticeable as long as elevation perturbation is small.
         private void CreateRiverSurface_EdgesAndCorners(RiverData thisData, RiverData nextData){
-            float upRiverSurfaceY, intermediateUpRiverSurfaceY,
-                  intermediateDownRiverSurfaceY, downRiverSurfaceY;
+            float upRiverSurfaceY, midRiverSurfaceY, downRiverSurfaceY;
 
-            Vector3 upRiverLeftBank, upRiverRightBank, intermediateUpRiverLeftBank, intermediateUpRiverRightBank;
-            Vector3 intermediateDownRiverLeftBank, intermediateDownRiverRightBank, downRiverLeftBank, downRiverRightBank;
+            Vector3 upRiverLeftBank, upRiverRightBank, downRiverLeftBank, downRiverRightBank;
 
             float upRiverParam, downRiverParam;
+
+            EdgeVertices leftBank = new EdgeVertices(
+                thisData.Right.transform.localPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction.Opposite()),
+                thisData.Right.transform.localPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction.Opposite())
+            );
+
+            EdgeVertices rightBank = new EdgeVertices(
+                thisData.Center.transform.localPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction),
+                thisData.Center.transform.localPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction)
+            );
 
             CalculateRiverSurfaceEdgeProperties(
                 thisData, false, out upRiverSurfaceY, out upRiverLeftBank, out upRiverRightBank,
@@ -172,60 +195,55 @@ namespace Assets.Simulation.HexMap {
                 out downRiverParam
             );
 
-            intermediateUpRiverSurfaceY   = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
-            intermediateDownRiverSurfaceY = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
+            midRiverSurfaceY = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
 
-            intermediateUpRiverLeftBank  = Vector3.Lerp(upRiverLeftBank,  downRiverLeftBank,  upRiverParam);
-            intermediateUpRiverRightBank = Vector3.Lerp(upRiverRightBank, downRiverRightBank, upRiverParam);
+            leftBank.V1 = upRiverLeftBank;
+            leftBank.V5 = downRiverLeftBank;
 
-            intermediateDownRiverLeftBank  = Vector3.Lerp(upRiverLeftBank,  downRiverLeftBank,  1f - downRiverParam);
-            intermediateDownRiverRightBank = Vector3.Lerp(upRiverRightBank, downRiverRightBank, 1f - downRiverParam);
+            rightBank.V1 = upRiverRightBank;
+            rightBank.V5 = downRiverRightBank;
+
+            leftBank.V1.y = upRiverSurfaceY;
+            leftBank.V2.y = (upRiverSurfaceY + midRiverSurfaceY) / 2f;
+            leftBank.V3.y = midRiverSurfaceY;
+            leftBank.V4.y = (midRiverSurfaceY + downRiverSurfaceY) / 2f;
+            leftBank.V5.y = downRiverSurfaceY;
+
+            rightBank.V1.y = upRiverSurfaceY;
+            rightBank.V2.y = (upRiverSurfaceY + midRiverSurfaceY) / 2f;
+            rightBank.V3.y = midRiverSurfaceY;
+            rightBank.V4.y = (midRiverSurfaceY + downRiverSurfaceY) / 2f;
+            rightBank.V5.y = downRiverSurfaceY;
 
             bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(thisData.Center, thisData.Direction) == RiverFlow.Counterclockwise;
 
             Vector3 indices = new Vector3(
                 thisData.Center.Index, thisData.Center.Index, thisData.Center.Index
             );
-
-            //If the intermediate up-river section will start at the corner, there's
-            //no reason to create another segment of water. This happens when the
-            //corner is a confluence and this edge is supposed to make a waterfall into it.
-            //That triangulation needs to be handled as a special case elsewhere, however.
-            if(upRiverParam > 0f) {
-                MeshBuilder.TriangulateRiverQuadUnperturbed(
-                    upRiverLeftBank, upRiverRightBank,
-                    intermediateUpRiverLeftBank, intermediateUpRiverRightBank,
-                    upRiverSurfaceY, intermediateUpRiverSurfaceY,
-                    0f, upRiverParam,
-                    isReversed, indices
-                );
-            }else {
-                intermediateUpRiverSurfaceY = upRiverSurfaceY;
-            }
-
-            //We ignore the final down-river section for the same reasons we ignore
-            //the first section; if our intermediate quad got us all the way to the
-            //corner
-            if(downRiverParam > 0f) {
-                MeshBuilder.TriangulateRiverQuadUnperturbed(
-                    intermediateDownRiverLeftBank, intermediateDownRiverRightBank,
-                    downRiverLeftBank, downRiverRightBank,
-                    intermediateUpRiverSurfaceY, downRiverSurfaceY,
-                    1f - downRiverParam, 1f,
-                    isReversed, indices
-                );
-            }else {
-                intermediateDownRiverSurfaceY = downRiverSurfaceY;
-            }
+            
+            MeshBuilder.TriangulateRiverQuadUnperturbed(
+                leftBank.V1, rightBank.V1,
+                NoiseGenerator.Perturb(leftBank.V2), NoiseGenerator.Perturb(rightBank.V2),
+                0f, 0.25f, isReversed, indices
+            );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
-                intermediateUpRiverLeftBank, intermediateUpRiverRightBank,
-                intermediateDownRiverLeftBank, intermediateDownRiverRightBank,
-                intermediateUpRiverSurfaceY, intermediateDownRiverSurfaceY,
-                upRiverParam, 1f - downRiverParam,
-                isReversed, indices
+                NoiseGenerator.Perturb(leftBank.V2), NoiseGenerator.Perturb(rightBank.V2),
+                NoiseGenerator.Perturb(leftBank.V3), NoiseGenerator.Perturb(rightBank.V3),
+                0.25f, 0.5f, isReversed, indices
             );
-            
+
+            MeshBuilder.TriangulateRiverQuadUnperturbed(
+                NoiseGenerator.Perturb(leftBank.V3), NoiseGenerator.Perturb(rightBank.V3),
+                NoiseGenerator.Perturb(leftBank.V4), NoiseGenerator.Perturb(rightBank.V4),
+                0.5f, 0.75f, isReversed, indices
+            );
+
+            MeshBuilder.TriangulateRiverQuadUnperturbed(
+                NoiseGenerator.Perturb(leftBank.V4), NoiseGenerator.Perturb(rightBank.V4),
+                leftBank.V5, rightBank.V5,
+                0.75f, 1f, isReversed, indices
+            );
         }
 
         //Determines what the endpoints of a particular river surface segment should look like.
@@ -392,64 +410,96 @@ namespace Assets.Simulation.HexMap {
                 data.Left  .EdgeElevation > data.Right.EdgeElevation
             ) {
                 //There's a waterfall flowing from CenterLeft river into the confluence
-                float edgeY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
-
-                bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction.Previous()) == RiverFlow.Counterclockwise;
-                var indices = new Vector3(data.Center.Index, data.Center.Index, data.Center.Index);
-
-                var waterfallUpRiverLeft  = data.PerturbedLeftCorner;
-                var waterfallUpRiverRight = data.PerturbedCenterCorner;
-
-                waterfallUpRiverLeft .y = edgeY;
-                waterfallUpRiverRight.y = edgeY;
-
-                //We want the waterfall to stop when it hits the water triangle at the confluence.
-                //Rather than performing a ray-triangle intersection test (which can miss because
-                //our ray will pass very close to the triangle's edge) we can use
-                //ClosestPointsOnTwoLines to find our "intersection" with the water triangle
-                //and use those as our down-river points. This section tests between one of the
-                //water triangle's edges and a line that goes between the river's edge and one
-                //of the trough points.
-
-                Vector3 waterfallDownRiverLeft = Vector3.zero, waterfallDownRiverRight = Vector3.zero;
-                Vector3 dummyVector;
-
-                Vector3 waterfallVectorLeft  = data.PertrubedLeftRightTroughPoint   - waterfallUpRiverLeft;
-                Vector3 waterfallVectorRight = data.PerturbedCenterRightTroughPoint - waterfallUpRiverRight;
-
-                Vector3 rightLeftTriangleEdge   = yAdjustedLeft   - yAdjustedRight;
-                Vector3 rightCenterTriangleEdge = yAdjustedCenter - yAdjustedRight;
-
-                Geometry3D.ClosestPointsOnTwoLines(
-                    waterfallUpRiverLeft, waterfallVectorLeft,
-                    yAdjustedRight, rightLeftTriangleEdge,
-                    out waterfallDownRiverLeft, out dummyVector
+                CreateRiverSurface_Waterfall(data, yAdjustedCenter, yAdjustedLeft, yAdjustedRight);
+            }else if(
+                data.Center.EdgeElevation > data.Left.EdgeElevation &&
+                data.Right .EdgeElevation > data.Left.EdgeElevation
+            ) {
+                //There's a waterfall flowing from CenterRight river into the confluence.
+                //We need to rotate our data to make sure that Right is the new center and
+                //Left is the new right
+                CreateRiverSurface_Waterfall(
+                    new RiverData(
+                        data.Right, data.Center, data.Left, data.Direction.Previous2(),
+                        NoiseGenerator, RiverCanon
+                    ),
+                    yAdjustedRight, yAdjustedCenter, yAdjustedLeft
                 );
-
-                Geometry3D.ClosestPointsOnTwoLines(
-                    waterfallUpRiverRight, waterfallVectorRight,
-                    yAdjustedRight, rightCenterTriangleEdge,
-                    out waterfallDownRiverRight, out dummyVector
-                );
-
-                MeshBuilder.TriangulateRiverQuadUnperturbed(
-                    waterfallUpRiverLeft, waterfallUpRiverRight,
-                    waterfallDownRiverLeft, waterfallDownRiverRight,
-                    0f, 0.2f, isReversed, indices
+            }else if(
+                data.Left .EdgeElevation > data.Center.EdgeElevation &&
+                data.Right.EdgeElevation > data.Center.EdgeElevation
+            ) {
+                //There's a waterwall flowing from LeftRight river into the confluence.
+                //we need to rotate our data to make sure that Center is the new Right
+                //and Left is the new center
+                CreateRiverSurface_Waterfall(
+                    new RiverData(
+                        data.Left, data.Right, data.Center, data.Direction.Next2(),
+                        NoiseGenerator, RiverCanon
+                    ),
+                    yAdjustedLeft, yAdjustedRight, yAdjustedCenter
                 );
             }
+        }
+
+        //Center and Left both have a higher elevation than Right, which means a
+        //waterfall should flow from the river between Center and Left into the
+        //corner, towards Right.
+        private void CreateRiverSurface_Waterfall(
+            RiverData data, Vector3 yAdjustedCenter, Vector3 yAdjustedLeft, Vector3 yAdjustedRight
+        ){
+            float edgeY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
+
+            bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction.Previous()) == RiverFlow.Counterclockwise;
+            var indices = new Vector3(data.Center.Index, data.Center.Index, data.Center.Index);
+
+            var waterfallUpRiverLeft  = data.PerturbedLeftCorner;
+            var waterfallUpRiverRight = data.PerturbedCenterCorner;
+
+            waterfallUpRiverLeft .y = edgeY;
+            waterfallUpRiverRight.y = edgeY;
+
+            //We want the waterfall to stop when it hits the water triangle at the confluence.
+            //Rather than performing a ray-triangle intersection test (which can miss because
+            //our ray may pass very close to the triangle's edge) we can use
+            //ClosestPointsOnTwoLines to find our "intersection" with the water triangle
+            //and use those as our down-river points. This section tests between one of the
+            //water triangle's edges and a line that goes between the river's edge and one
+            //of the trough points.
+
+            Vector3 waterfallDownRiverLeft = Vector3.zero, waterfallDownRiverRight = Vector3.zero;
+            Vector3 dummyVector;
+
+            Vector3 waterfallVectorLeft  = data.PertrubedLeftRightTroughPoint   - waterfallUpRiverLeft;
+            Vector3 waterfallVectorRight = data.PerturbedCenterRightTroughPoint - waterfallUpRiverRight;
+
+            Vector3 rightLeftTriangleEdge   = yAdjustedLeft   - yAdjustedRight;
+            Vector3 rightCenterTriangleEdge = yAdjustedCenter - yAdjustedRight;
+
+            Geometry3D.ClosestPointsOnTwoLines(
+                waterfallUpRiverLeft, waterfallVectorLeft,
+                yAdjustedRight, rightLeftTriangleEdge,
+                out waterfallDownRiverLeft, out dummyVector
+            );
+
+            Geometry3D.ClosestPointsOnTwoLines(
+                waterfallUpRiverRight, waterfallVectorRight,
+                yAdjustedRight, rightCenterTriangleEdge,
+                out waterfallDownRiverRight, out dummyVector
+            );
+
+            //UV may need to be synchronized at some point. 0.2 is just there to make sure the waterfall flows.
+            MeshBuilder.TriangulateRiverQuadUnperturbed(
+                waterfallUpRiverLeft, waterfallUpRiverRight,
+                waterfallDownRiverLeft, waterfallDownRiverRight,
+                0f, 0.2f, isReversed, indices
+            );
         }
 
         //Draws six triangles connecting the three inward-facing solid corners of the triangles, the
         //troughs of the rivers on all three edges, and the confluence point at the middle of the
         //intersecting rivers
         private void CreateRiverTrough_Confluence(RiverData data){
-            //We're building out the entire corner section, so we can ignore the corners
-            //in the same way normal corner triangulation functions
-            if(data.Direction > HexDirection.E) {
-                return;
-            }
-
             //Triangle pointing at center, which LeftRight river flows towards
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 NoiseGenerator.Perturb(data.CenterCorner,           data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights1,
@@ -479,15 +529,21 @@ namespace Assets.Simulation.HexMap {
             );
         }
 
-        //Non-rivered edge is between right and left. Outer river bank is opposite center
+        //Non-rivered edge is between right and left. Center is on the inside of the curve
         private void CreateRiverTrough_Curve(RiverData data){
-            CreateRiverInnerCurve(data);
+            //The inside of the curve is always a single triangle, since the two
+            //riverine edges prevent anything tricky from happening
+            MeshBuilder.AddTerrainTriangleUnperturbed(
+                data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights1,
+                data.PerturbedCenterLeftTroughPoint,  data.Left.Index,   MeshBuilder.Weights12,
+                data.PerturbedCenterRightTroughPoint, data.Right.Index,  MeshBuilder.Weights13
+            );
 
             //We've already taken care of River and Void edge types, so we don't need to check them again here
             HexEdgeType leftRightEdge = HexMetrics.GetEdgeType(data.Left, data.Right);
 
             if(leftRightEdge == HexEdgeType.Flat) {
-                CreateRiverOuterCurveFlat(data);
+                CreateRiverTrough_OuterCurveFlat(data);
             }else if(leftRightEdge == HexEdgeType.Slope) {
                 if(data.Left.EdgeElevation < data.Right.EdgeElevation) {
                     CreateRiverOuterCurveSloped_TerracesClockwiseUp(data);
@@ -497,16 +553,8 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        private void CreateRiverInnerCurve(RiverData data){
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedCenterCorner,    data.Center.Index, MeshBuilder.Weights1,
-                data.PerturbedCenterLeftTroughPoint,  data.Left.Index,   MeshBuilder.Weights12,
-                data.PerturbedCenterRightTroughPoint, data.Right.Index,  MeshBuilder.Weights13
-            );
-        }
-
         //Non-rivered edge is between right and left. Outer river bank is opposite center
-        private void CreateRiverOuterCurveFlat(RiverData data){
+        private void CreateRiverTrough_OuterCurveFlat(RiverData data){
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
@@ -535,13 +583,13 @@ namespace Assets.Simulation.HexMap {
             //which happens below the terrace convergence
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedCenterLeftTroughPoint,  data.Center.Index, MeshBuilder.Weights12,
-                data.PerturbedLeftCorner,     data.Left  .Index, MeshBuilder.Weights2,
+                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights2,
                 data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13
             );
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights13,
-                data.PerturbedLeftCorner,     data.Left  .Index, MeshBuilder.Weights2,
+                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights2,
                 convergencePoint,                     data.Right .Index, convergenceWeights
             );
 
@@ -552,9 +600,9 @@ namespace Assets.Simulation.HexMap {
             Color stepWeights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.LeftCorner, data.Center.Index, MeshBuilder.Weights2,
-                stepVertex2,             data.Left  .Index, stepWeights2,
-                convergencePoint,        data.Right .Index, convergenceWeights
+                data.PerturbedLeftCorner, data.Center.Index, MeshBuilder.Weights2,
+                stepVertex2,              data.Left  .Index, stepWeights2,
+                convergencePoint,         data.Right .Index, convergenceWeights
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -575,9 +623,9 @@ namespace Assets.Simulation.HexMap {
             }
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                stepVertex2,                       data.Center.Index, stepWeights2,
+                stepVertex2,               data.Center.Index, stepWeights2,
                 data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights3,
-                convergencePoint,                  data.Right .Index, convergenceWeights
+                convergencePoint,          data.Right .Index, convergenceWeights
             );
         }
 
@@ -604,7 +652,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedCenterLeftTroughPoint, data.Center.Index, MeshBuilder.Weights13,
                 convergencePoint,                    data.Right .Index, convergenceWeights,
-                data.PerturbedRightCorner,   data.Left  .Index, MeshBuilder.Weights2
+                data.PerturbedRightCorner,           data.Left  .Index, MeshBuilder.Weights2
             );
 
             Vector3 stepVertex2 = NoiseGenerator.Perturb(
@@ -614,9 +662,9 @@ namespace Assets.Simulation.HexMap {
             Color stepWeights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                convergencePoint,         data.Center.Index, convergenceWeights,
-                stepVertex2,              data.Right .Index, stepWeights2,
-                data.RightCorner, data.Left  .Index, MeshBuilder.Weights2
+                convergencePoint,          data.Center.Index, convergenceWeights,
+                stepVertex2,               data.Right .Index, stepWeights2,
+                data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights2
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -637,9 +685,9 @@ namespace Assets.Simulation.HexMap {
             }
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                convergencePoint,                 data.Center.Index, convergenceWeights,
+                convergencePoint,         data.Center.Index, convergenceWeights,
                 data.PerturbedLeftCorner, data.Right .Index, MeshBuilder.Weights3,
-                stepVertex2,                      data.Left  .Index, stepWeights2
+                stepVertex2,              data.Left  .Index, stepWeights2
             );
         }
 
@@ -658,7 +706,8 @@ namespace Assets.Simulation.HexMap {
                 }else if(leftRightEdgeType == HexEdgeType.Slope) {
                     CreateRiverEndpointTrough_FlatTerraces(data);
                 }else if(leftRightEdgeType == HexEdgeType.Cliff) {
-                    CreateRiverEndpointTrough_FlatCliff(data);
+                    //This case should never come up, since cliffs only appear when DeepWater
+                    //is in play
                 }
             }else if(centerLeftEdgeType == HexEdgeType.Slope) {
                 if(leftRightEdgeType == HexEdgeType.Flat) {
@@ -676,17 +725,23 @@ namespace Assets.Simulation.HexMap {
                 }
             }else if(centerLeftEdgeType == HexEdgeType.Cliff) {
                 if(leftRightEdgeType == HexEdgeType.Flat) {
-                    CreateRiverEndpointTrough_CliffFlat(data);
+                    //This case should never come up, since cliffs only appear when DeepWater
+                    //is in play
                 }else if(leftRightEdgeType == HexEdgeType.Slope) {
                     CreateRiverEndpointTrough_CliffTerraces(data);
                 }else if(leftRightEdgeType == HexEdgeType.Cliff) {
                     CreateRiverEndpointTrough_DoubleCliff(data);
                 }
+            }else if(centerLeftEdgeType == HexEdgeType.River) {
+                if(leftRightEdgeType == HexEdgeType.Slope) {
+                    
+                }
             }
         }
 
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
-        //and Center/Left and Left/Right are both flat edges
+        //and Center/Left and Left/Right are both flat edges. This leads to a river running
+        //into the back of a terraced slope.
         private void CreateRiverEndpointTrough_DoubleFlat(RiverData data) {
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
@@ -706,17 +761,17 @@ namespace Assets.Simulation.HexMap {
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
         //and Center/Left and Left/Right are both terraced edges
         private void CreateRiverEndpointTrough_DoubleTerracesUp(RiverData data) {
-            Vector3 toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, 1);
-            Color   toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,       1);
+            Vector3 toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
-            Vector3 toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, 1);
-            Color   toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,      1);
+            Vector3 toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             //Builds the first triangle between the terraces
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner, data.Left  .Index, MeshBuilder.Weights1,
-                toRightTerraceVertexTwo,  data.Center.Index, toRightTerraceWeightsTwo,
-                toCenterTerraceVertexTwo, data.Right .Index, toCenterTerraceWeightsTwo
+                NoiseGenerator.Perturb(data.LeftCorner,          data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(toRightTerraceVertexTwo,  false),                      data.Center.Index, toRightTerraceWeightsTwo,
+                NoiseGenerator.Perturb(toCenterTerraceVertexTwo, false),                      data.Right .Index, toCenterTerraceWeightsTwo
             );
 
             //Builds the quads between the terraces
@@ -727,72 +782,76 @@ namespace Assets.Simulation.HexMap {
                 Vector3 toRightTerraceVertexOne  = toRightTerraceVertexTwo;
                 Color   toRightTerraceWeightsOne = toRightTerraceWeightsTwo;
 
-                toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, i);
-                toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,       i);
+                toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
-                toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, i);
-                toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,      i);
+                toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
+                MeshBuilder.AddTerrainTriangle(
                     toCenterTerraceVertexTwo, data.Left.Index,   toCenterTerraceWeightsTwo,
                     toCenterTerraceVertexOne, data.Center.Index, toCenterTerraceWeightsOne,
                     toRightTerraceVertexOne,  data.Right.Index,  toRightTerraceWeightsOne
                 );
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
+                MeshBuilder.AddTerrainTriangle(
                     toRightTerraceVertexOne,  data.Left  .Index, toRightTerraceWeightsOne,
                     toRightTerraceVertexTwo,  data.Center.Index, toRightTerraceWeightsTwo,
                     toCenterTerraceVertexTwo, data.Right .Index, toCenterTerraceWeightsTwo
                 );
             }
 
+            //We need to check for Y perturbation on CenterCorner and RightCorner, since they're
+            //probably going to be hills and hills Y perturb.
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedCenterCorner, data.Left  .Index, MeshBuilder.Weights2,
-                toCenterTerraceVertexTwo,   data.Center.Index, toCenterTerraceWeightsTwo,
-                data.PerturbedRightCorner,  data.Right .Index, MeshBuilder.Weights3
+                NoiseGenerator.Perturb(data.CenterCorner,        data.Center.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights2,
+                NoiseGenerator.Perturb(toCenterTerraceVertexTwo, false),                        data.Center.Index, toCenterTerraceWeightsTwo,
+                NoiseGenerator.Perturb(data.RightCorner,         data.Right.RequiresYPerturb),  data.Right .Index, MeshBuilder.Weights3
             );
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                toCenterTerraceVertexTwo,  data.Left  .Index, toCenterTerraceWeightsTwo,
-                toRightTerraceVertexTwo,   data.Center.Index, toRightTerraceWeightsTwo,
-                data.PerturbedRightCorner, data.Right .Index, MeshBuilder.Weights3
+                NoiseGenerator.Perturb(toCenterTerraceVertexTwo, false),                       data.Left  .Index, toCenterTerraceWeightsTwo,
+                NoiseGenerator.Perturb(toRightTerraceVertexTwo,  false),                       data.Center.Index, toRightTerraceWeightsTwo,
+                NoiseGenerator.Perturb(data.RightCorner,         data.Right.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights3
             );
 
-            //Draws the triangle below all the terraces
+            //Draws the triangle that the river collides into.
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights1,
-                data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
-                data.PerturbedCenterRightTroughPoint, data.Left  .Index, MeshBuilder.Weights12
+                NoiseGenerator.Perturb(data.CenterCorner,           data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(data.RightCorner,            data.Right.RequiresYPerturb),  data.Right .Index, MeshBuilder.Weights2,
+                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                        data.Left  .Index, MeshBuilder.Weights12
             );
         }
 
+        //There's a river between Center and Right, and both Center and Right are
+        //above Left, with slopes going down towards Left from both sides.
         //This converges all of the terraced edges to the center trough of the river.
         //Consider figuring out a better policy.
         private void CreateRiverEndpointTrough_DoubleTerracesDown(RiverData data) {
             Vector3 leftCenterTerracePointTwo = HexMetrics.TerraceLerp(
-                data.PerturbedLeftCorner, data.PerturbedCenterCorner, 1
+                data.LeftCorner, data.CenterCorner, 1
             );
             Color leftCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(
                 MeshBuilder.Weights1, MeshBuilder.Weights3, 1
             );
 
             Vector3 leftRightTerracePointTwo = HexMetrics.TerraceLerp(
-                data.PerturbedLeftCorner, data.PerturbedRightCorner, 1
+                data.LeftCorner, data.RightCorner, 1
             );
             Color leftRightTerraceWeightsTwo = HexMetrics.TerraceLerp(
                 MeshBuilder.Weights1, MeshBuilder.Weights2, 1
             );
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                leftCenterTerracePointTwo,            data.Center.Index, leftCenterTerraceWeightsTwo
+                NoiseGenerator.Perturb(data.LeftCorner,             data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                      data.Right .Index, MeshBuilder.Weights23,
+                NoiseGenerator.Perturb(leftCenterTerracePointTwo,   false),                      data.Center.Index, leftCenterTerraceWeightsTwo
             );
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                leftRightTerracePointTwo,             data.Right .Index, leftRightTerraceWeightsTwo,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+                NoiseGenerator.Perturb(data.LeftCorner,             data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(leftRightTerracePointTwo,    false),                      data.Right .Index, leftRightTerraceWeightsTwo,
+                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                      data.Center.Index, MeshBuilder.Weights23
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -803,42 +862,65 @@ namespace Assets.Simulation.HexMap {
                 Color   leftRightTerraceWeightsOne = leftRightTerraceWeightsTwo;
 
                 leftCenterTerracePointTwo = HexMetrics.TerraceLerp(
-                    data.PerturbedLeftCorner, data.PerturbedCenterCorner, i
+                    data.LeftCorner, data.CenterCorner, i
                 );
                 leftCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(
                     MeshBuilder.Weights1, MeshBuilder.Weights3, i
                 );
 
                 leftRightTerracePointTwo = HexMetrics.TerraceLerp(
-                    data.PerturbedLeftCorner, data.PerturbedRightCorner, i
+                    data.LeftCorner, data.RightCorner, i
                 );
                 leftRightTerraceWeightsTwo = HexMetrics.TerraceLerp(
                     MeshBuilder.Weights1, MeshBuilder.Weights2, i
                 );
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
-                    leftCenterTerracePointOne,            data.Left  .Index, leftCenterTerraceWeightsOne,
-                    data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                    leftCenterTerracePointTwo,            data.Center.Index, leftCenterTerraceWeightsTwo
+                MeshBuilder.AddTerrainTriangle(
+                    leftCenterTerracePointOne,   data.Left  .Index, leftCenterTerraceWeightsOne,
+                    data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
+                    leftCenterTerracePointTwo,   data.Center.Index, leftCenterTerraceWeightsTwo
                 );
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
-                    leftRightTerracePointOne,             data.Left  .Index, leftRightTerraceWeightsOne,
-                    leftRightTerracePointTwo,             data.Right .Index, leftRightTerraceWeightsTwo,
-                    data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+                MeshBuilder.AddTerrainTriangle(
+                    leftRightTerracePointOne,    data.Left  .Index, leftRightTerraceWeightsOne,
+                    leftRightTerracePointTwo,    data.Right .Index, leftRightTerraceWeightsTwo,
+                    data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
                 );
             }
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                leftCenterTerracePointTwo,            data.Left  .Index, leftCenterTerraceWeightsTwo,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights3
+                NoiseGenerator.Perturb(leftCenterTerracePointTwo,   false),                        data.Left  .Index, leftCenterTerraceWeightsTwo,
+                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                        data.Right .Index, MeshBuilder.Weights23,
+                NoiseGenerator.Perturb(data.CenterCorner,           data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights3
             );
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                leftRightTerracePointTwo,             data.Left  .Index, leftRightTerraceWeightsTwo,
-                data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+                NoiseGenerator.Perturb(leftRightTerracePointTwo,    false),                       data.Left  .Index, leftRightTerraceWeightsTwo,
+                NoiseGenerator.Perturb(data.RightCorner,            data.Right.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights2,
+                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                       data.Center.Index, MeshBuilder.Weights23
+            );
+
+            //The current policy is to drop a waterfall from this edge, since
+            //The only way to have two terraces sloping down is to have the river
+            //flow into a shallow water cell.
+            Vector3 yAdjustedCenter = data.PerturbedCenterCorner,
+                    yAdjustedLeft   = data.PerturbedLeftCorner,
+                    yAdjustedRight  = data.PerturbedRightCorner;
+
+            //The waterfall is supposed to drop down to the water level,
+            //so we need to adjust the corner points differently than when
+            //creating a river confluence.
+            yAdjustedCenter.y = data.Left.WaterSurfaceY;
+            yAdjustedLeft  .y = data.Left.WaterSurfaceY;
+            yAdjustedRight .y = data.Left.WaterSurfaceY;
+
+            //We need to rotate to make sure that our water cell is on the Right
+            CreateRiverSurface_Waterfall(
+                new RiverData(
+                    data.Right, data.Center, data.Left, data.Direction.Previous2(),
+                    NoiseGenerator, RiverCanon
+                ),
+                yAdjustedRight, yAdjustedCenter, yAdjustedLeft
             );
         }
 
@@ -856,8 +938,34 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights2,
                 data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights3
             );
+
+            //The current policy is to drop a waterfall from this edge, since
+            //The only way to have two terraces sloping down is to have the river
+            //flow into a shallow water cell.
+            Vector3 yAdjustedCenter = data.PerturbedCenterCorner,
+                    yAdjustedLeft   = data.PerturbedLeftCorner,
+                    yAdjustedRight  = data.PerturbedRightCorner;
+
+            //The waterfall is supposed to drop down to the water level,
+            //so we need to adjust the corner points differently than when
+            //creating a river confluence.
+            yAdjustedCenter.y = data.Left.WaterSurfaceY;
+            yAdjustedLeft  .y = data.Left.WaterSurfaceY;
+            yAdjustedRight .y = data.Left.WaterSurfaceY;
+
+            //We need to rotate to make sure that our water cell is on the Right
+            CreateRiverSurface_Waterfall(
+                new RiverData(
+                    data.Right, data.Center, data.Left, data.Direction.Previous2(),
+                    NoiseGenerator, RiverCanon
+                ),
+                yAdjustedRight, yAdjustedCenter, yAdjustedLeft
+            );
         }
 
+        //Rivered edge is between Center and Right. River endpoint is pointing at Left,
+        //Center/Left is flat, and Left/Right is a terraced edge, which could only
+        //Possible be pointing up
         private void CreateRiverEndpointTrough_FlatTerraces(RiverData data) {
             //Adds the triangle opposite the terraced edge, equivalent to half of a flat endpoint
             MeshBuilder.AddTerrainTriangleUnperturbed(
@@ -879,74 +987,82 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
             );
 
-            Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, 1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,      1);
+            Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             //Builds out the terrace convergence between Left and Right
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner, data.Left  .Index, MeshBuilder.Weights1,
-                terraceVertexTwo,         data.Right .Index, terraceWeightsTwo,
-                convergencePoint,         data.Center.Index, convergenceWeights
+                data.PerturbedLeftCorner,                 data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
+                convergencePoint,                         data.Center.Index, convergenceWeights
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 terraceVertexOne  = terraceVertexTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terraceVertexTwo  = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,      i);
+                terraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.AddTerrainTriangleUnperturbed(
-                    terraceVertexOne, data.Left  .Index, terraceWeightsOne,
-                    terraceVertexTwo, data.Right .Index, terraceWeightsTwo,
-                    convergencePoint, data.Center.Index, convergenceWeights
+                    NoiseGenerator.Perturb(terraceVertexOne), data.Left  .Index, terraceWeightsOne,
+                    NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
+                    convergencePoint,                         data.Center.Index, convergenceWeights
                 );
             }
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                terraceVertexTwo,          data.Left  .Index, terraceWeightsTwo,
-                data.PerturbedRightCorner, data.Right .Index, MeshBuilder.Weights2,
-                convergencePoint,          data.Center.Index, convergenceWeights
+                NoiseGenerator.Perturb(terraceVertexTwo), data.Left  .Index, terraceWeightsTwo,
+                data.PerturbedRightCorner,                data.Right .Index, MeshBuilder.Weights2,
+                convergencePoint,                         data.Center.Index, convergenceWeights
             );
 
             CreateRiverEndpointSurface_Default(data);
         }
 
+        //Rivered edge is between Center and Right. River endpoint is pointing at left,
+        //Center/Left is a terraced edge going down from Center to Left,
+        //and Left/Right is flat
         private void CreateRiverEndpointTrough_TerracesFlat(RiverData data) {
-            //Builds out the endpoint trough
+            //Builds out the flat, cliff-like surface opposite Center
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+                NoiseGenerator.Perturb(data.LeftCorner,  data.Left.RequiresYPerturb),  data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(data.RightCorner, data.Right.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights2,
+                data.PerturbedCenterRightTroughPoint,                                  data.Center.Index, MeshBuilder.Weights23
             );
 
-            var convergencePoint   = Vector3.Lerp(data.PerturbedCenterRightTroughPoint, data.PerturbedCenterCorner, 0.5f);
-            var convergenceWeights = Color  .Lerp(MeshBuilder.Weights23,                MeshBuilder.Weights2,       0.5f);
+            //We want to converge Center/Left's terraces to the surface opposite Left, so we need
+            //to find the midpoint between the trough and the left corner
+            var convergencePoint   = Vector3.Lerp(data.CenterRightTroughPoint, data.CenterCorner,    0.5f);
+            var convergenceWeights = Color  .Lerp(MeshBuilder.Weights23,       MeshBuilder.Weights2, 0.5f);
 
+            //ConvergencePoint has the potential to deviate from the above triangle, so we need to make
+            //sure to fill any space that could appear
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                convergencePoint,                     data.Center.Index, convergenceWeights
+                NoiseGenerator.Perturb(data.LeftCorner, data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
+                data.PerturbedCenterRightTroughPoint,                                data.Right .Index, MeshBuilder.Weights23,
+                NoiseGenerator.Perturb(convergencePoint),                            data.Center.Index, convergenceWeights
             );
 
-            //Builds out the terrace convergence about the endpoint trough
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, 1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,       1);
+            //Builds out the terrace convergence from the terraced slope on Center/Left
+            //to the convergence point between CenterRightTrough and LeftCorner
+            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                terracePointTwo,          data.Left  .Index, terraceWeightsTwo,
-                data.PerturbedLeftCorner, data.Right .Index, MeshBuilder.Weights1,
-                convergencePoint,         data.Center.Index, convergenceWeights
+                NoiseGenerator.Perturb(terracePointTwo),                             data.Left  .Index, terraceWeightsTwo,
+                NoiseGenerator.Perturb(data.LeftCorner, data.Left.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(convergencePoint),                            data.Center.Index, convergenceWeights
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,       i);
+                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
+                MeshBuilder.AddTerrainTriangle(
                     terracePointTwo,  data.Left  .Index, terraceWeightsTwo,
                     terracePointOne,  data.Right .Index, terraceWeightsOne,
                     convergencePoint, data.Center.Index, convergenceWeights
@@ -954,20 +1070,20 @@ namespace Assets.Simulation.HexMap {
             }
 
             MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedCenterCorner, data.Left  .Index, MeshBuilder.Weights3,
-                terracePointTwo,            data.Right .Index, terraceWeightsTwo,
-                convergencePoint,           data.Center.Index, convergenceWeights
+                NoiseGenerator.Perturb(data.CenterCorner, data.Center.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights3,
+                NoiseGenerator.Perturb(terracePointTwo,   false),                        data.Right .Index, terraceWeightsTwo,
+                NoiseGenerator.Perturb(convergencePoint,  false),                        data.Center.Index, convergenceWeights
+            );
+
+            //After converging the terraces, there remains a triangular surface between CenterCorner,
+            //convergencePoint, and CenterRightTroughPoint that needs to be filled
+            MeshBuilder.AddTerrainTriangleUnperturbed(
+                NoiseGenerator.Perturb(data.CenterCorner, data.Center.RequiresYPerturb), data.Left.Index,   MeshBuilder.Weights3,
+                NoiseGenerator.Perturb(convergencePoint,  false),                        data.Right.Index,  convergenceWeights,
+                data.PerturbedCenterRightTroughPoint,                                    data.Center.Index, MeshBuilder.Weights23
             );
 
             CreateRiverEndpointSurface_Default(data);
-        }
-
-        private void CreateRiverEndpointTrough_FlatCliff(RiverData data) {
-            Debug.LogWarning("CreateRiverEndpoint_FlatCliff is unimplemented");
-        }
-
-        private void CreateRiverEndpointTrough_CliffFlat(RiverData data) {
-            Debug.LogWarning("CreateRiverEndpoint_CliffFlat is unimplemented");
         }
 
         //This method handles only the case when Left is below Center and Right, and thus the terraced
@@ -975,41 +1091,41 @@ namespace Assets.Simulation.HexMap {
         //were Deep Water, which would prevent the existence of a river between Center and Right.
         private void CreateRiverEndpointTrough_TerracesCliff(RiverData data) {
             //Builds the triangle that deals with the cliff edge attached to Right
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+            MeshBuilder.AddTerrainTriangle(
+                data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
+                data.RightCorner,            data.Right .Index, MeshBuilder.Weights2,
+                data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
             );
 
             //Builds out the terraced edges attached to Center by converging them to the
             //trough point opposite Left
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, 1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,       1);
+            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                terracePointTwo,                      data.Center.Index, terraceWeightsTwo
+            MeshBuilder.AddTerrainTriangle(
+                data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
+                data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
+                terracePointTwo,             data.Center.Index, terraceWeightsTwo
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedCenterCorner, i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights3,       i);
+                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
-                    terracePointOne,                      data.Left  .Index, terraceWeightsOne,
-                    data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                    terracePointTwo,                      data.Center.Index, terraceWeightsTwo
+                MeshBuilder.AddTerrainTriangle(
+                    terracePointOne,             data.Left  .Index, terraceWeightsOne,
+                    data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
+                    terracePointTwo,             data.Center.Index, terraceWeightsTwo
                 );
             }
 
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                terracePointTwo,                      data.Left  .Index, terraceWeightsTwo,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights3
+            MeshBuilder.AddTerrainTriangle(
+                terracePointTwo,             data.Left  .Index, terraceWeightsTwo,
+                data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
+                data.CenterCorner,           data.Center.Index, MeshBuilder.Weights3
             );
         }
 
@@ -1018,41 +1134,41 @@ namespace Assets.Simulation.HexMap {
         //if Right were Deep Water, which would prevent the existence of a river between Center and Right.
         private void CreateRiverEndpointTrough_CliffTerraces(RiverData data) {
             //Builds the triangle that deals with the cliff edge attached to Center
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights3
+            MeshBuilder.AddTerrainTriangle(
+                data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
+                data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
+                data.CenterCorner,           data.Center.Index, MeshBuilder.Weights3
             );
 
             //Builds out the terraced edges attached to Right by converging them to the
             //trough point opposite Left
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, 1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,      1);
+            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
-                terracePointTwo,                      data.Right .Index, terraceWeightsTwo,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+            MeshBuilder.AddTerrainTriangle(
+                data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
+                terracePointTwo,             data.Right .Index, terraceWeightsTwo,
+                data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.PerturbedLeftCorner, data.PerturbedRightCorner, i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1,     MeshBuilder.Weights2,      i);
+                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
-                MeshBuilder.AddTerrainTriangleUnperturbed(
-                    terracePointOne,                      data.Left  .Index, terraceWeightsOne,
-                    terracePointTwo,                      data.Right .Index, terraceWeightsTwo,
-                    data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+                MeshBuilder.AddTerrainTriangle(
+                    terracePointOne,             data.Left  .Index, terraceWeightsOne,
+                    terracePointTwo,             data.Right .Index, terraceWeightsTwo,
+                    data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
                 );
             }
 
-            MeshBuilder.AddTerrainTriangleUnperturbed(
-                terracePointTwo,                      data.Left  .Index, terraceWeightsTwo,
-                data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
-                data.PerturbedCenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
+            MeshBuilder.AddTerrainTriangle(
+                terracePointTwo,             data.Left  .Index, terraceWeightsTwo,
+                data.RightCorner,            data.Right .Index, MeshBuilder.Weights2,
+                data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23
             );
         }
 
@@ -1082,41 +1198,6 @@ namespace Assets.Simulation.HexMap {
                     new Vector2(1f, 0f), indices
                 );
             }
-        }
-
-        private EdgeVertices GetYAdjustedEdge(IHexCell cell, HexDirection direction) {
-            var center = cell.transform.localPosition;
-
-            var retval = new EdgeVertices(
-                center + HexMetrics.GetSecondOuterSolidCorner(direction),
-                center + HexMetrics.GetFirstOuterSolidCorner (direction)
-            );
-
-            retval.V1.y = cell.EdgeY;
-            retval.V2.y = cell.EdgeY;
-            retval.V3.y = cell.EdgeY;
-            retval.V4.y = cell.EdgeY;
-            retval.V5.y = cell.EdgeY;
-
-            return retval;
-        }
-
-        private EdgeVertices GetRiverTroughEdge(EdgeVertices nearEdge, EdgeVertices farEdge, bool invertFarEdge) {
-            var troughEdge = new EdgeVertices(
-                (nearEdge.V1 + (invertFarEdge ? farEdge.V5 : farEdge.V1)) / 2f,
-                (nearEdge.V2 + (invertFarEdge ? farEdge.V4 : farEdge.V2)) / 2f,
-                (nearEdge.V3 + farEdge.V3)                                / 2f,
-                (nearEdge.V4 + (invertFarEdge ? farEdge.V2 : farEdge.V4)) / 2f,
-                (nearEdge.V5 + (invertFarEdge ? farEdge.V1 : farEdge.V5)) / 2f
-            );
-
-            troughEdge.V1.y = Mathf.Min(nearEdge.V1.y, (invertFarEdge ? farEdge.V5 : farEdge.V1).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V2.y = Mathf.Min(nearEdge.V2.y, (invertFarEdge ? farEdge.V4 : farEdge.V2).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V3.y = Mathf.Min(nearEdge.V3.y, farEdge.V3.y)                                + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V4.y = Mathf.Min(nearEdge.V4.y, (invertFarEdge ? farEdge.V2 : farEdge.V4).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V5.y = Mathf.Min(nearEdge.V5.y, (invertFarEdge ? farEdge.V1 : farEdge.V5).y) + HexMetrics.StreamBedElevationOffset;
-
-            return troughEdge;
         }
 
         #endregion
