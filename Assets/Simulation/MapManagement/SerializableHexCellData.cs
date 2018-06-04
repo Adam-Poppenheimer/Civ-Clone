@@ -15,16 +15,16 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [DataMember()] public HexCoordinates Coordinates;
-        [DataMember()] public TerrainType    Terrain;
-        [DataMember()] public TerrainFeature Feature;
-        [DataMember()] public TerrainShape   Shape;
-        [DataMember()] public bool           SuppressSlot;
-        [DataMember()] public bool           HasRoads;
-        [DataMember()] public bool           HasOutgoingRiver;
-        [DataMember()] public HexDirection   OutgoingRiver;
-        [DataMember()] public bool           IsSlotOccupied;
-        [DataMember()] public bool           IsSlotLocked;
+        [DataMember()] public HexCoordinates   Coordinates;
+        [DataMember()] public TerrainType      Terrain;
+        [DataMember()] public TerrainFeature   Feature;
+        [DataMember()] public TerrainShape     Shape;
+        [DataMember()] public bool             SuppressSlot;
+        [DataMember()] public bool             HasRoads;
+        [DataMember()] public bool             IsSlotOccupied;
+        [DataMember()] public bool             IsSlotLocked;
+        [DataMember()] public bool[]           HasRiverAtEdge;
+        [DataMember()] public RiverFlow[] DirectionOfRiverAtEdge;
 
         #endregion
 

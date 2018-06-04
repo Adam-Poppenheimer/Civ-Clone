@@ -73,8 +73,8 @@ namespace Assets.Simulation.HexMap {
                 _elevation = value;
                 var localPosition = transform.localPosition;
 
-                localPosition.y = _elevation * HexMetrics.ElevationStep * HexMetrics.ElevationPerturbStrength;
-                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f - 1f);
+                localPosition.y = _elevation * HexMetrics.ElevationStep;
+                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f) - 1f;
 
                 transform.localPosition = localPosition;
 
@@ -100,11 +100,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         public float PeakY {
-            get { return transform.position.y + ((PeakElevation - FoundationElevation) * HexMetrics.ElevationStep); }
+            get { return transform.localPosition.y + (Config.GetPeakElevationForShape(Shape) * HexMetrics.ElevationStep); }
         }
 
         public float EdgeY {
-            get { return transform.position.y + ((EdgeElevation - FoundationElevation) * HexMetrics.ElevationStep); }
+            get { return transform.localPosition.y + (Config.GetEdgeElevationForShape(Shape) * HexMetrics.ElevationStep); }
         }
 
         public float StreamBedY {
@@ -115,8 +115,12 @@ namespace Assets.Simulation.HexMap {
 
         public float RiverSurfaceY {
             get {
-                return (FoundationElevation + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
+                return EdgeY + (HexMetrics.RiverElevationOffset * HexMetrics.ElevationStep);
             }
+        }
+
+        public bool RequiresYPerturb {
+            get { return Shape == TerrainShape.Hills; }
         }
 
         public bool HasRoads {
@@ -131,12 +135,12 @@ namespace Assets.Simulation.HexMap {
         private bool _hasRoads;
 
         public bool IsUnderwater {
-            get { return Config.WaterLevel > EdgeElevation + 1; }
+            get { return Config.WaterLevel > EdgeElevation; }
         }
 
         public float WaterSurfaceY {
             get {
-                return (Config.WaterLevel + HexMetrics.WaterElevationOffset) * HexMetrics.ElevationStep;
+                return (Config.WaterLevel + HexMetrics.OceanElevationOffset) * HexMetrics.ElevationStep;
             }
         }
 
@@ -212,10 +216,6 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         #region from IHexCell
-
-        public HexEdgeType GetEdgeType(IHexCell otherCell) {
-            return HexMetrics.GetEdgeType(this, otherCell);
-        }
 
         public int GetElevationDifference(HexDirection direction) {
             if(Grid.HasNeighbor(this, direction)) {

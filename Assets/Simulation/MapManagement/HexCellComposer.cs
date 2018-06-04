@@ -15,8 +15,7 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
-
+        private IHexGrid    Grid;
         private IRiverCanon RiverCanon;
 
         #endregion
@@ -42,19 +41,24 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var cell in Grid.AllCells) {
                 var newCellData = new SerializableHexCellData() {
-                    Coordinates         = cell.Coordinates,
-                    Terrain             = cell.Terrain,
-                    Feature             = cell.Feature,
-                    Shape               = cell.Shape,
-                    SuppressSlot        = cell.SuppressSlot,
-                    HasRoads            = cell.HasRoads,
-
-                    HasOutgoingRiver = RiverCanon.HasOutgoingRiver(cell),
-                    OutgoingRiver    = RiverCanon.GetOutgoingRiver(cell),
-
-                    IsSlotOccupied = cell.WorkerSlot.IsOccupied,
-                    IsSlotLocked   = cell.WorkerSlot.IsLocked
+                    Coordinates            = cell.Coordinates,
+                    Terrain                = cell.Terrain,
+                    Feature                = cell.Feature,
+                    Shape                  = cell.Shape,
+                    SuppressSlot           = cell.SuppressSlot,
+                    HasRoads               = cell.HasRoads,
+                    IsSlotOccupied         = cell.WorkerSlot.IsOccupied,
+                    IsSlotLocked           = cell.WorkerSlot.IsLocked,
+                    HasRiverAtEdge         = new bool[6],
+                    DirectionOfRiverAtEdge = new RiverFlow[6]
                 };
+
+                foreach(var edgeWithRiver in RiverCanon.GetEdgesWithRivers(cell)) {
+                    newCellData.HasRiverAtEdge[(int)edgeWithRiver] = true;
+
+                    newCellData.DirectionOfRiverAtEdge[(int)edgeWithRiver]
+                        = RiverCanon.GetFlowOfRiverAtEdge(cell, edgeWithRiver);
+                }
 
                 mapData.HexCells.Add(newCellData);
             }
@@ -72,8 +76,12 @@ namespace Assets.Simulation.MapManagement {
                 cellToModify.SuppressSlot        = cellData.SuppressSlot;
                 cellToModify.HasRoads            = cellData.HasRoads;
 
-                if(cellData.HasOutgoingRiver) {
-                    RiverCanon.SetOutgoingRiver(cellToModify, cellData.OutgoingRiver);
+                for(int i = 0; i < 6; i++) {
+                    var edge = (HexDirection)i;
+
+                    if(cellData.HasRiverAtEdge[i] && !RiverCanon.HasRiverAlongEdge(cellToModify, edge)) {
+                        RiverCanon.AddRiverToCell(cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]);
+                    }
                 }
 
                 cellToModify.WorkerSlot.IsOccupied = cellData.IsSlotOccupied;

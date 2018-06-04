@@ -33,6 +33,14 @@ namespace Assets.Simulation.HexMap {
             V5 = cornerTwo;
         }
 
+        public EdgeVertices(Vector3 v1, Vector3 v2, Vector3 v3, Vector3 v4, Vector3 v5) {
+            V1 = v1;
+            V2 = v2;
+            V3 = v3;
+            V4 = v4;
+            V5 = v5;
+        }
+
         #endregion
 
         #region instance methods

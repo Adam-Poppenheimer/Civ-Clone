@@ -20,6 +20,7 @@ namespace Assets.Simulation.HexMap {
         public CellPointerEnterSignal                      PointerEnterSignal { get; private set; }
         public CellPointerExitSignal                       PointerExitSignal  { get; private set; }
         public ISubject<Tuple<IHexCell, PointerEventData>> PointerDownSignal  { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> DraggedSignal      { get; private set; }
 
         public ISubject<IHexCell> FoundationElevationChangedSignal  { get; private set; }
         public ISubject<IHexCell> ShapeChangedSignal                { get; private set; }
@@ -37,6 +38,7 @@ namespace Assets.Simulation.HexMap {
             PointerEnterSignal = pointerEnterSignal;
             PointerExitSignal  = pointerExitSignal;
             PointerDownSignal  = new Subject<Tuple<IHexCell, PointerEventData>>();
+            DraggedSignal      = new Subject<Tuple<IHexCell, PointerEventData>>();
 
             FoundationElevationChangedSignal  = new Subject<IHexCell>();
             ShapeChangedSignal                = new Subject<IHexCell>();

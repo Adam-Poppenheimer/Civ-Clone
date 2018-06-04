@@ -15,7 +15,7 @@ MonoBehaviour:
   _slopeMoveCost: 1
   _cityMoveCost: 1
   _roadMoveCostMultiplier: 0.5
-  _waterLevel: 4
+  _waterLevel: 3
   BaseMoveCost: 1
   GrasslandYield:
     Food: 2

@@ -263,45 +263,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCells_RiverDataRecorded() {
-            var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
-            var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
-            var cellThree = BuildHexCell(new HexCoordinates(4, 5));
-
-            MockRiverCanon.Setup(canon => canon.HasOutgoingRiver(cellOne))  .Returns(true);
-            MockRiverCanon.Setup(canon => canon.HasOutgoingRiver(cellTwo))  .Returns(true);
-            MockRiverCanon.Setup(canon => canon.HasOutgoingRiver(cellThree)).Returns(false);
-
-            MockRiverCanon.Setup(canon => canon.GetOutgoingRiver(cellOne))  .Returns(HexDirection.E);
-            MockRiverCanon.Setup(canon => canon.GetOutgoingRiver(cellTwo))  .Returns(HexDirection.W);
-            MockRiverCanon.Setup(canon => canon.GetOutgoingRiver(cellThree)).Returns(HexDirection.SE);
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            var mapData = new SerializableMapData();
-
-            composer.ComposeCells(mapData);
-
-            var dataLikeCellOne = mapData.HexCells.Where(
-                data => data.Coordinates      == cellOne.Coordinates
-                     && data.HasOutgoingRiver == true
-                     && data.OutgoingRiver    == HexDirection.E
-            );
-
-            var dataLikeCellTwo = mapData.HexCells.Where(
-                data => data.Coordinates      == cellTwo.Coordinates
-                     && data.HasOutgoingRiver == true
-                     && data.OutgoingRiver    == HexDirection.W
-            );
-
-            var dataLikeCellThree = mapData.HexCells.Where(
-                data => data.Coordinates      == cellThree.Coordinates
-                     && data.HasOutgoingRiver == false
-                     && data.OutgoingRiver    == HexDirection.SE
-            );
-
-            Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
-            Assert.AreEqual(1, dataLikeCellTwo.Count(),   "Unexpected number of data representing CellTwo");
-            Assert.AreEqual(1, dataLikeCellThree.Count(), "Unexpected number of data representing CellThree");
+            throw new NotImplementedException();
         }
 
         [Test]
@@ -473,35 +435,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeCells_RiverDataSetProperly() {
-            var mapData = new SerializableMapData() {
-                HexCells = new List<SerializableHexCellData>() {
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0), HasOutgoingRiver = false,
-                        OutgoingRiver = HexDirection.E
-                    },
-                    new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), HasOutgoingRiver = true,
-                        OutgoingRiver = HexDirection.SE
-                    },
-                }
-            };
-
-            var composer = Container.Resolve<HexCellComposer>();
-
-            composer.DecomposeCells(mapData);
-
-            var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
-            var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
-
-            MockRiverCanon.Verify(
-                canon => canon.SetOutgoingRiver(cellOne, It.IsAny<HexDirection>()),
-                Times.Never, "Unexpected call to SetOutgoingRiver on CellOne"
-            );
-
-            MockRiverCanon.Verify(
-                canon => canon.SetOutgoingRiver(cellTwo, HexDirection.SE),
-                Times.Once, "SetOutgoingRiver not called on cellTwo as expected"
-            );
+            throw new NotImplementedException();
         }
 
         [Test]

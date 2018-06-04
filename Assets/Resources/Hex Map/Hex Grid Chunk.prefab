@@ -144,6 +144,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4144246859062056}
   - component: {fileID: 114137592705337108}
+  - component: {fileID: 114308610398214188}
+  - component: {fileID: 114046177623957754}
   m_Layer: 0
   m_Name: Hex Grid Chunk
   m_TagString: Untagged
@@ -568,6 +570,21 @@ MeshFilter:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1533324543438160}
   m_Mesh: {fileID: 0}
+--- !u!114 &114046177623957754
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1679801979891694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 44056e41d5d493040bb5a4d7319284fe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Terrain: {fileID: 114749892619900210}
+  Roads: {fileID: 114415578841082280}
+  Rivers: {fileID: 114275613597108862}
+  Water: {fileID: 114700860226082344}
 --- !u!114 &114137592705337108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -646,6 +663,23 @@ MonoBehaviour:
   UseUV2Coordinates: 0
   UseCellData: 1
   UseColors: 0
+--- !u!114 &114308610398214188
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1679801979891694}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 08eca9f7688a0a24685b89133b020c8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _installers:
+  - {fileID: 114046177623957754}
+  _installerPrefabs: []
+  _scriptableObjectInstallers: []
+  _autoRun: 1
+  _kernel: {fileID: 0}
 --- !u!114 &114415578841082280
 MonoBehaviour:
   m_ObjectHideFlags: 1

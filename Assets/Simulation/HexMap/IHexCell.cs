@@ -25,10 +25,12 @@ namespace Assets.Simulation.HexMap {
         int EdgeElevation       { get; }
         int PeakElevation       { get; }
 
-        float PeakY       { get; }
+        float PeakY         { get; }
         float EdgeY         { get; }
         float StreamBedY    { get; }
         float RiverSurfaceY { get; }
+
+        bool RequiresYPerturb { get; }
 
         bool HasRoads { get; set; }
 
@@ -55,8 +57,6 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         #region methods
-
-        HexEdgeType GetEdgeType(IHexCell otherCell);
 
         int GetElevationDifference(HexDirection direction);
 
