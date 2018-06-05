@@ -16,9 +16,18 @@ namespace Assets.Simulation.HexMap {
 
         Color Weights123 { get; }
 
+        HexMesh Culture { get; }
+
         #endregion
 
         #region methods
+
+        void ClearMeshes();
+        void ApplyMeshes();
+
+        CellTriangulationData GetTriangulationData(
+            IHexCell center, IHexCell left, IHexCell right, HexDirection direction
+        );
 
         void TriangulateEdgeFan(
             Vector3 center, EdgeVertices edge, float index, bool perturbY = false

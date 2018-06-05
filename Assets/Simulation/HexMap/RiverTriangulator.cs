@@ -43,40 +43,34 @@ namespace Assets.Simulation.HexMap {
 
         #region from IRiverTriangulator
 
-        public void TriangulateConnectionAsRiver(
-            HexDirection direction, IHexCell cell, EdgeVertices nearEdge
-        ) {
-            IHexCell previousNeighbor = Grid.GetNeighbor(cell, direction.Previous());
-            IHexCell neighbor         = Grid.GetNeighbor(cell, direction);            
-            IHexCell nextNeighbor     = Grid.GetNeighbor(cell, direction.Next());
+        public bool ShouldTriangulateRiverConnection(CellTriangulationData thisData) {
+            return thisData.Direction <= HexDirection.SE && thisData.IsRiverCorner;
+        }
 
-            var thisCornerData = new RiverData(cell, previousNeighbor, neighbor,     direction,        NoiseGenerator, RiverCanon);
-            var nextCornerData = new RiverData(cell, neighbor,         nextNeighbor, direction.Next(), NoiseGenerator, RiverCanon);            
+        public void TriangulateRiverConnection(CellTriangulationData thisData) {          
+            IHexCell nextNeighbor = Grid.GetNeighbor(thisData.Center, thisData.Direction.Next());
 
-            if(direction > HexDirection.SE) {
+            var nextData = MeshBuilder.GetTriangulationData(
+                thisData.Center, thisData.Right, nextNeighbor, thisData.Direction.Next()
+            );            
+
+            if(thisData.Direction > HexDirection.SE) {
                 return;
             }
 
             //Creates river edge troughs and surfaces in the direction if needed
-            if(thisCornerData.CenterToRightEdgeType == HexEdgeType.River) {
-                CreateRiverTrough_Edge(thisCornerData);
-                CreateRiverSurface_EdgesAndCorners(thisCornerData, nextCornerData);
-            }
-
-            if(direction > HexDirection.E) {
-                return;
+            if(thisData.CenterToRightEdgeType == HexEdgeType.River) {
+                CreateRiverTrough_Edge(thisData);
+                CreateRiverSurface_EdgesAndCorners(thisData, nextData);
             }
 
             //Creates river corner troughs and surfaces at the previous corner if needed
-            if( thisCornerData.CenterToRightEdgeType == HexEdgeType.River ||
-                thisCornerData.CenterToLeftEdgeType  == HexEdgeType.River ||
-                thisCornerData.LeftToRightEdgeType   == HexEdgeType.River
-            ) {
-                CreateRiverTrough_Corner(thisCornerData);
+            if(thisData.Direction <= HexDirection.SE && thisData.IsRiverCorner) {
+                CreateRiverTrough_Corner(thisData);
             }
         }
 
-        private void CreateRiverTrough_Corner(RiverData data) {
+        private void CreateRiverTrough_Corner(CellTriangulationData data) {
             if(data.AllEdgesHaveRivers) {
                 //There is a confluence at the corner
                 CreateRiverTrough_Confluence (data);
@@ -88,17 +82,15 @@ namespace Assets.Simulation.HexMap {
                     //CreateRiverTrough_Curve draws relative to the inside of the curve,
                     //We rotate our river data so that Right is in the center, Center
                     //is on the left, and Left is on the right
-                    CreateRiverTrough_Curve(new RiverData(
-                        data.Right, data.Center, data.Left, data.Direction.Opposite().Next(),
-                        NoiseGenerator, RiverCanon
+                    CreateRiverTrough_Curve(MeshBuilder.GetTriangulationData(
+                        data.Right, data.Center, data.Left, data.Direction.Opposite().Next()
                     ));
                 }else if(data.CenterToRightEdgeType != HexEdgeType.River) {
                     //There is a river corner and Left is on its inside edge. We must
                     //rotate so that Left is in the center, Right is on the left, and
                     //Center is on the right
-                    CreateRiverTrough_Curve(new RiverData(
-                        data.Left, data.Right, data.Center, data.Direction.Next2(),
-                        NoiseGenerator, RiverCanon
+                    CreateRiverTrough_Curve(MeshBuilder.GetTriangulationData(
+                        data.Left, data.Right, data.Center, data.Direction.Next2()
                     ));
                 }else {
                     //There is a river corner and Center is on its inside edge
@@ -109,9 +101,8 @@ namespace Assets.Simulation.HexMap {
             //pointing towards Left
             }else if(data.CenterToLeftEdgeType == HexEdgeType.River) {
                 //There is an endpoint pointing towards Right
-                CreateRiverTrough_Endpoint(new RiverData(
-                    data.Left, data.Right, data.Center, data.Direction.Next2(),
-                    NoiseGenerator, RiverCanon
+                CreateRiverTrough_Endpoint(MeshBuilder.GetTriangulationData(
+                    data.Left, data.Right, data.Center, data.Direction.Next2()
                 ));
 
             }else if(data.CenterToRightEdgeType == HexEdgeType.River) {
@@ -120,36 +111,15 @@ namespace Assets.Simulation.HexMap {
 
             }else if(data.LeftToRightEdgeType == HexEdgeType.River) {
                 //There is an endpoint pointing towards Center
-                CreateRiverTrough_Endpoint(new RiverData(
-                    data.Right, data.Center, data.Left, data.Direction.Opposite().Next(),
-                    NoiseGenerator, RiverCanon
+                CreateRiverTrough_Endpoint(MeshBuilder.GetTriangulationData(
+                    data.Right, data.Center, data.Left, data.Direction.Opposite().Next()
                 ));
-            }
-        }
-
-        public bool HasRiverCorner(IHexCell cell, HexDirection direction) {
-            IHexCell neighbor     = Grid.GetNeighbor(cell, direction);
-            IHexCell nextNeighbor = Grid.GetNeighbor(cell, direction.Next());
-
-            if(neighbor != null && RiverCanon.HasRiverAlongEdge(cell, direction)) {
-                return true;
-
-            }else if(nextNeighbor != null && RiverCanon.HasRiverAlongEdge(cell, direction.Next())) {
-                return true;
-
-            }else if(
-                neighbor != null && nextNeighbor != null &&
-                RiverCanon.HasRiverAlongEdge(neighbor, direction.Opposite().Previous())
-            ){
-                return true;
-            }else {
-                return false;
             }
         }
 
         #endregion
 
-        private void CreateRiverTrough_Edge(RiverData data){
+        private void CreateRiverTrough_Edge(CellTriangulationData data){
             MeshBuilder.TriangulateEdgeStrip(
                 data.CenterToRightEdge, MeshBuilder.Weights1,  data.Center.Index, data.Center.RequiresYPerturb,
                 data.CenterRightTrough, MeshBuilder.Weights12, data.Right.Index,  false,
@@ -168,7 +138,7 @@ namespace Assets.Simulation.HexMap {
         //In order to handle rivers of different elevation, this method averages the Y values
         //of nearby river edges. This can sometimes cause rivers to flow uphill, though
         //the effect is usually unnoticeable as long as elevation perturbation is small.
-        private void CreateRiverSurface_EdgesAndCorners(RiverData thisData, RiverData nextData){
+        private void CreateRiverSurface_EdgesAndCorners(CellTriangulationData thisData, CellTriangulationData nextData){
             float upRiverSurfaceY, midRiverSurfaceY, downRiverSurfaceY;
 
             Vector3 upRiverLeftBank, upRiverRightBank, downRiverLeftBank, downRiverRightBank;
@@ -253,7 +223,7 @@ namespace Assets.Simulation.HexMap {
         //so that UVs wrap properly.
         //Confluences and endpoints are handled separately.
         private void CalculateRiverSurfaceEdgeProperties(
-            RiverData data, bool targetingNextCorner,
+            CellTriangulationData data, bool targetingNextCorner,
             out float riverSurfaceY, out Vector3 riverLeftBank, out Vector3 riverRightBank,
             out float param
         ) {
@@ -382,7 +352,7 @@ namespace Assets.Simulation.HexMap {
 
         //This method currently places a static water triangle at the confluence as a first approximation.
         //Managing the UV for proper river flow is quite complex and is being deferred to a later date.
-        private void CreateRiverSurface_Confluence(RiverData data) {
+        private void CreateRiverSurface_Confluence(CellTriangulationData data) {
             float confluenceY = Mathf.Min(
                 data.Center.RiverSurfaceY, data.Left.RiverSurfaceY, data.Right.RiverSurfaceY
             );
@@ -419,9 +389,8 @@ namespace Assets.Simulation.HexMap {
                 //We need to rotate our data to make sure that Right is the new center and
                 //Left is the new right
                 CreateRiverSurface_Waterfall(
-                    new RiverData(
-                        data.Right, data.Center, data.Left, data.Direction.Previous2(),
-                        NoiseGenerator, RiverCanon
+                    MeshBuilder.GetTriangulationData(
+                        data.Right, data.Center, data.Left, data.Direction.Previous2()
                     ),
                     yAdjustedRight, yAdjustedCenter, yAdjustedLeft
                 );
@@ -433,9 +402,8 @@ namespace Assets.Simulation.HexMap {
                 //we need to rotate our data to make sure that Center is the new Right
                 //and Left is the new center
                 CreateRiverSurface_Waterfall(
-                    new RiverData(
-                        data.Left, data.Right, data.Center, data.Direction.Next2(),
-                        NoiseGenerator, RiverCanon
+                    MeshBuilder.GetTriangulationData(
+                        data.Left, data.Right, data.Center, data.Direction.Next2()
                     ),
                     yAdjustedLeft, yAdjustedRight, yAdjustedCenter
                 );
@@ -446,7 +414,7 @@ namespace Assets.Simulation.HexMap {
         //waterfall should flow from the river between Center and Left into the
         //corner, towards Right.
         private void CreateRiverSurface_Waterfall(
-            RiverData data, Vector3 yAdjustedCenter, Vector3 yAdjustedLeft, Vector3 yAdjustedRight
+            CellTriangulationData data, Vector3 yAdjustedCenter, Vector3 yAdjustedLeft, Vector3 yAdjustedRight
         ){
             float edgeY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
 
@@ -499,7 +467,7 @@ namespace Assets.Simulation.HexMap {
         //Draws six triangles connecting the three inward-facing solid corners of the triangles, the
         //troughs of the rivers on all three edges, and the confluence point at the middle of the
         //intersecting rivers
-        private void CreateRiverTrough_Confluence(RiverData data){
+        private void CreateRiverTrough_Confluence(CellTriangulationData data){
             //Triangle pointing at center, which LeftRight river flows towards
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 NoiseGenerator.Perturb(data.CenterCorner,           data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights1,
@@ -530,7 +498,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         //Non-rivered edge is between right and left. Center is on the inside of the curve
-        private void CreateRiverTrough_Curve(RiverData data){
+        private void CreateRiverTrough_Curve(CellTriangulationData data){
             //The inside of the curve is always a single triangle, since the two
             //riverine edges prevent anything tricky from happening
             MeshBuilder.AddTerrainTriangleUnperturbed(
@@ -554,7 +522,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         //Non-rivered edge is between right and left. Outer river bank is opposite center
-        private void CreateRiverTrough_OuterCurveFlat(RiverData data){
+        private void CreateRiverTrough_OuterCurveFlat(CellTriangulationData data){
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
@@ -568,7 +536,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         //Non-rivered edge is between right and left. Outer river bank is opposite center
-        private void CreateRiverOuterCurveSloped_TerracesClockwiseUp(RiverData data) {
+        private void CreateRiverOuterCurveSloped_TerracesClockwiseUp(CellTriangulationData data) {
             //We need to converge the terraces to the convergence point, which is set at some point
             //between the right trough and the right point
             var convergencePoint = Vector3.Lerp(
@@ -630,7 +598,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         //Non-rivered edge is between right and left. Outer river bank is opposite center
-        private void CreateRiverOuterCurveSloped_TerracesClockwiseDown(RiverData data) {
+        private void CreateRiverOuterCurveSloped_TerracesClockwiseDown(CellTriangulationData data) {
             //We need to converge the terraces to the convergence point, which is set at some point
             //between the left trough and the left point
             var convergencePoint = Vector3.Lerp(
@@ -692,7 +660,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         //Rivered edge is between Center and Right. River endpoint is pointing at Left
-        private void CreateRiverTrough_Endpoint(RiverData data) {
+        private void CreateRiverTrough_Endpoint(CellTriangulationData data) {
             if(data.Left == null) {
                 return;
             }
@@ -742,7 +710,7 @@ namespace Assets.Simulation.HexMap {
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
         //and Center/Left and Left/Right are both flat edges. This leads to a river running
         //into the back of a terraced slope.
-        private void CreateRiverEndpointTrough_DoubleFlat(RiverData data) {
+        private void CreateRiverEndpointTrough_DoubleFlat(CellTriangulationData data) {
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,            data.Right .Index, MeshBuilder.Weights2,
@@ -760,7 +728,7 @@ namespace Assets.Simulation.HexMap {
 
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
         //and Center/Left and Left/Right are both terraced edges
-        private void CreateRiverEndpointTrough_DoubleTerracesUp(RiverData data) {
+        private void CreateRiverEndpointTrough_DoubleTerracesUp(CellTriangulationData data) {
             Vector3 toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
             Color   toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
@@ -827,7 +795,7 @@ namespace Assets.Simulation.HexMap {
         //above Left, with slopes going down towards Left from both sides.
         //This converges all of the terraced edges to the center trough of the river.
         //Consider figuring out a better policy.
-        private void CreateRiverEndpointTrough_DoubleTerracesDown(RiverData data) {
+        private void CreateRiverEndpointTrough_DoubleTerracesDown(CellTriangulationData data) {
             Vector3 leftCenterTerracePointTwo = HexMetrics.TerraceLerp(
                 data.LeftCorner, data.CenterCorner, 1
             );
@@ -916,9 +884,8 @@ namespace Assets.Simulation.HexMap {
 
             //We need to rotate to make sure that our water cell is on the Right
             CreateRiverSurface_Waterfall(
-                new RiverData(
-                    data.Right, data.Center, data.Left, data.Direction.Previous2(),
-                    NoiseGenerator, RiverCanon
+                MeshBuilder.GetTriangulationData(
+                    data.Right, data.Center, data.Left, data.Direction.Previous2()
                 ),
                 yAdjustedRight, yAdjustedCenter, yAdjustedLeft
             );
@@ -926,7 +893,7 @@ namespace Assets.Simulation.HexMap {
 
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
         //and Center/Left and Left/Right are both cliffed edges
-        private void CreateRiverEndpointTrough_DoubleCliff(RiverData data) {
+        private void CreateRiverEndpointTrough_DoubleCliff(CellTriangulationData data) {
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights1,
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights2,
@@ -955,9 +922,8 @@ namespace Assets.Simulation.HexMap {
 
             //We need to rotate to make sure that our water cell is on the Right
             CreateRiverSurface_Waterfall(
-                new RiverData(
-                    data.Right, data.Center, data.Left, data.Direction.Previous2(),
-                    NoiseGenerator, RiverCanon
+                MeshBuilder.GetTriangulationData(
+                    data.Right, data.Center, data.Left, data.Direction.Previous2()
                 ),
                 yAdjustedRight, yAdjustedCenter, yAdjustedLeft
             );
@@ -966,7 +932,7 @@ namespace Assets.Simulation.HexMap {
         //Rivered edge is between Center and Right. River endpoint is pointing at Left,
         //Center/Left is flat, and Left/Right is a terraced edge, which could only
         //Possible be pointing up
-        private void CreateRiverEndpointTrough_FlatTerraces(RiverData data) {
+        private void CreateRiverEndpointTrough_FlatTerraces(CellTriangulationData data) {
             //Adds the triangle opposite the terraced edge, equivalent to half of a flat endpoint
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
@@ -1023,7 +989,7 @@ namespace Assets.Simulation.HexMap {
         //Rivered edge is between Center and Right. River endpoint is pointing at left,
         //Center/Left is a terraced edge going down from Center to Left,
         //and Left/Right is flat
-        private void CreateRiverEndpointTrough_TerracesFlat(RiverData data) {
+        private void CreateRiverEndpointTrough_TerracesFlat(CellTriangulationData data) {
             //Builds out the flat, cliff-like surface opposite Center
             MeshBuilder.AddTerrainTriangleUnperturbed(
                 NoiseGenerator.Perturb(data.LeftCorner,  data.Left.RequiresYPerturb),  data.Left  .Index, MeshBuilder.Weights1,
@@ -1089,7 +1055,7 @@ namespace Assets.Simulation.HexMap {
         //This method handles only the case when Left is below Center and Right, and thus the terraced
         //slope is going down towards Left. The only way the terrace could go up is if Right
         //were Deep Water, which would prevent the existence of a river between Center and Right.
-        private void CreateRiverEndpointTrough_TerracesCliff(RiverData data) {
+        private void CreateRiverEndpointTrough_TerracesCliff(CellTriangulationData data) {
             //Builds the triangle that deals with the cliff edge attached to Right
             MeshBuilder.AddTerrainTriangle(
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
@@ -1132,7 +1098,7 @@ namespace Assets.Simulation.HexMap {
         //This method handles only the case where Left is below Center and Right, and thus the
         //terraced slope is going down from Right to Left. The only way the terrace could go up is
         //if Right were Deep Water, which would prevent the existence of a river between Center and Right.
-        private void CreateRiverEndpointTrough_CliffTerraces(RiverData data) {
+        private void CreateRiverEndpointTrough_CliffTerraces(CellTriangulationData data) {
             //Builds the triangle that deals with the cliff edge attached to Center
             MeshBuilder.AddTerrainTriangle(
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
@@ -1172,7 +1138,7 @@ namespace Assets.Simulation.HexMap {
             );
         }
 
-        private void CreateRiverEndpointSurface_Default(RiverData data) {
+        private void CreateRiverEndpointSurface_Default(CellTriangulationData data) {
             var indices = new Vector3(data.Center.Index, data.Left.Index, data.Right.Index);
 
             Vector3 yAdjustedCenter = data.PerturbedCenterCorner,

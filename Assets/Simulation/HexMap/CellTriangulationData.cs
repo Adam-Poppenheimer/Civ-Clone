@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    public class RiverData {
+    public class CellTriangulationData {
 
         #region instance fields and properties
 
@@ -216,6 +216,129 @@ namespace Assets.Simulation.HexMap {
         }
         private bool? _twoEdgesHaveRivers;
 
+        public bool IsRiverCorner {
+            get {
+                if(_isRiverCorner == null) {
+                    _isRiverCorner = CenterToLeftEdgeType  == HexEdgeType.River ||
+                                     CenterToRightEdgeType == HexEdgeType.River ||
+                                     LeftToRightEdgeType   == HexEdgeType.River;
+                }
+                return _isRiverCorner.GetValueOrDefault();
+            }
+        }
+        private bool? _isRiverCorner;
+
+        public Vector3 CenterPeak {
+            get {
+                if(_centerPeak == null) {
+                    _centerPeak = new Vector3(
+                        Center.transform.localPosition.x,
+                        Center.PeakY,
+                        Center.transform.localPosition.z
+                    );
+                }
+
+                return _centerPeak.GetValueOrDefault();
+            }
+        }
+        private Vector3? _centerPeak;
+
+        public EdgeVertices CenterToRightInnerEdge {
+            get {
+                if(_centerToRightInnerEdge == null) {
+                    _centerToRightInnerEdge = new EdgeVertices(
+                        CenterPeak + HexMetrics.GetFirstInnerSolidCorner (Direction),
+                        CenterPeak + HexMetrics.GetSecondInnerSolidCorner(Direction)
+                    );
+                }
+
+                return _centerToRightInnerEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToRightInnerEdge;
+
+        public IEnumerable<Vector3> CenterFeatureLocations {
+            get {
+                if(_featureLocations == null) {
+                    _featureLocations = new List<Vector3>() {
+                        (Center.transform.localPosition + CenterToRightEdge.V1 + CenterToRightEdge.V5) * (1f / 3f)
+                    };
+                }
+
+                return _featureLocations;
+            }
+        }
+        private List<Vector3> _featureLocations;
+
+        public Vector3 CenterWaterMidpoint {
+            get {
+                if(_centerWaterMidpoint == null) {
+                    _centerWaterMidpoint = new Vector3(
+                        Center.transform.localPosition.x,
+                        Center.WaterSurfaceY,
+                        Center.transform.localPosition.z
+                    );
+                }
+
+                return _centerWaterMidpoint.GetValueOrDefault();
+            }
+        }
+        private Vector3? _centerWaterMidpoint;
+
+        public EdgeVertices CenterToRightWaterEdge {
+            get {
+                if(_centerToRightWaterEdge == null) {
+                    var newEdge = new EdgeVertices(
+                        Center.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction),
+                        Center.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction)
+                    );
+
+                    newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Center.WaterSurfaceY;
+
+                    _centerToRightWaterEdge = newEdge;
+                }
+
+                return _centerToRightWaterEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToRightWaterEdge;
+
+        public EdgeVertices RightToCenterWaterEdge {
+            get {
+                if(_rightToCenterWaterEdge == null) {
+                    var newEdge = new EdgeVertices(
+                        Right.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction.Opposite()),
+                        Right.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction.Opposite())
+                    );
+
+                    newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Right.WaterSurfaceY;
+
+                    _rightToCenterWaterEdge = newEdge;
+                }
+
+                return _rightToCenterWaterEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _rightToCenterWaterEdge;
+
+        public EdgeVertices LeftToCenterWaterEdge {
+            get {
+                if(_leftToCenterWaterEdge == null) {
+                    var newEdge = new EdgeVertices(
+                        Left.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction.Next2()),
+                        Left.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction.Next2())
+                    );
+
+                    newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Left.WaterSurfaceY;
+
+                    _leftToCenterWaterEdge = newEdge;
+                }
+
+                return _leftToCenterWaterEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToCenterWaterEdge;
+
 
 
         private INoiseGenerator NoiseGenerator;
@@ -225,7 +348,7 @@ namespace Assets.Simulation.HexMap {
 
         #region constructors
 
-        public RiverData(
+        public CellTriangulationData(
             IHexCell center, IHexCell left,
             IHexCell right, HexDirection direction,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon

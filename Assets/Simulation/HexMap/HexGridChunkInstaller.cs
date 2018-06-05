@@ -17,6 +17,9 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh Roads;
         [SerializeField] private HexMesh Rivers;
         [SerializeField] private HexMesh Water;
+        [SerializeField] private HexMesh Culture;
+        [SerializeField] private HexMesh WaterShore;
+        [SerializeField] private HexMesh Estuaries;
 
         #endregion
 
@@ -25,13 +28,19 @@ namespace Assets.Simulation.HexMap {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<HexMesh>().WithId("Terrain").FromInstance(Terrain);
-            Container.Bind<HexMesh>().WithId("Roads")  .FromInstance(Roads);
-            Container.Bind<HexMesh>().WithId("Rivers") .FromInstance(Rivers);
-            Container.Bind<HexMesh>().WithId("Water")  .FromInstance(Water);
+            Container.Bind<HexMesh>().WithId("Terrain")    .FromInstance(Terrain);
+            Container.Bind<HexMesh>().WithId("Roads")      .FromInstance(Roads);
+            Container.Bind<HexMesh>().WithId("Rivers")     .FromInstance(Rivers);
+            Container.Bind<HexMesh>().WithId("Water")      .FromInstance(Water);
+            Container.Bind<HexMesh>().WithId("Culture")    .FromInstance(Culture);
+            Container.Bind<HexMesh>().WithId("Water Shore").FromInstance(WaterShore);
+            Container.Bind<HexMesh>().WithId("Estuaries")  .FromInstance(Estuaries);
 
-            Container.Bind<IHexGridMeshBuilder>().To<HexGridMeshBuilder>().AsSingle();
-            Container.Bind<IRiverTriangulator> ().To<RiverTriangulator> ().AsSingle();
+            Container.Bind<IHexGridMeshBuilder>      ().To<HexGridMeshBuilder>      ().AsSingle();
+            Container.Bind<IRiverTriangulator>       ().To<RiverTriangulator>       ().AsSingle();
+            Container.Bind<ICultureTriangulator>     ().To<CultureTriangulator>     ().AsSingle();
+            Container.Bind<IBasicTerrainTriangulator>().To<BasicTerrainTriangulator>().AsSingle();
+            Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
         }
 
         #endregion

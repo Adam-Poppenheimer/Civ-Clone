@@ -11,11 +11,8 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        void TriangulateConnectionAsRiver(
-            HexDirection direction, IHexCell cell, EdgeVertices nearEdge
-        );
-
-        bool HasRiverCorner(IHexCell cell, HexDirection direction);
+        bool ShouldTriangulateRiverConnection(CellTriangulationData thisData);
+        void TriangulateRiverConnection      (CellTriangulationData thisData);
 
         #endregion
 

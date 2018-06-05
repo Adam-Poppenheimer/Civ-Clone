@@ -60,28 +60,41 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private HexMesh         Terrain;
-        private HexMesh         Roads;
-        private HexMesh         Rivers;
-        private HexMesh         Water;
+        public HexMesh Terrain    { get; private set; }
+        public HexMesh Roads      { get; private set; }
+        public HexMesh Rivers     { get; private set; }
+        public HexMesh Water      { get; private set; }
+        public HexMesh Culture    { get; private set; }
+        public HexMesh WaterShore { get; private set; }
+        public HexMesh Estuaries  { get; private set; }
+
         private INoiseGenerator NoiseGenerator;
+        private IRiverCanon     RiverCanon;
 
         #endregion
 
         #region constructors
 
         public HexGridMeshBuilder(
-            [Inject(Id = "Terrain")] HexMesh terrain,
-            [Inject(Id = "Roads")]   HexMesh roads,
-            [Inject(Id = "Rivers")]  HexMesh rivers,
-            [Inject(Id = "Water")]   HexMesh water,
-            INoiseGenerator noiseGenerator
+            [Inject(Id = "Terrain")]     HexMesh terrain,
+            [Inject(Id = "Roads")]       HexMesh roads,
+            [Inject(Id = "Rivers")]      HexMesh rivers,
+            [Inject(Id = "Water")]       HexMesh water,
+            [Inject(Id = "Culture")]     HexMesh culture,
+            [Inject(Id = "Water Shore")] HexMesh waterShore,
+            [Inject(Id = "Estuaries")]   HexMesh estuaries,
+            INoiseGenerator noiseGenerator, IRiverCanon riverCanon
         ) {
-            Terrain        = terrain;
-            Roads          = roads;
-            Rivers         = rivers;
-            Water          = water;
+            Terrain    = terrain;
+            Roads      = roads;
+            Rivers     = rivers;
+            Water      = water;
+            Culture    = culture;
+            WaterShore = waterShore;
+            Estuaries  = estuaries;
+
             NoiseGenerator = noiseGenerator;
+            RiverCanon     = riverCanon;
         }
 
         #endregion
@@ -89,6 +102,32 @@ namespace Assets.Simulation.HexMap {
         #region instance methods
 
         #region from HexGridMeshBuilder
+
+        public void ClearMeshes() {
+            Terrain   .Clear();
+            Rivers    .Clear();
+            Roads     .Clear();
+            Water     .Clear();
+            WaterShore.Clear();
+            Estuaries .Clear();
+            Culture   .Clear();
+        }
+
+        public void ApplyMeshes() {
+            Terrain   .Apply();
+            Rivers    .Apply();
+            Roads     .Apply();
+            Water     .Apply();
+            WaterShore.Apply();
+            Estuaries .Apply();
+            Culture   .Apply();
+        }
+
+        public CellTriangulationData GetTriangulationData(
+            IHexCell center, IHexCell left, IHexCell right, HexDirection direction
+        ) {
+            return new CellTriangulationData(center, left, right, direction, NoiseGenerator, RiverCanon);
+        }
 
         public void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index, bool perturbY = false) {
             Terrain.AddTriangle(center, edge.V1, edge.V2, perturbY);
