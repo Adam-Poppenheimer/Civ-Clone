@@ -16,8 +16,6 @@ namespace Assets.Simulation.HexMap {
         private IHexGrid            Grid;
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
-        private HexMesh             Terrain;
-        private HexMesh             Roads;
 
         #endregion
 
@@ -26,15 +24,11 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public BasicTerrainTriangulator(
             IHexGrid grid, IHexGridMeshBuilder meshBuilder,
-            INoiseGenerator noiseGenerator,
-            [Inject(Id = "Terrain")] HexMesh terrain,
-            [Inject(Id = "Roads")] HexMesh roads
+            INoiseGenerator noiseGenerator
         ) {
             Grid           = grid;
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
-            Terrain        = terrain;
-            Roads          = roads;
         }
 
         #endregion
@@ -68,16 +62,16 @@ namespace Assets.Simulation.HexMap {
                     ShouldRoadBeRendered(data.Center, data.Right)
                 );
             }else if(data.Center.Shape == TerrainShape.Hills || data.Right.Shape == TerrainShape.Hills){
-                TriangulateEdgeStrip_Hills(
+                MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, data.Right .RequiresYPerturb,
-                    ShouldRoadBeRendered(data.Center, data.Right)
+                    MeshBuilder.Terrain
                 );
             }else{
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index,
-                    ShouldRoadBeRendered(data.Center, data.Right)
+                    MeshBuilder.Terrain
                 );
             }
 
@@ -111,18 +105,20 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCenterWithHills(CellTriangulationData data) {
             MeshBuilder.TriangulateEdgeFan(
                 data.CenterPeak, data.CenterToRightInnerEdge,
-                data.Center.Index, true
+                data.Center.Index, MeshBuilder.Terrain, true
             );
 
-            TriangulateEdgeStrip_Hills(
+            MeshBuilder.TriangulateEdgeStrip(
                 data.CenterToRightInnerEdge, MeshBuilder.Weights1, data.Center.Index, true,
-                data.CenterToRightEdge,      MeshBuilder.Weights1, data.Center.Index, true
+                data.CenterToRightEdge,      MeshBuilder.Weights1, data.Center.Index, true,
+                MeshBuilder.Terrain
             );
         }
 
         private void TriangulateCenterWithoutHills(CellTriangulationData data){
             MeshBuilder.TriangulateEdgeFan(
-                data.CenterPeak, data.CenterToRightEdge, data.Center.Index
+                data.CenterPeak, data.CenterToRightEdge, data.Center.Index,
+                MeshBuilder.Terrain
             );
 
             if(data.Center.HasRoads) {
@@ -158,11 +154,11 @@ namespace Assets.Simulation.HexMap {
             Vector3 center, Vector3 middleLeft, Vector3 middleRight, EdgeVertices e,
             bool hasRoadThroughCellEdge, float index
         ) {
+            Vector3 indices;
+            indices.x = indices.y = indices.z = index;
+
             if(hasRoadThroughCellEdge) {
                 Vector3 middleCenter = Vector3.Lerp(middleLeft, middleRight, 0.5f);
-
-                Vector3 indices;
-                indices.x = indices.y = indices.z = index;
 
                 MeshBuilder.TriangulateRoadSegment(
                     middleLeft, middleCenter, middleRight,
@@ -170,31 +166,27 @@ namespace Assets.Simulation.HexMap {
                     MeshBuilder.Weights1, MeshBuilder.Weights2, indices
                 );
 
-                Roads.AddTriangle(center, middleLeft, middleCenter);
-                Roads.AddTriangle(center, middleCenter, middleRight);
-                Roads.AddTriangleUV(
-                    new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(1f, 0f)
-                );
-                Roads.AddTriangleUV(
-                    new Vector2(1f, 0f), new Vector2(1f, 0f), new Vector2(0f, 0f)
+                MeshBuilder.AddTriangle(
+                    center,       MeshBuilder.Weights1, new Vector2(1f, 0f),
+                    middleLeft,   MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    middleCenter, MeshBuilder.Weights1, new Vector2(1f, 0f),
+                    indices, MeshBuilder.Roads
                 );
 
-                Roads.AddTriangleCellData(indices, MeshBuilder.Weights1);
-                Roads.AddTriangleCellData(indices, MeshBuilder.Weights1);
+                MeshBuilder.AddTriangle(
+                    center,       MeshBuilder.Weights1, new Vector2(1f, 0f),
+                    middleCenter, MeshBuilder.Weights1, new Vector2(1f, 0f),
+                    middleRight,  MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    indices, MeshBuilder.Roads
+                );
             }else {
-                TriangulateRoadEdge(center, middleLeft, middleRight, index);
+                MeshBuilder.AddTriangle(
+                    center,      MeshBuilder.Weights1, new Vector2(1f, 0f),
+                    middleLeft,  MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    middleRight, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    indices, MeshBuilder.Roads
+                );
             }            
-        }
-
-        private void TriangulateRoadEdge(Vector3 center, Vector3 middleLeft, Vector3 middleRight, float index) {
-            Roads.AddTriangle(center, middleLeft, middleRight);
-            Roads.AddTriangleUV(
-                new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f)
-            );
-
-            Vector3 indices;
-            indices.x = indices.y = indices.z = index;
-            Roads.AddTriangleCellData(indices, MeshBuilder.Weights1);
         }
 
         private void TriangulateEdgeTerraces(
@@ -207,10 +199,10 @@ namespace Assets.Simulation.HexMap {
             float i1 = beginCell.Index;
             float i2 = endCell.Index;
 
-            TriangulateEdgeStrip_Hills(
+            MeshBuilder.TriangulateEdgeStrip(
                 begin,   MeshBuilder.Weights1, i1, beginCell.RequiresYPerturb,
                 edgeTwo, weights2,             i2, false,
-                hasRoad
+                MeshBuilder.Terrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -220,60 +212,21 @@ namespace Assets.Simulation.HexMap {
                 edgeTwo  = EdgeVertices.TerraceLerp(begin, end, i);
                 weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
-                TriangulateEdgeStrip_Hills(
+                MeshBuilder.TriangulateEdgeStrip(
                     edgeOne, weights1, i1, false,
                     edgeTwo, weights2, i2, false,
-                    hasRoad
+                    MeshBuilder.Terrain
                 );
             }
 
-            TriangulateEdgeStrip_Hills(
+            MeshBuilder.TriangulateEdgeStrip(
                 edgeTwo, weights2,             i1, false,
                 end,     MeshBuilder.Weights2, i2, endCell.RequiresYPerturb,
-                hasRoad
+                MeshBuilder.Terrain
             );
-        }
-
-        private void TriangulateEdgeStrip_Hills(
-            EdgeVertices e1, Color w1, float index1, bool perturbEdgeOne,
-            EdgeVertices e2, Color w2, float index2, bool perturbEdgeTwo,
-            bool hasRoad = false
-        ) {
-            Terrain.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(e1.V1, perturbEdgeOne), NoiseGenerator.Perturb(e1.V2, perturbEdgeOne),
-                NoiseGenerator.Perturb(e2.V1, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V2, perturbEdgeTwo)
-            );
-
-            Terrain.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(e1.V2, perturbEdgeOne), NoiseGenerator.Perturb(e1.V3, perturbEdgeOne),
-                NoiseGenerator.Perturb(e2.V2, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V3, perturbEdgeTwo)
-            );
-
-            Terrain.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(e1.V3, perturbEdgeOne), NoiseGenerator.Perturb(e1.V4, perturbEdgeOne),
-                NoiseGenerator.Perturb(e2.V3, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V4, perturbEdgeTwo)
-            );
-
-            Terrain.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(e1.V4, perturbEdgeOne), NoiseGenerator.Perturb(e1.V5, perturbEdgeOne),
-                NoiseGenerator.Perturb(e2.V4, perturbEdgeTwo), NoiseGenerator.Perturb(e2.V5, perturbEdgeTwo)
-            );
-
-            Vector3 indices;
-            indices.x = indices.z = index1;
-            indices.y = index2;
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-
-            if(hasRoad) {
-                MeshBuilder.TriangulateRoadSegment(e1.V2, e1.V3, e1.V4, e2.V2, e2.V3, e2.V4, w1, w2, indices);
-            }
         }
 
         private void TriangulateCorner(CellTriangulationData data) {
-
             var leftOrientedData = MeshBuilder.GetTriangulationData(
                 data.Left, data.Right, data.Center, data.Direction.Next2()
             );
@@ -310,19 +263,11 @@ namespace Assets.Simulation.HexMap {
                 }
 
             }else {
-                Terrain.AddTriangleUnperturbed(
-                    NoiseGenerator.Perturb(data.CenterCorner, data.Center.RequiresYPerturb),
-                    NoiseGenerator.Perturb(data.LeftCorner,   data.Left  .RequiresYPerturb),
-                    NoiseGenerator.Perturb(data.RightCorner,  data.Right .RequiresYPerturb)
-                );
-
-                Vector3 indices;
-                indices.x = data.Center.Index;
-                indices.y = data.Left  .Index;
-                indices.z = data.Right .Index;
-
-                Terrain.AddTriangleCellData(
-                    indices, MeshBuilder.Weights1, MeshBuilder.Weights2, MeshBuilder.Weights3
+                MeshBuilder.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(data.CenterCorner, data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights1,
+                    NoiseGenerator.Perturb(data.LeftCorner,   data.Left  .RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights2,
+                    NoiseGenerator.Perturb(data.RightCorner,  data.Right .RequiresYPerturb), data.Right .Index, MeshBuilder.Weights3,
+                    MeshBuilder.Terrain
                 );
             }            
         }
@@ -334,18 +279,12 @@ namespace Assets.Simulation.HexMap {
             Color w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
             Color w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
-            Vector3 indices;
-            indices.x = data.Center.Index;
-            indices.y = data.Left  .Index;
-            indices.z = data.Right .Index;
-
-            Terrain.AddTriangleUnperturbed(
-                data.PerturbedCenterCorner,
-                NoiseGenerator.Perturb(v3),
-                NoiseGenerator.Perturb(v4)
+            MeshBuilder.AddTriangleUnperturbed(
+                data.PerturbedCenterCorner, data.Center.Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(v3), data.Left  .Index, w3,
+                NoiseGenerator.Perturb(v4), data.Right .Index, w4,
+                MeshBuilder.Terrain
             );
-
-            Terrain.AddTriangleCellData(indices, MeshBuilder.Weights1, w3, w4);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v3;
@@ -358,17 +297,20 @@ namespace Assets.Simulation.HexMap {
                 w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
                 w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                Terrain.AddQuad(v1, v2, v3, v4);
-
-                Terrain.AddQuadCellData(indices, w1, w2, w3, w4);
+                MeshBuilder.AddQuad(
+                    v1, w1, v2, w2,
+                    v3, w3, v4, w4,
+                    data.Center.Index, data.Left.Index, data.Right.Index,
+                    MeshBuilder.Terrain
+                );
             }
 
-            Terrain.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(v3, false), NoiseGenerator.Perturb(v4, false),
-                data.PerturbedLeftCorner, data.PerturbedRightCorner
+            MeshBuilder.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(v3, false), w3,                   NoiseGenerator.Perturb(v4, false), w4,
+                data.PerturbedLeftCorner,          MeshBuilder.Weights2, data.PerturbedRightCorner,         MeshBuilder.Weights3,
+                data.Center.Index, data.Left.Index, data.Right.Index,
+                MeshBuilder.Terrain
             );
-
-            Terrain.AddQuadCellData(indices, w3, w4, MeshBuilder.Weights2, MeshBuilder.Weights3);
         }
 
         private void TriangulateCornerTerracesCliff(CellTriangulationData data){
@@ -398,13 +340,11 @@ namespace Assets.Simulation.HexMap {
                     indices
                 );
             }else {
-                Terrain.AddTriangleUnperturbed(
-                    NoiseGenerator.Perturb(data.LeftCorner,  data.Left .RequiresYPerturb),
-                    NoiseGenerator.Perturb(data.RightCorner, data.Right.RequiresYPerturb),
-                    boundary
-                );
-                Terrain.AddTriangleCellData(
-                    indices, MeshBuilder.Weights2, MeshBuilder.Weights3, boundaryWeights
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.PerturbedLeftCorner,  data.Center.Index, MeshBuilder.Weights2,
+                    data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights3,
+                    boundary,                  data.Right .Index, boundaryWeights,
+                    MeshBuilder.Terrain
                 );
             }
         }
@@ -434,12 +374,11 @@ namespace Assets.Simulation.HexMap {
                     boundary, boundaryWeights, indices
                 );
             }else {
-                Terrain.AddTriangleUnperturbed(
-                    data.PerturbedLeftCorner, data.PerturbedRightCorner, boundary
-                );
-
-                Terrain.AddTriangleCellData(
-                    indices, MeshBuilder.Weights2, MeshBuilder.Weights3, boundaryWeights
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.PerturbedLeftCorner,  data.Center.Index, MeshBuilder.Weights2,
+                    data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights3,
+                    boundary,                  data.Right .Index, boundaryWeights,
+                    MeshBuilder.Terrain
                 );
             }
         }
@@ -453,20 +392,28 @@ namespace Assets.Simulation.HexMap {
             Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
             Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
 
-            Terrain.AddTriangleUnperturbed(NoiseGenerator.Perturb(begin, perturbBeginY), v2, boundary);
-            Terrain.AddTriangleCellData(indices, beginWeights, w2, boundaryWeights);
+            MeshBuilder.AddTriangleUnperturbed(
+                NoiseGenerator.Perturb(begin, perturbBeginY), beginWeights,
+                v2, w2, boundary, boundaryWeights,
+                indices, MeshBuilder.Terrain
+            );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 Vector3 v1 = v2;
                 Color w1 = w2;
                 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
                 w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
-                Terrain.AddTriangleUnperturbed(v1, v2, boundary);
-                Terrain.AddTriangleCellData(indices, w1, w2, boundaryWeights);
+
+                MeshBuilder.AddTriangleUnperturbed(
+                    v1, w1, v2, w2, boundary, boundaryWeights,
+                    indices, MeshBuilder.Terrain
+                );
             }
 
-            Terrain.AddTriangleUnperturbed(v2, NoiseGenerator.Perturb(left, perturbLeftY), boundary);
-            Terrain.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
+            MeshBuilder.AddTriangleUnperturbed(
+                v2, w2, NoiseGenerator.Perturb(left, perturbLeftY), leftWeights,
+                boundary, boundaryWeights, indices, MeshBuilder.Terrain
+            );
         }
 
         private bool ShouldRoadBeRendered(IHexCell cell, IHexCell neighbor) {

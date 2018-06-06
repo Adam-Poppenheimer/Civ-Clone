@@ -56,7 +56,6 @@ namespace Assets.Simulation.HexMap {
         public Color Weights123 {
             get { return _weights123; }
         }
-        
 
         #endregion
 
@@ -129,41 +128,64 @@ namespace Assets.Simulation.HexMap {
             return new CellTriangulationData(center, left, right, direction, NoiseGenerator, RiverCanon);
         }
 
-        public void TriangulateEdgeFan(Vector3 center, EdgeVertices edge, float index, bool perturbY = false) {
-            Terrain.AddTriangle(center, edge.V1, edge.V2, perturbY);
-            Terrain.AddTriangle(center, edge.V2, edge.V3, perturbY);
-            Terrain.AddTriangle(center, edge.V3, edge.V4, perturbY);
-            Terrain.AddTriangle(center, edge.V4, edge.V5, perturbY);
+        public void TriangulateEdgeFan(
+            Vector3 center, EdgeVertices edge, float index, HexMesh targetedMesh, bool perturbY = false
+        ){
+            targetedMesh.AddTriangle(center, edge.V1, edge.V2, perturbY);
+            targetedMesh.AddTriangle(center, edge.V2, edge.V3, perturbY);
+            targetedMesh.AddTriangle(center, edge.V3, edge.V4, perturbY);
+            targetedMesh.AddTriangle(center, edge.V4, edge.V5, perturbY);
 
             Vector3 indices;
             indices.x = indices.y = indices.z = index;
-            Terrain.AddTriangleCellData(indices, Weights1);
-            Terrain.AddTriangleCellData(indices, Weights1);
-            Terrain.AddTriangleCellData(indices, Weights1);
-            Terrain.AddTriangleCellData(indices, Weights1);
+
+            targetedMesh.AddTriangleCellData(indices, Weights1);
+            targetedMesh.AddTriangleCellData(indices, Weights1);
+            targetedMesh.AddTriangleCellData(indices, Weights1);
+            targetedMesh.AddTriangleCellData(indices, Weights1);
+        }
+
+        public void TriangulateEdgeStrip(
+            EdgeVertices e1, Color w1, float index1,
+            EdgeVertices e2, Color w2, float index2,
+            HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuad(e1.V1, e1.V2, e2.V1, e2.V2);
+            targetedMesh.AddQuad(e1.V2, e1.V3, e2.V2, e2.V3);
+            targetedMesh.AddQuad(e1.V3, e1.V4, e2.V3, e2.V4);
+            targetedMesh.AddQuad(e1.V4, e1.V5, e2.V4, e2.V5);
+
+            Vector3 indices;
+            indices.x = indices.z = index1;
+            indices.y = index2;
+
+            targetedMesh.AddQuadCellData(indices, w1, w2);
+            targetedMesh.AddQuadCellData(indices, w1, w2);
+            targetedMesh.AddQuadCellData(indices, w1, w2);
+            targetedMesh.AddQuadCellData(indices, w1, w2);
         }
 
         public void TriangulateEdgeStrip(
             EdgeVertices e1, Color w1, float index1, bool perturbEdgeOneY,
             EdgeVertices e2, Color w2, float index2, bool perturbEdgeTwoY,
-            bool hasRoad = false
+            HexMesh targetMesh
         ) {
-            Terrain.AddQuadUnperturbed(
+            targetMesh.AddQuadUnperturbed(
                 NoiseGenerator.Perturb(e1.V1, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V2, perturbEdgeOneY),
                 NoiseGenerator.Perturb(e2.V1, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V2, perturbEdgeTwoY)
             );
 
-            Terrain.AddQuadUnperturbed(
+            targetMesh.AddQuadUnperturbed(
                 NoiseGenerator.Perturb(e1.V2, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V3, perturbEdgeOneY),
                 NoiseGenerator.Perturb(e2.V2, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V3, perturbEdgeTwoY)
             );
 
-            Terrain.AddQuadUnperturbed(
+            targetMesh.AddQuadUnperturbed(
                 NoiseGenerator.Perturb(e1.V3, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V4, perturbEdgeOneY),
                 NoiseGenerator.Perturb(e2.V3, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V4, perturbEdgeTwoY)
             );
 
-            Terrain.AddQuadUnperturbed(
+            targetMesh.AddQuadUnperturbed(
                 NoiseGenerator.Perturb(e1.V4, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V5, perturbEdgeOneY),
                 NoiseGenerator.Perturb(e2.V4, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V5, perturbEdgeTwoY)
             );
@@ -171,37 +193,50 @@ namespace Assets.Simulation.HexMap {
             Vector3 indices;
             indices.x = indices.z = index1;
             indices.y = index2;
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
 
-            if(hasRoad) {
-                TriangulateRoadSegment(e1.V2, e1.V3, e1.V4, e2.V2, e2.V3, e2.V4, w1, w2, indices);
-            }
+            targetMesh.AddQuadCellData(indices, w1, w2);
+            targetMesh.AddQuadCellData(indices, w1, w2);
+            targetMesh.AddQuadCellData(indices, w1, w2);
+            targetMesh.AddQuadCellData(indices, w1, w2);
         }
 
         public void TriangulateEdgeStrip(
-            EdgeVertices e1, Color w1, float index1,
-            EdgeVertices e2, Color w2, float index2,
-            bool hasRoad = false
+            EdgeVertices e1, Color w1, float index1, float v1, bool perturbEdgeOneY,
+            EdgeVertices e2, Color w2, float index2, float v2, bool perturbEdgeTwoY,
+            HexMesh targetMesh
         ) {
-            Terrain.AddQuad(e1.V1, e1.V2, e2.V1, e2.V2);
-            Terrain.AddQuad(e1.V2, e1.V3, e2.V2, e2.V3);
-            Terrain.AddQuad(e1.V3, e1.V4, e2.V3, e2.V4);
-            Terrain.AddQuad(e1.V4, e1.V5, e2.V4, e2.V5);
+            TriangulateEdgeStrip(
+                e1, w1, index1, perturbEdgeOneY,
+                e2, w2, index2, perturbEdgeTwoY,
+                targetMesh
+            );
 
-            Vector3 indices;
-            indices.x = indices.z = index1;
-            indices.y = index2;
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
-            Terrain.AddQuadCellData(indices, w1, w2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+        }
 
-            if(hasRoad) {
-                TriangulateRoadSegment(e1.V2, e1.V3, e1.V4, e2.V2, e2.V3, e2.V4, w1, w2, indices);
-            }
+        public void TriangulateEdgeStrip(
+            EdgeVertices e1, Color w1, float index1, float v1, bool perturbEdgeOneY,
+            EdgeVertices e2, Color w2, float index2, float v2, bool perturbEdgeTwoY,
+            Color color, HexMesh targetMesh
+        ) {
+            TriangulateEdgeStrip(
+                e1, w1, index1, perturbEdgeOneY,
+                e2, w2, index2, perturbEdgeTwoY,
+                targetMesh
+            );
+
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
         }
 
         public void TriangulateRoadSegment(
@@ -219,28 +254,145 @@ namespace Assets.Simulation.HexMap {
             Roads.AddQuadCellData(indices, w1, w2);
         }
 
-        public void AddTerrainTriangle(
+        public void AddTriangle(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
-            Vector3 vertexThree, int indexThree, Color weightsThree
+            Vector3 vertexThree, int indexThree, Color weightsThree,
+            HexMesh targetedMesh
         ) {
-            Terrain.AddTriangle(vertexOne, vertexTwo, vertexThree);
+            targetedMesh.AddTriangle(vertexOne, vertexTwo, vertexThree);
 
             Vector3 indices = new Vector3(indexOne, indexTwo, indexThree);
 
-            Terrain.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+            targetedMesh.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
         }
 
-        public void AddTerrainTriangleUnperturbed(
+        public void AddTriangle(
+            Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
+            Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
+            Vector3 vertexThree, Color weightsThree, Vector2 uv3,
+            Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddTriangle(vertexOne, vertexTwo, vertexThree);
+
+            targetedMesh.AddTriangleUV(uv1, uv2, uv3);
+
+            targetedMesh.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+        }
+
+        public void AddTriangleUnperturbed(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
-            Vector3 vertexThree, int indexThree, Color weightsThree
+            Vector3 vertexThree, int indexThree, Color weightsThree,
+            HexMesh targetedMesh
         ) {
-            Terrain.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
+            targetedMesh.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
 
             Vector3 indices = new Vector3(indexOne, indexTwo, indexThree);
 
-            Terrain.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+            targetedMesh.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+        }
+
+        public void AddTriangleUnperturbed(
+            Vector3 vertexOne,   Color weightsOne,
+            Vector3 vertexTwo,   Color weightsTwo,
+            Vector3 vertexThree, Color weightsThree,
+            Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
+
+            targetedMesh.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+        }
+
+        public void AddTriangleUnperturbed(
+            Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
+            Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
+            Vector3 vertexThree, Color weightsThree, Vector2 uv3,
+            Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
+
+            targetedMesh.AddTriangleUV(uv1, uv2, uv3);
+
+            targetedMesh.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
+        }
+
+        public void AddTriangleUnperturbed(
+            Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
+            Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
+            Vector3 vertexThree, Color weightsThree, Vector2 uv3,
+            Color color, Vector3 indices, HexMesh targetedMesh
+        ) {
+            AddTriangleUnperturbed(
+                vertexOne,   weightsOne,   uv1,
+                vertexTwo,   weightsTwo,   uv2,
+                vertexThree, weightsThree, uv3,
+                indices, targetedMesh
+            );
+
+            targetedMesh.AddTriangleColor(color);
+        }
+
+        public void AddQuad(
+            Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
+            Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
+            int indexOne, int indexTwo, int indexThree, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuad(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                new Vector3(indexOne, indexTwo, indexThree),
+                weightsOne, weightsTwo, weightsThree, weightsFour
+            );
+        }
+
+        public void AddQuad(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Color color, Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuad(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                indices, weightsBL, weightsBR, weightsTL, weightsTR
+            );
+
+            targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
+
+            targetedMesh.AddQuadColor(color);
+        }
+
+        public void AddQuadUnperturbed(
+            Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
+            Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
+            int indexOne, int indexTwo, int indexThree, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                new Vector3(indexOne, indexTwo, indexThree),
+                weightsOne, weightsTwo, weightsThree, weightsFour
+            );
+        }
+
+        public void AddQuadUnperturbed(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Color color, Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                indices, weightsBL, weightsBR, weightsTL, weightsTR
+            );
+
+            targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
+
+            targetedMesh.AddQuadColor(color);
         }
 
         public void TriangulateRiverQuad(
@@ -309,29 +461,6 @@ namespace Assets.Simulation.HexMap {
                 bottomLeft, bottomRight, topLeft, topRight,
                 vMin, vMax, isReversed, indices
             );
-        }
-
-        public void AddRiverTriangleUnperturbed(
-            Vector3 v1, Vector3 v2, Vector3 v3,
-            Vector2 uv1, Vector2 uv2, Vector2 uv3,
-            Vector3 indices
-        ) {
-            Rivers.AddTriangleUnperturbed(v1,  v2,  v3);
-            Rivers.AddTriangleUV(uv1, uv2, uv3);
-
-            Rivers.AddTriangleCellData(indices, Weights1, Weights2, Weights3);
-        }
-
-        public void AddWaterTriangleUnperturbed(
-            Vector3 vertexOne,   int indexOne,   Color weightsOne,
-            Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
-            Vector3 vertexThree, int indexThree, Color weightsThree
-        ) {
-            Water.AddTriangleUnperturbed(vertexOne, vertexTwo, vertexThree);
-
-            Vector3 indices = new Vector3(indexOne, indexTwo, indexThree);
-
-            Water.AddTriangleCellData(indices, weightsOne, weightsTwo, weightsThree);
         }
 
         #endregion

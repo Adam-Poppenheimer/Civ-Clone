@@ -599,11 +599,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bef604af287f94c4c926da10889ca1b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Terrain: {fileID: 114749892619900210}
-  Rivers: {fileID: 114275613597108862}
-  Roads: {fileID: 114415578841082280}
-  Water: {fileID: 114700860226082344}
-  WaterShore: {fileID: 114157243756510432}
   FeatureManager: {fileID: 114214256119993870}
 --- !u!114 &114157243756510432
 MonoBehaviour:

@@ -71,10 +71,10 @@ namespace Assets.Simulation.HexMap {
             if(data.CenterToRightEdgeType == HexEdgeType.Slope) {
                 TriangulateCultureTerraces(data, owner);
             }else {
-                TriangulateCultureEdgeStrip(
-                    data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
-                    data.RightToCenterEdge, MeshBuilder.Weights2, data.Right.Index,  data.Right .RequiresYPerturb,
-                    owner, 0f, 1f
+                MeshBuilder.TriangulateEdgeStrip(
+                    data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
+                    data.RightToCenterEdge, MeshBuilder.Weights2, data.Right.Index,  1f, data.Right .RequiresYPerturb,
+                    owner.Color, MeshBuilder.Culture
                 );
             }
 
@@ -117,81 +117,36 @@ namespace Assets.Simulation.HexMap {
             CellTriangulationData data, ICivilization owner
         ) {
             EdgeVertices edgeTwo  = EdgeVertices.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, 1);
-            float        uv2      = HexMetrics.TerraceLerp(0f, 1f, 1);
+            float        v2       = HexMetrics.TerraceLerp(0f, 1f, 1);
             Color        weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
-            TriangulateCultureEdgeStrip(
-                data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
-                edgeTwo,                weights2,             data.Right .Index, false,
-                owner, 0f, uv2
+            MeshBuilder.TriangulateEdgeStrip(
+                data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
+                edgeTwo,                weights2,             data.Right .Index, v2, false,
+                owner.Color, MeshBuilder.Culture
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
                 EdgeVertices edgeOne  = edgeTwo;
-                float        uv1      = uv2;
+                float        v1       = v2;
                 Color        weights1 = weights2;
 
                 edgeTwo  = EdgeVertices.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, i);
-                uv2      = HexMetrics.TerraceLerp(0f, 1f, i);
+                v2       = HexMetrics.TerraceLerp(0f, 1f, i);
                 weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
-                TriangulateCultureEdgeStrip(
-                    edgeOne, weights1, data.Center.Index, false,
-                    edgeTwo, weights2, data.Right .Index, false,
-                    owner, uv1, uv2
+                MeshBuilder.TriangulateEdgeStrip(
+                    edgeOne, weights1, data.Center.Index, v1, false,
+                    edgeTwo, weights2, data.Right .Index, v2, false,
+                    owner.Color, MeshBuilder.Culture
                 );
             }
 
-            TriangulateCultureEdgeStrip(
-                edgeTwo,                weights2,             data.Center.Index, false,
-                data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, data.Right .RequiresYPerturb,
-                owner, uv2, 1f
+            MeshBuilder.TriangulateEdgeStrip(
+                edgeTwo,                weights2,             data.Center.Index, v2, false,
+                data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, 1f, data.Right.RequiresYPerturb,
+                owner.Color, MeshBuilder.Culture
             );
-        }
-
-        private void TriangulateCultureEdgeStrip(
-            EdgeVertices edgeOne, Color w1, float index1, bool perturbEdgeOneY,
-            EdgeVertices edgeTwo, Color w2, float index2, bool perturbEdgeTwoY,
-            ICivilization owner, float vMin, float vMax
-        ) {
-            MeshBuilder.Culture.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(edgeOne.V1, perturbEdgeOneY), NoiseGenerator.Perturb(edgeOne.V2, perturbEdgeOneY),
-                NoiseGenerator.Perturb(edgeTwo.V1, perturbEdgeTwoY), NoiseGenerator.Perturb(edgeTwo.V2, perturbEdgeTwoY)
-            );
-
-            MeshBuilder.Culture.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(edgeOne.V2, perturbEdgeOneY), NoiseGenerator.Perturb(edgeOne.V3, perturbEdgeOneY),
-                NoiseGenerator.Perturb(edgeTwo.V2, perturbEdgeTwoY), NoiseGenerator.Perturb(edgeTwo.V3, perturbEdgeTwoY)
-            );
-
-            MeshBuilder.Culture.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(edgeOne.V3, perturbEdgeOneY), NoiseGenerator.Perturb(edgeOne.V4, perturbEdgeOneY),
-                NoiseGenerator.Perturb(edgeTwo.V3, perturbEdgeTwoY), NoiseGenerator.Perturb(edgeTwo.V4, perturbEdgeTwoY)
-            );
-
-            MeshBuilder.Culture.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(edgeOne.V4, perturbEdgeOneY), NoiseGenerator.Perturb(edgeOne.V5, perturbEdgeOneY),
-                NoiseGenerator.Perturb(edgeTwo.V4, perturbEdgeTwoY), NoiseGenerator.Perturb(edgeTwo.V5, perturbEdgeTwoY)
-            );
-
-            MeshBuilder.Culture.AddQuadColor(owner.Color);
-            MeshBuilder.Culture.AddQuadColor(owner.Color);
-            MeshBuilder.Culture.AddQuadColor(owner.Color);
-            MeshBuilder.Culture.AddQuadColor(owner.Color);
-
-            MeshBuilder.Culture.AddQuadUV(0f, 0f, vMin, vMax);
-            MeshBuilder.Culture.AddQuadUV(0f, 0f, vMin, vMax);
-            MeshBuilder.Culture.AddQuadUV(0f, 0f, vMin, vMax);
-            MeshBuilder.Culture.AddQuadUV(0f, 0f, vMin, vMax);
-
-            Vector3 indices;
-            indices.x = indices.z = index1;
-            indices.y = index2;
-
-            MeshBuilder.Culture.AddQuadCellData(indices, w1, w2);
-            MeshBuilder.Culture.AddQuadCellData(indices, w1, w2);
-            MeshBuilder.Culture.AddQuadCellData(indices, w1, w2);
-            MeshBuilder.Culture.AddQuadCellData(indices, w1, w2);
         }
 
         private void TriangulateCultureCorner(
@@ -243,92 +198,79 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCultureCornerTerraces(
             CellTriangulationData data, ICivilization owner
         ){
-            Vector3 v3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
-            Vector3 v4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
+            Vector3 vertex3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
+            Vector3 vertex4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
 
-            float uvMin, leftUVMax, rightUVMax;
-            CalculateCultureUVs(
+            float alphaMin, leftAlphaMax, rightAlphaMax;
+            CalculateCultureAlphas(
                 data.Center, data.Left, data.Right, owner,
-                out uvMin, out leftUVMax, out rightUVMax
+                out alphaMin, out leftAlphaMax, out rightAlphaMax
             );
 
-            float uv3 = HexMetrics.TerraceLerp(uvMin, leftUVMax,  1);
-            float uv4 = HexMetrics.TerraceLerp(uvMin, rightUVMax, 1);
+            float alpha3 = HexMetrics.TerraceLerp(alphaMin, leftAlphaMax,  1);
+            float alpha4 = HexMetrics.TerraceLerp(alphaMin, rightAlphaMax, 1);
 
-            Color w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
-            Color w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Color weights3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Color weights4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             Vector3 indices;
             indices.x = data.Center.Index;
             indices.y = data.Left  .Index;
             indices.z = data.Right .Index;
 
-            MeshBuilder.Culture.AddTriangleUnperturbed(
-                data.PerturbedCenterCorner, NoiseGenerator.Perturb(v3),
-                NoiseGenerator.Perturb(v4)
+            MeshBuilder.AddTriangleUnperturbed(
+                data.PerturbedCenterCorner, MeshBuilder.Weights1, new Vector2(0f, alphaMin),
+                NoiseGenerator.Perturb(vertex3), weights3,        new Vector2(0f, alpha3),
+                NoiseGenerator.Perturb(vertex4), weights4,        new Vector2(0f, alpha4),
+                owner.Color, indices, MeshBuilder.Culture
             );
-
-            MeshBuilder.Culture.AddTriangleColor(owner.Color);
-            MeshBuilder.Culture.AddTriangleUV(
-                new Vector2(0f, uvMin),
-                new Vector2(0f, uv3),
-                new Vector2(0f, uv4)
-            );
-
-            MeshBuilder.Culture.AddTriangleCellData(indices, MeshBuilder.Weights1, w3, w4);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
-                Vector3 v1 = v3;
-                Vector3 v2 = v4;
-                float uv1 = uv3;
-                float uv2 = uv4;
-                Color w1 = w3;
-                Color w2 = w4;
+                Vector3 vertex1 = vertex3;
+                Vector3 vertex2 = vertex4;
+                float alpha1 = alpha3;
+                float alpha2 = alpha4;
+                Color weights1 = weights3;
+                Color weights2 = weights4;
 
-                v3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
-                v4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, i);
+                vertex3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
+                vertex4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, i);
 
-                uv3 = HexMetrics.TerraceLerp(uvMin, leftUVMax, i);
-                uv4 = HexMetrics.TerraceLerp(uvMin, rightUVMax, i);
+                alpha3 = HexMetrics.TerraceLerp(alphaMin, leftAlphaMax,  i);
+                alpha4 = HexMetrics.TerraceLerp(alphaMin, rightAlphaMax, i);
 
-                w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
-                w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                weights3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                weights4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                MeshBuilder.Culture.AddQuad(v1, v2, v3, v4);
-                MeshBuilder.Culture.AddQuadColor(owner.Color);
-                MeshBuilder.Culture.AddQuadUV(
-                    new Vector2(0f, uv1), new Vector2(0f, uv2),
-                    new Vector2(0f, uv3), new Vector2(0f, uv4)
+                MeshBuilder.AddQuad(
+                    vertex1, weights1, new Vector2(0f, alpha1),
+                    vertex2, weights2, new Vector2(0f, alpha2),
+                    vertex3, weights3, new Vector2(0f, alpha3),
+                    vertex4, weights4, new Vector2(0f, alpha4),
+                    owner.Color, indices, MeshBuilder.Culture
                 );
-
-                MeshBuilder.Culture.AddQuadCellData(indices, w1, w2, w3, w4);
             }
 
-            MeshBuilder.Culture.AddQuadUnperturbed(
-                NoiseGenerator.Perturb(v3), NoiseGenerator.Perturb(v4),
-                data.PerturbedLeftCorner, data.PerturbedRightCorner
+            MeshBuilder.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(vertex3), weights3,             new Vector2(0f, alpha3),
+                NoiseGenerator.Perturb(vertex4), weights4,             new Vector2(0f, alpha4),
+                data.PerturbedLeftCorner,        MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
+                data.PerturbedRightCorner,       MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
+                owner.Color, indices, MeshBuilder.Culture
             );
-
-            MeshBuilder.Culture.AddQuadColor(owner.Color);
-            MeshBuilder.Culture.AddQuadUV(
-                new Vector2(0f, uv3), new Vector2(0f, uv4),
-                new Vector2(0f, leftUVMax), new Vector2(0f, rightUVMax)
-            );
-
-            MeshBuilder.Culture.AddQuadCellData(indices, w3, w4, MeshBuilder.Weights2, MeshBuilder.Weights3);
         }
 
         private void TriangulateCultureCornerTerracesCliff(
             CellTriangulationData data, ICivilization owner
         ){
-            float uvMin, leftUVMax, rightUVMax;
-            CalculateCultureUVs
-                (data.Center, data.Left, data.Right, owner,
-                out uvMin, out leftUVMax, out rightUVMax
+            float alphaMin, leftAlphaMax, rightAlphaMax;
+            CalculateCultureAlphas(
+                data.Center, data.Left, data.Right, owner,
+                out alphaMin, out leftAlphaMax, out rightAlphaMax
             );
 
             float b = Mathf.Abs(1f / (data.Right.EdgeElevation - data.Center.EdgeElevation));
-            float boundaryUV = Mathf.Lerp(uvMin, rightUVMax, b);
+            float boundaryAlpha = Mathf.Lerp(alphaMin, rightAlphaMax, b);
 
             Vector3 boundary = Vector3.Lerp(data.PerturbedCenterCorner, data.PerturbedRightCorner, b);
 
@@ -339,45 +281,42 @@ namespace Assets.Simulation.HexMap {
             indices.z = data.Right .Index;
 
             TriangulateCultureBoundaryTriangle(
-                data.CenterCorner, data.Center, uvMin,     MeshBuilder.Weights1,
-                data.LeftCorner,   data.Left,   leftUVMax, MeshBuilder.Weights2,
-                boundary, boundaryUV,
+                data.CenterCorner, data.Center, alphaMin,     MeshBuilder.Weights1,
+                data.LeftCorner,   data.Left,   leftAlphaMax, MeshBuilder.Weights2,
+                boundary, boundaryAlpha,
                 boundaryWeights, indices,
                 owner
             );
 
             if(data.LeftToRightEdgeType == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
-                    data.LeftCorner,  data.Left,  leftUVMax,  MeshBuilder.Weights2,
-                    data.RightCorner, data.Right, rightUVMax, MeshBuilder.Weights3,
-                    boundary, boundaryUV,
+                    data.LeftCorner,  data.Left,  leftAlphaMax,  MeshBuilder.Weights2,
+                    data.RightCorner, data.Right, rightAlphaMax, MeshBuilder.Weights3,
+                    boundary, boundaryAlpha,
                     boundaryWeights, indices,
                     owner
                 );
             }else {
-                MeshBuilder.Culture.AddTriangleUnperturbed(data.PerturbedLeftCorner, data.PerturbedRightCorner, boundary);
-                MeshBuilder.Culture.AddTriangleColor(owner.Color);
-                MeshBuilder.Culture.AddTriangleUV(
-                    new Vector2(0f, leftUVMax),
-                    new Vector2(0f, rightUVMax),
-                    new Vector2(0f, boundaryUV)
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.PerturbedLeftCorner,  MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
+                    data.PerturbedRightCorner, MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
+                    boundary,                  boundaryWeights,      new Vector2(0f, boundaryAlpha),
+                    owner.Color, indices, MeshBuilder.Culture
                 );
-
-                MeshBuilder.Culture.AddTriangleCellData(indices, MeshBuilder.Weights2, MeshBuilder.Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateCultureCornerCliffTerraces(
             CellTriangulationData data, ICivilization owner
         ){
-            float uvMin, leftUVMax, rightUVMax;
-            CalculateCultureUVs(
+            float alphaMin, leftAlphaMax, rightAlphaMax;
+            CalculateCultureAlphas(
                 data.Center, data.Left, data.Right, owner,
-                out uvMin, out leftUVMax, out rightUVMax
+                out alphaMin, out leftAlphaMax, out rightAlphaMax
             );
 
             float b = Mathf.Abs(1f / (data.Left.EdgeElevation - data.Center.EdgeElevation));
-            float boundaryUV = Mathf.Lerp(uvMin, leftUVMax, b);
+            float boundaryAlpha = Mathf.Lerp(alphaMin, leftAlphaMax, b);
 
             Vector3 boundary = Vector3.Lerp(data.PerturbedCenterCorner, data.PerturbedLeftCorner, b);
 
@@ -388,85 +327,71 @@ namespace Assets.Simulation.HexMap {
             indices.z = data.Right .Index;
 
             TriangulateCultureBoundaryTriangle(
-                data.RightCorner,  data.Right,  rightUVMax, MeshBuilder.Weights3,
-                data.CenterCorner, data.Center, uvMin,      MeshBuilder.Weights1,
-                boundary, boundaryUV,
-                boundaryWeights, indices,
+                data.RightCorner,  data.Right,  rightAlphaMax, MeshBuilder.Weights3,
+                data.CenterCorner, data.Center, alphaMin,      MeshBuilder.Weights1,
+                boundary, boundaryAlpha, boundaryWeights,
+                indices,
                 owner
             );
 
             if(data.LeftToRightEdgeType == HexEdgeType.Slope) {
                 TriangulateCultureBoundaryTriangle(
-                    data.LeftCorner,  data.Left,  leftUVMax,  MeshBuilder.Weights2,
-                    data.RightCorner, data.Right, rightUVMax, MeshBuilder.Weights3,
-                    boundary, boundaryUV,
+                    data.LeftCorner,  data.Left,  leftAlphaMax,  MeshBuilder.Weights2,
+                    data.RightCorner, data.Right, rightAlphaMax, MeshBuilder.Weights3,
+                    boundary, boundaryAlpha,
                     boundaryWeights, indices,
                     owner
                 );
             }else {
-                MeshBuilder.Culture.AddTriangleUnperturbed(data.PerturbedLeftCorner, data.PerturbedRightCorner, boundary);
-                MeshBuilder.Culture.AddTriangleColor(owner.Color);
-                MeshBuilder.Culture.AddTriangleUV(
-                    new Vector2(0f, leftUVMax),
-                    new Vector2(0f, rightUVMax),
-                    new Vector2(0f, boundaryUV)
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.PerturbedLeftCorner,  MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
+                    data.PerturbedRightCorner, MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
+                    boundary,                  boundaryWeights,      new Vector2(0f, boundaryAlpha),
+                    owner.Color, indices, MeshBuilder.Culture
                 );
-                MeshBuilder.Culture.AddTriangleCellData(indices, MeshBuilder.Weights2, MeshBuilder.Weights3, boundaryWeights);
             }
         }
 
         private void TriangulateCultureBoundaryTriangle(
-            Vector3 begin, IHexCell beginCell, float beginUV, Color beginWeights,
-            Vector3 left,  IHexCell leftCell,  float leftUV,  Color leftWeights,
-            Vector3 boundary, float boundaryUV, Color boundaryWeights,
-            Vector3 indices,
-            ICivilization owner
+            Vector3 begin, IHexCell beginCell, float beginAlpha, Color beginWeights,
+            Vector3 left,  IHexCell leftCell,  float leftAlpha,  Color leftWeights,
+            Vector3 boundary, float boundaryAlpha, Color boundaryWeights,
+            Vector3 indices, ICivilization owner
         ) {
-            Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-            float uv2 = HexMetrics.TerraceLerp(beginUV, leftUV, 1);
-            Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
+            Vector3 vertex2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
+            float alpha2    = HexMetrics.TerraceLerp(beginAlpha,   leftAlpha,   1);
+            Color weights2  = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
 
-            MeshBuilder.Culture.AddTriangleUnperturbed(
-                NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb), v2, boundary
+            MeshBuilder.AddTriangleUnperturbed(
+                NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb), beginWeights,    new Vector2(0f, beginAlpha),
+                vertex2,                                                   weights2,        new Vector2(0f, alpha2),
+                boundary,                                                  boundaryWeights, new Vector2(0f, boundaryAlpha),
+                owner.Color, indices, MeshBuilder.Culture
             );
-
-            MeshBuilder.Culture.AddTriangleColor(owner.Color);
-            MeshBuilder.Culture.AddTriangleUV(
-                new Vector2(0f, beginUV),
-                new Vector2(0f, uv2),
-                new Vector2(0f, boundaryUV)
-            );
-            MeshBuilder.Culture.AddTriangleCellData(indices, beginWeights, w2, boundaryWeights);
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
-                Vector3 v1 = v2;
-                float uv1 = uv2;
-                Color w1 = w2;
+                Vector3 vertex1 = vertex2;
+                float alpha1    = alpha2;
+                Color weights1  = weights2;
 
-                v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
-                uv2 = HexMetrics.TerraceLerp(beginUV, leftUV, i);
-                w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
+                vertex2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
+                alpha2 = HexMetrics.TerraceLerp(beginAlpha, leftAlpha, i);
+                weights2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
 
-                MeshBuilder.Culture.AddTriangleUnperturbed(v1, v2, boundary);
-                MeshBuilder.Culture.AddTriangleColor(owner.Color);
-                MeshBuilder.Culture.AddTriangleUV(
-                    new Vector2(0f, uv1),
-                    new Vector2(0f, uv2),
-                    new Vector2(0f, boundaryUV)
+                MeshBuilder.AddTriangleUnperturbed(
+                    vertex1,  weights1,        new Vector2(0f, alpha1),
+                    vertex2,  weights2,        new Vector2(0f, alpha2),
+                    boundary, boundaryWeights, new Vector2(0f, boundaryAlpha),
+                    owner.Color, indices, MeshBuilder.Culture
                 );
-                MeshBuilder.Culture.AddTriangleCellData(indices, w1, w2, boundaryWeights);
             }
 
-            MeshBuilder.Culture.AddTriangleUnperturbed(
-                v2, NoiseGenerator.Perturb(left, leftCell.RequiresYPerturb), boundary
+            MeshBuilder.AddTriangleUnperturbed(
+                vertex2,                                                 weights2,        new Vector2(0f, alpha2),
+                NoiseGenerator.Perturb(left, leftCell.RequiresYPerturb), leftWeights,     new Vector2(0f, leftAlpha),
+                boundary,                                                boundaryWeights, new Vector2(0f, boundaryAlpha),
+                owner.Color, indices, MeshBuilder.Culture
             );
-            MeshBuilder.Culture.AddTriangleColor(owner.Color);
-            MeshBuilder.Culture.AddTriangleUV(
-                new Vector2(0f, uv2),
-                new Vector2(0f, leftUV),
-                new Vector2(0f, boundaryUV)
-            );
-            MeshBuilder.Culture.AddTriangleCellData(indices, w2, leftWeights, boundaryWeights);
         }
 
         //Creates a single triangle between the three corners.
@@ -475,21 +400,10 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCultureCornerSimple(
             CellTriangulationData data, ICivilization owner
         ) {
-            MeshBuilder.Culture.AddTriangleUnperturbed(
-                data.PerturbedCenterCorner, data.PerturbedLeftCorner,
-                data.PerturbedRightCorner
-            );
-
-            MeshBuilder.Culture.AddTriangleColor(owner.Color);
-
-            float uvMin, leftUVMax, rightUVMax;
-            CalculateCultureUVs(
+            float alphaMin, leftAlphaMax, rightAlphaMax;
+            CalculateCultureAlphas(
                 data.Center, data.Left, data.Right, owner,
-                out uvMin, out leftUVMax, out rightUVMax
-            );
-
-            MeshBuilder.Culture.AddTriangleUV(
-                new Vector2(0f, uvMin), new Vector2(0f, leftUVMax), new Vector2(0f, rightUVMax)
+                out alphaMin, out leftAlphaMax, out rightAlphaMax
             );
 
             Vector3 indices;
@@ -497,49 +411,54 @@ namespace Assets.Simulation.HexMap {
             indices.y = data.Left.Index;
             indices.z = data.Right.Index;
 
-            MeshBuilder.Culture.AddTriangleCellData(indices, MeshBuilder.Weights1, MeshBuilder.Weights2, MeshBuilder.Weights3);
+            MeshBuilder.AddTriangleUnperturbed(
+                data.PerturbedCenterCorner, MeshBuilder.Weights1, new Vector2(0f, alphaMin),
+                data.PerturbedLeftCorner,   MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
+                data.PerturbedRightCorner,  MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
+                owner.Color, indices, MeshBuilder.Culture
+            );
         }
 
-        //Figures out how to arrange culture UVs for corner cases,
+        //Figures out how to arrange culture alpha for corner cases,
         //given the three cells that make up the corner and the
         //owner for which we're drawing culture.
-        private void CalculateCultureUVs(
+        private void CalculateCultureAlphas(
             IHexCell beginCell, IHexCell leftCell,
             IHexCell rightCell, ICivilization owner,
-            out float uvMin, out float leftUVMax, out float rightUVMax
+            out float alphaMin, out float leftAlphaMax, out float rightAlphaMax
         ){
             if(CivTerritoryLogic.GetCivClaimingCell(beginCell) == owner) {
                 if(CivTerritoryLogic.GetCivClaimingCell(leftCell) == owner) {
                     //Bottom owned, left owned, right unowned
-                    uvMin = leftUVMax = 0f;
-                    rightUVMax = 1f;
+                    alphaMin = leftAlphaMax = 0f;
+                    rightAlphaMax = 1f;
 
                 }else if(CivTerritoryLogic.GetCivClaimingCell(rightCell) == owner) {
                     //Bottom owned, left unowned, right owned
-                    uvMin = rightUVMax = 0f;
-                    leftUVMax = 1f;
+                    alphaMin = rightAlphaMax = 0f;
+                    leftAlphaMax = 1f;
 
                 }else {
                     //Bottom owned, left unowned, right unowned
-                    uvMin = 0f;
-                    leftUVMax = rightUVMax = 1f;
+                    alphaMin = 0f;
+                    leftAlphaMax = rightAlphaMax = 1f;
 
                 }
             }else if(CivTerritoryLogic.GetCivClaimingCell(leftCell) == owner) {
                 if(CivTerritoryLogic.GetCivClaimingCell(rightCell) == owner) {
                     //bottom unowned, left owned, right owned
-                    uvMin = 1f;
-                    leftUVMax = rightUVMax = 0f;
+                    alphaMin = 1f;
+                    leftAlphaMax = rightAlphaMax = 0f;
 
                 }else {
                     //bottom unowned, left owned, right unowned
-                    uvMin = rightUVMax = 1f;
-                    leftUVMax = 0f;
+                    alphaMin = rightAlphaMax = 1f;
+                    leftAlphaMax = 0f;
                 }
             }else {
                 //bottom unowned, left unowned, right owned
-                uvMin = leftUVMax = 1f;
-                rightUVMax = 0f;
+                alphaMin = leftAlphaMax = 1f;
+                rightAlphaMax = 0f;
             }
         }
 
