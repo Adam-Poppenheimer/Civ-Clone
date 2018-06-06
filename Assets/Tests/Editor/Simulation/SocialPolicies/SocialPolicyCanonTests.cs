@@ -20,6 +20,9 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
         private Mock<ITechCanon> MockTechCanon;
 
+        private CivilizationSignals CivSignals;
+
+
         private List<ISocialPolicyDefinition> AvailablePolicies = new List<ISocialPolicyDefinition>();
         private List<IPolicyTreeDefinition>   AvailableTrees    = new List<IPolicyTreeDefinition>();
 
@@ -36,7 +39,10 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
             MockTechCanon = new Mock<ITechCanon>();
 
-            Container.Bind<ITechCanon>().FromInstance(MockTechCanon.Object);
+            CivSignals = new CivilizationSignals();
+
+            Container.Bind<ITechCanon>         ().FromInstance(MockTechCanon.Object);
+            Container.Bind<CivilizationSignals>().FromInstance(CivSignals);
 
             Container.Bind<SocialPolicyCanon>().AsSingle();
         }

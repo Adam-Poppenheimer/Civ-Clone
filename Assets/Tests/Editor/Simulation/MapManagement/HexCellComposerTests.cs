@@ -263,7 +263,41 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCells_RiverDataRecorded() {
-            throw new NotImplementedException();
+            var cellOne = BuildHexCell(new HexCoordinates(0, 0));
+
+            MockRiverCanon.Setup(canon => canon.GetEdgesWithRivers(cellOne))
+                          .Returns(new List<HexDirection>() { HexDirection.E, HexDirection.W, HexDirection.SE });
+
+            MockRiverCanon.Setup(canon => canon.GetFlowOfRiverAtEdge(cellOne, HexDirection.E)) .Returns(RiverFlow.Clockwise);
+            MockRiverCanon.Setup(canon => canon.GetFlowOfRiverAtEdge(cellOne, HexDirection.W)) .Returns(RiverFlow.Counterclockwise);
+            MockRiverCanon.Setup(canon => canon.GetFlowOfRiverAtEdge(cellOne, HexDirection.SE)).Returns(RiverFlow.Counterclockwise);
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            var mapData = new SerializableMapData();
+
+            composer.ComposeCells(mapData);
+
+            CollectionAssert.AreEqual(
+                new List<bool>() { false, true, true, false, true, false },
+                mapData.HexCells[0].HasRiverAtEdge,
+                "HexCells[0].HasRiverAtEdge not populated as expected"
+            );
+
+            Assert.AreEqual(
+                RiverFlow.Clockwise, mapData.HexCells[0].DirectionOfRiverAtEdge[1],
+                "Unexpected flow for river along HexDirection.E"
+            );
+
+            Assert.AreEqual(
+                RiverFlow.Counterclockwise, mapData.HexCells[0].DirectionOfRiverAtEdge[2],
+                "Unexpected flow for river along HexDirection.SE"
+            );
+
+            Assert.AreEqual(
+                RiverFlow.Counterclockwise, mapData.HexCells[0].DirectionOfRiverAtEdge[4],
+                "Unexpected flow for river along HexDirection.W"
+            );
         }
 
         [Test]
@@ -435,7 +469,49 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeCells_RiverDataSetProperly() {
-            throw new NotImplementedException();
+            var mapData = new SerializableMapData() {
+                HexCells = new List<SerializableHexCellData>() {
+                    new SerializableHexCellData() {
+                        Coordinates = new HexCoordinates(0, 0),
+                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
+                        DirectionOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
+                    },
+                    new SerializableHexCellData() {
+                        Coordinates = new HexCoordinates(1, 1),
+                        HasRiverAtEdge = new bool[] { true, false, true, false, false, false },
+                        DirectionOfRiverAtEdge = new RiverFlow[] {
+                            RiverFlow.Counterclockwise, RiverFlow.Counterclockwise, RiverFlow.Clockwise
+                        }
+                    }
+                }
+            };
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            composer.DecomposeCells(mapData);
+
+            var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
+            var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
+
+            MockRiverCanon.Verify(
+                canon => canon.AddRiverToCell(cellOne, HexDirection.NE, RiverFlow.Counterclockwise),
+                Times.Once, "River not added to cellOne's northeastern edge as expected"
+            );
+
+            MockRiverCanon.Verify(
+                canon => canon.AddRiverToCell(cellTwo, HexDirection.NE, RiverFlow.Counterclockwise),
+                Times.Once, "River not added to cellTwo's northeastern edge as expected"
+            );
+
+            MockRiverCanon.Verify(
+                canon => canon.AddRiverToCell(cellTwo, HexDirection.SE, RiverFlow.Clockwise),
+                Times.Once, "River not added to cellTwo's southeastern edge as expected"
+            );
+
+            MockRiverCanon.Verify(
+                canon => canon.AddRiverToCell(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<RiverFlow>()),
+                Times.Exactly(3), "Unexpected number of calls to RiverCanon.AddRiverToCell"
+            );
         }
 
         [Test]
