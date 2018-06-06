@@ -20,14 +20,9 @@ namespace Assets.Simulation.HexMap {
 
         private HexCell[] Cells;
 
-        [SerializeField] private HexFeatureManager FeatureManager;
-
-        private IHexGrid                  Grid;
-        private IRiverTriangulator        RiverTriangulator;
-        private IHexGridMeshBuilder       MeshBuilder;
-        private ICultureTriangulator      CultureTriangulator;
-        private IBasicTerrainTriangulator BasicTerrainTriangulator;
-        private IWaterTriangulator        WaterTriangulator;
+        private IHexGridMeshBuilder  MeshBuilder;
+        private IHexFeatureManager   FeatureManager;
+        private IHexCellTriangulator Triangulator;
 
         #endregion
 
@@ -35,17 +30,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            IHexGrid grid, IRiverTriangulator riverTriangulator,
-            IHexGridMeshBuilder meshBuilder, ICultureTriangulator cultureTriangulator,
-            IBasicTerrainTriangulator basicTerrainTriangulator,
-            IWaterTriangulator waterTriangulator
+            IHexGridMeshBuilder meshBuilder, IHexFeatureManager featureManager,
+            IHexCellTriangulator triangulator
         ){
-            Grid                     = grid;
-            RiverTriangulator        = riverTriangulator;
-            MeshBuilder              = meshBuilder;
-            CultureTriangulator      = cultureTriangulator;
-            BasicTerrainTriangulator = basicTerrainTriangulator;
-            WaterTriangulator        = waterTriangulator;
+            MeshBuilder    = meshBuilder;
+            FeatureManager = featureManager;
+            Triangulator   = triangulator;
         }
 
         #region Unity messages
@@ -75,51 +65,11 @@ namespace Assets.Simulation.HexMap {
             FeatureManager.Clear();
 
             for(int i = 0; i < Cells.Length; ++i) {
-                TriangulateCell(Cells[i]);
+                Triangulator.TriangulateCell(Cells[i]);
             }
 
             MeshBuilder.ApplyMeshes();
             FeatureManager.Apply();
-        }
-
-        private void TriangulateCell(IHexCell cell) {
-            FeatureManager.FlagLocationForFeatures(cell.transform.localPosition, cell);
-
-            for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
-                TriangulateInDirection(direction, cell);
-            }
-        }
-
-        private void TriangulateInDirection(HexDirection direction, IHexCell cell) {
-            var previousNeighbor = Grid.GetNeighbor(cell, direction.Previous());
-            var neighbor         = Grid.GetNeighbor(cell, direction);
-
-            var data = MeshBuilder.GetTriangulationData(
-                cell, previousNeighbor, neighbor, direction
-            );
-
-            BasicTerrainTriangulator.TriangulateTerrainCenter(data);
-
-            foreach(var featureLocation in data.CenterFeatureLocations) {
-                FeatureManager.FlagLocationForFeatures(featureLocation, cell);
-            }
-
-            if(RiverTriangulator.ShouldTriangulateRiverConnection(data)) {
-                RiverTriangulator.TriangulateRiverConnection(data);
-            }
-            
-
-            if(BasicTerrainTriangulator.ShouldTriangulateTerrainConnection(data)) {
-                BasicTerrainTriangulator.TriangulateTerrainConnection(data);
-            }
-
-            if(WaterTriangulator.ShouldTriangulateWater(data)) {
-                WaterTriangulator.TriangulateWater(data);
-            }
-
-            if(CultureTriangulator.ShouldTriangulateCulture(data)) {
-                CultureTriangulator.TriangulateCulture(data);               
-            }
         }
 
         #endregion

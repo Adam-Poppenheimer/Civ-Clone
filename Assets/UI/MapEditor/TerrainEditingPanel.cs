@@ -224,8 +224,8 @@ namespace Assets.UI.MapEditor {
             var directions = EnumUtil.GetValues<HexDirection>().ToList();
 
             directions.Sort(delegate(HexDirection directionOne, HexDirection directionTwo) {
-                var edgeOneMiddle = cell.transform.position + HexMetrics.GetOuterEdgeMiddle(directionOne);
-                var edgeTwoMiddle = cell.transform.position + HexMetrics.GetOuterEdgeMiddle(directionTwo);
+                var edgeOneMiddle = cell.Position + HexMetrics.GetOuterEdgeMiddle(directionOne);
+                var edgeTwoMiddle = cell.Position + HexMetrics.GetOuterEdgeMiddle(directionTwo);
 
                 return Vector3.Distance(mouseRayHit, edgeOneMiddle)
                     .CompareTo(Vector3.Distance(mouseRayHit, edgeTwoMiddle));

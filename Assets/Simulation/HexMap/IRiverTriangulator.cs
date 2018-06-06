@@ -11,8 +11,8 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        bool ShouldTriangulateRiverConnection(CellTriangulationData thisData);
-        void TriangulateRiverConnection      (CellTriangulationData thisData);
+        bool ShouldTriangulateRiver(CellTriangulationData thisData);
+        void TriangulateRiver      (CellTriangulationData thisData);
 
         #endregion
 

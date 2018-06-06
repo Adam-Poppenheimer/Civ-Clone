@@ -224,8 +224,6 @@ namespace Assets.Tests.Simulation.Units {
         private IHexCell BuildHexCell(bool isValidPlaceForUnit) {
             var mockTile = new Mock<IHexCell>();
 
-            mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
-
             MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), mockTile.Object))
                 .Returns(isValidPlaceForUnit);
 

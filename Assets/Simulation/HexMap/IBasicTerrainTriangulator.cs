@@ -10,8 +10,8 @@ namespace Assets.Simulation.HexMap {
 
         void TriangulateTerrainCenter(CellTriangulationData data);
 
-        bool ShouldTriangulateTerrainConnection(CellTriangulationData data);
-        void TriangulateTerrainConnection      (CellTriangulationData data);
+        bool ShouldTriangulateTerrainEdge(CellTriangulationData data);
+        void TriangulateTerrainEdge      (CellTriangulationData data);
 
         #endregion
 

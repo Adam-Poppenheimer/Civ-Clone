@@ -108,7 +108,7 @@ namespace Assets.Simulation.HexMap {
             }
 
             for(int i = Cells.Count - 1; i >= 0; i--) {
-                Destroy(Cells[i].transform.gameObject);
+                Cells[i].Destroy();
             }
 
             for(int i = Chunks.Length - 1; i >= 0; i--) {
@@ -191,8 +191,8 @@ namespace Assets.Simulation.HexMap {
             var retval = new List<IHexCell>();
 
             var coordinateLine = HexCoordinates.GetCoordinatesInLine(
-                start.Coordinates, start.transform.position,
-                end.Coordinates, end.transform.position
+                start.Coordinates, start.Position,
+                end.Coordinates, end.Position
             );
 
             foreach(var coordinates in coordinateLine){

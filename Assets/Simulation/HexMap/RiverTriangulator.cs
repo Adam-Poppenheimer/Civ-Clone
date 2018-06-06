@@ -43,11 +43,11 @@ namespace Assets.Simulation.HexMap {
 
         #region from IRiverTriangulator
 
-        public bool ShouldTriangulateRiverConnection(CellTriangulationData thisData) {
+        public bool ShouldTriangulateRiver(CellTriangulationData thisData) {
             return thisData.Direction <= HexDirection.SE && thisData.IsRiverCorner;
         }
 
-        public void TriangulateRiverConnection(CellTriangulationData thisData) {          
+        public void TriangulateRiver(CellTriangulationData thisData) {          
             IHexCell nextNeighbor = Grid.GetNeighbor(thisData.Center, thisData.Direction.Next());
 
             var nextData = MeshBuilder.GetTriangulationData(
@@ -147,13 +147,13 @@ namespace Assets.Simulation.HexMap {
             float upRiverParam, downRiverParam;
 
             EdgeVertices leftBank = new EdgeVertices(
-                thisData.Right.transform.localPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction.Opposite()),
-                thisData.Right.transform.localPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction.Opposite())
+                thisData.Right.LocalPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction.Opposite()),
+                thisData.Right.LocalPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction.Opposite())
             );
 
             EdgeVertices rightBank = new EdgeVertices(
-                thisData.Center.transform.localPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction),
-                thisData.Center.transform.localPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction)
+                thisData.Center.LocalPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction),
+                thisData.Center.LocalPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction)
             );
 
             CalculateRiverSurfaceEdgeProperties(

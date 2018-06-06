@@ -18,6 +18,14 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexCell
 
+        public Vector3 Position {
+            get { return transform.position; }
+        }
+
+        public Vector3 LocalPosition {
+            get { return transform.localPosition; }
+        }
+
         public HexCoordinates Coordinates {
             get { return _coordinates; }
             set { _coordinates = value; }
@@ -247,6 +255,14 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshElevation() {
             FoundationElevation = Config.GetFoundationElevationForTerrain(Terrain);
+        }
+
+        public void Destroy() {
+            if(Application.isPlaying) {
+                Destroy(gameObject);
+            }else {
+                DestroyImmediate(gameObject);
+            }
         }
 
         #endregion

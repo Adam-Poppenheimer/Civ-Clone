@@ -52,25 +52,11 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region tests
 
-        [Test(Description = "When a new improvement is created, its transform should be " +
-            "parented to the transform of the improvement's location")]
-        public void ImprovementCreated_NewTransformParentSet() {
-            var template = BuildTemplate();
-            var location = BuildTile(true);
-
-            var factory = Container.Resolve<ImprovementFactory>();
-
-            var newImprovement = factory.BuildImprovement(template, location);
-
-            Assert.AreEqual(location.transform, newImprovement.transform.parent,
-                "newImprovement's transform has an unexpected parent");
-        }
-
         [Test(Description = "When a new improvement is created, it should have its " +
             "Template property initialized with the argued template")]
         public void ImprovementCreated_TemplateInitialized() {
             var template = BuildTemplate();
-            var location = BuildTile(true);
+            var location = BuildCell(true);
 
             var factory = Container.Resolve<ImprovementFactory>();
 
@@ -84,7 +70,7 @@ namespace Assets.Tests.Simulation.Improvements {
             "should assign that improvement to the argued tile via ImprovementLocationCanon")]
         public void ImprovementCreated_LocationSet() {
             var template = BuildTemplate();
-            var location = BuildTile(true);
+            var location = BuildCell(true);
 
             var factory = Container.Resolve<ImprovementFactory>();
 
@@ -100,7 +86,7 @@ namespace Assets.Tests.Simulation.Improvements {
         [Test(Description = "Create should throw an ArgumentNullException when passed a null argument")]
         public void CreateCalled_ThrowsOnNullArguments() {
             var template = BuildTemplate();
-            var location = BuildTile(true);
+            var location = BuildCell(true);
 
             var factory = Container.Resolve<ImprovementFactory>();
 
@@ -115,7 +101,7 @@ namespace Assets.Tests.Simulation.Improvements {
             "cannot accept the improvement it's created")]
         public void CreateCalled_ThrowsIfImprovementInvalidAtLocation() {
             var template = BuildTemplate();
-            var location = BuildTile(false);
+            var location = BuildCell(false);
 
             var factory = Container.Resolve<ImprovementFactory>();
 
@@ -127,15 +113,13 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region utilities
 
-        private IHexCell BuildTile(bool validForImprovement) {
-            var mockTile = new Mock<IHexCell>();
+        private IHexCell BuildCell(bool validForImprovement) {
+            var mockCell = new Mock<IHexCell>();
 
-            mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
-
-            MockLocationCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IImprovement>(), mockTile.Object))
+            MockLocationCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IImprovement>(), mockCell.Object))
                 .Returns(validForImprovement);
 
-            return mockTile.Object;
+            return mockCell.Object;
         }
 
         private IImprovementTemplate BuildTemplate() {

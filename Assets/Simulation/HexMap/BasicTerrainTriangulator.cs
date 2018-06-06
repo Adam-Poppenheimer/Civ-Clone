@@ -13,7 +13,6 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGrid            Grid;
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
 
@@ -23,10 +22,8 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public BasicTerrainTriangulator(
-            IHexGrid grid, IHexGridMeshBuilder meshBuilder,
-            INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
         ) {
-            Grid           = grid;
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
         }
@@ -46,11 +43,11 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public bool ShouldTriangulateTerrainConnection(CellTriangulationData data) {
+        public bool ShouldTriangulateTerrainEdge(CellTriangulationData data) {
             return data.CenterToRightEdgeType != HexEdgeType.River && data.Direction <= HexDirection.SE;
         }
 
-        public void TriangulateTerrainConnection(CellTriangulationData data) {
+        public void TriangulateTerrainEdge(CellTriangulationData data) {
             if(data.Right == null) {
                 return;
             }
@@ -58,8 +55,7 @@ namespace Assets.Simulation.HexMap {
             if(data.CenterToRightEdgeType == HexEdgeType.Slope) {
                 TriangulateEdgeTerraces(
                     data.CenterToRightEdge, data.Center,
-                    data.RightToCenterEdge, data.Right,
-                    ShouldRoadBeRendered(data.Center, data.Right)
+                    data.RightToCenterEdge, data.Right
                 );
             }else if(data.Center.Shape == TerrainShape.Hills || data.Right.Shape == TerrainShape.Hills){
                 MeshBuilder.TriangulateEdgeStrip(
@@ -120,79 +116,11 @@ namespace Assets.Simulation.HexMap {
                 data.CenterPeak, data.CenterToRightEdge, data.Center.Index,
                 MeshBuilder.Terrain
             );
-
-            if(data.Center.HasRoads) {
-                Vector2 interpolators = GetRoadInterpolators(data.Direction, data.Center);
-
-                TriangulateRoad(
-                    data.CenterPeak,
-                    Vector3.Lerp(data.CenterPeak, data.CenterToRightEdge.V1, interpolators.x),
-                    Vector3.Lerp(data.CenterPeak, data.CenterToRightEdge.V5, interpolators.y),
-                    data.CenterToRightEdge, ShouldRoadBeRendered(data.Center, data.Right),
-                    data.Center.Index
-                );
-            }
-        }
-
-        private Vector2 GetRoadInterpolators(HexDirection direction, IHexCell cell) {
-            var previousNeighbor = Grid.GetNeighbor(cell, direction.Previous());
-            var neighbor         = Grid.GetNeighbor(cell, direction);
-            var nextNeighbor     = Grid.GetNeighbor(cell, direction.Next());
-
-            Vector2 interpolators;
-            if(ShouldRoadBeRendered(cell, neighbor)) {
-                interpolators.x = interpolators.y = 0.5f;
-
-            }else {
-                interpolators.x = ShouldRoadBeRendered(cell, previousNeighbor) ? 0.5f : 0.25f;
-                interpolators.y = ShouldRoadBeRendered(cell, nextNeighbor)     ? 0.5f : 0.25f;
-            }
-            return interpolators;
-        }
-
-        private void TriangulateRoad(
-            Vector3 center, Vector3 middleLeft, Vector3 middleRight, EdgeVertices e,
-            bool hasRoadThroughCellEdge, float index
-        ) {
-            Vector3 indices;
-            indices.x = indices.y = indices.z = index;
-
-            if(hasRoadThroughCellEdge) {
-                Vector3 middleCenter = Vector3.Lerp(middleLeft, middleRight, 0.5f);
-
-                MeshBuilder.TriangulateRoadSegment(
-                    middleLeft, middleCenter, middleRight,
-                    e.V2, e.V3, e.V4,
-                    MeshBuilder.Weights1, MeshBuilder.Weights2, indices
-                );
-
-                MeshBuilder.AddTriangle(
-                    center,       MeshBuilder.Weights1, new Vector2(1f, 0f),
-                    middleLeft,   MeshBuilder.Weights1, new Vector2(0f, 0f),
-                    middleCenter, MeshBuilder.Weights1, new Vector2(1f, 0f),
-                    indices, MeshBuilder.Roads
-                );
-
-                MeshBuilder.AddTriangle(
-                    center,       MeshBuilder.Weights1, new Vector2(1f, 0f),
-                    middleCenter, MeshBuilder.Weights1, new Vector2(1f, 0f),
-                    middleRight,  MeshBuilder.Weights1, new Vector2(0f, 0f),
-                    indices, MeshBuilder.Roads
-                );
-            }else {
-                MeshBuilder.AddTriangle(
-                    center,      MeshBuilder.Weights1, new Vector2(1f, 0f),
-                    middleLeft,  MeshBuilder.Weights1, new Vector2(0f, 0f),
-                    middleRight, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                    indices, MeshBuilder.Roads
-                );
-            }            
-        }
+        }        
 
         private void TriangulateEdgeTerraces(
             EdgeVertices begin, IHexCell beginCell,
-            EdgeVertices end, IHexCell endCell,
-            bool hasRoad
+            EdgeVertices end, IHexCell endCell
         ) {
             EdgeVertices edgeTwo = EdgeVertices.TerraceLerp(begin, end, 1);
             Color weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
@@ -414,13 +342,6 @@ namespace Assets.Simulation.HexMap {
                 v2, w2, NoiseGenerator.Perturb(left, perturbLeftY), leftWeights,
                 boundary, boundaryWeights, indices, MeshBuilder.Terrain
             );
-        }
-
-        private bool ShouldRoadBeRendered(IHexCell cell, IHexCell neighbor) {
-            return neighbor != null
-                && neighbor.HasRoads
-                && cell.HasRoads
-                && HexMetrics.GetEdgeType(cell, neighbor) != HexEdgeType.Cliff;
         }
 
         #endregion

@@ -14,7 +14,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.HexMap {
 
-    public class HexFeatureManager : MonoBehaviour {
+    public class HexFeatureManager : MonoBehaviour, IHexFeatureManager {
 
         #region instance fields and properties
 

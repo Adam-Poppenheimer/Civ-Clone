@@ -33,19 +33,13 @@ namespace Assets.Simulation.Cities {
 
         #endregion
 
-        private DiContainer Container;
-
-        private GameObject CityPrefab;
-
+        private DiContainer                                   Container;
+        private GameObject                                    CityPrefab;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private IHexGrid Grid;
-
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-
-        private IUnitFactory UnitFactory;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IHexGrid                                      Grid;
+        private IPossessionRelationship<ICity, IHexCell>      CellPossessionCanon;
+        private IUnitFactory                                  UnitFactory;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
 
         #endregion
 
@@ -106,7 +100,7 @@ namespace Assets.Simulation.Cities {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
-            newCityGameObject.transform.SetParent(location.transform, false);
+            newCityGameObject.transform.position = location.Position;
             newCityGameObject.name = string.Format("City {0}", allCities.Count);
 
             var newCity = newCityGameObject.GetComponent<City>();

@@ -232,9 +232,9 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerPeak == null) {
                     _centerPeak = new Vector3(
-                        Center.transform.localPosition.x,
+                        Center.LocalPosition.x,
                         Center.PeakY,
-                        Center.transform.localPosition.z
+                        Center.LocalPosition.z
                     );
                 }
 
@@ -261,7 +261,7 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_featureLocations == null) {
                     _featureLocations = new List<Vector3>() {
-                        (Center.transform.localPosition + CenterToRightEdge.V1 + CenterToRightEdge.V5) * (1f / 3f)
+                        (Center.LocalPosition + CenterToRightEdge.V1 + CenterToRightEdge.V5) * (1f / 3f)
                     };
                 }
 
@@ -274,9 +274,9 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerWaterMidpoint == null) {
                     _centerWaterMidpoint = new Vector3(
-                        Center.transform.localPosition.x,
+                        Center.LocalPosition.x,
                         Center.WaterSurfaceY,
-                        Center.transform.localPosition.z
+                        Center.LocalPosition.z
                     );
                 }
 
@@ -289,8 +289,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerToRightWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Center.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction),
-                        Center.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction)
+                        Center.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction),
+                        Center.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction)
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Center.WaterSurfaceY;
@@ -307,8 +307,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_rightToCenterWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Right.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction.Opposite()),
-                        Right.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction.Opposite())
+                        Right.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Opposite()),
+                        Right.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Opposite())
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Right.WaterSurfaceY;
@@ -325,8 +325,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_leftToCenterWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Left.transform.localPosition + HexMetrics.GetFirstWaterCorner (Direction.Next2()),
-                        Left.transform.localPosition + HexMetrics.GetSecondWaterCorner(Direction.Next2())
+                        Left.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Next2()),
+                        Left.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Next2())
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Left.WaterSurfaceY;
@@ -368,7 +368,7 @@ namespace Assets.Simulation.HexMap {
         #region methods
 
         private EdgeVertices GetYAdjustedEdge(IHexCell cell, HexDirection direction, bool invertEdge = false) {
-            var center = cell.transform.localPosition;
+            var center = cell.LocalPosition;
 
             EdgeVertices retval;
 

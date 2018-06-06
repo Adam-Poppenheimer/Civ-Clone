@@ -21,6 +21,8 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh WaterShore;
         [SerializeField] private HexMesh Estuaries;
 
+        [SerializeField] private HexFeatureManager FeatureManager;
+
         #endregion
 
         #region instance methods
@@ -36,11 +38,15 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<HexMesh>().WithId("Water Shore").FromInstance(WaterShore);
             Container.Bind<HexMesh>().WithId("Estuaries")  .FromInstance(Estuaries);
 
+            Container.Bind<IHexFeatureManager>().To<HexFeatureManager>().FromInstance(FeatureManager);
+
             Container.Bind<IHexGridMeshBuilder>      ().To<HexGridMeshBuilder>      ().AsSingle();
             Container.Bind<IRiverTriangulator>       ().To<RiverTriangulator>       ().AsSingle();
             Container.Bind<ICultureTriangulator>     ().To<CultureTriangulator>     ().AsSingle();
             Container.Bind<IBasicTerrainTriangulator>().To<BasicTerrainTriangulator>().AsSingle();
             Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
+            Container.Bind<IRoadTriangulator>        ().To<RoadTriangulator>        ().AsSingle();
+            Container.Bind<IHexCellTriangulator>     ().To<HexCellTriangulator>     ().AsSingle();
         }
 
         #endregion

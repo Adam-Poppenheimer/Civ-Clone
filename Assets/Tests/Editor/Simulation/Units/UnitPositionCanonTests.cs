@@ -499,7 +499,6 @@ namespace Assets.Tests.Simulation.Units {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.Setup(cell => cell.IsUnderwater).Returns(data.IsUnderwater);
-            mockCell.Setup(cell => cell.transform   ).Returns(new GameObject().transform);
 
             return mockCell.Object;
         }

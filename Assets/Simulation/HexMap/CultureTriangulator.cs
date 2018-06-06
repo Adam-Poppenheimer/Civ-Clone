@@ -16,7 +16,6 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGrid                    Grid;
         private ICivilizationTerritoryLogic CivTerritoryLogic;
         private INoiseGenerator             NoiseGenerator;
         private IHexGridMeshBuilder         MeshBuilder;
@@ -27,10 +26,9 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public CultureTriangulator(
-            IHexGrid grid, ICivilizationTerritoryLogic civTerritoryLogic,
+            ICivilizationTerritoryLogic civTerritoryLogic,
             INoiseGenerator noiseGenerator, IHexGridMeshBuilder meshBuilder
         ) {
-            Grid              = grid;
             CivTerritoryLogic = civTerritoryLogic;
             NoiseGenerator    = noiseGenerator;
             MeshBuilder       = meshBuilder;

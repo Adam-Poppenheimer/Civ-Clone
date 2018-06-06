@@ -69,8 +69,7 @@ namespace Assets.Simulation.Improvements {
             }
 
             var newGameObject = GameObject.Instantiate(ImprovementPrefab);
-            newGameObject.transform.SetParent(location.transform, false);
-            newGameObject.transform.position = Grid.PerformIntersectionWithTerrainSurface(location.transform.position);
+            newGameObject.transform.position = Grid.PerformIntersectionWithTerrainSurface(location.Position);
 
             Container.InjectGameObject(newGameObject);
 

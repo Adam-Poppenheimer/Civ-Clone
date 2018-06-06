@@ -13,9 +13,10 @@ namespace Assets.Simulation.HexMap {
 
         #region properties
 
-        HexCoordinates Coordinates { get; }
+        Vector3 Position      { get; }
+        Vector3 LocalPosition { get; }
 
-        Transform transform { get; }
+        HexCoordinates Coordinates { get; }
 
         TerrainType    Terrain { get; set; }
         TerrainFeature Feature { get; set; }
@@ -65,6 +66,8 @@ namespace Assets.Simulation.HexMap {
 
         void RefreshVisibility();
         void RefreshElevation();
+
+        void Destroy();
 
         #endregion
 

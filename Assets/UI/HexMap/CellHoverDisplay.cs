@@ -99,7 +99,7 @@ namespace Assets.UI.HexMap {
             SetYieldDisplay       (hoveredCell);
             SetResourceNodeDisplay(hoveredCell);
             
-            transform.position = Camera.main.WorldToScreenPoint(hoveredCell.transform.position);
+            transform.position = Camera.main.WorldToScreenPoint(hoveredCell.Position);
 
             gameObject.SetActive(true);            
         }

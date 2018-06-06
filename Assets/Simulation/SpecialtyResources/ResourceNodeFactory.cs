@@ -68,8 +68,6 @@ namespace Assets.Simulation.SpecialtyResources{
 
 			var newNode = Container.InstantiateComponentOnNewGameObject<ResourceNode>();
 
-			newNode.transform.SetParent(location.transform, false);
-
 			newNode.Resource = definition;
 			newNode.Copies   = copies;
 

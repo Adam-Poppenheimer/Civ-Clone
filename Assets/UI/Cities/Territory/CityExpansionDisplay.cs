@@ -90,10 +90,10 @@ namespace Assets.UI.Cities.Territory {
                 return;
             }
 
-            var nextTile = ExpansionLogic.GetNextCellToPursue(ObjectToDisplay);
+            var nextCell = ExpansionLogic.GetNextCellToPursue(ObjectToDisplay);
 
             var currentCulture = ObjectToDisplay.CultureStockpile;
-            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringCell(ObjectToDisplay, nextTile);
+            var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringCell(ObjectToDisplay, nextCell);
 
             var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Culture];
 
@@ -111,7 +111,7 @@ namespace Assets.UI.Cities.Territory {
             ExpansionProgressSlider.value = currentCulture;
 
             NextTileIndicator.gameObject.SetActive(true);
-            NextTileIndicator.position = Camera.main.WorldToScreenPoint(nextTile.transform.position);          
+            NextTileIndicator.position = Camera.main.WorldToScreenPoint(nextCell.Position);          
         }
 
         #endregion

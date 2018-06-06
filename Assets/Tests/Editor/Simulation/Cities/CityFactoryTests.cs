@@ -283,8 +283,6 @@ namespace Assets.Tests.Simulation.Cities {
             var mockTile = new Mock<IHexCell>();
             mockTile.SetupAllProperties();
 
-            mockTile.Setup(tile => tile.transform).Returns(new GameObject().transform);
-
             MockCellPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(mockTile.Object, It.IsAny<ICity>()))
                 .Returns(canBeAssigned);
 
