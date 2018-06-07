@@ -588,6 +588,7 @@ MonoBehaviour:
   Culture: {fileID: 114270732117973604}
   WaterShore: {fileID: 114157243756510432}
   Estuaries: {fileID: 114792601958404866}
+  FeatureManager: {fileID: 114214256119993870}
 --- !u!114 &114137592705337108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -599,7 +600,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bef604af287f94c4c926da10889ca1b9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  FeatureManager: {fileID: 114214256119993870}
 --- !u!114 &114157243756510432
 MonoBehaviour:
   m_ObjectHideFlags: 1

@@ -37,7 +37,7 @@ namespace Assets.Simulation.HexMap {
 
         void TriangulateEdgeFan(
             Vector3 center, EdgeVertices edge, float index,
-            HexMesh targetedMesh, bool perturbY = false
+            HexMesh targetMesh, bool perturbY = false
         );
 
         void TriangulateEdgeStrip(
@@ -64,58 +64,52 @@ namespace Assets.Simulation.HexMap {
             Color color, HexMesh targetMesh
         );
 
-        void TriangulateRoadSegment(
-            Vector3 v1, Vector3 v2, Vector3 v3,
-            Vector3 v4, Vector3 v5, Vector3 v6,
-            Color w1, Color w2, Vector3 indices
-        );
-
         void AddTriangle(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
             Vector3 vertexThree, int indexThree, Color weightsThree,
-            HexMesh targetedMesh
+            HexMesh targetMesh
         );
 
         void AddTriangle(
             Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
             Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
             Vector3 vertexThree, Color weightsThree, Vector2 uv3,
-            Vector3 indices, HexMesh targetedMesh
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddTriangleUnperturbed(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
             Vector3 vertexThree, int indexThree, Color weightsThree,
-            HexMesh targetedMesh
+            HexMesh targetMesh
         );
 
         void AddTriangleUnperturbed(
             Vector3 vertexOne,   Color weightsOne,
             Vector3 vertexTwo,   Color weightsTwo,
             Vector3 vertexThree, Color weightsThree,
-            Vector3 indices, HexMesh targetedMesh
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddTriangleUnperturbed(
             Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
             Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
             Vector3 vertexThree, Color weightsThree, Vector2 uv3,
-            Vector3 indices, HexMesh targetedMesh
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddTriangleUnperturbed(
             Vector3 vertexOne,   Color weightsOne,   Vector2 uv1,
             Vector3 vertexTwo,   Color weightsTwo,   Vector2 uv2,
             Vector3 vertexThree, Color weightsThree, Vector2 uv3,
-            Color color, Vector3 indices, HexMesh targetedMesh
+            Color color, Vector3 indices, HexMesh targetMesh
         );
 
         void AddQuad(
             Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
             Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
-            int indexOne, int indexTwo, int indexThree, HexMesh targetedMesh
+            int indexOne, int indexTwo, int indexThree, HexMesh targetMesh
         );
 
         void AddQuad(
@@ -123,13 +117,21 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
             Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
             Vector3 topRight,    Color weightsTR, Vector2 uvTR,
-            Color color, Vector3 indices, HexMesh targetedMesh
+            Color color, Vector3 indices, HexMesh targetMesh
+        );
+
+        void AddQuad(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddQuadUnperturbed(
             Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
             Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
-            int indexOne, int indexTwo, int indexThree, HexMesh targetedMesh
+            int indexOne, int indexTwo, int indexThree, HexMesh targetMesh
         );
 
         void AddQuadUnperturbed(
@@ -137,7 +139,15 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
             Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
             Vector3 topRight,    Color weightsTR, Vector2 uvTR,
-            Color color, Vector3 indices, HexMesh targetedMesh
+            Color color, Vector3 indices, HexMesh targetMesh
+        );
+
+        void AddQuadUnperturbed(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Vector3 indices, HexMesh targetMesh
         );
 
         void TriangulateRiverQuad(

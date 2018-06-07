@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.HexMap {
             var cellToTest = BuildCell(new Vector3(1f, 2f, 3f));
 
             var triangulationData = new CellTriangulationData(
-                cellToTest, null, null, HexDirection.E, null, null
+                cellToTest, null, null, null, HexDirection.E, null, null
             );
 
             MockMeshBuilder.Setup(builder => builder.GetTriangulationData(cellToTest, null, null, It.IsAny<HexDirection>()))
@@ -587,7 +587,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private CellTriangulationData BuildTriangulationDataInDirection(
             IHexCell cell, HexDirection direction
         ){
-            var newData = new CellTriangulationData(cell, null, null, direction, null, null);
+            var newData = new CellTriangulationData(cell, null, null, null, direction, null, null);
 
             MockMeshBuilder.Setup(
                 builder => builder.GetTriangulationData(cell, null, null, direction)

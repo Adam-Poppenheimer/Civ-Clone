@@ -11,9 +11,10 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public IHexCell Center { get; private set; }
-        public IHexCell Left   { get; private set; }
-        public IHexCell Right  { get; private set; }
+        public IHexCell Center    { get; private set; }
+        public IHexCell Left      { get; private set; }
+        public IHexCell Right     { get; private set; }
+        public IHexCell NextRight { get; private set; }
 
         public HexDirection Direction { get; private set; }
 
@@ -189,6 +190,16 @@ namespace Assets.Simulation.HexMap {
         }
         private HexEdgeType? _leftToRightEdgeType;
 
+        public HexEdgeType CenterToNextRightEdgeType {
+            get {
+                if(_centerToNextRightEdgeType == null) {
+                    _centerToNextRightEdgeType = GetEdgeType(Center, NextRight, Direction.Next());
+                }
+                return _centerToNextRightEdgeType.GetValueOrDefault();
+            }
+        }
+        private HexEdgeType? _centerToNextRightEdgeType;
+
         public bool AllEdgesHaveRivers {
             get {
                 if(_allEdgesHaveRivers == null) {
@@ -339,6 +350,18 @@ namespace Assets.Simulation.HexMap {
         }
         private EdgeVertices? _leftToCenterWaterEdge;
 
+        public bool HasRoadToLeft {
+            get { return Left != null && Left.HasRoads && CenterToLeftEdgeType != HexEdgeType.Cliff; }
+        }
+
+        public bool HasRoadToRight {
+            get { return Right != null && Right.HasRoads && CenterToRightEdgeType != HexEdgeType.Cliff; }
+        }
+
+        public bool HasRoadToNextRight {
+            get { return NextRight != null && NextRight.HasRoads && CenterToNextRightEdgeType != HexEdgeType.Cliff; }
+        }
+
 
 
         private INoiseGenerator NoiseGenerator;
@@ -350,12 +373,14 @@ namespace Assets.Simulation.HexMap {
 
         public CellTriangulationData(
             IHexCell center, IHexCell left,
-            IHexCell right, HexDirection direction,
+            IHexCell right, IHexCell nextRight,
+            HexDirection direction,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon
         ){
-            Center = center;
-            Left   = left;
-            Right  = right;
+            Center    = center;
+            Left      = left;
+            Right     = right;
+            NextRight = nextRight;
 
             Direction = direction;
 

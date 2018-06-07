@@ -69,6 +69,7 @@ namespace Assets.Simulation.HexMap {
 
         private INoiseGenerator NoiseGenerator;
         private IRiverCanon     RiverCanon;
+        private IHexGrid        Grid;
 
         #endregion
 
@@ -82,7 +83,8 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Culture")]     HexMesh culture,
             [Inject(Id = "Water Shore")] HexMesh waterShore,
             [Inject(Id = "Estuaries")]   HexMesh estuaries,
-            INoiseGenerator noiseGenerator, IRiverCanon riverCanon
+            INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
+            IHexGrid grid
         ) {
             Terrain    = terrain;
             Roads      = roads;
@@ -94,6 +96,7 @@ namespace Assets.Simulation.HexMap {
 
             NoiseGenerator = noiseGenerator;
             RiverCanon     = riverCanon;
+            Grid           = grid;
         }
 
         #endregion
@@ -125,7 +128,9 @@ namespace Assets.Simulation.HexMap {
         public CellTriangulationData GetTriangulationData(
             IHexCell center, IHexCell left, IHexCell right, HexDirection direction
         ) {
-            return new CellTriangulationData(center, left, right, direction, NoiseGenerator, RiverCanon);
+            var nextRight = Grid.GetNeighbor(center, direction.Next());
+
+            return new CellTriangulationData(center, left, right, nextRight, direction, NoiseGenerator, RiverCanon);
         }
 
         public void TriangulateEdgeFan(
@@ -364,6 +369,22 @@ namespace Assets.Simulation.HexMap {
             targetedMesh.AddQuadColor(color);
         }
 
+        public void AddQuad(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuad(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                indices, weightsBL, weightsBR, weightsTL, weightsTR
+            );
+
+            targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
+        }
+
         public void AddQuadUnperturbed(
             Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
             Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
@@ -393,6 +414,22 @@ namespace Assets.Simulation.HexMap {
             targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
 
             targetedMesh.AddQuadColor(color);
+        }
+
+        public void AddQuadUnperturbed(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Vector3 indices, HexMesh targetedMesh
+        ) {
+            targetedMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetedMesh.AddQuadCellData(
+                indices, weightsBL, weightsBR, weightsTL, weightsTR
+            );
+
+            targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
         }
 
         public void TriangulateRiverQuad(
