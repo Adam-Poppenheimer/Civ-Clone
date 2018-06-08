@@ -59,23 +59,27 @@ namespace Assets.Simulation.HexMap {
             return GetDirectionArray(cell)[(int)edge];
         }
 
-        public bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction) {
-            return RiverMeetsPlacementConditions(cell, edge, direction) && !HasRiverAlongEdge(cell, edge);
+        public bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow flow) {
+            if(HasRiverAlongEdge(cell, edge)) {
+                return false;
+            }
+
+            return RiverMeetsPlacementConditions(cell, edge, flow);
         }
 
-        public void AddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction) {
-            if(!CanAddRiverToCell(cell, edge, direction)) {
+        public void AddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow flow) {
+            if(!CanAddRiverToCell(cell, edge, flow)) {
                 throw new InvalidOperationException("CanAddRiverToCell must return true on the given arguments");
             }
 
             GetPresenceArray (cell)[(int)edge] = true;
-            GetDirectionArray(cell)[(int)edge] = direction;
+            GetDirectionArray(cell)[(int)edge] = flow;
 
             var neighborAtEdge = Grid.GetNeighbor(cell, edge);
 
             if(neighborAtEdge != null) {
                 GetPresenceArray (neighborAtEdge)[(int)(edge.Opposite())] = true;
-                GetDirectionArray(neighborAtEdge)[(int)(edge.Opposite())] = direction.Opposite();
+                GetDirectionArray(neighborAtEdge)[(int)(edge.Opposite())] = flow.Opposite();
             }
 
             cell.RefreshSelfOnly();
@@ -121,11 +125,6 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private bool RiverMeetsPlacementConditions(IHexCell cell, HexDirection edge, RiverFlow direction) {
-            var neighbor = Grid.GetNeighbor(cell, edge);
-            return neighbor != null && !cell.IsUnderwater && !neighbor.IsUnderwater;
-        }
-
         private bool[] GetPresenceArray(IHexCell cell) {
             bool[] retval;
 
@@ -150,6 +149,112 @@ namespace Assets.Simulation.HexMap {
             }
 
             return retval;
+        }
+
+        private bool RiverMeetsPlacementConditions(IHexCell cell, HexDirection edge, RiverFlow flow) {
+            var neighbor = Grid.GetNeighbor(cell, edge);     
+
+            if(neighbor == null) {
+                return false;
+            }
+
+            if(cell.IsUnderwater || neighbor.IsUnderwater) {
+                return false;
+            }
+
+            IHexCell previousNeighbor = Grid.GetNeighbor(cell, edge.Previous());
+            IHexCell nextNeighbor     = Grid.GetNeighbor(cell, edge.Next());
+
+            return PreviousCornerIsValid(cell, edge, flow, previousNeighbor, neighbor)
+                && NextCornerIsValid    (cell, edge, flow, neighbor,         nextNeighbor);
+        }
+
+        private bool PreviousCornerIsValid(
+            IHexCell cell, HexDirection edge, RiverFlow flow,
+            IHexCell previousNeighbor, IHexCell neighbor
+        ) {
+            if(previousNeighbor == null) {
+                return true;
+            }
+
+            bool cellIsBelow = cell.EdgeElevation < previousNeighbor.EdgeElevation &&
+                               cell.EdgeElevation < neighbor        .EdgeElevation;
+
+            bool previousNeighborIsBelow = previousNeighbor.EdgeElevation < cell.EdgeElevation &&
+                                           previousNeighbor.EdgeElevation < neighbor.EdgeElevation;
+
+            bool neighborIsBelow = neighbor.EdgeElevation < cell            .EdgeElevation &&
+                                   neighbor.EdgeElevation < previousNeighbor.EdgeElevation;
+
+            if(HasRiverAlongEdge(cell, edge.Previous())) {
+
+                if(previousNeighborIsBelow && flow == RiverFlow.Clockwise) {
+                    return false;
+                }else if(neighborIsBelow && flow == RiverFlow.Counterclockwise) {
+                    return false;
+                } else {
+                    return HasRiverAlongEdge(previousNeighbor, edge.Next())
+                        || GetFlowOfRiverAtEdge(cell, edge.Previous()) == flow;
+                }
+
+            }else if(HasRiverAlongEdge(previousNeighbor, edge.Next())) {
+
+                if(cellIsBelow && flow == RiverFlow.Counterclockwise) {
+                    return false;
+                }else {
+                    return GetFlowOfRiverAtEdge(previousNeighbor, edge.Next()) == flow
+                        && (!previousNeighborIsBelow || flow == RiverFlow.Counterclockwise);
+                }
+
+            }else {
+
+                return true;
+
+            }
+        }
+
+        private bool NextCornerIsValid(
+            IHexCell cell, HexDirection edge, RiverFlow flow,
+            IHexCell neighbor, IHexCell nextNeighbor
+        ) {
+            if(nextNeighbor == null) {
+                return true;
+            }
+
+            bool cellIsBelow = cell.EdgeElevation < neighbor    .EdgeElevation &&
+                               cell.EdgeElevation < nextNeighbor.EdgeElevation;
+
+            bool neighborIsBelow = neighbor.EdgeElevation < cell        .EdgeElevation &&
+                                   neighbor.EdgeElevation < nextNeighbor.EdgeElevation;
+
+            bool nextNeighborIsBelow = nextNeighbor.EdgeElevation < cell    .EdgeElevation &&
+                                       nextNeighbor.EdgeElevation < neighbor.EdgeElevation;            
+
+            if(HasRiverAlongEdge(cell, edge.Next())) {
+
+                if(nextNeighborIsBelow && flow == RiverFlow.Counterclockwise){
+                    return false;
+                }else if(neighborIsBelow && flow == RiverFlow.Clockwise) {
+                    return false;
+                } else {
+                    return HasRiverAlongEdge(nextNeighbor, edge.Previous())
+                        || GetFlowOfRiverAtEdge(cell, edge.Next()) == flow;
+                }
+
+            }else if(HasRiverAlongEdge(nextNeighbor, edge.Previous())) {
+
+                if(cellIsBelow && flow == RiverFlow.Clockwise) {
+                    return false;
+                } else {
+                    return GetFlowOfRiverAtEdge(nextNeighbor, edge.Previous()) == flow
+                        && (!nextNeighborIsBelow || flow == RiverFlow.Clockwise);
+                }
+
+            }else {
+
+                return true;
+
+            }
         }
 
         #endregion
