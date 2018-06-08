@@ -473,13 +473,13 @@ namespace Assets.Tests.Simulation.MapManagement {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
                         Coordinates = new HexCoordinates(0, 0),
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        DirectionOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
+                        HasRiverAtEdge = new List<bool>() { true, false, false, false, false, false },
+                        DirectionOfRiverAtEdge = new List<RiverFlow> { RiverFlow.Counterclockwise }
                     },
                     new SerializableHexCellData() {
                         Coordinates = new HexCoordinates(1, 1),
-                        HasRiverAtEdge = new bool[] { true, false, true, false, false, false },
-                        DirectionOfRiverAtEdge = new RiverFlow[] {
+                        HasRiverAtEdge = new List<bool> { true, false, true, false, false, false },
+                        DirectionOfRiverAtEdge = new List<RiverFlow> {
                             RiverFlow.Counterclockwise, RiverFlow.Counterclockwise, RiverFlow.Clockwise
                         }
                     }

@@ -49,8 +49,8 @@ namespace Assets.Simulation.MapManagement {
                     HasRoads               = cell.HasRoads,
                     IsSlotOccupied         = cell.WorkerSlot.IsOccupied,
                     IsSlotLocked           = cell.WorkerSlot.IsLocked,
-                    HasRiverAtEdge         = new bool[6],
-                    DirectionOfRiverAtEdge = new RiverFlow[6]
+                    HasRiverAtEdge         = new List<bool>(new bool[6]),
+                    DirectionOfRiverAtEdge = new List<RiverFlow>(new RiverFlow[6])
                 };
 
                 foreach(var edgeWithRiver in RiverCanon.GetEdgesWithRivers(cell)) {

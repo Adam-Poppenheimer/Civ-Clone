@@ -11,6 +11,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapManagement {
 
     public class FileSystemLiaison : IFileSystemLiaison {

@@ -23,8 +23,8 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public bool             HasRoads;
         [DataMember()] public bool             IsSlotOccupied;
         [DataMember()] public bool             IsSlotLocked;
-        [DataMember()] public bool[]           HasRiverAtEdge         = new bool[6];
-        [DataMember()] public RiverFlow[]      DirectionOfRiverAtEdge = new RiverFlow[6];
+        [DataMember()] public List<bool>       HasRiverAtEdge         = new List<bool>();
+        [DataMember()] public List<RiverFlow>  DirectionOfRiverAtEdge = new List<RiverFlow>();
 
         #endregion
 
