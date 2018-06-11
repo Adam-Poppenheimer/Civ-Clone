@@ -42,6 +42,8 @@ namespace Assets.Simulation.HexMap {
 
             Container.Bind<IHexGridMeshBuilder>      ().To<HexGridMeshBuilder>      ().AsSingle();
             Container.Bind<IRiverTriangulator>       ().To<RiverTriangulator>       ().AsSingle();
+            Container.Bind<IRiverTroughTriangulator> ().To<RiverTroughTriangulator> ().AsSingle();
+            Container.Bind<IRiverSurfaceTriangulator>().To<RiverSurfaceTriangulator>().AsSingle();
             Container.Bind<ICultureTriangulator>     ().To<CultureTriangulator>     ().AsSingle();
             Container.Bind<IBasicTerrainTriangulator>().To<BasicTerrainTriangulator>().AsSingle();
             Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
