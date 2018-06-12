@@ -143,7 +143,7 @@ namespace Assets.Simulation.HexMap {
         private bool _hasRoads;
 
         public bool IsUnderwater {
-            get { return Config.WaterLevel > EdgeElevation; }
+            get { return Terrain.IsWater(); }
         }
 
         public float WaterSurfaceY {

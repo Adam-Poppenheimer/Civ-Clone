@@ -5,6 +5,7 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
@@ -31,8 +32,9 @@ namespace Assets.UI.MapEditor {
 
         private IImprovementTemplate SelectedTemplate;
 
-        private List<RectTransform> InstantiatedRecords = new List<RectTransform>();  
+        private List<RectTransform> InstantiatedRecords = new List<RectTransform>();
 
+        private IDisposable CellClickedSubscription;
 
 
 
@@ -65,7 +67,7 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             PopulateImprovementList();
 
-            CellSignals.ClickedSignal.Listen(OnCellClicked);
+            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
             RefreshMode();
         }
@@ -77,7 +79,7 @@ namespace Assets.UI.MapEditor {
 
             InstantiatedRecords.Clear();
 
-            CellSignals.ClickedSignal.Unlisten(OnCellClicked);
+            CellClickedSubscription.Dispose();
         }
 
         #endregion
@@ -108,7 +110,9 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void OnCellClicked(IHexCell cell, Vector3 location) {
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+            var cell = data.Item1;
+
             if(IsAdding && SelectedTemplate != null) {
                 TryAddImprovementTo(SelectedTemplate, cell);
             }else if(IsRemoving) {

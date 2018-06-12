@@ -5,6 +5,7 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
@@ -67,7 +68,7 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             PopulateCivilizationDropdown();
 
-            CellSignals.ClickedSignal.Listen(OnCellClicked);
+            CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
             CityClickedSubscription = CitySignals.PointerClickedSignal.Subscribe(OnCityClicked);
 
@@ -76,7 +77,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnDisable() {
-            CellSignals.ClickedSignal.Unlisten(OnCellClicked);
+            CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
             CityClickedSubscription.Dispose();
 
@@ -102,7 +103,9 @@ namespace Assets.UI.MapEditor {
             SetActiveCivilization(CivilizationDropdown.value);
         }
 
-        private void OnCellClicked(IHexCell cell, Vector3 location) {
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+            var cell = data.Item1;
+
             if(IsAdding) {
                 if(CityValidityLogic.IsCellValidForCity(cell)) {
                     CityFactory.Create(cell, ActiveCivilization);

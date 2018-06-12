@@ -41,10 +41,6 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<ICellVisibilityCanon>().To<CellVisibilityCanon>().AsSingle();
             Container.Bind<IFreshWaterCanon>    ().To<FreshWaterCanon>    ().AsSingle();
 
-            Container.DeclareSignal<CellClickedSignal>();
-            Container.DeclareSignal<CellPointerEnterSignal>();
-            Container.DeclareSignal<CellPointerExitSignal>();
-
             Container.Bind<HexCellSignals>().AsSingle();
         }
 

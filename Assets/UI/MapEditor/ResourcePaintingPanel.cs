@@ -5,8 +5,10 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.SpecialtyResources;
@@ -38,6 +40,9 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private RectTransform ResourceRecordPrefab;
         [SerializeField] private RectTransform ResourceRecordContainer;
+
+        private IDisposable CellClickedSubscription;
+
 
 
 
@@ -71,11 +76,11 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnEnable() {
-            CellSignals.ClickedSignal.Listen(OnCellClicked);
+            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
         }
         
         private void OnDisable() {
-            CellSignals.ClickedSignal.Unlisten(OnCellClicked);
+            CellClickedSubscription.Dispose();
         }
 
         #endregion
@@ -125,7 +130,9 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void OnCellClicked(IHexCell cell, Vector3 position) {
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+            var cell = data.Item1;
+
             if(IsDeleting) {
                 var nodeOnCell = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
                 if(nodeOnCell != null) {

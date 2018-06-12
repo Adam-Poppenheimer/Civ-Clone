@@ -348,9 +348,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
-
-            CellSignals.PointerEnterSignal.Listen(OnCellPointerEntered);
-            CellSignals.PointerExitSignal .Listen(OnCellPointerExited);
+            EventSubscriptions.Add(CellSignals.PointerEnterSignal  .Subscribe(OnCellPointerEntered));
+            EventSubscriptions.Add(CellSignals.PointerExitSignal   .Subscribe(OnCellPointerExited));
         }
 
         private void DetachEvents() {
@@ -358,9 +357,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 subscription.Dispose();
             }
             EventSubscriptions.Clear();
-
-            CellSignals.PointerEnterSignal.Unlisten(OnCellPointerEntered);
-            CellSignals.PointerExitSignal .Unlisten(OnCellPointerExited);
         }
 
         #endregion

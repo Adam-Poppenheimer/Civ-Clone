@@ -87,11 +87,10 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #endregion
 
         private void AttachEvents() {
-            EventSubscriptions.Add(UnitSignals.BeginDragSignal.Subscribe(OnUnitBeginDrag));
-            EventSubscriptions.Add(UnitSignals.EndDragSignal  .Subscribe(OnUnitEndDrag));
-
-            CellSignals.PointerEnterSignal.Listen(OnCellPointerEntered);
-            CellSignals.PointerExitSignal .Listen(OnCellPointerExited);
+            EventSubscriptions.Add(UnitSignals.BeginDragSignal   .Subscribe(OnUnitBeginDrag));
+            EventSubscriptions.Add(UnitSignals.EndDragSignal     .Subscribe(OnUnitEndDrag));
+            EventSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEntered));
+            EventSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExited));
         }
 
         private void DetachEvents() {
@@ -100,9 +99,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             }
 
             EventSubscriptions.Clear();
-
-            CellSignals.PointerEnterSignal.Unlisten(OnCellPointerEntered);
-            CellSignals.PointerExitSignal .Unlisten(OnCellPointerExited);
         }
 
         private void OnUnitBeginDrag(Tuple<IUnit, PointerEventData> data) {

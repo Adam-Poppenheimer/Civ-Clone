@@ -14,13 +14,16 @@ using Assets.Simulation.Cities;
 namespace Assets.Simulation.HexMap {
 
     public class HexMeshEventEmitter : MonoBehaviour, IPointerDownHandler,
-        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler, IDragHandler {
+        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler,
+        IBeginDragHandler, IDragHandler, IEndDragHandler {
 
         #region instance fields and properties
 
         public MeshCollider Collider { get; private set; }
 
         private IHexCell LastCellEntered;
+
+        private IHexCell CellBeingDragged;
 
         private bool ShouldEmitEnterExitMessages;
 
@@ -101,7 +104,9 @@ namespace Assets.Simulation.HexMap {
                     if(cityAtLocation != null) {
                         CitySignals.PointerClickedSignal.OnNext(cityAtLocation);
                     }else {
-                        CellSignals.ClickedSignal.Fire(clickedCell, Input.mousePosition);
+                        CellSignals.ClickedSignal.OnNext(
+                            new Tuple<IHexCell, PointerEventData>(clickedCell, eventData)
+                        );
                     }
                 }
             }
@@ -126,20 +131,35 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public void OnDrag(PointerEventData eventData) {
-            var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
-            RaycastHit hit;
-            if(Physics.Raycast(pointerRay, out hit) && hit.collider == Collider) {
-                var coordinates = HexCoordinates.FromPosition(hit.point);
+        public void OnBeginDrag(PointerEventData eventData) {
+            CellBeingDragged = GetCellUnderPosition(Input.mousePosition);
 
-                if(!Grid.HasCellAtCoordinates(coordinates)) {
-                    return;
-                }
-
-                var draggedCell = Grid.GetCellAtCoordinates(coordinates);
-
-                CellSignals.DraggedSignal.OnNext(new Tuple<IHexCell, PointerEventData>(draggedCell, eventData));
+            if(CellBeingDragged != null) {
+                CellSignals.BeginDragSignal.OnNext(new HexCellDragData() {
+                    CellBeingDragged = CellBeingDragged,
+                    EventData        = eventData
+                });
             }
+        }
+
+        public void OnDrag(PointerEventData eventData) {
+            if(CellBeingDragged != null) {
+                CellSignals.DragSignal.OnNext(new HexCellDragData() {
+                    CellBeingDragged = CellBeingDragged,
+                    EventData        = eventData
+                });
+            }
+        }
+
+        public void OnEndDrag(PointerEventData eventData) {
+            if(CellBeingDragged != null) {
+                CellSignals.EndDragSignal.OnNext(new HexCellDragData() {
+                    CellBeingDragged = CellBeingDragged,
+                    EventData        = eventData
+                });
+            }
+
+            CellBeingDragged = null;
         }
 
         #endregion
@@ -190,11 +210,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void EmitEnterMessage(IHexCell cell) {
-            CellSignals.PointerEnterSignal.Fire(LastCellEntered);
+            CellSignals.PointerEnterSignal.OnNext(LastCellEntered);
         }
 
         private void EmitExitMessage(IHexCell cell) {
-            CellSignals.PointerExitSignal.Fire(cell);
+            CellSignals.PointerExitSignal.OnNext(cell);
         }
 
         private void EmitEnterMessage(ICity city) {

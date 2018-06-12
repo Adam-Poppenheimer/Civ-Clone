@@ -21,7 +21,6 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
 
-        [SerializeField] private TerrainEditingPanel      TerrainEditingPanel;
         [SerializeField] private CivManagementPanel       CivManagementPanel;
         [SerializeField] private UnitPaintingPanel        UnitPaintingPanel;
         [SerializeField] private CityPaintingPanel        CityPaintingPanel;
@@ -30,8 +29,17 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
         [SerializeField] private UnitEditingPanel         UnitEditingPanel;
         [SerializeField] private CivEditingPanel          CivEditingPanel;
+        [SerializeField] private BrushPanel               BrushPanel;
+        [SerializeField] private RiverPaintingPanel       RiverPaintingPanel;
+
+        [SerializeField] private CellPaintingPanelBase TerrainPaintingPanel;
+        [SerializeField] private CellPaintingPanelBase ShapePaintingPanel;
+        [SerializeField] private CellPaintingPanelBase FeaturePaintingPanel;
+        
+        [SerializeField] private CellPaintingPanelBase RoadPaintingPanel;
 
         [SerializeField] private GameObject SaveMapDisplay;
+        [SerializeField] private GameObject EditTypeSelectionPanel;
 
         #endregion
 
@@ -45,7 +53,6 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
             Container.Bind<CivManagementPanel>      ().FromInstance(CivManagementPanel);
-            Container.Bind<TerrainEditingPanel>     ().FromInstance(TerrainEditingPanel);
             Container.Bind<UnitPaintingPanel>       ().FromInstance(UnitPaintingPanel);
             Container.Bind<CityPaintingPanel>       ().FromInstance(CityPaintingPanel);
             Container.Bind<TechManagementPanel>     ().FromInstance(TechManagementPanel);
@@ -53,8 +60,16 @@ namespace Assets.UI.StateMachine {
             Container.Bind<ImprovementPaintingPanel>().FromInstance(ImprovementPaintingPanel);
             Container.Bind<UnitEditingPanel>        ().FromInstance(UnitEditingPanel);
             Container.Bind<CivEditingPanel>         ().FromInstance(CivEditingPanel);
+            Container.Bind<BrushPanel>              ().FromInstance(BrushPanel);
+            Container.Bind<RiverPaintingPanel>      ().FromInstance(RiverPaintingPanel);
 
-            Container.Bind<GameObject>().WithId("Save Map Display").FromInstance(SaveMapDisplay);
+            Container.Bind<CellPaintingPanelBase>().WithId("Terrain Painting Panel").FromInstance(TerrainPaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Shape Painting Panel")  .FromInstance(ShapePaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Feature Painting Panel").FromInstance(FeaturePaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Road Painting Panel")   .FromInstance(RoadPaintingPanel);
+
+            Container.Bind<GameObject>().WithId("Save Map Display")         .FromInstance(SaveMapDisplay);
+            Container.Bind<GameObject>().WithId("Edit Type Selection Panel").FromInstance(EditTypeSelectionPanel);
         }
 
         #endregion

@@ -9,40 +9,44 @@ using Zenject;
 
 using Assets.UI.MapEditor;
 
-namespace Assets.UI.StateMachine.States.MapEditor {
+namespace Assets.UI.StateMachine.States.MapEditor.CellEditing {
 
-    public class TerrainEditingState : StateMachineBehaviour {
+    public class RiverPaintingState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private TerrainEditingPanel TerrainEditor;
-
         private UIStateMachineBrain Brain;
+        private RiverPaintingPanel  RiverPanel;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(TerrainEditingPanel terrainEditor, UIStateMachineBrain brain) {
-            TerrainEditor = terrainEditor;
-            Brain         = brain;
+        public void InjectDependencies(
+            UIStateMachineBrain brain, RiverPaintingPanel riverPanel
+        ){
+            Brain      = brain;
+            RiverPanel = riverPanel;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            TerrainEditor.gameObject.SetActive(true);
-
             Brain.ClearListeners();
-            Brain.ListenForTransitions(TransitionType.ReturnViaButton);
 
             Brain.EnableCameraMovement();
-            Brain.EnableCellHovering();
+            Brain.DisableCellHovering();
+
+            Brain.ListenForTransitions(TransitionType.ReturnViaButton);
+
+            RiverPanel.gameObject.SetActive(true);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            TerrainEditor.gameObject.SetActive(false);
+            Brain.ClearListeners();
+
+            RiverPanel.gameObject.SetActive(false);
         }
 
         #endregion

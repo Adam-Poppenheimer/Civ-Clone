@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
@@ -155,7 +156,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Clear();
         }
 
-        private void OnCellClicked(IHexCell cell, Vector3 location) {
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
             if(IsAttackValid()) {
                 PerformAttack();
             }
@@ -293,9 +294,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             EventSubscriptions.Add(UnitSignals.PointerExitedSignal .Subscribe(OnUnitPointerExited));
             EventSubscriptions.Add(UnitSignals.ClickedSignal       .Subscribe(OnUnitClicked));
 
-            CellSignals.PointerEnterSignal.Listen(OnCellPointerEnter);
-            CellSignals.PointerExitSignal .Listen(OnCellPointerExit);
-            CellSignals.ClickedSignal     .Listen(OnCellClicked);
+            EventSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
+            EventSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExit));
+            EventSubscriptions.Add(CellSignals.ClickedSignal     .Subscribe(OnCellClicked));
 
             EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
@@ -307,10 +308,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 subscription.Dispose();
             }
             EventSubscriptions.Clear();
-
-            CellSignals.PointerEnterSignal.Unlisten(OnCellPointerEnter);
-            CellSignals.PointerExitSignal .Unlisten(OnCellPointerExit);
-            CellSignals.ClickedSignal     .Unlisten(OnCellClicked);
         }
 
         #endregion

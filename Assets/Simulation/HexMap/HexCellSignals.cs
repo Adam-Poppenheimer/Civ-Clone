@@ -16,44 +16,43 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public CellClickedSignal                           ClickedSignal      { get; private set; }
-        public CellPointerEnterSignal                      PointerEnterSignal { get; private set; }
-        public CellPointerExitSignal                       PointerExitSignal  { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> ClickedSignal      { get; private set; }
         public ISubject<Tuple<IHexCell, PointerEventData>> PointerDownSignal  { get; private set; }
-        public ISubject<Tuple<IHexCell, PointerEventData>> DraggedSignal      { get; private set; }
+        public ISubject<IHexCell>                          PointerEnterSignal { get; private set; }
+        public ISubject<IHexCell>                          PointerExitSignal  { get; private set; }
 
-        public ISubject<IHexCell> FoundationElevationChangedSignal  { get; private set; }
-        public ISubject<IHexCell> ShapeChangedSignal                { get; private set; }
-        public ISubject<IHexCell> FeatureChangedSignal              { get; private set; }
-        public ISubject<IHexCell> WaterLevelChangedSignal           { get; private set; }
+        public ISubject<HexCellDragData> BeginDragSignal { get; private set; }
+        public ISubject<HexCellDragData> DragSignal      { get; private set; }
+        public ISubject<HexCellDragData> EndDragSignal   { get; private set; }
+
+        public ISubject<IHexCell> FoundationElevationChangedSignal { get; private set; }
+        public ISubject<IHexCell> ShapeChangedSignal               { get; private set; }
+        public ISubject<IHexCell> FeatureChangedSignal             { get; private set; }
+        public ISubject<IHexCell> WaterLevelChangedSignal          { get; private set; }
 
         #endregion
 
         #region constructors
 
-        public HexCellSignals(CellClickedSignal clickedSignal, CellPointerEnterSignal pointerEnterSignal,
-            CellPointerExitSignal pointerExitSignal) {
+        public HexCellSignals() {
 
-            ClickedSignal      = clickedSignal;
-            PointerEnterSignal = pointerEnterSignal;
-            PointerExitSignal  = pointerExitSignal;
+            ClickedSignal      = new Subject<Tuple<IHexCell, PointerEventData>>();
             PointerDownSignal  = new Subject<Tuple<IHexCell, PointerEventData>>();
-            DraggedSignal      = new Subject<Tuple<IHexCell, PointerEventData>>();
+            PointerEnterSignal = new Subject<IHexCell>();
+            PointerExitSignal  = new Subject<IHexCell>();
 
-            FoundationElevationChangedSignal  = new Subject<IHexCell>();
-            ShapeChangedSignal                = new Subject<IHexCell>();
-            FeatureChangedSignal              = new Subject<IHexCell>();
-            WaterLevelChangedSignal           = new Subject<IHexCell>();
+            BeginDragSignal = new Subject<HexCellDragData>();
+            DragSignal      = new Subject<HexCellDragData>();
+            EndDragSignal   = new Subject<HexCellDragData>();
+
+            FoundationElevationChangedSignal = new Subject<IHexCell>();
+            ShapeChangedSignal               = new Subject<IHexCell>();
+            FeatureChangedSignal             = new Subject<IHexCell>();
+            WaterLevelChangedSignal          = new Subject<IHexCell>();
         }
 
         #endregion
 
     }
-
-    public class CellClickedSignal : Signal<CellClickedSignal, IHexCell, Vector3> { }
-
-    public class CellPointerEnterSignal : Signal<CellPointerEnterSignal, IHexCell> { }
-
-    public class CellPointerExitSignal : Signal<CellPointerExitSignal, IHexCell> { }
 
 }

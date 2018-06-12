@@ -5,6 +5,7 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
@@ -35,6 +36,7 @@ namespace Assets.UI.MapEditor {
         private List<RectTransform> InstantiatedRecords = new List<RectTransform>();        
 
         private IDisposable UnitClickedSubscription;
+        private IDisposable CellClickedSubscription;
 
 
 
@@ -75,9 +77,8 @@ namespace Assets.UI.MapEditor {
             PopulateCivilizationDropdown();
             PopulateUnitList();
 
-            CellSignals.ClickedSignal.Listen(OnCellClicked);
-
             UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
+            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
             IsAddingToggle.onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);
@@ -90,9 +91,8 @@ namespace Assets.UI.MapEditor {
 
             InstantiatedRecords.Clear();
 
-            CellSignals.ClickedSignal.Unlisten(OnCellClicked);
-
             UnitClickedSubscription.Dispose();
+            CellClickedSubscription.Dispose();
 
             IsAddingToggle.onValueChanged.RemoveAllListeners();
             IsRemovingToggle.onValueChanged.RemoveAllListeners();
@@ -143,11 +143,11 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void OnCellClicked(IHexCell cell, Vector3 location) {
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
             if(IsAdding) {
-                TryAddUnit(cell);
+                TryAddUnit(data.Item1);
             }else {
-                TryRemoveUnit(cell);
+                TryRemoveUnit(data.Item1);
             }
         }
 
