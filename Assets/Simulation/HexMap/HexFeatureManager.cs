@@ -15,11 +15,9 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.HexMap {
 
-    public class HexFeatureManager : MonoBehaviour, IHexFeatureManager {
+    public class HexFeatureManager : IHexFeatureManager {
 
         #region instance fields and properties
-
-        private Transform Container;
 
         private DictionaryOfLists<IHexCell, Vector3> FeaturePositionsForCell =
             new DictionaryOfLists<IHexCell, Vector3>();
@@ -27,11 +25,13 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private INoiseGenerator                                  NoiseGenerator;
-        private IFeatureConfig                                   Config;
-        private IHexGrid                                         Grid;
-        private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-        private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
+        private INoiseGenerator   NoiseGenerator;
+        private IHexGrid          Grid;
+        private FeaturePlacerBase CityFeaturePlacer;
+        private FeaturePlacerBase ResourceFeaturePlacer;
+        private FeaturePlacerBase ImprovementFeaturePlacer;
+        private FeaturePlacerBase TreeFeaturePlacer;
+        private Transform         FeatureContainer;
 
         #endregion
 
@@ -39,24 +39,26 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            INoiseGenerator noiseGenerator, IFeatureConfig config, IHexGrid grid,
-            IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            INoiseGenerator noiseGenerator, IHexGrid grid,
+            [Inject(Id = "City Feature Placer")]        FeaturePlacerBase cityFeaturePlacer,
+            [Inject(Id = "Resource Feature Placer")]    FeaturePlacerBase resourceFeaturePlacer,
+            [Inject(Id = "Improvement Feature Placer")] FeaturePlacerBase improvementFeaturePlacer,
+            [Inject(Id = "Tree Feature Placer")]        FeaturePlacerBase treeFeaturePlacer,
+            [Inject(Id = "Feature Container")] Transform featureContainer
         ){
-            NoiseGenerator            = noiseGenerator;
-            Config                    = config;
-            Grid                      = grid;
-            ResourceNodeLocationCanon = resourceNodeLocationCanon;
-            CityLocationCanon         = cityLocationCanon;
+            NoiseGenerator           = noiseGenerator;
+            Grid                     = grid;
+            CityFeaturePlacer        = cityFeaturePlacer;
+            ResourceFeaturePlacer    = resourceFeaturePlacer;
+            ImprovementFeaturePlacer = improvementFeaturePlacer;
+            TreeFeaturePlacer        = treeFeaturePlacer;
+            FeatureContainer         = featureContainer;
         }
 
         public void Clear() {
-            if(Container != null) {
-                Destroy(Container.gameObject);
+            for(int i = FeatureContainer.childCount - 1; i >= 0; --i) {
+                GameObject.Destroy(FeatureContainer.GetChild(i).gameObject);
             }
-
-            Container = new GameObject("Features Container").transform;
-            Container.SetParent(transform, false);
         }
 
         public void Apply() {
@@ -67,109 +69,88 @@ namespace Assets.Simulation.HexMap {
             FeaturePositionsForCell.Clear();
         }
 
-        public void FlagLocationForFeatures(Vector3 location, IHexCell cell) {
-            FeaturePositionsForCell[cell].Add(location);
+
+
+        public void AddFeatureLocationsForCell(IHexCell cell) {
+            var listOfLocations = new List<Vector3>();
+
+            AddCenterFeaturePoints(cell, listOfLocations);
+
+            foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                AddDirectionalFeaturePoints(cell, direction, listOfLocations);
+            }
+
+            FeaturePositionsForCell[cell] = listOfLocations;
+        }
+
+        private void AddCenterFeaturePoints(IHexCell cell, List<Vector3> pointList) {
+            pointList.Add(Grid.PerformIntersectionWithTerrainSurface(cell.LocalPosition));
+        }
+
+        //This method divides the sextant of the cell (excluding the edge regions between cells
+        //in the current direction into four triangles. For each of these triangles, it then
+        //adds a single location somewhere between each of that triangle's vertices and that
+        //triangle's midpoint.
+        //Triangles one and two are abutting the outer edge of the cell. Triangle
+        //three is right in the middle of the sextant, and triangle four is closest
+        //to the edge, with one vertex right in the middle of the cell.
+        private void AddDirectionalFeaturePoints(
+            IHexCell cell, HexDirection direction, List<Vector3> pointList
+        ) {
+            var center = cell.LocalPosition;
+            var cornerOne = HexMetrics.GetFirstOuterSolidCorner (direction) + center;
+            var cornerTwo = HexMetrics.GetSecondOuterSolidCorner(direction) + center;
+
+            var edgeMidpoint = (cornerOne + cornerTwo) / 2f;
+
+            var leftMidpoint  = (center + cornerOne) / 2f;
+            var rightMidpoint = (center + cornerTwo) / 2f;
+
+            AddFeaturePointsFromTriangle(cornerOne,    edgeMidpoint, leftMidpoint,  pointList);
+            AddFeaturePointsFromTriangle(edgeMidpoint, cornerTwo,    rightMidpoint, pointList);
+            AddFeaturePointsFromTriangle(leftMidpoint, edgeMidpoint, rightMidpoint, pointList);
+            AddFeaturePointsFromTriangle(center,       leftMidpoint, rightMidpoint, pointList);
+        }
+
+        private void AddFeaturePointsFromTriangle(
+            Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, List<Vector3> pointList
+        ) {
+            var triangleMidpoint = (vertexOne + vertexTwo + vertexThree) / 3f;
+
+            Vector3 terrainPoint;
+
+            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexOne, triangleMidpoint, 0.5f), out terrainPoint)) {
+                pointList.Add(terrainPoint);
+            }
+
+            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexTwo, triangleMidpoint, 0.5f), out terrainPoint)) {
+                pointList.Add(terrainPoint);
+            }
+
+            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexThree, triangleMidpoint, 0.5f), out terrainPoint)) {
+                pointList.Add(terrainPoint);
+            }
         }
 
         private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {
-            var cityOnCell = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
-            var nodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            for(int i = 0; i < locations.Count; i++) {
+                var location = locations[i];
 
-            if(cityOnCell != null) {
-                ApplyCityFeaturesToCell(cell, locations);
+                var locationHash = NoiseGenerator.SampleHashGrid(location);
 
-            }else if(nodeOnCell != null) {
-                ApplyResourceNodeToCell(cell, locations, nodeOnCell);
+                if(CityFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
+                    continue;
 
-            }else if(cell.Feature == TerrainFeature.Forest) {
-                ApplyTreesToCell(cell, locations, Config.ForestTreePrefabs);
+                }else if(ImprovementFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
+                    continue;
 
-            }else if(cell.Feature == TerrainFeature.Jungle) {
-                ApplyTreesToCell(cell, locations, Config.JungleTreePrefabs);
-            }
-        }
+                }else if(ResourceFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
+                    continue;
 
-        private void ApplyCityFeaturesToCell(IHexCell cell, List<Vector3> locations) {
-            foreach(var location in locations) {
-                ApplyBuildingToLocation(location, location == locations.First());
-            }
-        }
-
-        private void ApplyResourceNodeToCell(IHexCell cell, List<Vector3> locations, IResourceNode node) {
-            foreach(var location in locations) {
-                if(!ApplyResourceNodeToLocation(location, node, location == locations.First())) {
-                    
-                    if(cell.Feature == TerrainFeature.Forest) {
-                        ApplyTreesToLocation(location, Config.ForestTreePrefabs);
-
-                    }else if(cell.Feature == TerrainFeature.Jungle) {
-                        ApplyTreesToLocation(location, Config.JungleTreePrefabs);
-                    }
+                }else {
+                    TreeFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash);
                 }
             }
-        }
-
-        private void ApplyTreesToCell(
-            IHexCell cell, List<Vector3> locations, ReadOnlyCollection<Transform> treePrefabs
-        ) {
-            foreach(var location in locations) {
-                ApplyTreesToLocation(location, treePrefabs, location == locations.First());
-            }
-        }
-
-
-        private bool ApplyBuildingToLocation(Vector3 location, bool forcePopulate = false) {
-            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
-
-            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
-            if(!forcePopulate && hash.A >= Config.BuildingAppearanceChance) {
-                return false;
-            }
-
-            int buildingIndex = (int)(hash.C * Config.BuildingPrefabs.Count);
-            AddFeature(Config.BuildingPrefabs[buildingIndex], meshCorrectedLocation, hash);
-
-            return true;
-        }
-
-        private bool ApplyTreesToLocation(
-            Vector3 location, ReadOnlyCollection<Transform> treePrefabs, bool forcePopulate = false
-        ){
-            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
-
-            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
-            if(!forcePopulate && hash.A >= Config.TreeAppearanceChance) {
-                return false;
-            }
-
-            int treeIndex = (int)(hash.C * treePrefabs.Count);
-            AddFeature(treePrefabs[treeIndex], meshCorrectedLocation, hash);
-
-            return true;
-        }
-
-        private bool ApplyResourceNodeToLocation(Vector3 location, IResourceNode node, bool forcePopulate = false) {
-            if(!node.IsVisible) {
-                return false;
-            }
-
-            var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
-
-            HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
-            if(!forcePopulate && hash.A >= Config.ResourceAppearanceChance) {
-                return false;
-            }
-
-            AddFeature(node.Resource.AppearancePrefab, meshCorrectedLocation, hash);
-            return true;
-        }
-
-
-        private void AddFeature(Transform prefab, Vector3 location, HexHash hash) {
-            Transform instance = Instantiate(prefab);
-            instance.localPosition = NoiseGenerator.Perturb(location);
-            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
-            instance.SetParent(Container, false);
         }
 
         #endregion

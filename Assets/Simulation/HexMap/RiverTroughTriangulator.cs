@@ -13,7 +13,6 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGrid            Grid;
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
 
@@ -23,9 +22,8 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public RiverTroughTriangulator(
-            IHexGrid grid, IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
         ){
-            Grid           = grid;
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
         }

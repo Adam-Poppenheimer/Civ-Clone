@@ -18,7 +18,6 @@ namespace Assets.Simulation.HexMap {
         private IBasicTerrainTriangulator BasicTerrainTriangulator;
         private IWaterTriangulator        WaterTriangulator;
         private IRoadTriangulator         RoadTriangulator;
-        private IHexFeatureManager        FeatureManager;
 
         #endregion
 
@@ -29,8 +28,7 @@ namespace Assets.Simulation.HexMap {
             IHexGrid grid, IRiverTriangulator riverTriangulator,
             IHexGridMeshBuilder meshBuilder, ICultureTriangulator cultureTriangulator,
             IBasicTerrainTriangulator basicTerrainTriangulator,
-            IWaterTriangulator waterTriangulator, IRoadTriangulator roadTriangulator,
-            IHexFeatureManager featureManager
+            IWaterTriangulator waterTriangulator, IRoadTriangulator roadTriangulator
         ) {
             Grid                     = grid;
             RiverTriangulator        = riverTriangulator;
@@ -39,7 +37,6 @@ namespace Assets.Simulation.HexMap {
             BasicTerrainTriangulator = basicTerrainTriangulator;
             WaterTriangulator        = waterTriangulator;
             RoadTriangulator         = roadTriangulator;
-            FeatureManager           = featureManager;
         }
 
         #endregion
@@ -49,8 +46,6 @@ namespace Assets.Simulation.HexMap {
         #region HexCellTriangulationLogic
 
         public void TriangulateCell(IHexCell cell) {
-            FeatureManager.FlagLocationForFeatures(cell.LocalPosition, cell);
-
             for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
                 TriangulateInDirection(direction, cell);
             }
@@ -67,10 +62,6 @@ namespace Assets.Simulation.HexMap {
             );
 
             BasicTerrainTriangulator.TriangulateTerrainCenter(data);
-
-            foreach(var featureLocation in data.CenterFeatureLocations) {
-                FeatureManager.FlagLocationForFeatures(featureLocation, cell);
-            }
 
             if(RiverTriangulator.ShouldTriangulateRiver(data)) {
                 RiverTriangulator.TriangulateRiver(data);

@@ -62,27 +62,6 @@ namespace Assets.Tests.Simulation.HexMap {
         #region tests
 
         [Test]
-        public void TriangulateCell_FlagsCenterForFeatures() {
-            var cellToTest = BuildCell(new Vector3(1f, 2f, 3f));
-
-            var triangulationData = new CellTriangulationData(
-                cellToTest, null, null, null, HexDirection.E, null, null
-            );
-
-            MockMeshBuilder.Setup(builder => builder.GetTriangulationData(cellToTest, null, null, It.IsAny<HexDirection>()))
-                           .Returns(triangulationData);
-
-            var triangulator = Container.Resolve<HexCellTriangulator>();
-
-            triangulator.TriangulateCell(cellToTest);
-
-            MockFeatureManager.Verify(
-                manager => manager.FlagLocationForFeatures(cellToTest.LocalPosition, cellToTest),
-                Times.Once
-            );
-        }
-
-        [Test]
         public void TriangulateCell_TriangulatesTerrainCenterInEachDirection() {
             var cellToTest = BuildCell(new Vector3(1f, 2f, 3f));
 
@@ -129,67 +108,16 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
-        public void TriangulateCell_FlagsAppropriateFeaturesInEachDirection() {
+        public void TriangulateCell_FlagsCellForFeatures() {
             var cellToTest = BuildCell(Vector3.zero);
-
-            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
-            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
-            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
-            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
-            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
-            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
 
             var cellTriangulator = Container.Resolve<HexCellTriangulator>();
 
             cellTriangulator.TriangulateCell(cellToTest);
 
-            foreach(var featureLocation in northEastData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from northEastData", featureLocation)
-                );
-            }
-
-            foreach(var featureLocation in eastData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from eastData", featureLocation)
-                );
-            }
-
-            foreach(var featureLocation in southEastData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from southEastData", featureLocation)
-                );
-            }
-
-            foreach(var featureLocation in southWestData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from southWestData", featureLocation)
-                );
-            }
-
-            foreach(var featureLocation in westData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from westData", featureLocation)
-                );
-            }
-
-            foreach(var featureLocation in northWestData.CenterFeatureLocations) {
-                MockFeatureManager.Verify(
-                    manager => manager.FlagLocationForFeatures(featureLocation, cellToTest),
-                    Times.Once,
-                    string.Format("Failed to flag location {0} from northWestData", featureLocation)
-                );
-            }
+            MockFeatureManager.Verify(
+                manager => manager.AddFeatureLocationsForCell(cellToTest), Times.Once
+            );
         }
 
         [Test]

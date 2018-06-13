@@ -268,19 +268,6 @@ namespace Assets.Simulation.HexMap {
         }
         private EdgeVertices? _centerToRightInnerEdge;
 
-        public IEnumerable<Vector3> CenterFeatureLocations {
-            get {
-                if(_featureLocations == null) {
-                    _featureLocations = new List<Vector3>() {
-                        (Center.LocalPosition + CenterToRightEdge.V1 + CenterToRightEdge.V5) * (1f / 3f)
-                    };
-                }
-
-                return _featureLocations;
-            }
-        }
-        private List<Vector3> _featureLocations;
-
         public Vector3 CenterWaterMidpoint {
             get {
                 if(_centerWaterMidpoint == null) {

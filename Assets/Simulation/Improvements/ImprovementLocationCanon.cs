@@ -35,7 +35,12 @@ namespace Assets.Simulation.Improvements {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
+        protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
+            newOwner.RefreshSelfOnly();
+        }
+
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
+            oldOwner.RefreshSelfOnly();
             Signals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 

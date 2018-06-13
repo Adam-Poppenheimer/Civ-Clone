@@ -12,8 +12,9 @@ MonoBehaviour:
   m_Name: Feature Config
   m_EditorClassIdentifier: 
   _buildingAppearanceChance: 1
-  _improvementAppearanceChance: 0.25
-  _treeAppearanceChance: 0.5
+  _resourceAppearanceChance: 0.25
+  _treeAppearanceChance: 0.75
+  _improvementAppearanceChance: 0.1
   _buildingPrefabs:
   - {fileID: 400002, guid: b8beb0b1c5ecc86428ecf58aa1c1a42d, type: 2}
   _forestTreePrefabs:
@@ -42,3 +43,7 @@ MonoBehaviour:
   - {fileID: 4000011942536910, guid: 51546c9db0352774fb0da301e65d9c9e, type: 2}
   - {fileID: 4000010381822282, guid: 02974f397b6a5e34e87a88f379a46373, type: 2}
   - {fileID: 4000013334804512, guid: 5df7d12a1bcf0604caa25b77c707b991, type: 2}
+  _guaranteedTreeModulo: 10
+  _guaranteedBuildingModulo: 1000
+  _guaranteedResourceModulo: 10
+  _guaranteedImprovementModulo: 18

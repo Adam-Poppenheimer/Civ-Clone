@@ -22,6 +22,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh Estuaries;
 
         [SerializeField] private HexFeatureManager FeatureManager;
+        [SerializeField] private Transform         FeatureContainer;
 
         #endregion
 
@@ -38,8 +39,9 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<HexMesh>().WithId("Water Shore").FromInstance(WaterShore);
             Container.Bind<HexMesh>().WithId("Estuaries")  .FromInstance(Estuaries);
 
-            Container.Bind<IHexFeatureManager>().To<HexFeatureManager>().FromInstance(FeatureManager);
+            Container.Bind<Transform>().WithId("Feature Container").FromInstance(FeatureContainer);
 
+            Container.Bind<IHexFeatureManager>       ().To<HexFeatureManager>       ().AsSingle();
             Container.Bind<IHexGridMeshBuilder>      ().To<HexGridMeshBuilder>      ().AsSingle();
             Container.Bind<IRiverTriangulator>       ().To<RiverTriangulator>       ().AsSingle();
             Container.Bind<IRiverTroughTriangulator> ().To<RiverTroughTriangulator> ().AsSingle();
@@ -49,6 +51,11 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
             Container.Bind<IRoadTriangulator>        ().To<RoadTriangulator>        ().AsSingle();
             Container.Bind<IHexCellTriangulator>     ().To<HexCellTriangulator>     ().AsSingle();
+
+            Container.Bind<FeaturePlacerBase>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();
+            Container.Bind<FeaturePlacerBase>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
+            Container.Bind<FeaturePlacerBase>().WithId("Improvement Feature Placer").To<ImprovementFeaturePlacer>().AsSingle();
+            Container.Bind<FeaturePlacerBase>().WithId("Tree Feature Placer")       .To<TreeFeaturePlacer>       ().AsSingle();
         }
 
         #endregion

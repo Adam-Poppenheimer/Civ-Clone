@@ -49,6 +49,8 @@ namespace Assets.Simulation.HexMap {
 
         Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition);
 
+        bool TryPerformIntersectionWithTerrainSurface(Vector3 xzPosition, out Vector3 hitpoint);
+
         void ToggleUI(bool isVisible);
 
         #endregion

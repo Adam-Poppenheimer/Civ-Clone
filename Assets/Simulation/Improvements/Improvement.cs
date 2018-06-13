@@ -15,18 +15,7 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovement
 
-        public IImprovementTemplate Template {
-            get { return _improvementTemplate; }
-            set {
-                _improvementTemplate = value;
-
-                if(_improvementTemplate.AppearancePrefab != null) {
-                    var appearancePrefab = Instantiate(_improvementTemplate.AppearancePrefab);
-                    appearancePrefab.transform.SetParent(transform, false);
-                }
-            }
-        }
-        private IImprovementTemplate _improvementTemplate;
+        public IImprovementTemplate Template { get; set; }
 
         public bool IsConstructed {
             get {

@@ -73,9 +73,8 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4293883636591628}
-  - component: {fileID: 114214256119993870}
   m_Layer: 0
-  m_Name: Features
+  m_Name: Feature Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -588,7 +587,7 @@ MonoBehaviour:
   Culture: {fileID: 114270732117973604}
   WaterShore: {fileID: 114157243756510432}
   Estuaries: {fileID: 114792601958404866}
-  FeatureManager: {fileID: 114214256119993870}
+  FeatureContainer: {fileID: 4293883636591628}
 --- !u!114 &114137592705337108
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -616,17 +615,6 @@ MonoBehaviour:
   UseUV2Coordinates: 0
   UseCellData: 1
   UseColors: 0
---- !u!114 &114214256119993870
-MonoBehaviour:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1478505621179812}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 318a2bb7001452948be72e7c608fca6e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &114270732117973604
 MonoBehaviour:
   m_ObjectHideFlags: 1

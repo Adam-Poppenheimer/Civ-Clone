@@ -17,11 +17,15 @@ namespace Assets.Simulation.HexMap {
 
         ReadOnlyCollection<Transform> BuildingPrefabs { get; }
 
-        float TreeAppearanceChance { get; }
+        float TreeAppearanceChance        { get; }
+        float BuildingAppearanceChance    { get; }
+        float ResourceAppearanceChance    { get; }
+        float ImprovementAppearanceChance { get; }
 
-        float BuildingAppearanceChance { get; }
-
-        float ResourceAppearanceChance { get; }
+        int GuaranteedTreeModulo        { get; }
+        int GuaranteedBuildingModulo    { get; }
+        int GuaranteedResourceModulo    { get; }
+        int GuaranteedImprovementModulo { get; }
 
         #endregion
 

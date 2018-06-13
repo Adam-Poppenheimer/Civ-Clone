@@ -292,6 +292,18 @@ namespace Assets.Simulation.HexMap {
             return results.point;
         }
 
+        public bool TryPerformIntersectionWithTerrainSurface(Vector3 xzPosition, out Vector3 hitpoint) {
+            RaycastHit results;
+
+            if(Physics.Raycast(xzPosition + MapIntersector, Vector3.down * 50, out results, Mathf.Infinity, layerMask: TerrainCollisionMask)) {
+                hitpoint = results.point;
+                return true;
+            }else {
+                hitpoint = Vector3.zero;
+                return false;
+            }
+        }
+
         public void ToggleUI(bool isVisible) {
             foreach(var cell in Cells) {
                 cell.Overlay.SetDisplayType(UI.HexMap.CellOverlayType.Labels);

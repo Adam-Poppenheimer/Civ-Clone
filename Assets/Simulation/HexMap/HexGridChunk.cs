@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -46,6 +47,9 @@ namespace Assets.Simulation.HexMap {
 
         private void LateUpdate() {
             TriangulateAllCells();
+
+            StartCoroutine(PopulateAllFeatures());
+
             enabled = false;
         }
 
@@ -61,14 +65,24 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void TriangulateAllCells() {
-            MeshBuilder.ClearMeshes();
-            FeatureManager.Clear();
+            MeshBuilder.ClearMeshes();            
 
             for(int i = 0; i < Cells.Length; ++i) {
                 Triangulator.TriangulateCell(Cells[i]);
             }
 
-            MeshBuilder.ApplyMeshes();
+            MeshBuilder.ApplyMeshes();            
+        }
+
+        public IEnumerator PopulateAllFeatures() {
+            yield return new WaitForEndOfFrame();
+
+            FeatureManager.Clear();
+
+            for(int i = 0; i < Cells.Length; ++i) {
+                FeatureManager.AddFeatureLocationsForCell(Cells[i]);
+            }
+
             FeatureManager.Apply();
         }
 

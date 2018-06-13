@@ -9,7 +9,7 @@ namespace Assets.Simulation.HexMap {
         void Apply();
         void Clear();
 
-        void FlagLocationForFeatures(Vector3 location, IHexCell cell);
+        void AddFeatureLocationsForCell(IHexCell cell);
 
         #endregion
 

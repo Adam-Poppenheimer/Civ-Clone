@@ -24,7 +24,7 @@ MonoBehaviour:
   _clearsForestsWhenBuilt: 1
   _defensiveBonus: 0
   _requiresResourceToExtract: 0
-  _appearancePrefab: {fileID: 4814062064803488, guid: 9f1238ff02204e040bdb510ea717ae94,
+  _appearancePrefab: {fileID: 4946165858268716, guid: 528f3190b3ed63b4aa46da8c65aac381,
     type: 2}
   _turnsToConstruct: 5
   _freshWaterAlwaysEnables: 1

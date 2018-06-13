@@ -77,8 +77,6 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnDisable() {
-            CellSignals.ClickedSignal.Subscribe(OnCellClicked);
-
             CityClickedSubscription.Dispose();
 
             IsAddingToggle.onValueChanged.RemoveAllListeners();
