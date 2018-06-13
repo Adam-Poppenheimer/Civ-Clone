@@ -502,7 +502,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private IHexCell BuildHexCell(bool hasAccessToFreshWater = false) {
             var newCell = new Mock<IHexCell>().Object;
 
-            MockFreshWaterCanon.Setup(canon => canon.DoesCellHaveAccessToFreshWater(newCell)).Returns(hasAccessToFreshWater);
+            MockFreshWaterCanon.Setup(canon => canon.HasAccessToFreshWater(newCell)).Returns(hasAccessToFreshWater);
 
             return newCell;
         }

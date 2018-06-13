@@ -9,7 +9,7 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        bool DoesCellHaveAccessToFreshWater(IHexCell cell);
+        bool HasAccessToFreshWater(IHexCell cell);
 
         #endregion
 

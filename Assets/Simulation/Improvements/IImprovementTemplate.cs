@@ -35,6 +35,8 @@ namespace Assets.Simulation.Improvements {
 
         int TurnsToConstruct { get; }
 
+        bool FreshWaterAlwaysEnables { get; }
+
         #endregion
 
     }

@@ -22,7 +22,7 @@ GameObject:
   - component: {fileID: 33467759301475512}
   - component: {fileID: 23925247060017540}
   m_Layer: 0
-  m_Name: Trading Post 5
+  m_Name: Trading Post
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -19,7 +19,7 @@ MonoBehaviour:
     Culture: 0
     Science: 0
   _restrictedToFeatures: 
-  _restrictedToTerrains: 
+  _restrictedToTerrains: 0000000001000000
   _restrictedToShapes: 00000000
   _clearsForestsWhenBuilt: 1
   _defensiveBonus: 0
@@ -27,3 +27,4 @@ MonoBehaviour:
   _appearancePrefab: {fileID: 4814062064803488, guid: 9f1238ff02204e040bdb510ea717ae94,
     type: 2}
   _turnsToConstruct: 5
+  _freshWaterAlwaysEnables: 1

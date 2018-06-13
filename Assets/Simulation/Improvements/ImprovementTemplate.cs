@@ -66,6 +66,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private int _turnsToConstruct;
 
+        public bool FreshWaterAlwaysEnables {
+            get { return _freshWaterAlwaysEnables; }
+        }
+        [SerializeField] private bool _freshWaterAlwaysEnables;
+
         #endregion
 
         #endregion

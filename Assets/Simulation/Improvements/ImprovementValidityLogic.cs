@@ -16,8 +16,8 @@ namespace Assets.Simulation.Improvements {
         #region instance fields and properties
 
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
+        private IFreshWaterCanon                                 FreshWaterCanon;
 
         #endregion
 
@@ -26,10 +26,12 @@ namespace Assets.Simulation.Improvements {
         [Inject]
         public ImprovementValidityLogic(
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IFreshWaterCanon freshWaterCanon
         ){
             NodePositionCanon = nodePositionCanon;
             CityLocationCanon = cityLocationCanon;
+            FreshWaterCanon   = freshWaterCanon;
         }
 
         #endregion
@@ -54,12 +56,13 @@ namespace Assets.Simulation.Improvements {
                 return true;
             }else if(template.RequiresResourceToExtract) {
                 return false;
+            }else if(template.FreshWaterAlwaysEnables && FreshWaterCanon.HasAccessToFreshWater(cell)) {
+                return true;
             }
 
-            return 
-                (template.RestrictedToTerrains.Count() == 0 || template.RestrictedToTerrains.Contains(cell.Terrain)) &&
-                (template.RestrictedToFeatures.Count() == 0 || template.RestrictedToFeatures.Contains(cell.Feature)) && 
-                (template.RestrictedToShapes  .Count() == 0 || template.RestrictedToShapes  .Contains(cell.Shape  ));
+            return (template.RestrictedToTerrains.Count() == 0 || template.RestrictedToTerrains.Contains(cell.Terrain)) &&
+                   (template.RestrictedToFeatures.Count() == 0 || template.RestrictedToFeatures.Contains(cell.Feature)) && 
+                   (template.RestrictedToShapes  .Count() == 0 || template.RestrictedToShapes  .Contains(cell.Shape  ));
         }
 
         #endregion

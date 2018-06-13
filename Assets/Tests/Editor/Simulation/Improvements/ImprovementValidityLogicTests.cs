@@ -43,6 +43,8 @@ namespace Assets.Tests.Simulation.Improvements {
 
             public int FoundationElevation;
 
+            public bool HasAccessToFreshWater;
+
         }
 
         public struct ImprovementTemplateTestData {
@@ -54,6 +56,8 @@ namespace Assets.Tests.Simulation.Improvements {
             public List<TerrainShape> RestrictedToShapes;
 
             public bool RequiresResourceToExtract;
+
+            public bool FreshWaterAlwaysEnables;
 
         }
 
@@ -236,6 +240,59 @@ namespace Assets.Tests.Simulation.Improvements {
                     },
 
                 }).SetName("No terrain, shape, or feature restrictions, no resource, and RequiresResourceToExtract is true").Returns(false);
+
+
+
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0,
+                        HasAccessToFreshWater = true
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest },
+                        FreshWaterAlwaysEnables = true
+                    }
+                }).SetName("Invalid terrain, but has access to fresh water and FreshWaterAlwaysEnables is true").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Flatlands, FoundationElevation = 0,
+                        HasAccessToFreshWater = true
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes   = new List<TerrainShape>() { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>() { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.Forest },
+                        FreshWaterAlwaysEnables = true
+                    }
+                }).SetName("Invalid feature, but has access to fresh water and FreshWaterAlwaysEnables is true").Returns(true);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = TerrainType.Desert, Feature = TerrainFeature.None,
+                        Shape = TerrainShape.Mountains, FoundationElevation = 0,
+                        HasAccessToFreshWater = true
+                    },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { FoundationElevation = 0 }
+                    },
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes   = new List<TerrainShape>  () { TerrainShape.Flatlands, TerrainShape.Hills },
+                        RestrictedToTerrains = new List<TerrainType>   () { TerrainType.Grassland, TerrainType.Plains },
+                        RestrictedToFeatures = new List<TerrainFeature>() { TerrainFeature.None, TerrainFeature.Forest },
+                        FreshWaterAlwaysEnables = true
+                    }
+                }).SetName("Invalid Shape, but has access to fresh water and FreshWaterAlwaysEnables is true").Returns(true);
             }
         }
 
@@ -249,6 +306,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private Mock<IHexGrid>                                         MockGrid;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>         MockCityLocationCanon;
+        private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -266,6 +324,7 @@ namespace Assets.Tests.Simulation.Improvements {
             MockGrid              = new Mock<IHexGrid>();
             MockNodePositionCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockFreshWaterCanon   = new Mock<IFreshWaterCanon>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
@@ -273,6 +332,7 @@ namespace Assets.Tests.Simulation.Improvements {
             Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>        ().FromInstance(MockCityLocationCanon.Object);
+            Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon  .Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }
@@ -319,9 +379,11 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain             = data.Terrain;
-            newCell.Feature             = data.Feature;
-            newCell.Shape               = data.Shape;
+            newCell.Terrain = data.Terrain;
+            newCell.Feature = data.Feature;
+            newCell.Shape   = data.Shape;
+
+            MockFreshWaterCanon.Setup(canon => canon.HasAccessToFreshWater(newCell)).Returns(data.HasAccessToFreshWater);
 
             return newCell;
         }
@@ -342,10 +404,11 @@ namespace Assets.Tests.Simulation.Improvements {
         private IImprovementTemplate BuildTemplate(ImprovementTemplateTestData data){
             var mockTemplate = new Mock<IImprovementTemplate>();
 
-            mockTemplate.Setup(template => template.RestrictedToTerrains).Returns(data.RestrictedToTerrains);
-            mockTemplate.Setup(template => template.RestrictedToFeatures).Returns(data.RestrictedToFeatures);
-            mockTemplate.Setup(template => template.RestrictedToShapes  ).Returns(data.RestrictedToShapes  );
+            mockTemplate.Setup(template => template.RestrictedToTerrains)     .Returns(data.RestrictedToTerrains);
+            mockTemplate.Setup(template => template.RestrictedToFeatures)     .Returns(data.RestrictedToFeatures);
+            mockTemplate.Setup(template => template.RestrictedToShapes )      .Returns(data.RestrictedToShapes);
             mockTemplate.Setup(template => template.RequiresResourceToExtract).Returns(data.RequiresResourceToExtract);
+            mockTemplate.Setup(template => template.FreshWaterAlwaysEnables)  .Returns(data.FreshWaterAlwaysEnables);
 
             return mockTemplate.Object;
         }

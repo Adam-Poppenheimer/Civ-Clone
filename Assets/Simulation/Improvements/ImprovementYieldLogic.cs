@@ -78,7 +78,7 @@ namespace Assets.Simulation.Improvements {
                 }
 
                 foreach(IImprovementModificationData mod in applicableTechMods) {
-                    if(!mod.RequiresFreshWater || FreshWaterCanon.DoesCellHaveAccessToFreshWater(cell)) {
+                    if(!mod.RequiresFreshWater || FreshWaterCanon.HasAccessToFreshWater(cell)) {
                         retval += mod.BonusYield;
                     }
                 }
