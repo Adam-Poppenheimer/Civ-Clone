@@ -35,10 +35,15 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private List<Transform> _buildingPrefabs;
 
-        public ReadOnlyCollection<Transform> TreePrefabs {
-            get { return _treePrefabs.AsReadOnly(); }
+        public ReadOnlyCollection<Transform> ForestTreePrefabs {
+            get { return _forestTreePrefabs.AsReadOnly(); }
         }
-        [SerializeField] private List<Transform> _treePrefabs;
+        [SerializeField] private List<Transform> _forestTreePrefabs;
+
+        public ReadOnlyCollection<Transform> JungleTreePrefabs {
+            get { return _jungleTreePrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _jungleTreePrefabs;
 
         #endregion
 

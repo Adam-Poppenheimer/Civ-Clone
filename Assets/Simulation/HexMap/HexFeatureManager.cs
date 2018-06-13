@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -26,15 +27,11 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private INoiseGenerator NoiseGenerator;
-
-        private IFeatureConfig Config;
-
-        private IHexGrid Grid;
-
+        private INoiseGenerator                                  NoiseGenerator;
+        private IFeatureConfig                                   Config;
+        private IHexGrid                                         Grid;
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
 
         #endregion
 
@@ -85,8 +82,10 @@ namespace Assets.Simulation.HexMap {
                 ApplyResourceNodeToCell(cell, locations, nodeOnCell);
 
             }else if(cell.Feature == TerrainFeature.Forest) {
-                ApplyForestToCell(cell, locations);
+                ApplyTreesToCell(cell, locations, Config.ForestTreePrefabs);
 
+            }else if(cell.Feature == TerrainFeature.Jungle) {
+                ApplyTreesToCell(cell, locations, Config.JungleTreePrefabs);
             }
         }
 
@@ -101,15 +100,20 @@ namespace Assets.Simulation.HexMap {
                 if(!ApplyResourceNodeToLocation(location, node, location == locations.First())) {
                     
                     if(cell.Feature == TerrainFeature.Forest) {
-                        ApplyForestToLocation(location);
+                        ApplyTreesToLocation(location, Config.ForestTreePrefabs);
+
+                    }else if(cell.Feature == TerrainFeature.Jungle) {
+                        ApplyTreesToLocation(location, Config.JungleTreePrefabs);
                     }
                 }
             }
         }
 
-        private void ApplyForestToCell(IHexCell cell, List<Vector3> locations) {
+        private void ApplyTreesToCell(
+            IHexCell cell, List<Vector3> locations, ReadOnlyCollection<Transform> treePrefabs
+        ) {
             foreach(var location in locations) {
-                ApplyForestToLocation(location, location == locations.First());
+                ApplyTreesToLocation(location, treePrefabs, location == locations.First());
             }
         }
 
@@ -128,7 +132,9 @@ namespace Assets.Simulation.HexMap {
             return true;
         }
 
-        private bool ApplyForestToLocation(Vector3 location, bool forcePopulate = false) {
+        private bool ApplyTreesToLocation(
+            Vector3 location, ReadOnlyCollection<Transform> treePrefabs, bool forcePopulate = false
+        ){
             var meshCorrectedLocation = Grid.PerformIntersectionWithTerrainSurface(location);
 
             HexHash hash = NoiseGenerator.SampleHashGrid(meshCorrectedLocation);
@@ -136,8 +142,8 @@ namespace Assets.Simulation.HexMap {
                 return false;
             }
 
-            int treeIndex = (int)(hash.C * Config.TreePrefabs.Count);
-            AddFeature(Config.TreePrefabs[treeIndex], meshCorrectedLocation, hash);
+            int treeIndex = (int)(hash.C * treePrefabs.Count);
+            AddFeature(treePrefabs[treeIndex], meshCorrectedLocation, hash);
 
             return true;
         }

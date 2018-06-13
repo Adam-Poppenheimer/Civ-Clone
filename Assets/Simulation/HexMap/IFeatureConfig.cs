@@ -12,7 +12,8 @@ namespace Assets.Simulation.HexMap {
 
         #region properties
 
-        ReadOnlyCollection<Transform> TreePrefabs { get; }
+        ReadOnlyCollection<Transform> ForestTreePrefabs { get; }
+        ReadOnlyCollection<Transform> JungleTreePrefabs { get; }
 
         ReadOnlyCollection<Transform> BuildingPrefabs { get; }
 
