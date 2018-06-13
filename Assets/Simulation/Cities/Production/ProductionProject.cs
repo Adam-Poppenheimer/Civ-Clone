@@ -59,6 +59,7 @@ namespace Assets.Simulation.Cities.Production {
         public ProductionProject(
             IUnitTemplate unitToConstruct, IUnitFactory unitFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IStartingExperienceLogic startingExperienceLogic
         ){
             if(unitToConstruct == null) {
@@ -68,6 +69,7 @@ namespace Assets.Simulation.Cities.Production {
             UnitToConstruct         = unitToConstruct;
             UnitFactory             = unitFactory;
             CityPossessionCanon     = cityPossessionCanon;
+            CityLocationCanon       = cityLocationCanon;
             StartingExperienceLogic = startingExperienceLogic;
         }
 

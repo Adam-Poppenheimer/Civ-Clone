@@ -9,6 +9,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -22,6 +23,7 @@ namespace Assets.Simulation.Cities.Production {
         private IBuildingFactory                              BuildingFactory;
         private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IStartingExperienceLogic                      StartingExperienceLogic;
 
         #endregion
@@ -38,11 +40,13 @@ namespace Assets.Simulation.Cities.Production {
         public ProductionProjectFactory(
             IBuildingFactory buildingFactory, IUnitFactory unitFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IStartingExperienceLogic startingExperienceLogic
         ){
             BuildingFactory         = buildingFactory;
             UnitFactory             = unitFactory;
             CityPossessionCanon     = cityPossessionCanon;
+            CityLocationCanon       = cityLocationCanon;
             StartingExperienceLogic = startingExperienceLogic;
         }
 
@@ -59,7 +63,10 @@ namespace Assets.Simulation.Cities.Production {
 
         /// <inheritdoc/>
         public IProductionProject ConstructProject(IUnitTemplate template) {
-            return new ProductionProject(template, UnitFactory, CityPossessionCanon, StartingExperienceLogic);
+            return new ProductionProject(
+                template, UnitFactory, CityPossessionCanon,
+                CityLocationCanon, StartingExperienceLogic
+            );
         }
 
         #endregion
