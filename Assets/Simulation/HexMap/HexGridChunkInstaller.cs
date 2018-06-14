@@ -52,10 +52,10 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IRoadTriangulator>        ().To<RoadTriangulator>        ().AsSingle();
             Container.Bind<IHexCellTriangulator>     ().To<HexCellTriangulator>     ().AsSingle();
 
-            Container.Bind<FeaturePlacerBase>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();
-            Container.Bind<FeaturePlacerBase>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
-            Container.Bind<FeaturePlacerBase>().WithId("Improvement Feature Placer").To<ImprovementFeaturePlacer>().AsSingle();
-            Container.Bind<FeaturePlacerBase>().WithId("Tree Feature Placer")       .To<TreeFeaturePlacer>       ().AsSingle();
+            Container.Bind<IFeaturePlacer>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();
+            Container.Bind<IFeaturePlacer>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
+            Container.Bind<IFeaturePlacer>().WithId("Improvement Feature Placer").To<ImprovementFeaturePlacer>().AsSingle();
+            Container.Bind<IFeaturePlacer>().WithId("Tree Feature Placer")       .To<TreeFeaturePlacer>       ().AsSingle();
         }
 
         #endregion

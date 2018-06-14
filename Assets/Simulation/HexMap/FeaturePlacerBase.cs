@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Assets.Simulation.HexMap {
 
-    public abstract class FeaturePlacerBase {
+    public abstract class FeaturePlacerBase : IFeaturePlacer {
 
         #region instance fields and properties
 

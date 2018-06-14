@@ -26,7 +26,6 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IBasicTerrainTriangulator> MockBasicTerrainTriangulator;
         private Mock<IWaterTriangulator>        MockWaterTriangulator;
         private Mock<IRoadTriangulator>         MockRoadTriangulator;
-        private Mock<IHexFeatureManager>        MockFeatureManager;
 
         #endregion
 
@@ -43,7 +42,6 @@ namespace Assets.Tests.Simulation.HexMap {
             MockBasicTerrainTriangulator = new Mock<IBasicTerrainTriangulator>();
             MockWaterTriangulator        = new Mock<IWaterTriangulator>();
             MockRoadTriangulator         = new Mock<IRoadTriangulator>();
-            MockFeatureManager           = new Mock<IHexFeatureManager>();
 
             Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
             Container.Bind<IRiverTriangulator>       ().FromInstance(MockRiverTriangulator       .Object);
@@ -52,7 +50,6 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IBasicTerrainTriangulator>().FromInstance(MockBasicTerrainTriangulator.Object);
             Container.Bind<IWaterTriangulator>       ().FromInstance(MockWaterTriangulator       .Object);
             Container.Bind<IRoadTriangulator>        ().FromInstance(MockRoadTriangulator        .Object);
-            Container.Bind<IHexFeatureManager>       ().FromInstance(MockFeatureManager          .Object);
 
             Container.Bind<HexCellTriangulator>().AsSingle();
         }
@@ -104,19 +101,6 @@ namespace Assets.Tests.Simulation.HexMap {
             MockBasicTerrainTriangulator.Verify(
                 triangulator => triangulator.TriangulateTerrainCenter(northWestData),
                 Times.Once, "TriangulateTerrainCenter not called on northWestData as expected"
-            );
-        }
-
-        [Test]
-        public void TriangulateCell_FlagsCellForFeatures() {
-            var cellToTest = BuildCell(Vector3.zero);
-
-            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
-
-            cellTriangulator.TriangulateCell(cellToTest);
-
-            MockFeatureManager.Verify(
-                manager => manager.AddFeatureLocationsForCell(cellToTest), Times.Once
             );
         }
 

@@ -1,4 +1,7 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+
+using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
@@ -10,6 +13,8 @@ namespace Assets.Simulation.HexMap {
         void Clear();
 
         void AddFeatureLocationsForCell(IHexCell cell);
+
+        IEnumerable<Vector3> GetFeatureLocationsForCell(IHexCell cell);
 
         #endregion
 

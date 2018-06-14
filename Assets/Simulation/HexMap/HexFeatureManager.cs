@@ -25,13 +25,13 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private INoiseGenerator   NoiseGenerator;
-        private IHexGrid          Grid;
-        private FeaturePlacerBase CityFeaturePlacer;
-        private FeaturePlacerBase ResourceFeaturePlacer;
-        private FeaturePlacerBase ImprovementFeaturePlacer;
-        private FeaturePlacerBase TreeFeaturePlacer;
-        private Transform         FeatureContainer;
+        private INoiseGenerator       NoiseGenerator;
+        private IFeatureLocationLogic FeatureLocationLogic;
+        private IFeaturePlacer        CityFeaturePlacer;
+        private IFeaturePlacer        ResourceFeaturePlacer;
+        private IFeaturePlacer        ImprovementFeaturePlacer;
+        private IFeaturePlacer        TreeFeaturePlacer;
+        private Transform             FeatureContainer;
 
         #endregion
 
@@ -39,15 +39,15 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            INoiseGenerator noiseGenerator, IHexGrid grid,
-            [Inject(Id = "City Feature Placer")]        FeaturePlacerBase cityFeaturePlacer,
-            [Inject(Id = "Resource Feature Placer")]    FeaturePlacerBase resourceFeaturePlacer,
-            [Inject(Id = "Improvement Feature Placer")] FeaturePlacerBase improvementFeaturePlacer,
-            [Inject(Id = "Tree Feature Placer")]        FeaturePlacerBase treeFeaturePlacer,
-            [Inject(Id = "Feature Container")] Transform featureContainer
+            INoiseGenerator noiseGenerator, IFeatureLocationLogic featureLocationLogic,
+            [Inject(Id = "City Feature Placer")]        IFeaturePlacer cityFeaturePlacer,
+            [Inject(Id = "Resource Feature Placer")]    IFeaturePlacer resourceFeaturePlacer,
+            [Inject(Id = "Improvement Feature Placer")] IFeaturePlacer improvementFeaturePlacer,
+            [Inject(Id = "Tree Feature Placer")]        IFeaturePlacer treeFeaturePlacer,
+            [InjectOptional(Id = "Feature Container")] Transform featureContainer
         ){
             NoiseGenerator           = noiseGenerator;
-            Grid                     = grid;
+            FeatureLocationLogic     = featureLocationLogic;
             CityFeaturePlacer        = cityFeaturePlacer;
             ResourceFeaturePlacer    = resourceFeaturePlacer;
             ImprovementFeaturePlacer = improvementFeaturePlacer;
@@ -55,9 +55,19 @@ namespace Assets.Simulation.HexMap {
             FeatureContainer         = featureContainer;
         }
 
+        #region from IHexFeatureManager
+
         public void Clear() {
+            if(FeatureContainer == null) {
+                return;
+            }
+
             for(int i = FeatureContainer.childCount - 1; i >= 0; --i) {
-                GameObject.Destroy(FeatureContainer.GetChild(i).gameObject);
+                if(Application.isPlaying) {
+                    GameObject.Destroy(FeatureContainer.GetChild(i).gameObject);
+                }else {
+                    GameObject.DestroyImmediate(FeatureContainer.GetChild(i).gameObject);
+                }                
             }
         }
 
@@ -74,63 +84,20 @@ namespace Assets.Simulation.HexMap {
         public void AddFeatureLocationsForCell(IHexCell cell) {
             var listOfLocations = new List<Vector3>();
 
-            AddCenterFeaturePoints(cell, listOfLocations);
+            listOfLocations.AddRange(FeatureLocationLogic.GetCenterFeaturePoints(cell));
 
             foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                AddDirectionalFeaturePoints(cell, direction, listOfLocations);
+                listOfLocations.AddRange(FeatureLocationLogic.GetDirectionalFeaturePoints(cell, direction));                
             }
 
             FeaturePositionsForCell[cell] = listOfLocations;
         }
 
-        private void AddCenterFeaturePoints(IHexCell cell, List<Vector3> pointList) {
-            pointList.Add(Grid.PerformIntersectionWithTerrainSurface(cell.LocalPosition));
+        public IEnumerable<Vector3> GetFeatureLocationsForCell(IHexCell cell) {
+            return FeaturePositionsForCell[cell];
         }
 
-        //This method divides the sextant of the cell (excluding the edge regions between cells
-        //in the current direction into four triangles. For each of these triangles, it then
-        //adds a single location somewhere between each of that triangle's vertices and that
-        //triangle's midpoint.
-        //Triangles one and two are abutting the outer edge of the cell. Triangle
-        //three is right in the middle of the sextant, and triangle four is closest
-        //to the edge, with one vertex right in the middle of the cell.
-        private void AddDirectionalFeaturePoints(
-            IHexCell cell, HexDirection direction, List<Vector3> pointList
-        ) {
-            var center = cell.LocalPosition;
-            var cornerOne = HexMetrics.GetFirstOuterSolidCorner (direction) + center;
-            var cornerTwo = HexMetrics.GetSecondOuterSolidCorner(direction) + center;
-
-            var edgeMidpoint = (cornerOne + cornerTwo) / 2f;
-
-            var leftMidpoint  = (center + cornerOne) / 2f;
-            var rightMidpoint = (center + cornerTwo) / 2f;
-
-            AddFeaturePointsFromTriangle(cornerOne,    edgeMidpoint, leftMidpoint,  pointList);
-            AddFeaturePointsFromTriangle(edgeMidpoint, cornerTwo,    rightMidpoint, pointList);
-            AddFeaturePointsFromTriangle(leftMidpoint, edgeMidpoint, rightMidpoint, pointList);
-            AddFeaturePointsFromTriangle(center,       leftMidpoint, rightMidpoint, pointList);
-        }
-
-        private void AddFeaturePointsFromTriangle(
-            Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree, List<Vector3> pointList
-        ) {
-            var triangleMidpoint = (vertexOne + vertexTwo + vertexThree) / 3f;
-
-            Vector3 terrainPoint;
-
-            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexOne, triangleMidpoint, 0.5f), out terrainPoint)) {
-                pointList.Add(terrainPoint);
-            }
-
-            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexTwo, triangleMidpoint, 0.5f), out terrainPoint)) {
-                pointList.Add(terrainPoint);
-            }
-
-            if(Grid.TryPerformIntersectionWithTerrainSurface(Vector3.Lerp(vertexThree, triangleMidpoint, 0.5f), out terrainPoint)) {
-                pointList.Add(terrainPoint);
-            }
-        }
+        #endregion
 
         private void ApplyFeaturesToCell(IHexCell cell, List<Vector3> locations) {
             for(int i = 0; i < locations.Count; i++) {
