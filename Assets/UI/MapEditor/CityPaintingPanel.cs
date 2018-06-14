@@ -30,19 +30,18 @@ namespace Assets.UI.MapEditor {
 
         private bool IsAdding = true;
 
+        private IDisposable CellClickedSubscription;
         private IDisposable CityClickedSubscription;
 
 
-        private ICityFactory CityFactory;
 
-        private ICivilizationFactory CivilizationFactory;
 
-        private ICityValidityLogic CityValidityLogic;
 
-        private HexCellSignals CellSignals;
-
-        private CitySignals CitySignals;
-
+        private ICityFactory                             CityFactory;
+        private ICivilizationFactory                     CivilizationFactory;
+        private ICityValidityLogic                       CityValidityLogic;
+        private HexCellSignals                           CellSignals;
+        private CitySignals                              CitySignals;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
@@ -68,18 +67,18 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             PopulateCivilizationDropdown();
 
-            CellSignals.ClickedSignal.Subscribe(OnCellClicked);
-
+            CellClickedSubscription = CellSignals.ClickedSignal       .Subscribe(OnCellClicked);
             CityClickedSubscription = CitySignals.PointerClickedSignal.Subscribe(OnCityClicked);
 
-            IsAddingToggle.onValueChanged.AddListener(isOn => IsAdding = isOn);
+            IsAddingToggle  .onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);
         }
 
         private void OnDisable() {
+            CellClickedSubscription.Dispose();
             CityClickedSubscription.Dispose();
 
-            IsAddingToggle.onValueChanged.RemoveAllListeners();
+            IsAddingToggle  .onValueChanged.RemoveAllListeners();
             IsRemovingToggle.onValueChanged.RemoveAllListeners();
         }
 
