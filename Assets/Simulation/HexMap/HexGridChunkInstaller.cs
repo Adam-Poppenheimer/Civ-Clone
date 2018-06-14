@@ -51,6 +51,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
             Container.Bind<IRoadTriangulator>        ().To<RoadTriangulator>        ().AsSingle();
             Container.Bind<IHexCellTriangulator>     ().To<HexCellTriangulator>     ().AsSingle();
+            Container.Bind<IFeatureLocationLogic>    ().To<FeatureLocationLogic>    ().AsSingle();
 
             Container.Bind<IFeaturePlacer>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();
             Container.Bind<IFeaturePlacer>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
