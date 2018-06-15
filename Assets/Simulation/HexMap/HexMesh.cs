@@ -18,6 +18,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private bool UseCollider;
         [SerializeField] private bool UseUVCoordinates;
         [SerializeField] private bool UseUV2Coordinates;
+        [SerializeField] private bool UseUV3Coordinates;
         [SerializeField] private bool UseCellData;
         [SerializeField] private bool UseColors;
 
@@ -29,6 +30,7 @@ namespace Assets.Simulation.HexMap {
         [NonSerialized] private List<Color>   CellWeights;
         [NonSerialized] private List<Vector2> UVs;
         [NonSerialized] private List<Vector2> UV2s;
+        [NonSerialized] private List<Vector2> UV3s;
         [NonSerialized] private List<Vector3> CellIndices;
         [NonSerialized] private List<Color>   Colors;
 
@@ -74,6 +76,10 @@ namespace Assets.Simulation.HexMap {
                 UV2s = ListPool<Vector2>.Get();
             }
 
+            if(UseUV3Coordinates) {
+                UV3s = ListPool<Vector2>.Get();
+            }
+
             if(UseColors) {
                 Colors = ListPool<Color>.Get();
             }
@@ -102,6 +108,11 @@ namespace Assets.Simulation.HexMap {
             if(UseUV2Coordinates) {
                 ManagedMesh.SetUVs(1, UV2s);
                 ListPool<Vector2>.Add(UV2s);
+            }
+
+            if(UseUV3Coordinates) {
+                ManagedMesh.SetUVs(2, UV3s);
+                ListPool<Vector2>.Add(UV3s);
             }
 
             if(UseColors) {
@@ -210,6 +221,26 @@ namespace Assets.Simulation.HexMap {
             UV2s.Add(new Vector2(uMax, vMin));
             UV2s.Add(new Vector2(uMin, vMax));
             UV2s.Add(new Vector2(uMax, vMax));
+        }
+
+        public void AddTriangleUV3(Vector2 uv1, Vector2 uv2, Vector2 uv3) {
+            UV3s.Add(uv1);
+            UV3s.Add(uv2);
+            UV3s.Add(uv3);
+        }
+
+        public void AddQuadUV3(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4) {
+            UV3s.Add(uv1);
+            UV3s.Add(uv2);
+            UV3s.Add(uv3);
+            UV3s.Add(uv4);
+        }
+
+        public void AddQuadUV3(float uMin, float uMax, float vMin, float vMax) {
+            UV3s.Add(new Vector2(uMin, vMin));
+            UV3s.Add(new Vector2(uMax, vMin));
+            UV3s.Add(new Vector2(uMin, vMax));
+            UV3s.Add(new Vector2(uMax, vMax));
         }
 
         public void AddTriangleCellData(Vector3 indices, Color weights1, Color weights2, Color weights3) {

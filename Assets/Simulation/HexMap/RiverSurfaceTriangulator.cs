@@ -39,8 +39,7 @@ namespace Assets.Simulation.HexMap {
 
         #region from IRiverSurfaceTriangulator
 
-        //This method currently places a static water triangle at the confluence as a first approximation.
-        //Managing the UV for proper river flow is quite complex and is being deferred to a later date.
+        
         public void CreateRiverSurface_Confluence(CellTriangulationData data) {
             float confluenceY = Mathf.Min(
                 data.Center.RiverSurfaceY, data.Left.RiverSurfaceY, data.Right.RiverSurfaceY
@@ -50,18 +49,37 @@ namespace Assets.Simulation.HexMap {
                     yAdjustedLeft   = data.PerturbedLeftCorner,
                     yAdjustedRight  = data.PerturbedRightCorner;
 
-            yAdjustedCenter.y = confluenceY;
-            yAdjustedLeft  .y = confluenceY;
-            yAdjustedRight .y = confluenceY;
+            yAdjustedCenter    .y = confluenceY;
+            yAdjustedLeft      .y = confluenceY;
+            yAdjustedRight     .y = confluenceY;
 
-            //Every confluence consists of some triangle of still water where the rivers
-            //converge/diverge.
-            MeshBuilder.AddTriangleUnperturbed(
-                yAdjustedCenter, data.Center.Index, MeshBuilder.Weights1,
-                yAdjustedLeft,   data.Left  .Index, MeshBuilder.Weights2,
-                yAdjustedRight,  data.Right .Index, MeshBuilder.Weights3,
-                MeshBuilder.Water
+            var mesh = MeshBuilder.RiverConfluences;
+
+            mesh.AddTriangleUnperturbed(yAdjustedCenter, yAdjustedLeft, yAdjustedRight);
+            mesh.AddTriangleColor(new Color(1f, 0f, 0f), new Color(0f, 1f, 0f), new Color(0f, 0f, 1f));
+
+            mesh.AddTriangleCellData(
+                new Vector3(data.Center.Index, data.Left.Index, data.Right.Index),
+                MeshBuilder.Weights1, MeshBuilder.Weights2, MeshBuilder.Weights123
             );
+
+            if(RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction.Previous()) == RiverFlow.Clockwise) {
+                mesh.AddTriangleUV(new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, 0.3f));
+            }else {
+                mesh.AddTriangleUV(new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, -0.3f));
+            }
+            
+            if(RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction) == RiverFlow.Clockwise) {
+                mesh.AddTriangleUV2(new Vector2(1f, 0f), new Vector2(0.5f, -0.3f), new Vector2(0f, 0f));
+            }else {
+                mesh.AddTriangleUV2(new Vector2(1f, 0f), new Vector2(0.5f, 0.3f), new Vector2(0f, 0f));
+            }
+
+            if(RiverCanon.GetFlowOfRiverAtEdge(data.Left, data.Direction.Next()) == RiverFlow.Clockwise) {
+                mesh.AddTriangleUV3(new Vector2(0.5f, 0.3f), new Vector2(1f, 0f), new Vector2(0f, 0f));                
+            }else {
+                mesh.AddTriangleUV3(new Vector2(0.5f, -0.3f), new Vector2(1f, 0f), new Vector2(0f, 0f)); 
+            }
         }
 
         //This method creates the river surface for edges. It extends these edges into any

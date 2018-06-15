@@ -16,13 +16,14 @@ namespace Assets.Simulation.HexMap {
 
         Color Weights123 { get; }
 
-        HexMesh Terrain    { get; }
-        HexMesh Roads      { get; }
-        HexMesh Rivers     { get; }
-        HexMesh Water      { get; }
-        HexMesh Culture    { get; }
-        HexMesh WaterShore { get; }
-        HexMesh Estuaries  { get; }
+        HexMesh Terrain          { get; }
+        HexMesh Roads            { get; }
+        HexMesh Rivers           { get; }
+        HexMesh RiverConfluences { get; }
+        HexMesh Water            { get; }
+        HexMesh Culture          { get; }
+        HexMesh WaterShore       { get; }
+        HexMesh Estuaries        { get; }
 
         #endregion
 

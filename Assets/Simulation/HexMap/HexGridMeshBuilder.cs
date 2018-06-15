@@ -59,13 +59,14 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        public HexMesh Terrain    { get; private set; }
-        public HexMesh Roads      { get; private set; }
-        public HexMesh Rivers     { get; private set; }
-        public HexMesh Water      { get; private set; }
-        public HexMesh Culture    { get; private set; }
-        public HexMesh WaterShore { get; private set; }
-        public HexMesh Estuaries  { get; private set; }
+        public HexMesh Terrain          { get; private set; }
+        public HexMesh Roads            { get; private set; }
+        public HexMesh Rivers           { get; private set; }
+        public HexMesh RiverConfluences { get; private set; }
+        public HexMesh Water            { get; private set; }
+        public HexMesh Culture          { get; private set; }
+        public HexMesh WaterShore       { get; private set; }
+        public HexMesh Estuaries        { get; private set; }
 
         private INoiseGenerator NoiseGenerator;
         private IRiverCanon     RiverCanon;
@@ -76,23 +77,25 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         public HexGridMeshBuilder(
-            [Inject(Id = "Terrain")]     HexMesh terrain,
-            [Inject(Id = "Roads")]       HexMesh roads,
-            [Inject(Id = "Rivers")]      HexMesh rivers,
-            [Inject(Id = "Water")]       HexMesh water,
-            [Inject(Id = "Culture")]     HexMesh culture,
-            [Inject(Id = "Water Shore")] HexMesh waterShore,
-            [Inject(Id = "Estuaries")]   HexMesh estuaries,
+            [Inject(Id = "Terrain")]           HexMesh terrain,
+            [Inject(Id = "Roads")]             HexMesh roads,
+            [Inject(Id = "Rivers")]            HexMesh rivers,
+            [Inject(Id = "River Confluences")] HexMesh riverConfluences,
+            [Inject(Id = "Water")]             HexMesh water,
+            [Inject(Id = "Culture")]           HexMesh culture,
+            [Inject(Id = "Water Shore")]       HexMesh waterShore,
+            [Inject(Id = "Estuaries")]         HexMesh estuaries,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IHexGrid grid
         ) {
-            Terrain    = terrain;
-            Roads      = roads;
-            Rivers     = rivers;
-            Water      = water;
-            Culture    = culture;
-            WaterShore = waterShore;
-            Estuaries  = estuaries;
+            Terrain          = terrain;
+            Roads            = roads;
+            Rivers           = rivers;
+            RiverConfluences = riverConfluences;
+            Water            = water;
+            Culture          = culture;
+            WaterShore       = waterShore;
+            Estuaries        = estuaries;
 
             NoiseGenerator = noiseGenerator;
             RiverCanon     = riverCanon;
@@ -106,23 +109,25 @@ namespace Assets.Simulation.HexMap {
         #region from HexGridMeshBuilder
 
         public void ClearMeshes() {
-            Terrain   .Clear();
-            Rivers    .Clear();
-            Roads     .Clear();
-            Water     .Clear();
-            WaterShore.Clear();
-            Estuaries .Clear();
-            Culture   .Clear();
+            Terrain         .Clear();
+            Rivers          .Clear();
+            RiverConfluences.Clear();
+            Roads           .Clear();
+            Water           .Clear();
+            WaterShore      .Clear();
+            Estuaries       .Clear();
+            Culture         .Clear();
         }
 
         public void ApplyMeshes() {
-            Terrain   .Apply();
-            Rivers    .Apply();
-            Roads     .Apply();
-            Water     .Apply();
-            WaterShore.Apply();
-            Estuaries .Apply();
-            Culture   .Apply();
+            Terrain         .Apply();
+            Rivers          .Apply();
+            RiverConfluences.Apply();
+            Roads           .Apply();
+            Water           .Apply();
+            WaterShore      .Apply();
+            Estuaries       .Apply();
+            Culture         .Apply();
         }
 
         public CellTriangulationData GetTriangulationData(
