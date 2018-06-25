@@ -36,20 +36,21 @@
 			
 		UNITY_INSTANCING_CBUFFER_END
 
-		void vert(inout appdata_full v, out Input o) {
-			UNITY_INITIALIZE_OUTPUT(Input, o);
-			o.riverUV = v.texcoord1.xy;
+		void vert(inout appdata_full v, out Input data) {
+			UNITY_INITIALIZE_OUTPUT(Input, data);
+			data.riverUV = v.texcoord1.xy;
 
 			float4 cell0 = GetCellData(v, 0);
 			float4 cell1 = GetCellData(v, 1);
+			float4 cell2 = GetCellData(v, 2);
 
-			o.visibility = cell0.x * v.color.x + cell1.x * v.color.y;
-			o.visibility = lerp(0.25, 1, o.visibility);
+			data.visibility =
+				cell0.x * v.color.x + cell1.x * v.color.y + cell2.x * v.color.z;
+			data.visibility = lerp(0.25, 1, data.visibility);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			float shore = IN.uv_MainTex.y;
-			shore = sqrt(shore) * 0.9;
 
 			float foam = Foam(shore, IN.worldPos.xz, _MainTex);
 			float waves = Waves(IN.worldPos.xz, _MainTex);

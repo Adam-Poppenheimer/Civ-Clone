@@ -65,6 +65,12 @@ namespace Assets.Simulation.HexMap {
             Color color, HexMesh targetMesh
         );
 
+        void TriangulateEdgeStripPartial(
+            EdgeVertices e1, Color w1, float index1, float v1, bool perturbEdgeOneY,
+            EdgeVertices e2, Color w2, float index2, float v2, bool perturbEdgeTwoY,
+            HexMesh targetMesh, bool includeV1, bool includeV5
+        );
+
         void AddTriangle(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,
@@ -148,6 +154,14 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
             Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
             Vector3 topRight,    Color weightsTR, Vector2 uvTR,
+            Vector3 indices, HexMesh targetMesh
+        );
+
+        void AddQuadUnperturbed(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL, Vector2 uv2BL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR, Vector2 uv2BR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL, Vector2 uv2TL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR, Vector2 uv2TR,
             Vector3 indices, HexMesh targetMesh
         );
 

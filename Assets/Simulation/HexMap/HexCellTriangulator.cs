@@ -57,31 +57,31 @@ namespace Assets.Simulation.HexMap {
             var previousNeighbor = Grid.GetNeighbor(cell, direction.Previous());
             var neighbor         = Grid.GetNeighbor(cell, direction);
 
-            var data = MeshBuilder.GetTriangulationData(
+            var thisData = MeshBuilder.GetTriangulationData(
                 cell, previousNeighbor, neighbor, direction
             );
 
-            BasicTerrainTriangulator.TriangulateTerrainCenter(data);
+            BasicTerrainTriangulator.TriangulateTerrainCenter(thisData);
 
-            if(RiverTriangulator.ShouldTriangulateRiver(data)) {
-                RiverTriangulator.TriangulateRiver(data);
+            if(RiverTriangulator.ShouldTriangulateRiver(thisData)) {
+                RiverTriangulator.TriangulateRiver(thisData);
             }
             
 
-            if(BasicTerrainTriangulator.ShouldTriangulateTerrainEdge(data)) {
-                BasicTerrainTriangulator.TriangulateTerrainEdge(data);
+            if(BasicTerrainTriangulator.ShouldTriangulateTerrainEdge(thisData)) {
+                BasicTerrainTriangulator.TriangulateTerrainEdge(thisData);
             }
 
-            if(WaterTriangulator.ShouldTriangulateWater(data)) {
-                WaterTriangulator.TriangulateWater(data);
+            if(WaterTriangulator.ShouldTriangulateWater(thisData)) {
+                WaterTriangulator.TriangulateWater(thisData);
             }
 
-            if(CultureTriangulator.ShouldTriangulateCulture(data)) {
-                CultureTriangulator.TriangulateCulture(data);               
+            if(CultureTriangulator.ShouldTriangulateCulture(thisData)) {
+                CultureTriangulator.TriangulateCulture(thisData);               
             }
 
-            if(RoadTriangulator.ShouldTriangulateRoads(data)) {
-                RoadTriangulator.TriangulateRoads(data);
+            if(RoadTriangulator.ShouldTriangulateRoads(thisData)) {
+                RoadTriangulator.TriangulateRoads(thisData);
             }
         }
 

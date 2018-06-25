@@ -249,6 +249,53 @@ namespace Assets.Simulation.HexMap {
             targetMesh.AddQuadUV(0f, 0f, v1, v2);
         }
 
+        public void TriangulateEdgeStripPartial(
+            EdgeVertices e1, Color w1, float index1, float v1, bool perturbEdgeOneY,
+            EdgeVertices e2, Color w2, float index2, float v2, bool perturbEdgeTwoY,
+            HexMesh targetMesh, bool includeV1, bool includeV5 
+        ) {
+            Vector3 indices;
+            indices.x = indices.z = index1;
+            indices.y = index2;
+
+            if(includeV1) {
+                targetMesh.AddQuadUnperturbed(
+                    NoiseGenerator.Perturb(e1.V1, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V2, perturbEdgeOneY),
+                    NoiseGenerator.Perturb(e2.V1, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V2, perturbEdgeTwoY)
+                );
+
+                targetMesh.AddQuadCellData(indices, w1, w2);
+
+                targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            }
+
+            targetMesh.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V2, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V3, perturbEdgeOneY),
+                NoiseGenerator.Perturb(e2.V2, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V3, perturbEdgeTwoY)
+            );
+
+            targetMesh.AddQuadUnperturbed(
+                NoiseGenerator.Perturb(e1.V3, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V4, perturbEdgeOneY),
+                NoiseGenerator.Perturb(e2.V3, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V4, perturbEdgeTwoY)
+            );
+
+            targetMesh.AddQuadCellData(indices, w1, w2);
+            targetMesh.AddQuadCellData(indices, w1, w2);
+            
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+
+            if(includeV5) {
+                targetMesh.AddQuadUnperturbed(
+                    NoiseGenerator.Perturb(e1.V4, perturbEdgeOneY), NoiseGenerator.Perturb(e1.V5, perturbEdgeOneY),
+                    NoiseGenerator.Perturb(e2.V4, perturbEdgeTwoY), NoiseGenerator.Perturb(e2.V5, perturbEdgeTwoY)
+                );
+
+                targetMesh.AddQuadCellData(indices, w1, w2);
+                targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            }
+        }
+
         public void TriangulateRoadSegment(
             Vector3 v1, Vector3 v2, Vector3 v3,
             Vector3 v4, Vector3 v5, Vector3 v6,
@@ -426,15 +473,32 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomRight, Color weightsBR, Vector2 uvBR,
             Vector3 topLeft,     Color weightsTL, Vector2 uvTL,
             Vector3 topRight,    Color weightsTR, Vector2 uvTR,
-            Vector3 indices, HexMesh targetedMesh
+            Vector3 indices, HexMesh targetMesh
         ) {
-            targetedMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+            targetMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
 
-            targetedMesh.AddQuadCellData(
+            targetMesh.AddQuadCellData(
                 indices, weightsBL, weightsBR, weightsTL, weightsTR
             );
 
-            targetedMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
+            targetMesh.AddQuadUV(uvBL, uvBR, uvTL, uvTR);
+        }
+
+        public void AddQuadUnperturbed(
+            Vector3 bottomLeft,  Color weightsBL, Vector2 uvBL, Vector2 uv2BL,
+            Vector3 bottomRight, Color weightsBR, Vector2 uvBR, Vector2 uv2BR,
+            Vector3 topLeft,     Color weightsTL, Vector2 uvTL, Vector2 uv2TL,
+            Vector3 topRight,    Color weightsTR, Vector2 uvTR, Vector2 uv2TR,
+            Vector3 indices, HexMesh targetMesh
+        ) {
+            targetMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetMesh.AddQuadCellData(
+                indices, weightsBL, weightsBR, weightsTL, weightsTR
+            );
+
+            targetMesh.AddQuadUV (uvBL,  uvBR,  uvTL,  uvTR);
+            targetMesh.AddQuadUV2(uv2BL, uv2BR, uv2TL, uv2TR);
         }
 
         public void TriangulateRiverQuad(

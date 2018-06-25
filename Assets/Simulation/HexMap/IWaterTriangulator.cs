@@ -7,7 +7,7 @@ namespace Assets.Simulation.HexMap {
         #region methods
 
         bool ShouldTriangulateWater(CellTriangulationData data);
-        void TriangulateWater      (CellTriangulationData data);
+        void TriangulateWater      (CellTriangulationData thisData);
 
         #endregion
 

@@ -319,6 +319,24 @@ namespace Assets.Simulation.HexMap {
         }
         private EdgeVertices? _rightToCenterWaterEdge;
 
+        public EdgeVertices CenterToLeftWaterEdge {
+            get {
+                if(_centerToLeftWaterEdge == null) {
+                    var newEdge = new EdgeVertices(
+                        Center.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Previous()),
+                        Center.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Previous())
+                    );
+
+                    newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Center.WaterSurfaceY;
+
+                    _centerToLeftWaterEdge = newEdge;
+                }
+
+                return _centerToLeftWaterEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToLeftWaterEdge;
+
         public EdgeVertices LeftToCenterWaterEdge {
             get {
                 if(_leftToCenterWaterEdge == null) {

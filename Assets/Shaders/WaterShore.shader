@@ -49,7 +49,6 @@
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			float shore = IN.uv_MainTex.y;
-			shore = sqrt(shore) * 0.9;
 
 			float foam = Foam(shore, IN.worldPos.xz, _MainTex);
 			float waves = Waves(IN.worldPos.xz, _MainTex);
