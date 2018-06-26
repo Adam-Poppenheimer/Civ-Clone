@@ -123,7 +123,11 @@ namespace Assets.Simulation.HexMap {
 
         public float RiverSurfaceY {
             get {
-                return EdgeY + (HexMetrics.RiverElevationOffset * HexMetrics.ElevationStep);
+                if(Shape == TerrainShape.Flatlands) {
+                    return WaterSurfaceY;
+                }else {
+                    return EdgeY + (HexMetrics.RiverElevationOffset * HexMetrics.ElevationStep);
+                }
             }
         }
 

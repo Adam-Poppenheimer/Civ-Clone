@@ -137,7 +137,7 @@ namespace Assets.Simulation.HexMap {
                 data.Left  .EdgeElevation > data.Right.EdgeElevation
             ) {
                 //There's a waterfall flowing from CenterLeft river into the confluence
-                SurfaceTriangulator.CreateRiverSurface_Waterfall(data, confluenceY);
+                SurfaceTriangulator.CreateRiverSurface_ConfluenceWaterfall(data, confluenceY);
             }else if(
                 data.Center.EdgeElevation > data.Left.EdgeElevation &&
                 data.Right .EdgeElevation > data.Left.EdgeElevation
@@ -145,7 +145,7 @@ namespace Assets.Simulation.HexMap {
                 //There's a waterfall flowing from CenterRight river into the confluence.
                 //We need to rotate our data to make sure that Right is the new center and
                 //Left is the new right
-                SurfaceTriangulator.CreateRiverSurface_Waterfall(
+                SurfaceTriangulator.CreateRiverSurface_ConfluenceWaterfall(
                     MeshBuilder.GetTriangulationData(
                         data.Right, data.Center, data.Left, data.Direction.Previous2()
                     ),
@@ -158,7 +158,7 @@ namespace Assets.Simulation.HexMap {
                 //There's a waterwall flowing from LeftRight river into the confluence.
                 //we need to rotate our data to make sure that Center is the new Right
                 //and Left is the new center
-                SurfaceTriangulator.CreateRiverSurface_Waterfall(
+                SurfaceTriangulator.CreateRiverSurface_ConfluenceWaterfall(
                     MeshBuilder.GetTriangulationData(
                         data.Left, data.Right, data.Center, data.Direction.Next2()
                     ),
@@ -222,20 +222,11 @@ namespace Assets.Simulation.HexMap {
                 }else if(data.LeftToRightEdgeType == HexEdgeType.Slope) {
 
                     //If Left is underwater, we know that it is also below Center and Right
-                    //and that it requires the creation of a delta. Otherwise, we can
+                    //and that it requires the creation of an estuary. Otherwise, we can
                     //use the generic DoubleTerraces case, which handles both upward-
                     //and downward-facing cases
                     if(data.Left.IsUnderwater) {
                         TroughTriangulator.CreateRiverTrough_Endpoint_ShallowWaterRiverDelta(data);
-
-                        //We need to rotate to make sure that our water cell is on the Right
-                        SurfaceTriangulator.CreateRiverSurface_Waterfall(
-                            MeshBuilder.GetTriangulationData(
-                                data.Right, data.Center, data.Left, data.Direction.Previous2()
-                            ),
-                            data.Left.WaterSurfaceY
-                        );
-
                     }else {
                         TroughTriangulator.CreateRiverTrough_Endpoint_DoubleTerraces(data);
                     }
@@ -253,14 +244,23 @@ namespace Assets.Simulation.HexMap {
 
                     TroughTriangulator.CreateRiverTrough_Endpoint_DoubleCliff(data);
 
-                    //We need to rotate to make sure that our water cell is on the Right
-                    SurfaceTriangulator.CreateRiverSurface_Waterfall(
-                        MeshBuilder.GetTriangulationData(
-                            data.Right, data.Center, data.Left, data.Direction.Previous2()
-                        ),
-                        data.Left.WaterSurfaceY
-                    );
-
+                    //If Left is underwater, that means we have a river ending in
+                    //in an estuary. This can happen if Left is DeepWater or if
+                    //Left is ShallowWater and both Right and Center are not flat.
+                    //We should create a waterfall if and only if both Right and
+                    //Center are Hills or Mountains, since those are the only cases
+                    //where the water would fall from any distance
+                    if( data.Left.IsUnderwater && data.Right.Shape != TerrainShape.Flatlands &&
+                        data.Center.Shape != TerrainShape.Flatlands
+                    ){
+                        //We need to rotate to make sure that our water cell is on the Right
+                        SurfaceTriangulator.CreateRiverSurface_EstuaryWaterfall(
+                            MeshBuilder.GetTriangulationData(
+                                data.Right, data.Center, data.Left, data.Direction.Previous2()
+                            ),
+                            data.Left.WaterSurfaceY
+                        );
+                    }
                 }
             }
         }

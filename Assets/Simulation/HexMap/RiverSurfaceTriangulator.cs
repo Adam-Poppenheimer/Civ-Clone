@@ -168,14 +168,14 @@ namespace Assets.Simulation.HexMap {
             );
         }
 
-        public void CreateRiverSurface_Waterfall(CellTriangulationData data, float yAdjustment) {
-            CreateRiverSurface_Waterfall(data, yAdjustment, yAdjustment, yAdjustment);
+        public void CreateRiverSurface_ConfluenceWaterfall(CellTriangulationData data, float yAdjustment) {
+            CreateRiverSurface_ConfluenceWaterfall(data, yAdjustment, yAdjustment, yAdjustment);
         }
 
         //Center and Left both have a higher elevation than Right, which means a
         //waterfall should flow from the river between Center and Left into the
         //corner, towards Right.
-        public void CreateRiverSurface_Waterfall(
+        public void CreateRiverSurface_ConfluenceWaterfall(
             CellTriangulationData data, float centerYAdjustment,
             float leftYAdjustment, float rightYAdjustment
         ) {
@@ -235,6 +235,46 @@ namespace Assets.Simulation.HexMap {
             );
         }
 
+        //There is a river between Center and Left.
+        //Center and Left are both above Right, which is underwater.
+        //Creates a waterfall that flows from the river towards Right.
+        //This waterfall consists of a single quad that goes from the
+        //end of the river towards the solid edges of Right.
+        public void CreateRiverSurface_EstuaryWaterfall(CellTriangulationData data, float yAdjustment) {
+            float edgeY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
+
+            bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction.Previous()) == RiverFlow.Counterclockwise;
+            var indices = new Vector3(data.Center.Index, data.Center.Index, data.Center.Index);
+
+            Vector3 waterfallUpRiverLeft  = data.PerturbedLeftCorner;
+            Vector3 waterfallUpRiverRight = data.PerturbedCenterCorner;
+
+            waterfallUpRiverLeft .y = edgeY;
+            waterfallUpRiverRight.y = edgeY;
+
+            Vector3 downRiverLeftTarget  = Vector3.Lerp(
+                NoiseGenerator.Perturb(data.RightToLeftEdge.V1), NoiseGenerator.Perturb(data.RightToLeftEdge.V2), 
+                1f / 4f
+            );
+
+            Vector3 downRiverRightTarget = Vector3.Lerp(
+                NoiseGenerator.Perturb(data.RightToCenterEdge.V1), NoiseGenerator.Perturb(data.RightToCenterEdge.V2),
+                1f / 4f
+            );
+
+            float leftParam  = (data.Right.WaterSurfaceY - waterfallUpRiverLeft .y) / (downRiverLeftTarget  .y - waterfallUpRiverLeft .y);
+            float rightParam = (data.Right.WaterSurfaceY - waterfallUpRiverRight.y) / (downRiverRightTarget .y - waterfallUpRiverRight.y);
+
+            Vector3 waterfallDownRiverLeft  = Vector3.Lerp(waterfallUpRiverLeft,  downRiverLeftTarget,  leftParam);
+            Vector3 waterfallDownRiverRight = Vector3.Lerp(waterfallUpRiverRight, downRiverRightTarget, rightParam);
+
+            MeshBuilder.TriangulateRiverQuadUnperturbed(
+                waterfallUpRiverLeft,   waterfallUpRiverRight,
+                waterfallDownRiverLeft, waterfallDownRiverRight,
+                0f, 0.2f, isReversed, indices
+            );
+        }
+
         //Creates the water surface for a river endpoint. The river lies between
         //Center and Right and is facing Left.
         public void CreateRiverEndpointSurface_Default(CellTriangulationData data) {
@@ -286,7 +326,7 @@ namespace Assets.Simulation.HexMap {
                 RiverCanon.HasRiverAlongEdge(data.Center, data.Direction)
             ) {
 
-                if(RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Opposite().Next())) {
+                if(RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Previous2())) {
 
                     //Data represents a corner that's part of a river confluence.
 
