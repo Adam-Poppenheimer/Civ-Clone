@@ -53,9 +53,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         public class HexCellTestData {
 
-            public TerrainType    Terrain;
-            public TerrainShape   Shape;
-            public TerrainFeature Feature;
+            public CellTerrain    Terrain;
+            public CellShape   Shape;
+            public CellVegetation Vegetation;
 
             public bool HasRiver;
 
@@ -77,8 +77,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         public class UnitConfigTestData {
 
-            public float TerrainDefensiveness = 0;
-            public float FeatureDefensiveness = 0;
+            public float TerrainDefensiveness    = 0;
+            public float VegetationDefensiveness = 0;
             public float ShapeDefensiveness   = 0;
 
             public float RiverCrossingAttackingModifier;
@@ -99,13 +99,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
                     Location = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Shape = TerrainShape.Hills,
-                         Feature = TerrainFeature.Jungle
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                         Vegetation = CellVegetation.Jungle
                     },
                     UnitConfig = new UnitConfigTestData() {
                         TerrainDefensiveness = 1f,
                         ShapeDefensiveness   = 2f,
-                        FeatureDefensiveness = 4f
+                        VegetationDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
@@ -114,14 +114,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
                     Location = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Shape = TerrainShape.Hills,
-                         Feature = TerrainFeature.Jungle,
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                         Vegetation = CellVegetation.Jungle,
                          Improvement = new ImprovementTestData() { DefensiveBonus = 2f }
                     },
                     UnitConfig = new UnitConfigTestData() {
                         TerrainDefensiveness = 1f,
                         ShapeDefensiveness   = 2f,
-                        FeatureDefensiveness = 4f
+                        VegetationDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
                         Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
@@ -213,13 +213,13 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
                     Location = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Shape = TerrainShape.Hills,
-                        Feature = TerrainFeature.Jungle
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Jungle
                     },
                     UnitConfig = new UnitConfigTestData() {
                         TerrainDefensiveness = 1f,
                         ShapeDefensiveness   = 2f,
-                        FeatureDefensiveness = 4f
+                        VegetationDefensiveness = 4f
                     }
                 }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
                     CombatType = CombatType.Ranged,
@@ -228,14 +228,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
                 yield return new TestCaseData(new CombatInfoLogicTestData() {
                     Location = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Shape = TerrainShape.Hills,
-                        Feature = TerrainFeature.Jungle,
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Jungle,
                         Improvement = new ImprovementTestData() { DefensiveBonus = 2f }
                     },
                     UnitConfig = new UnitConfigTestData() {
                         TerrainDefensiveness = 1f,
                         ShapeDefensiveness   = 2f,
-                        FeatureDefensiveness = 4f
+                        VegetationDefensiveness = 4f
                     },
                     CombatInfoFromPromotions = new CombatInfo() {
                         Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
@@ -343,14 +343,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         private void SetUpConfigs(CombatInfoLogicTestData testData) {
-            MockUnitConfig.Setup(config => config.GetTerrainDefensiveness(It.IsAny<TerrainType>()))
+            MockUnitConfig.Setup(config => config.GetTerrainDefensiveness(It.IsAny<CellTerrain>()))
                           .Returns(testData.UnitConfig.TerrainDefensiveness);
 
-            MockUnitConfig.Setup(config => config.GetShapeDefensiveness(It.IsAny<TerrainShape>()))
+            MockUnitConfig.Setup(config => config.GetShapeDefensiveness(It.IsAny<CellShape>()))
                           .Returns(testData.UnitConfig.ShapeDefensiveness);
 
-            MockUnitConfig.Setup(config => config.GetFeatureDefensiveness(It.IsAny<TerrainFeature>()))
-                          .Returns(testData.UnitConfig.FeatureDefensiveness);
+            MockUnitConfig.Setup(config => config.GetVegetationDefensiveness(It.IsAny<CellVegetation>()))
+                          .Returns(testData.UnitConfig.VegetationDefensiveness);
 
             MockUnitConfig.Setup(config => config.RiverCrossingAttackModifier).Returns(testData.UnitConfig.RiverCrossingAttackingModifier);
 
@@ -424,9 +424,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private IHexCell BuildHexCell(HexCellTestData data) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.Terrain).Returns(data.Terrain);
-            mockCell.Setup(cell => cell.Shape)  .Returns(data.Shape);
-            mockCell.Setup(cell => cell.Feature).Returns(data.Feature);
+            mockCell.Setup(cell => cell.Terrain)   .Returns(data.Terrain);
+            mockCell.Setup(cell => cell.Shape)     .Returns(data.Shape);
+            mockCell.Setup(cell => cell.Vegetation).Returns(data.Vegetation);
 
             var newCell = mockCell.Object;
 

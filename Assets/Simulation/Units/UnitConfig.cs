@@ -115,7 +115,7 @@ namespace Assets.Simulation.Units {
 
         [SerializeField] private List<float> TerrainDefensiveness;        
         [SerializeField] private List<float> ShapeDefensiveness;
-        [SerializeField] private List<float> FeatureDefensiveness;
+        [SerializeField] private List<float> VegetationDefensiveness;
 
         #endregion
 
@@ -123,7 +123,7 @@ namespace Assets.Simulation.Units {
 
         #region from IUnitConfig
 
-        public float GetTerrainDefensiveness(TerrainType terrain) {
+        public float GetTerrainDefensiveness(CellTerrain terrain) {
             var index = (int)terrain;
 
             if(index >= TerrainDefensiveness.Count) {
@@ -133,7 +133,7 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        public float GetShapeDefensiveness(TerrainShape shape) {
+        public float GetShapeDefensiveness(CellShape shape) {
             var index = (int)shape;
 
             if(index >= ShapeDefensiveness.Count) {
@@ -143,13 +143,13 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        public float GetFeatureDefensiveness(TerrainFeature feature) {
-            var index = (int)feature;
+        public float GetVegetationDefensiveness(CellVegetation vegetation) {
+            var index = (int)vegetation;
 
-            if(index >= FeatureDefensiveness.Count) {
+            if(index >= VegetationDefensiveness.Count) {
                 return 0;
             }else {
-                return FeatureDefensiveness[index];
+                return VegetationDefensiveness[index];
             }
         }
 

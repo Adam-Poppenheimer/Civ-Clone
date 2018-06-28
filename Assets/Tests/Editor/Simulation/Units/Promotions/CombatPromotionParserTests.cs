@@ -37,13 +37,13 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         public class PromotionTestData {
 
             public bool RestrictedByTerrains;
-            public IEnumerable<TerrainType> ValidTerrains;
+            public IEnumerable<CellTerrain> ValidTerrains;
 
             public bool RestrictedByShapes;
-            public IEnumerable<TerrainShape> ValidShapes;
+            public IEnumerable<CellShape> ValidShapes;
 
-            public bool RestrictedByFeatures;
-            public IEnumerable<TerrainFeature> ValidFeatures;
+            public bool RestrictedByVegetation;
+            public IEnumerable<CellVegetation> ValidVegetation;
 
             public bool RestrictedByOpponentTypes;
             public IEnumerable<UnitType> ValidOpponentTypes;
@@ -84,11 +84,11 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
         public class HexCellTestData {
             
-            public TerrainType Terrain;
+            public CellTerrain Terrain;
 
-            public TerrainShape Shape;
+            public CellShape Shape;
 
-            public TerrainFeature Feature;
+            public CellVegetation Vegetation;
 
             public bool IsRoughTerrain;
 
@@ -220,9 +220,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByTerrains = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Grassland }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Grassland }
                 }).SetName("Promotion restricted by terrains and location not a valid terrain | promotion ignored").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -231,9 +231,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByTerrains = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Grassland }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Grassland }
                 }).SetName("Promotion not restricted by terrains and location not a valid terrain | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -242,9 +242,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByTerrains = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Plains }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Plains }
                 }).SetName("Promotion restricted by terrains and location a valid terrain | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -253,9 +253,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByShapes = true,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Flatlands }
+                    Location = new HexCellTestData() { Shape = CellShape.Flatlands }
                 }).SetName("Promotion restricted by shapes and location not a valid shape | promotion ignored").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -264,9 +264,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByShapes = false,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Flatlands }
+                    Location = new HexCellTestData() { Shape = CellShape.Flatlands }
                 }).SetName("Promotion not restricted by shapes and location not a valid shape | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -275,9 +275,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
                         RestrictedByShapes = true,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Mountains }
+                    Location = new HexCellTestData() { Shape = CellShape.Mountains }
                 }).SetName("Promotion restricted by shapes and location a valid shape | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -285,10 +285,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByFeatures = true,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = true,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.None }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.None }
                 }).SetName("Promotion restricted by features and location not a valid feature | promotion ignored").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -296,10 +296,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByFeatures = false,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = false,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.None }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.None }
                 }).SetName("Promotion not restricted by features and location not a valid feature | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -307,10 +307,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileAttacking = true,
-                        RestrictedByFeatures = true,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = true,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.Marsh }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.Marsh }
                 }).SetName("Promotion restricted by features and location a valid feature | promotion applied").Returns(new CombatInfo() {
                     Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -561,9 +561,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByTerrains = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Grassland }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Grassland }
                 }).SetName("Promotion restricted by terrains and location not a valid terrain | promotion ignored").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -572,9 +572,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByTerrains = false,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Grassland }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Grassland }
                 }).SetName("Promotion not restricted by terrains and location not a valid terrain | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -583,9 +583,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByTerrains = true,
-                        ValidTerrains = new List<TerrainType>() { TerrainType.Plains }
+                        ValidTerrains = new List<CellTerrain>() { CellTerrain.Plains }
                     },
-                    Location = new HexCellTestData() { Terrain = TerrainType.Plains }
+                    Location = new HexCellTestData() { Terrain = CellTerrain.Plains }
                 }).SetName("Promotion restricted by terrains and location a valid terrain | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -594,9 +594,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByShapes = true,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Flatlands }
+                    Location = new HexCellTestData() { Shape = CellShape.Flatlands }
                 }).SetName("Promotion restricted by shapes and location not a valid shape | promotion ignored").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -605,9 +605,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByShapes = false,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Flatlands }
+                    Location = new HexCellTestData() { Shape = CellShape.Flatlands }
                 }).SetName("Promotion not restricted by shapes and location not a valid shapes | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -616,9 +616,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
                         RestrictedByShapes = true,
-                        ValidShapes = new List<TerrainShape>() { TerrainShape.Hills, TerrainShape.Mountains }
+                        ValidShapes = new List<CellShape>() { CellShape.Hills, CellShape.Mountains }
                     },
-                    Location = new HexCellTestData() { Shape = TerrainShape.Mountains }
+                    Location = new HexCellTestData() { Shape = CellShape.Mountains }
                 }).SetName("Promotion restricted by shapes and location a valid shape | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -626,10 +626,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByFeatures = true,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = true,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.None }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.None }
                 }).SetName("Promotion restricted by features and location not a valid feature | promotion ignored").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0f }
                 });
@@ -637,10 +637,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByFeatures = false,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = false,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.None }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.None }
                 }).SetName("Promotion not restricted by features and location not a valid feature | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -648,10 +648,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
                 yield return new TestCaseData(new ParsePromotionTestData() {
                     Promotion = new PromotionTestData() {
                         CombatModifier = 0.5f, AppliesWhileDefending = true,
-                        RestrictedByFeatures = true,
-                        ValidFeatures = new List<TerrainFeature>() { TerrainFeature.Forest, TerrainFeature.Marsh }
+                        RestrictedByVegetation = true,
+                        ValidVegetation = new List<CellVegetation>() { CellVegetation.Forest, CellVegetation.Marsh }
                     },
-                    Location = new HexCellTestData() { Feature = TerrainFeature.Marsh }
+                    Location = new HexCellTestData() { Vegetation = CellVegetation.Marsh }
                 }).SetName("Promotion restricted by features and location a valid feature | promotion applied").Returns(new CombatInfo() {
                     Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
                 });
@@ -862,7 +862,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             mockCell.Setup(cell => cell.Terrain)       .Returns(cellData.Terrain);
             mockCell.Setup(cell => cell.Shape)         .Returns(cellData.Shape);
-            mockCell.Setup(cell => cell.Feature)       .Returns(cellData.Feature);
+            mockCell.Setup(cell => cell.Vegetation)    .Returns(cellData.Vegetation);
             mockCell.Setup(cell => cell.IsRoughTerrain).Returns(cellData.IsRoughTerrain);
 
             return mockCell.Object;
@@ -886,8 +886,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             mockPromotion.Setup(promotion => promotion.RestrictedByShapes).Returns(promotionData.RestrictedByShapes);
             mockPromotion.Setup(promotion => promotion.ValidShapes)       .Returns(promotionData.ValidShapes);
 
-            mockPromotion.Setup(promotion => promotion.RestrictedByFeatures).Returns(promotionData.RestrictedByFeatures);
-            mockPromotion.Setup(promotion => promotion.ValidFeatures)       .Returns(promotionData.ValidFeatures);
+            mockPromotion.Setup(promotion => promotion.RestrictedByVegetations).Returns(promotionData.RestrictedByVegetation);
+            mockPromotion.Setup(promotion => promotion.ValidVegetations)       .Returns(promotionData.ValidVegetation);
 
             mockPromotion.Setup(promotion => promotion.RestrictedByOpponentTypes).Returns(promotionData.RestrictedByOpponentTypes);
             mockPromotion.Setup(promotion => promotion.ValidOpponentTypes)       .Returns(promotionData.ValidOpponentTypes);

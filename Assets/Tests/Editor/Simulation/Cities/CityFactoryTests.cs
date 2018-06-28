@@ -43,6 +43,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
         private Mock<IUnitFactory>                                  MockUnitFactory;
+        private Mock<ICellModificationLogic>                        MockCellModificationLogic;
 
         #endregion
 
@@ -59,21 +60,23 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGrid                = new Mock<IHexGrid>();
-            MockCellPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
-            MockDistributionLogic   = new Mock<IWorkerDistributionLogic>();
-            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockUnitFactory         = new Mock<IUnitFactory>();
+            MockCityPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockGrid                  = new Mock<IHexGrid>();
+            MockCellPossessionCanon   = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockDistributionLogic     = new Mock<IWorkerDistributionLogic>();
+            MockUnitPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCityLocationCanon     = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockUnitFactory           = new Mock<IUnitFactory>();
+            MockCellModificationLogic = new Mock<ICellModificationLogic>();
 
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon.Object);
-            Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic  .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
-            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory        .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon  .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                 .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon  .Object);
+            Container.Bind<IWorkerDistributionLogic>                     ().FromInstance(MockDistributionLogic    .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon  .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon    .Object);
+            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory          .Object);
+            Container.Bind<ICellModificationLogic>                       ().FromInstance(MockCellModificationLogic.Object);
 
             Container.Bind<IPopulationGrowthLogic>  ().FromMock();
             Container.Bind<IProductionLogic>        ().FromMock();

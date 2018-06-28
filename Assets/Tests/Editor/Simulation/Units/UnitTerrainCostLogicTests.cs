@@ -36,9 +36,9 @@ namespace Assets.Tests.Simulation.Units {
 
         public class HexCellTestData {
 
-            public TerrainType    Terrain;
-            public TerrainFeature Feature;
-            public TerrainShape   Shape;
+            public CellTerrain    Terrain;
+            public CellVegetation Vegetation;
+            public CellShape   Shape;
 
             public int  FoundationElevation;
             public bool IsUnderwater;
@@ -70,8 +70,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false,
@@ -124,8 +124,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        FoundationElevation = 0, IsUnderwater = false, Shape = TerrainShape.Flatlands
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        FoundationElevation = 0, IsUnderwater = false, Shape = CellShape.Flatlands
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -137,8 +137,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -150,8 +150,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 2, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, FoundationElevation = 2, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -163,8 +163,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 1
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -176,8 +176,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 2
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -189,8 +189,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Flatlands, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -202,8 +202,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -215,8 +215,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -228,8 +228,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Mountains, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Mountains, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -241,8 +241,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, FoundationElevation = 1, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, FoundationElevation = 1, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false
@@ -254,8 +254,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MovementInfo = new MovementInfo() { IgnoresTerrainCosts = true }
@@ -269,8 +269,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -283,8 +283,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Flatlands, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -297,8 +297,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -308,11 +308,11 @@ namespace Assets.Tests.Simulation.Units {
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
-                        FoundationElevation = 0, Shape = TerrainShape.Hills
+                        FoundationElevation = 0, Shape = CellShape.Hills
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.None,
-                        Shape = TerrainShape.Hills, FoundationElevation = 0, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Hills, FoundationElevation = 0, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 10,
@@ -327,8 +327,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0, HasRoads = true
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, IsUnderwater = false, HasRoads = true
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, IsUnderwater = false, HasRoads = true
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 2
@@ -340,8 +340,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0, HasRoads = true
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, IsUnderwater = false
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, IsUnderwater = false
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 2
@@ -353,8 +353,8 @@ namespace Assets.Tests.Simulation.Units {
                         FoundationElevation = 0
                     },
                     NextCell = new HexCellTestData() {
-                        Terrain = TerrainType.Grassland, Feature = TerrainFeature.Forest,
-                        Shape = TerrainShape.Hills, IsUnderwater = false, HasRoads = true
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills, IsUnderwater = false, HasRoads = true
                     },
                     Unit = new UnitTestData() {
                         IsAquatic = false, MaxMovement = 2
@@ -363,15 +363,15 @@ namespace Assets.Tests.Simulation.Units {
             }
         }
 
-        private Dictionary<TerrainFeature, int> FeatureMoveCosts = new Dictionary<TerrainFeature, int>() {
-            { TerrainFeature.None,   0 },
-            { TerrainFeature.Forest, 1 },
+        private Dictionary<CellVegetation, int> VegetationMoveCosts = new Dictionary<CellVegetation, int>() {
+            { CellVegetation.None,   0 },
+            { CellVegetation.Forest, 1 },
         };
 
-        private Dictionary<TerrainShape, int> ShapeMoveCosts = new Dictionary<TerrainShape, int>() {
-            { TerrainShape.Flatlands,  0 },
-            { TerrainShape.Hills,      1 },
-            { TerrainShape.Mountains, -1 },
+        private Dictionary<CellShape, int> ShapeMoveCosts = new Dictionary<CellShape, int>() {
+            { CellShape.Flatlands,  0 },
+            { CellShape.Hills,      1 },
+            { CellShape.Mountains, -1 },
         };
 
         #endregion
@@ -402,13 +402,13 @@ namespace Assets.Tests.Simulation.Units {
 
             MockConfig.Setup(config => config.SlopeMoveCost).Returns(1);
 
-            MockConfig.Setup(config => config.GetBaseMoveCostOfTerrain(It.IsAny<TerrainType>())).Returns(1);
+            MockConfig.Setup(config => config.GetBaseMoveCostOfTerrain(It.IsAny<CellTerrain>())).Returns(1);
 
-            MockConfig.Setup(config => config.GetBaseMoveCostOfFeature(It.IsAny<TerrainFeature>()))
-                      .Returns<TerrainFeature>(feature => FeatureMoveCosts[feature]);
+            MockConfig.Setup(config => config.GetBaseMoveCostOfVegetation(It.IsAny<CellVegetation>()))
+                      .Returns<CellVegetation>(feature => VegetationMoveCosts[feature]);
 
-            MockConfig.Setup(config => config.GetBaseMoveCostOfShape(It.IsAny<TerrainShape>()))
-                      .Returns<TerrainShape>(shape => ShapeMoveCosts[shape]);
+            MockConfig.Setup(config => config.GetBaseMoveCostOfShape(It.IsAny<CellShape>()))
+                      .Returns<CellShape>(shape => ShapeMoveCosts[shape]);
 
             MockConfig.Setup(config => config.RoadMoveCostMultiplier).Returns(0.5f);
 
@@ -452,12 +452,12 @@ namespace Assets.Tests.Simulation.Units {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
-            mockCell.Setup(cell => cell.IsUnderwater ).Returns(testData.IsUnderwater);
+            mockCell.Setup(cell => cell.Terrain ).Returns(testData.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
 
             int edgeElevation;
 
             switch(testData.Shape) {
-                case TerrainShape.Hills: case TerrainShape.Mountains: edgeElevation = testData.FoundationElevation + 1; break;
+                case CellShape.Hills: case CellShape.Mountains: edgeElevation = testData.FoundationElevation + 1; break;
                 default: edgeElevation = testData.FoundationElevation; break;
             }
 
@@ -466,10 +466,10 @@ namespace Assets.Tests.Simulation.Units {
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain  = testData.Terrain;
-            newCell.Feature  = testData.Feature;
-            newCell.Shape    = testData.Shape;
-            newCell.HasRoads = testData.HasRoads;
+            newCell.Terrain    = testData.Terrain;
+            newCell.Vegetation = testData.Vegetation;
+            newCell.Shape      = testData.Shape;
+            newCell.HasRoads   = testData.HasRoads;
 
             MockUnitPositionCanon
                 .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))

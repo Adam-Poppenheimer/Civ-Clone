@@ -51,9 +51,9 @@ namespace Assets.Simulation.Civilizations {
         #endregion
 
         private bool IsMovementValidForConnection(IHexCell fromCell, IHexCell toCell, ICivilization civOne, ICivilization civTwo) {
-            if(toCell.IsUnderwater) {
+            if(toCell.Terrain.IsWater()) {
 
-                if(fromCell.IsUnderwater) {
+                if(fromCell.Terrain.IsWater()) {
                     return true;
                 }
 
@@ -84,7 +84,7 @@ namespace Assets.Simulation.Civilizations {
                     return false;
                 }
 
-                return !fromCell.IsUnderwater || toCell.IsUnderwater || IsCityValidHarbor(cityAtToCell);
+                return !fromCell.Terrain.IsWater() || toCell.Terrain.IsWater() || IsCityValidHarbor(cityAtToCell);
             }
         }
 

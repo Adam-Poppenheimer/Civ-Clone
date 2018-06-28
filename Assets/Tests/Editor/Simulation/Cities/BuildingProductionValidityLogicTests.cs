@@ -682,7 +682,7 @@ namespace Assets.Tests.Simulation.Cities {
         ){
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(cellData.IsUnderwater);
+            mockCell.Setup(cell => cell.Terrain).Returns(cellData.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
 
             var newCell = mockCell.Object;
 

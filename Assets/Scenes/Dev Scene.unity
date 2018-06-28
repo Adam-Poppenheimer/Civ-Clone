@@ -5296,8 +5296,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.31229, y: -24.875}
-  m_SizeDelta: {x: 249.74971, y: 49.75}
+  m_AnchoredPosition: {x: 176.2793, y: -24.875}
+  m_SizeDelta: {x: 235.03906, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &159139095
 MonoBehaviour:
@@ -9346,8 +9346,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.09357, y: -144.375}
-  m_SizeDelta: {x: 312.18713, y: 49.75}
+  m_AnchoredPosition: {x: 156.89941, y: -144.375}
+  m_SizeDelta: {x: 293.79883, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &300406904
 MonoBehaviour:
@@ -9432,7 +9432,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1002229047}
-        m_MethodName: SetActiveFeature
+        m_MethodName: SetActiveVegetation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -19259,8 +19259,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.09357, y: -199.125}
-  m_SizeDelta: {x: 312.18713, y: 49.75}
+  m_AnchoredPosition: {x: 156.89941, y: -199.125}
+  m_SizeDelta: {x: 293.79883, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &561625946
 MonoBehaviour:
@@ -19345,7 +19345,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1002229047}
-        m_MethodName: SetActiveFeature
+        m_MethodName: SetActiveVegetation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -22424,8 +22424,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.09357, y: -34.875}
-  m_SizeDelta: {x: 312.18713, y: 49.75}
+  m_AnchoredPosition: {x: 156.89941, y: -34.875}
+  m_SizeDelta: {x: 293.79883, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &645704992
 MonoBehaviour:
@@ -22510,7 +22510,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1002229047}
-        m_MethodName: SetActiveFeature
+        m_MethodName: SetActiveVegetation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -23068,7 +23068,7 @@ MonoBehaviour:
   RiverPaintingPanel: {fileID: 1472030450}
   TerrainPaintingPanel: {fileID: 2132189352}
   ShapePaintingPanel: {fileID: 660730851}
-  FeaturePaintingPanel: {fileID: 1002229047}
+  VegetationPaintingPanel: {fileID: 1002229047}
   RoadPaintingPanel: {fileID: 1290465812}
   SaveMapDisplay: {fileID: 629577333}
   EditTypeSelectionPanel: {fileID: 1068196452}
@@ -28183,8 +28183,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 31.218714, y: -24.875}
-  m_SizeDelta: {x: 62.437428, y: 49.75}
+  m_AnchoredPosition: {x: 29.379883, y: -24.875}
+  m_SizeDelta: {x: 58.759766, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &839661359
 MonoBehaviour:
@@ -30782,8 +30782,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.09357, y: -89.625}
-  m_SizeDelta: {x: 312.18713, y: 49.75}
+  m_AnchoredPosition: {x: 156.89941, y: -89.625}
+  m_SizeDelta: {x: 293.79883, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &899950604
 MonoBehaviour:
@@ -30868,7 +30868,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1002229047}
-        m_MethodName: SetActiveFeature
+        m_MethodName: SetActiveVegetation
         m_Mode: 3
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -31845,8 +31845,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.31229, y: -24.875}
-  m_SizeDelta: {x: 249.74971, y: 49.75}
+  m_AnchoredPosition: {x: 176.2793, y: -24.875}
+  m_SizeDelta: {x: 235.03906, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &924266852
 MonoBehaviour:
@@ -33663,7 +33663,7 @@ GameObject:
   - component: {fileID: 1002229042}
   - component: {fileID: 1002229043}
   m_Layer: 5
-  m_Name: Feature Painting Panel
+  m_Name: Vegetation Painting Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -33688,8 +33688,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 166.09357, y: -349}
-  m_SizeDelta: {x: 332.18713, y: 234}
+  m_AnchoredPosition: {x: 156.89941, y: -117}
+  m_SizeDelta: {x: 313.79883, y: 234}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1002229042
 MonoBehaviour:
@@ -39904,8 +39904,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.31229, y: -24.875}
-  m_SizeDelta: {x: 249.74971, y: 49.75}
+  m_AnchoredPosition: {x: 176.2793, y: -24.875}
+  m_SizeDelta: {x: 235.03906, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1225522805
 MonoBehaviour:
@@ -50867,8 +50867,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 187.31229, y: -24.875}
-  m_SizeDelta: {x: 249.74971, y: 49.75}
+  m_AnchoredPosition: {x: 176.2793, y: -24.875}
+  m_SizeDelta: {x: 235.03906, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1578862408
 MonoBehaviour:
@@ -66027,8 +66027,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 31.218714, y: -24.875}
-  m_SizeDelta: {x: 62.437428, y: 49.75}
+  m_AnchoredPosition: {x: 29.379883, y: -24.875}
+  m_SizeDelta: {x: 58.759766, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2015699396
 MonoBehaviour:
@@ -66415,8 +66415,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 31.218714, y: -24.875}
-  m_SizeDelta: {x: 62.437428, y: 49.75}
+  m_AnchoredPosition: {x: 29.379883, y: -24.875}
+  m_SizeDelta: {x: 58.759766, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2031189948
 MonoBehaviour:
@@ -68525,8 +68525,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 31.218714, y: -24.875}
-  m_SizeDelta: {x: 62.437428, y: 49.75}
+  m_AnchoredPosition: {x: 29.379883, y: -24.875}
+  m_SizeDelta: {x: 58.759766, y: 49.75}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2099777522
 MonoBehaviour:

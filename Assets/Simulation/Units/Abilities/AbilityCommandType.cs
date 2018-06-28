@@ -9,7 +9,7 @@ namespace Assets.Simulation.Units.Abilities {
         BuildImprovement = 0,
         FoundCity        = 1,
         BuildRoad        = 2,
-        ClearFeature     = 3,
+        ClearVegetation  = 3,
         SetUpToBombard   = 4,
     }
 

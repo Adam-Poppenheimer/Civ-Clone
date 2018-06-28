@@ -158,7 +158,7 @@ namespace Assets.Simulation.HexMap {
                 return false;
             }
 
-            if(cell.IsUnderwater || neighbor.IsUnderwater) {
+            if(cell.Terrain.IsWater() || neighbor.Terrain.IsWater()) {
                 return false;
             }
 

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public enum TerrainType {
+    public enum CellTerrain {
         Grassland    = 0,
         Plains       = 1,
         Desert       = 2,

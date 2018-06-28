@@ -30,9 +30,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
         public struct GetYieldOfCellTestData {
 
-            public TerrainType    Terrain;
-            public TerrainFeature Feature;
-            public TerrainShape   Shape;
+            public CellTerrain    Terrain;
+            public CellVegetation Vegetation;
+            public CellShape      Shape;
 
             public ResourceNodeData ResourceNodeOnCell;
 
@@ -91,37 +91,37 @@ namespace Assets.Tests.Simulation.HexMap {
         private static IEnumerable<TestCaseData> TestCases {
             get {
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Flat/no feature/no resource").Returns(new ResourceSummary(1f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Plains,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Plains,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Plains/Flat/no feature/no resource").Returns(new ResourceSummary(1.1f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Desert,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Desert,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Desert/Flat/no feature/no resource").Returns(new ResourceSummary(1.2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Tundra,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Tundra,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Tundra/Flat/no feature/no resource").Returns(new ResourceSummary(1.3f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Snow,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Snow,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Snow/Flat/no feature/no resource").Returns(new ResourceSummary(1.4f));
 
@@ -129,46 +129,46 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Flat/Forest/no resource").Returns(new ResourceSummary(2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Plains,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Plains,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Plains/Flat/Forest/no resource").Returns(new ResourceSummary(2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Desert,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Desert,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Desert/Flat/Forest/no resource").Returns(new ResourceSummary(2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Tundra,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Tundra,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Tundra/Flat/Forest/no resource").Returns(new ResourceSummary(2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Snow,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Snow,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = null
                 }).SetName("Snow/Flat/Forest/no resource").Returns(new ResourceSummary(2f));
 
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
@@ -179,9 +179,9 @@ namespace Assets.Tests.Simulation.HexMap {
                 }).SetName("Grassland/Flat/no feature/Has a visible resource").Returns(new ResourceSummary(1f, 2f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = false
@@ -192,9 +192,9 @@ namespace Assets.Tests.Simulation.HexMap {
                 }).SetName("Grassland/Flat/no feature/Has an invisible resource").Returns(new ResourceSummary(1f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
@@ -203,9 +203,9 @@ namespace Assets.Tests.Simulation.HexMap {
                 }).SetName("Grassland/Flat/no feature/Has a visible resource but no civ").Returns(new ResourceSummary(1f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
@@ -219,18 +219,18 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ImprovementOnCell = new ImprovementData() {
                         Yield = new ResourceSummary(0f, 0f, 3f)
                     }
                 }).SetName("Grassland/Flat/no feature/Has an improvement").Returns(new ResourceSummary(1f, 0f, 3f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ImprovementOnCell = new ImprovementData() {
                         Yield = new ResourceSummary(0f, 0f, 3f)
                     }
@@ -238,9 +238,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
@@ -254,9 +254,9 @@ namespace Assets.Tests.Simulation.HexMap {
                 }).SetName("Grassland/Flat/no feature/Has a visible resource and an improvement").Returns(new ResourceSummary(1f, 2f, 3f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(0f, 2f), IsVisible = true
@@ -271,9 +271,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Flatlands,
                     ResourceNodeOnCell = new ResourceNodeData() {
                         Resource = new ResourceDefinitionData() {
                             BonusYield = new ResourceSummary(food: 2), IsVisible = true
@@ -301,47 +301,47 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Hills,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Hills,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Hills/No feature").Returns(new ResourceSummary(10f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape   = TerrainShape.Mountains,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape   = CellShape.Mountains,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Mountains/No feature").Returns(new ResourceSummary(20f));
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.Forest,
-                    Shape   = TerrainShape.Hills,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.Forest,
+                    Shape   = CellShape.Hills,
                     ResourceNodeOnCell = null
                 }).SetName("Grassland/Hills/Forest").Returns(new ResourceSummary(2f));
 
 
                 yield return new TestCaseData(new GetYieldOfCellTestData() {
-                    Terrain = TerrainType.Grassland,
-                    Feature = TerrainFeature.None,
-                    Shape = TerrainShape.Flatlands,
+                    Terrain = CellTerrain.Grassland,
+                    Vegetation = CellVegetation.None,
+                    Shape = CellShape.Flatlands,
                     ResourceNodeOnCell = null,
                     CityOwningCell = new CityData() {
                         Buildings = new List<BuildingData>() {
                             new BuildingData() {
                                 CellYieldModifications = new List<CellYieldModificationData>() {
-                                    new CellYieldModificationData(TerrainType.Grassland, new ResourceSummary(culture: 1)),
-                                    new CellYieldModificationData(TerrainShape.Hills,    new ResourceSummary(culture: 2)),
-                                    new CellYieldModificationData(TerrainFeature.None,   new ResourceSummary(culture: 3)),
+                                    new CellYieldModificationData(CellTerrain.Grassland, new ResourceSummary(culture: 1)),
+                                    new CellYieldModificationData(CellShape.Hills,    new ResourceSummary(culture: 2)),
+                                    new CellYieldModificationData(CellVegetation.None,   new ResourceSummary(culture: 3)),
                                     new CellYieldModificationData(true,                  new ResourceSummary(culture: 4))
                                 }
                             },
                             new BuildingData() {
                                 CellYieldModifications = new List<CellYieldModificationData>() {
-                                    new CellYieldModificationData(TerrainType.Desert,     new ResourceSummary(gold: 1)),
-                                    new CellYieldModificationData(TerrainShape.Flatlands, new ResourceSummary(gold: 2)),
-                                    new CellYieldModificationData(TerrainFeature.Forest,  new ResourceSummary(gold: 3)),
+                                    new CellYieldModificationData(CellTerrain.Desert,     new ResourceSummary(gold: 1)),
+                                    new CellYieldModificationData(CellShape.Flatlands, new ResourceSummary(gold: 2)),
+                                    new CellYieldModificationData(CellVegetation.Forest,  new ResourceSummary(gold: 3)),
                                     new CellYieldModificationData(false,                  new ResourceSummary(gold: 4))
                                 }
                             }
@@ -352,23 +352,23 @@ namespace Assets.Tests.Simulation.HexMap {
             }
         }
 
-        private static Dictionary<TerrainType, ResourceSummary> TerrainYields = new Dictionary<TerrainType, ResourceSummary>() {
-            { TerrainType.Grassland, new ResourceSummary(1f)   },
-            { TerrainType.Plains,    new ResourceSummary(1.1f) },
-            { TerrainType.Desert,    new ResourceSummary(1.2f) },
-            { TerrainType.Tundra,    new ResourceSummary(1.3f) },
-            { TerrainType.Snow,      new ResourceSummary(1.4f) },
+        private static Dictionary<CellTerrain, ResourceSummary> TerrainYields = new Dictionary<CellTerrain, ResourceSummary>() {
+            { CellTerrain.Grassland, new ResourceSummary(1f)   },
+            { CellTerrain.Plains,    new ResourceSummary(1.1f) },
+            { CellTerrain.Desert,    new ResourceSummary(1.2f) },
+            { CellTerrain.Tundra,    new ResourceSummary(1.3f) },
+            { CellTerrain.Snow,      new ResourceSummary(1.4f) },
         };
 
-        private static Dictionary<TerrainFeature, ResourceSummary> FeatureYields = new Dictionary<TerrainFeature, ResourceSummary>() {
-            { TerrainFeature.None,   new ResourceSummary(0f) },
-            { TerrainFeature.Forest, new ResourceSummary(2f) },
+        private static Dictionary<CellVegetation, ResourceSummary> VegetationYields = new Dictionary<CellVegetation, ResourceSummary>() {
+            { CellVegetation.None,   new ResourceSummary(0f) },
+            { CellVegetation.Forest, new ResourceSummary(2f) },
         };
 
-        private static Dictionary<TerrainShape, ResourceSummary> ShapeYields = new Dictionary<TerrainShape, ResourceSummary>() {
-            { TerrainShape.Flatlands, new ResourceSummary(0f) },
-            { TerrainShape.Hills,     new ResourceSummary(10f) },
-            { TerrainShape.Mountains, new ResourceSummary(20f) },
+        private static Dictionary<CellShape, ResourceSummary> ShapeYields = new Dictionary<CellShape, ResourceSummary>() {
+            { CellShape.Flatlands, new ResourceSummary(0f) },
+            { CellShape.Hills,     new ResourceSummary(10f) },
+            { CellShape.Mountains, new ResourceSummary(20f) },
         };
 
         #endregion
@@ -403,14 +403,14 @@ namespace Assets.Tests.Simulation.HexMap {
             MockTechCanon                = new Mock<ITechCanon>();
             MockGameCore                 = new Mock<IGameCore>();
 
-            MockConfig.Setup(config => config.GetYieldOfFeature(It.IsAny<TerrainFeature>()))
-                      .Returns<TerrainFeature>(feature => FeatureYields[feature]);
+            MockConfig.Setup(config => config.GetYieldOfVegetation(It.IsAny<CellVegetation>()))
+                      .Returns<CellVegetation>(feature => VegetationYields[feature]);
 
-            MockConfig.Setup(config => config.GetYieldOfTerrain(It.IsAny<TerrainType>()))
-                      .Returns<TerrainType>(feature => TerrainYields[feature]);
+            MockConfig.Setup(config => config.GetYieldOfTerrain(It.IsAny<CellTerrain>()))
+                      .Returns<CellTerrain>(feature => TerrainYields[feature]);
 
-            MockConfig.Setup(config => config.GetYieldOfShape(It.IsAny<TerrainShape>()))
-                      .Returns<TerrainShape>(feature => ShapeYields[feature]);
+            MockConfig.Setup(config => config.GetYieldOfShape(It.IsAny<CellShape>()))
+                      .Returns<CellShape>(feature => ShapeYields[feature]);
 
             Container.Bind<IHexMapConfig>                                  ().FromInstance(MockConfig                  .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon       .Object);
@@ -434,7 +434,7 @@ namespace Assets.Tests.Simulation.HexMap {
             "ResourceNode, it should also add that resource's bonus yield to the result returned.")]
         [TestCaseSource("TestCases")]
         public ResourceSummary GetYieldOfCellTests(GetYieldOfCellTestData data) {
-            var cell = BuildCell(data.Terrain, data.Feature, data.Shape);
+            var cell = BuildCell(data.Terrain, data.Vegetation, data.Shape);
 
             IResourceNode node = null;
             if(data.ResourceNodeOnCell != null) {
@@ -463,16 +463,16 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region utilities
 
-        private IHexCell BuildCell(TerrainType terrain, TerrainFeature feature, TerrainShape shape) {
+        private IHexCell BuildCell(CellTerrain terrain, CellVegetation vegetation, CellShape shape) {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
 
             var newCell = mockCell.Object;
 
-            newCell.Terrain = terrain;
-            newCell.Feature = feature;
-            newCell.Shape   = shape;
+            newCell.Terrain    = terrain;
+            newCell.Vegetation = vegetation;
+            newCell.Shape      = shape;
 
             return newCell;
         }

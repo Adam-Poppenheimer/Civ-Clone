@@ -75,9 +75,9 @@ namespace Assets.Simulation.HexMap {
                 civOwningCell = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
             }
 
-            if(cell.Feature != TerrainFeature.None) {
-                retval = Config.GetYieldOfFeature(cell.Feature);
-            }else if(cell.Shape != TerrainShape.Flatlands) {
+            if(cell.Vegetation != CellVegetation.None) {
+                retval = Config.GetYieldOfVegetation(cell.Vegetation);
+            }else if(cell.Shape != CellShape.Flatlands) {
                 retval = Config.GetYieldOfShape(cell.Shape);
             }else {
                 retval = Config.GetYieldOfTerrain(cell.Terrain);
@@ -136,14 +136,14 @@ namespace Assets.Simulation.HexMap {
                             retval += cellModification.BonusYield;
 
                         }else if(
-                            cellModification.PropertyConsidered == CellPropertyType.Feature &&
-                            cell.Feature == cellModification.FeatureRequired
+                            cellModification.PropertyConsidered == CellPropertyType.Vegetation &&
+                            cell.Vegetation == cellModification.VegetationRequired
                         ) {
                             retval += cellModification.BonusYield;
 
                         }else if(
                             cellModification.PropertyConsidered == CellPropertyType.CellIsUnderwater &&
-                            cell.IsUnderwater == cellModification.MustBeUnderwater
+                            cell.Terrain.IsWater() == cellModification.MustBeUnderwater
                         ) {
                             retval += cellModification.BonusYield;
                         }

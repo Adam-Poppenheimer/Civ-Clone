@@ -111,12 +111,12 @@ namespace Assets.UI.HexMap {
         private void SetCellDataField(IHexCell cell) {
             string cellDataString = cell.Terrain.ToString();
 
-            if(cell.Shape != TerrainShape.Flatlands) {
+            if(cell.Shape != CellShape.Flatlands) {
                 cellDataString += ", " + cell.Shape.ToString();
             }
 
-            if(cell.Feature != TerrainFeature.None) {
-                cellDataString += ", " + cell.Feature.ToString();
+            if(cell.Vegetation != CellVegetation.None) {
+                cellDataString += ", " + cell.Vegetation.ToString();
             }
 
             cellDataString += GetImprovementString(cell);

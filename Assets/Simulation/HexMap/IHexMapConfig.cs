@@ -20,17 +20,17 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        ResourceSummary GetYieldOfTerrain(TerrainType    terrain);
-        ResourceSummary GetYieldOfFeature(TerrainFeature feature);
-        ResourceSummary GetYieldOfShape  (TerrainShape   shape);
+        ResourceSummary GetYieldOfTerrain   (CellTerrain    terrain);
+        ResourceSummary GetYieldOfVegetation(CellVegetation vegetation);
+        ResourceSummary GetYieldOfShape     (CellShape      shape);
 
-        int GetBaseMoveCostOfTerrain(TerrainType    terrain);
-        int GetBaseMoveCostOfShape  (TerrainShape   shape);
-        int GetBaseMoveCostOfFeature(TerrainFeature feature);
+        int GetBaseMoveCostOfTerrain   (CellTerrain    terrain);
+        int GetBaseMoveCostOfShape     (CellShape      shape);
+        int GetBaseMoveCostOfVegetation(CellVegetation vegetation);
 
-        int GetFoundationElevationForTerrain(TerrainType  terrain);
-        int GetEdgeElevationForShape        (TerrainShape shape);
-        int GetPeakElevationForShape        (TerrainShape shape);
+        int GetFoundationElevationForTerrain(CellTerrain terrain);
+        int GetEdgeElevationForShape        (CellShape shape);
+        int GetPeakElevationForShape        (CellShape shape);
 
         #endregion
 

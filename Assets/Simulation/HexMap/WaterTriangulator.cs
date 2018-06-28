@@ -38,13 +38,13 @@ namespace Assets.Simulation.HexMap {
         #region from IWaterTriangulator
 
         public bool ShouldTriangulateWater(CellTriangulationData data) {
-            return data.Center.IsUnderwater;
+            return data.Center.Terrain.IsWater();
         }
 
         public void TriangulateWater(CellTriangulationData data) {
             TriangulateWaterShoreCenter(data);
 
-            if(data.Right != null && !data.Right.IsUnderwater) {
+            if(data.Right != null && !data.Right.Terrain.IsWater()) {
                 var previousCornerHasEstuary = data.IsRiverCorner;
                 var nextCornerHasEstuary     = RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Next2());
 
@@ -288,12 +288,12 @@ namespace Assets.Simulation.HexMap {
 
         private void TriangulateShoreCorner(CellTriangulationData data, EdgeVertices shoreEdgeTwo) {
             if(data.Left != null) {
-                Vector3 v3 = data.Left.IsUnderwater ? data.LeftToCenterWaterEdge.V1 : data.LeftCorner;
+                Vector3 v3 = data.Left.Terrain.IsWater() ? data.LeftToCenterWaterEdge.V1 : data.LeftCorner;
                 v3.y = data.Center.WaterSurfaceY;
 
                 MeshBuilder.AddTriangle(
                     data.CenterToRightWaterEdge.V1, MeshBuilder.Weights1, Vector2.zero,
-                    v3,                             MeshBuilder.Weights2, new Vector2(0f, data.Left.IsUnderwater ? 0f : 1f),
+                    v3,                             MeshBuilder.Weights2, new Vector2(0f, data.Left.Terrain.IsWater() ? 0f : 1f),
                     shoreEdgeTwo.V1,                MeshBuilder.Weights3, new Vector2(0f, 1f),
                     new Vector3(data.Center.Index, data.Left.Index, data.Right.Index), MeshBuilder.WaterShore
                 );
@@ -318,7 +318,7 @@ namespace Assets.Simulation.HexMap {
                     MeshBuilder.Water
                 );
 
-                if(data.Direction <= HexDirection.E && data.Left != null && data.Left.IsUnderwater) {
+                if(data.Direction <= HexDirection.E && data.Left != null && data.Left.Terrain.IsWater()) {
                     MeshBuilder.AddTriangle(
                         data.CenterToRightWaterEdge.V1, data.Center.Index, MeshBuilder.Weights1,
                         data.LeftToCenterWaterEdge .V1, data.Left  .Index, MeshBuilder.Weights2,

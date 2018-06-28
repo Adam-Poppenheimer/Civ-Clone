@@ -36,7 +36,7 @@ namespace Assets.Simulation.HexMap {
 
         public void TriangulateTerrainCenter(CellTriangulationData data){
 
-            if(data.Center.Shape == TerrainShape.Hills) {
+            if(data.Center.Shape == CellShape.Hills) {
                 TriangulateCenterWithHills(data);
             }else {
                 TriangulateCenterWithoutHills(data);
@@ -57,7 +57,7 @@ namespace Assets.Simulation.HexMap {
                     data.CenterToRightEdge, data.Center,
                     data.RightToCenterEdge, data.Right
                 );
-            }else if(data.Center.Shape == TerrainShape.Hills || data.Right.Shape == TerrainShape.Hills){
+            }else if(data.Center.Shape == CellShape.Hills || data.Right.Shape == CellShape.Hills){
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, data.Right .RequiresYPerturb,

@@ -67,6 +67,7 @@ namespace Assets.Simulation.HexMap {
         public HexMesh Culture          { get; private set; }
         public HexMesh WaterShore       { get; private set; }
         public HexMesh Estuaries        { get; private set; }
+        public HexMesh Marsh            { get; private set; }
 
         private INoiseGenerator NoiseGenerator;
         private IRiverCanon     RiverCanon;
@@ -85,6 +86,7 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Culture")]           HexMesh culture,
             [Inject(Id = "Water Shore")]       HexMesh waterShore,
             [Inject(Id = "Estuaries")]         HexMesh estuaries,
+            [Inject(Id = "Marsh")]             HexMesh marsh,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IHexGrid grid
         ) {
@@ -96,6 +98,7 @@ namespace Assets.Simulation.HexMap {
             Culture          = culture;
             WaterShore       = waterShore;
             Estuaries        = estuaries;
+            Marsh            = marsh;
 
             NoiseGenerator = noiseGenerator;
             RiverCanon     = riverCanon;
@@ -117,6 +120,7 @@ namespace Assets.Simulation.HexMap {
             WaterShore      .Clear();
             Estuaries       .Clear();
             Culture         .Clear();
+            Marsh           .Clear();
         }
 
         public void ApplyMeshes() {
@@ -128,6 +132,7 @@ namespace Assets.Simulation.HexMap {
             WaterShore      .Apply();
             Estuaries       .Apply();
             Culture         .Apply();
+            Marsh           .Apply();
         }
 
         public CellTriangulationData GetTriangulationData(
@@ -140,7 +145,7 @@ namespace Assets.Simulation.HexMap {
 
         public void TriangulateEdgeFan(
             Vector3 center, EdgeVertices edge, float index, HexMesh targetedMesh, bool perturbY = false
-        ){
+        ) {
             targetedMesh.AddTriangle(center, edge.V1, edge.V2, perturbY);
             targetedMesh.AddTriangle(center, edge.V2, edge.V3, perturbY);
             targetedMesh.AddTriangle(center, edge.V3, edge.V4, perturbY);
@@ -153,6 +158,19 @@ namespace Assets.Simulation.HexMap {
             targetedMesh.AddTriangleCellData(indices, Weights1);
             targetedMesh.AddTriangleCellData(indices, Weights1);
             targetedMesh.AddTriangleCellData(indices, Weights1);
+        }
+
+        public void TriangulateEdgeFan(
+            Vector3 center, EdgeVertices edge, float index,  float v, HexMesh targetedMesh, bool perturbY = false
+        ) {
+            TriangulateEdgeFan(center, edge, index, targetedMesh, perturbY);
+
+            var uv = new Vector2(0f, v);
+
+            targetedMesh.AddTriangleUV(uv, uv, uv);
+            targetedMesh.AddTriangleUV(uv, uv, uv);
+            targetedMesh.AddTriangleUV(uv, uv, uv);
+            targetedMesh.AddTriangleUV(uv, uv, uv);
         }
 
         public void TriangulateEdgeStrip(

@@ -40,24 +40,18 @@ namespace Assets.Simulation.Cities {
         private IPossessionRelationship<ICity, IHexCell>      CellPossessionCanon;
         private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private ICellModificationLogic                        CellModificationLogic;
 
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// Constructs a factory capable of creating properly-integrated cities.
-        /// </summary>
-        /// <param name="container">The container used to inject dependencies into newly-created factories.</param>
-        /// <param name="cityPrefab">The prefab used to instantiate new cities.</param>
-        /// <param name="cityPossessionCanon">The canon used to assign new cities to their proper owners.</param>
-        /// <param name="grid">The HexGrid used.</param>
-        /// <param name="cellPossessionCanon">The canon used to assign adjacent cells to the city</param>
         [Inject]
         public CityFactory(DiContainer container, [Inject(Id = "City Prefab")] GameObject cityPrefab,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals,
-            IUnitFactory unitFactory, IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IUnitFactory unitFactory, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            ICellModificationLogic cellModificationLogic
         ){
             Container             = container;
             CityPrefab            = cityPrefab;
@@ -66,7 +60,8 @@ namespace Assets.Simulation.Cities {
             CellPossessionCanon   = cellPossessionCanon;
             UnitFactory           = unitFactory;
             CityLocationCanon     = cityLocationCanon;
-            
+            CellModificationLogic = cellModificationLogic;
+
             if(citySignals != null) {
                 citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
             }
@@ -78,18 +73,6 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityFactory
 
-        /// <summary>
-        /// Creates a new city at the argued location belonging to the argued civilization.
-        /// </summary>
-        /// <param name="location">The location to place the city</param>
-        /// <param name="owner">The owner the city will belong to</param>
-        /// <returns>A fully-instantiated anc configured city with the correct location and owner</returns>
-        /// <remarks>
-        /// This method makes sure that the created city has the correct population, location,
-        /// owner, starting tiles, and resource focus. It also suppresses the slot of the argued location,
-        /// performs distribution on the city, adds it to the AllCities collection, and refreshes the city's
-        /// location.
-        /// </remarks>
         public ICity Create(IHexCell location, ICivilization owner){
             if(location == null) {
                 throw new ArgumentNullException("location");
@@ -110,7 +93,8 @@ namespace Assets.Simulation.Cities {
             CityLocationCanon.ChangeOwnerOfPossession(newCity, location);
 
             location.SuppressSlot = true;
-            location.Feature = TerrainFeature.None;
+            
+            CellModificationLogic.ChangeVegetationOfCell(location, CellVegetation.None);
 
             if(CityPossessionCanon.CanChangeOwnerOfPossession(newCity, owner)) {
                 CityPossessionCanon.ChangeOwnerOfPossession(newCity, owner);

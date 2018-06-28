@@ -320,8 +320,8 @@ namespace Assets.Tests.Simulation.Civilizations {
         private IHexCell BuildHexCell(HexCellTestData cellData, ICivilization cityOwner) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(cellData.IsUnderwater);
-            mockCell.Setup(cell => cell.HasRoads)    .Returns(cellData.HasRoads);
+            mockCell.Setup(cell => cell.Terrain) .Returns(cellData.IsUnderwater? CellTerrain.FreshWater : CellTerrain.Grassland);
+            mockCell.Setup(cell => cell.HasRoads).Returns(cellData.HasRoads);
 
             var newCell = mockCell.Object;
 

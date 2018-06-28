@@ -18,6 +18,7 @@ namespace Assets.Simulation.HexMap {
         private IBasicTerrainTriangulator BasicTerrainTriangulator;
         private IWaterTriangulator        WaterTriangulator;
         private IRoadTriangulator         RoadTriangulator;
+        private IMarshTriangulator        MarshTriangulator;
 
         #endregion
 
@@ -28,7 +29,8 @@ namespace Assets.Simulation.HexMap {
             IHexGrid grid, IRiverTriangulator riverTriangulator,
             IHexGridMeshBuilder meshBuilder, ICultureTriangulator cultureTriangulator,
             IBasicTerrainTriangulator basicTerrainTriangulator,
-            IWaterTriangulator waterTriangulator, IRoadTriangulator roadTriangulator
+            IWaterTriangulator waterTriangulator, IRoadTriangulator roadTriangulator,
+            IMarshTriangulator marshTriangulator
         ) {
             Grid                     = grid;
             RiverTriangulator        = riverTriangulator;
@@ -37,6 +39,7 @@ namespace Assets.Simulation.HexMap {
             BasicTerrainTriangulator = basicTerrainTriangulator;
             WaterTriangulator        = waterTriangulator;
             RoadTriangulator         = roadTriangulator;
+            MarshTriangulator        = marshTriangulator;
         }
 
         #endregion
@@ -66,7 +69,6 @@ namespace Assets.Simulation.HexMap {
             if(RiverTriangulator.ShouldTriangulateRiver(thisData)) {
                 RiverTriangulator.TriangulateRiver(thisData);
             }
-            
 
             if(BasicTerrainTriangulator.ShouldTriangulateTerrainEdge(thisData)) {
                 BasicTerrainTriangulator.TriangulateTerrainEdge(thisData);
@@ -82,6 +84,18 @@ namespace Assets.Simulation.HexMap {
 
             if(RoadTriangulator.ShouldTriangulateRoads(thisData)) {
                 RoadTriangulator.TriangulateRoads(thisData);
+            }
+
+            if(MarshTriangulator.ShouldTriangulateMarshCenter(thisData)) {
+                MarshTriangulator.TriangulateMarshCenter(thisData);
+            }
+
+            if(MarshTriangulator.ShouldTriangulateMarshEdge(thisData)) {
+                MarshTriangulator.TriangulateMarshEdge(thisData);
+            }
+
+            if(MarshTriangulator.ShouldTriangulateMarshCorner(thisData)) {
+                MarshTriangulator.TriangulateMarshCorner(thisData);
             }
         }
 

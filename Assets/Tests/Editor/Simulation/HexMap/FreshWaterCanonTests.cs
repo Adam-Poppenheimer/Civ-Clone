@@ -29,7 +29,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public bool HasRiver;
 
-            public TerrainType Terrain;
+            public CellTerrain Terrain;
 
         }
 
@@ -50,49 +50,49 @@ namespace Assets.Tests.Simulation.HexMap {
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
                     Cell = new HexCellTestData(),
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Terrain = TerrainType.Grassland },
-                        new HexCellTestData() { Terrain = TerrainType.ShallowWater },
-                        new HexCellTestData() { Terrain = TerrainType.DeepWater }
+                        new HexCellTestData() { Terrain = CellTerrain.Grassland },
+                        new HexCellTestData() { Terrain = CellTerrain.ShallowWater },
+                        new HexCellTestData() { Terrain = CellTerrain.DeepWater }
                     }
                 }).SetName("Cell with no rivers, non-FreshWater neighbors").Returns(false);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
                     Cell = new HexCellTestData(),
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Terrain = TerrainType.FreshWater },
-                        new HexCellTestData() { Terrain = TerrainType.FreshWater },
-                        new HexCellTestData() { Terrain = TerrainType.FreshWater }
+                        new HexCellTestData() { Terrain = CellTerrain.FreshWater },
+                        new HexCellTestData() { Terrain = CellTerrain.FreshWater },
+                        new HexCellTestData() { Terrain = CellTerrain.FreshWater }
                     }
                 }).SetName("Cell with no rivers, FreshWater neighbors").Returns(true);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
                     Cell = new HexCellTestData() { HasRiver = true },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Terrain = TerrainType.Grassland },
-                        new HexCellTestData() { Terrain = TerrainType.ShallowWater },
-                        new HexCellTestData() { Terrain = TerrainType.DeepWater }
+                        new HexCellTestData() { Terrain = CellTerrain.Grassland },
+                        new HexCellTestData() { Terrain = CellTerrain.ShallowWater },
+                        new HexCellTestData() { Terrain = CellTerrain.DeepWater }
                     }
                 }).SetName("Cell with a river, non-FreshWater neighbors").Returns(true);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
                     Cell = new HexCellTestData(),
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { Terrain = TerrainType.Grassland },
-                        new HexCellTestData() { Terrain = TerrainType.ShallowWater },
-                        new HexCellTestData() { Terrain = TerrainType.FreshWater }
+                        new HexCellTestData() { Terrain = CellTerrain.Grassland },
+                        new HexCellTestData() { Terrain = CellTerrain.ShallowWater },
+                        new HexCellTestData() { Terrain = CellTerrain.FreshWater }
                     }
                 }).SetName("Cell with no rivers, mix of FreshWater and non-FreshWater neighbors").Returns(true);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
-                    Cell = new HexCellTestData() { Terrain = TerrainType.ShallowWater }
+                    Cell = new HexCellTestData() { Terrain = CellTerrain.ShallowWater }
                 }).SetName("Cell is ShallowWater, adjacent sources of fresh water").Returns(false);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
-                    Cell = new HexCellTestData() { Terrain = TerrainType.DeepWater }
+                    Cell = new HexCellTestData() { Terrain = CellTerrain.DeepWater }
                 }).SetName("Cell is DeepWater, adjacent sources of fresh water").Returns(false);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
-                    Cell = new HexCellTestData() { Terrain = TerrainType.FreshWater }
+                    Cell = new HexCellTestData() { Terrain = CellTerrain.FreshWater }
                 }).SetName("Cell is FreshWater, no adjacent sources of fresh water").Returns(true);
             }
         }

@@ -84,85 +84,85 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexMapConfig
 
-        public ResourceSummary GetYieldOfTerrain(TerrainType terrain) {
+        public ResourceSummary GetYieldOfTerrain(CellTerrain terrain) {
             switch(terrain) {
-                case TerrainType.Grassland:    return GrasslandYield;
-                case TerrainType.Plains:       return PlainsYield;
-                case TerrainType.Desert:       return DesertYield;
-                case TerrainType.Tundra:       return TundraYield;
-                case TerrainType.Snow:         return SnowYield;
-                case TerrainType.ShallowWater: return ShallowWaterYield;
-                case TerrainType.DeepWater:    return DeepWaterYield;
-                case TerrainType.FreshWater:   return FreshWaterYield;
+                case CellTerrain.Grassland:    return GrasslandYield;
+                case CellTerrain.Plains:       return PlainsYield;
+                case CellTerrain.Desert:       return DesertYield;
+                case CellTerrain.Tundra:       return TundraYield;
+                case CellTerrain.Snow:         return SnowYield;
+                case CellTerrain.ShallowWater: return ShallowWaterYield;
+                case CellTerrain.DeepWater:    return DeepWaterYield;
+                case CellTerrain.FreshWater:   return FreshWaterYield;
                 default: throw new NotImplementedException();
             }
         }
 
-        public ResourceSummary GetYieldOfFeature(TerrainFeature feature) {
+        public ResourceSummary GetYieldOfVegetation(CellVegetation feature) {
             switch(feature) {
-                case TerrainFeature.None:   return ResourceSummary.Empty;
-                case TerrainFeature.Forest: return ForestYield;
-                case TerrainFeature.Jungle: return JungleYield;
-                case TerrainFeature.Marsh:  return MarshYield;
+                case CellVegetation.None:   return ResourceSummary.Empty;
+                case CellVegetation.Forest: return ForestYield;
+                case CellVegetation.Jungle: return JungleYield;
+                case CellVegetation.Marsh:  return MarshYield;
                 default: throw new NotImplementedException();
             }
         }
 
-        public ResourceSummary GetYieldOfShape(TerrainShape shape) {
+        public ResourceSummary GetYieldOfShape(CellShape shape) {
             switch(shape) {
-                case TerrainShape.Flatlands: return ResourceSummary.Empty;
-                case TerrainShape.Hills:     return HillsYield;
-                case TerrainShape.Mountains: return MountainsYield;
+                case CellShape.Flatlands: return ResourceSummary.Empty;
+                case CellShape.Hills:     return HillsYield;
+                case CellShape.Mountains: return MountainsYield;
                 default: throw new NotImplementedException();
             }
         }
 
-        public int GetBaseMoveCostOfTerrain(TerrainType terrain) {
+        public int GetBaseMoveCostOfTerrain(CellTerrain terrain) {
             return BaseMoveCost;
         }
 
-        public int GetBaseMoveCostOfShape(TerrainShape shape) {
+        public int GetBaseMoveCostOfShape(CellShape shape) {
             switch(shape) {
-                case TerrainShape.Flatlands: return 0;
-                case TerrainShape.Hills:     return HillsMoveCost;
-                case TerrainShape.Mountains: return MountainsMoveCost;
+                case CellShape.Flatlands: return 0;
+                case CellShape.Hills:     return HillsMoveCost;
+                case CellShape.Mountains: return MountainsMoveCost;
                 default: throw new NotImplementedException();
             }
         }
 
-        public int GetBaseMoveCostOfFeature(TerrainFeature feature) {
+        public int GetBaseMoveCostOfVegetation(CellVegetation feature) {
             switch(feature) {
-                case TerrainFeature.None:   return 0;
-                case TerrainFeature.Forest: return ForestMoveCost;
-                case TerrainFeature.Jungle: return JungleMoveCost;
-                case TerrainFeature.Marsh:  return MarshMoveCost;
+                case CellVegetation.None:   return 0;
+                case CellVegetation.Forest: return ForestMoveCost;
+                case CellVegetation.Jungle: return JungleMoveCost;
+                case CellVegetation.Marsh:  return MarshMoveCost;
                 default: throw new NotImplementedException();
             }
         }
 
-        public int GetFoundationElevationForTerrain(TerrainType terrain) {
+        public int GetFoundationElevationForTerrain(CellTerrain terrain) {
             switch(terrain) {
-                case TerrainType.FreshWater:   return FreshWaterFoundationElevation;
-                case TerrainType.ShallowWater: return ShallowWaterFoundationElevation;
-                case TerrainType.DeepWater:    return DeepWaterFoundationElevation;
+                case CellTerrain.FreshWater:   return FreshWaterFoundationElevation;
+                case CellTerrain.ShallowWater: return ShallowWaterFoundationElevation;
+                case CellTerrain.DeepWater:    return DeepWaterFoundationElevation;
                 default:                       return LandBaseFoundationElevation;
             }
         }
 
-        public int GetEdgeElevationForShape(TerrainShape shape) {
+        public int GetEdgeElevationForShape(CellShape shape) {
             switch(shape) {
-                case TerrainShape.Flatlands: return 0;
-                case TerrainShape.Hills:     return HillsEdgeElevation;
-                case TerrainShape.Mountains: return MountainsEdgeElevation;
+                case CellShape.Flatlands: return 0;
+                case CellShape.Hills:     return HillsEdgeElevation;
+                case CellShape.Mountains: return MountainsEdgeElevation;
                 default: throw new NotImplementedException();
             }
         }
 
-        public int GetPeakElevationForShape(TerrainShape shape) {
+        public int GetPeakElevationForShape(CellShape shape) {
             switch(shape) {
-                case TerrainShape.Flatlands: return 0;
-                case TerrainShape.Hills:     return HillsPeakElevation;
-                case TerrainShape.Mountains: return MountainsPeakElevation;
+                case CellShape.Flatlands: return 0;
+                case CellShape.Hills:     return HillsPeakElevation;
+                case CellShape.Mountains: return MountainsPeakElevation;
                 default: throw new NotImplementedException();
             }
         }

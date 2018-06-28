@@ -102,7 +102,7 @@ namespace Assets.Simulation.Units {
                 return true;
 
             }else {
-                return template.IsAquatic == location.IsUnderwater;
+                return template.IsAquatic == location.Terrain.IsWater();
             }
         }
 

@@ -64,7 +64,7 @@ namespace Assets.Simulation.Units {
                 foreach(var intermediateCell in cellLine) {
                     int blockingHeight = intermediateCell.ViewElevation + blockingOffset;
 
-                    if(intermediateCell.Feature == TerrainFeature.Forest || intermediateCell.Feature == TerrainFeature.Jungle) {
+                    if(intermediateCell.Vegetation == CellVegetation.Forest || intermediateCell.Vegetation == CellVegetation.Jungle) {
                         blockingHeight++;
                     }
 

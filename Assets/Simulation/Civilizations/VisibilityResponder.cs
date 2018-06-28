@@ -76,7 +76,7 @@ namespace Assets.Simulation.Civilizations {
             cellSignals.FoundationElevationChangedSignal.Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.WaterLevelChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.ShapeChangedSignal              .Subscribe(OnHexCellVisibilityPropertiesChanged);
-            cellSignals.FeatureChangedSignal            .Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.VegetationChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
 
             civSignals.CivLosingCitySignal.Subscribe(OnCivLosingCity);
             civSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity);

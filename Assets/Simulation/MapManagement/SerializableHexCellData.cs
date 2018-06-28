@@ -16,9 +16,9 @@ namespace Assets.Simulation.MapManagement {
         #region instance fields and properties
 
         [DataMember()] public HexCoordinates   Coordinates;
-        [DataMember()] public TerrainType      Terrain;
-        [DataMember()] public TerrainFeature   Feature;
-        [DataMember()] public TerrainShape     Shape;
+        [DataMember()] public CellTerrain      Terrain;
+        [DataMember()] public CellVegetation   Vegetation;
+        [DataMember()] public CellShape     Shape;
         [DataMember()] public bool             SuppressSlot;
         [DataMember()] public bool             HasRoads;
         [DataMember()] public bool             IsSlotOccupied;

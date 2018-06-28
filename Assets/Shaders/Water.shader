@@ -48,7 +48,7 @@
 		UNITY_INSTANCING_CBUFFER_END
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			float waves = Waves(IN.worldPos.xz, _MainTex);
+			float waves = Waves(IN.worldPos.xz, _MainTex, 0.025);
 
 			fixed4 c = saturate(_Color + waves);
 			o.Albedo = c.rgb * IN.visibility;

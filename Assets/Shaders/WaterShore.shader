@@ -51,7 +51,7 @@
 			float shore = IN.uv_MainTex.y;
 
 			float foam = Foam(shore, IN.worldPos.xz, _MainTex);
-			float waves = Waves(IN.worldPos.xz, _MainTex);
+			float waves = Waves(IN.worldPos.xz, _MainTex, 0.025);
 
 			waves *= 1 - shore;
 

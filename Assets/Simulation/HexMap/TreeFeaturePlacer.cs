@@ -34,13 +34,13 @@ namespace Assets.Simulation.HexMap {
         public override bool TryPlaceFeatureAtLocation(
             IHexCell cell, Vector3 location, int locationIndex, HexHash hash
         ) {
-            if( (cell.Feature != TerrainFeature.Forest && cell.Feature != TerrainFeature.Jungle) ||
+            if( (cell.Vegetation != CellVegetation.Forest && cell.Vegetation != CellVegetation.Jungle) ||
                 (hash.A >= Config.TreeAppearanceChance && locationIndex % Config.GuaranteedTreeModulo != 0)
             ){
                 return false;
             }
 
-            if(cell.Feature == TerrainFeature.Forest) {
+            if(cell.Vegetation == CellVegetation.Forest) {
                 int treeIndex = (int)(hash.C * Config.ForestTreePrefabs.Count);
 
                 AddFeature(Config.ForestTreePrefabs[treeIndex], location, hash);

@@ -5,10 +5,11 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public enum TerrainShape {
-        Flatlands = 0,
-        Hills     = 1,
-        Mountains = 2
+    public enum CellVegetation {
+        None   = 0,
+        Forest = 1,
+        Jungle = 2,
+        Marsh  = 3
     }
 
 }

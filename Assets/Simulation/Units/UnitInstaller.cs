@@ -18,7 +18,7 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private List<TerrainType> LandTerrainTypes;
+        [SerializeField] private List<CellTerrain> LandTerrainTypes;
         [SerializeField] private Transform UnitContainer;
 
         #endregion

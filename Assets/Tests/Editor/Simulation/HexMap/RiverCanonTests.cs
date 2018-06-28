@@ -33,7 +33,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public bool IsUnderwater;
 
-            public TerrainShape Shape;
+            public CellShape Shape;
 
             public int EdgeElevation;
 
@@ -1006,8 +1006,8 @@ namespace Assets.Tests.Simulation.HexMap {
             riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
             riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
 
-            mockNeighborOne  .Setup(cell => cell.IsUnderwater).Returns(true);
-            mockNeighborThree.Setup(cell => cell.IsUnderwater).Returns(true);
+            mockNeighborOne  .Setup(cell => cell.Terrain).Returns(CellTerrain.FreshWater);
+            mockNeighborThree.Setup(cell => cell.Terrain).Returns(CellTerrain.FreshWater);
 
             riverCanon.ValidateRivers(cellToTest);
 
@@ -1039,7 +1039,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private IHexCell BuildHexCell(bool isUnderwater, List<IHexCell> neighbors, out Mock<IHexCell> mock) {
             mock = new Mock<IHexCell>();
 
-            mock.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
+            mock.Setup(cell => cell.Terrain).Returns(isUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
 
             var newCell = mock.Object;
 
@@ -1060,7 +1060,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private IHexCell BuildHexCell(HexCellTestData testData) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(testData.IsUnderwater);
+            mockCell.Setup(cell => cell.Terrain).Returns(testData.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
             mockCell.Setup(cell => cell.Shape).Returns(testData.Shape);
             mockCell.Setup(cell => cell.EdgeElevation).Returns(testData.EdgeElevation);
 

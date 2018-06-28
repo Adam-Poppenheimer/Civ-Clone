@@ -15,17 +15,21 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private IHexGrid    Grid;
-        private IRiverCanon RiverCanon;
+        private IHexGrid               Grid;
+        private IRiverCanon            RiverCanon;
+        private ICellModificationLogic CellModificationLogic;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public HexCellComposer(IHexGrid grid, IRiverCanon riverCanon) {
-            Grid       = grid;
-            RiverCanon = riverCanon;
+        public HexCellComposer(
+            IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic cellModificationLogic
+        ) {
+            Grid                  = grid;
+            RiverCanon            = riverCanon;
+            CellModificationLogic = cellModificationLogic;
         }
 
         #endregion
@@ -43,7 +47,7 @@ namespace Assets.Simulation.MapManagement {
                 var newCellData = new SerializableHexCellData() {
                     Coordinates            = cell.Coordinates,
                     Terrain                = cell.Terrain,
-                    Feature                = cell.Feature,
+                    Vegetation             = cell.Vegetation,
                     Shape                  = cell.Shape,
                     SuppressSlot           = cell.SuppressSlot,
                     HasRoads               = cell.HasRoads,
@@ -70,11 +74,12 @@ namespace Assets.Simulation.MapManagement {
             foreach(var cellData in mapData.HexCells) {
                 var cellToModify = Grid.GetCellAtCoordinates(cellData.Coordinates);
 
-                cellToModify.Terrain             = cellData.Terrain;
-                cellToModify.Feature             = cellData.Feature;
-                cellToModify.Shape               = cellData.Shape;
-                cellToModify.SuppressSlot        = cellData.SuppressSlot;
-                cellToModify.HasRoads            = cellData.HasRoads;
+                CellModificationLogic.ChangeTerrainOfCell   (cellToModify, cellData.Terrain);
+                CellModificationLogic.ChangeShapeOfCell     (cellToModify, cellData.Shape);
+                CellModificationLogic.ChangeVegetationOfCell(cellToModify, cellData.Vegetation);
+                CellModificationLogic.ChangeHasRoadsOfCell  (cellToModify, cellData.HasRoads);
+
+                cellToModify.SuppressSlot = cellData.SuppressSlot;
 
                 for(int i = 0; i < 6; i++) {
                     var edge = (HexDirection)i;

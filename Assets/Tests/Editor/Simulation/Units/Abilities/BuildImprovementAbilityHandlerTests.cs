@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         Name = "Ability One",
                         CommandRequests = new List<AbilityCommandRequest>() {
                             new AbilityCommandRequest() {
-                                CommandType = AbilityCommandType.ClearFeature,
+                                CommandType = AbilityCommandType.ClearVegetation,
                                 ArgsToPass = new List<string>() { "Valid Template" }
                             }
                         }
@@ -171,7 +171,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                         Name = "Ability One",
                         CommandRequests = new List<AbilityCommandRequest>() {
                             new AbilityCommandRequest() {
-                                CommandType = AbilityCommandType.ClearFeature,
+                                CommandType = AbilityCommandType.ClearVegetation,
                                 ArgsToPass = new List<string>() { "Valid Template" }
                             },
                             new AbilityCommandRequest() {

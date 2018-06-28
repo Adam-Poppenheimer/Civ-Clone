@@ -71,7 +71,7 @@ namespace Assets.Simulation.Units.Combat {
 
             if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
                 combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetVegetationDefensiveness(location.Vegetation);
                 combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
@@ -93,7 +93,7 @@ namespace Assets.Simulation.Units.Combat {
 
             if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
                 combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetFeatureDefensiveness(location.Feature);
+                combatInfo.Defender.CombatModifier += UnitConfig.GetVegetationDefensiveness(location.Vegetation);
                 combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();

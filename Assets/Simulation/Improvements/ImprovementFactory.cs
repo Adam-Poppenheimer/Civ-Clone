@@ -27,6 +27,7 @@ namespace Assets.Simulation.Improvements {
 
         private DiContainer               Container;
         private IImprovementLocationCanon ImprovementLocationCanon;
+        private ICellModificationLogic    CellModificationLogic;
         private GameObject                ImprovementPrefab;
 
         #endregion
@@ -36,11 +37,13 @@ namespace Assets.Simulation.Improvements {
         [Inject]
         public ImprovementFactory(DiContainer container,
             IImprovementLocationCanon improvementLocationCanon,
+            ICellModificationLogic cellModificationLogic,
             [Inject(Id = "Improvement Prefab")] GameObject improvementPrefab,
             ImprovementSignals signals
         ){
             Container                = container;
             ImprovementLocationCanon = improvementLocationCanon;
+            CellModificationLogic    = cellModificationLogic;
             ImprovementPrefab        = improvementPrefab;
 
             signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
@@ -53,7 +56,7 @@ namespace Assets.Simulation.Improvements {
         #region from IImprovementFactory
 
         public IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location) {
-            return (BuildImprovement(template, location, 0, false, false));
+            return BuildImprovement(template, location, 0, false, false);
         }
 
         public IImprovement BuildImprovement(
@@ -73,8 +76,8 @@ namespace Assets.Simulation.Improvements {
             var newImprovement = newGameObject.GetComponent<Improvement>();
             newImprovement.Template = template;
 
-            if(template.ClearsForestsWhenBuilt && location.Feature == TerrainFeature.Forest) {
-                location.Feature = TerrainFeature.None;
+            if(template.ClearsVegetationWhenBuilt && location.Vegetation != CellVegetation.None) {
+                CellModificationLogic.ChangeVegetationOfCell(location, CellVegetation.None);
             }
 
             if(!ImprovementLocationCanon.CanChangeOwnerOfPossession(newImprovement, location)) {

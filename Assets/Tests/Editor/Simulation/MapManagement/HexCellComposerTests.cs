@@ -18,8 +18,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid>    MockGrid;
-        private Mock<IRiverCanon> MockRiverCanon;
+        private Mock<IHexGrid>               MockGrid;
+        private Mock<IRiverCanon>            MockRiverCanon;
+        private Mock<ICellModificationLogic> MockCellModificationLogic;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -33,16 +34,18 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void CommonInstall() {
             AllCells.Clear();
 
-            MockGrid       = new Mock<IHexGrid>();
-            MockRiverCanon = new Mock<IRiverCanon>();
+            MockGrid                  = new Mock<IHexGrid>();
+            MockRiverCanon            = new Mock<IRiverCanon>();
+            MockCellModificationLogic = new Mock<ICellModificationLogic>();
 
             MockGrid.Setup(grid => grid.AllCells).Returns(AllCells.AsReadOnly());
 
             MockGrid.Setup(grid => grid.GetCellAtCoordinates(It.IsAny<HexCoordinates>()))
                     .Returns<HexCoordinates>(coords => BuildHexCell(coords));
 
-            Container.Bind<IHexGrid>   ().FromInstance(MockGrid      .Object);
-            Container.Bind<IRiverCanon>().FromInstance(MockRiverCanon.Object);
+            Container.Bind<IHexGrid>              ().FromInstance(MockGrid                 .Object);
+            Container.Bind<IRiverCanon>           ().FromInstance(MockRiverCanon           .Object);
+            Container.Bind<ICellModificationLogic>().FromInstance(MockCellModificationLogic.Object);
 
             Container.Bind<HexCellComposer>().AsSingle();
         }
@@ -87,9 +90,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
             var cellThree = BuildHexCell(new HexCoordinates(4, 5));
 
-            cellOne  .Terrain = TerrainType.Grassland;
-            cellTwo  .Terrain = TerrainType.Desert;
-            cellThree.Terrain = TerrainType.Snow;
+            cellOne  .Terrain = CellTerrain.Grassland;
+            cellTwo  .Terrain = CellTerrain.Desert;
+            cellThree.Terrain = CellTerrain.Snow;
 
             var composer = Container.Resolve<HexCellComposer>();
 
@@ -118,14 +121,14 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeCells_FeatureRecorded() {
+        public void ComposeCells_VegetationRecorded() {
             var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
             var cellThree = BuildHexCell(new HexCoordinates(4, 5));
 
-            cellOne  .Feature = TerrainFeature.Forest;
-            cellTwo  .Feature = TerrainFeature.Jungle;
-            cellThree.Feature = TerrainFeature.Forest;
+            cellOne  .Vegetation = CellVegetation.Forest;
+            cellTwo  .Vegetation = CellVegetation.Jungle;
+            cellThree.Vegetation = CellVegetation.Forest;
 
             var composer = Container.Resolve<HexCellComposer>();
 
@@ -135,17 +138,17 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var dataLikeCellOne = mapData.HexCells.Where(
                 data => data.Coordinates == cellOne.Coordinates
-                     && data.Feature     == cellOne.Feature
+                     && data.Vegetation  == cellOne.Vegetation
             );
 
             var dataLikeCellTwo = mapData.HexCells.Where(
                 data => data.Coordinates == cellTwo.Coordinates
-                     && data.Feature     == cellTwo.Feature
+                     && data.Vegetation  == cellTwo.Vegetation
             );
 
             var dataLikeCellThree = mapData.HexCells.Where(
                 data => data.Coordinates == cellThree.Coordinates
-                     && data.Feature     == cellThree.Feature
+                     && data.Vegetation  == cellThree.Vegetation
             );
 
             Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
@@ -159,9 +162,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
             var cellThree = BuildHexCell(new HexCoordinates(4, 5));
 
-            cellOne  .Shape = TerrainShape.Mountains;
-            cellTwo  .Shape = TerrainShape.Flatlands;
-            cellThree.Shape = TerrainShape.Hills;
+            cellOne  .Shape = CellShape.Mountains;
+            cellTwo  .Shape = CellShape.Flatlands;
+            cellThree.Shape = CellShape.Hills;
 
             var composer = Container.Resolve<HexCellComposer>();
 
@@ -348,14 +351,14 @@ namespace Assets.Tests.Simulation.MapManagement {
 
 
         [Test]
-        public void DecomposeCells_TerrainSetProperly() {
+        public void DecomposeCells_TerrainChangedThroughCellModificationLogic() {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0), Terrain = TerrainType.Desert
+                        Coordinates = new HexCoordinates(0, 0), Terrain = CellTerrain.Desert
                     },
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), Terrain = TerrainType.Tundra
+                        Coordinates = new HexCoordinates(1, 1), Terrain = CellTerrain.Tundra
                     },
                 }
             };
@@ -367,19 +370,26 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
 
-            Assert.AreEqual(TerrainType.Desert, cellOne.Terrain, "CellOne has an unexpected terrain");
-            Assert.AreEqual(TerrainType.Tundra, cellTwo.Terrain, "CellTwo has an unexpected terrain");
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeTerrainOfCell(cellOne, CellTerrain.Desert), Times.Once,
+                "ChangeTerrainOfCellTo not called properly on cellOne"
+            );
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeTerrainOfCell(cellTwo, CellTerrain.Tundra), Times.Once,
+                "ChangeTerrainOfCellTo not called properly on cellTwo"
+            );
         }
 
         [Test]
-        public void DecomposeCells_FeatureSetProperly() {
+        public void DecomposeCells_VegetationChangedThroughCellModificationLogic() {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0), Feature = TerrainFeature.Forest
+                        Coordinates = new HexCoordinates(0, 0), Vegetation = CellVegetation.Forest
                     },
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), Feature = TerrainFeature.Marsh
+                        Coordinates = new HexCoordinates(1, 1), Vegetation = CellVegetation.Marsh
                     },
                 }
             };
@@ -391,19 +401,26 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
 
-            Assert.AreEqual(TerrainFeature.Forest, cellOne.Feature, "CellOne has an unexpected feature");
-            Assert.AreEqual(TerrainFeature.Marsh,  cellTwo.Feature, "CellTwo has an unexpected feature");
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeVegetationOfCell(cellOne, CellVegetation.Forest), Times.Once,
+                "ChangeVegetationOfCellTo not called properly on cellOne"
+            );
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeVegetationOfCell(cellTwo, CellVegetation.Marsh), Times.Once,
+                "ChangeVegetationOfCellTo not called properly on cellTwo"
+            );
         }
 
         [Test]
-        public void DecomposeCells_ShapeSetProperly() {
+        public void DecomposeCells_ShapeChangedThroughCellModificationLogic() {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0),Shape = TerrainShape.Mountains
+                        Coordinates = new HexCoordinates(0, 0),Shape = CellShape.Mountains
                     },
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), Shape = TerrainShape.Flatlands
+                        Coordinates = new HexCoordinates(1, 1), Shape = CellShape.Flatlands
                     },
                 }
             };
@@ -415,8 +432,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
 
-            Assert.AreEqual(TerrainShape.Mountains, cellOne.Shape, "CellOne has an unexpected shape");
-            Assert.AreEqual(TerrainShape.Flatlands, cellTwo.Shape, "CellTwo has an unexpected shape");
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeShapeOfCell(cellOne, CellShape.Mountains), Times.Once,
+                "ChangeShapeOfCellTo not called properly on cellOne"
+            );
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeShapeOfCell(cellTwo, CellShape.Flatlands), Times.Once,
+                "ChangeShapeOfCellTo not called properly on cellTwo"
+            );
         }
 
         [Test]
@@ -444,7 +468,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void DecomposeCells_HasRoadsSetProperly() {
+        public void DecomposeCells_HasRoadsChangedThroughCellModificationLogic () {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
@@ -463,8 +487,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
 
-            Assert.AreEqual(false, cellOne.HasRoads, "CellOne has an unexpected HasRoads value");
-            Assert.AreEqual(true,  cellTwo.HasRoads, "CellTwo has an unexpected HasRoads value");
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeHasRoadsOfCell(cellOne, false), Times.Once,
+                "ChangeHasRoadsOfCellTo not called properly on cellOne"
+            );
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeHasRoadsOfCell(cellTwo, true), Times.Once,
+                "ChangeHasRoadsOfCellTo not called properly on cellTwo"
+            );
         }
 
         [Test]

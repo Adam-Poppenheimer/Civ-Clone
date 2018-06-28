@@ -34,7 +34,7 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private CellPaintingPanelBase TerrainPaintingPanel;
         [SerializeField] private CellPaintingPanelBase ShapePaintingPanel;
-        [SerializeField] private CellPaintingPanelBase FeaturePaintingPanel;
+        [SerializeField] private CellPaintingPanelBase VegetationPaintingPanel;
         
         [SerializeField] private CellPaintingPanelBase RoadPaintingPanel;
 
@@ -63,10 +63,10 @@ namespace Assets.UI.StateMachine {
             Container.Bind<BrushPanel>              ().FromInstance(BrushPanel);
             Container.Bind<RiverPaintingPanel>      ().FromInstance(RiverPaintingPanel);
 
-            Container.Bind<CellPaintingPanelBase>().WithId("Terrain Painting Panel").FromInstance(TerrainPaintingPanel);
-            Container.Bind<CellPaintingPanelBase>().WithId("Shape Painting Panel")  .FromInstance(ShapePaintingPanel);
-            Container.Bind<CellPaintingPanelBase>().WithId("Feature Painting Panel").FromInstance(FeaturePaintingPanel);
-            Container.Bind<CellPaintingPanelBase>().WithId("Road Painting Panel")   .FromInstance(RoadPaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Terrain Painting Panel")   .FromInstance(TerrainPaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Shape Painting Panel")     .FromInstance(ShapePaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Vegetation Painting Panel").FromInstance(VegetationPaintingPanel);
+            Container.Bind<CellPaintingPanelBase>().WithId("Road Painting Panel")      .FromInstance(RoadPaintingPanel);
 
             Container.Bind<GameObject>().WithId("Save Map Display")         .FromInstance(SaveMapDisplay);
             Container.Bind<GameObject>().WithId("Edit Type Selection Panel").FromInstance(EditTypeSelectionPanel);

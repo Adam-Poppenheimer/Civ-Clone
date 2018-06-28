@@ -39,7 +39,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void TriangulateRoads(CellTriangulationData data) {
-            if(data.Center.Shape == TerrainShape.Hills) {
+            if(data.Center.Shape == CellShape.Hills) {
                 TriangulateCenterRoads_Hills(data);
             }else {
                 TriangulateCenterRoads_NoHills(data);

@@ -13,9 +13,9 @@ namespace Assets.Simulation.Cities.Buildings {
 
         CellPropertyType PropertyConsidered { get; }
 
-        TerrainType      TerrainRequired    { get; }
-        TerrainShape     ShapeRequired      { get; }
-        TerrainFeature   FeatureRequired    { get; }
+        CellTerrain    TerrainRequired    { get; }
+        CellShape      ShapeRequired      { get; }
+        CellVegetation VegetationRequired { get; }
 
         bool MustBeUnderwater { get; }
 

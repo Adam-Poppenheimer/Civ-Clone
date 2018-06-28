@@ -48,9 +48,9 @@ namespace Assets.Simulation.Units {
 
         #region methods
 
-        float GetTerrainDefensiveness(TerrainType    terrain);        
-        float GetShapeDefensiveness  (TerrainShape   shape);
-        float GetFeatureDefensiveness(TerrainFeature feature);
+        float GetTerrainDefensiveness   (CellTerrain    terrain);        
+        float GetShapeDefensiveness     (CellShape      shape);
+        float GetVegetationDefensiveness(CellVegetation vegetation);
 
         #endregion
 

@@ -26,25 +26,25 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private ResourceSummary _bonusYield;
 
-        public IEnumerable<TerrainFeature> RestrictedToFeatures {
-            get { return _restrictedToFeatures; }
+        public IEnumerable<CellVegetation> RestrictedToVegetations {
+            get { return _restrictedToVegetations; }
         }
-        [SerializeField] private List<TerrainFeature> _restrictedToFeatures;
+        [SerializeField] private List<CellVegetation> _restrictedToVegetations;
 
-        public IEnumerable<TerrainType> RestrictedToTerrains {
+        public IEnumerable<CellTerrain> RestrictedToTerrains {
             get { return _restrictedToTerrains; }
         }
-        [SerializeField] private List<TerrainType> _restrictedToTerrains;
+        [SerializeField] private List<CellTerrain> _restrictedToTerrains;
 
-        public IEnumerable<TerrainShape> RestrictedToShapes {
+        public IEnumerable<CellShape> RestrictedToShapes {
             get { return _restrictedToShapes; }
         }
-        [SerializeField] private List<TerrainShape> _restrictedToShapes;
+        [SerializeField] private List<CellShape> _restrictedToShapes;
 
-        public bool ClearsForestsWhenBuilt {
-            get { return _clearsForestsWhenBuilt; }
+        public bool ClearsVegetationWhenBuilt {
+            get { return _clearsVegetationWhenBuilt; }
         }
-        [SerializeField] private bool _clearsForestsWhenBuilt;
+        [SerializeField] private bool _clearsVegetationWhenBuilt;
 
         public float DefensiveBonus {
             get { return _defensiveBonus; }

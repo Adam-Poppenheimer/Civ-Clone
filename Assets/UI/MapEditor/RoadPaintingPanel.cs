@@ -20,7 +20,7 @@ namespace Assets.UI.MapEditor {
         #region from CellPaintingPanelBase
 
         protected override void EditCell(IHexCell cell) {
-            if(AddingOrRemoving && !cell.IsUnderwater) {
+            if(AddingOrRemoving && !cell.Terrain.IsWater()) {
                 cell.HasRoads = true;
             }else {
                 cell.HasRoads = false;

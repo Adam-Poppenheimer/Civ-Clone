@@ -18,11 +18,11 @@ namespace Assets.Simulation.HexMap {
 
         HexCoordinates Coordinates { get; }
 
-        TerrainType    Terrain { get; set; }
-        TerrainFeature Feature { get; set; }
-        TerrainShape   Shape   { get; set; }
+        CellTerrain    Terrain    { get; set; }
+        CellShape      Shape      { get; set; }
+        CellVegetation Vegetation { get; set; }
 
-        int FoundationElevation { get; }
+        int FoundationElevation { get; set; }
         int EdgeElevation       { get; }
         int PeakElevation       { get; }
 
@@ -36,8 +36,6 @@ namespace Assets.Simulation.HexMap {
         bool HasRoads { get; set; }
 
         float WaterSurfaceY { get; }
-
-        bool IsUnderwater { get; }
 
         int ViewElevation { get; }
 
@@ -65,7 +63,6 @@ namespace Assets.Simulation.HexMap {
         void RefreshSelfOnly();
 
         void RefreshVisibility();
-        void RefreshElevation();
 
         void Destroy();
 

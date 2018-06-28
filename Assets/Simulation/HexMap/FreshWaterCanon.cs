@@ -31,10 +31,10 @@ namespace Assets.Simulation.HexMap {
         #region from IFreshWaterCanon
 
         public bool HasAccessToFreshWater(IHexCell cell) {
-            bool isFreshWater          = cell.Terrain == TerrainType.FreshWater;
-            bool isSaltWater           = cell.IsUnderwater && !isFreshWater;
+            bool isFreshWater          = cell.Terrain == CellTerrain.FreshWater;
+            bool isSaltWater           = cell.Terrain.IsWater() && !isFreshWater;
             bool hasRiver              = RiverCanon.HasRiver(cell);
-            bool hasFreshWaterNeighbor = Grid.GetNeighbors(cell).Exists(neighbor => neighbor.Terrain == TerrainType.FreshWater);
+            bool hasFreshWaterNeighbor = Grid.GetNeighbors(cell).Exists(neighbor => neighbor.Terrain == CellTerrain.FreshWater);
 
             return !isSaltWater && (isFreshWater || hasRiver || hasFreshWaterNeighbor);
         }

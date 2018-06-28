@@ -69,7 +69,7 @@ namespace Assets.Simulation.Units {
         #endregion
 
         private float GetAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            if(nextCell.IsUnderwater) {
+            if(nextCell.Terrain.IsWater()) {
                 return Config.GetBaseMoveCostOfTerrain(nextCell.Terrain);
             }else {
                 return -1;
@@ -77,7 +77,7 @@ namespace Assets.Simulation.Units {
         }
 
         private float GetNonAquaticTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
-            if(nextCell.IsUnderwater) {
+            if(nextCell.Terrain.IsWater()) {
                 return -1;
             }
 
@@ -101,7 +101,7 @@ namespace Assets.Simulation.Units {
                 moveCost += Config.SlopeMoveCost;
             }
 
-            var featureCost = Config.GetBaseMoveCostOfFeature(nextCell.Feature);
+            var featureCost = Config.GetBaseMoveCostOfVegetation(nextCell.Vegetation);
             if(featureCost == -1) {
                 return -1;
             }else if(!movementInfo.IgnoresTerrainCosts){
@@ -109,7 +109,7 @@ namespace Assets.Simulation.Units {
             }
 
             var shapeCost = Config.GetBaseMoveCostOfShape(nextCell.Shape);
-            if(nextCell.Shape != TerrainShape.Flatlands) {
+            if(nextCell.Shape != CellShape.Flatlands) {
                 if(shapeCost == -1) {
                     return -1;
                 }else if(!movementInfo.IgnoresTerrainCosts){
@@ -125,7 +125,7 @@ namespace Assets.Simulation.Units {
         }
 
         private bool IsCellRoughTerrain(IHexCell cell) {
-            return !cell.HasRoads && (cell.Shape != TerrainShape.Flatlands || cell.Feature != TerrainFeature.None);
+            return !cell.HasRoads && (cell.Shape != CellShape.Flatlands || cell.Vegetation != CellVegetation.None);
         }
 
         #endregion

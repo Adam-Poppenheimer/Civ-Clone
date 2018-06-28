@@ -144,7 +144,7 @@ namespace Assets.Tests.Simulation.Cities {
         private IHexCell BuildCell(ICity owner, bool isUnderwater = false, bool hasRiver = false) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.IsUnderwater).Returns(isUnderwater);
+            mockCell.Setup(cell => cell.Terrain).Returns(isUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
 
             MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(mockCell.Object)).Returns(owner);
 

@@ -225,7 +225,7 @@ namespace Assets.Simulation.HexMap {
                     //and that it requires the creation of an estuary. Otherwise, we can
                     //use the generic DoubleTerraces case, which handles both upward-
                     //and downward-facing cases
-                    if(data.Left.IsUnderwater) {
+                    if(data.Left.Terrain.IsWater()) {
                         TroughTriangulator.CreateRiverTrough_Endpoint_ShallowWaterRiverDelta(data);
                     }else {
                         TroughTriangulator.CreateRiverTrough_Endpoint_DoubleTerraces(data);
@@ -250,8 +250,8 @@ namespace Assets.Simulation.HexMap {
                     //We should create a waterfall if and only if both Right and
                     //Center are Hills or Mountains, since those are the only cases
                     //where the water would fall from any distance
-                    if( data.Left.IsUnderwater && data.Right.Shape != TerrainShape.Flatlands &&
-                        data.Center.Shape != TerrainShape.Flatlands
+                    if( data.Left.Terrain.IsWater() && data.Right.Shape != CellShape.Flatlands &&
+                        data.Center.Shape != CellShape.Flatlands
                     ){
                         //We need to rotate to make sure that our water cell is on the Right
                         SurfaceTriangulator.CreateRiverSurface_EstuaryWaterfall(

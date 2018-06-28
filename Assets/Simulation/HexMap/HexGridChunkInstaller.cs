@@ -21,6 +21,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh Culture;
         [SerializeField] private HexMesh WaterShore;
         [SerializeField] private HexMesh Estuaries;
+        [SerializeField] private HexMesh Marsh;
 
         [SerializeField] private HexFeatureManager FeatureManager;
         [SerializeField] private Transform         FeatureContainer;
@@ -40,6 +41,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<HexMesh>().WithId("Culture")          .FromInstance(Culture);
             Container.Bind<HexMesh>().WithId("Water Shore")      .FromInstance(WaterShore);
             Container.Bind<HexMesh>().WithId("Estuaries")        .FromInstance(Estuaries);
+            Container.Bind<HexMesh>().WithId("Marsh")            .FromInstance(Marsh);
 
             Container.Bind<Transform>().WithId("Feature Container").FromInstance(FeatureContainer);
 
@@ -53,6 +55,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IWaterTriangulator>       ().To<WaterTriangulator>       ().AsSingle();
             Container.Bind<IRoadTriangulator>        ().To<RoadTriangulator>        ().AsSingle();
             Container.Bind<IHexCellTriangulator>     ().To<HexCellTriangulator>     ().AsSingle();
+            Container.Bind<IMarshTriangulator>       ().To<MarshTriangulator>       ().AsSingle();
             Container.Bind<IFeatureLocationLogic>    ().To<FeatureLocationLogic>    ().AsSingle();
 
             Container.Bind<IFeaturePlacer>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();

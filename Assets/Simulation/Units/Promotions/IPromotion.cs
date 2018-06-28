@@ -21,13 +21,13 @@ namespace Assets.Simulation.Units.Promotions {
         Sprite Icon { get; }
 
         bool RestrictedByTerrains              { get; }
-        IEnumerable<TerrainType> ValidTerrains { get; }
+        IEnumerable<CellTerrain> ValidTerrains { get; }
 
-        bool RestrictedByShapes               { get; }
-        IEnumerable<TerrainShape> ValidShapes { get; }
+        bool RestrictedByShapes            { get; }
+        IEnumerable<CellShape> ValidShapes { get; }
 
-        bool RestrictedByFeatures                 { get; }
-        IEnumerable<TerrainFeature> ValidFeatures { get; }
+        bool RestrictedByVegetations                 { get; }
+        IEnumerable<CellVegetation> ValidVegetations { get; }
 
         bool RestrictedByOpponentTypes           { get; }
         IEnumerable<UnitType> ValidOpponentTypes { get; }

@@ -61,17 +61,22 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private IWorkerSlotFactory WorkerSlotFactory;
-        private DiContainer        Container;
+        private DiContainer                    Container;
+        private IWorkerSlotFactory             WorkerSlotFactory;
+        private ICellModificationLogic CellModificationLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(DiContainer container, IWorkerSlotFactory workerSlotFactory){
-            Container         = container;
-            WorkerSlotFactory = workerSlotFactory;
+        public void InjectDependencies(
+            DiContainer container, IWorkerSlotFactory workerSlotFactory,
+            ICellModificationLogic cellModificationLogic
+        ) {
+            Container             = container;
+            WorkerSlotFactory     = workerSlotFactory;
+            CellModificationLogic = cellModificationLogic;
         }
 
         #region Unity message methods
@@ -356,12 +361,10 @@ namespace Assets.Simulation.HexMap {
             newCell.ShaderData  = CellShaderData;
             newCell.Index       = i;
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
-            newCell.Terrain     = TerrainType.Grassland;
-            newCell.Feature     = TerrainFeature.None;
-            newCell.Shape       = TerrainShape.Flatlands;
-            
-            newCell.RefreshElevation();
-            
+
+            CellModificationLogic.ChangeTerrainOfCell   (newCell, CellTerrain.Grassland);
+            CellModificationLogic.ChangeShapeOfCell     (newCell, CellShape.Flatlands);
+            CellModificationLogic.ChangeVegetationOfCell(newCell, CellVegetation.None);            
 
             newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
 

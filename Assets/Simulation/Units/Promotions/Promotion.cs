@@ -35,30 +35,30 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private bool _restrictedByTerrains;
 
-        public IEnumerable<TerrainType> ValidTerrains {
+        public IEnumerable<CellTerrain> ValidTerrains {
             get { return _validTerrains; }
         }
-        [SerializeField] private List<TerrainType> _validTerrains;
+        [SerializeField] private List<CellTerrain> _validTerrains;
 
         public bool RestrictedByShapes {
             get { return _restrictedByShapes; }
         }
         [SerializeField] private bool _restrictedByShapes;
 
-        public IEnumerable<TerrainShape> ValidShapes {
+        public IEnumerable<CellShape> ValidShapes {
             get { return _validShapes; }
         }
-        [SerializeField] private List<TerrainShape> _validShapes;
+        [SerializeField] private List<CellShape> _validShapes;
 
-        public bool RestrictedByFeatures {
-            get { return _restrictedByFeatures; }
+        public bool RestrictedByVegetations {
+            get { return _restrictedByVegetations; }
         }
-        [SerializeField] private bool _restrictedByFeatures;
+        [SerializeField] private bool _restrictedByVegetations;
 
-        public IEnumerable<TerrainFeature> ValidFeatures {
-            get { return _validFeatures; }
+        public IEnumerable<CellVegetation> ValidVegetations {
+            get { return _validVegetations; }
         }
-        [SerializeField] private List<TerrainFeature> _validFeatures;
+        [SerializeField] private List<CellVegetation> _validVegetations;
 
         public bool RestrictedByOpponentTypes {
             get { return _restrictedByOpponentTypes; }

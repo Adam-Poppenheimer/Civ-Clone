@@ -26,6 +26,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IBasicTerrainTriangulator> MockBasicTerrainTriangulator;
         private Mock<IWaterTriangulator>        MockWaterTriangulator;
         private Mock<IRoadTriangulator>         MockRoadTriangulator;
+        private Mock<IMarshTriangulator>        MockMarshTriangulator;
 
         #endregion
 
@@ -42,6 +43,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockBasicTerrainTriangulator = new Mock<IBasicTerrainTriangulator>();
             MockWaterTriangulator        = new Mock<IWaterTriangulator>();
             MockRoadTriangulator         = new Mock<IRoadTriangulator>();
+            MockMarshTriangulator        = new Mock<IMarshTriangulator>();
 
             Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
             Container.Bind<IRiverTriangulator>       ().FromInstance(MockRiverTriangulator       .Object);
@@ -50,6 +52,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IBasicTerrainTriangulator>().FromInstance(MockBasicTerrainTriangulator.Object);
             Container.Bind<IWaterTriangulator>       ().FromInstance(MockWaterTriangulator       .Object);
             Container.Bind<IRoadTriangulator>        ().FromInstance(MockRoadTriangulator        .Object);
+            Container.Bind<IMarshTriangulator>       ().FromInstance(MockMarshTriangulator       .Object);
 
             Container.Bind<HexCellTriangulator>().AsSingle();
         }
@@ -481,6 +484,234 @@ namespace Assets.Tests.Simulation.HexMap {
             MockRoadTriangulator.Verify(
                 triangulator => triangulator.TriangulateRoads(northWestData),
                 Times.Never, "Unexpectedly called TriangulateRoads on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesMarshCenterInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(northEastData),
+                Times.Once, "Did not call TriangulateMarshCenter on northEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(southEastData),
+                Times.Once, "Did not call TriangulateMarshCenter on southEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(westData),
+                Times.Once, "Did not call TriangulateMarshCenter on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesntTriangulateMarshCenterInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCenter(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(eastData),
+                Times.Never, "Unexpectedly called TriangulateRoads on eastData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(southWestData),
+                Times.Never, "Unexpectedly called TriangulateRoads on southWestData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCenter(northWestData),
+                Times.Never, "Unexpectedly called TriangulateRoads on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesMarshEdgeInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(northEastData),
+                Times.Once, "Did not call TriangulateMarshEdge on northEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(southEastData),
+                Times.Once, "Did not call TriangulateMarshEdge on southEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(westData),
+                Times.Once, "Did not call TriangulateMarshEdge on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesntTriangulateMarshEdgeInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshEdge(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(eastData),
+                Times.Never, "Unexpectedly called TriangulateMarshEdge on eastData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(southWestData),
+                Times.Never, "Unexpectedly called TriangulateMarshEdge on southWestData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshEdge(northWestData),
+                Times.Never, "Unexpectedly called TriangulateMarshEdge on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesMarshCornerInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(northEastData),
+                Times.Once, "Did not call TriangulateMarshCorner on northEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(southEastData),
+                Times.Once, "Did not call TriangulateMarshCorner on southEastData as expected"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(westData),
+                Times.Once, "Did not call TriangulateMarshCorner on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesntTriangulateMarshCornerInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(northEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(eastData))     .Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(southEastData)).Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(southWestData)).Returns(false);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(westData))     .Returns(true);
+            MockMarshTriangulator.Setup(triangulator => triangulator.ShouldTriangulateMarshCorner(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(eastData),
+                Times.Never, "Unexpectedly called TriangulateMarshCorner on eastData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(southWestData),
+                Times.Never, "Unexpectedly called TriangulateMarshCorner on southWestData"
+            );
+
+            MockMarshTriangulator.Verify(
+                triangulator => triangulator.TriangulateMarshCorner(northWestData),
+                Times.Never, "Unexpectedly called TriangulateMarshCorner on northWestData"
             );
         }
 

@@ -19,20 +19,20 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private CellPropertyType _propertyConsidered;
 
-        public TerrainType TerrainRequired {
+        public CellTerrain TerrainRequired {
             get { return _terrainRequired; }
         }
-        [SerializeField] private TerrainType _terrainRequired;
+        [SerializeField] private CellTerrain _terrainRequired;
 
-        public TerrainShape ShapeRequired {
+        public CellShape ShapeRequired {
             get { return _shapeRequired; }
         }
-        [SerializeField] private TerrainShape _shapeRequired;
+        [SerializeField] private CellShape _shapeRequired;
 
-        public TerrainFeature FeatureRequired {
-            get { return _featureRequired; }
+        public CellVegetation VegetationRequired {
+            get { return _vegetationRequired; }
         }
-        [SerializeField] private TerrainFeature _featureRequired;
+        [SerializeField] private CellVegetation _vegetationRequired;
 
         public bool MustBeUnderwater {
             get { return _mustBeUnderwater; }
@@ -50,37 +50,37 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region constructors
 
-        public CellYieldModificationData(TerrainType terrainRequired, ResourceSummary bonusYield) {
+        public CellYieldModificationData(CellTerrain terrainRequired, ResourceSummary bonusYield) {
             _propertyConsidered = CellPropertyType.Terrain;
             _terrainRequired    = terrainRequired;
             _bonusYield         = bonusYield;
 
             _mustBeUnderwater = false;
 
-            _shapeRequired    = TerrainShape.Flatlands;
-            _featureRequired  = TerrainFeature.None;
+            _shapeRequired    = CellShape.Flatlands;
+            _vegetationRequired  = CellVegetation.None;
             _mustBeUnderwater = false;
         }
 
-        public CellYieldModificationData(TerrainShape shapeRequired, ResourceSummary bonusYield) {
+        public CellYieldModificationData(CellShape shapeRequired, ResourceSummary bonusYield) {
             _propertyConsidered = CellPropertyType.Shape;
             _shapeRequired      = shapeRequired;
             _bonusYield         = bonusYield;
 
             _mustBeUnderwater = false;
 
-            _terrainRequired  = TerrainType.Grassland;
-            _featureRequired  = TerrainFeature.None;
+            _terrainRequired  = CellTerrain.Grassland;
+            _vegetationRequired  = CellVegetation.None;
             _mustBeUnderwater = false;
         }
 
-        public CellYieldModificationData(TerrainFeature featureRequired, ResourceSummary bonusYield) {
-            _propertyConsidered = CellPropertyType.Feature;
-            _featureRequired    = featureRequired;
+        public CellYieldModificationData(CellVegetation featureRequired, ResourceSummary bonusYield) {
+            _propertyConsidered = CellPropertyType.Vegetation;
+            _vegetationRequired    = featureRequired;
             _bonusYield         = bonusYield;
 
-            _terrainRequired  = TerrainType.Grassland;
-            _shapeRequired    = TerrainShape.Flatlands;
+            _terrainRequired  = CellTerrain.Grassland;
+            _shapeRequired    = CellShape.Flatlands;
             _mustBeUnderwater = false;
         }
 
@@ -89,9 +89,9 @@ namespace Assets.Simulation.Cities.Buildings {
             _mustBeUnderwater   = mustBeUnderwater;
             _bonusYield         = bonusYield;
 
-            _terrainRequired = TerrainType.Grassland;
-            _shapeRequired   = TerrainShape.Flatlands;
-            _featureRequired = TerrainFeature.None;
+            _terrainRequired = CellTerrain.Grassland;
+            _shapeRequired   = CellShape.Flatlands;
+            _vegetationRequired = CellVegetation.None;
         }
 
         #endregion

@@ -29,7 +29,6 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<CityDisplayBase>         AllCityDisplays;
         [SerializeField] private List<CivilizationDisplayBase> AllCivilizationDisplays;
-        [SerializeField] private List<CellDisplayBase>         AllTileDisplays;
         [SerializeField] private List<UnitDisplayBase>         AllUnitDisplays;
 
         [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
@@ -59,7 +58,6 @@ namespace Assets.UI.StateMachine {
 
             Container.Bind<List<CityDisplayBase>>        ().FromInstance(AllCityDisplays);
             Container.Bind<List<CivilizationDisplayBase>>().FromInstance(AllCivilizationDisplays);
-            Container.Bind<List<CellDisplayBase>>        ().FromInstance(AllTileDisplays);
             Container.Bind<List<UnitDisplayBase>>        ().FromInstance(AllUnitDisplays);
 
             Container.Bind<TechTreeDisplay>                ().FromInstance(TechTreeDisplay);

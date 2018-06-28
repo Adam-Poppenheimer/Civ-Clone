@@ -53,7 +53,7 @@ namespace Assets.Simulation.Units.Promotions {
             }else if(promotion.RestrictedByShapes && !promotion.ValidShapes.Contains(location.Shape)) {
                 return false;
 
-            }else if(promotion.RestrictedByFeatures && !promotion.ValidFeatures.Contains(location.Feature)) {
+            }else if(promotion.RestrictedByVegetations && !promotion.ValidVegetations.Contains(location.Vegetation)) {
                 return false;
 
             }else if(promotion.RequiresFlatTerrain && location.IsRoughTerrain) {

@@ -253,13 +253,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5809e911b9362c249a94cfa650f3340e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _coordinates:
-    _x: 0
-    _z: 0
-  _terrain: 0
-  _feature: 0
-  _shape: 0
-  _elevation: 0
   overlay: {fileID: 114687170947816028}
 --- !u!114 &114446591517605982
 MonoBehaviour:

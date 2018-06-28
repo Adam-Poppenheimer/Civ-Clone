@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Zenject;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI.MapEditor {
@@ -13,21 +15,26 @@ namespace Assets.UI.MapEditor {
 
         private bool IsPainting;
 
-        private TerrainShape ActiveShape;
+        private CellShape ActiveShape;
+
+
+
+        private ICellModificationLogic CellModificationLogic;
 
         #endregion
 
         #region instance methods
 
+        [Inject]
+        private void InjectDependencies(ICellModificationLogic cellModificationLogic) {
+            CellModificationLogic = cellModificationLogic;
+        }
+
         #region from CellPaintingPanelBase
 
         protected override void EditCell(IHexCell cell) {
-            if(IsPainting) {
-                cell.Shape = ActiveShape;
-
-                if(cell.IsUnderwater && ActiveShape != TerrainShape.Flatlands) {
-                    cell.Terrain = TerrainType.Grassland;
-                }
+            if(IsPainting && CellModificationLogic.CanChangeShapeOfCell(cell, ActiveShape)) {
+                CellModificationLogic.ChangeShapeOfCell(cell, ActiveShape);
             }
         }
 
@@ -36,7 +43,7 @@ namespace Assets.UI.MapEditor {
         public void SetActiveShape(int index) {
             IsPainting = index >= 0;
             if(IsPainting) {
-                ActiveShape = (TerrainShape)index;
+                ActiveShape = (CellShape)index;
             }
         }
 

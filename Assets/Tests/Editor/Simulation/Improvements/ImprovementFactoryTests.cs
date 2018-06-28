@@ -23,6 +23,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
         private Mock<IImprovementLocationCanon> MockLocationCanon;
         private Mock<IHexGrid>                  MockGrid;
+        private Mock<ICellModificationLogic>    MockCellModificationLogic;
 
         #endregion
 
@@ -35,11 +36,13 @@ namespace Assets.Tests.Simulation.Improvements {
             ImprovementPrefab = new GameObject("Improvement Prefab");
             ImprovementPrefab.AddComponent<Improvement>();
 
-            MockLocationCanon = new Mock<IImprovementLocationCanon>();
-            MockGrid          = new Mock<IHexGrid>();
+            MockLocationCanon         = new Mock<IImprovementLocationCanon>();
+            MockGrid                  = new Mock<IHexGrid>();
+            MockCellModificationLogic = new Mock<ICellModificationLogic>();
 
-            Container.Bind<IImprovementLocationCanon>().FromInstance(MockLocationCanon.Object);
-            Container.Bind<IHexGrid>                 ().FromInstance(MockGrid         .Object);
+            Container.Bind<IImprovementLocationCanon>().FromInstance(MockLocationCanon        .Object);
+            Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                 .Object);
+            Container.Bind<ICellModificationLogic>   ().FromInstance(MockCellModificationLogic.Object);
 
             Container.Bind<GameObject>().WithId("Improvement Prefab").FromInstance(ImprovementPrefab);
 

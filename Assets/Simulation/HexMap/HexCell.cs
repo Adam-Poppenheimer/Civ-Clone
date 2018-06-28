@@ -26,38 +26,33 @@ namespace Assets.Simulation.HexMap {
             get { return transform.localPosition; }
         }
 
-        public HexCoordinates Coordinates {
-            get { return _coordinates; }
-            set { _coordinates = value; }
-        }
-        [SerializeField] private HexCoordinates _coordinates;
+        public HexCoordinates Coordinates { get; set; }
 
-        public TerrainType Terrain {
+        public CellTerrain Terrain {
             get { return _terrain; }
             set {
                 _terrain = value;
 
                 ShaderData.RefreshTerrain(this);
-                RefreshElevation();
             }
         }
-        [SerializeField] private TerrainType _terrain;
+        private CellTerrain _terrain;
 
-        public TerrainFeature Feature {
-            get { return _feature; }
+        public CellVegetation Vegetation {
+            get { return _vegetation; }
             set {
-                if(value == _feature) {
+                if(value == _vegetation) {
                     return;
                 }
 
-                _feature = value;
+                _vegetation = value;
                 RefreshSelfOnly();
-                Signals.FeatureChangedSignal.OnNext(this);
+                Signals.VegetationChangedSignal.OnNext(this);
             }
         }
-        [SerializeField] private TerrainFeature _feature;
+        private CellVegetation _vegetation;
 
-        public TerrainShape Shape {
+        public CellShape Shape {
             get { return _shape; }
             set {
                 if(_shape == value) {
@@ -70,11 +65,11 @@ namespace Assets.Simulation.HexMap {
                 Signals.ShapeChangedSignal.OnNext(this);
             }
         }
-        [SerializeField] private TerrainShape _shape;
+        private CellShape _shape;
 
         public int FoundationElevation {
             get { return _elevation; }
-            private set {
+            set {
                 if(_elevation == value) {
                     return;
                 }
@@ -93,7 +88,7 @@ namespace Assets.Simulation.HexMap {
                 Signals.FoundationElevationChangedSignal.OnNext(this);
             }
         }
-        [SerializeField] private int _elevation = int.MinValue;
+        private int _elevation;
 
         public int EdgeElevation {
             get {
@@ -123,7 +118,7 @@ namespace Assets.Simulation.HexMap {
 
         public float RiverSurfaceY {
             get {
-                if(Shape == TerrainShape.Flatlands) {
+                if(Shape == CellShape.Flatlands) {
                     return WaterSurfaceY;
                 }else {
                     return EdgeY + (HexMetrics.RiverElevationOffset * HexMetrics.ElevationStep);
@@ -132,7 +127,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool RequiresYPerturb {
-            get { return Shape == TerrainShape.Hills; }
+            get { return Shape == CellShape.Hills; }
         }
 
         public bool HasRoads {
@@ -145,10 +140,6 @@ namespace Assets.Simulation.HexMap {
             }
         }
         private bool _hasRoads;
-
-        public bool IsUnderwater {
-            get { return Terrain.IsWater(); }
-        }
 
         public float WaterSurfaceY {
             get {
@@ -176,7 +167,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexCellOverlay overlay;
 
         public bool IsRoughTerrain {
-            get { return Feature == TerrainFeature.Forest || Feature == TerrainFeature.Jungle || Shape == TerrainShape.Hills; }
+            get { return Vegetation == CellVegetation.Forest || Vegetation == CellVegetation.Jungle || Shape == CellShape.Hills; }
         }
 
         public Vector3 UnitAnchorPoint {
@@ -255,10 +246,6 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility() {
             ShaderData.RefreshVisibility(this);
-        }
-
-        public void RefreshElevation() {
-            FoundationElevation = Config.GetFoundationElevationForTerrain(Terrain);
         }
 
         public void Destroy() {

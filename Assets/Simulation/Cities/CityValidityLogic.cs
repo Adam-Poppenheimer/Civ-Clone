@@ -73,7 +73,7 @@ namespace Assets.Simulation.Cities {
                 return false;
             }
 
-            if(cell.IsUnderwater || RiverCanon.HasRiver(cell)) {
+            if(cell.Terrain.IsWater() || RiverCanon.HasRiver(cell)) {
                 return false;
             }
 

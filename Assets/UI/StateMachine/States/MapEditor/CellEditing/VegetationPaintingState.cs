@@ -11,14 +11,15 @@ using Assets.UI.MapEditor;
 
 namespace Assets.UI.StateMachine.States.MapEditor.CellEditing {
 
-    public class FeaturePaintingState : CellPaintingStateBase {
+    public class VegetationPaintingState : CellPaintingStateBase {
 
         #region instance methods
 
         [Inject]
         public void InjectPanel(
-            [Inject(Id = "Feature Painting Panel")] CellPaintingPanelBase featurePaintingPanel) {
-            PanelToControl = featurePaintingPanel;
+            [Inject(Id = "Vegetation Painting Panel")] CellPaintingPanelBase vegetationPaintingPanel
+        ) {
+            PanelToControl = vegetationPaintingPanel;
         }
 
         #endregion

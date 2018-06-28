@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI.MapEditor {
@@ -15,22 +17,26 @@ namespace Assets.UI.MapEditor {
 
         private bool IsPaintingTerrain;
 
-        private TerrainType ActiveTerrain;
+        private CellTerrain ActiveTerrain;
+
+
+
+        private ICellModificationLogic CellModificationLogic;
 
         #endregion
 
         #region instance methods
 
+        [Inject]
+        private void InjectDependencies(ICellModificationLogic cellModificationLogic) {
+            CellModificationLogic = cellModificationLogic;
+        }
+
         #region from CellPaintingPanelBase
 
         protected override void EditCell(IHexCell cell) {
-            if(IsPaintingTerrain) {
-                cell.Terrain = ActiveTerrain;
-
-                if(cell.IsUnderwater) {
-                    cell.Shape   = TerrainShape.Flatlands;
-                    cell.Feature = TerrainFeature.None;
-                }
+            if(IsPaintingTerrain && CellModificationLogic.CanChangeTerrainOfCell(cell, ActiveTerrain)) {
+                CellModificationLogic.ChangeTerrainOfCell(cell, ActiveTerrain);
             }
         }
 
@@ -39,7 +45,7 @@ namespace Assets.UI.MapEditor {
         public void SetActiveTerrain(int index) {
             IsPaintingTerrain = index >= 0;
             if(IsPaintingTerrain) {
-                ActiveTerrain = (TerrainType)index;
+                ActiveTerrain = (CellTerrain)index;
             }
         }
 

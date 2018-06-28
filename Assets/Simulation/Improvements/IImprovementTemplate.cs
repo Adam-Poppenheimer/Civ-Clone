@@ -17,15 +17,15 @@ namespace Assets.Simulation.Improvements {
 
         Sprite Icon { get; }
 
-        IEnumerable<TerrainType> RestrictedToTerrains { get; }
+        IEnumerable<CellTerrain> RestrictedToTerrains { get; }
 
-        IEnumerable<TerrainFeature> RestrictedToFeatures { get; }
+        IEnumerable<CellVegetation> RestrictedToVegetations { get; }
 
-        IEnumerable<TerrainShape> RestrictedToShapes { get; }
+        IEnumerable<CellShape> RestrictedToShapes { get; }
 
         ResourceSummary BonusYieldNormal { get; }
 
-        bool ClearsForestsWhenBuilt { get; }
+        bool ClearsVegetationWhenBuilt { get; }
 
         float DefensiveBonus { get; }
 

@@ -11,19 +11,23 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class ClearFeatureAbilityHandler : IAbilityHandler {
+    public class ClearVegetationAbilityHandler : IAbilityHandler {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon UnitPositionCanon;
+        private IUnitPositionCanon     UnitPositionCanon;
+        private ICellModificationLogic CellModificationLogic;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ClearFeatureAbilityHandler(IUnitPositionCanon unitPositionCanon) {
-            UnitPositionCanon = unitPositionCanon;
+        public ClearVegetationAbilityHandler(
+            IUnitPositionCanon unitPositionCanon, ICellModificationLogic cellModificationLogic
+        ) {
+            UnitPositionCanon     = unitPositionCanon;
+            CellModificationLogic = cellModificationLogic;
         }
 
         #endregion
@@ -35,10 +39,10 @@ namespace Assets.Simulation.Units.Abilities {
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             var firstCommand = ability.CommandRequests.FirstOrDefault();
 
-            if(ability.CommandRequests.Count() == 1 && firstCommand.CommandType == AbilityCommandType.ClearFeature) {
+            if(ability.CommandRequests.Count() == 1 && firstCommand.CommandType == AbilityCommandType.ClearVegetation) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                return unitLocation.Feature.ToString().Equals(firstCommand.ArgsToPass.FirstOrDefault());
+                return unitLocation.Vegetation.ToString().Equals(firstCommand.ArgsToPass.FirstOrDefault());
             }else {
                 return false;
             }
@@ -48,7 +52,7 @@ namespace Assets.Simulation.Units.Abilities {
             if(CanHandleAbilityOnUnit(ability, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                unitLocation.Feature = TerrainFeature.None;
+                CellModificationLogic.ChangeVegetationOfCell(unitLocation, CellVegetation.None);
 
                 return new AbilityExecutionResults(true, null);
             }else {

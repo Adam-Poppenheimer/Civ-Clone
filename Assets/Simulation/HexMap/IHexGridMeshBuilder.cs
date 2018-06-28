@@ -24,6 +24,7 @@ namespace Assets.Simulation.HexMap {
         HexMesh Culture          { get; }
         HexMesh WaterShore       { get; }
         HexMesh Estuaries        { get; }
+        HexMesh Marsh            { get; }
 
         #endregion
 
@@ -39,6 +40,11 @@ namespace Assets.Simulation.HexMap {
         void TriangulateEdgeFan(
             Vector3 center, EdgeVertices edge, float index,
             HexMesh targetMesh, bool perturbY = false
+        );
+
+        void TriangulateEdgeFan(
+            Vector3 center, EdgeVertices edge, float index,
+            float v, HexMesh targetedMesh, bool perturbY = false
         );
 
         void TriangulateEdgeStrip(

@@ -21,7 +21,7 @@ namespace Assets.Simulation.Units.Abilities {
                     context.Container.Instantiate<FoundCityAbilityHandler>(),
                     context.Container.Instantiate<BuildImprovementAbilityHandler>(),
                     context.Container.Instantiate<BuildRoadAbilityHandler>(),
-                    context.Container.Instantiate<ClearFeatureAbilityHandler>(),
+                    context.Container.Instantiate<ClearVegetationAbilityHandler>(),
                     context.Container.Instantiate<SetUpToBombardAbilityHandler>()
                 }
             );

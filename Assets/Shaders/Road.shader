@@ -6,7 +6,7 @@
 		_Metallic ("Metallic", Range(0,1)) = 0.0
 	}
 	SubShader {
-		Tags { "RenderType" = "Opaque" "Queue" = "Geometry+1" }
+		Tags { "RenderType" = "Opaque" "Queue" = "Transparent+1" }
 		LOD 200
 			Offset -1, -1
 		

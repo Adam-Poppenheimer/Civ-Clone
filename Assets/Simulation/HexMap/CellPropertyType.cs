@@ -8,7 +8,7 @@ namespace Assets.Simulation.HexMap {
     public enum CellPropertyType {
         Terrain          = 0,
         Shape            = 1,
-        Feature          = 2,
+        Vegetation       = 2,
         CellIsUnderwater = 3,
     }
 

@@ -158,7 +158,7 @@ namespace Assets.Simulation.Cities.Buildings {
             }
 
             if( template.RequiresCoastalCity && 
-                Grid.GetNeighbors(cityLocation).Where(neighbor => neighbor.IsUnderwater).Count() <= 0
+                Grid.GetNeighbors(cityLocation).Where(neighbor => neighbor.Terrain.IsWater()).Count() <= 0
             ){
                 return false;
             }
