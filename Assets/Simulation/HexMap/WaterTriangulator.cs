@@ -42,9 +42,13 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void TriangulateWater(CellTriangulationData data) {
-            TriangulateWaterShoreCenter(data);
+            if(data.Right == null) {
+                return;
+            }
 
-            if(data.Right != null && !data.Right.Terrain.IsWater()) {
+            if(!data.Right.Terrain.IsWater()) {
+                TriangulateWaterShoreCenter(data);
+
                 var previousCornerHasEstuary = data.IsRiverCorner;
                 var nextCornerHasEstuary     = RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Next2());
 
@@ -303,8 +307,8 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateOpenWater(CellTriangulationData data) {
             MeshBuilder.AddTriangle(
                 data.CenterWaterMidpoint,       data.Center.Index, MeshBuilder.Weights1,
-                data.CenterToRightWaterEdge.V1, data.Center.Index, MeshBuilder.Weights1,
-                data.CenterToRightWaterEdge.V5, data.Center.Index, MeshBuilder.Weights1,
+                data.CenterToRightWaterEdge.V1, data.Right .Index, MeshBuilder.Weights1,
+                data.CenterToRightWaterEdge.V5, data.Right .Index, MeshBuilder.Weights1,
                 MeshBuilder.Water
             );
 
