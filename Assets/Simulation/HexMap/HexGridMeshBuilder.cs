@@ -63,6 +63,7 @@ namespace Assets.Simulation.HexMap {
         public HexMesh Roads            { get; private set; }
         public HexMesh Rivers           { get; private set; }
         public HexMesh RiverConfluences { get; private set; }
+        public HexMesh RiverCorners     { get; private set; }
         public HexMesh Water            { get; private set; }
         public HexMesh Culture          { get; private set; }
         public HexMesh WaterShore       { get; private set; }
@@ -82,6 +83,7 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Roads")]             HexMesh roads,
             [Inject(Id = "Rivers")]            HexMesh rivers,
             [Inject(Id = "River Confluences")] HexMesh riverConfluences,
+            [Inject(Id = "River Corners")]     HexMesh riverCorners,
             [Inject(Id = "Water")]             HexMesh water,
             [Inject(Id = "Culture")]           HexMesh culture,
             [Inject(Id = "Water Shore")]       HexMesh waterShore,
@@ -94,6 +96,7 @@ namespace Assets.Simulation.HexMap {
             Roads            = roads;
             Rivers           = rivers;
             RiverConfluences = riverConfluences;
+            RiverCorners     = riverCorners;
             Water            = water;
             Culture          = culture;
             WaterShore       = waterShore;
@@ -115,6 +118,7 @@ namespace Assets.Simulation.HexMap {
             Terrain         .Clear();
             Rivers          .Clear();
             RiverConfluences.Clear();
+            RiverCorners    .Clear();
             Roads           .Clear();
             Water           .Clear();
             WaterShore      .Clear();
@@ -127,6 +131,7 @@ namespace Assets.Simulation.HexMap {
             Terrain         .Apply();
             Rivers          .Apply();
             RiverConfluences.Apply();
+            RiverCorners    .Apply();
             Roads           .Apply();
             Water           .Apply();
             WaterShore      .Apply();
@@ -546,7 +551,7 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomLeft, Vector3 bottomRight,
             Vector3 topLeft, Vector3 topRight,
             float vMin, float vMax,
-            bool isReversed, Vector3 indices
+            bool isReversed,  Vector3 indices
         ) {
             TriangulateRiverQuadUnperturbed(
                 NoiseGenerator.Perturb(bottomLeft), NoiseGenerator.Perturb(bottomRight),
@@ -559,15 +564,16 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomLeft, Vector3 bottomRight,
             Vector3 topLeft, Vector3 topRight,
             float vMin, float vMax,
-            bool isReversed, Vector3 indices
+             bool isReversed, Vector3 indices
         ) {
             Rivers.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
 
-            if(isReversed) {
-                Rivers.AddQuadUV(0f, 1f, 1f - vMin, 1f - vMax);
-            }else {
-                Rivers.AddQuadUV(0f, 1f, vMin, vMax);
-            }
+            float u1 = isReversed ? 1f : 0f;
+            float u2 = isReversed ? 0f : 1f;
+            float v1 = isReversed ? 1f - vMin : vMin;
+            float v2 = isReversed ? 1f - vMax : vMax;
+
+            Rivers.AddQuadUV(u1, u2, v1, v2);
 
             Rivers.AddQuadCellData(indices, Weights1, Weights2);
         }

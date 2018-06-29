@@ -17,6 +17,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private HexMesh Roads;
         [SerializeField] private HexMesh Rivers;
         [SerializeField] private HexMesh RiverConfluences;
+        [SerializeField] private HexMesh RiverCorners;
         [SerializeField] private HexMesh Water;
         [SerializeField] private HexMesh Culture;
         [SerializeField] private HexMesh WaterShore;
@@ -37,6 +38,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<HexMesh>().WithId("Roads")            .FromInstance(Roads);
             Container.Bind<HexMesh>().WithId("Rivers")           .FromInstance(Rivers);
             Container.Bind<HexMesh>().WithId("River Confluences").FromInstance(RiverConfluences);
+            Container.Bind<HexMesh>().WithId("River Corners")    .FromInstance(RiverCorners);
             Container.Bind<HexMesh>().WithId("Water")            .FromInstance(Water);
             Container.Bind<HexMesh>().WithId("Culture")          .FromInstance(Culture);
             Container.Bind<HexMesh>().WithId("Water Shore")      .FromInstance(WaterShore);

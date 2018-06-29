@@ -6,9 +6,9 @@
 
         void CreateRiverSurface_Confluence(CellTriangulationData data);
 
-        void CreateRiverSurface_EdgesAndCorners(
-            CellTriangulationData thisData, CellTriangulationData nextData
-        );
+        void CreateRiverSurface_ThisCornerToMiddle(CellTriangulationData thisData);
+        void CreateRiverSurface_MiddleToNextCorner(CellTriangulationData nextData);
+        void CreateRiverSurface_CurveCorner       (CellTriangulationData thisData);
 
         void CreateRiverEndpointSurface_Default(CellTriangulationData data);
 

@@ -42,15 +42,15 @@ namespace Assets.Simulation.HexMap {
 
         public const float StreamBedElevationOffset = -1.5f;
 
-        public const float OceanElevationOffset = -0.25f;
-        public const float RiverElevationOffset = -0.25f;
+        public const float OceanElevationOffset = -0.35f;
+        public const float RiverElevationOffset = -0.35f;
 
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
 
         public const float RiverCurveOffsetDefault = 0.15f;
 
-        public const float RiverSlopedCurveLerp = 0.5f;
+        public const float RiverSlopedCurveLerp = 0f;
 
         public const float RiverEndpointVMax = 0.25f;
 

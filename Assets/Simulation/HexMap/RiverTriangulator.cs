@@ -62,11 +62,17 @@ namespace Assets.Simulation.HexMap {
             //Creates river edge troughs and surfaces in the direction if needed
             if(data.CenterToRightEdgeType == HexEdgeType.River) {
                 TroughTriangulator.CreateRiverTrough_Edge(data);
-                SurfaceTriangulator.CreateRiverSurface_EdgesAndCorners(data, nextData);
+
+                SurfaceTriangulator.CreateRiverSurface_ThisCornerToMiddle(data);
+                SurfaceTriangulator.CreateRiverSurface_MiddleToNextCorner(nextData);
             }
 
             if(data.Direction > HexDirection.E || data.Left == null || !data.IsRiverCorner) {
                 return;
+            }
+
+            if(!data.AllEdgesHaveRivers) {
+                SurfaceTriangulator.CreateRiverSurface_CurveCorner(data);
             }
 
             CreateRiverTrough_Corner(data);

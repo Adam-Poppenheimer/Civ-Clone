@@ -45131,7 +45131,6 @@ MonoBehaviour:
   - {fileID: 1754464550}
   - {fileID: 488705171}
   - {fileID: 906880375}
-  AllTileDisplays: []
   AllUnitDisplays:
   - {fileID: 1446234555}
   - {fileID: 994394905}

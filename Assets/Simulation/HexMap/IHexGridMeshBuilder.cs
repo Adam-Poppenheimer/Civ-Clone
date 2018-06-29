@@ -20,6 +20,7 @@ namespace Assets.Simulation.HexMap {
         HexMesh Roads            { get; }
         HexMesh Rivers           { get; }
         HexMesh RiverConfluences { get; }
+        HexMesh RiverCorners     { get; }
         HexMesh Water            { get; }
         HexMesh Culture          { get; }
         HexMesh WaterShore       { get; }

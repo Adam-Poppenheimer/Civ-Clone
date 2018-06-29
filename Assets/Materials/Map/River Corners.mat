@@ -6,8 +6,8 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: River
-  m_Shader: {fileID: 4800000, guid: 02581ec1e74684e4f827676a3232fa2c, type: 3}
+  m_Name: River Corners
+  m_Shader: {fileID: 4800000, guid: ae4ca5519cc724547a79dd045314f687, type: 3}
   m_ShaderKeywords: 
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0

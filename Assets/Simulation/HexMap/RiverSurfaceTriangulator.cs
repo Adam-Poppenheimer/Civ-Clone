@@ -82,90 +82,213 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        //This method creates the river surface for edges. It extends these edges into any
-        //applicable river corners so that UV interpolation lets the river flow properly.
-        //Resolving the corners independently led to problems that I couldn't resolve.
-        //In order to handle rivers of different elevation, this method averages the Y values
-        //of nearby river edges. This can sometimes cause rivers to flow uphill, though
-        //the effect is usually unnoticeable as long as elevation perturbation is small.
-        public void CreateRiverSurface_EdgesAndCorners(
-            CellTriangulationData thisData, CellTriangulationData nextData
-        ){
-            float upRiverSurfaceY, midRiverSurfaceY, downRiverSurfaceY;
+        public void CreateRiverSurface_ThisCornerToMiddle(CellTriangulationData thisData) {
+            float riverSurfaceY = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
 
-            Vector3 upRiverLeftBank, upRiverRightBank, downRiverLeftBank, downRiverRightBank;
+            Vector3 leftOne   = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V1);
+            Vector3 leftTwo   = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V2);
+            Vector3 leftThree = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V3);
 
-            float upRiverParam, downRiverParam;
+            Vector3 rightOne   = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V1);
+            Vector3 rightTwo   = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V2);
+            Vector3 rightThree = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V3);
 
-            EdgeVertices leftBank = new EdgeVertices(
-                thisData.Right.LocalPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction.Opposite()),
-                thisData.Right.LocalPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction.Opposite())
-            );
-
-            EdgeVertices rightBank = new EdgeVertices(
-                thisData.Center.LocalPosition + HexMetrics.GetFirstOuterSolidCorner (thisData.Direction),
-                thisData.Center.LocalPosition + HexMetrics.GetSecondOuterSolidCorner(thisData.Direction)
-            );
-
-            CalculateRiverSurfaceEdgeProperties(
-                thisData, false, out upRiverSurfaceY, out upRiverLeftBank, out upRiverRightBank,
-                out upRiverParam
-            );
-
-            CalculateRiverSurfaceEdgeProperties(
-                nextData, true,  out downRiverSurfaceY, out downRiverLeftBank, out downRiverRightBank,
-                out downRiverParam
-            );
-
-            midRiverSurfaceY = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
-
-            leftBank.V1 = upRiverLeftBank;
-            leftBank.V5 = downRiverLeftBank;
-
-            rightBank.V1 = upRiverRightBank;
-            rightBank.V5 = downRiverRightBank;
-
-            leftBank.V1.y = upRiverSurfaceY;
-            leftBank.V2.y = (upRiverSurfaceY + midRiverSurfaceY) / 2f;
-            leftBank.V3.y = midRiverSurfaceY;
-            leftBank.V4.y = (midRiverSurfaceY + downRiverSurfaceY) / 2f;
-            leftBank.V5.y = downRiverSurfaceY;
-
-            rightBank.V1.y = upRiverSurfaceY;
-            rightBank.V2.y = (upRiverSurfaceY + midRiverSurfaceY) / 2f;
-            rightBank.V3.y = midRiverSurfaceY;
-            rightBank.V4.y = (midRiverSurfaceY + downRiverSurfaceY) / 2f;
-            rightBank.V5.y = downRiverSurfaceY;
+            leftOne.y = leftTwo.y = leftThree.y = rightOne.y = rightTwo.y = rightThree.y = riverSurfaceY;
 
             bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(thisData.Center, thisData.Direction) == RiverFlow.Counterclockwise;
 
             Vector3 indices = new Vector3(
                 thisData.Center.Index, thisData.Center.Index, thisData.Center.Index
             );
-            
+
             MeshBuilder.TriangulateRiverQuadUnperturbed(
-                leftBank.V1, rightBank.V1,
-                NoiseGenerator.Perturb(leftBank.V2), NoiseGenerator.Perturb(rightBank.V2),
-                0f, 0.25f, isReversed, indices
+                leftOne, rightOne, leftTwo, rightTwo,
+                0.1f, 0.3f, isReversed, indices
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
-                NoiseGenerator.Perturb(leftBank.V2), NoiseGenerator.Perturb(rightBank.V2),
-                NoiseGenerator.Perturb(leftBank.V3), NoiseGenerator.Perturb(rightBank.V3),
-                0.25f, 0.5f, isReversed, indices
+                leftTwo, rightTwo, leftThree, rightThree,
+                0.3f, 0.5f, isReversed, indices
+            );
+        }
+
+        public void CreateRiverSurface_MiddleToNextCorner(CellTriangulationData nextData) {
+            float riverSurfaceY = Mathf.Min(nextData.Center.RiverSurfaceY, nextData.Left.RiverSurfaceY);
+
+            Vector3 leftThree = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V3);
+            Vector3 leftFour  = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V4);
+            Vector3 leftFive  = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V5);
+
+            Vector3 rightThree = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V3);
+            Vector3 rightFour  = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V4);
+            Vector3 rightFive  = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V5);
+
+            leftThree.y = leftFour.y = leftFive.y = rightThree.y = rightFour.y = rightFive.y = riverSurfaceY;
+
+            bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(nextData.Center, nextData.Direction.Previous()) == RiverFlow.Counterclockwise;
+
+            Vector3 indices = new Vector3(
+                nextData.Center.Index, nextData.Center.Index, nextData.Center.Index
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
-                NoiseGenerator.Perturb(leftBank.V3), NoiseGenerator.Perturb(rightBank.V3),
-                NoiseGenerator.Perturb(leftBank.V4), NoiseGenerator.Perturb(rightBank.V4),
-                0.5f, 0.75f, isReversed, indices
+                leftThree, rightThree, leftFour, rightFour,
+                0.5f, 0.7f, isReversed, indices
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
-                NoiseGenerator.Perturb(leftBank.V4), NoiseGenerator.Perturb(rightBank.V4),
-                leftBank.V5, rightBank.V5,
-                0.75f, 1f, isReversed, indices
-            );
+                leftFour, rightFour, leftFive, rightFive,
+                0.7f, 0.9f, isReversed, indices
+            );            
+        }
+
+        public void CreateRiverSurface_CurveCorner(CellTriangulationData data) {
+            float riverSurfaceY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
+
+            bool isReversed = false;
+            bool waterfallHasOppositeReversal = false;
+
+            Vector3 centerCorner = Vector3.zero, leftCorner = Vector3.zero, rightCorner = Vector3.zero;
+
+            bool buildCorner    = false;
+            bool buildWaterfall = false;
+
+            Vector3 waterfallUpRiverLeft   = Vector3.zero, waterfallUpRiverRight   = Vector3.zero;
+            Vector3 waterfallDownRiverLeft = Vector3.zero, waterfallDownRiverRight = Vector3.zero;
+
+            if(data.CenterToRightEdgeType == HexEdgeType.River) {
+                if(data.CenterToLeftEdgeType == HexEdgeType.River) {
+                    buildCorner = true;
+
+                    centerCorner = data.PerturbedCenterCorner;
+                    leftCorner   = data.PerturbedLeftCorner;
+                    rightCorner  = data.PerturbedRightCorner;
+
+                    centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+
+                    isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction) == RiverFlow.Counterclockwise;
+
+                    if(data.Center.EdgeElevation > data.Right.EdgeElevation && data.Left.EdgeElevation > data.Right.EdgeElevation) {
+                        buildWaterfall = true;
+
+                        waterfallUpRiverLeft    = data.PerturbedLeftCorner;
+                        waterfallUpRiverRight   = data.PerturbedCenterCorner;
+                        waterfallDownRiverLeft  = leftCorner;
+                        waterfallDownRiverRight = centerCorner;
+
+                        waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
+
+                    }else if(data.Center.EdgeElevation > data.Left.EdgeElevation && data.Right.EdgeElevation > data.Left.EdgeElevation) {
+                        buildWaterfall = true;
+
+                        waterfallUpRiverLeft    = data.PerturbedCenterCorner;
+                        waterfallUpRiverRight   = data.PerturbedRightCorner;
+                        waterfallDownRiverLeft  = centerCorner;
+                        waterfallDownRiverRight = rightCorner;
+
+                        waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
+                    }
+
+                }else if(data.LeftToRightEdgeType == HexEdgeType.River) {
+                    buildCorner = true;
+
+                    centerCorner = data.PerturbedRightCorner;
+                    leftCorner   = data.PerturbedCenterCorner;
+                    rightCorner  = data.PerturbedLeftCorner;
+
+                    centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+
+                    isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Right, data.Direction.Previous2()) == RiverFlow.Counterclockwise;
+
+                    if(data.Center.EdgeElevation > data.Left.EdgeElevation && data.Right.EdgeElevation > data.Left.EdgeElevation) {
+                        buildWaterfall = true;
+
+                        waterfallUpRiverLeft    = data.PerturbedCenterCorner;
+                        waterfallUpRiverRight   = data.PerturbedRightCorner;
+                        waterfallDownRiverLeft  = leftCorner;
+                        waterfallDownRiverRight = centerCorner;
+
+                        waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
+
+                    }else if(data.Center.EdgeElevation < data.Right.EdgeElevation && data.Center.EdgeElevation < data.Left.EdgeElevation) {
+                        buildWaterfall = true;
+                        waterfallHasOppositeReversal = true;
+
+                        waterfallUpRiverLeft    = data.PerturbedRightCorner;
+                        waterfallUpRiverRight   = data.PerturbedLeftCorner;
+                        waterfallDownRiverLeft  = centerCorner;
+                        waterfallDownRiverRight = rightCorner;
+
+                        waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
+                    }
+                }
+
+            }else if(data.CenterToLeftEdgeType == HexEdgeType.River && data.LeftToRightEdgeType == HexEdgeType.River) {
+                buildCorner = true;
+
+                centerCorner = data.PerturbedLeftCorner;
+                leftCorner   = data.PerturbedRightCorner;
+                rightCorner  = data.PerturbedCenterCorner;
+
+                centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+
+                isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Left, data.Direction.Next()) == RiverFlow.Counterclockwise;
+
+                if(data.Center.EdgeElevation > data.Right.EdgeElevation && data.Left.EdgeElevation > data.Right.EdgeElevation) {
+                    buildWaterfall = true;
+                    waterfallHasOppositeReversal = true;
+
+                    waterfallUpRiverLeft    = data.PerturbedLeftCorner;
+                    waterfallUpRiverRight   = data.PerturbedCenterCorner;
+                    waterfallDownRiverLeft  = centerCorner;
+                    waterfallDownRiverRight = rightCorner;
+
+                    waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
+
+                }else if(data.Center.EdgeElevation < data.Left.EdgeElevation && data.Center.EdgeElevation < data.Right.EdgeElevation) {
+                    buildWaterfall = true;
+
+                    waterfallUpRiverLeft    = data.PerturbedRightCorner;
+                    waterfallUpRiverRight   = data.PerturbedLeftCorner;
+                    waterfallDownRiverLeft  = leftCorner;
+                    waterfallDownRiverRight = centerCorner;
+
+                    waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
+
+                }
+            }
+
+            if(!buildCorner) {
+                return;
+            }
+
+            if(isReversed) {
+                MeshBuilder.AddTriangleUnperturbed(
+                    centerCorner, data.Center.Index, MeshBuilder.Weights1,
+                    leftCorner,   data.Left  .Index, MeshBuilder.Weights3,
+                    rightCorner,  data.Right .Index, MeshBuilder.Weights2,
+                    MeshBuilder.RiverCorners 
+                );
+                MeshBuilder.RiverCorners.AddTriangleUV(new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
+            }else {
+                MeshBuilder.AddTriangleUnperturbed(
+                    centerCorner, data.Center.Index, MeshBuilder.Weights1,
+                    leftCorner,   data.Left  .Index, MeshBuilder.Weights2,
+                    rightCorner,  data.Right .Index, MeshBuilder.Weights3,
+                    MeshBuilder.RiverCorners 
+                );
+                MeshBuilder.RiverCorners.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f));
+            }
+
+            if(buildWaterfall) {
+                Vector3 indices = new Vector3(data.Center.Index, data.Left.Index, data.Right.Index);
+
+                MeshBuilder.TriangulateRiverQuadUnperturbed(
+                    waterfallUpRiverLeft,   waterfallUpRiverRight,
+                    waterfallDownRiverLeft, waterfallDownRiverRight,
+                    0.9f, 1f, waterfallHasOppositeReversal ? !isReversed : isReversed, indices
+                );
+            }
         }
 
         public void CreateRiverSurface_ConfluenceWaterfall(CellTriangulationData data, float yAdjustment) {
@@ -308,140 +431,6 @@ namespace Assets.Simulation.HexMap {
         }
 
         #endregion
-
-        //Determines what the endpoints of a particular river surface segment should look like.
-        //Unlike other triangulations, river surface triangulation needs to be simultaneously
-        //aware of a particular edge and both of its corners in order to function properly.
-        //A large number of corner cases are handled by extending the edge's surface into the corners,
-        //so that UVs wrap properly.
-        //Confluences and endpoints are handled separately.
-        private void CalculateRiverSurfaceEdgeProperties(
-            CellTriangulationData data, bool targetingNextCorner,
-            out float riverSurfaceY, out Vector3 riverLeftBank, out Vector3 riverRightBank,
-            out float param
-        ) {
-            param = HexMetrics.RiverCurveOffsetDefault;
-
-            if( RiverCanon.HasRiverAlongEdge(data.Center, data.Direction.Previous()) &&
-                RiverCanon.HasRiverAlongEdge(data.Center, data.Direction)
-            ) {
-
-                if(RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Previous2())) {
-
-                    //Data represents a corner that's part of a river confluence.
-
-                    //By default, the river Y should align itself with the Y of the confluence.
-                    riverSurfaceY = Mathf.Min(
-                        data.Center.RiverSurfaceY, data.Left.RiverSurfaceY, data.Right.RiverSurfaceY
-                    );
-
-                    //Waterfalls occur when two of the cells surrounding the confluence are at the same
-                    //edge elevation and the third has a different elevation, so we need to check those
-                    //to see if this is true and set the parameter to zero if it is. That'll tell the
-                    //calling method to build a river right to the edge but not drop it down to the
-                    //confluence triangle. We also need to make sure that the river surface isn't
-                    //dropped down to the confluence's y coordinate.
-                    if( data.Center.EdgeElevation == data.Left .EdgeElevation &&
-                        data.Center.EdgeElevation != data.Right.EdgeElevation
-                    ) {
-
-                        param = 0f;
-                        //If this is the next corner, then that means this edge is at the top of the waterfall
-                        //between center and left and needs to be aligned to the Y that river would normally have
-                        if(targetingNextCorner) {
-                            riverSurfaceY = Mathf.Min(data.Center.RiverSurfaceY, data.Left .RiverSurfaceY);
-                        }                        
-
-                    }else if(
-                        data.Center.EdgeElevation == data.Right.EdgeElevation &&
-                        data.Center.EdgeElevation != data.Left .EdgeElevation
-                    ) {
-
-                        param = 0f;
-                        
-                        //If this is the current corner, then that means this edge is at the top of the waterfall
-                        //between center and right and needs to be aligned to the Y that river would normally have
-                        if(!targetingNextCorner) {
-                            riverSurfaceY = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
-                        }                        
-
-                    }else if(
-                        data.Left.EdgeElevation == data.Right.EdgeElevation &&
-                        data.Left.EdgeElevation != data.Center.EdgeElevation
-                    ) {
-
-                        param = 0f;
-
-                        //If this is either corner, that means this edge is not part of the waterfall
-                        //and needs to remain aligned with the confluence. Since that's the default
-                        //behavior, we don't need to do anything here
-                    }
-
-                    if(targetingNextCorner) {
-                        riverLeftBank  = data.PerturbedLeftCorner;
-                        riverRightBank = data.PerturbedCenterCorner;
-                    }else {
-                        riverLeftBank  = data.PerturbedRightCorner;
-                        riverRightBank = data.PerturbedCenterCorner;
-                    }
-
-                }else {
-                    //Center is on the inside of a curve
-                    riverSurfaceY = (
-                        Mathf.Min(data.Center.RiverSurfaceY, data.Left .RiverSurfaceY) + 
-                        Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY)
-                    ) / 2f;
-
-                    riverLeftBank  = (data.PerturbedLeftCorner + data.PerturbedRightCorner) / 2f;
-                    riverRightBank = data.PerturbedCenterCorner;
-                }
-
-            }else if(
-                data.Left != null && data.Right != null &&
-                RiverCanon.HasRiverAlongEdge(data.Right, data.Direction.Opposite().Next())
-            ) {
-
-                if(!RiverCanon.HasRiverAlongEdge(data.Center, data.Direction)) {
-                    //This case only occurs when invoked on the next corner of a valid river.
-                    //There should be a river between Center and Left and Left and Right,
-                    //but none between Center and Right.
-                    riverSurfaceY = (
-                        Mathf.Min(data.Left.RiverSurfaceY, data.Right.RiverSurfaceY) +
-                        Mathf.Min(data.Left.RiverSurfaceY, data.Center.RiverSurfaceY)
-                    ) / 2f;
-
-                    riverLeftBank  = data.PerturbedLeftCorner;
-                    riverRightBank = (data.PerturbedCenterCorner + data.PerturbedRightCorner) / 2f;
-
-                }else {
-                    //Center is on the outside of a curve, and the second segment is between
-                    //Left and Right
-                    riverSurfaceY = (
-                        Math.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY) + 
-                        Math.Min(data.Left  .RiverSurfaceY, data.Right.RiverSurfaceY)
-                    ) / 2f;
-
-                    riverLeftBank = data.PerturbedRightCorner;
-                    riverRightBank = (data.PerturbedLeftCorner + data.PerturbedCenterCorner) / 2f;
-                }
-
-            }else if(!RiverCanon.HasRiverAlongEdge(data.Center, data.Direction)){
-                //There's a river between Left and Center, which has an endpoint leading into Right
-                riverSurfaceY = Math.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
-
-                riverLeftBank  = data.PerturbedLeftCorner;
-                riverRightBank = data.PerturbedCenterCorner;
-
-            }else {                
-
-                //There's a river between Right and Center, which has an endpoint leading into Left
-                riverSurfaceY = Math.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
-
-                riverLeftBank  = data.PerturbedRightCorner;
-                riverRightBank = data.PerturbedCenterCorner;
-
-            }
-        }
 
         #endregion
 
