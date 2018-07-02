@@ -48,6 +48,8 @@ namespace Assets.Simulation.HexMap {
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
 
+        public const float RiverTroughEndpointPullback = 0.1f;
+
         public const float RiverCurveOffsetDefault = 0.15f;
 
         public const float RiverSlopedCurveLerp = 0f;

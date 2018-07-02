@@ -15,10 +15,10 @@
 
         
         void CreateRiverTrough_Endpoint_CliffTerraces              (CellTriangulationData data);
-        void CreateRiverTrough_Endpoint_DoubleCliff                 (CellTriangulationData data);
+        void CreateRiverTrough_Endpoint_DoubleCliff                (CellTriangulationData data);
         void CreateRiverTrough_Endpoint_DoubleFlat                 (CellTriangulationData data);
-        void CreateRiverTrough_Endpoint_ShallowWaterRiverDelta         (CellTriangulationData data);
-        void CreateRiverTrough_Endpoint_DoubleTerraces           (CellTriangulationData data);
+        void CreateRiverTrough_Endpoint_ShallowWaterRiverDelta     (CellTriangulationData data);
+        void CreateRiverTrough_Endpoint_DoubleTerraces             (CellTriangulationData data);
         void CreateRiverTrough_Endpoint_FlatTerraces_ElevatedLeft  (CellTriangulationData data);
         void CreateRiverTrough_Endpoint_FlatTerraces_ElevatedRight (CellTriangulationData data);
         void CreateRiverTrough_Endpoint_TerracesCliff              (CellTriangulationData data);

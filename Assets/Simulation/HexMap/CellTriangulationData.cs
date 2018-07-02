@@ -41,7 +41,7 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices LeftToCenterEdge {
             get {
                 if(_leftToCenterEdge == null) {
-                    _leftToCenterEdge = GetYAdjustedEdge(Left, Direction.Previous().Opposite(), true);
+                    _leftToCenterEdge = GetYAdjustedEdge(Left, Direction.Next2(), true);
                 }
                 return _leftToCenterEdge.GetValueOrDefault();
             }
@@ -61,7 +61,7 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices LeftToRightEdge {
             get {
                 if(_leftToRightEdge == null) {
-                    _leftToRightEdge = GetYAdjustedEdge(Left, Direction.Previous().Opposite().Previous());
+                    _leftToRightEdge = GetYAdjustedEdge(Left, Direction.Next());
                 }
                 return _leftToRightEdge.GetValueOrDefault();
             }
@@ -71,12 +71,72 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices RightToLeftEdge {
             get {
                 if(_rightToLeftEdge == null) {
-                    _rightToLeftEdge = GetYAdjustedEdge(Right, Direction.Opposite().Next());
+                    _rightToLeftEdge = GetYAdjustedEdge(Right, Direction.Previous2());
                 }
                 return _rightToLeftEdge.GetValueOrDefault();
             }
         }
         private EdgeVertices? _rightToLeftEdge;
+
+        public EdgeVertices CenterToRightEdgePerturbed {
+            get {
+                if(_centerToRightEdgePerturbed == null) {
+                    _centerToRightEdgePerturbed = NoiseGenerator.Perturb(CenterToRightEdge, Center.RequiresYPerturb);
+                }
+                return _centerToRightEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToRightEdgePerturbed;
+
+        public EdgeVertices CenterToLeftEdgePerturbed {
+            get {
+                if(_centerToLeftEdgePerturbed == null) {
+                    _centerToLeftEdgePerturbed = NoiseGenerator.Perturb(CenterToLeftEdge, Center.RequiresYPerturb);
+                }
+                return _centerToLeftEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToLeftEdgePerturbed;
+
+        public EdgeVertices LeftToCenterEdgePerturbed {
+            get {
+                if(_leftToCenterEdgePerturbed == null) {
+                    _leftToCenterEdgePerturbed = NoiseGenerator.Perturb(LeftToCenterEdge, Left.RequiresYPerturb);
+                }
+                return _leftToCenterEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToCenterEdgePerturbed;
+
+        public EdgeVertices RightToCenterEdgePerturbed {
+            get {
+                if(_rightToCenterEdgePerturbed == null) {
+                    _rightToCenterEdgePerturbed = NoiseGenerator.Perturb(RightToCenterEdge, Right.RequiresYPerturb);
+                }
+                return _rightToCenterEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _rightToCenterEdgePerturbed;
+
+        public EdgeVertices LeftToRightEdgePerturbed {
+            get {
+                if(_leftToRightEdgePerturbed == null) {
+                    _leftToRightEdgePerturbed = NoiseGenerator.Perturb(LeftToRightEdge, Left.RequiresYPerturb);
+                }
+                return _leftToRightEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToRightEdgePerturbed;
+
+        public EdgeVertices RightToLeftEdgePerturbed {
+            get {
+                if(_rightToLeftEdgePerturbed == null) {
+                    _rightToLeftEdgePerturbed = NoiseGenerator.Perturb(RightToLeftEdge, Right.RequiresYPerturb);
+                }
+                return _rightToLeftEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _rightToLeftEdgePerturbed;
 
         public Vector3 CenterCorner {
             get { return CenterToLeftEdge.V5; }
@@ -93,7 +153,12 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices CenterLeftTrough {
             get {
                 if(_centerLeftTrough == null) {
-                    _centerLeftTrough = GetRiverTrough(CenterToLeftEdge, LeftToCenterEdge, false);
+                    var trough = GetRiverTrough(CenterToLeftEdgePerturbed, LeftToCenterEdgePerturbed, false);
+
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+
+                    _centerLeftTrough = trough;
                 }
                 return _centerLeftTrough.GetValueOrDefault();
             }
@@ -103,7 +168,12 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices CenterRightTrough {
             get {
                 if(_centerRightTrough == null) {
-                    _centerRightTrough = GetRiverTrough(CenterToRightEdge, RightToCenterEdge, false);
+                    var trough = GetRiverTrough(CenterToRightEdgePerturbed, RightToCenterEdgePerturbed, false);
+
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+
+                    _centerRightTrough = trough;
                 }
                 return _centerRightTrough.GetValueOrDefault();
             }
@@ -113,7 +183,12 @@ namespace Assets.Simulation.HexMap {
         public EdgeVertices LeftRightTrough {
             get {
                 if(_leftRightTrough == null) {
-                    _leftRightTrough = GetRiverTrough(LeftToRightEdge, RightToLeftEdge, true);
+                    var trough = GetRiverTrough(LeftToRightEdgePerturbed, RightToLeftEdgePerturbed, true);
+
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+
+                    _leftRightTrough = trough;
                 }
                 return _leftRightTrough.GetValueOrDefault();
             }
@@ -132,14 +207,6 @@ namespace Assets.Simulation.HexMap {
             get { return LeftRightTrough.V5; }
         }
 
-        public Vector3 ConfluencePoint {
-            get { return (CenterLeftTroughPoint + CenterRightTroughPoint + LeftRightTroughPoint) / 3f; }
-        }
-
-        public Vector3 PerturbedCenterLeftTroughPoint {
-            get { return NoiseGenerator.Perturb(CenterLeftTroughPoint, false); }
-        }
-
         public Vector3 PerturbedLeftCorner {
             get { return NoiseGenerator.Perturb(LeftCorner, Left.RequiresYPerturb); }
         }
@@ -150,14 +217,6 @@ namespace Assets.Simulation.HexMap {
 
         public Vector3 PerturbedRightCorner {
             get { return NoiseGenerator.Perturb(RightCorner, Right.RequiresYPerturb); }
-        }
-
-        public Vector3 PerturbedCenterRightTroughPoint {
-            get { return NoiseGenerator.Perturb(CenterRightTroughPoint, false); }
-        }
-
-        public Vector3 PertrubedLeftRightTroughPoint {
-            get { return NoiseGenerator.Perturb(LeftRightTroughPoint, false); }
         }
 
         public HexEdgeType CenterToLeftEdgeType {
@@ -199,6 +258,16 @@ namespace Assets.Simulation.HexMap {
             }
         }
         private HexEdgeType? _centerToNextRightEdgeType;
+
+        public HexEdgeType RightToNextRightEdgeType {
+            get {
+                if(_rightToNextRightEdgeType == null) {
+                    _rightToNextRightEdgeType = GetEdgeType(Right, NextRight, Direction.Next2());
+                }
+                return _rightToNextRightEdgeType.GetValueOrDefault();
+            }
+        }
+        private HexEdgeType? _rightToNextRightEdgeType;
 
         public bool AllEdgesHaveRivers {
             get {

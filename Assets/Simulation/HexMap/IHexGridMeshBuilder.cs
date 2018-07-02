@@ -78,6 +78,12 @@ namespace Assets.Simulation.HexMap {
             HexMesh targetMesh, bool includeV1, bool includeV5
         );
 
+        void TriangulateEdgeStripUnperturbed(
+            EdgeVertices edgeOne, Color weightsOne, float indexOne,
+            EdgeVertices edgeTwo, Color weightsTwo, float indexTwo,
+            HexMesh targetMesh
+        );
+
         void AddTriangle(
             Vector3 vertexOne,   int indexOne,   Color weightsOne,
             Vector3 vertexTwo,   int indexTwo,   Color weightsTwo,

@@ -360,8 +360,8 @@ namespace Assets.Simulation.HexMap {
             Vector3 waterfallDownRiverLeft = Vector3.zero, waterfallDownRiverRight = Vector3.zero;
             Vector3 dummyVector;
 
-            Vector3 waterfallVectorLeft  = data.PertrubedLeftRightTroughPoint   - waterfallUpRiverLeft;
-            Vector3 waterfallVectorRight = data.PerturbedCenterRightTroughPoint - waterfallUpRiverRight;
+            Vector3 waterfallVectorLeft  = data.LeftRightTroughPoint   - waterfallUpRiverLeft;
+            Vector3 waterfallVectorRight = data.CenterRightTroughPoint - waterfallUpRiverRight;
 
             Vector3 rightLeftTriangleEdge   = yAdjustedLeft   - yAdjustedRight;
             Vector3 rightCenterTriangleEdge = yAdjustedCenter - yAdjustedRight;

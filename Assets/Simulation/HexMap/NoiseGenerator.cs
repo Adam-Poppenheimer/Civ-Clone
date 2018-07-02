@@ -60,6 +60,13 @@ namespace Assets.Simulation.HexMap {
             return position;
         }
 
+        public EdgeVertices Perturb(EdgeVertices edge, bool includeY = false) {
+            return new EdgeVertices(
+                Perturb(edge.V1, includeY), Perturb(edge.V2, includeY), Perturb(edge.V3, includeY),
+                Perturb(edge.V4, includeY), Perturb(edge.V5, includeY)
+            );
+        }
+
         public HexHash SampleHashGrid(Vector3 position) {
             int x = (int)(position.x * HashGridScale) % HashGridSize;
             int z = (int)(position.z * HashGridScale) % HashGridSize;

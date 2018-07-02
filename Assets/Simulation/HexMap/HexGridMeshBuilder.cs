@@ -319,6 +319,37 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        public void TriangulateEdgeStripUnperturbed(
+            EdgeVertices edgeOne, Color weightsOne, float indexOne,
+            EdgeVertices edgeTwo, Color weightsTwo, float indexTwo,
+            HexMesh targetMesh
+        ) {
+            targetMesh.AddQuadUnperturbed(
+                edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2
+            );
+
+            targetMesh.AddQuadUnperturbed(
+                edgeOne.V2, edgeOne.V3, edgeTwo.V2, edgeTwo.V3
+            );
+
+            targetMesh.AddQuadUnperturbed(
+                edgeOne.V3, edgeOne.V4, edgeTwo.V3, edgeTwo.V4
+            );
+
+            targetMesh.AddQuadUnperturbed(
+                edgeOne.V4, edgeOne.V5, edgeTwo.V4, edgeTwo.V5
+            );
+
+            Vector3 indices;
+            indices.x = indices.z = indexOne;
+            indices.y = indexTwo;
+
+            targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
+            targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
+            targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
+            targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
+        }
+
         public void TriangulateRoadSegment(
             Vector3 v1, Vector3 v2, Vector3 v3,
             Vector3 v4, Vector3 v5, Vector3 v6,
