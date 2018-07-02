@@ -193,9 +193,10 @@ namespace Assets.Simulation.HexMap {
         public void CreateRiverTrough_Curve_TerracesClockwiseDown(CellTriangulationData data) {
             //We need to converge the terraces to the convergence point, which is set at some point
             //between the left trough and the left point
-            var convergencePoint = Vector3.Lerp(
-                data.PerturbedCenterLeftTroughPoint, data.PerturbedLeftCorner, HexMetrics.RiverSlopedCurveLerp
-            );
+            var convergenceY = data.PerturbedCenterLeftTroughPoint.y;
+
+            var convergencePoint = data.PerturbedLeftCorner;
+            convergencePoint.y = convergenceY;
 
             var convergenceWeights = Color.Lerp(
                 MeshBuilder.Weights13, MeshBuilder.Weights3, HexMetrics.RiverSlopedCurveLerp

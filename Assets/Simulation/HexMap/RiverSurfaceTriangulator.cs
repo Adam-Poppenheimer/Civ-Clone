@@ -64,21 +64,45 @@ namespace Assets.Simulation.HexMap {
             );
 
             if(RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction.Previous()) == RiverFlow.Clockwise) {
-                mesh.AddTriangleUV(new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, 0.3f));
+                mesh.AddTriangleUV(
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeEndV),
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeEndV),
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeEndV + HexMetrics.RiverConfluenceV)
+                );
             }else {
-                mesh.AddTriangleUV(new Vector2(1f, 0f), new Vector2(0f, 0f), new Vector2(0.5f, -0.3f));
+                mesh.AddTriangleUV(
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeStartV),
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeStartV),
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeStartV - HexMetrics.RiverConfluenceV)
+                );
             }
             
             if(RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction) == RiverFlow.Clockwise) {
-                mesh.AddTriangleUV2(new Vector2(1f, 0f), new Vector2(0.5f, -0.3f), new Vector2(0f, 0f));
+                mesh.AddTriangleUV2(
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeStartV),
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeStartV - HexMetrics.RiverConfluenceV),
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeStartV)
+                );
             }else {
-                mesh.AddTriangleUV2(new Vector2(1f, 0f), new Vector2(0.5f, 0.3f), new Vector2(0f, 0f));
+                mesh.AddTriangleUV2(
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeEndV),
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeEndV + HexMetrics.RiverConfluenceV),
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeEndV)
+                );
             }
 
             if(RiverCanon.GetFlowOfRiverAtEdge(data.Left, data.Direction.Next()) == RiverFlow.Clockwise) {
-                mesh.AddTriangleUV3(new Vector2(0.5f, 0.3f), new Vector2(1f, 0f), new Vector2(0f, 0f));                
+                mesh.AddTriangleUV3(
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeEndV + HexMetrics.RiverConfluenceV),
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeEndV),
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeEndV)
+                );                
             }else {
-                mesh.AddTriangleUV3(new Vector2(0.5f, -0.3f), new Vector2(1f, 0f), new Vector2(0f, 0f)); 
+                mesh.AddTriangleUV3(
+                    new Vector2(0.5f,                       HexMetrics.RiverEdgeStartV - HexMetrics.RiverConfluenceV),
+                    new Vector2(HexMetrics.RiverPortU,      HexMetrics.RiverEdgeStartV),
+                    new Vector2(HexMetrics.RiverStarboardU, HexMetrics.RiverEdgeStartV)
+                );
             }
         }
 
@@ -103,12 +127,14 @@ namespace Assets.Simulation.HexMap {
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 leftOne, rightOne, leftTwo, rightTwo,
-                0.1f, 0.3f, isReversed, indices
+                HexMetrics.GetRiverEdgeV(0), HexMetrics.GetRiverEdgeV(1),
+                isReversed, indices
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 leftTwo, rightTwo, leftThree, rightThree,
-                0.3f, 0.5f, isReversed, indices
+                HexMetrics.GetRiverEdgeV(1), HexMetrics.GetRiverEdgeV(2),
+                isReversed, indices
             );
         }
 
@@ -133,12 +159,14 @@ namespace Assets.Simulation.HexMap {
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 leftThree, rightThree, leftFour, rightFour,
-                0.5f, 0.7f, isReversed, indices
+                HexMetrics.GetRiverEdgeV(2), HexMetrics.GetRiverEdgeV(3),
+                isReversed, indices
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 leftFour, rightFour, leftFive, rightFive,
-                0.7f, 0.9f, isReversed, indices
+                HexMetrics.GetRiverEdgeV(3), HexMetrics.GetRiverEdgeV(4),
+                isReversed, indices
             );            
         }
 
@@ -350,11 +378,11 @@ namespace Assets.Simulation.HexMap {
                 out waterfallDownRiverRight, out dummyVector
             );
 
-            //UV may need to be synchronized at some point. 0.2 is just there to make sure the waterfall flows.
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 waterfallUpRiverLeft, waterfallUpRiverRight,
                 waterfallDownRiverLeft, waterfallDownRiverRight,
-                0f, 0.2f, isReversed, indices
+                HexMetrics.RiverEdgeEndV, HexMetrics.RiverEdgeEndV + HexMetrics.RiverWaterfallV,
+                isReversed, indices
             );
         }
 
@@ -394,7 +422,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 waterfallUpRiverLeft,   waterfallUpRiverRight,
                 waterfallDownRiverLeft, waterfallDownRiverRight,
-                0f, 0.2f, isReversed, indices
+                HexMetrics.RiverEdgeEndV, HexMetrics.RiverEdgeEndV + HexMetrics.EstuaryWaterfallV, isReversed, indices
             );
         }
 
@@ -415,16 +443,16 @@ namespace Assets.Simulation.HexMap {
 
             if(RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction) == RiverFlow.Clockwise) {
                 MeshBuilder.AddTriangleUnperturbed(
-                    yAdjustedCenter, MeshBuilder.Weights1, new Vector2(1f, 0f), 
-                    yAdjustedLeft,   MeshBuilder.Weights2, new Vector2(0.5f, -HexMetrics.RiverEndpointVMax),
-                    yAdjustedRight,  MeshBuilder.Weights3, Vector2.zero,
+                    yAdjustedCenter, MeshBuilder.Weights1, new Vector2(1f,   HexMetrics.RiverEdgeStartV), 
+                    yAdjustedLeft,   MeshBuilder.Weights2, new Vector2(0.5f, HexMetrics.RiverEdgeStartV - HexMetrics.RiverEndpointV),
+                    yAdjustedRight,  MeshBuilder.Weights3, new Vector2(0f,   HexMetrics.RiverEdgeStartV),
                     indices, MeshBuilder.Rivers
                 );
             }else {
                 MeshBuilder.AddTriangleUnperturbed(
-                    yAdjustedCenter, MeshBuilder.Weights1, Vector2.zero, 
-                    yAdjustedLeft,   MeshBuilder.Weights2, new Vector2(0.5f, HexMetrics.RiverEndpointVMax),
-                    yAdjustedRight,  MeshBuilder.Weights3, new Vector2(1f, 0f),
+                    yAdjustedCenter, MeshBuilder.Weights1, new Vector2(0f,   HexMetrics.RiverEdgeEndV), 
+                    yAdjustedLeft,   MeshBuilder.Weights2, new Vector2(0.5f, HexMetrics.RiverEdgeEndV + HexMetrics.RiverEndpointV),
+                    yAdjustedRight,  MeshBuilder.Weights3, new Vector2(1f,   HexMetrics.RiverEdgeEndV),
                     indices, MeshBuilder.Rivers
                 );
             }

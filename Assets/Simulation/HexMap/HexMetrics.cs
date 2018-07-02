@@ -52,7 +52,18 @@ namespace Assets.Simulation.HexMap {
 
         public const float RiverSlopedCurveLerp = 0f;
 
-        public const float RiverEndpointVMax = 0.25f;
+        public const float RiverPortU      = 0f;
+        public const float RiverStarboardU = 1f;
+
+        public const float RiverEndpointV = 0.25f;
+
+        public const float RiverEdgeStartV = 0.1f;
+        public const float RiverEdgeStepV  = 0.2f;
+        public const float RiverEdgeEndV   = RiverEdgeStartV + 4 * RiverEdgeStepV;
+
+        public const float RiverConfluenceV  = 0.3f;
+        public const float EstuaryWaterfallV = 0.2f;
+        public const float RiverWaterfallV   = 0.2f;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
@@ -148,6 +159,10 @@ namespace Assets.Simulation.HexMap {
 
         public static Vector3 GetWaterBridge(HexDirection direction) {
             return (Corners[(int)direction] + Corners[(int)direction + 1]) * WaterBlendFactor;
+        }
+
+        public static float GetRiverEdgeV(int vertex) {
+            return RiverEdgeStartV + vertex * RiverEdgeStepV;
         }
 
         #endregion
