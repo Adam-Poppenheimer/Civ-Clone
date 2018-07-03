@@ -501,11 +501,14 @@ namespace Assets.Simulation.HexMap {
                 (nearEdge.V5 + (invertFarEdge ? farEdge.V1 : farEdge.V5)) / 2f
             );
 
-            troughEdge.V1.y = Mathf.Min(nearEdge.V1.y, (invertFarEdge ? farEdge.V5 : farEdge.V1).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V2.y = Mathf.Min(nearEdge.V2.y, (invertFarEdge ? farEdge.V4 : farEdge.V2).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V3.y = Mathf.Min(nearEdge.V3.y, farEdge.V3.y)                                + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V4.y = Mathf.Min(nearEdge.V4.y, (invertFarEdge ? farEdge.V2 : farEdge.V4).y) + HexMetrics.StreamBedElevationOffset;
-            troughEdge.V5.y = Mathf.Min(nearEdge.V5.y, (invertFarEdge ? farEdge.V1 : farEdge.V5).y) + HexMetrics.StreamBedElevationOffset;
+            float troughY = Mathf.Min(
+                nearEdge.V1.y, nearEdge.V2.y, nearEdge.V3.y, nearEdge.V4.y, nearEdge.V5.y,
+                farEdge .V1.y, farEdge .V2.y, farEdge .V3.y, farEdge .V4.y, farEdge .V5.y
+            );
+
+            troughY += HexMetrics.StreamBedElevationOffset;
+
+            troughEdge.V1.y = troughEdge.V2.y = troughEdge.V3.y = troughEdge.V4.y = troughEdge.V5.y = troughY;
 
             return troughEdge;
         }

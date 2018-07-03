@@ -77,7 +77,6 @@ namespace Assets.Simulation.HexMap {
                 var localPosition = transform.localPosition;
 
                 localPosition.y = _elevation * HexMetrics.ElevationStep;
-                localPosition.y += (NoiseGenerator.SampleNoise(localPosition).y * 2f) - 1f;
 
                 transform.localPosition = localPosition;
 
@@ -180,7 +179,6 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private INoiseGenerator NoiseGenerator;
         private IHexGrid        Grid;
         private IRiverCanon     RiverCanon;
         private HexCellSignals  Signals;
@@ -192,10 +190,9 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            INoiseGenerator noiseGenerator, IHexGrid grid, IRiverCanon riverCanon,
+            IHexGrid grid, IRiverCanon riverCanon,
             HexCellSignals signals, IHexMapConfig config
         ){
-            NoiseGenerator = noiseGenerator;
             Grid           = grid;
             RiverCanon     = riverCanon;
             Signals        = signals;

@@ -48,7 +48,7 @@ namespace Assets.Simulation.HexMap {
         public const float WaterFactor = 0.6f;
         public const float WaterBlendFactor = 1f - WaterFactor;
 
-        public const float RiverTroughEndpointPullback = 0.1f;
+        public const float RiverTroughEndpointPullback = 0.01f;
 
         public const float RiverCurveOffsetDefault = 0.15f;
 
@@ -66,6 +66,8 @@ namespace Assets.Simulation.HexMap {
         public const float RiverConfluenceV  = 0.3f;
         public const float EstuaryWaterfallV = 0.2f;
         public const float RiverWaterfallV   = 0.2f;
+
+        public const float CornerWaterfallTroughProtrusion = 0.05f;
 
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),

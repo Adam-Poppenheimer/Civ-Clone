@@ -17,6 +17,16 @@ namespace Assets.Util {
             return Vector3.Dot(AV, AB) / Vector3.Dot(AB, AB);
         }
 
+        public static Vector3 GetPointBetweenWithY(Vector3 a, Vector3 b, float y) {
+            float lerpParam = (y - a.y) / (b.y - a.y);
+            return Vector3.Lerp(a, b, lerpParam);
+        }
+
+        public static Vector3 GetPointBetweenWithY(Vector3 a, Vector3 b, float y, out float lerpParam) {
+            lerpParam = (y - a.y) / (b.y - a.y);
+            return Vector3.Lerp(a, b, lerpParam);
+        }
+
         #endregion
 
     }
