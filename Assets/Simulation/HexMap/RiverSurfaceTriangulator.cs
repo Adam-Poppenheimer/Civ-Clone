@@ -208,6 +208,7 @@ namespace Assets.Simulation.HexMap {
 
                     }else if(data.Center.EdgeElevation > data.Left.EdgeElevation && data.Right.EdgeElevation > data.Left.EdgeElevation) {
                         buildWaterfall = true;
+                        waterfallHasOppositeReversal = true;
 
                         waterfallUpRiverLeft    = data.PerturbedCenterCorner;
                         waterfallUpRiverRight   = data.PerturbedRightCorner;
@@ -238,7 +239,7 @@ namespace Assets.Simulation.HexMap {
 
                         waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
 
-                    }else if(data.Center.EdgeElevation < data.Right.EdgeElevation && data.Center.EdgeElevation < data.Left.EdgeElevation) {
+                    }else if(data.Center.EdgeElevation < data.Right.EdgeElevation && data.Center.EdgeElevation < data.Left.EdgeElevation) {                        
                         buildWaterfall = true;
                         waterfallHasOppositeReversal = true;
 
