@@ -950,16 +950,16 @@ namespace Assets.Simulation.HexMap {
             );
 
             MeshBuilder.AddTriangleUnperturbed(
-                NoiseGenerator.Perturb(data.LeftCorner,             data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
-                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                      data.Right .Index, MeshBuilder.Weights23,
-                NoiseGenerator.Perturb(leftCenterTerracePointTwo,   false),                      data.Center.Index, leftCenterTerraceWeightsTwo,
+                data.PerturbedLeftCorner,                                 data.Left  .Index, MeshBuilder.Weights1,
+                data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
+                NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Center.Index, leftCenterTerraceWeightsTwo,
                 MeshBuilder.Terrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
-                NoiseGenerator.Perturb(data.LeftCorner,             data.Left.RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights1,
-                NoiseGenerator.Perturb(leftRightTerracePointTwo,    false),                      data.Right .Index, leftRightTerraceWeightsTwo,
-                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                      data.Center.Index, MeshBuilder.Weights23,
+                data.PerturbedLeftCorner,                                data.Left  .Index, MeshBuilder.Weights1,
+                NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Right .Index, leftRightTerraceWeightsTwo,
+                data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
                 MeshBuilder.Terrain
             );
 
@@ -984,32 +984,32 @@ namespace Assets.Simulation.HexMap {
                     MeshBuilder.Weights1, MeshBuilder.Weights2, i
                 );
 
-                MeshBuilder.AddTriangle(
-                    leftCenterTerracePointOne,   data.Left  .Index, leftCenterTerraceWeightsOne,
-                    data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                    leftCenterTerracePointTwo,   data.Center.Index, leftCenterTerraceWeightsTwo,
+                MeshBuilder.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(leftCenterTerracePointOne, false), data.Left  .Index, leftCenterTerraceWeightsOne,
+                    data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
+                    NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Center.Index, leftCenterTerraceWeightsTwo,
                     MeshBuilder.Terrain
                 );
 
-                MeshBuilder.AddTriangle(
-                    leftRightTerracePointOne,    data.Left  .Index, leftRightTerraceWeightsOne,
-                    leftRightTerracePointTwo,    data.Right .Index, leftRightTerraceWeightsTwo,
-                    data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
+                MeshBuilder.AddTriangleUnperturbed(
+                    NoiseGenerator.Perturb(leftRightTerracePointOne, false), data.Left  .Index, leftRightTerraceWeightsOne,
+                    NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Right .Index, leftRightTerraceWeightsTwo,
+                    data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
                     MeshBuilder.Terrain
                 );
             }
 
             MeshBuilder.AddTriangleUnperturbed(
-                NoiseGenerator.Perturb(leftCenterTerracePointTwo,   false),                        data.Left  .Index, leftCenterTerraceWeightsTwo,
-                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                        data.Right .Index, MeshBuilder.Weights23,
-                NoiseGenerator.Perturb(data.CenterCorner,           data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights3,
+                NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Left  .Index, leftCenterTerraceWeightsTwo,
+                data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
+                data.PerturbedCenterCorner,                               data.Center.Index, MeshBuilder.Weights3,
                 MeshBuilder.Terrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
-                NoiseGenerator.Perturb(leftRightTerracePointTwo,    false),                       data.Left  .Index, leftRightTerraceWeightsTwo,
-                NoiseGenerator.Perturb(data.RightCorner,            data.Right.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights2,
-                NoiseGenerator.Perturb(data.CenterRightTroughPoint, false),                       data.Center.Index, MeshBuilder.Weights23,
+                NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Left  .Index, leftRightTerraceWeightsTwo,
+                data.PerturbedRightCorner,                               data.Right .Index, MeshBuilder.Weights2,
+                data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
                 MeshBuilder.Terrain
             );
         }
