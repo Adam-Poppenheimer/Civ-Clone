@@ -40,6 +40,16 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _waterLevel;
 
+        public int WaterTerrainIndex {
+            get { return _waterTerrainIndex; }
+        }
+        [SerializeField] private int _waterTerrainIndex;
+
+        public int MountainTerrainIndex {
+            get { return _mountainTerrainIndex; }
+        }
+        [SerializeField] private int _mountainTerrainIndex;
+
         #endregion
 
         [SerializeField] private int BaseMoveCost;

@@ -50,7 +50,7 @@
 		float4 GetTerrainColor(Input IN, int index) {
 			float3 uvw = float3(IN.worldPos.xz * 0.02, IN.terrain[index]);
 			float4 c = UNITY_SAMPLE_TEX2DARRAY(_MainTex, uvw);
-			return c * IN.color[index] * IN.visibility[index];
+			return c * (IN.color[index] * IN.visibility[index]);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {

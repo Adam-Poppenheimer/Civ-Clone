@@ -16,6 +16,9 @@ namespace Assets.Simulation.HexMap {
 
         int WaterLevel { get; }
 
+        int WaterTerrainIndex    { get; }
+        int MountainTerrainIndex { get; }
+
         #endregion
 
         #region methods

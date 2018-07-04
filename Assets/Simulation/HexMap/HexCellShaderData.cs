@@ -34,15 +34,20 @@ namespace Assets.Simulation.HexMap {
 
         private IGameCore            GameCore;
         private ICellVisibilityCanon VisibilityCanon;
+        private IHexMapConfig        Config;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IGameCore gameCore, ICellVisibilityCanon visibilityCanon) {
+        public void InjectDependencies(
+            IGameCore gameCore, ICellVisibilityCanon visibilityCanon,
+            IHexMapConfig config
+        ) {
             GameCore        = gameCore;
             VisibilityCanon = visibilityCanon;
+            Config          = config;
         }
 
         #region Unity messages
@@ -97,7 +102,14 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RefreshTerrain(IHexCell cell) {
-            CellTextureData[cell.Index].a = (byte)cell.Terrain;            
+            if(cell.Terrain.IsWater()) {
+                CellTextureData[cell.Index].a = (byte)Config.WaterTerrainIndex;
+            }else if(cell.Shape == CellShape.Mountains) {
+                CellTextureData[cell.Index].a = (byte)Config.MountainTerrainIndex;
+            }else {
+                CellTextureData[cell.Index].a = (byte)cell.Terrain;
+            }
+
             enabled = true;
         }
 
