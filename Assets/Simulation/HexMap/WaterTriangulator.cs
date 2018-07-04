@@ -201,72 +201,92 @@ namespace Assets.Simulation.HexMap {
             //feeding the water and decreasing if the water is feeding the river.
 
             if(riverIsFeedingWater) {
-                //The orientation of a river's U coordinates change based on the direction
-                //in which it was triangulated. Since estuaries are triangulated in all directions
-                //and river edges are triangulated only in the first three, we need adapt our U
-                //coordinates based on the current direction of triangulation.
-                float farLeftU, leftU, nearLeftU, nearRightU, rightU, farRightU;
-                if(data.Direction == HexDirection.NE || data.Direction == HexDirection.E || data.Direction == HexDirection.NW) {
-                    farLeftU  = 1.5f;  leftU  = 1f; nearLeftU  = 0.7f;
-                    farRightU = -0.5f; rightU = 0f; nearRightU = 0.3f;
-                }else {
-                    farLeftU  = -0.5f; leftU  = 0f; nearLeftU  = 0.3f;
-                    farRightU = 1.5f;  rightU = 1f; nearRightU = 0.7f;
-                }
+                float farLeftU  = 1.5f;  float leftU  = 1f; float nearLeftU  = 0.7f;
+                float farRightU = -0.5f; float rightU = 0f; float nearRightU = 0.3f;
 
                 //For the middle triangle
                 //Points are CenterToRightWaterEdge.V1, LeftCorner, and RightCorner
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(0.5f, 0.45f), new Vector2(leftU, 0f), new Vector2(rightU, 0f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(0.5f,   HexMetrics.RiverEdgeEndV + 0.45f),
+                    new Vector2(leftU,  HexMetrics.RiverEdgeEndV),
+                    new Vector2(rightU, HexMetrics.RiverEdgeEndV)
+                );
 
                 //For the left quad
 
                 //Points are CenterToLeftWaterEdge.V5, CenterToLeftWaterEdge.V4, and leftShoreEdge.V5
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(0.5f, 0.45f), new Vector2(nearLeftU, 0.6f), new Vector2(leftU, 0f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(0.5f,      HexMetrics.RiverEdgeEndV + 0.45f),
+                    new Vector2(nearLeftU, HexMetrics.RiverEdgeEndV + 0.6f),
+                    new Vector2(leftU,     HexMetrics.RiverEdgeEndV)
+                );
 
                 //Points are CenterToLeftWaterEdge.V4, leftShoreEdge.V4, and leftShoreEdge.V5
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(nearLeftU, 0.6f), new Vector2(farLeftU, 0.4f), new Vector2(leftU, 0f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearLeftU, HexMetrics.RiverEdgeEndV + 0.6f),
+                    new Vector2(farLeftU,  HexMetrics.RiverEdgeEndV + 0.4f),
+                    new Vector2(leftU,     HexMetrics.RiverEdgeEndV)
+                );
 
                 //For the right quad
 
                 //Points are CenterToRightWaterEdge.V2, CenterToRightWaterEdge.V1, and rightShoreEdge.V1
-                MeshBuilder.Estuaries.AddTriangleUV2( new Vector2(nearRightU, 0.6f), new Vector2(0.5f, 0.45f), new Vector2(rightU, 0f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearRightU, HexMetrics.RiverEdgeEndV + 0.6f),
+                    new Vector2(0.5f,       HexMetrics.RiverEdgeEndV + 0.45f),
+                    new Vector2(rightU,     HexMetrics.RiverEdgeEndV)
+                );
 
                 //Points are CenterToRightWaterEdge.V2, rightShoreEdge.V1, and rightShoreEdge.V2
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(nearRightU, 0.6f), new Vector2(rightU, 0f), new Vector2(farRightU, 0.4f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearRightU, HexMetrics.RiverEdgeEndV + 0.6f),
+                    new Vector2(rightU,     HexMetrics.RiverEdgeEndV),
+                    new Vector2(farRightU,  HexMetrics.RiverEdgeEndV + 0.4f)
+                );
 
             }else {
-                //The orientation of a river's U coordinates change based on the direction
-                //in which it was triangulated. Since estuaries are triangulated in all directions
-                //and river edges are triangulated only in the first three, we need adapt our U
-                //coordinates based on the current direction of triangulation.
-                float farLeftU, leftU, nearLeftU, nearRightU, rightU, farRightU;
-                if(data.Direction == HexDirection.NE || data.Direction == HexDirection.E || data.Direction == HexDirection.NW) {
-                    farLeftU  = 1.5f;  leftU  = 1f; nearLeftU  = 0.7f;
-                    farRightU = -0.5f; rightU = 0f; nearRightU = 0.3f;
-                }else {
-                    farLeftU  = -0.5f; leftU  = 0f; nearLeftU  = 0.3f;
-                    farRightU = 1.5f;  rightU = 1f; nearRightU = 0.7f;
-                }
+                float farLeftU  = -0.5f; float leftU  = 0f; float nearLeftU  = 0.3f;
+                float farRightU = 1.5f;  float rightU = 1f; float nearRightU = 0.7f;
 
                 //For the middle triangle
                 //Points are CenterToRightWaterEdge.V1, LeftCorner, and RightCorner
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(0.5f, 0.55f), new Vector2(leftU, 1f), new Vector2(rightU, 1f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(0.5f,   HexMetrics.RiverEdgeStartV - 0.45f),
+                    new Vector2(leftU,  HexMetrics.RiverEdgeStartV),
+                    new Vector2(rightU, HexMetrics.RiverEdgeStartV)
+                );
 
                 //For the left quad
 
                 //Points are CenterToLeftWaterEdge.V5, CenterToLeftWaterEdge.V4, and leftShoreEdge.V5
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(0.5f, 0.55f), new Vector2(nearLeftU, 0.4f), new Vector2(leftU, 1f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(0.5f,      HexMetrics.RiverEdgeStartV - 0.45f),
+                    new Vector2(nearLeftU, HexMetrics.RiverEdgeStartV - 0.6f),
+                    new Vector2(leftU,     HexMetrics.RiverEdgeStartV)
+                );
 
                 //Points are CenterToLeftWaterEdge.V4, leftShoreEdge.V4, and leftShoreEdge.V5
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(nearLeftU, 0.4f), new Vector2(-farLeftU, 0.6f), new Vector2(leftU, 1f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearLeftU, HexMetrics.RiverEdgeStartV - 0.6f),
+                    new Vector2(-farLeftU, HexMetrics.RiverEdgeStartV - 0.4f),
+                    new Vector2(leftU,     HexMetrics.RiverEdgeStartV)
+                );
 
                 //For the right quad
 
                 //Points are CenterToRightWaterEdge.V2, CenterToRightWaterEdge.V1, and rightShoreEdge.V1
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(nearRightU, 0.4f), new Vector2(0.5f, 0.55f), new Vector2(rightU, 1f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearRightU, HexMetrics.RiverEdgeStartV - 0.6f),
+                    new Vector2(0.5f,       HexMetrics.RiverEdgeStartV - 0.45f),
+                    new Vector2(rightU,     HexMetrics.RiverEdgeStartV)
+                );
 
                 //Points are CenterToRightWaterEdge.V2, rightShoreEdge.V1, and rightShoreEdge.V2
-                MeshBuilder.Estuaries.AddTriangleUV2(new Vector2(nearRightU, 0.4f), new Vector2(rightU, 1f), new Vector2(farRightU, 0.6f));
+                MeshBuilder.Estuaries.AddTriangleUV2(
+                    new Vector2(nearRightU, HexMetrics.RiverEdgeStartV - 0.6f),
+                    new Vector2(rightU,     HexMetrics.RiverEdgeStartV),
+                    new Vector2(farRightU,  HexMetrics.RiverEdgeStartV - 0.4f)
+                );
             }
         }
 
