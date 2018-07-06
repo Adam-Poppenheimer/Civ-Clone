@@ -47,13 +47,13 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.TriangulateEdgeStripUnperturbed(
                 nearEdge,   MeshBuilder.Weights1,  data.Center.Index,
                 troughEdge, MeshBuilder.Weights12, data.Right.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
 
             MeshBuilder.TriangulateEdgeStripUnperturbed(
                 troughEdge, MeshBuilder.Weights12, data.Center.Index,
                 farEdge,    MeshBuilder.Weights2,  data.Right .Index,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }
 
@@ -65,7 +65,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
 
             //Triangle pointing at left, which CenterRight river flows towards
@@ -73,7 +73,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,   data.Center.Index, MeshBuilder.Weights2,
                 data.LeftRightTroughPoint,  data.Left  .Index, MeshBuilder.Weights23,
                 data.CenterLeftTroughPoint, data.Right .Index, MeshBuilder.Weights12,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
 
             //Triangle pointing at right, which CenterLeft river flows towards
@@ -81,7 +81,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedRightCorner,   data.Center.Index, MeshBuilder.Weights3,
                 data.CenterRightTroughPoint, data.Left  .Index, MeshBuilder.Weights13,
                 data.LeftRightTroughPoint,   data.Right .Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
 
             //Triangle in the middle, touching each of the trough points and which all rivers flow towards
@@ -89,7 +89,7 @@ namespace Assets.Simulation.HexMap {
                 data.CenterLeftTroughPoint,  data.Center.Index, MeshBuilder.Weights12,
                 data.LeftRightTroughPoint,   data.Left  .Index, MeshBuilder.Weights23,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }
 
@@ -131,14 +131,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 lowerCenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 lowerCenterLeftTroughPoint, data.Center.Index, MeshBuilder.Weights12,
                 data.PerturbedCenterCorner, data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint, data.Right .Index, MeshBuilder.Weights12,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the protrusion
@@ -183,7 +183,7 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint + offsetVector, data.Center.Index, lowerRiverIntersectionWeights,
                 centerToBottomTroughPoint   + offsetVector, data.Left  .Index, MeshBuilder.Weights1,
                 upperRiverIntersectionPoint + offsetVector, data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddQuadUnperturbed(
@@ -192,21 +192,21 @@ namespace Assets.Simulation.HexMap {
                 upperRiverIntersectionPoint + offsetVector, upperRiverIntersectionWeights,
                 upperRiverIntersectionPoint,                upperRiverIntersectionWeights,
                 data.Center.Index, data.Left.Index, data.Right.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 centerToBottomTroughPoint   + offsetVector, data.Center.Index, centerToBottomTroughWeights,
                 data.PerturbedCenterCorner,                 data.Left  .Index, MeshBuilder.Weights1,
                 upperRiverIntersectionPoint + offsetVector, data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint + offsetVector, data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedCenterCorner,                 data.Left  .Index, MeshBuilder.Weights1,
                 upperRiverIntersectionPoint,                data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -227,14 +227,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 lowerCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 lowerCenterRightTroughPoint, data.Left  .Index, MeshBuilder.Weights13,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the protrusion
@@ -279,7 +279,7 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint + offsetVector, data.Center.Index, lowerRiverIntersectionWeights,
                 upperRiverIntersectionPoint + offsetVector, data.Left  .Index, upperRiverIntersectionWeights,
                 centerToBottomTroughPoint   + offsetVector, data.Right .Index, centerToBottomTroughWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddQuadUnperturbed(
@@ -287,21 +287,21 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint + offsetVector, lowerRiverIntersectionWeights,
                 upperRiverIntersectionPoint,                upperRiverIntersectionWeights,
                 upperRiverIntersectionPoint + offsetVector, upperRiverIntersectionWeights,
-                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.Terrain
+                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint,                data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedCenterCorner,                 data.Left  .Index, MeshBuilder.Weights1,
                 upperRiverIntersectionPoint + offsetVector, data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint + offsetVector, data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedCenterCorner,                 data.Left  .Index, MeshBuilder.Weights1,
                 centerToBottomTroughPoint   + offsetVector, data.Right .Index, centerToBottomTroughWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -312,7 +312,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }
 
@@ -320,16 +320,16 @@ namespace Assets.Simulation.HexMap {
         //The outer river bank is opposite center, and the edge between Left and Right is flat.
         public void CreateRiverTrough_Curve_OuterFlat(CellTriangulationData data) {
             MeshBuilder.AddTriangleUnperturbed(
-                data.PerturbedLeftCorner,   data.Left  .Index, MeshBuilder.Weights1,
-                data.PerturbedRightCorner,  data.Right .Index, MeshBuilder.Weights2,
-                data.CenterLeftTroughPoint, data.Center.Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                data.PerturbedLeftCorner,   MeshBuilder.Weights2,
+                data.PerturbedRightCorner,  MeshBuilder.Weights3,
+                data.CenterLeftTroughPoint, MeshBuilder.Weights12,
+                data.StandardIndicies, MeshBuilder.SmoothTerrain
             );
             MeshBuilder.AddTriangleUnperturbed(
-                data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights13,
-                data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
-                data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                data.CenterLeftTroughPoint,  MeshBuilder.Weights12,
+                data.PerturbedRightCorner,   MeshBuilder.Weights3,
+                data.CenterRightTroughPoint, MeshBuilder.Weights13,
+                data.StandardIndicies, MeshBuilder.SmoothTerrain
             );
         }
 
@@ -363,7 +363,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,         data.Center.Index, convergenceWeights,
                 data.PerturbedLeftCorner, data.Left  .Index, MeshBuilder.Weights2,
                 stepVertex2,              data.Right .Index, stepWeights2,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -382,7 +382,7 @@ namespace Assets.Simulation.HexMap {
                     convergencePoint, data.Center.Index, convergenceWeights,
                     stepVertex1,      data.Left  .Index, stepWeights1,
                     stepVertex2,      data.Right .Index, stepWeights2,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -390,7 +390,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,          data.Center.Index, convergenceWeights,
                 stepVertex2,               data.Left  .Index, stepWeights2,
                 data.PerturbedRightCorner, data.Right .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //We need to finish the upper side of the opposite wall, which requires an
@@ -402,7 +402,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,                  data.Center.Index, convergenceWeights,
                 data.PerturbedRightCorner,         data.Left  .Index, MeshBuilder.Weights3,
                 rightCornerAlignedWithConvergence, data.Right .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the the vertical surface that connects the upper river's
@@ -411,14 +411,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedRightCorner,   data.Center.Index, MeshBuilder.Weights3,
                 data.CenterRightTroughPoint, data.Left  .Index, MeshBuilder.Weights13,
                 lowerCenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 rightCornerAlignedWithConvergence, data.Center.Index, convergenceWeights,
                 data.PerturbedRightCorner,         data.Left  .Index, MeshBuilder.Weights3,
                 lowerCenterRightTroughPoint,       data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the lower outer section of the trough, lined up with the trough
@@ -429,7 +429,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,          MeshBuilder.Weights2,
                 rightCornerAlignedWithConvergence, MeshBuilder.Weights3,
                 data.Center.Index, data.Right.Index, data.Left.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //To make sure the terrain mesh continues to obscure the outer edges of the river
@@ -471,7 +471,7 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint             + offsetVector, lowerRiverIntersectionWeights,
                 rightCornerAlignedWithUpperRiverSurface + offsetVector, MeshBuilder.Weights3,
                 upperRiverIntersectionPoint             + offsetVector, upperRiverIntersectionWeights,
-                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.Terrain
+                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddQuadUnperturbed(
@@ -479,21 +479,21 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint,                lowerRiverIntersectionWeights,
                 upperRiverIntersectionPoint + offsetVector, upperRiverIntersectionWeights,
                 upperRiverIntersectionPoint,                upperRiverIntersectionWeights,
-                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.Terrain
+                data.Center.Index, data.Left.Index, data.Right.Index, MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint + offsetVector, data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedRightCorner,                  data.Left  .Index, MeshBuilder.Weights3,
                 upperRiverIntersectionPoint,                data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 rightCornerAlignedWithUpperRiverSurface + offsetVector, data.Center.Index, MeshBuilder.Weights3,
                 data.PerturbedRightCorner,                              data.Left  .Index, MeshBuilder.Weights3,
                 upperRiverIntersectionPoint + offsetVector,             data.Right .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -530,7 +530,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,          data.Center.Index, convergenceWeights,
                 stepVertex2,               data.Right .Index, stepWeights2,
                 data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights2,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -549,7 +549,7 @@ namespace Assets.Simulation.HexMap {
                     convergencePoint, data.Center.Index, convergenceWeights,
                     stepVertex2,      data.Right .Index, stepWeights2,
                     stepVertex1,      data.Left  .Index, stepWeights1,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -557,7 +557,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,         data.Center.Index, convergenceWeights,
                 data.PerturbedLeftCorner, data.Right .Index, MeshBuilder.Weights3,
                 stepVertex2,              data.Left  .Index, stepWeights2,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //We need to finish the upper side of the opposite wall, which requires an
@@ -569,7 +569,7 @@ namespace Assets.Simulation.HexMap {
                 leftCornerAlignedWithConvergence, data.Center.Index, MeshBuilder.Weights3,
                 data.PerturbedLeftCorner,         data.Right .Index, MeshBuilder.Weights3,
                 convergencePoint,                 data.Left  .Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the the vertical surface that connects the upper river's
@@ -578,14 +578,14 @@ namespace Assets.Simulation.HexMap {
                 lowerCenterLeftTroughPoint, data.Center.Index, MeshBuilder.Weights13,
                 data.CenterLeftTroughPoint, data.Right .Index, MeshBuilder.Weights13,
                 data.PerturbedLeftCorner,   data.Left  .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 lowerCenterLeftTroughPoint,       data.Center.Index, MeshBuilder.Weights13,
                 data.PerturbedLeftCorner,         data.Right .Index, MeshBuilder.Weights3,
                 leftCornerAlignedWithConvergence, data.Left  .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Creates the lower outer section of the trough, lined up with the trough
@@ -596,7 +596,7 @@ namespace Assets.Simulation.HexMap {
                 leftCornerAlignedWithConvergence, MeshBuilder.Weights3,
                 data.PerturbedRightCorner,        MeshBuilder.Weights2,
                 data.Center.Index, data.Right.Index, data.Left.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //To make sure the terrain mesh continues to obscure the outer edges of the river
@@ -638,7 +638,7 @@ namespace Assets.Simulation.HexMap {
                 leftCornerAlignedWithConvergence       + offsetVector, MeshBuilder.Weights3,
                 upperRiverIntersectionPoint            + offsetVector, upperRiverIntersectionWeights,
                 leftCornerAlignedWithUpperRiverSurface + offsetVector, MeshBuilder.Weights3,
-                data.Center.Index, data.Right.Index, data.Left.Index, MeshBuilder.Terrain
+                data.Center.Index, data.Right.Index, data.Left.Index, MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddQuadUnperturbed(
@@ -646,21 +646,21 @@ namespace Assets.Simulation.HexMap {
                 lowerRiverIntersectionPoint + offsetVector, lowerRiverIntersectionWeights,
                 upperRiverIntersectionPoint,                upperRiverIntersectionWeights,
                 upperRiverIntersectionPoint + offsetVector, upperRiverIntersectionWeights,
-                data.Center.Index, data.Right.Index, data.Left.Index, MeshBuilder.Terrain
+                data.Center.Index, data.Right.Index, data.Left.Index, MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint + offsetVector,            data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedLeftCorner,                              data.Right .Index, MeshBuilder.Weights3,
                 leftCornerAlignedWithUpperRiverSurface + offsetVector, data.Left  .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 upperRiverIntersectionPoint,                data.Center.Index, upperRiverIntersectionWeights,
                 data.PerturbedLeftCorner,                   data.Right .Index, MeshBuilder.Weights3,
                 upperRiverIntersectionPoint + offsetVector, data.Left  .Index, upperRiverIntersectionWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -672,14 +672,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }
 
@@ -693,7 +693,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.PerturbedCenterCorner,           data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             var convergencePoint = Vector3.Lerp(
@@ -707,7 +707,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,            data.Left.Index,   convergenceWeights,
                 data.PerturbedRightCorner,   data.Right.Index,  MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.RightCorner,     data.LeftCorner,      1);
@@ -718,7 +718,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,                         data.Left  .Index, convergenceWeights,
                 NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
                 data.PerturbedRightCorner,                data.Center.Index, MeshBuilder.Weights2,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -732,7 +732,7 @@ namespace Assets.Simulation.HexMap {
                     convergencePoint,                         data.Left  .Index, convergenceWeights,
                     NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
                     NoiseGenerator.Perturb(terraceVertexOne), data.Center.Index, terraceWeightsOne,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -740,7 +740,7 @@ namespace Assets.Simulation.HexMap {
                 convergencePoint,                         data.Left  .Index, convergenceWeights,
                 data.PerturbedLeftCorner,                 data.Right .Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(terraceVertexTwo), data.Center.Index, terraceWeightsTwo,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -754,7 +754,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             var convergencePoint = Vector3.Lerp(
@@ -768,7 +768,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left.Index,   MeshBuilder.Weights1,
                 convergencePoint,            data.Right.Index,  convergenceWeights,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
@@ -779,7 +779,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,                 data.Left  .Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
                 convergencePoint,                         data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -793,7 +793,7 @@ namespace Assets.Simulation.HexMap {
                     NoiseGenerator.Perturb(terraceVertexOne), data.Left  .Index, terraceWeightsOne,
                     NoiseGenerator.Perturb(terraceVertexTwo), data.Right .Index, terraceWeightsTwo,
                     convergencePoint,                         data.Center.Index, convergenceWeights,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -801,7 +801,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(terraceVertexTwo), data.Left  .Index, convergenceWeights,
                 data.PerturbedRightCorner,                data.Right .Index, MeshBuilder.Weights2,
                 convergencePoint,                         data.Center.Index, terraceWeightsTwo,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -813,7 +813,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //We want to converge Center/Left's terraces to the Center/Right edge, so we need
@@ -829,7 +829,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 convergencePoint,            data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Builds out the terrace convergence from the terraced slope on Center/Left
@@ -841,7 +841,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(terracePointTwo), data.Left  .Index, terraceWeightsTwo,
                 data.PerturbedLeftCorner,                data.Right .Index, MeshBuilder.Weights1,
                 convergencePoint,                        data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -855,7 +855,7 @@ namespace Assets.Simulation.HexMap {
                     NoiseGenerator.Perturb(terracePointTwo), data.Left  .Index, terraceWeightsTwo,
                     NoiseGenerator.Perturb(terracePointOne), data.Right .Index, terraceWeightsOne,
                     convergencePoint,                        data.Center.Index, convergenceWeights,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -863,7 +863,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,              data.Left  .Index, MeshBuilder.Weights3,
                 NoiseGenerator.Perturb(terracePointTwo), data.Right .Index, terraceWeightsTwo,
                 convergencePoint,                        data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -875,7 +875,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(data.LeftCorner,  data.Left.RequiresYPerturb),  data.Left  .Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(data.RightCorner, data.Right.RequiresYPerturb), data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint,                                  data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //We want to converge Center/Left's terraces to the surface opposite Left, so we need
@@ -891,7 +891,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,           data.Left  .Index, MeshBuilder.Weights3,
                 convergencePoint,                     data.Right .Index, convergenceWeights,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Builds out the terrace convergence from the terraced slope on Center/Left
@@ -903,7 +903,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,              data.Left  .Index, MeshBuilder.Weights3,
                 NoiseGenerator.Perturb(terracePointTwo), data.Right .Index, terraceWeightsTwo,
                 convergencePoint,                        data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -917,7 +917,7 @@ namespace Assets.Simulation.HexMap {
                     NoiseGenerator.Perturb(terracePointOne), data.Left  .Index, terraceWeightsOne,
                     NoiseGenerator.Perturb(terracePointTwo), data.Right .Index, terraceWeightsTwo,
                     convergencePoint,                        data.Center.Index, convergenceWeights,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -925,7 +925,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(terracePointTwo), data.Left  .Index, terraceWeightsTwo,
                 data.PerturbedLeftCorner,                data.Right .Index, MeshBuilder.Weights1,
                 convergencePoint,                        data.Center.Index, convergenceWeights,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -953,14 +953,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,                                 data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
                 NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Center.Index, leftCenterTerraceWeightsTwo,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedLeftCorner,                                data.Left  .Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Right .Index, leftRightTerraceWeightsTwo,
                 data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -988,14 +988,14 @@ namespace Assets.Simulation.HexMap {
                     NoiseGenerator.Perturb(leftCenterTerracePointOne, false), data.Left  .Index, leftCenterTerraceWeightsOne,
                     data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
                     NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Center.Index, leftCenterTerraceWeightsTwo,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(leftRightTerracePointOne, false), data.Left  .Index, leftRightTerraceWeightsOne,
                     NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Right .Index, leftRightTerraceWeightsTwo,
                     data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -1003,14 +1003,14 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(leftCenterTerracePointTwo, false), data.Left  .Index, leftCenterTerraceWeightsTwo,
                 data.CenterRightTroughPoint,                              data.Right .Index, MeshBuilder.Weights23,
                 data.PerturbedCenterCorner,                               data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 NoiseGenerator.Perturb(leftRightTerracePointTwo, false), data.Left  .Index, leftRightTerraceWeightsTwo,
                 data.PerturbedRightCorner,                               data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint,                             data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -1030,7 +1030,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,                         data.Left  .Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(toRightTerraceVertexTwo),  data.Right .Index, toRightTerraceWeightsTwo,
                 NoiseGenerator.Perturb(toCenterTerraceVertexTwo), data.Center.Index, toCenterTerraceWeightsTwo,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Builds the quads between the terraces
@@ -1053,7 +1053,7 @@ namespace Assets.Simulation.HexMap {
                     toRightTerraceVertexTwo, toRightTerraceWeightsTwo,
                     toCenterTerraceVertexTwo, toCenterTerraceWeightsTwo,
                     data.Left.Index, data.Right.Index, data.Center.Index,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -1063,7 +1063,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedRightCorner,                        MeshBuilder.Weights2,
                 data.PerturbedCenterCorner,                       MeshBuilder.Weights3,
                 data.Left.Index, data.Right.Index, data.Center.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Draws the triangle that the river collides into.
@@ -1071,7 +1071,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Left  .Index, MeshBuilder.Weights3,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -1084,7 +1084,7 @@ namespace Assets.Simulation.HexMap {
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 data.RightCorner,            data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Builds out the terraced edges attached to Center by converging them to the
@@ -1096,7 +1096,7 @@ namespace Assets.Simulation.HexMap {
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 terracePointTwo,             data.Center.Index, terraceWeightsTwo,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -1110,7 +1110,7 @@ namespace Assets.Simulation.HexMap {
                     terracePointOne,             data.Left  .Index, terraceWeightsOne,
                     data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                     terracePointTwo,             data.Center.Index, terraceWeightsTwo,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -1118,7 +1118,7 @@ namespace Assets.Simulation.HexMap {
                 terracePointTwo,             data.Left  .Index, terraceWeightsTwo,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.CenterCorner,           data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -1131,7 +1131,7 @@ namespace Assets.Simulation.HexMap {
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.CenterCorner,           data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Builds out the terraced edges attached to Right by converging them to the
@@ -1143,7 +1143,7 @@ namespace Assets.Simulation.HexMap {
                 data.LeftCorner,             data.Left  .Index, MeshBuilder.Weights1,
                 terracePointTwo,             data.Right .Index, terraceWeightsTwo,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -1157,7 +1157,7 @@ namespace Assets.Simulation.HexMap {
                     terracePointOne,             data.Left  .Index, terraceWeightsOne,
                     terracePointTwo,             data.Right .Index, terraceWeightsTwo,
                     data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -1165,7 +1165,7 @@ namespace Assets.Simulation.HexMap {
                 terracePointTwo,             data.Left  .Index, terraceWeightsTwo,
                 data.RightCorner,            data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -1176,14 +1176,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights2,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights3,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 

@@ -18,6 +18,10 @@ namespace Assets.Simulation.HexMap {
 
         public HexDirection Direction { get; private set; }
 
+        public Vector3 StandardIndicies {
+            get { return new Vector3(Center.Index, Left.Index, Right.Index); }
+        }
+
         public EdgeVertices CenterToLeftEdge {
             get {
                 if(_centerToleftEdge == null) {

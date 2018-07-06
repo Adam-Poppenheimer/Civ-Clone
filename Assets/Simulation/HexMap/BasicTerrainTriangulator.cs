@@ -61,13 +61,13 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, data.Right .RequiresYPerturb,
-                    MeshBuilder.Terrain
+                    MeshBuilder.SmoothTerrain
                 );
             }else{
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index,
-                    MeshBuilder.Terrain
+                    MeshBuilder.SmoothTerrain
                 );
             }
 
@@ -101,20 +101,20 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCenterWithHills(CellTriangulationData data) {
             MeshBuilder.TriangulateEdgeFan(
                 data.CenterPeak, data.CenterToRightInnerEdge,
-                data.Center.Index, MeshBuilder.Terrain, true
+                data.Center.Index, MeshBuilder.SmoothTerrain, true
             );
 
             MeshBuilder.TriangulateEdgeStrip(
                 data.CenterToRightInnerEdge, MeshBuilder.Weights1, data.Center.Index, true,
                 data.CenterToRightEdge,      MeshBuilder.Weights1, data.Center.Index, true,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }
 
         private void TriangulateCenterWithoutHills(CellTriangulationData data){
             MeshBuilder.TriangulateEdgeFan(
                 data.CenterPeak, data.CenterToRightEdge, data.Center.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.SmoothTerrain
             );
         }        
 
@@ -130,7 +130,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.TriangulateEdgeStrip(
                 begin,   MeshBuilder.Weights1, i1, beginCell.RequiresYPerturb,
                 edgeTwo, weights2,             i2, false,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -143,14 +143,14 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.TriangulateEdgeStrip(
                     edgeOne, weights1, i1, false,
                     edgeTwo, weights2, i2, false,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
             MeshBuilder.TriangulateEdgeStrip(
                 edgeTwo, weights2,             i1, false,
                 end,     MeshBuilder.Weights2, i2, endCell.RequiresYPerturb,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -192,10 +192,10 @@ namespace Assets.Simulation.HexMap {
 
             }else {
                 MeshBuilder.AddTriangleUnperturbed(
-                    NoiseGenerator.Perturb(data.CenterCorner, data.Center.RequiresYPerturb), data.Center.Index, MeshBuilder.Weights1,
-                    NoiseGenerator.Perturb(data.LeftCorner,   data.Left  .RequiresYPerturb), data.Left  .Index, MeshBuilder.Weights2,
-                    NoiseGenerator.Perturb(data.RightCorner,  data.Right .RequiresYPerturb), data.Right .Index, MeshBuilder.Weights3,
-                    MeshBuilder.Terrain
+                    data.PerturbedCenterCorner, data.Center.Index, MeshBuilder.Weights1,
+                    data.PerturbedLeftCorner,   data.Left  .Index, MeshBuilder.Weights2,
+                    data.PerturbedRightCorner,  data.Right .Index, MeshBuilder.Weights3,
+                    MeshBuilder.SmoothTerrain
                 );
             }            
         }
@@ -211,7 +211,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner, data.Center.Index, MeshBuilder.Weights1,
                 NoiseGenerator.Perturb(v3), data.Left  .Index, w3,
                 NoiseGenerator.Perturb(v4), data.Right .Index, w4,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -229,7 +229,7 @@ namespace Assets.Simulation.HexMap {
                     v1, w1, v2, w2,
                     v3, w3, v4, w4,
                     data.Center.Index, data.Left.Index, data.Right.Index,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -237,7 +237,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(v3, false), w3,                   NoiseGenerator.Perturb(v4, false), w4,
                 data.PerturbedLeftCorner,          MeshBuilder.Weights2, data.PerturbedRightCorner,         MeshBuilder.Weights3,
                 data.Center.Index, data.Left.Index, data.Right.Index,
-                MeshBuilder.Terrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -272,7 +272,7 @@ namespace Assets.Simulation.HexMap {
                     data.PerturbedLeftCorner,  data.Center.Index, MeshBuilder.Weights2,
                     data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights3,
                     boundary,                  data.Right .Index, boundaryWeights,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
         }
@@ -306,7 +306,7 @@ namespace Assets.Simulation.HexMap {
                     data.PerturbedLeftCorner,  data.Center.Index, MeshBuilder.Weights2,
                     data.PerturbedRightCorner, data.Left  .Index, MeshBuilder.Weights3,
                     boundary,                  data.Right .Index, boundaryWeights,
-                    MeshBuilder.Terrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
         }
@@ -323,7 +323,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.AddTriangleUnperturbed(
                 NoiseGenerator.Perturb(begin, perturbBeginY), beginWeights,
                 v2, w2, boundary, boundaryWeights,
-                indices, MeshBuilder.Terrain
+                indices, MeshBuilder.JaggedTerrain
             );
 
             for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
@@ -334,13 +334,13 @@ namespace Assets.Simulation.HexMap {
 
                 MeshBuilder.AddTriangleUnperturbed(
                     v1, w1, v2, w2, boundary, boundaryWeights,
-                    indices, MeshBuilder.Terrain
+                    indices, MeshBuilder.JaggedTerrain
                 );
             }
 
             MeshBuilder.AddTriangleUnperturbed(
                 v2, w2, NoiseGenerator.Perturb(left, perturbLeftY), leftWeights,
-                boundary, boundaryWeights, indices, MeshBuilder.Terrain
+                boundary, boundaryWeights, indices, MeshBuilder.JaggedTerrain
             );
         }
 

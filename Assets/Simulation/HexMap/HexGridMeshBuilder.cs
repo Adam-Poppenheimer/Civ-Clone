@@ -59,7 +59,8 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        public HexMesh Terrain          { get; private set; }
+        public HexMesh SmoothTerrain    { get; private set; }
+        public HexMesh JaggedTerrain    { get; private set; }
         public HexMesh Roads            { get; private set; }
         public HexMesh Rivers           { get; private set; }
         public HexMesh RiverConfluences { get; private set; }
@@ -79,7 +80,8 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         public HexGridMeshBuilder(
-            [Inject(Id = "Terrain")]           HexMesh terrain,
+            [Inject(Id = "Smooth Terrain")]    HexMesh smoothTerrain,
+            [Inject(Id = "Jagged Terrain")]    HexMesh jaggedTerrain,
             [Inject(Id = "Roads")]             HexMesh roads,
             [Inject(Id = "Rivers")]            HexMesh rivers,
             [Inject(Id = "River Confluences")] HexMesh riverConfluences,
@@ -92,7 +94,8 @@ namespace Assets.Simulation.HexMap {
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IHexGrid grid
         ) {
-            Terrain          = terrain;
+            SmoothTerrain    = smoothTerrain;
+            JaggedTerrain    = jaggedTerrain;
             Roads            = roads;
             Rivers           = rivers;
             RiverConfluences = riverConfluences;
@@ -115,7 +118,8 @@ namespace Assets.Simulation.HexMap {
         #region from HexGridMeshBuilder
 
         public void ClearMeshes() {
-            Terrain         .Clear();
+            SmoothTerrain   .Clear();
+            JaggedTerrain   .Clear();
             Rivers          .Clear();
             RiverConfluences.Clear();
             RiverCorners    .Clear();
@@ -128,7 +132,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void ApplyMeshes() {
-            Terrain         .Apply();
+            SmoothTerrain   .Apply();
+            JaggedTerrain   .Apply();
             Rivers          .Apply();
             RiverConfluences.Apply();
             RiverCorners    .Apply();
@@ -324,6 +329,17 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices edgeTwo, Color weightsTwo, float indexTwo,
             HexMesh targetMesh
         ) {
+            TriangulateEdgeStripUnperturbed(
+                edgeOne, weightsOne, edgeTwo, weightsTwo,
+                new Vector3(indexOne, indexTwo, 0), targetMesh
+            );
+        }
+
+        public void TriangulateEdgeStripUnperturbed(
+            EdgeVertices edgeOne, Color weightsOne,
+            EdgeVertices edgeTwo, Color weightsTwo,
+            Vector3 indices, HexMesh targetMesh
+        ) {
             targetMesh.AddQuadUnperturbed(
                 edgeOne.V1, edgeOne.V2, edgeTwo.V1, edgeTwo.V2
             );
@@ -339,10 +355,6 @@ namespace Assets.Simulation.HexMap {
             targetMesh.AddQuadUnperturbed(
                 edgeOne.V4, edgeOne.V5, edgeTwo.V4, edgeTwo.V5
             );
-
-            Vector3 indices;
-            indices.x = indices.z = indexOne;
-            indices.y = indexTwo;
 
             targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
             targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
@@ -494,13 +506,25 @@ namespace Assets.Simulation.HexMap {
         public void AddQuadUnperturbed(
             Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
             Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
-            int indexOne, int indexTwo, int indexThree, HexMesh targetedMesh
+            int indexOne, int indexTwo, int indexThree, HexMesh targetMesh
         ) {
-            targetedMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+            targetMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
 
-            targetedMesh.AddQuadCellData(
+            targetMesh.AddQuadCellData(
                 new Vector3(indexOne, indexTwo, indexThree),
                 weightsOne, weightsTwo, weightsThree, weightsFour
+            );
+        }
+
+        public void AddQuadUnperturbed(
+            Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
+            Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
+            Vector3 indices, HexMesh targetMesh
+        ) {
+            targetMesh.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
+
+            targetMesh.AddQuadCellData(
+                indices, weightsOne, weightsTwo, weightsThree, weightsFour
             );
         }
 

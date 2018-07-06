@@ -6,7 +6,7 @@ float4 _HexCellData_TexelSize;
 
 float4 GetCellData(appdata_full v, int index) {
 	float2 uv;
-	uv.x = (v.texcoord2[index] + 0.5) * _HexCellData_TexelSize.x;
+	uv.x = (v.texcoord3[index] + 0.5) * _HexCellData_TexelSize.x;
 	float row = floor(uv.x);
 	uv.x -= row;
 	uv.y = (row + 0.5) * _HexCellData_TexelSize.y;

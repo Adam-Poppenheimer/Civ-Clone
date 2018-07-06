@@ -16,7 +16,8 @@ namespace Assets.Simulation.HexMap {
 
         Color Weights123 { get; }
 
-        HexMesh Terrain          { get; }
+        HexMesh SmoothTerrain    { get; }
+        HexMesh JaggedTerrain    { get; }
         HexMesh Roads            { get; }
         HexMesh Rivers           { get; }
         HexMesh RiverConfluences { get; }
@@ -82,6 +83,12 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices edgeOne, Color weightsOne, float indexOne,
             EdgeVertices edgeTwo, Color weightsTwo, float indexTwo,
             HexMesh targetMesh
+        );
+
+        void TriangulateEdgeStripUnperturbed(
+            EdgeVertices edgeOne, Color weightsOnes,
+            EdgeVertices edgeTwo, Color weightsTwo,
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddTriangle(
@@ -152,6 +159,12 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
             Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
             int indexOne, int indexTwo, int indexThree, HexMesh targetMesh
+        );
+
+        void AddQuadUnperturbed(
+            Vector3 bottomLeft, Color weightsOne,   Vector3 bottomRight, Color weightsTwo,
+            Vector3 topLeft,    Color weightsThree, Vector3 topRight,    Color weightsFour,
+            Vector3 indices, HexMesh targetMesh
         );
 
         void AddQuadUnperturbed(

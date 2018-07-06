@@ -8,6 +8,8 @@ using UnityEngine.EventSystems;
 
 using Zenject;
 
+using Assets.Util;
+
 namespace Assets.Simulation.HexMap {
 
     [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
@@ -21,6 +23,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private bool UseUV3Coordinates;
         [SerializeField] private bool UseCellData;
         [SerializeField] private bool UseColors;
+        [SerializeField] private bool WeldMesh;
 
         private Mesh ManagedMesh;
         public MeshCollider Collider { get; private set; }
@@ -34,15 +37,22 @@ namespace Assets.Simulation.HexMap {
         [NonSerialized] private List<Vector3> CellIndices;
         [NonSerialized] private List<Color>   Colors;
 
+
+
+
         private INoiseGenerator NoiseGenerator;
+        private MeshWelder      MeshWelder;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(INoiseGenerator noiseGenerator) {
+        public void InjectDependencies(
+            INoiseGenerator noiseGenerator, MeshWelder meshWelder
+        ) {
             NoiseGenerator = noiseGenerator;
+            MeshWelder     = meshWelder;
         }
 
         #region Unity message methods
@@ -64,7 +74,7 @@ namespace Assets.Simulation.HexMap {
             Triangles = ListPool<int>    .Get();
 
             if(UseCellData) {
-                CellWeights = ListPool<Color>.Get();
+                CellWeights = ListPool<Color>  .Get();
                 CellIndices = ListPool<Vector3>.Get();
             }
 
@@ -96,7 +106,7 @@ namespace Assets.Simulation.HexMap {
                 ManagedMesh.SetColors(CellWeights);
                 ListPool<Color>.Add(CellWeights);
 
-                ManagedMesh.SetUVs(2, CellIndices);
+                ManagedMesh.SetUVs(3, CellIndices);
                 ListPool<Vector3>.Add(CellIndices);
             }
 
@@ -118,6 +128,11 @@ namespace Assets.Simulation.HexMap {
             if(UseColors) {
                 ManagedMesh.SetColors(Colors);
                 ListPool<Color>.Add(Colors);
+            }
+
+            if(WeldMesh) {
+                MeshWelder.Mesh = ManagedMesh;
+                MeshWelder.Weld();
             }
 
             ManagedMesh.RecalculateNormals();

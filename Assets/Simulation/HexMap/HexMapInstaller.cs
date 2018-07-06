@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Util;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexMapInstaller : MonoInstaller {
@@ -41,6 +43,8 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<ICellVisibilityCanon>  ().To<CellVisibilityCanon>  ().AsSingle();
             Container.Bind<IFreshWaterCanon>      ().To<FreshWaterCanon>      ().AsSingle();
             Container.Bind<ICellModificationLogic>().To<CellModificationLogic>().AsSingle();
+
+            Container.Bind<MeshWelder>().AsSingle();
 
             Container.Bind<HexCellSignals>().AsSingle();
         }

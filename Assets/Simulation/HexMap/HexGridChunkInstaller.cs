@@ -13,7 +13,8 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private HexMesh Terrain;
+        [SerializeField] private HexMesh SmoothTerrain;
+        [SerializeField] private HexMesh JaggedTerrain;
         [SerializeField] private HexMesh Roads;
         [SerializeField] private HexMesh Rivers;
         [SerializeField] private HexMesh RiverConfluences;
@@ -34,7 +35,8 @@ namespace Assets.Simulation.HexMap {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<HexMesh>().WithId("Terrain")          .FromInstance(Terrain);
+            Container.Bind<HexMesh>().WithId("Smooth Terrain")   .FromInstance(SmoothTerrain);
+            Container.Bind<HexMesh>().WithId("Jagged Terrain")   .FromInstance(JaggedTerrain);
             Container.Bind<HexMesh>().WithId("Roads")            .FromInstance(Roads);
             Container.Bind<HexMesh>().WithId("Rivers")           .FromInstance(Rivers);
             Container.Bind<HexMesh>().WithId("River Confluences").FromInstance(RiverConfluences);
