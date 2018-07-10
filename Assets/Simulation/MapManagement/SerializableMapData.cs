@@ -13,6 +13,9 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
+        [DataMember()] public int CellCountX;
+        [DataMember()] public int CellCountZ;
+
         [DataMember()] public List<SerializableHexCellData>      HexCells;
         [DataMember()] public List<SerializableCivilizationData> Civilizations;
         [DataMember()] public List<SerializableCityData>         Cities;

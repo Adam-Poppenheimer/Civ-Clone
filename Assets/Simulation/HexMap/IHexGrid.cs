@@ -17,11 +17,14 @@ namespace Assets.Simulation.HexMap {
         int ChunkCountX { get; }
         int ChunkCountZ { get; }
 
+        int CellCountX { get; }
+        int CellCountZ { get; }
+
         #endregion
 
         #region methods
 
-        void Build();
+        void Build(int chunkCountX, int chunkCountZ);
         void Clear();
 
         bool     HasCellAtCoordinates(HexCoordinates coords);
@@ -29,6 +32,8 @@ namespace Assets.Simulation.HexMap {
 
         bool     HasCellAtLocation(Vector3 location);
         IHexCell GetCellAtLocation(Vector3 location);
+
+        IHexCell GetCellAtOffset(int xOffset, int zOffset);
 
         bool     HasNeighbor(IHexCell center, HexDirection direction);
         IHexCell GetNeighbor(IHexCell center, HexDirection direction);

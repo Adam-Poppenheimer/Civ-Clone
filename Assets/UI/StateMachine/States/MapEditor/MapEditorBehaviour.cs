@@ -49,7 +49,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
 
-            Grid.Build();
+            Grid.Build(4, 3);
 
             CivFactory.Create("Player Civilization", Color.red);
 

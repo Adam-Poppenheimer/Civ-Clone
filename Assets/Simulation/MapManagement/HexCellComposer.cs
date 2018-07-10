@@ -69,7 +69,7 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void DecomposeCells(SerializableMapData mapData) {
-            Grid.Build();
+            Grid.Build(mapData.CellCountX, mapData.CellCountZ);
 
             foreach(var cellData in mapData.HexCells) {
                 var cellToModify = Grid.GetCellAtCoordinates(cellData.Coordinates);

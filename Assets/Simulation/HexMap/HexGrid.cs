@@ -32,15 +32,11 @@ namespace Assets.Simulation.HexMap {
             get { return Cells.AsReadOnly(); }
         }
 
-        public int ChunkCountX {
-            get { return _chunkCountX; }
-        }
-        [SerializeField] private int _chunkCountX;
+        public int ChunkCountX { get; private set; }
+        public int ChunkCountZ { get; private set; }
 
-        public int ChunkCountZ {
-            get { return _chunkCountZ; }
-        }
-        [SerializeField] private int _chunkCountZ;
+        public int CellCountX { get; private set; }
+        public int CellCountZ { get; private set; }
 
         #endregion
 
@@ -50,9 +46,6 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private LayerMask TerrainCollisionMask;
 
-        private int CellCountX;
-        private int CellCountZ;
-
         private List<IHexCell> Cells;
 
         private HexGridChunk[] Chunks;
@@ -61,8 +54,8 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private DiContainer                    Container;
-        private IWorkerSlotFactory             WorkerSlotFactory;
+        private DiContainer            Container;
+        private IWorkerSlotFactory     WorkerSlotFactory;
         private ICellModificationLogic CellModificationLogic;
 
         #endregion
@@ -81,7 +74,16 @@ namespace Assets.Simulation.HexMap {
 
         #region Unity message methods
 
-        private void Awake() {
+        #endregion
+
+        #region from IHexGrid        
+
+        public void Build(int chunkCountX, int chunkCountZ) {
+            Clear();
+
+            ChunkCountX = chunkCountX;
+            ChunkCountZ = chunkCountZ;
+
             CellCountX = ChunkCountX * HexMetrics.ChunkSizeX;
             CellCountZ = ChunkCountZ * HexMetrics.ChunkSizeZ;
 
@@ -89,13 +91,7 @@ namespace Assets.Simulation.HexMap {
             CellShaderData.Initialize(CellCountX, CellCountZ);
 
             CellShaderData.enabled = true;
-        }
 
-        #endregion
-
-        #region from IHexGrid        
-
-        public void Build() {
             var oldVisibilityMode = CellShaderData.ImmediateMode;
 
             CellShaderData.ImmediateMode = true;
@@ -152,6 +148,10 @@ namespace Assets.Simulation.HexMap {
             HexCoordinates coordinates = HexCoordinates.FromPosition(transform.InverseTransformPoint(location));
 
             return GetCellAtCoordinates(coordinates);
+        }
+
+        public IHexCell GetCellAtOffset(int xOffset, int zOffset) {
+            return Cells[xOffset + zOffset * CellCountX];
         }
 
         public bool HasNeighbor(IHexCell center, HexDirection direction) {
