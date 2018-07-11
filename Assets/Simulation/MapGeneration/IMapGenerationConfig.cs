@@ -27,6 +27,15 @@ namespace Assets.Simulation.MapGeneration {
         int InlandSeaMaxSize         { get; }
         int ContinentalShelfDistance { get; }
 
+
+
+        int MapBorderX { get; }
+        int MapBorderZ { get; }
+
+        int RegionBorder { get; }
+
+        int RegionCount { get; }
+
         #endregion
 
     }

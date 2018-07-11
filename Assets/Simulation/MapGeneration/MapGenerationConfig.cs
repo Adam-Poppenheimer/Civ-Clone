@@ -84,6 +84,27 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private int _continentalShelfDistance;
 
+
+        public int MapBorderX {
+            get { return _mapBorderX; }
+        }
+        [SerializeField, Range(0, 10)] private int _mapBorderX;
+
+        public int MapBorderZ {
+            get { return _mapBorderZ; }
+        }
+        [SerializeField, Range(0, 10)] private int _mapBorderZ;
+
+        public int RegionBorder {
+            get { return _regionBorder; }
+        }
+        [SerializeField, Range(0, 10)] private int _regionBorder;
+
+        public int RegionCount {
+            get { return _regionCount; }
+        }
+        [SerializeField, Range(1, 4)] private int _regionCount = 1;
+
         #endregion
 
         #endregion

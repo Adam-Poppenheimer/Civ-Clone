@@ -24247,7 +24247,7 @@ MonoBehaviour:
   m_MinValue: 5
   m_MaxValue: 30
   m_WholeNumbers: 1
-  m_Value: 8
+  m_Value: 11
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
@@ -26295,7 +26295,7 @@ MonoBehaviour:
   m_MinValue: 5
   m_MaxValue: 30
   m_WholeNumbers: 1
-  m_Value: 6
+  m_Value: 8
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:

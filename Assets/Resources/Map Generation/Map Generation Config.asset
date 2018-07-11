@@ -11,15 +11,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12dbe6e8a6bd62f498cef8c2c5f92b36, type: 3}
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
+  _useFixedSeed: 0
+  _fixedSeed: 715993951
   _jitterProbability: 0.5
   _chunkSizeMin: 30
-  _chunkSizeMax: 100
-  _landPercentage: 50
+  _chunkSizeMax: 80
+  _landPercentage: 40
   _mountainThreshold: 1.1
   _hillsThreshold: 0.88
   _flatlandsThreshold: 0
   _sectionRaisePressureMin: 0
   _sectionRaisePressureMax: 0.4
-  _lakeMaxSize: 10
-  _inlandSeaMaxSize: 30
-  _continentalShelfDistance: 2
+  _lakeMaxSize: 8
+  _inlandSeaMaxSize: 20
+  _continentalShelfDistance: 1
+  _mapBorderX: 5
+  _mapBorderZ: 5
+  _regionBorder: 5
+  _regionCount: 4
