@@ -1,5 +1,7 @@
 ﻿using System;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapGeneration {
 
     public interface IMapGenerationConfig {
@@ -35,6 +37,21 @@ namespace Assets.Simulation.MapGeneration {
         int RegionBorder { get; }
 
         int RegionCount { get; }
+
+
+        float StartingMoisture { get; }
+
+        float EvaporationCoefficient   { get; }
+        float PrecipitationCoefficient { get; }
+        float RunoffCoefficient        { get; }
+        float SeepageCoefficient       { get; }
+
+        HexDirection WindDirection { get; }
+        float        WindStrength  { get; }
+
+        float FlatlandsCloudMaximum { get; }
+        float HillsCloudMaximum     { get; }
+        float MountainsCloudMaximum { get; }
 
         #endregion
 

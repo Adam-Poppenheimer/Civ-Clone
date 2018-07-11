@@ -4,6 +4,7 @@
 		_MainTex ("Terrain Texture Array", 2DArray) = "white" {}
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Metallic ("Metallic", Range(0,1)) = 0.0
+		[Toggle(SHOW_MAP_DATA)] _ShowMapData("Show Map Data", Float) = 0
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
@@ -12,6 +13,7 @@
 		CGPROGRAM
 		#pragma surface surf Standard fullforwardshadows vertex:vert
 		#pragma target 3.5
+		#pragma shader_feature SHOW_MAP_DATA
 
 		#include "HexCellData.cginc"
 
@@ -22,6 +24,10 @@
 			float3 worldPos;
 			float3 terrain;
 			float3 visibility;
+
+			#if defined(SHOW_MAP_DATA)
+			float mapData;
+			#endif
 		};
 
 		
@@ -41,6 +47,10 @@
 			data.visibility.y = cell1.x;
 			data.visibility.z = cell2.x;
 			data.visibility = lerp(0.25, 1, data.visibility);
+
+			#if defined(SHOW_MAP_DATA)
+			data.mapData = cell0.z * v.color.x + cell1.z * v.color.y + cell2.z * v.color.z;
+			#endif
 		}
 
 		half _Glossiness;
@@ -60,6 +70,11 @@
 				GetTerrainColor(IN, 2);
 
 			o.Albedo = c.rgb * _Color;
+
+			#if defined(SHOW_MAP_DATA)
+			o.Albedo = IN.mapData;
+			#endif
+
 			o.Metallic = _Metallic;
 			o.Smoothness = _Glossiness;
 			o.Alpha = c.a;

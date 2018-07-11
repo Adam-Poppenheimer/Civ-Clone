@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapGeneration {
 
     [CreateAssetMenu(menuName = "Civ Clone/Map Generation Config")]
@@ -104,6 +106,60 @@ namespace Assets.Simulation.MapGeneration {
             get { return _regionCount; }
         }
         [SerializeField, Range(1, 4)] private int _regionCount = 1;
+
+
+
+        public float StartingMoisture {
+            get { return _startingMoisture; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _startingMoisture = 0.1f;
+
+        public float EvaporationCoefficient {
+            get { return _evaporationCoefficient; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _evaporationCoefficient = 0.5f;
+
+        public float PrecipitationCoefficient {
+            get { return _precipitationCoefficient; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _precipitationCoefficient = 0.25f;
+
+        public float RunoffCoefficient {
+            get { return _runoffCoefficient; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _runoffCoefficient = 0.25f;
+
+        public float SeepageCoefficient {
+            get { return _seepageCoefficient; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _seepageCoefficient = 0.125f;
+
+
+        public HexDirection WindDirection {
+            get { return _windDirection; }
+        }
+        [SerializeField] private HexDirection _windDirection = HexDirection.NW;
+
+        public float WindStrength {
+            get { return _windStrength; }
+        }
+        [SerializeField, Range(1f, 10f)] private float _windStrength = 4f;
+
+
+        public float FlatlandsCloudMaximum {
+            get { return _flatlandsCloudMaximum; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _flatlandsCloudMaximum = 1f;
+
+        public float HillsCloudMaximum {
+            get { return _hillsCloudMaximum; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _hillsCloudMaximum = 0.5f;
+
+        public float MountainsCloudMaximum {
+            get { return _mountainsCloudMaximum; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _mountainsCloudMaximum = 0.1f;
 
         #endregion
 

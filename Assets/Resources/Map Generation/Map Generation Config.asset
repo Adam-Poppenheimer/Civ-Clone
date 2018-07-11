@@ -11,12 +11,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12dbe6e8a6bd62f498cef8c2c5f92b36, type: 3}
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
-  _useFixedSeed: 0
-  _fixedSeed: 715993951
+  _useFixedSeed: 1
+  _fixedSeed: 362436002
   _jitterProbability: 0.5
   _chunkSizeMin: 30
-  _chunkSizeMax: 80
-  _landPercentage: 40
+  _chunkSizeMax: 60
+  _landPercentage: 50
   _mountainThreshold: 1.1
   _hillsThreshold: 0.88
   _flatlandsThreshold: 0
@@ -28,4 +28,14 @@ MonoBehaviour:
   _mapBorderX: 5
   _mapBorderZ: 5
   _regionBorder: 5
-  _regionCount: 4
+  _regionCount: 2
+  _startingMoisture: 0.1
+  _evaporationCoefficient: 0.5
+  _precipitationCoefficient: 0.25
+  _runoffCoefficient: 0.25
+  _seepageCoefficient: 0.125
+  _windDirection: 4
+  _windStrength: 5
+  _flatlandsCloudMaximum: 0.9
+  _hillsCloudMaximum: 0.5
+  _mountainsCloudMaximum: 0.1

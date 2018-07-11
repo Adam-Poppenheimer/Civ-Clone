@@ -226,6 +226,10 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        public void SetMapData(float data) {
+            ShaderData.SetMapData(this, data);
+        }
+
         public void Refresh() {
             if(Chunk != null) {
                 Chunk.Refresh();

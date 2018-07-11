@@ -129,6 +129,10 @@ namespace Assets.Simulation.HexMap {
             enabled = true;
         }
 
+        public void SetMapData(IHexCell cell, float data) {
+            CellTextureData[cell.Index].b = data < 0f ? (byte)0 : (data < 1f ? (byte)(data * 254f) : (byte)254f);
+        }
+
         private bool UpdateCellData(IHexCell cell, int delta) {
             int index = cell.Index;
             Color32 data = CellTextureData[index];

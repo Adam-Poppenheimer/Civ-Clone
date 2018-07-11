@@ -21,6 +21,10 @@ namespace Assets.Simulation.MapGeneration {
             public int XMin, XMax, ZMin, ZMax;
         }
 
+        private struct ClimateData {
+            public float Clouds, Moisture;
+        }
+
         #endregion
 
         #region instance fields and properties
@@ -28,6 +32,8 @@ namespace Assets.Simulation.MapGeneration {
         private int CellCount;
 
         private List<MapRegion> Regions;
+        private List<ClimateData> Climate     = new List<ClimateData>();
+        private List<ClimateData> NextClimate = new List<ClimateData>();
 
 
         private IHexGrid               Grid;
@@ -75,6 +81,9 @@ namespace Assets.Simulation.MapGeneration {
             CreateRegions();
             CreateLand();
             ReconfigureWater();
+            CreateClimate();
+            ApplyTerrain();
+            VisualizeData();
 
             UnityEngine.Random.state = originalRandomState;
         }
@@ -174,7 +183,6 @@ namespace Assets.Simulation.MapGeneration {
 
             CalculateLandAndElevation(landCells, elevationPressures);
 
-            ApplyTerrain(landCells);
             ApplyElevation(Grid.AllCells, elevationPressures);
         }
 
@@ -212,7 +220,8 @@ namespace Assets.Simulation.MapGeneration {
                     CellModLogic.ChangeShapeOfCell(cell, CellShape.Hills);
 
                 }else if(elevationPressure >= Config.FlatlandsThreshold) {
-                    CellModLogic.ChangeShapeOfCell(cell, CellShape.Flatlands);
+                    CellModLogic.ChangeShapeOfCell  (cell, CellShape  .Flatlands);
+                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
 
                 }else {
                     CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
@@ -220,9 +229,34 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void ApplyTerrain(HashSet<IHexCell> landCells) {
-            foreach(var cell in landCells) {
-                CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
+        private void ApplyTerrain() {
+            for(int i = 0; i < Grid.AllCells.Count; i++) {
+                var cell = Grid.AllCells[i];
+
+                if(cell.Terrain.IsWater() || cell.Shape == CellShape.Mountains) {
+                    continue;
+                }
+
+                float moisture = Climate[i].Moisture;
+                if(moisture < 0.25f) {
+                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Desert);
+
+                }else if(moisture < 0.45f) {
+                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Plains);
+
+                }else {
+                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
+                    if(moisture < 0.5f) {
+                        continue;
+
+                    }else if(moisture < 0.7f) {
+                        CellModLogic.ChangeVegetationOfCell(cell, CellVegetation.Forest);
+                    }else {
+                        CellModLogic.ChangeVegetationOfCell(cell, CellVegetation.Jungle);
+                    }
+
+                }
+                
             }
         }
 
@@ -291,6 +325,110 @@ namespace Assets.Simulation.MapGeneration {
                         }
                     }
                 }
+            }
+        }
+
+        private void CreateClimate() {
+            Climate.Clear();
+            NextClimate.Clear();
+
+            var initialData = new ClimateData();
+            initialData.Moisture = Config.StartingMoisture;
+
+            var clearData = new ClimateData();
+
+            for(int i = 0; i < CellCount; i++) {
+                Climate.Add(initialData);
+                NextClimate.Add(clearData);
+            }
+
+            for(int cycle = 0; cycle < 40; cycle++) {
+                for(int i = 0; i < CellCount; i++) {
+                    EvolveClimate(i);
+                }
+                var swap = Climate;
+                Climate = NextClimate;
+                NextClimate = swap;
+            }
+        }
+
+        private void EvolveClimate(int cellIndex) {
+            var cell = Grid.AllCells[cellIndex];
+            var cellClimate = Climate[cellIndex];
+
+            if(cell.Terrain.IsWater()) {
+                cellClimate.Moisture = 1f;
+                cellClimate.Clouds += Config.EvaporationCoefficient;
+            }else {
+                float evaporation = cellClimate.Moisture * Config.EvaporationCoefficient;
+                cellClimate.Moisture -= evaporation;
+                cellClimate.Clouds += evaporation;
+            }
+
+            float precipitation = cellClimate.Clouds * Config.PrecipitationCoefficient;
+            cellClimate.Clouds   -= precipitation;
+            cellClimate.Moisture += precipitation;
+
+            float cloudMaximum;
+            switch(cell.Shape) {
+                case CellShape.Flatlands: cloudMaximum = Config.FlatlandsCloudMaximum; break;
+                case CellShape.Hills:     cloudMaximum = Config.HillsCloudMaximum;     break;
+                case CellShape.Mountains: cloudMaximum = Config.MountainsCloudMaximum; break;
+                default:                  cloudMaximum = 0f;                           break;
+            }
+
+            if(cellClimate.Clouds > cloudMaximum) {
+                cellClimate.Moisture += cellClimate.Clouds - cloudMaximum;
+                cellClimate.Clouds = cloudMaximum;
+            }
+
+            HexDirection mainDisperalDirection = Config.WindDirection.Opposite();
+            float cloudDispersal = cellClimate.Clouds * (1f / (5f + Config.WindStrength));
+
+            float runoff  = cellClimate.Moisture * Config.RunoffCoefficient  * (1f / 6f);
+            float seepage = cellClimate.Moisture * Config.SeepageCoefficient * (1f / 6f);
+
+            for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; direction++) {
+                IHexCell neighbor = Grid.GetNeighbor(cell, direction);
+
+                if(neighbor == null) {
+                    continue;
+                }
+
+                var neighborClimate = NextClimate[neighbor.Index];
+
+                if(direction == mainDisperalDirection) {
+                    neighborClimate.Clouds += cloudDispersal * Config.WindStrength;
+                }else {
+                    neighborClimate.Clouds += cloudDispersal;
+                }
+
+                if(neighbor.ViewElevation < cell.ViewElevation) {
+                    cellClimate    .Moisture -= runoff;
+                    neighborClimate.Moisture += runoff;
+
+                }else if(neighbor.ViewElevation == cell.ViewElevation) {
+                    cellClimate    .Moisture -= seepage;
+                    neighborClimate.Moisture += seepage;
+                }
+
+                NextClimate[neighbor.Index] = neighborClimate;
+            }
+
+            ClimateData nextCellClimate = NextClimate[cellIndex];
+
+            nextCellClimate.Moisture += cellClimate.Moisture;
+            if(nextCellClimate.Moisture > 1f) {
+                nextCellClimate.Moisture = 1f;
+            }
+
+            NextClimate[cellIndex] = nextCellClimate;
+            Climate[cellIndex] = new ClimateData();
+        }
+
+        private void VisualizeData() {
+            for(int i = 0; i < CellCount; i++) {
+                Grid.AllCells[i].SetMapData(Climate[i].Moisture);
             }
         }
 

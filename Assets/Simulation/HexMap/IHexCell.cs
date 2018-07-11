@@ -64,6 +64,8 @@ namespace Assets.Simulation.HexMap {
 
         void RefreshVisibility();
 
+        void SetMapData(float data);
+
         void Destroy();
 
         #endregion
