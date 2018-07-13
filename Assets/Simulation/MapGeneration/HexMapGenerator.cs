@@ -51,7 +51,6 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         private int CellCount;
-        private int LandCellCount;
 
         private List<MapRegion> Regions;
         private List<ClimateData> Climate     = new List<ClimateData>();
@@ -112,7 +111,9 @@ namespace Assets.Simulation.MapGeneration {
             ReconfigureWater();
             CreateClimate();
             ApplyTerrainAndVegetation();
-            RiverGenerator.CreateRivers(Climate, LandCellCount);
+
+            int landCount = Grid.AllCells.Count(cell => !cell.Terrain.IsWater());
+            RiverGenerator.CreateRivers(Climate, landCount);
 
             UnityEngine.Random.state = originalRandomState;
         }
@@ -219,7 +220,6 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IHexCell> landCells, Dictionary<IHexCell, float> elevationPressures
         ) {
             int landBudget = Mathf.RoundToInt(CellCount * Config.LandPercentage * 0.01f);
-            LandCellCount = landBudget;
 
             int iterations = 0;
 
@@ -232,10 +232,6 @@ namespace Assets.Simulation.MapGeneration {
                         return;
                     } 
                 } 
-            }
-
-            if(landBudget > 0) {
-                LandCellCount -= landBudget;
             }
         }
 

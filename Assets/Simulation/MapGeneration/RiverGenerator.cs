@@ -42,7 +42,9 @@ namespace Assets.Simulation.MapGeneration {
 
         public void CreateRivers(List<ClimateData> climateData, int landCellCount) {
             var riverOrigins = new List<IHexCell>();
-            for(int i = 0; i < landCellCount; i++) {
+
+            int cellCount = Grid.AllCells.Count;
+            for(int i = 0; i < cellCount; i++) {
                 var cell = Grid.AllCells[i];
 
                 if(cell.Terrain.IsWater()) {
