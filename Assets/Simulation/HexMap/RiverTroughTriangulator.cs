@@ -47,13 +47,13 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.TriangulateEdgeStripUnperturbed(
                 nearEdge,   MeshBuilder.Weights1,  data.Center.Index,
                 troughEdge, MeshBuilder.Weights12, data.Right.Index,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.TriangulateEdgeStripUnperturbed(
                 troughEdge, MeshBuilder.Weights12, data.Center.Index,
                 farEdge,    MeshBuilder.Weights2,  data.Right .Index,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -65,7 +65,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Triangle pointing at left, which CenterRight river flows towards
@@ -73,7 +73,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,   data.Center.Index, MeshBuilder.Weights2,
                 data.LeftRightTroughPoint,  data.Left  .Index, MeshBuilder.Weights23,
                 data.CenterLeftTroughPoint, data.Right .Index, MeshBuilder.Weights12,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Triangle pointing at right, which CenterLeft river flows towards
@@ -81,7 +81,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedRightCorner,   data.Center.Index, MeshBuilder.Weights3,
                 data.CenterRightTroughPoint, data.Left  .Index, MeshBuilder.Weights13,
                 data.LeftRightTroughPoint,   data.Right .Index, MeshBuilder.Weights23,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
 
             //Triangle in the middle, touching each of the trough points and which all rivers flow towards
@@ -89,7 +89,7 @@ namespace Assets.Simulation.HexMap {
                 data.CenterLeftTroughPoint,  data.Center.Index, MeshBuilder.Weights12,
                 data.LeftRightTroughPoint,   data.Left  .Index, MeshBuilder.Weights23,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -312,7 +312,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights1,
                 data.CenterLeftTroughPoint,  data.Left  .Index, MeshBuilder.Weights12,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights13,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
         }
 
@@ -323,13 +323,13 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,   MeshBuilder.Weights2,
                 data.PerturbedRightCorner,  MeshBuilder.Weights3,
                 data.CenterLeftTroughPoint, MeshBuilder.Weights12,
-                data.StandardIndicies, MeshBuilder.SmoothTerrain
+                data.StandardIndicies, MeshBuilder.JaggedTerrain
             );
             MeshBuilder.AddTriangleUnperturbed(
                 data.CenterLeftTroughPoint,  MeshBuilder.Weights12,
                 data.PerturbedRightCorner,   MeshBuilder.Weights3,
                 data.CenterRightTroughPoint, MeshBuilder.Weights13,
-                data.StandardIndicies, MeshBuilder.SmoothTerrain
+                data.StandardIndicies, MeshBuilder.JaggedTerrain
             );
         }
 
@@ -672,14 +672,14 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.PerturbedRightCorner,   data.Right .Index, MeshBuilder.Weights2,
                 data.CenterRightTroughPoint, data.Center.Index, MeshBuilder.Weights23,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedLeftCorner,    data.Left  .Index, MeshBuilder.Weights1,
                 data.CenterRightTroughPoint, data.Right .Index, MeshBuilder.Weights23,
                 data.PerturbedCenterCorner,  data.Center.Index, MeshBuilder.Weights3,
-                MeshBuilder.SmoothTerrain
+                MeshBuilder.JaggedTerrain
             );
         }
 

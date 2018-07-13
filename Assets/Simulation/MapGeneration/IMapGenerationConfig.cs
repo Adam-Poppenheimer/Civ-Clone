@@ -53,6 +53,19 @@ namespace Assets.Simulation.MapGeneration {
         float HillsCloudMaximum     { get; }
         float MountainsCloudMaximum { get; }
 
+
+        int RiverSegmentPercentage { get; }
+        int RiverMaxLengthInHexes  { get; }
+
+
+
+        float LowTemperature  { get; }
+        float HighTemperature { get; }
+
+        HemisphereMode Hemispheres { get; }
+
+        float TemperatureJitter { get; }
+
         #endregion
 
     }

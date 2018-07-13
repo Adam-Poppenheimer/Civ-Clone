@@ -21,15 +21,37 @@ namespace Assets.Simulation.MapGeneration {
             public int XMin, XMax, ZMin, ZMax;
         }
 
-        private struct ClimateData {
-            public float Clouds, Moisture;
-        }
+        #endregion
+
+        #region static fields and properties
+
+        private static float[] TemperatureBands = { 0.2f, 0.28f, 0.54f, 0.85f };
+        private static float[] MoistureBands    = { 0.2f, 0.28f, 0.54f, 0.85f };
+
+        //X axis is moisture, ascending from left to right
+        //Y axis is temperature, ascending from top to bottom
+        private static CellTerrain[] BiomeTerrains = {
+            CellTerrain.Snow,   CellTerrain.Snow,   CellTerrain.Snow,   CellTerrain.Snow,      CellTerrain.Snow,
+            CellTerrain.Tundra, CellTerrain.Tundra, CellTerrain.Tundra, CellTerrain.Tundra,    CellTerrain.Tundra,
+            CellTerrain.Desert, CellTerrain.Plains, CellTerrain.Plains, CellTerrain.Plains,    CellTerrain.Grassland,
+            CellTerrain.Desert, CellTerrain.Desert, CellTerrain.Plains, CellTerrain.Grassland, CellTerrain.Grassland,
+            CellTerrain.Desert, CellTerrain.Desert, CellTerrain.Plains, CellTerrain.Grassland, CellTerrain.Grassland,
+        };
+
+        private static CellVegetation[] BiomeVegetations = {
+            CellVegetation.None, CellVegetation.None, CellVegetation.None, CellVegetation.None,   CellVegetation.None,
+            CellVegetation.None, CellVegetation.None, CellVegetation.None, CellVegetation.Forest, CellVegetation.Forest,
+            CellVegetation.None, CellVegetation.None, CellVegetation.None, CellVegetation.Forest, CellVegetation.Forest,
+            CellVegetation.None, CellVegetation.None, CellVegetation.None, CellVegetation.Forest, CellVegetation.Jungle,
+            CellVegetation.None, CellVegetation.None, CellVegetation.None, CellVegetation.Jungle, CellVegetation.Jungle,
+        };
 
         #endregion
 
         #region instance fields and properties
 
         private int CellCount;
+        private int LandCellCount;
 
         private List<MapRegion> Regions;
         private List<ClimateData> Climate     = new List<ClimateData>();
@@ -39,6 +61,9 @@ namespace Assets.Simulation.MapGeneration {
         private IHexGrid               Grid;
         private ICellModificationLogic CellModLogic;
         private IMapGenerationConfig   Config;
+        private IHexMapConfig          HexMapConfig;
+        private IRiverGenerator        RiverGenerator;
+        private INoiseGenerator        NoiseGenerator;
 
         #endregion
 
@@ -47,11 +72,15 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public HexMapGenerator(
             IHexGrid grid, ICellModificationLogic cellModLogic,
-            IMapGenerationConfig config
+            IMapGenerationConfig config, IHexMapConfig hexMapConfig,
+            IRiverGenerator riverGenerator, INoiseGenerator noiseGenerator
         ) {
-            Grid         = grid;
-            CellModLogic = cellModLogic;
-            Config       = config;
+            Grid           = grid;
+            CellModLogic   = cellModLogic;
+            Config         = config;
+            HexMapConfig   = hexMapConfig;
+            RiverGenerator = riverGenerator;
+            NoiseGenerator = noiseGenerator;
         }
 
         #endregion
@@ -82,8 +111,8 @@ namespace Assets.Simulation.MapGeneration {
             CreateLand();
             ReconfigureWater();
             CreateClimate();
-            ApplyTerrain();
-            VisualizeData();
+            ApplyTerrainAndVegetation();
+            RiverGenerator.CreateRivers(Climate, LandCellCount);
 
             UnityEngine.Random.state = originalRandomState;
         }
@@ -190,6 +219,8 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IHexCell> landCells, Dictionary<IHexCell, float> elevationPressures
         ) {
             int landBudget = Mathf.RoundToInt(CellCount * Config.LandPercentage * 0.01f);
+            LandCellCount = landBudget;
+
             int iterations = 0;
 
             int sizeOfSection = UnityEngine.Random.Range(Config.SectionSizeMin, Config.SectionSizeMax + 1);
@@ -201,6 +232,10 @@ namespace Assets.Simulation.MapGeneration {
                         return;
                     } 
                 } 
+            }
+
+            if(landBudget > 0) {
+                LandCellCount -= landBudget;
             }
         }
 
@@ -229,7 +264,9 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void ApplyTerrain() {
+        private void ApplyTerrainAndVegetation() {
+            var temperatureJitterChannel = UnityEngine.Random.Range(0, 4);
+
             for(int i = 0; i < Grid.AllCells.Count; i++) {
                 var cell = Grid.AllCells[i];
 
@@ -237,26 +274,30 @@ namespace Assets.Simulation.MapGeneration {
                     continue;
                 }
 
+                float temperature = DetermineTemperature(cell, temperatureJitterChannel);
                 float moisture = Climate[i].Moisture;
-                if(moisture < 0.25f) {
-                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Desert);
 
-                }else if(moisture < 0.45f) {
-                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Plains);
-
-                }else {
-                    CellModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
-                    if(moisture < 0.5f) {
-                        continue;
-
-                    }else if(moisture < 0.7f) {
-                        CellModLogic.ChangeVegetationOfCell(cell, CellVegetation.Forest);
-                    }else {
-                        CellModLogic.ChangeVegetationOfCell(cell, CellVegetation.Jungle);
+                int tempeartureIndex = 0;
+                for(; tempeartureIndex < TemperatureBands.Length; tempeartureIndex++) {
+                    if(temperature < TemperatureBands[tempeartureIndex]) {
+                        break;
                     }
-
                 }
-                
+
+                int moistureIndex = 0;
+                for(; moistureIndex < MoistureBands.Length; moistureIndex++) {
+                    if(moisture < MoistureBands[moistureIndex]) {
+                        break;
+                    }
+                }
+
+                var terrain    = BiomeTerrains   [tempeartureIndex * 5 + moistureIndex];
+                var vegetation = BiomeVegetations[tempeartureIndex * 5 + moistureIndex];
+
+                CellModLogic.ChangeTerrainOfCell(cell, terrain);
+                if( CellModLogic.CanChangeVegetationOfCell(cell, vegetation)) {
+                    CellModLogic.ChangeVegetationOfCell   (cell, vegetation);
+                }                
             }
         }
 
@@ -426,10 +467,24 @@ namespace Assets.Simulation.MapGeneration {
             Climate[cellIndex] = new ClimateData();
         }
 
-        private void VisualizeData() {
-            for(int i = 0; i < CellCount; i++) {
-                Grid.AllCells[i].SetMapData(Climate[i].Moisture);
+        private float DetermineTemperature(IHexCell cell, int jitterChannel) {
+            float latitude = (float)cell.Coordinates.Z / Grid.CellCountZ;
+            if(Config.Hemispheres == HemisphereMode.Both) {
+                latitude *= 2;
+                if(latitude > 1f) {
+                    latitude = 2f - latitude;
+                }
+            }else if(Config.Hemispheres == HemisphereMode.North) {
+                latitude = 1f - latitude;
             }
+
+            float temperature = Mathf.LerpUnclamped(Config.LowTemperature, Config.HighTemperature, latitude);
+
+            float jitter = NoiseGenerator.SampleNoise(cell.Position * 0.1f)[jitterChannel];
+
+            temperature += (jitter * 2f - 1f) * Config.TemperatureJitter;
+
+            return temperature;
         }
 
         private bool HasLandWithinDistance(IHexCell waterCell, int distance) {

@@ -50,6 +50,10 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private int _mountainTerrainIndex;
 
+        public int MaxElevation {
+            get { return GetPeakElevationForShape(CellShape.Mountains) + GetFoundationElevationForTerrain(CellTerrain.Grassland); }
+        }
+
         #endregion
 
         [SerializeField] private int BaseMoveCost;

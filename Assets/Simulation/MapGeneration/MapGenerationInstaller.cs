@@ -22,6 +22,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from MonoInstaller
 
         public override void InstallBindings() {
+            Container.Bind<IRiverGenerator>().To<RiverGenerator>().AsSingle();
+
             Container.Bind<IHexMapGenerator>().To<HexMapGenerator>().AsSingle();
 
             Container.Bind<IMapGenerationConfig>().To<MapGenerationConfig>().FromInstance(Config);

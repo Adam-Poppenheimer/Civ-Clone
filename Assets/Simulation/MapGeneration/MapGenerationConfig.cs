@@ -161,6 +161,40 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0f, 1f)] private float _mountainsCloudMaximum = 0.1f;
 
+
+
+        public int RiverSegmentPercentage {
+            get { return _riverSegmentPercentage; }
+        }
+        [SerializeField, Range(0, 20)] private int _riverSegmentPercentage = 10;
+
+        public int RiverMaxLengthInHexes {
+            get { return _riverMaxLengthInHexes; }
+        }
+        [SerializeField, Range(0, 100)] private int _riverMaxLengthInHexes = 30;
+
+
+
+        public float LowTemperature {
+            get { return _lowTemperature; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _lowTemperature = 0f;
+
+        public float HighTemperature {
+            get { return _highTemperature; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _highTemperature = 1f;
+
+        public HemisphereMode Hemispheres {
+            get { return _hemispheres; }
+        }
+        [SerializeField] private HemisphereMode _hemispheres = HemisphereMode.Both;
+
+        public float TemperatureJitter {
+            get { return _temperatureJitter; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _temperatureJitter = 0.1f;
+
         #endregion
 
         #endregion

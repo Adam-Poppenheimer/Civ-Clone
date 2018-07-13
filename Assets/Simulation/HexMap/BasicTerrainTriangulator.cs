@@ -61,13 +61,13 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, data.Center.RequiresYPerturb,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, data.Right .RequiresYPerturb,
-                    MeshBuilder.SmoothTerrain
+                    MeshBuilder.JaggedTerrain
                 );
             }else{
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index,
-                    MeshBuilder.SmoothTerrain
+                    MeshBuilder.JaggedTerrain
                 );
             }
 
@@ -195,7 +195,7 @@ namespace Assets.Simulation.HexMap {
                     data.PerturbedCenterCorner, data.Center.Index, MeshBuilder.Weights1,
                     data.PerturbedLeftCorner,   data.Left  .Index, MeshBuilder.Weights2,
                     data.PerturbedRightCorner,  data.Right .Index, MeshBuilder.Weights3,
-                    MeshBuilder.SmoothTerrain
+                    MeshBuilder.JaggedTerrain
                 );
             }            
         }

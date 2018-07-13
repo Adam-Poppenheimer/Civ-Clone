@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12dbe6e8a6bd62f498cef8c2c5f92b36, type: 3}
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
-  _useFixedSeed: 1
-  _fixedSeed: 362436002
+  _useFixedSeed: 0
+  _fixedSeed: 539472490
   _jitterProbability: 0.5
   _chunkSizeMin: 30
   _chunkSizeMax: 60
@@ -39,3 +39,9 @@ MonoBehaviour:
   _flatlandsCloudMaximum: 0.9
   _hillsCloudMaximum: 0.5
   _mountainsCloudMaximum: 0.1
+  _riverSegmentPercentage: 10
+  _riverMaxLengthInHexes: 30
+  _lowTemperature: 0
+  _highTemperature: 1
+  _hemispheres: 0
+  _temperatureJitter: 0.1
