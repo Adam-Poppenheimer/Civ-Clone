@@ -60,7 +60,6 @@ namespace Assets.Simulation.MapGeneration {
         private IHexGrid               Grid;
         private ICellModificationLogic CellModLogic;
         private IMapGenerationConfig   Config;
-        private IHexMapConfig          HexMapConfig;
         private IRiverGenerator        RiverGenerator;
         private INoiseGenerator        NoiseGenerator;
 
@@ -71,13 +70,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public HexMapGenerator(
             IHexGrid grid, ICellModificationLogic cellModLogic,
-            IMapGenerationConfig config, IHexMapConfig hexMapConfig,
-            IRiverGenerator riverGenerator, INoiseGenerator noiseGenerator
+            IMapGenerationConfig config, IRiverGenerator riverGenerator,
+            INoiseGenerator noiseGenerator
         ) {
             Grid           = grid;
             CellModLogic   = cellModLogic;
             Config         = config;
-            HexMapConfig   = hexMapConfig;
             RiverGenerator = riverGenerator;
             NoiseGenerator = noiseGenerator;
         }
@@ -101,7 +99,7 @@ namespace Assets.Simulation.MapGeneration {
                 Debug.Log("Using seed " + seed);
             }else {
                 UnityEngine.Random.InitState(Config.FixedSeed);
-            }            
+            }
 
             CellCount = chunkCountX * HexMetrics.ChunkSizeX * chunkCountZ * HexMetrics.ChunkSizeZ;
 
@@ -129,46 +127,46 @@ namespace Assets.Simulation.MapGeneration {
 
             MapRegion region;
             if(Config.RegionCount == 1) {
-                region.XMin = Config.MapBorderX;
-                region.XMax = Grid.CellCountX - Config.MapBorderX;
-                region.ZMin = Config.MapBorderZ;
-                region.ZMax = Grid.CellCountZ - Config.MapBorderZ;
+                region.XMin = Config.HardMapBorderX;
+                region.XMax = Grid.CellCountX - Config.HardMapBorderX;
+                region.ZMin = Config.HardMapBorderZ;
+                region.ZMax = Grid.CellCountZ - Config.HardMapBorderZ;
 
                 Regions.Add(region);
 
             } else if(Config.RegionCount == 2) {
                 if(UnityEngine.Random.value < 0.5f) {
-                    region.XMin = Config.MapBorderX;
+                    region.XMin = Config.HardMapBorderX;
                     region.XMax = Grid.CellCountX / 2 - Config.RegionBorder;
-                    region.ZMin = Config.MapBorderZ;
-                    region.ZMax = Grid.CellCountZ - Config.MapBorderZ;
+                    region.ZMin = Config.HardMapBorderZ;
+                    region.ZMax = Grid.CellCountZ - Config.HardMapBorderZ;
 
                     Regions.Add(region);
 
                     region.XMin = Grid.CellCountX / 2 + Config.RegionBorder;
-                    region.XMax = Grid.CellCountX - Config.MapBorderX;
+                    region.XMax = Grid.CellCountX - Config.HardMapBorderX;
 
                     Regions.Add(region);
                 } else {
-                    region.XMin = Config.MapBorderX;
-                    region.XMax = Grid.CellCountX - Config.MapBorderX;
-                    region.ZMin = Config.MapBorderZ;
+                    region.XMin = Config.HardMapBorderX;
+                    region.XMax = Grid.CellCountX - Config.HardMapBorderX;
+                    region.ZMin = Config.HardMapBorderZ;
                     region.ZMax = Grid.CellCountZ / 2 - Config.RegionBorder;
 
                     Regions.Add(region);
 
                     region.ZMin = Grid.CellCountZ / 2 + Config.RegionBorder;
-                    region.ZMax = Grid.CellCountZ - Config.MapBorderZ;
+                    region.ZMax = Grid.CellCountZ - Config.HardMapBorderZ;
 
                     Regions.Add(region);
                 }
 
 
             } else if(Config.RegionCount == 3) {
-                region.XMin = Config.MapBorderX;
+                region.XMin = Config.HardMapBorderX;
                 region.XMax = Grid.CellCountX / 3 - Config.RegionBorder;
-                region.ZMin = Config.MapBorderZ;
-                region.ZMax = Grid.CellCountZ - Config.MapBorderZ;
+                region.ZMin = Config.HardMapBorderZ;
+                region.ZMax = Grid.CellCountZ - Config.HardMapBorderZ;
 
                 Regions.Add(region);
 
@@ -178,28 +176,28 @@ namespace Assets.Simulation.MapGeneration {
                 Regions.Add(region);
 
                 region.XMin = Grid.CellCountX * 2 / 3 + Config.RegionBorder;
-                region.XMax = Grid.CellCountX - Config.MapBorderX;
+                region.XMax = Grid.CellCountX - Config.HardMapBorderX;
 
                 Regions.Add(region);
             } else {
-                region.XMin = Config.MapBorderX;
+                region.XMin = Config.HardMapBorderX;
 			    region.XMax = Grid.CellCountX / 2 - Config.RegionBorder;
-			    region.ZMin = Config.MapBorderZ;
+			    region.ZMin = Config.HardMapBorderZ;
 			    region.ZMax = Grid.CellCountZ / 2 - Config.RegionBorder;
 
 			    Regions.Add(region);
 
 			    region.XMin = Grid.CellCountX / 2 + Config.RegionBorder;
-			    region.XMax = Grid.CellCountX - Config.MapBorderX;
+			    region.XMax = Grid.CellCountX - Config.HardMapBorderX;
 
 			    Regions.Add(region);
 
 			    region.ZMin = Grid.CellCountZ / 2 + Config.RegionBorder;
-			    region.ZMax = Grid.CellCountZ - Config.MapBorderZ;
+			    region.ZMax = Grid.CellCountZ - Config.HardMapBorderZ;
 
 			    Regions.Add(region);
 
-			    region.XMin = Config.MapBorderX;
+			    region.XMin = Config.HardMapBorderX;
 			    region.XMax = Grid.CellCountX / 2 - Config.RegionBorder;
 
 			    Regions.Add(region);

@@ -58,6 +58,14 @@ namespace Assets.Simulation.HexMap {
             return new HexCoordinates(x - z / 2, z);
         }
 
+        public static int ToOffsetCoordinateX(HexCoordinates cubeCoords) {
+            return cubeCoords.X + (cubeCoords.Z - (cubeCoords.Z & 1)) / 2;
+        }
+
+        public static int ToOffsetCoordinateZ(HexCoordinates cubeCoords) {
+            return cubeCoords.Z;
+        }
+
         public static HexCoordinates FromPosition(Vector3 position) {
             float x = position.x / (HexMetrics.InnerRadius * 2f);
             float y = -x;

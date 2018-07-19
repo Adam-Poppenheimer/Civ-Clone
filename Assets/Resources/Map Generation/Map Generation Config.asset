@@ -12,21 +12,24 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 539472490
+  _fixedSeed: 1950569725
   _jitterProbability: 0.5
   _chunkSizeMin: 30
   _chunkSizeMax: 60
-  _landPercentage: 50
-  _mountainThreshold: 1.1
-  _hillsThreshold: 0.88
+  _landPercentage: 30
+  _mountainThreshold: 0.7
+  _hillsThreshold: 0.65
   _flatlandsThreshold: 0
   _sectionRaisePressureMin: 0
   _sectionRaisePressureMax: 0.4
   _lakeMaxSize: 8
   _inlandSeaMaxSize: 20
   _continentalShelfDistance: 1
-  _mapBorderX: 5
-  _mapBorderZ: 5
+  _hardMapBorderX: 2
+  _hardMapBorderZ: 1
+  _softMapBorderX: 3
+  _softMapBorderZ: 3
+  _softBorderAvoidance: 1
   _regionBorder: 5
   _regionCount: 2
   _startingMoisture: 0.1
@@ -45,3 +48,11 @@ MonoBehaviour:
   _highTemperature: 1
   _hemispheres: 0
   _temperatureJitter: 0.1
+  _civCount: 8
+  _minCivSeparation: 10
+  _continentJitterX: 3
+  _continentJitterZ: 2
+  _startingLocationTemplates:
+  - {fileID: 11400000, guid: dad453d0a2238624eb3697cdc81c2687, type: 2}
+  _boundaryTemplates:
+  - {fileID: 11400000, guid: af7cd1af7230fa14b8e25fd1a1548a18, type: 2}

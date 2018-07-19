@@ -87,15 +87,31 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField] private int _continentalShelfDistance;
 
 
-        public int MapBorderX {
-            get { return _mapBorderX; }
+        public int HardMapBorderX {
+            get { return _hardMapBorderX; }
         }
-        [SerializeField, Range(0, 10)] private int _mapBorderX;
+        [SerializeField, Range(0, 10)] private int _hardMapBorderX = 2;
 
-        public int MapBorderZ {
-            get { return _mapBorderZ; }
+        public int HardMapBorderZ {
+            get { return _hardMapBorderZ; }
         }
-        [SerializeField, Range(0, 10)] private int _mapBorderZ;
+        [SerializeField, Range(0, 10)] private int _hardMapBorderZ = 2;
+
+        public int SoftMapBorderX {
+            get { return _softMapBorderX; }
+        }
+        [SerializeField, Range(0, 10)] private int _softMapBorderX = 2;
+
+        public int SoftMapBorderZ {
+            get { return _softMapBorderZ; }
+        }
+        [SerializeField, Range(0, 10)] private int _softMapBorderZ = 2;
+
+        public int SoftBorderAvoidance {
+            get { return _softBorderAvoidance; }
+        }
+        [SerializeField, Range(1, 100)] private int _softBorderAvoidance = 10;
+
 
         public int RegionBorder {
             get { return _regionBorder; }
@@ -194,6 +210,41 @@ namespace Assets.Simulation.MapGeneration {
             get { return _temperatureJitter; }
         }
         [SerializeField, Range(0f, 1f)] private float _temperatureJitter = 0.1f;
+
+
+
+
+        public int CivCount {
+            get { return _civCount; }
+        }
+        [SerializeField, Range(2, 10)] private int _civCount = 8;
+
+        public int MinCivSeparation {
+            get { return _minCivSeparation; }
+        }
+        [SerializeField, Range(5, 20)] private int _minCivSeparation = 10;
+
+        public int ContinentJitterX {
+            get { return _continentJitterX; }
+        }
+        [SerializeField, Range(0, 5)] private int _continentJitterX = 3;
+
+        public int ContinentJitterZ {
+            get { return _continentJitterZ; }
+        }
+        [SerializeField, Range(0, 5)] private int _continentJitterZ = 2;
+
+
+
+        public IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates {
+            get { return _startingLocationTemplates.Cast<IRegionGenerationTemplate>(); }
+        }
+        [SerializeField] private List<RegionGenerationTemplate> _startingLocationTemplates;
+
+        public IEnumerable<IRegionGenerationTemplate> BoundaryTemplates {
+            get { return _boundaryTemplates.Cast<IRegionGenerationTemplate>(); }
+        }
+        [SerializeField] private List<RegionGenerationTemplate> _boundaryTemplates;
 
         #endregion
 

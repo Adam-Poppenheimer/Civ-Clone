@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+
+using UnityEngine;
 
 using Assets.Simulation.HexMap;
 
@@ -31,8 +34,13 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        int MapBorderX { get; }
-        int MapBorderZ { get; }
+        int HardMapBorderX { get; }
+        int HardMapBorderZ { get; }
+
+        int SoftMapBorderX { get; }
+        int SoftMapBorderZ { get; }
+
+        int SoftBorderAvoidance { get; }
 
         int RegionBorder { get; }
 
@@ -65,6 +73,18 @@ namespace Assets.Simulation.MapGeneration {
         HemisphereMode Hemispheres { get; }
 
         float TemperatureJitter { get; }
+
+
+
+        int CivCount         { get; }
+        int MinCivSeparation { get; }
+
+        int ContinentJitterX { get; }
+        int ContinentJitterZ { get; }
+
+
+        IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates { get; }
+        IEnumerable<IRegionGenerationTemplate> BoundaryTemplates         { get; }
 
         #endregion
 

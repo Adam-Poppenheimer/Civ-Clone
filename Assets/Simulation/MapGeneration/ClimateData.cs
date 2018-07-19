@@ -9,7 +9,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        public float Clouds, Moisture;
+        public float Clouds;
+        public float Moisture;
+        public float Temperature;
 
         #endregion
 
