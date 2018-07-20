@@ -22,10 +22,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.QueueForInject(Config);
-
-            foreach(var template in Config.StartingLocationTemplates.Concat(Config.BoundaryTemplates)) {
-                Container.QueueForInject(template);
+            foreach(var regionTemplate in Resources.LoadAll<RegionGenerationTemplate>("")) {
+                Container.QueueForInject(regionTemplate);
             }
 
             Container.Bind<IRiverGenerator>().To<RiverGenerator>().AsSingle();

@@ -46,146 +46,124 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IContinentGenerator
 
-         public void GenerateContinent(MapRegion continent) {
+         public void GenerateContinent(MapRegion continent, IContinentGenerationTemplate template) {
             foreach(var cell in continent.Cells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
             }
 
             var unassignedCells = new HashSet<IHexCell>(continent.Cells);
 
-            var regions = SplitContinentIntoRegions(continent, unassignedCells);
+            var regions = SplitContinentIntoRegions(continent, template, unassignedCells);
 
             AssignOrphansToRegions(unassignedCells, regions);
 
-            RegionGenerator.GenerateRegion(regions[0], Config.StartingLocationTemplates.Random());
-            RegionGenerator.GenerateRegion(regions[1], Config.BoundaryTemplates        .Random());
-            RegionGenerator.GenerateRegion(regions[2], Config.StartingLocationTemplates.Random());
-
-            foreach(var cell in regions[1].Cells) {
-                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.Desert);
-            }
+            RegionGenerator.GenerateRegion(regions[0], template.StartingLocationTemplates.Random());
+            RegionGenerator.GenerateRegion(regions[1], template.BoundaryTemplates        .Random());
+            RegionGenerator.GenerateRegion(regions[2], template.StartingLocationTemplates.Random());
         }
 
         #endregion
 
-        private List<MapRegion> SplitContinentIntoRegions(MapRegion continent, HashSet<IHexCell> unassignedCells) {
+        private List<MapRegion> SplitContinentIntoRegions(
+            MapRegion continent, IContinentGenerationTemplate template,
+            HashSet<IHexCell> unassignedCells
+        ) {
             if(continent.IsTallerThanWide()) {
-                return SplitContinentIntoRegions_Vertical(continent, unassignedCells);
+                return SplitContinentIntoRegions_Vertical(continent, template, unassignedCells);
             }else {
-                return SplitContinentIntoRegions_Horizontal(continent, unassignedCells);
+                return SplitContinentIntoRegions_Horizontal(continent, template, unassignedCells);
             }
         }
 
         private List<MapRegion> SplitContinentIntoRegions_Vertical(
-            MapRegion continent, HashSet<IHexCell> unassignedCells
+            MapRegion continent, IContinentGenerationTemplate template, HashSet<IHexCell> unassignedCells
         ) {
-            var topRegion    = new MapRegion(Grid);
-            var middleRegion = new MapRegion(Grid);
-            var bottomRegion = new MapRegion(Grid);
+            var regions        = new List<MapRegion>();
+            var regionCrawlers = new Dictionary<MapRegion, IEnumerator<IHexCell>>();
 
             var zBiasedWeightFunction = BuildAxisBiasedWeightFunction(100f, 1f);
 
             int xAverage = Mathf.RoundToInt((continent.XMin + continent.XMax) / 2f);
             int zSpan    = continent.ZMax - continent.ZMin;
 
-            IHexCell topSeed    = continent.GetClosestCellToCell(Grid.GetCellAtOffset(xAverage, continent.ZMin + Mathf.RoundToInt(zSpan * 5f / 6f)));
-            IHexCell middleSeed = continent.GetClosestCellToCell(Grid.GetCellAtOffset(xAverage, continent.ZMin + Mathf.RoundToInt(zSpan * 3f / 6f)));
-            IHexCell bottomSeed = continent.GetClosestCellToCell(Grid.GetCellAtOffset(xAverage, continent.ZMin + Mathf.RoundToInt(zSpan * 1f / 6f)));
+            int totalRegionCount = 2 * template.StartingAreaCount - 1;
 
-            var topCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                topSeed, unassignedCells, zBiasedWeightFunction
-            );
+            for(int i = 0; i < totalRegionCount; i++) {
+                var region = new MapRegion(Grid);                
 
-            var middleCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                middleSeed, unassignedCells, zBiasedWeightFunction
-            );
+                float ratioUpZSpan = (2 * i + 1) / (totalRegionCount * 2f);
 
-            var bottomCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                bottomSeed, unassignedCells, zBiasedWeightFunction
-            );
+                var seed = continent.GetClosestCellToCell(                    
+                    Grid.GetCellAtOffset(xAverage, continent.ZMin + Mathf.RoundToInt(zSpan * ratioUpZSpan))
+                );
+
+                regionCrawlers[region] = GridTraversalLogic.GetCrawlingEnumerator(
+                    seed, unassignedCells, region.Cells, zBiasedWeightFunction
+                );
+
+                regions.Add(region);
+            }
             
             SplitCellsBetweenRegions(
-                topRegion, topCrawler, middleRegion, middleCrawler,
-                bottomRegion, bottomCrawler, unassignedCells
+                regions, regionCrawlers, unassignedCells
             );
 
-            return new List<MapRegion>() { topRegion, middleRegion, bottomRegion };
+            return regions;
         }
 
         private List<MapRegion> SplitContinentIntoRegions_Horizontal(
-            MapRegion continent, HashSet<IHexCell> unassignedCells
+            MapRegion continent, IContinentGenerationTemplate template, HashSet<IHexCell> unassignedCells
         ) {
-            var leftRegion   = new MapRegion(Grid);
-            var middleRegion = new MapRegion(Grid);
-            var rightRegion  = new MapRegion(Grid);
+            var regions        = new List<MapRegion>();
+            var regionCrawlers = new Dictionary<MapRegion, IEnumerator<IHexCell>>();
 
             var xBiasedWeightFunction = BuildAxisBiasedWeightFunction(1f, 100f);
 
             int xSpan    = continent.XMax - continent.XMin;
             int zAverage = Mathf.RoundToInt((continent.ZMin + continent.ZMax) / 2f);
 
-            IHexCell leftSeed   = continent.GetClosestCellToCell(Grid.GetCellAtOffset(continent.XMin + Mathf.RoundToInt(xSpan * 1f / 6f), zAverage));
-            IHexCell middleSeed = continent.GetClosestCellToCell(Grid.GetCellAtOffset(continent.XMin + Mathf.RoundToInt(xSpan * 3f / 6f), zAverage));
-            IHexCell rightSeed  = continent.GetClosestCellToCell(Grid.GetCellAtOffset(continent.XMin + Mathf.RoundToInt(xSpan * 5f / 6f), zAverage));
+            int totalRegionCount = 2 * template.StartingAreaCount - 1;
 
-            var leftCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                leftSeed, unassignedCells, xBiasedWeightFunction
-            );
+            for(int i = 0; i < totalRegionCount; i++) {
+                var region = new MapRegion(Grid);                
 
-            var middleCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                middleSeed, unassignedCells, xBiasedWeightFunction
-            );
+                float ratioAcrossXSpan = (2 * i + 1) / (totalRegionCount * 2f);
 
-            var rightCrawler = GridTraversalLogic.GetCrawlingEnumerator(
-                rightSeed, unassignedCells, xBiasedWeightFunction
-            );
+                var seed = continent.GetClosestCellToCell(
+                    Grid.GetCellAtOffset(continent.XMin + Mathf.RoundToInt(xSpan * ratioAcrossXSpan), zAverage)
+                );
 
+                regionCrawlers[region] = GridTraversalLogic.GetCrawlingEnumerator(
+                    seed, unassignedCells, region.Cells, xBiasedWeightFunction
+                );
+
+                regions.Add(region);
+            }
+            
             SplitCellsBetweenRegions(
-                leftRegion, leftCrawler, middleRegion, middleCrawler,
-                rightRegion, rightCrawler, unassignedCells
+                regions, regionCrawlers, unassignedCells
             );
 
-            return new List<MapRegion>() { leftRegion, middleRegion, rightRegion };
+            return regions;
         }
 
         private void SplitCellsBetweenRegions(
-            MapRegion regionOne,   IEnumerator<IHexCell> regionOneCrawler,
-            MapRegion regionTwo,   IEnumerator<IHexCell> regionTwoCrawler,
-            MapRegion regionThree, IEnumerator<IHexCell> regionThreeCrawler,
+            List<MapRegion> regions, Dictionary<MapRegion, IEnumerator<IHexCell>> crawlers,
             HashSet<IHexCell> unassignedCells
         ) {
-            int regionCellTarget = Mathf.CeilToInt(unassignedCells.Count / 3f);
-
-            int firstCellCount = 0, secondCellCount = 0, thirdCellCount = 0;
+            int regionCellTarget = Mathf.CeilToInt(unassignedCells.Count / (float)regions.Count);
 
             int iterations = unassignedCells.Count * 10;
             while(unassignedCells.Count > 0 && iterations-- > 0) {
+                foreach(var region in regions) {
+                    var crawler = crawlers[region];
 
-                if(firstCellCount < regionCellTarget && regionOneCrawler.MoveNext()) {
-                    var newCell = regionOneCrawler.Current;
+                    if(region.Cells.Count < regionCellTarget && crawler.MoveNext()) {
+                        var newCell = crawler.Current;
 
-                    regionOne.AddCell(newCell);
-                    unassignedCells.Remove(newCell);
-
-                    firstCellCount++;
-                }
-
-                if(secondCellCount < regionCellTarget && regionTwoCrawler.MoveNext()) {
-                    var newCell = regionTwoCrawler.Current;
-
-                    regionTwo.AddCell(newCell);
-                    unassignedCells.Remove(newCell);
-
-                    secondCellCount++;
-                }
-
-                if(thirdCellCount < regionCellTarget && regionThreeCrawler.MoveNext()) {
-                    var newCell = regionThreeCrawler.Current;
-
-                    regionThree.AddCell(newCell);
-                    unassignedCells.Remove(newCell);
-
-                    thirdCellCount++;
+                        region.AddCell(newCell);
+                        unassignedCells.Remove(newCell);
+                    }
                 }
             }
         }
@@ -197,8 +175,8 @@ namespace Assets.Simulation.MapGeneration {
             return distanceFromSeed + jitter;
         }
 
-        private Func<IHexCell, IHexCell, int> BuildAxisBiasedWeightFunction(float xBias, float zBias) {
-            return delegate(IHexCell cell, IHexCell seed) {
+        private CrawlingWeightFunction BuildAxisBiasedWeightFunction(float xBias, float zBias) {
+            return delegate(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
                 int cellOffsetX = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
                 int cellOffsetZ = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
 

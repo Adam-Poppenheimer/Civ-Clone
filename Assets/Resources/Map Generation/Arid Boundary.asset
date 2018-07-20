@@ -9,25 +9,25 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Starting Area
+  m_Name: Arid Boundary
   m_EditorClassIdentifier: 
   _hillsPercentage: 15
   _mountainsPercentage: 5
-  _treePercentage: 50
-  _minTreeClumps: 6
+  _treePercentage: 15
+  _minTreeClumps: 8
   _maxTreeClumps: 8
-  _jungleThreshold: 0.75
-  _marshChanceBase: 0.05
-  _marshChancePerAdjacentWater: 0.1
-  _marshChancePerAdjacentRiver: 0.1
-  GrasslandsPercentage: 65
-  PlainsPercentage: 35
-  DesertPercentage: 0
+  _jungleThreshold: 1
+  _marshChanceBase: 0
+  _marshChancePerAdjacentWater: 0
+  _marshChancePerAdjacentRiver: 0
+  GrasslandsPercentage: 0
+  PlainsPercentage: 50
+  DesertPercentage: 50
   TundraPercentage: 0
   SnowPercentage: 0
-  GrasslandSeedCount: 3
-  PlainsSeedCount: 2
-  DesertSeedCount: 0
+  GrasslandSeedCount: 1
+  PlainsSeedCount: 5
+  DesertSeedCount: 2
   TundraSeedCount: 0
   SnowSeedCount: 0
   TundraThreshold: 0.3

@@ -236,15 +236,15 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        public IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates {
-            get { return _startingLocationTemplates.Cast<IRegionGenerationTemplate>(); }
+        public IEnumerable<IContinentGenerationTemplate> ContinentTemplates {
+            get { return _continentTemplates.Cast<IContinentGenerationTemplate>(); }
         }
-        [SerializeField] private List<RegionGenerationTemplate> _startingLocationTemplates;
+        [SerializeField] private List<ContinentGenerationTemplate> _continentTemplates;
 
-        public IEnumerable<IRegionGenerationTemplate> BoundaryTemplates {
-            get { return _boundaryTemplates.Cast<IRegionGenerationTemplate>(); }
+        public float InlandWaterSeedChance {
+            get { return _inlandWaterSeedChance; }
         }
-        [SerializeField] private List<RegionGenerationTemplate> _boundaryTemplates;
+        [SerializeField, Range(0f, 1f)] private float _inlandWaterSeedChance = 0.01f;
 
         #endregion
 

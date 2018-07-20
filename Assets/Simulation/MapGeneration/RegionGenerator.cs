@@ -96,23 +96,31 @@ namespace Assets.Simulation.MapGeneration {
 
                 var terrainCount = Mathf.RoundToInt(region.Cells.Count * terrainData.Percentage * 0.01f);
 
+                var acceptedCells = new List<IHexCell>();
+
                 var crawlers = new List<IEnumerator<IHexCell>>();
 
                 for(int i = 0; i < terrainData.SeedCount; i++) {
-                    var seed = unassignedCells.Except(seeds).Random();
-                    seeds.Add(seed);
+                    var seedCandidates = unassignedCells.Where(terrainData.SeedFilter).Except(seeds);
 
-                    var crawler = GridTraversalLogic.GetCrawlingEnumerator(
-                        seed, unassignedCells, terrainData.WeightFunction
-                    );
+                    if(seedCandidates.Count() == 0) {
+                        Debug.LogWarning("Failed to assign expected number of seeds for terrain type " + terrain.ToString());
+                        break;
+                    }else {
+                        var seed = seedCandidates.Random();
+                        seeds.Add(seed);
 
-                    crawlers.Add(crawler);
+                        var crawler = GridTraversalLogic.GetCrawlingEnumerator(
+                            seed, unassignedCells, acceptedCells, terrainData.WeightFunction
+                        );
+
+                        crawlers.Add(crawler);
+                    }
                 }
 
                 terrainCounts  [terrain] = terrainCount;
                 terrainCrawlers[terrain] = crawlers;
-
-                cellsOfTerrain[terrain] = new List<IHexCell>();
+                cellsOfTerrain [terrain] = acceptedCells;
             }
 
             foreach(var cell in region.Cells) {
@@ -181,13 +189,13 @@ namespace Assets.Simulation.MapGeneration {
                 treeSeeds.Add(openCells[Random.Range(0, openCells.Count)]);
             }
 
+            var treeCells = new List<IHexCell>();
+
             var treeCrawlers = treeSeeds.Select(
                 seed => GridTraversalLogic.GetCrawlingEnumerator(
-                    seed, openCells, TreeWeightFunction
+                    seed, openCells, treeCells, TreeWeightFunction
                 )
             ).ToList();
-
-            var treeCells = new List<IHexCell>();
 
             for(int i = 0; i < treeCount; i++) {
                 if(treeCrawlers.Count == 0) {
@@ -221,7 +229,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private int TreeWeightFunction(IHexCell cell, IHexCell seed) {
+        private int TreeWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
             if( cell.Vegetation == CellVegetation.Marsh ||                    
                 !ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.Forest)
             ) {

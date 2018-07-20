@@ -9,6 +9,8 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapGeneration {
 
     public class SubdividingMapGenerator : IHexMapGenerator {
@@ -67,10 +69,10 @@ namespace Assets.Simulation.MapGeneration {
 
             FloodMap();
 
-            ContinentGenerator.GenerateContinent(Continents[0]);
-            ContinentGenerator.GenerateContinent(Continents[1]);
-            ContinentGenerator.GenerateContinent(Continents[2]);
-            ContinentGenerator.GenerateContinent(Continents[3]);
+            ContinentGenerator.GenerateContinent(Continents[0], Config.ContinentTemplates.Random());
+            ContinentGenerator.GenerateContinent(Continents[1], Config.ContinentTemplates.Random());
+            ContinentGenerator.GenerateContinent(Continents[2], Config.ContinentTemplates.Random());
+            ContinentGenerator.GenerateContinent(Continents[3], Config.ContinentTemplates.Random());
 
             foreach(var ocean in Oceans) {
                 OceanGenerator.GenerateOcean(ocean);
@@ -180,13 +182,13 @@ namespace Assets.Simulation.MapGeneration {
             var regionEnumerators = new Dictionary<MapRegion, IEnumerator<IHexCell>>();
             foreach(var continent in Continents) {
                 regionEnumerators[continent] = GridTraversalLogic.GetCrawlingEnumerator(
-                    continent.Seed, unassignedCells, ContinentWeightFunction
+                    continent.Seed, unassignedCells, continent.Cells, ContinentWeightFunction
                 );
             }
 
             foreach(var ocean in Oceans) {
                 regionEnumerators[ocean] = GridTraversalLogic.GetCrawlingEnumerator(
-                    ocean.Seed, unassignedCells, OceanWeightFunction
+                    ocean.Seed, unassignedCells, ocean.Cells, OceanWeightFunction
                 );
             }
 
@@ -341,7 +343,9 @@ namespace Assets.Simulation.MapGeneration {
             return Grid.AllCells[Random.Range(0, Grid.AllCells.Count)];
         }
 
-        private int ContinentWeightFunction(IHexCell cell, IHexCell seed) {
+        private int ContinentWeightFunction(
+            IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells
+        ) {
             int distanceFromSeed = Grid.GetDistance(seed, cell);
             int jitter = Random.value < Config.JitterProbability ? 1 : 0;
 
@@ -354,7 +358,9 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private int OceanWeightFunction(IHexCell cell, IHexCell seed) {
+        private int OceanWeightFunction(
+            IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells
+        ) {
             int distanceFromSeed = Grid.GetDistance(seed, cell);
             int selectionBias = Random.value < Config.JitterProbability ? 1 : 0;
 

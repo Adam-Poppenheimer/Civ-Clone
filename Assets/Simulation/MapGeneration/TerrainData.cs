@@ -15,7 +15,9 @@ namespace Assets.Simulation.MapGeneration {
 
         public readonly int SeedCount;
 
-        public readonly Func<IHexCell, IHexCell, int> WeightFunction;
+        public readonly CrawlingWeightFunction WeightFunction;
+
+        public readonly Func<IHexCell, bool> SeedFilter;
 
         public readonly Predicate<IHexCell> ForceAdaptFilter;
 
@@ -24,12 +26,13 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         public TerrainData(
-            int percentage, int seedCount, Func<IHexCell, IHexCell, int> weightFunction,
-            Predicate<IHexCell> forceAdaptFilter
+            int percentage, int seedCount, CrawlingWeightFunction weightFunction,
+            Func<IHexCell, bool> seedFilter, Predicate<IHexCell> forceAdaptFilter
         ) {
             Percentage       = percentage;
             SeedCount        = seedCount;
             WeightFunction   = weightFunction;
+            SeedFilter       = seedFilter;
             ForceAdaptFilter = forceAdaptFilter;
         }
 

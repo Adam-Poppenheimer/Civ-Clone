@@ -9,26 +9,26 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Desert Boundary
+  m_Name: Mountainous Boundary
   m_EditorClassIdentifier: 
   _hillsPercentage: 20
-  _mountainsPercentage: 10
-  _treePercentage: 0
-  _minTreeClumps: 0
-  _maxTreeClumps: 0
+  _mountainsPercentage: 30
+  _treePercentage: 20
+  _minTreeClumps: 3
+  _maxTreeClumps: 5
   _jungleThreshold: 0.75
-  _marshChanceBase: 0.05
-  _marshChancePerAdjacentWater: 0.05
-  _marshChancePerAdjacentRiver: 0.05
-  GrasslandsPercentage: 0
-  PlainsPercentage: 0
-  DesertPercentage: 100
+  _marshChanceBase: 0
+  _marshChancePerAdjacentWater: 0
+  _marshChancePerAdjacentRiver: 0
+  GrasslandsPercentage: 40
+  PlainsPercentage: 50
+  DesertPercentage: 10
   TundraPercentage: 0
   SnowPercentage: 0
-  GrasslandSeedCount: 0
-  PlainsSeedCount: 0
-  DesertSeedCount: 3
+  GrasslandSeedCount: 2
+  PlainsSeedCount: 1
+  DesertSeedCount: 1
   TundraSeedCount: 0
   SnowSeedCount: 0
-  TundraThreshold: 0.2
-  SnowThreshold: 0.1
+  TundraThreshold: 0.3
+  SnowThreshold: 0.2

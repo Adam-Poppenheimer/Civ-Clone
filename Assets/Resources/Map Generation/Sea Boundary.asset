@@ -9,26 +9,28 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Starting Area
+  m_Name: Sea Boundary
   m_EditorClassIdentifier: 
-  _hillsPercentage: 15
-  _mountainsPercentage: 5
-  _treePercentage: 50
+  _hillsPercentage: 10
+  _mountainsPercentage: 0
+  _treePercentage: 40
   _minTreeClumps: 6
-  _maxTreeClumps: 8
-  _jungleThreshold: 0.75
-  _marshChanceBase: 0.05
-  _marshChancePerAdjacentWater: 0.1
-  _marshChancePerAdjacentRiver: 0.1
-  GrasslandsPercentage: 65
-  PlainsPercentage: 35
+  _maxTreeClumps: 10
+  _jungleThreshold: 0.7
+  _marshChanceBase: 0.1
+  _marshChancePerAdjacentWater: 0.15
+  _marshChancePerAdjacentRiver: 0.15
+  GrasslandsPercentage: 40
+  PlainsPercentage: 20
   DesertPercentage: 0
   TundraPercentage: 0
   SnowPercentage: 0
-  GrasslandSeedCount: 3
+  WaterPercentage: 40
+  GrasslandSeedCount: 2
   PlainsSeedCount: 2
   DesertSeedCount: 0
   TundraSeedCount: 0
   SnowSeedCount: 0
-  TundraThreshold: 0.3
-  SnowThreshold: 0.2
+  WaterSeedCount: 3
+  TundraThreshold: 0
+  SnowThreshold: 0

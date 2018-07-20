@@ -35,8 +35,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from IGridTraversalLogic
 
         public IEnumerator<IHexCell> GetCrawlingEnumerator(
-            IHexCell seed, IEnumerable<IHexCell> availableCells,
-            Func<IHexCell, IHexCell, int> weightFunction
+            IHexCell seed, IEnumerable<IHexCell> availableCells, IEnumerable<IHexCell> acceptedCells,
+            CrawlingWeightFunction weightFunction
         ) {
             var searchFrontier = new PriorityQueue<IHexCell>();
 
@@ -47,7 +47,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 if(availableCells.Contains(current)) {
                     yield return current;
-                    ExpandFrontier(current, availableCells, searchFrontier, weightFunction, seed);
+                    ExpandFrontier(current, availableCells, searchFrontier, acceptedCells, seed, weightFunction);
                 }
             }
         }
@@ -56,12 +56,12 @@ namespace Assets.Simulation.MapGeneration {
 
         private void ExpandFrontier(
             IHexCell center, IEnumerable<IHexCell> availableCells, PriorityQueue<IHexCell> searchFrontier,
-            Func<IHexCell, IHexCell, int> weightFunction, IHexCell seed
+            IEnumerable<IHexCell> acceptedCells, IHexCell seed, CrawlingWeightFunction weightFunction
         ) {
             foreach(var neighbor in Grid.GetNeighbors(center)) {
 
                 if(availableCells.Contains(neighbor) && !searchFrontier.Contains(neighbor)) {
-                    int candidateWeight = weightFunction(neighbor, seed);
+                    int candidateWeight = weightFunction(neighbor, seed, acceptedCells);
 
                     if(candidateWeight >= 0) {
                         searchFrontier.Add(neighbor, candidateWeight);

@@ -83,8 +83,10 @@ namespace Assets.Simulation.MapGeneration {
         int ContinentJitterZ { get; }
 
 
-        IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates { get; }
-        IEnumerable<IRegionGenerationTemplate> BoundaryTemplates         { get; }
+
+        IEnumerable<IContinentGenerationTemplate> ContinentTemplates { get; }
+
+        float InlandWaterSeedChance { get; }
 
         #endregion
 
