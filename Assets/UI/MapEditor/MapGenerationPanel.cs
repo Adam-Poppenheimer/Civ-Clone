@@ -25,15 +25,19 @@ namespace Assets.UI.MapEditor {
 
 
 
-        private IHexMapGenerator MapGenerator;
+        private IMapGenerator     MapGenerator;
+        private IMapGenerationConfig Config;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void CommonInstall(IHexMapGenerator mapGenerator) {
+        public void CommonInstall(
+            IMapGenerator mapGenerator, IMapGenerationConfig config
+        ) {
             MapGenerator = mapGenerator;
+            Config       = config;
         }
 
         #region Unity messages
@@ -48,7 +52,8 @@ namespace Assets.UI.MapEditor {
         public void TryGeneratingMap() {
             MapGenerator.GenerateMap(
                 Mathf.RoundToInt(MapChunkWidthSlider.value),
-                Mathf.RoundToInt(MapChunkHeightSlider.value)
+                Mathf.RoundToInt(MapChunkHeightSlider.value),
+                Config.MapTemplate
             );
         }
 

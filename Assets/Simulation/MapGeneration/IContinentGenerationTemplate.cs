@@ -6,6 +6,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
+        int LandPercentage { get; }
+
+        int SoftBorderX { get; }
+        int SoftBorderZ { get; }
+
         int StartingAreaCount { get; }
 
         IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates { get; }

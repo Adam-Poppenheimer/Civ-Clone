@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 15a82a245bf1d854a97bd6233e169f9d, type: 3}
+  m_Name: Test Map
+  m_EditorClassIdentifier: 
+  _civCount: 8
+  _continentSections:
+  - _xMin: 0.05
+    _xMax: 0.45
+    _zMin: 0.05
+    _zMax: 0.4
+  - _xMin: 0.55
+    _xMax: 0.95
+    _zMin: 0.05
+    _zMax: 0.4
+  - _xMin: 0.05
+    _xMax: 0.45
+    _zMin: 0.6
+    _zMax: 0.95
+  - _xMin: 0.55
+    _xMax: 0.95
+    _zMin: 0.6
+    _zMax: 0.95
+  _continentTemplates:
+  - {fileID: 11400000, guid: 91c7b68e5b825d54ea42ec31cfd40c89, type: 2}
+  _oceanTemplates:
+  - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}

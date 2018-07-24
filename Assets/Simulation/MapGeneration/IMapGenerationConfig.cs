@@ -75,18 +75,7 @@ namespace Assets.Simulation.MapGeneration {
         float TemperatureJitter { get; }
 
 
-
-        int CivCount         { get; }
-        int MinCivSeparation { get; }
-
-        int ContinentJitterX { get; }
-        int ContinentJitterZ { get; }
-
-
-
-        IEnumerable<IContinentGenerationTemplate> ContinentTemplates { get; }
-
-        float InlandWaterSeedChance { get; }
+        IMapGenerationTemplate MapTemplate { get; }
 
         #endregion
 

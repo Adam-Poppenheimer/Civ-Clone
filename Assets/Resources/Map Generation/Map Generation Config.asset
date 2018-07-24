@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 1671229423
+  _fixedSeed: 1688591598
   _jitterProbability: 0.5
   _chunkSizeMin: 30
   _chunkSizeMax: 60
@@ -48,10 +48,4 @@ MonoBehaviour:
   _highTemperature: 1
   _hemispheres: 0
   _temperatureJitter: 0.1
-  _civCount: 8
-  _minCivSeparation: 10
-  _continentJitterX: 3
-  _continentJitterZ: 2
-  _continentTemplates:
-  - {fileID: 11400000, guid: 91c7b68e5b825d54ea42ec31cfd40c89, type: 2}
-  _inlandWaterSeedChance: 0.01
+  _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}

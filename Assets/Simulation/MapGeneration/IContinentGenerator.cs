@@ -12,7 +12,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateContinent(MapRegion continent, IContinentGenerationTemplate template);
+        void GenerateContinent(
+            MapRegion continent, IContinentGenerationTemplate template,
+            IEnumerable<IHexCell> oceanCells
+        );
 
         #endregion
 

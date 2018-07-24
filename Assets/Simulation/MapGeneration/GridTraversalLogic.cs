@@ -16,16 +16,14 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         private IHexGrid Grid;
-        private IMapGenerationConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public GridTraversalLogic(IHexGrid grid, IMapGenerationConfig config) {
+        public GridTraversalLogic(IHexGrid grid) {
             Grid   = grid;
-            Config = config;
         }
 
         #endregion

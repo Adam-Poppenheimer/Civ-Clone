@@ -7,6 +7,8 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
+    public delegate bool SeedFilter(IHexCell cell, IEnumerable<IHexCell> oceanCells);
+
     public class TerrainData {
 
         #region instance fields and properties
@@ -17,7 +19,7 @@ namespace Assets.Simulation.MapGeneration {
 
         public readonly CrawlingWeightFunction WeightFunction;
 
-        public readonly Func<IHexCell, bool> SeedFilter;
+        public readonly SeedFilter SeedFilter;
 
         public readonly Predicate<IHexCell> ForceAdaptFilter;
 
@@ -27,7 +29,7 @@ namespace Assets.Simulation.MapGeneration {
 
         public TerrainData(
             int percentage, int seedCount, CrawlingWeightFunction weightFunction,
-            Func<IHexCell, bool> seedFilter, Predicate<IHexCell> forceAdaptFilter
+            SeedFilter seedFilter, Predicate<IHexCell> forceAdaptFilter
         ) {
             Percentage       = percentage;
             SeedCount        = seedCount;

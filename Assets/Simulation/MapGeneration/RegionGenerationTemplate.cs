@@ -202,7 +202,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private ICellTemperatureLogic TemperatureLogic;
         private IHexGrid              Grid;
-        private IMapGenerationConfig  Config;
 
         #endregion
 
@@ -210,12 +209,10 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public void InjectDependencies(
-            ICellTemperatureLogic temperatureLogic, IHexGrid grid,
-            IMapGenerationConfig config
+            ICellTemperatureLogic temperatureLogic, IHexGrid grid
         ) {
             TemperatureLogic = temperatureLogic;
             Grid             = grid;
-            Config           = config;
         }
 
         #region Unity messages
@@ -279,12 +276,12 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private bool DefaultSeedFilter(IHexCell cell) {
+        private bool DefaultSeedFilter(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
             return true;
         }
 
-        private bool WaterSeedFilter(IHexCell cell) {
-            return Grid.GetCellsInRadius(cell, 2).Exists(neighbor => neighbor.Terrain.IsWater());
+        private bool WaterSeedFilter(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
+            return Grid.GetCellsInRadius(cell, 2).Intersect(oceanCells).Any();
         }
 
         #endregion

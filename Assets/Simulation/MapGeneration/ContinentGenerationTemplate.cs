@@ -14,6 +14,21 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IContinentGenerationTemplate
 
+        public int LandPercentage {
+            get { return _landPercentage; }
+        }
+        [SerializeField, Range(1, 100)] private int _landPercentage;
+
+        public int SoftBorderX {
+            get { return _softBorderX; }
+        }
+        [SerializeField] private int _softBorderX;
+
+        public int SoftBorderZ {
+            get { return _softBorderZ; }
+        }
+        [SerializeField] private int _softBorderZ;
+
         public int StartingAreaCount {
             get { return _startingAreaCount; }
         }

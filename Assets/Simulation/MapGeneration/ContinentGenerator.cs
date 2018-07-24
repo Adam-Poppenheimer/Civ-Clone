@@ -14,7 +14,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class SubdividingContinentGenerator : IContinentGenerator {
+    public class ContinentGenerator : IContinentGenerator {
 
         #region instance fields and properties
 
@@ -29,7 +29,7 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         [Inject]
-        public SubdividingContinentGenerator(
+        public ContinentGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, IMapGenerationConfig config,
             IRegionGenerator startingLocationGenerator, IGridTraversalLogic gridTraversalLogic
         ) {
@@ -46,7 +46,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IContinentGenerator
 
-         public void GenerateContinent(MapRegion continent, IContinentGenerationTemplate template) {
+         public void GenerateContinent(
+             MapRegion continent, IContinentGenerationTemplate template,
+             IEnumerable<IHexCell> oceanCells
+            ) {
             foreach(var cell in continent.Cells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
             }
@@ -57,9 +60,9 @@ namespace Assets.Simulation.MapGeneration {
 
             AssignOrphansToRegions(unassignedCells, regions);
 
-            RegionGenerator.GenerateRegion(regions[0], template.StartingLocationTemplates.Random());
-            RegionGenerator.GenerateRegion(regions[1], template.BoundaryTemplates        .Random());
-            RegionGenerator.GenerateRegion(regions[2], template.StartingLocationTemplates.Random());
+            RegionGenerator.GenerateRegion(regions[0], template.StartingLocationTemplates.Random(), oceanCells);
+            RegionGenerator.GenerateRegion(regions[1], template.BoundaryTemplates        .Random(), oceanCells);
+            RegionGenerator.GenerateRegion(regions[2], template.StartingLocationTemplates.Random(), oceanCells);
         }
 
         #endregion

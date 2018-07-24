@@ -214,37 +214,10 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        public int CivCount {
-            get { return _civCount; }
+        public IMapGenerationTemplate MapTemplate {
+            get { return _mapTemplate; }
         }
-        [SerializeField, Range(2, 10)] private int _civCount = 8;
-
-        public int MinCivSeparation {
-            get { return _minCivSeparation; }
-        }
-        [SerializeField, Range(5, 20)] private int _minCivSeparation = 10;
-
-        public int ContinentJitterX {
-            get { return _continentJitterX; }
-        }
-        [SerializeField, Range(0, 5)] private int _continentJitterX = 3;
-
-        public int ContinentJitterZ {
-            get { return _continentJitterZ; }
-        }
-        [SerializeField, Range(0, 5)] private int _continentJitterZ = 2;
-
-
-
-        public IEnumerable<IContinentGenerationTemplate> ContinentTemplates {
-            get { return _continentTemplates.Cast<IContinentGenerationTemplate>(); }
-        }
-        [SerializeField] private List<ContinentGenerationTemplate> _continentTemplates;
-
-        public float InlandWaterSeedChance {
-            get { return _inlandWaterSeedChance; }
-        }
-        [SerializeField, Range(0f, 1f)] private float _inlandWaterSeedChance = 0.01f;
+        [SerializeField] private MapGenerationTemplate _mapTemplate;
 
         #endregion
 

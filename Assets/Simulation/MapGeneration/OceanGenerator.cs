@@ -11,7 +11,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class SubdividingOceanGenerator : IOceanGenerator {
+    public class OceanGenerator : IOceanGenerator {
 
         #region instance fields and properties
 
@@ -23,7 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         [Inject]
-        public SubdividingOceanGenerator(
+        public OceanGenerator(
             ICellModificationLogic modLogic, IHexGrid grid
         ) {
             ModLogic = modLogic;
@@ -36,9 +36,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IOceanGenerator
 
-        public void GenerateOcean(MapRegion ocean) {
+        public void GenerateOcean(
+            MapRegion ocean, IOceanGenerationTemplate template, IEnumerable<IHexCell> continentCells
+        ) {
             foreach(var cell in ocean.Cells) {
-                ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.DeepWater);
+                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
             }
         }
 

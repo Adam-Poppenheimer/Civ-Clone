@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IHexMapGenerator {
+    public interface IMapGenerator {
 
         #region methods
 
-        void GenerateMap(int chunkCountX, int chunkCountZ);
+        void GenerateMap(int chunkCountX, int chunkCountZ, IMapGenerationTemplate template);
 
         #endregion
 

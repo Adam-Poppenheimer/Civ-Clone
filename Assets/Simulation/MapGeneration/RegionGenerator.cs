@@ -22,7 +22,6 @@ namespace Assets.Simulation.MapGeneration {
         private ICellTemperatureLogic  TemperatureLogic;
         private IGridTraversalLogic    GridTraversalLogic;
         private IRiverCanon            RiverCanon;
-        private INoiseGenerator        NoiseGenerator;
 
         #endregion
 
@@ -31,14 +30,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
-            IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon, INoiseGenerator noiseGenerator
+            IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon
         ) {
             ModLogic           = modLogic;
             Grid               = grid;
             TemperatureLogic   = temperatureLogic;
             GridTraversalLogic = gridTraversalLogic;
             RiverCanon         = riverCanon;
-            NoiseGenerator     = noiseGenerator;
         }
 
         #endregion
@@ -47,9 +45,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IStartingLocationGenerator
 
-        public void GenerateRegion(MapRegion region, IRegionGenerationTemplate template) {
+        public void GenerateRegion(
+            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> oceanCells
+        ) {
             GenerateTopology(region, template);
-            PaintTerrain    (region, template);
+            PaintTerrain    (region, template, oceanCells);
             PaintVegetation (region, template);
         }
 
@@ -77,9 +78,10 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void PaintTerrain(MapRegion region, IRegionGenerationTemplate template) {
-            int jitterChannel = Random.Range(0, 4);
-
+        private void PaintTerrain(
+            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> oceanCells
+        ) {
             var terrains = EnumUtil.GetValues<CellTerrain>();
 
             var dataOfTerrains  = new Dictionary<CellTerrain, TerrainData>();
@@ -101,7 +103,7 @@ namespace Assets.Simulation.MapGeneration {
                 var crawlers = new List<IEnumerator<IHexCell>>();
 
                 for(int i = 0; i < terrainData.SeedCount; i++) {
-                    var seedCandidates = unassignedCells.Where(terrainData.SeedFilter).Except(seeds);
+                    var seedCandidates = unassignedCells.Where(cell => terrainData.SeedFilter(cell, oceanCells)).Except(seeds);
 
                     if(seedCandidates.Count() == 0) {
                         Debug.LogWarning("Failed to assign expected number of seeds for terrain type " + terrain.ToString());
