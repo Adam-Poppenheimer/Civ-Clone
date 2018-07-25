@@ -33,6 +33,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 100)] private int _treePercentage;
 
+        public int RiverPercentage {
+            get { return _riverPercentage; }
+        }
+        [SerializeField, Range(0, 100)] private int _riverPercentage;
+
 
         public int MinTreeClumps {
             get { return _minTreeClumps; }

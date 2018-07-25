@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -8,16 +9,17 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapGeneration {
 
     public class RiverGenerator : IRiverGenerator {
 
         #region instance fields and properties
 
-        private IHexGrid             Grid;
-        private IMapGenerationConfig GenerationConfig;
-        private IHexMapConfig        HexMapConfig;
-        private IRiverCanon          RiverCanon;
+        private IGridTraversalLogic GridTraversalLogic;
+        private IHexGrid            Grid;
+        private IRiverCanon         RiverCanon;
 
         #endregion
 
@@ -25,13 +27,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RiverGenerator(
-            IHexGrid grid, IMapGenerationConfig generationConfig,
-            IHexMapConfig hexMapConfig, IRiverCanon riverCanon
+            IGridTraversalLogic gridTraversalLogic, IHexGrid grid,
+            IRiverCanon riverCanon
         ) {
-            Grid             = grid;
-            GenerationConfig = generationConfig;
-            HexMapConfig     = hexMapConfig;
-            RiverCanon       = riverCanon;
+            GridTraversalLogic = gridTraversalLogic;
+            Grid               = grid;
+            RiverCanon         = riverCanon;
         }
 
         #endregion
@@ -40,58 +41,30 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IRiverGenerator
 
-        public void CreateRivers(List<ClimateData> climateData, int landCellCount) {
-            var riverOrigins = new List<IHexCell>();
+        public void CreateRiversForRegion(
+            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> oceanCells
+        ) {
+            int desiredCellsWithRiver = Mathf.RoundToInt(template.RiverPercentage * region.Cells.Count * 0.01f);
+              
+            var riveredCells = new HashSet<IHexCell>();
 
-            int cellCount = Grid.AllCells.Count;
-            for(int i = 0; i < cellCount; i++) {
-                var cell = Grid.AllCells[i];
+            var riverStartCandidates = region.Cells.Where(
+                cell => cell.Shape != CellShape.Flatlands &&
+                        !Grid.GetNeighbors(cell).Any(neighbor => IsWater(neighbor, oceanCells))
+            ).ToList();
 
-                if(cell.Terrain.IsWater()) {
-                    continue;
-                }
+            int iterations = region.Cells.Count * 10;
+            while(riveredCells.Count < desiredCellsWithRiver && riverStartCandidates.Count > 0 && iterations-- > 0) {
+                var start = riverStartCandidates.Random();
 
-                var climate = climateData[i];
+                riverStartCandidates.Remove(start);
 
-                float weight = (float)(cell.PeakElevation - HexMapConfig.WaterLevel) /
-                               (HexMapConfig.MaxElevation - HexMapConfig.WaterLevel);
+                HashSet<IHexCell> cellsAdjacentToNewRiver;
 
-                weight *= climate.Moisture;
-
-                if (weight > 0.75f) {
-				    riverOrigins.Add(cell);
-				    riverOrigins.Add(cell);
-			    }
-			    if (weight > 0.5f) {
-				    riverOrigins.Add(cell);
-			    }
-			    if (weight > 0.25f) {
-				    riverOrigins.Add(cell);
-			    }
-            }
-
-            int riverBudget = Mathf.RoundToInt(landCellCount * GenerationConfig.RiverSegmentPercentage * 0.01f);
-            while(riverBudget > 0 && riverOrigins.Count > 0) {
-                int index = Random.Range(0, riverOrigins.Count);
-                int lastIndex = riverOrigins.Count - 1;
-
-                IHexCell origin = riverOrigins[index];
-                riverOrigins[index] = riverOrigins[lastIndex];
-                riverOrigins.RemoveAt(lastIndex);
-
-                if(!RiverCanon.HasRiver(origin)) {
-                    bool isValidOrigin = true;
-
-                    for(var direction = HexDirection.NE; direction < HexDirection.NW; direction++) {
-                        var neighbor = Grid.GetNeighbor(origin, direction);
-                        if(neighbor != null && (RiverCanon.HasRiver(neighbor) || neighbor.Terrain.IsWater())) {
-                            isValidOrigin = false;
-                            break;
-                        }
-                    }
-
-                    if(isValidOrigin) {
-                        riverBudget -= CreateRiver(origin);
+                if(TryBuildNewRiver(region, template, oceanCells, start, out cellsAdjacentToNewRiver)) {
+                    foreach(var cell in cellsAdjacentToNewRiver) {
+                        riveredCells.Add(cell);
                     }
                 }
             }
@@ -99,175 +72,110 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private int CreateRiver(IHexCell origin) {
-            var pathToEndpoint = GetPathToValidEndpoint(origin);
+        private bool TryBuildNewRiver(
+            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> oceanCells, IHexCell start,
+            out HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
+            cellsAdjacentToRiver = new HashSet<IHexCell>();
 
-            if(pathToEndpoint == null) {
-                return 0;
-            }
+            IHexCell end;
 
-            CreateRiverStartPoint(pathToEndpoint[0], pathToEndpoint[1]);
+            if(TryGetRiverEnd(region, template, start, oceanCells, out end)) {
 
-            RiverPathResults pathSectionResults = new RiverPathResults(false, false);
+                var riverPath = new List<IHexCell>() { start };
 
-            int i = 1;
-            for(; i < pathToEndpoint.Count - 1; i++) {
-                pathSectionResults = CreateRiverAlongCell(pathToEndpoint[i - 1], pathToEndpoint[i], pathToEndpoint[i + 1]);
+                var pathFrom = Grid.GetShortestPathBetween(start, end, BuildRiverWeightFunction(oceanCells));
 
-                if(!pathSectionResults.Completed) {
-                    Debug.LogWarning("Failed to complete river");
-                    break;
-                }else if(pathSectionResults.FoundWater) {
-                    break;
+                if(pathFrom == null) {
+                    return false;
                 }
-            }
 
-            if(!pathSectionResults.FoundWater) {
-                pathSectionResults = CreateRiverEndPoint(pathToEndpoint[i - 1], pathToEndpoint[i]);
+                riverPath.AddRange(pathFrom);
 
-                if(!pathSectionResults.Completed) {
-                    Debug.LogWarning("Failed to complete river");
+                pathFrom.ForEach(cell => cell.SetMapData(0.35f));
+                start.SetMapData(1f);
 
-                    return i;
-                }
-            }
+                CreateRiverStartPoint(riverPath[0], riverPath[1], cellsAdjacentToRiver);
 
-            return i + 1;
-        }
+                RiverPathResults pathSectionResults = new RiverPathResults(false, false);
 
-        private RiverPathResults CreateRiverEndPoint(IHexCell previousCell, IHexCell endingCell) {
-            if(endingCell.Terrain.IsWater()) {
-                return RiverPathResults.Water;
-            }
+                int i = 1;
+                for(; i < riverPath.Count - 1; i++) {
+                    pathSectionResults = CreateRiverAlongCell(
+                        riverPath[i - 1], riverPath[i], riverPath[i + 1],
+                        oceanCells, cellsAdjacentToRiver
+                    );
 
-            var directionToEnd      = GetDirectionOfNeighbor(previousCell, endingCell);
-            var directionToPrevious = directionToEnd.Opposite();
-
-            //If the rivers leading out of previousCell are already connected
-            //to some river, then we don't need to do anything
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToEnd)) {
-                return RiverPathResults.Success;
-
-            }else if(
-                RiverCanon.HasRiverAlongEdge(previousCell, directionToEnd.Next()) &&
-                RiverCanon.HasRiverAlongEdge(endingCell, directionToPrevious.Previous())
-            ) {
-                return RiverPathResults.Success;
-
-            }else if(
-                RiverCanon.HasRiverAlongEdge(previousCell, directionToEnd.Previous()) &&
-                RiverCanon.HasRiverAlongEdge(endingCell, directionToPrevious.Next())
-            ) {
-                return RiverPathResults.Success;
-            }
-
-            //Case triggers when there's a river along the bottom-left edge of
-            //endingCell. We can treat it like a sharp CCW turn towards
-            //the cell below and to the left of endingCell
-            if(RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Previous2())) {
-                return CreateRiverAlongCell_SharpCCWTurn(
-                    previousCell, endingCell, Grid.GetNeighbor(endingCell, directionToEnd.Previous2()),
-                    directionToPrevious, directionToEnd.Previous2()
-                );
-            }
-
-            //Case triggers when there's a river along the bottom-right edge of
-            //endingCell. We can treat it like a sharp CW
-            //turn towards the cell below and to the right of endingCell
-            if(RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Next2())) {
-                return CreateRiverAlongCell_SharpCWTurn(
-                    previousCell, endingCell, Grid.GetNeighbor(endingCell, directionToEnd.Next2()),
-                    directionToPrevious, directionToEnd.Next2()
-                );
-            }
-
-            //Case triggers when there's a river along the top-left edge of
-            //endingCell. In this case, we can treat this like a gentle CCW
-            //turn towards the cell above and to the left of endingCell
-            if(RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Previous())) {
-                return CreateRiverAlongCell_GentleCCWTurn(
-                    previousCell, endingCell, Grid.GetNeighbor(endingCell, directionToEnd.Previous()),
-                    directionToPrevious, directionToEnd.Previous()
-                );          
-            }
-
-            //Case triggers when there's a river along the top-right edge of
-            //endingCell. We can treat it like a gentle CW
-            //turn towards the cell above and to the right of endingCell
-            if(RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Next())) {
-                return CreateRiverAlongCell_GentleCWTurn(
-                    previousCell, endingCell, Grid.GetNeighbor(endingCell, directionToEnd.Next()),
-                    directionToPrevious, directionToEnd.Next()
-                );
-            }
-
-            //Case triggers when there's a river along the top edge of
-            //endingCell. In this case, we can treat this like a
-            //straight-across section towards the cell above endingCell
-            if(RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd)) {
-                return CreateRiverAlongCell_StraightAcross(
-                    previousCell, endingCell, Grid.GetNeighbor(endingCell, directionToEnd),
-                    directionToPrevious, directionToEnd
-                );
-            }
-
-            return RiverPathResults.Fail;
-        }
-
-        private List<IHexCell> GetPathToValidEndpoint(IHexCell origin) {
-            int distance = 0;
-
-            while(distance < GenerationConfig.RiverMaxLengthInHexes) {
-                foreach(var cellInRing in Grid.GetCellsInRing(origin, distance++)) {
-                    if(cellInRing == origin) {
-                        continue;
-                    }
-
-                    if(!cellInRing.Terrain.IsWater() && !RiverCanon.HasRiver(cellInRing)) {
-                        continue;
-                    }
-
-                    var pathToCell = Grid.GetShortestPathBetween(origin, cellInRing, RiverPathCostFunction);
-                    if(pathToCell != null) {
-                        var retval = new List<IHexCell>() { origin };
-                        retval.AddRange(pathToCell);
-                        return retval;
+                    if(!pathSectionResults.Completed) {
+                        riverPath[i + 1].SetMapData(0.75f);
+                        Debug.LogWarning("Failed to complete river");
+                        break;
+                    }else if(pathSectionResults.FoundWater) {
+                        break;
                     }
                 }
+
+                if(!pathSectionResults.FoundWater) {
+                    pathSectionResults = CreateRiverEndpoint(
+                        riverPath[i - 1], riverPath[i], oceanCells, cellsAdjacentToRiver
+                    );
+
+                    if(!pathSectionResults.Completed) {
+                        Debug.LogWarning("Failed to resolve river endpoint");
+                    }
+                }
+
+                return true;
+            }else {
+                Debug.LogWarning("Failed to get river endpoints");
+                return false;
             }
-            
-            return null;
         }
 
-        private float RiverPathCostFunction(IHexCell currentCell, IHexCell nextCell) {
-            if(nextCell.PeakElevation >= currentCell.PeakElevation && nextCell.Shape != CellShape.Flatlands) {
-                return -1f;
+        private bool TryGetRiverEnd(
+            MapRegion region, IRegionGenerationTemplate template,
+            IHexCell start, IEnumerable<IHexCell> oceanCells,
+            out IHexCell end
+        ) {
+            var cellsAdjacentToOcean = region.Cells.Where(
+                cell => Grid.GetNeighbors(cell).Any(neighbor => oceanCells.Contains(neighbor))
+            );
+
+            var validCandidates = cellsAdjacentToOcean.Where(
+                cell => cell != start && !IsWater(cell, oceanCells) && !RiverCanon.HasRiver(cell)
+            );
+
+            if(validCandidates.Any()) {
+                end = validCandidates.Random();
+                return true;
+            }else {
+                end = null;
+                return false;
             }
-            
-            return 1f;
         }
 
-        //The river should end pointing at NextCell
-        private void CreateRiverStartPoint(IHexCell startingCell, IHexCell nextCell) {
+        private void CreateRiverStartPoint(
+            IHexCell startingCell, IHexCell nextCell, HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
             var directionToNeighbor = GetDirectionOfNeighbor(startingCell, nextCell);
 
-            if(Random.value >= 0.5f) {
-                if(RiverCanon .CanAddRiverToCell(startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise)) {
-                    RiverCanon.AddRiverToCell   (startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise);
+            if(UnityEngine.Random.value >= 0.5f) {
+                if(RiverCanon.CanAddRiverToCell(startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise)) {
+                    AddRiverToCell(startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise, cellsAdjacentToRiver);
 
                 }else if(RiverCanon.CanAddRiverToCell(startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise)) {
-                    RiverCanon     .AddRiverToCell   (startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise);
+                    AddRiverToCell(startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise, cellsAdjacentToRiver);
 
                 }else {
                     Debug.LogWarningFormat("Failed to draw a river starting point between cells {0} and {1}", startingCell, nextCell);
                 }
-
             }else {
-                if(RiverCanon .CanAddRiverToCell(startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise)) {
-                    RiverCanon.AddRiverToCell   (startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise);
+                if(RiverCanon.CanAddRiverToCell(startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise)) {
+                    AddRiverToCell(startingCell, directionToNeighbor.Next(), RiverFlow.Counterclockwise, cellsAdjacentToRiver);
 
                 }else if(RiverCanon.CanAddRiverToCell(startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise)) {
-                    RiverCanon     .AddRiverToCell   (startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise);
+                    AddRiverToCell(startingCell, directionToNeighbor.Previous(), RiverFlow.Clockwise, cellsAdjacentToRiver);
 
                 }else {
                     Debug.LogWarningFormat("Failed to draw a river starting point between cells {0} and {1}", startingCell, nextCell);
@@ -275,22 +183,119 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private RiverPathResults CreateRiverAlongCell(IHexCell previousCell, IHexCell currentCell, IHexCell nextCell) {
+        private RiverPathResults CreateRiverAlongCell(
+            IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
             var directionToPrevious = GetDirectionOfNeighbor(currentCell, previousCell);
             var directionToNext     = GetDirectionOfNeighbor(currentCell, nextCell);
 
             if(directionToPrevious == directionToNext.Opposite()) {
-                return CreateRiverAlongCell_StraightAcross(previousCell, currentCell, nextCell, directionToPrevious, directionToNext);
+                return CreateRiverAlongCell_StraightAcross(
+                    previousCell, currentCell, nextCell, directionToPrevious,
+                    directionToNext, oceanCells, cellsAdjacentToRiver
+                );
 
             }else if(directionToPrevious == directionToNext.Previous2()) {
-                return CreateRiverAlongCell_GentleCCWTurn(previousCell, currentCell, nextCell, directionToPrevious, directionToNext);
+                return CreateRiverAlongCell_GentleCCWTurn(
+                    previousCell, currentCell, nextCell, directionToPrevious,
+                    directionToNext, oceanCells, cellsAdjacentToRiver
+                );
 
             }else if(directionToPrevious == directionToNext.Next2()) {
-                return CreateRiverAlongCell_GentleCWTurn(previousCell, currentCell, nextCell, directionToPrevious, directionToNext);
+                return CreateRiverAlongCell_GentleCWTurn(
+                    previousCell, currentCell, nextCell, directionToPrevious,
+                    directionToNext, oceanCells, cellsAdjacentToRiver
+                );
 
             }else {
                 return RiverPathResults.Fail;
             }
+        }
+
+        private RiverPathResults CreateRiverEndpoint(
+            IHexCell previousCell, IHexCell endingCell, IEnumerable<IHexCell> oceanCells,
+            HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
+            //It's possible (though unlikely) that our endpointwd is a water cell. If
+            //it is, we don't need to do anything.
+            if(IsWater(endingCell, oceanCells)) {
+                return RiverPathResults.Water;
+            }
+
+            //If it's not water, we next attempt to connect it to any rivers on the cell
+            //or to nearby cells that are submerged in water. We can check and handle
+            //both cases at the same time.
+            var directionToEnd      = GetDirectionOfNeighbor(previousCell, endingCell);
+            var directionToPrevious = directionToEnd.Opposite();
+
+            var bottomLeftNeighbor     = Grid.GetNeighbor(endingCell, directionToEnd.Previous2());
+            var topLeftNeighbor        = Grid.GetNeighbor(endingCell, directionToEnd.Previous());
+            var straightAcrossNeighbor = Grid.GetNeighbor(endingCell, directionToEnd);
+            var topRightNeighbor       = Grid.GetNeighbor(endingCell, directionToEnd.Next());
+            var bottomRightNeighbor    = Grid.GetNeighbor(endingCell, directionToEnd.Next2());
+
+            //Case triggers when there's a river or water along the bottom-left edge of
+            //endingCell. We can treat it like a sharp CCW turn towards
+            //the cell below and to the left of endingCell
+            if( RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Previous2()) ||
+                IsWater(bottomLeftNeighbor, oceanCells)
+            ) {
+                return CreateRiverAlongCell_SharpCCWTurn(
+                    previousCell, endingCell, bottomLeftNeighbor,
+                    directionToPrevious, directionToEnd.Previous2(), oceanCells, cellsAdjacentToRiver
+                );
+            }
+
+            //Case triggers when there's a river or water along the bottom-right edge of
+            //endingCell. We can treat it like a sharp CW
+            //turn towards the cell below and to the right of endingCell
+            if( RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Next2()) ||
+                IsWater(bottomRightNeighbor, oceanCells)
+            ) {
+                return CreateRiverAlongCell_SharpCWTurn(
+                    previousCell, endingCell, bottomRightNeighbor,
+                    directionToPrevious, directionToEnd.Next2(), oceanCells, cellsAdjacentToRiver
+                );
+            }
+
+            //Case triggers when there's a river or water along the top-left edge of
+            //endingCell. In this case, we can treat this like a gentle CCW
+            //turn towards the cell above and to the left of endingCell
+            if( RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Previous()) ||
+                IsWater(topLeftNeighbor, oceanCells)
+            ) {
+                return CreateRiverAlongCell_GentleCCWTurn(
+                    previousCell, endingCell, topLeftNeighbor,
+                    directionToPrevious, directionToEnd.Previous(), oceanCells, cellsAdjacentToRiver
+                );          
+            }
+
+            //Case triggers when there's a river or water along the top-right edge of
+            //endingCell. We can treat it like a gentle CW
+            //turn towards the cell above and to the right of endingCell
+            if( RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd.Next()) ||
+                IsWater(topRightNeighbor, oceanCells)
+            ) {
+                return CreateRiverAlongCell_GentleCWTurn(
+                    previousCell, endingCell, topRightNeighbor,
+                    directionToPrevious, directionToEnd.Next(), oceanCells, cellsAdjacentToRiver
+                );
+            }
+
+            //Case triggers when there's a river or water along the top edge of
+            //endingCell. In this case, we can treat this like a
+            //straight-across section towards the cell above endingCell
+            if( RiverCanon.HasRiverAlongEdge(endingCell, directionToEnd) ||
+                IsWater(straightAcrossNeighbor, oceanCells)
+            ) {
+                return CreateRiverAlongCell_StraightAcross(
+                    previousCell, endingCell, straightAcrossNeighbor,
+                    directionToPrevious, directionToEnd, oceanCells, cellsAdjacentToRiver
+                );
+            }
+
+            return RiverPathResults.Fail;
         }
 
         //We need to draw a river from previousCell to nextCell by adding rivers
@@ -298,7 +303,8 @@ namespace Assets.Simulation.MapGeneration {
         //each-other. Previous river should have some river pointing at currentCell
         private RiverPathResults CreateRiverAlongCell_StraightAcross(
             IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
-            HexDirection directionToPrevious, HexDirection directionToNext
+            HexDirection directionToPrevious, HexDirection directionToNext,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             var leftToLeftPath = new RiverPath(
                 currentCell, directionToNext.Previous2(), directionToNext.Previous(),
@@ -335,7 +341,7 @@ namespace Assets.Simulation.MapGeneration {
                 pathsToTry.Add(rightToLeftPath);
             }
 
-            return TryFollowSomePath(pathsToTry);
+            return TryFollowSomePath(pathsToTry, oceanCells, cellsAdjacentToRiver);
         }
 
         //We need to draw a river from previousCell to nextCell by adding rivers
@@ -343,7 +349,8 @@ namespace Assets.Simulation.MapGeneration {
         //and should have some river pointing at currentCell
         private RiverPathResults CreateRiverAlongCell_GentleCCWTurn(
             IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
-            HexDirection directionToPrevious, HexDirection directionToNext
+            HexDirection directionToPrevious, HexDirection directionToNext,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             var leftToLeftPath = new RiverPath(
                 currentCell, directionToNext.Previous(),
@@ -379,7 +386,7 @@ namespace Assets.Simulation.MapGeneration {
                 pathsToTry.Add(rightToLeftPath);
             }
 
-            return TryFollowSomePath(pathsToTry);
+            return TryFollowSomePath(pathsToTry, oceanCells, cellsAdjacentToRiver);
         }
 
         //We need to draw a river from previousCell to nextCell by adding rivers
@@ -387,7 +394,8 @@ namespace Assets.Simulation.MapGeneration {
         //and should have some river pointing at currentCell
         private RiverPathResults CreateRiverAlongCell_SharpCCWTurn(
             IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
-            HexDirection directionToPrevious, HexDirection directionToNext
+            HexDirection directionToPrevious, HexDirection directionToNext,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             var rightToRightPath = new RiverPath(
                 currentCell, directionToPrevious.Previous(), directionToNext.Next(),
@@ -404,18 +412,18 @@ namespace Assets.Simulation.MapGeneration {
             //Assuming directionToPrevious.Opposite() is up,
             //this case triggers when previousCell has a
             //river along its upper left edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
                 return RiverPathResults.Success;
             }
 
             //this case triggers when previousCell has a
             //river along its upper right edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
                 pathsToTry.Add(rightToRightPath);
                 pathsToTry.Add(rightToLeftPath);                
             }
 
-            return TryFollowSomePath(pathsToTry);
+            return TryFollowSomePath(pathsToTry, oceanCells, cellsAdjacentToRiver);
         }
 
         //We need to draw a river from previousCell to nextCell by adding rivers
@@ -423,7 +431,8 @@ namespace Assets.Simulation.MapGeneration {
         //and should have some river pointing at currentCell
         private RiverPathResults CreateRiverAlongCell_GentleCWTurn(
             IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
-            HexDirection directionToPrevious, HexDirection directionToNext
+            HexDirection directionToPrevious, HexDirection directionToNext,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             var leftLeftPath = new RiverPath(
                 currentCell, directionToPrevious.Next(), directionToNext.Previous(),
@@ -463,7 +472,7 @@ namespace Assets.Simulation.MapGeneration {
                 pathsToTry.Add(rightleftPath);
             }
 
-            return TryFollowSomePath(pathsToTry);
+            return TryFollowSomePath(pathsToTry, oceanCells, cellsAdjacentToRiver);
         }
 
         //We need to draw a river from previousCell to nextCell by adding rivers
@@ -471,7 +480,8 @@ namespace Assets.Simulation.MapGeneration {
         //and should have some river pointing at currentCell
         private RiverPathResults CreateRiverAlongCell_SharpCWTurn(
             IHexCell previousCell, IHexCell currentCell, IHexCell nextCell,
-            HexDirection directionToPrevious, HexDirection directionToNext
+            HexDirection directionToPrevious, HexDirection directionToNext,
+            IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             var leftToLeftPath = new RiverPath(
                 currentCell, directionToPrevious.Next(), directionToNext.Previous(),
@@ -488,7 +498,7 @@ namespace Assets.Simulation.MapGeneration {
             //Assuming directionToPrevious.Opposite() is up, 
             //this case triggers when previousCell has a
             //river along its upper left edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
                 pathsToTry.Add(leftToLeftPath);
                 pathsToTry.Add(leftToRightPath);
             }
@@ -496,18 +506,20 @@ namespace Assets.Simulation.MapGeneration {
             //Assuming directionToPrevious.Opposite() is up, 
             //this case triggers when previousCell has a
             //river along its upper right edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
                 return RiverPathResults.Success;
             }
 
-            return TryFollowSomePath(pathsToTry);
+            return TryFollowSomePath(pathsToTry, oceanCells, cellsAdjacentToRiver);
         }
 
-        private RiverPathResults TryFollowSomePath(List<RiverPath> paths) {
+        private RiverPathResults TryFollowSomePath(
+            List<RiverPath> paths, IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
             while(paths.Count > 0) {
                 RiverPath randomPath = paths.First();
 
-                var pathResults = randomPath.TryBuildOutPath();
+                var pathResults = randomPath.TryBuildOutPath(cellsAdjacentToRiver, oceanCells);
 
                 if(pathResults.Completed) {
                     return pathResults;
@@ -521,7 +533,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private HexDirection GetDirectionOfNeighbor(IHexCell cell, IHexCell neighbor) {
             if(cell == neighbor) {
-                throw new System.InvalidOperationException("The argued cells are identical");
+                throw new InvalidOperationException("The argued cells are identical");
             }
 
             for(var direction = HexDirection.NE; direction <= HexDirection.NW; direction++) {
@@ -530,7 +542,35 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            throw new System.InvalidOperationException("the argued cells are not neighbors");
+            throw new InvalidOperationException("the argued cells are not neighbors");
+        }
+
+        private void AddRiverToCell(
+            IHexCell cell, HexDirection direction, RiverFlow flow, HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
+            RiverCanon.AddRiverToCell(cell, direction, flow);
+
+            cellsAdjacentToRiver.Add(cell);
+
+            if(Grid.HasNeighbor(cell, direction)) {
+                cellsAdjacentToRiver.Add(Grid.GetNeighbor(cell, direction));
+            }
+        }
+
+        private bool IsWater(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
+            return cell.Terrain.IsWater() || oceanCells.Contains(cell);
+        }
+
+        private Func<IHexCell, IHexCell, float> BuildRiverWeightFunction(IEnumerable<IHexCell> oceanCells) {
+            return delegate(IHexCell currentCell, IHexCell nextCell) {
+                if(nextCell.Shape != CellShape.Flatlands || IsWater(nextCell, oceanCells)) {
+                    return -1f;
+                }else if(Grid.GetNeighbors(nextCell).Any(neighbor => IsWater(neighbor, oceanCells))) {
+                    return 2f;
+                }else {
+                    return 1f;
+                }
+            };
         }
 
         #endregion

@@ -11,6 +11,7 @@ namespace Assets.Simulation.MapGeneration {
         int HillsPercentage     { get; }
         int MountainsPercentage { get; }
         int TreePercentage      { get; }
+        int RiverPercentage     { get; }
 
         int MinTreeClumps { get; }
         int MaxTreeClumps { get; }

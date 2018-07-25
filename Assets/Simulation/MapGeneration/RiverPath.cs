@@ -69,7 +69,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance methods
 
-        public bool CanBuildOutPath() {
+        public bool CanBuildOutPath(IEnumerable<IHexCell> oceanCells) {
             if(Cell.Terrain.IsWater()) {
                 return true;
             }
@@ -78,7 +78,7 @@ namespace Assets.Simulation.MapGeneration {
                 if(RiverCanon.CanAddRiverToCell(Cell, segment, Flow)) {
                     continue;
 
-                }else if(HasWaterInDirection(Cell, segment)){
+                }else if(HasWaterInDirection(Cell, segment, oceanCells)){
                     return true;
 
                 }else if(!HasRiverInDirectionWithFlow(Cell, segment, Flow)
@@ -90,17 +90,19 @@ namespace Assets.Simulation.MapGeneration {
             return true;
         }
 
-        public RiverPathResults TryBuildOutPath() {
+        public RiverPathResults TryBuildOutPath(
+            HashSet<IHexCell> cellsAdjacentToRiver, IEnumerable<IHexCell> oceanCells
+        ) {
             if(Cell.Terrain.IsWater()) {
                 return RiverPathResults.Water;
             }
 
             foreach(var segment in Path) {
-                if(RiverCanon.CanAddRiverToCell(Cell, segment, Flow)) {
-                    RiverCanon.AddRiverToCell(Cell, segment, Flow);
-
-                }else if(HasWaterInDirection(Cell, segment)) {
+                if(HasWaterInDirection(Cell, segment, oceanCells)) {
                     return RiverPathResults.Water;
+
+                } else if(RiverCanon.CanAddRiverToCell(Cell, segment, Flow)) {
+                    AddRiverToCell(Cell, segment, Flow, cellsAdjacentToRiver);
 
                 } else if(!HasRiverInDirectionWithFlow(Cell, segment, Flow)){
                     return RiverPathResults.Fail;
@@ -117,8 +119,23 @@ namespace Assets.Simulation.MapGeneration {
             );
         }
 
-        private bool HasWaterInDirection(IHexCell cell, HexDirection direction) {
-            return Grid.GetNeighbor(cell, direction).Terrain.IsWater();
+        private bool HasWaterInDirection(
+            IHexCell cell, HexDirection direction, IEnumerable<IHexCell> oceanCells
+        ) {
+            var neighbor = Grid.GetNeighbor(cell, direction);
+            return neighbor.Terrain.IsWater() || oceanCells.Contains(neighbor);
+        }
+
+        private void AddRiverToCell(
+            IHexCell cell, HexDirection direction, RiverFlow flow, HashSet<IHexCell> cellsAdjacentToRiver
+        ) {
+            RiverCanon.AddRiverToCell(cell, direction, flow);
+
+            cellsAdjacentToRiver.Add(cell);
+
+            if(Grid.HasNeighbor(cell, direction)) {
+                cellsAdjacentToRiver.Add(Grid.GetNeighbor(cell, direction));
+            }
         }
 
         #endregion

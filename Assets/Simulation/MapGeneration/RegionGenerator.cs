@@ -22,6 +22,7 @@ namespace Assets.Simulation.MapGeneration {
         private ICellTemperatureLogic  TemperatureLogic;
         private IGridTraversalLogic    GridTraversalLogic;
         private IRiverCanon            RiverCanon;
+        private IRiverGenerator        RiverGenerator;
 
         #endregion
 
@@ -30,13 +31,15 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
-            IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon
+            IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
+            IRiverGenerator riverGenerator
         ) {
             ModLogic           = modLogic;
             Grid               = grid;
             TemperatureLogic   = temperatureLogic;
             GridTraversalLogic = gridTraversalLogic;
             RiverCanon         = riverCanon;
+            RiverGenerator     = riverGenerator;
         }
 
         #endregion
@@ -52,6 +55,8 @@ namespace Assets.Simulation.MapGeneration {
             GenerateTopology(region, template);
             PaintTerrain    (region, template, oceanCells);
             PaintVegetation (region, template);
+
+            RiverGenerator.CreateRiversForRegion(region, template, oceanCells);
         }
 
         #endregion
