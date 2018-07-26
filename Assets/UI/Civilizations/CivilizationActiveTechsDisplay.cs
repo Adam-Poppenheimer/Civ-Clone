@@ -51,7 +51,7 @@ namespace Assets.UI.Civilizations {
 
                 CurrentTechRecord.TurnsToResearch = (int)Math.Ceiling(
                     (activeTech.Cost - CurrentTechRecord.CurrentProgress) /
-                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.ResourceType.Science]
+                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science]
                 );
             }else {
                 CurrentTechRecord.TechToDisplay = null;

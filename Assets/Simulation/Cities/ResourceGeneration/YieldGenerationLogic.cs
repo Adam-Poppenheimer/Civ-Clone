@@ -15,7 +15,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
     /// <summary>
     /// The standard implementation of IResourceGenerationLogic.
     /// </summary>
-    public class ResourceGenerationLogic : IResourceGenerationLogic {
+    public class YieldGenerationLogic : IYieldGenerationLogic {
 
         #region instance fields and properties
 
@@ -24,8 +24,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private IIncomeModifierLogic                          IncomeModifierLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private ICellResourceLogic                            CellResourceLogic;
-        private IBuildingResourceLogic                        BuildingResourceLogic;
+        private ICellYieldLogic                            CellYieldLogic;
+        private IBuildingYieldLogic                           BuildingYieldLogic;
         private IUnemploymentLogic                            UnemploymentLogic;
 
         #endregion
@@ -33,11 +33,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region constructors
 
         [Inject]
-        public ResourceGenerationLogic(
+        public YieldGenerationLogic(
             ICityConfig config, IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon, IIncomeModifierLogic incomeModifierLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellResourceLogic cellResourceLogic, IBuildingResourceLogic buildingResourceLogic,
+            ICellYieldLogic cellResourceLogic, IBuildingYieldLogic buildingResourceLogic,
             IUnemploymentLogic unemploymentLogic
         ){
             Config                  = config;
@@ -45,8 +45,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             BuildingPossessionCanon = buildingPossessionCanon;
             IncomeModifierLogic     = incomeModifierLogic;
             CityPossessionCanon     = cityPossessionCanon;
-            CellResourceLogic       = cellResourceLogic;
-            BuildingResourceLogic   = buildingResourceLogic;
+            CellYieldLogic       = cellResourceLogic;
+            BuildingYieldLogic   = buildingResourceLogic;
             UnemploymentLogic       = unemploymentLogic;
         }
 
@@ -57,11 +57,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region from IResourceGenerationLogic
 
         /// <inheritdoc/>
-        public ResourceSummary GetTotalYieldForCity(ICity city) {
-            return GetTotalYieldForCity(city, ResourceSummary.Empty);
+        public YieldSummary GetTotalYieldForCity(ICity city) {
+            return GetTotalYieldForCity(city, YieldSummary.Empty);
         } 
 
-        public ResourceSummary GetTotalYieldForCity(ICity city, ResourceSummary additionalBonuses) {
+        public YieldSummary GetTotalYieldForCity(ICity city, YieldSummary additionalBonuses) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
@@ -83,19 +83,19 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return retval;
         }
 
-        public ResourceSummary GetBaseYieldOfCity(ICity city) {
+        public YieldSummary GetBaseYieldOfCity(ICity city) {
             var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city);
             var civMultipliers  = IncomeModifierLogic.GetYieldMultipliersForCivilization(CityPossessionCanon.GetOwnerOfPossession(city));
 
-            var retval = Config.LocationYield * (ResourceSummary.Ones + cityMultipliers + civMultipliers);
+            var retval = Config.LocationYield * (YieldSummary.Ones + cityMultipliers + civMultipliers);
 
-            retval += new ResourceSummary(science: 1) * city.Population * (ResourceSummary.Ones + cityMultipliers + civMultipliers);
+            retval += new YieldSummary(science: 1) * city.Population * (YieldSummary.Ones + cityMultipliers + civMultipliers);
 
             return retval;
         }
 
         /// <inheritdoc/>
-        public ResourceSummary GetYieldOfUnemployedPersonForCity(ICity city) {
+        public YieldSummary GetYieldOfUnemployedPersonForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
@@ -103,25 +103,25 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             return Config.UnemployedYield * GetMultiplier(city);
         }
 
-        public ResourceSummary GetYieldOfCellForCity(IHexCell cell, ICity city) {
+        public YieldSummary GetYieldOfCellForCity(IHexCell cell, ICity city) {
             if(cell == null) {
                 throw new ArgumentNullException("slot");
             }else if(city == null) {
                 throw new ArgumentNullException("city");
             }            
 
-            return CellResourceLogic.GetYieldOfCell(cell) * GetMultiplier(city);
+            return CellYieldLogic.GetYieldOfCell(cell) * GetMultiplier(city);
         }
 
-        public ResourceSummary GetYieldOfBuildingForCity(IBuilding building, ICity city) {
+        public YieldSummary GetYieldOfBuildingForCity(IBuilding building, ICity city) {
             var multiplier = GetMultiplier(city);
 
-            var buildingYield = BuildingResourceLogic.GetYieldOfBuilding(building) * multiplier;
+            var buildingYield = BuildingYieldLogic.GetYieldOfBuilding(building) * multiplier;
 
             return buildingYield;
         }
 
-        public ResourceSummary GetYieldOfBuildingSlotsForCity(IBuilding building, ICity city) {
+        public YieldSummary GetYieldOfBuildingSlotsForCity(IBuilding building, ICity city) {
             var multiplier = GetMultiplier(city);
 
             var slotYield = building.Template.SlotYield * multiplier;
@@ -131,10 +131,10 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #endregion
 
-        private ResourceSummary GetMultiplier(ICity city) {
+        private YieldSummary GetMultiplier(ICity city) {
             var owningCivilization = CityPossessionCanon.GetOwnerOfPossession(city);
 
-            return ResourceSummary.Ones + IncomeModifierLogic.GetYieldMultipliersForCity(city)
+            return YieldSummary.Ones + IncomeModifierLogic.GetYieldMultipliersForCity(city)
                 + IncomeModifierLogic.GetYieldMultipliersForCivilization(owningCivilization);
         }
 

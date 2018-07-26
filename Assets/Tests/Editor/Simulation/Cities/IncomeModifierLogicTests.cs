@@ -68,7 +68,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var civilization = BuildCivilization();
 
-            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForCivilization(civilization),
+            Assert.AreEqual(YieldSummary.Empty, modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value");
         }
 
@@ -78,20 +78,20 @@ namespace Assets.Tests.Simulation.Cities {
         public void GetYieldMultipliersForCivilization_ConsidersBuildings() {
             var civilization = BuildCivilization(
                 BuildCity(
-                    BuildBuilding(new ResourceSummary(food: 1),       new ResourceSummary(food: -1)),
-                    BuildBuilding(new ResourceSummary(gold: 2),       ResourceSummary.Empty),
-                    BuildBuilding(new ResourceSummary(production: 3), ResourceSummary.Empty)
+                    BuildBuilding(new YieldSummary(food: 1),       new YieldSummary(food: -1)),
+                    BuildBuilding(new YieldSummary(gold: 2),       YieldSummary.Empty),
+                    BuildBuilding(new YieldSummary(production: 3), YieldSummary.Empty)
                 ),
                 BuildCity(
-                    BuildBuilding(new ResourceSummary(gold: 4),       ResourceSummary.Empty),
-                    BuildBuilding(new ResourceSummary(production: 5), ResourceSummary.Empty),
-                    BuildBuilding(new ResourceSummary(culture: 6),    new ResourceSummary(culture: -6))
+                    BuildBuilding(new YieldSummary(gold: 4),       YieldSummary.Empty),
+                    BuildBuilding(new YieldSummary(production: 5), YieldSummary.Empty),
+                    BuildBuilding(new YieldSummary(culture: 6),    new YieldSummary(culture: -6))
                 )
             );
 
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
             Assert.AreEqual(
-                new ResourceSummary(food: 1, gold: 6, production: 8, culture: 6),
+                new YieldSummary(food: 1, gold: 6, production: 8, culture: 6),
                 modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value"
             );
@@ -110,7 +110,7 @@ namespace Assets.Tests.Simulation.Cities {
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             Assert.AreEqual(
-                new ResourceSummary(food: 0, gold: -15 * 0.02f, production: -15 * 0.02f, culture: 0, science: 0),
+                new YieldSummary(food: 0, gold: -15 * 0.02f, production: -15 * 0.02f, culture: 0, science: 0),
                 modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value"
             );
@@ -123,7 +123,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity();
 
-            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForCity(city),
+            Assert.AreEqual(YieldSummary.Empty, modifierLogic.GetYieldMultipliersForCity(city),
                 "GetYieldMultipliersForCity returned an unexpected value");
         }
 
@@ -132,15 +132,15 @@ namespace Assets.Tests.Simulation.Cities {
             "in that city")]
         public void GetYieldMultipliersForCity_ConsidersBuildings() {
             var city = BuildCity(
-                BuildBuilding(new ResourceSummary(food:    1), new ResourceSummary(food:    -1)),
-                BuildBuilding(new ResourceSummary(gold:    2), new ResourceSummary(gold:    -2)),
-                BuildBuilding(new ResourceSummary(culture: 3), new ResourceSummary(culture: -3))
+                BuildBuilding(new YieldSummary(food:    1), new YieldSummary(food:    -1)),
+                BuildBuilding(new YieldSummary(gold:    2), new YieldSummary(gold:    -2)),
+                BuildBuilding(new YieldSummary(culture: 3), new YieldSummary(culture: -3))
             );
 
             var modifierLogic = Container.Resolve<IncomeModifierLogic>();
 
             Assert.AreEqual(
-                new ResourceSummary(food: -1, gold: -2, culture: -3),
+                new YieldSummary(food: -1, gold: -2, culture: -3),
                 modifierLogic.GetYieldMultipliersForCity(city),
                 "GetYieldMultipliersForCity returned an unexpected value"
             );
@@ -153,7 +153,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var slot = new Mock<IWorkerSlot>().Object;
 
-            Assert.AreEqual(ResourceSummary.Empty, modifierLogic.GetYieldMultipliersForSlot(slot),
+            Assert.AreEqual(YieldSummary.Empty, modifierLogic.GetYieldMultipliersForSlot(slot),
                 "GetYieldMultipliersForSlot returned an unexpected value");
         }
 
@@ -175,7 +175,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IBuilding BuildBuilding(ResourceSummary civilizationModifier, ResourceSummary cityModifier) {
+        private IBuilding BuildBuilding(YieldSummary civilizationModifier, YieldSummary cityModifier) {
             var mockBuilding = new Mock<IBuilding>();
 
             mockBuilding.Setup(building => building.CivilizationYieldModifier).Returns(civilizationModifier);
@@ -204,7 +204,7 @@ namespace Assets.Tests.Simulation.Cities {
             return civilization;
         }
 
-        private IWorkerSlot BuildSlot(ResourceSummary baseYield) {
+        private IWorkerSlot BuildSlot(YieldSummary baseYield) {
             var mockSlot = new Mock<IWorkerSlot>();
 
             return mockSlot.Object;

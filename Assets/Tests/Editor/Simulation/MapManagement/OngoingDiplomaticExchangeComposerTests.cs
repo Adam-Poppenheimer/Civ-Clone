@@ -9,7 +9,7 @@ using Moq;
 
 using Assets.Simulation.Diplomacy;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.MapManagement;
 
 namespace Assets.Tests.Simulation.MapManagement {
@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         private List<ICivilization> AllCivs = new List<ICivilization>();
 
-        private List<ISpecialtyResourceDefinition> AllResources = new List<ISpecialtyResourceDefinition>();
+        private List<IResourceDefinition> AllResources = new List<IResourceDefinition>();
 
         #endregion
 
@@ -51,7 +51,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<ICivilizationFactory>      ().FromInstance(MockCivFactory     .Object);
             Container.Bind<IDiplomaticExchangeFactory>().FromInstance(MockExchangeFactory.Object);
 
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+            Container.Bind<IEnumerable<IResourceDefinition>>()
                      .WithId("Available Specialty Resources")
                      .FromInstance(AllResources);
 
@@ -243,7 +243,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         private IOngoingDiplomaticExchange BuildOngoingExchange(
             ExchangeType type, ICivilization sender, ICivilization receiver,
-            ISpecialtyResourceDefinition resourceInput, int integerInput
+            IResourceDefinition resourceInput, int integerInput
         ) {
             var mockExchange = new Mock<IOngoingDiplomaticExchange>();
 
@@ -273,8 +273,8 @@ namespace Assets.Tests.Simulation.MapManagement {
             return newCiv;
         }
 
-        private ISpecialtyResourceDefinition BuildResource(string name) {
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResource(string name) {
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Name = name;
             mockResource.Setup(resource => resource.name).Returns(name);

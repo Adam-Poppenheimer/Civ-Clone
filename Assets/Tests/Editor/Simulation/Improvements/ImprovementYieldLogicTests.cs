@@ -14,7 +14,7 @@ using Assets.Simulation.Technology;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -50,13 +50,13 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public class ImprovementTemplateTestData {
 
-            public ResourceSummary BonusYieldNormal;
+            public YieldSummary BonusYieldNormal;
 
         }
 
         public class ResourceNodeTestData {
 
-            public ResourceSummary DefinitionImprovementYield;
+            public YieldSummary DefinitionImprovementYield;
 
             public bool IsExtractedByImprovement;
 
@@ -84,7 +84,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
         public class ImprovementModificationTestData {
 
-            public ResourceSummary BonusYield;
+            public YieldSummary BonusYield;
 
             public bool AppliesToImprovement;
 
@@ -101,11 +101,11 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },                    
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -113,17 +113,17 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Non-extracting improvement, no techs").Returns(
-                    new ResourceSummary(food: 1)
+                    new YieldSummary(food: 1)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = true,
                         IsVisible = false
                     },
@@ -132,17 +132,17 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Extracting improvement, invisible resource, no techs").Returns(
-                    new ResourceSummary(food: 1)
+                    new YieldSummary(food: 1)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = true,
                         IsVisible = true
                     },
@@ -151,17 +151,17 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Extracting improvement, visible resource, no techs").Returns(
-                    new ResourceSummary(production: 2)
+                    new YieldSummary(production: 2)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -170,34 +170,34 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true
+                                        BonusYield = new YieldSummary(gold: 1), AppliesToImprovement = true
                                     },
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true
+                                        BonusYield = new YieldSummary(culture: 2), AppliesToImprovement = true
                                     }
                                 }
                             },
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true
+                                        BonusYield = new YieldSummary(science: 3), AppliesToImprovement = true
                                     },
                                 }
                             }
                         }
                     }
                 }).SetName("Non-extracting improvement, techs that modify yield").Returns(
-                    new ResourceSummary(food: 1, gold: 1, culture: 2, science: 3)
+                    new YieldSummary(food: 1, gold: 1, culture: 2, science: 3)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -206,34 +206,34 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = false
+                                        BonusYield = new YieldSummary(gold: 1), AppliesToImprovement = false
                                     },
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(culture: 2f), AppliesToImprovement = false
+                                        BonusYield = new YieldSummary(culture: 2f), AppliesToImprovement = false
                                     }
                                 }
                             },
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = false
+                                        BonusYield = new YieldSummary(science: 3), AppliesToImprovement = false
                                     }
                                 }
                             }
                         }
                     }
                 }).SetName("Non-extracting improvement, techs that don't modify yield").Returns(
-                    new ResourceSummary(food: 1)
+                    new YieldSummary(food: 1)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -242,34 +242,34 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = false
+                                        BonusYield = new YieldSummary(gold: 1), AppliesToImprovement = false
                                     },
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(culture: 2f), AppliesToImprovement = true
+                                        BonusYield = new YieldSummary(culture: 2f), AppliesToImprovement = true
                                     }
                                 }
                             },
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(science: 3f), AppliesToImprovement = false
+                                        BonusYield = new YieldSummary(science: 3f), AppliesToImprovement = false
                                     }
                                 }
                             }
                         }
                     }
                 }).SetName("Non-extracting improvement, only some tech modifications affect template").Returns(
-                    new ResourceSummary(food: 1, culture: 2)
+                    new YieldSummary(food: 1, culture: 2)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CellHasAccessToFreshWater = true,
@@ -279,11 +279,11 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(gold: 1), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     },
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(culture: 2), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     }
                                 }
@@ -291,7 +291,7 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(science: 3), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     },
                                 }
@@ -299,17 +299,17 @@ namespace Assets.Tests.Simulation.Improvements {
                         }
                     }
                 }).SetName("Non-extracting improvement, fresh water, tech modifications require fresh water").Returns(
-                    new ResourceSummary(food: 1, gold: 1, culture: 2, science: 3)
+                    new YieldSummary(food: 1, gold: 1, culture: 2, science: 3)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CellHasAccessToFreshWater = false,
@@ -319,11 +319,11 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(gold: 1), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(gold: 1), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     },
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(culture: 2), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(culture: 2), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     }
                                 }
@@ -331,7 +331,7 @@ namespace Assets.Tests.Simulation.Improvements {
                             new TechTestData() {
                                 ImprovementModifications = new List<ImprovementModificationTestData>() {
                                     new ImprovementModificationTestData() {
-                                        BonusYield = new ResourceSummary(science: 3), AppliesToImprovement = true,
+                                        BonusYield = new YieldSummary(science: 3), AppliesToImprovement = true,
                                         RequiresFreshWater = true
                                     },
                                 }
@@ -339,7 +339,7 @@ namespace Assets.Tests.Simulation.Improvements {
                         }
                     }
                 }).SetName("Non-extracting improvement, no fresh water, tech modifications require fresh water").Returns(
-                    new ResourceSummary(food: 1, gold: 0, culture: 0, science: 0)
+                    new YieldSummary(food: 1, gold: 0, culture: 0, science: 0)
                 );
             }
         }
@@ -349,12 +349,12 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                         IsConstructed = true
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -362,18 +362,18 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Improvement is constructed").Returns(
-                    new ResourceSummary(food: 1)
+                    new YieldSummary(food: 1)
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                         IsConstructed = false
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -381,18 +381,18 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Improvement is not constructed").Returns(
-                    ResourceSummary.Empty
+                    YieldSummary.Empty
                 );
 
                 yield return new TestCaseData(new ImprovementYieldTestData() {
                     Improvement = new ImprovementTestData() {
                         Template = new ImprovementTemplateTestData() {
-                            BonusYieldNormal = new ResourceSummary(food: 1)
+                            BonusYieldNormal = new YieldSummary(food: 1)
                         },
                         IsConstructed = true, IsPillaged = true
                     },
                     ResourceNodeAtCell = new ResourceNodeTestData() {
-                        DefinitionImprovementYield = new ResourceSummary(production: 2),
+                        DefinitionImprovementYield = new YieldSummary(production: 2),
                         IsExtractedByImprovement = false
                     },
                     CityOwningCell = new CityTestData(),
@@ -400,7 +400,7 @@ namespace Assets.Tests.Simulation.Improvements {
                         TechsDiscovered = new List<TechTestData>()
                     }
                 }).SetName("Improvement is constructed but pillaged").Returns(
-                    ResourceSummary.Empty
+                    YieldSummary.Empty
                 );
             }
         }
@@ -447,7 +447,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
         [TestCaseSource("GetExpectedYieldTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetExpectedYieldTests(ImprovementYieldTestData testData) {
+        public YieldSummary GetExpectedYieldTests(ImprovementYieldTestData testData) {
             var location = BuildHexCell(testData.CellHasAccessToFreshWater);
 
             var improvementTemplate = BuildImprovementTemplate(testData.Improvement.Template);
@@ -471,7 +471,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
         [TestCaseSource("GetYieldOfImprovementTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfImprovementTests(ImprovementYieldTestData testData) {
+        public YieldSummary GetYieldOfImprovementTests(ImprovementYieldTestData testData) {
             var location = BuildHexCell(testData.CellHasAccessToFreshWater);
 
             var improvementTemplate = BuildImprovementTemplate(testData.Improvement.Template);
@@ -535,7 +535,7 @@ namespace Assets.Tests.Simulation.Improvements {
         ) {
             var mockNode = new Mock<IResourceNode>();
 
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+            var mockDefinition = new Mock<IResourceDefinition>();
 
             mockDefinition.Setup(definition => definition.BonusYieldWhenImproved)
                 .Returns(testData.DefinitionImprovementYield);

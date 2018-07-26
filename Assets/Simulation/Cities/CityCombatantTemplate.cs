@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
@@ -128,10 +128,10 @@ namespace Assets.Simulation.Cities {
             get { return CombatLogic.GetMaxHitpointsOfCity(UnderlyingCity); }
         }
 
-        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+        public IEnumerable<IResourceDefinition> RequiredResources {
             get { return _emptyResources; }
         }
-        private static List<ISpecialtyResourceDefinition> _emptyResources = new List<ISpecialtyResourceDefinition>();
+        private static List<IResourceDefinition> _emptyResources = new List<IResourceDefinition>();
 
         public bool BenefitsFromDefensiveTerrain {
             get { return false; }

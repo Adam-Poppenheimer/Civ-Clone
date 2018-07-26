@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
@@ -14,7 +14,8 @@ namespace Assets.Simulation.MapGeneration {
 
         void GenerateContinent(
             MapRegion continent, IContinentGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+            IEnumerable<IHexCell> oceanCells,
+            List<IResourceDefinition> availableLuxuries
         );
 
         #endregion

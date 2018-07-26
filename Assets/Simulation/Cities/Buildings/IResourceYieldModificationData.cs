@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -11,8 +11,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        ISpecialtyResourceDefinition Resource   { get; }
-        ResourceSummary              BonusYield { get; }
+        IResourceDefinition Resource   { get; }
+        YieldSummary              BonusYield { get; }
 
         #endregion
 

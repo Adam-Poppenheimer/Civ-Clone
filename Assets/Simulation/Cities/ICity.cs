@@ -44,7 +44,7 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// The income the city generated during the last call to <ref>PerformIncome</ref>.
         /// </summary>
-        ResourceSummary LastIncome { get; }
+        YieldSummary LastIncome { get; }
 
         /// <summary>
         /// The project the city is currently trying to construct.
@@ -55,7 +55,7 @@ namespace Assets.Simulation.Cities {
         /// The current resource focus of the city, which determines what tiles the city will
         /// prioritize when assigning its citizens to slots
         /// </summary>
-        ResourceFocusType ResourceFocus { get; set; }
+        YieldFocusType YieldFocus { get; set; }
 
         /// <summary>
         /// The cell that the city is actively seeking to acquire via border expansion.

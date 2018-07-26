@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Core;
 
@@ -31,7 +31,7 @@ namespace Assets.UI.SpecialtyResources {
         private IFreeResourcesLogic               FreeResourcesLogic;
         private IResourceExtractionLogic          ExtractionLogic;
         private IResourceTransferCanon            ResourceTransferCanon;
-        IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
+        IEnumerable<IResourceDefinition> AvailableResources;
 
         #endregion
 
@@ -41,7 +41,7 @@ namespace Assets.UI.SpecialtyResources {
         public void InjectDependencies(
             IGameCore gameCore, IFreeResourcesLogic freeResourcesLogic,
             IResourceExtractionLogic extractionLogic, IResourceTransferCanon resourceTransferCanon,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             GameCore              = gameCore;
             FreeResourcesLogic    = freeResourcesLogic;
@@ -74,7 +74,7 @@ namespace Assets.UI.SpecialtyResources {
 
         #endregion
 
-        private void BuildSummary(ISpecialtyResourceDefinition resource, int totalCopies) {
+        private void BuildSummary(IResourceDefinition resource, int totalCopies) {
             int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActiveCivilization);
 
             var newSummaryPrefab = Instantiate(ResourceSummaryPrefab);

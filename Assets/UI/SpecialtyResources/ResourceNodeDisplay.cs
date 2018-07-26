@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 using TMPro;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.UI.SpecialtyResources {
 
@@ -26,7 +26,7 @@ namespace Assets.UI.SpecialtyResources {
             if(SummaryField != null) {
                 string summaryText;
 
-                if(node.Resource.Type == SpecialtyResourceType.Strategic) {
+                if(node.Resource.Type == ResourceType.Strategic) {
                     summaryText = String.Format(StringFormats.ResourceNodeSummary_Strategic, node.Resource.name, node.Copies);
                 }else {
                     summaryText = String.Format(StringFormats.ResourceNodeSummary_NonStrategic, node.Resource.name);

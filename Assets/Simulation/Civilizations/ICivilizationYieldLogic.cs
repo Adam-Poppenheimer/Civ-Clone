@@ -9,7 +9,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        ResourceSummary GetYieldOfCivilization(ICivilization civilization);
+        YieldSummary GetYieldOfCivilization(ICivilization civilization);
 
         #endregion
 

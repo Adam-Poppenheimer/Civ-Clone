@@ -13,7 +13,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -190,7 +190,7 @@ namespace Assets.Tests.Simulation.Units {
 
         #region utilities
 
-        private IUnitTemplate BuildTemplate(IEnumerable<ISpecialtyResourceDefinition> requiredResources) {
+        private IUnitTemplate BuildTemplate(IEnumerable<IResourceDefinition> requiredResources) {
             var mockTemplate = new Mock<IUnitTemplate>();
 
             mockTemplate.Setup(template => template.RequiredResources).Returns(requiredResources);
@@ -201,7 +201,7 @@ namespace Assets.Tests.Simulation.Units {
         }
 
         private ICity BuildCity(ICivilization owner, IHexCell location,
-            IEnumerable<ISpecialtyResourceDefinition> resourcesAvailableToOwner
+            IEnumerable<IResourceDefinition> resourcesAvailableToOwner
         ){
             var mockCity = new Mock<ICity>();
 
@@ -218,8 +218,8 @@ namespace Assets.Tests.Simulation.Units {
             return newCity;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition(string name) {
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResourceDefinition(string name) {
+            var mockDefinition = new Mock<IResourceDefinition>();
 
             mockDefinition.Setup(definition => definition.name).Returns(name);
             mockDefinition.Name = name;

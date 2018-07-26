@@ -31,7 +31,7 @@ namespace Assets.Simulation.Cities {
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IHexCells from least to most yield of the focused resource</returns>
         public static Comparison<IHexCell> BuildFocusedComparisonAscending(ICity sourceCity,
-            ResourceType focusedResource, IResourceGenerationLogic generationLogic) {
+            YieldType focusedResource, IYieldGenerationLogic generationLogic) {
 
             return delegate(IHexCell firstCell, IHexCell secondCell) {
                 var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
@@ -39,7 +39,7 @@ namespace Assets.Simulation.Cities {
 
                 var focusComparison = firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
                 if(focusComparison == 0) {
-                    focusComparison = firstYield[ResourceType.Food].CompareTo(secondYield[ResourceType.Food]);
+                    focusComparison = firstYield[YieldType.Food].CompareTo(secondYield[YieldType.Food]);
                 }
                 if(focusComparison == 0) {
                     focusComparison = firstYield.Total.CompareTo(secondYield.Total);
@@ -60,17 +60,17 @@ namespace Assets.Simulation.Cities {
         /// additional comparisons are made beyond the yield of the specified resource
         /// </remarks>
         /// <param name="sourceCity">The city whose hypothetical yield is being considered</param>
-        /// <param name="focusedResource">The ResourceType to be maximized</param>
+        /// <param name="focusedYield">The YieldType to be maximized</param>
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IHexCells from least to most yield of the focused resource</returns>
-        public static Comparison<IHexCell> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity,
-            IResourceGenerationLogic generationLogic) {
-
+        public static Comparison<IHexCell> BuildYieldComparisonAscending(
+            YieldType focusedYield, ICity sourceCity, IYieldGenerationLogic generationLogic
+        ) {
             return delegate(IHexCell firstCell, IHexCell secondCell) {
-                var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
+                var firstYield  = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
                 var secondYield = generationLogic.GetYieldOfCellForCity(secondCell, sourceCity);
 
-                return firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
+                return firstYield[focusedYield].CompareTo(secondYield[focusedYield]);
             };
 
         }
@@ -82,8 +82,9 @@ namespace Assets.Simulation.Cities {
         /// <param name="sourceCity">The city whose hypothetical yield is being considered</param>
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IHexCells from least to most total yield</returns>
-        public static Comparison<IHexCell> BuildTotalYieldComparisonAscending(ICity sourceCity,
-            IResourceGenerationLogic generationLogic) {
+        public static Comparison<IHexCell> BuildTotalYieldComparisonAscending(
+            ICity sourceCity, IYieldGenerationLogic generationLogic
+        ) {
 
             return delegate(IHexCell firstCell, IHexCell secondCell) {
                 var firstYield = generationLogic.GetYieldOfCellForCity(firstCell, sourceCity);
@@ -102,16 +103,17 @@ namespace Assets.Simulation.Cities {
         /// <param name="focus">The ResourceFocusType to be maximized for</param>
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IHexCells based on their usefulness to the argued focus</returns>
-        public static Comparison<IHexCell> BuildComparisonAscending(ICity sourceCity, ResourceFocusType focus,
-            IResourceGenerationLogic generationLogic) {
+        public static Comparison<IHexCell> BuildComparisonAscending(
+            ICity sourceCity, YieldFocusType focus, IYieldGenerationLogic generationLogic
+        ) {
 
             switch(focus) {
-                case ResourceFocusType.Food:       return BuildResourceComparisonAscending(ResourceType.Food,       sourceCity, generationLogic);
-                case ResourceFocusType.Gold:       return BuildResourceComparisonAscending(ResourceType.Gold,       sourceCity, generationLogic);
-                case ResourceFocusType.Production: return BuildResourceComparisonAscending(ResourceType.Production, sourceCity, generationLogic);
-                case ResourceFocusType.Culture:    return BuildResourceComparisonAscending(ResourceType.Culture,    sourceCity, generationLogic);
-                case ResourceFocusType.Science:    return BuildResourceComparisonAscending(ResourceType.Science,    sourceCity, generationLogic);
-                case ResourceFocusType.TotalYield: return BuildTotalYieldComparisonAscending(sourceCity, generationLogic);
+                case YieldFocusType.Food:       return BuildYieldComparisonAscending(YieldType.Food,       sourceCity, generationLogic);
+                case YieldFocusType.Gold:       return BuildYieldComparisonAscending(YieldType.Gold,       sourceCity, generationLogic);
+                case YieldFocusType.Production: return BuildYieldComparisonAscending(YieldType.Production, sourceCity, generationLogic);
+                case YieldFocusType.Culture:    return BuildYieldComparisonAscending(YieldType.Culture,    sourceCity, generationLogic);
+                case YieldFocusType.Science:    return BuildYieldComparisonAscending(YieldType.Science,    sourceCity, generationLogic);
+                case YieldFocusType.TotalYield: return BuildTotalYieldComparisonAscending(sourceCity, generationLogic);
                 default: return null;
             }
         }

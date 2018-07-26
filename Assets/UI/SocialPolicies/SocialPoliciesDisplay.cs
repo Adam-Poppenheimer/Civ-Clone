@@ -107,7 +107,7 @@ namespace Assets.UI.SocialPolicies {
             if(!IgnoreCost) {
                 int   stockpile         = ObjectToDisplay.CultureStockpile;
                 int   costForNext       = PolicyCostLogic.GetCostOfNextPolicyForCiv(ObjectToDisplay);
-                float cultureProduction = YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[ResourceType.Culture];
+                float cultureProduction = YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[YieldType.Culture];
 
                 CultureStockpileField    .text = stockpile  .ToString();
                 CultureForNextPolicyField.text = costForNext.ToString();

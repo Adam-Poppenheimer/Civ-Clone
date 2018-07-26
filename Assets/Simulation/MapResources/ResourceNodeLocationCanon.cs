@@ -8,20 +8,20 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
     public class ResourceNodeLocationCanon : PossessionRelationship<IHexCell, IResourceNode> {
 
         #region instance fields and properties
 
-        private SpecialtyResourceSignals Signals;
+        private ResourceSignals Signals;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ResourceNodeLocationCanon(SpecialtyResourceSignals signals) {
+        public ResourceNodeLocationCanon(ResourceSignals signals) {
             Signals = signals;
 
             signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);

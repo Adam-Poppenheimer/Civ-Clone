@@ -16,7 +16,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.UI {
 
-    public class ResourceSummaryDisplay : MonoBehaviour, IResourceSummaryDisplay {
+    public class YieldSummaryDisplay : MonoBehaviour, IYieldSummaryDisplay {
 
         #region instance fields and properties
 
@@ -41,7 +41,7 @@ namespace Assets.UI {
 
         #region from IResourceSummaryDisplay
 
-        public void DisplaySummary(ResourceSummary summary) {
+        public void DisplaySummary(YieldSummary summary) {
             SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
                 summary, DisplayEmptyResources, PlusSignOnPositiveNumbers
             );

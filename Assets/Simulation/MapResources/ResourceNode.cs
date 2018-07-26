@@ -9,7 +9,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
     public class ResourceNode : MonoBehaviour, IResourceNode {
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.SpecialtyResources {
 
         public int Copies { get; set; }
 
-        public ISpecialtyResourceDefinition Resource { get; set; }
+        public IResourceDefinition Resource { get; set; }
 
         public bool IsVisible {
             get { return _isVisible; }
@@ -38,7 +38,7 @@ namespace Assets.Simulation.SpecialtyResources {
         #endregion
 
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
-        private SpecialtyResourceSignals                         Signals;
+        private ResourceSignals                         Signals;
 
         #endregion
 
@@ -47,7 +47,7 @@ namespace Assets.Simulation.SpecialtyResources {
         [Inject]
         public void InjectDependencies(
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon, 
-            SpecialtyResourceSignals signals
+            ResourceSignals signals
         ){
             NodeLocationCanon = nodeLocationCanon;
             Signals           = signals;

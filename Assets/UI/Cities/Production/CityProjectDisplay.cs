@@ -47,7 +47,7 @@ namespace Assets.UI.Cities.Production {
 
             projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);            
 
-            ProgressSliderFill.color = coreConfig.GetColorForResourceType(ResourceType.Production);
+            ProgressSliderFill.color = coreConfig.GetColorForYieldType(YieldType.Production);
         }
 
         #region from CityDisplayBase
@@ -92,7 +92,7 @@ namespace Assets.UI.Cities.Production {
 
             ProjectNameField.text = project.Name;
             ProjectCostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
-                ResourceType.Production, project.ProductionToComplete
+                YieldType.Production, project.ProductionToComplete
             );            
 
             ProductionProgressSlider.minValue = 0;

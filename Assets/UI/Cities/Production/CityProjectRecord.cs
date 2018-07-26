@@ -50,13 +50,13 @@ namespace Assets.UI.Cities.Production {
             if(UnitTemplate != null) {
                 NameField.text = UnitTemplate.name;
                 CostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
-                    ResourceType.Production, UnitTemplate.ProductionCost
+                    YieldType.Production, UnitTemplate.ProductionCost
                 );
 
             }else if(BuildingTemplate != null) {
                 NameField.text = BuildingTemplate.name;
                 CostField.text = YieldFormatter.GetTMProFormattedSingleResourceString(
-                    ResourceType.Production, BuildingTemplate.ProductionCost
+                    YieldType.Production, BuildingTemplate.ProductionCost
                 );
             }
         }

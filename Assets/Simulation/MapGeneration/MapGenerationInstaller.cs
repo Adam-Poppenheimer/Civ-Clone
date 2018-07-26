@@ -32,11 +32,12 @@ namespace Assets.Simulation.MapGeneration {
 
             Container.Bind<IMapGenerationConfig>().To<MapGenerationConfig>().FromInstance(Config);
 
-            Container.Bind<IContinentGenerator>  ().To<ContinentGenerator>().AsSingle();
-            Container.Bind<IOceanGenerator>      ().To<OceanGenerator>    ().AsSingle();
-            Container.Bind<IRegionGenerator>     ().To<RegionGenerator>              ().AsSingle();
-            Container.Bind<ICellTemperatureLogic>().To<CellTemperatureLogic>         ().AsSingle();
-            Container.Bind<IGridTraversalLogic>  ().To<GridTraversalLogic>           ().AsSingle();
+            Container.Bind<IContinentGenerator>  ().To<ContinentGenerator>  ().AsSingle();
+            Container.Bind<IOceanGenerator>      ().To<OceanGenerator>      ().AsSingle();
+            Container.Bind<IRegionGenerator>     ().To<RegionGenerator>     ().AsSingle();
+            Container.Bind<ICellTemperatureLogic>().To<CellTemperatureLogic>().AsSingle();
+            Container.Bind<IGridTraversalLogic>  ().To<GridTraversalLogic>  ().AsSingle();
+            Container.Bind<IResourceDistributor> ().To<ResourceDistributor> ().AsSingle();
         }
 
         #endregion

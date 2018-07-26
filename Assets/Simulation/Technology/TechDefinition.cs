@@ -9,7 +9,7 @@ using UnityEngine;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 using Assets.Simulation.SocialPolicies;
@@ -72,10 +72,10 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private List<ImprovementModificationData> _improvementYieldModifications;
 
-        public IEnumerable<ISpecialtyResourceDefinition> RevealedResources {
-            get { return _revealedResources.Cast<ISpecialtyResourceDefinition>(); }
+        public IEnumerable<IResourceDefinition> RevealedResources {
+            get { return _revealedResources.Cast<IResourceDefinition>(); }
         }
-        [SerializeField] private List<SpecialtyResourceDefinition> _revealedResources;
+        [SerializeField] private List<ResourceDefinition> _revealedResources;
 
         public IEnumerable<IPolicyTreeDefinition> PolicyTreesEnabled {
             get { return _policyTreesEnabled.Cast<IPolicyTreeDefinition>(); }

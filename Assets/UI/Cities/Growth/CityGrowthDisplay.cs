@@ -75,14 +75,14 @@ namespace Assets.UI.Cities.Growth {
 
         private IPopulationGrowthLogic GrowthLogic;
 
-        private IResourceGenerationLogic GenerationLogic;
+        private IYieldGenerationLogic GenerationLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic) {
+        public void InjectDependencies(IPopulationGrowthLogic growthLogic, IYieldGenerationLogic generationLogic) {
             GrowthLogic = growthLogic;
             GenerationLogic = generationLogic;
         }
@@ -111,7 +111,7 @@ namespace Assets.UI.Cities.Growth {
             GrowthSlider.value = currentFoodStockpile;
 
             var netIncome = 
-                GenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Food] -
+                GenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[YieldType.Food] -
                 GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
 
             if(netIncome > 0) {

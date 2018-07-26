@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
@@ -47,8 +47,8 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementYieldLogic
 
-        public ResourceSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell) {
-            ResourceSummary retval;
+        public YieldSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell) {
+            YieldSummary retval;
             ICity cityOwningCell = null;
             ICivilization civOwningCell = null;
 
@@ -87,13 +87,13 @@ namespace Assets.Simulation.Improvements {
             return retval;
         }
 
-        public ResourceSummary GetYieldOfImprovement(IImprovement improvement) {
+        public YieldSummary GetYieldOfImprovement(IImprovement improvement) {
             if(improvement.IsConstructed && !improvement.IsPillaged) {
                 return GetExpectedYieldOfImprovementOnCell(
                     improvement.Template, ImprovementLocationCanon.GetOwnerOfPossession(improvement)
                 );
             }else {
-                return ResourceSummary.Empty;
+                return YieldSummary.Empty;
             }            
         }
 

@@ -22,11 +22,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         public class BuildingTestData {
 
-            public ResourceSummary StaticYield = ResourceSummary.Empty;
+            public YieldSummary StaticYield = YieldSummary.Empty;
 
-            public ResourceSummary SlotYield = ResourceSummary.Empty;
+            public YieldSummary SlotYield = YieldSummary.Empty;
 
-            public ResourceSummary BonusYieldPerPopulation = ResourceSummary.Empty;
+            public YieldSummary BonusYieldPerPopulation = YieldSummary.Empty;
 
             public CityTestData Owner = new CityTestData();
 
@@ -54,24 +54,24 @@ namespace Assets.Tests.Simulation.Cities {
             get {
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        StaticYield = new ResourceSummary(food: 1f, production: 2f, gold: 3f, culture: 4f)
+                        StaticYield = new YieldSummary(food: 1f, production: 2f, gold: 3f, culture: 4f)
                     }
-                ).SetName("Considers static yield").Returns(new ResourceSummary(
+                ).SetName("Considers static yield").Returns(new YieldSummary(
                     food: 1f, production: 2f, gold: 3f, culture: 4f
                 ));
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        BonusYieldPerPopulation = new ResourceSummary(food: 1f, production: 1f, gold: 2f, culture: 3f),
+                        BonusYieldPerPopulation = new YieldSummary(food: 1f, production: 1f, gold: 2f, culture: 3f),
                         Owner = new CityTestData() { Population = 5 }
                     }
-                ).SetName("Considers per-population yield").Returns(new ResourceSummary(
+                ).SetName("Considers per-population yield").Returns(new YieldSummary(
                     food: 5f, production: 5f, gold: 10f, culture: 15f
                 ));
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new ResourceSummary(food: 1f, production: 1f),
+                        SlotYield = new YieldSummary(food: 1f, production: 1f),
                         Slots = new List<SlotTestData>() {
                             new SlotTestData() { IsOccupied = true },
                             new SlotTestData() { IsOccupied = true },
@@ -80,7 +80,7 @@ namespace Assets.Tests.Simulation.Cities {
                             new SlotTestData() { IsOccupied = false },
                         }
                     }
-                ).SetName("Considers yield of occupied slots").Returns(new ResourceSummary(
+                ).SetName("Considers yield of occupied slots").Returns(new YieldSummary(
                     food: 3f, production: 3f
                 ));
             }
@@ -104,7 +104,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
 
-            Container.Bind<BuildingResourceLogic>().AsSingle();
+            Container.Bind<BuildingYieldLogic>().AsSingle();
         }
 
         #endregion
@@ -113,10 +113,10 @@ namespace Assets.Tests.Simulation.Cities {
 
         [TestCaseSource("GetYieldOfBuildingTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfBuildingTests(BuildingTestData buildingData) {
+        public YieldSummary GetYieldOfBuildingTests(BuildingTestData buildingData) {
             var building = BuildBuilding(buildingData);
 
-            var resourceLogic = Container.Resolve<BuildingResourceLogic>();
+            var resourceLogic = Container.Resolve<BuildingYieldLogic>();
 
             return resourceLogic.GetYieldOfBuilding(building);
         }

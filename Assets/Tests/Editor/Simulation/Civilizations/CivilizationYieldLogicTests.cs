@@ -21,7 +21,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
-        private Mock<IResourceGenerationLogic> MockGenerationLogic;
+        private Mock<IYieldGenerationLogic> MockGenerationLogic;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -36,13 +36,13 @@ namespace Assets.Tests.Simulation.Civilizations {
             AllCities.Clear();
 
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGenerationLogic     = new Mock<IResourceGenerationLogic>();
+            MockGenerationLogic     = new Mock<IYieldGenerationLogic>();
 
             MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICivilization>()))
                 .Returns(AllCities);
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IResourceGenerationLogic>().FromInstance(MockGenerationLogic.Object);
+            Container.Bind<IYieldGenerationLogic>().FromInstance(MockGenerationLogic.Object);
 
             Container.Bind<CivilizationYieldLogic>().AsSingle();
         }
@@ -55,16 +55,16 @@ namespace Assets.Tests.Simulation.Civilizations {
             "cities bestowed to it by CityPossessionCanon. Total yields should be " +
             "determined by IResourceGenerationLogic")]
         public void GetYieldOfCivilization_SumsOwnedCityYields() {
-            BuildCity(new ResourceSummary(food: 1f));
-            BuildCity(new ResourceSummary(gold: 2f));
-            BuildCity(new ResourceSummary(culture: 3f));
+            BuildCity(new YieldSummary(food: 1f));
+            BuildCity(new YieldSummary(gold: 2f));
+            BuildCity(new YieldSummary(culture: 3f));
 
             var civilization = BuildCivilization();
 
             var yieldLogic = Container.Resolve<CivilizationYieldLogic>();
 
             Assert.AreEqual(
-                new ResourceSummary(food: 1f, gold: 2f, culture: 3f),
+                new YieldSummary(food: 1f, gold: 2f, culture: 3f),
                 yieldLogic.GetYieldOfCivilization(civilization),
                 "GetYieldOfCivilization returned an unexpected value"
             );
@@ -74,7 +74,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region utilities
 
-        private ICity BuildCity(ResourceSummary yield) {
+        private ICity BuildCity(YieldSummary yield) {
             var mockCity = new Mock<ICity>();
 
             var newCity = mockCity.Object;

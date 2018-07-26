@@ -45,22 +45,22 @@ namespace Assets.UI.Civilizations {
 
             GoldField.text = String.Format(
                 StringFormats.StockpileAndIncomeDisplayFormat,
-                (int)ResourceType.Gold,
+                (int)YieldType.Gold,
                 ObjectToDisplay.GoldStockpile,
-                civilizationYield[ResourceType.Gold]
+                civilizationYield[YieldType.Gold]
             );
 
             CultureField.text = String.Format(
                 StringFormats.StockpileAndIncomeDisplayFormat,
-                (int)ResourceType.Culture,
+                (int)YieldType.Culture,
                 ObjectToDisplay.CultureStockpile,
-                civilizationYield[ResourceType.Culture]
+                civilizationYield[YieldType.Culture]
             );
 
             ScienceField.text = String.Format(
                 StringFormats.IncomeDisplayFormat,
-                (int)ResourceType.Science,
-                civilizationYield[ResourceType.Science]
+                (int)YieldType.Science,
+                civilizationYield[YieldType.Science]
             );
         }
 

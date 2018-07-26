@@ -19,7 +19,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         bool MustBeUnderwater { get; }
 
-        ResourceSummary BonusYield { get; }
+        YieldSummary BonusYield { get; }
 
         #endregion
 

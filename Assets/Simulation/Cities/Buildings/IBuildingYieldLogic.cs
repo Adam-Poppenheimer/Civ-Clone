@@ -5,9 +5,9 @@ using System.Text;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    public interface IBuildingResourceLogic {
+    public interface IBuildingYieldLogic {
 
-        ResourceSummary GetYieldOfBuilding(IBuilding building);
+        YieldSummary GetYieldOfBuilding(IBuilding building);
 
     }
 

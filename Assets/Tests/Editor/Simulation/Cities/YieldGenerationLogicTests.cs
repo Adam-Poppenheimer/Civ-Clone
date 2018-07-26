@@ -47,13 +47,13 @@ namespace Assets.Tests.Simulation.Cities {
 
             public CivilizationTestData OwningCivilization = new CivilizationTestData() { };
 
-            public ResourceSummary CityYieldMultipliers = ResourceSummary.Empty;
+            public YieldSummary CityYieldMultipliers = YieldSummary.Empty;
 
         }
 
         public class CellTestData {
 
-            public ResourceSummary CellYield = ResourceSummary.Empty;
+            public YieldSummary CellYield = YieldSummary.Empty;
 
             public SlotTestData Slot = new SlotTestData() { };
 
@@ -63,9 +63,9 @@ namespace Assets.Tests.Simulation.Cities {
 
         public class BuildingTestData {
 
-            public ResourceSummary BuildingYield;
+            public YieldSummary BuildingYield;
 
-            public ResourceSummary SlotYield;
+            public YieldSummary SlotYield;
 
         }
 
@@ -77,15 +77,15 @@ namespace Assets.Tests.Simulation.Cities {
 
         public class CivilizationTestData {
 
-            public ResourceSummary YieldMultipliers = ResourceSummary.Empty;
+            public YieldSummary YieldMultipliers = YieldSummary.Empty;
 
         }
 
         public class CityConfigTestData {
 
-            public ResourceSummary UnemployedYield = ResourceSummary.Empty;
+            public YieldSummary UnemployedYield = YieldSummary.Empty;
 
-            public ResourceSummary LocationYield = ResourceSummary.Empty;
+            public YieldSummary LocationYield = YieldSummary.Empty;
 
         }
 
@@ -97,64 +97,64 @@ namespace Assets.Tests.Simulation.Cities {
             get {
                 yield return new TestCaseData(
                     new CellTestData() {
-                        CellYield = new ResourceSummary(food: 1f, production: 2f, gold: 3f),
+                        CellYield = new YieldSummary(food: 1f, production: 2f, gold: 3f),
                         Slot = new SlotTestData() {
                             IsOccupied = true
                         }
                     },
                     new CityTestData() { }
-                ).SetName("Occupied slot, no additional modifiers").Returns(new ResourceSummary(
+                ).SetName("Occupied slot, no additional modifiers").Returns(new YieldSummary(
                     food: 1f, production: 2f, gold: 3f
                 ));
 
                 yield return new TestCaseData(
                     new CellTestData() {
-                        CellYield = new ResourceSummary(food: 1f, production: 2f, gold: 3f),
+                        CellYield = new YieldSummary(food: 1f, production: 2f, gold: 3f),
                         Slot = new SlotTestData() { IsOccupied = false }
                     },
                     new CityTestData() { }
-                ).SetName("Unoccupied slot, no additional modifiers").Returns(new ResourceSummary(
+                ).SetName("Unoccupied slot, no additional modifiers").Returns(new YieldSummary(
                     food: 1f, production: 2f, gold: 3f
                 ));
 
                 yield return new TestCaseData(
                     new CellTestData() {
-                        CellYield = new ResourceSummary(food: 1f, production: 2f, gold: 3f),
+                        CellYield = new YieldSummary(food: 1f, production: 2f, gold: 3f),
                         Slot = new SlotTestData() { IsOccupied = true }
                     },
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(food: 0f, production: -0.5f, gold: 2f, culture: 3f),
+                        CityYieldMultipliers = new YieldSummary(food: 0f, production: -0.5f, gold: 2f, culture: 3f),
                     }                    
-                ).SetName("Occupied slot, city has yield modifiers").Returns(new ResourceSummary(
+                ).SetName("Occupied slot, city has yield modifiers").Returns(new YieldSummary(
                     food: 1f, production: 1f, gold: 9f
                 ));
 
                 yield return new TestCaseData(
                     new CellTestData() {
-                        CellYield = new ResourceSummary(food: 1f, production: 2f, gold: 3f),
+                        CellYield = new YieldSummary(food: 1f, production: 2f, gold: 3f),
                         Slot = new SlotTestData() { IsOccupied = true }
                     },
                     new CityTestData() {
                         OwningCivilization   = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 0f, production: -0.5f, gold: 2f, culture: 3f)
+                            YieldMultipliers = new YieldSummary(food: 0f, production: -0.5f, gold: 2f, culture: 3f)
                         },
                     }                    
-                ).SetName("Occupied slot, civilization has yield modifiers").Returns(new ResourceSummary(
+                ).SetName("Occupied slot, civilization has yield modifiers").Returns(new YieldSummary(
                     food: 1f, production: 1f, gold: 9f
                 ));
 
                 yield return new TestCaseData(
                     new CellTestData() {
-                        CellYield = new ResourceSummary(food: 1f, production: 1f, gold: 1f, culture: 1f),
+                        CellYield = new YieldSummary(food: 1f, production: 1f, gold: 1f, culture: 1f),
                         Slot = new SlotTestData() { IsOccupied = true }
                     },
                     new CityTestData() {
                         OwningCivilization   = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 2f, gold: 1f)
+                            YieldMultipliers = new YieldSummary(food: 2f, gold: 1f)
                         },
-                        CityYieldMultipliers = new ResourceSummary(food: 1f, production: -1f),
+                        CityYieldMultipliers = new YieldSummary(food: 1f, production: -1f),
                     }
-                ).SetName("Occupied slot, city and civilization modifiers in play").Returns(new ResourceSummary(
+                ).SetName("Occupied slot, city and civilization modifiers in play").Returns(new YieldSummary(
                     food: 4f, production: 0f, gold: 2f, culture: 1f
                 ));
             }
@@ -165,48 +165,48 @@ namespace Assets.Tests.Simulation.Cities {
                 yield return new TestCaseData(
                     new CityTestData() { },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary(food: 1f, production: 1f)
+                        UnemployedYield = new YieldSummary(food: 1f, production: 1f)
                     }
                 ).SetName("No modifiers in play returns configured base").Returns(
-                    new ResourceSummary(food: 1f, production: 1f)
+                    new YieldSummary(food: 1f, production: 1f)
                 );
 
                 yield return new TestCaseData(
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(food: 2f, production: 3f, gold: -4f),
+                        CityYieldMultipliers = new YieldSummary(food: 2f, production: 3f, gold: -4f),
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary(food: 1f, production: 1f)
+                        UnemployedYield = new YieldSummary(food: 1f, production: 1f)
                     }
                 ).SetName("city modifiers in play").Returns(
-                    new ResourceSummary(food: 3f, production: 4f)
+                    new YieldSummary(food: 3f, production: 4f)
                 );
 
                 yield return new TestCaseData(
                     new CityTestData() {
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 2f, production: 3f, gold: -4f)
+                            YieldMultipliers = new YieldSummary(food: 2f, production: 3f, gold: -4f)
                         }
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary(food: 1f, production: 1f)
+                        UnemployedYield = new YieldSummary(food: 1f, production: 1f)
                     }
                 ).SetName("Civilization modifiers in play").Returns(
-                    new ResourceSummary(food: 3f, production: 4f)
+                    new YieldSummary(food: 3f, production: 4f)
                 );
 
                 yield return new TestCaseData(
                     new CityTestData() {
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 2f, production: 3f, gold: -4f)
+                            YieldMultipliers = new YieldSummary(food: 2f, production: 3f, gold: -4f)
                         },
-                        CityYieldMultipliers = new ResourceSummary(food: -1f, production: 0f, culture: 0.5f)
+                        CityYieldMultipliers = new YieldSummary(food: -1f, production: 0f, culture: 0.5f)
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary(food: 1f, production: 1f, gold: 1f, culture: 1f)
+                        UnemployedYield = new YieldSummary(food: 1f, production: 1f, gold: 1f, culture: 1f)
                     }
                 ).SetName("City and civilization modifiers in play").Returns(
-                    new ResourceSummary(food: 2f, production: 4f, gold: -3f, culture: 1.5f)
+                    new YieldSummary(food: 2f, production: 4f, gold: -3f, culture: 1.5f)
                 );
             }
         }
@@ -215,49 +215,49 @@ namespace Assets.Tests.Simulation.Cities {
             get {
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        BuildingYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        BuildingYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() { }
                 ).SetName("Building with yield, no additional modifiers").Returns(
-                    new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f)
+                    new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        BuildingYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        BuildingYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(production: 2f, gold: 0.5f, culture: -1f)
+                        CityYieldMultipliers = new YieldSummary(production: 2f, gold: 0.5f, culture: -1f)
                     }
                 ).SetName("Building with yield, city modifiers present").Returns(
-                    new ResourceSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
+                    new YieldSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        BuildingYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        BuildingYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() {
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(production: 2f, gold: 0.5f, culture: -1f)
+                            YieldMultipliers = new YieldSummary(production: 2f, gold: 0.5f, culture: -1f)
                         }
                     }
                 ).SetName("Building with yield, civilization modifiers present").Returns(
-                    new ResourceSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
+                    new YieldSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        BuildingYield = new ResourceSummary(food: 1f, production: 1f, gold: 1f, culture: 1f, science: 1f),
+                        BuildingYield = new YieldSummary(food: 1f, production: 1f, gold: 1f, culture: 1f, science: 1f),
                     },
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(food: 1f, production: -1f, gold: 2f),
+                        CityYieldMultipliers = new YieldSummary(food: 1f, production: -1f, gold: 2f),
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 0.5f, production: -1f, gold: 0.5f, culture: -1f)
+                            YieldMultipliers = new YieldSummary(food: 0.5f, production: -1f, gold: 0.5f, culture: -1f)
                         }
                     }
                 ).SetName("Building with yield, city and civilization modifiers present").Returns(
-                    new ResourceSummary(food: 2.5f, production: -1f, gold: 3.5f, culture: 0f, science: 1f)
+                    new YieldSummary(food: 2.5f, production: -1f, gold: 3.5f, culture: 0f, science: 1f)
                 );
             }
         }
@@ -266,49 +266,49 @@ namespace Assets.Tests.Simulation.Cities {
             get {
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        SlotYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() { }
                 ).SetName("Building with slot yields, no additional modifiers").Returns(
-                    new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f)
+                    new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        SlotYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(production: 2f, gold: 0.5f, culture: -1f)
+                        CityYieldMultipliers = new YieldSummary(production: 2f, gold: 0.5f, culture: -1f)
                     }
                 ).SetName("Building with slot yields, city modifiers present").Returns(
-                    new ResourceSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
+                    new YieldSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new ResourceSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
+                        SlotYield = new YieldSummary(food: 4f, production: 2f, gold: 1f, culture: 6f),
                     },
                     new CityTestData() {
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(production: 2f, gold: 0.5f, culture: -1f)
+                            YieldMultipliers = new YieldSummary(production: 2f, gold: 0.5f, culture: -1f)
                         }
                     }
                 ).SetName("Building with slot yields, civilization modifiers present").Returns(
-                    new ResourceSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
+                    new YieldSummary(food: 4f, production: 6f, gold: 1f * 1.5f, culture: 0f)
                 );
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new ResourceSummary(food: 1f, production: 1f, gold: 1f, culture: 1f, science: 1f),
+                        SlotYield = new YieldSummary(food: 1f, production: 1f, gold: 1f, culture: 1f, science: 1f),
                     },
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(food: 1f, production: -1f, gold: 2f),
+                        CityYieldMultipliers = new YieldSummary(food: 1f, production: -1f, gold: 2f),
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(food: 0.5f, production: -1f, gold: 0.5f, culture: -1f)
+                            YieldMultipliers = new YieldSummary(food: 0.5f, production: -1f, gold: 0.5f, culture: -1f)
                         }
                     }
                 ).SetName("Building with slot yields, city and civilization modifiers present").Returns(
-                    new ResourceSummary(food: 2.5f, production: -1f, gold: 3.5f, culture: 0f, science: 1f)
+                    new YieldSummary(food: 2.5f, production: -1f, gold: 3.5f, culture: 0f, science: 1f)
                 );
             }
         }
@@ -318,23 +318,23 @@ namespace Assets.Tests.Simulation.Cities {
                 yield return new TestCaseData(
                     new CityTestData() {  },
                     new CityConfigTestData() {
-                        LocationYield = new ResourceSummary(food: 2f, production: 1f, gold: 1f)
+                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
                     }
-                ).SetName("Considers the configured yield of the city's location").Returns(new ResourceSummary(
+                ).SetName("Considers the configured yield of the city's location").Returns(new YieldSummary(
                     food: 2f, production: 1f, gold: 1f
                 ));
 
                 yield return new TestCaseData(
                     new CityTestData() {
-                        CityYieldMultipliers = new ResourceSummary(food: 1f, production: -1f),
+                        CityYieldMultipliers = new YieldSummary(food: 1f, production: -1f),
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(production: 0.5f, gold: 3f)
+                            YieldMultipliers = new YieldSummary(production: 0.5f, gold: 3f)
                         }
                     },
                     new CityConfigTestData() {
-                        LocationYield = new ResourceSummary(food: 2f, production: 1f, gold: 1f)
+                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
                     }
-                ).SetName("Location yield modified by multipliers").Returns(new ResourceSummary(
+                ).SetName("Location yield modified by multipliers").Returns(new YieldSummary(
                     food: 4f, production: 0.5f, gold: 4f
                 ));
 
@@ -345,22 +345,22 @@ namespace Assets.Tests.Simulation.Cities {
                     new CityConfigTestData() {
 
                     }
-                ).SetName("Adds 1 science for each person in the city").Returns(new ResourceSummary(
+                ).SetName("Adds 1 science for each person in the city").Returns(new YieldSummary(
                     science: 5f
                 ));
 
                 yield return new TestCaseData(
                     new CityTestData() {
                         Population = 5,
-                        CityYieldMultipliers = new ResourceSummary(science: 1f),
+                        CityYieldMultipliers = new YieldSummary(science: 1f),
                         OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new ResourceSummary(science: 1.5f)
+                            YieldMultipliers = new YieldSummary(science: 1.5f)
                         }
                     },
                     new CityConfigTestData() {
                         
                     }
-                ).SetName("Science per population modified by multipliers").Returns(new ResourceSummary(
+                ).SetName("Science per population modified by multipliers").Returns(new YieldSummary(
                     science: 5f * 3.5f
                 ));
             }
@@ -373,31 +373,31 @@ namespace Assets.Tests.Simulation.Cities {
                         Population = 0,
                         Territory = new List<CellTestData>() {
                             new CellTestData() {
-                                CellYield = new ResourceSummary(food: 1),
+                                CellYield = new YieldSummary(food: 1),
                                 Slot = new SlotTestData() { IsOccupied = true }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(production: 2),
+                                CellYield = new YieldSummary(production: 2),
                                 Slot = new SlotTestData() { IsOccupied = false }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(gold: 3),
+                                CellYield = new YieldSummary(gold: 3),
                                 Slot = new SlotTestData() { IsOccupied = true }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(culture: 4),
+                                CellYield = new YieldSummary(culture: 4),
                                 Slot = new SlotTestData() { IsOccupied = false }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(science: 5),
+                                CellYield = new YieldSummary(science: 5),
                                 Slot = new SlotTestData() { IsOccupied = true }
                             }
                         }
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary()
+                        UnemployedYield = new YieldSummary()
                     }
-                ).SetName("Accounts for yield of all occupied territory").Returns(new ResourceSummary(
+                ).SetName("Accounts for yield of all occupied territory").Returns(new YieldSummary(
                     food: 1f, gold: 3f, science: 5f
                 ));
 
@@ -406,33 +406,33 @@ namespace Assets.Tests.Simulation.Cities {
                         Population = 0,
                         Territory = new List<CellTestData>() {
                             new CellTestData() {
-                                CellYield = new ResourceSummary(food: 1),
+                                CellYield = new YieldSummary(food: 1),
                                 Slot = new SlotTestData() { IsOccupied = true }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(production: 2),
+                                CellYield = new YieldSummary(production: 2),
                                 SuppressSlot = true,
                                 Slot = new SlotTestData() { IsOccupied = false }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(gold: 3),
+                                CellYield = new YieldSummary(gold: 3),
                                 SuppressSlot = true,
                                 Slot = new SlotTestData() { IsOccupied = true }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(culture: 4),
+                                CellYield = new YieldSummary(culture: 4),
                                 Slot = new SlotTestData() { IsOccupied = false }
                             },
                             new CellTestData() {
-                                CellYield = new ResourceSummary(science: 5),
+                                CellYield = new YieldSummary(science: 5),
                                 Slot = new SlotTestData() { IsOccupied = true }
                             }
                         }
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary()
+                        UnemployedYield = new YieldSummary()
                     }
-                ).SetName("Ignores suppressed slots").Returns(new ResourceSummary(
+                ).SetName("Ignores suppressed slots").Returns(new YieldSummary(
                     food: 1f, science: 5f
                 ));
 
@@ -440,17 +440,17 @@ namespace Assets.Tests.Simulation.Cities {
                     new CityTestData() {
                         Population = 0,
                         Buildings = new List<BuildingTestData>() {
-                            new BuildingTestData() { BuildingYield = new ResourceSummary(food:       1f) },
-                            new BuildingTestData() { BuildingYield = new ResourceSummary(production: 2f) },
-                            new BuildingTestData() { BuildingYield = new ResourceSummary(gold:       3f) },
-                            new BuildingTestData() { BuildingYield = new ResourceSummary(culture:    4f) },
-                            new BuildingTestData() { BuildingYield = new ResourceSummary(science:    5f) },
+                            new BuildingTestData() { BuildingYield = new YieldSummary(food:       1f) },
+                            new BuildingTestData() { BuildingYield = new YieldSummary(production: 2f) },
+                            new BuildingTestData() { BuildingYield = new YieldSummary(gold:       3f) },
+                            new BuildingTestData() { BuildingYield = new YieldSummary(culture:    4f) },
+                            new BuildingTestData() { BuildingYield = new YieldSummary(science:    5f) },
                         }
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary()
+                        UnemployedYield = new YieldSummary()
                     }
-                ).SetName("Accounts for yield of all buildings").Returns(new ResourceSummary(
+                ).SetName("Accounts for yield of all buildings").Returns(new YieldSummary(
                     food: 1f, production: 2f, gold: 3f, culture: 4f, science: 5f
                 ));
 
@@ -460,9 +460,9 @@ namespace Assets.Tests.Simulation.Cities {
                         UnemployedPeople = 3
                     },
                     new CityConfigTestData() {
-                        UnemployedYield = new ResourceSummary(production: 1f)
+                        UnemployedYield = new YieldSummary(production: 1f)
                     }
-                ).SetName("Accounts for yield of unemployed people").Returns(new ResourceSummary(
+                ).SetName("Accounts for yield of unemployed people").Returns(new YieldSummary(
                     production: 3f
                 ));
 
@@ -471,9 +471,9 @@ namespace Assets.Tests.Simulation.Cities {
                         Population = 5
                     },
                     new CityConfigTestData() {
-                        LocationYield = new ResourceSummary(food: 2f, production: 1f, gold: 1f)
+                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
                     }
-                ).SetName("Accounts for base city yield").Returns(new ResourceSummary(
+                ).SetName("Accounts for base city yield").Returns(new YieldSummary(
                     food: 2f, production: 1f, gold: 1f, science: 5f
                 ));
             }
@@ -488,8 +488,8 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeModifierLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<ICellResourceLogic>                            MockCellResourceLogic;
-        private Mock<IBuildingResourceLogic>                        MockBuildingResourceLogic;
+        private Mock<ICellYieldLogic>                            MockCellResourceLogic;
+        private Mock<IBuildingYieldLogic>                        MockBuildingResourceLogic;
         private Mock<IUnemploymentLogic>                            MockUnemploymentLogic;
 
         #endregion
@@ -505,8 +505,8 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();     
             MockIncomeModifierLogic     = new Mock<IIncomeModifierLogic>();   
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockCellResourceLogic       = new Mock<ICellResourceLogic>();
-            MockBuildingResourceLogic   = new Mock<IBuildingResourceLogic>();
+            MockCellResourceLogic       = new Mock<ICellYieldLogic>();
+            MockBuildingResourceLogic   = new Mock<IBuildingYieldLogic>();
             MockUnemploymentLogic       = new Mock<IUnemploymentLogic>();
 
             Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig                 .Object);
@@ -514,11 +514,11 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic    .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<ICellResourceLogic>                           ().FromInstance(MockCellResourceLogic      .Object);
-            Container.Bind<IBuildingResourceLogic>                       ().FromInstance(MockBuildingResourceLogic  .Object);
+            Container.Bind<ICellYieldLogic>                           ().FromInstance(MockCellResourceLogic      .Object);
+            Container.Bind<IBuildingYieldLogic>                       ().FromInstance(MockBuildingResourceLogic  .Object);
             Container.Bind<IUnemploymentLogic>                           ().FromInstance(MockUnemploymentLogic      .Object);
 
-            Container.Bind<ResourceGenerationLogic>().AsSingle();
+            Container.Bind<YieldGenerationLogic>().AsSingle();
         }
 
         private void SetupConfig(CityConfigTestData configData) {
@@ -532,69 +532,69 @@ namespace Assets.Tests.Simulation.Cities {
 
         [TestCaseSource("GetYieldOfCellForCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfCellForCityTests(CellTestData cellData, CityTestData cityData) {
+        public YieldSummary GetYieldOfCellForCityTests(CellTestData cellData, CityTestData cityData) {
             var cell = BuildCell(cellData);
             var city = BuildCity(cityData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetYieldOfCellForCity(cell, city);
         }
 
         [TestCaseSource("GetYieldOfUnemployedPersonForCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfUnemployedPersonForCityTests(CityTestData cityData, CityConfigTestData configData) {
+        public YieldSummary GetYieldOfUnemployedPersonForCityTests(CityTestData cityData, CityConfigTestData configData) {
             var city = BuildCity(cityData);
 
             SetupConfig(configData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetYieldOfUnemployedPersonForCity(city);
         }
 
         [TestCaseSource("GetYieldOfBuildingForCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfBuildingForCityTests(BuildingTestData buildingData, CityTestData cityData) {
+        public YieldSummary GetYieldOfBuildingForCityTests(BuildingTestData buildingData, CityTestData cityData) {
             var building = BuildBuilding(buildingData);
             var city = BuildCity(cityData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetYieldOfBuildingForCity(building, city);
         }
 
         [TestCaseSource("GetYieldOfBuildingSlotsForCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetYieldOfBuildingSlotsForCityTests(BuildingTestData testData, CityTestData cityData) {
+        public YieldSummary GetYieldOfBuildingSlotsForCityTests(BuildingTestData testData, CityTestData cityData) {
             var building = BuildBuilding(testData);
             var city = BuildCity(cityData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetYieldOfBuildingSlotsForCity(building, city);
         }
 
         [TestCaseSource("GetBaseYieldOfCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetBaseYieldOfCityTests(CityTestData cityData, CityConfigTestData configData) {
+        public YieldSummary GetBaseYieldOfCityTests(CityTestData cityData, CityConfigTestData configData) {
             var city = BuildCity(cityData);
 
             SetupConfig(configData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetBaseYieldOfCity(city);
         }
 
         [TestCaseSource("GetTotalYieldForCityTestCases")]
         [Test(Description = "")]
-        public ResourceSummary GetTotalYieldForCityTests(CityTestData cityData, CityConfigTestData configData) {
+        public YieldSummary GetTotalYieldForCityTests(CityTestData cityData, CityConfigTestData configData) {
             SetupConfig(configData);
 
             var city = BuildCity(cityData);
 
-            var resourceLogic = Container.Resolve<ResourceGenerationLogic>();
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetTotalYieldForCity(city);
         }

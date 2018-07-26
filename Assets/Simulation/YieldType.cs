@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation {
 
-    public enum ResourceType {
+    public enum YieldType {
         Food = 0,
         Production = 1,
         Gold = 2,

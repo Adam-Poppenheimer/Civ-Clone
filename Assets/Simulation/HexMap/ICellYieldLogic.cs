@@ -5,11 +5,11 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public interface ICellResourceLogic {
+    public interface ICellYieldLogic {
 
         #region methods
 
-        ResourceSummary GetYieldOfCell(IHexCell cell);
+        YieldSummary GetYieldOfCell(IHexCell cell);
 
         #endregion
 

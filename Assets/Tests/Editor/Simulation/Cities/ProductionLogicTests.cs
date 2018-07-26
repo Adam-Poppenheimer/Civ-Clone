@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IResourceGenerationLogic>                  MockGenerationLogic;
+        private Mock<IYieldGenerationLogic>                  MockGenerationLogic;
         private Mock<ICityConfig>                               MockConfig;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
 
@@ -36,11 +36,11 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockGenerationLogic         = new Mock<IResourceGenerationLogic>();
+            MockGenerationLogic         = new Mock<IYieldGenerationLogic>();
             MockConfig                  = new Mock<ICityConfig>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
-            Container.Bind<IResourceGenerationLogic>                 ().FromInstance(MockGenerationLogic        .Object);
+            Container.Bind<IYieldGenerationLogic>                 ().FromInstance(MockGenerationLogic        .Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
 
@@ -59,10 +59,10 @@ namespace Assets.Tests.Simulation.Cities {
             var city = new Mock<ICity>().Object;
             var project = new Mock<IProductionProject>().Object;
 
-            var totalYield = new ResourceSummary(food: 5, gold: 12, production: 13);
-            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city, It.IsAny<ResourceSummary>())).Returns(totalYield);
+            var totalYield = new YieldSummary(food: 5, gold: 12, production: 13);
+            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city, It.IsAny<YieldSummary>())).Returns(totalYield);
 
-            Assert.AreEqual(totalYield[ResourceType.Production], productionLogic.GetProductionProgressPerTurnOnProject(city, project),
+            Assert.AreEqual(totalYield[YieldType.Production], productionLogic.GetProductionProgressPerTurnOnProject(city, project),
                 "GetProductionProgressPerTurnOnProject returned an unexpected value");
         }
 
@@ -80,13 +80,13 @@ namespace Assets.Tests.Simulation.Cities {
             MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IBuilding>() { buildingInCity });
 
-            var totalYield = new ResourceSummary(production: 10f);
-            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city, It.IsAny<ResourceSummary>())).Returns(totalYield);
+            var totalYield = new YieldSummary(production: 10f);
+            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city, It.IsAny<YieldSummary>())).Returns(totalYield);
 
             var productionLogic = Container.Resolve<ProductionLogic>();
 
-            var expectedAdditionalModifiersFromLandProject    = new ResourceSummary(production: 2f);
-            var expectedAdditionalModifiersFromMountedProject = new ResourceSummary(production: 3f);
+            var expectedAdditionalModifiersFromLandProject    = new YieldSummary(production: 2f);
+            var expectedAdditionalModifiersFromMountedProject = new YieldSummary(production: 3f);
 
             productionLogic.GetProductionProgressPerTurnOnProject(city, landTemplateProject);            
 

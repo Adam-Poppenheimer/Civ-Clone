@@ -9,7 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Diplomacy {
 

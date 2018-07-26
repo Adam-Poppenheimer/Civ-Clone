@@ -25,9 +25,9 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        ResourceSummary GetYieldOfTerrain   (CellTerrain    terrain);
-        ResourceSummary GetYieldOfVegetation(CellVegetation vegetation);
-        ResourceSummary GetYieldOfShape     (CellShape      shape);
+        YieldSummary GetYieldOfTerrain   (CellTerrain    terrain);
+        YieldSummary GetYieldOfVegetation(CellVegetation vegetation);
+        YieldSummary GetYieldOfShape     (CellShape      shape);
 
         int GetBaseMoveCostOfTerrain   (CellTerrain    terrain);
         int GetBaseMoveCostOfShape     (CellShape      shape);

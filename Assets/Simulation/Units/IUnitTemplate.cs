@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Units {
 
@@ -43,7 +43,7 @@ namespace Assets.Simulation.Units {
 
         int MaxHitpoints { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
+        IEnumerable<IResourceDefinition> RequiredResources { get; }
 
         bool IsImmobile { get; }
 

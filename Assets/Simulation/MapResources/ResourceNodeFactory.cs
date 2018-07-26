@@ -10,7 +10,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources{
+namespace Assets.Simulation.MapResources{
 
     public class ResourceNodeFactory : IResourceNodeFactory {
 
@@ -38,7 +38,7 @@ namespace Assets.Simulation.SpecialtyResources{
         [Inject]
 		public ResourceNodeFactory(DiContainer container,
 			IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-             SpecialtyResourceSignals signals
+             ResourceSignals signals
 		){
 			Container                 = container;
 			ResourceNodeLocationCanon = resourceNodeLocationCanon;
@@ -52,7 +52,7 @@ namespace Assets.Simulation.SpecialtyResources{
 
         #region from IResourceNodeFactory
 
-		public bool CanBuildNode(IHexCell location, ISpecialtyResourceDefinition definition) {
+		public bool CanBuildNode(IHexCell location, IResourceDefinition definition) {
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(definition == null) {
@@ -61,7 +61,7 @@ namespace Assets.Simulation.SpecialtyResources{
             return ResourceNodeLocationCanon.GetPossessionsOfOwner(location).Count() == 0;
         }
 
-		public IResourceNode BuildNode(IHexCell location, ISpecialtyResourceDefinition definition, int copies) {
+		public IResourceNode BuildNode(IHexCell location, IResourceDefinition definition, int copies) {
 			if(!CanBuildNode(location, definition)) {
 				throw new InvalidOperationException("CanBuildNode must return true on the argued location and definition");
             }

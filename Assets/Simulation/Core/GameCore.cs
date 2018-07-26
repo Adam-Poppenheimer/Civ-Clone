@@ -13,7 +13,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Diplomacy;
 

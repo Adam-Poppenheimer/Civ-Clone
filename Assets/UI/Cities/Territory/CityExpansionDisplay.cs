@@ -71,16 +71,16 @@ namespace Assets.UI.Cities.Territory {
         [SerializeField] private RectTransform _nextTileIndicator;
 
         private IBorderExpansionLogic ExpansionLogic;
-        private IResourceGenerationLogic ResourceGenerationLogic;
+        private IYieldGenerationLogic YieldGenerationLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IBorderExpansionLogic expansionLogic, IResourceGenerationLogic resourceGenerationLogic) {
+        public void InjectDependencies(IBorderExpansionLogic expansionLogic, IYieldGenerationLogic resourceGenerationLogic) {
             ExpansionLogic = expansionLogic;
-            ResourceGenerationLogic = resourceGenerationLogic;
+            YieldGenerationLogic = resourceGenerationLogic;
         }
 
         #region from CityDisplayBase
@@ -95,7 +95,7 @@ namespace Assets.UI.Cities.Territory {
             var currentCulture = ObjectToDisplay.CultureStockpile;
             var neededCulture = ExpansionLogic.GetCultureCostOfAcquiringCell(ObjectToDisplay, nextCell);
 
-            var culturePerTurn = ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[ResourceType.Culture];
+            var culturePerTurn = YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[YieldType.Culture];
 
             CultureStockpileField.text = currentCulture.ToString();
             CultureNeededField.text = neededCulture.ToString();

@@ -6,7 +6,7 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -41,21 +41,21 @@ namespace Assets.Simulation.Cities.Buildings {
         /// <summary>
         /// The yield the building provides to its city just by existing.
         /// </summary>
-        ResourceSummary StaticYield { get; }
+        YieldSummary StaticYield { get; }
 
         int SlotCount { get; }
 
-        ResourceSummary SlotYield { get; }
+        YieldSummary SlotYield { get; }
 
         /// <summary>
         /// The yield modifier the building provides to the civilization of the city it's in.
         /// </summary>
-        ResourceSummary CivilizationYieldModifier { get; }
+        YieldSummary CivilizationYieldModifier { get; }
 
         /// <summary>
         /// The yield modifier the building provides to the city it's in.
         /// </summary>
-        ResourceSummary CityYieldModifier { get; }
+        YieldSummary CityYieldModifier { get; }
 
         int LocalHappiness { get; }
 
@@ -63,7 +63,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int Unhappiness { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> ResourcesConsumed { get; }
+        IEnumerable<IResourceDefinition> ResourcesConsumed { get; }
 
         IEnumerable<IResourceYieldModificationData> ResourceYieldModifications { get; }
 
@@ -75,11 +75,11 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int CityMaxHitpointBonus { get; }
 
-        ResourceSummary BonusYieldPerPopulation { get; }
+        YieldSummary BonusYieldPerPopulation { get; }
 
         IEnumerable<IBuildingTemplate> PrerequisiteBuildings { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> PrerequisiteResourcesNearCity { get; }
+        IEnumerable<IResourceDefinition> PrerequisiteResourcesNearCity { get; }
 
         IEnumerable<IImprovementTemplate> PrerequisiteImprovementsNearCity { get; }
 

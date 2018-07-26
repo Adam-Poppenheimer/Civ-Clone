@@ -16,7 +16,7 @@ namespace Assets.Simulation.Civilizations {
 
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
-        private IResourceGenerationLogic ResourceGenerationLogic;
+        private IYieldGenerationLogic ResourceYieldLogic;
 
         #endregion
 
@@ -25,10 +25,10 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public CivilizationYieldLogic(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IResourceGenerationLogic resourceGenerationLogic
+            IYieldGenerationLogic resourceGenerationLogic
         ){
             CityPossessionCanon     = cityPossessionCanon;
-            ResourceGenerationLogic = resourceGenerationLogic;
+            ResourceYieldLogic = resourceGenerationLogic;
         }
 
         #endregion
@@ -37,11 +37,11 @@ namespace Assets.Simulation.Civilizations {
 
         #region from ICivilizationYieldLogic
 
-        public ResourceSummary GetYieldOfCivilization(ICivilization civilization) {
-            ResourceSummary retval = ResourceSummary.Empty;
+        public YieldSummary GetYieldOfCivilization(ICivilization civilization) {
+            YieldSummary retval = YieldSummary.Empty;
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
-                retval += ResourceGenerationLogic.GetTotalYieldForCity(city);
+                retval += ResourceYieldLogic.GetTotalYieldForCity(city);
             }
 
             return retval;

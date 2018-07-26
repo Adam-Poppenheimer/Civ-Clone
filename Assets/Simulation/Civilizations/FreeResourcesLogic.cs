@@ -5,7 +5,7 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -37,7 +37,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IFreeResourceLogic
 
-        public int GetFreeCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public int GetFreeCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             return
                 ExtractionLogic.GetExtractedCopiesOfResourceForCiv(resource, civ) + 
                 TransferCanon  .GetImportedCopiesOfResourceForCiv (resource, civ) -

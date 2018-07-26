@@ -6,7 +6,7 @@ namespace Assets.Simulation.Technology {
 
         #region properties
 
-        ResourceSummary      BonusYield { get; }
+        YieldSummary      BonusYield { get; }
         IImprovementTemplate Template   { get; }
 
         bool RequiresFreshWater { get; }

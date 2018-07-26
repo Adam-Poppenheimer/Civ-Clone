@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Diplomacy {
 
@@ -18,7 +18,7 @@ namespace Assets.Simulation.Diplomacy {
         private DiContainer                               Container;
         private IResourceTransferCanon                    ResourceTransferCanon;
         private IFreeResourcesLogic                       FreeResourcesLogic;
-        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;        
+        private IEnumerable<IResourceDefinition> AvailableResources;        
 
         #endregion
 
@@ -28,7 +28,7 @@ namespace Assets.Simulation.Diplomacy {
         public ResourceExchangeBuilder(
             ICivilizationConnectionLogic civilizationConnectionLogic, DiContainer container,
             IResourceTransferCanon resourceTransferCanon, IFreeResourcesLogic freeResourcesLogic,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             CivilizationConnectionLogic = civilizationConnectionLogic;
             Container                   = container;
@@ -67,16 +67,16 @@ namespace Assets.Simulation.Diplomacy {
             ).ToList();
 
             var tradeableLuxuriesOfSender   = tradeableOfSender
-                .Where(resource => resource.Type == SpecialtyResourceType.Luxury)
+                .Where(resource => resource.Type == ResourceType.Luxury)
                 .Where(resource => FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, receiver) <= 0);
 
-            var tradeableStrategicsOfSender = tradeableOfSender.Where(resource => resource.Type == SpecialtyResourceType.Strategic);
+            var tradeableStrategicsOfSender = tradeableOfSender.Where(resource => resource.Type == MapResources.ResourceType.Strategic);
 
             var tradeableLuxuriesOfReceiver   = tradeableOfReceiver
-                .Where(resource => resource.Type == SpecialtyResourceType.Luxury)
+                .Where(resource => resource.Type == ResourceType.Luxury)
                 .Where(resource => FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, sender) <= 0);
 
-            var tradeableStrategicsOfReceiver = tradeableOfReceiver.Where(resource => resource.Type == SpecialtyResourceType.Strategic);
+            var tradeableStrategicsOfReceiver = tradeableOfReceiver.Where(resource => resource.Type == MapResources.ResourceType.Strategic);
 
             foreach(var luxury in tradeableLuxuriesOfSender) {
                 var luxuryExchange = Container.Instantiate<ResourceDiplomaticExchange>();

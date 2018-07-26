@@ -10,7 +10,7 @@ using Moq;
 
 using Assets.Simulation;
 using Assets.Simulation.MapManagement;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.MapManagement {
@@ -76,8 +76,8 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IHexGrid>                                         MockGrid;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodeLocationCanon;
 
-        private List<ISpecialtyResourceDefinition> AvailableSpecialtyResources =
-            new List<ISpecialtyResourceDefinition>();
+        private List<IResourceDefinition> AvailableSpecialtyResources =
+            new List<IResourceDefinition>();
 
         private List<IResourceNode> AllNodes = new List<IResourceNode>();
 
@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodeLocationCanon.Object);
 
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+            Container.Bind<IEnumerable<IResourceDefinition>>()
                      .WithId("Available Specialty Resources")
                      .FromInstance(AvailableSpecialtyResources);
 
@@ -201,7 +201,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.DecomposeResources(mapData);
 
             MockNodeFactory.Verify(
-                factory => factory.BuildNode(location, It.IsAny<ISpecialtyResourceDefinition>(), It.IsAny<int>()),
+                factory => factory.BuildNode(location, It.IsAny<IResourceDefinition>(), It.IsAny<int>()),
                 Times.Once, "NodeFactory.BuildNode was not called with the expected location argument"
             );
         }
@@ -252,7 +252,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockNodeFactory.Verify(
                 factory => factory.BuildNode(
-                    It.IsAny<IHexCell>(), It.IsAny<ISpecialtyResourceDefinition>(), 5
+                    It.IsAny<IHexCell>(), It.IsAny<IResourceDefinition>(), 5
                 ), Times.Once, "NodeFactory.BuildNode was not called with the expected copies argument"
             );
         }
@@ -279,7 +279,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private IResourceNode BuildResourceNode(ResourceNodeTestData testData) {
             var mockNode = new Mock<IResourceNode>();
 
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(resource => resource.name).Returns(testData.ResourceName);
 
@@ -309,8 +309,8 @@ namespace Assets.Tests.Simulation.MapManagement {
             return mockCell.Object;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition(string name) {
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResourceDefinition(string name) {
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(definition => definition.name).Returns(name);
 

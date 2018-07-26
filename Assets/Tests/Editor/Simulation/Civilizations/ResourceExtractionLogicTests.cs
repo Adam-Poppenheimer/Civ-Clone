@@ -10,7 +10,7 @@ using Moq;
 
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Cities;
 using Assets.Simulation.HexMap;
@@ -65,7 +65,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         public class ResourceTestData {
 
-            public SpecialtyResourceType Type;
+            public Assets.Simulation.MapResources.ResourceType Type;
 
             public bool IsVisibleToCiv;
 
@@ -101,7 +101,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Strategic
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Strategic
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -142,7 +142,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -183,7 +183,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Bonus
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Bonus
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -224,7 +224,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = false, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = false, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -251,7 +251,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -278,7 +278,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -305,7 +305,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -332,7 +332,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -356,7 +356,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 yield return new TestCaseData(new ExtractedCopiesTestData() {
                     AvailableResources = new List<ResourceTestData>() {
                         new ResourceTestData() {
-                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = SpecialtyResourceType.Luxury
+                            ExtractorIndex = 0, IsVisibleToCiv = true, Type = Assets.Simulation.MapResources.ResourceType.Luxury
                         }
                     },
                     AvailableTemplates = new List<ImprovementTemplateTestData>() {
@@ -440,7 +440,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         #region utilities
 
         private ICivilization BuildCiv(
-            CivilizationTestData data, List<ISpecialtyResourceDefinition> resources,
+            CivilizationTestData data, List<IResourceDefinition> resources,
             List<IImprovementTemplate> availableTemplates
         ){
             var newCiv = new Mock<ICivilization>().Object;
@@ -452,7 +452,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         }
 
         private ICity BuildCity(
-            CityTestData data, List<ISpecialtyResourceDefinition> resources,
+            CityTestData data, List<IResourceDefinition> resources,
             List<IImprovementTemplate> availableTemplates
         ){
             var newCity = new Mock<ICity>().Object;
@@ -464,7 +464,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         }
 
         private IHexCell BuildCell(
-            HexCellTestData data, List<ISpecialtyResourceDefinition> resources,
+            HexCellTestData data, List<IResourceDefinition> resources,
             List<IImprovementTemplate> availableTemplates
         ){
             var mockCell = new Mock<IHexCell>();
@@ -502,7 +502,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             return mockImprovement.Object;
         }
 
-        private IResourceNode BuildResourceNode(ResourceNodeTestData data, ISpecialtyResourceDefinition resource) {
+        private IResourceNode BuildResourceNode(ResourceNodeTestData data, IResourceDefinition resource) {
             var mockNode = new Mock<IResourceNode>();
 
             mockNode.Setup(node => node.Copies)  .Returns(data.Copies);
@@ -511,10 +511,10 @@ namespace Assets.Tests.Simulation.Civilizations {
             return mockNode.Object;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition(
+        private IResourceDefinition BuildResourceDefinition(
             ResourceTestData data, List<IImprovementTemplate> availableTemplates
         ){
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(resource => resource.Type).Returns(data.Type);
 

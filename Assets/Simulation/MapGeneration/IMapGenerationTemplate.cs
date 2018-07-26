@@ -16,6 +16,8 @@ namespace Assets.Simulation.MapGeneration {
         IEnumerable<IContinentGenerationTemplate> ContinentTemplates { get; }
         IEnumerable<IOceanGenerationTemplate>     OceanTemplates     { get; }
 
+        int LuxuriesPerContinent { get; }
+
         #endregion
 
     }

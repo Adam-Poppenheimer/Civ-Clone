@@ -5,13 +5,13 @@ using System.Text;
 
 using UnityEngine;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
     public interface IResourceNode {
 
         #region properties
 
-        ISpecialtyResourceDefinition Resource { get; }
+        IResourceDefinition Resource { get; }
 
         int Copies { get; }
 

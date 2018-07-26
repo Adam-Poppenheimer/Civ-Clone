@@ -8,7 +8,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 

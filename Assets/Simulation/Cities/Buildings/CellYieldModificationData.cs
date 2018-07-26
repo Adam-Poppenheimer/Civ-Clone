@@ -39,10 +39,10 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private bool _mustBeUnderwater;
 
-        public ResourceSummary BonusYield {
+        public YieldSummary BonusYield {
             get { return _bonusYield; }
         }
-        [SerializeField] ResourceSummary _bonusYield;
+        [SerializeField] YieldSummary _bonusYield;
 
         #endregion
 
@@ -50,7 +50,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region constructors
 
-        public CellYieldModificationData(CellTerrain terrainRequired, ResourceSummary bonusYield) {
+        public CellYieldModificationData(CellTerrain terrainRequired, YieldSummary bonusYield) {
             _propertyConsidered = CellPropertyType.Terrain;
             _terrainRequired    = terrainRequired;
             _bonusYield         = bonusYield;
@@ -62,7 +62,7 @@ namespace Assets.Simulation.Cities.Buildings {
             _mustBeUnderwater = false;
         }
 
-        public CellYieldModificationData(CellShape shapeRequired, ResourceSummary bonusYield) {
+        public CellYieldModificationData(CellShape shapeRequired, YieldSummary bonusYield) {
             _propertyConsidered = CellPropertyType.Shape;
             _shapeRequired      = shapeRequired;
             _bonusYield         = bonusYield;
@@ -74,7 +74,7 @@ namespace Assets.Simulation.Cities.Buildings {
             _mustBeUnderwater = false;
         }
 
-        public CellYieldModificationData(CellVegetation featureRequired, ResourceSummary bonusYield) {
+        public CellYieldModificationData(CellVegetation featureRequired, YieldSummary bonusYield) {
             _propertyConsidered = CellPropertyType.Vegetation;
             _vegetationRequired    = featureRequired;
             _bonusYield         = bonusYield;
@@ -84,7 +84,7 @@ namespace Assets.Simulation.Cities.Buildings {
             _mustBeUnderwater = false;
         }
 
-        public CellYieldModificationData(bool mustBeUnderwater, ResourceSummary bonusYield) {
+        public CellYieldModificationData(bool mustBeUnderwater, YieldSummary bonusYield) {
             _propertyConsidered = CellPropertyType.CellIsUnderwater;
             _mustBeUnderwater   = mustBeUnderwater;
             _bonusYield         = bonusYield;

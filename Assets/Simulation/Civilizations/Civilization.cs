@@ -77,10 +77,10 @@ namespace Assets.Simulation.Civilizations {
         public void PerformIncome() {
             var yield = YieldLogic.GetYieldOfCivilization(this);
 
-            GoldStockpile    += Mathf.FloorToInt(yield[ResourceType.Gold]);
-            CultureStockpile += Mathf.FloorToInt(yield[ResourceType.Culture]);
+            GoldStockpile    += Mathf.FloorToInt(yield[YieldType.Gold]);
+            CultureStockpile += Mathf.FloorToInt(yield[YieldType.Culture]);
 
-            LastScienceYield = Mathf.FloorToInt(yield[ResourceType.Science]);
+            LastScienceYield = Mathf.FloorToInt(yield[YieldType.Science]);
         }
 
         public void PerformResearch() {

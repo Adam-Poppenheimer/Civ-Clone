@@ -12,7 +12,7 @@ using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Improvements;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.Civilizations {
@@ -29,7 +29,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         private Mock<IPossessionRelationship<ICivilization, ICity>>    MockCityPossessionCanon;
 
         ImprovementSignals       ImprovementSignals;
-        SpecialtyResourceSignals ResourceSignals;
+        ResourceSignals ResourceSignals;
         CivilizationSignals      CivSignals;
 
         CitySignals CitySignals {
@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCityPossessionCanon       = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
             ImprovementSignals = new ImprovementSignals();
-            ResourceSignals    = new SpecialtyResourceSignals();
+            ResourceSignals    = new ResourceSignals();
             CivSignals         = new CivilizationSignals();
 
             Container.Bind<IResourceTransferCanon>                          ().FromInstance(MockResourceTransferCanon    .Object);
@@ -63,7 +63,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon      .Object);
 
             Container.Bind<ImprovementSignals>      ().FromInstance(ImprovementSignals);
-            Container.Bind<SpecialtyResourceSignals>().FromInstance(ResourceSignals);
+            Container.Bind<ResourceSignals>().FromInstance(ResourceSignals);
             Container.Bind<CivilizationSignals>     ().FromInstance(CivSignals);
 
             Container.Bind<SignalManager>().AsSingle();
@@ -173,7 +173,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civ = BuildCiv();
 
             var cityTerritory = new List<IHexCell>();
-            var resources = new List<ISpecialtyResourceDefinition>();
+            var resources = new List<IResourceDefinition>();
 
             for(int i = 0; i < 5; i++) {
                 var resource = BuildResource("Resource " + i.ToString());
@@ -218,8 +218,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             return new Mock<ICivilization>().Object;
         }
 
-        private ISpecialtyResourceDefinition BuildResource(string name = "") {
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResource(string name = "") {
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Name = name;
 
@@ -244,7 +244,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             return newImprovement;
         }
 
-        private IResourceNode BuildNode(IHexCell location, ISpecialtyResourceDefinition resource) {
+        private IResourceNode BuildNode(IHexCell location, IResourceDefinition resource) {
             var mockNode = new Mock<IResourceNode>();
             
             mockNode.Setup(node => node.Resource).Returns(resource);

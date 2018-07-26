@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities.Territory {
         private IHexGrid                                 HexGrid;
         private IPossessionRelationship<ICity, IHexCell> PossessionCanon;        
         private ICityConfig                              Config;
-        private IResourceGenerationLogic                 ResourceGenerationLogic;
+        private IYieldGenerationLogic                    YieldGenerationLogic;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
@@ -41,13 +41,13 @@ namespace Assets.Simulation.Cities.Territory {
         [Inject]
         public BorderExpansionLogic(
             IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
-            ICityConfig config, IResourceGenerationLogic resourceGenerationLogic,
+            ICityConfig config, IYieldGenerationLogic resourceGenerationLogic,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             HexGrid                 = hexGrid;
             PossessionCanon         = possessionCanon;
             Config                  = config;
-            ResourceGenerationLogic = resourceGenerationLogic;
+            YieldGenerationLogic = resourceGenerationLogic;
             CityLocationCanon       = cityLocationCanon;
         }
 
@@ -81,7 +81,7 @@ namespace Assets.Simulation.Cities.Territory {
             }
             var availableTiles = GetAllCellsAvailableToCity(city).ToList();
 
-            availableTiles.Sort(CellComparisonUtil.BuildComparisonAscending(city, city.ResourceFocus, ResourceGenerationLogic));
+            availableTiles.Sort(CellComparisonUtil.BuildComparisonAscending(city, city.YieldFocus, YieldGenerationLogic));
 
             return availableTiles.LastOrDefault();
         }

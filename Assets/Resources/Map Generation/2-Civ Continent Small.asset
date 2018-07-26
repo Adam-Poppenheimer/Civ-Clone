@@ -21,3 +21,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: af7cd1af7230fa14b8e25fd1a1548a18, type: 2}
   - {fileID: 11400000, guid: 82680f295d247d54bbf18d0e33a1e091, type: 2}
   - {fileID: 11400000, guid: 668407af27e76754b995684ae63394e3, type: 2}
+  _luxuriesPerRegion: 4

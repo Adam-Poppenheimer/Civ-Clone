@@ -5,7 +5,7 @@ using System.Text;
 
 using UniRx;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {

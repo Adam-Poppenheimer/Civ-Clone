@@ -5,7 +5,7 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
@@ -15,7 +15,7 @@ using Assets.Simulation.Core;
 
 namespace Assets.Simulation.HexMap {
 
-    public class CellResourceLogic : ICellResourceLogic {
+    public class CellYieldLogic : ICellYieldLogic {
 
         #region instance fields and properties
 
@@ -34,7 +34,7 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         [Inject]
-        public CellResourceLogic(IHexMapConfig config,
+        public CellYieldLogic(IHexMapConfig config,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             IImprovementLocationCanon improvementLocationCanon,
             IImprovementYieldLogic improvementYieldLogic,
@@ -58,14 +58,14 @@ namespace Assets.Simulation.HexMap {
 
         #region instance methods
 
-        #region from ITileResourceLogic
+        #region from ICellResourceLogic
 
-        public ResourceSummary GetYieldOfCell(IHexCell cell) {
+        public YieldSummary GetYieldOfCell(IHexCell cell) {
             if(cell == null) {
                 throw new ArgumentNullException("cell");
             }
 
-            ResourceSummary retval;
+            YieldSummary retval;
             ICity cityOwningCell = null;
             ICivilization civOwningCell = null;
 
@@ -109,8 +109,8 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private ResourceSummary GetContributionFromBuildings(IHexCell cell, IResourceNode nodeAtLocation) {
-            var retval = ResourceSummary.Empty;
+        private YieldSummary GetContributionFromBuildings(IHexCell cell, IResourceNode nodeAtLocation) {
+            var retval = YieldSummary.Empty;
 
             var cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
 

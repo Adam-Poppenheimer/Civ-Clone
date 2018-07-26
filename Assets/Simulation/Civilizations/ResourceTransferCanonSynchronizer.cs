@@ -8,7 +8,7 @@ using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Improvements;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Civilizations {
@@ -36,7 +36,7 @@ namespace Assets.Simulation.Civilizations {
             IPossessionRelationship<ICity, IHexCell>         cityTerritoryCanon,
             IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
             ImprovementSignals                               improvementSignals,
-            SpecialtyResourceSignals                         resourceSignals,
+            ResourceSignals                         resourceSignals,
             CitySignals                                      citySignals,
             CivilizationSignals                              civSignals
         ) {

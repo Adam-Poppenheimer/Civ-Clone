@@ -20,13 +20,13 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int Maintenance { get; }
 
-        ResourceSummary StaticYield { get; }
+        YieldSummary StaticYield { get; }
 
         ReadOnlyCollection<IWorkerSlot> Slots { get; }
 
-        ResourceSummary CivilizationYieldModifier { get; }
+        YieldSummary CivilizationYieldModifier { get; }
 
-        ResourceSummary CityYieldModifier { get; }
+        YieldSummary CityYieldModifier { get; }
 
         IBuildingTemplate Template { get; }
 

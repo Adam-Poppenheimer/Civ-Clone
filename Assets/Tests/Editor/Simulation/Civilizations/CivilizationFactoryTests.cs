@@ -13,7 +13,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Tests.Simulation.Civilizations {
 

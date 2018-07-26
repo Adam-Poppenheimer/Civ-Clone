@@ -9,7 +9,7 @@ using UnityEngine;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Simulation.Technology {
@@ -37,7 +37,7 @@ namespace Assets.Simulation.Technology {
 
         IEnumerable<IImprovementModificationData> ImprovementYieldModifications { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> RevealedResources { get; }
+        IEnumerable<IResourceDefinition> RevealedResources { get; }
 
         IEnumerable<IPolicyTreeDefinition> PolicyTreesEnabled { get; }
 

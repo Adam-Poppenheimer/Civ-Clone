@@ -7,9 +7,9 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
-    public class SpecialtyResourceSignals {
+    public class ResourceSignals {
 
         #region instance fields and properties
 
@@ -20,7 +20,7 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #region constructors
 
-        public SpecialtyResourceSignals() {
+        public ResourceSignals() {
             ResourceNodeBeingDestroyedSignal           = new Subject<IResourceNode>();
             ResourceNodeRemovedFromLocationSignal = new Subject<Tuple<IResourceNode, IHexCell>>();
         }

@@ -7,7 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {

@@ -7,7 +7,7 @@ using Zenject;
 
 using Assets.Simulation.Diplomacy;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -17,7 +17,7 @@ namespace Assets.Simulation.MapManagement {
 
         private ICivilizationFactory                      CivFactory;
         private IDiplomaticExchangeFactory                ExchangeFactory;
-        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
+        private IEnumerable<IResourceDefinition> AvailableResources;
 
         #endregion
 
@@ -26,7 +26,7 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public OngoingDiplomaticExchangeComposer(
             ICivilizationFactory civFactory, IDiplomaticExchangeFactory exchangeFactory,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             CivFactory         = civFactory;
             ExchangeFactory    = exchangeFactory;

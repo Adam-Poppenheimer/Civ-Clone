@@ -15,7 +15,7 @@ using Assets.Simulation;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
@@ -31,7 +31,7 @@ namespace Assets.UI.HexMap {
 
         [SerializeField] private Text CellDataField;
 
-        [SerializeField] private ResourceSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay YieldDisplay;
 
         [SerializeField] private ResourceNodeDisplay ResourceNodeDisplay;
 
@@ -60,11 +60,11 @@ namespace Assets.UI.HexMap {
 
 
         private IHexCellSignalLogic                              SignalLogic;
-        private IResourceGenerationLogic                         GenerationLogic;
+        private IYieldGenerationLogic                            GenerationLogic;
         private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodePositionCanon;
         private IImprovementLocationCanon                        ImprovementLocationCanon;
-        private ICellResourceLogic                               CellResourceLogic;
+        private ICellYieldLogic                                  CellYieldLogic;
         private ITechCanon                                       TechCanon;
         private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
         private IGameCore                                        GameCore;
@@ -75,11 +75,11 @@ namespace Assets.UI.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            IHexCellSignalLogic signalLogic, IResourceGenerationLogic generationLogic,
+            IHexCellSignalLogic signalLogic, IYieldGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodePositionCanon,
             IImprovementLocationCanon improvementLocationCanon,
-            ICellResourceLogic cellResourceLogic, ITechCanon techCanon,
+            ICellYieldLogic cellResourceLogic, ITechCanon techCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IGameCore gameCore
         ){
@@ -88,7 +88,7 @@ namespace Assets.UI.HexMap {
             CellPossessionCanon       = cellPossessionCanon;
             ResourceNodePositionCanon = resourceNodePositionCanon;
             ImprovementLocationCanon  = improvementLocationCanon;
-            CellResourceLogic         = cellResourceLogic;
+            CellYieldLogic         = cellResourceLogic;
             TechCanon                 = techCanon;
             CityPossessionCanon       = cityPossessionCanon;
             GameCore                  = gameCore;
@@ -151,7 +151,7 @@ namespace Assets.UI.HexMap {
             if(cellOwner != null) {
                 YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfCellForCity(cell, cellOwner));
             }else {
-                YieldDisplay.DisplaySummary(CellResourceLogic.GetYieldOfCell(cell));
+                YieldDisplay.DisplaySummary(CellYieldLogic.GetYieldOfCell(cell));
             }
         }
 

@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -42,19 +42,19 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IResourceAssignmentCanon
 
-        public int GetExportedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public int GetExportedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             return AllActiveTransfers
                 .Where(transfer => transfer.Exporter == civ && transfer.Resource == resource)
                 .Sum(transfer => transfer.Copies);
         }
 
-        public int GetImportedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public int GetImportedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             return AllActiveTransfers
                 .Where(transfer => transfer.Importer == civ && transfer.Resource == resource)
                 .Sum(transfer => transfer.Copies);
         }
 
-        public int GetTradeableCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public int GetTradeableCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             int extractedCopies = ExtractionLogic.GetExtractedCopiesOfResourceForCiv(resource, civ);
             int exportedCopies  = GetExportedCopiesOfResourceForCiv                 (resource, civ);
             int lockedCopies    = LockingCanon.GetLockedCopiesOfResourceForCiv      (resource, civ);
@@ -71,14 +71,14 @@ namespace Assets.Simulation.Civilizations {
         }
 
         public bool CanExportCopiesOfResource(
-            ISpecialtyResourceDefinition resource, int copies,
+            IResourceDefinition resource, int copies,
             ICivilization exporter, ICivilization importer
         ){
             return GetTradeableCopiesOfResourceForCiv(resource, exporter) >= copies;
         }
 
         public ResourceTransfer ExportCopiesOfResource(
-            ISpecialtyResourceDefinition resource, int copies,
+            IResourceDefinition resource, int copies,
             ICivilization exporter, ICivilization importer
         ){
             if(!CanExportCopiesOfResource(resource, copies, exporter, importer)) {
@@ -99,7 +99,7 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        public void SynchronizeResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public void SynchronizeResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             int tradeDeficit = GetTradeableCopiesOfResourceForCiv(resource, civ);
 
             if(tradeDeficit < 0) {

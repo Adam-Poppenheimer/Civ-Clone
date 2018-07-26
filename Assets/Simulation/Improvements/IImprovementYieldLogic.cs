@@ -11,9 +11,9 @@ namespace Assets.Simulation.Improvements {
 
         #region methods
 
-        ResourceSummary GetYieldOfImprovement(IImprovement improvement);
+        YieldSummary GetYieldOfImprovement(IImprovement improvement);
 
-        ResourceSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell);
+        YieldSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell);
 
         #endregion
 

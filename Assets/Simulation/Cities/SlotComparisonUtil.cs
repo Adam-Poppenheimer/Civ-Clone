@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities {
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IWorkerSlots from least to most yield of the focused resource</returns>
         public static Comparison<IWorkerSlot> BuildFocusedComparisonAscending(ICity sourceCity,
-            ResourceType focusedResource, IResourceGenerationLogic generationLogic) {
+            YieldType focusedResource, IYieldGenerationLogic generationLogic) {
 
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
                 var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
@@ -37,7 +37,7 @@ namespace Assets.Simulation.Cities {
 
                 var focusComparison = firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
                 if(focusComparison == 0) {
-                    focusComparison = firstYield[ResourceType.Food].CompareTo(secondYield[ResourceType.Food]);
+                    focusComparison = firstYield[YieldType.Food].CompareTo(secondYield[YieldType.Food]);
                 }
                 if(focusComparison == 0) {
                     focusComparison = firstYield.Total.CompareTo(secondYield.Total);
@@ -58,16 +58,17 @@ namespace Assets.Simulation.Cities {
         /// additional comparisons are made beyond the yield of the specified resource
         /// </remarks>
         /// <param name="sourceCity">The city whose hypothetical yield is being considered</param>
-        /// <param name="focusedResource">The ResourceType to be maximized</param>
+        /// <param name="focusedYield">The ResourceType to be maximized</param>
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IWorkerSlots from least to most yield of the focused resource</returns>
-        public static Comparison<IWorkerSlot> BuildResourceComparisonAscending(ResourceType focusedResource, ICity sourceCity,
-            IResourceGenerationLogic generationLogic) {
+        public static Comparison<IWorkerSlot> BuildYieldComparisonAscending(
+            YieldType focusedYield, ICity sourceCity, IYieldGenerationLogic generationLogic
+        ) {
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
                 var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
                 var secondYield = GetSlotYield(secondSlot, sourceCity, generationLogic);
 
-                return firstYield[focusedResource].CompareTo(secondYield[focusedResource]);
+                return firstYield[focusedYield].CompareTo(secondYield[focusedYield]);
             };
         }
 
@@ -78,9 +79,9 @@ namespace Assets.Simulation.Cities {
         /// <param name="sourceCity">The city whose hypothetical yield is being considered</param>
         /// <param name="generationLogic">The IResourceGenerationLogic used to determine the yield for the argued city</param>
         /// <returns>A Comparison that'll sort IWorkerSlots from least to most total yield</returns>
-        public static Comparison<IWorkerSlot> BuildTotalYieldComparisonAscending(ICity sourceCity,
-            IResourceGenerationLogic generationLogic) {
-
+        public static Comparison<IWorkerSlot> BuildTotalYieldComparisonAscending(
+            ICity sourceCity, IYieldGenerationLogic generationLogic
+        ) {
             return delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
                 var firstYield  = GetSlotYield(firstSlot,  sourceCity, generationLogic);
                 var secondYield = GetSlotYield(secondSlot, sourceCity, generationLogic);
@@ -90,7 +91,9 @@ namespace Assets.Simulation.Cities {
 
         }
 
-        private static ResourceSummary GetSlotYield(IWorkerSlot slot, ICity city, IResourceGenerationLogic generationLogic) {
+        private static YieldSummary GetSlotYield(
+            IWorkerSlot slot, ICity city, IYieldGenerationLogic generationLogic
+        ) {
             if(slot.ParentCell != null) {
                 return generationLogic.GetYieldOfCellForCity(slot.ParentCell, city);
             }else {

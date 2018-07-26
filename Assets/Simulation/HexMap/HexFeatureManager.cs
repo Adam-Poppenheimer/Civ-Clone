@@ -9,7 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 

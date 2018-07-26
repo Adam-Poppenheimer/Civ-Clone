@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
-    public enum SpecialtyResourceType {
+    public enum ResourceType {
         Bonus,
         Luxury,
         Strategic

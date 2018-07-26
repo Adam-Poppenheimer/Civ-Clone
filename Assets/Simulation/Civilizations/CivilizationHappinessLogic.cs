@@ -5,7 +5,7 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Civilizations {
@@ -18,7 +18,7 @@ namespace Assets.Simulation.Civilizations {
         private IFreeResourcesLogic                           FreeResourcesLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private ICityHappinessLogic                           CityHappinessLogic;
-        private List<ISpecialtyResourceDefinition>            AvailableLuxuries;
+        private List<IResourceDefinition>            AvailableLuxuries;
 
         #endregion
 
@@ -28,14 +28,14 @@ namespace Assets.Simulation.Civilizations {
             ICivilizationConfig config, IFreeResourcesLogic freeResourcesLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             ICityHappinessLogic cityHappinessLogic,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             Config              = config;
             FreeResourcesLogic  = freeResourcesLogic;
             CityPossessionCanon = cityPossessionCanon;
             CityHappinessLogic  = cityHappinessLogic;
 
-            AvailableLuxuries = availableResources.Where(resource => resource.Type == SpecialtyResourceType.Luxury).ToList();
+            AvailableLuxuries = availableResources.Where(resource => resource.Type == ResourceType.Luxury).ToList();
         }
 
         #endregion

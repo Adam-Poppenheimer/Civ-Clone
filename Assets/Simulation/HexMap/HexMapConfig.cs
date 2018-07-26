@@ -58,21 +58,21 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private int BaseMoveCost;
 
-        [SerializeField] private ResourceSummary GrasslandYield;
-        [SerializeField] private ResourceSummary PlainsYield;
-        [SerializeField] private ResourceSummary DesertYield;
-        [SerializeField] private ResourceSummary TundraYield;
-        [SerializeField] private ResourceSummary SnowYield;
-        [SerializeField] private ResourceSummary ShallowWaterYield;
-        [SerializeField] private ResourceSummary DeepWaterYield;
-        [SerializeField] private ResourceSummary FreshWaterYield;
+        [SerializeField] private YieldSummary GrasslandYield;
+        [SerializeField] private YieldSummary PlainsYield;
+        [SerializeField] private YieldSummary DesertYield;
+        [SerializeField] private YieldSummary TundraYield;
+        [SerializeField] private YieldSummary SnowYield;
+        [SerializeField] private YieldSummary ShallowWaterYield;
+        [SerializeField] private YieldSummary DeepWaterYield;
+        [SerializeField] private YieldSummary FreshWaterYield;
 
-        [SerializeField] private ResourceSummary HillsYield;
-        [SerializeField] private ResourceSummary MountainsYield;
+        [SerializeField] private YieldSummary HillsYield;
+        [SerializeField] private YieldSummary MountainsYield;
 
-        [SerializeField] private ResourceSummary ForestYield;
-        [SerializeField] private ResourceSummary JungleYield;
-        [SerializeField] private ResourceSummary MarshYield;
+        [SerializeField] private YieldSummary ForestYield;
+        [SerializeField] private YieldSummary JungleYield;
+        [SerializeField] private YieldSummary MarshYield;
 
         [SerializeField] private int HillsMoveCost;
         [SerializeField] private int MountainsMoveCost;
@@ -98,7 +98,7 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexMapConfig
 
-        public ResourceSummary GetYieldOfTerrain(CellTerrain terrain) {
+        public YieldSummary GetYieldOfTerrain(CellTerrain terrain) {
             switch(terrain) {
                 case CellTerrain.Grassland:    return GrasslandYield;
                 case CellTerrain.Plains:       return PlainsYield;
@@ -112,9 +112,9 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public ResourceSummary GetYieldOfVegetation(CellVegetation feature) {
+        public YieldSummary GetYieldOfVegetation(CellVegetation feature) {
             switch(feature) {
-                case CellVegetation.None:   return ResourceSummary.Empty;
+                case CellVegetation.None:   return YieldSummary.Empty;
                 case CellVegetation.Forest: return ForestYield;
                 case CellVegetation.Jungle: return JungleYield;
                 case CellVegetation.Marsh:  return MarshYield;
@@ -122,9 +122,9 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public ResourceSummary GetYieldOfShape(CellShape shape) {
+        public YieldSummary GetYieldOfShape(CellShape shape) {
             switch(shape) {
-                case CellShape.Flatlands: return ResourceSummary.Empty;
+                case CellShape.Flatlands: return YieldSummary.Empty;
                 case CellShape.Hills:     return HillsYield;
                 case CellShape.Mountains: return MountainsYield;
                 default: throw new NotImplementedException();

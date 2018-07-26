@@ -51,7 +51,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IPossessionRelationship<IHexCell, ICity>> ().To<CityLocationCanon>              ().AsSingle();
             Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>          ().AsSingle();
             Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                ().AsSingle();
-            Container.Bind<IResourceGenerationLogic>                 ().To<ResourceGenerationLogic>        ().AsSingle();
+            Container.Bind<IYieldGenerationLogic>                 ().To<YieldGenerationLogic>        ().AsSingle();
             Container.Bind<IBorderExpansionLogic>                    ().To<BorderExpansionLogic>           ().AsSingle();
             Container.Bind<IWorkerDistributionLogic>                 ().To<WorkerDistributionLogic>        ().AsSingle();
             Container.Bind<IBuildingProductionValidityLogic>         ().To<BuildingProductionValidityLogic>().AsSingle();
@@ -61,7 +61,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>              ().AsSingle();
             Container.Bind<ICityCombatLogic>                         ().To<CityCombatLogic>                ().AsSingle();
             Container.Bind<ICityHappinessLogic>                      ().To<CityHappinessLogic>             ().AsSingle();
-            Container.Bind<IBuildingResourceLogic>                   ().To<BuildingResourceLogic>          ().AsSingle();
+            Container.Bind<IBuildingYieldLogic>                   ().To<BuildingYieldLogic>          ().AsSingle();
             Container.Bind<IUnemploymentLogic>                       ().To<UnemploymentLogic>              ().AsSingle();
             Container.Bind<ICityLineOfSightLogic>                    ().To<CityLineOfSightLogic>           ().AsSingle();
 

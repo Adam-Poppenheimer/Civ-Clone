@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Units {
 
@@ -83,10 +83,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _maxHitpoints;
 
-        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
-            get { return _requiredResources.Cast<ISpecialtyResourceDefinition>(); }
+        public IEnumerable<IResourceDefinition> RequiredResources {
+            get { return _requiredResources.Cast<IResourceDefinition>(); }
         }
-        [SerializeField] private List<SpecialtyResourceDefinition> _requiredResources;
+        [SerializeField] private List<ResourceDefinition> _requiredResources;
 
         public bool IsImmobile {
             get { return _isImmobile; }

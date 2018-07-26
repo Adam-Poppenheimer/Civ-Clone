@@ -5,7 +5,7 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Diplomacy {
@@ -21,7 +21,7 @@ namespace Assets.Simulation.Diplomacy {
         }
 
         public override bool RequiresIntegerInput {
-            get { return ResourceInput.Type == SpecialtyResourceType.Strategic; }
+            get { return ResourceInput.Type == MapResources.ResourceType.Strategic; }
         }
 
         #endregion

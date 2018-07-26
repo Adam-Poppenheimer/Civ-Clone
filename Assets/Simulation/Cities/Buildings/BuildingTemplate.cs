@@ -6,7 +6,7 @@ using System.Text;
 
 using UnityEngine;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -48,28 +48,28 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _slotCount;
         
-        public ResourceSummary SlotYield {
+        public YieldSummary SlotYield {
             get { return _slotYield; }
         }
-        [SerializeField] private ResourceSummary _slotYield;
+        [SerializeField] private YieldSummary _slotYield;
 
         /// <inheritdoc/>
-        public ResourceSummary StaticYield {
+        public YieldSummary StaticYield {
             get { return _staticYield; }
         }
-        [SerializeField] private ResourceSummary _staticYield;
+        [SerializeField] private YieldSummary _staticYield;
 
         /// <inheritdoc/>
-        public ResourceSummary CivilizationYieldModifier {
+        public YieldSummary CivilizationYieldModifier {
             get { return _civilizationYieldModifier; }
         }
-        [SerializeField] private ResourceSummary _civilizationYieldModifier;
+        [SerializeField] private YieldSummary _civilizationYieldModifier;
 
         /// <inheritdoc/>
-        public ResourceSummary CityYieldModifier {
+        public YieldSummary CityYieldModifier {
             get { return _cityYieldModifier; }
         }
-        [SerializeField] private ResourceSummary _cityYieldModifier;
+        [SerializeField] private YieldSummary _cityYieldModifier;
 
         public int LocalHappiness {
             get { return _localHappiness; }
@@ -86,10 +86,10 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _unhappiness;
 
-        public IEnumerable<ISpecialtyResourceDefinition> ResourcesConsumed {
-            get { return _resourcesConsumed.Cast<ISpecialtyResourceDefinition>(); }
+        public IEnumerable<IResourceDefinition> ResourcesConsumed {
+            get { return _resourcesConsumed.Cast<IResourceDefinition>(); }
         }
-        [SerializeField] private List<SpecialtyResourceDefinition> _resourcesConsumed;
+        [SerializeField] private List<ResourceDefinition> _resourcesConsumed;
 
         public IEnumerable<IResourceYieldModificationData> ResourceYieldModifications {
             get { return _resourceYieldModifications.Cast<IResourceYieldModificationData>(); }
@@ -116,20 +116,20 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _cityMaxHitpointBonus;
 
-        public ResourceSummary BonusYieldPerPopulation {
+        public YieldSummary BonusYieldPerPopulation {
             get { return _bonusYieldPerPopulation; }
         }
-        [SerializeField] private ResourceSummary _bonusYieldPerPopulation;
+        [SerializeField] private YieldSummary _bonusYieldPerPopulation;
 
         public IEnumerable<IBuildingTemplate> PrerequisiteBuildings {
             get { return _prerequisiteBuildings.Cast<IBuildingTemplate>(); }
         }
         [SerializeField] private List<BuildingTemplate> _prerequisiteBuildings;
 
-        public IEnumerable<ISpecialtyResourceDefinition> PrerequisiteResourcesNearCity {
-            get { return _prerequisiteResourcesNearCity.Cast<ISpecialtyResourceDefinition>(); }
+        public IEnumerable<IResourceDefinition> PrerequisiteResourcesNearCity {
+            get { return _prerequisiteResourcesNearCity.Cast<IResourceDefinition>(); }
         }
-        [SerializeField] private List<SpecialtyResourceDefinition> _prerequisiteResourcesNearCity;
+        [SerializeField] private List<ResourceDefinition> _prerequisiteResourcesNearCity;
 
         public IEnumerable<IImprovementTemplate> PrerequisiteImprovementsNearCity {
             get { return _prerequisiteImprovementsNearCity.Cast<IImprovementTemplate>(); }

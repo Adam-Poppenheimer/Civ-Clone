@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -11,7 +11,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        int GetExtractedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        int GetExtractedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
         #endregion
 

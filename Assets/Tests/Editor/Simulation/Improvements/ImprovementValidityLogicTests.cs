@@ -12,7 +12,7 @@ using Assets.Simulation;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Tests.Simulation.Improvements {
 
@@ -416,7 +416,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private IResourceNode BuildResourceNode(IHexCell location, IImprovementTemplate extractor) {
             var mockNode = new Mock<IResourceNode>();
 
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+            var mockDefinition = new Mock<IResourceDefinition>();
             mockDefinition.Setup(definition => definition.Extractor).Returns(extractor);
 
             mockNode.Setup(node => node.Resource).Returns(mockDefinition.Object);

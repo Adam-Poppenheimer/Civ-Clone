@@ -10,7 +10,7 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -415,8 +415,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region utilities
 
-        private ISpecialtyResourceDefinition BuildResource() {
-            return new Mock<ISpecialtyResourceDefinition>().Object;
+        private IResourceDefinition BuildResource() {
+            return new Mock<IResourceDefinition>().Object;
         }
 
         private ICivilization BuildCiv() {

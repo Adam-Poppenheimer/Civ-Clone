@@ -17,20 +17,20 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        [SerializeField] private ResourceSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay YieldDisplay;
 
 
 
 
-        private IResourceGenerationLogic ResourceGenerationLogic;
+        private IYieldGenerationLogic YieldGenerationLogic;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IResourceGenerationLogic resourceGenerationLogic) {
-            ResourceGenerationLogic = resourceGenerationLogic;
+        public void InjectDependencies(IYieldGenerationLogic resourceGenerationLogic) {
+            YieldGenerationLogic = resourceGenerationLogic;
         }
 
         #region from CityDisplayBase
@@ -40,7 +40,7 @@ namespace Assets.UI.Cities.ResourceGeneration {
                 return;
             }
 
-            YieldDisplay.DisplaySummary(ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay));
+            YieldDisplay.DisplaySummary(YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay));
         }
 
         #endregion

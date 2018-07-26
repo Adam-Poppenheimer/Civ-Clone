@@ -24,7 +24,7 @@ namespace Assets.Simulation.Cities.Distribution {
 
         private IPopulationGrowthLogic GrowthLogic;
 
-        private IResourceGenerationLogic GenerationLogic;
+        private IYieldGenerationLogic GenerationLogic;
 
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
@@ -43,7 +43,7 @@ namespace Assets.Simulation.Cities.Distribution {
         /// <param name="tileCanon"></param>
         [Inject]
         public WorkerDistributionLogic(
-            IPopulationGrowthLogic growthLogic, IResourceGenerationLogic generationLogic,
+            IPopulationGrowthLogic growthLogic, IYieldGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IBuilding> buildingCanon, IPossessionRelationship<ICity, IHexCell> tileCanon
         ){
             GrowthLogic     = growthLogic;
@@ -61,19 +61,19 @@ namespace Assets.Simulation.Cities.Distribution {
         /// <inheritdoc/>
         public void DistributeWorkersIntoSlots(
             int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
-            ResourceFocusType focus
+            YieldFocusType focus
         ){
             foreach(var slot in slots) {
                 slot.IsOccupied = false;
             }
 
             switch(focus) {
-                case ResourceFocusType.Food:       PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Food);       break;
-                case ResourceFocusType.Gold:       PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Gold);       break;
-                case ResourceFocusType.Production: PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Production); break;
-                case ResourceFocusType.Culture:    PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Culture);    break;
-                case ResourceFocusType.Science:    PerformFocusedDistribution(workerCount, slots, sourceCity, ResourceType.Science);    break;
-                case ResourceFocusType.TotalYield: PerformUnfocusedDistribution(workerCount, slots, sourceCity); break;
+                case YieldFocusType.Food:       PerformFocusedDistribution(workerCount, slots, sourceCity, YieldType.Food);       break;
+                case YieldFocusType.Gold:       PerformFocusedDistribution(workerCount, slots, sourceCity, YieldType.Gold);       break;
+                case YieldFocusType.Production: PerformFocusedDistribution(workerCount, slots, sourceCity, YieldType.Production); break;
+                case YieldFocusType.Culture:    PerformFocusedDistribution(workerCount, slots, sourceCity, YieldType.Culture);    break;
+                case YieldFocusType.Science:    PerformFocusedDistribution(workerCount, slots, sourceCity, YieldType.Science);    break;
+                case YieldFocusType.TotalYield: PerformUnfocusedDistribution(workerCount, slots, sourceCity); break;
                 default: break;
             } 
         }
@@ -102,7 +102,7 @@ namespace Assets.Simulation.Cities.Distribution {
         /// yield is sufficient to sustain the population.
         /// </remarks>
         private void PerformFocusedDistribution(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
-            ResourceType focusedResource) {
+            YieldType focusedResource) {
             var maximizingComparison = SlotComparisonUtil.BuildFocusedComparisonAscending(sourceCity, focusedResource, GenerationLogic);
 
             MaximizeYield(workerCount, slots, sourceCity, maximizingComparison);
@@ -141,7 +141,7 @@ namespace Assets.Simulation.Cities.Distribution {
         private void MitigateStarvation(int workerCount, IEnumerable<IWorkerSlot> slots, ICity sourceCity,
             Comparison<IWorkerSlot> yieldMaximizationComparer) {
 
-            int foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food]);
+            int foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[YieldType.Food]);
             int foodRequired = GrowthLogic.GetFoodConsumptionPerTurn(sourceCity);
 
             var occupiedByMaxYieldDescending = new List<IWorkerSlot>(slots.Where(slot => slot.IsOccupied));
@@ -150,7 +150,7 @@ namespace Assets.Simulation.Cities.Distribution {
             occupiedByMaxYieldDescending.Reverse();
 
             var slotsByFoodThenFocusedYield = new List<IWorkerSlot>(slots);
-            var foodComparer = SlotComparisonUtil.BuildResourceComparisonAscending(ResourceType.Food, sourceCity, GenerationLogic);
+            var foodComparer = SlotComparisonUtil.BuildYieldComparisonAscending(YieldType.Food, sourceCity, GenerationLogic);
 
             slotsByFoodThenFocusedYield.Sort(delegate(IWorkerSlot firstSlot, IWorkerSlot secondSlot) {
                 int foodComparison = foodComparer(firstSlot, secondSlot);
@@ -169,7 +169,7 @@ namespace Assets.Simulation.Cities.Distribution {
                     occupiedByMaxYieldDescending.Remove(worstOccupiedForFocus);
                     slotsByFoodThenFocusedYield.Remove(bestUnoccupiedForFood);
 
-                    foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[ResourceType.Food]);
+                    foodProduced = Mathf.FloorToInt(GenerationLogic.GetTotalYieldForCity(sourceCity)[YieldType.Food]);
                 }else {
                     break;
                 }

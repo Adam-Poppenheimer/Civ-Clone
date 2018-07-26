@@ -99,24 +99,24 @@ namespace Assets.Simulation.Core {
 
         #region from IYieldConfig
 
-        public Sprite GetIconForResourceType(ResourceType type) {
+        public Sprite GetIconForYieldType(YieldType type) {
             switch(type) {
-                case ResourceType.Food:       return FoodIcon;
-                case ResourceType.Production: return ProductionIcon;
-                case ResourceType.Gold:       return GoldIcon;
-                case ResourceType.Culture:    return CultureIcon;
-                case ResourceType.Science:    return ScienceIcon;
+                case YieldType.Food:       return FoodIcon;
+                case YieldType.Production: return ProductionIcon;
+                case YieldType.Gold:       return GoldIcon;
+                case YieldType.Culture:    return CultureIcon;
+                case YieldType.Science:    return ScienceIcon;
                 default: return null;
             }
         }
 
-        public Color GetColorForResourceType(ResourceType type) {
+        public Color GetColorForYieldType(YieldType type) {
             switch(type) {
-                case ResourceType.Food:       return FoodColor;
-                case ResourceType.Production: return ProductionColor;
-                case ResourceType.Gold:       return GoldColor;
-                case ResourceType.Culture:    return CultureColor;
-                case ResourceType.Science:    return ScienceColor;
+                case YieldType.Food:       return FoodColor;
+                case YieldType.Production: return ProductionColor;
+                case YieldType.Gold:       return GoldColor;
+                case YieldType.Culture:    return CultureColor;
+                case YieldType.Science:    return ScienceColor;
                 default: return Color.magenta;
             }
         }

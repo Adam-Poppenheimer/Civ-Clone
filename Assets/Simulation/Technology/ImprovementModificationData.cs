@@ -19,10 +19,10 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private ImprovementTemplate _template;
 
-        public ResourceSummary BonusYield {
+        public YieldSummary BonusYield {
             get { return _bonusYield; }
         }
-        [SerializeField] private ResourceSummary _bonusYield;
+        [SerializeField] private YieldSummary _bonusYield;
 
         public bool RequiresFreshWater {
             get { return _requiresFreshWater; }

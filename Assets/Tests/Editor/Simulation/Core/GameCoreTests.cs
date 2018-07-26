@@ -15,7 +15,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Diplomacy;
 
@@ -245,7 +245,7 @@ namespace Assets.Tests.Simulation.Core {
                 .Returns(new List<ICivilization>() { activeCiv }.AsReadOnly());
 
             MockTechCanon.Setup(canon => canon.GetResourcesVisibleToCiv(activeCiv))
-                .Returns(new List<ISpecialtyResourceDefinition>() { visibleResource });
+                .Returns(new List<IResourceDefinition>() { visibleResource });
 
             gameCore.ActiveCivilization = activeCiv;
 
@@ -403,7 +403,7 @@ namespace Assets.Tests.Simulation.Core {
             return new Mock<ICivilization>().Object;
         }
 
-        private IResourceNode BuildResourceNode(ISpecialtyResourceDefinition resource) {
+        private IResourceNode BuildResourceNode(IResourceDefinition resource) {
             var mockNode = new Mock<IResourceNode>();
 
             mockNode.SetupAllProperties();
@@ -416,8 +416,8 @@ namespace Assets.Tests.Simulation.Core {
             return mockNode.Object;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition() {
-            return new Mock<ISpecialtyResourceDefinition>().Object;
+        private IResourceDefinition BuildResourceDefinition() {
+            return new Mock<IResourceDefinition>().Object;
         }
 
         #endregion

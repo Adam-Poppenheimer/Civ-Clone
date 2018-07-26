@@ -44,6 +44,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private List<RegionGenerationTemplate> _boundaryTemplates;
 
+        public int LuxuriesPerRegion {
+            get { return _luxuriesPerRegion; }
+        }
+        [SerializeField] private int _luxuriesPerRegion;
+
         #endregion
 
         #endregion

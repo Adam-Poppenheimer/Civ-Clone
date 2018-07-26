@@ -9,9 +9,9 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
-    public class SpecialtyResourceInstaller : MonoInstaller {
+    public class ResourceInstaller : MonoInstaller {
 
         #region instance fields and properties
 
@@ -26,15 +26,15 @@ namespace Assets.Simulation.SpecialtyResources {
         public override void InstallBindings() {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().To<ResourceNodeLocationCanon>().AsSingle();
 
-            var allResources = new List<ISpecialtyResourceDefinition>(Resources.LoadAll<SpecialtyResourceDefinition>("Specialty Resources"));
+            var allResources = new List<IResourceDefinition>(Resources.LoadAll<ResourceDefinition>("Specialty Resources"));
 
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+            Container.Bind<IEnumerable<IResourceDefinition>>()
                 .WithId("Available Specialty Resources")
-                .FromInstance(allResources.Cast<ISpecialtyResourceDefinition>());
+                .FromInstance(allResources.Cast<IResourceDefinition>());
 
             Container.Bind<IResourceNodeFactory>().To<ResourceNodeFactory>().AsSingle();
 
-            Container.Bind<SpecialtyResourceSignals>().AsSingle();
+            Container.Bind<ResourceSignals>().AsSingle();
         }
 
         #endregion

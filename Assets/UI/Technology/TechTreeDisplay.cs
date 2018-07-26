@@ -88,7 +88,7 @@ namespace Assets.UI.Technology {
 
                 techRecord.TurnsToResearch = (int)Math.Ceiling(
                     (techRecord.TechToDisplay.Cost - techRecord.CurrentProgress) /
-                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.ResourceType.Science]
+                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science]
                 );
 
                 techRecord.Refresh();

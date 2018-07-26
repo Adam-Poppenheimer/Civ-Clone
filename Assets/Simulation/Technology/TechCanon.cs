@@ -11,7 +11,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.SocialPolicies;
 
 using UnityCustomUtilities.Extensions;
@@ -44,7 +44,7 @@ namespace Assets.Simulation.Technology {
 
         private IEnumerable<IAbilityDefinition> AvailableAbilities;
 
-        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
+        private IEnumerable<IResourceDefinition> AvailableResources;
 
         #endregion
 
@@ -54,7 +54,7 @@ namespace Assets.Simulation.Technology {
         public TechCanon(
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
             [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources,
             CivilizationSignals civSignals
         ){
             _availableTechs    = availableTechs;
@@ -155,8 +155,8 @@ namespace Assets.Simulation.Technology {
             return retval;
         }
 
-        public IEnumerable<ISpecialtyResourceDefinition> GetResourcesVisibleToCiv(ICivilization civilization) {
-            var retval = new HashSet<ISpecialtyResourceDefinition>(AvailableResources);
+        public IEnumerable<IResourceDefinition> GetResourcesVisibleToCiv(ICivilization civilization) {
+            var retval = new HashSet<IResourceDefinition>(AvailableResources);
 
             if(!IgnoreResourceVisibility) {
                 foreach(var tech in AvailableTechs) {
@@ -201,7 +201,7 @@ namespace Assets.Simulation.Technology {
             return GetResearchedAbilities(civilization).Contains(ability);
         }
 
-        public bool IsResourceVisibleToCiv(ISpecialtyResourceDefinition resource, ICivilization civilization) {
+        public bool IsResourceVisibleToCiv(IResourceDefinition resource, ICivilization civilization) {
             return GetResourcesVisibleToCiv(civilization).Contains(resource);
         }
 

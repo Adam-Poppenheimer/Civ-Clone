@@ -10,7 +10,7 @@ using Moq;
 
 using Assets.Simulation.Diplomacy;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -34,7 +34,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         public class ResourceDefinitionTestData {
 
-            public SpecialtyResourceType Type;
+            public ResourceType Type;
 
         }
 
@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             get {
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -109,7 +109,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -132,7 +132,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -175,7 +175,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -196,7 +196,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -217,7 +217,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Luxury }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Luxury }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -242,7 +242,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -264,7 +264,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -286,7 +286,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -307,7 +307,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -328,7 +328,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -349,7 +349,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
                 yield return new TestCaseData(new ResourceExchangeBuilderTestData() {
                     Resources = new List<ResourceDefinitionTestData>() {
-                        new ResourceDefinitionTestData() { Type = SpecialtyResourceType.Strategic }
+                        new ResourceDefinitionTestData() { Type = ResourceType.Strategic }
                     },
                     Sender = new CivilizationTestData() {
                         ResourceSummaries = new List<ResourceSummaryTestData>() {
@@ -378,7 +378,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
         private Mock<IResourceTransferCanon>       MockResourceTransferCanon;
         private Mock<IFreeResourcesLogic>          MockFreeResourcesLogic;
 
-        private List<ISpecialtyResourceDefinition> AvailableResources = new List<ISpecialtyResourceDefinition>();
+        private List<IResourceDefinition> AvailableResources = new List<IResourceDefinition>();
 
         #endregion
 
@@ -398,7 +398,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             Container.Bind<IResourceTransferCanon>      ().FromInstance(MockResourceTransferCanon.Object);
             Container.Bind<IFreeResourcesLogic>         ().FromInstance(MockFreeResourcesLogic   .Object);
 
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+            Container.Bind<IEnumerable<IResourceDefinition>>()
                      .WithId("Available Specialty Resources")
                      .FromInstance(AvailableResources);
 
@@ -441,7 +441,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
         #region utilities
 
         private void CheckExchangesAgainstExpectations(
-            List<ISpecialtyResourceDefinition> resources,
+            List<IResourceDefinition> resources,
             IEnumerable<ResourceDiplomaticExchange> exchanges,
             List<ResourceSummaryTestData> expectations
         ) {
@@ -470,8 +470,8 @@ namespace Assets.Tests.Simulation.Diplomacy {
             }
         }
 
-        private ISpecialtyResourceDefinition BuildResource(ResourceDefinitionTestData data) {
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResource(ResourceDefinitionTestData data) {
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(resource => resource.Type).Returns(data.Type);
 
@@ -482,7 +482,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             return newResource;
         }
 
-        private ICivilization BuildCivilization(CivilizationTestData testData, List<ISpecialtyResourceDefinition> resources) {
+        private ICivilization BuildCivilization(CivilizationTestData testData, List<IResourceDefinition> resources) {
             var newCiv = new Mock<ICivilization>().Object;
 
             for(int i = 0; i < testData.ResourceSummaries.Count; i++) {

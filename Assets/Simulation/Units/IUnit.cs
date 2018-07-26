@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.HexMap;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
 
@@ -38,7 +38,7 @@ namespace Assets.Simulation.Units {
 
         int MaxHitpoints { get; }
 
-        IEnumerable<ISpecialtyResourceDefinition> RequiredResources { get; }
+        IEnumerable<IResourceDefinition> RequiredResources { get; }
 
         List<IHexCell> CurrentPath { get; set; }
 

@@ -11,7 +11,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI.MapEditor {
@@ -20,7 +20,7 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        private ISpecialtyResourceDefinition ActiveResource;
+        private IResourceDefinition ActiveResource;
 
         private int ActiveCopies {
             get { return _activeCopies; }
@@ -48,7 +48,7 @@ namespace Assets.UI.MapEditor {
 
         private IResourceNodeFactory ResourceNodeFactory;
 
-        private List<ISpecialtyResourceDefinition> AvailableResources;
+        private List<IResourceDefinition> AvailableResources;
 
         private HexCellSignals CellSignals;
 
@@ -60,11 +60,11 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(IResourceNodeFactory resourceNodeFactory,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources,
             HexCellSignals cellSignals, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
         ){
             ResourceNodeFactory = resourceNodeFactory;
-            AvailableResources  = new List<ISpecialtyResourceDefinition>(availableResources);
+            AvailableResources  = new List<IResourceDefinition>(availableResources);
             CellSignals         = cellSignals;
             NodePositionCanon   = nodePositionCanon;
         }
@@ -96,7 +96,7 @@ namespace Assets.UI.MapEditor {
         public void SetActiveResource(int index) {
             ActiveResource = AvailableResources[index];
 
-            var shouldHaveCopies = ActiveResource.Type == SpecialtyResourceType.Strategic;
+            var shouldHaveCopies = ActiveResource.Type == Simulation.MapResources.ResourceType.Strategic;
 
             CopiesSection.gameObject.SetActive(shouldHaveCopies);
 
@@ -145,7 +145,7 @@ namespace Assets.UI.MapEditor {
             cell.RefreshSelfOnly();
         }
 
-        private int ResourceSorter(ISpecialtyResourceDefinition a, ISpecialtyResourceDefinition b) {
+        private int ResourceSorter(IResourceDefinition a, IResourceDefinition b) {
             return a.name.CompareTo(b.name);
         }
 

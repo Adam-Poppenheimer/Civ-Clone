@@ -34,6 +34,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private List<OceanGenerationTemplate> _oceanTemplates;
 
+        public int LuxuriesPerContinent {
+            get { return _luxuriesPerContinent; }
+        }
+        [SerializeField, Range(1, 15)] private int _luxuriesPerContinent = 5;
+
         #endregion
 
         #endregion

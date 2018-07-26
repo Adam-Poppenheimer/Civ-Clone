@@ -28,15 +28,15 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return Template.Maintenance; }
         }
 
-        public ResourceSummary StaticYield {
+        public YieldSummary StaticYield {
             get { return Template.StaticYield; }
         }
 
-        public ResourceSummary CivilizationYieldModifier {
+        public YieldSummary CivilizationYieldModifier {
             get { return Template.CivilizationYieldModifier; }
         }
 
-        public ResourceSummary CityYieldModifier {
+        public YieldSummary CityYieldModifier {
             get { return Template.CityYieldModifier; }
         }
 

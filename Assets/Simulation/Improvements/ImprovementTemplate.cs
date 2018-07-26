@@ -21,10 +21,10 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private Sprite _icon;
 
-        public ResourceSummary BonusYieldNormal {
+        public YieldSummary BonusYieldNormal {
             get { return _bonusYield; }
         }
-        [SerializeField] private ResourceSummary _bonusYield;
+        [SerializeField] private YieldSummary _bonusYield;
 
         public IEnumerable<CellVegetation> RestrictedToVegetations {
             get { return _restrictedToVegetations; }

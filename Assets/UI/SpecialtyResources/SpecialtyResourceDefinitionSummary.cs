@@ -6,7 +6,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.UI.SpecialtyResources {
 
@@ -23,7 +23,7 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance methods
 
-        public void Initialize(ISpecialtyResourceDefinition resource, int freeCopies, int totalCopies) {
+        public void Initialize(IResourceDefinition resource, int freeCopies, int totalCopies) {
             if(NameField != null) {
                 NameField.text = resource.name;
             }

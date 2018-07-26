@@ -14,7 +14,7 @@ using Assets.Simulation.Diplomacy;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Tests.Simulation.MapManagement {
 

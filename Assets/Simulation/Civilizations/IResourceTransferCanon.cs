@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -12,21 +12,21 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
-        int GetExportedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        int GetExportedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
-        int GetImportedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        int GetImportedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
-        int GetTradeableCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        int GetTradeableCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
         IEnumerable<ResourceTransfer> GetAllExportTransfersFromCiv(ICivilization civ);
         IEnumerable<ResourceTransfer> GetAllImportTransfersFromCiv(ICivilization civ);
 
-        bool             CanExportCopiesOfResource(ISpecialtyResourceDefinition resource, int copies, ICivilization fromCiv, ICivilization toCiv);
-        ResourceTransfer ExportCopiesOfResource   (ISpecialtyResourceDefinition resource, int copies, ICivilization fromCiv, ICivilization toCiv);
+        bool             CanExportCopiesOfResource(IResourceDefinition resource, int copies, ICivilization fromCiv, ICivilization toCiv);
+        ResourceTransfer ExportCopiesOfResource   (IResourceDefinition resource, int copies, ICivilization fromCiv, ICivilization toCiv);
 
         void CancelTransfer(ResourceTransfer transfer);
 
-        void SynchronizeResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        void SynchronizeResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
         #endregion
 

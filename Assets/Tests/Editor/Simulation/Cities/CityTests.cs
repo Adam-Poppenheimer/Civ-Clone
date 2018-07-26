@@ -39,7 +39,7 @@ namespace Assets.Tests.Simulation.Cities {
             public bool SuppressSlot;
             public bool SlotIsLocked;
             public bool SlotIsOccupied;
-            public ResourceSummary BaseYield;
+            public YieldSummary BaseYield;
 
         }
 
@@ -49,7 +49,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IPopulationGrowthLogic>                    MockGrowthLogic;
         private Mock<IProductionLogic>                          MockProductionLogic;
-        private Mock<IResourceGenerationLogic>                  MockResourceGenerationLogic;
+        private Mock<IYieldGenerationLogic>                     MockYieldGenerationLogic;
         private Mock<IBorderExpansionLogic>                     MockExpansionLogic;
         private Mock<IPossessionRelationship<ICity, IHexCell>>  MockCellPossessionCanon;
         private Mock<IWorkerDistributionLogic>                  MockDistributionLogic;
@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             MockGrowthLogic             = new Mock<IPopulationGrowthLogic>();
             MockProductionLogic         = new Mock<IProductionLogic>();
-            MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
+            MockYieldGenerationLogic = new Mock<IYieldGenerationLogic>();
             MockExpansionLogic          = new Mock<IBorderExpansionLogic>();
             MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic       = new Mock<IWorkerDistributionLogic>();
@@ -76,7 +76,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic            .Object);
             Container.Bind<IProductionLogic>                         ().FromInstance(MockProductionLogic        .Object);
-            Container.Bind<IResourceGenerationLogic>                 ().FromInstance(MockResourceGenerationLogic.Object);
+            Container.Bind<IYieldGenerationLogic>                 ().FromInstance(MockYieldGenerationLogic.Object);
             Container.Bind<IBorderExpansionLogic>                    ().FromInstance(MockExpansionLogic         .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon    .Object);
             Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic      .Object);
@@ -138,7 +138,7 @@ namespace Assets.Tests.Simulation.Cities {
             
             MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(10);
 
-            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
+            MockYieldGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(YieldSummary.Empty);
 
             city.Population = 1;
 
@@ -374,7 +374,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformDistribution_SendsRequestToDistributionLogic() {
             var city = Container.Resolve<City>();
             city.Population = 7;
-            city.ResourceFocus = ResourceFocusType.TotalYield;
+            city.YieldFocus = YieldFocusType.TotalYield;
 
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockCell(new CellMockData()) }.AsReadOnly());
@@ -385,7 +385,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockDistributionLogic.Verify(
                 logic => logic.DistributeWorkersIntoSlots(
-                    city.Population, It.IsAny<IEnumerable<IWorkerSlot>>(), city, city.ResourceFocus
+                    city.Population, It.IsAny<IEnumerable<IWorkerSlot>>(), city, city.YieldFocus
                 ),
                 Times.Once,
                 "DistributionLogic's DistributeWorkersIntoSlots was not called with the correct " +
@@ -419,10 +419,10 @@ namespace Assets.Tests.Simulation.Cities {
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
                     It.IsAny<ICity>(),
-                    It.IsAny<ResourceFocusType>()
+                    It.IsAny<YieldFocusType>()
                 )
             ).Callback(
-                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, YieldFocusType preferences) {
                     CollectionAssert.IsSupersetOf(availableSlots, allSlots);
                 }
             );                
@@ -459,10 +459,10 @@ namespace Assets.Tests.Simulation.Cities {
                     It.IsAny<int>(),
                     It.IsAny<IEnumerable<IWorkerSlot>>(),
                     It.IsAny<ICity>(),
-                    It.IsAny<ResourceFocusType>()
+                    It.IsAny<YieldFocusType>()
                 )
             ).Callback(
-                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
+                delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, YieldFocusType preferences) {
                     CollectionAssert.DoesNotContain(availableSlots, tileMockTwo.Object.WorkerSlot,
                         "DistributionLogic was incorrectly passed a slot from a suppressed tile");
                 }
@@ -493,9 +493,9 @@ namespace Assets.Tests.Simulation.Cities {
                 .Returns(new List<IBuilding>().AsReadOnly());
 
             MockDistributionLogic.Setup(
-                logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), city, It.IsAny<ResourceFocusType>())
+                logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), city, It.IsAny<YieldFocusType>())
             ).Callback(
-                delegate(int workerCount, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, ResourceFocusType preferences) {
+                delegate(int workerCount, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, YieldFocusType preferences) {
                     Assert.AreEqual(1, workerCount, "Incorrect workerCount passed to DistributionLogic");
 
                     CollectionAssert.Contains      (availableSlots, unlockedSlotTile        .WorkerSlot, "unlockedSlot not passed to DistributionLogic");
@@ -524,18 +524,18 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When PerformIncome is called on a city, that city should " +
             "call into ResourceGenerationLogic to determine its LastIncome and update its " +
             "culture and food stockpiles")]
-        public void PerformIncome_ChecksResourceGenerationLogicForIncome() {
+        public void PerformIncome_ChecksYieldGenerationLogicForIncome() {
             var city = Container.Resolve<City>();
             city.FoodStockpile = 5;
             city.CultureStockpile = 4;
 
-            var income = new ResourceSummary(food: -2, production: 1, gold: 7, culture: 2);
+            var income = new YieldSummary(food: -2, production: 1, gold: 7, culture: 2);
 
-            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(income);
+            MockYieldGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(income);
 
             city.PerformIncome();
 
-            MockResourceGenerationLogic.Verify(logic => logic.GetTotalYieldForCity(city), Times.AtLeastOnce,
+            MockYieldGenerationLogic.Verify(logic => logic.GetTotalYieldForCity(city), Times.AtLeastOnce,
                 "ResourceGenerationLogic's GetTotalYieldForCity was not called as expected");
 
             Assert.AreEqual(income, city.LastIncome, "City did not correctly update its LastIncome");
@@ -550,7 +550,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = Container.Resolve<City>();
             city.FoodStockpile = 5;
 
-            MockResourceGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(ResourceSummary.Empty);
+            MockYieldGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city)).Returns(YieldSummary.Empty);
 
             MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(4);
 
@@ -571,9 +571,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             city.FoodStockpile = 0;
 
-            MockResourceGenerationLogic
+            MockYieldGenerationLogic
                 .Setup(logic => logic.GetTotalYieldForCity(city))
-                .Returns(new ResourceSummary(food: 10));
+                .Returns(new YieldSummary(food: 10));
 
             MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(8);
             MockGrowthLogic.Setup(logic => logic.GetFoodStockpileAdditionFromIncome(city, 2)).Returns(2);

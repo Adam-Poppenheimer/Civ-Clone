@@ -10,7 +10,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Cities {
@@ -142,7 +142,7 @@ namespace Assets.Tests.Simulation.Cities {
             return mockBuilding.Object;
         }
 
-        private IBuildingTemplate BuildTemplate(params ISpecialtyResourceDefinition[] requiredResources) {
+        private IBuildingTemplate BuildTemplate(params IResourceDefinition[] requiredResources) {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
             mockTemplate.Setup(template => template.ResourcesConsumed).Returns(requiredResources);
@@ -150,8 +150,8 @@ namespace Assets.Tests.Simulation.Cities {
             return mockTemplate.Object;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition(string name = "") {
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResourceDefinition(string name = "") {
+            var mockDefinition = new Mock<IResourceDefinition>();
 
             mockDefinition.Name = name;
             mockDefinition.Setup(definition => definition.name).Returns(name);

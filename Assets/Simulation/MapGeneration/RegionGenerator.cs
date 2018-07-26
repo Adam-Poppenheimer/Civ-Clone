@@ -6,7 +6,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
@@ -23,6 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         private IGridTraversalLogic    GridTraversalLogic;
         private IRiverCanon            RiverCanon;
         private IRiverGenerator        RiverGenerator;
+        private IResourceNodeFactory   NodeFactory;
 
         #endregion
 
@@ -32,7 +33,7 @@ namespace Assets.Simulation.MapGeneration {
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
             IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
-            IRiverGenerator riverGenerator
+            IRiverGenerator riverGenerator, IResourceNodeFactory nodeFactory
         ) {
             ModLogic           = modLogic;
             Grid               = grid;
@@ -40,6 +41,7 @@ namespace Assets.Simulation.MapGeneration {
             GridTraversalLogic = gridTraversalLogic;
             RiverCanon         = riverCanon;
             RiverGenerator     = riverGenerator;
+            NodeFactory        = nodeFactory;
         }
 
         #endregion
@@ -50,13 +52,23 @@ namespace Assets.Simulation.MapGeneration {
 
         public void GenerateRegion(
             MapRegion region, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+            IEnumerable<IHexCell> oceanCells,
+            List<IResourceDefinition> availableLuxuries
         ) {
             GenerateTopology(region, template);
-            PaintTerrain    (region, template, oceanCells);
-            PaintVegetation (region, template);
+            PaintTerrain(region, template, oceanCells);
 
             RiverGenerator.CreateRiversForRegion(region, template, oceanCells);
+
+            PaintVegetation(region, template);
+
+            foreach(var luxury in availableLuxuries) {
+                var validCells = region.Cells.Where(cell => NodeFactory.CanBuildNode(cell, luxury));
+
+                if(validCells.Any()) {
+                    NodeFactory.BuildNode(validCells.Random(), luxury, 1);
+                }
+            }
         }
 
         #endregion

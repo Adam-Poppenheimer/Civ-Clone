@@ -35,9 +35,9 @@ namespace Assets.Simulation.Core {
 
         #region methods
 
-        Sprite GetIconForResourceType(ResourceType type);
+        Sprite GetIconForYieldType(YieldType type);
 
-        Color GetColorForResourceType(ResourceType type);
+        Color GetColorForYieldType(YieldType type);
 
         #endregion
 

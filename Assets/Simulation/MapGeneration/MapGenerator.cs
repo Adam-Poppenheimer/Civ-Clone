@@ -8,6 +8,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 
@@ -23,6 +24,10 @@ namespace Assets.Simulation.MapGeneration {
         private IContinentGenerator    ContinentGenerator;
         private IOceanGenerator        OceanGenerator;
         private IGridTraversalLogic    GridTraversalLogic;
+        private IResourceDistributor   ResourceDistributor;
+
+        private IEnumerable<IResourceDefinition> LuxuryResources;
+        private IEnumerable<IResourceDefinition> StrategicResources;
 
         #endregion
 
@@ -32,14 +37,20 @@ namespace Assets.Simulation.MapGeneration {
         public MapGenerator(
             IMapGenerationConfig config, ICivilizationFactory civFactory,
             IHexGrid grid, IContinentGenerator continentGenerator,
-            IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic
+            IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
+            IResourceDistributor resourceDistributor,
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
-            Config             = config;
-            CivFactory         = civFactory;
-            Grid               = grid;
-            ContinentGenerator = continentGenerator;
-            OceanGenerator     = oceanGenerator;
-            GridTraversalLogic = gridTraversalLogic;
+            Config              = config;
+            CivFactory          = civFactory;
+            Grid                = grid;
+            ContinentGenerator  = continentGenerator;
+            OceanGenerator      = oceanGenerator;
+            GridTraversalLogic  = gridTraversalLogic;
+            ResourceDistributor = resourceDistributor;
+
+            LuxuryResources    = availableResources.Where(resource => resource.Type == MapResources.ResourceType.Luxury);
+            StrategicResources = availableResources.Where(resource => resource.Type == MapResources.ResourceType.Strategic);
         }
 
         #endregion
@@ -60,12 +71,17 @@ namespace Assets.Simulation.MapGeneration {
             var continents = SplitMapIntoContinents(template, unassignedCells);
             var oceans     = SplitMapIntoOceans    (template, unassignedCells);
 
+            var resourceSubdivisions = ResourceDistributor.SubdivideResources(
+                LuxuryResources, continents.Count, template.LuxuriesPerContinent
+            );
+
             var continentCells = continents.SelectMany(continent => continent.Cells);
             var oceanCells     = oceans    .SelectMany(ocean     => ocean    .Cells);
 
-            foreach(var continent in continents) {
+            for(int i = 0; i < continents.Count; i++) {
                 ContinentGenerator.GenerateContinent(
-                    continent, template.ContinentTemplates.Random(), oceanCells
+                    continents[i], template.ContinentTemplates.Random(), oceanCells,
+                    resourceSubdivisions[i]
                 );
             }
 

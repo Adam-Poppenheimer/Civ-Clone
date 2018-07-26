@@ -12,7 +12,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
 
@@ -590,8 +590,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition(string name) {
-            var mockDefinition = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResourceDefinition(string name) {
+            var mockDefinition = new Mock<IResourceDefinition>();
 
             mockDefinition.Name = name;
             mockDefinition.Setup(definition => definition.name).Returns(name);
@@ -602,7 +602,7 @@ namespace Assets.Tests.Simulation.Cities {
         private IBuildingTemplate BuildTemplate(
             BuildingTemplateTestData templateData,
             List<IBuildingTemplate> allBuildingTemplates,
-            List<ISpecialtyResourceDefinition> allResources,
+            List<IResourceDefinition> allResources,
             List<IImprovementTemplate> allImprovementTemplates
         ){
             var mockTemplate = new Mock<IBuildingTemplate>();
@@ -644,7 +644,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private ICity BuildCity(
             CityTestData cityData, ICivilization owner, IEnumerable<IBuilding> buildings,
-            List<ISpecialtyResourceDefinition> allResources,
+            List<IResourceDefinition> allResources,
             List<IImprovementTemplate> allImprovementTemplates
         ){
             var mockCity = new Mock<ICity>();
@@ -666,7 +666,7 @@ namespace Assets.Tests.Simulation.Cities {
             return newCity;
         }
 
-        private ICivilization BuildCivilization(IEnumerable<ISpecialtyResourceDefinition> availableResources) {
+        private ICivilization BuildCivilization(IEnumerable<IResourceDefinition> availableResources) {
             var newCiv = new Mock<ICivilization>().Object;
 
             foreach(var resource in availableResources) {
@@ -677,7 +677,7 @@ namespace Assets.Tests.Simulation.Cities {
         }
 
         private IHexCell BuildCell(
-            HexCellTestData cellData, List<ISpecialtyResourceDefinition> allResources,
+            HexCellTestData cellData, List<IResourceDefinition> allResources,
             List<IImprovementTemplate> allImprovementTemplates
         ){
             var mockCell = new Mock<IHexCell>();
@@ -699,7 +699,7 @@ namespace Assets.Tests.Simulation.Cities {
             return newCell;
         }
 
-        private IResourceNode BuildResourceNode(IHexCell location, ISpecialtyResourceDefinition resource) {
+        private IResourceNode BuildResourceNode(IHexCell location, IResourceDefinition resource) {
             var mockNode = new Mock<IResourceNode>();
 
             mockNode.Setup(node => node.Resource).Returns(resource);

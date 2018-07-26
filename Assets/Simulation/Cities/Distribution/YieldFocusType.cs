@@ -10,7 +10,7 @@ namespace Assets.Simulation.Cities.Distribution {
     /// types to focus on when distributing citizens to slots or seeking out new
     /// territory to acquire.
     /// </summary>
-    public enum ResourceFocusType {
+    public enum YieldFocusType {
         /// <summary>
         /// Attempts to maximize total yield of the slot or cell.
         /// </summary>

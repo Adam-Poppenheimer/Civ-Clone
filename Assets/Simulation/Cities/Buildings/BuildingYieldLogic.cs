@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    public class BuildingResourceLogic : IBuildingResourceLogic {
+    public class BuildingYieldLogic : IBuildingYieldLogic {
 
         #region instance fields and properties
 
@@ -18,7 +18,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #region constructors
 
         [Inject]
-        public BuildingResourceLogic(IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon) {
+        public BuildingYieldLogic(IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon) {
             BuildingPossessionCanon = buildingPossessionCanon;
         }
 
@@ -28,7 +28,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IBuildingResourceLogic
 
-        public ResourceSummary GetYieldOfBuilding(IBuilding building) {
+        public YieldSummary GetYieldOfBuilding(IBuilding building) {
             var retval = building.Template.StaticYield;
 
             var buildingOwner = BuildingPossessionCanon.GetOwnerOfPossession(building);

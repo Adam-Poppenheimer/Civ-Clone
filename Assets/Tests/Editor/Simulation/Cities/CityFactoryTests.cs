@@ -80,7 +80,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPopulationGrowthLogic>  ().FromMock();
             Container.Bind<IProductionLogic>        ().FromMock();
-            Container.Bind<IResourceGenerationLogic>().FromMock();
+            Container.Bind<IYieldGenerationLogic>().FromMock();
             Container.Bind<IBorderExpansionLogic>   ().FromMock();
             Container.Bind<ICityCombatLogic>        ().FromMock();
             Container.Bind<IUnitPositionCanon>      ().FromMock();
@@ -224,10 +224,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var newCity = factory.Create(tile, civilization);
 
-            Assert.AreEqual(ResourceFocusType.TotalYield, newCity.ResourceFocus, "newCity.ResourceFocus has an unexpected value");
+            Assert.AreEqual(YieldFocusType.TotalYield, newCity.YieldFocus, "newCity.ResourceFocus has an unexpected value");
 
             MockDistributionLogic.Verify(
-                logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), newCity, newCity.ResourceFocus),
+                logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), newCity, newCity.YieldFocus),
                 Times.Once,
                 "WorkerDistributionLogic.DistributeWorkersIntoSlots was not called as expected"
             );

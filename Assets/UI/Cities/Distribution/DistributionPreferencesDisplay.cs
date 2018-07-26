@@ -40,7 +40,7 @@ namespace Assets.UI.Cities.Distribution {
             }
 
             var currentFocusValue = ResourceFocusDropdown.options
-                .Where(option => option.text.Equals(ObjectToDisplay.ResourceFocus.ToString()))
+                .Where(option => option.text.Equals(ObjectToDisplay.YieldFocus.ToString()))
                 .FirstOrDefault();
 
             ResourceFocusDropdown.value = ResourceFocusDropdown.options.IndexOf(currentFocusValue);
@@ -50,8 +50,8 @@ namespace Assets.UI.Cities.Distribution {
 
         private void OnResourceFocusDropdownChanged(int newValue) {
             var newOption = ResourceFocusDropdown.options[newValue];
-            var newFocus = (ResourceFocusType)Enum.Parse(typeof(ResourceFocusType), newOption.text, true);
-            ObjectToDisplay.ResourceFocus = newFocus;
+            var newFocus = (YieldFocusType)Enum.Parse(typeof(YieldFocusType), newOption.text, true);
+            ObjectToDisplay.YieldFocus = newFocus;
             ObjectToDisplay.PerformDistribution();
         }
 

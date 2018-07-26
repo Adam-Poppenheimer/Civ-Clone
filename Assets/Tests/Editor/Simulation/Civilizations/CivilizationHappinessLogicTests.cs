@@ -11,7 +11,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         public class ResourceTestData {
 
-            public SpecialtyResourceType Type;
+            public Assets.Simulation.MapResources.ResourceType Type;
 
         }
 
@@ -80,10 +80,10 @@ namespace Assets.Tests.Simulation.Civilizations {
                     Civilization = new CivilizationTestData(),
                     Cities = new List<CityTestData>() { },
                     AvailableResources = new List<ResourceTestData>() {
-                        new ResourceTestData() { Type = SpecialtyResourceType.Luxury },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Luxury },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Bonus },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Strategic },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Luxury },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Luxury },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Bonus },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Strategic },
                     },
                     Config = new ConfigTestData() {
                         BaseHappiness = 0, HappinessPerLuxury = 4
@@ -135,10 +135,10 @@ namespace Assets.Tests.Simulation.Civilizations {
                         new CityTestData() { LocalHappiness = 0, GlobalHappiness = 0, Population = 3 },
                     },
                     AvailableResources = new List<ResourceTestData>() {
-                        new ResourceTestData() { Type = SpecialtyResourceType.Luxury },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Luxury },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Bonus },
-                        new ResourceTestData() { Type = SpecialtyResourceType.Strategic },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Luxury },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Luxury },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Bonus },
+                        new ResourceTestData() { Type = Assets.Simulation.MapResources.ResourceType.Strategic },
                     },
                     Config = new ConfigTestData() {
                         BaseHappiness = 5, HappinessPerLuxury = 4
@@ -211,7 +211,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             SetupConfig(testData.Config);
 
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>()
+            Container.Bind<IEnumerable<IResourceDefinition>>()
                 .WithId("Available Specialty Resources")
                 .FromInstance(resources);
 
@@ -250,7 +250,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private ICivilization BuildCivilization(
             CivilizationTestData data, IEnumerable<ICity> cities,
-            IEnumerable<ISpecialtyResourceDefinition> resources
+            IEnumerable<IResourceDefinition> resources
         ){
             var mockCiv = new Mock<ICivilization>();
 
@@ -281,8 +281,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             return newCity;
         }
 
-        private ISpecialtyResourceDefinition BuildResource(ResourceTestData data) {
-            var mockResource = new Mock<ISpecialtyResourceDefinition>();
+        private IResourceDefinition BuildResource(ResourceTestData data) {
+            var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(resource => resource.Type).Returns(data.Type);
 

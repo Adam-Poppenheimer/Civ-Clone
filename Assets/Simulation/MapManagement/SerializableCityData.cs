@@ -19,9 +19,9 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public int Population;
 
-        [DataMember()] public int               FoodStockpile;
-        [DataMember()] public int               CultureStockpile;
-        [DataMember()] public ResourceFocusType ResourceFocus;
+        [DataMember()] public int            FoodStockpile;
+        [DataMember()] public int            CultureStockpile;
+        [DataMember()] public YieldFocusType YieldFocus;
 
         [DataMember()] public SerializableProjectData ActiveProject;
         

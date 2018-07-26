@@ -1,6 +1,6 @@
 ﻿using System;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -8,13 +8,13 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        int GetLockedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
+        int GetLockedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
 
-        bool CanLockCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);
-        void LockCopyOfResourceForCiv   (ISpecialtyResourceDefinition resource, ICivilization civ);
+        bool CanLockCopyOfResourceForCiv(IResourceDefinition resource, ICivilization civ);
+        void LockCopyOfResourceForCiv   (IResourceDefinition resource, ICivilization civ);
 
-        bool CanUnlockCopyOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ);        
-        void UnlockCopyOfResourceForCiv   (ISpecialtyResourceDefinition resource, ICivilization civ);
+        bool CanUnlockCopyOfResourceForCiv(IResourceDefinition resource, ICivilization civ);        
+        void UnlockCopyOfResourceForCiv   (IResourceDefinition resource, ICivilization civ);
 
         #endregion
     }

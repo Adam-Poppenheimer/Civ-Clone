@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 

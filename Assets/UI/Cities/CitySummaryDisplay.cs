@@ -66,7 +66,7 @@ namespace Assets.UI.Cities {
 
         private IProductionLogic ProductionLogic;
 
-        private IResourceGenerationLogic ResourceGenerationLogic;
+        private IYieldGenerationLogic YieldGenerationLogic;
 
         private IGameCore GameCore;
 
@@ -85,7 +85,7 @@ namespace Assets.UI.Cities {
             IHexGrid grid, ICityConfig config, IUnitPositionCanon unitPositionCanon,
             ICombatExecuter combatExecuter, UIStateMachineBrain brain,
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic,
-            IResourceGenerationLogic resourceGenerationLogic, IGameCore gameCore,
+            IYieldGenerationLogic resourceGenerationLogic, IGameCore gameCore,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "UI Animator")] Animator uiAnimator
@@ -97,7 +97,7 @@ namespace Assets.UI.Cities {
             Brain                   = brain;
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
-            ResourceGenerationLogic = resourceGenerationLogic;
+            YieldGenerationLogic = resourceGenerationLogic;
             GameCore                = gameCore;
             CityPossessionCanon     = cityPossessionCanon;
             CityLocationCanon       = cityLocationCanon;
@@ -158,11 +158,11 @@ namespace Assets.UI.Cities {
         }
 
         private void DisplayGrowthData() {
-            ResourceSummary income = ResourceGenerationLogic.GetTotalYieldForCity(ObjectToDisplay);
+            YieldSummary income = YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay);
 
             int currentFoodStockpile = ObjectToDisplay.FoodStockpile;
             int foodUntilNextGrowth = GrowthLogic.GetFoodStockpileToGrow(ObjectToDisplay);
-            float netFoodIncome = income[ResourceType.Food] - GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
+            float netFoodIncome = income[YieldType.Food] - GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
 
             int turnsToGrow = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / netFoodIncome);
 

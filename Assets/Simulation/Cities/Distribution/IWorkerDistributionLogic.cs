@@ -26,7 +26,7 @@ namespace Assets.Simulation.Cities.Distribution {
         /// <param name="sourceCity">The city the distribution is being performed for</param>
         /// <param name="preferences">The resource focus the distribution should be trying to maximize</param>
         void DistributeWorkersIntoSlots(int workerCount, IEnumerable<IWorkerSlot> slots,
-            ICity sourceCity, ResourceFocusType preferences);
+            ICity sourceCity, YieldFocusType preferences);
 
         /// <summary>
         /// Retrieves all slots available to the given city.

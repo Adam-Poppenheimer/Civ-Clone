@@ -12,7 +12,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Technology;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Tests.Simulation.Technology {
@@ -23,7 +23,7 @@ namespace Assets.Tests.Simulation.Technology {
         #region instance fields and properties
 
         private List<ITechDefinition>              AvailableTechs     = new List<ITechDefinition>();
-        private List<ISpecialtyResourceDefinition> AvailableResources = new List<ISpecialtyResourceDefinition>();
+        private List<IResourceDefinition> AvailableResources = new List<IResourceDefinition>();
         private List<IAbilityDefinition>           AvailableAbilities = new List<IAbilityDefinition>();
 
         #endregion
@@ -39,7 +39,7 @@ namespace Assets.Tests.Simulation.Technology {
             AvailableAbilities.Clear();
 
             Container.Bind<List<ITechDefinition>>                    ().WithId("Available Techs")              .FromInstance(AvailableTechs);
-            Container.Bind<IEnumerable<ISpecialtyResourceDefinition>>().WithId("Available Specialty Resources").FromInstance(AvailableResources);
+            Container.Bind<IEnumerable<IResourceDefinition>>().WithId("Available Specialty Resources").FromInstance(AvailableResources);
             Container.Bind<IEnumerable<IAbilityDefinition>>          ().WithId("Available Abilities")          .FromInstance(AvailableAbilities);
 
             Container.Bind<CivilizationSignals>().AsSingle();
@@ -334,15 +334,15 @@ namespace Assets.Tests.Simulation.Technology {
         [Test(Description = "GetVisibleResources should include all resources except " +
             "those made visible by undiscovered techs. This includes resources made visible by no tech")]
         public void GetVisibleResources_ExcludesResourcesFromUndiscoveredTechs() {
-            var discoveredResources = new List<ISpecialtyResourceDefinition>() {
+            var discoveredResources = new List<IResourceDefinition>() {
                 BuildResourceDefinition(), BuildResourceDefinition()
             };
 
-            var undiscoveredResources = new List<ISpecialtyResourceDefinition>() {
+            var undiscoveredResources = new List<IResourceDefinition>() {
                 BuildResourceDefinition(), BuildResourceDefinition(), BuildResourceDefinition()
             };
             
-            var unassociatedResources = new List<ISpecialtyResourceDefinition>() {
+            var unassociatedResources = new List<IResourceDefinition>() {
                 BuildResourceDefinition(), BuildResourceDefinition()
             };
 
@@ -390,7 +390,7 @@ namespace Assets.Tests.Simulation.Technology {
             List<IBuildingTemplate>            buildings      = null,
             List<IUnitTemplate>                units          = null,
             List<IAbilityDefinition>           abilities      = null,
-            List<ISpecialtyResourceDefinition> resources      = null,
+            List<IResourceDefinition> resources      = null,
             List<IPolicyTreeDefinition>        policyTrees    = null
         ){
             var mockTech = new Mock<ITechDefinition>();
@@ -402,7 +402,7 @@ namespace Assets.Tests.Simulation.Technology {
             mockTech.Setup(tech => tech.BuildingsEnabled)  .Returns(buildings        != null ? buildings      : new List<IBuildingTemplate>());
             mockTech.Setup(tech => tech.UnitsEnabled)      .Returns(units            != null ? units          : new List<IUnitTemplate>());
             mockTech.Setup(tech => tech.AbilitiesEnabled)  .Returns(abilities        != null ? abilities      : new List<IAbilityDefinition>());
-            mockTech.Setup(tech => tech.RevealedResources) .Returns(resources        != null ? resources      : new List<ISpecialtyResourceDefinition>());
+            mockTech.Setup(tech => tech.RevealedResources) .Returns(resources        != null ? resources      : new List<IResourceDefinition>());
             mockTech.Setup(tech => tech.PolicyTreesEnabled).Returns(policyTrees      != null ? policyTrees    : new List<IPolicyTreeDefinition>());
 
             AvailableTechs.Add(mockTech.Object);
@@ -430,8 +430,8 @@ namespace Assets.Tests.Simulation.Technology {
             return newAbility;
         }
 
-        private ISpecialtyResourceDefinition BuildResourceDefinition() {
-            var newResource = new Mock<ISpecialtyResourceDefinition>().Object;
+        private IResourceDefinition BuildResourceDefinition() {
+            var newResource = new Mock<IResourceDefinition>().Object;
 
             AvailableResources.Add(newResource);
 

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -12,12 +12,12 @@ namespace Assets.Simulation.Civilizations {
         public readonly ICivilization Exporter;
         public readonly ICivilization Importer;
 
-        public readonly ISpecialtyResourceDefinition Resource;
+        public readonly IResourceDefinition Resource;
 
         public readonly int Copies;
 
         public ResourceTransfer(
-            ICivilization exporter, ICivilization importer, ISpecialtyResourceDefinition resource, int copies
+            ICivilization exporter, ICivilization importer, IResourceDefinition resource, int copies
         ){
             Exporter = exporter;
             Importer = importer;

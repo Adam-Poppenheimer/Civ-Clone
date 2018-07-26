@@ -23,7 +23,7 @@ namespace Assets.Simulation.Improvements {
 
         IEnumerable<CellShape> RestrictedToShapes { get; }
 
-        ResourceSummary BonusYieldNormal { get; }
+        YieldSummary BonusYieldNormal { get; }
 
         bool ClearsVegetationWhenBuilt { get; }
 

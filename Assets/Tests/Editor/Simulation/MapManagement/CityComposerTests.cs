@@ -199,9 +199,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnit());
             var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnit());
 
-            SetCityFields(cityOne,   1,  11, -1, ResourceFocusType.TotalYield);
-            SetCityFields(cityTwo,   2,  -2, 22, ResourceFocusType.Culture);
-            SetCityFields(cityThree, -3, 33, 3,  ResourceFocusType.Production);
+            SetCityFields(cityOne,   1,  11, -1, YieldFocusType.TotalYield);
+            SetCityFields(cityTwo,   2,  -2, 22, YieldFocusType.Culture);
+            SetCityFields(cityThree, -3, 33, 3,  YieldFocusType.Production);
 
             var mapData = new SerializableMapData();
 
@@ -212,17 +212,17 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(1,                            mapData.Cities[0].Population,       "CityOne data has an unexpected Population");
             Assert.AreEqual(11,                           mapData.Cities[0].FoodStockpile,    "CityOne data has an unexpected FoodStockpile");
             Assert.AreEqual(-1,                           mapData.Cities[0].CultureStockpile, "CityOne data has an unexpected CultureStockpile");
-            Assert.AreEqual(ResourceFocusType.TotalYield, mapData.Cities[0].ResourceFocus,    "CityOne data has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.TotalYield, mapData.Cities[0].YieldFocus,    "CityOne data has an unexpected ResourceFocus");
 
             Assert.AreEqual(2,                         mapData.Cities[1].Population,       "CityTwo data has an unexpected Population");
             Assert.AreEqual(-2,                        mapData.Cities[1].FoodStockpile,    "CityTwo data has an unexpected FoodStockpile");
             Assert.AreEqual(22,                        mapData.Cities[1].CultureStockpile, "CityTwo data has an unexpected CultureStockpile");
-            Assert.AreEqual(ResourceFocusType.Culture, mapData.Cities[1].ResourceFocus,    "CityTwo data has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.Culture, mapData.Cities[1].YieldFocus,    "CityTwo data has an unexpected ResourceFocus");
 
             Assert.AreEqual(-3,                           mapData.Cities[2].Population,       "CityThree data has an unexpected Population");
             Assert.AreEqual(33,                           mapData.Cities[2].FoodStockpile,    "CityThree data has an unexpected FoodStockpile");
             Assert.AreEqual(3,                            mapData.Cities[2].CultureStockpile, "CityThree data has an unexpected CultureStockpile");
-            Assert.AreEqual(ResourceFocusType.Production, mapData.Cities[2].ResourceFocus,    "CityThree data has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.Production, mapData.Cities[2].YieldFocus,    "CityThree data has an unexpected ResourceFocus");
         }
 
         [Test]
@@ -352,17 +352,17 @@ namespace Assets.Tests.Simulation.MapManagement {
                     new SerializableCityData() {
                         Location = new HexCoordinates(1, 1), Owner = "Civ One",
                         Population = 1, CultureStockpile = 10, FoodStockpile = 100,
-                        ResourceFocus = ResourceFocusType.TotalYield
+                        YieldFocus = YieldFocusType.TotalYield
                     },
                     new SerializableCityData() {
                         Location = new HexCoordinates(2, 2), Owner = "Civ Two",
                         Population = 2, CultureStockpile = 20, FoodStockpile = 200,
-                        ResourceFocus = ResourceFocusType.Production
+                        YieldFocus = YieldFocusType.Production
                     },
                     new SerializableCityData() {
                         Location = new HexCoordinates(3, 3), Owner = "Civ Three",
                         Population = 3, CultureStockpile = 30, FoodStockpile = 300,
-                        ResourceFocus = ResourceFocusType.Culture
+                        YieldFocus = YieldFocusType.Culture
                     },
                 }
             };
@@ -385,9 +385,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(200, AllCities[1].FoodStockpile, "CityTwo has an unexpected FoodStockpile");
             Assert.AreEqual(300, AllCities[2].FoodStockpile, "CityThree has an unexpected FoodStockpile");
 
-            Assert.AreEqual(ResourceFocusType.TotalYield, AllCities[0].ResourceFocus, "CityOne has an unexpected ResourceFocus");
-            Assert.AreEqual(ResourceFocusType.Production, AllCities[1].ResourceFocus, "CityTwo has an unexpected ResourceFocus");
-            Assert.AreEqual(ResourceFocusType.Culture,    AllCities[2].ResourceFocus, "CityThree has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.TotalYield, AllCities[0].YieldFocus, "CityOne has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.Production, AllCities[1].YieldFocus, "CityTwo has an unexpected ResourceFocus");
+            Assert.AreEqual(YieldFocusType.Culture,    AllCities[2].YieldFocus, "CityThree has an unexpected ResourceFocus");
         }
 
         [Test]
@@ -556,12 +556,12 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         private void SetCityFields(
-            ICity city, int population, int foodStockpile, int cultureStockpile, ResourceFocusType resourceFocus
+            ICity city, int population, int foodStockpile, int cultureStockpile, YieldFocusType resourceFocus
         ){
             city.Population       = population;
             city.FoodStockpile    = foodStockpile;
             city.CultureStockpile = cultureStockpile;
-            city.ResourceFocus    = resourceFocus;
+            city.YieldFocus    = resourceFocus;
         }
 
         private IBuildingTemplate BuildBuildingTemplate(string name) {

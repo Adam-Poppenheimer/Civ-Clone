@@ -117,7 +117,7 @@ namespace Assets.Simulation.Cities {
                 }                
             }
 
-            newCity.ResourceFocus = ResourceFocusType.TotalYield;
+            newCity.YieldFocus = YieldFocusType.TotalYield;
             newCity.PerformDistribution();
 
             allCities.Add(newCity);

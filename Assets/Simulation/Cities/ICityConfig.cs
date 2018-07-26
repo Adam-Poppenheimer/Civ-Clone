@@ -29,7 +29,7 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// The yield of all unemployed citizens.
         /// </summary>
-        ResourceSummary UnemployedYield { get; }
+        YieldSummary UnemployedYield { get; }
 
         /// <summary>
         /// The amount of gold it costs per production to hurry a project.
@@ -85,7 +85,7 @@ namespace Assets.Simulation.Cities {
 
         float UnhappinessPerPopulation { get; }
 
-        ResourceSummary LocationYield { get; }
+        YieldSummary LocationYield { get; }
 
         Sprite CombatantImage { get; }
 

@@ -72,10 +72,10 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private int _tileCostBase;
 
         /// <inheritdoc/>
-        public ResourceSummary UnemployedYield {
+        public YieldSummary UnemployedYield {
             get { return _unemployedYield; }
         }
-        [SerializeField] private ResourceSummary _unemployedYield;
+        [SerializeField] private YieldSummary _unemployedYield;
 
         /// <inheritdoc/>
         public int MinimumSeparation {
@@ -133,10 +133,10 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _unhappinessPerPopulation;
 
-        public ResourceSummary LocationYield {
+        public YieldSummary LocationYield {
             get { return _locationYield; }
         }
-        [SerializeField] private ResourceSummary _locationYield;
+        [SerializeField] private YieldSummary _locationYield;
 
         public Sprite CombatantImage {
             get { return _combatantImage; }

@@ -33,3 +33,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 91c7b68e5b825d54ea42ec31cfd40c89, type: 2}
   _oceanTemplates:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
+  _luxuriesPerContinent: 8

@@ -25,11 +25,11 @@ namespace Assets.UI.Cities {
 
         public ICity Owner { get; set; }
 
-        public ResourceSummary SlotYield { get; set; }
+        public YieldSummary SlotYield { get; set; }
 
         [SerializeField] private Image SlotImage;
 
-        [SerializeField] private ResourceSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay YieldDisplay;
 
         private IDisposable OccupiedSubscription;
         private IDisposable UnoccupiedSubcription;

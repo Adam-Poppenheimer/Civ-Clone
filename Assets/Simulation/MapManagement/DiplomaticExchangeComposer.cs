@@ -8,7 +8,7 @@ using Zenject;
 using Assets.Simulation.Diplomacy;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.MapManagement {
         private IPossessionRelationship<IHexCell, ICity>  CityLocationCanon;
         private IDiplomaticExchangeFactory                ExchangeFactory;
         private IHexGrid                                  Grid;
-        private IEnumerable<ISpecialtyResourceDefinition> AvailableResources;
+        private IEnumerable<IResourceDefinition> AvailableResources;
 
         #endregion
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.MapManagement {
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IDiplomaticExchangeFactory exchangeFactory,
             IHexGrid grid,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             CityLocationCanon  = cityLocationCanon;
             ExchangeFactory    = exchangeFactory;

@@ -20,7 +20,7 @@ namespace Assets.Simulation.Cities.Production {
 
         private ICityConfig Config;
 
-        private IResourceGenerationLogic GenerationLogic;
+        private IYieldGenerationLogic GenerationLogic;
 
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
@@ -34,7 +34,7 @@ namespace Assets.Simulation.Cities.Production {
         /// <param name="config"></param>
         /// <param name="generationLogic"></param>
         public ProductionLogic(
-            ICityConfig config, IResourceGenerationLogic generationLogic,
+            ICityConfig config, IYieldGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
         ){
             Config                  = config;
@@ -85,8 +85,8 @@ namespace Assets.Simulation.Cities.Production {
             }
 
             float totalProduction = GenerationLogic.GetTotalYieldForCity(
-                city, new ResourceSummary(production: productionModifier)
-            )[ResourceType.Production];
+                city, new YieldSummary(production: productionModifier)
+            )[YieldType.Production];
 
             return Mathf.FloorToInt(totalProduction);
         }

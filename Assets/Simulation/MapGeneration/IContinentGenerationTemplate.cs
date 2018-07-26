@@ -16,6 +16,8 @@ namespace Assets.Simulation.MapGeneration {
         IEnumerable<IRegionGenerationTemplate> StartingLocationTemplates { get; }
         IEnumerable<IRegionGenerationTemplate> BoundaryTemplates         { get; }
 
+        int LuxuriesPerRegion { get; }
+
         #endregion
 
     }

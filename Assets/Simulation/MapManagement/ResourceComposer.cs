@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapManagement {
@@ -19,7 +19,7 @@ namespace Assets.Simulation.MapManagement {
         private IResourceNodeFactory                             NodeFactory;
         private IHexGrid                                         Grid;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
-        private IEnumerable<ISpecialtyResourceDefinition>        AvailableSpecialtyResources;
+        private IEnumerable<IResourceDefinition>                 AvailableResources;
 
         #endregion
 
@@ -28,12 +28,12 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public ResourceComposer(IResourceNodeFactory nodeFactory, IHexGrid grid,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<ISpecialtyResourceDefinition> availableSpecialtyResources
+            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableSpecialtyResources
         ){
             NodeFactory                 = nodeFactory;
             Grid                        = grid;
             NodeLocationCanon           = nodeLocationCanon;
-            AvailableSpecialtyResources = availableSpecialtyResources;
+            AvailableResources = availableSpecialtyResources;
         }
 
         #endregion
@@ -66,7 +66,7 @@ namespace Assets.Simulation.MapManagement {
         public void DecomposeResources(SerializableMapData mapData) {
             foreach(var nodeData in mapData.ResourceNodes) {
                 var nodeLocation = Grid.GetCellAtCoordinates(nodeData.Location);
-                var nodeResource = AvailableSpecialtyResources.Where(
+                var nodeResource = AvailableResources.Where(
                     resource => resource.name.Equals(nodeData.ResourceName)
                 ).First();
 

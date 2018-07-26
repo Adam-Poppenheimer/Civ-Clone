@@ -17,7 +17,7 @@ namespace Assets.UI.HexMap {
 
         [SerializeField] private float MapTileHoverDelay;
 
-        [SerializeField] private ResourceSummaryDisplay MapTileHoverYieldDisplay;
+        [SerializeField] private YieldSummaryDisplay MapTileHoverYieldDisplay;
 
         [SerializeField] private GameObject PathIndicatorPrefab;
 
@@ -33,9 +33,9 @@ namespace Assets.UI.HexMap {
 
             Container.BindInterfacesAndSelfTo<HexCellSignalLogic>().AsSingle();
 
-            Container.Bind<IResourceSummaryDisplay>()
+            Container.Bind<IYieldSummaryDisplay>()
                 .WithId("Tile Hover Yield Display")
-                .To<ResourceSummaryDisplay>()
+                .To<YieldSummaryDisplay>()
                 .FromInstance(MapTileHoverYieldDisplay);
 
             Container.Bind<ICellPathDrawer>().To<CellPathDrawer>().AsSingle();

@@ -31,7 +31,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             public CityTestData City;
 
-            public ResourceFocusType ResourceFocus;
+            public YieldFocusType YieldFocus;
 
         }
 
@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             public SlotTestData Slot;
 
-            public ResourceSummary Yield;
+            public YieldSummary Yield;
 
         }
 
@@ -75,7 +75,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             public List<SlotTestData> Slots;
 
-            public ResourceSummary SlotYield;
+            public YieldSummary SlotYield;
 
         }
 
@@ -93,30 +93,30 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 1)
+                                Yield = new YieldSummary(food: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 2)
+                                Yield = new YieldSummary(food: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 3)
+                                Yield = new YieldSummary(food: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 4)
+                                Yield = new YieldSummary(food: 4)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 5)
+                                Yield = new YieldSummary(food: 5)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.TotalYield
+                    YieldFocus = YieldFocusType.TotalYield
                 }).SetName("Total yield focus maximizes total yield");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -127,30 +127,30 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(gold: 1)
+                                Yield = new YieldSummary(gold: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 2)
+                                Yield = new YieldSummary(food: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(production: 1, culture: 1, gold: 1)
+                                Yield = new YieldSummary(production: 1, culture: 1, gold: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, production: 2, science: 1)
+                                Yield = new YieldSummary(food: 1, production: 2, science: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(culture: 3, science: 2)
+                                Yield = new YieldSummary(culture: 3, science: 2)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.TotalYield
+                    YieldFocus = YieldFocusType.TotalYield
                 }).SetName("Total yield handles mixed yields well");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -161,30 +161,30 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, culture: 1)
+                                Yield = new YieldSummary(food: 1, culture: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, culture: 2)
+                                Yield = new YieldSummary(food: 1, culture: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 10,  production: 4)
+                                Yield = new YieldSummary(food: 10,  production: 4)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 0, culture: 1)
+                                Yield = new YieldSummary(food: 0, culture: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 10, gold: 5)
+                                Yield = new YieldSummary(food: 10, gold: 5)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.Culture
+                    YieldFocus = YieldFocusType.Culture
                 }).SetName("Specific yield focus maximizes that yield");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -195,30 +195,30 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 1, culture: 1)
+                                Yield = new YieldSummary(food: 1, culture: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, production: 3)
+                                Yield = new YieldSummary(food: 1, production: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 1,  science: 2)
+                                Yield = new YieldSummary(food: 1,  science: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, gold: 4)
+                                Yield = new YieldSummary(food: 1, gold: 4)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1, culture: 2, science: 3)
+                                Yield = new YieldSummary(food: 1, culture: 2, science: 3)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.Food
+                    YieldFocus = YieldFocusType.Food
                 }).SetName("Specific yield tie-breaks with total yield");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -229,23 +229,23 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 1)
+                                Yield = new YieldSummary(food: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 2)
+                                Yield = new YieldSummary(food: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 3)
+                                Yield = new YieldSummary(food: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 4)
+                                Yield = new YieldSummary(food: 4)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 5)
+                                Yield = new YieldSummary(food: 5)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
@@ -254,11 +254,11 @@ namespace Assets.Tests.Simulation.Cities {
                                     new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
                                     new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
                                 },
-                                SlotYield = new ResourceSummary(food: 6)
+                                SlotYield = new YieldSummary(food: 6)
                             }
                         }
                     },
-                    ResourceFocus = ResourceFocusType.Food
+                    YieldFocus = YieldFocusType.Food
                 }).SetName("Distribution considers slots in buildings");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -269,42 +269,42 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 2)
+                                Yield = new YieldSummary(food: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 3)
+                                Yield = new YieldSummary(food: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 3)
+                                Yield = new YieldSummary(food: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 4)
+                                Yield = new YieldSummary(food: 4)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(production: 21)
+                                Yield = new YieldSummary(production: 21)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(production: 22)
+                                Yield = new YieldSummary(production: 22)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(production: 23)
+                                Yield = new YieldSummary(production: 23)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(production: 24)
+                                Yield = new YieldSummary(production: 24)
                             }
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.Production
+                    YieldFocus = YieldFocusType.Production
                 }).SetName("Non-food distributions try to prevent starvation");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -315,14 +315,14 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1)
+                                Yield = new YieldSummary(food: 1)
                             },
                         },
                         Buildings = new List<BuildingTestData>() {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.TotalYield
+                    YieldFocus = YieldFocusType.TotalYield
                 }).SetName("Handles insufficient slots gracefully");
 
                 yield return new TestCaseData(new WorkerDistributionTestData() {
@@ -333,24 +333,24 @@ namespace Assets.Tests.Simulation.Cities {
                         Territory = new List<HexCellTestData>() {
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 1)
+                                Yield = new YieldSummary(food: 1)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 2)
+                                Yield = new YieldSummary(food: 2)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = true, ExpectsOccupation = true },
-                                Yield = new ResourceSummary(food: 3)
+                                Yield = new YieldSummary(food: 3)
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 4),
+                                Yield = new YieldSummary(food: 4),
                                 SuppressSlot = true
                             },
                             new HexCellTestData() {
                                 Slot = new SlotTestData() { IsOccupied = false, ExpectsOccupation = false },
-                                Yield = new ResourceSummary(food: 5),
+                                Yield = new YieldSummary(food: 5),
                                 SuppressSlot = true
                             }
                         },
@@ -358,7 +358,7 @@ namespace Assets.Tests.Simulation.Cities {
 
                         }
                     },
-                    ResourceFocus = ResourceFocusType.TotalYield
+                    YieldFocus = YieldFocusType.TotalYield
                 }).SetName("Ignores suppressed slots");
             }
         }
@@ -430,7 +430,7 @@ namespace Assets.Tests.Simulation.Cities {
         #region instance fields and properties
 
         private Mock<IPopulationGrowthLogic>                    MockGrowthLogic;
-        private Mock<IResourceGenerationLogic>                  MockResourceGenerationLogic;
+        private Mock<IYieldGenerationLogic>                     MockYieldGenerationLogic;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
         private Mock<IPossessionRelationship<ICity, IHexCell>>  MockCellPossessionCanon;
 
@@ -447,16 +447,16 @@ namespace Assets.Tests.Simulation.Cities {
             OccupationExpectations.Clear();
 
             MockGrowthLogic             = new Mock<IPopulationGrowthLogic>();
-            MockResourceGenerationLogic = new Mock<IResourceGenerationLogic>();
+            MockYieldGenerationLogic = new Mock<IYieldGenerationLogic>();
             MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
-            MockResourceGenerationLogic
+            MockYieldGenerationLogic
                 .Setup(logic => logic.GetTotalYieldForCity(It.IsAny<ICity>()))
                 .Returns<ICity>(MockTotalYieldForCity);
 
             Container.Bind<IPopulationGrowthLogic>()                   .FromInstance(MockGrowthLogic.Object);
-            Container.Bind<IResourceGenerationLogic>()                 .FromInstance(MockResourceGenerationLogic.Object);
+            Container.Bind<IYieldGenerationLogic>()                 .FromInstance(MockYieldGenerationLogic.Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>() .FromInstance(MockCellPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
 
@@ -477,7 +477,7 @@ namespace Assets.Tests.Simulation.Cities {
             var availableSlots = distributionLogic.GetSlotsAvailableToCity(city);
 
             distributionLogic.DistributeWorkersIntoSlots(
-                testData.WorkersToDistribute, availableSlots, city, testData.ResourceFocus
+                testData.WorkersToDistribute, availableSlots, city, testData.YieldFocus
             );
 
             foreach(var slot in OccupationExpectations.Keys) {
@@ -564,7 +564,7 @@ namespace Assets.Tests.Simulation.Cities {
                 BuildSlot(cellData.Slot, newCell, "Slot " + cellData.Yield.ToString())
             );
 
-            MockResourceGenerationLogic
+            MockYieldGenerationLogic
                 .Setup(logic => logic.GetYieldOfCellForCity(newCell, It.IsAny<ICity>()))
                 .Returns(cellData.Yield);
 
@@ -582,26 +582,26 @@ namespace Assets.Tests.Simulation.Cities {
                     slotData => BuildSlot(slotData, newBuilding, "Slot " + buildingData.SlotYield.ToString())
                 ).ToList().AsReadOnly());
 
-            MockResourceGenerationLogic
+            MockYieldGenerationLogic
                 .Setup(logic => logic.GetYieldOfBuildingSlotsForCity(newBuilding, It.IsAny<ICity>()))
                 .Returns(buildingData.SlotYield);
 
             return newBuilding;
         }
 
-        private ResourceSummary MockTotalYieldForCity(ICity city) {
-            var retval = ResourceSummary.Empty;
+        private YieldSummary MockTotalYieldForCity(ICity city) {
+            var retval = YieldSummary.Empty;
 
             foreach(var cell in MockCellPossessionCanon.Object.GetPossessionsOfOwner(city)) {
                 if(!cell.SuppressSlot && cell.WorkerSlot.IsOccupied) {
-                    retval += MockResourceGenerationLogic.Object.GetYieldOfCellForCity(cell, city);
+                    retval += MockYieldGenerationLogic.Object.GetYieldOfCellForCity(cell, city);
                 }
             }
 
             foreach(var building in MockBuildingPossessionCanon.Object.GetPossessionsOfOwner(city)) {
                 int occupiedSlots = building.Slots.Where(slot => slot.IsOccupied).Count();
 
-                retval += MockResourceGenerationLogic.Object.GetYieldOfBuildingSlotsForCity(building, city) * occupiedSlots;
+                retval += MockYieldGenerationLogic.Object.GetYieldOfBuildingSlotsForCity(building, city) * occupiedSlots;
             }
 
             return retval;

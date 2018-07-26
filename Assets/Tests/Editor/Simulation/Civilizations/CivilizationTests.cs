@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
             MockYieldLogic.Setup(logic => logic.GetYieldOfCivilization(civilization))
-                .Returns(new ResourceSummary(gold: 2, production: 4, culture: 5, science: 10));
+                .Returns(new YieldSummary(gold: 2, production: 4, culture: 5, science: 10));
 
             civilization.PerformIncome();
 

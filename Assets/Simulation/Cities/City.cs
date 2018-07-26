@@ -65,7 +65,7 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private int _cultureStockpile;
 
         /// <inheritdoc/>
-        public ResourceSummary LastIncome { get; private set; }
+        public YieldSummary LastIncome { get; private set; }
 
         /// <inheritdoc/>
         public IProductionProject ActiveProject {
@@ -80,7 +80,7 @@ namespace Assets.Simulation.Cities {
         private IProductionProject _activeProject;
 
         /// <inheritdoc/>
-        public ResourceFocusType ResourceFocus { get; set; }
+        public YieldFocusType YieldFocus { get; set; }
 
         /// <inheritdoc/>
         public IHexCell CellBeingPursued { get; private set; }
@@ -91,7 +91,7 @@ namespace Assets.Simulation.Cities {
 
         private IPopulationGrowthLogic                   GrowthLogic;
         private IProductionLogic                         ProductionLogic;
-        private IResourceGenerationLogic                 ResourceGenerationLogic;
+        private IYieldGenerationLogic                    YieldGenerationLogic;
         private IBorderExpansionLogic                    ExpansionLogic;
         private IPossessionRelationship<ICity, IHexCell> TilePossessionCanon;
         private IWorkerDistributionLogic                 DistributionLogic;
@@ -104,13 +104,13 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
-            IResourceGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
+            IYieldGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
             IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
             CitySignals signals
         ){
             GrowthLogic             = growthLogic;
             ProductionLogic         = productionLogic;
-            ResourceGenerationLogic = resourceGenerationLogic;
+            YieldGenerationLogic = resourceGenerationLogic;
             ExpansionLogic          = expansionLogic;
             TilePossessionCanon     = tilePossessionCanon;
             DistributionLogic       = distributionLogic;
@@ -181,24 +181,24 @@ namespace Assets.Simulation.Cities {
 
             var slotsToAssign = allSlots.Where(slot => !slot.IsLocked);
 
-            DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, ResourceFocus);
+            DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, YieldFocus);
 
             Signals.DistributionPerformedSignal.Fire(this);
         }
 
         /// <inheritdoc/>
         public void PerformIncome(){
-            LastIncome = ResourceGenerationLogic.GetTotalYieldForCity(this);
+            LastIncome = YieldGenerationLogic.GetTotalYieldForCity(this);
 
-            CultureStockpile += Mathf.FloorToInt(LastIncome[ResourceType.Culture]);
+            CultureStockpile += Mathf.FloorToInt(LastIncome[YieldType.Culture]);
 
             int foodConsumption = GrowthLogic.GetFoodConsumptionPerTurn(this);
-            if(foodConsumption <= LastIncome[ResourceType.Food]) {
+            if(foodConsumption <= LastIncome[YieldType.Food]) {
                 FoodStockpile += Mathf.FloorToInt(GrowthLogic.GetFoodStockpileAdditionFromIncome(
-                    this, LastIncome[ResourceType.Food] - foodConsumption
+                    this, LastIncome[YieldType.Food] - foodConsumption
                 ));
             }else {
-                FoodStockpile -= Mathf.CeilToInt(foodConsumption - LastIncome[ResourceType.Food]);
+                FoodStockpile -= Mathf.CeilToInt(foodConsumption - LastIncome[YieldType.Food]);
             }
         }
 

@@ -7,11 +7,11 @@ using Assets.Simulation;
 
 namespace Assets.UI {
 
-    public interface IResourceSummaryDisplay {
+    public interface IYieldSummaryDisplay {
 
         #region methods
 
-        void DisplaySummary(ResourceSummary summary);
+        void DisplaySummary(YieldSummary summary);
 
         #endregion
 

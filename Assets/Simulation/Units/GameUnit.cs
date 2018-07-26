@@ -14,7 +14,7 @@ using Assets.Util;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Promotions;
 
 using UnityCustomUtilities.Extensions;
@@ -92,7 +92,7 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        public IEnumerable<ISpecialtyResourceDefinition> RequiredResources {
+        public IEnumerable<IResourceDefinition> RequiredResources {
             get { return Template.RequiredResources; }
         }
 

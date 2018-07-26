@@ -5,7 +5,7 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Improvements;
@@ -48,7 +48,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IResourceExtractionLogic
 
-        public int GetExtractedCopiesOfResourceForCiv(ISpecialtyResourceDefinition resource, ICivilization civ) {
+        public int GetExtractedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             int retval = 0;
 
             if(!TechCanon.IsResourceVisibleToCiv(resource, civ)) {
@@ -66,9 +66,9 @@ namespace Assets.Simulation.Civilizations {
                             improvementAtLocation != null && improvementAtLocation.Template == resource.Extractor &&
                             improvementAtLocation.IsConstructed && !improvementAtLocation.IsPillaged
                         )) {
-                            if(resource.Type == SpecialtyResourceType.Strategic) {
+                            if(resource.Type == MapResources.ResourceType.Strategic) {
                                 retval += nodeOnCell.Copies;
-                            }else if(resource.Type == SpecialtyResourceType.Luxury){
+                            }else if(resource.Type == MapResources.ResourceType.Luxury){
                                 retval++;
                             }
                         }

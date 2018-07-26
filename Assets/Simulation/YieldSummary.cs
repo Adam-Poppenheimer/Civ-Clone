@@ -8,16 +8,16 @@ using UnityEngine;
 namespace Assets.Simulation {
 
     [Serializable]
-    public struct ResourceSummary {
+    public struct YieldSummary {
 
         #region static fields and properties
 
-        public static ResourceSummary Empty {
-            get { return new ResourceSummary(); }
+        public static YieldSummary Empty {
+            get { return new YieldSummary(); }
         }
 
-        public static ResourceSummary Ones {
-            get { return new ResourceSummary(food: 1, production: 1, gold: 1, culture: 1, science: 1); }
+        public static YieldSummary Ones {
+            get { return new YieldSummary(food: 1, production: 1, gold: 1, culture: 1, science: 1); }
         }
 
         #endregion
@@ -38,24 +38,24 @@ namespace Assets.Simulation {
 
         #region indexers
 
-        public float this[ResourceType index] {
+        public float this[YieldType index] {
             get {
                 switch(index) {
-                    case ResourceType.Food:       return Food;
-                    case ResourceType.Production: return Production;
-                    case ResourceType.Gold:       return Gold;
-                    case ResourceType.Culture:    return Culture;
-                    case ResourceType.Science:    return Science;
+                    case YieldType.Food:       return Food;
+                    case YieldType.Production: return Production;
+                    case YieldType.Gold:       return Gold;
+                    case YieldType.Culture:    return Culture;
+                    case YieldType.Science:    return Science;
                     default: throw new IndexOutOfRangeException();
                 }
             }
             set {
                 switch(index) {
-                    case ResourceType.Food:       Food       = value; break;
-                    case ResourceType.Production: Production = value; break;
-                    case ResourceType.Gold:       Gold       = value; break;
-                    case ResourceType.Culture:    Culture    = value; break;
-                    case ResourceType.Science:    Science    = value; break;
+                    case YieldType.Food:       Food       = value; break;
+                    case YieldType.Production: Production = value; break;
+                    case YieldType.Gold:       Gold       = value; break;
+                    case YieldType.Culture:    Culture    = value; break;
+                    case YieldType.Science:    Science    = value; break;
                     default: throw new IndexOutOfRangeException();
                 }
             }
@@ -65,7 +65,7 @@ namespace Assets.Simulation {
 
         #region constructors
 
-        public ResourceSummary(
+        public YieldSummary(
             float food = 0, float production = 0, float gold = 0,
             float culture = 0, float science = 0
         ){
@@ -76,7 +76,7 @@ namespace Assets.Simulation {
             Science    = science;
         }
 
-        public ResourceSummary(ResourceSummary other) {
+        public YieldSummary(YieldSummary other) {
             Food       = other.Food;
             Production = other.Production;
             Gold       = other.Gold;
@@ -88,8 +88,8 @@ namespace Assets.Simulation {
 
         #region operators
 
-        public static ResourceSummary operator +(ResourceSummary firstSummary, ResourceSummary secondSummary) {
-            return new ResourceSummary(
+        public static YieldSummary operator +(YieldSummary firstSummary, YieldSummary secondSummary) {
+            return new YieldSummary(
                 food:       firstSummary.Food       + secondSummary.Food,
                 production: firstSummary.Production + secondSummary.Production,
                 gold:       firstSummary.Gold       + secondSummary.Gold,
@@ -98,8 +98,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator -(ResourceSummary firstSummary, ResourceSummary secondSummary) {
-            return new ResourceSummary(
+        public static YieldSummary operator -(YieldSummary firstSummary, YieldSummary secondSummary) {
+            return new YieldSummary(
                 food:       firstSummary.Food       - secondSummary.Food,
                 production: firstSummary.Production - secondSummary.Production,
                 gold:       firstSummary.Gold       - secondSummary.Gold,
@@ -108,8 +108,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator -(ResourceSummary summary) {
-            return new ResourceSummary(
+        public static YieldSummary operator -(YieldSummary summary) {
+            return new YieldSummary(
                 food:       -summary.Food,
                 production: -summary.Production,
                 gold:       -summary.Gold,
@@ -118,8 +118,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator *(ResourceSummary summary, int coefficient) {
-            return new ResourceSummary(
+        public static YieldSummary operator *(YieldSummary summary, int coefficient) {
+            return new YieldSummary(
                 food:       summary.Food       * coefficient,
                 production: summary.Production * coefficient,
                 gold:       summary.Gold       * coefficient,
@@ -128,8 +128,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator *(ResourceSummary summary, float coefficient) {
-            return new ResourceSummary(
+        public static YieldSummary operator *(YieldSummary summary, float coefficient) {
+            return new YieldSummary(
                 food:       summary.Food       * coefficient,
                 production: summary.Production * coefficient,
                 gold:       summary.Gold       * coefficient,
@@ -138,8 +138,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator *(ResourceSummary firstSummary, ResourceSummary secondSummary) {
-            return new ResourceSummary(
+        public static YieldSummary operator *(YieldSummary firstSummary, YieldSummary secondSummary) {
+            return new YieldSummary(
                 food:       firstSummary.Food       * secondSummary.Food,
                 production: firstSummary.Production * secondSummary.Production,
                 gold:       firstSummary.Gold       * secondSummary.Gold,
@@ -148,8 +148,8 @@ namespace Assets.Simulation {
             );
         }
 
-        public static ResourceSummary operator /(ResourceSummary summary, float divisor) {
-            return new ResourceSummary(
+        public static YieldSummary operator /(YieldSummary summary, float divisor) {
+            return new YieldSummary(
                 food:       summary.Food       / divisor,
                 production: summary.Production / divisor,
                 gold:       summary.Gold       / divisor,

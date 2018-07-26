@@ -51,12 +51,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         #region from IIncomeModifierLogic
 
         /// <inheritdoc/>
-        public ResourceSummary GetYieldMultipliersForCity(ICity city) {
+        public YieldSummary GetYieldMultipliersForCity(ICity city) {
             if(city == null) {
                 throw new ArgumentNullException("city");
             }
 
-            var baseModifier = ResourceSummary.Empty;
+            var baseModifier = YieldSummary.Empty;
 
             foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                 baseModifier += building.CityYieldModifier;
@@ -66,12 +66,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         }
 
         /// <inheritdoc/>
-        public ResourceSummary GetYieldMultipliersForCivilization(ICivilization civilization) {
+        public YieldSummary GetYieldMultipliersForCivilization(ICivilization civilization) {
             if(civilization == null) {
                 throw new ArgumentNullException("civilization");
             }
 
-            var baseModifier = ResourceSummary.Empty;            
+            var baseModifier = YieldSummary.Empty;            
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
@@ -84,20 +84,20 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             if(civHappiness < 0) {
                 var goldAndProductionLoss = civHappiness * CivilizationConfig.YieldLossPerUnhappiness;
 
-                baseModifier[ResourceType.Gold]       += goldAndProductionLoss;
-                baseModifier[ResourceType.Production] += goldAndProductionLoss;
+                baseModifier[YieldType.Gold]       += goldAndProductionLoss;
+                baseModifier[YieldType.Production] += goldAndProductionLoss;
             }
 
             return  baseModifier;
         }
 
         /// <inheritdoc/>
-        public ResourceSummary GetYieldMultipliersForSlot(IWorkerSlot slot) {
+        public YieldSummary GetYieldMultipliersForSlot(IWorkerSlot slot) {
             if(slot == null) {
                 throw new ArgumentNullException("slot");
             }
 
-            return ResourceSummary.Empty;
+            return YieldSummary.Empty;
         }
 
         #endregion

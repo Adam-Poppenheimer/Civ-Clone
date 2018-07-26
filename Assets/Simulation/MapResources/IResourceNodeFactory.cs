@@ -5,7 +5,7 @@ using System.Text;
 
 using Assets.Simulation.HexMap;
 
-namespace Assets.Simulation.SpecialtyResources {
+namespace Assets.Simulation.MapResources {
 
     public interface IResourceNodeFactory {
 
@@ -17,9 +17,9 @@ namespace Assets.Simulation.SpecialtyResources {
 
         #region methods
 
-        bool CanBuildNode(IHexCell location, ISpecialtyResourceDefinition definition);
+        bool CanBuildNode(IHexCell location, IResourceDefinition definition);
 
-        IResourceNode BuildNode(IHexCell location, ISpecialtyResourceDefinition definition, int copies);
+        IResourceNode BuildNode(IHexCell location, IResourceDefinition definition, int copies);
 
         #endregion
 

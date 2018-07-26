@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 using UnityEngine;
 
 namespace Assets.Simulation.Cities.Buildings {
@@ -14,15 +14,15 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region from IResourceYieldModificationData
 
-        public ResourceSummary BonusYield {
+        public YieldSummary BonusYield {
             get { return _bonusYield; }
         }
-        [SerializeField] private ResourceSummary _bonusYield;
+        [SerializeField] private YieldSummary _bonusYield;
 
-        public ISpecialtyResourceDefinition Resource {
+        public IResourceDefinition Resource {
             get { return _resource; }
         }
-        [SerializeField] private SpecialtyResourceDefinition _resource;
+        [SerializeField] private ResourceDefinition _resource;
 
         #endregion
 

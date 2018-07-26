@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SpecialtyResources;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Diplomacy {
 
@@ -21,7 +21,7 @@ namespace Assets.Simulation.Diplomacy {
         public int IntegerInput { get; set; }
 
         public ICity                        CityInput     { get; set; }
-        public ISpecialtyResourceDefinition ResourceInput { get; set; }
+        public IResourceDefinition ResourceInput { get; set; }
 
         #endregion
 
