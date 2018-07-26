@@ -24,9 +24,18 @@ namespace Assets.Simulation.MapResources {
 
         IImprovementTemplate Extractor { get; }
 
-        IEnumerable<CellTerrain>    PermittedTerrains    { get; }
-        IEnumerable<CellShape>      PermittedShapes      { get; }
-        IEnumerable<CellVegetation> PermittedVegetations { get; }
+        bool ValidOnGrassland { get; }
+        bool ValidOnPlains    { get; }
+        bool ValidOnDesert    { get; }
+        bool ValidOnTundra    { get; }
+        bool ValidOnSnow      { get; }
+        bool ValidOnShallowWater     { get; }
+
+        bool ValidOnHills     { get; }
+
+        bool ValidOnForest    { get; }
+        bool ValidOnJungle    { get; }
+        bool ValidOnMarsh     { get; }
 
         Transform AppearancePrefab { get; }
 

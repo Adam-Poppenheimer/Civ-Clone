@@ -37,20 +37,63 @@ namespace Assets.Simulation.MapResources {
         }
         [SerializeField] private ImprovementTemplate _extractor;
 
-        public IEnumerable<CellTerrain> PermittedTerrains {
-            get { return _permittedTerrains; }
-        }
-        [SerializeField] private List<CellTerrain> _permittedTerrains;
 
-        public IEnumerable<CellShape> PermittedShapes {
-            get { return _permittedShapes; }
-        }
-        [SerializeField] private List<CellShape> _permittedShapes;
 
-        public IEnumerable<CellVegetation> PermittedVegetations {
-            get { return _permittedVegetations; }
+
+        public bool ValidOnGrassland {
+            get { return _validOnGrassland; }
         }
-        [SerializeField] private List<CellVegetation> _permittedVegetations;
+        [SerializeField] private bool _validOnGrassland;
+
+        public bool ValidOnPlains {
+            get { return _validOnPlains; }
+        }
+        [SerializeField] private bool _validOnPlains;
+
+        public bool ValidOnDesert {
+            get { return _validOnDesert; }
+        }
+        [SerializeField] private bool _validOnDesert;
+
+        public bool ValidOnTundra {
+            get { return _validOnTundra; }
+        }
+        [SerializeField] private bool _validOnTundra;
+
+        public bool ValidOnSnow {
+            get { return _validOnSnow; }
+        }
+        [SerializeField] private bool _validOnSnow;
+
+        public bool ValidOnShallowWater {
+            get { return _validOnCoast; }
+        }
+        [SerializeField] private bool _validOnCoast;
+
+
+        public bool ValidOnHills {
+            get { return _validOnHills; }
+        }
+        [SerializeField] private bool _validOnHills;
+
+
+        public bool ValidOnForest {
+            get { return _validOnForest; }
+        }
+        [SerializeField] private bool _validOnForest;
+
+        public bool ValidOnJungle {
+            get { return _validOnJungle; }
+        }
+        [SerializeField] private bool _validOnJungle;
+
+        public bool ValidOnMarsh {
+            get { return _validOnMarsh; }
+        }
+        [SerializeField] private bool _validOnMarsh;
+
+
+
 
         public Transform AppearancePrefab {
             get { return _appearancePrefab; }

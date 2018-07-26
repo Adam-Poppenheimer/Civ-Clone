@@ -28,20 +28,20 @@ namespace Assets.Simulation.MapResources{
         private DiContainer Container;
 
 		private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-
-        
+        private IResourceRestrictionCanon                        RestrictionCanon;        
 
         #endregion
 
         #region constructors
 
         [Inject]
-		public ResourceNodeFactory(DiContainer container,
-			IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-             ResourceSignals signals
+		public ResourceNodeFactory(
+            DiContainer container, IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
+            IResourceRestrictionCanon restrictionCanon, ResourceSignals signals
 		){
 			Container                 = container;
 			ResourceNodeLocationCanon = resourceNodeLocationCanon;
+            RestrictionCanon          = restrictionCanon;
 
             signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
         }
@@ -52,23 +52,24 @@ namespace Assets.Simulation.MapResources{
 
         #region from IResourceNodeFactory
 
-		public bool CanBuildNode(IHexCell location, IResourceDefinition definition) {
+		public bool CanBuildNode(IHexCell location, IResourceDefinition resource) {
             if(location == null) {
                 throw new ArgumentNullException("location");
-            }else if(definition == null) {
-                throw new ArgumentNullException("definition");
+            }else if(resource == null) {
+                throw new ArgumentNullException("resource");
             }
-            return ResourceNodeLocationCanon.GetPossessionsOfOwner(location).Count() == 0;
+            return ResourceNodeLocationCanon.GetPossessionsOfOwner(location).Count() == 0
+                && RestrictionCanon.IsResourceValidOnCell(resource, location);
         }
 
-		public IResourceNode BuildNode(IHexCell location, IResourceDefinition definition, int copies) {
-			if(!CanBuildNode(location, definition)) {
-				throw new InvalidOperationException("CanBuildNode must return true on the argued location and definition");
+		public IResourceNode BuildNode(IHexCell location, IResourceDefinition resource, int copies) {
+			if(!CanBuildNode(location, resource)) {
+				throw new InvalidOperationException("CanBuildNode must return true on the argued location and resource");
             }
 
 			var newNode = Container.InstantiateComponentOnNewGameObject<ResourceNode>();
 
-			newNode.Resource = definition;
+			newNode.Resource = resource;
 			newNode.Copies   = copies;
 
 			ResourceNodeLocationCanon.ChangeOwnerOfPossession(newNode, location);

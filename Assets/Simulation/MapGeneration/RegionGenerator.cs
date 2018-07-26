@@ -61,14 +61,6 @@ namespace Assets.Simulation.MapGeneration {
             RiverGenerator.CreateRiversForRegion(region, template, oceanCells);
 
             PaintVegetation(region, template);
-
-            foreach(var luxury in availableLuxuries) {
-                var validCells = region.Cells.Where(cell => NodeFactory.CanBuildNode(cell, luxury));
-
-                if(validCells.Any()) {
-                    NodeFactory.BuildNode(validCells.Random(), luxury, 1);
-                }
-            }
         }
 
         #endregion

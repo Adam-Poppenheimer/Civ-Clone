@@ -32,7 +32,8 @@ namespace Assets.Simulation.MapResources {
                 .WithId("Available Specialty Resources")
                 .FromInstance(allResources.Cast<IResourceDefinition>());
 
-            Container.Bind<IResourceNodeFactory>().To<ResourceNodeFactory>().AsSingle();
+            Container.Bind<IResourceRestrictionCanon>().To<ResourceRestrictionCanon>().AsSingle();
+            Container.Bind<IResourceNodeFactory>     ().To<ResourceNodeFactory>     ().AsSingle();
 
             Container.Bind<ResourceSignals>().AsSingle();
         }

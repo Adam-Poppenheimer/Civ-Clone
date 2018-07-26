@@ -31,7 +31,18 @@ namespace Assets.Simulation.MapResources {
         #region from IResourceRestrictionCanon
 
         public bool IsResourceValidOnCell(IResourceDefinition resource, IHexCell cell) {
-            throw new NotImplementedException();
+            return (resource.ValidOnGrassland    && cell.Terrain    == CellTerrain.Grassland)
+                || (resource.ValidOnPlains       && cell.Terrain    == CellTerrain.Plains)
+                || (resource.ValidOnDesert       && cell.Terrain    == CellTerrain.Desert)
+                || (resource.ValidOnTundra       && cell.Terrain    == CellTerrain.Tundra)
+                || (resource.ValidOnSnow         && cell.Terrain    == CellTerrain.Snow)
+                || (resource.ValidOnShallowWater && cell.Terrain    == CellTerrain.ShallowWater)
+
+                || (resource.ValidOnHills        && cell.Shape      == CellShape.Hills)
+
+                || (resource.ValidOnForest       && cell.Vegetation == CellVegetation.Forest)
+                || (resource.ValidOnJungle       && cell.Vegetation == CellVegetation.Jungle)
+                || (resource.ValidOnMarsh        && cell.Vegetation == CellVegetation.Marsh);
         }
 
         #endregion
