@@ -219,6 +219,16 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private MapGenerationTemplate _mapTemplate;
 
+        public int MinStrategicCopies {
+            get { return _minStrategicCopies; }
+        }
+        [SerializeField, Range(0, 20)] private int _minStrategicCopies = 2;
+
+        public int MaxStrategicCopies {
+            get { return _maxStrategicCopies; }
+        }
+        [SerializeField, Range(0, 20)] private int _maxStrategicCopies = 12;
+
         #endregion
 
         #endregion

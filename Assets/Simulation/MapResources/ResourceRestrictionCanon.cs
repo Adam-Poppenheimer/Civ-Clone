@@ -31,18 +31,30 @@ namespace Assets.Simulation.MapResources {
         #region from IResourceRestrictionCanon
 
         public bool IsResourceValidOnCell(IResourceDefinition resource, IHexCell cell) {
-            return (resource.ValidOnGrassland    && cell.Terrain    == CellTerrain.Grassland)
-                || (resource.ValidOnPlains       && cell.Terrain    == CellTerrain.Plains)
-                || (resource.ValidOnDesert       && cell.Terrain    == CellTerrain.Desert)
-                || (resource.ValidOnTundra       && cell.Terrain    == CellTerrain.Tundra)
-                || (resource.ValidOnSnow         && cell.Terrain    == CellTerrain.Snow)
-                || (resource.ValidOnShallowWater && cell.Terrain    == CellTerrain.ShallowWater)
+            return GetPlacementWeightOnCell(resource, cell) > 0;
+        }
 
-                || (resource.ValidOnHills        && cell.Shape      == CellShape.Hills)
+        public int GetPlacementWeightOnCell(IResourceDefinition resource, IHexCell cell) {
+            if(cell.Shape == CellShape.Mountains) {
+                return 0;
+            }
 
-                || (resource.ValidOnForest       && cell.Vegetation == CellVegetation.Forest)
-                || (resource.ValidOnJungle       && cell.Vegetation == CellVegetation.Jungle)
-                || (resource.ValidOnMarsh        && cell.Vegetation == CellVegetation.Marsh);
+            int weight = 0;
+
+            weight += (cell.Terrain == CellTerrain.Grassland    ? 1 : 0) * resource.GrasslandWeight;
+            weight += (cell.Terrain == CellTerrain.Plains       ? 1 : 0) * resource.PlainsWeight;
+            weight += (cell.Terrain == CellTerrain.Desert       ? 1 : 0) * resource.DesertWeight;
+            weight += (cell.Terrain == CellTerrain.Tundra       ? 1 : 0) * resource.TundraWeight;
+            weight += (cell.Terrain == CellTerrain.Snow         ? 1 : 0) * resource.SnowWeight;
+            weight += (cell.Terrain == CellTerrain.ShallowWater ? 1 : 0) * resource.ShallowWaterWeight;
+
+            weight += (cell.Shape == CellShape.Hills ? 1 : 0) * resource.HillWeight;
+
+            weight += (cell.Vegetation == CellVegetation.Forest ? 1 : 0) * resource.ForestWeight;
+            weight += (cell.Vegetation == CellVegetation.Jungle ? 1 : 0) * resource.JungleWeight;
+            weight += (cell.Vegetation == CellVegetation.Marsh  ? 1 : 0) * resource.MarshWeight;
+
+            return Math.Max(0, weight);
         }
 
         #endregion

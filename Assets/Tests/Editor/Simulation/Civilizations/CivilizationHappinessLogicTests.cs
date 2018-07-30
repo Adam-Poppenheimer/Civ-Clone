@@ -212,7 +212,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             SetupConfig(testData.Config);
 
             Container.Bind<IEnumerable<IResourceDefinition>>()
-                .WithId("Available Specialty Resources")
+                .WithId("Available Resources")
                 .FromInstance(resources);
 
             happinessLogic = Container.Resolve<CivilizationHappinessLogic>();

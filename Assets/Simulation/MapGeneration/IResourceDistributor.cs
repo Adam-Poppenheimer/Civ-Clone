@@ -11,13 +11,8 @@ namespace Assets.Simulation.MapGeneration {
     public interface IResourceDistributor {
 
         #region methods
-        
-        List<List<IResourceDefinition>> SubdivideResources(
-            IEnumerable<IResourceDefinition> resources, int groupCount,
-            int minResourcesPerGroup
-        );
 
-        void DistributeResourcesAcrossRegion(
+        void DistributeLuxuryResourcesAcrossRegion(
             MapRegion region, IRegionGenerationTemplate template,
             IEnumerable<IHexCell> oceanCells
         );

@@ -30,7 +30,7 @@ namespace Assets.Simulation.MapManagement {
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IDiplomaticExchangeFactory exchangeFactory,
             IHexGrid grid,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             CityLocationCanon  = cityLocationCanon;
             ExchangeFactory    = exchangeFactory;

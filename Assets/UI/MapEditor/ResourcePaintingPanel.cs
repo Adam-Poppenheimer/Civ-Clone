@@ -60,7 +60,7 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(IResourceNodeFactory resourceNodeFactory,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
             HexCellSignals cellSignals, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
         ){
             ResourceNodeFactory = resourceNodeFactory;

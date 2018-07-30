@@ -26,7 +26,7 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public OngoingDiplomaticExchangeComposer(
             ICivilizationFactory civFactory, IDiplomaticExchangeFactory exchangeFactory,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             CivFactory         = civFactory;
             ExchangeFactory    = exchangeFactory;

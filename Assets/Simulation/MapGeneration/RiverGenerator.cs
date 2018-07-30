@@ -17,9 +17,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IGridTraversalLogic GridTraversalLogic;
-        private IHexGrid            Grid;
-        private IRiverCanon         RiverCanon;
+        private IHexGrid    Grid;
+        private IRiverCanon RiverCanon;
 
         #endregion
 
@@ -30,9 +29,8 @@ namespace Assets.Simulation.MapGeneration {
             IGridTraversalLogic gridTraversalLogic, IHexGrid grid,
             IRiverCanon riverCanon
         ) {
-            GridTraversalLogic = gridTraversalLogic;
-            Grid               = grid;
-            RiverCanon         = riverCanon;
+            Grid       = grid;
+            RiverCanon = riverCanon;
         }
 
         #endregion
@@ -128,7 +126,6 @@ namespace Assets.Simulation.MapGeneration {
 
                 return true;
             }else {
-                Debug.LogWarning("Failed to get river endpoints");
                 return false;
             }
         }

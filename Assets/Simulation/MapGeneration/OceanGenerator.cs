@@ -16,7 +16,6 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         private ICellModificationLogic ModLogic;
-        private IHexGrid               Grid;
 
         #endregion
 
@@ -24,10 +23,9 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public OceanGenerator(
-            ICellModificationLogic modLogic, IHexGrid grid
+            ICellModificationLogic modLogic
         ) {
             ModLogic = modLogic;
-            Grid     = grid;
         }
 
         #endregion

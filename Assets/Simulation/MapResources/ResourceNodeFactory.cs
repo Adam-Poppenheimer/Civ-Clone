@@ -25,10 +25,10 @@ namespace Assets.Simulation.MapResources{
 
         #endregion
 
-        private DiContainer Container;
-
+        private DiContainer                                      Container;
 		private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-        private IResourceRestrictionCanon                        RestrictionCanon;        
+        private IResourceRestrictionCanon                        RestrictionCanon;     
+        private Transform                                        NodeContainer;   
 
         #endregion
 
@@ -37,11 +37,13 @@ namespace Assets.Simulation.MapResources{
         [Inject]
 		public ResourceNodeFactory(
             DiContainer container, IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-            IResourceRestrictionCanon restrictionCanon, ResourceSignals signals
+            IResourceRestrictionCanon restrictionCanon, ResourceSignals signals,
+            [InjectOptional(Id = "Resource Node Container")] Transform nodeContainer
 		){
 			Container                 = container;
 			ResourceNodeLocationCanon = resourceNodeLocationCanon;
             RestrictionCanon          = restrictionCanon;
+            NodeContainer             = nodeContainer;
 
             signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
         }
@@ -73,6 +75,10 @@ namespace Assets.Simulation.MapResources{
 			newNode.Copies   = copies;
 
 			ResourceNodeLocationCanon.ChangeOwnerOfPossession(newNode, location);
+
+            if(NodeContainer != null) {
+                newNode.transform.SetParent(NodeContainer, false);
+            }
 
             allNodes.Add(newNode);
 

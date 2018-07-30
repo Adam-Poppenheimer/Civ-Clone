@@ -41,7 +41,7 @@ namespace Assets.UI.SpecialtyResources {
         public void InjectDependencies(
             IGameCore gameCore, IFreeResourcesLogic freeResourcesLogic,
             IResourceExtractionLogic extractionLogic, IResourceTransferCanon resourceTransferCanon,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             GameCore              = gameCore;
             FreeResourcesLogic    = freeResourcesLogic;

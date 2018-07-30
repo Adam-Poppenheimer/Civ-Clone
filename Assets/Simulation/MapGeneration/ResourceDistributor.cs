@@ -18,15 +18,27 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
+        private IMapGenerationConfig      Config;
+        private IResourceNodeFactory      NodeFactory;
+        private IResourceSampler          ResourceSampler;
+        private IResourceRestrictionCanon ResourceRestrictionCanon;
+        private IHexGrid                  Grid;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ResourceDistributor(IHexGrid grid) {
-            Grid = grid;
+        public ResourceDistributor(
+            IMapGenerationConfig config, IResourceNodeFactory nodeFactory,
+            IResourceSampler resourceSampler, IResourceRestrictionCanon resourceRestrictionCanon,
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon, IHexGrid grid
+        ) {
+            Config                   = config;
+            NodeFactory              = nodeFactory;
+            ResourceSampler          = resourceSampler;
+            ResourceRestrictionCanon = resourceRestrictionCanon;
+            Grid                     = grid;
         }
 
         #endregion
@@ -35,65 +47,74 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IResourceDistributor
 
-        public List<List<IResourceDefinition>> SubdivideResources(
-            IEnumerable<IResourceDefinition> resources,
-            int groupCount, int resourcesPerGroup
-        ) {
-            if(resources.Count() < resourcesPerGroup) {
-                throw new InvalidOperationException("Not enough resources to create valid subdivisions");
-            }
-
-            var retval = new List<List<IResourceDefinition>>();
-
-            var unfinishedSubdivisions = new List<List<IResourceDefinition>>();
-
-            for(int i = 0; i < groupCount; i++) {
-                unfinishedSubdivisions.Add(new List<IResourceDefinition>());
-            }
-
-            int minUsesOfResource = 0;
-            var usesOfResource = new Dictionary<IResourceDefinition, int>();
-
-            foreach(var resource in resources) {
-                usesOfResource[resource] = 0;
-            }
-
-            int iterations = 10000;
-            while(unfinishedSubdivisions.Count > 0 && iterations-- > 0) {
-                var subdivision = unfinishedSubdivisions.Random();
-
-                var leastUsedResources = usesOfResource.Keys.Where(
-                    resource => usesOfResource[resource] <= minUsesOfResource
-                );
-
-                if(leastUsedResources.Any()) {
-                    var resource = leastUsedResources.Random();
-
-                    if(!subdivision.Contains(resource)) {
-                        subdivision.Add(resource);
-                        usesOfResource[resource]++;
-
-                        if(subdivision.Count >= resourcesPerGroup) {
-                            retval.Add(subdivision);
-                            unfinishedSubdivisions.Remove(subdivision);
-                        }
-                    }
-
-                }else {
-                    minUsesOfResource++;
-                }
-            }
-
-            return retval;
-        }
-
-        public void DistributeResourcesAcrossRegion(
+        public void DistributeLuxuryResourcesAcrossRegion(
             MapRegion region, IRegionGenerationTemplate template, IEnumerable<IHexCell> oceanCells
         ) {
-            throw new NotImplementedException();
-        }        
+            var resourcesSoFar = new List<IResourceDefinition>();
+
+            if(template.HasPrimaryResource) {
+                DistributeLuxury(
+                    region, oceanCells, template.PrimaryResourceCount, resourcesSoFar
+                );
+            }
+
+            if(template.HasSecondaryResource) {
+                DistributeLuxury(
+                    region, oceanCells, template.SecondaryResourceCount, resourcesSoFar
+                );
+            }
+
+            if(template.HasTertiaryResource) {
+                DistributeLuxury(
+                    region, oceanCells, template.TertiaryResourceCount, resourcesSoFar
+                );
+            }
+
+            if(template.HasQuaternaryResource) {
+                DistributeLuxury(
+                    region, oceanCells, template.QuaternaryResourceCount, resourcesSoFar
+                );
+            }
+        }
 
         #endregion
+
+        private void DistributeLuxury(
+            MapRegion region, IEnumerable<IHexCell> oceanCells,
+            int nodeCount, List<IResourceDefinition> luxuriesSoFar
+        ) {
+            var results = ResourceSampler.GetLuxuryForRegion(region, nodeCount, luxuriesSoFar);
+
+            luxuriesSoFar.Add(results.Resource);
+
+            DistributeResource(results.Resource, results.ValidLocations, nodeCount, oceanCells);
+        }
+
+        private void DistributeResource(
+            IResourceDefinition resource, IEnumerable<IHexCell> validLocations,
+            int count, IEnumerable<IHexCell> oceanCells
+        ) {
+            if(validLocations.Count() < count) {
+                Debug.LogWarning("Could not find enough valid locations for resoure " + resource.name);
+            }
+
+            var nodeLocations = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                validLocations, count, GetResourceWeightFunction(resource, validLocations)
+            );
+
+            foreach(var location in nodeLocations) {
+                int copies = resource.Type == ResourceType.Strategic
+                           ? UnityEngine.Random.Range(Config.MinStrategicCopies, Config.MaxStrategicCopies) : 1;
+
+                NodeFactory.BuildNode(location, resource, copies);
+            }
+        }
+
+        private Func<IHexCell, int> GetResourceWeightFunction(IResourceDefinition resource, IEnumerable<IHexCell> validLocations) {
+            return delegate(IHexCell cell) {
+                return ResourceRestrictionCanon.GetPlacementWeightOnCell(resource, cell);
+            };
+        }
 
         #endregion
 

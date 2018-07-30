@@ -103,7 +103,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodeLocationCanon.Object);
 
             Container.Bind<IEnumerable<IResourceDefinition>>()
-                     .WithId("Available Specialty Resources")
+                     .WithId("Available Resources")
                      .FromInstance(AvailableSpecialtyResources);
 
             Container.Bind<ResourceComposer>().AsSingle();

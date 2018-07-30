@@ -77,6 +77,9 @@ namespace Assets.Simulation.MapGeneration {
 
         IMapGenerationTemplate MapTemplate { get; }
 
+        int MinStrategicCopies { get; }
+        int MaxStrategicCopies { get; }
+
         #endregion
 
     }

@@ -38,9 +38,9 @@ namespace Assets.Tests.Simulation.Technology {
             AvailableResources.Clear();
             AvailableAbilities.Clear();
 
-            Container.Bind<List<ITechDefinition>>                    ().WithId("Available Techs")              .FromInstance(AvailableTechs);
-            Container.Bind<IEnumerable<IResourceDefinition>>().WithId("Available Specialty Resources").FromInstance(AvailableResources);
-            Container.Bind<IEnumerable<IAbilityDefinition>>          ().WithId("Available Abilities")          .FromInstance(AvailableAbilities);
+            Container.Bind<List<ITechDefinition>>           ().WithId("Available Techs")    .FromInstance(AvailableTechs);
+            Container.Bind<IEnumerable<IResourceDefinition>>().WithId("Available Resources").FromInstance(AvailableResources);
+            Container.Bind<IEnumerable<IAbilityDefinition>> ().WithId("Available Abilities").FromInstance(AvailableAbilities);
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

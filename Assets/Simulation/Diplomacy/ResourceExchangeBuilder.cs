@@ -28,7 +28,7 @@ namespace Assets.Simulation.Diplomacy {
         public ResourceExchangeBuilder(
             ICivilizationConnectionLogic civilizationConnectionLogic, DiContainer container,
             IResourceTransferCanon resourceTransferCanon, IFreeResourcesLogic freeResourcesLogic,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             CivilizationConnectionLogic = civilizationConnectionLogic;
             Container                   = container;

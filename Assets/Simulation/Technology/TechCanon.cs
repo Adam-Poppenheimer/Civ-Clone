@@ -54,7 +54,7 @@ namespace Assets.Simulation.Technology {
         public TechCanon(
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
             [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
             CivilizationSignals civSignals
         ){
             _availableTechs    = availableTechs;

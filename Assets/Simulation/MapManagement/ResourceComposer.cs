@@ -28,7 +28,7 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public ResourceComposer(IResourceNodeFactory nodeFactory, IHexGrid grid,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableSpecialtyResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableSpecialtyResources
         ){
             NodeFactory                 = nodeFactory;
             Grid                        = grid;

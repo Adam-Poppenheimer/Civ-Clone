@@ -14,8 +14,7 @@ namespace Assets.Simulation.MapGeneration {
 
         void GenerateRegion(
             MapRegion region, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells,
-            List<IResourceDefinition> availableLuxuries
+            IEnumerable<IHexCell> oceanCells
         );
 
         #endregion

@@ -14,6 +14,10 @@ MonoBehaviour:
   _hillsPercentage: 15
   _mountainsPercentage: 5
   _treePercentage: 15
+  _riverPercentage: 5
+  _luxuryResourcePercentage: 8
+  _strategicResourcePercentage: 6
+  _bonusResourcePercentage: 8
   _minTreeClumps: 8
   _maxTreeClumps: 8
   _jungleThreshold: 1
@@ -25,10 +29,12 @@ MonoBehaviour:
   DesertPercentage: 50
   TundraPercentage: 0
   SnowPercentage: 0
+  WaterPercentage: 0
   GrasslandSeedCount: 1
   PlainsSeedCount: 5
   DesertSeedCount: 2
   TundraSeedCount: 0
   SnowSeedCount: 0
+  WaterSeedCount: 0
   TundraThreshold: 0.3
   SnowThreshold: 0.2

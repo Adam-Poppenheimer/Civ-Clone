@@ -38,59 +38,71 @@ namespace Assets.Simulation.MapResources {
         [SerializeField] private ImprovementTemplate _extractor;
 
 
+        public bool ValidOnGrassland    { get { return GrasslandWeight    > 0; } }
+        public bool ValidOnPlains       { get { return PlainsWeight       > 0; } }
+        public bool ValidOnDesert       { get { return DesertWeight       > 0; } }
+        public bool ValidOnTundra       { get { return TundraWeight       > 0; } }
+        public bool ValidOnSnow         { get { return SnowWeight         > 0; } }
+        public bool ValidOnShallowWater { get { return ShallowWaterWeight > 0; } }
+        
+        public bool ValidOnHills        { get { return HillWeight         > 0; } }
+
+        public bool ValidOnForest       { get { return ForestWeight       > 0; } }
+        public bool ValidOnJungle       { get { return JungleWeight       > 0; } }
+        public bool ValidOnMarsh        { get { return MarshWeight        > 0; } }
 
 
-        public bool ValidOnGrassland {
-            get { return _validOnGrassland; }
+        public int GrasslandWeight {
+            get { return _grasslandWeight; }
         }
-        [SerializeField] private bool _validOnGrassland;
+        [SerializeField] private int _grasslandWeight;
 
-        public bool ValidOnPlains {
-            get { return _validOnPlains; }
+        public int PlainsWeight {
+            get { return _plainsWeight; }
         }
-        [SerializeField] private bool _validOnPlains;
+        [SerializeField] private int _plainsWeight;
 
-        public bool ValidOnDesert {
-            get { return _validOnDesert; }
+        public int DesertWeight {
+            get { return _desertWeight; }
         }
-        [SerializeField] private bool _validOnDesert;
+        [SerializeField] private int _desertWeight;
 
-        public bool ValidOnTundra {
-            get { return _validOnTundra; }
+        public int TundraWeight {
+            get { return _tundraWeight; }
         }
-        [SerializeField] private bool _validOnTundra;
+        [SerializeField] private int _tundraWeight;
 
-        public bool ValidOnSnow {
-            get { return _validOnSnow; }
+        public int SnowWeight {
+            get { return _snowWeight; }
         }
-        [SerializeField] private bool _validOnSnow;
+        [SerializeField] private int _snowWeight;
 
-        public bool ValidOnShallowWater {
-            get { return _validOnCoast; }
+        public int ShallowWaterWeight {
+            get { return _shallowWaterWeight; }
         }
-        [SerializeField] private bool _validOnCoast;
+        [SerializeField] private int _shallowWaterWeight;
 
 
-        public bool ValidOnHills {
-            get { return _validOnHills; }
+        public int HillWeight {
+            get { return _hillWeight; }
         }
-        [SerializeField] private bool _validOnHills;
+        [SerializeField] private int _hillWeight;
 
 
-        public bool ValidOnForest {
-            get { return _validOnForest; }
+        public int ForestWeight {
+            get { return _forestWeight; }
         }
-        [SerializeField] private bool _validOnForest;
+        [SerializeField] private int _forestWeight;
 
-        public bool ValidOnJungle {
-            get { return _validOnJungle; }
+        public int JungleWeight {
+            get { return _jungleWeight; }
         }
-        [SerializeField] private bool _validOnJungle;
+        [SerializeField] private int _jungleWeight;
 
-        public bool ValidOnMarsh {
-            get { return _validOnMarsh; }
+        public int MarshWeight {
+            get { return _marshWeight; }
         }
-        [SerializeField] private bool _validOnMarsh;
+        [SerializeField] private int _marshWeight;
 
 
 

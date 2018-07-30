@@ -399,7 +399,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
             Container.Bind<IFreeResourcesLogic>         ().FromInstance(MockFreeResourcesLogic   .Object);
 
             Container.Bind<IEnumerable<IResourceDefinition>>()
-                     .WithId("Available Specialty Resources")
+                     .WithId("Available Resources")
                      .FromInstance(AvailableResources);
 
             Container.Bind<ResourceExchangeBuilder>().AsSingle();

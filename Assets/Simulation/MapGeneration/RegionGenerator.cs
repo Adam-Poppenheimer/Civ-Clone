@@ -23,7 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         private IGridTraversalLogic    GridTraversalLogic;
         private IRiverCanon            RiverCanon;
         private IRiverGenerator        RiverGenerator;
-        private IResourceNodeFactory   NodeFactory;
+        private IResourceDistributor   ResourceDistributor;
 
         #endregion
 
@@ -33,15 +33,15 @@ namespace Assets.Simulation.MapGeneration {
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
             IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
-            IRiverGenerator riverGenerator, IResourceNodeFactory nodeFactory
+            IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor
         ) {
-            ModLogic           = modLogic;
-            Grid               = grid;
-            TemperatureLogic   = temperatureLogic;
-            GridTraversalLogic = gridTraversalLogic;
-            RiverCanon         = riverCanon;
-            RiverGenerator     = riverGenerator;
-            NodeFactory        = nodeFactory;
+            ModLogic            = modLogic;
+            Grid                = grid;
+            TemperatureLogic    = temperatureLogic;
+            GridTraversalLogic  = gridTraversalLogic;
+            RiverCanon          = riverCanon;
+            RiverGenerator      = riverGenerator;
+            ResourceDistributor = resourceDistributor;
         }
 
         #endregion
@@ -52,8 +52,7 @@ namespace Assets.Simulation.MapGeneration {
 
         public void GenerateRegion(
             MapRegion region, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells,
-            List<IResourceDefinition> availableLuxuries
+            IEnumerable<IHexCell> oceanCells
         ) {
             GenerateTopology(region, template);
             PaintTerrain(region, template, oceanCells);
@@ -61,6 +60,8 @@ namespace Assets.Simulation.MapGeneration {
             RiverGenerator.CreateRiversForRegion(region, template, oceanCells);
 
             PaintVegetation(region, template);
+
+            ResourceDistributor.DistributeLuxuryResourcesAcrossRegion(region, template, oceanCells);
         }
 
         #endregion

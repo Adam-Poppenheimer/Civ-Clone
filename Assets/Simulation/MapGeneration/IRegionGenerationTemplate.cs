@@ -22,6 +22,18 @@ namespace Assets.Simulation.MapGeneration {
         float MarshChancePerAdjacentRiver { get; }
         float MarshChancePerAdjacentWater { get; }
 
+        bool HasPrimaryResource  { get; }
+        int PrimaryResourceCount { get; }
+
+        bool HasSecondaryResource  { get; }
+        int SecondaryResourceCount { get; }
+
+        bool HasTertiaryResource  { get; }
+        int TertiaryResourceCount { get; }
+
+        bool HasQuaternaryResource  { get; }
+        int QuaternaryResourceCount { get; }
+
         #endregion
 
         #region methods

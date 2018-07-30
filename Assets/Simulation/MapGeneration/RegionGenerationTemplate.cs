@@ -71,6 +71,54 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0f, 1f)] private float _marshChancePerAdjacentRiver = 0.05f;
 
+
+
+        public bool HasPrimaryResource {
+            get { return _hasPrimaryResource; }
+        }
+        [SerializeField] private bool _hasPrimaryResource;
+
+        public int PrimaryResourceCount {
+            get { return _primaryResourceCount; }
+        }
+        [SerializeField, Range(0, 10)] private int _primaryResourceCount;
+
+
+
+        public bool HasSecondaryResource {
+            get { return _hasSecondaryResource; }
+        }
+        [SerializeField] private bool _hasSecondaryResource;
+
+        public int SecondaryResourceCount {
+            get { return _secondaryResourceCount; }
+        }
+        [SerializeField, Range(0, 10)] private int _secondaryResourceCount;
+
+
+
+        public bool HasTertiaryResource {
+            get { return _hasTertiaryResource; }
+        }
+        [SerializeField] private bool _hasTertiaryResource;
+
+        public int TertiaryResourceCount {
+            get { return _tertiaryResourceCount; }
+        }
+        [SerializeField, Range(0, 10)] private int _tertiaryResourceCount;
+
+
+
+        public bool HasQuaternaryResource {
+            get { return _hasQuaternaryResource; }
+        }
+        [SerializeField] private bool _hasQuaternaryResource;
+
+        public int QuaternaryResourceCount {
+            get { return _quaternaryResourceCount; }
+        }
+        [SerializeField, Range(0, 10)] private int _quaternaryResourceCount;
+
         #endregion
 
         [SerializeField, Range(0, 100)] private int GrasslandsPercentage;

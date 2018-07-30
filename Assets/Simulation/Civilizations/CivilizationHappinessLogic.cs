@@ -28,7 +28,7 @@ namespace Assets.Simulation.Civilizations {
             ICivilizationConfig config, IFreeResourcesLogic freeResourcesLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             ICityHappinessLogic cityHappinessLogic,
-            [Inject(Id = "Available Specialty Resources")] IEnumerable<IResourceDefinition> availableResources
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ){
             Config              = config;
             FreeResourcesLogic  = freeResourcesLogic;

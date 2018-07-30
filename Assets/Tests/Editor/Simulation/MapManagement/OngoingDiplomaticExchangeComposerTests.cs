@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IDiplomaticExchangeFactory>().FromInstance(MockExchangeFactory.Object);
 
             Container.Bind<IEnumerable<IResourceDefinition>>()
-                     .WithId("Available Specialty Resources")
+                     .WithId("Available Resources")
                      .FromInstance(AllResources);
 
             Container.Bind<OngoingDiplomaticExchangeComposer>().AsSingle();

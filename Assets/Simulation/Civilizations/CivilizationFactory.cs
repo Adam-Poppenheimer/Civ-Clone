@@ -28,18 +28,22 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private DiContainer Container;
-
+        private DiContainer         Container;
         private CivilizationSignals Signals;
+        private Transform           CivContainer;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public CivilizationFactory(DiContainer container, CivilizationSignals signals) {
-            Container = container;
-            Signals   = signals;
+        public CivilizationFactory(
+            DiContainer container, CivilizationSignals signals,
+            [InjectOptional(Id = "Civ Container")] Transform civContainer
+        ) {
+            Container    = container;
+            Signals      = signals;
+            CivContainer = civContainer;
 
             signals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
@@ -60,6 +64,10 @@ namespace Assets.Simulation.Civilizations {
 
             newCivilization.Name = name;
             newCivilization.Color = color;
+
+            if(CivContainer != null) {
+                newCivilization.transform.SetParent(CivContainer, false);
+            }
 
             allCivilizations.Add(newCivilization);
 

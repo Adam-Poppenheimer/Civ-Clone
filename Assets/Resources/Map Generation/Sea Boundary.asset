@@ -14,6 +14,10 @@ MonoBehaviour:
   _hillsPercentage: 10
   _mountainsPercentage: 0
   _treePercentage: 40
+  _riverPercentage: 10
+  _luxuryResourcePercentage: 8
+  _strategicResourcePercentage: 6
+  _bonusResourcePercentage: 8
   _minTreeClumps: 6
   _maxTreeClumps: 10
   _jungleThreshold: 0.7

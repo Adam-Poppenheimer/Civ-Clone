@@ -1,0 +1,40 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d29e05e822867b1418e0253483b73785, type: 3}
+  m_Name: Stone
+  m_EditorClassIdentifier: 
+  _bonusYieldBase:
+    Food: 0
+    Production: 1
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _bonusYieldWhenImproved:
+    Food: 0
+    Production: 1
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _type: 0
+  _extractor: {fileID: 11400000, guid: 18ab8c2dd04861549850a7bfd64fea88, type: 2}
+  _grasslandWeight: 0
+  _plainsWeight: 2
+  _desertWeight: 2
+  _tundraWeight: 2
+  _snowWeight: 2
+  _shallowWaterWeight: 0
+  _hillWeight: 1
+  _forestWeight: -1000
+  _jungleWeight: -1000
+  _marshWeight: -1000
+  _appearancePrefab: {fileID: 4285154389039604, guid: 41864e2aaca952d42b550e328a2b88ae,
+    type: 2}
+  _icon: {fileID: 21300000, guid: cbfb7ad0824d87d4cab8ea04b92f4837, type: 3}

@@ -38,6 +38,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ICellTemperatureLogic>().To<CellTemperatureLogic>().AsSingle();
             Container.Bind<IGridTraversalLogic>  ().To<GridTraversalLogic>  ().AsSingle();
             Container.Bind<IResourceDistributor> ().To<ResourceDistributor> ().AsSingle();
+            Container.Bind<IResourceSampler>     ().To<ResourceSampler>     ().AsSingle();
         }
 
         #endregion

@@ -13,6 +13,8 @@ namespace Assets.Simulation.MapResources {
 
         bool IsResourceValidOnCell(IResourceDefinition resource, IHexCell cell);
 
+        int GetPlacementWeightOnCell(IResourceDefinition resource, IHexCell cell);
+
         #endregion
 
     }

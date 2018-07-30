@@ -2418,6 +2418,34 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 57197493}
+--- !u!1 &65354634
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 65354635}
+  m_Layer: 0
+  m_Name: Civ Container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &65354635
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 65354634}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 893.74445, y: -3.737359, z: 128.86052}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 12
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &67255738
 GameObject:
   m_ObjectHideFlags: 0
@@ -10797,7 +10825,7 @@ GameObject:
   - component: {fileID: 322894998}
   - component: {fileID: 322894997}
   m_Layer: 0
-  m_Name: Specialty Resource Installer
+  m_Name: Map Resource Installer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -10814,6 +10842,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 229c3b274fb0ab0469334f3708be4961, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  ResourceNodeContainer: {fileID: 341741594}
 --- !u!4 &322894998
 Transform:
   m_ObjectHideFlags: 0
@@ -11691,6 +11720,34 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 337844476}
+--- !u!1 &341741593
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 341741594}
+  m_Layer: 0
+  m_Name: Resource Node Container
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &341741594
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 341741593}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 893.74445, y: -3.737359, z: 128.86052}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 11
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &343081247
 GameObject:
   m_ObjectHideFlags: 0
@@ -64265,6 +64322,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a0c317033ca45fb4cbec73078256a82a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CivContainer: {fileID: 65354635}
 --- !u!4 &1899176768
 Transform:
   m_ObjectHideFlags: 0

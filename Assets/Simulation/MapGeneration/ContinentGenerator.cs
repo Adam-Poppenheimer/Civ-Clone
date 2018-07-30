@@ -23,7 +23,6 @@ namespace Assets.Simulation.MapGeneration {
         private IMapGenerationConfig   Config;
         private IRegionGenerator       RegionGenerator;
         private IGridTraversalLogic    GridTraversalLogic;
-        private IResourceDistributor   ResourceDistributor;
 
         #endregion
 
@@ -32,15 +31,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public ContinentGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, IMapGenerationConfig config,
-            IRegionGenerator startingLocationGenerator, IGridTraversalLogic gridTraversalLogic,
-            IResourceDistributor resourceDistributor
+            IRegionGenerator startingLocationGenerator, IGridTraversalLogic gridTraversalLogic
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
             Config              = config;
             RegionGenerator     = startingLocationGenerator;
             GridTraversalLogic  = gridTraversalLogic;
-            ResourceDistributor = resourceDistributor;
         }
 
         #endregion
@@ -51,8 +48,7 @@ namespace Assets.Simulation.MapGeneration {
 
          public void GenerateContinent(
              MapRegion continent, IContinentGenerationTemplate template,
-             IEnumerable<IHexCell> oceanCells,
-             List<IResourceDefinition> availableLuxuries
+             IEnumerable<IHexCell> oceanCells
         ) {
             foreach(var cell in continent.Cells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
@@ -62,15 +58,11 @@ namespace Assets.Simulation.MapGeneration {
 
             var regions = SplitContinentIntoRegions(continent, template, unassignedCells);
 
-            var luxurySubdivisions = ResourceDistributor.SubdivideResources(
-                availableLuxuries, regions.Count, template.LuxuriesPerRegion
-            );
-
             AssignOrphansToRegions(unassignedCells, regions);
 
-            RegionGenerator.GenerateRegion(regions[0], template.StartingLocationTemplates.Random(), oceanCells, luxurySubdivisions[0]);
-            RegionGenerator.GenerateRegion(regions[1], template.BoundaryTemplates        .Random(), oceanCells, luxurySubdivisions[1]);
-            RegionGenerator.GenerateRegion(regions[2], template.StartingLocationTemplates.Random(), oceanCells, luxurySubdivisions[2]);
+            RegionGenerator.GenerateRegion(regions[0], template.StartingLocationTemplates.Random(), oceanCells);
+            RegionGenerator.GenerateRegion(regions[1], template.BoundaryTemplates        .Random(), oceanCells);
+            RegionGenerator.GenerateRegion(regions[2], template.StartingLocationTemplates.Random(), oceanCells);
         }
 
         #endregion

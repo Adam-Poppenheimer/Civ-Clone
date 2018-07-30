@@ -112,7 +112,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
                 yield return new TestCaseData(new IsResourceValidOnCellTestData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Shape = CellShape.Mountains,
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands,
                         Vegetation = CellVegetation.Marsh
                     },
                     Resource = new ResourceDefinitionTestData() {
@@ -122,7 +122,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
                 yield return new TestCaseData(new IsResourceValidOnCellTestData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Plains, Shape = CellShape.Mountains,
+                        Terrain = CellTerrain.Plains, Shape = CellShape.Flatlands,
                         Vegetation = CellVegetation.Marsh
                     },
                     Resource = new ResourceDefinitionTestData() {
@@ -149,6 +149,14 @@ namespace Assets.Tests.Simulation.MapResources {
                         ValidOnPlains = true, ValidOnHills = true, ValidOnJungle = true
                     }
                 }).SetName("Multiple valid options/Cell applies to three").Returns(true);
+
+
+                yield return new TestCaseData(new IsResourceValidOnCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Mountains
+                    },
+                    Resource = new ResourceDefinitionTestData() { ValidOnGrassland = true }
+                }).SetName("Otherwise valid resource placement/Cells is a mountain").Returns(false);
                 
             }
         }

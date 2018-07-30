@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 961821562
+  _fixedSeed: 1615753133
   _jitterProbability: 0.5
   _chunkSizeMin: 30
   _chunkSizeMax: 60
@@ -49,3 +49,8 @@ MonoBehaviour:
   _hemispheres: 0
   _temperatureJitter: 0.1
   _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
+  _minStrategicCopies: 2
+  _maxStrategicCopies: 12
+  _nearbyRadius: 3
+  _neighboringResourceAvoidanceStrength: 40
+  _nearbyResourceAvoidanceStrength: 5

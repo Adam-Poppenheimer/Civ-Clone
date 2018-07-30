@@ -20,7 +20,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        
+        [SerializeField] private Transform CivContainer;
 
         #endregion
 
@@ -30,6 +30,8 @@ namespace Assets.Simulation.Civilizations {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
+            Container.Bind<Transform>().WithId("Civ Container").FromInstance(CivContainer);
+
             Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();
 
             Container.Bind<ICivilizationConfig>().To<CivilizationConfig>().FromResource("Civilizations");

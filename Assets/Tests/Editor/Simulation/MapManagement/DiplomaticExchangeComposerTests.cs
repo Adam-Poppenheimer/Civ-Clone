@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IHexGrid>                                ().FromInstance(MockGrid             .Object);
 
             Container.Bind<IEnumerable<IResourceDefinition>>()
-                     .WithId("Available Specialty Resources")
+                     .WithId("Available Resources")
                      .FromInstance(AvailableResources);
 
             Container.Bind<DiplomaticExchangeComposer>().AsSingle();
