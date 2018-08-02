@@ -25,15 +25,15 @@ namespace Assets.Simulation.Technology {
 
         #region methods
 
-        IEnumerable<IBuildingTemplate>            GetResearchedBuildings  (ICivilization civilization);
-        IEnumerable<IUnitTemplate>                GetResearchedUnits      (ICivilization civilization);
-        IEnumerable<IAbilityDefinition>           GetResearchedAbilities  (ICivilization civilization);
-        IEnumerable<IResourceDefinition> GetResourcesVisibleToCiv(ICivilization civilization);
-        IEnumerable<IPolicyTreeDefinition>        GetResearchedPolicyTrees (ICivilization civilization);
+        IEnumerable<IBuildingTemplate>     GetResearchedBuildings  (ICivilization civilization);
+        IEnumerable<IUnitTemplate>         GetResearchedUnits      (ICivilization civilization);
+        IEnumerable<IAbilityDefinition>    GetResearchedAbilities  (ICivilization civilization);
+        IEnumerable<IResourceDefinition>   GetResourcesVisibleToCiv(ICivilization civilization);
+        IEnumerable<IPolicyTreeDefinition> GetResearchedPolicyTrees(ICivilization civilization);
 
-        bool IsBuildingResearchedForCiv(IBuildingTemplate            template, ICivilization civilization);
-        bool IsUnitResearchedForCiv    (IUnitTemplate                template, ICivilization civilization);
-        bool IsAbilityResearchedForCiv (IAbilityDefinition           ability,  ICivilization civilization);
+        bool IsBuildingResearchedForCiv(IBuildingTemplate   template, ICivilization civilization);
+        bool IsUnitResearchedForCiv    (IUnitTemplate       template, ICivilization civilization);
+        bool IsAbilityResearchedForCiv (IAbilityDefinition  ability,  ICivilization civilization);
         bool IsResourceVisibleToCiv    (IResourceDefinition resource, ICivilization civilization);
 
         IEnumerable<ITechDefinition> GetTechsDiscoveredByCiv(ICivilization civilization);

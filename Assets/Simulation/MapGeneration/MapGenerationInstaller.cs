@@ -39,6 +39,11 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IGridTraversalLogic>  ().To<GridTraversalLogic>  ().AsSingle();
             Container.Bind<IResourceDistributor> ().To<ResourceDistributor> ().AsSingle();
             Container.Bind<IResourceSampler>     ().To<ResourceSampler>     ().AsSingle();
+            Container.Bind<IYieldScorer>         ().To<YieldScorer>         ().AsSingle();
+            Container.Bind<IRegionBalancer>      ().To<RegionBalancer>      ().AsSingle();
+            Container.Bind<IYieldEstimator>      ().To<YieldEstimator>      ().AsSingle();
+
+            Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>  ().AsSingle();
         }
 
         #endregion

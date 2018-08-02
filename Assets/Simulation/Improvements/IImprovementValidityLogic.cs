@@ -11,7 +11,9 @@ namespace Assets.Simulation.Improvements {
 
         #region methods
 
-        bool IsTemplateValidForCell(IImprovementTemplate template, IHexCell tile);
+        bool IsTemplateValidForCell(
+            IImprovementTemplate template, IHexCell cell, bool ignoreOwnership
+        );
 
         #endregion
 

@@ -74,6 +74,9 @@ namespace Assets.Simulation.MapGeneration {
 
         float TemperatureJitter { get; }
 
+        float CoastChancePerAdjacentOcean { get; }
+        float CoastChancePerNearbyOcean   { get; }
+
 
         IMapGenerationTemplate MapTemplate { get; }
 

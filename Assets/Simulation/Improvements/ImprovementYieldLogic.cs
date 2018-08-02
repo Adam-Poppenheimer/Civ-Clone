@@ -3,43 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.HexMap;
+using Zenject;
+
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Technology;
-using Assets.Simulation.Cities;
-using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Improvements {
 
     public class ImprovementYieldLogic : IImprovementYieldLogic {
 
-        #region instance fields and properties
-
-        private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-        private IImprovementLocationCanon                        ImprovementLocationCanon;
-        private ITechCanon                                       TechCanon;
-        private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
-        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
-        private IFreshWaterCanon                                 FreshWaterCanon;
-
-        #endregion
-
         #region constructors
 
-        public ImprovementYieldLogic(
-            IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-            IImprovementLocationCanon improvementLocationCanon, ITechCanon techCanon,
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IFreshWaterCanon freshWaterCanon
-        ) {
-            ResourceNodeLocationCanon = resourceNodeLocationCanon;
-            ImprovementLocationCanon  = improvementLocationCanon;
-            TechCanon                 = techCanon;
-            CellPossessionCanon       = cellPossessionCanon;
-            CityPossessionCanon       = cityPossessionCanon;
-            FreshWaterCanon           = freshWaterCanon;
-        }
+        [Inject]
+        public ImprovementYieldLogic() { }
 
         #endregion
 
@@ -47,54 +23,44 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementYieldLogic
 
-        public YieldSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell) {
-            YieldSummary retval;
-            ICity cityOwningCell = null;
-            ICivilization civOwningCell = null;
-
-            cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
-
-            if(cityOwningCell != null) {
-                civOwningCell = CityPossessionCanon.GetOwnerOfPossession(cityOwningCell);
-            }
-
-            var resourceNodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
-
-            if( resourceNodeOnCell != null && resourceNodeOnCell.Resource.Extractor == template &&
-                (civOwningCell == null || TechCanon.IsResourceVisibleToCiv(resourceNodeOnCell.Resource, civOwningCell))
-            ){
-                retval = resourceNodeOnCell.Resource.BonusYieldWhenImproved;               
+        public YieldSummary GetYieldOfImprovement(
+            IImprovement improvement, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
+        ) {
+            if(improvement.IsConstructed && !improvement.IsPillaged) {
+                return GetYieldOfImprovementTemplate(
+                    improvement.Template, nodeAtLocation, visibleResources,
+                    discoveredTechs, hasFreshWater
+                );
             }else {
-                retval = template.BonusYieldNormal;
+                return YieldSummary.Empty;
+            }
+        }
+
+        public YieldSummary GetYieldOfImprovementTemplate(
+            IImprovementTemplate template, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
+        ) {
+            YieldSummary retval = YieldSummary.Empty;
+
+            if( nodeAtLocation == null || nodeAtLocation.Resource.Extractor != template ||
+                !visibleResources.Contains(nodeAtLocation.Resource)
+            ) {
+                retval += template.BonusYieldNormal;
             }
 
-            if(civOwningCell != null) {
-                var applicableTechMods = new List<IImprovementModificationData>();
+            var applicableTechMods = discoveredTechs.SelectMany(tech => tech.ImprovementYieldModifications)
+                                                    .Where(mod => mod.Template == template);
 
-                foreach(var techModifyingYield in TechCanon.GetTechsDiscoveredByCiv(civOwningCell)) {
-                    applicableTechMods.AddRange(
-                        techModifyingYield.ImprovementYieldModifications.Where(tuple => tuple.Template == template)
-                    );
-                }
-
-                foreach(IImprovementModificationData mod in applicableTechMods) {
-                    if(!mod.RequiresFreshWater || FreshWaterCanon.HasAccessToFreshWater(cell)) {
-                        retval += mod.BonusYield;
-                    }
+            foreach(var mod in applicableTechMods) {
+                if(!mod.RequiresFreshWater || hasFreshWater) {
+                    retval += mod.BonusYield;
                 }
             }
 
             return retval;
-        }
-
-        public YieldSummary GetYieldOfImprovement(IImprovement improvement) {
-            if(improvement.IsConstructed && !improvement.IsPillaged) {
-                return GetExpectedYieldOfImprovementOnCell(
-                    improvement.Template, ImprovementLocationCanon.GetOwnerOfPossession(improvement)
-                );
-            }else {
-                return YieldSummary.Empty;
-            }            
         }
 
         #endregion

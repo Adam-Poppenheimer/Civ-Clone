@@ -18,7 +18,6 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
         private IMapGenerationConfig   Config;
         private IRegionGenerator       RegionGenerator;
@@ -30,14 +29,14 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public ContinentGenerator(
-            ICellModificationLogic modLogic, IHexGrid grid, IMapGenerationConfig config,
-            IRegionGenerator startingLocationGenerator, IGridTraversalLogic gridTraversalLogic
+            IHexGrid grid, IMapGenerationConfig config,
+            IRegionGenerator startingLocationGenerator,
+            IGridTraversalLogic gridTraversalLogic
         ) {
-            ModLogic            = modLogic;
-            Grid                = grid;
-            Config              = config;
-            RegionGenerator     = startingLocationGenerator;
-            GridTraversalLogic  = gridTraversalLogic;
+            Grid               = grid;
+            Config             = config;
+            RegionGenerator    = startingLocationGenerator;
+            GridTraversalLogic = gridTraversalLogic;
         }
 
         #endregion
@@ -50,10 +49,6 @@ namespace Assets.Simulation.MapGeneration {
              MapRegion continent, IContinentGenerationTemplate template,
              IEnumerable<IHexCell> oceanCells
         ) {
-            foreach(var cell in continent.Cells) {
-                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.Grassland);
-            }
-
             var unassignedCells = new HashSet<IHexCell>(continent.Cells);
 
             var regions = SplitContinentIntoRegions(continent, template, unassignedCells);

@@ -52,27 +52,27 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             var resourcesSoFar = new List<IResourceDefinition>();
 
-            if(template.HasPrimaryResource) {
+            if(template.HasPrimaryLuxury) {
                 DistributeLuxury(
-                    region, oceanCells, template.PrimaryResourceCount, resourcesSoFar
+                    region, oceanCells, template.PrimaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasSecondaryResource) {
+            if(template.HasSecondaryLuxury) {
                 DistributeLuxury(
-                    region, oceanCells, template.SecondaryResourceCount, resourcesSoFar
+                    region, oceanCells, template.SecondaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasTertiaryResource) {
+            if(template.HasTertiaryLuxury) {
                 DistributeLuxury(
-                    region, oceanCells, template.TertiaryResourceCount, resourcesSoFar
+                    region, oceanCells, template.TertiaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasQuaternaryResource) {
+            if(template.HasQuaternaryLuxury) {
                 DistributeLuxury(
-                    region, oceanCells, template.QuaternaryResourceCount, resourcesSoFar
+                    region, oceanCells, template.QuaternaryLuxuryCount, resourcesSoFar
                 );
             }
         }

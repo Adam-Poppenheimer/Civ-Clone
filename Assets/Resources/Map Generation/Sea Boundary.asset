@@ -15,15 +15,25 @@ MonoBehaviour:
   _mountainsPercentage: 0
   _treePercentage: 40
   _riverPercentage: 10
-  _luxuryResourcePercentage: 8
-  _strategicResourcePercentage: 6
-  _bonusResourcePercentage: 8
   _minTreeClumps: 6
   _maxTreeClumps: 10
   _jungleThreshold: 0.7
   _marshChanceBase: 0.1
   _marshChancePerAdjacentWater: 0.15
   _marshChancePerAdjacentRiver: 0.15
+  _hasLuxuryResource: 0
+  _primaryLuxuryCount: 0
+  _hasSecondaryLuxury: 0
+  _secondaryLuxuryCount: 0
+  _hasTertiaryLuxury: 0
+  _tertiaryLuxuryCount: 0
+  _hasQuaternaryLuxury: 0
+  _quaternaryLuxuryCount: 0
+  _balanceResources: 0
+  _minFood: 150
+  _minProduction: 100
+  _minScore: 0
+  _maxScore: 0
   GrasslandsPercentage: 40
   PlainsPercentage: 20
   DesertPercentage: 0
@@ -36,5 +46,5 @@ MonoBehaviour:
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 3
-  TundraThreshold: 0
-  SnowThreshold: 0
+  TundraThreshold: 0.15
+  SnowThreshold: 0.05

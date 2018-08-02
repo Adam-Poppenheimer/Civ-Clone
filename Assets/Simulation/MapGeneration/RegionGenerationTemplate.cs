@@ -73,51 +73,73 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        public bool HasPrimaryResource {
-            get { return _hasPrimaryResource; }
+        public bool HasPrimaryLuxury {
+            get { return _hasLuxuryResource; }
         }
-        [SerializeField] private bool _hasPrimaryResource;
+        [SerializeField] private bool _hasLuxuryResource;
 
-        public int PrimaryResourceCount {
-            get { return _primaryResourceCount; }
+        public int PrimaryLuxuryCount {
+            get { return _primaryLuxuryCount; }
         }
-        [SerializeField, Range(0, 10)] private int _primaryResourceCount;
+        [SerializeField, Range(0, 10)] private int _primaryLuxuryCount;
 
-
-
-        public bool HasSecondaryResource {
-            get { return _hasSecondaryResource; }
+        public bool HasSecondaryLuxury {
+            get { return _hasSecondaryLuxury; }
         }
-        [SerializeField] private bool _hasSecondaryResource;
+        [SerializeField] private bool _hasSecondaryLuxury;
 
-        public int SecondaryResourceCount {
-            get { return _secondaryResourceCount; }
+        public int SecondaryLuxuryCount {
+            get { return _secondaryLuxuryCount; }
         }
-        [SerializeField, Range(0, 10)] private int _secondaryResourceCount;
+        [SerializeField, Range(0, 10)] private int _secondaryLuxuryCount;
 
-
-
-        public bool HasTertiaryResource {
-            get { return _hasTertiaryResource; }
+        public bool HasTertiaryLuxury {
+            get { return _hasTertiaryLuxury; }
         }
-        [SerializeField] private bool _hasTertiaryResource;
+        [SerializeField] private bool _hasTertiaryLuxury;
 
-        public int TertiaryResourceCount {
-            get { return _tertiaryResourceCount; }
+        public int TertiaryLuxuryCount {
+            get { return _tertiaryLuxuryCount; }
         }
-        [SerializeField, Range(0, 10)] private int _tertiaryResourceCount;
+        [SerializeField, Range(0, 10)] private int _tertiaryLuxuryCount;
 
-
-
-        public bool HasQuaternaryResource {
-            get { return _hasQuaternaryResource; }
+        public bool HasQuaternaryLuxury {
+            get { return _hasQuaternaryLuxury; }
         }
-        [SerializeField] private bool _hasQuaternaryResource;
+        [SerializeField] private bool _hasQuaternaryLuxury;
 
-        public int QuaternaryResourceCount {
-            get { return _quaternaryResourceCount; }
+        public int QuaternaryLuxuryCount {
+            get { return _quaternaryLuxuryCount; }
         }
-        [SerializeField, Range(0, 10)] private int _quaternaryResourceCount;
+        [SerializeField, Range(0, 10)] private int _quaternaryLuxuryCount;
+
+
+
+        public bool BalanceResources {
+            get { return _balanceResources; }
+        }
+        [SerializeField] private bool _balanceResources;
+
+        public float MinFood {
+            get { return _minFood; }
+        }
+        [SerializeField, Range(0f, 200f)] private float _minFood = 0;
+
+        public float MinProduction {
+            get { return _minProduction; }
+        }
+        [SerializeField, Range(0f, 200f)] private float _minProduction = 0;
+
+
+        public float MinScore {
+            get { return _minScore; }
+        }
+        [SerializeField, Range(0f, 1000f)] private float _minScore = 0;
+
+        public float MaxScore {
+            get { return _maxScore; }
+        }
+        [SerializeField, Range(0f, 1000f)] private float _maxScore = 0;
 
         #endregion
 

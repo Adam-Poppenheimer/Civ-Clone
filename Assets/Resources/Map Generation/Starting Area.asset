@@ -17,18 +17,23 @@ MonoBehaviour:
   _riverPercentage: 20
   _minTreeClumps: 6
   _maxTreeClumps: 8
-  _jungleThreshold: 0.75
+  _jungleThreshold: 0.6
   _marshChanceBase: 0.05
   _marshChancePerAdjacentWater: 0.1
   _marshChancePerAdjacentRiver: 0.1
-  _hasPrimaryResource: 1
-  _primaryResourceCount: 6
-  _hasSecondaryResource: 1
-  _secondaryResourceCount: 2
-  _hasTertiaryResource: 1
-  _tertiaryResourceCount: 1
-  _hasQuaternaryResource: 0
-  _quaternaryResourceCount: 0
+  _hasLuxuryResource: 1
+  _primaryLuxuryCount: 4
+  _hasSecondaryLuxury: 1
+  _secondaryLuxuryCount: 2
+  _hasTertiaryLuxury: 1
+  _tertiaryLuxuryCount: 1
+  _hasQuaternaryLuxury: 0
+  _quaternaryLuxuryCount: 0
+  _balanceResources: 1
+  _minFood: 115
+  _minProduction: 70
+  _minScore: 240
+  _maxScore: 270
   GrasslandsPercentage: 65
   PlainsPercentage: 35
   DesertPercentage: 0
@@ -41,5 +46,5 @@ MonoBehaviour:
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 0
-  TundraThreshold: 0.3
-  SnowThreshold: 0.2
+  TundraThreshold: 0.15
+  SnowThreshold: 0.05

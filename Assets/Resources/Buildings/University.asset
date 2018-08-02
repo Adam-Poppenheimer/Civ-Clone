@@ -15,17 +15,13 @@ MonoBehaviour:
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _productionCost: 160
   _maintenance: 2
-  _slotYields:
-  - Food: 0
+  _slotCount: 0
+  _slotYield:
+    Food: 0
     Production: 0
     Gold: 0
     Culture: 0
-    Science: 3
-  - Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 3
+    Science: 0
   _staticYield:
     Food: 0
     Production: 0
@@ -47,13 +43,13 @@ MonoBehaviour:
   _localHappiness: 0
   _globalHappiness: 0
   _unhappiness: 0
-  _requiredResources: []
+  _resourcesConsumed: []
   _resourceYieldModifications: []
   _cellYieldModifications:
   - _propertyConsidered: 2
     _terrainRequired: 0
     _shapeRequired: 0
-    _featureRequired: 2
+    _vegetationRequired: 2
     _mustBeUnderwater: 0
     _bonusYield:
       Food: 0
@@ -72,6 +68,11 @@ MonoBehaviour:
     Science: 0
   _prerequisiteBuildings:
   - {fileID: 11400000, guid: fabf9f802302ad940afc3439fb2e9ca1, type: 2}
+  _prerequisiteResourcesNearCity: []
+  _prerequisiteImprovementsNearCity: []
   _landUnitProductionBonus: 0
   _mountedUnitProductionBonus: 0
   _requiresAdjacentRiver: 0
+  _requiresCoastalCity: 0
+  _providesOverseaConnection: 0
+  _bonusExperience: 0

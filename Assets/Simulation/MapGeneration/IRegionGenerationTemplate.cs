@@ -22,17 +22,25 @@ namespace Assets.Simulation.MapGeneration {
         float MarshChancePerAdjacentRiver { get; }
         float MarshChancePerAdjacentWater { get; }
 
-        bool HasPrimaryResource  { get; }
-        int PrimaryResourceCount { get; }
+        bool HasPrimaryLuxury  { get; }
+        int PrimaryLuxuryCount { get; }
 
-        bool HasSecondaryResource  { get; }
-        int SecondaryResourceCount { get; }
+        bool HasSecondaryLuxury  { get; }
+        int SecondaryLuxuryCount { get; }
 
-        bool HasTertiaryResource  { get; }
-        int TertiaryResourceCount { get; }
+        bool HasTertiaryLuxury  { get; }
+        int TertiaryLuxuryCount { get; }
 
-        bool HasQuaternaryResource  { get; }
-        int QuaternaryResourceCount { get; }
+        bool HasQuaternaryLuxury  { get; }
+        int QuaternaryLuxuryCount { get; }
+
+        bool BalanceResources { get; }
+
+        float MinFood       { get; }
+        float MinProduction { get; }
+
+        float MinScore { get; }
+        float MaxScore { get; }
 
         #endregion
 

@@ -69,7 +69,7 @@ namespace Assets.Simulation.Units.Abilities {
             var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
             return templateOfName != null
-                && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation)
+                && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation, false)
                 && (improvementOnCell == null || improvementOnCell.Template != templateOfName);
         }
 

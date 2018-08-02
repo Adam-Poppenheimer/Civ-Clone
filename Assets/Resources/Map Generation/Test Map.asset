@@ -14,20 +14,20 @@ MonoBehaviour:
   _civCount: 8
   _continentSections:
   - _xMin: 0.05
-    _xMax: 0.45
+    _xMax: 0.49
     _zMin: 0.05
-    _zMax: 0.4
-  - _xMin: 0.55
+    _zMax: 0.45
+  - _xMin: 0.51
     _xMax: 0.95
     _zMin: 0.05
-    _zMax: 0.4
+    _zMax: 0.45
   - _xMin: 0.05
-    _xMax: 0.45
-    _zMin: 0.6
+    _xMax: 0.49
+    _zMin: 0.55
     _zMax: 0.95
-  - _xMin: 0.55
+  - _xMin: 0.51
     _xMax: 0.95
-    _zMin: 0.6
+    _zMin: 0.55
     _zMax: 0.95
   _continentTemplates:
   - {fileID: 11400000, guid: 91c7b68e5b825d54ea42ec31cfd40c89, type: 2}

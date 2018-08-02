@@ -74,13 +74,16 @@ namespace Assets.Simulation.MapGeneration {
             if(validLuxuriesLittleUsed.Any()) {
                 var sampledLuxury = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
                     validLuxuriesLittleUsed, 1, luxury => cellsForLuxury[luxury].Count
-                ).First();
+                ).FirstOrDefault();
 
-                LuxuriesLittleUsed.Remove(sampledLuxury);
+                if(sampledLuxury != null) {
+                    LuxuriesLittleUsed.Remove(sampledLuxury);
 
-                return new ResourceSamplerResults(sampledLuxury, cellsForLuxury[sampledLuxury]);
+                    return new ResourceSamplerResults(sampledLuxury, cellsForLuxury[sampledLuxury]);
+                }
+            }
 
-            }else if(validLuxuries.Any()) {
+            if(validLuxuries.Any()) {
                 var sampledLuxury = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
                     validLuxuries, 1, luxury => cellsForLuxury[luxury].Count
                 ).First();

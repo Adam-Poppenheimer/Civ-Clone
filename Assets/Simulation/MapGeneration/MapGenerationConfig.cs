@@ -211,6 +211,16 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0f, 1f)] private float _temperatureJitter = 0.1f;
 
+        public float CoastChancePerAdjacentOcean {
+            get { return _coastChancePerAdjacentOcean; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _coastChancePerAdjacentOcean = 0.45f;
+
+        public float CoastChancePerNearbyOcean {
+            get { return _coastChancePerNearbyOcean; }
+        }
+        [SerializeField, Range(0f, 0.1f)] private float _coastChancePerNearbyOcean = 0.025f;
+
 
 
 

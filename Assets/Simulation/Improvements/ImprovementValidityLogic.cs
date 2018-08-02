@@ -40,14 +40,16 @@ namespace Assets.Simulation.Improvements {
 
         #region from IImprovementValidityLogic
 
-        public bool IsTemplateValidForCell(IImprovementTemplate template, IHexCell cell) {
+        public bool IsTemplateValidForCell(
+            IImprovementTemplate template, IHexCell cell, bool ignoreOwnership
+        ) {
             if(template == null) {
                 throw new ArgumentNullException("template");
             }else if(cell == null) {
                 throw new ArgumentNullException("cell");
             }
 
-            if(CityLocationCanon.GetPossessionsOfOwner(cell).Count() > 0) {
+            if(!ignoreOwnership && CityLocationCanon.GetPossessionsOfOwner(cell).Count() > 0) {
                 return false;
             }
 

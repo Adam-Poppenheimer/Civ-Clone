@@ -24,6 +24,8 @@ namespace Assets.Simulation.MapGeneration {
         private IRiverCanon            RiverCanon;
         private IRiverGenerator        RiverGenerator;
         private IResourceDistributor   ResourceDistributor;
+        private IRegionBalancer        RegionBalancer;
+        private IMapGenerationConfig   Config;
 
         #endregion
 
@@ -33,7 +35,8 @@ namespace Assets.Simulation.MapGeneration {
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
             IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
-            IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor
+            IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor,
+            IRegionBalancer regionBalancer, IMapGenerationConfig config
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
@@ -42,6 +45,8 @@ namespace Assets.Simulation.MapGeneration {
             RiverCanon          = riverCanon;
             RiverGenerator      = riverGenerator;
             ResourceDistributor = resourceDistributor;
+            RegionBalancer      = regionBalancer;
+            Config              = config;
         }
 
         #endregion
@@ -54,24 +59,49 @@ namespace Assets.Simulation.MapGeneration {
             MapRegion region, IRegionGenerationTemplate template,
             IEnumerable<IHexCell> oceanCells
         ) {
-            GenerateTopology(region, template);
-            PaintTerrain(region, template, oceanCells);
+            var waterCells = new List<IHexCell>(CarveOutCoasts(region, oceanCells));
 
-            RiverGenerator.CreateRiversForRegion(region, template, oceanCells);
+            foreach(var cell in waterCells) {
+                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
+            }
 
-            PaintVegetation(region, template);
+            var undecidedCells = region.Cells.Except(waterCells);
+
+            GenerateTopology(undecidedCells, template);
+            PaintTerrain(undecidedCells, template, oceanCells);
+
+            var newWaterCells = undecidedCells.Where(cell => cell.Terrain.IsWater());
+
+            waterCells.AddRange(newWaterCells);
+
+            var landCells = undecidedCells.Except(newWaterCells);
+
+            RationalizeWater(waterCells, oceanCells);
+
+            RiverGenerator.CreateRiversForRegion(landCells, template, oceanCells);
+
+            PaintVegetation(landCells, template);
 
             ResourceDistributor.DistributeLuxuryResourcesAcrossRegion(region, template, oceanCells);
+            RegionBalancer.BalanceRegionYields(region, template, oceanCells);
         }
 
         #endregion
 
-        private void GenerateTopology(MapRegion region, IRegionGenerationTemplate template) {
-            int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * region.Cells.Count * 0.01f);
-            int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * region.Cells.Count * 0.01f);
+        IEnumerable<IHexCell> CarveOutCoasts(MapRegion region, IEnumerable<IHexCell> oceanCells) {
+            return region.Cells.Where(
+                cell => Grid.GetCellsInRadius(cell, Config.ContinentalShelfDistance).Any(
+                    nearby => oceanCells.Contains(nearby)
+                )
+            ).ToList();
+        }
+
+        private void GenerateTopology(IEnumerable<IHexCell> undecidedCells, IRegionGenerationTemplate template) {
+            int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * undecidedCells.Count() * 0.01f);
+            int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * undecidedCells.Count() * 0.01f);
 
             var elevatedCells = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
-                region.Cells, desiredHillsCount + desiredMountainCount,
+                undecidedCells, desiredHillsCount + desiredMountainCount,
                 HillsStartingWeightFunction, HillsDynamicWeightFunction, cell => Grid.GetNeighbors(cell)
             );
 
@@ -89,7 +119,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void PaintTerrain(
-            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> undecidedCells, IRegionGenerationTemplate template,
             IEnumerable<IHexCell> oceanCells
         ) {
             var terrains = EnumUtil.GetValues<CellTerrain>();
@@ -99,14 +129,14 @@ namespace Assets.Simulation.MapGeneration {
             var terrainCrawlers = new Dictionary<CellTerrain, List<IEnumerator<IHexCell>>>();
             var cellsOfTerrain  = new Dictionary<CellTerrain, List<IHexCell>>();
 
-            var unassignedCells = new HashSet<IHexCell>(region.Cells);
+            var unassignedCells = new HashSet<IHexCell>(undecidedCells);
             var seeds = new List<IHexCell>();
 
             foreach(var terrain in terrains) {
                 var terrainData = template.GetTerrainData(terrain);
                 dataOfTerrains[terrain] = terrainData;
 
-                var terrainCount = Mathf.RoundToInt(region.Cells.Count * terrainData.Percentage * 0.01f);
+                var terrainCount = Mathf.RoundToInt(undecidedCells.Count() * terrainData.Percentage * 0.01f);
 
                 var acceptedCells = new List<IHexCell>();
 
@@ -135,7 +165,7 @@ namespace Assets.Simulation.MapGeneration {
                 cellsOfTerrain [terrain] = acceptedCells;
             }
 
-            foreach(var cell in region.Cells) {
+            foreach(var cell in undecidedCells) {
                 foreach(var terrain in terrains) {
                     if(dataOfTerrains[terrain].ForceAdaptFilter(cell)) {
 
@@ -178,10 +208,26 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void PaintVegetation(MapRegion region, IRegionGenerationTemplate template) {
+        private void RationalizeWater(
+            IEnumerable<IHexCell> waterCells, IEnumerable<IHexCell> oceanCells
+        ) {
+            foreach(var waterCell in waterCells) {
+                var landCandidates = Grid.GetCellsInRadius(waterCell, Config.ContinentalShelfDistance);
+
+                if(landCandidates.Any(cell => !cell.Terrain.IsWater() && !oceanCells.Contains(cell))) {
+                    ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.ShallowWater);
+                }else {
+                    ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.DeepWater);
+                }
+            }
+        }
+
+        private void PaintVegetation(
+            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template
+        ) {
             var openCells = new List<IHexCell>();
 
-            foreach(var cell in region.Cells) {
+            foreach(var cell in landCells) {
                 if(ShouldBeMarsh(cell, template)) {
                     ModLogic.ChangeVegetationOfCell(cell, CellVegetation.Marsh);
 

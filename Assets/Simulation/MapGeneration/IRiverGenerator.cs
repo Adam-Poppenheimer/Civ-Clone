@@ -12,7 +12,7 @@ namespace Assets.Simulation.MapGeneration {
         #region methods
 
         void CreateRiversForRegion(
-            MapRegion region, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
             IEnumerable<IHexCell> oceanCells
         );
 

@@ -8,7 +8,6 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 
