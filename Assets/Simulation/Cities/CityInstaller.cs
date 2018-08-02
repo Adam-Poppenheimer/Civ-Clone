@@ -51,7 +51,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IPossessionRelationship<IHexCell, ICity>> ().To<CityLocationCanon>              ().AsSingle();
             Container.Bind<IPopulationGrowthLogic>                   ().To<PopulationGrowthLogic>          ().AsSingle();
             Container.Bind<IProductionLogic>                         ().To<ProductionLogic>                ().AsSingle();
-            Container.Bind<IYieldGenerationLogic>                 ().To<YieldGenerationLogic>        ().AsSingle();
+            Container.Bind<IYieldGenerationLogic>                    ().To<YieldGenerationLogic>           ().AsSingle();
             Container.Bind<IBorderExpansionLogic>                    ().To<BorderExpansionLogic>           ().AsSingle();
             Container.Bind<IWorkerDistributionLogic>                 ().To<WorkerDistributionLogic>        ().AsSingle();
             Container.Bind<IBuildingProductionValidityLogic>         ().To<BuildingProductionValidityLogic>().AsSingle();
@@ -61,7 +61,8 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityValidityLogic>                       ().To<CityValidityLogic>              ().AsSingle();
             Container.Bind<ICityCombatLogic>                         ().To<CityCombatLogic>                ().AsSingle();
             Container.Bind<ICityHappinessLogic>                      ().To<CityHappinessLogic>             ().AsSingle();
-            Container.Bind<IBuildingYieldLogic>                   ().To<BuildingYieldLogic>          ().AsSingle();
+            Container.Bind<IBuildingInherentYieldLogic>              ().To<BuildingInherentYieldLogic>     ().AsSingle();
+            Container.Bind<ICellYieldFromBuildingsLogic>             ().To<CellYieldFromBuildingsLogic>    ().AsSingle();
             Container.Bind<IUnemploymentLogic>                       ().To<UnemploymentLogic>              ().AsSingle();
             Container.Bind<ICityLineOfSightLogic>                    ().To<CityLineOfSightLogic>           ().AsSingle();
 

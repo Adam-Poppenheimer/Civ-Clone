@@ -75,20 +75,22 @@ namespace Assets.UI.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            IHexCellSignalLogic signalLogic, IYieldGenerationLogic generationLogic,
-            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
+            IHexCellSignalLogic                              signalLogic,
+            IYieldGenerationLogic                            generationLogic,
+            IPossessionRelationship<ICity, IHexCell>         cellPossessionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> resourceNodePositionCanon,
-            IImprovementLocationCanon improvementLocationCanon,
-            ICellYieldLogic cellResourceLogic, ITechCanon techCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IGameCore gameCore
+            IImprovementLocationCanon                        improvementLocationCanon,
+            ICellYieldLogic                                  cellResourceLogic,
+            ITechCanon                                       techCanon,
+            IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
+            IGameCore                                        gameCore
         ){
             SignalLogic               = signalLogic;
             GenerationLogic           = generationLogic;
             CellPossessionCanon       = cellPossessionCanon;
             ResourceNodePositionCanon = resourceNodePositionCanon;
             ImprovementLocationCanon  = improvementLocationCanon;
-            CellYieldLogic         = cellResourceLogic;
+            CellYieldLogic            = cellResourceLogic;
             TechCanon                 = techCanon;
             CityPossessionCanon       = cityPossessionCanon;
             GameCore                  = gameCore;
@@ -151,7 +153,7 @@ namespace Assets.UI.HexMap {
             if(cellOwner != null) {
                 YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfCellForCity(cell, cellOwner));
             }else {
-                YieldDisplay.DisplaySummary(CellYieldLogic.GetYieldOfCell(cell));
+                YieldDisplay.DisplaySummary(CellYieldLogic.GetYieldOfCell(cell, GameCore.ActiveCivilization));
             }
         }
 

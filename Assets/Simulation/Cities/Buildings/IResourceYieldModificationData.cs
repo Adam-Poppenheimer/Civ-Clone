@@ -12,7 +12,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #region instance fields and properties
 
         IResourceDefinition Resource   { get; }
-        YieldSummary              BonusYield { get; }
+        YieldSummary        BonusYield { get; }
 
         #endregion
 

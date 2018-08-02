@@ -15,6 +15,11 @@ namespace Assets.Simulation.HexMap {
                    type == CellTerrain.FreshWater;
         }
 
+        public static bool IsArctic(this CellTerrain type) {
+            return type == CellTerrain.Tundra ||
+                   type == CellTerrain.Snow;
+        }
+
         #endregion
 
     }

@@ -123,7 +123,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void TryAddImprovementTo(IImprovementTemplate template, IHexCell location) {
-            if( ImprovementValidityLogic.IsTemplateValidForCell(template, location) &&
+            if( ImprovementValidityLogic.IsTemplateValidForCell(template, location, true) &&
                 ImprovementLocationCanon.CanPlaceImprovementOfTemplateAtLocation(template, location)
             ) {
                 ImprovementFactory.BuildImprovement(template, location, 0, true, false);

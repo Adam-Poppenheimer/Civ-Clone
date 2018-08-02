@@ -33,13 +33,15 @@ namespace Assets.Tests.Simulation.Improvements {
 
             public ResourceNodeTestData NodeOnCell;
 
+            public bool IgnoreOwnership;
+
         }
 
         public struct HexCellTestData {
 
             public CellTerrain    Terrain;
             public CellVegetation Vegetation;
-            public CellShape   Shape;
+            public CellShape      Shape;
 
             public int FoundationElevation;
 
@@ -83,8 +85,8 @@ namespace Assets.Tests.Simulation.Improvements {
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RestrictedToShapes   = new List<CellShape>  () { CellShape.Flatlands, CellShape.Hills },
-                        RestrictedToTerrains = new List<CellTerrain>   () { CellTerrain.Grassland, CellTerrain.Plains },
+                        RestrictedToShapes      = new List<CellShape>     () { CellShape.Flatlands, CellShape.Hills },
+                        RestrictedToTerrains    = new List<CellTerrain>   () { CellTerrain.Grassland, CellTerrain.Plains },
                         RestrictedToVegetations = new List<CellVegetation>() { CellVegetation.None, CellVegetation.Forest }
                     }
                 }).SetName("Everything is valid").Returns(true);
@@ -193,6 +195,20 @@ namespace Assets.Tests.Simulation.Improvements {
                         RestrictedToVegetations = new List<CellVegetation>() { CellVegetation.None, CellVegetation.Forest }
                     }
                 }).SetName("City on otherwise valid cell").Returns(false);
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None, FoundationElevation = 0
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = true,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes      = new List<CellShape>     () { CellShape.Flatlands,   CellShape.Hills },
+                        RestrictedToTerrains    = new List<CellTerrain>   () { CellTerrain.Grassland, CellTerrain.Plains },
+                        RestrictedToVegetations = new List<CellVegetation>() { CellVegetation.None,   CellVegetation.Forest }
+                    },
+                    IgnoreOwnership = true
+                }).SetName("City on otherwise valid cell, and ownership ignored").Returns(true);
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
@@ -364,7 +380,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
             var validityLogic = Container.Resolve<ImprovementValidityLogic>();
 
-            return validityLogic.IsTemplateValidForCell(templateToTest, cellToTest);
+            return validityLogic.IsTemplateValidForCell(templateToTest, cellToTest, data.IgnoreOwnership);
         }
 
         #endregion

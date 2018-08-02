@@ -489,7 +489,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IIncomeModifierLogic>                          MockIncomeModifierLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<ICellYieldLogic>                            MockCellResourceLogic;
-        private Mock<IBuildingYieldLogic>                        MockBuildingResourceLogic;
+        private Mock<IBuildingInherentYieldLogic>                        MockBuildingResourceLogic;
         private Mock<IUnemploymentLogic>                            MockUnemploymentLogic;
 
         #endregion
@@ -506,7 +506,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockIncomeModifierLogic     = new Mock<IIncomeModifierLogic>();   
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockCellResourceLogic       = new Mock<ICellYieldLogic>();
-            MockBuildingResourceLogic   = new Mock<IBuildingYieldLogic>();
+            MockBuildingResourceLogic   = new Mock<IBuildingInherentYieldLogic>();
             MockUnemploymentLogic       = new Mock<IUnemploymentLogic>();
 
             Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig                 .Object);
@@ -515,7 +515,7 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic    .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
             Container.Bind<ICellYieldLogic>                           ().FromInstance(MockCellResourceLogic      .Object);
-            Container.Bind<IBuildingYieldLogic>                       ().FromInstance(MockBuildingResourceLogic  .Object);
+            Container.Bind<IBuildingInherentYieldLogic>                       ().FromInstance(MockBuildingResourceLogic  .Object);
             Container.Bind<IUnemploymentLogic>                           ().FromInstance(MockUnemploymentLogic      .Object);
 
             Container.Bind<YieldGenerationLogic>().AsSingle();
@@ -641,7 +641,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockCell.Setup(cell => cell.WorkerSlot  ).Returns(BuildWorkerSlot(cellData.Slot));
             mockCell.Setup(cell => cell.SuppressSlot).Returns(cellData.SuppressSlot);
 
-            MockCellResourceLogic.Setup(logic => logic.GetYieldOfCell(mockCell.Object)).Returns(cellData.CellYield);
+            MockCellResourceLogic.Setup(logic => logic.GetYieldOfCell(mockCell.Object, It.IsAny<ICivilization>()))
+                                 .Returns(cellData.CellYield);
 
             return mockCell.Object;
         }

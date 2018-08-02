@@ -172,6 +172,14 @@ namespace Assets.Simulation {
 
         #endregion
 
+        public bool Contains(YieldSummary other) {
+            return Food       >= other.Food
+                && Production >= other.Production
+                && Gold       >= other.Gold
+                && Culture    >= other.Culture
+                && Science    >= other.Science;
+        }
+
         #endregion
 
     }

@@ -37,12 +37,13 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
             Container.Bind<int>()      .WithId("Random Seed") .FromInstance(hexConfig.RandomSeed);
 
-            Container.Bind<ICellYieldLogic>    ().To<CellYieldLogic>    ().AsSingle();
-            Container.Bind<INoiseGenerator>       ().To<NoiseGenerator>       ().AsSingle();
-            Container.Bind<IRiverCanon>           ().To<RiverCanon>           ().AsSingle();
-            Container.Bind<ICellVisibilityCanon>  ().To<CellVisibilityCanon>  ().AsSingle();
-            Container.Bind<IFreshWaterCanon>      ().To<FreshWaterCanon>      ().AsSingle();
-            Container.Bind<ICellModificationLogic>().To<CellModificationLogic>().AsSingle();
+            Container.Bind<ICellYieldLogic>        ().To<CellYieldLogic>        ().AsSingle();
+            Container.Bind<INoiseGenerator>        ().To<NoiseGenerator>        ().AsSingle();
+            Container.Bind<IRiverCanon>            ().To<RiverCanon>            ().AsSingle();
+            Container.Bind<ICellVisibilityCanon>   ().To<CellVisibilityCanon>   ().AsSingle();
+            Container.Bind<IFreshWaterCanon>       ().To<FreshWaterCanon>       ().AsSingle();
+            Container.Bind<ICellModificationLogic> ().To<CellModificationLogic> ().AsSingle();
+            Container.Bind<IInherentCellYieldLogic>().To<InherentCellYieldLogic>().AsSingle();
 
             Container.Bind<MeshWelder>().AsSingle();
 

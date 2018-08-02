@@ -513,7 +513,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             var newTemplate = mockTemplate.Object;
 
             MockImprovementValidityLogic
-                .Setup(logic => logic.IsTemplateValidForCell(newTemplate, It.IsAny<IHexCell>()))
+                .Setup(logic => logic.IsTemplateValidForCell(newTemplate, It.IsAny<IHexCell>(), false))
                 .Returns(templateData.IsValid);
 
             AllTemplates.Add(newTemplate);

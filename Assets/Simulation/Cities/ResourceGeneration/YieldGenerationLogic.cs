@@ -7,7 +7,6 @@ using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
@@ -24,8 +23,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private IIncomeModifierLogic                          IncomeModifierLogic;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private ICellYieldLogic                            CellYieldLogic;
-        private IBuildingYieldLogic                           BuildingYieldLogic;
+        private ICellYieldLogic                               CellYieldLogic;
+        private IBuildingInherentYieldLogic                   BuildingYieldLogic;
         private IUnemploymentLogic                            UnemploymentLogic;
 
         #endregion
@@ -34,19 +33,22 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         [Inject]
         public YieldGenerationLogic(
-            ICityConfig config, IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon, IIncomeModifierLogic incomeModifierLogic,
+            ICityConfig                                   config,
+            IPossessionRelationship<ICity, IHexCell>      cellPossessionCanon,
+            IPossessionRelationship<ICity, IBuilding>     buildingPossessionCanon,
+            IIncomeModifierLogic                          incomeModifierLogic,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellYieldLogic cellResourceLogic, IBuildingYieldLogic buildingResourceLogic,
-            IUnemploymentLogic unemploymentLogic
+            ICellYieldLogic                               cellResourceLogic,
+            IBuildingInherentYieldLogic                   buildingResourceLogic,
+            IUnemploymentLogic                            unemploymentLogic
         ){
             Config                  = config;
             CellPossessionCanon     = cellPossessionCanon;
             BuildingPossessionCanon = buildingPossessionCanon;
             IncomeModifierLogic     = incomeModifierLogic;
             CityPossessionCanon     = cityPossessionCanon;
-            CellYieldLogic       = cellResourceLogic;
-            BuildingYieldLogic   = buildingResourceLogic;
+            CellYieldLogic          = cellResourceLogic;
+            BuildingYieldLogic      = buildingResourceLogic;
             UnemploymentLogic       = unemploymentLogic;
         }
 
@@ -108,9 +110,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("slot");
             }else if(city == null) {
                 throw new ArgumentNullException("city");
-            }            
+            }
 
-            return CellYieldLogic.GetYieldOfCell(cell) * GetMultiplier(city);
+            ICivilization owner = CityPossessionCanon.GetOwnerOfPossession(city);
+
+            return CellYieldLogic.GetYieldOfCell(cell, owner) * GetMultiplier(city);
         }
 
         public YieldSummary GetYieldOfBuildingForCity(IBuilding building, ICity city) {

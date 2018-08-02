@@ -7,7 +7,9 @@ using Zenject;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    public class BuildingYieldLogic : IBuildingYieldLogic {
+    //Only returns yield unassociated with any cells. Yield that buildings add to
+    //cells are added to the cell itself through ICellYieldLogic and
+    public class BuildingInherentYieldLogic : IBuildingInherentYieldLogic {
 
         #region instance fields and properties
 
@@ -18,7 +20,7 @@ namespace Assets.Simulation.Cities.Buildings {
         #region constructors
 
         [Inject]
-        public BuildingYieldLogic(IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon) {
+        public BuildingInherentYieldLogic(IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon) {
             BuildingPossessionCanon = buildingPossessionCanon;
         }
 

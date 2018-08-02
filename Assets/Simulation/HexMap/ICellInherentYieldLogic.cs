@@ -3,15 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.Civilizations;
-
 namespace Assets.Simulation.HexMap {
 
-    public interface ICellYieldLogic {
+    public interface IInherentCellYieldLogic {
 
         #region methods
 
-        YieldSummary GetYieldOfCell(IHexCell cell, ICivilization perspectiveCiv);
+        YieldSummary GetInherentCellYield(IHexCell cell);
 
         #endregion
 

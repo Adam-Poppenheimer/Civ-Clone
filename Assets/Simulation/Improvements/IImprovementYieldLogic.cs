@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Improvements {
 
@@ -11,9 +12,17 @@ namespace Assets.Simulation.Improvements {
 
         #region methods
 
-        YieldSummary GetYieldOfImprovement(IImprovement improvement);
+        YieldSummary GetYieldOfImprovement(
+            IImprovement improvement, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
+        );
 
-        YieldSummary GetExpectedYieldOfImprovementOnCell(IImprovementTemplate template, IHexCell cell);
+        YieldSummary GetYieldOfImprovementTemplate(
+            IImprovementTemplate template, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
+        );
 
         #endregion
 

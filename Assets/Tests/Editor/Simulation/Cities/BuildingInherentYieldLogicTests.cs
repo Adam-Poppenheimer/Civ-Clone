@@ -16,7 +16,7 @@ using Assets.Simulation.WorkerSlots;
 namespace Assets.Tests.Simulation.Cities {
 
     [TestFixture]
-    public class BuildingResourceLogicTests : ZenjectUnitTestFixture {
+    public class BuildingInherentYieldLogicTests : ZenjectUnitTestFixture {
 
         #region internal types
 
@@ -104,7 +104,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
 
-            Container.Bind<BuildingYieldLogic>().AsSingle();
+            Container.Bind<BuildingInherentYieldLogic>().AsSingle();
         }
 
         #endregion
@@ -116,7 +116,7 @@ namespace Assets.Tests.Simulation.Cities {
         public YieldSummary GetYieldOfBuildingTests(BuildingTestData buildingData) {
             var building = BuildBuilding(buildingData);
 
-            var resourceLogic = Container.Resolve<BuildingYieldLogic>();
+            var resourceLogic = Container.Resolve<BuildingInherentYieldLogic>();
 
             return resourceLogic.GetYieldOfBuilding(building);
         }
