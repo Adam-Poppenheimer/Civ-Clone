@@ -50,6 +50,8 @@ namespace Assets.Simulation.MapResources {
         int JungleWeight       { get; }
         int MarshWeight        { get; }
 
+        int SelectionWeight { get; }
+
         Transform AppearancePrefab { get; }
 
         Sprite Icon { get; }

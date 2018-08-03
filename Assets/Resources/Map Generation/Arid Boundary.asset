@@ -29,11 +29,11 @@ MonoBehaviour:
   _tertiaryLuxuryCount: 0
   _hasQuaternaryLuxury: 0
   _quaternaryLuxuryCount: 0
-  _balanceResources: 0
-  _minFood: 150
-  _minProduction: 100
-  _minScore: 0
-  _maxScore: 0
+  _balanceResources: 1
+  _minFoodPerCell: 1
+  _minProductionPerCell: 0.5
+  _minScorePerCell: 3.6
+  _maxScorePerCell: 3.75
   GrasslandsPercentage: 0
   PlainsPercentage: 50
   DesertPercentage: 50
@@ -46,5 +46,5 @@ MonoBehaviour:
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 0
-  TundraThreshold: 0.15
-  SnowThreshold: 0.05
+  TundraThreshold: 0.25
+  SnowThreshold: 0.18

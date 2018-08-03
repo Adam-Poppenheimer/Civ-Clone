@@ -43,7 +43,10 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IRegionBalancer>      ().To<RegionBalancer>      ().AsSingle();
             Container.Bind<IYieldEstimator>      ().To<YieldEstimator>      ().AsSingle();
 
-            Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>  ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<FreshWaterLakeBalanceStrategy>().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>         ().AsSingle();
         }
 
         #endregion

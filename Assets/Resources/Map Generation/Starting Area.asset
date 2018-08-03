@@ -14,7 +14,7 @@ MonoBehaviour:
   _hillsPercentage: 15
   _mountainsPercentage: 5
   _treePercentage: 50
-  _riverPercentage: 20
+  _riverPercentage: 30
   _minTreeClumps: 6
   _maxTreeClumps: 8
   _jungleThreshold: 0.6
@@ -30,10 +30,10 @@ MonoBehaviour:
   _hasQuaternaryLuxury: 0
   _quaternaryLuxuryCount: 0
   _balanceResources: 1
-  _minFood: 115
-  _minProduction: 70
-  _minScore: 240
-  _maxScore: 270
+  _minFoodPerCell: 2
+  _minProductionPerCell: 1
+  _minScorePerCell: 4.15
+  _maxScorePerCell: 4.4
   GrasslandsPercentage: 65
   PlainsPercentage: 35
   DesertPercentage: 0
@@ -46,5 +46,5 @@ MonoBehaviour:
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 0
-  TundraThreshold: 0.15
-  SnowThreshold: 0.05
+  TundraThreshold: 0.25
+  SnowThreshold: 0.18

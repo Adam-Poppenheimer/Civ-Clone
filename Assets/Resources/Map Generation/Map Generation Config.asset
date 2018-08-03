@@ -53,3 +53,9 @@ MonoBehaviour:
   _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
   _minStrategicCopies: 2
   _maxStrategicCopies: 12
+  _yieldScoringWeights:
+    Food: 1
+    Production: 1.5
+    Gold: 1
+    Culture: 2
+    Science: 0.75

@@ -11,15 +11,15 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-
+        private IMapGenerationConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public YieldScorer() {
-
+        public YieldScorer(IMapGenerationConfig config) {
+            Config = config;
         }
 
         #endregion
@@ -29,7 +29,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IYieldScorer
 
         public float GetScoreOfYield(YieldSummary yield) {
-            return yield.Total;
+            return (yield * Config.YieldScoringWeights).Total;
         }
 
         #endregion

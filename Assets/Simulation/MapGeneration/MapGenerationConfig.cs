@@ -239,6 +239,12 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 20)] private int _maxStrategicCopies = 12;
 
+
+        public YieldSummary YieldScoringWeights {
+            get { return _yieldScoringWeights; }
+        }
+        [SerializeField] private YieldSummary _yieldScoringWeights;
+
         #endregion
 
         #endregion

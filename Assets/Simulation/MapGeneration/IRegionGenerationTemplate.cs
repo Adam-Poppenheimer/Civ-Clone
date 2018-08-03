@@ -36,11 +36,11 @@ namespace Assets.Simulation.MapGeneration {
 
         bool BalanceResources { get; }
 
-        float MinFood       { get; }
-        float MinProduction { get; }
+        float MinFoodPerCell       { get; }
+        float MinProductionPerCell { get; }
 
-        float MinScore { get; }
-        float MaxScore { get; }
+        float MinScorePerCell { get; }
+        float MaxScorePerCell { get; }
 
         #endregion
 

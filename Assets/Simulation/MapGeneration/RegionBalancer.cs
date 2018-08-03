@@ -54,29 +54,40 @@ namespace Assets.Simulation.MapGeneration {
                 currentYield += CellYieldEstimator.GetYieldEstimateForCell(cell);
             }
 
+            float minFood       = template.MinFoodPerCell       * region.Cells.Count;
+            float minProduction = template.MinProductionPerCell * region.Cells.Count;
+
             BringYieldTypeToMin(
-                YieldType.Food, template.MinFood, region, ref currentYield
+                YieldType.Food, minFood, region, ref currentYield
             );
 
             BringYieldTypeToMin(
-                YieldType.Production, template.MinProduction, region, ref currentYield
+                YieldType.Production, minProduction, region, ref currentYield
             );
+
+
+            float minScore = template.MinScorePerCell * region.Cells.Count;
+            float maxScore = template.MaxScorePerCell * region.Cells.Count;
 
             var currentScore = YieldScorer.GetScoreOfYield(currentYield);
 
-            Debug.Log("Pre-balance score: " + currentScore);
-
-            int iterations = 100;
+            int iterations = 1000;
             float scoreChange;
 
-            while((currentScore < template.MinScore || currentScore > template.MaxScore) && iterations-- > 0) {
-                var strategy = BalanceStrategies.Random();
+            while((currentScore < minScore || currentScore > maxScore) && iterations-- > 0) {
+                var strategyToAttempt = WeightedRandomSampler<IBalanceStrategy>.SampleElementsFromSet(
+                    BalanceStrategies, 1, strategy => strategy.SelectionWeight
+                ).FirstOrDefault();
 
-                if(currentScore < template.MinScore && strategy.TryIncreaseScore(region, out scoreChange)) {
+                if(strategyToAttempt == null) {
+                    break;
+                }
+
+                if(currentScore < minScore && strategyToAttempt.TryIncreaseScore(region, out scoreChange)) {
                     currentScore += scoreChange;
                 }
 
-                if(currentScore > template.MaxScore && strategy.TryDecreaseScore(region, out scoreChange)) {
+                if(currentScore > maxScore && strategyToAttempt.TryDecreaseScore(region, out scoreChange)) {
                     currentScore -= scoreChange;
                 }
             }

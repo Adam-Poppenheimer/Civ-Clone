@@ -120,26 +120,26 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private bool _balanceResources;
 
-        public float MinFood {
-            get { return _minFood; }
+        public float MinFoodPerCell {
+            get { return _minFoodPerCell; }
         }
-        [SerializeField, Range(0f, 200f)] private float _minFood = 0;
+        [SerializeField, Range(0.5f, 4f)] private float _minFoodPerCell = 0;
 
-        public float MinProduction {
-            get { return _minProduction; }
+        public float MinProductionPerCell {
+            get { return _minProductionPerCell; }
         }
-        [SerializeField, Range(0f, 200f)] private float _minProduction = 0;
+        [SerializeField, Range(0.5f, 4f)] private float _minProductionPerCell = 0;
 
 
-        public float MinScore {
-            get { return _minScore; }
+        public float MinScorePerCell {
+            get { return _minScorePerCell; }
         }
-        [SerializeField, Range(0f, 1000f)] private float _minScore = 0;
+        [SerializeField, Range(1f, 10f)] private float _minScorePerCell = 0;
 
-        public float MaxScore {
-            get { return _maxScore; }
+        public float MaxScorePerCell {
+            get { return _maxScorePerCell; }
         }
-        [SerializeField, Range(0f, 1000f)] private float _maxScore = 0;
+        [SerializeField, Range(1f, 10f)] private float _maxScorePerCell = 0;
 
         #endregion
 

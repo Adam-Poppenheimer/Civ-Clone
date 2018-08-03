@@ -16,6 +16,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
+        #region from IBalanceStrategy
+
+        public int SelectionWeight {
+            get { return 100; }
+        }
+
+        #endregion
+
         private IYieldEstimator           YieldEstimator;
         private IResourceNodeFactory      ResourceNodeFactory;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
@@ -64,21 +72,27 @@ namespace Assets.Simulation.MapGeneration {
             var availableResources = BonusResourcesWithYield[type].ToList();
 
             while(availableResources.Count > 0) {
-                var resource = availableResources.Random();
+                var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                    availableResources, 1, resource => resource.SelectionWeight
+                ).FirstOrDefault();
+
+                if(chosenResource == null) {
+                    break;
+                }
 
                 var cell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
-                    region.Cells, 1, GetResourceWeightFunction(resource)
+                    region.Cells, 1, GetResourceWeightFunction(chosenResource)
                 ).FirstOrDefault();
 
                 if(cell != null) {
                     var oldYield = YieldEstimator.GetYieldEstimateForCell(cell);
 
-                    ResourceNodeFactory.BuildNode(cell, resource, 0);
+                    ResourceNodeFactory.BuildNode(cell, chosenResource, 0);
                     
                     yieldAdded = YieldEstimator.GetYieldEstimateForCell(cell) - oldYield;
                     return true;
                 }else {
-                    availableResources.Remove(resource);
+                    availableResources.Remove(chosenResource);
                 }
             }
 

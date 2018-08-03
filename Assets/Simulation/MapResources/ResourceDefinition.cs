@@ -106,6 +106,10 @@ namespace Assets.Simulation.MapResources {
 
 
 
+        public int SelectionWeight {
+            get { return _selectionWeight; }
+        }
+        [SerializeField] private int _selectionWeight;
 
         public Transform AppearancePrefab {
             get { return _appearancePrefab; }

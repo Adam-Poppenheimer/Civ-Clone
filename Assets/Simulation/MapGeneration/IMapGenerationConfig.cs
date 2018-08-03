@@ -83,6 +83,8 @@ namespace Assets.Simulation.MapGeneration {
         int MinStrategicCopies { get; }
         int MaxStrategicCopies { get; }
 
+        YieldSummary YieldScoringWeights { get; }
+
         #endregion
 
     }

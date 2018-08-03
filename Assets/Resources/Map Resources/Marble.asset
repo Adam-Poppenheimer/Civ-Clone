@@ -35,6 +35,7 @@ MonoBehaviour:
   _forestWeight: 0
   _jungleWeight: 0
   _marshWeight: -1000
+  _selectionWeight: 1
   _appearancePrefab: {fileID: 4307953511643046, guid: ffa44f00895e71f4a96a57ec0f69788e,
     type: 2}
   _icon: {fileID: 21300000, guid: cbfb7ad0824d87d4cab8ea04b92f4837, type: 3}
