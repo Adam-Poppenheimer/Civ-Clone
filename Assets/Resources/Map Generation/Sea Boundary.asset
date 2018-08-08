@@ -46,5 +46,5 @@ MonoBehaviour:
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 3
-  TundraThreshold: 0.25
+  TundraThreshold: 0.27
   SnowThreshold: 0.18

@@ -66,6 +66,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private YieldSummary ShallowWaterYield;
         [SerializeField] private YieldSummary DeepWaterYield;
         [SerializeField] private YieldSummary FreshWaterYield;
+        [SerializeField] private YieldSummary FloodPlainsYield;
 
         [SerializeField] private YieldSummary HillsYield;
         [SerializeField] private YieldSummary MountainsYield;
@@ -108,6 +109,7 @@ namespace Assets.Simulation.HexMap {
                 case CellTerrain.ShallowWater: return ShallowWaterYield;
                 case CellTerrain.DeepWater:    return DeepWaterYield;
                 case CellTerrain.FreshWater:   return FreshWaterYield;
+                case CellTerrain.FloodPlains:  return FloodPlainsYield;
                 default: throw new NotImplementedException();
             }
         }

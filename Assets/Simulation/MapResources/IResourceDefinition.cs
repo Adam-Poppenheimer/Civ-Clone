@@ -24,22 +24,10 @@ namespace Assets.Simulation.MapResources {
 
         IImprovementTemplate Extractor { get; }
 
-        bool ValidOnGrassland    { get; }
-        bool ValidOnPlains       { get; }
-        bool ValidOnDesert       { get; }
-        bool ValidOnTundra       { get; }
-        bool ValidOnSnow         { get; }
-        bool ValidOnShallowWater { get; }
-
-        bool ValidOnHills        { get; }
-
-        bool ValidOnForest       { get; }
-        bool ValidOnJungle       { get; }
-        bool ValidOnMarsh        { get; }
-
         int GrasslandWeight    { get; }
         int PlainsWeight       { get; }
         int DesertWeight       { get; }
+        int FloodPlainsWeight  { get; }
         int TundraWeight       { get; }
         int SnowWeight         { get; }
         int ShallowWaterWeight { get; }

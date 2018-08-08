@@ -13,7 +13,8 @@ namespace Assets.Simulation.HexMap {
         Snow         = 4,
         ShallowWater = 5,
         DeepWater    = 6,
-        FreshWater   = 7
+        FreshWater   = 7,
+        FloodPlains  = 8
     }
 
 }

@@ -17,8 +17,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid    Grid;
-        private IRiverCanon RiverCanon;
+        private IHexGrid               Grid;
+        private IRiverCanon            RiverCanon;
+        private ICellModificationLogic ModLogic;
 
         #endregion
 
@@ -26,11 +27,11 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RiverGenerator(
-            IGridTraversalLogic gridTraversalLogic, IHexGrid grid,
-            IRiverCanon riverCanon
+            IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic modLogic
         ) {
             Grid       = grid;
             RiverCanon = riverCanon;
+            ModLogic   = modLogic;
         }
 
         #endregion
@@ -62,6 +63,9 @@ namespace Assets.Simulation.MapGeneration {
 
                 if(TryBuildNewRiver(landCells, template, oceanCells, start, out cellsAdjacentToNewRiver)) {
                     foreach(var cell in cellsAdjacentToNewRiver) {
+                        if(ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)) {
+                            ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
+                        }
                         riveredCells.Add(cell);
                     }
                 }

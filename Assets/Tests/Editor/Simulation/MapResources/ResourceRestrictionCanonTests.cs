@@ -187,6 +187,11 @@ namespace Assets.Tests.Simulation.MapResources {
             return restrictionCanon.IsResourceValidOnCell(resource, cell);
         }
 
+        [Test]
+        public void MissingTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities
@@ -203,19 +208,21 @@ namespace Assets.Tests.Simulation.MapResources {
 
         private IResourceDefinition BuildResource(ResourceDefinitionTestData resourceData) {
             var mockResource = new Mock<IResourceDefinition>();
+            /*
+            mockResource.Setup(resource => resource.GrasslandWeight)   .Returns(resourceData.GrasslandWeight);
+            mockResource.Setup(resource => resource.PlainsWeight)      .Returns(resourceData.PlainsWeight);
+            mockResource.Setup(resource => resource.DesertWeight)      .Returns(resourceData.DesertWeight);
+            mockResource.Setup(resource => resource.FloodPlainsWeight) .Returns(resourceData.FloodPlainsWeight);
+            mockResource.Setup(resource => resource.TundraWeight)      .Returns(resourceData.TundraWeight);
+            mockResource.Setup(resource => resource.SnowWeight)        .Returns(resourceData.SnowWeight);
+            mockResource.Setup(resource => resource.ShallowWaterWeight).Returns(resourceData.ShallowWaterWeight);
 
-            mockResource.Setup(resource => resource.ValidOnGrassland)   .Returns(resourceData.ValidOnGrassland);
-            mockResource.Setup(resource => resource.ValidOnPlains)      .Returns(resourceData.ValidOnPlains);
-            mockResource.Setup(resource => resource.ValidOnDesert)      .Returns(resourceData.ValidOnDesert);
-            mockResource.Setup(resource => resource.ValidOnTundra)      .Returns(resourceData.ValidOnTundra);
-            mockResource.Setup(resource => resource.ValidOnSnow)        .Returns(resourceData.ValidOnSnow);
-            mockResource.Setup(resource => resource.ValidOnShallowWater).Returns(resourceData.ValidOnShallowWater);
+            mockResource.Setup(resource => resource.HillWeight)       .Returns(resourceData.HillWeight);
 
-            mockResource.Setup(resource => resource.ValidOnHills)       .Returns(resourceData.ValidOnHills);
-
-            mockResource.Setup(resource => resource.ValidOnForest)      .Returns(resourceData.ValidOnForest);
-            mockResource.Setup(resource => resource.ValidOnJungle)      .Returns(resourceData.ValidOnJungle);
-            mockResource.Setup(resource => resource.ValidOnMarsh)       .Returns(resourceData.ValidOnMarsh);
+            mockResource.Setup(resource => resource.ForestWeight)      .Returns(resourceData.ForestWeight);
+            mockResource.Setup(resource => resource.JungleWeight)      .Returns(resourceData.JungleWeight);
+            mockResource.Setup(resource => resource.MarshWeight)       .Returns(resourceData.MarshWeight);
+            */
 
             return mockResource.Object;
         }

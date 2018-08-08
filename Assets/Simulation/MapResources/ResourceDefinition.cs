@@ -38,20 +38,6 @@ namespace Assets.Simulation.MapResources {
         [SerializeField] private ImprovementTemplate _extractor;
 
 
-        public bool ValidOnGrassland    { get { return GrasslandWeight    > 0; } }
-        public bool ValidOnPlains       { get { return PlainsWeight       > 0; } }
-        public bool ValidOnDesert       { get { return DesertWeight       > 0; } }
-        public bool ValidOnTundra       { get { return TundraWeight       > 0; } }
-        public bool ValidOnSnow         { get { return SnowWeight         > 0; } }
-        public bool ValidOnShallowWater { get { return ShallowWaterWeight > 0; } }
-        
-        public bool ValidOnHills        { get { return HillWeight         > 0; } }
-
-        public bool ValidOnForest       { get { return ForestWeight       > 0; } }
-        public bool ValidOnJungle       { get { return JungleWeight       > 0; } }
-        public bool ValidOnMarsh        { get { return MarshWeight        > 0; } }
-
-
         public int GrasslandWeight {
             get { return _grasslandWeight; }
         }
@@ -66,6 +52,11 @@ namespace Assets.Simulation.MapResources {
             get { return _desertWeight; }
         }
         [SerializeField] private int _desertWeight;
+
+        public int FloodPlainsWeight {
+            get { return _floodPlainsWeight; }
+        }
+        [SerializeField] private int _floodPlainsWeight;
 
         public int TundraWeight {
             get { return _tundraWeight; }

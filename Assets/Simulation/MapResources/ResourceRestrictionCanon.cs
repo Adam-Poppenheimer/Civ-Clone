@@ -44,6 +44,7 @@ namespace Assets.Simulation.MapResources {
             weight += (cell.Terrain == CellTerrain.Grassland    ? 1 : 0) * resource.GrasslandWeight;
             weight += (cell.Terrain == CellTerrain.Plains       ? 1 : 0) * resource.PlainsWeight;
             weight += (cell.Terrain == CellTerrain.Desert       ? 1 : 0) * resource.DesertWeight;
+            weight += (cell.Terrain == CellTerrain.FloodPlains  ? 1 : 0) * resource.FloodPlainsWeight;
             weight += (cell.Terrain == CellTerrain.Tundra       ? 1 : 0) * resource.TundraWeight;
             weight += (cell.Terrain == CellTerrain.Snow         ? 1 : 0) * resource.SnowWeight;
             weight += (cell.Terrain == CellTerrain.ShallowWater ? 1 : 0) * resource.ShallowWaterWeight;

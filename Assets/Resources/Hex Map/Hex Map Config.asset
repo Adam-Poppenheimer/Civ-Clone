@@ -67,6 +67,12 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+  FloodPlainsYield:
+    Food: 2
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
   HillsYield:
     Food: 0
     Production: 2

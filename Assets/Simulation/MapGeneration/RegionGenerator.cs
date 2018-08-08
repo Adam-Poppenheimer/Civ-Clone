@@ -80,6 +80,8 @@ namespace Assets.Simulation.MapGeneration {
 
             RiverGenerator.CreateRiversForRegion(landCells, template, oceanCells);
 
+            AssignFloodPlains(landCells);
+
             PaintVegetation(landCells, template);
 
             ResourceDistributor.DistributeLuxuryResourcesAcrossRegion(region, template, oceanCells);
@@ -218,6 +220,14 @@ namespace Assets.Simulation.MapGeneration {
                     ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.ShallowWater);
                 }else {
                     ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.DeepWater);
+                }
+            }
+        }
+
+        private void AssignFloodPlains(IEnumerable<IHexCell> landCells) {
+            foreach(var desertCell in landCells.Where(cell => cell.Terrain == CellTerrain.Desert)) {
+                if(ModLogic.CanChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains)) {
+                    ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
                 }
             }
         }

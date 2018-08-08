@@ -31,7 +31,11 @@ namespace Assets.Simulation.HexMap {
         #region from ICellPropertyModificationLogic
 
         public bool CanChangeTerrainOfCell(IHexCell cell, CellTerrain terrain) {
-            return true;
+            if(terrain == CellTerrain.FloodPlains) {
+                return cell.Terrain == CellTerrain.Desert && cell.Shape == CellShape.Flatlands && RiverCanon.HasRiver(cell);
+            }else {
+                return true;
+            }
         }
 
         public void ChangeTerrainOfCell(IHexCell cell, CellTerrain terrain) {
@@ -47,7 +51,10 @@ namespace Assets.Simulation.HexMap {
                 ChangeVegetationOfCell(cell, CellVegetation.None);
             }
 
-            if(cell.Vegetation == CellVegetation.Forest && (cell.Terrain == CellTerrain.Snow || cell.Terrain == CellTerrain.Desert)) {
+            if(cell.Vegetation == CellVegetation.Forest && (
+                cell.Terrain == CellTerrain.Snow || cell.Terrain == CellTerrain.Desert ||
+                cell.Terrain == CellTerrain.FloodPlains
+            )) {
                 ChangeVegetationOfCell(cell, CellVegetation.None);
             }
 
@@ -77,6 +84,10 @@ namespace Assets.Simulation.HexMap {
             cell.Shape = shape;
 
             if(shape != CellShape.Flatlands) {
+                if(cell.Terrain == CellTerrain.FloodPlains) {
+                    ChangeTerrainOfCell(cell, CellTerrain.Desert);
+                }
+
                 if(cell.Vegetation == CellVegetation.Marsh) {
                     ChangeVegetationOfCell(cell, CellVegetation.None);
                 }
@@ -99,8 +110,8 @@ namespace Assets.Simulation.HexMap {
             if(cell.Terrain.IsWater() && vegetation != CellVegetation.None && vegetation != CellVegetation.Marsh) {
                 return false;
             }else if(vegetation == CellVegetation.Forest) {
-                return cell.Terrain != CellTerrain.Desert && cell.Terrain != CellTerrain.Snow
-                    && cell.Shape != CellShape.Mountains;
+                return cell.Terrain != CellTerrain.Desert && cell.Terrain != CellTerrain.FloodPlains &&
+                       cell.Terrain != CellTerrain.Snow   && cell.Shape != CellShape.Mountains;
             }else if(vegetation == CellVegetation.Jungle) {
                 return (cell.Terrain == CellTerrain.Grassland || cell.Terrain == CellTerrain.Plains)
                     && cell.Shape != CellShape.Mountains;
