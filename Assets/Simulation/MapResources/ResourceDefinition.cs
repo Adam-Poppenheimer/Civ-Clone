@@ -89,8 +89,8 @@ namespace Assets.Simulation.MapResources {
                 case CellTerrain.Tundra:       return TundraWeight;
                 case CellTerrain.Snow:         return SnowWeight;
                 case CellTerrain.ShallowWater: return ShallowWaterWeight;
-                case CellTerrain.DeepWater:    return int.MinValue;
-                case CellTerrain.FreshWater:   return int.MinValue;
+                case CellTerrain.DeepWater:    return -1000;
+                case CellTerrain.FreshWater:   return -1000;
                 default: throw new NotImplementedException();
             }
         }
@@ -99,7 +99,7 @@ namespace Assets.Simulation.MapResources {
             switch(shape) {
                 case CellShape.Flatlands: return FlatlandWeight;
                 case CellShape.Hills:     return HillsWeight;
-                case CellShape.Mountains: return int.MinValue;
+                case CellShape.Mountains: return -1000;
                 default: throw new NotImplementedException();
             }
         }

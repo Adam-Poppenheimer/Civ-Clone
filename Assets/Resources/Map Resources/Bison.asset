@@ -25,16 +25,19 @@ MonoBehaviour:
     Science: 0
   _type: 0
   _extractor: {fileID: 11400000, guid: 5150da6b483a28d4489a8fbba14a57f2, type: 2}
-  _grasslandWeight: 1
-  _plainsWeight: 1
-  _desertWeight: 0
-  _tundraWeight: 0
-  _snowWeight: 0
-  _shallowWaterWeight: 0
-  _hillWeight: -1000
-  _forestWeight: -1000
-  _jungleWeight: -1000
-  _marshWeight: -1000
+  GrasslandWeight: 2
+  PlainsWeight: 3
+  DesertWeight: 0
+  FloodPlainsWeight: 0
+  TundraWeight: 0
+  SnowWeight: 0
+  ShallowWaterWeight: 0
+  FlatlandWeight: 0
+  HillsWeight: -1000
+  NoVegetationWeight: 0
+  ForestWeight: -1000
+  JungleWeight: -1000
+  MarshWeight: -1000
   _selectionWeight: 1
   _appearancePrefab: {fileID: 4285154389039604, guid: 7e78f929e997c614185a315f33caa73e,
     type: 2}

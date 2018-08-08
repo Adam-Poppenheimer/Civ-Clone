@@ -35,32 +35,97 @@ namespace Assets.Tests.Simulation.MapResources {
 
             mockResource.Setup(resource => resource.GetWeightFromTerrain(CellTerrain.Desert)).Returns(15);
 
-            throw new NotImplementedException();
+            var cellToTest = BuildCell(terrain: CellTerrain.Desert);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
+
+            Assert.AreEqual(15, weight);
+
+            mockResource.Verify(
+                resource => resource.GetWeightFromTerrain(CellTerrain.Desert), Times.Once,
+                "resource.GetWeightFromTerrain wasn't called as expected"
+            );
         }
 
         [Test]
         public void GetPlacementWeightOnCell_IncludesWeightFromShape() {
-            throw new NotImplementedException();
+            var mockResource = new Mock<IResourceDefinition>();
+
+            mockResource.Setup(resource => resource.GetWeightFromShape(CellShape.Mountains)).Returns(11);
+
+            var cellToTest = BuildCell(shape: CellShape.Mountains);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
+
+            Assert.AreEqual(11, weight);
+
+            mockResource.Verify(
+                resource => resource.GetWeightFromShape(CellShape.Mountains), Times.Once,
+                "resource.GetWeightFromShape wasn't called as expected"
+            );
         }
 
         [Test]
         public void GetPlacementWeightOnCell_IncludesWeightFromVegetation() {
-            throw new NotImplementedException();
+            var mockResource = new Mock<IResourceDefinition>();
+
+            mockResource.Setup(resource => resource.GetWeightFromVegetation(CellVegetation.Jungle)).Returns(17);
+
+            var cellToTest = BuildCell(vegetation: CellVegetation.Jungle);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
+
+            Assert.AreEqual(17, weight);
+
+            mockResource.Verify(
+                resource => resource.GetWeightFromVegetation(CellVegetation.Jungle), Times.Once,
+                "resource.GetWeightFromVegetation wasn't called as expected"
+            );
         }
 
         [Test]
-        public bool IsResourceValidOnCell_TrueIfWeightIsPositive() {
-            throw new NotImplementedException();
+        public void IsResourceValidOnCell_TrueIfWeightIsPositive() {
+            var mockResource = new Mock<IResourceDefinition>();
+
+            mockResource.Setup(resource => resource.GetWeightFromTerrain(CellTerrain.Grassland)).Returns(1);
+
+            var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            Assert.IsTrue(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }
 
         [Test]
-        public bool IsResourceValidOnCell_FalseIfWeightIsNegative() {
-            throw new NotImplementedException();
+        public void IsResourceValidOnCell_FalseIfWeightIsNegative() {
+            var mockResource = new Mock<IResourceDefinition>();
+
+            mockResource.Setup(resource => resource.GetWeightFromTerrain(CellTerrain.Grassland)).Returns(-1);
+
+            var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            Assert.IsFalse(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }
 
         [Test]
-        public bool IsResourceValidOnCell_FalseIfWeightIsZero() {
-            throw new NotImplementedException();
+        public void IsResourceValidOnCell_FalseIfWeightIsZero() {
+            var mockResource = new Mock<IResourceDefinition>();
+
+            mockResource.Setup(resource => resource.GetWeightFromTerrain(CellTerrain.Grassland)).Returns(0);
+
+            var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
+
+            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+
+            Assert.IsFalse(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }
 
         #endregion
