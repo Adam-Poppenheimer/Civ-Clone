@@ -38,62 +38,22 @@ namespace Assets.Simulation.MapResources {
         [SerializeField] private ImprovementTemplate _extractor;
 
 
-        public int GrasslandWeight {
-            get { return _grasslandWeight; }
-        }
-        [SerializeField] private int _grasslandWeight;
-
-        public int PlainsWeight {
-            get { return _plainsWeight; }
-        }
-        [SerializeField] private int _plainsWeight;
-
-        public int DesertWeight {
-            get { return _desertWeight; }
-        }
-        [SerializeField] private int _desertWeight;
-
-        public int FloodPlainsWeight {
-            get { return _floodPlainsWeight; }
-        }
-        [SerializeField] private int _floodPlainsWeight;
-
-        public int TundraWeight {
-            get { return _tundraWeight; }
-        }
-        [SerializeField] private int _tundraWeight;
-
-        public int SnowWeight {
-            get { return _snowWeight; }
-        }
-        [SerializeField] private int _snowWeight;
-
-        public int ShallowWaterWeight {
-            get { return _shallowWaterWeight; }
-        }
-        [SerializeField] private int _shallowWaterWeight;
+        [SerializeField] private int GrasslandWeight;
+        [SerializeField] private int PlainsWeight;
+        [SerializeField] private int DesertWeight;
+        [SerializeField] private int FloodPlainsWeight;
+        [SerializeField] private int TundraWeight;
+        [SerializeField] private int SnowWeight;
+        [SerializeField] private int ShallowWaterWeight;
 
 
-        public int HillWeight {
-            get { return _hillWeight; }
-        }
-        [SerializeField] private int _hillWeight;
+        [SerializeField] private int FlatlandWeight;
+        [SerializeField] private int HillsWeight;
 
-
-        public int ForestWeight {
-            get { return _forestWeight; }
-        }
-        [SerializeField] private int _forestWeight;
-
-        public int JungleWeight {
-            get { return _jungleWeight; }
-        }
-        [SerializeField] private int _jungleWeight;
-
-        public int MarshWeight {
-            get { return _marshWeight; }
-        }
-        [SerializeField] private int _marshWeight;
+        [SerializeField] private int NoVegetationWeight;
+        [SerializeField] private int ForestWeight;
+        [SerializeField] private int JungleWeight;
+        [SerializeField] private int MarshWeight;
 
 
 
@@ -115,7 +75,49 @@ namespace Assets.Simulation.MapResources {
         #endregion
 
         #endregion
-        
+
+        #region instance methods
+
+        #region from IResourceDefinition
+
+        public int GetWeightFromTerrain(CellTerrain terrain) {
+            switch(terrain) {
+                case CellTerrain.Grassland:    return GrasslandWeight;
+                case CellTerrain.Plains:       return PlainsWeight;
+                case CellTerrain.Desert:       return DesertWeight;
+                case CellTerrain.FloodPlains:  return FloodPlainsWeight;
+                case CellTerrain.Tundra:       return TundraWeight;
+                case CellTerrain.Snow:         return SnowWeight;
+                case CellTerrain.ShallowWater: return ShallowWaterWeight;
+                case CellTerrain.DeepWater:    return int.MinValue;
+                case CellTerrain.FreshWater:   return int.MinValue;
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public int GetWeightFromShape(CellShape shape) {
+            switch(shape) {
+                case CellShape.Flatlands: return FlatlandWeight;
+                case CellShape.Hills:     return HillsWeight;
+                case CellShape.Mountains: return int.MinValue;
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public int GetWeightFromVegetation(CellVegetation vegetation) {
+            switch(vegetation) {
+                case CellVegetation.None:   return NoVegetationWeight;
+                case CellVegetation.Forest: return ForestWeight;
+                case CellVegetation.Jungle: return JungleWeight;
+                case CellVegetation.Marsh:  return MarshWeight;
+                default: throw new NotImplementedException();
+            }
+        }
+
+        #endregion
+
+        #endregion
+
     }
 
 }

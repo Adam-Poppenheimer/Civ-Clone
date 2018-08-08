@@ -24,25 +24,19 @@ namespace Assets.Simulation.MapResources {
 
         IImprovementTemplate Extractor { get; }
 
-        int GrasslandWeight    { get; }
-        int PlainsWeight       { get; }
-        int DesertWeight       { get; }
-        int FloodPlainsWeight  { get; }
-        int TundraWeight       { get; }
-        int SnowWeight         { get; }
-        int ShallowWaterWeight { get; }
-
-        int HillWeight         { get; }
-
-        int ForestWeight       { get; }
-        int JungleWeight       { get; }
-        int MarshWeight        { get; }
-
         int SelectionWeight { get; }
 
         Transform AppearancePrefab { get; }
 
         Sprite Icon { get; }
+
+        #endregion
+
+        #region methods
+
+        int GetWeightFromTerrain   (CellTerrain    terrain);
+        int GetWeightFromShape     (CellShape      shape);
+        int GetWeightFromVegetation(CellVegetation vegetation);
 
         #endregion
 

@@ -35,25 +35,9 @@ namespace Assets.Simulation.MapResources {
         }
 
         public int GetPlacementWeightOnCell(IResourceDefinition resource, IHexCell cell) {
-            if(cell.Shape == CellShape.Mountains) {
-                return 0;
-            }
-
-            int weight = 0;
-
-            weight += (cell.Terrain == CellTerrain.Grassland    ? 1 : 0) * resource.GrasslandWeight;
-            weight += (cell.Terrain == CellTerrain.Plains       ? 1 : 0) * resource.PlainsWeight;
-            weight += (cell.Terrain == CellTerrain.Desert       ? 1 : 0) * resource.DesertWeight;
-            weight += (cell.Terrain == CellTerrain.FloodPlains  ? 1 : 0) * resource.FloodPlainsWeight;
-            weight += (cell.Terrain == CellTerrain.Tundra       ? 1 : 0) * resource.TundraWeight;
-            weight += (cell.Terrain == CellTerrain.Snow         ? 1 : 0) * resource.SnowWeight;
-            weight += (cell.Terrain == CellTerrain.ShallowWater ? 1 : 0) * resource.ShallowWaterWeight;
-
-            weight += (cell.Shape == CellShape.Hills ? 1 : 0) * resource.HillWeight;
-
-            weight += (cell.Vegetation == CellVegetation.Forest ? 1 : 0) * resource.ForestWeight;
-            weight += (cell.Vegetation == CellVegetation.Jungle ? 1 : 0) * resource.JungleWeight;
-            weight += (cell.Vegetation == CellVegetation.Marsh  ? 1 : 0) * resource.MarshWeight;
+            int weight = resource.GetWeightFromTerrain   (cell.Terrain   ) +
+                         resource.GetWeightFromShape     (cell.Shape     ) +
+                         resource.GetWeightFromVegetation(cell.Vegetation);
 
             return Math.Max(0, weight);
         }
