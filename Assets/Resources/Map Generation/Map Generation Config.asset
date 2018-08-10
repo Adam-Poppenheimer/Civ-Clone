@@ -51,8 +51,8 @@ MonoBehaviour:
   _coastChancePerAdjacentOcean: 0.45
   _coastChancePerNearbyOcean: 0.025
   _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
-  _minStrategicCopies: 2
-  _maxStrategicCopies: 12
+  _minStrategicCopies: 1
+  _maxStrategicCopies: 10
   _yieldScoringWeights:
     Food: 1
     Production: 1.5

@@ -42,6 +42,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IYieldScorer>         ().To<YieldScorer>         ().AsSingle();
             Container.Bind<IRegionBalancer>      ().To<RegionBalancer>      ().AsSingle();
             Container.Bind<IYieldEstimator>      ().To<YieldEstimator>      ().AsSingle();
+            Container.Bind<IStrategicCopiesLogic>().To<StrategicCopiesLogic>().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();

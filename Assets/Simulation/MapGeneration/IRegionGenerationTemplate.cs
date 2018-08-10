@@ -34,6 +34,9 @@ namespace Assets.Simulation.MapGeneration {
         bool HasQuaternaryLuxury  { get; }
         int QuaternaryLuxuryCount { get; }
 
+        float StrategicNodesPerCell  { get; }
+        float StrategicCopiesPerCell { get; }
+
         bool BalanceResources { get; }
 
         float MinFoodPerCell       { get; }

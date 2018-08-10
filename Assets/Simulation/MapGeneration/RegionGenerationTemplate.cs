@@ -113,6 +113,16 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 10)] private int _quaternaryLuxuryCount;
 
+        public float StrategicNodesPerCell {
+            get { return _strategicNodesPerCell; }
+        }
+        [SerializeField, Range(0f, 0.5f)] private float _strategicNodesPerCell;
+
+        public float StrategicCopiesPerCell {
+            get { return _strategicCopiesPerCell; }
+        }
+        [SerializeField, Range(0f, 2f)] private float _strategicCopiesPerCell;
+
 
 
         public bool BalanceResources {

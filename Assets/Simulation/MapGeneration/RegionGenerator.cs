@@ -84,7 +84,9 @@ namespace Assets.Simulation.MapGeneration {
 
             PaintVegetation(landCells, template);
 
-            ResourceDistributor.DistributeLuxuryResourcesAcrossRegion(region, template, oceanCells);
+            ResourceDistributor.DistributeLuxuryResourcesAcrossRegion   (region, template);
+            ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, template);
+
             RegionBalancer.BalanceRegionYields(region, template, oceanCells);
         }
 

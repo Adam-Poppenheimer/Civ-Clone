@@ -98,8 +98,6 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             currentScore = YieldScorer.GetScoreOfYield(currentYield);
-
-            Debug.Log("Post-balance score: " + currentScore);
         }
 
         #endregion

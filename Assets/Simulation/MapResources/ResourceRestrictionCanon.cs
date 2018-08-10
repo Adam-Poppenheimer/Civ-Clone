@@ -13,15 +13,17 @@ namespace Assets.Simulation.MapResources {
 
         #region instance fields and properties
 
-
+        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ResourceRestrictionCanon() {
-
+        public ResourceRestrictionCanon(
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon
+        ) {
+            NodeLocationCanon = nodeLocationCanon;
         }
 
         #endregion
@@ -35,6 +37,10 @@ namespace Assets.Simulation.MapResources {
         }
 
         public int GetPlacementWeightOnCell(IResourceDefinition resource, IHexCell cell) {
+            if(NodeLocationCanon.GetPossessionsOfOwner(cell).Any()) {
+                return 0;
+            }
+
             int weight = resource.GetWeightFromTerrain   (cell.Terrain   ) +
                          resource.GetWeightFromShape     (cell.Shape     ) +
                          resource.GetWeightFromVegetation(cell.Vegetation);
