@@ -19,6 +19,7 @@ namespace Assets.Simulation.HexMap {
         private IWaterTriangulator        WaterTriangulator;
         private IRoadTriangulator         RoadTriangulator;
         private IMarshTriangulator        MarshTriangulator;
+        private IFloodPlainsTriangulator  FloodPlainsTriangulator;
 
         #endregion
 
@@ -30,7 +31,7 @@ namespace Assets.Simulation.HexMap {
             IHexGridMeshBuilder meshBuilder, ICultureTriangulator cultureTriangulator,
             IBasicTerrainTriangulator basicTerrainTriangulator,
             IWaterTriangulator waterTriangulator, IRoadTriangulator roadTriangulator,
-            IMarshTriangulator marshTriangulator
+            IMarshTriangulator marshTriangulator, IFloodPlainsTriangulator floodPlainsTriangulator
         ) {
             Grid                     = grid;
             RiverTriangulator        = riverTriangulator;
@@ -40,6 +41,7 @@ namespace Assets.Simulation.HexMap {
             WaterTriangulator        = waterTriangulator;
             RoadTriangulator         = roadTriangulator;
             MarshTriangulator        = marshTriangulator;
+            FloodPlainsTriangulator  = floodPlainsTriangulator;
         }
 
         #endregion
@@ -96,6 +98,14 @@ namespace Assets.Simulation.HexMap {
 
             if(MarshTriangulator.ShouldTriangulateMarshCorner(thisData)) {
                 MarshTriangulator.TriangulateMarshCorner(thisData);
+            }
+
+            if(FloodPlainsTriangulator.ShouldTriangulateFloodPlainEdge(thisData)) {
+                FloodPlainsTriangulator.TriangulateFloodPlainEdge(thisData);
+            }
+
+            if(FloodPlainsTriangulator.ShouldTriangulateFloodPlainCorner(thisData)) {
+                FloodPlainsTriangulator.TriangulateFloodPlainCorner(thisData);
             }
         }
 

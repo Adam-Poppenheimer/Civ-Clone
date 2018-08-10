@@ -20,6 +20,11 @@ namespace Assets.Simulation.HexMap {
                    type == CellTerrain.Snow;
         }
 
+        public static bool IsDesert(this CellTerrain type) {
+            return type == CellTerrain.Desert ||
+                   type == CellTerrain.FloodPlains;
+        }
+
         #endregion
 
     }

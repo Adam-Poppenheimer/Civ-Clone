@@ -106,6 +106,8 @@ namespace Assets.Simulation.HexMap {
                 CellTextureData[cell.Index].a = (byte)Config.WaterTerrainIndex;
             }else if(cell.Shape == CellShape.Mountains) {
                 CellTextureData[cell.Index].a = (byte)Config.MountainTerrainIndex;
+            }else if(cell.Terrain == CellTerrain.FloodPlains) {
+                CellTextureData[cell.Index].a = (byte)CellTerrain.Desert;
             }else {
                 CellTextureData[cell.Index].a = (byte)cell.Terrain;
             }

@@ -33,6 +33,8 @@ namespace Assets.Simulation.HexMap {
             set {
                 _terrain = value;
 
+                Refresh();
+
                 ShaderData.RefreshTerrain(this);
             }
         }

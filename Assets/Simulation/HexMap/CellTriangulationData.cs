@@ -315,17 +315,35 @@ namespace Assets.Simulation.HexMap {
         public Vector3 CenterPeak {
             get {
                 if(_centerPeak == null) {
-                    _centerPeak = new Vector3(
-                        Center.LocalPosition.x,
-                        Center.PeakY,
-                        Center.LocalPosition.z
-                    );
+                    _centerPeak = new Vector3(Center.LocalPosition.x, Center.PeakY, Center.LocalPosition.z);
                 }
 
                 return _centerPeak.GetValueOrDefault();
             }
         }
         private Vector3? _centerPeak;
+
+        public Vector3 LeftPeak {
+            get {
+                if(_leftPeak == null) {
+                    _leftPeak = new Vector3(Left.LocalPosition.x, Left.PeakY, Left.LocalPosition.z);
+                }
+
+                return _leftPeak.GetValueOrDefault();
+            }
+        }
+        private Vector3? _leftPeak;
+
+        public Vector3 RightPeak {
+            get {
+                if(_rightPeak == null) {
+                    _rightPeak = new Vector3(Right.LocalPosition.x, Right.PeakY, Right.LocalPosition.z);
+                }
+
+                return _rightPeak.GetValueOrDefault();
+            }
+        }
+        private Vector3? _rightPeak;
 
         public EdgeVertices CenterToRightInnerEdge {
             get {
@@ -340,6 +358,34 @@ namespace Assets.Simulation.HexMap {
             }
         }
         private EdgeVertices? _centerToRightInnerEdge;
+
+        public EdgeVertices LeftToRightInnerEdge {
+            get {
+                if(_leftToRightInnerEdge == null) {
+                    _leftToRightInnerEdge = new EdgeVertices(
+                        LeftPeak + HexMetrics.GetFirstInnerSolidCorner (Direction.Next()),
+                        LeftPeak + HexMetrics.GetSecondInnerSolidCorner(Direction.Next())
+                    );
+                }
+
+                return _leftToRightInnerEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToRightInnerEdge;
+
+        public EdgeVertices RightToLeftInnerEdge {
+            get {
+                if(_rightToLeftInnerEdge == null) {
+                    _rightToLeftInnerEdge = new EdgeVertices(
+                        RightPeak + HexMetrics.GetFirstInnerSolidCorner (Direction.Previous2()),
+                        RightPeak + HexMetrics.GetSecondInnerSolidCorner(Direction.Previous2())
+                    );
+                }
+
+                return _rightToLeftInnerEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _rightToLeftInnerEdge;
 
         public Vector3 CenterWaterMidpoint {
             get {

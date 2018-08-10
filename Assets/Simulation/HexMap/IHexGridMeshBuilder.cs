@@ -27,6 +27,7 @@ namespace Assets.Simulation.HexMap {
         HexMesh WaterShore       { get; }
         HexMesh Estuaries        { get; }
         HexMesh Marsh            { get; }
+        HexMesh FloodPlains      { get; }
 
         #endregion
 
@@ -89,6 +90,12 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices edgeOne, Color weightsOnes,
             EdgeVertices edgeTwo, Color weightsTwo,
             Vector3 indices, HexMesh targetMesh
+        );
+
+        void TriangulateEdgeStripUnperturbed(
+            EdgeVertices e1, Color w1, float index1, float v1,
+            EdgeVertices e2, Color w2, float index2, float v2,
+            HexMesh targetMesh
         );
 
         void AddTriangle(

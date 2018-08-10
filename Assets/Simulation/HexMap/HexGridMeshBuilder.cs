@@ -70,6 +70,7 @@ namespace Assets.Simulation.HexMap {
         public HexMesh WaterShore       { get; private set; }
         public HexMesh Estuaries        { get; private set; }
         public HexMesh Marsh            { get; private set; }
+        public HexMesh FloodPlains      { get; private set; }
 
         private INoiseGenerator NoiseGenerator;
         private IRiverCanon     RiverCanon;
@@ -91,6 +92,7 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Water Shore")]       HexMesh waterShore,
             [Inject(Id = "Estuaries")]         HexMesh estuaries,
             [Inject(Id = "Marsh")]             HexMesh marsh,
+            [Inject(Id = "Flood Plains")]      HexMesh floodPlains,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IHexGrid grid
         ) {
@@ -105,6 +107,7 @@ namespace Assets.Simulation.HexMap {
             WaterShore       = waterShore;
             Estuaries        = estuaries;
             Marsh            = marsh;
+            FloodPlains      = floodPlains;
 
             NoiseGenerator = noiseGenerator;
             RiverCanon     = riverCanon;
@@ -129,6 +132,7 @@ namespace Assets.Simulation.HexMap {
             Estuaries       .Clear();
             Culture         .Clear();
             Marsh           .Clear();
+            FloodPlains     .Clear();
         }
 
         public void ApplyMeshes() {
@@ -143,6 +147,7 @@ namespace Assets.Simulation.HexMap {
             Estuaries       .Apply();
             Culture         .Apply();
             Marsh           .Apply();
+            FloodPlains     .Apply();
         }
 
         public CellTriangulationData GetTriangulationData(
@@ -360,6 +365,23 @@ namespace Assets.Simulation.HexMap {
             targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
             targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
             targetMesh.AddQuadCellData(indices, weightsOne, weightsTwo);
+        }
+
+        public void TriangulateEdgeStripUnperturbed(
+            EdgeVertices e1, Color w1, float index1, float v1,
+            EdgeVertices e2, Color w2, float index2, float v2,
+            HexMesh targetMesh
+        ) {
+            TriangulateEdgeStripUnperturbed(
+                e1, w1, index1,
+                e2, w2, index2,
+                targetMesh
+            );
+
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
+            targetMesh.AddQuadUV(0f, 0f, v1, v2);
         }
 
         public void TriangulateRoadSegment(
