@@ -38,7 +38,7 @@ namespace Assets.Simulation.HexMap {
         bool     HasNeighbor(IHexCell center, HexDirection direction);
         IHexCell GetNeighbor(IHexCell center, HexDirection direction);
 
-        int GetDistance(IHexCell tileOne, IHexCell tileTwo);
+        int GetDistance(IHexCell cellOne, IHexCell cellTwo);
 
         List<IHexCell> GetCellsInRadius(IHexCell center, int radius);
 

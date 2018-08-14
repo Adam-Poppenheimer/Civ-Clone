@@ -19,7 +19,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IBalanceStrategy
 
         public int SelectionWeight {
-            get { return 10; }
+            get { return 3; }
         }
 
         #endregion
@@ -109,7 +109,7 @@ namespace Assets.Simulation.MapGeneration {
                     !cell.Terrain.IsWater() && ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FreshWater)
                 ) {
                     bool surroundedByLand = Grid.GetNeighbors(cell).All(
-                        neighbor => region.Cells.Contains(neighbor) && neighbor.Terrain != CellTerrain.ShallowWater &&
+                        neighbor => region.Land.Cells.Contains(neighbor) && neighbor.Terrain != CellTerrain.ShallowWater &&
                                     neighbor.Terrain != CellTerrain.DeepWater
                     );
 

@@ -32,7 +32,6 @@ namespace Assets.Simulation.MapGeneration {
 
             Container.Bind<IMapGenerationConfig>().To<MapGenerationConfig>().FromInstance(Config);
 
-            Container.Bind<IContinentGenerator>  ().To<ContinentGenerator>  ().AsSingle();
             Container.Bind<IOceanGenerator>      ().To<OceanGenerator>      ().AsSingle();
             Container.Bind<IRegionGenerator>     ().To<RegionGenerator>     ().AsSingle();
             Container.Bind<ICellTemperatureLogic>().To<CellTemperatureLogic>().AsSingle();
@@ -45,8 +44,8 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IStrategicCopiesLogic>().To<StrategicCopiesLogic>().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
-            Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();
-            Container.Bind<IBalanceStrategy>().To<FreshWaterLakeBalanceStrategy>().AsSingle();
+            //Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();
+            //Container.Bind<IBalanceStrategy>().To<FreshWaterLakeBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>         ().AsSingle();
         }
 

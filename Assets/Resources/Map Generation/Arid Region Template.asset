@@ -9,40 +9,42 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Arid Boundary
+  m_Name: Arid Region Template
   m_EditorClassIdentifier: 
-  _hillsPercentage: 15
+  _hillsPercentage: 20
   _mountainsPercentage: 5
   _treePercentage: 15
-  _riverPercentage: 5
-  _minTreeClumps: 8
+  _riverPercentage: 30
+  _minTreeClumps: 6
   _maxTreeClumps: 8
-  _jungleThreshold: 1
+  _jungleThreshold: 0
   _marshChanceBase: 0
   _marshChancePerAdjacentWater: 0
   _marshChancePerAdjacentRiver: 0
-  _hasLuxuryResource: 0
-  _primaryLuxuryCount: 0
-  _hasSecondaryLuxury: 0
-  _secondaryLuxuryCount: 0
-  _hasTertiaryLuxury: 0
-  _tertiaryLuxuryCount: 0
+  _hasLuxuryResource: 1
+  _primaryLuxuryCount: 4
+  _hasSecondaryLuxury: 1
+  _secondaryLuxuryCount: 2
+  _hasTertiaryLuxury: 1
+  _tertiaryLuxuryCount: 1
   _hasQuaternaryLuxury: 0
   _quaternaryLuxuryCount: 0
+  _strategicNodesPerCell: 0.05
+  _strategicCopiesPerCell: 0.2
   _balanceResources: 1
-  _minFoodPerCell: 1
-  _minProductionPerCell: 0.5
-  _minScorePerCell: 3.6
-  _maxScorePerCell: 3.75
+  _minFoodPerCell: 2
+  _minProductionPerCell: 1
+  _minScorePerCell: 4
+  _maxScorePerCell: 4.3
   GrasslandsPercentage: 0
-  PlainsPercentage: 50
-  DesertPercentage: 50
+  PlainsPercentage: 55
+  DesertPercentage: 45
   TundraPercentage: 0
   SnowPercentage: 0
   WaterPercentage: 0
   GrasslandSeedCount: 1
-  PlainsSeedCount: 5
-  DesertSeedCount: 2
+  PlainsSeedCount: 3
+  DesertSeedCount: 4
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 0

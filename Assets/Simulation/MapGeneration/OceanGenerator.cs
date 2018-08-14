@@ -35,7 +35,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IOceanGenerator
 
         public void GenerateOcean(
-            MapRegion ocean, IOceanGenerationTemplate template, IEnumerable<IHexCell> continentCells
+            MapSection ocean, IOceanGenerationTemplate template
         ) {
             foreach(var cell in ocean.Cells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);

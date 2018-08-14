@@ -12,50 +12,24 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 1816454421
-  _jitterProbability: 0.5
-  _chunkSizeMin: 30
-  _chunkSizeMax: 60
+  _fixedSeed: 985071056
   _landPercentage: 30
-  _mountainThreshold: 0.7
-  _hillsThreshold: 0.65
-  _flatlandsThreshold: 0
-  _sectionRaisePressureMin: 0
-  _sectionRaisePressureMax: 0.4
-  _lakeMaxSize: 8
-  _inlandSeaMaxSize: 20
-  _continentalShelfDistance: 1
   _hardMapBorderX: 2
-  _hardMapBorderZ: 1
+  _hardMapBorderZ: 3
   _softMapBorderX: 3
-  _softMapBorderZ: 3
-  _softBorderAvoidance: 1
-  _regionBorder: 5
-  _regionCount: 2
-  _startingMoisture: 0.1
-  _evaporationCoefficient: 0.5
-  _precipitationCoefficient: 0.25
-  _runoffCoefficient: 0.25
-  _seepageCoefficient: 0.125
-  _windDirection: 4
-  _windStrength: 5
-  _flatlandsCloudMaximum: 0.9
-  _hillsCloudMaximum: 0.5
-  _mountainsCloudMaximum: 0.1
-  _riverSegmentPercentage: 10
-  _riverMaxLengthInHexes: 30
+  _softMapBorderZ: 4
+  _softBorderAvoidanceWeight: 50
   _lowTemperature: 0
   _highTemperature: 1
   _hemispheres: 0
   _temperatureJitter: 0.1
-  _coastChancePerAdjacentOcean: 0.45
-  _coastChancePerNearbyOcean: 0.025
   _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
   _minStrategicCopies: 1
   _maxStrategicCopies: 10
   _yieldScoringWeights:
-    Food: 1
+    Food: 1.25
     Production: 1.5
-    Gold: 1
+    Gold: 1.5
     Culture: 2
     Science: 0.75
+  _maxLakeSize: 6

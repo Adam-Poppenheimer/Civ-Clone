@@ -46,6 +46,8 @@ namespace Assets.Simulation.MapGeneration {
                     sample.Add(selectedElement);
                     totalWeight -= selectedWeight;
                     weights.Remove(selectedElement);
+                }else {
+                    break;
                 }
             }
 

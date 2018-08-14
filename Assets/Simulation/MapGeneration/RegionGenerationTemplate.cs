@@ -167,17 +167,15 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField, Range(0, 20)] private int SnowSeedCount;
         [SerializeField, Range(0, 20)] private int WaterSeedCount;
 
-        [SerializeField, Range(0f, 1f)] private float TundraThreshold;
-        [SerializeField, Range(0f, 1f)] private float SnowThreshold;
-        
+        [SerializeField, Range(0f, 1f)] private float ArcticThreshold;
 
         private TerrainData GrasslandData {
             get {
                 if(grasslandData == null) {
                     grasslandData = new TerrainData(
                         GrasslandsPercentage, GrasslandSeedCount,
-                        DefaultWeightFunction, DefaultSeedFilter,
-                        AutoRejectThresholdFunction
+                        DefaultCrawlingWeightFunction, DefaultSeedFilter,
+                        DefaultSeedWeightFunction
                     );
                 }
 
@@ -191,8 +189,8 @@ namespace Assets.Simulation.MapGeneration {
                 if(plainsData == null) {
                     plainsData = new TerrainData(
                         PlainsPercentage, PlainsSeedCount,
-                        DefaultWeightFunction, DefaultSeedFilter,
-                        AutoRejectThresholdFunction
+                        DefaultCrawlingWeightFunction, DefaultSeedFilter,
+                        DefaultSeedWeightFunction
                     );
                 }
 
@@ -206,8 +204,8 @@ namespace Assets.Simulation.MapGeneration {
                 if(desertData == null) {
                     desertData = new TerrainData(
                         DesertPercentage, DesertSeedCount,
-                        DefaultWeightFunction, DefaultSeedFilter,
-                        AutoRejectThresholdFunction
+                        DefaultCrawlingWeightFunction, DefaultSeedFilter,
+                        DefaultSeedWeightFunction
                     );
                 }
 
@@ -219,14 +217,10 @@ namespace Assets.Simulation.MapGeneration {
         private TerrainData TundraData {
             get {
                 if(tundraData == null) {
-                    var thresholdFunction = BuildTemperatureThresholdFunction(
-                        SnowThreshold, TundraThreshold, UnityEngine.Random.Range(0, 4)
-                    );
-
                     tundraData = new TerrainData(
                         TundraPercentage, TundraSeedCount,
-                        DefaultWeightFunction, DefaultSeedFilter,
-                        thresholdFunction
+                        ArcticCrawlingWeightFunction, DefaultSeedFilter,
+                        ArcticWeightFunction
                     );
                 }
 
@@ -238,14 +232,10 @@ namespace Assets.Simulation.MapGeneration {
         private TerrainData SnowData {
             get {
                 if(snowData == null) {
-                    var thresholdFunction = BuildTemperatureThresholdFunction(
-                        0, SnowThreshold, UnityEngine.Random.Range(0, 4)
-                    );
-
                     snowData = new TerrainData(
                         SnowPercentage, SnowSeedCount,
-                        DefaultWeightFunction, DefaultSeedFilter,
-                        thresholdFunction
+                        ArcticCrawlingWeightFunction, ArcticSeedFilter,
+                        ArcticWeightFunction
                     );
                 }
 
@@ -254,27 +244,12 @@ namespace Assets.Simulation.MapGeneration {
         }
         private TerrainData snowData;
 
-        private TerrainData WaterData {
-            get {
-                if(waterData == null) {
-                    waterData = new TerrainData(
-                        WaterPercentage, WaterSeedCount,
-                        DefaultWeightFunction, WaterSeedFilter,
-                        AutoRejectThresholdFunction
-                    );
-                }
-
-                return waterData;
-            }
-        }
-        private TerrainData waterData;
-
         private TerrainData DefaultData {
             get {
                 if(defaultData == null) {
                     defaultData = new TerrainData(
-                        0, 0, DefaultWeightFunction, DefaultSeedFilter,
-                        AutoRejectThresholdFunction
+                        0, 0, DefaultCrawlingWeightFunction, ArcticSeedFilter,
+                        DefaultSeedWeightFunction
                     );
                 }
 
@@ -308,7 +283,6 @@ namespace Assets.Simulation.MapGeneration {
             desertData    = null;
             tundraData    = null;
             snowData      = null;
-            waterData     = null;
             defaultData   = null;
         }
 
@@ -323,7 +297,6 @@ namespace Assets.Simulation.MapGeneration {
                 case CellTerrain.Desert:    return DesertData;
                 case CellTerrain.Tundra:    return TundraData;
                 case CellTerrain.Snow:      return SnowData;
-                case CellTerrain.DeepWater: return WaterData;
 
                 default: return DefaultData;
             }
@@ -331,42 +304,36 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private bool AutoRejectThresholdFunction(IHexCell cell) {
-            return false;
-        }
-
-        private Predicate<IHexCell> BuildTemperatureThresholdFunction(
-            float minTemperature, float maxTemperature, int jitterChannel
-        ) {
-            return delegate(IHexCell cell) {
-                float temperature = TemperatureLogic.GetTemperatureOfCell(cell, jitterChannel);
-
-                return temperature >= minTemperature && temperature < maxTemperature;
-            };
-        }
-
-        private int DefaultWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-            return Grid.GetDistance(cell, seed);
-        }
-
-        private int WaterWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-            int distance = Grid.GetDistance(cell, seed);
-
-            if(Grid.GetNeighbors(cell).Exists(
-                neighbor => neighbor.Terrain.IsWater() || acceptedCells.Contains(neighbor)
-            )) {
-                return distance;
+        private int DefaultCrawlingWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
+            if(acceptedCells.Contains(cell)) {
+                return 0;
             }else {
-                return distance + 100;
+                return Grid.GetDistance(cell, seed);
             }
         }
 
-        private bool DefaultSeedFilter(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
+        private bool DefaultSeedFilter(IHexCell cell, MapSection land, MapSection water) {
             return true;
         }
 
-        private bool WaterSeedFilter(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
-            return Grid.GetCellsInRadius(cell, 2).Intersect(oceanCells).Any();
+        private int DefaultSeedWeightFunction(IHexCell cell) {
+            return 1;
+        }
+
+        private bool ArcticSeedFilter(IHexCell cell, MapSection land, MapSection water) {
+            return TemperatureLogic.GetTemperatureOfCell(cell, 0) <= ArcticThreshold;
+        }
+
+        private int ArcticCrawlingWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
+            if(acceptedCells.Contains(cell)) {
+                return 0;
+            }else {
+                return ArcticWeightFunction(cell);
+            }
+        }
+
+        private int ArcticWeightFunction(IHexCell cell) {
+            return 1000 - Mathf.RoundToInt(1000 * TemperatureLogic.GetTemperatureOfCell(cell, 0));
         }
 
         #endregion

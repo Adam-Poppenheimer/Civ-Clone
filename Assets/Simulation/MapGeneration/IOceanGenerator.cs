@@ -11,9 +11,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateOcean(
-            MapRegion ocean, IOceanGenerationTemplate template, IEnumerable<IHexCell> continentCells
-        );
+        void GenerateOcean(MapSection ocean, IOceanGenerationTemplate template);
 
         #endregion
 

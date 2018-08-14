@@ -11,12 +11,20 @@ namespace Assets.Simulation.MapGeneration {
 
         int CivCount { get; }
 
-        IEnumerable<MapSection> ContinentSections { get; }
+        IEnumerable<IRegionGenerationTemplate> CivRegionTemplates { get; }
+        IEnumerable<IOceanGenerationTemplate>  OceanTemplates     { get; }
 
-        IEnumerable<IContinentGenerationTemplate> ContinentTemplates { get; }
-        IEnumerable<IOceanGenerationTemplate>     OceanTemplates     { get; }
+        int ContinentalLandPercentage { get; }
 
-        int LuxuriesPerContinent { get; }
+        int VoronoiPointCount { get; }
+
+        int VoronoiPartitionIterations { get; }
+
+        int MinStartingLocationDistance { get; }
+
+
+        int NeighborsInContinentWeight     { get; }
+        int DistanceFromSeedCentroidWeight { get; }
 
         #endregion
 

@@ -6,7 +6,6 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
 
 using UnityCustomUtilities.Extensions;
@@ -55,57 +54,38 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IStartingLocationGenerator
 
-        public void GenerateRegion(
-            MapRegion region, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+        public void GenerateTopologyAndEcology(
+            MapRegion region, IRegionGenerationTemplate template
         ) {
-            var waterCells = new List<IHexCell>(CarveOutCoasts(region, oceanCells));
+            GenerateTopology(region, template);
+            PaintTerrain(region, template);
 
-            foreach(var cell in waterCells) {
-                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
-            }
+            RiverGenerator.CreateRiversForRegion(region.Land.Cells, template, region.Water.Cells);
 
-            var undecidedCells = region.Cells.Except(waterCells);
+            AssignFloodPlains(region.Land.Cells);
 
-            GenerateTopology(undecidedCells, template);
-            PaintTerrain(undecidedCells, template, oceanCells);
+            PaintVegetation(region.Land.Cells, template);
+        }
 
-            var newWaterCells = undecidedCells.Where(cell => cell.Terrain.IsWater());
-
-            waterCells.AddRange(newWaterCells);
-
-            var landCells = undecidedCells.Except(newWaterCells);
-
-            RationalizeWater(waterCells, oceanCells);
-
-            RiverGenerator.CreateRiversForRegion(landCells, template, oceanCells);
-
-            AssignFloodPlains(landCells);
-
-            PaintVegetation(landCells, template);
-
+        public void DistributeYieldAndResources(
+            MapRegion region, IRegionGenerationTemplate template
+        ) {
             ResourceDistributor.DistributeLuxuryResourcesAcrossRegion   (region, template);
             ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, template);
 
-            RegionBalancer.BalanceRegionYields(region, template, oceanCells);
+            RegionBalancer.BalanceRegionYields(region, template);
         }
 
         #endregion
 
-        IEnumerable<IHexCell> CarveOutCoasts(MapRegion region, IEnumerable<IHexCell> oceanCells) {
-            return region.Cells.Where(
-                cell => Grid.GetCellsInRadius(cell, Config.ContinentalShelfDistance).Any(
-                    nearby => oceanCells.Contains(nearby)
-                )
-            ).ToList();
-        }
+        private void GenerateTopology(MapRegion region, IRegionGenerationTemplate template) {
+            var landCells = region.Land.Cells;
 
-        private void GenerateTopology(IEnumerable<IHexCell> undecidedCells, IRegionGenerationTemplate template) {
-            int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * undecidedCells.Count() * 0.01f);
-            int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * undecidedCells.Count() * 0.01f);
+            int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * landCells.Count() * 0.01f);
+            int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * landCells.Count() * 0.01f);
 
             var elevatedCells = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
-                undecidedCells, desiredHillsCount + desiredMountainCount,
+                landCells, desiredHillsCount + desiredMountainCount,
                 HillsStartingWeightFunction, HillsDynamicWeightFunction, cell => Grid.GetNeighbors(cell)
             );
 
@@ -123,41 +103,50 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void PaintTerrain(
-            IEnumerable<IHexCell> undecidedCells, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+            MapRegion region, IRegionGenerationTemplate template
         ) {
-            var terrains = EnumUtil.GetValues<CellTerrain>();
+            var landTerrains = EnumUtil.GetValues<CellTerrain>().Where(terrain => !terrain.IsWater());
 
             var dataOfTerrains  = new Dictionary<CellTerrain, TerrainData>();
             var terrainCounts   = new Dictionary<CellTerrain, int>();
             var terrainCrawlers = new Dictionary<CellTerrain, List<IEnumerator<IHexCell>>>();
             var cellsOfTerrain  = new Dictionary<CellTerrain, List<IHexCell>>();
 
-            var unassignedCells = new HashSet<IHexCell>(undecidedCells);
+            var unassignedLandCells = new HashSet<IHexCell>(region.Land.Cells);
             var seeds = new List<IHexCell>();
 
-            foreach(var terrain in terrains) {
+            foreach(var terrain in landTerrains) {
                 var terrainData = template.GetTerrainData(terrain);
                 dataOfTerrains[terrain] = terrainData;
 
-                var terrainCount = Mathf.RoundToInt(undecidedCells.Count() * terrainData.Percentage * 0.01f);
+                var terrainCount = Mathf.RoundToInt(unassignedLandCells.Count() * terrainData.Percentage * 0.01f);
 
                 var acceptedCells = new List<IHexCell>();
 
                 var crawlers = new List<IEnumerator<IHexCell>>();
 
                 for(int i = 0; i < terrainData.SeedCount; i++) {
-                    var seedCandidates = unassignedCells.Where(cell => terrainData.SeedFilter(cell, oceanCells)).Except(seeds);
+                    var seedCandidates = unassignedLandCells.Where(
+                        cell => terrainData.SeedFilter(cell, region.Land, region.Water)
+                    ).Except(seeds);
 
                     if(seedCandidates.Count() == 0) {
                         Debug.LogWarning("Failed to assign expected number of seeds for terrain type " + terrain.ToString());
                         break;
                     }else {
-                        var seed = seedCandidates.Random();
+                        var seed = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                            seedCandidates, 1, terrainData.SeedWeightFunction
+                        ).FirstOrDefault();
+
+                        if(seed == null) {
+                            Debug.LogWarning("Failed to select a seed from a nonzero number of candidates");
+                            break;
+                        }
+
                         seeds.Add(seed);
 
                         var crawler = GridTraversalLogic.GetCrawlingEnumerator(
-                            seed, unassignedCells, acceptedCells, terrainData.WeightFunction
+                            seed, unassignedLandCells, acceptedCells, terrainData.CrawlingWeightFunction
                         );
 
                         crawlers.Add(crawler);
@@ -169,21 +158,9 @@ namespace Assets.Simulation.MapGeneration {
                 cellsOfTerrain [terrain] = acceptedCells;
             }
 
-            foreach(var cell in undecidedCells) {
-                foreach(var terrain in terrains) {
-                    if(dataOfTerrains[terrain].ForceAdaptFilter(cell)) {
-
-                        cellsOfTerrain[terrain].Add(cell);
-                        unassignedCells.Remove(cell);
-
-                        break;
-                    }
-                }
-            }
-
-            int iterations = unassignedCells.Count * 10;
-            while(unassignedCells.Count > 0 && iterations-- > 0) {
-                var currentTerrain = terrains.Random();
+            int iterations = unassignedLandCells.Count * 10;
+            while(unassignedLandCells.Count > 0 && iterations-- > 0) {
+                var currentTerrain = landTerrains.Random();
 
                 if(cellsOfTerrain[currentTerrain].Count < terrainCounts[currentTerrain]) {
                     var crawlers = terrainCrawlers[currentTerrain];
@@ -194,7 +171,7 @@ namespace Assets.Simulation.MapGeneration {
                             var newCell = currentCrawler.Current;
 
                             cellsOfTerrain[currentTerrain].Add(newCell);
-                            unassignedCells.Remove(newCell);
+                            unassignedLandCells.Remove(newCell);
 
                             break;
 
@@ -205,24 +182,14 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            foreach(var terrain in terrains) {
+            foreach(var terrain in landTerrains) {
                 foreach(var cell in cellsOfTerrain[terrain]) {
                     ModLogic.ChangeTerrainOfCell(cell, terrain);
                 }
             }
-        }
 
-        private void RationalizeWater(
-            IEnumerable<IHexCell> waterCells, IEnumerable<IHexCell> oceanCells
-        ) {
-            foreach(var waterCell in waterCells) {
-                var landCandidates = Grid.GetCellsInRadius(waterCell, Config.ContinentalShelfDistance);
-
-                if(landCandidates.Any(cell => !cell.Terrain.IsWater() && !oceanCells.Contains(cell))) {
-                    ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.ShallowWater);
-                }else {
-                    ModLogic.ChangeTerrainOfCell(waterCell, CellTerrain.DeepWater);
-                }
+            foreach(var cell in region.Water.Cells) {
+                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
             }
         }
 

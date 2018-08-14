@@ -123,7 +123,8 @@ namespace Assets.Simulation.MapGeneration {
             IHexCell cell, HexDirection direction, IEnumerable<IHexCell> oceanCells
         ) {
             var neighbor = Grid.GetNeighbor(cell, direction);
-            return neighbor.Terrain.IsWater() || oceanCells.Contains(neighbor);
+
+            return neighbor != null && (neighbor.Terrain.IsWater() || oceanCells.Contains(neighbor));
         }
 
         private void AddRiverToCell(

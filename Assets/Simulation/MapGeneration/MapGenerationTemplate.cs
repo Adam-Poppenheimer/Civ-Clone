@@ -19,25 +19,45 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(2, 10)] private int _civCount = 8;
 
-        public IEnumerable<MapSection> ContinentSections {
-            get { return _continentSections; }
+        public IEnumerable<IRegionGenerationTemplate> CivRegionTemplates {
+            get { return _civRegionTemplates.Cast<IRegionGenerationTemplate>(); }
         }
-        [SerializeField] private List<MapSection> _continentSections;
-
-        public IEnumerable<IContinentGenerationTemplate> ContinentTemplates {
-            get { return _continentTemplates.Cast<IContinentGenerationTemplate>(); }
-        }
-        [SerializeField] private List<ContinentGenerationTemplate> _continentTemplates;
+        [SerializeField] private List<RegionGenerationTemplate> _civRegionTemplates;
 
         public IEnumerable<IOceanGenerationTemplate> OceanTemplates {
             get { return _oceanTemplates.Cast<IOceanGenerationTemplate>(); }
         }
         [SerializeField] private List<OceanGenerationTemplate> _oceanTemplates;
 
-        public int LuxuriesPerContinent {
-            get { return _luxuriesPerContinent; }
+        public int ContinentalLandPercentage {
+            get { return _continentalLandPercentage; }
         }
-        [SerializeField, Range(1, 15)] private int _luxuriesPerContinent = 5;
+        [SerializeField, Range(1, 100)] private int _continentalLandPercentage;
+
+        public int VoronoiPointCount {
+            get { return _voronoiPointCount; }
+        }
+        [SerializeField, Range(50, 1000)] private int _voronoiPointCount;
+
+        public int VoronoiPartitionIterations {
+            get { return _voronoiPartitionIterations; }
+        }
+        [SerializeField, Range(1, 20)] private int _voronoiPartitionIterations;
+
+        public int MinStartingLocationDistance {
+            get { return _minStartingLocationDistance; }
+        }
+        [SerializeField, Range(1, 15)] private int _minStartingLocationDistance;
+
+        public int NeighborsInContinentWeight {
+            get { return _neighborsInContinentWeight; }
+        }
+        [SerializeField] private int _neighborsInContinentWeight;
+
+        public int DistanceFromSeedCentroidWeight {
+            get { return _distanceFromSeedCentroidWeight; }
+        }
+        [SerializeField] private int _distanceFromSeedCentroidWeight;
 
         #endregion
 

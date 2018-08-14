@@ -12,9 +12,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateRegion(
-            MapRegion region, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+        void GenerateTopologyAndEcology(
+            MapRegion region, IRegionGenerationTemplate template
+        );
+
+        void DistributeYieldAndResources(
+            MapRegion region, IRegionGenerationTemplate template
         );
 
         #endregion

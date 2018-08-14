@@ -14,24 +14,7 @@ namespace Assets.Simulation.MapGeneration {
         bool UseFixedSeed { get; }
         int  FixedSeed    { get; }
 
-        float JitterProbability { get; }
-
-        int SectionSizeMin { get; }
-        int SectionSizeMax { get; }
-
         int LandPercentage { get; }
-
-        float MountainThreshold  { get; }
-        float HillsThreshold     { get; }
-        float FlatlandsThreshold { get; }
-
-        float SectionRaisePressureMin { get; }
-        float SectionRaisePressureMax { get; }
-
-        int LakeMaxSize              { get; }
-        int InlandSeaMaxSize         { get; }
-        int ContinentalShelfDistance { get; }
-
 
 
         int HardMapBorderX { get; }
@@ -40,31 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         int SoftMapBorderX { get; }
         int SoftMapBorderZ { get; }
 
-        int SoftBorderAvoidance { get; }
-
-        int RegionBorder { get; }
-
-        int RegionCount { get; }
-
-
-        float StartingMoisture { get; }
-
-        float EvaporationCoefficient   { get; }
-        float PrecipitationCoefficient { get; }
-        float RunoffCoefficient        { get; }
-        float SeepageCoefficient       { get; }
-
-        HexDirection WindDirection { get; }
-        float        WindStrength  { get; }
-
-        float FlatlandsCloudMaximum { get; }
-        float HillsCloudMaximum     { get; }
-        float MountainsCloudMaximum { get; }
-
-
-        int RiverSegmentPercentage { get; }
-        int RiverMaxLengthInHexes  { get; }
-
+        int SoftBorderAvoidanceWeight { get; }
 
 
         float LowTemperature  { get; }
@@ -74,9 +33,6 @@ namespace Assets.Simulation.MapGeneration {
 
         float TemperatureJitter { get; }
 
-        float CoastChancePerAdjacentOcean { get; }
-        float CoastChancePerNearbyOcean   { get; }
-
 
         IMapGenerationTemplate MapTemplate { get; }
 
@@ -84,6 +40,9 @@ namespace Assets.Simulation.MapGeneration {
         int MaxStrategicCopies { get; }
 
         YieldSummary YieldScoringWeights { get; }
+
+
+        int MaxLakeSize { get; }
 
         #endregion
 

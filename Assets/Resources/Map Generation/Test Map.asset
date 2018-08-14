@@ -12,25 +12,13 @@ MonoBehaviour:
   m_Name: Test Map
   m_EditorClassIdentifier: 
   _civCount: 8
-  _continentSections:
-  - _xMin: 0.05
-    _xMax: 0.49
-    _zMin: 0.05
-    _zMax: 0.45
-  - _xMin: 0.51
-    _xMax: 0.95
-    _zMin: 0.05
-    _zMax: 0.45
-  - _xMin: 0.05
-    _xMax: 0.49
-    _zMin: 0.55
-    _zMax: 0.95
-  - _xMin: 0.51
-    _xMax: 0.95
-    _zMin: 0.55
-    _zMax: 0.95
-  _continentTemplates:
-  - {fileID: 11400000, guid: 91c7b68e5b825d54ea42ec31cfd40c89, type: 2}
+  _civRegionTemplates:
+  - {fileID: 11400000, guid: dad453d0a2238624eb3697cdc81c2687, type: 2}
   _oceanTemplates:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
-  _luxuriesPerContinent: 10
+  _continentalLandPercentage: 30
+  _voronoiPointCount: 1000
+  _voronoiPartitionIterations: 2
+  _minStartingLocationDistance: 6
+  _neighborsInContinentWeight: 100
+  _distanceFromSeedCentroidWeight: -50
