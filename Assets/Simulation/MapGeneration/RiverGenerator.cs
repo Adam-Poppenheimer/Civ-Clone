@@ -67,6 +67,7 @@ namespace Assets.Simulation.MapGeneration {
                             ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
                         }
                         riveredCells.Add(cell);
+                        riverStartCandidates.Remove(cell);
                     }
                 }
             }
@@ -101,10 +102,23 @@ namespace Assets.Simulation.MapGeneration {
 
                 int i = 1;
                 for(; i < riverPath.Count - 1; i++) {
-                    pathSectionResults = CreateRiverAlongCell(
-                        riverPath[i - 1], riverPath[i], riverPath[i + 1],
-                        oceanCells, cellsAdjacentToRiver
-                    );
+                    if(RiverCanon.HasRiver(riverPath[i])) {
+                        pathSectionResults = CreateRiverEndpoint(
+                            riverPath[i - 1], riverPath[i], oceanCells, cellsAdjacentToRiver
+                        );
+
+                        if(pathSectionResults.Completed) {
+                            pathSectionResults.FoundWater = true;
+                        }
+
+                        break;
+
+                    }else {
+                        pathSectionResults = CreateRiverAlongCell(
+                            riverPath[i - 1], riverPath[i], riverPath[i + 1],
+                            oceanCells, cellsAdjacentToRiver
+                        );
+                    }
 
                     if(!pathSectionResults.Completed) {
                         Debug.LogWarning("Failed to complete river");
@@ -215,7 +229,7 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IHexCell> cellsAdjacentToRiver
         ) {
             //It's possible (though unlikely) that our endpointwd is a water cell. If
-            //it is, we don't need to do anything.
+            //it is, we don't need to do anything.e
             if(IsWater(endingCell, oceanCells)) {
                 return RiverPathResults.Water;
             }
@@ -409,13 +423,13 @@ namespace Assets.Simulation.MapGeneration {
             //Assuming directionToPrevious.Opposite() is up,
             //this case triggers when previousCell has a
             //river along its upper left edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
                 return RiverPathResults.Success;
             }
 
             //this case triggers when previousCell has a
             //river along its upper right edge
-            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Next2())) {
+            if(RiverCanon.HasRiverAlongEdge(previousCell, directionToPrevious.Previous2())) {
                 pathsToTry.Add(rightToRightPath);
                 pathsToTry.Add(rightToLeftPath);                
             }
@@ -513,6 +527,10 @@ namespace Assets.Simulation.MapGeneration {
         private RiverPathResults TryFollowSomePath(
             List<RiverPath> paths, IEnumerable<IHexCell> oceanCells, HashSet<IHexCell> cellsAdjacentToRiver
         ) {
+            if(paths.Any(path => path.IsAlreadyCompleted())) {
+                return RiverPathResults.Success;
+            }
+
             while(paths.Count > 0) {
                 RiverPath randomPath = paths.First();
 

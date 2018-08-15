@@ -90,6 +90,16 @@ namespace Assets.Simulation.MapGeneration {
             return true;
         }
 
+        public bool IsAlreadyCompleted() {
+            foreach(var segment in Path) {
+                if(!HasRiverInDirectionWithFlow(Cell, segment, Flow)) {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
         public RiverPathResults TryBuildOutPath(
             HashSet<IHexCell> cellsAdjacentToRiver, IEnumerable<IHexCell> oceanCells
         ) {
