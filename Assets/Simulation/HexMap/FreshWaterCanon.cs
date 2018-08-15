@@ -33,10 +33,12 @@ namespace Assets.Simulation.HexMap {
         public bool HasAccessToFreshWater(IHexCell cell) {
             bool isFreshWater          = cell.Terrain == CellTerrain.FreshWater;
             bool isSaltWater           = cell.Terrain.IsWater() && !isFreshWater;
+            bool hasOasis              = cell.Feature == CellFeature.Oasis;
             bool hasRiver              = RiverCanon.HasRiver(cell);
             bool hasFreshWaterNeighbor = Grid.GetNeighbors(cell).Exists(neighbor => neighbor.Terrain == CellTerrain.FreshWater);
+            
 
-            return !isSaltWater && (isFreshWater || hasRiver || hasFreshWaterNeighbor);
+            return !isSaltWater && (isFreshWater || hasOasis || hasRiver || hasFreshWaterNeighbor);
         }
 
         #endregion

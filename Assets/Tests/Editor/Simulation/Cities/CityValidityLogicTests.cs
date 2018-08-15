@@ -62,7 +62,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "IsCellValidForCity should return false if the " +
             "argued cell already belongs to another city")]
-        public void IsCellValidForCity_FalseIfTileBelongsToCity() {
+        public void IsCellValidForCity_FalseIfCellBelongsToCity() {
             var cell = BuildCell(new Mock<ICity>().Object);
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
@@ -73,7 +73,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "IsCellValidForCity should return false if the " +
             "distance between this cell and any city is less than Config.MinSeparation")]
-        public void IsCellValidForCity_FalseIfTileTooCloseToCity() {
+        public void IsCellValidForCity_FalseIfCellTooCloseToCity() {
             var cell = BuildCell(null);
 
             var firstLocation  = BuildCell(null);
@@ -98,7 +98,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "IsCellValidForCity should return true if the " +
             "cell is unowned and no city is less than Config.MinSeparation away from it")]
-        public void IsTileValidForCity_TrueOtherwise() {
+        public void IsCellValidForCity_TrueOtherwise() {
             var cell = BuildCell(null);
 
             var firstLocation  = BuildCell(null);
@@ -137,14 +137,27 @@ namespace Assets.Tests.Simulation.Cities {
                 "An underwater rivered cell is incorrectly considered valid for city placement");
         }
 
+
+        [Test]
+        public void IsCellValidFOrCity_FalseIfCellFeatureNotNone() {
+            var cell = BuildCell(null, feature: CellFeature.Oasis);
+
+            var validityLogic = Container.Resolve<CityValidityLogic>();
+
+            Assert.IsFalse(validityLogic.IsCellValidForCity(cell));
+        }
         #endregion
 
         #region utilities
 
-        private IHexCell BuildCell(ICity owner, bool isUnderwater = false, bool hasRiver = false) {
+        private IHexCell BuildCell(
+            ICity owner, bool isUnderwater = false, bool hasRiver = false,
+            CellFeature feature = CellFeature.None
+        ) {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.Setup(cell => cell.Terrain).Returns(isUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
+            mockCell.Setup(cell => cell.Feature).Returns(feature);
 
             MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(mockCell.Object)).Returns(owner);
 

@@ -103,6 +103,12 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+  OasisYield:
+    Food: 3
+    Production: 0
+    Gold: 1
+    Culture: 0
+    Science: 0
   HillsMoveCost: 1
   MountainsMoveCost: -1
   ForestMoveCost: 1

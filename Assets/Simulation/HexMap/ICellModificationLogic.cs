@@ -18,6 +18,9 @@ namespace Assets.Simulation.HexMap {
         bool CanChangeVegetationOfCell(IHexCell cell, CellVegetation vegetation);
         void ChangeVegetationOfCell   (IHexCell cell, CellVegetation vegetation);
 
+        bool CanChangeFeatureOfCell(IHexCell cell, CellFeature feature);
+        void ChangeFeatureOfCell   (IHexCell cell, CellFeature feature);
+
         bool CanChangeHasRoadsOfCell(IHexCell cell, bool hasRoads);
         void ChangeHasRoadsOfCell   (IHexCell cell, bool hasRoads);
 

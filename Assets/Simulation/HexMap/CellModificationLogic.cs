@@ -62,6 +62,10 @@ namespace Assets.Simulation.HexMap {
                 ChangeVegetationOfCell(cell, CellVegetation.None);
             }
 
+            if(cell.Terrain != CellTerrain.Desert && cell.Feature == CellFeature.Oasis) {
+                ChangeFeatureOfCell(cell, CellFeature.None);
+            }
+
             if(cell.Terrain.IsWater()) {
                 ChangeVegetationOfCell(cell, CellVegetation.None);
                 ChangeShapeOfCell(cell, CellShape.Flatlands);
@@ -100,6 +104,10 @@ namespace Assets.Simulation.HexMap {
                     ChangeVegetationOfCell(cell, CellVegetation.None);
                 }
 
+                if(cell.Feature == CellFeature.Oasis) {
+                    ChangeFeatureOfCell(cell, CellFeature.None);
+                }
+
                 if(shape == CellShape.Mountains && cell.HasRoads) {
                     ChangeHasRoadsOfCell(cell, false);
                 }
@@ -131,6 +139,26 @@ namespace Assets.Simulation.HexMap {
                 ChangeTerrainOfCell(cell, CellTerrain.Grassland);
                 ChangeShapeOfCell  (cell, CellShape.Flatlands);
             }
+        }
+
+        public bool CanChangeFeatureOfCell(IHexCell cell, CellFeature feature) {
+            if(feature == CellFeature.None) {
+                return true;
+
+            }else if(feature == CellFeature.Oasis) {
+                return cell.Terrain == CellTerrain.Desert && cell.Shape == CellShape.Flatlands;
+
+            }else {
+                return false;
+            }
+        }
+
+        public void ChangeFeatureOfCell(IHexCell cell, CellFeature feature) {
+            if(!CanChangeFeatureOfCell(cell, feature)) {
+                throw new InvalidOperationException("CanChangeFeatureOfCell must return true on the given arguments");
+            }
+
+            cell.Feature = feature;
         }
 
         public bool CanChangeHasRoadsOfCell(IHexCell cell, bool hasRoads) {

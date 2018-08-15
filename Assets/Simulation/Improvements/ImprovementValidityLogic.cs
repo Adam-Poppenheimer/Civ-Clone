@@ -62,7 +62,8 @@ namespace Assets.Simulation.Improvements {
                 return true;
             }
 
-            return (template.RestrictedToTerrains   .Count() == 0 || template.RestrictedToTerrains   .Contains(cell.Terrain)) &&
+            return cell.Feature == CellFeature.None &&
+                   (template.RestrictedToTerrains   .Count() == 0 || template.RestrictedToTerrains   .Contains(cell.Terrain)) &&
                    (template.RestrictedToVegetations.Count() == 0 || template.RestrictedToVegetations.Contains(cell.Vegetation)) && 
                    (template.RestrictedToShapes     .Count() == 0 || template.RestrictedToShapes     .Contains(cell.Shape  ));
         }

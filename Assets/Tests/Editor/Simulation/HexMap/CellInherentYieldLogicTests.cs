@@ -30,6 +30,9 @@ namespace Assets.Tests.Simulation.HexMap {
             public YieldSummary TerrainYield    = new YieldSummary(food: 1);
             public YieldSummary ShapeYield      = new YieldSummary(production: 20);
             public YieldSummary VegetationYield = new YieldSummary(gold: 300);
+            public YieldSummary FeatureYield    = new YieldSummary(culture: 4000);
+
+            public bool DoesFeatureOverrideYield = false;
 
         }
 
@@ -38,6 +41,7 @@ namespace Assets.Tests.Simulation.HexMap {
             public CellTerrain    Terrain    = CellTerrain.Grassland;
             public CellShape      Shape      = CellShape.Flatlands;
             public CellVegetation Vegetation = CellVegetation.None;
+            public CellFeature    Feature    = CellFeature.None;
 
         }
 
@@ -128,6 +132,38 @@ namespace Assets.Tests.Simulation.HexMap {
                         Vegetation = CellVegetation.None
                     }
                 }).SetName("Plains, flatlands, and none | terrain dominates").Returns(new YieldSummary(food: 1));
+
+
+
+                yield return new TestCaseData(new GetYieldTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Forest, Feature = CellFeature.Oasis
+                    },
+                    Config = new HexMapConfigTestData() {
+                        DoesFeatureOverrideYield = true
+                    }
+                }).SetName("Feature yield overrides everything when DoesFeatureOverrideYield returns true").Returns(new YieldSummary(culture: 4000));
+
+                yield return new TestCaseData(new GetYieldTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Forest, Feature = CellFeature.Oasis
+                    },
+                    Config = new HexMapConfigTestData() {
+                        DoesFeatureOverrideYield = false
+                    }
+                }).SetName("Feature yield ignored when DoesFeatureOverrideYield returns false").Returns(new YieldSummary(gold: 300));
+
+                yield return new TestCaseData(new GetYieldTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Forest, Feature = CellFeature.None
+                    },
+                    Config = new HexMapConfigTestData() {
+                        DoesFeatureOverrideYield = true
+                    }
+                }).SetName("Feature yield ignored when Feature is none, even if override requested").Returns(new YieldSummary(gold: 300));
             }
         }
 
@@ -176,6 +212,9 @@ namespace Assets.Tests.Simulation.HexMap {
             MockConfig.Setup(config => config.GetYieldOfTerrain   (It.IsAny<CellTerrain>   ())).Returns(configData.TerrainYield);
             MockConfig.Setup(config => config.GetYieldOfShape     (It.IsAny<CellShape>     ())).Returns(configData.ShapeYield);
             MockConfig.Setup(config => config.GetYieldOfVegetation(It.IsAny<CellVegetation>())).Returns(configData.VegetationYield);
+            MockConfig.Setup(config => config.GetYieldOfFeature   (It.IsAny<CellFeature>   ())).Returns(configData.FeatureYield);
+            
+            MockConfig.Setup(config => config.DoesFeatureOverrideYield(It.IsAny<CellFeature>())).Returns(configData.DoesFeatureOverrideYield);
         }
 
         private IHexCell BuildCell(HexCellTestData cellData) {
@@ -184,6 +223,7 @@ namespace Assets.Tests.Simulation.HexMap {
             mockCell.Setup(cell => cell.Terrain)   .Returns(cellData.Terrain);
             mockCell.Setup(cell => cell.Shape)     .Returns(cellData.Shape);
             mockCell.Setup(cell => cell.Vegetation).Returns(cellData.Vegetation);
+            mockCell.Setup(cell => cell.Feature)   .Returns(cellData.Feature);
 
             return mockCell.Object;
         }

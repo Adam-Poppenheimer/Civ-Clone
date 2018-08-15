@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapResources {
         }
 
         public int GetPlacementWeightOnCell(IResourceDefinition resource, IHexCell cell) {
-            if(NodeLocationCanon.GetPossessionsOfOwner(cell).Any()) {
+            if(NodeLocationCanon.GetPossessionsOfOwner(cell).Any() || cell.Feature != CellFeature.None) {
                 return 0;
             }
 

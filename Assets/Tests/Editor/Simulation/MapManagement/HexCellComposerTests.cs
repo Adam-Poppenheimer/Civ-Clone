@@ -121,6 +121,42 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
+        public void ComposeCells_ShapeRecorded() {
+            var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
+            var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
+            var cellThree = BuildHexCell(new HexCoordinates(4, 5));
+
+            cellOne  .Shape = CellShape.Mountains;
+            cellTwo  .Shape = CellShape.Flatlands;
+            cellThree.Shape = CellShape.Hills;
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            var mapData = new SerializableMapData();
+
+            composer.ComposeCells(mapData);
+
+            var dataLikeCellOne = mapData.HexCells.Where(
+                data => data.Coordinates == cellOne.Coordinates
+                     && data.Shape       == cellOne.Shape
+            );
+
+            var dataLikeCellTwo = mapData.HexCells.Where(
+                data => data.Coordinates == cellTwo.Coordinates
+                     && data.Shape       == cellTwo.Shape
+            );
+
+            var dataLikeCellThree = mapData.HexCells.Where(
+                data => data.Coordinates == cellThree.Coordinates
+                     && data.Shape       == cellThree.Shape
+            );
+
+            Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
+            Assert.AreEqual(1, dataLikeCellTwo.Count(),   "Unexpected number of data representing CellTwo");
+            Assert.AreEqual(1, dataLikeCellThree.Count(), "Unexpected number of data representing CellThree");
+        }
+
+        [Test]
         public void ComposeCells_VegetationRecorded() {
             var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
@@ -157,14 +193,14 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeCells_ShapeRecorded() {
+        public void ComposeCells_FeatureRecorded() {
             var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
             var cellThree = BuildHexCell(new HexCoordinates(4, 5));
 
-            cellOne  .Shape = CellShape.Mountains;
-            cellTwo  .Shape = CellShape.Flatlands;
-            cellThree.Shape = CellShape.Hills;
+            cellOne  .Feature = CellFeature.Oasis;
+            cellTwo  .Feature = CellFeature.None;
+            cellThree.Feature = CellFeature.Oasis;
 
             var composer = Container.Resolve<HexCellComposer>();
 
@@ -174,17 +210,17 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var dataLikeCellOne = mapData.HexCells.Where(
                 data => data.Coordinates == cellOne.Coordinates
-                     && data.Shape       == cellOne.Shape
+                     && data.Feature     == cellOne.Feature
             );
 
             var dataLikeCellTwo = mapData.HexCells.Where(
                 data => data.Coordinates == cellTwo.Coordinates
-                     && data.Shape       == cellTwo.Shape
+                     && data.Feature     == cellTwo.Feature
             );
 
             var dataLikeCellThree = mapData.HexCells.Where(
                 data => data.Coordinates == cellThree.Coordinates
-                     && data.Shape       == cellThree.Shape
+                     && data.Feature     == cellThree.Feature
             );
 
             Assert.AreEqual(1, dataLikeCellOne.Count(),   "Unexpected number of data representing CellOne");
@@ -382,6 +418,37 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
+        public void DecomposeCells_ShapeChangedThroughCellModificationLogic() {
+            var mapData = new SerializableMapData() {
+                HexCells = new List<SerializableHexCellData>() {
+                    new SerializableHexCellData() {
+                        Coordinates = new HexCoordinates(0, 0),Shape = CellShape.Mountains
+                    },
+                    new SerializableHexCellData() {
+                        Coordinates = new HexCoordinates(1, 1), Shape = CellShape.Flatlands
+                    },
+                }
+            };
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            composer.DecomposeCells(mapData);
+
+            var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
+            var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeShapeOfCell(cellOne, CellShape.Mountains), Times.Once,
+                "ChangeShapeOfCellTo not called properly on cellOne"
+            );
+
+            MockCellModificationLogic.Verify(
+                logic => logic.ChangeShapeOfCell(cellTwo, CellShape.Flatlands), Times.Once,
+                "ChangeShapeOfCellTo not called properly on cellTwo"
+            );
+        }
+
+        [Test]
         public void DecomposeCells_VegetationChangedThroughCellModificationLogic() {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
@@ -413,14 +480,14 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void DecomposeCells_ShapeChangedThroughCellModificationLogic() {
+        public void DecomposeCells_FeatureChangedThroughCellModificationLogic() {
             var mapData = new SerializableMapData() {
                 HexCells = new List<SerializableHexCellData>() {
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(0, 0),Shape = CellShape.Mountains
+                        Coordinates = new HexCoordinates(0, 0), Feature = CellFeature.Oasis
                     },
                     new SerializableHexCellData() {
-                        Coordinates = new HexCoordinates(1, 1), Shape = CellShape.Flatlands
+                        Coordinates = new HexCoordinates(1, 1), Feature = CellFeature.None
                     },
                 }
             };
@@ -433,13 +500,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
 
             MockCellModificationLogic.Verify(
-                logic => logic.ChangeShapeOfCell(cellOne, CellShape.Mountains), Times.Once,
-                "ChangeShapeOfCellTo not called properly on cellOne"
+                logic => logic.ChangeFeatureOfCell(cellOne, CellFeature.Oasis), Times.Once,
+                "ChangeFeatureOfCell not called properly on cellOne"
             );
 
             MockCellModificationLogic.Verify(
-                logic => logic.ChangeShapeOfCell(cellTwo, CellShape.Flatlands), Times.Once,
-                "ChangeShapeOfCellTo not called properly on cellTwo"
+                logic => logic.ChangeFeatureOfCell(cellTwo, CellFeature.None), Times.Once,
+                "ChangeFeatureOfCell not called properly on cellTwo"
             );
         }
 

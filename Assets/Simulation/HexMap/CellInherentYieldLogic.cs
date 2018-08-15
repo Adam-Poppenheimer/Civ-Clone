@@ -29,17 +29,18 @@ namespace Assets.Simulation.HexMap {
         #region from ICellInherentYieldLogic
 
         public YieldSummary GetInherentCellYield(IHexCell cell) {
-            YieldSummary retval = YieldSummary.Empty;
+            if(cell.Feature != CellFeature.None && Config.DoesFeatureOverrideYield(cell.Feature)) {
+                return Config.GetYieldOfFeature(cell.Feature);
 
-            if(cell.Vegetation != CellVegetation.None) {
-                retval = Config.GetYieldOfVegetation(cell.Vegetation);
+            }else if(cell.Vegetation != CellVegetation.None) {
+                return Config.GetYieldOfVegetation(cell.Vegetation);
+
             }else if(cell.Shape != CellShape.Flatlands) {
-                retval = Config.GetYieldOfShape(cell.Shape);
-            }else {
-                retval = Config.GetYieldOfTerrain(cell.Terrain);
-            }
+                return Config.GetYieldOfShape(cell.Shape);
 
-            return retval;
+            }else {
+                return Config.GetYieldOfTerrain(cell.Terrain);
+            }
         }
 
         #endregion

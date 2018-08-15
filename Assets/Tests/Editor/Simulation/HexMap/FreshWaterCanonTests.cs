@@ -31,6 +31,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public CellTerrain Terrain;
 
+            public CellFeature Feature;
+
         }
 
         #endregion
@@ -82,6 +84,26 @@ namespace Assets.Tests.Simulation.HexMap {
                         new HexCellTestData() { Terrain = CellTerrain.FreshWater }
                     }
                 }).SetName("Cell with no rivers, mix of FreshWater and non-FreshWater neighbors").Returns(true);
+
+
+
+                yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
+                    Cell = new HexCellTestData() { Feature = CellFeature.Oasis },
+                    Neighbors = new List<HexCellTestData>() {
+
+                    }
+                }).SetName("Cell with no rivers, cell has oasis").Returns(true);
+
+                yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
+                    Cell = new HexCellTestData() { Feature = CellFeature.Oasis },
+                    Neighbors = new List<HexCellTestData>() {
+                        new HexCellTestData() { Feature = CellFeature.None },
+                        new HexCellTestData() { Feature = CellFeature.Oasis },
+                        new HexCellTestData() { Feature = CellFeature.None }
+                    }
+                }).SetName("Cell with no rivers and no oasis, some adjacent cell has an oasis").Returns(true);
+
+
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
                     Cell = new HexCellTestData() { Terrain = CellTerrain.ShallowWater }
@@ -146,6 +168,7 @@ namespace Assets.Tests.Simulation.HexMap {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.Setup(cell => cell.Terrain).Returns(testData.Terrain);
+            mockCell.Setup(cell => cell.Feature).Returns(testData.Feature);
 
             var newCell = mockCell.Object;
 

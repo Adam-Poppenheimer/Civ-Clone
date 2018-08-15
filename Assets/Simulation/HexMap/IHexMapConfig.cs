@@ -25,9 +25,12 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
+        bool DoesFeatureOverrideYield(CellFeature feature);
+
         YieldSummary GetYieldOfTerrain   (CellTerrain    terrain);
         YieldSummary GetYieldOfVegetation(CellVegetation vegetation);
         YieldSummary GetYieldOfShape     (CellShape      shape);
+        YieldSummary GetYieldOfFeature   (CellFeature    feature);
 
         int GetBaseMoveCostOfTerrain   (CellTerrain    terrain);
         int GetBaseMoveCostOfShape     (CellShape      shape);

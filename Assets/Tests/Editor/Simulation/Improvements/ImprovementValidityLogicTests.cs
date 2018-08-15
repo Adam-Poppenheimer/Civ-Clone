@@ -42,8 +42,7 @@ namespace Assets.Tests.Simulation.Improvements {
             public CellTerrain    Terrain;
             public CellVegetation Vegetation;
             public CellShape      Shape;
-
-            public int FoundationElevation;
+            public CellFeature    Feature;
 
             public bool HasAccessToFreshWater;
 
@@ -75,12 +74,12 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region test cases
 
-        private static IEnumerable ValidityTestCases {
+        private static IEnumerable IsTemplateValidForCellTestCases {
             get {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -94,7 +93,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Desert, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -108,7 +107,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -122,10 +121,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Desert, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Mountains, FoundationElevation = 0
+                        Shape = CellShape.Mountains
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { FoundationElevation = 0 }
+                        new HexCellTestData()
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -138,10 +137,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Desert, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { FoundationElevation = 0 }
+                        new HexCellTestData()
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -154,10 +153,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { FoundationElevation = 0 }
+                        new HexCellTestData()
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -170,10 +169,10 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0
+                        Shape = CellShape.Flatlands
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { FoundationElevation = 0 }
+                        new HexCellTestData()
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
@@ -185,7 +184,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None, FoundationElevation = 0
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = true,
@@ -198,7 +197,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None, FoundationElevation = 0
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = true,
@@ -212,7 +211,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Desert, Vegetation = CellVegetation.Forest, FoundationElevation = 0
+                        Terrain = CellTerrain.Desert, Vegetation = CellVegetation.Forest
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -228,7 +227,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Desert, Vegetation = CellVegetation.Forest, FoundationElevation = 0
+                        Terrain = CellTerrain.Desert, Vegetation = CellVegetation.Forest
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -244,7 +243,7 @@ namespace Assets.Tests.Simulation.Improvements {
 
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None, FoundationElevation = 0
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -263,8 +262,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Desert, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0,
-                        HasAccessToFreshWater = true
+                        Shape = CellShape.Flatlands, HasAccessToFreshWater = true
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -279,8 +277,7 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, FoundationElevation = 0,
-                        HasAccessToFreshWater = true
+                        Shape = CellShape.Flatlands, HasAccessToFreshWater = true
                     },
                     Neighbors = new List<HexCellTestData>(),
                     CellHasCity = false,
@@ -295,20 +292,36 @@ namespace Assets.Tests.Simulation.Improvements {
                 yield return new TestCaseData(new IsTemplateValidForCellData() {
                     Cell = new HexCellTestData() {
                         Terrain = CellTerrain.Desert, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Mountains, FoundationElevation = 0,
-                        HasAccessToFreshWater = true
+                        Shape = CellShape.Mountains, HasAccessToFreshWater = true
                     },
                     Neighbors = new List<HexCellTestData>() {
-                        new HexCellTestData() { FoundationElevation = 0 }
+                        new HexCellTestData()
                     },
                     CellHasCity = false,
                     ImprovementTemplate = new ImprovementTemplateTestData() {
-                        RestrictedToShapes   = new List<CellShape>  () { CellShape.Flatlands, CellShape.Hills },
-                        RestrictedToTerrains = new List<CellTerrain>   () { CellTerrain.Grassland, CellTerrain.Plains },
+                        RestrictedToShapes      = new List<CellShape>     () { CellShape.Flatlands, CellShape.Hills },
+                        RestrictedToTerrains    = new List<CellTerrain>   () { CellTerrain.Grassland, CellTerrain.Plains },
                         RestrictedToVegetations = new List<CellVegetation>() { CellVegetation.None, CellVegetation.Forest },
                         FreshWaterAlwaysEnables = true
                     }
                 }).SetName("Invalid Shape, but has access to fresh water and FreshWaterAlwaysEnables is true").Returns(true);
+
+
+
+                yield return new TestCaseData(new IsTemplateValidForCellData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands, Feature = CellFeature.Oasis,
+                        HasAccessToFreshWater = true
+                    },
+                    Neighbors = new List<HexCellTestData>(),
+                    CellHasCity = false,
+                    ImprovementTemplate = new ImprovementTemplateTestData() {
+                        RestrictedToShapes      = new List<CellShape>     () { CellShape.Flatlands },
+                        RestrictedToTerrains    = new List<CellTerrain>   () { CellTerrain.Grassland },
+                        RestrictedToVegetations = new List<CellVegetation>() { CellVegetation.None },
+                    }
+                }).SetName("Otherwise valid cell, but has an oasis").Returns(false);
             }
         }
 
@@ -357,12 +370,9 @@ namespace Assets.Tests.Simulation.Improvements {
 
         #region tests
 
-        [Test(Description = "IsTemplateValidForCell should consider the terrain, vegetation, and " +
-            "edge types of the cell in question. It should always forbid placement on cities but allow " +
-            "templates on ResourceNodes regardless of other properties if the node requires that " +
-            "template as an extractor")]
-        [TestCaseSource("ValidityTestCases")]
-        public bool IsTemplateValidForCell_ConsidersTerrainAndVegetation(IsTemplateValidForCellData data){
+        [Test()]
+        [TestCaseSource("IsTemplateValidForCellTestCases")]
+        public bool IsTemplateValidForCellTests(IsTemplateValidForCellData data){
             var cellToTest = BuildCell(data.Cell);
 
             if(data.CellHasCity) {
@@ -391,13 +401,13 @@ namespace Assets.Tests.Simulation.Improvements {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
-            mockCell.Setup(cell => cell.FoundationElevation).Returns(data.FoundationElevation);
 
             var newCell = mockCell.Object;
 
             newCell.Terrain    = data.Terrain;
             newCell.Vegetation = data.Vegetation;
             newCell.Shape      = data.Shape;
+            newCell.Feature    = data.Feature;
 
             MockFreshWaterCanon.Setup(canon => canon.HasAccessToFreshWater(newCell)).Returns(data.HasAccessToFreshWater);
 

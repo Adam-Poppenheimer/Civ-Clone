@@ -27,6 +27,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IWaterTriangulator>        MockWaterTriangulator;
         private Mock<IRoadTriangulator>         MockRoadTriangulator;
         private Mock<IMarshTriangulator>        MockMarshTriangulator;
+        private Mock<IFloodPlainsTriangulator>  MockFloodPlainsTriangulator;
 
         #endregion
 
@@ -44,6 +45,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockWaterTriangulator        = new Mock<IWaterTriangulator>();
             MockRoadTriangulator         = new Mock<IRoadTriangulator>();
             MockMarshTriangulator        = new Mock<IMarshTriangulator>();
+            MockFloodPlainsTriangulator  = new Mock<IFloodPlainsTriangulator>();
 
             Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
             Container.Bind<IRiverTriangulator>       ().FromInstance(MockRiverTriangulator       .Object);
@@ -53,6 +55,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IWaterTriangulator>       ().FromInstance(MockWaterTriangulator       .Object);
             Container.Bind<IRoadTriangulator>        ().FromInstance(MockRoadTriangulator        .Object);
             Container.Bind<IMarshTriangulator>       ().FromInstance(MockMarshTriangulator       .Object);
+            Container.Bind<IFloodPlainsTriangulator> ().FromInstance(MockFloodPlainsTriangulator .Object);
 
             Container.Bind<HexCellTriangulator>().AsSingle();
         }
@@ -712,6 +715,158 @@ namespace Assets.Tests.Simulation.HexMap {
             MockMarshTriangulator.Verify(
                 triangulator => triangulator.TriangulateMarshCorner(northWestData),
                 Times.Never, "Unexpectedly called TriangulateMarshCorner on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesFloodPlainEdgeInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(northEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(eastData))     .Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(southEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(southWestData)).Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(westData))     .Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(northEastData),
+                Times.Once, "Did not call TriangulateFloodPlainEdge on northEastData as expected"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(southEastData),
+                Times.Once, "Did not call TriangulateFloodPlainEdge on southEastData as expected"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(westData),
+                Times.Once, "Did not call TriangulateFloodPlainEdge on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesNotTriangulateFloodPlainEdgeInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(northEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(eastData))     .Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(southEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(southWestData)).Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(westData))     .Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainEdge(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(eastData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainEdge on eastData"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(southWestData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainEdge on southWestData"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainEdge(northWestData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainEdge on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesFloodPlainCornerInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(northEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(eastData))     .Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(southEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(southWestData)).Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(westData))     .Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(northEastData),
+                Times.Once, "Did not call TriangulateFloodPlainCorner on northEastData as expected"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(southEastData),
+                Times.Once, "Did not call TriangulateFloodPlainCorner on southEastData as expected"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(westData),
+                Times.Once, "Did not call TriangulateFloodPlainCorner on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesNotTriangulateFloodPlainCornerInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(northEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(eastData))     .Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(southEastData)).Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(southWestData)).Returns(false);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(westData))     .Returns(true);
+            MockFloodPlainsTriangulator.Setup(triangulator => triangulator.ShouldTriangulateFloodPlainCorner(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(eastData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainCorner on eastData"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(southWestData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainCorner on southWestData"
+            );
+
+            MockFloodPlainsTriangulator.Verify(
+                triangulator => triangulator.TriangulateFloodPlainCorner(northWestData),
+                Times.Never, "Unexpectedly called TriangulateFloodPlainCorner on northWestData"
             );
         }
 

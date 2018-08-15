@@ -47,8 +47,9 @@ namespace Assets.Simulation.MapManagement {
                 var newCellData = new SerializableHexCellData() {
                     Coordinates            = cell.Coordinates,
                     Terrain                = cell.Terrain,
-                    Vegetation             = cell.Vegetation,
                     Shape                  = cell.Shape,
+                    Vegetation             = cell.Vegetation,
+                    Feature                = cell.Feature,
                     SuppressSlot           = cell.SuppressSlot,
                     HasRoads               = cell.HasRoads,
                     IsSlotOccupied         = cell.WorkerSlot.IsOccupied,
@@ -77,6 +78,7 @@ namespace Assets.Simulation.MapManagement {
                 CellModificationLogic.ChangeTerrainOfCell   (cellToModify, cellData.Terrain);
                 CellModificationLogic.ChangeShapeOfCell     (cellToModify, cellData.Shape);
                 CellModificationLogic.ChangeVegetationOfCell(cellToModify, cellData.Vegetation);
+                CellModificationLogic.ChangeFeatureOfCell   (cellToModify, cellData.Feature);
                 CellModificationLogic.ChangeHasRoadsOfCell  (cellToModify, cellData.HasRoads);
 
                 cellToModify.SuppressSlot = cellData.SuppressSlot;

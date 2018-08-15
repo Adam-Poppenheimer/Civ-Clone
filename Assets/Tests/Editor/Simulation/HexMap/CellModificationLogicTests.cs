@@ -33,6 +33,14 @@ namespace Assets.Tests.Simulation.HexMap {
 
         }
 
+        public class CanChangeFeatureOfCellTestData {
+
+            public CellFeature Feature;
+
+            public HexCellTestData Cell;
+
+        }
+
         public class CanChangeHasRoadsOfCellTestData {
 
             public bool HasRoads;
@@ -46,6 +54,7 @@ namespace Assets.Tests.Simulation.HexMap {
             public CellTerrain    Terrain;
             public CellShape      Shape;
             public CellVegetation Vegetation;
+            public CellFeature    Feature;
             public bool           HasRoads;
             public bool           HasRiver;
 
@@ -294,6 +303,45 @@ namespace Assets.Tests.Simulation.HexMap {
             }
         }
 
+        public static IEnumerable CanChangeFeatureOfCellTestCases {
+            get {
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Desert, Shape = CellShape.Flatlands
+                    },
+                    Feature = CellFeature.Oasis
+                }).SetName("Oasis valid on flat desert").Returns(true);
+
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands
+                    },
+                    Feature = CellFeature.Oasis
+                }).SetName("Oasis invalid on flat non-desert").Returns(false);
+
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Desert, Shape = CellShape.Hills
+                    },
+                    Feature = CellFeature.Oasis
+                }).SetName("Oasis invalid on hilly desert").Returns(false);
+
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Desert, Shape = CellShape.Mountains
+                    },
+                    Feature = CellFeature.Oasis
+                }).SetName("Oasis invalid on mountainous desert").Returns(false);
+
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Desert, Shape = CellShape.Hills
+                    },
+                    Feature = CellFeature.None
+                }).SetName("None always valid").Returns(true);
+            }
+        }
+
         public static IEnumerable CanChangeHasRoadsOfCellTestCases {
             get {
                 //hasRoads argument is false (not exhaustive)
@@ -519,6 +567,17 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
+        public void ChangeTerrainOfCell_OasisRemovedIfNewTerrainNotDesert() {
+            var cellToTest = BuildCell(terrain: CellTerrain.Desert, feature: CellFeature.Oasis);
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeTerrainOfCell(cellToTest, CellTerrain.Grassland);
+
+            Assert.AreEqual(CellFeature.None, cellToTest.Feature);
+        }
+
+        [Test]
         public void ChangeTerrainOfCell_RiversRemovedIfNewTerrainUnderwater() {
             var cellToTest = BuildCell();
 
@@ -545,7 +604,7 @@ namespace Assets.Tests.Simulation.HexMap {
         #region Shape tests
         [Test]
         public void CanChangeShapeOfCellTests() {
-            Assert.Ignore("CanChangeShapeOfCell always return true, which is considered a case too trivial to test");
+            Assert.Ignore("CanChangeShapeOfCell always return true, which makes unit testing it unproductive");
         }
 
         [Test]
@@ -593,6 +652,17 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
+        public void ChangeShapeOfCell_HillsRemoveOases() {
+            var cellToTest = BuildCell(terrain: CellTerrain.Desert, feature: CellFeature.Oasis);
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Hills);
+
+            Assert.AreEqual(CellFeature.None, cellToTest.Feature);
+        }
+
+        [Test]
         public void ChangeShapeOfCell_MountainsRemoveMarsh() {
             var cellToTest = BuildCell(vegetation: CellVegetation.Marsh);
 
@@ -634,6 +704,17 @@ namespace Assets.Tests.Simulation.HexMap {
             modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
 
             Assert.AreEqual(CellTerrain.Grassland, cellToTest.Terrain);
+        }
+
+        [Test]
+        public void ChangeShapeOfCell_MountainsRemoveOases() {
+            var cellToTest = BuildCell(terrain: CellTerrain.Desert, feature: CellFeature.Oasis);
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
+
+            Assert.AreEqual(CellFeature.None, cellToTest.Feature);
         }
 
         [Test]
@@ -704,6 +785,20 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #endregion
 
+        #region Feature tests
+
+        [Test]
+        [TestCaseSource("CanChangeFeatureOfCellTestCases")]
+        public bool CanChangeFeatureOfCellTests(CanChangeFeatureOfCellTestData testData) {
+            var cellToTest = BuildCell(testData.Cell);
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            return modLogic.CanChangeFeatureOfCell(cellToTest, testData.Feature);
+        }
+
+        #endregion
+
         #region Road tests
         [Test]
         [TestCaseSource("CanChangeHasRoadsOfCellTestCases")]
@@ -744,7 +839,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private IHexCell BuildCell(HexCellTestData cellData) {
             return BuildCell(
                 cellData.Terrain, cellData.Shape, cellData.Vegetation,
-                cellData.HasRoads, cellData.HasRiver
+                cellData.Feature, cellData.HasRoads, cellData.HasRiver
             );
         }
 
@@ -752,6 +847,7 @@ namespace Assets.Tests.Simulation.HexMap {
             CellTerrain    terrain    = CellTerrain.Grassland,
             CellShape      shape      = CellShape.Flatlands,
             CellVegetation vegetation = CellVegetation.None,
+            CellFeature    feature    = CellFeature.None,
             bool           hasRoads   = false,
             bool           hasRiver   = false
         ) {
@@ -764,6 +860,7 @@ namespace Assets.Tests.Simulation.HexMap {
             newCell.Terrain    = terrain;
             newCell.Shape      = shape;
             newCell.Vegetation = vegetation;
+            newCell.Feature    = feature;
             newCell.HasRoads   = hasRoads;
 
             MockRiverCanon.Setup(canon => canon.HasRiver(newCell)).Returns(hasRiver);

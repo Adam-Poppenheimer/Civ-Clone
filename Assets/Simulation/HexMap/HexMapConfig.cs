@@ -75,6 +75,8 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private YieldSummary JungleYield;
         [SerializeField] private YieldSummary MarshYield;
 
+        [SerializeField] private YieldSummary OasisYield;
+
         [SerializeField] private int HillsMoveCost;
         [SerializeField] private int MountainsMoveCost;
 
@@ -99,6 +101,10 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexMapConfig
 
+        public bool DoesFeatureOverrideYield(CellFeature feature) {
+            return feature == CellFeature.Oasis;
+        }
+
         public YieldSummary GetYieldOfTerrain(CellTerrain terrain) {
             switch(terrain) {
                 case CellTerrain.Grassland:    return GrasslandYield;
@@ -114,8 +120,17 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public YieldSummary GetYieldOfVegetation(CellVegetation feature) {
-            switch(feature) {
+        public YieldSummary GetYieldOfShape(CellShape shape) {
+            switch(shape) {
+                case CellShape.Flatlands: return YieldSummary.Empty;
+                case CellShape.Hills:     return HillsYield;
+                case CellShape.Mountains: return MountainsYield;
+                default: throw new NotImplementedException();
+            }
+        }
+
+        public YieldSummary GetYieldOfVegetation(CellVegetation vegetation) {
+            switch(vegetation) {
                 case CellVegetation.None:   return YieldSummary.Empty;
                 case CellVegetation.Forest: return ForestYield;
                 case CellVegetation.Jungle: return JungleYield;
@@ -124,11 +139,10 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public YieldSummary GetYieldOfShape(CellShape shape) {
-            switch(shape) {
-                case CellShape.Flatlands: return YieldSummary.Empty;
-                case CellShape.Hills:     return HillsYield;
-                case CellShape.Mountains: return MountainsYield;
+        public YieldSummary GetYieldOfFeature(CellFeature feature) {
+            switch(feature) {
+                case CellFeature.None: return YieldSummary.Empty;
+                case CellFeature.Oasis: return OasisYield;
                 default: throw new NotImplementedException();
             }
         }

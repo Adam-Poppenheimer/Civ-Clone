@@ -9,13 +9,13 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.UI.MapEditor {
 
-    public class ShapePaintingPanel : CellPaintingPanelBase {
+    public class FeaturePaintingPanel : CellPaintingPanelBase {
 
         #region instance fields and properties
 
         private bool IsPainting;
 
-        private CellShape ActiveShape;
+        private CellFeature ActiveFeature;
 
 
 
@@ -33,8 +33,8 @@ namespace Assets.UI.MapEditor {
         #region from CellPaintingPanelBase
 
         protected override void EditCell(IHexCell cell) {
-            if(IsPainting && ModLogic.CanChangeShapeOfCell(cell, ActiveShape)) {
-                ModLogic.ChangeShapeOfCell(cell, ActiveShape);
+            if(IsPainting && ModLogic.CanChangeFeatureOfCell(cell, ActiveFeature)) {
+                ModLogic.ChangeFeatureOfCell(cell, ActiveFeature);
             }
         }
 
@@ -43,12 +43,12 @@ namespace Assets.UI.MapEditor {
         public void SetActiveShape(int index) {
             IsPainting = index >= 0;
             if(IsPainting) {
-                ActiveShape = (CellShape)index;
+                ActiveFeature = (CellFeature)index;
             }
         }
 
         #endregion
-
+        
     }
 
 }

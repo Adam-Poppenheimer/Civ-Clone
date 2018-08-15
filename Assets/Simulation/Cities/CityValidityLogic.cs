@@ -77,6 +77,10 @@ namespace Assets.Simulation.Cities {
                 return false;
             }
 
+            if(cell.Feature == CellFeature.Oasis) {
+                return false;
+            }
+
             foreach(var city in CityFactory.AllCities) {
                 var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
 

@@ -121,6 +121,10 @@ namespace Assets.UI.HexMap {
                 cellDataString += ", " + cell.Vegetation.ToString();
             }
 
+            if(cell.Feature != CellFeature.None) {
+                cellDataString += ", " + cell.Feature.ToString();
+            }
+
             cellDataString += GetImprovementString(cell);
 
             CellDataField.text = cellDataString;

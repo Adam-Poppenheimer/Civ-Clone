@@ -21,6 +21,7 @@ namespace Assets.Simulation.HexMap {
         CellTerrain    Terrain    { get; set; }
         CellShape      Shape      { get; set; }
         CellVegetation Vegetation { get; set; }
+        CellFeature    Feature    { get; set; }
 
         int FoundationElevation { get; set; }
         int EdgeElevation       { get; }

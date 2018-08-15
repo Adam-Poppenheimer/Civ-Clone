@@ -18,7 +18,8 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public HexCoordinates   Coordinates;
         [DataMember()] public CellTerrain      Terrain;
         [DataMember()] public CellVegetation   Vegetation;
-        [DataMember()] public CellShape     Shape;
+        [DataMember()] public CellShape        Shape;
+        [DataMember()] public CellFeature      Feature;
         [DataMember()] public bool             SuppressSlot;
         [DataMember()] public bool             HasRoads;
         [DataMember()] public bool             IsSlotOccupied;

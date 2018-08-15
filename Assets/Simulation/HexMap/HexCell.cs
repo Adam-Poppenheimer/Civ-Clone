@@ -40,20 +40,6 @@ namespace Assets.Simulation.HexMap {
         }
         private CellTerrain _terrain;
 
-        public CellVegetation Vegetation {
-            get { return _vegetation; }
-            set {
-                if(value == _vegetation) {
-                    return;
-                }
-
-                _vegetation = value;
-                RefreshSelfOnly();
-                Signals.VegetationChangedSignal.OnNext(this);
-            }
-        }
-        private CellVegetation _vegetation;
-
         public CellShape Shape {
             get { return _shape; }
             set {
@@ -68,6 +54,33 @@ namespace Assets.Simulation.HexMap {
             }
         }
         private CellShape _shape;
+
+        public CellVegetation Vegetation {
+            get { return _vegetation; }
+            set {
+                if(value == _vegetation) {
+                    return;
+                }
+
+                _vegetation = value;
+                RefreshSelfOnly();
+                Signals.VegetationChangedSignal.OnNext(this);
+            }
+        }
+        private CellVegetation _vegetation;
+
+        public CellFeature Feature {
+            get { return _feature; }
+            set {
+                if(_feature == value) {
+                    return;
+                }
+
+                _feature = value;
+                Refresh();
+            }
+        }
+        private CellFeature _feature;
 
         public int FoundationElevation {
             get { return _elevation; }
