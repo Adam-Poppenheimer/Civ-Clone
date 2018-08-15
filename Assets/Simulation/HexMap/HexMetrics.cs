@@ -69,6 +69,9 @@ namespace Assets.Simulation.HexMap {
 
         public const float CornerWaterfallTroughProtrusion = 0.05f;
 
+        public const float OasisWaterLerp = 0.5f;
+        public const float OasisVerdantEdgeLerp = 0.75f;
+
         private static Vector3[] Corners = {
             new Vector3(0f, 0f,  OuterRadius),
             new Vector3(InnerRadius, 0f,  0.5f * OuterRadius),
