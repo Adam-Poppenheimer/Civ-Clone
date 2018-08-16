@@ -22,3 +22,7 @@ MonoBehaviour:
   _minStartingLocationDistance: 6
   _neighborsInContinentWeight: 100
   _distanceFromSeedCentroidWeight: -50
+  _startingUnits:
+  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
+  - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}
+  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}

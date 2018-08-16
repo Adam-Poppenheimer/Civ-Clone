@@ -32,16 +32,17 @@ namespace Assets.Simulation.MapGeneration {
 
             Container.Bind<IMapGenerationConfig>().To<MapGenerationConfig>().FromInstance(Config);
 
-            Container.Bind<IOceanGenerator>      ().To<OceanGenerator>      ().AsSingle();
-            Container.Bind<IRegionGenerator>     ().To<RegionGenerator>     ().AsSingle();
-            Container.Bind<ICellTemperatureLogic>().To<CellTemperatureLogic>().AsSingle();
-            Container.Bind<IGridTraversalLogic>  ().To<GridTraversalLogic>  ().AsSingle();
-            Container.Bind<IResourceDistributor> ().To<ResourceDistributor> ().AsSingle();
-            Container.Bind<IResourceSampler>     ().To<ResourceSampler>     ().AsSingle();
-            Container.Bind<IYieldScorer>         ().To<YieldScorer>         ().AsSingle();
-            Container.Bind<IRegionBalancer>      ().To<RegionBalancer>      ().AsSingle();
-            Container.Bind<IYieldEstimator>      ().To<YieldEstimator>      ().AsSingle();
-            Container.Bind<IStrategicCopiesLogic>().To<StrategicCopiesLogic>().AsSingle();
+            Container.Bind<IOceanGenerator>            ().To<OceanGenerator>            ().AsSingle();
+            Container.Bind<IRegionGenerator>           ().To<RegionGenerator>           ().AsSingle();
+            Container.Bind<ICellTemperatureLogic>      ().To<CellTemperatureLogic>      ().AsSingle();
+            Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
+            Container.Bind<IResourceDistributor>       ().To<ResourceDistributor>       ().AsSingle();
+            Container.Bind<IResourceSampler>           ().To<ResourceSampler>           ().AsSingle();
+            Container.Bind<IYieldScorer>               ().To<YieldScorer>               ().AsSingle();
+            Container.Bind<IRegionBalancer>            ().To<RegionBalancer>            ().AsSingle();
+            Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
+            Container.Bind<IStrategicCopiesLogic>      ().To<StrategicCopiesLogic>      ().AsSingle();
+            Container.Bind<IStartingUnitPlacementLogic>().To<StartingUnitPlacementLogic>().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
             //Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();

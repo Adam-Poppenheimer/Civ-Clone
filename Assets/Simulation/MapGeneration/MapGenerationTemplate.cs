@@ -1,9 +1,12 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 using UnityEngine;
+
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -58,6 +61,18 @@ namespace Assets.Simulation.MapGeneration {
             get { return _distanceFromSeedCentroidWeight; }
         }
         [SerializeField] private int _distanceFromSeedCentroidWeight;
+
+        public ReadOnlyCollection<IUnitTemplate> StartingUnits {
+            get {
+                if(_startingUnitsCast == null) {
+                    _startingUnitsCast = _startingUnits.Cast<IUnitTemplate>().ToList();
+                }
+
+                return _startingUnitsCast.AsReadOnly();
+            }
+        }
+        [NonSerialized]  private List<IUnitTemplate> _startingUnitsCast;
+        [SerializeField] private List<UnitTemplate> _startingUnits;
 
         #endregion
 

@@ -18,15 +18,15 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IMapGenerationConfig Config;
-        private ICivilizationFactory CivFactory;
-        private IHexGrid             Grid;
-        private IRegionGenerator     RegionGenerator;
-        private IOceanGenerator      OceanGenerator;
-        private IGridTraversalLogic  GridTraversalLogic;
-        private IResourceSampler     ResourceSampler;
-
-        private ICellModificationLogic ModLogic;
+        private IMapGenerationConfig        Config;
+        private ICivilizationFactory        CivFactory;
+        private IHexGrid                    Grid;
+        private IRegionGenerator            RegionGenerator;
+        private IOceanGenerator             OceanGenerator;
+        private IGridTraversalLogic         GridTraversalLogic;
+        private IResourceSampler            ResourceSampler;
+        private ICellModificationLogic      ModLogic;
+        private IStartingUnitPlacementLogic StartingUnitPlacementLogic;
 
         #endregion
 
@@ -37,18 +37,18 @@ namespace Assets.Simulation.MapGeneration {
             IMapGenerationConfig config, ICivilizationFactory civFactory,
             IHexGrid grid, IRegionGenerator regionGenerator,
             IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
-            IResourceSampler resourceSampler,
-            ICellModificationLogic modLogic
+            IResourceSampler resourceSampler, ICellModificationLogic modLogic,
+            IStartingUnitPlacementLogic startingUnitPlacementLogic
         ) {
-            Config             = config;
-            CivFactory         = civFactory;
-            Grid               = grid;
-            RegionGenerator    = regionGenerator;
-            OceanGenerator     = oceanGenerator;
-            GridTraversalLogic = gridTraversalLogic;
-            ResourceSampler    = resourceSampler;
-
-            ModLogic = modLogic;
+            Config                     = config;
+            CivFactory                 = civFactory;
+            Grid                       = grid;
+            RegionGenerator            = regionGenerator;
+            OceanGenerator             = oceanGenerator;
+            GridTraversalLogic         = gridTraversalLogic;
+            ResourceSampler            = resourceSampler;
+            ModLogic                   = modLogic;
+            StartingUnitPlacementLogic = startingUnitPlacementLogic;
         }
 
         #endregion
@@ -72,6 +72,17 @@ namespace Assets.Simulation.MapGeneration {
             GenerateOceansAndContinents(template, out landRegions, out oceanSections);
 
             PaintMap(landRegions, oceanSections, template);
+
+            for(int i = 0; i < CivFactory.AllCivilizations.Count; i++) {
+                StartingUnitPlacementLogic.PlaceStartingUnitsInRegion(
+                    landRegions[i], CivFactory.AllCivilizations[i], template
+                );
+
+                float mapData = (float)i / (CivFactory.AllCivilizations.Count - 1);
+                foreach(var cell in landRegions[i].Cells) {
+                    cell.SetMapData(mapData);
+                }
+            }
 
             UnityEngine.Random.state = oldRandomState;
         }
@@ -97,9 +108,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void GenerateCivs(int civCount) {
-            foreach(var civ in CivFactory.AllCivilizations.ToArray()) {
-                civ.Destroy();
-            }
+            CivFactory.Clear();
 
             for(int i = 0; i < civCount; i++) {
                 CivFactory.Create(string.Format("Civ {0}", i + 1), UnityEngine.Random.ColorHSV());

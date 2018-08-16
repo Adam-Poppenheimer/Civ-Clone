@@ -13,7 +13,7 @@ namespace Assets.Simulation.Civilizations {
     /// <summary>
     /// Defines a factory capable of creating civilizations of a particular name.
     /// </summary>
-    public interface ICivilizationFactory : IFactory<string, Color, ICivilization> {
+    public interface ICivilizationFactory {
 
         #region properties
 
@@ -21,6 +21,14 @@ namespace Assets.Simulation.Civilizations {
         /// All civilizations created or recognized by this factory.
         /// </summary>
         ReadOnlyCollection<ICivilization> AllCivilizations { get; }
+
+        #endregion
+
+        #region methods
+
+        ICivilization Create(string name, Color color);
+
+        void Clear();
 
         #endregion
 

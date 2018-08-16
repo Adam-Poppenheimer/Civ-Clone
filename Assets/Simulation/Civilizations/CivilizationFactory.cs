@@ -74,7 +74,15 @@ namespace Assets.Simulation.Civilizations {
             Signals.NewCivilizationCreatedSignal.OnNext(newCivilization);
 
             return newCivilization;
-        }        
+        }
+
+        public void Clear() {
+            foreach(var civ in allCivilizations) {
+                civ.Destroy();
+            }
+
+            allCivilizations.Clear();
+        }
 
         #endregion
 
