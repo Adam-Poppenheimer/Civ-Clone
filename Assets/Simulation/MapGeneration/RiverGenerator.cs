@@ -68,6 +68,10 @@ namespace Assets.Simulation.MapGeneration {
                         }
                         riveredCells.Add(cell);
                         riverStartCandidates.Remove(cell);
+
+                        foreach(var startingNeighbor in Grid.GetNeighbors(start)) {
+                            riverStartCandidates.Remove(startingNeighbor);
+                        }
                     }
                 }
             }
