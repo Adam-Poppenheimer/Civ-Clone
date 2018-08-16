@@ -42,26 +42,29 @@ namespace Assets.Simulation.MapGeneration {
 
         public void CreateRiversForRegion(
             IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells
+            IEnumerable<IHexCell> waterCells
         ) {
-            int desiredCellsWithRiver = Mathf.RoundToInt(template.RiverPercentage * landCells.Count() * 0.01f);
+            int desiredRiveredCellsCount = Mathf.RoundToInt(template.RiverPercentage * landCells.Count() * 0.01f);
               
             var riveredCells = new HashSet<IHexCell>();
 
             var riverStartCandidates = landCells.Where(
                 cell => cell.Shape != CellShape.Flatlands &&
-                        !Grid.GetNeighbors(cell).Any(neighbor => IsWater(neighbor, oceanCells))
+                        !Grid.GetNeighbors(cell).Any(neighbor => IsWater(neighbor, waterCells))
             ).ToList();
 
             int iterations = landCells.Count() * 10;
-            while(riveredCells.Count < desiredCellsWithRiver && riverStartCandidates.Count > 0 && iterations-- > 0) {
+            while(riveredCells.Count < desiredRiveredCellsCount && riverStartCandidates.Count > 0 && iterations-- > 0) {
                 var start = riverStartCandidates.Random();
 
                 riverStartCandidates.Remove(start);
 
                 HashSet<IHexCell> cellsAdjacentToNewRiver;
 
-                if(TryBuildNewRiver(landCells, template, oceanCells, start, out cellsAdjacentToNewRiver)) {
+                if(TryBuildNewRiver(
+                    landCells, template, waterCells, start,
+                    desiredRiveredCellsCount - riveredCells.Count, out cellsAdjacentToNewRiver
+                )) {
                     foreach(var cell in cellsAdjacentToNewRiver) {
                         if(ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)) {
                             ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
@@ -81,18 +84,20 @@ namespace Assets.Simulation.MapGeneration {
 
         private bool TryBuildNewRiver(
             IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
-            IEnumerable<IHexCell> oceanCells, IHexCell start,
-            out HashSet<IHexCell> cellsAdjacentToRiver
+            IEnumerable<IHexCell> waterCells, IHexCell start, int maxRiveredCellCount,
+            out HashSet<IHexCell> riveredCells
         ) {
-            cellsAdjacentToRiver = new HashSet<IHexCell>();
+            riveredCells = new HashSet<IHexCell>();
 
             IHexCell end;
 
-            if(TryGetRiverEnd(landCells, template, start, oceanCells, out end)) {
+            int maxRiverLength = Math.Max(2, Mathf.RoundToInt(maxRiveredCellCount / 3f));
+
+            if(TryGetRiverEnd(landCells, template, start, waterCells, maxRiverLength, out end)) {
 
                 var riverPath = new List<IHexCell>() { start };
 
-                var pathFrom = Grid.GetShortestPathBetween(start, end, BuildRiverWeightFunction(oceanCells));
+                var pathFrom = Grid.GetShortestPathBetween(start, end, BuildRiverWeightFunction(waterCells));
 
                 if(pathFrom == null) {
                     return false;
@@ -100,7 +105,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 riverPath.AddRange(pathFrom);
 
-                CreateRiverStartPoint(riverPath[0], riverPath[1], cellsAdjacentToRiver);
+                CreateRiverStartPoint(riverPath[0], riverPath[1], riveredCells);
 
                 RiverPathResults pathSectionResults = new RiverPathResults(false, false);
 
@@ -108,7 +113,7 @@ namespace Assets.Simulation.MapGeneration {
                 for(; i < riverPath.Count - 1; i++) {
                     if(RiverCanon.HasRiver(riverPath[i])) {
                         pathSectionResults = CreateRiverEndpoint(
-                            riverPath[i - 1], riverPath[i], oceanCells, cellsAdjacentToRiver
+                            riverPath[i - 1], riverPath[i], waterCells, riveredCells
                         );
 
                         if(pathSectionResults.Completed) {
@@ -120,7 +125,7 @@ namespace Assets.Simulation.MapGeneration {
                     }else {
                         pathSectionResults = CreateRiverAlongCell(
                             riverPath[i - 1], riverPath[i], riverPath[i + 1],
-                            oceanCells, cellsAdjacentToRiver
+                            waterCells, riveredCells
                         );
                     }
 
@@ -134,7 +139,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 if(!pathSectionResults.FoundWater) {
                     pathSectionResults = CreateRiverEndpoint(
-                        riverPath[i - 1], riverPath[i], oceanCells, cellsAdjacentToRiver
+                        riverPath[i - 1], riverPath[i], waterCells, riveredCells
                     );
 
                     if(!pathSectionResults.Completed) {
@@ -150,15 +155,19 @@ namespace Assets.Simulation.MapGeneration {
 
         private bool TryGetRiverEnd(
             IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
-            IHexCell start, IEnumerable<IHexCell> oceanCells,
+            IHexCell start, IEnumerable<IHexCell> waterCells, int maxRiverLength,
             out IHexCell end
         ) {
+
+
             var cellsAdjacentToOcean = landCells.Where(
-                cell => Grid.GetNeighbors(cell).Any(neighbor => oceanCells.Contains(neighbor) || neighbor.Terrain.IsWater())
+                cell => Grid.GetNeighbors(cell).Any(neighbor => waterCells.Contains(neighbor) || neighbor.Terrain.IsWater())
             );
 
             var validCandidates = cellsAdjacentToOcean.Where(
-                cell => cell != start && !IsWater(cell, oceanCells) && !RiverCanon.HasRiver(cell)
+                cell => cell != start && !IsWater(cell, waterCells) &&
+                        !RiverCanon.HasRiver(cell) &&
+                        Grid.GetDistance(cell, start) <= maxRiverLength
             );
 
             if(validCandidates.Any()) {
