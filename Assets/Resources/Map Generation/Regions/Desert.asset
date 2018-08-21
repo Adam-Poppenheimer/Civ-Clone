@@ -9,18 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Taiga Region Template
+  m_Name: Desert
   m_EditorClassIdentifier: 
-  _hillsPercentage: 15
-  _mountainsPercentage: 5
-  _treePercentage: 50
-  _riverPercentage: 20
-  _minTreeClumps: 6
-  _maxTreeClumps: 8
-  _jungleThreshold: 1
-  _marshChanceBase: 0.05
-  _marshChancePerAdjacentWater: 0.1
-  _marshChancePerAdjacentRiver: 0.1
+  _hillsPercentage: 20
+  _mountainsPercentage: 0
+  _treePercentage: 0
+  _riverPercentage: 30
+  _minTreeClumps: 0
+  _maxTreeClumps: 0
+  _jungleThreshold: 0
+  _marshChanceBase: 0
+  _marshChancePerAdjacentWater: 0
+  _marshChancePerAdjacentRiver: 0
   _hasLuxuryResource: 1
   _primaryLuxuryCount: 4
   _hasSecondaryLuxury: 1
@@ -29,23 +29,30 @@ MonoBehaviour:
   _tertiaryLuxuryCount: 1
   _hasQuaternaryLuxury: 0
   _quaternaryLuxuryCount: 0
-  _strategicNodesPerCell: 0.05
+  _strategicNodesPerCell: 0.1
   _strategicCopiesPerCell: 0.2
   _balanceResources: 1
   _minFoodPerCell: 2
   _minProductionPerCell: 1
   _minScorePerCell: 4
-  _maxScorePerCell: 4.3
-  GrasslandsPercentage: 20
+  _maxScorePerCell: 4.4
+  GrasslandsPercentage: 0
   PlainsPercentage: 15
-  DesertPercentage: 0
-  TundraPercentage: 55
-  SnowPercentage: 10
+  DesertPercentage: 85
+  TundraPercentage: 0
+  SnowPercentage: 0
   WaterPercentage: 0
-  GrasslandSeedCount: 3
-  PlainsSeedCount: 3
-  DesertSeedCount: 0
-  TundraSeedCount: 2
-  SnowSeedCount: 3
+  GrasslandSeedCount: 0
+  PlainsSeedCount: 1
+  DesertSeedCount: 5
+  TundraSeedCount: 0
+  SnowSeedCount: 0
   WaterSeedCount: 0
   ArcticThreshold: 0
+  BalanceStrategyWeights:
+  - _strategy: Bonus Resource Balance Strategy
+    _weight: 100
+  - _strategy: Oasis Balance Strategy
+    _weight: 20
+  - _strategy: Hills Balance Strategy
+    _weight: 30

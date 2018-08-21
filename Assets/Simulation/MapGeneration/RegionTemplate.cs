@@ -14,6 +14,25 @@ namespace Assets.Simulation.MapGeneration {
     [CreateAssetMenu(menuName = "Civ Clone/Region Generation Template")]
     public class RegionTemplate : ScriptableObject, IRegionTemplate {
 
+        #region internal types
+
+        [Serializable]
+        public struct BalanceStrategyData {
+            
+            public string StrategyName {
+                get { return _strategy; }
+            }
+            [SerializeField] private string _strategy;
+
+            public int Weight {
+                get { return _weight; }
+            }
+            [SerializeField] private int _weight;
+
+        }
+
+        #endregion
+
         #region instance fields and properties
 
         #region from IRegionGenerationTemplate
@@ -169,6 +188,8 @@ namespace Assets.Simulation.MapGeneration {
 
         [SerializeField, Range(0f, 1f)] private float ArcticThreshold;
 
+        [SerializeField] private List<BalanceStrategyData> BalanceStrategyWeights;
+
         private TerrainData GrasslandData {
             get {
                 if(grasslandData == null) {
@@ -258,10 +279,13 @@ namespace Assets.Simulation.MapGeneration {
         }
         private TerrainData defaultData;
 
+        private Dictionary<IBalanceStrategy, int> BalanceStrategyWeightsDict;
 
 
-        private ICellTemperatureLogic TemperatureLogic;
-        private IHexGrid              Grid;
+
+        private ICellTemperatureLogic  TemperatureLogic;
+        private IHexGrid               Grid;
+        private List<IBalanceStrategy> AllBalanceStrategies;
 
         #endregion
 
@@ -269,10 +293,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public void InjectDependencies(
-            ICellTemperatureLogic temperatureLogic, IHexGrid grid
+            ICellTemperatureLogic temperatureLogic, IHexGrid grid,
+            List<IBalanceStrategy> allBalanceStrategies
         ) {
-            TemperatureLogic = temperatureLogic;
-            Grid             = grid;
+            TemperatureLogic     = temperatureLogic;
+            Grid                 = grid;
+            AllBalanceStrategies = allBalanceStrategies;
         }
 
         #region Unity messages
@@ -284,6 +310,8 @@ namespace Assets.Simulation.MapGeneration {
             tundraData    = null;
             snowData      = null;
             defaultData   = null;
+
+            BalanceStrategyWeightsDict = null;
         }
 
         #endregion
@@ -300,6 +328,28 @@ namespace Assets.Simulation.MapGeneration {
 
                 default: return DefaultData;
             }
+        }
+
+        public int GetWeightForBalanceStrategy(IBalanceStrategy strategyToCheck) {
+            if(BalanceStrategyWeightsDict == null) {
+                BalanceStrategyWeightsDict = new Dictionary<IBalanceStrategy, int>();
+
+                foreach(var data in BalanceStrategyWeights) {
+                    var strategyWithName = AllBalanceStrategies.Where(
+                        strategy => strategy.Name.Equals(data.StrategyName)
+                    ).FirstOrDefault();
+
+                    if(strategyWithName != null) {
+                        BalanceStrategyWeightsDict[strategyWithName] = data.Weight;
+                    }
+                }
+
+                foreach(var unweightedStrategy in AllBalanceStrategies.Except(BalanceStrategyWeightsDict.Keys).ToArray()) {
+                    BalanceStrategyWeightsDict[unweightedStrategy] = 0;
+                }
+            }
+
+            return BalanceStrategyWeightsDict[strategyToCheck];
         }
 
         #endregion

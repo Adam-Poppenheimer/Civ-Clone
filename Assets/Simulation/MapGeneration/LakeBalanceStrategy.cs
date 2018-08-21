@@ -18,11 +18,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public int SelectionWeight {
-            get { return 3; }
-        }
+        public string Name { get { return "Lake Balance Strategy"; } }
 
         #endregion
+
+        private int MaxNearbyLakes = 3;
+
+
+
 
         private IHexGrid                                         Grid;
         private IYieldEstimator                                  YieldEstimator;
@@ -108,8 +111,9 @@ namespace Assets.Simulation.MapGeneration {
                 if( cell.Terrain != CellTerrain.Snow && cell.Terrain != CellTerrain.Desert &&
                     !cell.Terrain.IsWater() && ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FreshWater)
                 ) {
-                    bool surroundedByLand = Grid.GetNeighbors(cell).All(
-                        neighbor => region.LandCells.Contains(neighbor) && neighbor.Terrain != CellTerrain.ShallowWater &&
+                    bool surroundedByLandOrLakes = Grid.GetNeighbors(cell).All(
+                        neighbor => region.LandCells.Contains(neighbor) &&
+                                    neighbor.Terrain != CellTerrain.ShallowWater &&
                                     neighbor.Terrain != CellTerrain.DeepWater
                     );
 
@@ -117,11 +121,11 @@ namespace Assets.Simulation.MapGeneration {
 
                     bool fewNearbylakes = Grid.GetCellsInRadius(cell, 2).Count(
                         nearby => nearby.Terrain == CellTerrain.FreshWater
-                    ) < 3;
+                    ) < MaxNearbyLakes;
 
                     bool noAdjacentDesert = !Grid.GetNeighbors(cell).Any(neighbor => neighbor.Terrain == CellTerrain.Desert);
 
-                    return surroundedByLand && !hasResourceNode && fewNearbylakes && noAdjacentDesert;
+                    return surroundedByLandOrLakes && !hasResourceNode && fewNearbylakes && noAdjacentDesert;
                 }else {
                     return false;
                 }               

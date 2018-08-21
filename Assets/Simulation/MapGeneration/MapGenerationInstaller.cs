@@ -53,10 +53,11 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
 
-            Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
-            //Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();
-            //Container.Bind<IBalanceStrategy>().To<FreshWaterLakeBalanceStrategy>().AsSingle();
-            Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>         ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<LakeBalanceStrategy>         ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>        ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<OasisBalanceStrategy>        ().AsSingle();
         }
 
         #endregion

@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Tropical Region Template
+  m_Name: Tropical
   m_EditorClassIdentifier: 
   _hillsPercentage: 15
   _mountainsPercentage: 5
@@ -32,10 +32,10 @@ MonoBehaviour:
   _strategicNodesPerCell: 0.05
   _strategicCopiesPerCell: 0.2
   _balanceResources: 1
-  _minFoodPerCell: 2.2
-  _minProductionPerCell: 0.8
+  _minFoodPerCell: 2
+  _minProductionPerCell: 1
   _minScorePerCell: 4
-  _maxScorePerCell: 4.3
+  _maxScorePerCell: 4.4
   GrasslandsPercentage: 75
   PlainsPercentage: 25
   DesertPercentage: 0
@@ -49,3 +49,8 @@ MonoBehaviour:
   SnowSeedCount: 0
   WaterSeedCount: 0
   ArcticThreshold: 0
+  BalanceStrategyWeights:
+  - _strategy: Bonus Resource Balance Strategy
+    _weight: 100
+  - _strategy: Jungle Balance Strategy
+    _weight: 20

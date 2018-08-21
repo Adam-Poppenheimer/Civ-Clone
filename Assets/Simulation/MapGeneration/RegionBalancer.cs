@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IYieldEstimator        CellYieldEstimator;        
         private IYieldScorer           YieldScorer;
-        private List<IBalanceStrategy> BalanceStrategies;
+        private List<IBalanceStrategy> AllBalanceStrategies;
 
         #endregion
 
@@ -29,11 +29,11 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionBalancer(
             IYieldEstimator cellYieldEstimator, IYieldScorer yieldScorer,
-            List<IBalanceStrategy> balanceStrategies
+            List<IBalanceStrategy> allBalanceStrategies
         ) {
-            CellYieldEstimator = cellYieldEstimator;
-            YieldScorer        = yieldScorer;
-            BalanceStrategies  = balanceStrategies;
+            CellYieldEstimator   = cellYieldEstimator;
+            YieldScorer          = yieldScorer;
+            AllBalanceStrategies = allBalanceStrategies;
         }
 
         #endregion
@@ -58,11 +58,11 @@ namespace Assets.Simulation.MapGeneration {
             float minProduction = template.MinProductionPerCell * region.Cells.Count;
 
             BringYieldTypeToMin(
-                YieldType.Food, minFood, region, ref currentYield
+                YieldType.Food, minFood, region, template, ref currentYield
             );
 
             BringYieldTypeToMin(
-                YieldType.Production, minProduction, region, ref currentYield
+                YieldType.Production, minProduction, region, template, ref currentYield
             );
 
 
@@ -75,9 +75,7 @@ namespace Assets.Simulation.MapGeneration {
             float scoreChange;
 
             while((currentScore < minScore || currentScore > maxScore) && iterations-- > 0) {
-                var strategyToAttempt = WeightedRandomSampler<IBalanceStrategy>.SampleElementsFromSet(
-                    BalanceStrategies, 1, strategy => strategy.SelectionWeight
-                ).FirstOrDefault();
+                var strategyToAttempt = GetStrategy(AllBalanceStrategies, template);
 
                 if(strategyToAttempt == null) {
                     break;
@@ -103,15 +101,20 @@ namespace Assets.Simulation.MapGeneration {
         #endregion
 
         private void BringYieldTypeToMin(
-            YieldType type, float minYield, MapRegion region,
+            YieldType type, float minYield, MapRegion region, IRegionTemplate template,
             ref YieldSummary currentYield
         ) {
             float yieldDeficit = minYield - currentYield[type];
 
-            var validStrategies = new List<IBalanceStrategy>(BalanceStrategies);
+            var validStrategies = new List<IBalanceStrategy>(AllBalanceStrategies);
 
             while(yieldDeficit > 0 && validStrategies.Count > 0) {
-                var strategy = validStrategies.Random();
+                var strategy = GetStrategy(validStrategies, template);
+
+                if(strategy == null) {
+                    Debug.LogWarningFormat("Failed to bring yield type {0} to min yield {1}", type, minYield);
+                    break;
+                }
 
                 YieldSummary yieldAdded;
                 if(strategy.TryIncreaseYield(region, type, out yieldAdded)) {
@@ -124,6 +127,12 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         #endregion
+
+        private IBalanceStrategy GetStrategy(IEnumerable<IBalanceStrategy> strategies, IRegionTemplate template) {
+            return WeightedRandomSampler<IBalanceStrategy>.SampleElementsFromSet(
+                strategies, 1, strategy => template.GetWeightForBalanceStrategy(strategy)
+            ).FirstOrDefault();
+        }
 
     }
 

@@ -17,9 +17,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public int SelectionWeight {
-            get { return 25; }
-        }
+        public string Name { get { return "Jungle Balance Strategy"; } }
 
         #endregion
 

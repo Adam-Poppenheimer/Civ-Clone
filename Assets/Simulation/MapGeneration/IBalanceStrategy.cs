@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        int SelectionWeight { get; }
+        string Name { get; }
 
         #endregion
 

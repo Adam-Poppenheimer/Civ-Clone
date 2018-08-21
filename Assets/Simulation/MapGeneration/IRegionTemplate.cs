@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Assets.Simulation.HexMap;
 
@@ -50,6 +51,8 @@ namespace Assets.Simulation.MapGeneration {
         #region methods
 
         TerrainData GetTerrainData(CellTerrain terrain);
+
+        int GetWeightForBalanceStrategy(IBalanceStrategy strategyToCheck);
 
         #endregion
 

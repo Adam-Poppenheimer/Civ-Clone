@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.MapResources;
@@ -18,9 +20,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public int SelectionWeight {
-            get { return 100; }
-        }
+        public string Name { get { return "Bonus Resource Balance Strategy"; } }
 
         #endregion
 
