@@ -5,7 +5,14 @@ using System.Text;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IOceanGenerationTemplate {
+    public interface ICivHomelandTemplate {
+
+        #region properties
+
+        
+
+        #endregion
+
     }
 
 }

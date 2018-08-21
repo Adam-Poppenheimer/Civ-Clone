@@ -9,18 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Arid Region Template
+  m_Name: Temperate Region Template
   m_EditorClassIdentifier: 
-  _hillsPercentage: 20
+  _hillsPercentage: 15
   _mountainsPercentage: 5
-  _treePercentage: 15
-  _riverPercentage: 30
+  _treePercentage: 50
+  _riverPercentage: 20
   _minTreeClumps: 6
   _maxTreeClumps: 8
-  _jungleThreshold: 0
-  _marshChanceBase: 0
-  _marshChancePerAdjacentWater: 0
-  _marshChancePerAdjacentRiver: 0
+  _jungleThreshold: 0.8
+  _marshChanceBase: 0.05
+  _marshChancePerAdjacentWater: 0.1
+  _marshChancePerAdjacentRiver: 0.1
   _hasLuxuryResource: 1
   _primaryLuxuryCount: 4
   _hasSecondaryLuxury: 1
@@ -36,17 +36,16 @@ MonoBehaviour:
   _minProductionPerCell: 1
   _minScorePerCell: 4
   _maxScorePerCell: 4.3
-  GrasslandsPercentage: 0
-  PlainsPercentage: 55
-  DesertPercentage: 45
+  GrasslandsPercentage: 65
+  PlainsPercentage: 35
+  DesertPercentage: 0
   TundraPercentage: 0
   SnowPercentage: 0
   WaterPercentage: 0
-  GrasslandSeedCount: 1
-  PlainsSeedCount: 3
-  DesertSeedCount: 4
+  GrasslandSeedCount: 3
+  PlainsSeedCount: 2
+  DesertSeedCount: 0
   TundraSeedCount: 0
   SnowSeedCount: 0
   WaterSeedCount: 0
-  TundraThreshold: 0.27
-  SnowThreshold: 0.18
+  ArcticThreshold: 0

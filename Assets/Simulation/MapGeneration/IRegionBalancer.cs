@@ -8,7 +8,7 @@ namespace Assets.Simulation.MapGeneration {
         #region methods
 
         void BalanceRegionYields(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         );
 
         #endregion

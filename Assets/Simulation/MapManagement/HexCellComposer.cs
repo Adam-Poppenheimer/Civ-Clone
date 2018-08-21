@@ -43,7 +43,7 @@ namespace Assets.Simulation.MapManagement {
         public void ComposeCells(SerializableMapData mapData) {
             mapData.HexCells = new List<SerializableHexCellData>();
 
-            foreach(var cell in Grid.AllCells) {
+            foreach(var cell in Grid.Cells) {
                 var newCellData = new SerializableHexCellData() {
                     Coordinates            = cell.Coordinates,
                     Terrain                = cell.Terrain,

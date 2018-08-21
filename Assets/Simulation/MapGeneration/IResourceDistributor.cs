@@ -12,11 +12,11 @@ namespace Assets.Simulation.MapGeneration {
         #region methods
 
         void DistributeLuxuryResourcesAcrossRegion(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         );
 
         void DistributeStrategicResourcesAcrossRegion(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         );
 
         #endregion

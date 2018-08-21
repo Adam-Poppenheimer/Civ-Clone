@@ -14,6 +14,7 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         [SerializeField] private MapGenerationConfig Config;
+        [SerializeField] private List<RegionTemplate> LandRegionTemplates;
 
         #endregion
 
@@ -22,9 +23,13 @@ namespace Assets.Simulation.MapGeneration {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            foreach(var regionTemplate in Resources.LoadAll<RegionGenerationTemplate>("")) {
+            foreach(var regionTemplate in Resources.LoadAll<RegionTemplate>("")) {
                 Container.QueueForInject(regionTemplate);
             }
+
+            Container.Bind<IEnumerable<IRegionTemplate>>()
+                     .WithId("Land Region Templates")
+                     .FromInstance(LandRegionTemplates.Cast<IRegionTemplate>());
 
             Container.Bind<IRiverGenerator>().To<RiverGenerator>().AsSingle();
 
@@ -43,6 +48,10 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
             Container.Bind<IStrategicCopiesLogic>      ().To<StrategicCopiesLogic>      ().AsSingle();
             Container.Bind<IStartingUnitPlacementLogic>().To<StartingUnitPlacementLogic>().AsSingle();
+            Container.Bind<ICivHomelandGenerator>      ().To<CivHomelandGenerator>      ().AsSingle();
+            Container.Bind<IGridPartitionLogic>        ().To<GridPartitionLogic>        ().AsSingle();
+            Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
+            Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy> ().AsSingle();
             //Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>        ().AsSingle();

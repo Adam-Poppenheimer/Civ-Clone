@@ -50,7 +50,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IStartingUnitPlacementLogic
 
         public void PlaceStartingUnitsInRegion(
-            MapRegion region, ICivilization owner, IMapGenerationTemplate mapTemplate
+            MapRegion region, ICivilization owner, IMapTemplate mapTemplate
         ) {
             var bestLocation = GetBestStartingCell(region);
 

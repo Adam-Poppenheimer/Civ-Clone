@@ -4,7 +4,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IRegionGenerationTemplate {
+    public interface IRegionTemplate {
 
         #region properties
 

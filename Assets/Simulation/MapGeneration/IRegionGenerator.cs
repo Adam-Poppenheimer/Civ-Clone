@@ -13,11 +13,11 @@ namespace Assets.Simulation.MapGeneration {
         #region methods
 
         void GenerateTopologyAndEcology(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         );
 
         void DistributeYieldAndResources(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         );
 
         #endregion

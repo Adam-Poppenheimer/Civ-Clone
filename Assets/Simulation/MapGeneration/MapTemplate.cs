@@ -11,7 +11,7 @@ using Assets.Simulation.Units;
 namespace Assets.Simulation.MapGeneration {
 
     [CreateAssetMenu(menuName = "Civ Clone/Map Generation Template")]
-    public class MapGenerationTemplate : ScriptableObject, IMapGenerationTemplate {
+    public class MapTemplate : ScriptableObject, IMapTemplate {
 
         #region instance fields and properties
 
@@ -22,15 +22,15 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(2, 10)] private int _civCount = 8;
 
-        public IEnumerable<IRegionGenerationTemplate> CivRegionTemplates {
-            get { return _civRegionTemplates.Cast<IRegionGenerationTemplate>(); }
+        public IEnumerable<ICivHomelandTemplate> HomelandTemplates {
+            get { return _homelandTemplates.Cast<ICivHomelandTemplate>(); }
         }
-        [SerializeField] private List<RegionGenerationTemplate> _civRegionTemplates;
+        [SerializeField] private List<CivHomelandTemplate> _homelandTemplates;
 
-        public IEnumerable<IOceanGenerationTemplate> OceanTemplates {
-            get { return _oceanTemplates.Cast<IOceanGenerationTemplate>(); }
+        public IEnumerable<IOceanTemplate> OceanTemplates {
+            get { return _oceanTemplates.Cast<IOceanTemplate>(); }
         }
-        [SerializeField] private List<OceanGenerationTemplate> _oceanTemplates;
+        [SerializeField] private List<OceanTemplate> _oceanTemplates;
 
         public int ContinentalLandPercentage {
             get { return _continentalLandPercentage; }

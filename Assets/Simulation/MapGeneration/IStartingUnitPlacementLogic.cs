@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void PlaceStartingUnitsInRegion(MapRegion region, ICivilization owner, IMapGenerationTemplate template);
+        void PlaceStartingUnitsInRegion(MapRegion region, ICivilization owner, IMapTemplate template);
 
         #endregion
 

@@ -56,7 +56,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IResourceDistributor
 
         public void DistributeLuxuryResourcesAcrossRegion(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             var resourcesSoFar = new List<IResourceDefinition>();
 
@@ -86,7 +86,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeStrategicResourcesAcrossRegion(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             int nodesLeft  = Mathf.CeilToInt(template.StrategicNodesPerCell  * region.Cells.Count);
             int copiesLeft = Mathf.CeilToInt(template.StrategicCopiesPerCell * region.Cells.Count);

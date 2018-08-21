@@ -34,18 +34,32 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IOceanGenerator
 
-        public void GenerateOcean(
-            MapSection ocean, IOceanGenerationTemplate template
-        ) {
-            foreach(var cell in ocean.Cells) {
-                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
+        public OceanData GetOceanData(IEnumerable<MapSection> oceanSections, IMapTemplate mapTemplate) {
+            var oceanCells = oceanSections.SelectMany(section => section.Cells).ToList();
+
+            var oceanRegions = new List<MapRegion>() {
+                new MapRegion(new List<IHexCell>(), oceanCells)
+            };
+
+            return new OceanData(oceanRegions);
+        }
+
+        public void GenerateTopologyAndEcology(OceanData oceanData) {
+            foreach(var region in oceanData.OceanRegions) {
+                foreach(var cell in region.Cells) {
+                    ModLogic.ChangeTerrainOfCell(cell, CellTerrain.DeepWater);
+                }
             }
+        }
+
+        public void DistributeYieldAndResources(OceanData data) {
+            
         }
 
         #endregion
 
         #endregion
-        
+
     }
 
 }

@@ -142,7 +142,7 @@ namespace Assets.Simulation.Core {
         #endregion
 
         private void PerformBeginningOfTurnActions() {
-            foreach(var cell in Grid.AllCells) {
+            foreach(var cell in Grid.Cells) {
                 cell.RefreshVisibility();
             }
 

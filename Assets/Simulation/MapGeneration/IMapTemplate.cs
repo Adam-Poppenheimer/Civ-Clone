@@ -8,14 +8,14 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IMapGenerationTemplate {
+    public interface IMapTemplate {
 
         #region properties
 
         int CivCount { get; }
 
-        IEnumerable<IRegionGenerationTemplate> CivRegionTemplates { get; }
-        IEnumerable<IOceanGenerationTemplate>  OceanTemplates     { get; }
+        IEnumerable<ICivHomelandTemplate>     HomelandTemplates { get; }
+        IEnumerable<IOceanTemplate> OceanTemplates    { get; }
 
         int ContinentalLandPercentage { get; }
 

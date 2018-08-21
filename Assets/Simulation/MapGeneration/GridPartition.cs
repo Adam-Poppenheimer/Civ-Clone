@@ -7,7 +7,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class VoronoiPartition {
+    public class GridPartition {
 
         #region instance fields and properties
 
@@ -27,7 +27,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region constructors
 
-        public VoronoiPartition(IEnumerable<MapSection> sections, IHexGrid grid) {
+        public GridPartition(IEnumerable<MapSection> sections, IHexGrid grid) {
             Sections = sections;
             Grid = grid;
         }

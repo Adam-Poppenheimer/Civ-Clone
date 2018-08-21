@@ -46,7 +46,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockCivHappinessLogic  = new Mock<ICivilizationHappinessLogic>();
             MockCivConfig          = new Mock<ICivilizationConfig>();
 
-            MockGrid.Setup(map => map.AllCells).Returns(AllCells.AsReadOnly());
+            MockGrid.Setup(map => map.Cells).Returns(AllCells.AsReadOnly());
 
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossession.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossession    .Object);

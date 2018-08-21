@@ -12,7 +12,7 @@ using Assets.Simulation.HexMap;
 namespace Assets.Simulation.MapGeneration {
 
     [CreateAssetMenu(menuName = "Civ Clone/Region Generation Template")]
-    public class RegionGenerationTemplate : ScriptableObject, IRegionGenerationTemplate {
+    public class RegionTemplate : ScriptableObject, IRegionTemplate {
 
         #region instance fields and properties
 
@@ -304,7 +304,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private int DefaultCrawlingWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
+        private int DefaultCrawlingWeightFunction(
+            IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells
+        ) {
             if(acceptedCells.Contains(cell)) {
                 return 0;
             }else {
@@ -312,7 +314,9 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private bool DefaultSeedFilter(IHexCell cell, MapSection land, MapSection water) {
+        private bool DefaultSeedFilter(
+            IHexCell cell, IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells
+        ) {
             return true;
         }
 
@@ -320,7 +324,9 @@ namespace Assets.Simulation.MapGeneration {
             return 1;
         }
 
-        private bool ArcticSeedFilter(IHexCell cell, MapSection land, MapSection water) {
+        private bool ArcticSeedFilter(
+            IHexCell cell, IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells
+        ) {
             return TemperatureLogic.GetTemperatureOfCell(cell, 0) <= ArcticThreshold;
         }
 

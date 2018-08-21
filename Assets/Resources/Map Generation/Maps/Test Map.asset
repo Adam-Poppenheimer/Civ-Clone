@@ -12,8 +12,8 @@ MonoBehaviour:
   m_Name: Test Map
   m_EditorClassIdentifier: 
   _civCount: 8
-  _civRegionTemplates:
-  - {fileID: 11400000, guid: dad453d0a2238624eb3697cdc81c2687, type: 2}
+  _homelandTemplates:
+  - {fileID: 11400000, guid: 5d34c8d03c7c5224e8ee776bda3a58f5, type: 2}
   _oceanTemplates:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
   _continentalLandPercentage: 30
@@ -25,4 +25,3 @@ MonoBehaviour:
   _startingUnits:
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}
-  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}

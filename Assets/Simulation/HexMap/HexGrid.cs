@@ -28,9 +28,10 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexGrid
 
-        public ReadOnlyCollection<IHexCell> AllCells {
-            get { return Cells.AsReadOnly(); }
+        public ReadOnlyCollection<IHexCell> Cells {
+            get { return cells.AsReadOnly(); }
         }
+        private List<IHexCell> cells;
 
         public int ChunkCountX { get; private set; }
         public int ChunkCountZ { get; private set; }
@@ -44,9 +45,7 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexGridChunk ChunkPrefab;
 
-        [SerializeField] private LayerMask TerrainCollisionMask;
-
-        private List<IHexCell> Cells;
+        [SerializeField] private LayerMask TerrainCollisionMask;        
 
         private HexGridChunk[] Chunks;
 
@@ -104,7 +103,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void Clear() {
-            if(Cells == null) {
+            if(cells == null) {
                 return;
             }
 
@@ -116,7 +115,7 @@ namespace Assets.Simulation.HexMap {
                 Destroy(Chunks[i].gameObject);
             }
 
-            Cells  = null;
+            cells  = null;
             Chunks = null;
         }
 
@@ -342,7 +341,7 @@ namespace Assets.Simulation.HexMap {
                 }
             }
 
-            Cells = newCells.Cast<IHexCell>().ToList();
+            cells = newCells.Cast<IHexCell>().ToList();
         }
 
         private void CreateCell(int x, int z, int i, HexCell[] newCells) {

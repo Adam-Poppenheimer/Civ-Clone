@@ -41,7 +41,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IRiverGenerator
 
         public void CreateRiversForRegion(
-            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionTemplate template,
             IEnumerable<IHexCell> waterCells
         ) {
             int desiredRiveredCellsCount = Mathf.RoundToInt(template.RiverPercentage * landCells.Count() * 0.01f);
@@ -83,7 +83,7 @@ namespace Assets.Simulation.MapGeneration {
         #endregion
 
         private bool TryBuildNewRiver(
-            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionTemplate template,
             IEnumerable<IHexCell> waterCells, IHexCell start, int maxRiveredCellCount,
             out HashSet<IHexCell> riveredCells
         ) {
@@ -154,7 +154,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private bool TryGetRiverEnd(
-            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionTemplate template,
             IHexCell start, IEnumerable<IHexCell> waterCells, int maxRiverLength,
             out IHexCell end
         ) {

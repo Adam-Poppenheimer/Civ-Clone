@@ -38,7 +38,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockRiverCanon            = new Mock<IRiverCanon>();
             MockCellModificationLogic = new Mock<ICellModificationLogic>();
 
-            MockGrid.Setup(grid => grid.AllCells).Returns(AllCells.AsReadOnly());
+            MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
             MockGrid.Setup(grid => grid.GetCellAtCoordinates(It.IsAny<HexCoordinates>()))
                     .Returns<HexCoordinates>(coords => BuildHexCell(coords));

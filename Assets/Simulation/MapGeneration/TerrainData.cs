@@ -7,7 +7,9 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public delegate bool SeedFilter(IHexCell cell, MapSection land, MapSection water);
+    public delegate bool SeedFilter(
+        IHexCell cell, IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCell
+    );
 
     public class TerrainData {
 

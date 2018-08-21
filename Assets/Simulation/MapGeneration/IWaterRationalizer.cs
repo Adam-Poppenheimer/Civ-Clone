@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IMapGenerator {
+    public interface IWaterRationalizer {
 
         #region methods
 
-        void GenerateMap(int chunkCountX, int chunkCountZ, IMapTemplate template);
+        void RationalizeWater(IEnumerable<IHexCell> cells);
 
         #endregion
 

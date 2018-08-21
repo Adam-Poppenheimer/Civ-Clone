@@ -7,12 +7,12 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Ocean Generation Template")]
-    public class OceanGenerationTemplate : ScriptableObject, IOceanGenerationTemplate {
+    [CreateAssetMenu(menuName = "Civ Clone/Civ Homeland Template")]
+    public class CivHomelandTemplate : ScriptableObject, ICivHomelandTemplate {
 
         #region instance fields and properties
 
-        #region from IOceanGenerationTemplate
+        #region from ICivHomelandTemplate
 
 
 

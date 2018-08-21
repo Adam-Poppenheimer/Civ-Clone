@@ -198,7 +198,7 @@ namespace Assets.Tests.Simulation.Core {
 
             var gameCore = Container.Resolve<GameCore>();
 
-            MockGrid.Setup(grid => grid.AllCells).Returns(cellMocks.Select(mock => mock.Object).ToList().AsReadOnly());
+            MockGrid.Setup(grid => grid.Cells).Returns(cellMocks.Select(mock => mock.Object).ToList().AsReadOnly());
 
             MockCivilizationFactory
                 .Setup(factory => factory.AllCivilizations)
@@ -238,7 +238,7 @@ namespace Assets.Tests.Simulation.Core {
 
             var activeCiv = BuildCivilization();
 
-            MockGrid.Setup(grid => grid.AllCells).Returns(new List<IHexCell>().AsReadOnly());
+            MockGrid.Setup(grid => grid.Cells).Returns(new List<IHexCell>().AsReadOnly());
 
             MockCivilizationFactory
                 .Setup(factory => factory.AllCivilizations)
@@ -380,7 +380,7 @@ namespace Assets.Tests.Simulation.Core {
                 .Setup(factory => factory.AllCivilizations)
                 .Returns(new List<ICivilization>() { civilization }.AsReadOnly());
 
-            MockGrid.Setup(grid => grid.AllCells).Returns(new List<IHexCell>().AsReadOnly());
+            MockGrid.Setup(grid => grid.Cells).Returns(new List<IHexCell>().AsReadOnly());
 
             var playerSignals = Container.Resolve<PlayerSignals>();
 

@@ -82,10 +82,10 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        public IMapGenerationTemplate MapTemplate {
+        public IMapTemplate MapTemplate {
             get { return _mapTemplate; }
         }
-        [SerializeField] private MapGenerationTemplate _mapTemplate;
+        [SerializeField] private MapTemplate _mapTemplate;
 
         public int MinStrategicCopies {
             get { return _minStrategicCopies; }

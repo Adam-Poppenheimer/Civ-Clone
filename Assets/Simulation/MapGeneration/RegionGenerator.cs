@@ -55,20 +55,20 @@ namespace Assets.Simulation.MapGeneration {
         #region from IStartingLocationGenerator
 
         public void GenerateTopologyAndEcology(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             GenerateTopology(region, template);
             PaintTerrain(region, template);
 
-            RiverGenerator.CreateRiversForRegion(region.Land.Cells, template, region.Water.Cells);
+            RiverGenerator.CreateRiversForRegion(region.LandCells, template, region.WaterCells);
 
-            AssignFloodPlains(region.Land.Cells);
+            AssignFloodPlains(region.LandCells);
 
-            PaintVegetation(region.Land.Cells, template);
+            PaintVegetation(region.LandCells, template);
         }
 
         public void DistributeYieldAndResources(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             ResourceDistributor.DistributeLuxuryResourcesAcrossRegion   (region, template);
             ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, template);
@@ -78,8 +78,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private void GenerateTopology(MapRegion region, IRegionGenerationTemplate template) {
-            var landCells = region.Land.Cells;
+        private void GenerateTopology(MapRegion region, IRegionTemplate template) {
+            var landCells = region.LandCells;
 
             int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * landCells.Count() * 0.01f);
             int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * landCells.Count() * 0.01f);
@@ -103,7 +103,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void PaintTerrain(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             var landTerrains = EnumUtil.GetValues<CellTerrain>().Where(terrain => !terrain.IsWater());
 
@@ -112,7 +112,7 @@ namespace Assets.Simulation.MapGeneration {
             var terrainCrawlers = new Dictionary<CellTerrain, List<IEnumerator<IHexCell>>>();
             var cellsOfTerrain  = new Dictionary<CellTerrain, List<IHexCell>>();
 
-            var unassignedLandCells = new HashSet<IHexCell>(region.Land.Cells);
+            var unassignedLandCells = new HashSet<IHexCell>(region.LandCells);
             var seeds = new List<IHexCell>();
 
             foreach(var terrain in landTerrains) {
@@ -127,7 +127,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 for(int i = 0; i < terrainData.SeedCount; i++) {
                     var seedCandidates = unassignedLandCells.Where(
-                        cell => terrainData.SeedFilter(cell, region.Land, region.Water)
+                        cell => terrainData.SeedFilter(cell, region.LandCells, region.WaterCells)
                     ).Except(seeds);
 
                     if(seedCandidates.Count() == 0) {
@@ -188,7 +188,7 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            foreach(var cell in region.Water.Cells) {
+            foreach(var cell in region.WaterCells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
             }
         }
@@ -202,7 +202,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void PaintVegetation(
-            IEnumerable<IHexCell> landCells, IRegionGenerationTemplate template
+            IEnumerable<IHexCell> landCells, IRegionTemplate template
         ) {
             var openCells = new List<IHexCell>();
 
@@ -277,7 +277,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private bool ShouldBeMarsh(IHexCell cell, IRegionGenerationTemplate template) {
+        private bool ShouldBeMarsh(IHexCell cell, IRegionTemplate template) {
             if(cell.Terrain != CellTerrain.Grassland || cell.Shape != CellShape.Flatlands) {
                 return false;
             }

@@ -34,7 +34,7 @@ namespace Assets.Simulation.MapGeneration {
         float TemperatureJitter { get; }
 
 
-        IMapGenerationTemplate MapTemplate { get; }
+        IMapTemplate MapTemplate { get; }
 
         int MinStrategicCopies { get; }
         int MaxStrategicCopies { get; }

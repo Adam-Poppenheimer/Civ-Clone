@@ -43,7 +43,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IRegionBalancer
 
         public void BalanceRegionYields(
-            MapRegion region, IRegionGenerationTemplate template
+            MapRegion region, IRegionTemplate template
         ) {
             if(!template.BalanceResources) {
                 return;

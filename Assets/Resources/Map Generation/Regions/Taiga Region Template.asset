@@ -9,18 +9,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
-  m_Name: Tropical Region Template
+  m_Name: Taiga Region Template
   m_EditorClassIdentifier: 
   _hillsPercentage: 15
   _mountainsPercentage: 5
-  _treePercentage: 80
+  _treePercentage: 50
   _riverPercentage: 20
   _minTreeClumps: 6
   _maxTreeClumps: 8
-  _jungleThreshold: 0.4
+  _jungleThreshold: 1
   _marshChanceBase: 0.05
-  _marshChancePerAdjacentWater: 0.15
-  _marshChancePerAdjacentRiver: 0.15
+  _marshChancePerAdjacentWater: 0.1
+  _marshChancePerAdjacentRiver: 0.1
   _hasLuxuryResource: 1
   _primaryLuxuryCount: 4
   _hasSecondaryLuxury: 1
@@ -32,21 +32,20 @@ MonoBehaviour:
   _strategicNodesPerCell: 0.05
   _strategicCopiesPerCell: 0.2
   _balanceResources: 1
-  _minFoodPerCell: 2.2
-  _minProductionPerCell: 0.8
+  _minFoodPerCell: 2
+  _minProductionPerCell: 1
   _minScorePerCell: 4
   _maxScorePerCell: 4.3
-  GrasslandsPercentage: 75
-  PlainsPercentage: 25
+  GrasslandsPercentage: 20
+  PlainsPercentage: 15
   DesertPercentage: 0
-  TundraPercentage: 0
-  SnowPercentage: 0
+  TundraPercentage: 55
+  SnowPercentage: 10
   WaterPercentage: 0
   GrasslandSeedCount: 3
-  PlainsSeedCount: 2
+  PlainsSeedCount: 3
   DesertSeedCount: 0
-  TundraSeedCount: 0
-  SnowSeedCount: 0
+  TundraSeedCount: 2
+  SnowSeedCount: 3
   WaterSeedCount: 0
-  TundraThreshold: 0
-  SnowThreshold: 0
+  ArcticThreshold: 0

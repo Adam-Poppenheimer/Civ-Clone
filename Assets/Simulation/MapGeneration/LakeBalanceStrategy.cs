@@ -12,7 +12,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class FreshWaterLakeBalanceStrategy : IBalanceStrategy {
+    public class LakeBalanceStrategy : IBalanceStrategy {
 
         #region instance fields and properties
 
@@ -35,7 +35,7 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         [Inject]
-        public FreshWaterLakeBalanceStrategy(
+        public LakeBalanceStrategy(
             IHexGrid grid, IYieldEstimator yieldEstimator, IYieldScorer yieldScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             ICellModificationLogic modLogic
@@ -109,7 +109,7 @@ namespace Assets.Simulation.MapGeneration {
                     !cell.Terrain.IsWater() && ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FreshWater)
                 ) {
                     bool surroundedByLand = Grid.GetNeighbors(cell).All(
-                        neighbor => region.Land.Cells.Contains(neighbor) && neighbor.Terrain != CellTerrain.ShallowWater &&
+                        neighbor => region.LandCells.Contains(neighbor) && neighbor.Terrain != CellTerrain.ShallowWater &&
                                     neighbor.Terrain != CellTerrain.DeepWater
                     );
 

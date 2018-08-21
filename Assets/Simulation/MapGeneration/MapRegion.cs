@@ -12,13 +12,20 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        public readonly MapSection Land;
-        public readonly MapSection Water;
+        public ReadOnlyCollection<IHexCell> LandCells {
+            get { return _landCells.AsReadOnly(); }
+        }
+        private List<IHexCell> _landCells;
+
+        public ReadOnlyCollection<IHexCell> WaterCells {
+            get { return _waterCells.AsReadOnly(); }
+        }
+        private List<IHexCell> _waterCells;
 
         public ReadOnlyCollection<IHexCell> Cells {
             get {
                 if(_cells == null) {
-                    _cells = Land.Cells.Concat(Water.Cells).ToList();
+                    _cells = LandCells.Concat(WaterCells).ToList();
                 }
 
                 return _cells.AsReadOnly();
@@ -30,9 +37,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region constructors
 
-        public MapRegion(MapSection land, MapSection water) {
-            Land  = land;
-            Water = water;
+        public MapRegion(List<IHexCell> landCells, List<IHexCell> waterCells) {
+            _landCells  = landCells;
+            _waterCells = waterCells;
         }
 
         #endregion
