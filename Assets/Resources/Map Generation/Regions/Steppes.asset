@@ -1,0 +1,75 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
+  m_Name: Steppes
+  m_EditorClassIdentifier: 
+  _hillsPercentage: 10
+  _mountainsPercentage: 0
+  _treePercentage: 15
+  _riverPercentage: 20
+  _minTreeClumps: 6
+  _maxTreeClumps: 8
+  _areTreesJungle: 0
+  _marshChanceBase: 0.05
+  _marshChancePerAdjacentWater: 0.05
+  _marshChancePerAdjacentRiver: 0.05
+  _hasLuxuryResource: 1
+  _primaryLuxuryCount: 4
+  _hasSecondaryLuxury: 1
+  _secondaryLuxuryCount: 2
+  _hasTertiaryLuxury: 1
+  _tertiaryLuxuryCount: 1
+  _hasQuaternaryLuxury: 0
+  _quaternaryLuxuryCount: 0
+  _strategicNodesPerCell: 0.1
+  _strategicCopiesPerCell: 0.2
+  _balanceResources: 1
+  _minFoodPerCell: 2
+  _minProductionPerCell: 1
+  _minScorePerCell: 4
+  _maxScorePerCell: 4.4
+  GrasslandsPercentage: 25
+  PlainsPercentage: 65
+  DesertPercentage: 10
+  _tundraPercentage: 0
+  _snowPercentage: 0
+  GrasslandSeedCount: 4
+  PlainsSeedCount: 4
+  DesertSeedCount: 2
+  TreesOnGrasslandCrawlCost: 0
+  TreesOnPlainsCrawlCost: 0
+  TreesOnTundraCrawlCost: 0
+  TreesOnFlatlandsCrawlCost: 0
+  TreesOnHillsCrawlCost: 0
+  BalanceStrategyData:
+  - _strategy: Bonus Resource Balance Strategy
+    _weight: 100
+  - _strategy: Hills Balance Strategy
+    _weight: 10
+  MapResourceData:
+  - Resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    Weight: 10
+  - Resource: {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
+    Weight: 90
+  - Resource: {fileID: 11400000, guid: 5a3d04dde0378b647b424d1551604a95, type: 2}
+    Weight: 25
+  - Resource: {fileID: 11400000, guid: a7958eadeb99dca4e90ff72215e62afe, type: 2}
+    Weight: 60
+  - Resource: {fileID: 11400000, guid: 2bd5241ded607ee4caf5274379a102cc, type: 2}
+    Weight: 60
+  - Resource: {fileID: 11400000, guid: c673c4c39b639cb44b87cf9a81e98cc2, type: 2}
+    Weight: 100
+  - Resource: {fileID: 11400000, guid: 7a4a260518a1b3a49904fae2062c98a7, type: 2}
+    Weight: 100
+  - Resource: {fileID: 11400000, guid: ce39d0cc38e1e704abb94f85a88c17a9, type: 2}
+    Weight: 10
+  - Resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
+    Weight: 100
