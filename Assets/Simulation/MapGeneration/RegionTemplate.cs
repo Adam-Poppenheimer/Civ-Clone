@@ -57,6 +57,7 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 100)] private int _riverPercentage;
 
+        
 
         public int MinTreeClumps {
             get { return _minTreeClumps; }
@@ -68,10 +69,10 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 20)] private int _maxTreeClumps = 3;
 
-        public float JungleThreshold {
-            get { return _jungleThreshold; }
+        public bool AreTreesJungle {
+            get { return _areTreesJungle; }
         }
-        [SerializeField, Range(0f, 1f)] private float _jungleThreshold = 0.75f;
+        [SerializeField] private bool _areTreesJungle;
 
 
 

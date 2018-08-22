@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Name: Tropical
   m_EditorClassIdentifier: 
   _hillsPercentage: 15
-  _mountainsPercentage: 5
+  _mountainsPercentage: 0
   _treePercentage: 80
   _riverPercentage: 20
   _minTreeClumps: 6
-  _maxTreeClumps: 8
-  _jungleThreshold: 0.4
-  _marshChanceBase: 0.05
+  _maxTreeClumps: 15
+  _areTreesJungle: 1
+  _marshChanceBase: 0.15
   _marshChancePerAdjacentWater: 0.15
   _marshChancePerAdjacentRiver: 0.15
   _hasLuxuryResource: 1
@@ -29,21 +29,21 @@ MonoBehaviour:
   _tertiaryLuxuryCount: 1
   _hasQuaternaryLuxury: 0
   _quaternaryLuxuryCount: 0
-  _strategicNodesPerCell: 0.05
+  _strategicNodesPerCell: 0.03
   _strategicCopiesPerCell: 0.2
   _balanceResources: 1
   _minFoodPerCell: 2
-  _minProductionPerCell: 1
+  _minProductionPerCell: 0.75
   _minScorePerCell: 4
   _maxScorePerCell: 4.4
-  GrasslandsPercentage: 75
-  PlainsPercentage: 25
+  GrasslandsPercentage: 100
+  PlainsPercentage: 0
   DesertPercentage: 0
   TundraPercentage: 0
   SnowPercentage: 0
   WaterPercentage: 0
-  GrasslandSeedCount: 3
-  PlainsSeedCount: 2
+  GrasslandSeedCount: 4
+  PlainsSeedCount: 0
   DesertSeedCount: 0
   TundraSeedCount: 0
   SnowSeedCount: 0
@@ -51,6 +51,8 @@ MonoBehaviour:
   ArcticThreshold: 0
   BalanceStrategyWeights:
   - _strategy: Bonus Resource Balance Strategy
-    _weight: 100
+    _weight: 200
   - _strategy: Jungle Balance Strategy
     _weight: 20
+  - _strategy: Hills Balance Strategy
+    _weight: 100

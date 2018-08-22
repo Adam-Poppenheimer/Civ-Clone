@@ -29,7 +29,7 @@ MonoBehaviour:
   _yieldScoringWeights:
     Food: 1.25
     Production: 1.5
-    Gold: 1.5
+    Gold: 0.8
     Culture: 2
-    Science: 0.75
+    Science: 0.5
   _maxLakeSize: 6

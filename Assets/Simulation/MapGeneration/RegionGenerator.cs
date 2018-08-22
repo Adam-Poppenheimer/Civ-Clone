@@ -18,7 +18,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
-        private ICellTemperatureLogic  TemperatureLogic;
         private IGridTraversalLogic    GridTraversalLogic;
         private IRiverCanon            RiverCanon;
         private IRiverGenerator        RiverGenerator;
@@ -32,14 +31,13 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RegionGenerator(
-            ICellModificationLogic modLogic, IHexGrid grid, ICellTemperatureLogic temperatureLogic,
+            ICellModificationLogic modLogic, IHexGrid grid,
             IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
             IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor,
             IRegionBalancer regionBalancer, IMapGenerationConfig config
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
-            TemperatureLogic    = temperatureLogic;
             GridTraversalLogic  = gridTraversalLogic;
             RiverCanon          = riverCanon;
             RiverGenerator      = riverGenerator;
@@ -204,17 +202,16 @@ namespace Assets.Simulation.MapGeneration {
         private void PaintVegetation(
             IEnumerable<IHexCell> landCells, IRegionTemplate template
         ) {
+            var treeType = template.AreTreesJungle ? CellVegetation.Jungle : CellVegetation.Forest;
+
             var openCells = new List<IHexCell>();
 
             foreach(var cell in landCells) {
                 if(ShouldBeMarsh(cell, template)) {
                     ModLogic.ChangeVegetationOfCell(cell, CellVegetation.Marsh);
 
-                }else if(cell.Terrain.IsWater() || cell.Terrain == CellTerrain.Snow) {
-                    continue;
-
-                }else {
-                    openCells.Add(cell);
+                }else if(ModLogic.CanChangeVegetationOfCell(cell, treeType)) {
+                   openCells.Add(cell);
                 }
             }
 
@@ -223,14 +220,14 @@ namespace Assets.Simulation.MapGeneration {
             var treeSeeds = new List<IHexCell>();
 
             for(int i = 0; i < Random.Range(template.MinTreeClumps, template.MaxTreeClumps); i++) {
-                treeSeeds.Add(openCells[Random.Range(0, openCells.Count)]);
+                treeSeeds.Add(openCells.Random());
             }
 
             var treeCells = new List<IHexCell>();
 
             var treeCrawlers = treeSeeds.Select(
                 seed => GridTraversalLogic.GetCrawlingEnumerator(
-                    seed, openCells, treeCells, TreeWeightFunction
+                    seed, openCells, treeCells, GetTreeWeightFunction(treeType)
                 )
             ).ToList();
 
@@ -251,30 +248,22 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            int jitterChannel = Random.Range(0, 4);
-
             foreach(var treeCell in treeCells) {
-                float temperature = TemperatureLogic.GetTemperatureOfCell(treeCell, jitterChannel);
-
-                if( temperature >= template.JungleThreshold &&
-                    ModLogic.CanChangeVegetationOfCell(treeCell, CellVegetation.Jungle)
-                ) {
-                    ModLogic.ChangeVegetationOfCell(treeCell, CellVegetation.Jungle);
-                }else if(ModLogic.CanChangeVegetationOfCell(treeCell, CellVegetation.Forest)) {
-                    ModLogic.ChangeVegetationOfCell(treeCell, CellVegetation.Forest);
-                }
+                ModLogic.ChangeVegetationOfCell(treeCell, treeType);
             }
         }
 
-        private int TreeWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-            if( cell.Vegetation == CellVegetation.Marsh ||                    
-                !ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.Forest)
-            ) {
-                return -1;
+        private CrawlingWeightFunction GetTreeWeightFunction(CellVegetation treeType) {
+            return delegate(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
+                if( cell.Vegetation == CellVegetation.Marsh ||                    
+                    !ModLogic.CanChangeVegetationOfCell(cell, treeType)
+                ) {
+                    return -1;
 
-            }else{
-                return Grid.GetDistance(seed, cell);
-            }
+                }else{
+                    return Grid.GetDistance(seed, cell);
+                }
+            };
         }
 
         private bool ShouldBeMarsh(IHexCell cell, IRegionTemplate template) {

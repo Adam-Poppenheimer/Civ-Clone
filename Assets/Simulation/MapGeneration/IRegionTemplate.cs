@@ -14,10 +14,9 @@ namespace Assets.Simulation.MapGeneration {
         int TreePercentage      { get; }
         int RiverPercentage     { get; }
 
-        int MinTreeClumps { get; }
-        int MaxTreeClumps { get; }
-
-        float JungleThreshold { get; }
+        int  MinTreeClumps  { get; }
+        int  MaxTreeClumps  { get; }
+        bool AreTreesJungle { get; }
 
         float MarshChanceBase { get; }
         float MarshChancePerAdjacentRiver { get; }

@@ -21,6 +21,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
+        private int ProductionIncreaseWeight_Hills  = 1000;
+        private int ProductionIncreaseWeight_Plains = 1;
+
+
+
+
         private IHexGrid               Grid;
         private IYieldEstimator        YieldEstimator;
         private ICellModificationLogic ModLogic;
@@ -48,12 +54,16 @@ namespace Assets.Simulation.MapGeneration {
         #region from IBalanceStrategy
 
         public bool TryIncreaseYield(MapRegion region, YieldType type, out YieldSummary yieldAdded) {
-            yieldAdded = YieldSummary.Empty;
-            return false;
+            if(type == YieldType.Production) {
+                return TryIncreaseYield_Production(region, out yieldAdded);
+            }else {
+                yieldAdded = YieldSummary.Empty;
+                return false;
+            }
         }
 
         public bool TryIncreaseScore(MapRegion region, out float scoreAdded) {
-            var addJungleCandidates = region.Cells.Where(AddJungleCandidateFilter);
+            var addJungleCandidates = region.Cells.Where(IncreaseScoreFilter);
 
             if(addJungleCandidates.Any()) {
                 var newJungle = addJungleCandidates.Random();
@@ -73,7 +83,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public bool TryDecreaseScore(MapRegion region, out float scoreRemoved) {
-            var removeJungleCandidates = region.Cells.Where(RemoveJungleCandidateFilter);
+            var removeJungleCandidates = region.Cells.Where(DecreaseScoreFilter);
 
             if(removeJungleCandidates.Any()) {
                 var oldJungle = removeJungleCandidates.Random();
@@ -94,7 +104,28 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private bool AddJungleCandidateFilter(IHexCell cell) {
+        private bool TryIncreaseYield_Production(MapRegion region, out YieldSummary yieldAdded) {
+            yieldAdded = YieldSummary.Empty;
+
+            var targetCell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                region.LandCells, 1, IncreaseProductionWeightFunction
+            ).FirstOrDefault();
+
+            if(targetCell != null) {
+                var oldYield = YieldEstimator.GetYieldEstimateForCell(targetCell);
+
+                ModLogic.ChangeVegetationOfCell(targetCell, CellVegetation.None);
+
+                var newYield = YieldEstimator.GetYieldEstimateForCell(targetCell);
+
+                yieldAdded = newYield - oldYield;
+                return true;
+            }else {
+                return false;
+            }
+        }
+
+        private bool IncreaseScoreFilter(IHexCell cell) {
             if(ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.Jungle)) {
                 return Grid.GetNeighbors(cell).Count(neighbor => neighbor.Vegetation == CellVegetation.Jungle) >= 3;
             }else {
@@ -102,11 +133,23 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private bool RemoveJungleCandidateFilter(IHexCell cell) {
+        private bool DecreaseScoreFilter(IHexCell cell) {
             if(cell.Vegetation == CellVegetation.Jungle && ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.None)) {
                 return Grid.GetNeighbors(cell).Count(neighbor => neighbor.Vegetation == CellVegetation.None) >= 3;
             }else {
                 return false;
+            }
+        }
+
+        private int IncreaseProductionWeightFunction(IHexCell cell) {
+            if(cell.Vegetation != CellVegetation.Jungle || !ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.None)) {
+                return 0;
+            }else if(cell.Shape == CellShape.Hills) {
+                return ProductionIncreaseWeight_Hills;
+            }else if(cell.Terrain == CellTerrain.Plains) {
+                return ProductionIncreaseWeight_Plains;
+            }else {
+                return 0;
             }
         }
 

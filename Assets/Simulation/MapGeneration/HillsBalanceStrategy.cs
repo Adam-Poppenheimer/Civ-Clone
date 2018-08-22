@@ -59,7 +59,7 @@ namespace Assets.Simulation.MapGeneration {
                 return false;
             }
 
-            var candidates = region.Cells.Where(HillCandidateFilter);
+            var candidates = region.Cells.Where(HillCandidateFilter_ProductionIncreasing);
 
             if(candidates.Any()) {
                 var newHill = candidates.Random();
@@ -97,7 +97,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private bool HillCandidateFilter(IHexCell cell) {
+        private bool HillCandidateFilter_ScoreIncreasing(IHexCell cell) {
             if(NodeLocationCanon.GetPossessionsOfOwner(cell).Any()) {
                 return false;
             }
@@ -106,6 +106,13 @@ namespace Assets.Simulation.MapGeneration {
                 cell.Terrain == CellTerrain.Desert || cell.Terrain == CellTerrain.Tundra ||
                 cell.Terrain == CellTerrain.Snow
             );
+        }
+
+        private bool HillCandidateFilter_ProductionIncreasing(IHexCell cell) {
+            return !NodeLocationCanon.GetPossessionsOfOwner(cell).Any()
+                && !cell.Terrain.IsWater()
+                && cell.Shape != CellShape.Hills
+                && cell.Vegetation == CellVegetation.None;
         }
 
         #endregion
