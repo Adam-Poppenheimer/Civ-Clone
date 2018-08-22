@@ -17,7 +17,7 @@ MonoBehaviour:
   _riverPercentage: 20
   _minTreeClumps: 6
   _maxTreeClumps: 8
-  _jungleThreshold: 0.8
+  _areTreesJungle: 0
   _marshChanceBase: 0.05
   _marshChancePerAdjacentWater: 0.1
   _marshChancePerAdjacentRiver: 0.1
@@ -39,20 +39,39 @@ MonoBehaviour:
   GrasslandsPercentage: 65
   PlainsPercentage: 35
   DesertPercentage: 0
-  TundraPercentage: 0
-  SnowPercentage: 0
-  WaterPercentage: 0
+  _tundraPercentage: 0
+  _snowPercentage: 0
   GrasslandSeedCount: 3
   PlainsSeedCount: 2
   DesertSeedCount: 0
-  TundraSeedCount: 0
-  SnowSeedCount: 0
-  WaterSeedCount: 0
-  ArcticThreshold: 0
-  BalanceStrategyWeights:
+  TreesOnGrasslandCrawlCost: 0
+  TreesOnPlainsCrawlCost: 0
+  TreesOnTundraCrawlCost: 0
+  TreesOnFlatlandsCrawlCost: 0
+  TreesOnHillsCrawlCost: 0
+  BalanceStrategyData:
   - _strategy: Bonus Resource Balance Strategy
     _weight: 100
   - _strategy: Hills Balance Strategy
-    _weight: 5
-  - _strategy: Lake Balance Strategy
+    _weight: 20
+  - _strategy: Lakes Balance Strategy
     _weight: 10
+  MapResourceData:
+  - Resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    Weight: 40
+  - Resource: {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
+    Weight: 60
+  - Resource: {fileID: 11400000, guid: 5a3d04dde0378b647b424d1551604a95, type: 2}
+    Weight: 30
+  - Resource: {fileID: 11400000, guid: a7958eadeb99dca4e90ff72215e62afe, type: 2}
+    Weight: 10
+  - Resource: {fileID: 11400000, guid: 2bd5241ded607ee4caf5274379a102cc, type: 2}
+    Weight: 40
+  - Resource: {fileID: 11400000, guid: c673c4c39b639cb44b87cf9a81e98cc2, type: 2}
+    Weight: 50
+  - Resource: {fileID: 11400000, guid: 7a4a260518a1b3a49904fae2062c98a7, type: 2}
+    Weight: 40
+  - Resource: {fileID: 11400000, guid: ce39d0cc38e1e704abb94f85a88c17a9, type: 2}
+    Weight: 10
+  - Resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
+    Weight: 70

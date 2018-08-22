@@ -95,7 +95,7 @@ namespace Assets.Simulation.MapGeneration {
 
             while(nodesLeft > 0 && copiesLeft > 0 && validStrategics.Any()) {
                 var strategic = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    validStrategics, 1, resource => resource.SelectionWeight
+                    validStrategics, 1, resource => template.GetSelectionWeightOfResource(resource)
                 ).FirstOrDefault();
 
                 if(strategic == null) {

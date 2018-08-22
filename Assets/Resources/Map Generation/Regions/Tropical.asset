@@ -39,20 +39,33 @@ MonoBehaviour:
   GrasslandsPercentage: 100
   PlainsPercentage: 0
   DesertPercentage: 0
-  TundraPercentage: 0
-  SnowPercentage: 0
-  WaterPercentage: 0
+  _tundraPercentage: 0
+  _snowPercentage: 0
   GrasslandSeedCount: 4
   PlainsSeedCount: 0
   DesertSeedCount: 0
-  TundraSeedCount: 0
-  SnowSeedCount: 0
-  WaterSeedCount: 0
-  ArcticThreshold: 0
-  BalanceStrategyWeights:
+  TreesOnGrasslandCrawlCost: 0
+  TreesOnPlainsCrawlCost: 0
+  TreesOnTundraCrawlCost: 0
+  TreesOnFlatlandsCrawlCost: 0
+  TreesOnHillsCrawlCost: 0
+  BalanceStrategyData:
   - _strategy: Bonus Resource Balance Strategy
-    _weight: 200
-  - _strategy: Jungle Balance Strategy
-    _weight: 20
-  - _strategy: Hills Balance Strategy
     _weight: 100
+  - _strategy: Jungle Balance Strategy
+    _weight: 80
+  - _strategy: Hills Balance Strategy
+    _weight: 40
+  - _strategy: Lake Balance Strategy
+    _weight: 20
+  MapResourceData:
+  - Resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    Weight: 1
+  - Resource: {fileID: 11400000, guid: c673c4c39b639cb44b87cf9a81e98cc2, type: 2}
+    Weight: 10
+  - Resource: {fileID: 11400000, guid: 2bd5241ded607ee4caf5274379a102cc, type: 2}
+    Weight: 20
+  - Resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
+    Weight: 30
+  - Resource: {fileID: 11400000, guid: 02e75a66484b5cf4c85b14adc8fb9b00, type: 2}
+    Weight: 100

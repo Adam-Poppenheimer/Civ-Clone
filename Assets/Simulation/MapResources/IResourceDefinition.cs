@@ -24,8 +24,6 @@ namespace Assets.Simulation.MapResources {
 
         IImprovementTemplate Extractor { get; }
 
-        int SelectionWeight { get; }
-
         Transform AppearancePrefab { get; }
 
         Sprite Icon { get; }

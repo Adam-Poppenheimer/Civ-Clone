@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
@@ -19,11 +20,11 @@ namespace Assets.Simulation.MapGeneration {
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
         private IGridTraversalLogic    GridTraversalLogic;
-        private IRiverCanon            RiverCanon;
         private IRiverGenerator        RiverGenerator;
         private IResourceDistributor   ResourceDistributor;
         private IRegionBalancer        RegionBalancer;
         private IMapGenerationConfig   Config;
+        private IVegetationPainter     VegetationPainter;
 
         #endregion
 
@@ -32,18 +33,19 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid,
-            IGridTraversalLogic gridTraversalLogic, IRiverCanon riverCanon,
+            IGridTraversalLogic gridTraversalLogic,
             IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor,
-            IRegionBalancer regionBalancer, IMapGenerationConfig config
+            IRegionBalancer regionBalancer, IMapGenerationConfig config,
+            IVegetationPainter vegetationPainter
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
             GridTraversalLogic  = gridTraversalLogic;
-            RiverCanon          = riverCanon;
             RiverGenerator      = riverGenerator;
             ResourceDistributor = resourceDistributor;
             RegionBalancer      = regionBalancer;
             Config              = config;
+            VegetationPainter   = vegetationPainter;
         }
 
         #endregion
@@ -62,7 +64,7 @@ namespace Assets.Simulation.MapGeneration {
 
             AssignFloodPlains(region.LandCells);
 
-            PaintVegetation(region.LandCells, template);
+            VegetationPainter.PaintVegetation(region, template);
         }
 
         public void DistributeYieldAndResources(
@@ -100,24 +102,37 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void PaintTerrain(
-            MapRegion region, IRegionTemplate template
+        private void PaintTerrain(MapRegion region, IRegionTemplate template) {
+            var unassignedLandCells = new HashSet<IHexCell>(region.LandCells);
+
+            PaintArcticTerrain   (region, template, unassignedLandCells);
+            PaintNonArcticTerrain(region, template, unassignedLandCells);
+            AssignLandOrphans    (region, template, unassignedLandCells);
+
+            foreach(var cell in region.WaterCells) {
+                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
+            }
+        }
+
+        private void PaintNonArcticTerrain(
+            MapRegion region, IRegionTemplate template, HashSet<IHexCell> unassignedLandCells
         ) {
-            var landTerrains = EnumUtil.GetValues<CellTerrain>().Where(terrain => !terrain.IsWater());
+            var nonArcticLandTerrains = EnumUtil.GetValues<CellTerrain>().Where(
+                terrain => !terrain.IsWater() && !terrain.IsArctic()
+            );
 
             var dataOfTerrains  = new Dictionary<CellTerrain, TerrainData>();
             var terrainCounts   = new Dictionary<CellTerrain, int>();
             var terrainCrawlers = new Dictionary<CellTerrain, List<IEnumerator<IHexCell>>>();
             var cellsOfTerrain  = new Dictionary<CellTerrain, List<IHexCell>>();
-
-            var unassignedLandCells = new HashSet<IHexCell>(region.LandCells);
+            
             var seeds = new List<IHexCell>();
 
-            foreach(var terrain in landTerrains) {
-                var terrainData = template.GetTerrainData(terrain);
+            foreach(var terrain in nonArcticLandTerrains) {
+                var terrainData = template.GetNonArcticTerrainData(terrain);
                 dataOfTerrains[terrain] = terrainData;
 
-                var terrainCount = Mathf.RoundToInt(unassignedLandCells.Count() * terrainData.Percentage * 0.01f);
+                var terrainCount = Mathf.RoundToInt(region.LandCells.Count * terrainData.Percentage * 0.01f);
 
                 var acceptedCells = new List<IHexCell>();
 
@@ -158,7 +173,7 @@ namespace Assets.Simulation.MapGeneration {
 
             int iterations = unassignedLandCells.Count * 10;
             while(unassignedLandCells.Count > 0 && iterations-- > 0) {
-                var currentTerrain = landTerrains.Random();
+                var currentTerrain = nonArcticLandTerrains.Random();
 
                 if(cellsOfTerrain[currentTerrain].Count < terrainCounts[currentTerrain]) {
                     var crawlers = terrainCrawlers[currentTerrain];
@@ -180,14 +195,74 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            foreach(var terrain in landTerrains) {
+            foreach(var terrain in nonArcticLandTerrains) {
                 foreach(var cell in cellsOfTerrain[terrain]) {
                     ModLogic.ChangeTerrainOfCell(cell, terrain);
                 }
             }
+        }
 
-            foreach(var cell in region.WaterCells) {
-                ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
+        private void PaintArcticTerrain(
+            MapRegion region, IRegionTemplate template, HashSet<IHexCell> unassignedLandCells
+        ) {
+            var unassignedByPolarDistance = new List<IHexCell>(unassignedLandCells);
+
+            unassignedByPolarDistance.Sort(PolarDistanceComparer);
+
+            int snowCellCount   = Mathf.RoundToInt(template.SnowPercentage   * region.LandCells.Count * 0.01f);
+            int tundraCellCount = Mathf.RoundToInt(template.TundraPercentage * region.LandCells.Count * 0.01f);
+
+            for(int i = 0; i < snowCellCount; i++) {
+                if(unassignedByPolarDistance.Any()) {
+                    var candidate = unassignedByPolarDistance.Last();
+
+                    if(ModLogic.CanChangeTerrainOfCell(candidate, CellTerrain.Snow)) {
+                        ModLogic.ChangeTerrainOfCell(candidate, CellTerrain.Snow);
+                        unassignedLandCells.Remove(candidate);
+                    }
+
+                    unassignedLandCells.Remove(candidate);
+                    unassignedByPolarDistance.RemoveAt(unassignedByPolarDistance.Count - 1);
+                }else {
+                    break;
+                }
+            }
+
+            for(int i = 0; i < tundraCellCount; i++) {
+                if(unassignedByPolarDistance.Any()) {
+                    var candidate = unassignedByPolarDistance.Last();
+
+                    if(ModLogic.CanChangeTerrainOfCell(candidate, CellTerrain.Tundra)) {
+                        ModLogic.ChangeTerrainOfCell(candidate, CellTerrain.Tundra);
+                        unassignedLandCells.Remove(candidate);
+                    }
+                    
+                    unassignedByPolarDistance.RemoveAt(unassignedByPolarDistance.Count - 1);
+                }else {
+                    break;
+                }
+            }
+        }
+
+        private void AssignLandOrphans(
+            MapRegion region, IRegionTemplate template, HashSet<IHexCell> unassignedLandCells
+        ) {
+            foreach(var orphan in unassignedLandCells.ToArray()) {
+                var adjacentLandTerrains = Grid.GetCellsInRadius(orphan, 3)
+                                               .Except(unassignedLandCells)
+                                               .Intersect(region.LandCells)
+                                               .Select(neighbor => neighbor.Terrain)
+                                               .Where(terrain => !terrain.IsWater() && ModLogic.CanChangeTerrainOfCell(orphan, terrain));
+
+                if(adjacentLandTerrains.Any()) {
+                    var newTerrain = adjacentLandTerrains.Random();
+
+                    ModLogic.ChangeTerrainOfCell(orphan, newTerrain);
+
+                    unassignedLandCells.Remove(orphan);
+                }else {
+                    Debug.LogWarning("Could not find a valid terrain for an orphaned cell");
+                }
             }
         }
 
@@ -199,95 +274,8 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void PaintVegetation(
-            IEnumerable<IHexCell> landCells, IRegionTemplate template
-        ) {
-            var treeType = template.AreTreesJungle ? CellVegetation.Jungle : CellVegetation.Forest;
-
-            var openCells = new List<IHexCell>();
-
-            foreach(var cell in landCells) {
-                if(ShouldBeMarsh(cell, template)) {
-                    ModLogic.ChangeVegetationOfCell(cell, CellVegetation.Marsh);
-
-                }else if(ModLogic.CanChangeVegetationOfCell(cell, treeType)) {
-                   openCells.Add(cell);
-                }
-            }
-
-            int treeCount = Mathf.RoundToInt(template.TreePercentage * openCells.Count * 0.01f);
-
-            var treeSeeds = new List<IHexCell>();
-
-            for(int i = 0; i < Random.Range(template.MinTreeClumps, template.MaxTreeClumps); i++) {
-                treeSeeds.Add(openCells.Random());
-            }
-
-            var treeCells = new List<IHexCell>();
-
-            var treeCrawlers = treeSeeds.Select(
-                seed => GridTraversalLogic.GetCrawlingEnumerator(
-                    seed, openCells, treeCells, GetTreeWeightFunction(treeType)
-                )
-            ).ToList();
-
-            for(int i = 0; i < treeCount; i++) {
-                if(treeCrawlers.Count == 0) {
-                    Debug.LogWarning("Failed to paint correct number of trees into starting area");
-                    break;
-                }
-
-                var crawler = treeCrawlers[Random.Range(0, treeCrawlers.Count)];
-
-                if(crawler.MoveNext()) {
-                    treeCells.Add(crawler.Current);
-                    openCells.Remove(crawler.Current);
-                }else {
-                    treeCrawlers.Remove(crawler);
-                    i--;
-                }
-            }
-
-            foreach(var treeCell in treeCells) {
-                ModLogic.ChangeVegetationOfCell(treeCell, treeType);
-            }
-        }
-
-        private CrawlingWeightFunction GetTreeWeightFunction(CellVegetation treeType) {
-            return delegate(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-                if( cell.Vegetation == CellVegetation.Marsh ||                    
-                    !ModLogic.CanChangeVegetationOfCell(cell, treeType)
-                ) {
-                    return -1;
-
-                }else{
-                    return Grid.GetDistance(seed, cell);
-                }
-            };
-        }
-
-        private bool ShouldBeMarsh(IHexCell cell, IRegionTemplate template) {
-            if(cell.Terrain != CellTerrain.Grassland || cell.Shape != CellShape.Flatlands) {
-                return false;
-            }
-
-            int adjacentWater = Grid.GetNeighbors(cell).Where(
-                neighbor => neighbor.Terrain.IsWater()
-            ).Count();
-
-            int adjacentRivers = EnumUtil.GetValues<HexDirection>().Where(
-                direction => RiverCanon.HasRiverAlongEdge(cell, direction)
-            ).Count();
-
-            float chanceOfMarsh = template.MarshChanceBase
-                                + adjacentWater  * template.MarshChancePerAdjacentWater
-                                + adjacentRivers * template.MarshChancePerAdjacentRiver;
-
-            return Random.value < chanceOfMarsh;
-        }
-
         private int HillsStartingWeightFunction(IHexCell cell) {
-            int weight = Random.Range(2, 3);
+            int weight = UnityEngine.Random.Range(2, 3);
 
             if(Grid.GetNeighbors(cell).Exists(neighbor => neighbor.Terrain.IsWater())) {
                 weight -= 1;
@@ -304,6 +292,31 @@ namespace Assets.Simulation.MapGeneration {
 
         private int MountainWeightFunction(IHexCell cell) {
             return Grid.GetNeighbors(cell).Where(neighbor => neighbor.Shape != CellShape.Flatlands).Count();
+        }
+
+        private int PolarDistanceComparer(IHexCell cellA, IHexCell cellB) {
+            int polarDistanceA, polarDistanceB;
+
+            int zOffsetA = HexCoordinates.ToOffsetCoordinateZ(cellA.Coordinates);
+            int zOffsetB = HexCoordinates.ToOffsetCoordinateZ(cellB.Coordinates);
+
+            if(Config.Hemispheres == HemisphereMode.Both) {
+                polarDistanceA = Math.Min(zOffsetA, Grid.CellCountZ - zOffsetA);
+                polarDistanceB = Math.Min(zOffsetB, Grid.CellCountZ - zOffsetB);
+
+            }else if(Config.Hemispheres == HemisphereMode.North) {
+                polarDistanceA = Grid.CellCountZ - zOffsetA;
+                polarDistanceB = Grid.CellCountZ - zOffsetB;
+
+            }else if(Config.Hemispheres == HemisphereMode.South) {
+                polarDistanceA = zOffsetA;
+                polarDistanceB = zOffsetB;
+
+            }else {
+                throw new NotImplementedException("No behavior defined for HemisphereMode " + Config.Hemispheres);
+            }
+
+            return polarDistanceB.CompareTo(polarDistanceA);
         }
 
         #endregion

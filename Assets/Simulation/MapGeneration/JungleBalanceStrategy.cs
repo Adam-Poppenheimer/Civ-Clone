@@ -53,7 +53,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public bool TryIncreaseYield(MapRegion region, YieldType type, out YieldSummary yieldAdded) {
+        public bool TryIncreaseYield(MapRegion region, IRegionTemplate template, YieldType type, out YieldSummary yieldAdded) {
             if(type == YieldType.Production) {
                 return TryIncreaseYield_Production(region, out yieldAdded);
             }else {
@@ -62,7 +62,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public bool TryIncreaseScore(MapRegion region, out float scoreAdded) {
+        public bool TryIncreaseScore(MapRegion region, IRegionTemplate template, out float scoreAdded) {
             var addJungleCandidates = region.Cells.Where(IncreaseScoreFilter);
 
             if(addJungleCandidates.Any()) {
@@ -82,7 +82,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public bool TryDecreaseScore(MapRegion region, out float scoreRemoved) {
+        public bool TryDecreaseScore(MapRegion region, IRegionTemplate template, out float scoreRemoved) {
             var removeJungleCandidates = region.Cells.Where(DecreaseScoreFilter);
 
             if(removeJungleCandidates.Any()) {

@@ -52,6 +52,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IGridPartitionLogic>        ().To<GridPartitionLogic>        ().AsSingle();
             Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
+            Container.Bind<IVegetationPainter>         ().To<VegetationPainter>         ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();

@@ -68,12 +68,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public bool TryIncreaseYield(MapRegion region, YieldType type, out YieldSummary yieldAdded) {
+        public bool TryIncreaseYield(MapRegion region, IRegionTemplate template, YieldType type, out YieldSummary yieldAdded) {
             var availableResources = BonusResourcesWithYield[type].ToList();
 
             while(availableResources.Count > 0) {
                 var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    availableResources, 1, resource => resource.SelectionWeight
+                    availableResources, 1, resource => template.GetSelectionWeightOfResource(resource)
                 ).FirstOrDefault();
 
                 if(chosenResource == null) {
@@ -100,7 +100,7 @@ namespace Assets.Simulation.MapGeneration {
             return false;
         }
 
-        public bool TryIncreaseScore(MapRegion region, out float scoreAdded) {
+        public bool TryIncreaseScore(MapRegion region, IRegionTemplate template, out float scoreAdded) {
             YieldSummary yieldAdded;
 
             var yieldTypes = EnumUtil.GetValues<YieldType>().ToList();
@@ -108,7 +108,7 @@ namespace Assets.Simulation.MapGeneration {
             while(yieldTypes.Count > 0) {
                 var yieldType = yieldTypes.Random();
 
-                if(TryIncreaseYield(region, yieldType, out yieldAdded)) {
+                if(TryIncreaseYield(region, template, yieldType, out yieldAdded)) {
                     scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
                     return true;
                 }else {
@@ -120,7 +120,7 @@ namespace Assets.Simulation.MapGeneration {
             return false;
         }
 
-        public bool TryDecreaseScore(MapRegion region, out float scoreRemoved) {
+        public bool TryDecreaseScore(MapRegion region, IRegionTemplate template, out float scoreRemoved) {
             scoreRemoved = 0f;
             return false;
         }

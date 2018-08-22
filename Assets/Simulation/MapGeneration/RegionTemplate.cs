@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -17,9 +18,9 @@ namespace Assets.Simulation.MapGeneration {
         #region internal types
 
         [Serializable]
-        public struct BalanceStrategyData {
+        public struct BalanceStrategySummary {
             
-            public string StrategyName {
+            public string Strategy {
                 get { return _strategy; }
             }
             [SerializeField] private string _strategy;
@@ -31,11 +32,28 @@ namespace Assets.Simulation.MapGeneration {
 
         }
 
+        [Serializable]
+        public struct MapResourceSummary {
+
+            public ResourceDefinition Resource;
+
+            public int Weight;
+
+        }
+
         #endregion
 
         #region instance fields and properties
 
         #region from IRegionGenerationTemplate
+
+        public int TundraPercentage {
+            get { return _tundraPercentage; }
+        }
+
+        public int SnowPercentage {
+            get { return _snowPercentage; }
+        }
 
         public int HillsPercentage {
             get { return _hillsPercentage; }
@@ -176,20 +194,20 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField, Range(0, 100)] private int GrasslandsPercentage;
         [SerializeField, Range(0, 100)] private int PlainsPercentage;
         [SerializeField, Range(0, 100)] private int DesertPercentage;
-        [SerializeField, Range(0, 100)] private int TundraPercentage;
-        [SerializeField, Range(0, 100)] private int SnowPercentage;
-        [SerializeField, Range(0, 100)] private int WaterPercentage;
+        [SerializeField, Range(0, 100)] private int _tundraPercentage;
+        [SerializeField, Range(0, 100)] private int _snowPercentage;
 
         [SerializeField, Range(0, 20)] private int GrasslandSeedCount;
         [SerializeField, Range(0, 20)] private int PlainsSeedCount;
         [SerializeField, Range(0, 20)] private int DesertSeedCount;
-        [SerializeField, Range(0, 20)] private int TundraSeedCount;
-        [SerializeField, Range(0, 20)] private int SnowSeedCount;
-        [SerializeField, Range(0, 20)] private int WaterSeedCount;
 
-        [SerializeField, Range(0f, 1f)] private float ArcticThreshold;
 
-        [SerializeField] private List<BalanceStrategyData> BalanceStrategyWeights;
+        [SerializeField] private int TreesOnGrasslandCrawlCost;
+        [SerializeField] private int TreesOnPlainsCrawlCost;
+        [SerializeField] private int TreesOnTundraCrawlCost;
+
+        [SerializeField] private int TreesOnFlatlandsCrawlCost;
+        [SerializeField] private int TreesOnHillsCrawlCost;
 
         private TerrainData GrasslandData {
             get {
@@ -236,41 +254,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         private TerrainData desertData;
 
-        private TerrainData TundraData {
-            get {
-                if(tundraData == null) {
-                    tundraData = new TerrainData(
-                        TundraPercentage, TundraSeedCount,
-                        ArcticCrawlingWeightFunction, DefaultSeedFilter,
-                        ArcticWeightFunction
-                    );
-                }
-
-                return tundraData;
-            }
-        }
-        private TerrainData tundraData;
-
-        private TerrainData SnowData {
-            get {
-                if(snowData == null) {
-                    snowData = new TerrainData(
-                        SnowPercentage, SnowSeedCount,
-                        ArcticCrawlingWeightFunction, ArcticSeedFilter,
-                        ArcticWeightFunction
-                    );
-                }
-
-                return snowData;
-            }
-        }
-        private TerrainData snowData;
-
         private TerrainData DefaultData {
             get {
                 if(defaultData == null) {
                     defaultData = new TerrainData(
-                        0, 0, DefaultCrawlingWeightFunction, ArcticSeedFilter,
+                        0, 0, DefaultCrawlingWeightFunction, DefaultSeedFilter,
                         DefaultSeedWeightFunction
                     );
                 }
@@ -280,7 +268,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         private TerrainData defaultData;
 
-        private Dictionary<IBalanceStrategy, int> BalanceStrategyWeightsDict;
+        [SerializeField] private List<BalanceStrategySummary> BalanceStrategyData;
+        private Dictionary<IBalanceStrategy, int> BalanceStrategyWeights;
+
+        [SerializeField] private List<MapResourceSummary> MapResourceData; 
+        private Dictionary<IResourceDefinition, int> SelectionWeightsOfResources;
 
 
 
@@ -308,49 +300,77 @@ namespace Assets.Simulation.MapGeneration {
             grasslandData = null;
             plainsData    = null;
             desertData    = null;
-            tundraData    = null;
-            snowData      = null;
             defaultData   = null;
 
-            BalanceStrategyWeightsDict = null;
+            BalanceStrategyWeights = null;
         }
 
         #endregion
 
         #region from IRegionGenerationTemplate
 
-        public TerrainData GetTerrainData(CellTerrain terrain) {
+        public TerrainData GetNonArcticTerrainData(CellTerrain terrain) {
             switch(terrain) {
                 case CellTerrain.Grassland: return GrasslandData;
                 case CellTerrain.Plains:    return PlainsData;
                 case CellTerrain.Desert:    return DesertData;
-                case CellTerrain.Tundra:    return TundraData;
-                case CellTerrain.Snow:      return SnowData;
 
                 default: return DefaultData;
             }
         }
 
         public int GetWeightForBalanceStrategy(IBalanceStrategy strategyToCheck) {
-            if(BalanceStrategyWeightsDict == null) {
-                BalanceStrategyWeightsDict = new Dictionary<IBalanceStrategy, int>();
+            if(BalanceStrategyWeights == null) {
+                BalanceStrategyWeights = new Dictionary<IBalanceStrategy, int>();
 
-                foreach(var data in BalanceStrategyWeights) {
+                foreach(var data in BalanceStrategyData) {
                     var strategyWithName = AllBalanceStrategies.Where(
-                        strategy => strategy.Name.Equals(data.StrategyName)
+                        strategy => strategy.Name.Equals(data.Strategy)
                     ).FirstOrDefault();
 
                     if(strategyWithName != null) {
-                        BalanceStrategyWeightsDict[strategyWithName] = data.Weight;
+                        BalanceStrategyWeights[strategyWithName] = data.Weight;
                     }
                 }
 
-                foreach(var unweightedStrategy in AllBalanceStrategies.Except(BalanceStrategyWeightsDict.Keys).ToArray()) {
-                    BalanceStrategyWeightsDict[unweightedStrategy] = 0;
+                foreach(var unweightedStrategy in AllBalanceStrategies.Except(BalanceStrategyWeights.Keys).ToArray()) {
+                    BalanceStrategyWeights[unweightedStrategy] = 0;
                 }
             }
 
-            return BalanceStrategyWeightsDict[strategyToCheck];
+            return BalanceStrategyWeights[strategyToCheck];
+        }
+
+        public int GetTreePlacementCostForTerrain(CellTerrain terrain) {
+            switch(terrain) {
+                    case CellTerrain.Grassland: return TreesOnGrasslandCrawlCost;
+                    case CellTerrain.Plains:    return TreesOnPlainsCrawlCost;
+                    case CellTerrain.Tundra:    return TreesOnTundraCrawlCost;
+                    default: return -1000;
+                }
+        }
+
+        public int GetTreePlacementCostForShape(CellShape shape) {
+            switch(shape) {
+                    case CellShape.Flatlands: return TreesOnFlatlandsCrawlCost;
+                    case CellShape.Hills:     return TreesOnHillsCrawlCost;
+                    default: return -1000;
+                }
+        }
+
+        public int GetSelectionWeightOfResource(IResourceDefinition resource) {
+            if(SelectionWeightsOfResources == null) {
+                SelectionWeightsOfResources = new Dictionary<IResourceDefinition, int>();
+
+                foreach(var data in MapResourceData) {
+                    SelectionWeightsOfResources[data.Resource] = data.Weight;
+                }
+            }
+
+            int retval;
+
+            SelectionWeightsOfResources.TryGetValue(resource, out retval);
+            return retval;
         }
 
         #endregion
@@ -373,24 +393,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private int DefaultSeedWeightFunction(IHexCell cell) {
             return 1;
-        }
-
-        private bool ArcticSeedFilter(
-            IHexCell cell, IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells
-        ) {
-            return TemperatureLogic.GetTemperatureOfCell(cell, 0) <= ArcticThreshold;
-        }
-
-        private int ArcticCrawlingWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-            if(acceptedCells.Contains(cell)) {
-                return 0;
-            }else {
-                return ArcticWeightFunction(cell);
-            }
-        }
-
-        private int ArcticWeightFunction(IHexCell cell) {
-            return 1000 - Mathf.RoundToInt(1000 * TemperatureLogic.GetTemperatureOfCell(cell, 0));
         }
 
         #endregion

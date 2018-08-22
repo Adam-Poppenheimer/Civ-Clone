@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -13,6 +14,8 @@ namespace Assets.Simulation.MapGeneration {
         int MountainsPercentage { get; }
         int TreePercentage      { get; }
         int RiverPercentage     { get; }
+        int TundraPercentage    { get; }
+        int SnowPercentage      { get; }
 
         int  MinTreeClumps  { get; }
         int  MaxTreeClumps  { get; }
@@ -49,9 +52,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        TerrainData GetTerrainData(CellTerrain terrain);
+        TerrainData GetNonArcticTerrainData(CellTerrain terrain);
 
         int GetWeightForBalanceStrategy(IBalanceStrategy strategyToCheck);
+
+        int GetTreePlacementCostForTerrain(CellTerrain terrain);
+        int GetTreePlacementCostForShape  (CellShape   shape);
+
+        int GetSelectionWeightOfResource(IResourceDefinition resource);
 
         #endregion
 

@@ -81,11 +81,11 @@ namespace Assets.Simulation.MapGeneration {
                     break;
                 }
 
-                if(currentScore < minScore && strategyToAttempt.TryIncreaseScore(region, out scoreChange)) {
+                if(currentScore < minScore && strategyToAttempt.TryIncreaseScore(region, template, out scoreChange)) {
                     currentScore += scoreChange;
                 }
 
-                if(currentScore > maxScore && strategyToAttempt.TryDecreaseScore(region, out scoreChange)) {
+                if(currentScore > maxScore && strategyToAttempt.TryDecreaseScore(region, template, out scoreChange)) {
                     currentScore -= scoreChange;
                 }
             }
@@ -117,7 +117,7 @@ namespace Assets.Simulation.MapGeneration {
                 }
 
                 YieldSummary yieldAdded;
-                if(strategy.TryIncreaseYield(region, type, out yieldAdded)) {
+                if(strategy.TryIncreaseYield(region, template, type, out yieldAdded)) {
                     yieldDeficit -= yieldAdded[type];
                     currentYield += yieldAdded;
                 }else {
