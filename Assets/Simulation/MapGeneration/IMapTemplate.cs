@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.Units;
 
 namespace Assets.Simulation.MapGeneration {
@@ -14,8 +16,11 @@ namespace Assets.Simulation.MapGeneration {
 
         int CivCount { get; }
 
-        IEnumerable<ICivHomelandTemplate>     HomelandTemplates { get; }
-        IEnumerable<IOceanTemplate> OceanTemplates    { get; }
+        IEnumerable<ICivHomelandTemplate> HomelandTemplates { get; }
+        IEnumerable<IOceanTemplate>       OceanTemplates    { get; }
+
+        IEnumerable<IRegionBiomeTemplate>    RegionBiomes     { get; }
+        IEnumerable<IRegionTopologyTemplate> RegionTopologies { get; }
 
         int ContinentalLandPercentage { get; }
 
@@ -26,10 +31,13 @@ namespace Assets.Simulation.MapGeneration {
         int MinStartingLocationDistance { get; }
 
 
-        int NeighborsInContinentWeight     { get; }
+        int NeighborsInContinentWeight { get; }
         int DistanceFromSeedCentroidWeight { get; }
 
         ReadOnlyCollection<IUnitTemplate> StartingUnits { get; }
+
+
+        Texture2D PrecipitationTexture { get; }
 
         #endregion
 

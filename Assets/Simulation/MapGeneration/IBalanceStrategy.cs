@@ -17,10 +17,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        bool TryIncreaseYield(MapRegion region, IRegionTemplate template, YieldType type, out YieldSummary yieldAdded);
+        bool TryIncreaseYield(MapRegion region, RegionData regionData, YieldType type, out YieldSummary yieldAdded);
 
-        bool TryIncreaseScore(MapRegion region, IRegionTemplate template, out float scoreAdded);
-        bool TryDecreaseScore(MapRegion region, IRegionTemplate template, out float scoreRemoved);
+        bool TryIncreaseScore(MapRegion region, RegionData regionData, out float scoreAdded);
+        bool TryDecreaseScore(MapRegion region, RegionData regionData, out float scoreRemoved);
 
         #endregion
 

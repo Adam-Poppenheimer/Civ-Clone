@@ -4,7 +4,6 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -12,12 +11,12 @@ namespace Assets.Simulation.MapGeneration {
 
         CivHomelandData GetHomelandData(
             ICivilization civ, List<MapSection> landSections, List<MapSection> waterSections,
-            ICivHomelandTemplate template
+            GridPartition partition, ICivHomelandTemplate homelandTemplate, IMapTemplate mapTemplate
         );
 
-        void GenerateTopologyAndEcology(CivHomelandData homelandData);
+        void GenerateTopologyAndEcology(CivHomelandData homelandData, IMapTemplate mapTemplate);
 
-        void DistributeYieldAndResources(CivHomelandData homelandData);
+        void DistributeYieldAndResources(CivHomelandData homelandData, IMapTemplate mapTemplate);
 
     }
 

@@ -8,6 +8,8 @@ using UnityEngine;
 
 using Assets.Simulation.Units;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapGeneration {
 
     [CreateAssetMenu(menuName = "Civ Clone/Map Generation Template")]
@@ -31,6 +33,21 @@ namespace Assets.Simulation.MapGeneration {
             get { return _oceanTemplates.Cast<IOceanTemplate>(); }
         }
         [SerializeField] private List<OceanTemplate> _oceanTemplates;
+
+
+
+
+        public IEnumerable<IRegionBiomeTemplate> RegionBiomes {
+            get { return _regionBiomes.Cast<IRegionBiomeTemplate>(); }
+        }
+        [SerializeField] private List<RegionBiomeTemplate> _regionBiomes;
+
+        public IEnumerable<IRegionTopologyTemplate> RegionTopologies {
+            get { return _regionTopologies.Cast<IRegionTopologyTemplate>(); }
+        }
+        [SerializeField] private List<RegionTopologyTemplate> _regionTopologies;
+
+
 
         public int ContinentalLandPercentage {
             get { return _continentalLandPercentage; }
@@ -74,10 +91,15 @@ namespace Assets.Simulation.MapGeneration {
         [NonSerialized]  private List<IUnitTemplate> _startingUnitsCast;
         [SerializeField] private List<UnitTemplate> _startingUnits;
 
+        public Texture2D PrecipitationTexture {
+            get { return _precipitationTexture; }
+        }
+        [SerializeField] private Texture2D _precipitationTexture;
+
         #endregion
 
         #endregion
-        
+
     }
 
 }

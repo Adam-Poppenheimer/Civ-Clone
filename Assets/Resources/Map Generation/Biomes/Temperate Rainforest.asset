@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26edd8612624abb40b19e015e15c82fe, type: 3}
+  m_Name: Temperate Rainforest
+  m_EditorClassIdentifier: 
+  _minTemperature: 0.3
+  _maxTemperature: 0.75
+  _minPrecipitation: 0.55
+  _maxPrecipitation: 1
+  _grasslandData:
+    _percentage: 100
+    _seedCount: 4
+  _plainsData:
+    _percentage: 0
+    _seedCount: 0
+  _desertData:
+    _percentage: 0
+    _seedCount: 0
+  _tundraPercentage: 0
+  _snowPercentage: 0
+  _treePercentage: 90
+  _riverPercentage: 30
+  _minTreeClumps: 4
+  _maxTreeClumps: 5
+  _areTreesJungle: 0
+  _marshChanceBase: 0.1
+  _marshChancePerAdjacentWater: 0.1
+  _marshChancePerAdjacentRiver: 0.1
+  _balanceStrategyWeights:
+  - _balanceStrategy: Bonus Resource Balance Strategy
+    _weight: 100
+  _resourceWeights: []
+  TreesOnGrasslandCrawlCost: 0
+  TreesOnPlainsCrawlCost: 0
+  TreesOnTundraCrawlCost: 0
+  TreesOnFlatlandsCrawlCost: 0
+  TreesOnHillsCrawlCost: 0

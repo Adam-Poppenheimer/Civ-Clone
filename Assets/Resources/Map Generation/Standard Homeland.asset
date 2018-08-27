@@ -11,3 +11,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: acd855b66271eaf41980428aa08d6df0, type: 3}
   m_Name: Standard Homeland
   m_EditorClassIdentifier: 
+  _startingResources: {fileID: 11400000, guid: 546847b11a5f52e4d8898523df03de8f, type: 2}
+  _otherResources: {fileID: 11400000, guid: 15b2e0e6cd67e7f4b994e4e88bc2e282, type: 2}

@@ -16,6 +16,28 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 5d34c8d03c7c5224e8ee776bda3a58f5, type: 2}
   _oceanTemplates:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
+  _regionBiomes:
+  - {fileID: 11400000, guid: 722232bf72f7d39449e66b8ac42ccd2d, type: 2}
+  - {fileID: 11400000, guid: a81c2244e519f59458704e3618d99e1f, type: 2}
+  - {fileID: 11400000, guid: 9eb7f8a4da604904e8ab2afeaad79bf5, type: 2}
+  - {fileID: 11400000, guid: 1cf6e56a53aeef54380268d31fdb713a, type: 2}
+  - {fileID: 11400000, guid: ac44e1097e8c4c243b31d2f034473b50, type: 2}
+  - {fileID: 11400000, guid: c2ed120fc3cbdd141b3831019048a329, type: 2}
+  - {fileID: 11400000, guid: 70315a36dd500cd4196dbba96c8a207a, type: 2}
+  - {fileID: 11400000, guid: 36294d8bf7ec8ca47bb13027ac1c2957, type: 2}
+  - {fileID: 11400000, guid: e2436c8858db654448d97ce87683b800, type: 2}
+  - {fileID: 11400000, guid: 259e53b26ca4c3a43b354cb78a208c05, type: 2}
+  _regionTopologies:
+  - {fileID: 11400000, guid: cb152c931dbd5944bb72e18b555bdf18, type: 2}
+  - {fileID: 11400000, guid: cb152c931dbd5944bb72e18b555bdf18, type: 2}
+  - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
+  - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
+  - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
+  - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
+  - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
+  - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
+  - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
+  - {fileID: 11400000, guid: 660f8ed0c6ac6a44e9199cb834619617, type: 2}
   _continentalLandPercentage: 30
   _voronoiPointCount: 1000
   _voronoiPartitionIterations: 2
@@ -25,3 +47,5 @@ MonoBehaviour:
   _startingUnits:
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}
+  _precipitationTexture: {fileID: 2800000, guid: 748b29c542d52634e8742d99e7ca4578,
+    type: 3}

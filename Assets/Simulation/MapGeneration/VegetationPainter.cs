@@ -21,7 +21,6 @@ namespace Assets.Simulation.MapGeneration {
         private IHexGrid               Grid;
         private IRiverCanon            RiverCanon;
         private IGridTraversalLogic    GridTraversalLogic;
-        private IMapGenerationConfig   Config;
 
         #endregion
 
@@ -30,13 +29,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public VegetationPainter(
             ICellModificationLogic modLogic, IHexGrid grid, IRiverCanon riverCanon,
-            IGridTraversalLogic gridTraversalLogic, IMapGenerationConfig config
+            IGridTraversalLogic gridTraversalLogic
         ) {
             ModLogic           = modLogic;
             Grid               = grid;
             RiverCanon         = riverCanon;
             GridTraversalLogic = gridTraversalLogic;
-            Config             = config;
         }
 
         #endregion
@@ -45,7 +43,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IVegetationPainter
 
-        public void PaintVegetation(MapRegion region, IRegionTemplate template) {
+        public void PaintVegetation(MapRegion region, IRegionBiomeTemplate template) {
             var treeType = template.AreTreesJungle ? CellVegetation.Jungle : CellVegetation.Forest;
 
             var openCells = new List<IHexCell>();
@@ -76,7 +74,7 @@ namespace Assets.Simulation.MapGeneration {
 
             for(int i = 0; i < treeCount; i++) {
                 if(treeCrawlers.Count == 0) {
-                    Debug.LogWarning("Failed to paint correct number of trees into starting area");
+                    Debug.LogWarning("Failed to paint correct number of trees into region");
                     break;
                 }
 
@@ -98,7 +96,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private bool ShouldBeMarsh(IHexCell cell, IRegionTemplate template) {
+        private bool ShouldBeMarsh(IHexCell cell, IRegionBiomeTemplate template) {
             if(cell.Terrain != CellTerrain.Grassland || cell.Shape != CellShape.Flatlands) {
                 return false;
             }
@@ -119,7 +117,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private Func<IHexCell, int> GetTreeSeedWeightFunction(
-            CellVegetation treeType, IRegionTemplate template
+            CellVegetation treeType, IRegionBiomeTemplate template
         ) {
             return delegate(IHexCell cell) {
                 if( cell.Vegetation == CellVegetation.Marsh || cell.Feature != CellFeature.None ||
@@ -136,7 +134,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private CrawlingWeightFunction GetTreeCrawlingCostFunction(
-            CellVegetation treeType, IRegionTemplate template
+            CellVegetation treeType, IRegionBiomeTemplate template
         ) {
             return delegate(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
                 if( cell.Vegetation == CellVegetation.Marsh || cell.Feature != CellFeature.None ||

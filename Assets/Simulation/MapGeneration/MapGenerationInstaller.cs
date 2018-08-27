@@ -14,7 +14,6 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         [SerializeField] private MapGenerationConfig Config;
-        [SerializeField] private List<RegionTemplate> LandRegionTemplates;
 
         #endregion
 
@@ -23,14 +22,6 @@ namespace Assets.Simulation.MapGeneration {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            foreach(var regionTemplate in Resources.LoadAll<RegionTemplate>("")) {
-                Container.QueueForInject(regionTemplate);
-            }
-
-            Container.Bind<IEnumerable<IRegionTemplate>>()
-                     .WithId("Land Region Templates")
-                     .FromInstance(LandRegionTemplates.Cast<IRegionTemplate>());
-
             Container.Bind<IRiverGenerator>().To<RiverGenerator>().AsSingle();
 
             Container.Bind<IMapGenerator>().To<MapGenerator>().AsSingle();
@@ -39,7 +30,7 @@ namespace Assets.Simulation.MapGeneration {
 
             Container.Bind<IOceanGenerator>            ().To<OceanGenerator>            ().AsSingle();
             Container.Bind<IRegionGenerator>           ().To<RegionGenerator>           ().AsSingle();
-            Container.Bind<ICellTemperatureLogic>      ().To<CellTemperatureLogic>      ().AsSingle();
+            Container.Bind<ICellClimateLogic>          ().To<CellClimateLogic>          ().AsSingle();
             Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
             Container.Bind<IResourceDistributor>       ().To<ResourceDistributor>       ().AsSingle();
             Container.Bind<IResourceSampler>           ().To<ResourceSampler>           ().AsSingle();
@@ -53,6 +44,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
             Container.Bind<IVegetationPainter>         ().To<VegetationPainter>         ().AsSingle();
+            Container.Bind<ISectionSubdivisionLogic>   ().To<SectionSubdivisionLogic>   ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();

@@ -47475,7 +47475,13 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Config: {fileID: 11400000, guid: a33f79253eeb6ca44936424702c6835d, type: 2}
   LandRegionTemplates:
+  - {fileID: 11400000, guid: aa0c319aaca89774da7ad5dd82c3571b, type: 2}
   - {fileID: 11400000, guid: 1d19b46b5cdaf6840bfb523901c35085, type: 2}
+  - {fileID: 11400000, guid: b257c746b04b52a49b9099bbda605766, type: 2}
+  - {fileID: 11400000, guid: fd0984cdf9b2ab142b1e49527cfc9fd3, type: 2}
+  - {fileID: 11400000, guid: dad453d0a2238624eb3697cdc81c2687, type: 2}
+  - {fileID: 11400000, guid: f06a71c97a61a6345a8a9f867715bbb2, type: 2}
+  - {fileID: 11400000, guid: 3945314201a261141805610d073f7584, type: 2}
 --- !u!4 &1418824507
 Transform:
   m_ObjectHideFlags: 0

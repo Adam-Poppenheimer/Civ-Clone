@@ -14,12 +14,20 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from ICivHomelandTemplate
 
+        public IRegionResourceTemplate StartingResources {
+            get { return _startingResources; }
+        }
+        [SerializeField] private RegionResourceTemplate _startingResources;
 
+        public IRegionResourceTemplate OtherResources {
+            get { return _otherResources; }
+        }
+        [SerializeField] private RegionResourceTemplate _otherResources;
 
         #endregion
 
         #endregion
-
+        
     }
 
 }

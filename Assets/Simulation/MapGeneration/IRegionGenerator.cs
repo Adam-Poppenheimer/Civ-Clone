@@ -12,13 +12,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateTopologyAndEcology(
-            MapRegion region, IRegionTemplate template
-        );
-
-        void DistributeYieldAndResources(
-            MapRegion region, IRegionTemplate template
-        );
+        void GenerateTopologyAndEcology (MapRegion region, RegionData regionData);
+        void DistributeYieldAndResources(MapRegion region, RegionData regionData);
 
         #endregion
 

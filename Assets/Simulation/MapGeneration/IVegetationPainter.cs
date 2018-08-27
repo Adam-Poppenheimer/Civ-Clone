@@ -9,7 +9,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void PaintVegetation(MapRegion region, IRegionTemplate template);
+        void PaintVegetation(MapRegion region, IRegionBiomeTemplate template);
 
         #endregion
 

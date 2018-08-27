@@ -9,7 +9,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        
+        IRegionResourceTemplate StartingResources { get; }
+        IRegionResourceTemplate OtherResources    { get; }
 
         #endregion
 

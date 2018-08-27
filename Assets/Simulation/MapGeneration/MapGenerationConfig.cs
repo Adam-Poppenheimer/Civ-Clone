@@ -74,11 +74,6 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private HemisphereMode _hemispheres = HemisphereMode.Both;
 
-        public float TemperatureJitter {
-            get { return _temperatureJitter; }
-        }
-        [SerializeField, Range(0f, 1f)] private float _temperatureJitter = 0.1f;
-
 
 
 

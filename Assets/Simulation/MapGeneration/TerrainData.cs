@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
@@ -11,34 +13,20 @@ namespace Assets.Simulation.MapGeneration {
         IHexCell cell, IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCell
     );
 
-    public class TerrainData {
+    [Serializable]
+    public struct TerrainData {
 
         #region instance fields and properties
 
-        public readonly int Percentage;
-
-        public readonly int SeedCount;
-
-        public readonly CrawlingWeightFunction CrawlingWeightFunction;
-
-        public readonly SeedFilter SeedFilter;
-
-        public readonly Func<IHexCell, int> SeedWeightFunction;
-
-        #endregion
-
-        #region constructors
-
-        public TerrainData(
-            int percentage, int seedCount, CrawlingWeightFunction weightFunction,
-            SeedFilter seedFilter, Func<IHexCell, int> seedWeightFunction
-        ) {
-            Percentage             = percentage;
-            SeedCount              = seedCount;
-            CrawlingWeightFunction = weightFunction;
-            SeedFilter             = seedFilter;
-            SeedWeightFunction     = seedWeightFunction;
+        public int Percentage {
+            get { return _percentage; }
         }
+        [SerializeField, Range(0, 100)] private int _percentage;
+
+        public int SeedCount {
+            get { return _seedCount; }
+        }
+        [SerializeField] private int _seedCount;
 
         #endregion
 

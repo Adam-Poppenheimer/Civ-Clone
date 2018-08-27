@@ -10,8 +10,6 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
 
-using UnityCustomUtilities.Extensions;
-
 namespace Assets.Simulation.MapGeneration {
 
     public class ResourceDistributor : IResourceDistributor {
@@ -22,7 +20,6 @@ namespace Assets.Simulation.MapGeneration {
         private IResourceNodeFactory      NodeFactory;
         private IResourceSampler          ResourceSampler;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
-        private IHexGrid                  Grid;
         private IStrategicCopiesLogic     StrategicCopiesLogic;
 
         private IEnumerable<IResourceDefinition> StrategicResources;
@@ -35,7 +32,7 @@ namespace Assets.Simulation.MapGeneration {
         public ResourceDistributor(
             IMapGenerationConfig config, IResourceNodeFactory nodeFactory,
             IResourceSampler resourceSampler, IResourceRestrictionCanon resourceRestrictionCanon,
-            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon, IHexGrid grid,
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             IStrategicCopiesLogic strategicCopiesLogic,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
@@ -43,7 +40,6 @@ namespace Assets.Simulation.MapGeneration {
             NodeFactory              = nodeFactory;
             ResourceSampler          = resourceSampler;
             ResourceRestrictionCanon = resourceRestrictionCanon;
-            Grid                     = grid;
             StrategicCopiesLogic     = strategicCopiesLogic;
 
             StrategicResources = availableResources.Where(resource => resource.Type == ResourceType.Strategic);
@@ -55,47 +51,46 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IResourceDistributor
 
-        public void DistributeLuxuryResourcesAcrossRegion(
-            MapRegion region, IRegionTemplate template
-        ) {
+        public void DistributeLuxuryResourcesAcrossRegion(MapRegion region, RegionData regionData) {
             var resourcesSoFar = new List<IResourceDefinition>();
 
-            if(template.HasPrimaryLuxury) {
+            if(regionData.Resources.HasPrimaryLuxury) {
                 DistributeLuxury(
-                    region, template.PrimaryLuxuryCount, resourcesSoFar
+                    region, regionData.Resources.PrimaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasSecondaryLuxury) {
+            if(regionData.Resources.HasSecondaryLuxury) {
                 DistributeLuxury(
-                    region, template.SecondaryLuxuryCount, resourcesSoFar
+                    region, regionData.Resources.SecondaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasTertiaryLuxury) {
+            if(regionData.Resources.HasTertiaryLuxury) {
                 DistributeLuxury(
-                    region, template.TertiaryLuxuryCount, resourcesSoFar
+                    region, regionData.Resources.TertiaryLuxuryCount, resourcesSoFar
                 );
             }
 
-            if(template.HasQuaternaryLuxury) {
+            if(regionData.Resources.HasQuaternaryLuxury) {
                 DistributeLuxury(
-                    region, template.QuaternaryLuxuryCount, resourcesSoFar
+                    region, regionData.Resources.QuaternaryLuxuryCount, resourcesSoFar
                 );
             }
         }
 
-        public void DistributeStrategicResourcesAcrossRegion(
-            MapRegion region, IRegionTemplate template
-        ) {
-            int nodesLeft  = Mathf.CeilToInt(template.StrategicNodesPerCell  * region.Cells.Count);
-            int copiesLeft = Mathf.CeilToInt(template.StrategicCopiesPerCell * region.Cells.Count);
+        public void DistributeStrategicResourcesAcrossRegion(MapRegion region, RegionData regionData) {
+            int nodesLeft  = Mathf.CeilToInt(regionData.Resources.StrategicNodesPerCell  * region.Cells.Count);
+            int copiesLeft = Mathf.CeilToInt(regionData.Resources.StrategicCopiesPerCell * region.Cells.Count);
 
             var validStrategics = new List<IResourceDefinition>(StrategicResources);
 
+            Dictionary<IResourceDefinition, int> resourceWeights = regionData.GetResourceWeights();
+
             while(nodesLeft > 0 && copiesLeft > 0 && validStrategics.Any()) {
                 var strategic = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    validStrategics, 1, resource => template.GetSelectionWeightOfResource(resource)
+                    validStrategics, 1,
+                    resource => resourceWeights.ContainsKey(resource) ? resourceWeights[resource] : 0
                 ).FirstOrDefault();
 
                 if(strategic == null) {

@@ -41,7 +41,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IRiverGenerator
 
         public void CreateRiversForRegion(
-            IEnumerable<IHexCell> landCells, IRegionTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
             IEnumerable<IHexCell> waterCells
         ) {
             int desiredRiveredCellsCount = Mathf.RoundToInt(template.RiverPercentage * landCells.Count() * 0.01f);
@@ -83,7 +83,7 @@ namespace Assets.Simulation.MapGeneration {
         #endregion
 
         private bool TryBuildNewRiver(
-            IEnumerable<IHexCell> landCells, IRegionTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
             IEnumerable<IHexCell> waterCells, IHexCell start, int maxRiveredCellCount,
             out HashSet<IHexCell> riveredCells
         ) {
@@ -154,7 +154,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private bool TryGetRiverEnd(
-            IEnumerable<IHexCell> landCells, IRegionTemplate template,
+            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
             IHexCell start, IEnumerable<IHexCell> waterCells, int maxRiverLength,
             out IHexCell end
         ) {
@@ -586,7 +586,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private bool IsWater(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
-            return cell.Terrain.IsWater() || oceanCells.Contains(cell);
+            return cell != null && cell.Terrain.IsWater() || oceanCells.Contains(cell);
         }
 
         private Func<IHexCell, IHexCell, float> BuildRiverWeightFunction(IEnumerable<IHexCell> oceanCells) {

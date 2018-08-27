@@ -24,7 +24,6 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private IHexGrid                                         Grid;
         private IYieldEstimator                                  YieldEstimator;
         private IYieldScorer                                     YieldScorer;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
@@ -36,11 +35,10 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public HillsBalanceStrategy(
-            IHexGrid grid, IYieldEstimator yieldEstimator, IYieldScorer yieldScorer,
+            IYieldEstimator yieldEstimator, IYieldScorer yieldScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             ICellModificationLogic modLogic
         ) {
-            Grid              = grid;
             YieldEstimator    = yieldEstimator;
             YieldScorer       = yieldScorer;
             NodeLocationCanon = nodeLocationCanon;
@@ -53,7 +51,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public bool TryIncreaseYield(MapRegion region, IRegionTemplate template, YieldType type, out YieldSummary yieldAdded) {
+        public bool TryIncreaseYield(
+            MapRegion region, RegionData regionData, YieldType type, out YieldSummary yieldAdded
+        ) {
             if(type != YieldType.Production) {
                 yieldAdded = YieldSummary.Empty;
                 return false;
@@ -78,10 +78,10 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public bool TryIncreaseScore(MapRegion region, IRegionTemplate template, out float scoreAdded) {
+        public bool TryIncreaseScore(MapRegion region, RegionData regionData, out float scoreAdded) {
             YieldSummary yieldAdded;
 
-            if(TryIncreaseYield(region, template, YieldType.Production, out yieldAdded)) {
+            if(TryIncreaseYield(region, regionData, YieldType.Production, out yieldAdded)) {
                 scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
                 return true;
             }else {
@@ -90,7 +90,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public bool TryDecreaseScore(MapRegion region, IRegionTemplate template, out float scoreRemoved) {
+        public bool TryDecreaseScore(MapRegion region,RegionData regionData, out float scoreRemoved) {
             scoreRemoved = 0f;
             return false;
         }

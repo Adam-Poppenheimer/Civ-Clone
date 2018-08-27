@@ -39,6 +39,8 @@ namespace Assets.Simulation.MapGeneration {
         private IWaterRationalizer          WaterRationalizer;
         private ICivHomelandGenerator       HomelandGenerator;
         private ITemplateSelectionLogic     TemplateSelectionLogic;
+        private ICellClimateLogic           CellClimateLogic;
+        private ISectionSubdivisionLogic    SubdivisionLogic;
 
         #endregion
 
@@ -50,7 +52,8 @@ namespace Assets.Simulation.MapGeneration {
             IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
             IResourceSampler resourceSampler, IStartingUnitPlacementLogic startingUnitPlacementLogic,
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
-            ICivHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic
+            ICivHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
+            ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
@@ -62,6 +65,8 @@ namespace Assets.Simulation.MapGeneration {
             WaterRationalizer          = waterRationalizer;
             HomelandGenerator          = homelandGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
+            CellClimateLogic           = cellClimateLogic;
+            SubdivisionLogic           = subdivisionLogic;
         }
 
         #endregion
@@ -71,7 +76,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from IHexMapGenerator
 
         public void GenerateMap(int chunkCountX, int chunkCountZ, IMapTemplate template) {
-            ResourceSampler.Reset();
+            ResourceSampler .Reset();
+            CellClimateLogic.Reset(template);
 
             var oldRandomState = SetRandomState();
 
@@ -126,51 +132,28 @@ namespace Assets.Simulation.MapGeneration {
             var partition = GridPartitionLogic.GetPartitionOfGrid(Grid, mapTemplate);
             
             int totalLandCells = Mathf.RoundToInt(Grid.Cells.Count * mapTemplate.ContinentalLandPercentage * 0.01f);
-            int landCellsPerCiv = Mathf.RoundToInt((float)totalLandCells / CivFactory.AllCivilizations.Count);       
+            int landCellsPerCiv = Mathf.RoundToInt((float)totalLandCells / CivFactory.AllCivilizations.Count);
 
             HashSet<MapSection> unassignedSections = new HashSet<MapSection>(partition.Sections);
 
-            var landSectionsOfCivs = new Dictionary<ICivilization, List<MapSection>>();
-            var startingSections = new List<MapSection>();
-
-            var unfinishedCivs = new List<ICivilization>(CivFactory.AllCivilizations);
-            foreach(var civ in unfinishedCivs) {
-                var startingSection = GetStartingSection(unassignedSections, startingSections, mapTemplate);
-
-                landSectionsOfCivs[civ] = new List<MapSection>() { startingSection };
-
-                startingSections.Add(startingSection);
-
-                unassignedSections.Remove(startingSection);
-            }
-
-            while(unfinishedCivs.Any() && unassignedSections.Any()) {
-                var civ = unfinishedCivs.Random();
-
-                var landSections = landSectionsOfCivs[civ];
-
-                if(TryExpandHomeland(landSections, unassignedSections, partition, mapTemplate)) {
-                    int cellsBelongingToCiv = landSections.Sum(section => section.Cells.Count);
-
-                    if(cellsBelongingToCiv >= landCellsPerCiv) {
-                        unfinishedCivs.Remove(civ);
-                    }
-                }else {
-                    Debug.LogWarning("Failed to assign new section to civ " + civ.Name);
-                    unfinishedCivs.Remove(civ);
-                }
-            }
+            List<List<MapSection>> homelandChunks = SubdivisionLogic.DivideSectionsIntoChunks(
+                unassignedSections, partition, CivFactory.AllCivilizations.Count,
+                landCellsPerCiv, mapTemplate.MinStartingLocationDistance,
+                false, GetExpansionWeightFunction(partition, mapTemplate)
+            );
 
             var homelandOfCivs = new Dictionary<ICivilization, CivHomelandData>();
 
-            foreach(var civ in CivFactory.AllCivilizations) {
-                var landSections  = landSectionsOfCivs[civ];
+            for(int i = 0; i < CivFactory.AllCivilizations.Count; i++) {
+                var civ = CivFactory.AllCivilizations[i];
+
+                var landSections  = homelandChunks[i];
                 var waterSections = GetCoastForLandSection(landSections, unassignedSections, partition);
 
                 var homelandTemplate = TemplateSelectionLogic.GetHomelandTemplateForCiv(civ, mapTemplate);
 
                 homelandOfCivs[civ] = HomelandGenerator.GetHomelandData(
-                    civ, landSections, waterSections, homelandTemplate
+                    civ, landSections, waterSections, partition, homelandTemplate, mapTemplate
                 );
             }
 
@@ -188,7 +171,7 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var civ in CivFactory.AllCivilizations) {
                 var homeland = oceansAndContinents.HomelandDataForCiv[civ];
 
-                HomelandGenerator.GenerateTopologyAndEcology(homeland);
+                HomelandGenerator.GenerateTopologyAndEcology(homeland, mapTemplate);
             }
 
             OceanGenerator.GenerateTopologyAndEcology(oceansAndContinents.OceanData);
@@ -198,7 +181,7 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var civ in CivFactory.AllCivilizations) {
                 var homeland = oceansAndContinents.HomelandDataForCiv[civ];
 
-                HomelandGenerator.DistributeYieldAndResources(homeland);
+                HomelandGenerator.DistributeYieldAndResources(homeland, mapTemplate);
             }
 
             OceanGenerator.DistributeYieldAndResources(oceansAndContinents.OceanData);
@@ -207,126 +190,38 @@ namespace Assets.Simulation.MapGeneration {
         private List<MapSection> GetCoastForLandSection(
             List<MapSection> landSections, HashSet<MapSection> unassignedSections, GridPartition partition
         ) {
-            var landCells = landSections.SelectMany(section => section.Cells);
+            var unassignedAdjacentToLand = landSections.SelectMany(section => partition.GetNeighbors(section))
+                                                       .Intersect(unassignedSections)
+                                                       .Distinct()
+                                                       .ToList();
 
-            var cellsAdjacentToLand = landCells.SelectMany(cell => Grid.GetNeighbors(cell))
-                                               .Distinct()
-                                               .Except(landCells);
-
-            var sectionsAdjacentToLand = cellsAdjacentToLand.Select(cell => partition.GetSectionOfCell(cell))
-                                                            .Intersect(unassignedSections)
-                                                            .Distinct()
-                                                            .ToList();
-
-            foreach(var adjacentSection in sectionsAdjacentToLand) {
+            foreach(var adjacentSection in unassignedAdjacentToLand) {
                 unassignedSections.Remove(adjacentSection);
             }
 
-            return sectionsAdjacentToLand;
+            return unassignedAdjacentToLand;
         }
 
-        private MapSection GetStartingSection(
-            HashSet<MapSection> unassignedSections, IEnumerable<MapSection> startingSections,
-            IMapTemplate template
-        ) {
-            var candidates = new List<MapSection>();
-
-            foreach(var unassignedSection in unassignedSections) {
-                if(unassignedSection.Cells.Count == 0) {
-                    continue;
-                }
-
-                bool unassignedIsValid = true;
-                foreach(var startingSection in startingSections) {
-                    if( Grid.GetDistance(unassignedSection.CentroidCell, startingSection.CentroidCell) < template.MinStartingLocationDistance ||
-                        IsWithinSoftBorder(unassignedSection.CentroidCell)
-                    ) {
-                        unassignedIsValid = false;
-                        break;
-                    }
-                }
-
-                if(unassignedIsValid) {
-                    candidates.Add(unassignedSection);
-                }
-            }
-
-            if(candidates.Count == 0) {
-                throw new InvalidOperationException("Failed to acquire a valid starting location");
-            }else {
-                return candidates.Random();
-            }
-        }
-
-        private bool TryExpandHomeland(
-            List<MapSection> landSections, HashSet<MapSection> unassignedSections,
+        private ExpansionWeightFunction GetExpansionWeightFunction(
             GridPartition partition, IMapTemplate template
         ) {
-            var expansionCandiates = new HashSet<MapSection>();
-
-            foreach(var section in landSections) {
-                foreach(var neighbor in partition.GetNeighbors(section)) {
-                    if(unassignedSections.Contains(neighbor)) {
-                        expansionCandiates.Add(neighbor);
-                    }
-                }
-            }
-
-            if(expansionCandiates.Any()) {
-                var newSection = WeightedRandomSampler<MapSection>.SampleElementsFromSet(
-                    expansionCandiates, 1, GetExpansionWeightFunction(
-                        landSections, partition, template
-                    )
-                ).FirstOrDefault();
-
-                if(newSection != null) {
-                    unassignedSections.Remove(newSection);
-                    landSections.Add(newSection);
-
-                    return true;
-                }             
-            }
-
-            return false;
-        }
-
-        private Func<MapSection, int> GetExpansionWeightFunction(
-            List<MapSection> landSections, GridPartition partition,
-            IMapTemplate template
-        ) {
-            return delegate(MapSection region) {
-                if(IsWithinHardBorder(region.CentroidCell)) {
+            return delegate(MapSection section, List<MapSection> chunk) {
+                if(IsWithinHardBorder(section.CentroidCell)) {
                     return 0;
                 }
 
-                int borderAvoidanceWeight = GetBorderAvoidanceWeight(region.CentroidCell);
+                int borderAvoidanceWeight = GetBorderAvoidanceWeight(section.CentroidCell);
 
-                int neighborsInContinent = partition.GetNeighbors(region).Intersect(landSections).Count();
+                int neighborsInContinent = partition.GetNeighbors(section).Intersect(chunk).Count();
                 int neighborsInContinentWeight = neighborsInContinent * template.NeighborsInContinentWeight;
 
-                int distanceFromSeedCentroid = Grid.GetDistance(landSections[0].CentroidCell, region.CentroidCell);
+                int distanceFromSeedCentroid = Grid.GetDistance(chunk[0].CentroidCell, section.CentroidCell);
                 int distanceFromSeedCentroidWeight = distanceFromSeedCentroid * template.DistanceFromSeedCentroidWeight;
 
                 int weight = 1 + Math.Max(0, neighborsInContinentWeight + distanceFromSeedCentroidWeight + borderAvoidanceWeight);
 
                 return weight;
             };
-        }
-
-        private bool IsWithinHardBorder(IHexCell cell) {
-            var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
-            var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
-
-            return xOffset <= Config.HardMapBorderX || Grid.CellCountX - xOffset <= Config.HardMapBorderX
-                || zOffset <= Config.HardMapBorderZ || Grid.CellCountZ - zOffset <= Config.HardMapBorderZ;
-        }
-
-        private bool IsWithinSoftBorder(IHexCell cell) {
-            var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
-            var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
-
-            return xOffset <= Config.SoftMapBorderX || Grid.CellCountX - xOffset <= Config.SoftMapBorderX
-                || zOffset <= Config.SoftMapBorderZ || Grid.CellCountZ - zOffset <= Config.SoftMapBorderZ;
         }
 
         private int GetBorderAvoidanceWeight(IHexCell cell) {
@@ -350,6 +245,14 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             return -(distanceIntoBorderX + distanceIntoBorderZ) * Config.SoftBorderAvoidanceWeight;
+        }
+
+        private bool IsWithinHardBorder(IHexCell cell) {
+            var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
+            var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
+
+            return xOffset <= Config.HardMapBorderX || Grid.CellCountX - xOffset <= Config.HardMapBorderX
+                || zOffset <= Config.HardMapBorderZ || Grid.CellCountZ - zOffset <= Config.HardMapBorderZ;
         }
 
         #endregion

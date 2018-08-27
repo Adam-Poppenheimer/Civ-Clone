@@ -31,8 +31,6 @@ namespace Assets.Simulation.MapGeneration {
 
         HemisphereMode Hemispheres { get; }
 
-        float TemperatureJitter { get; }
-
 
         IMapTemplate MapTemplate { get; }
 

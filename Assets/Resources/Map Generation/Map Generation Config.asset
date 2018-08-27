@@ -22,7 +22,6 @@ MonoBehaviour:
   _lowTemperature: 0
   _highTemperature: 1
   _hemispheres: 0
-  _temperatureJitter: 0.1
   _mapTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
   _minStrategicCopies: 1
   _maxStrategicCopies: 10

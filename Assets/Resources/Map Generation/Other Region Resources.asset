@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea69c8e982f58ca4587d38140f0300f7, type: 3}
+  m_Name: Other Region Resources
+  m_EditorClassIdentifier: 
+  _hasPrimaryLuxury: 0
+  _primaryLuxuryCount: 0
+  _hasSecondaryLuxury: 0
+  _secondaryLuxuryCount: 0
+  _hasTertiaryLuxury: 0
+  _tertiaryLuxuryCount: 0
+  _hasQuaternaryLuxury: 0
+  _quaternaryLuxuryCount: 0
+  _strategicNodesPerCell: 0.1
+  _strategicCopiesPerCell: 0.1
+  _balanceResources: 1
+  _minFoodPerCell: 1
+  _minProductionPerCell: 0.5
+  _minScorePerCell: 4
+  _maxScorePerCell: 4.4

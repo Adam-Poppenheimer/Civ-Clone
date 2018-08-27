@@ -24,16 +24,15 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
+        private Dictionary<YieldType, IResourceDefinition[]> BonusResourcesWithYield =
+            new Dictionary<YieldType, IResourceDefinition[]>();
+
+
+
         private IYieldEstimator           YieldEstimator;
         private IResourceNodeFactory      ResourceNodeFactory;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
         private IYieldScorer              YieldScorer;
-
-
-        private IResourceDefinition[] BonusResources;
-
-        private Dictionary<YieldType, IResourceDefinition[]> BonusResourcesWithYield =
-            new Dictionary<YieldType, IResourceDefinition[]>();
 
         #endregion
 
@@ -50,10 +49,6 @@ namespace Assets.Simulation.MapGeneration {
             ResourceRestrictionCanon = resourceRestrictionCanon;
             YieldScorer              = yieldScorer;
 
-            BonusResources = availableResources.Where(
-                resource => resource.Type == ResourceType.Bonus
-            ).ToArray();
-
             foreach(var yieldType in EnumUtil.GetValues<YieldType>()) {
                 BonusResourcesWithYield[yieldType] = availableResources.Where(
                     resource => resource.Type == ResourceType.Bonus &&
@@ -68,12 +63,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IBalanceStrategy
 
-        public bool TryIncreaseYield(MapRegion region, IRegionTemplate template, YieldType type, out YieldSummary yieldAdded) {
+        public bool TryIncreaseYield(
+            MapRegion region, RegionData regionData, YieldType type, out YieldSummary yieldAdded
+        ) {
             var availableResources = BonusResourcesWithYield[type].ToList();
 
             while(availableResources.Count > 0) {
                 var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    availableResources, 1, resource => template.GetSelectionWeightOfResource(resource)
+                    availableResources, 1, resource => regionData.GetWeightOfResource(resource)
                 ).FirstOrDefault();
 
                 if(chosenResource == null) {
@@ -100,7 +97,9 @@ namespace Assets.Simulation.MapGeneration {
             return false;
         }
 
-        public bool TryIncreaseScore(MapRegion region, IRegionTemplate template, out float scoreAdded) {
+        public bool TryIncreaseScore(
+            MapRegion region, RegionData regionData, out float scoreAdded
+        ) {
             YieldSummary yieldAdded;
 
             var yieldTypes = EnumUtil.GetValues<YieldType>().ToList();
@@ -108,7 +107,7 @@ namespace Assets.Simulation.MapGeneration {
             while(yieldTypes.Count > 0) {
                 var yieldType = yieldTypes.Random();
 
-                if(TryIncreaseYield(region, template, yieldType, out yieldAdded)) {
+                if(TryIncreaseYield(region, regionData, yieldType, out yieldAdded)) {
                     scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
                     return true;
                 }else {
@@ -120,7 +119,9 @@ namespace Assets.Simulation.MapGeneration {
             return false;
         }
 
-        public bool TryDecreaseScore(MapRegion region, IRegionTemplate template, out float scoreRemoved) {
+        public bool TryDecreaseScore(
+            MapRegion region, RegionData regionData, out float scoreRemoved
+        ) {
             scoreRemoved = 0f;
             return false;
         }
