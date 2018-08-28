@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -11,8 +12,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void DistributeLuxuryResourcesAcrossRegion   (MapRegion region, RegionData regionData);
         void DistributeStrategicResourcesAcrossRegion(MapRegion region, RegionData regionData);
+
+        void DistributeResource(IResourceDefinition resource, IEnumerable<IHexCell> validLocations, int count);
 
         #endregion
 

@@ -24,6 +24,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private RegionResourceTemplate _otherResources;
 
+        public IEnumerable<LuxuryResourceData> LuxuryResourceData {
+            get { return _luxuryResourceData; }
+        }
+        [SerializeField] private List<LuxuryResourceData> _luxuryResourceData;
+
         #endregion
 
         #endregion

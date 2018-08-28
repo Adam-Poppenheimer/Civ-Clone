@@ -13,3 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hillsPercentage: 5
   _mountainsPercentage: 0
+  _balanceStrategyWeights:
+  - _balanceStrategy: Hills Balance Strategy
+    _weight: 0
+  _resourceWeights: []

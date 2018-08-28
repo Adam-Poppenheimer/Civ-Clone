@@ -14,7 +14,7 @@ MonoBehaviour:
   _minTemperature: 0.25
   _maxTemperature: 0.45
   _minPrecipitation: 0.1
-  _maxPrecipitation: 0.5
+  _maxPrecipitation: 0.8
   _grasslandData:
     _percentage: 0
     _seedCount: 3
@@ -36,28 +36,38 @@ MonoBehaviour:
   _marshChancePerAdjacentRiver: 0.05
   _balanceStrategyWeights:
   - _balanceStrategy: Bonus Resource Balance Strategy
-    _weight: 100
+    _weight: 150
+  - _balanceStrategy: Lake Balance Strategy
+    _weight: 20
+  - _balanceStrategy: Hills Balance Strategy
+    _weight: 30
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: ce39d0cc38e1e704abb94f85a88c17a9, type: 2}
-    _weight: 1
+    _weight: 120
   - _resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
-    _weight: 1
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
-  - _resource: {fileID: 0}
-    _weight: 0
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: 4d86ba4abaea8cd4196550f48f977fe0, type: 2}
+    _weight: 100
+  - _resource: {fileID: 11400000, guid: 679af6afd8d9ec04cb7aa8fcc130f0f6, type: 2}
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    _weight: 80
+  - _resource: {fileID: 11400000, guid: 09d3c69e2a236d74f82e41b81283f80e, type: 2}
+    _weight: 50
+  - _resource: {fileID: 11400000, guid: e73b229d1b40e2a4294a82c1cca95db7, type: 2}
+    _weight: 20
+  - _resource: {fileID: 11400000, guid: 2dfab701b5278274f877c275a17099cc, type: 2}
+    _weight: 60
+  - _resource: {fileID: 11400000, guid: 9901b4c7e2743a241829faf138879a52, type: 2}
+    _weight: 30
+  - _resource: {fileID: 11400000, guid: 32b854ea772785641ba2b70d88b207f8, type: 2}
+    _weight: 20
+  - _resource: {fileID: 11400000, guid: e5b94d92802737743973a8cce176e9e8, type: 2}
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: 19a751694a603074ca6a5e41a392d199, type: 2}
+    _weight: 50
+  - _resource: {fileID: 11400000, guid: 790a754f5c1d5944ba68ebf4f5102946, type: 2}
+    _weight: 10
   TreesOnGrasslandCrawlCost: 1
   TreesOnPlainsCrawlCost: 0
   TreesOnTundraCrawlCost: 1

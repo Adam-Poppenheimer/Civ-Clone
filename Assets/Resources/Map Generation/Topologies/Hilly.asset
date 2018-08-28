@@ -13,3 +13,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _hillsPercentage: 35
   _mountainsPercentage: 5
+  _balanceStrategyWeights:
+  - _balanceStrategy: Hills Balance Strategy
+    _weight: 40
+  _resourceWeights:
+  - _resource: {fileID: 11400000, guid: b409f38c0ccc9cb45ba152ae262c7847, type: 2}
+    _weight: 10
+  - _resource: {fileID: 11400000, guid: 19a751694a603074ca6a5e41a392d199, type: 2}
+    _weight: 10
+  - _resource: {fileID: 11400000, guid: b0061f458bd040343830089c47ec10d5, type: 2}
+    _weight: 10
+  - _resource: {fileID: 11400000, guid: 5a3d04dde0378b647b424d1551604a95, type: 2}
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: 32b854ea772785641ba2b70d88b207f8, type: 2}
+    _weight: 10
+  - _resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    _weight: 30

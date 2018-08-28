@@ -33,7 +33,6 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ICellClimateLogic>          ().To<CellClimateLogic>          ().AsSingle();
             Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
             Container.Bind<IResourceDistributor>       ().To<ResourceDistributor>       ().AsSingle();
-            Container.Bind<IResourceSampler>           ().To<ResourceSampler>           ().AsSingle();
             Container.Bind<IYieldScorer>               ().To<YieldScorer>               ().AsSingle();
             Container.Bind<IRegionBalancer>            ().To<RegionBalancer>            ().AsSingle();
             Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
@@ -45,6 +44,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
             Container.Bind<IVegetationPainter>         ().To<VegetationPainter>         ().AsSingle();
             Container.Bind<ISectionSubdivisionLogic>   ().To<SectionSubdivisionLogic>   ().AsSingle();
+            Container.Bind<ILuxuryDistributor>         ().To<LuxuryDistributor>         ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();

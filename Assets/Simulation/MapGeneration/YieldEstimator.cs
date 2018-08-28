@@ -63,6 +63,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
+        #region static fields and properties
+
+        private static YieldSummary OneScience = new YieldSummary(science: 1);
+
+        #endregion
+
         #region instance fields and properties
 
         private IInherentCellYieldLogic                          InherentYieldLogic;
@@ -144,7 +150,7 @@ namespace Assets.Simulation.MapGeneration {
 
             retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, AvailableBuildings);
 
-            return retval;               
+            return retval + OneScience;               
         }
 
         public YieldSummary GetYieldEstimateForResource(IResourceDefinition resource) {

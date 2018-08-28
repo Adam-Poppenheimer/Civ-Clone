@@ -37,7 +37,37 @@ MonoBehaviour:
   _balanceStrategyWeights:
   - _balanceStrategy: Bonus Resource Balance Strategy
     _weight: 100
-  _resourceWeights: []
+  - _balanceStrategy: Lake Balance Strategy
+    _weight: 15
+  _resourceWeights:
+  - _resource: {fileID: 11400000, guid: 02e75a66484b5cf4c85b14adc8fb9b00, type: 2}
+    _weight: 200
+  - _resource: {fileID: 11400000, guid: 2a917176d13474740b2911bcdd337ecd, type: 2}
+    _weight: 100
+  - _resource: {fileID: 11400000, guid: 80514376930013543ab75502d0f10e58, type: 2}
+    _weight: 80
+  - _resource: {fileID: 11400000, guid: e5b94d92802737743973a8cce176e9e8, type: 2}
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: 2b45b582650b7f6459f143f718231c81, type: 2}
+    _weight: 70
+  - _resource: {fileID: 11400000, guid: e12f3494b70bcae4ca3091126d9d037a, type: 2}
+    _weight: 20
+  - _resource: {fileID: 11400000, guid: 32b854ea772785641ba2b70d88b207f8, type: 2}
+    _weight: 30
+  - _resource: {fileID: 11400000, guid: b409f38c0ccc9cb45ba152ae262c7847, type: 2}
+    _weight: 15
+  - _resource: {fileID: 11400000, guid: 19a751694a603074ca6a5e41a392d199, type: 2}
+    _weight: 20
+  - _resource: {fileID: 11400000, guid: 2bd5241ded607ee4caf5274379a102cc, type: 2}
+    _weight: 30
+  - _resource: {fileID: 11400000, guid: 5d569c457a207db4591f2fa28f0f0b01, type: 2}
+    _weight: 60
+  - _resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
+    _weight: 40
+  - _resource: {fileID: 11400000, guid: e73b229d1b40e2a4294a82c1cca95db7, type: 2}
+    _weight: 30
+  - _resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
+    _weight: 100
   TreesOnGrasslandCrawlCost: 1
   TreesOnPlainsCrawlCost: -1
   TreesOnTundraCrawlCost: -1

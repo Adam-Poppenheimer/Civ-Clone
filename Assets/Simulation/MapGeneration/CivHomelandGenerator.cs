@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Civilizations;
@@ -17,11 +19,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IRegionGenerator                 RegionGenerator;
-        private ITemplateSelectionLogic          TemplateSelectionLogic;
-        private IHexGrid                         Grid;
-        private IEnumerable<IResourceDefinition> AvailableResources;
-        private List<IBalanceStrategy>           AvailableBalanceStrategies;
+        private IRegionGenerator        RegionGenerator;
+        private ITemplateSelectionLogic TemplateSelectionLogic;
+        private ILuxuryDistributor      LuxuryDistributor;
+
+        private List<IBalanceStrategy> AvailableBalanceStrategies;
 
         #endregion
 
@@ -29,14 +31,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public CivHomelandGenerator(
-            IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic, IHexGrid grid,
-            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
-            List<IBalanceStrategy> availableBalanceStrategies
+            IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic,
+            ILuxuryDistributor luxuryDistributor, List<IBalanceStrategy> availableBalanceStrategies
         ) {
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
-            Grid                       = grid;
-            AvailableResources         = availableResources;
+            LuxuryDistributor          = luxuryDistributor;
             AvailableBalanceStrategies = availableBalanceStrategies;
         }
 
@@ -76,7 +76,7 @@ namespace Assets.Simulation.MapGeneration {
             var startingData   = new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (startingRegion, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(startingRegion, mapTemplate),
-                homelandTemplate.StartingResources, AvailableResources, AvailableBalanceStrategies
+                homelandTemplate.StartingResources, AvailableBalanceStrategies
             );
 
             var otherRegions = regions.Where(region => region != startingRegion).ToList();
@@ -84,26 +84,13 @@ namespace Assets.Simulation.MapGeneration {
             var otherData = otherRegions.Select(region => new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (region, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(region, mapTemplate),
-                homelandTemplate.OtherResources, AvailableResources, AvailableBalanceStrategies
+                homelandTemplate.OtherResources, AvailableBalanceStrategies
             )).ToList();
-
-            float mapData = 0.7f;
-            foreach(var cell in startingRegion.Cells) {
-                cell.SetMapData(mapData);
-            }
-
-            foreach(var region in otherRegions) {
-                mapData -= 0.15f;
-                foreach(var cell in region.Cells) {
-                    cell.SetMapData(mapData);
-                }
-            }
-
-            Grid.GetCellAtLocation(homeCentroid).SetMapData(1f);
 
             return new CivHomelandData(
                 startingRegion, startingData,
-                otherRegions,   otherData
+                otherRegions,   otherData,
+                homelandTemplate.LuxuryResourceData
             );
         }
 
@@ -118,6 +105,8 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeYieldAndResources(CivHomelandData homelandData, IMapTemplate mapTemplate) {
+            LuxuryDistributor.DistributeLuxuriesAcrossHomeland(homelandData);
+
             RegionGenerator.DistributeYieldAndResources(homelandData.StartingRegion, homelandData.StartingData);
 
             for(int i = 0; i < homelandData.OtherRegions.Count; i++) {

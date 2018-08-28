@@ -11,8 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ea69c8e982f58ca4587d38140f0300f7, type: 3}
   m_Name: Other Region Resources
   m_EditorClassIdentifier: 
-  _hasPrimaryLuxury: 0
-  _primaryLuxuryCount: 0
+  _hasPrimaryLuxury: 1
+  _primaryLuxuryCount: 2
   _hasSecondaryLuxury: 0
   _secondaryLuxuryCount: 0
   _hasTertiaryLuxury: 0

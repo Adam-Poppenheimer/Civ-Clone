@@ -33,7 +33,6 @@ namespace Assets.Simulation.MapGeneration {
         private ICivilizationFactory        CivFactory;
         private IHexGrid                    Grid;
         private IOceanGenerator             OceanGenerator;
-        private IResourceSampler            ResourceSampler;
         private IStartingUnitPlacementLogic StartingUnitPlacementLogic;
         private IGridPartitionLogic         GridPartitionLogic;
         private IWaterRationalizer          WaterRationalizer;
@@ -50,7 +49,7 @@ namespace Assets.Simulation.MapGeneration {
         public MapGenerator(
             IMapGenerationConfig config, ICivilizationFactory civFactory, IHexGrid grid,
             IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
-            IResourceSampler resourceSampler, IStartingUnitPlacementLogic startingUnitPlacementLogic,
+            IStartingUnitPlacementLogic startingUnitPlacementLogic,
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             ICivHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic
@@ -59,7 +58,6 @@ namespace Assets.Simulation.MapGeneration {
             CivFactory                 = civFactory;
             Grid                       = grid;
             OceanGenerator             = oceanGenerator;
-            ResourceSampler            = resourceSampler;
             StartingUnitPlacementLogic = startingUnitPlacementLogic;
             GridPartitionLogic         = gridPartitionLogic;
             WaterRationalizer          = waterRationalizer;
@@ -76,7 +74,6 @@ namespace Assets.Simulation.MapGeneration {
         #region from IHexMapGenerator
 
         public void GenerateMap(int chunkCountX, int chunkCountZ, IMapTemplate template) {
-            ResourceSampler .Reset();
             CellClimateLogic.Reset(template);
 
             var oldRandomState = SetRandomState();

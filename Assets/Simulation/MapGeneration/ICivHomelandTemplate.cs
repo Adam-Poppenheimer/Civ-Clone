@@ -12,6 +12,8 @@ namespace Assets.Simulation.MapGeneration {
         IRegionResourceTemplate StartingResources { get; }
         IRegionResourceTemplate OtherResources    { get; }
 
+        IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
+
         #endregion
 
     }

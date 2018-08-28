@@ -65,7 +65,6 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeYieldAndResources(MapRegion region, RegionData regionData) {
-            ResourceDistributor.DistributeLuxuryResourcesAcrossRegion   (region, regionData);
             ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, regionData);
 
             RegionBalancer.BalanceRegionYields(region, regionData);

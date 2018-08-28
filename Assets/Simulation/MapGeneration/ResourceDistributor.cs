@@ -18,7 +18,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private IMapGenerationConfig      Config;
         private IResourceNodeFactory      NodeFactory;
-        private IResourceSampler          ResourceSampler;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
         private IStrategicCopiesLogic     StrategicCopiesLogic;
 
@@ -31,14 +30,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public ResourceDistributor(
             IMapGenerationConfig config, IResourceNodeFactory nodeFactory,
-            IResourceSampler resourceSampler, IResourceRestrictionCanon resourceRestrictionCanon,
+            IResourceRestrictionCanon resourceRestrictionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             IStrategicCopiesLogic strategicCopiesLogic,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             Config                   = config;
             NodeFactory              = nodeFactory;
-            ResourceSampler          = resourceSampler;
             ResourceRestrictionCanon = resourceRestrictionCanon;
             StrategicCopiesLogic     = strategicCopiesLogic;
 
@@ -50,34 +48,6 @@ namespace Assets.Simulation.MapGeneration {
         #region instance methods
 
         #region from IResourceDistributor
-
-        public void DistributeLuxuryResourcesAcrossRegion(MapRegion region, RegionData regionData) {
-            var resourcesSoFar = new List<IResourceDefinition>();
-
-            if(regionData.Resources.HasPrimaryLuxury) {
-                DistributeLuxury(
-                    region, regionData.Resources.PrimaryLuxuryCount, resourcesSoFar
-                );
-            }
-
-            if(regionData.Resources.HasSecondaryLuxury) {
-                DistributeLuxury(
-                    region, regionData.Resources.SecondaryLuxuryCount, resourcesSoFar
-                );
-            }
-
-            if(regionData.Resources.HasTertiaryLuxury) {
-                DistributeLuxury(
-                    region, regionData.Resources.TertiaryLuxuryCount, resourcesSoFar
-                );
-            }
-
-            if(regionData.Resources.HasQuaternaryLuxury) {
-                DistributeLuxury(
-                    region, regionData.Resources.QuaternaryLuxuryCount, resourcesSoFar
-                );
-            }
-        }
 
         public void DistributeStrategicResourcesAcrossRegion(MapRegion region, RegionData regionData) {
             int nodesLeft  = Mathf.CeilToInt(regionData.Resources.StrategicNodesPerCell  * region.Cells.Count);
@@ -117,19 +87,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        #endregion
-
-        private void DistributeLuxury(
-            MapRegion region, int nodeCount, List<IResourceDefinition> luxuriesSoFar
-        ) {
-            var results = ResourceSampler.GetLuxuryForRegion(region, nodeCount, luxuriesSoFar);
-
-            luxuriesSoFar.Add(results.Resource);
-
-            DistributeResource(results.Resource, results.ValidLocations, nodeCount);
-        }
-
-        private void DistributeResource(
+        public void DistributeResource(
             IResourceDefinition resource, IEnumerable<IHexCell> validLocations,
             int count
         ) {
@@ -148,6 +106,8 @@ namespace Assets.Simulation.MapGeneration {
                 NodeFactory.BuildNode(location, resource, copies);
             }
         }
+
+        #endregion
 
         private Func<IHexCell, int> GetResourceWeightFunction(IResourceDefinition resource) {
             return delegate(IHexCell cell) {

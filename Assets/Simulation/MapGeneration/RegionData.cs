@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        private IEnumerable<IResourceDefinition> AvailableResources;
+
         private IEnumerable<IBalanceStrategy>    AvailableBalanceStrategies;
 
         #endregion
@@ -28,14 +28,12 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         public RegionData(
-            IRegionBiomeTemplate biome, IRegionTopologyTemplate topology, IRegionResourceTemplate resources, 
-            IEnumerable<IResourceDefinition> availableResources,
+            IRegionBiomeTemplate biome, IRegionTopologyTemplate topology, IRegionResourceTemplate resources,
             IEnumerable<IBalanceStrategy> availableBalanceStrategies
         ) {
             Biome                      = biome;
             Topology                   = topology;
             Resources                  = resources;
-            AvailableResources         = availableResources;
             AvailableBalanceStrategies = availableBalanceStrategies;
         }
 
