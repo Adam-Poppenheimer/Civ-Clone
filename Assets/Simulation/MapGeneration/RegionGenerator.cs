@@ -20,11 +20,9 @@ namespace Assets.Simulation.MapGeneration {
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
         private IGridTraversalLogic    GridTraversalLogic;
-        private IRiverGenerator        RiverGenerator;
         private IResourceDistributor   ResourceDistributor;
         private IRegionBalancer        RegionBalancer;
         private IMapGenerationConfig   Config;
-        private IVegetationPainter     VegetationPainter;
 
         #endregion
 
@@ -33,46 +31,24 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, IGridTraversalLogic gridTraversalLogic,
-            IRiverGenerator riverGenerator, IResourceDistributor resourceDistributor,
-            IRegionBalancer regionBalancer, IMapGenerationConfig config,
-            IVegetationPainter vegetationPainter
+            IResourceDistributor resourceDistributor, IRegionBalancer regionBalancer,
+            IMapGenerationConfig config
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
             GridTraversalLogic  = gridTraversalLogic;
-            RiverGenerator      = riverGenerator;
             ResourceDistributor = resourceDistributor;
             RegionBalancer      = regionBalancer;
             Config              = config;
-            VegetationPainter   = vegetationPainter;
         }
 
         #endregion
 
         #region instance methods
 
-        #region from IStartingLocationGenerator
+        #region from IRegionGenerator
 
-        public void GenerateTopologyAndEcology(MapRegion region, RegionData regionData) {
-            GenerateTopology(region, regionData.Topology);
-            PaintTerrain    (region, regionData.Biome);
-
-            RiverGenerator.CreateRiversForRegion(region.LandCells, regionData.Biome, region.WaterCells);
-
-            AssignFloodPlains(region.LandCells);
-
-            VegetationPainter.PaintVegetation(region, regionData.Biome);
-        }
-
-        public void DistributeYieldAndResources(MapRegion region, RegionData regionData) {
-            ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, regionData);
-
-            RegionBalancer.BalanceRegionYields(region, regionData);
-        }
-
-        #endregion
-
-        private void GenerateTopology(MapRegion region, IRegionTopologyTemplate template) {
+        public void GenerateTopology(MapRegion region, IRegionTopologyTemplate template) {
             var landCells = region.LandCells;
 
             int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * landCells.Count() * 0.01f);
@@ -96,7 +72,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private void PaintTerrain(MapRegion region, IRegionBiomeTemplate template) {
+        public void PaintTerrain(MapRegion region, IRegionBiomeTemplate template) {
             var unassignedLandCells = new HashSet<IHexCell>(region.LandCells);
 
             PaintArcticTerrain(region, template, unassignedLandCells);
@@ -107,6 +83,22 @@ namespace Assets.Simulation.MapGeneration {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
             }
         }
+
+        public void AssignFloodPlains(IEnumerable<IHexCell> landCells) {
+            foreach(var desertCell in landCells.Where(cell => cell.Terrain == CellTerrain.Desert)) {
+                if(ModLogic.CanChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains)) {
+                    ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
+                }
+            }
+        }
+
+        public void DistributeYieldAndResources(MapRegion region, RegionData regionData) {
+            ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, regionData);
+
+            RegionBalancer.BalanceRegionYields(region, regionData);
+        }
+
+        #endregion
 
         private void PaintOtherTerrains(
             MapRegion region, IRegionBiomeTemplate template, HashSet<IHexCell> unassignedLandCells
@@ -265,14 +257,6 @@ namespace Assets.Simulation.MapGeneration {
                     unassignedLandCells.Remove(orphan);
                 }else {
                     Debug.LogWarning("Could not find a valid terrain for an orphaned cell");
-                }
-            }
-        }
-
-        private void AssignFloodPlains(IEnumerable<IHexCell> landCells) {
-            foreach(var desertCell in landCells.Where(cell => cell.Terrain == CellTerrain.Desert)) {
-                if(ModLogic.CanChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains)) {
-                    ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
                 }
             }
         }

@@ -22,6 +22,8 @@ namespace Assets.Simulation.MapGeneration {
         private IRegionGenerator        RegionGenerator;
         private ITemplateSelectionLogic TemplateSelectionLogic;
         private ILuxuryDistributor      LuxuryDistributor;
+        private IRiverGenerator         RiverGenerator;
+        private IVegetationPainter      VegetationPainter;
 
         private List<IBalanceStrategy> AvailableBalanceStrategies;
 
@@ -32,12 +34,15 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public CivHomelandGenerator(
             IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic,
-            ILuxuryDistributor luxuryDistributor, List<IBalanceStrategy> availableBalanceStrategies
+            ILuxuryDistributor luxuryDistributor, IRiverGenerator riverGenerator,
+            IVegetationPainter vegetationPainter, List<IBalanceStrategy> availableBalanceStrategies
         ) {
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
             LuxuryDistributor          = luxuryDistributor;
+            RiverGenerator             = riverGenerator;
             AvailableBalanceStrategies = availableBalanceStrategies;
+            VegetationPainter          = vegetationPainter;
         }
 
         #endregion
@@ -95,12 +100,31 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void GenerateTopologyAndEcology(CivHomelandData homelandData, IMapTemplate mapTemplate) {
-            RegionGenerator.GenerateTopologyAndEcology(homelandData.StartingRegion, homelandData.StartingData);
+            var regions = homelandData.OtherRegions.ToList();
+            regions.Add(homelandData.StartingRegion);
 
-            for(int i = 0; i < homelandData.OtherRegions.Count; i++) {
-                RegionGenerator.GenerateTopologyAndEcology(
-                    homelandData.OtherRegions[i], homelandData.OtherRegionData[i]
-                );
+            int riveredCells = 0;
+
+            foreach(var region in regions) {
+                var regionData = homelandData.GetDataOfRegion(region);
+
+                RegionGenerator.GenerateTopology(region, regionData.Topology);
+                RegionGenerator.PaintTerrain    (region, regionData.Biome);
+
+                RegionGenerator.AssignFloodPlains(region.LandCells);
+
+                riveredCells += Mathf.CeilToInt(region.LandCells.Count * regionData.Biome.RiverPercentage * 0.01f);
+            }
+
+            var allLandCells  = regions.SelectMany(region => region.LandCells);
+            var allWaterCells = regions.SelectMany(region => region.WaterCells);
+
+            RiverGenerator.CreateRivers(allLandCells, allWaterCells, riveredCells);
+
+            foreach(var region in regions) {
+                var regionData = homelandData.GetDataOfRegion(region);
+
+                VegetationPainter.PaintVegetation(region, regionData.Biome);
             }
         }
 

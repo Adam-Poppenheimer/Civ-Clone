@@ -11,9 +11,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void CreateRiversForRegion(
-            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
-            IEnumerable<IHexCell> oceanCells
+        void CreateRivers(
+            IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
+            int riverPercentage
         );
 
         #endregion

@@ -40,12 +40,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IRiverGenerator
 
-        public void CreateRiversForRegion(
-            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
-            IEnumerable<IHexCell> waterCells
-        ) {
-            int desiredRiveredCellsCount = Mathf.RoundToInt(template.RiverPercentage * landCells.Count() * 0.01f);
-              
+        public void CreateRivers(
+            IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
+            int desiredRiveredCells
+        ) {              
             var riveredCells = new HashSet<IHexCell>();
 
             var riverStartCandidates = landCells.Where(
@@ -54,7 +52,7 @@ namespace Assets.Simulation.MapGeneration {
             ).ToList();
 
             int iterations = landCells.Count() * 10;
-            while(riveredCells.Count < desiredRiveredCellsCount && riverStartCandidates.Count > 0 && iterations-- > 0) {
+            while(riveredCells.Count < desiredRiveredCells && riverStartCandidates.Count > 0 && iterations-- > 0) {
                 var start = riverStartCandidates.Random();
 
                 riverStartCandidates.Remove(start);
@@ -62,8 +60,8 @@ namespace Assets.Simulation.MapGeneration {
                 HashSet<IHexCell> cellsAdjacentToNewRiver;
 
                 if(TryBuildNewRiver(
-                    landCells, template, waterCells, start,
-                    desiredRiveredCellsCount - riveredCells.Count, out cellsAdjacentToNewRiver
+                    landCells, waterCells, start, desiredRiveredCells - riveredCells.Count,
+                    out cellsAdjacentToNewRiver
                 )) {
                     foreach(var cell in cellsAdjacentToNewRiver) {
                         if(ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)) {
@@ -83,9 +81,8 @@ namespace Assets.Simulation.MapGeneration {
         #endregion
 
         private bool TryBuildNewRiver(
-            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
-            IEnumerable<IHexCell> waterCells, IHexCell start, int maxRiveredCellCount,
-            out HashSet<IHexCell> riveredCells
+            IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
+            IHexCell start, int maxRiveredCellCount, out HashSet<IHexCell> riveredCells
         ) {
             riveredCells = new HashSet<IHexCell>();
 
@@ -93,7 +90,7 @@ namespace Assets.Simulation.MapGeneration {
 
             int maxRiverLength = Math.Max(2, Mathf.RoundToInt(maxRiveredCellCount / 3f));
 
-            if(TryGetRiverEnd(landCells, template, start, waterCells, maxRiverLength, out end)) {
+            if(TryGetRiverEnd(landCells, start, waterCells, maxRiverLength, out end)) {
 
                 var riverPath = new List<IHexCell>() { start };
 
@@ -154,9 +151,8 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private bool TryGetRiverEnd(
-            IEnumerable<IHexCell> landCells, IRegionBiomeTemplate template,
-            IHexCell start, IEnumerable<IHexCell> waterCells, int maxRiverLength,
-            out IHexCell end
+            IEnumerable<IHexCell> landCells, IHexCell start, IEnumerable<IHexCell> waterCells,
+            int maxRiverLength, out IHexCell end
         ) {
 
 
