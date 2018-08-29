@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
@@ -32,6 +34,20 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
         private List<IHexCell> _cells;
+
+        public Vector3 Centroid {
+            get {
+                if(_centroid == null) {
+                    var positionSum = Cells.Select(cell => cell.Position)
+                                           .Aggregate((total, nextPosition) => total + nextPosition);
+
+                    _centroid = positionSum / Cells.Count;
+                }
+
+                return _centroid.GetValueOrDefault();
+            }
+        }
+        private Vector3? _centroid;
 
         #endregion
 

@@ -28,6 +28,18 @@ namespace Assets.Simulation.MapGeneration {
         }
         private List<RegionData> _otherRegionData;
 
+        public IEnumerable<MapRegion> AllRegions {
+             get {
+                if(_allRegions == null) {
+                    _allRegions = new List<MapRegion>(OtherRegions);
+                    _allRegions.Add(StartingRegion);
+                }
+
+                return _allRegions;
+            }
+        }
+        private List<MapRegion> _allRegions;
+
 
         public IEnumerable<LuxuryResourceData> LuxuryResources { get; private set; }
 

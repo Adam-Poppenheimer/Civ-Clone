@@ -91,13 +91,16 @@ namespace Assets.Simulation.MapGeneration {
             IResourceDefinition resource, IEnumerable<IHexCell> validLocations,
             int count
         ) {
-            if(validLocations.Count() < count) {
-                Debug.LogWarning("Could not find enough valid locations for resoure " + resource.name);
-            }
-
             var nodeLocations = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
                 validLocations, count, GetResourceWeightFunction(resource)
             );
+
+            if(nodeLocations.Count < count) {
+                Debug.LogWarningFormat(
+                    "Could not find enough valid locations to place {0} {1} after weighting. Only found {2}",
+                    count, resource.name, nodeLocations.Count
+                );
+            }
 
             foreach(var location in nodeLocations) {
                 int copies = resource.Type == ResourceType.Strategic

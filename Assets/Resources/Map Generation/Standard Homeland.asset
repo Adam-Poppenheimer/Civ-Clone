@@ -19,5 +19,7 @@ MonoBehaviour:
   - _startingCount: 2
     _otherCount: 4
   - _startingCount: 0
-    _otherCount: 6
-  _regionCount: 16
+    _otherCount: 4
+  - _startingCount: 0
+    _otherCount: 1
+  _regionCount: 8

@@ -22,6 +22,14 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private int _otherCount;
 
+        public bool ConstrainedToStarting {
+            get { return StartingCount > 0 && OtherCount <= 0; }
+        }
+
+        public bool ConstrainedToOthers {
+            get { return OtherCount > 0 && StartingCount <= 0; }
+        }
+
         #endregion
 
     }

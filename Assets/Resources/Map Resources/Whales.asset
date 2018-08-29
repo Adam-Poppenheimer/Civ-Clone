@@ -31,14 +31,13 @@ MonoBehaviour:
   FloodPlainsWeight: 0
   TundraWeight: 0
   SnowWeight: 0
-  ShallowWaterWeight: 1
+  ShallowWaterWeight: 100
   FlatlandWeight: 0
   HillsWeight: 0
   NoVegetationWeight: 0
   ForestWeight: 0
   JungleWeight: 0
   MarshWeight: 0
-  _selectionWeight: 1
   _appearancePrefab: {fileID: 4307953511643046, guid: 38d6be8fa81e51a4fad03d9b9d0a525f,
     type: 2}
   _icon: {fileID: 21300000, guid: cbfb7ad0824d87d4cab8ea04b92f4837, type: 3}

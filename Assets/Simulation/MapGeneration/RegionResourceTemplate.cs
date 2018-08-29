@@ -14,65 +14,6 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IRegionResourceTemplate
 
-        public bool HasPrimaryLuxury  {
-            get {
-                return _hasPrimaryLuxury;
-            }
-        }
-        [SerializeField] private bool _hasPrimaryLuxury;
-
-        public int PrimaryLuxuryCount {
-            get {
-                return _primaryLuxuryCount;
-            }
-        }
-        [SerializeField] private int _primaryLuxuryCount;
-
-        public bool HasSecondaryLuxury  {
-            get {
-                return _hasSecondaryLuxury;
-            }
-        }
-        [SerializeField] private bool _hasSecondaryLuxury;
-
-        public int SecondaryLuxuryCount {
-            get {
-                return _secondaryLuxuryCount;
-            }
-        }
-        [SerializeField] private int _secondaryLuxuryCount;
-
-
-        public bool HasTertiaryLuxury  { 
-            get {
-                return _hasTertiaryLuxury;
-            }
-        }
-        [SerializeField] private bool _hasTertiaryLuxury;
-
-        public int TertiaryLuxuryCount {
-            get {
-                return _tertiaryLuxuryCount;
-            }
-        }
-        [SerializeField] private int _tertiaryLuxuryCount;
-
-
-        public bool HasQuaternaryLuxury  {
-            get {
-                return _hasQuaternaryLuxury;
-            }
-        }
-        [SerializeField] private bool _hasQuaternaryLuxury;
-
-        public int QuaternaryLuxuryCount {
-            get {
-                return _quaternaryLuxuryCount;
-            }
-        }
-        [SerializeField] private int _quaternaryLuxuryCount;
-
-
         public float StrategicNodesPerCell  {
             get {
                 return _strategicNodesPerCell;

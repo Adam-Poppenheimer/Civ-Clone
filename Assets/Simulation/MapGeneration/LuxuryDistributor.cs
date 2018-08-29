@@ -18,15 +18,19 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IResourceDistributor ResourceDistributor;
+        private IResourceDistributor      ResourceDistributor;
+        private IResourceRestrictionCanon ResourceRestrictionCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public LuxuryDistributor(IResourceDistributor resourceDistributor) {
-            ResourceDistributor = resourceDistributor;
+        public LuxuryDistributor(
+            IResourceDistributor resourceDistributor, IResourceRestrictionCanon resourceRestrictionCanon
+        ) {
+            ResourceDistributor      = resourceDistributor;
+            ResourceRestrictionCanon = resourceRestrictionCanon;
         }
 
         #endregion
@@ -36,135 +40,173 @@ namespace Assets.Simulation.MapGeneration {
         #region from ILuxuryDistributor
 
         public void DistributeLuxuriesAcrossHomeland(CivHomelandData homelandData) {
-            var luxuriesSelected = new List<IResourceDefinition>();
+            List<IResourceDefinition> luxuriesForStarting = GetLuxuriesForStartingRegion(homelandData);
+            List<IResourceDefinition> luxuriesForOthers   = GetLuxuriesForOtherRegions  (homelandData);
+            List<IResourceDefinition> luxuriesForWhole    = GetLuxuriesForWholeHomeland (homelandData);
 
-            var dataToSatisfy = homelandData.LuxuryResources.ToList();
-            int iterations = dataToSatisfy.Count * 20;
+            var luxuriesAlreadyChosen = new HashSet<IResourceDefinition>();
 
-            while(dataToSatisfy.Any() && iterations-- > 0) {
-                var luxuryData = dataToSatisfy.First();
-
-                var luxuryPlacementInRegion = new Dictionary<MapRegion, int>();
-                var luxuriesByPriority = new Dictionary<IResourceDefinition, int>();
-                int samplesSoFar = 0;
-
-                if(luxuryData.StartingCount > 0) {
-                    luxuryPlacementInRegion[homelandData.StartingRegion] = luxuryData.StartingCount;
-
-                    luxuriesByPriority = GetLuxuriesByPriority(
-                        homelandData.StartingRegion, homelandData, luxuriesSelected
+            foreach(var luxuryData in homelandData.LuxuryResources) {
+                if(luxuryData.ConstrainedToStarting) {
+                    DistributeLuxuryAcrossSingleRegion(
+                        homelandData.StartingRegion, luxuryData.StartingCount,
+                        luxuriesForStarting, luxuriesAlreadyChosen
                     );
-
-                    samplesSoFar++;
-                }
-
-                if(luxuryData.OtherCount > 0) {
-                    int copiesToAssign = luxuryData.OtherCount;
-                    var candidateRegions = homelandData.OtherRegions.ToList();
-
-                    while(copiesToAssign > 0 && candidateRegions.Any()) {
-
-                        MapRegion candidateRegion = candidateRegions.Random();
-
-                        var luxuriesByPriorityWithCandidate = GetCommonLuxuriesByPriority(
-                            candidateRegion, luxuriesByPriority, homelandData,
-                            samplesSoFar, luxuriesSelected
-                        );
-
-                        if(!luxuriesByPriorityWithCandidate.Any()) {
-                            candidateRegions.Remove(candidateRegion);
-                            continue;
-                        }
-
-                        luxuriesByPriority = luxuriesByPriorityWithCandidate;
-                        samplesSoFar++;
-
-                        int copiesInRegion = UnityEngine.Random.Range(1, copiesToAssign + 1);
-                        if(!luxuryPlacementInRegion.ContainsKey(candidateRegion)) {
-                            luxuryPlacementInRegion[candidateRegion] = copiesInRegion;
-                        }else {
-                            luxuryPlacementInRegion[candidateRegion] += copiesInRegion;
-                        }
-
-                        copiesToAssign -= copiesInRegion;
-                    }
-                }
-                var luxuryToPlace = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    luxuriesByPriority.Keys, 1, luxury => luxuriesByPriority[luxury]
-                ).FirstOrDefault();
-
-                if(luxuryToPlace == null) {
-                    continue;
+                }else if(luxuryData.ConstrainedToOthers) {
+                    DistributeLuxuryAcrossMultipleRegions(
+                        homelandData.OtherRegions, luxuryData.OtherCount,
+                        luxuriesForOthers, luxuriesAlreadyChosen
+                    );
                 }else {
-                    dataToSatisfy.Remove(luxuryData);
-
-                    luxuriesSelected.Add(luxuryToPlace);
-
-                    PlaceLuxuryInRegions(luxuryToPlace, luxuryPlacementInRegion, homelandData);
+                    DistributeLuxuryAcrossSingleAndMultipleRegions(
+                        homelandData.StartingRegion, homelandData.OtherRegions,
+                        luxuryData.StartingCount, luxuryData.OtherCount,
+                        luxuriesForWhole, luxuriesAlreadyChosen
+                    );
                 }
-            }
-
-            if(dataToSatisfy.Any()) {
-                Debug.LogError("Failed to distribute luxuries correctly across homeland");
             }
         }
 
         #endregion
 
-        private Dictionary<IResourceDefinition, int> GetLuxuriesByPriority(
-            MapRegion region, CivHomelandData homelandData,
-            IEnumerable<IResourceDefinition> luxuriesChosen
+        private void DistributeLuxuryAcrossSingleRegion(
+            MapRegion region, int nodeCount, List<IResourceDefinition> validLuxuries,
+            HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
-            var regionData = homelandData.GetDataOfRegion(region);
+            while(validLuxuries.Any()) {
+                var candidate = validLuxuries.Last();
+                validLuxuries.Remove(candidate);
 
-            var resourceWeights = regionData.GetResourceWeights();
+                if(luxuriesAlreadyChosen.Contains(candidate)) {
+                    continue;
+                }
 
-            var retval = new Dictionary<IResourceDefinition, int>();
+                var validCells = region.Cells.Where(
+                    cell => ResourceRestrictionCanon.IsResourceValidOnCell(candidate, cell)
+                );
 
-            var validPairs = resourceWeights.Where(
-                pair => pair.Key.Type == ResourceType.Luxury && pair.Value > 0 &&
-                        !luxuriesChosen.Contains(pair.Key)
-            );
-
-            foreach(var resourcePair in validPairs) {
-                retval[resourcePair.Key] = resourcePair.Value;
+                if(validCells.Count() >= nodeCount) {
+                    ResourceDistributor.DistributeResource(candidate, validCells, nodeCount);
+                    luxuriesAlreadyChosen.Add(candidate);
+                    return;
+                }
             }
+
+            Debug.LogError("Failed to perform luxury distribution on region");
+        }
+
+        private void DistributeLuxuryAcrossMultipleRegions(
+            IEnumerable<MapRegion> regions, int nodeCount, List<IResourceDefinition> validLuxuries,
+            HashSet<IResourceDefinition> luxuriesAlreadyChosen
+        ) {
+            while(validLuxuries.Any()) {
+                var candidate = validLuxuries.Last();
+                validLuxuries.Remove(candidate);
+
+                if(luxuriesAlreadyChosen.Contains(candidate)) {
+                    continue;
+                }
+
+                var validCells = regions.SelectMany(region => region.Cells).Where(
+                    cell => ResourceRestrictionCanon.IsResourceValidOnCell(candidate, cell)
+                );
+
+                if(validCells.Count() >= nodeCount) {
+                    ResourceDistributor.DistributeResource(candidate, validCells, nodeCount);
+                    luxuriesAlreadyChosen.Add(candidate);
+                    return;
+                }
+            }
+
+            Debug.LogError("Failed to perform luxury distribution across multiple regions");
+        }
+
+        private void DistributeLuxuryAcrossSingleAndMultipleRegions(
+            MapRegion singleRegion, IEnumerable<MapRegion> multipleRegions,
+            int singleNodeCount, int multipleNodeCount,
+            List<IResourceDefinition> validLuxuries,
+            HashSet<IResourceDefinition> luxuriesAlreadyChosen
+        ) {
+            while(validLuxuries.Any()) {
+                var candidate = validLuxuries.Last();
+                validLuxuries.Remove(candidate);
+
+                if(luxuriesAlreadyChosen.Contains(candidate)) {
+                    continue;
+                }
+
+                var validSingleCells = singleRegion.Cells.Where(
+                    cell => ResourceRestrictionCanon.IsResourceValidOnCell(candidate, cell)
+                );
+
+                var validMultipleCells = multipleRegions.SelectMany(region => region.Cells).Where(
+                    cell => ResourceRestrictionCanon.IsResourceValidOnCell(candidate, cell)
+                );
+
+                if(validSingleCells.Count() >= singleNodeCount && validMultipleCells.Count() >= multipleNodeCount) {
+                    ResourceDistributor.DistributeResource(candidate, validSingleCells,   singleNodeCount);
+                    ResourceDistributor.DistributeResource(candidate, validMultipleCells, multipleNodeCount);
+                    luxuriesAlreadyChosen.Add(candidate);
+                    return;
+                }
+            }
+
+            Debug.LogError("Failed to perform luxury distribution across a single region and multiple regions");
+        }
+
+
+        private List<IResourceDefinition> GetLuxuriesForStartingRegion(CivHomelandData homelandData) {
+            var priorityOfResources = homelandData.StartingData.GetResourceWeights();
+
+            var retval = priorityOfResources.Keys.Where(resource => resource.Type == ResourceType.Luxury).ToList();
+
+            retval.Sort((first, second) => priorityOfResources[first].CompareTo(priorityOfResources[second]));
 
             return retval;
         }
 
-        private Dictionary<IResourceDefinition, int> GetCommonLuxuriesByPriority(
-            MapRegion currentRegion, Dictionary<IResourceDefinition, int> existingResourcesWithPriority,
-            CivHomelandData homelandData, int samplesSoFar, IEnumerable<IResourceDefinition> luxuriesChosen
-        ) {
-            var currentLuxuriesByPriority = GetLuxuriesByPriority(currentRegion, homelandData, luxuriesChosen);
+        private List<IResourceDefinition> GetLuxuriesForOtherRegions(CivHomelandData homelandData) {
+            var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.OtherRegions);
 
-            if(!existingResourcesWithPriority.Any()) {
-                return currentLuxuriesByPriority;
-            }
+            var retval = globalPriorityOfLuxuries.Keys.ToList();
 
-            var retval = new Dictionary<IResourceDefinition, int>();
-
-            foreach(var existingResource in existingResourcesWithPriority.Keys.Intersect(currentLuxuriesByPriority.Keys)) {
-                int previousWeight = existingResourcesWithPriority[existingResource];
-
-                int currentRegionWeight = currentLuxuriesByPriority[existingResource];
-
-                int newWeight = (previousWeight * samplesSoFar + currentRegionWeight) * (samplesSoFar - 1);
-
-                retval[existingResource] = newWeight;
-            }
+            retval.Sort((first, second) => globalPriorityOfLuxuries[first].CompareTo(globalPriorityOfLuxuries[second]));
 
             return retval;
         }
 
-        private void PlaceLuxuryInRegions(
-            IResourceDefinition luxury, Dictionary<MapRegion, int> luxuryPlacementInRegion,
-            CivHomelandData homelandData
+        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(CivHomelandData homelandData) {
+            var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.AllRegions);
+
+            var retval = globalPriorityOfLuxuries.Keys.ToList();
+
+            retval.Sort((first, second) => globalPriorityOfLuxuries[first].CompareTo(globalPriorityOfLuxuries[second]));
+
+            return retval;
+        }
+
+        private Dictionary<IResourceDefinition, int> MashTogetherPriorityDictionaries(
+            CivHomelandData homelandData, IEnumerable<MapRegion> allRegions
         ) {
-            foreach(var region in luxuryPlacementInRegion.Keys) {
-                ResourceDistributor.DistributeResource(luxury, region.Cells, luxuryPlacementInRegion[region]);
+            var allRegionData = allRegions.Select(region => homelandData.GetDataOfRegion(region));
+
+            var mashedTogetherPriorities = new Dictionary<IResourceDefinition, int>();
+
+            foreach(var regionData in allRegionData) {
+                var resourceWeights = regionData.GetResourceWeights();
+
+                foreach(var luxury in resourceWeights.Keys.Where(resource => resource.Type == ResourceType.Luxury)) {
+                    int globalPriority;
+
+                    mashedTogetherPriorities.TryGetValue(luxury, out globalPriority);
+
+                    globalPriority += resourceWeights[luxury];
+
+                    mashedTogetherPriorities[luxury] = globalPriority;
+                }
             }
+
+            return mashedTogetherPriorities;
         }
 
         #endregion

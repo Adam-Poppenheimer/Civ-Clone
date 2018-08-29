@@ -12,6 +12,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
+using UnityCustomUtilities.DataStructures;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -74,7 +75,8 @@ namespace Assets.Simulation.MapGeneration {
                 regions.Add(region);
             }
 
-            var startingRegion = regions.Random();
+            var startingRegion = GetRegionNearestToCenter(regions);
+
             var startingData   = new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (startingRegion, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(startingRegion, mapTemplate),
@@ -99,6 +101,10 @@ namespace Assets.Simulation.MapGeneration {
         public void GenerateTopologyAndEcology(CivHomelandData homelandData, IMapTemplate mapTemplate) {
             var regions = homelandData.OtherRegions.ToList();
             regions.Add(homelandData.StartingRegion);
+
+            foreach(var cell in homelandData.StartingRegion.Cells) {
+                cell.SetMapData(1f);
+            }
 
             int riveredCells = 0;
 
@@ -145,11 +151,11 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             var allSections = landSections.Concat(waterSections).ToList();
 
-            var chunkQueue = new Queue<List<MapSection>>();
+            var chunkQueue = new PriorityQueue<List<MapSection>>();
 
-            chunkQueue.Enqueue(allSections);
+            chunkQueue.Add(allSections, 100f / allSections.Count);
 
-            while(chunkQueue.Count < chunkCount) {
+            while(chunkQueue.Count() < chunkCount) {
                 var chunkToSplit = chunkQueue.Peek();
 
                 if(chunkToSplit.Count() < 2) {
@@ -157,30 +163,54 @@ namespace Assets.Simulation.MapGeneration {
                     break;
                 }
 
-                chunkQueue.Dequeue();
+                chunkQueue.DeleteMin();
 
                 var landInChunk = chunkToSplit.Intersect(landSections);
 
                 var landCentroid = landInChunk.Select(section => section.Centroid)
                                               .Aggregate((sum, nextCentroid) => sum + nextCentroid) / landInChunk.Count();
 
-                if(UnityEngine.Random.value <= 0.5f) {
+                if(IsWiderThanTall(chunkToSplit)) {
                     var westChunk = chunkToSplit.Where(section => section.Centroid.x <= landCentroid.x).ToList();
                     var eastChunk = chunkToSplit.Where(section => section.Centroid.x >  landCentroid.x).ToList();
 
-                    chunkQueue.Enqueue(westChunk);
-                    chunkQueue.Enqueue(eastChunk);
+                    chunkQueue.Add(westChunk, 100f / westChunk.Count);
+                    chunkQueue.Add(eastChunk, 100f / eastChunk.Count);
                 }else {
                     var southChunk = chunkToSplit.Where(section => section.Centroid.z <= landCentroid.z).ToList();
                     var northChunk = chunkToSplit.Where(section => section.Centroid.z >  landCentroid.z).ToList();
 
-                    chunkQueue.Enqueue(southChunk);
-                    chunkQueue.Enqueue(northChunk);
+                    chunkQueue.Add(southChunk, 100f / southChunk.Count);
+                    chunkQueue.Add(northChunk, 100f / northChunk.Count);
                 }
             }
 
             landChunks  = chunkQueue.Select(chunk => chunk.Intersect(landSections) .ToList()).ToList();
             waterChunks = chunkQueue.Select(chunk => chunk.Intersect(waterSections).ToList()).ToList();
+        }
+
+        private bool IsWiderThanTall(List<MapSection> chunkToSplit) {
+            int minXCoord = chunkToSplit.Min(section => section.Cells.Min(cell => HexCoordinates.ToOffsetCoordinateX(cell.Coordinates)));
+            int maxXCoord = chunkToSplit.Max(section => section.Cells.Max(cell => HexCoordinates.ToOffsetCoordinateX(cell.Coordinates)));
+
+            int minZCoord = chunkToSplit.Min(section => section.Cells.Min(cell => HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates)));
+            int maxZCoord = chunkToSplit.Max(section => section.Cells.Max(cell => HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates)));
+
+            return maxXCoord - minXCoord > maxZCoord - minZCoord;
+        }
+
+        private MapRegion GetRegionNearestToCenter(IEnumerable<MapRegion> regions) {
+            var homelandCentroid = regions.Select(region => region.Centroid)
+                                          .Aggregate((total, nextCentroid) => total + nextCentroid);
+
+            homelandCentroid /= regions.Count();
+
+            return regions.Aggregate(delegate(MapRegion currentNearest, MapRegion next) {
+                float currentNearestDistance = Vector3.Distance(homelandCentroid, currentNearest.Centroid);
+                float nextDistance           = Vector3.Distance(homelandCentroid, next          .Centroid);
+
+                return nextDistance < currentNearestDistance ? next : currentNearest;
+            });
         }
 
         #endregion
