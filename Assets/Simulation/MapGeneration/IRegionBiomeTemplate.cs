@@ -17,14 +17,13 @@ namespace Assets.Simulation.MapGeneration {
         float MinPrecipitation { get; }
         float MaxPrecipitation { get; }
 
-        TerrainData GrasslandData { get; }
-        TerrainData PlainsData    { get; }
-        TerrainData DesertData    { get; }
-
-        int TreePercentage   { get; }
-        int RiverPercentage  { get; }
-        int TundraPercentage { get; }
-        int SnowPercentage   { get; }
+        int GrasslandPercentage { get; }
+        int PlainsPercentage    { get; }
+        int DesertPercentage    { get; }        
+        int TundraPercentage    { get; }
+        int SnowPercentage      { get; }
+        int TreePercentage      { get; }
+        int RiverPercentage     { get; }
 
         int  MinTreeClumps  { get; }
         int  MaxTreeClumps  { get; }

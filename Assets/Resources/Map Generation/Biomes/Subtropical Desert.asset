@@ -15,15 +15,9 @@ MonoBehaviour:
   _maxTemperature: 1
   _minPrecipitation: 0
   _maxPrecipitation: 0.2
-  _grasslandData:
-    _percentage: 0
-    _seedCount: 0
-  _plainsData:
-    _percentage: 20
-    _seedCount: 3
-  _desertData:
-    _percentage: 80
-    _seedCount: 4
+  _grasslandPercentage: 0
+  _plainsPercentage: 0
+  _desertPercentage: 100
   _tundraPercentage: 0
   _snowPercentage: 0
   _treePercentage: 0

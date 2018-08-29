@@ -14,6 +14,8 @@ namespace Assets.Simulation.MapGeneration {
 
         IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
 
+        int RegionCount { get; }
+
         #endregion
 
     }

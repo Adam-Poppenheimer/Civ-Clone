@@ -105,6 +105,57 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private int _maxLakeSize;
 
+
+
+        public int BaseTerrainWeight {
+            get { return _baseTerrainWeight; }
+        }
+        [SerializeField] private int _baseTerrainWeight;
+
+        public int TerrainTemperatureWeight {
+            get { return _terrainTemperatureWeight; }
+        }
+        [SerializeField] private int _terrainTemperatureWeight;
+
+        public int TerrainPrecipitationWeight {
+            get { return _terrainPrecipitationWeight; }
+        }
+        [SerializeField] private int _terrainPrecipitationWeight;
+
+        #endregion
+
+        [SerializeField, Range(0f, 1f)] private float IdealGrasslandTemperature;
+        [SerializeField, Range(0f, 1f)] private float IdealPlainsTemperature;
+        [SerializeField, Range(0f, 1f)] private float IdealDesertTemperature;
+
+        [SerializeField, Range(0f, 1f)] private float IdealGrasslandPrecipitation;
+        [SerializeField, Range(0f, 1f)] private float IdealPlainsPrecipitation;
+        [SerializeField, Range(0f, 1f)] private float IdealDesertPrecipitation;
+
+        #endregion
+
+        #region instance methods
+
+        #region from IMapGenerationConfig
+
+        public float GetIdealTemperatureForTerrain(CellTerrain terrain) {
+            switch(terrain) {
+                case CellTerrain.Grassland: return IdealGrasslandTemperature;
+                case CellTerrain.Plains:    return IdealPlainsTemperature;
+                case CellTerrain.Desert:    return IdealDesertTemperature;
+                default: throw new NotImplementedException("No ideal temperature for terrain " + terrain);
+            }
+        }
+
+        public float GetIdealPrecipitationForTerrain(CellTerrain terrain) {
+            switch(terrain) {
+                case CellTerrain.Grassland: return IdealGrasslandPrecipitation;
+                case CellTerrain.Plains:    return IdealPlainsPrecipitation;
+                case CellTerrain.Desert:    return IdealDesertPrecipitation;
+                default: throw new NotImplementedException("No ideal precipitation for terrain " + terrain);
+            }
+        }
+
         #endregion
 
         #endregion

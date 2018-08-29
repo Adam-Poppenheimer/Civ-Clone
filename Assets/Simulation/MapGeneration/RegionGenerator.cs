@@ -23,6 +23,7 @@ namespace Assets.Simulation.MapGeneration {
         private IResourceDistributor   ResourceDistributor;
         private IRegionBalancer        RegionBalancer;
         private IMapGenerationConfig   Config;
+        private ICellClimateLogic      CellClimateLogic;
 
         #endregion
 
@@ -32,7 +33,7 @@ namespace Assets.Simulation.MapGeneration {
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid, IGridTraversalLogic gridTraversalLogic,
             IResourceDistributor resourceDistributor, IRegionBalancer regionBalancer,
-            IMapGenerationConfig config
+            IMapGenerationConfig config, ICellClimateLogic cellClimateLogic
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
@@ -40,6 +41,7 @@ namespace Assets.Simulation.MapGeneration {
             ResourceDistributor = resourceDistributor;
             RegionBalancer      = regionBalancer;
             Config              = config;
+            CellClimateLogic    = cellClimateLogic;
         }
 
         #endregion
@@ -107,93 +109,30 @@ namespace Assets.Simulation.MapGeneration {
                 CellTerrain.Grassland, CellTerrain.Plains, CellTerrain.Desert
             };
 
-            var dataOfTerrains  = new Dictionary<CellTerrain, TerrainData>() {
-                { CellTerrain.Grassland, template.GrasslandData },
-                { CellTerrain.Plains,    template.PlainsData },
-                { CellTerrain.Desert,    template.DesertData },
+            var percentageOfTerrains  = new Dictionary<CellTerrain, int>() {
+                { CellTerrain.Grassland, template.GrasslandPercentage },
+                { CellTerrain.Plains,    template.PlainsPercentage    },
+                { CellTerrain.Desert,    template.DesertPercentage    },
             };
 
-            var terrainCounts   = new Dictionary<CellTerrain, int>();
-            var terrainCrawlers = new Dictionary<CellTerrain, List<IEnumerator<IHexCell>>>();
-            var cellsOfTerrain  = new Dictionary<CellTerrain, List<IHexCell>>();
-            
-            var seeds = new List<IHexCell>();
+            int landToPaintCount = unassignedLandCells.Count;
 
             foreach(var terrain in terrainsToPaint) {
-                var terrainData = dataOfTerrains[terrain];
+                var weightFunction = GetWeightFunction(terrain);
 
-                var terrainCount = Mathf.RoundToInt(region.LandCells.Count * terrainData.Percentage * 0.01f);
+                int terrainCount = Mathf.RoundToInt(percentageOfTerrains[terrain] * 0.01f * landToPaintCount);
+                terrainCount = Math.Min(terrainCount, unassignedLandCells.Count);
 
-                var acceptedCells = new List<IHexCell>();
+                var changeCandidatesDescending = new List<IHexCell>(unassignedLandCells);
 
-                var crawlers = new List<IEnumerator<IHexCell>>();
+                changeCandidatesDescending.Sort((first, second) => weightFunction(second).CompareTo(weightFunction(first)));
 
-                for(int i = 0; i < terrainData.SeedCount; i++) {
-                    var seedCandidates = unassignedLandCells.Except(seeds);
+                for(int i = 0; i < terrainCount; i++) {
+                    var cellToChange = changeCandidatesDescending[i];
 
-                    if(seedCandidates.Count() == 0) {
-                        Debug.LogWarning("Failed to assign expected number of seeds for terrain type " + terrain.ToString());
-                        break;
-                    }else {
-                        var seed = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(seedCandidates, 1, cell => 1)
-                                                                  .FirstOrDefault();
-
-                        if(seed == null) {
-                            Debug.LogWarning("Failed to select a seed from a nonzero number of candidates");
-                            break;
-                        }
-
-                        seeds.Add(seed);
-
-                        var crawler = GridTraversalLogic.GetCrawlingEnumerator(
-                            seed, unassignedLandCells, acceptedCells, NormalTerrainWeightFunction
-                        );
-
-                        crawlers.Add(crawler);
-                    }
+                    ModLogic.ChangeTerrainOfCell(cellToChange, terrain);
+                    unassignedLandCells.Remove(cellToChange);
                 }
-
-                terrainCounts  [terrain] = terrainCount;
-                terrainCrawlers[terrain] = crawlers;
-                cellsOfTerrain [terrain] = acceptedCells;
-            }
-
-            int iterations = unassignedLandCells.Count * 10;
-            while(unassignedLandCells.Count > 0 && iterations-- > 0) {
-                var currentTerrain = terrainsToPaint.Random();
-
-                if(cellsOfTerrain[currentTerrain].Count < terrainCounts[currentTerrain]) {
-                    var crawlers = terrainCrawlers[currentTerrain];
-
-                    while(crawlers.Count > 0) {
-                        var currentCrawler = crawlers.Random();
-                        if(currentCrawler.MoveNext()) {
-                            var newCell = currentCrawler.Current;
-
-                            cellsOfTerrain[currentTerrain].Add(newCell);
-                            unassignedLandCells.Remove(newCell);
-
-                            break;
-
-                        }else {
-                            crawlers.Remove(currentCrawler);
-                        }
-                    }
-                }
-            }
-
-            foreach(var terrain in terrainsToPaint) {
-                foreach(var cell in cellsOfTerrain[terrain]) {
-                    ModLogic.ChangeTerrainOfCell(cell, terrain);
-                }
-            }
-        }
-
-        private int NormalTerrainWeightFunction(IHexCell cell, IHexCell seed, IEnumerable<IHexCell> acceptedCells) {
-            if(!acceptedCells.Contains(cell)) {
-                return 0;
-            }else {
-                return Grid.GetDistance(cell, seed);
             }
         }
 
@@ -274,7 +213,7 @@ namespace Assets.Simulation.MapGeneration {
         private int HillsDynamicWeightFunction(IHexCell cell, List<IHexCell> elevatedCells) {
             int adjacentHillCount = Grid.GetNeighbors(cell).Where(adjacent => elevatedCells.Contains(adjacent)).Count();
 
-            return 2 + adjacentHillCount < 2 ? 10 * adjacentHillCount : 5 - adjacentHillCount;
+            return 2 + adjacentHillCount < 2 ? (10 * adjacentHillCount) : (5 - adjacentHillCount);
         }
 
         private int MountainWeightFunction(IHexCell cell) {
@@ -304,6 +243,26 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             return polarDistanceB.CompareTo(polarDistanceA);
+        }
+
+        private Func<IHexCell, int> GetWeightFunction(CellTerrain terrain) {
+            float idealTemperature   = Config.GetIdealTemperatureForTerrain  (terrain);
+            float idealPrecipitation = Config.GetIdealPrecipitationForTerrain(terrain);
+
+            return delegate(IHexCell cell) {
+                if(!ModLogic.CanChangeTerrainOfCell(cell, terrain)) {
+                    return 0;
+                }else {
+                    float cellTemperature   = CellClimateLogic.GetTemperatureOfCell  (cell);
+                    float cellPrecipitation = CellClimateLogic.GetPrecipitationOfCell(cell);
+
+                    int weight = Config.BaseTerrainWeight -
+                                 Config.TerrainTemperatureWeight   * Mathf.RoundToInt(Mathf.Abs(idealTemperature   - cellTemperature)) -
+                                 Config.TerrainPrecipitationWeight * Mathf.RoundToInt(Mathf.Abs(idealPrecipitation - cellPrecipitation));
+
+                    return Math.Max(weight, 0);
+                }
+            };
         }
 
         #endregion

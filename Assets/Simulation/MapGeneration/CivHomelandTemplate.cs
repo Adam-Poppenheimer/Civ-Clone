@@ -29,6 +29,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private List<LuxuryResourceData> _luxuryResourceData;
 
+        public int RegionCount {
+            get { return _regionCount; }
+        }
+        [SerializeField, Range(2, 20)] private int _regionCount;
+
         #endregion
 
         #endregion

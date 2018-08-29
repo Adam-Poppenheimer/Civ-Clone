@@ -55,27 +55,24 @@ namespace Assets.Simulation.MapGeneration {
             ICivilization civ, List<MapSection> landSections, List<MapSection> waterSections,
             GridPartition partition, ICivHomelandTemplate homelandTemplate, IMapTemplate mapTemplate
         ) {
-            var allSections = landSections.Concat(waterSections).ToList();
+            var landChunks  = new List<List<MapSection>>();
+            var waterChunks = new List<List<MapSection>>();
 
-            var homeCentroid = allSections.Select(section => section.Centroid)
-                                          .Aggregate((sum, nextCentroid) => sum + nextCentroid) / allSections.Count;
+            DivideSectionsIntoRectangularChunks(
+                landSections, waterSections, homelandTemplate.RegionCount,
+                out landChunks, out waterChunks
+            );
 
-            var southwestLand = landSections.Where(section => section.Centroid.x <= homeCentroid.x && section.Centroid.z <= homeCentroid.z);
-            var southeastLand = landSections.Where(section => section.Centroid.x >  homeCentroid.x && section.Centroid.z <= homeCentroid.z);
-            var northwestLand = landSections.Where(section => section.Centroid.x <= homeCentroid.x && section.Centroid.z >  homeCentroid.z);
-            var northeastLand = landSections.Where(section => section.Centroid.x >  homeCentroid.x && section.Centroid.z >  homeCentroid.z);
+            var regions = new List<MapRegion>();
 
-            var southwestWater = waterSections.Where(section => section.Centroid.x <= homeCentroid.x && section.Centroid.z <= homeCentroid.z);
-            var southeastWater = waterSections.Where(section => section.Centroid.x >  homeCentroid.x && section.Centroid.z <= homeCentroid.z);
-            var northwestWater = waterSections.Where(section => section.Centroid.x <= homeCentroid.x && section.Centroid.z >  homeCentroid.z);
-            var northeastWater = waterSections.Where(section => section.Centroid.x >  homeCentroid.x && section.Centroid.z >  homeCentroid.z);
+            for(int i = 0; i < landChunks.Count; i++) {
+                var region = new MapRegion(
+                    landChunks [i].SelectMany(section => section.Cells).ToList(),
+                    waterChunks[i].SelectMany(section => section.Cells).ToList()
+                );
 
-            var regions = new List<MapRegion>() {
-                new MapRegion(southeastLand.SelectMany(section => section.Cells).ToList(), southeastWater.SelectMany(section => section.Cells).ToList()),
-                new MapRegion(southwestLand.SelectMany(section => section.Cells).ToList(), southwestWater.SelectMany(section => section.Cells).ToList()),
-                new MapRegion(northeastLand.SelectMany(section => section.Cells).ToList(), northeastWater.SelectMany(section => section.Cells).ToList()),
-                new MapRegion(northwestLand.SelectMany(section => section.Cells).ToList(), northwestWater.SelectMany(section => section.Cells).ToList()),
-            };
+                regions.Add(region);
+            }
 
             var startingRegion = regions.Random();
             var startingData   = new RegionData(
@@ -141,6 +138,50 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         #endregion
+
+        private void DivideSectionsIntoRectangularChunks(
+            IEnumerable<MapSection> landSections, IEnumerable<MapSection> waterSections, int chunkCount,
+            out List<List<MapSection>> landChunks, out List<List<MapSection>> waterChunks
+        ) {
+            var allSections = landSections.Concat(waterSections).ToList();
+
+            var chunkQueue = new Queue<List<MapSection>>();
+
+            chunkQueue.Enqueue(allSections);
+
+            while(chunkQueue.Count < chunkCount) {
+                var chunkToSplit = chunkQueue.Peek();
+
+                if(chunkToSplit.Count() < 2) {
+                    Debug.LogWarning("Failed to get a splittable chunk while creating homeland regions");
+                    break;
+                }
+
+                chunkQueue.Dequeue();
+
+                var landInChunk = chunkToSplit.Intersect(landSections);
+
+                var landCentroid = landInChunk.Select(section => section.Centroid)
+                                              .Aggregate((sum, nextCentroid) => sum + nextCentroid) / landInChunk.Count();
+
+                if(UnityEngine.Random.value <= 0.5f) {
+                    var westChunk = chunkToSplit.Where(section => section.Centroid.x <= landCentroid.x).ToList();
+                    var eastChunk = chunkToSplit.Where(section => section.Centroid.x >  landCentroid.x).ToList();
+
+                    chunkQueue.Enqueue(westChunk);
+                    chunkQueue.Enqueue(eastChunk);
+                }else {
+                    var southChunk = chunkToSplit.Where(section => section.Centroid.z <= landCentroid.z).ToList();
+                    var northChunk = chunkToSplit.Where(section => section.Centroid.z >  landCentroid.z).ToList();
+
+                    chunkQueue.Enqueue(southChunk);
+                    chunkQueue.Enqueue(northChunk);
+                }
+            }
+
+            landChunks  = chunkQueue.Select(chunk => chunk.Intersect(landSections) .ToList()).ToList();
+            waterChunks = chunkQueue.Select(chunk => chunk.Intersect(waterSections).ToList()).ToList();
+        }
 
         #endregion
         

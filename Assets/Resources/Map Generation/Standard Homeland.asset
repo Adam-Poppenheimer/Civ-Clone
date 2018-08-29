@@ -20,3 +20,4 @@ MonoBehaviour:
     _otherCount: 4
   - _startingCount: 0
     _otherCount: 6
+  _regionCount: 16

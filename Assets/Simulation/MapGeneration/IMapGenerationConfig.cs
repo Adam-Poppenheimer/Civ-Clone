@@ -42,6 +42,18 @@ namespace Assets.Simulation.MapGeneration {
 
         int MaxLakeSize { get; }
 
+
+        int BaseTerrainWeight          { get; }
+        int TerrainTemperatureWeight   { get; }
+        int TerrainPrecipitationWeight { get; }
+
+        #endregion
+
+        #region methods
+
+        float GetIdealTemperatureForTerrain  (CellTerrain terrain);
+        float GetIdealPrecipitationForTerrain(CellTerrain terrain);
+
         #endregion
 
     }

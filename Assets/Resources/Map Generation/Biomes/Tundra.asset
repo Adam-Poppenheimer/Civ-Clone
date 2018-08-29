@@ -12,18 +12,12 @@ MonoBehaviour:
   m_Name: Tundra
   m_EditorClassIdentifier: 
   _minTemperature: 0
-  _maxTemperature: 0.25
+  _maxTemperature: 0.3
   _minPrecipitation: 0
-  _maxPrecipitation: 0.5
-  _grasslandData:
-    _percentage: 0
-    _seedCount: 0
-  _plainsData:
-    _percentage: 0
-    _seedCount: 0
-  _desertData:
-    _percentage: 0
-    _seedCount: 0
+  _maxPrecipitation: 0.4
+  _grasslandPercentage: 0
+  _plainsPercentage: 0
+  _desertPercentage: 0
   _tundraPercentage: 70
   _snowPercentage: 30
   _treePercentage: 0

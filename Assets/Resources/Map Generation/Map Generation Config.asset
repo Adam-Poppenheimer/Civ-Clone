@@ -32,3 +32,12 @@ MonoBehaviour:
     Culture: 2
     Science: 0.5
   _maxLakeSize: 6
+  _baseTerrainWeight: 201
+  _terrainTemperatureWeight: 100
+  _terrainPrecipitationWeight: 100
+  IdealGrasslandTemperature: 0.5
+  IdealPlainsTemperature: 0.5
+  IdealDesertTemperature: 0.75
+  IdealGrasslandPrecipitation: 0.6
+  IdealPlainsPrecipitation: 0.35
+  IdealDesertPrecipitation: 0.1

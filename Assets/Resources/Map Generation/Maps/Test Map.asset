@@ -18,7 +18,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
   _regionBiomes:
   - {fileID: 11400000, guid: 722232bf72f7d39449e66b8ac42ccd2d, type: 2}
-  - {fileID: 11400000, guid: a81c2244e519f59458704e3618d99e1f, type: 2}
   - {fileID: 11400000, guid: 9eb7f8a4da604904e8ab2afeaad79bf5, type: 2}
   - {fileID: 11400000, guid: 1cf6e56a53aeef54380268d31fdb713a, type: 2}
   - {fileID: 11400000, guid: ac44e1097e8c4c243b31d2f034473b50, type: 2}

@@ -40,20 +40,22 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(0, 1)] private float _maxPrecipitation;
 
-        public TerrainData GrasslandData {
-            get { return _grasslandData; }
-        }
-        [SerializeField] private TerrainData _grasslandData;
 
-        public TerrainData PlainsData {
-            get { return _plainsData; }
-        }
-        [SerializeField] private TerrainData _plainsData;
 
-        public TerrainData DesertData {
-            get { return _desertData; }
+        public int GrasslandPercentage {
+            get { return _grasslandPercentage; }
         }
-        [SerializeField] private TerrainData _desertData;
+        [SerializeField, Range(0, 100)] private int _grasslandPercentage;
+
+        public int PlainsPercentage {
+            get { return _plainsPercentage; }
+        }
+        [SerializeField, Range(0, 100)] private int _plainsPercentage;
+
+        public int DesertPercentage {
+            get { return _desertPercentage; }
+        }
+        [SerializeField, Range(0, 100)] private int _desertPercentage;
 
         public int TundraPercentage {
             get { return _tundraPercentage; }

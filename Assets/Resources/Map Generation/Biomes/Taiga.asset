@@ -12,18 +12,12 @@ MonoBehaviour:
   m_Name: Taiga
   m_EditorClassIdentifier: 
   _minTemperature: 0.25
-  _maxTemperature: 0.45
+  _maxTemperature: 0.5
   _minPrecipitation: 0.1
   _maxPrecipitation: 0.8
-  _grasslandData:
-    _percentage: 0
-    _seedCount: 3
-  _plainsData:
-    _percentage: 0
-    _seedCount: 0
-  _desertData:
-    _percentage: 0
-    _seedCount: 0
+  _grasslandPercentage: 0
+  _plainsPercentage: 0
+  _desertPercentage: 0
   _tundraPercentage: 100
   _snowPercentage: 0
   _treePercentage: 75
