@@ -14,7 +14,25 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IOceanGenerationTemplate
 
+        public int DeepOceanLandPercentage {
+            get { return _deepOceanLandPercentage; }
+        }
+        [SerializeField] private int _deepOceanLandPercentage;
 
+        public int RegionSubdivisionXStep {
+            get { return _regionSubdivisionXStep; }
+        }
+        [SerializeField] private int _regionSubdivisionXStep;
+
+        public int RegionSubdivisionZStep {
+            get { return _regionSubdivisionZStep; }
+        }
+        [SerializeField] private int _regionSubdivisionZStep;
+
+        public IRegionResourceTemplate ArchipelagoResources {
+            get { return _archipelagoResources; }
+        }
+        [SerializeField] private RegionResourceTemplate _archipelagoResources;
 
         #endregion
 

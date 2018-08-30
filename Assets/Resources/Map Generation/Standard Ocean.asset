@@ -11,3 +11,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7576cebe953f21846945fd28cf018303, type: 3}
   m_Name: Standard Ocean
   m_EditorClassIdentifier: 
+  _deepOceanLandPercentage: 5
+  _regionSubdivisionXStep: 15
+  _regionSubdivisionZStep: 15
+  _archipelagoResources: {fileID: 11400000, guid: 15b2e0e6cd67e7f4b994e4e88bc2e282,
+    type: 2}

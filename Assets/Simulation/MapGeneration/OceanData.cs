@@ -10,18 +10,44 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        public ReadOnlyCollection<MapRegion> OceanRegions {
-            get { return _oceanRegions.AsReadOnly(); }
+        public ReadOnlyCollection<MapRegion> EmptyOceanRegions {
+            get { return _emptyOceanRegions.AsReadOnly(); }
         }
-        private List<MapRegion> _oceanRegions;
+        private List<MapRegion> _emptyOceanRegions;
+
+        public ReadOnlyCollection<MapRegion> ArchipelagoRegions {
+            get { return _archipelagoRegions.AsReadOnly(); }
+        }
+        private List<MapRegion> _archipelagoRegions;
+
+        private List<RegionData> ArchipelagoRegionData;
 
         #endregion
 
         #region constructors
 
-        public OceanData(List<MapRegion> oceanRegions) {
-            _oceanRegions     = oceanRegions;
+        public OceanData(
+            List<MapRegion> emptyOceanRegions, List<MapRegion> archipelagoRegions,
+            List<RegionData> archipelagoRegionData
+        ) {
+            _emptyOceanRegions  = emptyOceanRegions;
+            _archipelagoRegions = archipelagoRegions;
 
+            ArchipelagoRegionData = archipelagoRegionData;
+        }
+
+        #endregion
+
+        #region instance methods
+
+        public RegionData GetRegionData(MapRegion archipelagoRegion) {
+            int regionIndex = ArchipelagoRegions.IndexOf(archipelagoRegion);
+
+            if(regionIndex < 0) {
+                throw new InvalidOperationException("The given region is not an archipelago region in this ocean");
+            }
+
+            return ArchipelagoRegionData[regionIndex];
         }
 
         #endregion

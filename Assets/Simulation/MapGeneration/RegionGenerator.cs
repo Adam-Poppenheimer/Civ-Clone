@@ -19,7 +19,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
-        private IGridTraversalLogic    GridTraversalLogic;
         private IResourceDistributor   ResourceDistributor;
         private IRegionBalancer        RegionBalancer;
         private IMapGenerationConfig   Config;
@@ -31,13 +30,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RegionGenerator(
-            ICellModificationLogic modLogic, IHexGrid grid, IGridTraversalLogic gridTraversalLogic,
+            ICellModificationLogic modLogic, IHexGrid grid,
             IResourceDistributor resourceDistributor, IRegionBalancer regionBalancer,
             IMapGenerationConfig config, ICellClimateLogic cellClimateLogic
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
-            GridTraversalLogic  = gridTraversalLogic;
             ResourceDistributor = resourceDistributor;
             RegionBalancer      = regionBalancer;
             Config              = config;

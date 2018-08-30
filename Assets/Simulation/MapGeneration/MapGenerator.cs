@@ -154,7 +154,9 @@ namespace Assets.Simulation.MapGeneration {
                 );
             }
 
-            var oceanData = OceanGenerator.GetOceanData(unassignedSections, mapTemplate);
+            var oceanTemplate = mapTemplate.OceanTemplates.Random();
+
+            var oceanData = OceanGenerator.GetOceanData(unassignedSections, oceanTemplate, mapTemplate, partition);
 
             return new OceanAndContinentData() {
                 HomelandDataForCiv = homelandOfCivs,

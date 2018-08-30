@@ -11,7 +11,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        OceanData GetOceanData(IEnumerable<MapSection> oceanSections, IMapTemplate mapTemplate);
+        OceanData GetOceanData(
+            IEnumerable<MapSection> oceanSections, IOceanTemplate oceanTemplate,
+            IMapTemplate mapTemplate, GridPartition partition
+        );
 
         void GenerateTopologyAndEcology(OceanData data);
 
