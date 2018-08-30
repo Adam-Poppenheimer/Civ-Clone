@@ -14,12 +14,12 @@ MonoBehaviour:
   _startingResources: {fileID: 11400000, guid: 546847b11a5f52e4d8898523df03de8f, type: 2}
   _otherResources: {fileID: 11400000, guid: 15b2e0e6cd67e7f4b994e4e88bc2e282, type: 2}
   _luxuryResourceData:
-  - _startingCount: 3
-    _otherCount: 0
   - _startingCount: 2
-    _otherCount: 4
+    _otherCount: 0
+  - _startingCount: 3
+    _otherCount: 3
   - _startingCount: 0
-    _otherCount: 4
+    _otherCount: 3
   - _startingCount: 0
     _otherCount: 1
   _regionCount: 8

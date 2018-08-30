@@ -31,6 +31,8 @@ MonoBehaviour:
   _balanceStrategyWeights:
   - _balanceStrategy: Bonus Resource Balance Strategy
     _weight: 100
+  - _balanceStrategy: Lake Balance Strategy
+    _weight: 20
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: 02e75a66484b5cf4c85b14adc8fb9b00, type: 2}
     _weight: 20

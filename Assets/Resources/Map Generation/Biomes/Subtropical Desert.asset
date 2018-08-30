@@ -33,6 +33,8 @@ MonoBehaviour:
     _weight: 100
   - _balanceStrategy: Oasis Balance Strategy
     _weight: 80
+  - _balanceStrategy: Hills Balance Strategy
+    _weight: 60
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: 5a3d04dde0378b647b424d1551604a95, type: 2}
     _weight: 100

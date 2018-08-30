@@ -114,8 +114,7 @@ namespace Assets.Simulation.MapGeneration {
                     !cell.Terrain.IsWater() && ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FreshWater)
                 ) {
                     bool surroundedByLandOrLakes = Grid.GetNeighbors(cell).All(
-                        neighbor => region.LandCells.Contains(neighbor) &&
-                                    neighbor.Terrain != CellTerrain.ShallowWater &&
+                        neighbor => neighbor.Terrain != CellTerrain.ShallowWater &&
                                     neighbor.Terrain != CellTerrain.DeepWater
                     );
 

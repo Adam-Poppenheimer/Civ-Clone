@@ -32,12 +32,12 @@ MonoBehaviour:
   - _balanceStrategy: Bonus Resource Balance Strategy
     _weight: 100
   - _balanceStrategy: Lake Balance Strategy
-    _weight: 30
+    _weight: 35
   - _balanceStrategy: Hills Balance Strategy
-    _weight: 25
+    _weight: 100
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
-    _weight: 100
+    _weight: 120
   - _resource: {fileID: 11400000, guid: 09d3c69e2a236d74f82e41b81283f80e, type: 2}
     _weight: 60
   - _resource: {fileID: 11400000, guid: 2dfab701b5278274f877c275a17099cc, type: 2}

@@ -126,7 +126,7 @@ namespace Assets.Simulation.MapGeneration {
         private bool OasisCandidateFilter(IHexCell cell, MapRegion region) {
             if(cell.Terrain == CellTerrain.Desert && ModLogic.CanChangeFeatureOfCell(cell, CellFeature.Oasis)) {
                 bool surroundedByLand = Grid.GetNeighbors(cell).All(
-                    neighbor => region.LandCells.Contains(neighbor) && !neighbor.Terrain.IsWater()
+                    neighbor => !neighbor.Terrain.IsWater()
                 );
 
                 bool hasResourceNode = NodePositionCanon.GetPossessionsOfOwner(cell).Any();

@@ -44,6 +44,8 @@ namespace Assets.Simulation.MapGeneration {
                 return;
             }
 
+            var scoreBeforeBalancing = GetScorePerCell(region);
+
             YieldSummary currentYield = YieldSummary.Empty;
             foreach(var cell in region.Cells) {
                 currentYield += CellYieldEstimator.GetYieldEstimateForCell(cell);
@@ -87,12 +89,12 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            currentYield = YieldSummary.Empty;
-            foreach(var cell in region.Cells) {
-                currentYield += CellYieldEstimator.GetYieldEstimateForCell(cell);
-            }
-
-            currentScore = YieldScorer.GetScoreOfYield(currentYield);
+            Debug.LogFormat(
+                "Balance changed score from {0} => {1}. Desired band {2} - {3}",
+                scoreBeforeBalancing, GetScorePerCell(region),
+                regionData.Resources.MinScorePerCell,
+                regionData.Resources.MaxScorePerCell
+            );
         }
 
         #endregion
@@ -123,13 +125,21 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        #endregion
-
         private IBalanceStrategy GetStrategy(Dictionary<IBalanceStrategy, int> strategyWeights) {
             return WeightedRandomSampler<IBalanceStrategy>.SampleElementsFromSet(
                 strategyWeights.Keys, 1, strategy => strategyWeights[strategy]
             ).FirstOrDefault();
         }
+
+        private float GetScorePerCell(MapRegion region) {
+            var cellsByScore = region.Cells.Select(
+                cell => YieldScorer.GetScoreOfYield(CellYieldEstimator.GetYieldEstimateForCell(cell))
+            );
+
+            return cellsByScore.Aggregate((current, next) => current + next) / region.Cells.Count;
+        }
+
+        #endregion
 
     }
 

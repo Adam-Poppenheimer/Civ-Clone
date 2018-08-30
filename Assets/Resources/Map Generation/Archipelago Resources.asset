@@ -9,12 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ea69c8e982f58ca4587d38140f0300f7, type: 3}
-  m_Name: Starting Region Resources
+  m_Name: Archipelago Resources
   m_EditorClassIdentifier: 
-  _strategicNodesPerCell: 0.05
-  _strategicCopiesPerCell: 0.1
+  _strategicNodesPerCell: 0.025
+  _strategicCopiesPerCell: 0.05
   _balanceResources: 1
-  _minFoodPerCell: 2
-  _minProductionPerCell: 1
-  _minScorePerCell: 5
-  _maxScorePerCell: 6
+  _minFoodPerCell: 0.5
+  _minProductionPerCell: 0
+  _minScorePerCell: 3.8
+  _maxScorePerCell: 5

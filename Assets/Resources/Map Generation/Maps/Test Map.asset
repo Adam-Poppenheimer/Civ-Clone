@@ -38,7 +38,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
   - {fileID: 11400000, guid: 660f8ed0c6ac6a44e9199cb834619617, type: 2}
   _continentalLandPercentage: 30
-  _voronoiPointCount: 1000
+  _voronoiPointCount: 800
   _voronoiPartitionIterations: 2
   _minStartingLocationDistance: 6
   _neighborsInContinentWeight: 100
