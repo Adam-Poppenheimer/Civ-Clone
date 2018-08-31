@@ -32,7 +32,7 @@ namespace Assets.Simulation.MapGeneration {
         private IYieldEstimator           YieldEstimator;
         private IResourceNodeFactory      ResourceNodeFactory;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
-        private IYieldScorer              YieldScorer;
+        private IMapScorer                MapScorer;
 
         #endregion
 
@@ -41,13 +41,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public BonusResourceBalanceStrategy(
             IYieldEstimator yieldEstimator, IResourceNodeFactory resourceNodeFactory,
-            IResourceRestrictionCanon resourceRestrictionCanon, IYieldScorer yieldScorer,
+            IResourceRestrictionCanon resourceRestrictionCanon, IMapScorer mapScorer,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             YieldEstimator           = yieldEstimator;
             ResourceNodeFactory      = resourceNodeFactory;
             ResourceRestrictionCanon = resourceRestrictionCanon;
-            YieldScorer              = yieldScorer;
+            MapScorer                = mapScorer;
 
             foreach(var yieldType in EnumUtil.GetValues<YieldType>()) {
                 BonusResourcesWithYield[yieldType] = availableResources.Where(
@@ -108,7 +108,7 @@ namespace Assets.Simulation.MapGeneration {
                 var yieldType = yieldTypes.Random();
 
                 if(TryIncreaseYield(region, regionData, yieldType, out yieldAdded)) {
-                    scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
+                    scoreAdded = MapScorer.GetScoreOfYield(yieldAdded);
                     return true;
                 }else {
                     yieldTypes.Remove(yieldType);

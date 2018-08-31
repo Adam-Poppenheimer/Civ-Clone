@@ -25,7 +25,7 @@ namespace Assets.Simulation.MapGeneration {
         #endregion
 
         private IYieldEstimator                                  YieldEstimator;
-        private IYieldScorer                                     YieldScorer;
+        private IMapScorer                                       MapScorer;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
         private ICellModificationLogic                           ModLogic;
 
@@ -35,12 +35,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public HillsBalanceStrategy(
-            IYieldEstimator yieldEstimator, IYieldScorer yieldScorer,
+            IYieldEstimator yieldEstimator, IMapScorer mapScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             ICellModificationLogic modLogic
         ) {
             YieldEstimator    = yieldEstimator;
-            YieldScorer       = yieldScorer;
+            MapScorer         = mapScorer;
             NodeLocationCanon = nodeLocationCanon;
             ModLogic          = modLogic;
         }
@@ -82,7 +82,7 @@ namespace Assets.Simulation.MapGeneration {
             YieldSummary yieldAdded;
 
             if(TryIncreaseYield(region, regionData, YieldType.Production, out yieldAdded)) {
-                scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
+                scoreAdded = MapScorer.GetScoreOfYield(yieldAdded);
                 return true;
             }else {
                 scoreAdded = 0f;

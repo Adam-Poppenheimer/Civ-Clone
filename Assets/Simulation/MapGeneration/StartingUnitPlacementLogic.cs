@@ -20,8 +20,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IHexGrid           Grid;
         private IUnitFactory       UnitFactory;
-        private IYieldEstimator    YieldEstimator;
-        private IYieldScorer       YieldScorer;
+        private ICellScorer        CellScorer;
         private IUnitPositionCanon UnitPositionCanon;
         private ICityConfig        CityConfig;
 
@@ -31,14 +30,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public StartingUnitPlacementLogic(
-            IHexGrid grid, IUnitFactory unitFactory, IYieldEstimator yieldEstimator,
-            IYieldScorer yieldScorer, IUnitPositionCanon unitPositionCanon,
-            ICityConfig cityConfig
+            IHexGrid grid, IUnitFactory unitFactory, ICellScorer cellScorer,
+            IUnitPositionCanon unitPositionCanon, ICityConfig cityConfig
         ) {
             Grid              = grid;
             UnitFactory       = unitFactory;
-            YieldEstimator    = yieldEstimator;
-            YieldScorer       = yieldScorer;
+            CellScorer        = cellScorer;
             UnitPositionCanon = unitPositionCanon;
             CityConfig        = cityConfig;
         }
@@ -101,7 +98,7 @@ namespace Assets.Simulation.MapGeneration {
             var cellsInRange = new Dictionary<IHexCell, IHexCell[]>();
 
             foreach(var cell in region.Cells) {
-                cellScores[cell] = YieldScorer.GetScoreOfYield(YieldEstimator.GetYieldEstimateForCell(cell));
+                cellScores[cell] = CellScorer.GetScoreOfCell(cell);
 
                 cellsInRange[cell] = Grid.GetCellsInRadius(cell, CityConfig.MaxBorderRange)
                                          .Where(nearby => region.Cells.Contains(nearby))

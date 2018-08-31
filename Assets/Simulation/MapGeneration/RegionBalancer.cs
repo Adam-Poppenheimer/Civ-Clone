@@ -18,8 +18,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IYieldEstimator        CellYieldEstimator;        
-        private IYieldScorer           YieldScorer;
+        private IYieldEstimator YieldEstimator;        
+        private ICellScorer     CellScorer;
 
         #endregion
 
@@ -27,10 +27,10 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RegionBalancer(
-            IYieldEstimator cellYieldEstimator, IYieldScorer yieldScorer
+            IYieldEstimator yieldEstimator, ICellScorer cellScorer
         ) {
-            CellYieldEstimator = cellYieldEstimator;
-            YieldScorer        = yieldScorer;
+            YieldEstimator = yieldEstimator;
+            CellScorer     = cellScorer;
         }
 
         #endregion
@@ -44,11 +44,9 @@ namespace Assets.Simulation.MapGeneration {
                 return;
             }
 
-            var scoreBeforeBalancing = GetScorePerCell(region);
-
             YieldSummary currentYield = YieldSummary.Empty;
             foreach(var cell in region.Cells) {
-                currentYield += CellYieldEstimator.GetYieldEstimateForCell(cell);
+                currentYield += YieldEstimator.GetYieldEstimateForCell(cell);
             }
 
             float minFood       = regionData.Resources.MinFoodPerCell       * region.Cells.Count;
@@ -66,7 +64,7 @@ namespace Assets.Simulation.MapGeneration {
             float minScore = regionData.Resources.MinScorePerCell * region.Cells.Count;
             float maxScore = regionData.Resources.MaxScorePerCell * region.Cells.Count;
 
-            var currentScore = YieldScorer.GetScoreOfYield(currentYield);
+            var currentScore = region.Cells.Select(cell => CellScorer.GetScoreOfCell(cell)).Sum();
 
             int iterations = 1000;
             float scoreChange;
@@ -88,13 +86,6 @@ namespace Assets.Simulation.MapGeneration {
                     currentScore -= scoreChange;
                 }
             }
-
-            Debug.LogFormat(
-                "Balance changed score from {0} => {1}. Desired band {2} - {3}",
-                scoreBeforeBalancing, GetScorePerCell(region),
-                regionData.Resources.MinScorePerCell,
-                regionData.Resources.MaxScorePerCell
-            );
         }
 
         #endregion
@@ -132,9 +123,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private float GetScorePerCell(MapRegion region) {
-            var cellsByScore = region.Cells.Select(
-                cell => YieldScorer.GetScoreOfYield(CellYieldEstimator.GetYieldEstimateForCell(cell))
-            );
+            var cellsByScore = region.Cells.Select(cell => CellScorer.GetScoreOfCell(cell));
 
             return cellsByScore.Aggregate((current, next) => current + next) / region.Cells.Count;
         }

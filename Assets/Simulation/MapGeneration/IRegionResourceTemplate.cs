@@ -9,6 +9,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
+        string name { get; }
+
         float StrategicNodesPerCell  { get; }
         float StrategicCopiesPerCell { get; }
 

@@ -33,6 +33,8 @@ MonoBehaviour:
     _weight: 100
   - _balanceStrategy: Lake Balance Strategy
     _weight: 30
+  - _balanceStrategy: Expand Ocean Balance Strategy
+    _weight: 1
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: ce39d0cc38e1e704abb94f85a88c17a9, type: 2}
     _weight: 90

@@ -5,9 +5,12 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
+
 namespace Assets.Simulation.MapGeneration {
 
-    public class YieldScorer : IYieldScorer {
+    public class MapScorer : IMapScorer {
 
         #region instance fields and properties
 
@@ -18,7 +21,7 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         [Inject]
-        public YieldScorer(IMapGenerationConfig config) {
+        public MapScorer(IMapGenerationConfig config) {
             Config = config;
         }
 
@@ -30,6 +33,10 @@ namespace Assets.Simulation.MapGeneration {
 
         public float GetScoreOfYield(YieldSummary yield) {
             return (yield * Config.YieldScoringWeights).Total;
+        }
+
+        public float GetScoreOfResourceNode(IResourceNode node) {
+            return node.Resource.Type != ResourceType.Bonus ? node.Resource.Score * node.Copies : 0;
         }
 
         #endregion

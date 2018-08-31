@@ -16,10 +16,8 @@ MonoBehaviour:
   _luxuryResourceData:
   - _startingCount: 2
     _otherCount: 0
-  - _startingCount: 3
+  - _startingCount: 1
     _otherCount: 3
   - _startingCount: 0
-    _otherCount: 3
-  - _startingCount: 0
-    _otherCount: 1
+    _otherCount: 2
   _regionCount: 8

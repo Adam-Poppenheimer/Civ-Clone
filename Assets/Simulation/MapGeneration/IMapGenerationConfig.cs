@@ -47,6 +47,10 @@ namespace Assets.Simulation.MapGeneration {
         int TerrainTemperatureWeight   { get; }
         int TerrainPrecipitationWeight { get; }
 
+
+        int RiverEndpointOnDesertWeight { get; }
+        int RiverEndpointOnArcticWeight { get; }
+
         #endregion
 
         #region methods

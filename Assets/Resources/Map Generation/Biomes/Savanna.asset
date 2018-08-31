@@ -35,6 +35,8 @@ MonoBehaviour:
     _weight: 20
   - _balanceStrategy: Hills Balance Strategy
     _weight: 30
+  - _balanceStrategy: Expand Ocean Balance Strategy
+    _weight: 1
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: c673c4c39b639cb44b87cf9a81e98cc2, type: 2}
     _weight: 80

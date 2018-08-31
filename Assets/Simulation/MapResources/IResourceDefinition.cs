@@ -28,6 +28,8 @@ namespace Assets.Simulation.MapResources {
 
         Sprite Icon { get; }
 
+        float Score { get; }
+
         #endregion
 
         #region methods

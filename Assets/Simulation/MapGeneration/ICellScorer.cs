@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IYieldScorer {
+    public interface ICellScorer {
 
         #region methods
 
-        float GetScoreOfYield(YieldSummary yield);
+        float GetScoreOfCell(IHexCell cell);
 
         #endregion
 

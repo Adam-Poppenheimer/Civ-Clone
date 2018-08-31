@@ -29,7 +29,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IHexGrid                                         Grid;
         private IYieldEstimator                                  YieldEstimator;
-        private IYieldScorer                                     YieldScorer;
+        private IMapScorer                                       MapScorer;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
         private ICellModificationLogic                           ModLogic;
 
@@ -39,13 +39,13 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public LakeBalanceStrategy(
-            IHexGrid grid, IYieldEstimator yieldEstimator, IYieldScorer yieldScorer,
+            IHexGrid grid, IYieldEstimator yieldEstimator, IMapScorer mapScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             ICellModificationLogic modLogic
         ) {
             Grid              = grid;
             YieldEstimator    = yieldEstimator;
-            YieldScorer       = yieldScorer;
+            MapScorer         = mapScorer;
             NodePositionCanon = nodePositionCanon;
             ModLogic          = modLogic;
         }
@@ -93,7 +93,7 @@ namespace Assets.Simulation.MapGeneration {
             YieldSummary yieldAdded;
 
             if(TryIncreaseYield(region, regionData, YieldType.Food, out yieldAdded)) {
-                scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
+                scoreAdded = MapScorer.GetScoreOfYield(yieldAdded);
                 return true;
             }else {
                 scoreAdded = 0f;

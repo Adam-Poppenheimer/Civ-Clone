@@ -77,7 +77,7 @@ namespace Assets.Simulation.MapGeneration {
         private IImprovementYieldLogic                           ImprovementYieldLogic;
         private IFreshWaterCanon                                 FreshWaterCanon;
         private ICellYieldFromBuildingsLogic                     YieldFromBuildingsLogic;
-        private IYieldScorer                                     YieldScorer;
+        private IMapScorer                                     YieldScorer;
         private IImprovementValidityLogic                        ImprovementValidityLogic;
 
         private IEnumerable<IResourceDefinition>  AvailableResources;
@@ -97,7 +97,7 @@ namespace Assets.Simulation.MapGeneration {
             IImprovementYieldLogic                           improvementYieldLogic,
             IFreshWaterCanon                                 freshWaterCanon,
             ICellYieldFromBuildingsLogic                     yieldFromBuildingsLogic,
-            IYieldScorer                                     yieldScorer,
+            IMapScorer                                       mapScorer,
             IImprovementValidityLogic                        improvementValidityLogic,
 
             [Inject(Id = "Available Resources")]             IEnumerable<IResourceDefinition>  availableResources,
@@ -111,7 +111,7 @@ namespace Assets.Simulation.MapGeneration {
             ImprovementYieldLogic    = improvementYieldLogic;
             FreshWaterCanon          = freshWaterCanon;
             YieldFromBuildingsLogic  = yieldFromBuildingsLogic;
-            YieldScorer              = yieldScorer;
+            YieldScorer              = mapScorer;
             ImprovementValidityLogic = improvementValidityLogic;
 
             AvailableResources    = availableResources;

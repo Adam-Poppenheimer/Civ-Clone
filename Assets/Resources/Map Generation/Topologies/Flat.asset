@@ -15,5 +15,7 @@ MonoBehaviour:
   _mountainsPercentage: 0
   _balanceStrategyWeights:
   - _balanceStrategy: Hills Balance Strategy
-    _weight: 0
+    _weight: 1
+  - _balanceStrategy: Mountain Balance Strategy
+    _weight: 1
   _resourceWeights: []

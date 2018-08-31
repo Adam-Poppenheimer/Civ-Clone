@@ -25,6 +25,7 @@ MonoBehaviour:
     Science: 0
   _type: 1
   _extractor: {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
+  _score: 16
   GrasslandWeight: 0
   PlainsWeight: 0
   DesertWeight: 0

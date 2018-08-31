@@ -20,6 +20,7 @@ namespace Assets.Simulation.MapGeneration {
         private IHexGrid               Grid;
         private IRiverCanon            RiverCanon;
         private ICellModificationLogic ModLogic;
+        private IMapGenerationConfig   Config;
 
         #endregion
 
@@ -27,11 +28,13 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RiverGenerator(
-            IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic modLogic
+            IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic modLogic,
+            IMapGenerationConfig config
         ) {
-            Grid       = grid;
-            RiverCanon = riverCanon;
-            ModLogic   = modLogic;
+            Grid           = grid;
+            RiverCanon     = riverCanon;
+            ModLogic       = modLogic;
+            Config         = config;
         }
 
         #endregion
@@ -46,14 +49,13 @@ namespace Assets.Simulation.MapGeneration {
         ) {              
             var riveredCells = new HashSet<IHexCell>();
 
-            var riverStartCandidates = landCells.Where(
-                cell => cell.Shape != CellShape.Flatlands &&
-                        !Grid.GetNeighbors(cell).Any(neighbor => IsWater(neighbor, waterCells))
-            ).ToList();
+            var riverStartCandidates = landCells.Where(GetRiverStartFilter(waterCells)).ToList();
 
             int iterations = landCells.Count() * 10;
             while(riveredCells.Count < desiredRiveredCells && riverStartCandidates.Count > 0 && iterations-- > 0) {
-                var start = riverStartCandidates.Random();
+                var start =  WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                    riverStartCandidates, 1, RiverStartWeightFunction
+                ).FirstOrDefault();
 
                 riverStartCandidates.Remove(start);
 
@@ -154,21 +156,17 @@ namespace Assets.Simulation.MapGeneration {
             IEnumerable<IHexCell> landCells, IHexCell start, IEnumerable<IHexCell> waterCells,
             int maxRiverLength, out IHexCell end
         ) {
-
-
             var cellsAdjacentToOcean = landCells.Where(
                 cell => Grid.GetNeighbors(cell).Any(neighbor => waterCells.Contains(neighbor) || neighbor.Terrain.IsWater())
             );
 
-            var validCandidates = cellsAdjacentToOcean.Where(
-                cell => cell != start && !IsWater(cell, waterCells) &&
-                        !RiverCanon.HasRiver(cell) &&
-                        Grid.GetDistance(cell, start) <= maxRiverLength
-            );
+            var validEndpoints = cellsAdjacentToOcean.Where(GetRiverEndpointFilter(waterCells, start, maxRiverLength));
 
-            if(validCandidates.Any()) {
-                end = validCandidates.Random();
-                return true;
+            if(validEndpoints.Any()) {
+                end = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                    validEndpoints, 1, RiverEndpointWeightFunction
+                ).FirstOrDefault();
+                return end != null;
             }else {
                 end = null;
                 return false;
@@ -583,6 +581,38 @@ namespace Assets.Simulation.MapGeneration {
 
         private bool IsWater(IHexCell cell, IEnumerable<IHexCell> oceanCells) {
             return cell != null && cell.Terrain.IsWater() || oceanCells.Contains(cell);
+        }
+
+        private Func<IHexCell, bool> GetRiverStartFilter(IEnumerable<IHexCell> waterCells) {
+            return delegate(IHexCell cell) {
+                return cell.Shape != CellShape.Flatlands
+                    && !Grid.GetNeighbors(cell).Any(neighbor => IsWater(neighbor, waterCells));
+            };            
+        }
+
+        private int RiverStartWeightFunction(IHexCell cell) {
+            int nearbyDesert = Grid.GetCellsInRadius(cell, 1).Count(nearby => nearby.Terrain == CellTerrain.Desert);
+            int nearbyArctic = Grid.GetCellsInRadius(cell, 1).Count(nearby => nearby.Terrain.IsArctic());
+
+            return 1 + nearbyDesert * Config.RiverEndpointOnDesertWeight + nearbyArctic * Config.RiverEndpointOnArcticWeight;
+        }
+
+        private Func<IHexCell, bool> GetRiverEndpointFilter(
+            IEnumerable<IHexCell> waterCells, IHexCell start, int maxRiverLength
+        ) {
+            return delegate(IHexCell cell) {
+                return cell != start
+                    && !IsWater(cell, waterCells)
+                    && !RiverCanon.HasRiver(cell)
+                    && Grid.GetDistance(cell, start) <= maxRiverLength;
+            };
+        }
+
+        private int RiverEndpointWeightFunction(IHexCell cell) {
+            int nearbyDesert = Grid.GetCellsInRadius(cell, 1).Count(nearby => nearby.Terrain == CellTerrain.Desert);
+            int nearbyArctic = Grid.GetCellsInRadius(cell, 1).Count(nearby => nearby.Terrain.IsArctic());
+
+            return 1 + nearbyDesert * Config.RiverEndpointOnDesertWeight + nearbyArctic * Config.RiverEndpointOnArcticWeight;
         }
 
         private Func<IHexCell, IHexCell, float> BuildRiverWeightFunction(IEnumerable<IHexCell> oceanCells) {

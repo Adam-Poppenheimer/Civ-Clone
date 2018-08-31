@@ -11,6 +11,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
+        string name { get; }
+
         float MinTemperature { get; }
         float MaxTemperature { get; }
 

@@ -32,7 +32,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IHexGrid                                         Grid;
         private IYieldEstimator                                  YieldEstimator;
-        private IYieldScorer                                     YieldScorer;
+        private IMapScorer                                       MapScorer;
         private ICellModificationLogic                           ModLogic;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
 
@@ -43,12 +43,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public OasisBalanceStrategy(
             IHexGrid grid, IYieldEstimator yieldEstimator,
-            IYieldScorer yieldScorer, ICellModificationLogic modLogic,
+            IMapScorer mapScorer, ICellModificationLogic modLogic,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
         ) {
             Grid              = grid;
             YieldEstimator    = yieldEstimator;
-            YieldScorer       = yieldScorer;
+            MapScorer         = mapScorer;
             ModLogic          = modLogic;
             NodePositionCanon = nodePositionCanon;
         }
@@ -95,7 +95,7 @@ namespace Assets.Simulation.MapGeneration {
             YieldSummary yieldAdded;
 
             if(TryIncreaseYield(region, regionData, YieldType.Food, out yieldAdded)) {
-                scoreAdded = YieldScorer.GetScoreOfYield(yieldAdded);
+                scoreAdded = MapScorer.GetScoreOfYield(yieldAdded);
                 return true;
             }else {
                 scoreAdded = 0f;

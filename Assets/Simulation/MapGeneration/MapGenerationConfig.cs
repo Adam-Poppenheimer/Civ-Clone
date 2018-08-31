@@ -122,6 +122,18 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private int _terrainPrecipitationWeight;
 
+
+
+        public int RiverEndpointOnDesertWeight {
+            get { return _riverEndpointOnDesertWeight; }
+        }
+        [SerializeField, Range(1, 100)] private int _riverEndpointOnDesertWeight = 50;
+
+        public int RiverEndpointOnArcticWeight {
+            get { return _riverEndpointOnArcticWeight; }
+        }
+        [SerializeField, Range(1, 100)] private int _riverEndpointOnArcticWeight = 50;
+
         #endregion
 
         [SerializeField, Range(0f, 1f)] private float IdealGrasslandTemperature;

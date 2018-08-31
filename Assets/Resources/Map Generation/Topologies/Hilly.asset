@@ -16,6 +16,8 @@ MonoBehaviour:
   _balanceStrategyWeights:
   - _balanceStrategy: Hills Balance Strategy
     _weight: 40
+  - _balanceStrategy: Mountain Balance Strategy
+    _weight: 60
   _resourceWeights:
   - _resource: {fileID: 11400000, guid: b409f38c0ccc9cb45ba152ae262c7847, type: 2}
     _weight: 10

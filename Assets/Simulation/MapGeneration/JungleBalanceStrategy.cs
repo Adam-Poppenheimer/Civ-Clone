@@ -28,9 +28,8 @@ namespace Assets.Simulation.MapGeneration {
 
 
         private IHexGrid               Grid;
-        private IYieldEstimator        YieldEstimator;
         private ICellModificationLogic ModLogic;
-        private IYieldScorer           YieldScorer;
+        private ICellScorer            CellScorer;
 
         #endregion
 
@@ -38,13 +37,11 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public JungleBalanceStrategy(
-            IHexGrid grid, IYieldEstimator yieldEstimator, ICellModificationLogic modLogic,
-            IYieldScorer yieldScorer
+            IHexGrid grid, ICellModificationLogic modLogic, ICellScorer cellScorer
         ) {
-            Grid           = grid;
-            YieldEstimator = yieldEstimator;
-            ModLogic       = modLogic;
-            YieldScorer    = yieldScorer;
+            Grid       = grid;
+            ModLogic   = modLogic;
+            CellScorer = cellScorer;
         }
 
         #endregion
@@ -56,12 +53,8 @@ namespace Assets.Simulation.MapGeneration {
         public bool TryIncreaseYield(
             MapRegion region, RegionData regionData, YieldType type, out YieldSummary yieldAdded
         ) {
-            if(type == YieldType.Production) {
-                return TryIncreaseYield_Production(region, out yieldAdded);
-            }else {
-                yieldAdded = YieldSummary.Empty;
-                return false;
-            }
+            yieldAdded = YieldSummary.Empty;
+            return false;
         }
 
         public bool TryIncreaseScore(MapRegion region, RegionData regionData, out float scoreAdded) {
@@ -70,13 +63,11 @@ namespace Assets.Simulation.MapGeneration {
             if(addJungleCandidates.Any()) {
                 var newJungle = addJungleCandidates.Random();
 
-                var oldYield = YieldEstimator.GetYieldEstimateForCell(newJungle);
+                var oldScore = CellScorer.GetScoreOfCell(newJungle);
 
                 ModLogic.ChangeVegetationOfCell(newJungle, CellVegetation.Jungle);
 
-                var newYield = YieldEstimator.GetYieldEstimateForCell(newJungle);
-
-                scoreAdded = YieldScorer.GetScoreOfYield(newYield - oldYield);
+                scoreAdded = CellScorer.GetScoreOfCell(newJungle) - oldScore;
                 return true;
             }else {
                 scoreAdded = 0f;
@@ -90,13 +81,11 @@ namespace Assets.Simulation.MapGeneration {
             if(removeJungleCandidates.Any()) {
                 var oldJungle = removeJungleCandidates.Random();
 
-                var oldYield = YieldEstimator.GetYieldEstimateForCell(oldJungle);
+                var oldScore = CellScorer.GetScoreOfCell(oldJungle);
 
                 ModLogic.ChangeVegetationOfCell(oldJungle, CellVegetation.None);
 
-                var newYield = YieldEstimator.GetYieldEstimateForCell(oldJungle);
-
-                scoreRemoved = YieldScorer.GetScoreOfYield(newYield - oldYield);
+                scoreRemoved = oldScore - CellScorer.GetScoreOfCell(oldJungle);
                 return true;
             }else {
                 scoreRemoved = 0f;
@@ -105,27 +94,6 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         #endregion
-
-        private bool TryIncreaseYield_Production(MapRegion region, out YieldSummary yieldAdded) {
-            yieldAdded = YieldSummary.Empty;
-
-            var targetCell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
-                region.LandCells, 1, IncreaseProductionWeightFunction
-            ).FirstOrDefault();
-
-            if(targetCell != null) {
-                var oldYield = YieldEstimator.GetYieldEstimateForCell(targetCell);
-
-                ModLogic.ChangeVegetationOfCell(targetCell, CellVegetation.None);
-
-                var newYield = YieldEstimator.GetYieldEstimateForCell(targetCell);
-
-                yieldAdded = newYield - oldYield;
-                return true;
-            }else {
-                return false;
-            }
-        }
 
         private bool IncreaseScoreFilter(IHexCell cell) {
             if(ModLogic.CanChangeVegetationOfCell(cell, CellVegetation.Jungle)) {

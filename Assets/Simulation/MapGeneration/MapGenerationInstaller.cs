@@ -33,7 +33,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ICellClimateLogic>          ().To<CellClimateLogic>          ().AsSingle();
             Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
             Container.Bind<IResourceDistributor>       ().To<ResourceDistributor>       ().AsSingle();
-            Container.Bind<IYieldScorer>               ().To<YieldScorer>               ().AsSingle();
+            Container.Bind<IMapScorer>                 ().To<MapScorer>                 ().AsSingle();
             Container.Bind<IRegionBalancer>            ().To<RegionBalancer>            ().AsSingle();
             Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
             Container.Bind<IStrategicCopiesLogic>      ().To<StrategicCopiesLogic>      ().AsSingle();
@@ -45,12 +45,15 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IVegetationPainter>         ().To<VegetationPainter>         ().AsSingle();
             Container.Bind<ISectionSubdivisionLogic>   ().To<SectionSubdivisionLogic>   ().AsSingle();
             Container.Bind<ILuxuryDistributor>         ().To<LuxuryDistributor>         ().AsSingle();
+            Container.Bind<ICellScorer>                ().To<CellScorer>                ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<LakeBalanceStrategy>         ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>        ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<OasisBalanceStrategy>        ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<MountainBalanceStrategy>     ().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<ExpandOceanBalanceStrategy>  ().AsSingle();
         }
 
         #endregion

@@ -102,10 +102,6 @@ namespace Assets.Simulation.MapGeneration {
             var regions = homelandData.OtherRegions.ToList();
             regions.Add(homelandData.StartingRegion);
 
-            foreach(var cell in homelandData.StartingRegion.Cells) {
-                cell.SetMapData(1f);
-            }
-
             int riveredCells = 0;
 
             foreach(var region in regions) {

@@ -14,7 +14,7 @@ MonoBehaviour:
   _strategicNodesPerCell: 0.1
   _strategicCopiesPerCell: 0.1
   _balanceResources: 1
-  _minFoodPerCell: 1
-  _minProductionPerCell: 0.5
-  _minScorePerCell: 4.5
-  _maxScorePerCell: 5.5
+  _minFoodPerCell: 0
+  _minProductionPerCell: 0
+  _minScorePerCell: 4
+  _maxScorePerCell: 5

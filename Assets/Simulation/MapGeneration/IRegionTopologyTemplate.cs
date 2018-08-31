@@ -13,6 +13,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
+        string name { get; }
+
         int HillsPercentage     { get; }
         int MountainsPercentage { get; }
 

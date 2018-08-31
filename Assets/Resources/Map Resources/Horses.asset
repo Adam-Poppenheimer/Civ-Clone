@@ -25,6 +25,7 @@ MonoBehaviour:
     Science: 0
   _type: 2
   _extractor: {fileID: 11400000, guid: ed4c86b01f88c6e4aa80d18a707994dd, type: 2}
+  _score: 2
   GrasslandWeight: 10
   PlainsWeight: 20
   DesertWeight: 1
@@ -38,7 +39,6 @@ MonoBehaviour:
   ForestWeight: -1000
   JungleWeight: -1000
   MarshWeight: -1000
-  _selectionWeight: 1
   _appearancePrefab: {fileID: 4316779951445352, guid: 3f5f419c5c3dcd84daa2e1b3861fb232,
     type: 2}
   _icon: {fileID: 21300000, guid: cbfb7ad0824d87d4cab8ea04b92f4837, type: 3}

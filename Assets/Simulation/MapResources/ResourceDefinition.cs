@@ -37,6 +37,11 @@ namespace Assets.Simulation.MapResources {
         }
         [SerializeField] private ImprovementTemplate _extractor;
 
+        public float Score {
+            get { return _score; }
+        }
+        [SerializeField, Range(1, 100)] private float _score;
+
 
         [SerializeField] private int GrasslandWeight;
         [SerializeField] private int PlainsWeight;
