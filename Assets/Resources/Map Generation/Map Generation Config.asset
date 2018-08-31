@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 622354780
+  _fixedSeed: 579225078
   _landPercentage: 30
   _hardMapBorderX: 2
   _hardMapBorderZ: 3
@@ -35,6 +35,8 @@ MonoBehaviour:
   _baseTerrainWeight: 201
   _terrainTemperatureWeight: 100
   _terrainPrecipitationWeight: 100
+  _riverEndpointOnDesertWeight: 50
+  _riverEndpointOnArcticWeight: 50
   IdealGrasslandTemperature: 0.5
   IdealPlainsTemperature: 0.5
   IdealDesertTemperature: 0.75

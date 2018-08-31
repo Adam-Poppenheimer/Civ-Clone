@@ -16,5 +16,5 @@ MonoBehaviour:
   _balanceResources: 1
   _minFoodPerCell: 0
   _minProductionPerCell: 0
-  _minScorePerCell: 4
-  _maxScorePerCell: 5
+  _minScorePerCell: 4.5
+  _maxScorePerCell: 5.5

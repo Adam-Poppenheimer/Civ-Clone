@@ -58,11 +58,21 @@ namespace Assets.Simulation.MapGeneration {
                         luxuriesForOthers, luxuriesAlreadyChosen
                     );
                 }else {
-                    DistributeLuxuryAcrossSingleAndMultipleRegions(
+                    if(!TryDistributeLuxuryAcrossSingleAndMultipleRegions(
                         homelandData.StartingRegion, homelandData.OtherRegions,
                         luxuryData.StartingCount, luxuryData.OtherCount,
                         luxuriesForWhole, luxuriesAlreadyChosen
-                    );
+                    )) {
+                        DistributeLuxuryAcrossSingleRegion(
+                            homelandData.StartingRegion, luxuryData.StartingCount,
+                            luxuriesForStarting, luxuriesAlreadyChosen
+                        );
+
+                        DistributeLuxuryAcrossMultipleRegions(
+                            homelandData.OtherRegions, luxuryData.OtherCount,
+                            luxuriesForOthers, luxuriesAlreadyChosen
+                        );
+                    }
                 }
             }
         }
@@ -92,7 +102,10 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            Debug.LogError("Failed to perform luxury distribution on region");
+            Debug.LogWarning("Failed to perform luxury distribution on region");
+            foreach(var cell in region.Cells) {
+                cell.SetMapData(0.75f);
+            }
         }
 
         private void DistributeLuxuryAcrossMultipleRegions(
@@ -118,13 +131,15 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            Debug.LogError("Failed to perform luxury distribution across multiple regions");
+            Debug.LogWarning("Failed to perform luxury distribution across multiple regions");
+            foreach(var cell in regions.SelectMany(region => region.Cells)) {
+                cell.SetMapData(0.75f);
+            }
         }
 
-        private void DistributeLuxuryAcrossSingleAndMultipleRegions(
-            MapRegion singleRegion, IEnumerable<MapRegion> multipleRegions,
-            int singleNodeCount, int multipleNodeCount,
-            List<IResourceDefinition> validLuxuries,
+        private bool TryDistributeLuxuryAcrossSingleAndMultipleRegions(
+            MapRegion singleRegion, IEnumerable<MapRegion> multipleRegions, int singleNodeCount,
+            int multipleNodeCount, List<IResourceDefinition> validLuxuries,
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
@@ -147,11 +162,11 @@ namespace Assets.Simulation.MapGeneration {
                     ResourceDistributor.DistributeResource(candidate, validSingleCells,   singleNodeCount);
                     ResourceDistributor.DistributeResource(candidate, validMultipleCells, multipleNodeCount);
                     luxuriesAlreadyChosen.Add(candidate);
-                    return;
+                    return true;
                 }
             }
 
-            Debug.LogError("Failed to perform luxury distribution across a single region and multiple regions");
+            return false;
         }
 
 
