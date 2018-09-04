@@ -382,12 +382,12 @@ namespace Assets.Tests.Simulation.Technology {
 
         [Test]
         public void GetTechsOfEra_ReturnsOnlyTechsWithArguedEra() {
-            var techOne   = BuildTech("Tech One",   era: TechnologyEra.Ancient);
-            var techTwo   = BuildTech("Tech Two",   era: TechnologyEra.Ancient);
+                            BuildTech("Tech One",   era: TechnologyEra.Ancient);
+                            BuildTech("Tech Two",   era: TechnologyEra.Ancient);
             var techThree = BuildTech("Tech Three", era: TechnologyEra.Classical);
             var techFour  = BuildTech("Tech Four",  era: TechnologyEra.Classical);
-            var techFive  = BuildTech("Tech Five",  era: TechnologyEra.Medieval);
-            var techSix   = BuildTech("Tech Six",   era: TechnologyEra.Medieval);
+                            BuildTech("Tech Five",  era: TechnologyEra.Medieval);
+                            BuildTech("Tech Six",   era: TechnologyEra.Medieval);
 
             var techCanon = Container.Resolve<TechCanon>();
 
@@ -401,7 +401,7 @@ namespace Assets.Tests.Simulation.Technology {
         public void GetEraOfCiv_GetsMostAdvancedEraAmongDiscoveredTechs() {
             var techOne   = BuildTech("Tech One",   era: TechnologyEra.Ancient);
             var techTwo   = BuildTech("Tech Two",   era: TechnologyEra.Classical);
-            var techThree = BuildTech("Tech Three", era: TechnologyEra.Medieval);
+                            BuildTech("Tech Three", era: TechnologyEra.Medieval);
 
             var civ = BuildCivilization();
 

@@ -28,6 +28,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IRoadTriangulator>         MockRoadTriangulator;
         private Mock<IMarshTriangulator>        MockMarshTriangulator;
         private Mock<IFloodPlainsTriangulator>  MockFloodPlainsTriangulator;
+        private Mock<IOasisTriangulator>        MockOasisTriangulator;
 
         #endregion
 
@@ -46,6 +47,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockRoadTriangulator         = new Mock<IRoadTriangulator>();
             MockMarshTriangulator        = new Mock<IMarshTriangulator>();
             MockFloodPlainsTriangulator  = new Mock<IFloodPlainsTriangulator>();
+            MockOasisTriangulator        = new Mock<IOasisTriangulator>();
 
             Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
             Container.Bind<IRiverTriangulator>       ().FromInstance(MockRiverTriangulator       .Object);
@@ -56,6 +58,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IRoadTriangulator>        ().FromInstance(MockRoadTriangulator        .Object);
             Container.Bind<IMarshTriangulator>       ().FromInstance(MockMarshTriangulator       .Object);
             Container.Bind<IFloodPlainsTriangulator> ().FromInstance(MockFloodPlainsTriangulator .Object);
+            Container.Bind<IOasisTriangulator>       ().FromInstance(MockOasisTriangulator       .Object);
 
             Container.Bind<HexCellTriangulator>().AsSingle();
         }
@@ -867,6 +870,82 @@ namespace Assets.Tests.Simulation.HexMap {
             MockFloodPlainsTriangulator.Verify(
                 triangulator => triangulator.TriangulateFloodPlainCorner(northWestData),
                 Times.Never, "Unexpectedly called TriangulateFloodPlainCorner on northWestData"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_TriangulatesOasesInDirectionsItShould() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(northEastData)).Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(eastData))     .Returns(false);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(southEastData)).Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(southWestData)).Returns(false);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(westData))     .Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(northEastData),
+                Times.Once, "Did not call TriangulateOasis on northEastData as expected"
+            );
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(southEastData),
+                Times.Once, "Did not call TriangulateOasis on southEastData as expected"
+            );
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(westData),
+                Times.Once, "Did not call TriangulateOasis on westData as expected"
+            );
+        }
+
+        [Test]
+        public void TriangulateCell_DoesntTriangulateOasesInDirectionsItShouldnt() {
+            var cellToTest = BuildCell(Vector3.zero);
+
+            var northEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NE);
+            var eastData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.E);
+            var southEastData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SE);
+            var southWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.SW);
+            var westData      = BuildTriangulationDataInDirection(cellToTest, HexDirection.W);
+            var northWestData = BuildTriangulationDataInDirection(cellToTest, HexDirection.NW);
+
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(northEastData)).Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(eastData))     .Returns(false);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(southEastData)).Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(southWestData)).Returns(false);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(westData))     .Returns(true);
+            MockOasisTriangulator.Setup(triangulator => triangulator.ShouldTriangulateOasis(northWestData)).Returns(false);
+
+            var cellTriangulator = Container.Resolve<HexCellTriangulator>();
+
+            cellTriangulator.TriangulateCell(cellToTest);
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(eastData),
+                Times.Never, "Unexpectedly called TriangulateOasis on eastData"
+            );
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(southWestData),
+                Times.Never, "Unexpectedly called TriangulateOasis on southWestData"
+            );
+
+            MockOasisTriangulator.Verify(
+                triangulator => triangulator.TriangulateOasis(northWestData),
+                Times.Never, "Unexpectedly called TriangulateOasis on northWestData"
             );
         }
 
