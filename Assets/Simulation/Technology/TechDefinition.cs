@@ -32,15 +32,15 @@ namespace Assets.Simulation.Technology {
             get { return name; }
         }
 
-        public IEnumerable<ITechDefinition> Prerequisites {
-            get { return _prerequisites.Cast<ITechDefinition>(); }
-        }
-        [SerializeField] private List<TechDefinition> _prerequisites;
-
         public Sprite Icon {
             get { return _icon; }
         }
         [SerializeField] private Sprite _icon;
+
+        public TechnologyEra Era {
+            get { return _era; }
+        }
+        [SerializeField] private TechnologyEra _era;
 
         public int TechTableRow {
             get { return _techTableRow; }
@@ -51,6 +51,11 @@ namespace Assets.Simulation.Technology {
             get { return _techTableColumn; }
         }
         [SerializeField] private int _techTableColumn;
+
+        public IEnumerable<ITechDefinition> Prerequisites {
+            get { return _prerequisites.Cast<ITechDefinition>(); }
+        }
+        [SerializeField] private List<TechDefinition> _prerequisites;
 
         public IEnumerable<IBuildingTemplate> BuildingsEnabled {
             get { return _buildingsEnabled.Cast<IBuildingTemplate>(); }

@@ -297,6 +297,14 @@ namespace Assets.Simulation.Technology {
             TechsResearchedByCiv[civilization].Remove(tech);
         }
 
+        public IEnumerable<ITechDefinition> GetTechsOfEra(TechnologyEra era) {
+            return AvailableTechs.Where(tech => tech.Era == era);
+        }
+
+        public TechnologyEra GetEraOfCiv(ICivilization civilization) {
+            return (TechnologyEra)GetTechsDiscoveredByCiv(civilization).Select(tech => (int)tech.Era).Max();
+        }
+
         #endregion
 
         private void OnCivilizationBeingDestroyed(ICivilization civ) {

@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Name: Optics
   m_EditorClassIdentifier: 
   _cost: 85
-  _prerequisites:
-  - {fileID: 11400000, guid: 5495d5de965a7c64693bff6c5bba4d0e, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
   _techTableRow: 0
   _techTableColumn: 3
+  _prerequisites:
+  - {fileID: 11400000, guid: 5495d5de965a7c64693bff6c5bba4d0e, type: 2}
   _buildingsEnabled:
   - {fileID: 11400000, guid: 9a77eb54fc8e073468885f6bc79244c8, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

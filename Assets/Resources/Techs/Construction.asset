@@ -12,12 +12,13 @@ MonoBehaviour:
   m_Name: Construction
   m_EditorClassIdentifier: 
   _cost: 105
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
+  _techTableRow: 8
+  _techTableColumn: 3
   _prerequisites:
   - {fileID: 11400000, guid: 98a9dc175378aaf48afdecb35e7cb379, type: 2}
   - {fileID: 11400000, guid: 7df2397e7f07d114db3b8100c0ea43f0, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 8
-  _techTableColumn: 3
   _buildingsEnabled:
   - {fileID: 11400000, guid: 06f10ef5ae3afd140b0c5a3c915f57dc, type: 2}
   _unitsEnabled:
@@ -25,3 +26,5 @@ MonoBehaviour:
   _abilitiesEnabled:
   - {fileID: 11400000, guid: f528d4860e79cc6448e5b8b1f7ecee92, type: 2}
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

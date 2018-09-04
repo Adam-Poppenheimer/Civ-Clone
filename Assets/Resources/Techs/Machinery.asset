@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Name: Machinery
   m_EditorClassIdentifier: 
   _cost: 485
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 2
+  _techTableRow: 7
+  _techTableColumn: 6
   _prerequisites:
   - {fileID: 11400000, guid: bb9c6be021a4d9c48924a3b458bc57ae, type: 2}
   - {fileID: 11400000, guid: 13c70b295543ce347a71267a26edc038, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 7
-  _techTableColumn: 6
   _buildingsEnabled: []
   _unitsEnabled:
   - {fileID: 11400000, guid: 1bf665c532e23094c9eb3351fc319ef6, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

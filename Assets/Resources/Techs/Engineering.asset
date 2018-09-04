@@ -12,15 +12,18 @@ MonoBehaviour:
   m_Name: Engineering
   m_EditorClassIdentifier: 
   _cost: 175
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
+  _techTableRow: 7
+  _techTableColumn: 4
   _prerequisites:
   - {fileID: 11400000, guid: 07e350d5f7b837543b75e19f9663c960, type: 2}
   - {fileID: 11400000, guid: b5f537cb10b3184418c355e32e5c3dc8, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 7
-  _techTableColumn: 4
   _buildingsEnabled:
   - {fileID: 11400000, guid: 18f16b9ac5768384b89178b903047b44, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: aae893c8c39b9964dbbb54f1f4b5a8b5, type: 2}
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

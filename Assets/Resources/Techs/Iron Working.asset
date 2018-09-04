@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Name: Iron Working
   m_EditorClassIdentifier: 
   _cost: 195
-  _prerequisites:
-  - {fileID: 11400000, guid: 6aed609dbc406da42845303f5adf9bbd, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
   _techTableRow: 9
   _techTableColumn: 4
+  _prerequisites:
+  - {fileID: 11400000, guid: 6aed609dbc406da42845303f5adf9bbd, type: 2}
   _buildingsEnabled: []
   _unitsEnabled:
   - {fileID: 11400000, guid: 5a0c8055065eaa54da85f8df8b20ad6c, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

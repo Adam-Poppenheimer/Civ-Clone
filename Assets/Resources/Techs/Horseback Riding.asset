@@ -12,15 +12,18 @@ MonoBehaviour:
   m_Name: Horseback Riding
   m_EditorClassIdentifier: 
   _cost: 105
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
+  _techTableRow: 4
+  _techTableColumn: 3
   _prerequisites:
   - {fileID: 11400000, guid: 7df2397e7f07d114db3b8100c0ea43f0, type: 2}
   - {fileID: 11400000, guid: 89af8696f3ce63344bcb946cc31c08ab, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 4
-  _techTableColumn: 3
   _buildingsEnabled:
   - {fileID: 11400000, guid: 30386decee0e7a948827f893853e57cf, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: b54fe7ee69880984daea038489925e0e, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

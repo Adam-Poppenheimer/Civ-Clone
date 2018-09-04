@@ -380,23 +380,58 @@ namespace Assets.Tests.Simulation.Technology {
             CollectionAssert.AreEquivalent(discoveredPolicyTrees, techCanon.GetResearchedPolicyTrees(civ));
         }
 
+        [Test]
+        public void GetTechsOfEra_ReturnsOnlyTechsWithArguedEra() {
+            var techOne   = BuildTech("Tech One",   era: TechnologyEra.Ancient);
+            var techTwo   = BuildTech("Tech Two",   era: TechnologyEra.Ancient);
+            var techThree = BuildTech("Tech Three", era: TechnologyEra.Classical);
+            var techFour  = BuildTech("Tech Four",  era: TechnologyEra.Classical);
+            var techFive  = BuildTech("Tech Five",  era: TechnologyEra.Medieval);
+            var techSix   = BuildTech("Tech Six",   era: TechnologyEra.Medieval);
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.AreEquivalent(
+                new List<ITechDefinition>() { techThree, techFour },
+                techCanon.GetTechsOfEra(TechnologyEra.Classical)
+            );
+        }
+
+        [Test]
+        public void GetEraOfCiv_GetsMostAdvancedEraAmongDiscoveredTechs() {
+            var techOne   = BuildTech("Tech One",   era: TechnologyEra.Ancient);
+            var techTwo   = BuildTech("Tech Two",   era: TechnologyEra.Classical);
+            var techThree = BuildTech("Tech Three", era: TechnologyEra.Medieval);
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            Assert.AreEqual(TechnologyEra.Classical, techCanon.GetEraOfCiv(civ));
+        }
+
         #endregion
 
         #region utilities
 
         private ITechDefinition BuildTech(
             string name,
-            List<ITechDefinition>              prerequisities = null,
-            List<IBuildingTemplate>            buildings      = null,
-            List<IUnitTemplate>                units          = null,
-            List<IAbilityDefinition>           abilities      = null,
-            List<IResourceDefinition> resources      = null,
-            List<IPolicyTreeDefinition>        policyTrees    = null
+            List<ITechDefinition>       prerequisities = null,
+            List<IBuildingTemplate>     buildings      = null,
+            List<IUnitTemplate>         units          = null,
+            List<IAbilityDefinition>    abilities      = null,
+            List<IResourceDefinition>   resources      = null,
+            List<IPolicyTreeDefinition> policyTrees    = null,
+            TechnologyEra               era            = TechnologyEra.Ancient
         ){
             var mockTech = new Mock<ITechDefinition>();
             mockTech.Name = name;
 
             mockTech.Setup(tech => tech.Name).Returns(name);
+            mockTech.Setup(tech => tech.Era) .Returns(era);
 
             mockTech.Setup(tech => tech.Prerequisites)     .Returns(prerequisities   != null ? prerequisities : new List<ITechDefinition>());
             mockTech.Setup(tech => tech.BuildingsEnabled)  .Returns(buildings        != null ? buildings      : new List<IBuildingTemplate>());
@@ -404,6 +439,7 @@ namespace Assets.Tests.Simulation.Technology {
             mockTech.Setup(tech => tech.AbilitiesEnabled)  .Returns(abilities        != null ? abilities      : new List<IAbilityDefinition>());
             mockTech.Setup(tech => tech.RevealedResources) .Returns(resources        != null ? resources      : new List<IResourceDefinition>());
             mockTech.Setup(tech => tech.PolicyTreesEnabled).Returns(policyTrees      != null ? policyTrees    : new List<IPolicyTreeDefinition>());
+            
 
             AvailableTechs.Add(mockTech.Object);
 

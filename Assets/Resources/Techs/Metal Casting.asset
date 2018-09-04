@@ -12,15 +12,18 @@ MonoBehaviour:
   m_Name: Metal Casting
   m_EditorClassIdentifier: 
   _cost: 275
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 2
+  _techTableRow: 8
+  _techTableColumn: 5
   _prerequisites:
   - {fileID: 11400000, guid: bb9c6be021a4d9c48924a3b458bc57ae, type: 2}
   - {fileID: 11400000, guid: a08c771453ae5364ea794d060ad16a66, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 8
-  _techTableColumn: 5
   _buildingsEnabled:
   - {fileID: 11400000, guid: 197b665ed85e9ec4f9677fa214e27dc4, type: 2}
   - {fileID: 11400000, guid: df61e5077dbc28d41989429884a3bfe4, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

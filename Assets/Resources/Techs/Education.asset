@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Name: Education
   m_EditorClassIdentifier: 
   _cost: 485
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 2
+  _techTableRow: 2
+  _techTableColumn: 6
   _prerequisites:
   - {fileID: 11400000, guid: b6a9e82434c7e574aa4f5acb1e7b55be, type: 2}
   - {fileID: 11400000, guid: 16faf0136984e3846abe63fd30c466ac, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 2
-  _techTableColumn: 6
   _buildingsEnabled:
   - {fileID: 11400000, guid: 443ed2043f6e9214a938d70561fbf230, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

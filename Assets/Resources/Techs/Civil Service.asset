@@ -12,13 +12,14 @@ MonoBehaviour:
   m_Name: Civil Service
   m_EditorClassIdentifier: 
   _cost: 275
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 2
+  _techTableRow: 4
+  _techTableColumn: 5
   _prerequisites:
   - {fileID: 11400000, guid: 149798a3a718cf04698b4feced981c7b, type: 2}
   - {fileID: 11400000, guid: 22d18a759eff3254ba2c2f33169e3e7d, type: 2}
   - {fileID: 11400000, guid: 25694bb2951efc348b9e83673f5c4d30, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 4
-  _techTableColumn: 5
   _buildingsEnabled: []
   _unitsEnabled:
   - {fileID: 11400000, guid: 337b80ff2749a7d4eae751565588fd56, type: 2}
@@ -32,3 +33,5 @@ MonoBehaviour:
       Culture: 0
       Science: 0
     _requiresFreshWater: 1
+  _revealedResources: []
+  _policyTreesEnabled: []

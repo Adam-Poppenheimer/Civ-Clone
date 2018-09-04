@@ -24,6 +24,8 @@ namespace Assets.Simulation.Technology {
 
         Sprite Icon { get; }
 
+        TechnologyEra Era { get; }
+
         int TechTableRow    { get; }
         int TechTableColumn { get; }
 

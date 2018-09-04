@@ -12,13 +12,16 @@ MonoBehaviour:
   m_Name: Drama and Poetry
   m_EditorClassIdentifier: 
   _cost: 175
-  _prerequisites:
-  - {fileID: 11400000, guid: 70b24b435e9801c4fa7f45659aa6450f, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 1
   _techTableRow: 2
   _techTableColumn: 4
+  _prerequisites:
+  - {fileID: 11400000, guid: 70b24b435e9801c4fa7f45659aa6450f, type: 2}
   _buildingsEnabled:
   - {fileID: 11400000, guid: 437510262c28308419511171ff0c2aec, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

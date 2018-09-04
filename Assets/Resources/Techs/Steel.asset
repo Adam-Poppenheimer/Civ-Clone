@@ -12,14 +12,17 @@ MonoBehaviour:
   m_Name: Steel
   m_EditorClassIdentifier: 
   _cost: 485
-  _prerequisites:
-  - {fileID: 11400000, guid: 17b609106cc91ec45bbefa4b517256ed, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 2
   _techTableRow: 9
   _techTableColumn: 6
+  _prerequisites:
+  - {fileID: 11400000, guid: 17b609106cc91ec45bbefa4b517256ed, type: 2}
   _buildingsEnabled:
   - {fileID: 11400000, guid: 9316cc394e1b8154790e18c5286f1690, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: 17379297a8d783c4cb80e5390c8637d4, type: 2}
   _abilitiesEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []
