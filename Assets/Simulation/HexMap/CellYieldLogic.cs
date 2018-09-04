@@ -76,7 +76,7 @@ namespace Assets.Simulation.HexMap {
             YieldSummary retval = YieldSummary.Empty;
             ICity cityOwningCell = CellPossessionCanon.GetOwnerOfPossession(cell);
 
-            retval += InherentYieldLogic.GetInherentCellYield(cell);
+            retval += InherentYieldLogic.GetInherentCellYield(cell, false);
 
             var nodeAtLocation = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 

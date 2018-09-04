@@ -23,6 +23,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public HexCellTestData Cell;
 
+            public bool WithVegetationCleared = false;
+
         }
 
         public class HexMapConfigTestData {
@@ -164,6 +166,16 @@ namespace Assets.Tests.Simulation.HexMap {
                         DoesFeatureOverrideYield = true
                     }
                 }).SetName("Feature yield ignored when Feature is none, even if override requested").Returns(new YieldSummary(gold: 300));
+
+
+
+                yield return new TestCaseData(new GetYieldTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
+                        Vegetation = CellVegetation.Forest, Feature = CellFeature.None
+                    },
+                    WithVegetationCleared = true
+                }).SetName("Vegetation ignored if withVegetationCleared is true").Returns(new YieldSummary(production: 20));
             }
         }
 
@@ -201,7 +213,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var yieldLogic = Container.Resolve<InherentCellYieldLogic>();
 
-            return yieldLogic.GetInherentCellYield(cell);
+            return yieldLogic.GetInherentCellYield(cell, testData.WithVegetationCleared);
         }
 
         #endregion

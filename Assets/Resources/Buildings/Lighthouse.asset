@@ -74,7 +74,7 @@ MonoBehaviour:
       Science: 0
     _resource: {fileID: 11400000, guid: 2dfab701b5278274f877c275a17099cc, type: 2}
   _cellYieldModifications:
-  - _propertyConsidered: 3
+  - _propertyConsidered: 0
     _terrainRequired: 5
     _shapeRequired: 0
     _vegetationRequired: 0

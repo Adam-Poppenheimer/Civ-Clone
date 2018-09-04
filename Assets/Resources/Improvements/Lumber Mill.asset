@@ -18,12 +18,13 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
-  _restrictedToFeatures: 01000000
+  _restrictedToVegetations: 01000000
   _restrictedToTerrains: 
   _restrictedToShapes: 
-  _clearsForestsWhenBuilt: 0
+  _clearsVegetationWhenBuilt: 0
   _defensiveBonus: 0
   _requiresResourceToExtract: 0
   _appearancePrefab: {fileID: 4946165858268716, guid: d51b158503c558949970e94b98d8c53e,
     type: 2}
   _turnsToConstruct: 5
+  _freshWaterAlwaysEnables: 0

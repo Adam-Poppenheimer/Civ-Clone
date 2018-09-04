@@ -129,8 +129,6 @@ namespace Assets.Simulation.MapGeneration {
         public YieldSummary GetYieldEstimateForCell(IHexCell cell) {
             var retval = YieldSummary.Empty;
 
-            retval += InherentYieldLogic.GetInherentCellYield(cell);
-
             var nodeAtLocation = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
             var expectedImprovement = GetExpectedImprovementForCell(cell, nodeAtLocation);
@@ -147,6 +145,8 @@ namespace Assets.Simulation.MapGeneration {
                     FreshWaterCanon.HasAccessToFreshWater(cell)
                 );
             }
+
+            retval += InherentYieldLogic.GetInherentCellYield(cell, expectedImprovement.ClearsVegetationWhenBuilt);
 
             retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, AvailableBuildings);
 

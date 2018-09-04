@@ -82,13 +82,13 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var cellYield = new YieldSummary(food: 1, production: 2, gold: 3);
 
-            MockInherentCellYieldLogic.Setup(logic => logic.GetInherentCellYield(cell)).Returns(cellYield);
+            MockInherentCellYieldLogic.Setup(logic => logic.GetInherentCellYield(cell, false)).Returns(cellYield);
 
             var yieldLogic = Container.Resolve<CellYieldLogic>();
 
             Assert.AreEqual(cellYield, yieldLogic.GetYieldOfCell(cell, null));
 
-            MockInherentCellYieldLogic.Verify(logic => logic.GetInherentCellYield(cell), Times.Once);
+            MockInherentCellYieldLogic.Verify(logic => logic.GetInherentCellYield(cell, false), Times.Once);
         }
 
         [Test]
