@@ -12,16 +12,20 @@ MonoBehaviour:
   m_Name: The Wheel
   m_EditorClassIdentifier: 
   _cost: 55
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
+  _techTableRow: 6
+  _techTableColumn: 2
   _prerequisites:
   - {fileID: 11400000, guid: 9052087a63ec8bc41a5fa38e1ba15025, type: 2}
   - {fileID: 11400000, guid: 82215f896cff43840bad45144a567c62, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 6
-  _techTableColumn: 2
   _buildingsEnabled:
   - {fileID: 11400000, guid: 2f32221f83d6666448d79494a28e3193, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: 92517a1adfcb9f74383b68a012268e0a, type: 2}
   _abilitiesEnabled:
   - {fileID: 11400000, guid: bc91d9fc26bb93e45b3c11cc5c2dd31f, type: 2}
+  _improvementsEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

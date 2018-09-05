@@ -27,11 +27,14 @@ namespace Assets.Tests.Simulation.MapGeneration {
         private Mock<IImprovementYieldLogic>                           MockImprovementYieldLogic;
         private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
         private Mock<ICellYieldFromBuildingsLogic>                     MockYieldFromBuildingsLogic;
-        private Mock<IImprovementEstimator>                            MockImprovementEstimator;
+        private Mock<ITechCanon>                                       MockTechCanon;
+        private Mock<IImprovementValidityLogic>                        MockImprovementValidityLogic;
+        private Mock<IMapScorer>                                       MockMapScorer;
 
-        private List<IResourceDefinition>  AvailableResources    = new List<IResourceDefinition>();
+        private List<IResourceDefinition>  VisibleResources      = new List<IResourceDefinition>();
         private List<ITechDefinition>      AvailableTechs        = new List<ITechDefinition>();
         private List<IBuildingTemplate>    AvailableBuildings    = new List<IBuildingTemplate>();
+        private List<IImprovementTemplate> AvailableImprovements = new List<IImprovementTemplate>();
 
         #endregion
 
@@ -41,17 +44,29 @@ namespace Assets.Tests.Simulation.MapGeneration {
 
         [SetUp]
         public void CommonInstall() {
-            MockInherentYieldLogic      = new Mock<IInherentCellYieldLogic>();
-            MockNodeLocationCanon       = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
-            MockNodeYieldLogic          = new Mock<IResourceNodeYieldLogic>();
-            MockImprovementYieldLogic   = new Mock<IImprovementYieldLogic>();
-            MockFreshWaterCanon         = new Mock<IFreshWaterCanon>();
-            MockYieldFromBuildingsLogic = new Mock<ICellYieldFromBuildingsLogic>();
-            MockImprovementEstimator    = new Mock<IImprovementEstimator>();
-
-            AvailableResources   .Clear();
+            VisibleResources     .Clear();
             AvailableTechs       .Clear();
             AvailableBuildings   .Clear();
+            AvailableImprovements.Clear();
+
+            MockInherentYieldLogic       = new Mock<IInherentCellYieldLogic>();
+            MockNodeLocationCanon        = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
+            MockNodeYieldLogic           = new Mock<IResourceNodeYieldLogic>();
+            MockImprovementYieldLogic    = new Mock<IImprovementYieldLogic>();
+            MockFreshWaterCanon          = new Mock<IFreshWaterCanon>();
+            MockYieldFromBuildingsLogic  = new Mock<ICellYieldFromBuildingsLogic>();
+            MockTechCanon                = new Mock<ITechCanon>();
+            MockImprovementValidityLogic = new Mock<IImprovementValidityLogic>();
+            MockMapScorer                = new Mock<IMapScorer>();
+
+            MockTechCanon.Setup(canon => canon.GetAvailableBuildingsFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
+                         .Returns(AvailableBuildings);
+
+            MockTechCanon.Setup(canon => canon.GetAvailableImprovementsFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
+                         .Returns(AvailableImprovements);
+
+            MockTechCanon.Setup(canon => canon.GetVisibleResourcesFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
+                         .Returns(VisibleResources);
 
             Container.Bind<IInherentCellYieldLogic>                         ().FromInstance(MockInherentYieldLogic      .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodeLocationCanon       .Object);
@@ -59,14 +74,11 @@ namespace Assets.Tests.Simulation.MapGeneration {
             Container.Bind<IImprovementYieldLogic>                          ().FromInstance(MockImprovementYieldLogic   .Object);
             Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon         .Object);
             Container.Bind<ICellYieldFromBuildingsLogic>                    ().FromInstance(MockYieldFromBuildingsLogic .Object);
-            Container.Bind<IImprovementEstimator>                           ().FromInstance(MockImprovementEstimator    .Object);
+            Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon               .Object);
+            Container.Bind<IImprovementValidityLogic>                       ().FromInstance(MockImprovementValidityLogic.Object);
+            Container.Bind<IMapScorer>                                      ().FromInstance(MockMapScorer               .Object);
 
-            var mockTechCanon = new Mock<ITechCanon>();
-            mockTechCanon.Setup(canon => canon.AvailableTechs).Returns(AvailableTechs.AsReadOnly());
-
-            Container.Bind<ITechCanon>().FromInstance(mockTechCanon.Object);
-            Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildings);
-            Container.Bind<IEnumerable<IResourceDefinition>>().WithId("Available Resources").FromInstance(AvailableResources);
+            Container.Bind<IEnumerable<IResourceDefinition>>().WithId("Available Resources").FromInstance(VisibleResources);
 
             Container.Bind<YieldEstimator>().AsSingle();
         }
@@ -105,11 +117,9 @@ namespace Assets.Tests.Simulation.MapGeneration {
         public void GetYieldEstimateForCell_IgnoresVegetationIfExpectedImprovementRequestsIt() {
             var cell = BuildCell();
 
-            var improvement = BuildImprovementTemplate(clearsVegetationWhenBuilt: true);
-
-            MockImprovementEstimator.Setup(
-                estimator => estimator.GetExpectedImprovementForCell(cell, It.IsAny<IResourceNode>())
-            ).Returns(improvement);
+            var improvement = BuildImprovementTemplate(
+                clearsVegetationWhenBuilt: true, isAvailable: true, isValidOnCell: true
+            );
 
             MockInherentYieldLogic.Setup(logic => logic.GetInherentCellYield(cell, true))
                                   .Returns(new YieldSummary(food: 1, production: 20));
@@ -126,15 +136,13 @@ namespace Assets.Tests.Simulation.MapGeneration {
         public void GetYieldEstimateForCell_AddsYieldFromNodeIfNodeNotNull() {
             var cell = BuildCell();
 
-            var node = BuildResourceNode(cell);
+            var node = BuildResourceNode(cell, BuildResourceDefinition(YieldSummary.Empty, YieldSummary.Empty, true));
 
-            var improvementTemplate = BuildImprovementTemplate(clearsVegetationWhenBuilt: false);
+            var improvementTemplate = BuildImprovementTemplate(
+                clearsVegetationWhenBuilt: false, isAvailable: true, isValidOnCell: true
+            );
 
-            MockImprovementEstimator.Setup(
-                estimator => estimator.GetExpectedImprovementForCell(cell, node)
-            ).Returns(improvementTemplate);
-
-            MockNodeYieldLogic.Setup(logic => logic.GetYieldFromNode(node, AvailableResources, It.IsAny<IImprovement>()))
+            MockNodeYieldLogic.Setup(logic => logic.GetYieldFromNode(node, VisibleResources, It.IsAny<IImprovement>()))
                               .Returns(new YieldSummary(food: 1, production: 20));
 
             var yieldEstimator = Container.Resolve<YieldEstimator>();
@@ -169,17 +177,15 @@ namespace Assets.Tests.Simulation.MapGeneration {
         public void GetYieldEstimateForCell_AddsYieldFromExpectedImprovementIfItIsntNull() {
             var cell = BuildCell();
 
-            var improvement = BuildImprovementTemplate(false);
-
-            MockImprovementEstimator.Setup(
-                estimator => estimator.GetExpectedImprovementForCell(cell, It.IsAny<IResourceNode>())
-            ).Returns(improvement);
+            var improvement = BuildImprovementTemplate(
+                clearsVegetationWhenBuilt: false, isAvailable: true, isValidOnCell: true
+            );
 
             MockFreshWaterCanon.Setup(canon => canon.HasAccessToFreshWater(cell)).Returns(true);
 
             MockImprovementYieldLogic.Setup(
                 logic => logic.GetYieldOfImprovementTemplate(
-                    improvement, It.IsAny<IResourceNode>(), AvailableResources,
+                    improvement, It.IsAny<IResourceNode>(), VisibleResources,
                     AvailableTechs, true
                 )
             ).Returns(new YieldSummary(food: 1, production: 20));
@@ -232,7 +238,8 @@ namespace Assets.Tests.Simulation.MapGeneration {
         public void GetYieldEstimateForResource_ReturnsBaseYieldPlusImprovedYield() {
             var resource = BuildResourceDefinition(
                 bonusYieldBase: new YieldSummary(food: 1, production: 20),
-                bonusYieldWhenImproved: new YieldSummary(production: 22, gold: 300)
+                bonusYieldWhenImproved: new YieldSummary(production: 22, gold: 300),
+                isVisible: true
             );
 
             var yieldEstimator = Container.Resolve<YieldEstimator>();
@@ -251,16 +258,33 @@ namespace Assets.Tests.Simulation.MapGeneration {
             return new Mock<IHexCell>().Object;
         }
 
-        private IImprovementTemplate BuildImprovementTemplate(bool clearsVegetationWhenBuilt) {
+        private IImprovementTemplate BuildImprovementTemplate(
+            bool clearsVegetationWhenBuilt, bool isAvailable, bool isValidOnCell
+        ) {
             var mockImprovement = new Mock<IImprovementTemplate>();
 
-            mockImprovement.Setup(template => template.ClearsVegetationWhenBuilt).Returns(clearsVegetationWhenBuilt);
+            mockImprovement.Setup(template => template.ClearsVegetationWhenBuilt)
+                           .Returns(clearsVegetationWhenBuilt);
 
-            return mockImprovement.Object;
+            var newImprovement = mockImprovement.Object;
+
+            if(isAvailable) {
+                AvailableImprovements.Add(newImprovement);
+            }
+
+            MockImprovementValidityLogic.Setup(
+                    logic => logic.IsTemplateValidForCell(newImprovement, It.IsAny<IHexCell>(), true)
+                ).Returns(isValidOnCell);
+
+            return newImprovement;
         }
 
-        private IResourceNode BuildResourceNode(IHexCell location) {
-            var newNode = new Mock<IResourceNode>().Object;
+        private IResourceNode BuildResourceNode(IHexCell location, IResourceDefinition resource) {
+            var mockNode = new Mock<IResourceNode>();
+
+            mockNode.Setup(node => node.Resource).Returns(resource);
+
+            var newNode = mockNode.Object;
 
             MockNodeLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
                                  .Returns(new List<IResourceNode>() { newNode });
@@ -269,12 +293,19 @@ namespace Assets.Tests.Simulation.MapGeneration {
         }
 
         private IResourceDefinition BuildResourceDefinition(
-            YieldSummary bonusYieldBase, YieldSummary bonusYieldWhenImproved
+            YieldSummary bonusYieldBase, YieldSummary bonusYieldWhenImproved,
+            bool isVisible
         ) {
             var mockResource = new Mock<IResourceDefinition>();
 
             mockResource.Setup(resource => resource.BonusYieldBase)        .Returns(bonusYieldBase);
             mockResource.Setup(resource => resource.BonusYieldWhenImproved).Returns(bonusYieldWhenImproved);
+
+            var newResource = mockResource.Object;
+
+            if(isVisible) {
+                VisibleResources.Add(newResource);
+            }
 
             return mockResource.Object;
         }

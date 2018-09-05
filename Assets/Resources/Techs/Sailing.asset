@@ -12,15 +12,20 @@ MonoBehaviour:
   m_Name: Sailing
   m_EditorClassIdentifier: 
   _cost: 55
-  _prerequisites:
-  - {fileID: 11400000, guid: de800cb3694be1f439303e32cfe8fb44, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
   _techTableRow: 0
   _techTableColumn: 2
+  _prerequisites:
+  - {fileID: 11400000, guid: de800cb3694be1f439303e32cfe8fb44, type: 2}
   _buildingsEnabled: []
   _unitsEnabled:
   - {fileID: 11400000, guid: 69c732bdc81e68847a36dd87d8b15cfd, type: 2}
   - {fileID: 11400000, guid: 9433119f741ba4347a37d39d5cc2252e, type: 2}
   _abilitiesEnabled:
   - {fileID: 11400000, guid: 1ad40fb588d47f24081dcfda8a027942, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: 374fa753d58face4e801763e4abda080, type: 2}
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

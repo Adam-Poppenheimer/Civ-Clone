@@ -12,14 +12,19 @@ MonoBehaviour:
   m_Name: Mining
   m_EditorClassIdentifier: 
   _cost: 35
-  _prerequisites:
-  - {fileID: 11400000, guid: 1a157683e02a603458036cea2f28d883, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
   _techTableRow: 8
   _techTableColumn: 1
+  _prerequisites:
+  - {fileID: 11400000, guid: 1a157683e02a603458036cea2f28d883, type: 2}
   _buildingsEnabled: []
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: 889583ea605a058488b9537000452202, type: 2}
   - {fileID: 11400000, guid: c24a6041877dff94fb082cc7cd4bd8c2, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: de08c5dd70339824cb2f33f9865f2d3b, type: 2}
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

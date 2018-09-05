@@ -24,6 +24,8 @@ MonoBehaviour:
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: aae893c8c39b9964dbbb54f1f4b5a8b5, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: 0760ef1118d0de64ca1ad761464d28d2, type: 2}
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []

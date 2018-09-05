@@ -15,10 +15,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IYieldEstimator                                  YieldEstimator;
-        private IMapScorer                                       MapScorer;
-        private ITechCanon                                       TechCanon;
-        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
+        private IYieldEstimator YieldEstimator;
+        private IMapScorer      MapScorer;
+        private ITechCanon      TechCanon;
 
         #endregion
 
@@ -26,13 +25,11 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public CellScorer(
-            IYieldEstimator yieldEstimator, IMapScorer mapScorer, ITechCanon techCanon,
-            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon
+            IYieldEstimator yieldEstimator, IMapScorer mapScorer, ITechCanon techCanon
         ) {
-            YieldEstimator    = yieldEstimator;
-            MapScorer         = mapScorer;
-            TechCanon         = techCanon;
-            NodeLocationCanon = nodeLocationCanon;
+            YieldEstimator = yieldEstimator;
+            MapScorer      = mapScorer;
+            TechCanon      = techCanon;
         }
 
         #endregion
@@ -42,15 +39,19 @@ namespace Assets.Simulation.MapGeneration {
         #region from ICellScorer
 
         public float GetScoreOfCell(IHexCell cell) {
-            float retval = MapScorer.GetScoreOfYield(
-                YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs)
-            );
+            var ancientTechs   = TechCanon.GetTechsOfEra(TechnologyEra.Ancient);
+            var classicalTechs = TechCanon.GetTechsOfEra(TechnologyEra.Classical).Concat(ancientTechs);
+            var medievalTechs  = TechCanon.GetTechsOfEra(TechnologyEra.Medieval) .Concat(classicalTechs);
 
-            foreach(var node in NodeLocationCanon.GetPossessionsOfOwner(cell)) {
-                retval += MapScorer.GetScoreOfResourceNode(node);
-            }
+            var ancientYield   = YieldEstimator.GetYieldEstimateForCell(cell, ancientTechs);
+            var classicalYield = YieldEstimator.GetYieldEstimateForCell(cell, classicalTechs);
+            var medievalYield  = YieldEstimator.GetYieldEstimateForCell(cell, medievalTechs);
 
-            return retval;
+            float ancientScore   = MapScorer.GetScoreOfYield(ancientYield);
+            float classicalScore = MapScorer.GetScoreOfYield(classicalYield);
+            float medievalScore  = MapScorer.GetScoreOfYield(medievalYield);
+
+            return (ancientScore + classicalScore + medievalScore) / 3f;
         }
 
         #endregion

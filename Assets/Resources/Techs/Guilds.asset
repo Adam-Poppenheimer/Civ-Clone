@@ -22,6 +22,8 @@ MonoBehaviour:
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: d2acdc816c63b8641bfdcd87a4232806, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: 02230ff3099c6a742bc8c257d72d1e7c, type: 2}
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []

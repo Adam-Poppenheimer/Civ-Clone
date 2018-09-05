@@ -11,6 +11,7 @@ using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
@@ -36,6 +37,8 @@ namespace Assets.Simulation.Technology {
         IEnumerable<IUnitTemplate> UnitsEnabled { get; }
 
         IEnumerable<IAbilityDefinition> AbilitiesEnabled { get; }
+
+        IEnumerable<IImprovementTemplate> ImprovementsEnabled { get; }
 
         IEnumerable<IImprovementModificationData> ImprovementYieldModifications { get; }
 

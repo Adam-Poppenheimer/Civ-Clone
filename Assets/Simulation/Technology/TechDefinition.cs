@@ -13,6 +13,7 @@ using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
@@ -71,6 +72,11 @@ namespace Assets.Simulation.Technology {
             get { return _abilitiesEnabled.Cast<IAbilityDefinition>(); }
         }
         [SerializeField] private List<AbilityDefinition> _abilitiesEnabled;
+
+        public IEnumerable<IImprovementTemplate> ImprovementsEnabled {
+            get { return _improvementsEnabled.Cast<IImprovementTemplate>(); }
+        }
+        [SerializeField] private List<ImprovementTemplate> _improvementsEnabled;
 
         public IEnumerable<IImprovementModificationData> ImprovementYieldModifications {
             get { return _improvementYieldModifications.Cast<IImprovementModificationData>(); }

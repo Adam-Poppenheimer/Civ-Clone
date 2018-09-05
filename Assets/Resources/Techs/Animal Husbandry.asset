@@ -12,15 +12,19 @@ MonoBehaviour:
   m_Name: Animal Husbandry
   m_EditorClassIdentifier: 
   _cost: 35
-  _prerequisites:
-  - {fileID: 11400000, guid: 1a157683e02a603458036cea2f28d883, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
   _techTableRow: 4
   _techTableColumn: 1
+  _prerequisites:
+  - {fileID: 11400000, guid: 1a157683e02a603458036cea2f28d883, type: 2}
   _buildingsEnabled: []
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: ce5221fd08531e743b6c8fa7605efd06, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: ed4c86b01f88c6e4aa80d18a707994dd, type: 2}
   _improvementYieldModifications: []
   _revealedResources:
   - {fileID: 11400000, guid: 63deef57b17e2e74aa4bbaea3aa2008d, type: 2}
+  _policyTreesEnabled: []

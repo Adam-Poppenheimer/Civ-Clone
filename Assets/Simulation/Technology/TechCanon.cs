@@ -15,6 +15,7 @@ using Assets.Simulation.MapResources;
 using Assets.Simulation.SocialPolicies;
 
 using UnityCustomUtilities.Extensions;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
@@ -42,9 +43,9 @@ namespace Assets.Simulation.Technology {
 
 
 
-        private IEnumerable<IAbilityDefinition> AvailableAbilities;
-
-        private IEnumerable<IResourceDefinition> AvailableResources;
+        private IEnumerable<IAbilityDefinition>   AvailableAbilities;
+        private IEnumerable<IResourceDefinition>  AvailableResources;
+        private IEnumerable<IImprovementTemplate> AvailableImprovements;
 
         #endregion
 
@@ -55,11 +56,13 @@ namespace Assets.Simulation.Technology {
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
             [Inject(Id = "Available Abilities")] IEnumerable<IAbilityDefinition> availableAbilities,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
+            [Inject(Id = "Available Improvement Templates")] IEnumerable<IImprovementTemplate> availableImprovements,
             CivilizationSignals civSignals
         ){
-            _availableTechs    = availableTechs;
-            AvailableAbilities = availableAbilities;
-            AvailableResources = availableResources;
+            _availableTechs       = availableTechs;
+            AvailableAbilities    = availableAbilities;
+            AvailableResources    = availableResources;
+            AvailableImprovements = availableImprovements;
 
             civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
@@ -69,6 +72,24 @@ namespace Assets.Simulation.Technology {
         #region instance methods
 
         #region from ITechCanon
+
+        public IEnumerable<IImprovementTemplate> GetAvailableImprovementsFromTechs(IEnumerable<ITechDefinition> techs) {
+            var excludedTechs = AvailableTechs.Except(techs);
+            var excludedImprovements = excludedTechs.SelectMany(tech => tech.ImprovementsEnabled);
+
+            return AvailableImprovements.Except(excludedImprovements);
+        }
+
+        public IEnumerable<IBuildingTemplate> GetAvailableBuildingsFromTechs(IEnumerable<ITechDefinition> techs) {
+            return techs.SelectMany(tech => tech.BuildingsEnabled);
+        }
+
+        public IEnumerable<IResourceDefinition> GetVisibleResourcesFromTechs(IEnumerable<ITechDefinition> techs) {
+            var excludedTechs = AvailableTechs.Except(techs);
+            var excludedResources = excludedTechs.SelectMany(tech => tech.RevealedResources);
+
+            return AvailableResources.Except(excludedResources);
+        }
 
         public List<ITechDefinition> GetPrerequisiteChainToResearchTech(ITechDefinition tech, ICivilization civilization) {
             if(tech == null) {

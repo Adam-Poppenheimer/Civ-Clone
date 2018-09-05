@@ -10,6 +10,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
@@ -24,6 +25,10 @@ namespace Assets.Simulation.Technology {
         #endregion
 
         #region methods
+
+        IEnumerable<IImprovementTemplate> GetAvailableImprovementsFromTechs(IEnumerable<ITechDefinition> techs);
+        IEnumerable<IBuildingTemplate>    GetAvailableBuildingsFromTechs   (IEnumerable<ITechDefinition> techs);
+        IEnumerable<IResourceDefinition>  GetVisibleResourcesFromTechs     (IEnumerable<ITechDefinition> techs);
 
         IEnumerable<IBuildingTemplate>     GetResearchedBuildings  (ICivilization civilization);
         IEnumerable<IUnitTemplate>         GetResearchedUnits      (ICivilization civilization);

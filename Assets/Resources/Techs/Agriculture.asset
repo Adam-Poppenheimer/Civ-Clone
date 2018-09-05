@@ -12,13 +12,13 @@ MonoBehaviour:
   m_Name: Agriculture
   m_EditorClassIdentifier: 
   _cost: 20
-  _prerequisites: []
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
   _techTableRow: 5
   _techTableColumn: 0
+  _prerequisites: []
   _buildingsEnabled:
   - {fileID: 11400000, guid: ce572b53a96d06140b505df1538b79ee, type: 2}
-  - {fileID: 11400000, guid: cd7474b09a5dc7e429969c57405644ff, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
@@ -26,5 +26,8 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 781ccce6fba14494cb15d2298a46f770, type: 2}
   _abilitiesEnabled:
   - {fileID: 11400000, guid: 55849e5c6d2df0d41ad9f3cfff6ced97, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
   _improvementYieldModifications: []
   _revealedResources: []
+  _policyTreesEnabled: []

@@ -12,14 +12,19 @@ MonoBehaviour:
   m_Name: Masonry
   m_EditorClassIdentifier: 
   _cost: 55
-  _prerequisites:
-  - {fileID: 11400000, guid: 8fd2c663e2b56564db83a85b0ed383e0, type: 2}
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
   _techTableRow: 8
   _techTableColumn: 2
+  _prerequisites:
+  - {fileID: 11400000, guid: 8fd2c663e2b56564db83a85b0ed383e0, type: 2}
   _buildingsEnabled:
   - {fileID: 11400000, guid: 38abe2f7d7e2b7744b6bac6d732cb03e, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled:
   - {fileID: 11400000, guid: ab541495ccd7322428eaa172674cc66c, type: 2}
+  _improvementsEnabled:
+  - {fileID: 11400000, guid: 18ab8c2dd04861549850a7bfd64fea88, type: 2}
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

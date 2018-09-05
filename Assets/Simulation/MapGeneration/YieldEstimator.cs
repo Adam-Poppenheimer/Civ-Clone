@@ -77,10 +77,9 @@ namespace Assets.Simulation.MapGeneration {
         private IImprovementYieldLogic                           ImprovementYieldLogic;
         private IFreshWaterCanon                                 FreshWaterCanon;
         private ICellYieldFromBuildingsLogic                     YieldFromBuildingsLogic;
-        private IImprovementEstimator                            ImprovementEstimator;
-
-        private IEnumerable<IResourceDefinition> AvailableResources;
-        private IEnumerable<IBuildingTemplate>   AvailableBuildings;
+        private ITechCanon                                       TechCanon;
+        private IImprovementValidityLogic                        ImprovementValidityLogic;
+        private IMapScorer                                       MapScorer;
 
         #endregion
 
@@ -94,21 +93,19 @@ namespace Assets.Simulation.MapGeneration {
             IImprovementYieldLogic                           improvementYieldLogic,
             IFreshWaterCanon                                 freshWaterCanon,
             ICellYieldFromBuildingsLogic                     yieldFromBuildingsLogic,
-            IImprovementEstimator                            improvementEstimator,
-            
-            List<IBuildingTemplate> availableBuildings,
-            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
+            ITechCanon                                       techCanon,
+            IImprovementValidityLogic                        improvementValidityLogic,
+            IMapScorer                                       mapScorer
         ) {
-            InherentYieldLogic      = inherentYieldLogic;
-            NodeLocationCanon       = nodeLocationCanon;
-            NodeYieldLogic          = nodeYieldLogic;
-            ImprovementYieldLogic   = improvementYieldLogic;
-            FreshWaterCanon         = freshWaterCanon;
-            YieldFromBuildingsLogic = yieldFromBuildingsLogic;
-            ImprovementEstimator    = improvementEstimator;
-
-            AvailableResources = availableResources;
-            AvailableBuildings = availableBuildings;
+            InherentYieldLogic       = inherentYieldLogic;
+            NodeLocationCanon        = nodeLocationCanon;
+            NodeYieldLogic           = nodeYieldLogic;
+            ImprovementYieldLogic    = improvementYieldLogic;
+            FreshWaterCanon          = freshWaterCanon;
+            YieldFromBuildingsLogic  = yieldFromBuildingsLogic;
+            TechCanon                = techCanon;
+            ImprovementValidityLogic = improvementValidityLogic;
+            MapScorer                = mapScorer;
         }
 
         #endregion
@@ -122,31 +119,36 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             var retval = YieldSummary.Empty;
 
+            var visibleResources      = TechCanon.GetVisibleResourcesFromTechs     (availableTechs).ToList();
+            var availableImprovements = TechCanon.GetAvailableImprovementsFromTechs(availableTechs).ToList();
+            var availableBuildings    = TechCanon.GetAvailableBuildingsFromTechs   (availableTechs).ToList();
+
             var nodeAtLocation = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            var expectedImprovement = ImprovementEstimator.GetExpectedImprovementForCell(cell, nodeAtLocation);
+            var validImprovements = GetImprovementsValidFor(
+                cell, nodeAtLocation, visibleResources, availableImprovements
+            );
 
-            if(nodeAtLocation != null) {
-                retval += NodeYieldLogic.GetYieldFromNode(
-                    nodeAtLocation, AvailableResources, new HypotheticalImprovement(expectedImprovement)
-                );
+            var yieldOfImprovements = validImprovements.Select(
+                improvement => GetYieldEstimateForCellWithImprovement(
+                    cell, nodeAtLocation, visibleResources, availableTechs,
+                    availableBuildings, improvement
+                )
+            );
+
+            YieldSummary bestYield = YieldSummary.Empty;
+            float bestScore = int.MinValue;
+
+            foreach(var yield in yieldOfImprovements) {
+                var score = MapScorer.GetScoreOfYield(yield);
+
+                if(score > bestScore) {
+                    bestYield = yield;
+                    bestScore = score;
+                }
             }
-            
-            bool clearVegetation = false;
-            if(expectedImprovement != null) {
-                retval += ImprovementYieldLogic.GetYieldOfImprovementTemplate(
-                    expectedImprovement, nodeAtLocation, AvailableResources, availableTechs,
-                    FreshWaterCanon.HasAccessToFreshWater(cell)
-                );
 
-                clearVegetation = expectedImprovement.ClearsVegetationWhenBuilt;
-            }
-
-            retval += InherentYieldLogic.GetInherentCellYield(cell, clearVegetation);
-
-            retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, AvailableBuildings);
-
-            return retval + OneScience;               
+            return bestYield;
         }
 
         public YieldSummary GetYieldEstimateForResource(IResourceDefinition resource) {
@@ -154,6 +156,58 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         #endregion
+
+        private YieldSummary GetYieldEstimateForCellWithImprovement(
+            IHexCell cell, IResourceNode nodeAtLocation, IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<ITechDefinition> availableTechs, IEnumerable<IBuildingTemplate> availableBuildings,
+            IImprovementTemplate improvement
+        ) {
+            var retval = YieldSummary.Empty;
+
+            if(nodeAtLocation != null) {
+                retval += NodeYieldLogic.GetYieldFromNode(
+                    nodeAtLocation, visibleResources, new HypotheticalImprovement(improvement)
+                );
+            }
+
+            bool clearVegetation = false;
+            if(improvement != null) {
+                retval += ImprovementYieldLogic.GetYieldOfImprovementTemplate(
+                    improvement, nodeAtLocation, visibleResources, availableTechs,
+                    FreshWaterCanon.HasAccessToFreshWater(cell)
+                );
+
+                clearVegetation = improvement.ClearsVegetationWhenBuilt;
+            }
+
+            retval += InherentYieldLogic.GetInherentCellYield(cell, clearVegetation);
+
+            retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, availableBuildings);
+
+            return retval + OneScience;
+        }
+
+        private IEnumerable<IImprovementTemplate> GetImprovementsValidFor(
+            IHexCell cell, IResourceNode nodeAtLocation, IEnumerable<IResourceDefinition> availableResources,
+            IEnumerable<IImprovementTemplate> availableImprovements
+        ) {
+            if( nodeAtLocation != null &&
+                nodeAtLocation.Resource.Extractor != null &&
+                availableResources.Contains(nodeAtLocation.Resource) &&
+                availableImprovements.Contains(nodeAtLocation.Resource.Extractor)
+            ) {
+                return new List<IImprovementTemplate>() { nodeAtLocation.Resource.Extractor };
+
+            }else {
+                var retval = availableImprovements.Where(
+                    improvement => ImprovementValidityLogic.IsTemplateValidForCell(improvement, cell, true)
+                ).ToList();
+
+                retval.Add(null);
+
+                return retval;
+            }
+        }
 
         #endregion
 

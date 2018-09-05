@@ -89,6 +89,17 @@ namespace Assets.Simulation.MapGeneration {
                     currentScore -= scoreChange;
                 }
             }
+
+            float maxScorePerCell = maxScore / region.Cells.Count;
+            float currentScorePerCell = region.Cells.Average(cell => CellScorer.GetScoreOfCell(cell));
+
+            if(currentScorePerCell > maxScorePerCell) {
+                Debug.LogFormat(
+                    "A {0} {1} has a score per cell of {2}, from a maximum of {3}",
+                    regionData.Topology.name, regionData.Biome.name, currentScorePerCell,
+                    maxScorePerCell
+                );
+            }
         }
 
         #endregion
