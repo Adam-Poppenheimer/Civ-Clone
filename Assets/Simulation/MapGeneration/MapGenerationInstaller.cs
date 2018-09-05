@@ -46,6 +46,7 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ISectionSubdivisionLogic>   ().To<SectionSubdivisionLogic>   ().AsSingle();
             Container.Bind<ILuxuryDistributor>         ().To<LuxuryDistributor>         ().AsSingle();
             Container.Bind<ICellScorer>                ().To<CellScorer>                ().AsSingle();
+            Container.Bind<IImprovementEstimator>      ().To<ImprovementEstimator>      ().AsSingle();
 
             Container.Bind<IBalanceStrategy>().To<BonusResourceBalanceStrategy>().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();

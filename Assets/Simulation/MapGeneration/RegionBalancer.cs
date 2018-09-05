@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -20,6 +21,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IYieldEstimator YieldEstimator;        
         private ICellScorer     CellScorer;
+        private ITechCanon      TechCanon;
 
         #endregion
 
@@ -27,10 +29,11 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public RegionBalancer(
-            IYieldEstimator yieldEstimator, ICellScorer cellScorer
+            IYieldEstimator yieldEstimator, ICellScorer cellScorer, ITechCanon techCanon
         ) {
             YieldEstimator = yieldEstimator;
             CellScorer     = cellScorer;
+            TechCanon      = techCanon;
         }
 
         #endregion
@@ -46,7 +49,7 @@ namespace Assets.Simulation.MapGeneration {
 
             YieldSummary currentYield = YieldSummary.Empty;
             foreach(var cell in region.Cells) {
-                currentYield += YieldEstimator.GetYieldEstimateForCell(cell);
+                currentYield += YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
             }
 
             float minFood       = regionData.Resources.MinFoodPerCell       * region.Cells.Count;

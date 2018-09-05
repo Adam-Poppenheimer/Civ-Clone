@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.MapResources;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -33,6 +34,7 @@ namespace Assets.Simulation.MapGeneration {
         private IResourceNodeFactory      ResourceNodeFactory;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
         private IMapScorer                MapScorer;
+        private ITechCanon                TechCanon;
 
         #endregion
 
@@ -41,13 +43,14 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public BonusResourceBalanceStrategy(
             IYieldEstimator yieldEstimator, IResourceNodeFactory resourceNodeFactory,
-            IResourceRestrictionCanon resourceRestrictionCanon, IMapScorer mapScorer,
+            IResourceRestrictionCanon resourceRestrictionCanon, IMapScorer mapScorer, ITechCanon techCanon,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             YieldEstimator           = yieldEstimator;
             ResourceNodeFactory      = resourceNodeFactory;
             ResourceRestrictionCanon = resourceRestrictionCanon;
             MapScorer                = mapScorer;
+            TechCanon                = techCanon;
 
             foreach(var yieldType in EnumUtil.GetValues<YieldType>()) {
                 BonusResourcesWithYield[yieldType] = availableResources.Where(
@@ -82,11 +85,11 @@ namespace Assets.Simulation.MapGeneration {
                 ).FirstOrDefault();
 
                 if(cell != null) {
-                    var oldYield = YieldEstimator.GetYieldEstimateForCell(cell);
+                    var oldYield = YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
 
                     ResourceNodeFactory.BuildNode(cell, chosenResource, 0);
                     
-                    yieldAdded = YieldEstimator.GetYieldEstimateForCell(cell) - oldYield;
+                    yieldAdded = YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs) - oldYield;
                     return true;
                 }else {
                     availableResources.Remove(chosenResource);

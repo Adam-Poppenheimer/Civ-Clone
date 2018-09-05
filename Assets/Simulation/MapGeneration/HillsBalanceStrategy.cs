@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -28,6 +29,7 @@ namespace Assets.Simulation.MapGeneration {
         private IMapScorer                                       MapScorer;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
         private ICellModificationLogic                           ModLogic;
+        private ITechCanon                                       TechCanon;
 
         #endregion
 
@@ -37,12 +39,13 @@ namespace Assets.Simulation.MapGeneration {
         public HillsBalanceStrategy(
             IYieldEstimator yieldEstimator, IMapScorer mapScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
-            ICellModificationLogic modLogic
+            ICellModificationLogic modLogic, ITechCanon techCanon
         ) {
             YieldEstimator    = yieldEstimator;
             MapScorer         = mapScorer;
             NodeLocationCanon = nodeLocationCanon;
             ModLogic          = modLogic;
+            TechCanon         = techCanon;
         }
 
         #endregion
@@ -64,11 +67,11 @@ namespace Assets.Simulation.MapGeneration {
             if(candidates.Any()) {
                 var newHill = candidates.Random();
 
-                var oldYield = YieldEstimator.GetYieldEstimateForCell(newHill);
+                var oldYield = YieldEstimator.GetYieldEstimateForCell(newHill, TechCanon.AvailableTechs);
 
                 ModLogic.ChangeShapeOfCell(newHill, CellShape.Hills);
 
-                var newYield = YieldEstimator.GetYieldEstimateForCell(newHill);
+                var newYield = YieldEstimator.GetYieldEstimateForCell(newHill, TechCanon.AvailableTechs);
 
                 yieldAdded = newYield - oldYield;
                 return true;

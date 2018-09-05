@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -32,6 +33,7 @@ namespace Assets.Simulation.MapGeneration {
         private IMapScorer                                       MapScorer;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
         private ICellModificationLogic                           ModLogic;
+        private ITechCanon                                       TechCanon;
 
         #endregion
 
@@ -41,13 +43,14 @@ namespace Assets.Simulation.MapGeneration {
         public LakeBalanceStrategy(
             IHexGrid grid, IYieldEstimator yieldEstimator, IMapScorer mapScorer,
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
-            ICellModificationLogic modLogic
+            ICellModificationLogic modLogic, ITechCanon techCanon
         ) {
             Grid              = grid;
             YieldEstimator    = yieldEstimator;
             MapScorer         = mapScorer;
             NodePositionCanon = nodePositionCanon;
             ModLogic          = modLogic;
+            TechCanon         = techCanon;
         }
 
         #endregion
@@ -72,14 +75,14 @@ namespace Assets.Simulation.MapGeneration {
                 var oldYields = new Dictionary<IHexCell, YieldSummary>();
 
                 foreach(var cell in Grid.GetCellsInRadius(newLake, 1)) {
-                    oldYields[cell] = YieldEstimator.GetYieldEstimateForCell(cell);
+                    oldYields[cell] = YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
                 }
 
                 ModLogic.ChangeTerrainOfCell(newLake, CellTerrain.FreshWater);
 
                 yieldAdded = YieldSummary.Empty;
                 foreach(var cell in oldYields.Keys) {
-                    yieldAdded += YieldEstimator.GetYieldEstimateForCell(cell) - oldYields[cell];
+                    yieldAdded += YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs) - oldYields[cell];
                 }
 
                 return true;

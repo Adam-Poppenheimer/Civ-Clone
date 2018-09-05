@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -9,7 +11,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        YieldSummary GetYieldEstimateForCell(IHexCell cell);
+        YieldSummary GetYieldEstimateForCell(
+            IHexCell cell, IEnumerable<ITechDefinition> availableTechs
+        );
 
         YieldSummary GetYieldEstimateForResource(IResourceDefinition resource);
 

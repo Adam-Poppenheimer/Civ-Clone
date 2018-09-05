@@ -77,13 +77,10 @@ namespace Assets.Simulation.MapGeneration {
         private IImprovementYieldLogic                           ImprovementYieldLogic;
         private IFreshWaterCanon                                 FreshWaterCanon;
         private ICellYieldFromBuildingsLogic                     YieldFromBuildingsLogic;
-        private IMapScorer                                     YieldScorer;
-        private IImprovementValidityLogic                        ImprovementValidityLogic;
+        private IImprovementEstimator                            ImprovementEstimator;
 
-        private IEnumerable<IResourceDefinition>  AvailableResources;
-        private IEnumerable<ITechDefinition>      AvailableTechs;
-        private IEnumerable<IBuildingTemplate>    AvailableBuildings;
-        private IEnumerable<IImprovementTemplate> AvailableImprovements;
+        private IEnumerable<IResourceDefinition> AvailableResources;
+        private IEnumerable<IBuildingTemplate>   AvailableBuildings;
 
         #endregion
 
@@ -97,27 +94,21 @@ namespace Assets.Simulation.MapGeneration {
             IImprovementYieldLogic                           improvementYieldLogic,
             IFreshWaterCanon                                 freshWaterCanon,
             ICellYieldFromBuildingsLogic                     yieldFromBuildingsLogic,
-            IMapScorer                                       mapScorer,
-            IImprovementValidityLogic                        improvementValidityLogic,
-
-            [Inject(Id = "Available Resources")]             IEnumerable<IResourceDefinition>  availableResources,
-                                                             ITechCanon                        techCanon,
-                                                             List<IBuildingTemplate>           availableBuildings,
-            [Inject(Id = "Available Improvement Templates")] IEnumerable<IImprovementTemplate> availableImprovements
+            IImprovementEstimator                            improvementEstimator,
+            
+            List<IBuildingTemplate> availableBuildings,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
-            InherentYieldLogic       = inherentYieldLogic;
-            NodeLocationCanon        = nodeLocationCanon;
-            NodeYieldLogic           = nodeYieldLogic;
-            ImprovementYieldLogic    = improvementYieldLogic;
-            FreshWaterCanon          = freshWaterCanon;
-            YieldFromBuildingsLogic  = yieldFromBuildingsLogic;
-            YieldScorer              = mapScorer;
-            ImprovementValidityLogic = improvementValidityLogic;
+            InherentYieldLogic      = inherentYieldLogic;
+            NodeLocationCanon       = nodeLocationCanon;
+            NodeYieldLogic          = nodeYieldLogic;
+            ImprovementYieldLogic   = improvementYieldLogic;
+            FreshWaterCanon         = freshWaterCanon;
+            YieldFromBuildingsLogic = yieldFromBuildingsLogic;
+            ImprovementEstimator    = improvementEstimator;
 
-            AvailableResources    = availableResources;
-            AvailableTechs        = techCanon.AvailableTechs;
-            AvailableBuildings    = availableBuildings;
-            AvailableImprovements = availableImprovements;
+            AvailableResources = availableResources;
+            AvailableBuildings = availableBuildings;
         }
 
         #endregion
@@ -126,12 +117,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from CellYieldEstimator
 
-        public YieldSummary GetYieldEstimateForCell(IHexCell cell) {
+        public YieldSummary GetYieldEstimateForCell(
+            IHexCell cell, IEnumerable<ITechDefinition> availableTechs
+        ) {
             var retval = YieldSummary.Empty;
 
             var nodeAtLocation = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            var expectedImprovement = GetExpectedImprovementForCell(cell, nodeAtLocation);
+            var expectedImprovement = ImprovementEstimator.GetExpectedImprovementForCell(cell, nodeAtLocation);
 
             if(nodeAtLocation != null) {
                 retval += NodeYieldLogic.GetYieldFromNode(
@@ -139,14 +132,17 @@ namespace Assets.Simulation.MapGeneration {
                 );
             }
             
+            bool clearVegetation = false;
             if(expectedImprovement != null) {
                 retval += ImprovementYieldLogic.GetYieldOfImprovementTemplate(
-                    expectedImprovement, nodeAtLocation, AvailableResources, AvailableTechs,
+                    expectedImprovement, nodeAtLocation, AvailableResources, availableTechs,
                     FreshWaterCanon.HasAccessToFreshWater(cell)
                 );
+
+                clearVegetation = expectedImprovement.ClearsVegetationWhenBuilt;
             }
 
-            retval += InherentYieldLogic.GetInherentCellYield(cell, expectedImprovement.ClearsVegetationWhenBuilt);
+            retval += InherentYieldLogic.GetInherentCellYield(cell, clearVegetation);
 
             retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, AvailableBuildings);
 
@@ -158,35 +154,6 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         #endregion
-
-        private IImprovementTemplate GetExpectedImprovementForCell(IHexCell cell, IResourceNode nodeAtLocation) {
-            if(nodeAtLocation != null && nodeAtLocation.Resource.Extractor != null) {
-                return nodeAtLocation.Resource.Extractor;
-            }
-
-            IImprovementTemplate bestTemplate = null;
-            float bestScore = int.MinValue;
-
-            foreach(var improvementTemplate in AvailableImprovements) {
-                if(!ImprovementValidityLogic.IsTemplateValidForCell(improvementTemplate, cell, true)) {
-                    continue;
-                }
-
-                YieldSummary improvementYield = ImprovementYieldLogic.GetYieldOfImprovementTemplate(
-                    improvementTemplate, nodeAtLocation, AvailableResources, AvailableTechs,
-                    FreshWaterCanon.HasAccessToFreshWater(cell)
-                );
-
-                float yieldScore = YieldScorer.GetScoreOfYield(improvementYield);
-
-                if(yieldScore > bestScore) {
-                    bestTemplate = improvementTemplate;
-                    bestScore = yieldScore;
-                }
-            }
-            
-            return bestTemplate;
-        }
 
         #endregion
 

@@ -7,6 +7,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -16,6 +17,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IYieldEstimator                                  YieldEstimator;
         private IMapScorer                                       MapScorer;
+        private ITechCanon                                       TechCanon;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
 
         #endregion
@@ -24,11 +26,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public CellScorer(
-            IYieldEstimator yieldEstimator, IMapScorer mapScorer,
+            IYieldEstimator yieldEstimator, IMapScorer mapScorer, ITechCanon techCanon,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon
         ) {
             YieldEstimator    = yieldEstimator;
             MapScorer         = mapScorer;
+            TechCanon         = techCanon;
             NodeLocationCanon = nodeLocationCanon;
         }
 
@@ -39,7 +42,9 @@ namespace Assets.Simulation.MapGeneration {
         #region from ICellScorer
 
         public float GetScoreOfCell(IHexCell cell) {
-            float retval = MapScorer.GetScoreOfYield(YieldEstimator.GetYieldEstimateForCell(cell));
+            float retval = MapScorer.GetScoreOfYield(
+                YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs)
+            );
 
             foreach(var node in NodeLocationCanon.GetPossessionsOfOwner(cell)) {
                 retval += MapScorer.GetScoreOfResourceNode(node);
