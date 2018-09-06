@@ -25,12 +25,13 @@ MonoBehaviour:
     Science: 0
   _type: 0
   _extractor: {fileID: 11400000, guid: ed4c86b01f88c6e4aa80d18a707994dd, type: 2}
+  _score: 0
   GrasslandWeight: 0
   PlainsWeight: 2
   DesertWeight: 5
   FloodPlainsWeight: 0
   TundraWeight: 0
-  SnowWeight: 0
+  SnowWeight: -1000
   ShallowWaterWeight: 0
   FlatlandWeight: 0
   HillsWeight: 500

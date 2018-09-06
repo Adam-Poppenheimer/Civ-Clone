@@ -45,7 +45,7 @@ MonoBehaviour:
   - _resource: {fileID: 11400000, guid: 7a4a260518a1b3a49904fae2062c98a7, type: 2}
     _weight: 15
   - _resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
-    _weight: 1000
+    _weight: 500
   - _resource: {fileID: 11400000, guid: 2bd5241ded607ee4caf5274379a102cc, type: 2}
     _weight: 30
   - _resource: {fileID: 11400000, guid: 60c793e2f2d1ae848ba695a88683fe6c, type: 2}
@@ -70,6 +70,8 @@ MonoBehaviour:
     _weight: 20
   - _resource: {fileID: 11400000, guid: 32b854ea772785641ba2b70d88b207f8, type: 2}
     _weight: 15
+  - _resource: {fileID: 11400000, guid: 2a917176d13474740b2911bcdd337ecd, type: 2}
+    _weight: 60
   TreesOnGrasslandCrawlCost: 0
   TreesOnPlainsCrawlCost: 0
   TreesOnTundraCrawlCost: 0

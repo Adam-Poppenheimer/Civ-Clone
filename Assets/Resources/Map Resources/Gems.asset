@@ -33,7 +33,7 @@ MonoBehaviour:
   TundraWeight: 5
   SnowWeight: 0
   ShallowWaterWeight: 0
-  FlatlandWeight: -1000
+  FlatlandWeight: 0
   HillsWeight: 20
   NoVegetationWeight: 5
   ForestWeight: 0

@@ -36,8 +36,8 @@ MonoBehaviour:
   FlatlandWeight: 0
   HillsWeight: 40
   NoVegetationWeight: 0
-  ForestWeight: -1000
-  JungleWeight: -1000
+  ForestWeight: 0
+  JungleWeight: 0
   MarshWeight: -1000
   _appearancePrefab: {fileID: 4307953511643046, guid: 33399b0ae9dab874ab8d2bd43f463beb,
     type: 2}

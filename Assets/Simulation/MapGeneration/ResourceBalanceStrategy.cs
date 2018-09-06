@@ -98,7 +98,7 @@ namespace Assets.Simulation.MapGeneration {
                                ? StrategicCopiesLogic.GetWeightedRandomCopies()
                                : 0;
 
-                    ResourceNodeFactory.BuildNode(cell, chosenResource, 0);
+                    ResourceNodeFactory.BuildNode(cell, chosenResource, copies);
                     
                     yieldAdded = YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs) - oldYield;
                     return true;

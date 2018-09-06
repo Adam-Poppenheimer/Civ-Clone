@@ -42,9 +42,13 @@ namespace Assets.Simulation.MapGeneration {
         #region from ILuxuryDistributor
 
         public void DistributeLuxuriesAcrossHomeland(HomelandData homelandData) {
-            List<IResourceDefinition> luxuriesForStarting = GetLuxuriesForStartingRegion(homelandData);
-            List<IResourceDefinition> luxuriesForOthers   = GetLuxuriesForOtherRegions  (homelandData);
-            List<IResourceDefinition> luxuriesForWhole    = GetLuxuriesForWholeHomeland (homelandData);
+            Dictionary<IResourceDefinition, int> weightForStarting;
+            Dictionary<IResourceDefinition, int> weightForOthers;
+            Dictionary<IResourceDefinition, int> weightForWhole;
+
+            List<IResourceDefinition> luxuriesForStarting = GetLuxuriesForStartingRegion(homelandData, out weightForStarting);
+            List<IResourceDefinition> luxuriesForOthers   = GetLuxuriesForOtherRegions  (homelandData, out weightForOthers);
+            List<IResourceDefinition> luxuriesForWhole    = GetLuxuriesForWholeHomeland (homelandData, out weightForWhole);
 
             var luxuriesAlreadyChosen = new HashSet<IResourceDefinition>();
 
@@ -52,27 +56,27 @@ namespace Assets.Simulation.MapGeneration {
                 if(luxuryData.ConstrainedToStarting) {
                     DistributeLuxuryAcrossSingleRegion(
                         homelandData.StartingRegion, luxuryData.StartingCount,
-                        luxuriesForStarting, luxuriesAlreadyChosen
+                        luxuriesForStarting, weightForStarting, luxuriesAlreadyChosen
                     );
                 }else if(luxuryData.ConstrainedToOthers) {
                     DistributeLuxuryAcrossMultipleRegions(
                         homelandData.OtherRegions, luxuryData.OtherCount,
-                        luxuriesForOthers, luxuriesAlreadyChosen
+                        luxuriesForOthers, weightForOthers, luxuriesAlreadyChosen
                     );
                 }else {
                     if(!TryDistributeLuxuryAcrossSingleAndMultipleRegions(
                         homelandData.StartingRegion, homelandData.OtherRegions,
                         luxuryData.StartingCount, luxuryData.OtherCount,
-                        luxuriesForWhole, luxuriesAlreadyChosen
+                        luxuriesForWhole, weightForWhole, luxuriesAlreadyChosen
                     )) {
                         DistributeLuxuryAcrossSingleRegion(
                             homelandData.StartingRegion, luxuryData.StartingCount,
-                            luxuriesForStarting, luxuriesAlreadyChosen
+                            luxuriesForStarting, weightForStarting, luxuriesAlreadyChosen
                         );
 
                         DistributeLuxuryAcrossMultipleRegions(
                             homelandData.OtherRegions, luxuryData.OtherCount,
-                            luxuriesForOthers, luxuriesAlreadyChosen
+                            luxuriesForOthers, weightForOthers, luxuriesAlreadyChosen
                         );
                     }
                 }
@@ -83,10 +87,13 @@ namespace Assets.Simulation.MapGeneration {
 
         private void DistributeLuxuryAcrossSingleRegion(
             MapRegion region, int nodeCount, List<IResourceDefinition> validLuxuries,
+            Dictionary<IResourceDefinition, int> weightForResources,
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = validLuxuries.Last();
+                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                    validLuxuries, 1, luxury => weightForResources[luxury]
+                ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
 
                 if(luxuriesAlreadyChosen.Contains(candidate)) {
@@ -111,11 +118,14 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private void DistributeLuxuryAcrossMultipleRegions(
-            IEnumerable<MapRegion> regions, int nodeCount, List<IResourceDefinition> validLuxuries,
+            IEnumerable<MapRegion> regions, int nodeCount, List<IResourceDefinition> validLuxuries,            
+            Dictionary<IResourceDefinition, int> weightForResources,
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = validLuxuries.Last();
+                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                    validLuxuries, 1, luxury => weightForResources[luxury]
+                ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
 
                 if(luxuriesAlreadyChosen.Contains(candidate)) {
@@ -142,10 +152,13 @@ namespace Assets.Simulation.MapGeneration {
         private bool TryDistributeLuxuryAcrossSingleAndMultipleRegions(
             MapRegion singleRegion, IEnumerable<MapRegion> multipleRegions, int singleNodeCount,
             int multipleNodeCount, List<IResourceDefinition> validLuxuries,
+            Dictionary<IResourceDefinition, int> weightForResources,
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = validLuxuries.Last();
+                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                    validLuxuries, 1, luxury => weightForResources[luxury]
+                ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
 
                 if(luxuriesAlreadyChosen.Contains(candidate)) {
@@ -195,32 +208,32 @@ namespace Assets.Simulation.MapGeneration {
         }
 
 
-        private List<IResourceDefinition> GetLuxuriesForStartingRegion(HomelandData homelandData) {
-            var priorityOfResources = homelandData.StartingData.GetResourceWeights();
+        private List<IResourceDefinition> GetLuxuriesForStartingRegion(
+            HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
+        ) {
+            weightOfResources = homelandData.StartingData.GetResourceWeights();
 
-            var retval = priorityOfResources.Keys.Where(resource => resource.Type == ResourceType.Luxury).ToList();
-
-            retval.Sort((first, second) => priorityOfResources[first].CompareTo(priorityOfResources[second]));
-
-            return retval;
-        }
-
-        private List<IResourceDefinition> GetLuxuriesForOtherRegions(HomelandData homelandData) {
-            var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.OtherRegions);
-
-            var retval = globalPriorityOfLuxuries.Keys.ToList();
-
-            retval.Sort((first, second) => globalPriorityOfLuxuries[first].CompareTo(globalPriorityOfLuxuries[second]));
+            var retval = weightOfResources.Keys.ToList();
 
             return retval;
         }
 
-        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(HomelandData homelandData) {
-            var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.AllRegions);
+        private List<IResourceDefinition> GetLuxuriesForOtherRegions(
+            HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
+        ) {
+            weightOfResources = MashTogetherPriorityDictionaries(homelandData, homelandData.OtherRegions);
 
-            var retval = globalPriorityOfLuxuries.Keys.ToList();
+            var retval = weightOfResources.Keys.ToList();
 
-            retval.Sort((first, second) => globalPriorityOfLuxuries[first].CompareTo(globalPriorityOfLuxuries[second]));
+            return retval;
+        }
+
+        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(
+            HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
+        ) {
+            weightOfResources = MashTogetherPriorityDictionaries(homelandData, homelandData.AllRegions);
+
+            var retval = weightOfResources.Keys.ToList();
 
             return retval;
         }
