@@ -15,42 +15,47 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class BonusResourceBalanceStrategy : IBalanceStrategy {
+    public class ResourceBalanceStrategy : IBalanceStrategy {
 
         #region instance fields and properties
 
         #region from IBalanceStrategy
 
-        public string Name { get { return "Bonus Resource Balance Strategy"; } }
+        public string Name { get { return "Resource Balance Strategy"; } }
 
         #endregion
 
         private Dictionary<YieldType, IResourceDefinition[]> BonusResourcesWithYield =
             new Dictionary<YieldType, IResourceDefinition[]>();
 
+        private List<IResourceDefinition> ScoreIncreasingCandidates;
+
 
 
         private IYieldEstimator           YieldEstimator;
         private IResourceNodeFactory      ResourceNodeFactory;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
-        private IMapScorer                MapScorer;
+        private ICellScorer               CellScorer;
         private ITechCanon                TechCanon;
+        private IStrategicCopiesLogic     StrategicCopiesLogic;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public BonusResourceBalanceStrategy(
+        public ResourceBalanceStrategy(
             IYieldEstimator yieldEstimator, IResourceNodeFactory resourceNodeFactory,
-            IResourceRestrictionCanon resourceRestrictionCanon, IMapScorer mapScorer, ITechCanon techCanon,
+            IResourceRestrictionCanon resourceRestrictionCanon, ICellScorer cellScorer, ITechCanon techCanon,
+            IStrategicCopiesLogic strategicCopiesLogic,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {
             YieldEstimator           = yieldEstimator;
             ResourceNodeFactory      = resourceNodeFactory;
             ResourceRestrictionCanon = resourceRestrictionCanon;
-            MapScorer                = mapScorer;
+            CellScorer               = cellScorer;
             TechCanon                = techCanon;
+            StrategicCopiesLogic     = strategicCopiesLogic;
 
             foreach(var yieldType in EnumUtil.GetValues<YieldType>()) {
                 BonusResourcesWithYield[yieldType] = availableResources.Where(
@@ -58,6 +63,8 @@ namespace Assets.Simulation.MapGeneration {
                                 YieldEstimator.GetYieldEstimateForResource(resource)[yieldType] > 0f
                 ).ToArray();
             }
+
+            ScoreIncreasingCandidates = availableResources.Where(resource => resource.Type != ResourceType.Luxury).ToList();
         }
 
         #endregion
@@ -73,7 +80,7 @@ namespace Assets.Simulation.MapGeneration {
 
             while(availableResources.Count > 0) {
                 var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
-                    availableResources, 1, resource => regionData.GetWeightOfResource(resource)
+                    availableResources, 1, GetResourceSelectionWeightFunction(region, regionData)
                 ).FirstOrDefault();
 
                 if(chosenResource == null) {
@@ -81,11 +88,15 @@ namespace Assets.Simulation.MapGeneration {
                 }
 
                 var cell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
-                    region.Cells, 1, GetResourceWeightFunction(chosenResource)
+                    region.Cells, 1, GetCellPlacementWeightFunction(chosenResource)
                 ).FirstOrDefault();
 
                 if(cell != null) {
                     var oldYield = YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
+
+                    int copies = chosenResource.Type == ResourceType.Strategic
+                               ? StrategicCopiesLogic.GetWeightedRandomCopies()
+                               : 0;
 
                     ResourceNodeFactory.BuildNode(cell, chosenResource, 0);
                     
@@ -103,21 +114,37 @@ namespace Assets.Simulation.MapGeneration {
         public bool TryIncreaseScore(
             MapRegion region, RegionData regionData, out float scoreAdded
         ) {
-            YieldSummary yieldAdded;
+            var candidateResources = new List<IResourceDefinition>(ScoreIncreasingCandidates);
 
-            var yieldTypes = EnumUtil.GetValues<YieldType>().ToList();
+            while(candidateResources.Any()) {
+                var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                    candidateResources, 1, GetResourceSelectionWeightFunction(region, regionData)
+                ).FirstOrDefault();
 
-            while(yieldTypes.Count > 0) {
-                var yieldType = yieldTypes.Random();
+                if(chosenResource == null) {
+                    break;
+                }
 
-                if(TryIncreaseYield(region, regionData, yieldType, out yieldAdded)) {
-                    scoreAdded = MapScorer.GetScoreOfYield(yieldAdded);
+                var cell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                    region.Cells, 1, GetCellPlacementWeightFunction(chosenResource)
+                ).FirstOrDefault();
+
+                if(cell != null) {
+                    float oldScore = CellScorer.GetScoreOfCell(cell);
+
+                    int copies = chosenResource.Type == ResourceType.Strategic
+                               ? StrategicCopiesLogic.GetWeightedRandomCopies()
+                               : 0;
+
+                    ResourceNodeFactory.BuildNode(cell, chosenResource, copies);
+                    
+                    scoreAdded = CellScorer.GetScoreOfCell(cell) - oldScore;
                     return true;
                 }else {
-                    yieldTypes.Remove(yieldType);
+                    candidateResources.Remove(chosenResource);
                 }
             }
-            
+
             scoreAdded = 0f;
             return false;
         }
@@ -131,7 +158,19 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
-        private Func<IHexCell, int> GetResourceWeightFunction(IResourceDefinition resource) {
+        private Func<IResourceDefinition, int> GetResourceSelectionWeightFunction(
+            MapRegion region, RegionData regionData
+        ) {
+            return delegate(IResourceDefinition resource) {
+                if(region.Cells.Any(cell => ResourceRestrictionCanon.IsResourceValidOnCell(resource, cell))) {
+                    return regionData.GetWeightOfResource(resource);
+                }else {
+                    return 0;
+                }
+            };
+        }
+
+        private Func<IHexCell, int> GetCellPlacementWeightFunction(IResourceDefinition resource) {
             return delegate(IHexCell cell) {
                 if(ResourceNodeFactory.CanBuildNode(cell, resource)) {
                     return ResourceRestrictionCanon.GetPlacementWeightOnCell(resource, cell);

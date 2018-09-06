@@ -9,14 +9,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        IRegionResourceTemplate StartingResources { get; }
-        IRegionResourceTemplate OtherResources    { get; }
-
         IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
 
         int RegionCount { get; }
 
-        HomelandYieldData YieldData { get; }
+        IYieldAndResourcesTemplate YieldAndResources { get; }
 
         #endregion
 

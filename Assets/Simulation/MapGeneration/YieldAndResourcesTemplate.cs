@@ -7,10 +7,20 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [Serializable]
-    public struct HomelandYieldData {
+    [CreateAssetMenu(menuName = "Civ Clone/Yield and Resources Template")]
+    public class YieldAndResourcesTemplate : ScriptableObject, IYieldAndResourcesTemplate {
 
         #region instance fields and properties
+
+        public float StrategicNodesPerCell {
+            get { return _strategicNodesPerCell; }
+        }
+        [SerializeField] private float _strategicNodesPerCell;
+
+        public float StrategicCopiesPerCell {
+            get { return _strategicCopiesPerCell; }
+        }
+        [SerializeField] private float _strategicCopiesPerCell;
 
         public float MinFoodPerCell {
             get { return _minFoodPerCell; }

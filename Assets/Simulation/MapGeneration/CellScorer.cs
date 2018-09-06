@@ -15,9 +15,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IYieldEstimator YieldEstimator;
-        private IMapScorer      MapScorer;
-        private ITechCanon      TechCanon;
+        private IYieldEstimator                                  YieldEstimator;
+        private IMapScorer                                       MapScorer;
+        private ITechCanon                                       TechCanon;
+        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
 
         #endregion
 
@@ -25,11 +26,13 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public CellScorer(
-            IYieldEstimator yieldEstimator, IMapScorer mapScorer, ITechCanon techCanon
+            IYieldEstimator yieldEstimator, IMapScorer mapScorer, ITechCanon techCanon,
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon
         ) {
-            YieldEstimator = yieldEstimator;
-            MapScorer      = mapScorer;
-            TechCanon      = techCanon;
+            YieldEstimator    = yieldEstimator;
+            MapScorer         = mapScorer;
+            TechCanon         = techCanon;
+            NodeLocationCanon = nodeLocationCanon;
         }
 
         #endregion
@@ -47,9 +50,16 @@ namespace Assets.Simulation.MapGeneration {
             var classicalYield = YieldEstimator.GetYieldEstimateForCell(cell, classicalTechs);
             var medievalYield  = YieldEstimator.GetYieldEstimateForCell(cell, medievalTechs);
 
-            float ancientScore   = MapScorer.GetScoreOfYield(ancientYield);
-            float classicalScore = MapScorer.GetScoreOfYield(classicalYield);
-            float medievalScore  = MapScorer.GetScoreOfYield(medievalYield);
+            var resourceNode = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+
+            float ancientScore = MapScorer.GetScoreOfYield(ancientYield) +
+                                 MapScorer.GetScoreOfResourceNode(resourceNode, ancientTechs);
+
+            float classicalScore = MapScorer.GetScoreOfYield(classicalYield) +
+                                   MapScorer.GetScoreOfResourceNode(resourceNode, classicalTechs);
+
+            float medievalScore = MapScorer.GetScoreOfYield(medievalYield) +
+                                  MapScorer.GetScoreOfResourceNode(resourceNode, medievalTechs);
 
             return (ancientScore + classicalScore + medievalScore) / 3f;
         }

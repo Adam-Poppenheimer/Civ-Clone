@@ -26,11 +26,11 @@ MonoBehaviour:
   _minStrategicCopies: 1
   _maxStrategicCopies: 10
   _yieldScoringWeights:
-    Food: 1.25
+    Food: 1.2
     Production: 1.5
-    Gold: 0.8
+    Gold: 1
     Culture: 2
-    Science: 0.5
+    Science: 0.6
   _maxLakeSize: 6
   _baseTerrainWeight: 201
   _terrainTemperatureWeight: 100

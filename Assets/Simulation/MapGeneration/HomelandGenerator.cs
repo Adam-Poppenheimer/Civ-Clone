@@ -25,6 +25,7 @@ namespace Assets.Simulation.MapGeneration {
         private IRiverGenerator         RiverGenerator;
         private IVegetationPainter      VegetationPainter;
         private IHomelandBalancer       HomelandBalancer;
+        private IStrategicDistributor   StrategicDistributor;
 
         private List<IBalanceStrategy> AvailableBalanceStrategies;
 
@@ -37,7 +38,7 @@ namespace Assets.Simulation.MapGeneration {
             IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ILuxuryDistributor luxuryDistributor, IRiverGenerator riverGenerator,
             IVegetationPainter vegetationPainter, List<IBalanceStrategy> availableBalanceStrategies,
-            IHomelandBalancer homelandBalancer
+            IHomelandBalancer homelandBalancer, IStrategicDistributor strategicDistributor
         ) {
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
@@ -46,6 +47,7 @@ namespace Assets.Simulation.MapGeneration {
             AvailableBalanceStrategies = availableBalanceStrategies;
             VegetationPainter          = vegetationPainter;
             HomelandBalancer           = homelandBalancer;
+            StrategicDistributor       = strategicDistributor;
         }
 
         #endregion
@@ -79,10 +81,10 @@ namespace Assets.Simulation.MapGeneration {
 
             var startingRegion = GetRegionNearestToCenter(regions);
 
-            var startingData   = new RegionData(
+            var startingData = new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (startingRegion, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(startingRegion, mapTemplate),
-                homelandTemplate.StartingResources, AvailableBalanceStrategies
+                AvailableBalanceStrategies
             );
 
             var otherRegions = regions.Where(region => region != startingRegion).ToList();
@@ -90,12 +92,12 @@ namespace Assets.Simulation.MapGeneration {
             var otherData = otherRegions.Select(region => new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (region, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(region, mapTemplate),
-                homelandTemplate.OtherResources, AvailableBalanceStrategies
+                AvailableBalanceStrategies
             )).ToList();
 
             return new HomelandData(
                 startingRegion, startingData, otherRegions, otherData,
-                homelandTemplate.LuxuryResourceData, homelandTemplate.YieldData
+                homelandTemplate.LuxuryResourceData, homelandTemplate.YieldAndResources
             );
         }
 
@@ -129,15 +131,8 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeYieldAndResources(HomelandData homelandData, IMapTemplate mapTemplate) {
-            LuxuryDistributor.DistributeLuxuriesAcrossHomeland(homelandData);
-
-            RegionGenerator.DistributeYieldAndResources(homelandData.StartingRegion, homelandData.StartingData);
-
-            for(int i = 0; i < homelandData.OtherRegions.Count; i++) {
-                RegionGenerator.DistributeYieldAndResources(
-                    homelandData.OtherRegions[i], homelandData.OtherRegionData[i]
-                );
-            }
+            LuxuryDistributor   .DistributeLuxuriesAcrossHomeland  (homelandData);
+            StrategicDistributor.DistributeStrategicsAcrossHomeland(homelandData);
 
             HomelandBalancer.BalanceHomelandYields(homelandData);
         }

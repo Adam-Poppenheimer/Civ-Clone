@@ -19,7 +19,6 @@ namespace Assets.Simulation.MapGeneration {
 
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
-        private IResourceDistributor   ResourceDistributor;
         private IMapGenerationConfig   Config;
         private ICellClimateLogic      CellClimateLogic;
 
@@ -30,14 +29,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid,
-            IResourceDistributor resourceDistributor,
             IMapGenerationConfig config, ICellClimateLogic cellClimateLogic
         ) {
-            ModLogic            = modLogic;
-            Grid                = grid;
-            ResourceDistributor = resourceDistributor;
-            Config              = config;
-            CellClimateLogic    = cellClimateLogic;
+            ModLogic         = modLogic;
+            Grid             = grid;
+            Config           = config;
+            CellClimateLogic = cellClimateLogic;
         }
 
         #endregion
@@ -88,10 +85,6 @@ namespace Assets.Simulation.MapGeneration {
                     ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
                 }
             }
-        }
-
-        public void DistributeYieldAndResources(MapRegion region, RegionData regionData) {
-            ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, regionData);
         }
 
         #endregion

@@ -8,13 +8,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ea69c8e982f58ca4587d38140f0300f7, type: 3}
-  m_Name: Other Region Resources
+  m_Script: {fileID: 11500000, guid: b8d6438dfc48f094d88ba6655fbf00fb, type: 3}
+  m_Name: Standard Yield And Resources
   m_EditorClassIdentifier: 
-  _strategicNodesPerCell: 0.1
+  _strategicNodesPerCell: 0.025
   _strategicCopiesPerCell: 0.1
-  _balanceResources: 1
-  _minFoodPerCell: 0
-  _minProductionPerCell: 0
-  _minScorePerCell: 3.5
-  _maxScorePerCell: 4.5
+  _minFoodPerCell: 1.3
+  _minProductionPerCell: 0.6
+  _minScorePerCell: 4.5
+  _maxScorePerCell: 5.5

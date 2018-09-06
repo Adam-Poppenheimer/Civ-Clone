@@ -8,13 +8,11 @@ using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IResourceDistributor {
+    public interface IStrategicDistributor {
 
         #region methods
 
-        void DistributeStrategicResourcesAcrossRegion(MapRegion region, RegionData regionData);
-
-        void DistributeResource(IResourceDefinition resource, IEnumerable<IHexCell> validLocations, int count);
+        void DistributeStrategicsAcrossHomeland(HomelandData homelandData);
 
         #endregion
 

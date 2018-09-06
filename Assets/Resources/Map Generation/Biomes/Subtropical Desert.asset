@@ -29,7 +29,7 @@ MonoBehaviour:
   _marshChancePerAdjacentWater: 0
   _marshChancePerAdjacentRiver: 0
   _balanceStrategyWeights:
-  - _balanceStrategy: Bonus Resource Balance Strategy
+  - _balanceStrategy: Resource Balance Strategy
     _weight: 100
   - _balanceStrategy: Oasis Balance Strategy
     _weight: 80

@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapGeneration {
 
         int DeepOceanLandPercentage { get; }
 
-        IRegionResourceTemplate ArchipelagoResources { get; }
+        IYieldAndResourcesTemplate ArchipelagoResources { get; }
 
         #endregion
 

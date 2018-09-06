@@ -90,11 +90,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeYieldAndResources(OceanData oceanData) {
-            foreach(var region in oceanData.ArchipelagoRegions) {
-                RegionData regionData = oceanData.GetRegionData(region);
-
-                RegionGenerator.DistributeYieldAndResources(region, regionData);
-            }
+            Debug.Log("Yield and resource distribution for oceans is currently unimplemented");
         }
 
         #endregion
@@ -132,7 +128,7 @@ namespace Assets.Simulation.MapGeneration {
             archipelagoRegionData = archipelagoRegions.Select(region => new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion(region, mapTemplate),
                 TemplateSelectionLogic.GetTopologyForLandRegion(region, mapTemplate),
-                oceanTemplate.ArchipelagoResources, AvailableBalanceStrategies
+                AvailableBalanceStrategies
             )).ToList();
         }
 

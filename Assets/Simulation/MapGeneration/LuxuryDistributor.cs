@@ -9,8 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.MapResources;
-
-using UnityCustomUtilities.Extensions;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -18,8 +17,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IResourceDistributor      ResourceDistributor;
         private IResourceRestrictionCanon ResourceRestrictionCanon;
+        private IMapGenerationConfig      Config;
+        private IResourceNodeFactory      NodeFactory;
 
         #endregion
 
@@ -27,10 +27,12 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public LuxuryDistributor(
-            IResourceDistributor resourceDistributor, IResourceRestrictionCanon resourceRestrictionCanon
+            IResourceRestrictionCanon resourceRestrictionCanon, IMapGenerationConfig config,
+            IResourceNodeFactory nodeFactory
         ) {
-            ResourceDistributor      = resourceDistributor;
             ResourceRestrictionCanon = resourceRestrictionCanon;
+            Config                   = config;
+            NodeFactory              = nodeFactory;
         }
 
         #endregion
@@ -96,7 +98,7 @@ namespace Assets.Simulation.MapGeneration {
                 );
 
                 if(validCells.Count() >= nodeCount) {
-                    ResourceDistributor.DistributeResource(candidate, validCells, nodeCount);
+                    DistributeResource(candidate, validCells, nodeCount);
                     luxuriesAlreadyChosen.Add(candidate);
                     return;
                 }
@@ -125,7 +127,7 @@ namespace Assets.Simulation.MapGeneration {
                 );
 
                 if(validCells.Count() >= nodeCount) {
-                    ResourceDistributor.DistributeResource(candidate, validCells, nodeCount);
+                    DistributeResource(candidate, validCells, nodeCount);
                     luxuriesAlreadyChosen.Add(candidate);
                     return;
                 }
@@ -159,14 +161,37 @@ namespace Assets.Simulation.MapGeneration {
                 );
 
                 if(validSingleCells.Count() >= singleNodeCount && validMultipleCells.Count() >= multipleNodeCount) {
-                    ResourceDistributor.DistributeResource(candidate, validSingleCells,   singleNodeCount);
-                    ResourceDistributor.DistributeResource(candidate, validMultipleCells, multipleNodeCount);
+                    DistributeResource(candidate, validSingleCells,   singleNodeCount);
+                    DistributeResource(candidate, validMultipleCells, multipleNodeCount);
                     luxuriesAlreadyChosen.Add(candidate);
                     return true;
                 }
             }
 
             return false;
+        }
+
+        private void DistributeResource(
+            IResourceDefinition resource, IEnumerable<IHexCell> validLocations,
+            int count
+        ) {
+            var nodeLocations = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                validLocations, count, GetResourceWeightFunction(resource)
+            );
+
+            if(nodeLocations.Count < count) {
+                Debug.LogWarningFormat(
+                    "Could not find enough valid locations to place {0} {1} after weighting. Only found {2}",
+                    count, resource.name, nodeLocations.Count
+                );
+            }
+
+            foreach(var location in nodeLocations) {
+                int copies = resource.Type == ResourceType.Strategic
+                           ? UnityEngine.Random.Range(Config.MinStrategicCopies, Config.MaxStrategicCopies) : 1;
+
+                NodeFactory.BuildNode(location, resource, copies);
+            }
         }
 
 
@@ -222,6 +247,12 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             return mashedTogetherPriorities;
+        }
+
+        private Func<IHexCell, int> GetResourceWeightFunction(IResourceDefinition resource) {
+            return delegate(IHexCell cell) {
+                return ResourceRestrictionCanon.GetPlacementWeightOnCell(resource, cell);
+            };
         }
 
         #endregion

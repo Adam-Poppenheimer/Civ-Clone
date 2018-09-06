@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -13,7 +14,9 @@ namespace Assets.Simulation.MapGeneration {
 
         float GetScoreOfYield(YieldSummary yield);
 
-        float GetScoreOfResourceNode(IResourceNode node);
+        float GetScoreOfResourceNode(
+            IResourceNode node, IEnumerable<ITechDefinition> availableTechs
+        );
 
         #endregion
 

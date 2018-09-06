@@ -14,16 +14,6 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from ICivHomelandTemplate
 
-        public IRegionResourceTemplate StartingResources {
-            get { return _startingResources; }
-        }
-        [SerializeField] private RegionResourceTemplate _startingResources;
-
-        public IRegionResourceTemplate OtherResources {
-            get { return _otherResources; }
-        }
-        [SerializeField] private RegionResourceTemplate _otherResources;
-
         public IEnumerable<LuxuryResourceData> LuxuryResourceData {
             get { return _luxuryResourceData; }
         }
@@ -34,10 +24,10 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(2, 20)] private int _regionCount;
 
-        public HomelandYieldData YieldData {
-            get { return _yieldData; }
+        public IYieldAndResourcesTemplate YieldAndResources {
+            get { return _yieldAndResources; }
         }
-        [SerializeField] private HomelandYieldData _yieldData;
+        [SerializeField] private YieldAndResourcesTemplate _yieldAndResources;
 
         #endregion
 

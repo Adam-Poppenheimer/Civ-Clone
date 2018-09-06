@@ -48,8 +48,8 @@ namespace Assets.Simulation.MapGeneration {
                 currentYield += YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
             }
 
-            float minFood       = homelandData.YieldData.MinFoodPerCell       * homelandData.Cells.Count();
-            float minProduction = homelandData.YieldData.MinProductionPerCell * homelandData.Cells.Count();
+            float minFood       = homelandData.YieldAndResources.MinFoodPerCell       * homelandData.Cells.Count();
+            float minProduction = homelandData.YieldAndResources.MinProductionPerCell * homelandData.Cells.Count();
 
             BringYieldTypeToMin(
                 YieldType.Food, minFood, homelandData, ref currentYield
@@ -59,8 +59,8 @@ namespace Assets.Simulation.MapGeneration {
                 YieldType.Production, minProduction, homelandData, ref currentYield
             );
 
-            float minScore = homelandData.YieldData.MinScorePerCell * homelandData.Cells.Count();
-            float maxScore = homelandData.YieldData.MaxScorePerCell * homelandData.Cells.Count();
+            float minScore = homelandData.YieldAndResources.MinScorePerCell * homelandData.Cells.Count();
+            float maxScore = homelandData.YieldAndResources.MaxScorePerCell * homelandData.Cells.Count();
 
             KeepScoreWithinBounds(homelandData, minScore, maxScore);
 

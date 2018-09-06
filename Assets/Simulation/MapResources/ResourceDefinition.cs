@@ -40,7 +40,7 @@ namespace Assets.Simulation.MapResources {
         public float Score {
             get { return _score; }
         }
-        [SerializeField, Range(1, 100)] private float _score;
+        [SerializeField, Range(0f, 20f)] private float _score;
 
 
         [SerializeField] private int GrasslandWeight;

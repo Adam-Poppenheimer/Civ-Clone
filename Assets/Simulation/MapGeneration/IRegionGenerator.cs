@@ -16,8 +16,6 @@ namespace Assets.Simulation.MapGeneration {
         void PaintTerrain     (MapRegion region, IRegionBiomeTemplate template);
         void AssignFloodPlains(IEnumerable<IHexCell> landCells);
 
-        void DistributeYieldAndResources(MapRegion region, RegionData regionData);
-
         #endregion
 
     }

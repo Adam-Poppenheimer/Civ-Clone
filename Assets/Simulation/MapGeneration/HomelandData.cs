@@ -54,7 +54,7 @@ namespace Assets.Simulation.MapGeneration {
 
         public IEnumerable<LuxuryResourceData> LuxuryResources { get; private set; }
 
-        public HomelandYieldData YieldData { get; private set; }
+        public IYieldAndResourcesTemplate YieldAndResources { get; private set; }
 
         #endregion
 
@@ -64,7 +64,7 @@ namespace Assets.Simulation.MapGeneration {
             MapRegion startingRegion, RegionData startingData,
             List<MapRegion> otherRegions, List<RegionData> otherRegionData, 
             IEnumerable<LuxuryResourceData> luxuryResources,
-            HomelandYieldData yieldData
+            IYieldAndResourcesTemplate yieldData
         ) {
             StartingRegion = startingRegion;
             StartingData   = startingData;
@@ -73,7 +73,7 @@ namespace Assets.Simulation.MapGeneration {
             _otherRegionData = otherRegionData;
 
             LuxuryResources = luxuryResources;
-            YieldData       = yieldData;
+            YieldAndResources       = yieldData;
         }
 
         #endregion

@@ -11,9 +11,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        public IRegionBiomeTemplate    Biome     { get; private set; }
-        public IRegionTopologyTemplate Topology  { get; private set; }
-        public IRegionResourceTemplate Resources { get; private set; }
+        public IRegionBiomeTemplate    Biome    { get; private set; }
+        public IRegionTopologyTemplate Topology { get; private set; }
 
         private Dictionary<IBalanceStrategy,    int> BalanceStrategyWeights;
         private Dictionary<IResourceDefinition, int> ResourceWeights;
@@ -28,12 +27,11 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         public RegionData(
-            IRegionBiomeTemplate biome, IRegionTopologyTemplate topology, IRegionResourceTemplate resources,
+            IRegionBiomeTemplate biome, IRegionTopologyTemplate topology,
             IEnumerable<IBalanceStrategy> availableBalanceStrategies
         ) {
             Biome                      = biome;
             Topology                   = topology;
-            Resources                  = resources;
             AvailableBalanceStrategies = availableBalanceStrategies;
         }
 

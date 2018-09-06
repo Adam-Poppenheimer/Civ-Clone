@@ -29,10 +29,10 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private int _regionSubdivisionZStep;
 
-        public IRegionResourceTemplate ArchipelagoResources {
+        public IYieldAndResourcesTemplate ArchipelagoResources {
             get { return _archipelagoResources; }
         }
-        [SerializeField] private RegionResourceTemplate _archipelagoResources;
+        [SerializeField] private YieldAndResourcesTemplate _archipelagoResources;
 
         #endregion
 
