@@ -49,12 +49,6 @@ namespace Assets.Simulation.MapGeneration {
         public void PlaceStartingUnitsInRegion(
             MapRegion region, ICivilization owner, IMapTemplate mapTemplate
         ) {
-            var bestLocation = GetBestStartingCell(region);
-
-            if(bestLocation == null) {
-                throw new InvalidOperationException("Failed to find a valid place to begin placing starting units");
-            }
-
             var centralLocation = GetBestStartingCell(region);
 
             if(centralLocation == null) {
@@ -68,14 +62,17 @@ namespace Assets.Simulation.MapGeneration {
 
                 var location = Grid.GetCellsInRadius(centralLocation, 2).Where(
                     cell => !UnitPositionCanon.GetPossessionsOfOwner(cell).Any() &&
-                            UnitFactory.CanBuildUnit(cell, unitTemplate, owner)
+                            UnitFactory.CanBuildUnit(cell, unitTemplate, owner) &&
+                            cell != null
                 ).FirstOrDefault();
 
                 if(location == null) {
-                    Debug.LogErrorFormat("Failed to place starting unit {0} for civ {1}", unitTemplate, owner);
+                    throw new InvalidOperationException(
+                        string.Format("Failed to place starting unit {0} for civ {1}", unitTemplate, owner)
+                    );
+                }else {
+                    UnitFactory.BuildUnit(location, unitTemplate, owner);
                 }
-
-                UnitFactory.BuildUnit(location, unitTemplate, owner);
             }
         }
 

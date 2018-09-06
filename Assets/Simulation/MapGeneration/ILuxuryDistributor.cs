@@ -9,7 +9,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void DistributeLuxuriesAcrossHomeland(CivHomelandData homelandData);
+        void DistributeLuxuriesAcrossHomeland(HomelandData homelandData);
 
         #endregion
 

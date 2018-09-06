@@ -53,7 +53,7 @@ namespace Assets.Simulation.MapGeneration {
             return mapTemplate.RegionTopologies.Random();
         }
 
-        public ICivHomelandTemplate GetHomelandTemplateForCiv(ICivilization civ, IMapTemplate mapTemplate) {
+        public IHomelandTemplate GetHomelandTemplateForCiv(ICivilization civ, IMapTemplate mapTemplate) {
             return mapTemplate.HomelandTemplates.Random();
         }
 

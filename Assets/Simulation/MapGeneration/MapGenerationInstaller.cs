@@ -34,11 +34,11 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
             Container.Bind<IResourceDistributor>       ().To<ResourceDistributor>       ().AsSingle();
             Container.Bind<IMapScorer>                 ().To<MapScorer>                 ().AsSingle();
-            Container.Bind<IRegionBalancer>            ().To<RegionBalancer>            ().AsSingle();
+            Container.Bind<IHomelandBalancer>            ().To<HomelandBalancer>            ().AsSingle();
             Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
             Container.Bind<IStrategicCopiesLogic>      ().To<StrategicCopiesLogic>      ().AsSingle();
             Container.Bind<IStartingUnitPlacementLogic>().To<StartingUnitPlacementLogic>().AsSingle();
-            Container.Bind<ICivHomelandGenerator>      ().To<CivHomelandGenerator>      ().AsSingle();
+            Container.Bind<IHomelandGenerator>      ().To<HomelandGenerator>      ().AsSingle();
             Container.Bind<IGridPartitionLogic>        ().To<GridPartitionLogic>        ().AsSingle();
             Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();

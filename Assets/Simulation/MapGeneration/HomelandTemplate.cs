@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.MapGeneration {
 
     [CreateAssetMenu(menuName = "Civ Clone/Civ Homeland Template")]
-    public class CivHomelandTemplate : ScriptableObject, ICivHomelandTemplate {
+    public class HomelandTemplate : ScriptableObject, IHomelandTemplate {
 
         #region instance fields and properties
 
@@ -33,6 +33,11 @@ namespace Assets.Simulation.MapGeneration {
             get { return _regionCount; }
         }
         [SerializeField, Range(2, 20)] private int _regionCount;
+
+        public HomelandYieldData YieldData {
+            get { return _yieldData; }
+        }
+        [SerializeField] private HomelandYieldData _yieldData;
 
         #endregion
 

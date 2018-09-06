@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private class OceanAndContinentData {
 
-            public Dictionary<ICivilization, CivHomelandData> HomelandDataForCiv;
+            public Dictionary<ICivilization, HomelandData> HomelandDataForCiv;
             public OceanData                                  OceanData;
 
         }
@@ -36,7 +36,7 @@ namespace Assets.Simulation.MapGeneration {
         private IStartingUnitPlacementLogic StartingUnitPlacementLogic;
         private IGridPartitionLogic         GridPartitionLogic;
         private IWaterRationalizer          WaterRationalizer;
-        private ICivHomelandGenerator       HomelandGenerator;
+        private IHomelandGenerator       HomelandGenerator;
         private ITemplateSelectionLogic     TemplateSelectionLogic;
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
@@ -51,7 +51,7 @@ namespace Assets.Simulation.MapGeneration {
             IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
             IStartingUnitPlacementLogic startingUnitPlacementLogic,
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
-            ICivHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
+            IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic
         ) {
             Config                     = config;
@@ -139,7 +139,7 @@ namespace Assets.Simulation.MapGeneration {
                 false, GetExpansionWeightFunction(partition, mapTemplate)
             );
 
-            var homelandOfCivs = new Dictionary<ICivilization, CivHomelandData>();
+            var homelandOfCivs = new Dictionary<ICivilization, HomelandData>();
 
             for(int i = 0; i < CivFactory.AllCivilizations.Count; i++) {
                 var civ = CivFactory.AllCivilizations[i];

@@ -20,7 +20,6 @@ namespace Assets.Simulation.MapGeneration {
         private ICellModificationLogic ModLogic;
         private IHexGrid               Grid;
         private IResourceDistributor   ResourceDistributor;
-        private IRegionBalancer        RegionBalancer;
         private IMapGenerationConfig   Config;
         private ICellClimateLogic      CellClimateLogic;
 
@@ -31,13 +30,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid,
-            IResourceDistributor resourceDistributor, IRegionBalancer regionBalancer,
+            IResourceDistributor resourceDistributor,
             IMapGenerationConfig config, ICellClimateLogic cellClimateLogic
         ) {
             ModLogic            = modLogic;
             Grid                = grid;
             ResourceDistributor = resourceDistributor;
-            RegionBalancer      = regionBalancer;
             Config              = config;
             CellClimateLogic    = cellClimateLogic;
         }
@@ -94,8 +92,6 @@ namespace Assets.Simulation.MapGeneration {
 
         public void DistributeYieldAndResources(MapRegion region, RegionData regionData) {
             ResourceDistributor.DistributeStrategicResourcesAcrossRegion(region, regionData);
-
-            RegionBalancer.BalanceRegionYields(region, regionData);
         }
 
         #endregion

@@ -14,14 +14,6 @@ namespace Assets.Simulation.MapGeneration {
         float StrategicNodesPerCell  { get; }
         float StrategicCopiesPerCell { get; }
 
-        bool BalanceResources { get; }
-
-        float MinFoodPerCell       { get; }
-        float MinProductionPerCell { get; }
-
-        float MinScorePerCell { get; }
-        float MaxScorePerCell { get; }
-
         #endregion
 
     }

@@ -61,7 +61,7 @@ MonoBehaviour:
   - _resource: {fileID: 11400000, guid: ea1718b705d910148b3d266deacd5064, type: 2}
     _weight: 80
   - _resource: {fileID: 11400000, guid: cd19cf15bd9071d4a978f3fdb04d66fc, type: 2}
-    _weight: 30
+    _weight: 1000
   - _resource: {fileID: 11400000, guid: 32b854ea772785641ba2b70d88b207f8, type: 2}
     _weight: 10
   - _resource: {fileID: 11400000, guid: 7511dd01d7514264e9209565504e92ca, type: 2}

@@ -5,11 +5,11 @@ using System.Linq;
 using System.Text;
 
 
-using Assets.Simulation.MapResources;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class CivHomelandData {
+    public class HomelandData {
 
         #region instance fields and properties
 
@@ -40,17 +40,31 @@ namespace Assets.Simulation.MapGeneration {
         }
         private List<MapRegion> _allRegions;
 
+        public IEnumerable<IHexCell> Cells {
+            get {
+                if(_cells == null) {
+                    _cells = AllRegions.SelectMany(region => region.Cells).ToList();
+                }
+
+                return _cells;
+            }
+        }
+        private List<IHexCell> _cells;
+
 
         public IEnumerable<LuxuryResourceData> LuxuryResources { get; private set; }
+
+        public HomelandYieldData YieldData { get; private set; }
 
         #endregion
 
         #region constructors
 
-        public CivHomelandData(
+        public HomelandData(
             MapRegion startingRegion, RegionData startingData,
             List<MapRegion> otherRegions, List<RegionData> otherRegionData, 
-            IEnumerable<LuxuryResourceData> luxuryResources           
+            IEnumerable<LuxuryResourceData> luxuryResources,
+            HomelandYieldData yieldData
         ) {
             StartingRegion = startingRegion;
             StartingData   = startingData;
@@ -59,6 +73,7 @@ namespace Assets.Simulation.MapGeneration {
             _otherRegionData = otherRegionData;
 
             LuxuryResources = luxuryResources;
+            YieldData       = yieldData;
         }
 
         #endregion

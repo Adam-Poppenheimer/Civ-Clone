@@ -117,7 +117,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
         public void GetYieldEstimateForCell_IgnoresVegetationIfExpectedImprovementRequestsIt() {
             var cell = BuildCell();
 
-            var improvement = BuildImprovementTemplate(
+            BuildImprovementTemplate(
                 clearsVegetationWhenBuilt: true, isAvailable: true, isValidOnCell: true
             );
 
@@ -138,7 +138,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
 
             var node = BuildResourceNode(cell, BuildResourceDefinition(YieldSummary.Empty, YieldSummary.Empty, true));
 
-            var improvementTemplate = BuildImprovementTemplate(
+            BuildImprovementTemplate(
                 clearsVegetationWhenBuilt: false, isAvailable: true, isValidOnCell: true
             );
 

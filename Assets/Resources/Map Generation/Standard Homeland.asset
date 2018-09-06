@@ -21,3 +21,8 @@ MonoBehaviour:
   - _startingCount: 0
     _otherCount: 2
   _regionCount: 8
+  _yieldData:
+    _minFoodPerCell: 1.5
+    _minProductionPerCell: 0.75
+    _minScorePerCell: 3.7
+    _maxScorePerCell: 4.7

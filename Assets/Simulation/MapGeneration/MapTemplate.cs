@@ -24,10 +24,10 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(2, 10)] private int _civCount = 8;
 
-        public IEnumerable<ICivHomelandTemplate> HomelandTemplates {
-            get { return _homelandTemplates.Cast<ICivHomelandTemplate>(); }
+        public IEnumerable<IHomelandTemplate> HomelandTemplates {
+            get { return _homelandTemplates.Cast<IHomelandTemplate>(); }
         }
-        [SerializeField] private List<CivHomelandTemplate> _homelandTemplates;
+        [SerializeField] private List<HomelandTemplate> _homelandTemplates;
 
         public IEnumerable<IOceanTemplate> OceanTemplates {
             get { return _oceanTemplates.Cast<IOceanTemplate>(); }

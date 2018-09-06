@@ -28,44 +28,6 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private float _strategicCopiesPerCell;
 
-
-        public bool BalanceResources {
-            get {
-                return _balanceResources;
-            }
-        }
-        [SerializeField] private bool _balanceResources;
-
-
-        public float MinFoodPerCell {
-            get {
-                return _minFoodPerCell;
-            }
-        }
-        [SerializeField] private float _minFoodPerCell;
-
-        public float MinProductionPerCell {
-            get {
-                return _minProductionPerCell;
-            }
-        }
-        [SerializeField] private float _minProductionPerCell;
-
-
-        public float MinScorePerCell {
-            get {
-                return _minScorePerCell;
-            }
-        }
-        [SerializeField] private float _minScorePerCell;
-
-        public float MaxScorePerCell {
-            get {
-                return _maxScorePerCell;
-            }
-        }
-        [SerializeField] private float _maxScorePerCell;
-
         #endregion
 
         #endregion

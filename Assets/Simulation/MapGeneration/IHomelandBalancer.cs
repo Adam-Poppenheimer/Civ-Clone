@@ -3,11 +3,11 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface IRegionBalancer {
+    public interface IHomelandBalancer {
 
         #region methods
 
-        void BalanceRegionYields(MapRegion region, RegionData regionData);
+        void BalanceHomelandYields(HomelandData homelandData);
 
         #endregion
 

@@ -16,7 +16,7 @@ namespace Assets.Simulation.MapGeneration {
 
         int CivCount { get; }
 
-        IEnumerable<ICivHomelandTemplate> HomelandTemplates { get; }
+        IEnumerable<IHomelandTemplate> HomelandTemplates { get; }
         IEnumerable<IOceanTemplate>       OceanTemplates    { get; }
 
         IEnumerable<IRegionBiomeTemplate>    RegionBiomes     { get; }

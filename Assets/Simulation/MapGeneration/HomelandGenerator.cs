@@ -9,14 +9,13 @@ using Zenject;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.MapResources;
 
 using UnityCustomUtilities.Extensions;
 using UnityCustomUtilities.DataStructures;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public class CivHomelandGenerator : ICivHomelandGenerator {
+    public class HomelandGenerator : IHomelandGenerator {
 
         #region instance fields and properties
 
@@ -25,6 +24,7 @@ namespace Assets.Simulation.MapGeneration {
         private ILuxuryDistributor      LuxuryDistributor;
         private IRiverGenerator         RiverGenerator;
         private IVegetationPainter      VegetationPainter;
+        private IHomelandBalancer       HomelandBalancer;
 
         private List<IBalanceStrategy> AvailableBalanceStrategies;
 
@@ -33,10 +33,11 @@ namespace Assets.Simulation.MapGeneration {
         #region constructors
 
         [Inject]
-        public CivHomelandGenerator(
+        public HomelandGenerator(
             IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ILuxuryDistributor luxuryDistributor, IRiverGenerator riverGenerator,
-            IVegetationPainter vegetationPainter, List<IBalanceStrategy> availableBalanceStrategies
+            IVegetationPainter vegetationPainter, List<IBalanceStrategy> availableBalanceStrategies,
+            IHomelandBalancer homelandBalancer
         ) {
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
@@ -44,6 +45,7 @@ namespace Assets.Simulation.MapGeneration {
             RiverGenerator             = riverGenerator;
             AvailableBalanceStrategies = availableBalanceStrategies;
             VegetationPainter          = vegetationPainter;
+            HomelandBalancer           = homelandBalancer;
         }
 
         #endregion
@@ -52,9 +54,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from ICivHomelandGenerator
 
-        public CivHomelandData GetHomelandData(
+        public HomelandData GetHomelandData(
             ICivilization civ, List<MapSection> landSections, List<MapSection> waterSections,
-            GridPartition partition, ICivHomelandTemplate homelandTemplate, IMapTemplate mapTemplate
+            GridPartition partition, IHomelandTemplate homelandTemplate, IMapTemplate mapTemplate
         ) {
             var landChunks  = new List<List<MapSection>>();
             var waterChunks = new List<List<MapSection>>();
@@ -91,14 +93,13 @@ namespace Assets.Simulation.MapGeneration {
                 homelandTemplate.OtherResources, AvailableBalanceStrategies
             )).ToList();
 
-            return new CivHomelandData(
-                startingRegion, startingData,
-                otherRegions,   otherData,
-                homelandTemplate.LuxuryResourceData
+            return new HomelandData(
+                startingRegion, startingData, otherRegions, otherData,
+                homelandTemplate.LuxuryResourceData, homelandTemplate.YieldData
             );
         }
 
-        public void GenerateTopologyAndEcology(CivHomelandData homelandData, IMapTemplate mapTemplate) {
+        public void GenerateTopologyAndEcology(HomelandData homelandData, IMapTemplate mapTemplate) {
             var regions = homelandData.OtherRegions.ToList();
             regions.Add(homelandData.StartingRegion);
 
@@ -127,7 +128,7 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        public void DistributeYieldAndResources(CivHomelandData homelandData, IMapTemplate mapTemplate) {
+        public void DistributeYieldAndResources(HomelandData homelandData, IMapTemplate mapTemplate) {
             LuxuryDistributor.DistributeLuxuriesAcrossHomeland(homelandData);
 
             RegionGenerator.DistributeYieldAndResources(homelandData.StartingRegion, homelandData.StartingData);
@@ -137,6 +138,8 @@ namespace Assets.Simulation.MapGeneration {
                     homelandData.OtherRegions[i], homelandData.OtherRegionData[i]
                 );
             }
+
+            HomelandBalancer.BalanceHomelandYields(homelandData);
         }
 
         #endregion

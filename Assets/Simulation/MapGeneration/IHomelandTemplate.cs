@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.MapGeneration {
 
-    public interface ICivHomelandTemplate {
+    public interface IHomelandTemplate {
 
         #region properties
 
@@ -15,6 +15,8 @@ namespace Assets.Simulation.MapGeneration {
         IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
 
         int RegionCount { get; }
+
+        HomelandYieldData YieldData { get; }
 
         #endregion
 

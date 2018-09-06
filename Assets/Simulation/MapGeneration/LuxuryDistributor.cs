@@ -39,7 +39,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from ILuxuryDistributor
 
-        public void DistributeLuxuriesAcrossHomeland(CivHomelandData homelandData) {
+        public void DistributeLuxuriesAcrossHomeland(HomelandData homelandData) {
             List<IResourceDefinition> luxuriesForStarting = GetLuxuriesForStartingRegion(homelandData);
             List<IResourceDefinition> luxuriesForOthers   = GetLuxuriesForOtherRegions  (homelandData);
             List<IResourceDefinition> luxuriesForWhole    = GetLuxuriesForWholeHomeland (homelandData);
@@ -170,7 +170,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
 
-        private List<IResourceDefinition> GetLuxuriesForStartingRegion(CivHomelandData homelandData) {
+        private List<IResourceDefinition> GetLuxuriesForStartingRegion(HomelandData homelandData) {
             var priorityOfResources = homelandData.StartingData.GetResourceWeights();
 
             var retval = priorityOfResources.Keys.Where(resource => resource.Type == ResourceType.Luxury).ToList();
@@ -180,7 +180,7 @@ namespace Assets.Simulation.MapGeneration {
             return retval;
         }
 
-        private List<IResourceDefinition> GetLuxuriesForOtherRegions(CivHomelandData homelandData) {
+        private List<IResourceDefinition> GetLuxuriesForOtherRegions(HomelandData homelandData) {
             var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.OtherRegions);
 
             var retval = globalPriorityOfLuxuries.Keys.ToList();
@@ -190,7 +190,7 @@ namespace Assets.Simulation.MapGeneration {
             return retval;
         }
 
-        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(CivHomelandData homelandData) {
+        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(HomelandData homelandData) {
             var globalPriorityOfLuxuries = MashTogetherPriorityDictionaries(homelandData, homelandData.AllRegions);
 
             var retval = globalPriorityOfLuxuries.Keys.ToList();
@@ -201,7 +201,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private Dictionary<IResourceDefinition, int> MashTogetherPriorityDictionaries(
-            CivHomelandData homelandData, IEnumerable<MapRegion> allRegions
+            HomelandData homelandData, IEnumerable<MapRegion> allRegions
         ) {
             var allRegionData = allRegions.Select(region => homelandData.GetDataOfRegion(region));
 
