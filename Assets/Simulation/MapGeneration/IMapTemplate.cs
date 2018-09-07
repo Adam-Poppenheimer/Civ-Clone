@@ -37,8 +37,19 @@ namespace Assets.Simulation.MapGeneration {
         float ContinentSeparationLineXMax { get; }
 
 
+
+        int HardMapBorderX { get; }
+        int HardMapBorderZ { get; }
+
+        int SoftMapBorderX { get; }
+        int SoftMapBorderZ { get; }
+
+        int SoftBorderAvoidanceWeight { get; }
+
+
         int NeighborsInContinentWeight     { get; }
         int DistanceFromSeedCentroidWeight { get; }
+        int DistanceFromMapCenterWeight    { get; }
 
         ReadOnlyCollection<IUnitTemplate> StartingUnits { get; }
 

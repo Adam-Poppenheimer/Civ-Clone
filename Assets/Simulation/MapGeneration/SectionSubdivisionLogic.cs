@@ -17,17 +17,15 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid             Grid;
-        private IMapGenerationConfig Config;
+        private IHexGrid Grid;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public SectionSubdivisionLogic(IHexGrid grid, IMapGenerationConfig config) {
-            Grid   = grid;
-            Config = config;
+        public SectionSubdivisionLogic(IHexGrid grid) {
+            Grid = grid;
         }
 
         #endregion
@@ -56,7 +54,9 @@ namespace Assets.Simulation.MapGeneration {
             }            
 
             for(int i = 0; i < chunkCount; i++) {
-                var startingSection = GetStartingSection(unassignedSections, startingSections, minSeedSeparation);
+                var startingSection = GetStartingSection(
+                    unassignedSections, startingSections, minSeedSeparation, mapTemplate
+                );
 
                 unfinishedChunks.Add(new List<MapSection>() { startingSection });
 
@@ -119,12 +119,12 @@ namespace Assets.Simulation.MapGeneration {
 
         private MapSection GetStartingSection(
             HashSet<MapSection> unassignedSections, IEnumerable<MapSection> startingSections,
-            int minSeparation
+            int minSeparation, IMapTemplate mapTemplate
         ) {
             var candidates = new List<MapSection>();
 
             foreach(var unassignedSection in unassignedSections) {
-                if(unassignedSection.Cells.Count == 0 || IsWithinSoftBorder(unassignedSection.CentroidCell)) {
+                if(unassignedSection.Cells.Count == 0 || IsWithinSoftBorder(unassignedSection.CentroidCell, mapTemplate)) {
                     continue;
                 }
 
@@ -177,12 +177,12 @@ namespace Assets.Simulation.MapGeneration {
             return false;
         }
 
-        private bool IsWithinSoftBorder(IHexCell cell) {
+        private bool IsWithinSoftBorder(IHexCell cell, IMapTemplate template) {
             var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
             var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
 
-            return xOffset <= Config.SoftMapBorderX || Grid.CellCountX - xOffset <= Config.SoftMapBorderX
-                || zOffset <= Config.SoftMapBorderZ || Grid.CellCountZ - zOffset <= Config.SoftMapBorderZ;
+            return xOffset <= template.SoftMapBorderX || Grid.CellCountX - xOffset <= template.SoftMapBorderX
+                || zOffset <= template.SoftMapBorderZ || Grid.CellCountZ - zOffset <= template.SoftMapBorderZ;
         }
 
         #endregion

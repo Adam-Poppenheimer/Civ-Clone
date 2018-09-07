@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15a82a245bf1d854a97bd6233e169f9d, type: 3}
-  m_Name: Test Map
+  m_Name: Continents
   m_EditorClassIdentifier: 
   _civCount: 8
   _homelandTemplates:
@@ -40,12 +40,16 @@ MonoBehaviour:
   _continentalLandPercentage: 30
   _voronoiPointCount: 800
   _voronoiPartitionIterations: 2
-  _minStartingLocationDistance: 6
+  _minStartingLocationDistance: 8
   _separateContinents: 1
   _continentSeparationLineXMin: 0.4
   _continentSeparationLineXMax: 0.6
   _neighborsInContinentWeight: 100
   _distanceFromSeedCentroidWeight: -50
+  _distanceFromMapCenterWeight: 0
+  _softMapBorderX: 3
+  _softMapBorderZ: 3
+  _softBorderAvoidanceWeight: 10
   _startingUnits:
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}

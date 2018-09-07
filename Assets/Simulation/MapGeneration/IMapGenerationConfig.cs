@@ -17,15 +17,6 @@ namespace Assets.Simulation.MapGeneration {
         int LandPercentage { get; }
 
 
-        int HardMapBorderX { get; }
-        int HardMapBorderZ { get; }
-
-        int SoftMapBorderX { get; }
-        int SoftMapBorderZ { get; }
-
-        int SoftBorderAvoidanceWeight { get; }
-
-
         float LowTemperature  { get; }
         float HighTemperature { get; }
 

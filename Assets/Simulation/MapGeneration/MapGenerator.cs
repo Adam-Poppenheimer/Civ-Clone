@@ -204,12 +204,14 @@ namespace Assets.Simulation.MapGeneration {
         private ExpansionWeightFunction GetExpansionWeightFunction(
             GridPartition partition, IMapTemplate template
         ) {
+            var middleCell = Grid.GetCellAtOffset(Grid.CellCountX / 2, Grid.CellCountZ / 2);
+
             return delegate(MapSection section, List<MapSection> chunk) {
-                if(IsWithinHardBorder(section.CentroidCell)) {
+                if(IsWithinHardBorder(section.CentroidCell, template)) {
                     return 0;
                 }
 
-                int borderAvoidanceWeight = GetBorderAvoidanceWeight(section.CentroidCell);
+                int borderAvoidanceWeight = GetBorderAvoidanceWeight(section.CentroidCell, template);
 
                 int neighborsInContinent = partition.GetNeighbors(section).Intersect(chunk).Count();
                 int neighborsInContinentWeight = neighborsInContinent * template.NeighborsInContinentWeight;
@@ -217,41 +219,45 @@ namespace Assets.Simulation.MapGeneration {
                 int distanceFromSeedCentroid = Grid.GetDistance(chunk[0].CentroidCell, section.CentroidCell);
                 int distanceFromSeedCentroidWeight = distanceFromSeedCentroid * template.DistanceFromSeedCentroidWeight;
 
-                int weight = 1 + Math.Max(0, neighborsInContinentWeight + distanceFromSeedCentroidWeight + borderAvoidanceWeight);
+                int distanceFromMapCenter = Grid.GetDistance(section.CentroidCell, middleCell) * template.DistanceFromMapCenterWeight;
+
+                int weight = 1 + Math.Max(
+                    0, neighborsInContinentWeight + distanceFromSeedCentroidWeight + borderAvoidanceWeight + distanceFromMapCenter
+                );
 
                 return weight;
             };
         }
 
-        private int GetBorderAvoidanceWeight(IHexCell cell) {
+        private int GetBorderAvoidanceWeight(IHexCell cell, IMapTemplate template) {
             int distanceIntoBorderX = 0, distanceIntoBorderZ = 0;
 
             var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
             var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
 
-            if(xOffset < Config.SoftMapBorderX) {
-                distanceIntoBorderX = Config.SoftMapBorderX - xOffset;
+            if(xOffset < template.SoftMapBorderX) {
+                distanceIntoBorderX = template.SoftMapBorderX - xOffset;
 
-            }else if(Grid.CellCountX - xOffset < Config.SoftMapBorderX) {
-                distanceIntoBorderX = Config.SoftMapBorderX - (Grid.CellCountX - xOffset);
+            }else if(Grid.CellCountX - xOffset < template.SoftMapBorderX) {
+                distanceIntoBorderX = template.SoftMapBorderX - (Grid.CellCountX - xOffset);
             }
 
-            if(zOffset < Config.SoftMapBorderZ) {
-                distanceIntoBorderZ = Config.SoftMapBorderZ - zOffset;
+            if(zOffset < template.SoftMapBorderZ) {
+                distanceIntoBorderZ = template.SoftMapBorderZ - zOffset;
 
-            }else if(Grid.CellCountZ - zOffset < Config.SoftMapBorderZ) {
-                distanceIntoBorderZ = Config.SoftMapBorderZ - (Grid.CellCountZ - zOffset);
+            }else if(Grid.CellCountZ - zOffset < template.SoftMapBorderZ) {
+                distanceIntoBorderZ = template.SoftMapBorderZ - (Grid.CellCountZ - zOffset);
             }
 
-            return -(distanceIntoBorderX + distanceIntoBorderZ) * Config.SoftBorderAvoidanceWeight;
+            return -(distanceIntoBorderX + distanceIntoBorderZ) * template.SoftBorderAvoidanceWeight;
         }
 
-        private bool IsWithinHardBorder(IHexCell cell) {
+        private bool IsWithinHardBorder(IHexCell cell, IMapTemplate template) {
             var xOffset = HexCoordinates.ToOffsetCoordinateX(cell.Coordinates);
             var zOffset = HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates);
 
-            return xOffset <= Config.HardMapBorderX || Grid.CellCountX - xOffset <= Config.HardMapBorderX
-                || zOffset <= Config.HardMapBorderZ || Grid.CellCountZ - zOffset <= Config.HardMapBorderZ;
+            return xOffset <= template.HardMapBorderX || Grid.CellCountX - xOffset <= template.HardMapBorderX
+                || zOffset <= template.HardMapBorderZ || Grid.CellCountZ - zOffset <= template.HardMapBorderZ;
         }
 
         #endregion

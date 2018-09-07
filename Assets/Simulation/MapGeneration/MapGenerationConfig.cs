@@ -32,32 +32,6 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField, Range(5, 95)] private int _landPercentage = 50;
 
 
-        public int HardMapBorderX {
-            get { return _hardMapBorderX; }
-        }
-        [SerializeField, Range(0, 10)] private int _hardMapBorderX = 2;
-
-        public int HardMapBorderZ {
-            get { return _hardMapBorderZ; }
-        }
-        [SerializeField, Range(0, 10)] private int _hardMapBorderZ = 2;
-
-        public int SoftMapBorderX {
-            get { return _softMapBorderX; }
-        }
-        [SerializeField, Range(0, 10)] private int _softMapBorderX = 2;
-
-        public int SoftMapBorderZ {
-            get { return _softMapBorderZ; }
-        }
-        [SerializeField, Range(0, 10)] private int _softMapBorderZ = 2;
-
-        public int SoftBorderAvoidanceWeight {
-            get { return _softBorderAvoidanceWeight; }
-        }
-        [SerializeField] private int _softBorderAvoidanceWeight = 10;
-
-
 
         public float LowTemperature {
             get { return _lowTemperature; }

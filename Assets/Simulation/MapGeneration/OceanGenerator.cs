@@ -18,7 +18,6 @@ namespace Assets.Simulation.MapGeneration {
         private ICellModificationLogic  ModLogic;
         private IRegionGenerator        RegionGenerator;
         private ITemplateSelectionLogic TemplateSelectionLogic;
-        private IMapGenerationConfig    Config;
         private IHexGrid                Grid;
 
         private List<IBalanceStrategy> AvailableBalanceStrategies;
@@ -30,13 +29,12 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public OceanGenerator(
             ICellModificationLogic modLogic, IRegionGenerator regionGenerator,
-            ITemplateSelectionLogic templateSelectionLogic, IMapGenerationConfig config,
-            IHexGrid grid, List<IBalanceStrategy> availableBalanceStrategies
+            ITemplateSelectionLogic templateSelectionLogic, IHexGrid grid,
+            List<IBalanceStrategy> availableBalanceStrategies
         ) {
             ModLogic                   = modLogic;
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
-            Config                     = config;
             Grid                       = grid;
             AvailableBalanceStrategies = availableBalanceStrategies;
         }
@@ -104,7 +102,7 @@ namespace Assets.Simulation.MapGeneration {
             int landSectionCount = Mathf.RoundToInt(oceanTemplate.DeepOceanLandPercentage * 0.01f * deepOceanSections.Count());
 
             var deepOceanLand = WeightedRandomSampler<MapSection>.SampleElementsFromSet(
-                deepOceanSections, landSectionCount, ArchipelagoWeightFunction
+                deepOceanSections, landSectionCount, GetArchipelagoWeightFunction(mapTemplate)
             ).ToList();
 
             var deepOceanWater = deepOceanSections.Except(deepOceanLand).ToList();
@@ -198,19 +196,21 @@ namespace Assets.Simulation.MapGeneration {
                 && centroidCoordZ <  zCoordinateMax;
         }
 
-        private int ArchipelagoWeightFunction(MapSection section) {
-            int centroidCellX = HexCoordinates.ToOffsetCoordinateX(section.CentroidCell.Coordinates);
-            int centroidCellZ = HexCoordinates.ToOffsetCoordinateZ(section.CentroidCell.Coordinates);
+        private Func<MapSection, int> GetArchipelagoWeightFunction(IMapTemplate template) {
+            return delegate(MapSection section) {
+                int centroidCellX = HexCoordinates.ToOffsetCoordinateX(section.CentroidCell.Coordinates);
+                int centroidCellZ = HexCoordinates.ToOffsetCoordinateZ(section.CentroidCell.Coordinates);
 
-            if( centroidCellX                   < Config.HardMapBorderX ||
-                Grid.CellCountX - centroidCellX < Config.HardMapBorderX ||
-                centroidCellZ                   < Config.HardMapBorderZ ||
-                Grid.CellCountZ - centroidCellZ < Config.HardMapBorderZ
-            ) {
-                return 0;
-            }else {
-                return 1;
-            }
+                if( centroidCellX                   < template.HardMapBorderX ||
+                    Grid.CellCountX - centroidCellX < template.HardMapBorderX ||
+                    centroidCellZ                   < template.HardMapBorderZ ||
+                    Grid.CellCountZ - centroidCellZ < template.HardMapBorderZ
+                ) {
+                    return 0;
+                }else {
+                    return 1;
+                }
+            };
         }
 
         #endregion
