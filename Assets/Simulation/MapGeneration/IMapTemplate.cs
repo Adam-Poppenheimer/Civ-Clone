@@ -17,7 +17,7 @@ namespace Assets.Simulation.MapGeneration {
         int CivCount { get; }
 
         IEnumerable<IHomelandTemplate> HomelandTemplates { get; }
-        IEnumerable<IOceanTemplate>       OceanTemplates    { get; }
+        IEnumerable<IOceanTemplate>    OceanTemplates    { get; }
 
         IEnumerable<IRegionBiomeTemplate>    RegionBiomes     { get; }
         IEnumerable<IRegionTopologyTemplate> RegionTopologies { get; }
@@ -31,7 +31,13 @@ namespace Assets.Simulation.MapGeneration {
         int MinStartingLocationDistance { get; }
 
 
-        int NeighborsInContinentWeight { get; }
+        bool SeparateContinents { get; }
+
+        float ContinentSeparationLineXMin { get; }
+        float ContinentSeparationLineXMax { get; }
+
+
+        int NeighborsInContinentWeight     { get; }
         int DistanceFromSeedCentroidWeight { get; }
 
         ReadOnlyCollection<IUnitTemplate> StartingUnits { get; }

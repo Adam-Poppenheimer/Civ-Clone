@@ -12,7 +12,7 @@ namespace Assets.Simulation.MapGeneration {
         List<List<MapSection>> DivideSectionsIntoChunks(
             HashSet<MapSection> unassignedSections, GridPartition partition,
             int chunkCount, int maxCellsPerChunk, int minSeedSeparation,
-            bool forceFullAssignment, ExpansionWeightFunction expansionWeightFunction
+            ExpansionWeightFunction expansionWeightFunction, IMapTemplate mapTemplate
         );
 
         #endregion

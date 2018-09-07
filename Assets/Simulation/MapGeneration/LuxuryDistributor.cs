@@ -112,9 +112,6 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             Debug.LogWarning("Failed to perform luxury distribution on region");
-            foreach(var cell in region.Cells) {
-                cell.SetMapData(0.75f);
-            }
         }
 
         private void DistributeLuxuryAcrossMultipleRegions(
@@ -144,9 +141,6 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             Debug.LogWarning("Failed to perform luxury distribution across multiple regions");
-            foreach(var cell in regions.SelectMany(region => region.Cells)) {
-                cell.SetMapData(0.75f);
-            }
         }
 
         private bool TryDistributeLuxuryAcrossSingleAndMultipleRegions(

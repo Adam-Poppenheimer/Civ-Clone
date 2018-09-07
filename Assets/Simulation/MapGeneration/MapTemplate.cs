@@ -69,6 +69,23 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(1, 15)] private int _minStartingLocationDistance;
 
+
+        public bool SeparateContinents {
+            get { return _separateContinents; }
+        }
+        [SerializeField] private bool _separateContinents;
+
+        public float ContinentSeparationLineXMin {
+            get { return _continentSeparationLineXMin; }
+        }
+        [SerializeField, Range(0.25f, 0.75f)] private float _continentSeparationLineXMin = 0.5f;
+
+        public float ContinentSeparationLineXMax {
+            get { return _continentSeparationLineXMax; }
+        }
+        [SerializeField, Range(0.25f, 0.75f)] private float _continentSeparationLineXMax = 0.5f;
+
+
         public int NeighborsInContinentWeight {
             get { return _neighborsInContinentWeight; }
         }

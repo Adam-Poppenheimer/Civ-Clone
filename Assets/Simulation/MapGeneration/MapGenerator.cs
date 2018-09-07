@@ -136,7 +136,7 @@ namespace Assets.Simulation.MapGeneration {
             List<List<MapSection>> homelandChunks = SubdivisionLogic.DivideSectionsIntoChunks(
                 unassignedSections, partition, CivFactory.AllCivilizations.Count,
                 landCellsPerCiv, mapTemplate.MinStartingLocationDistance,
-                false, GetExpansionWeightFunction(partition, mapTemplate)
+                GetExpansionWeightFunction(partition, mapTemplate), mapTemplate
             );
 
             var homelandOfCivs = new Dictionary<ICivilization, HomelandData>();

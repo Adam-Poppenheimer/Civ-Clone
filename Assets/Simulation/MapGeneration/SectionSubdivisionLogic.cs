@@ -17,7 +17,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
+        private IHexGrid             Grid;
         private IMapGenerationConfig Config;
 
         #endregion
@@ -39,7 +39,7 @@ namespace Assets.Simulation.MapGeneration {
         public List<List<MapSection>> DivideSectionsIntoChunks(
             HashSet<MapSection> unassignedSections, GridPartition partition,
             int chunkCount, int maxCellsPerChunk, int minSeedSeparation,
-            bool forceFullAssignment, ExpansionWeightFunction weightFunction
+            ExpansionWeightFunction weightFunction, IMapTemplate mapTemplate
         ) {
             if(chunkCount > unassignedSections.Count()) {
                 throw new ArgumentOutOfRangeException("Not enough sections to assign at least one per chunk");
@@ -49,6 +49,11 @@ namespace Assets.Simulation.MapGeneration {
             var unfinishedChunks = new List<List<MapSection>>();
 
             var startingSections = new List<MapSection>();
+            var forbiddenSections = new HashSet<MapSection>();
+
+            if(mapTemplate.SeparateContinents) {
+                DrawForbiddenLine(unassignedSections, forbiddenSections, partition, mapTemplate);
+            }            
 
             for(int i = 0; i < chunkCount; i++) {
                 var startingSection = GetStartingSection(unassignedSections, startingSections, minSeedSeparation);
@@ -78,26 +83,39 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             finishedChunks.AddRange(unfinishedChunks);
-
-            while(forceFullAssignment && unassignedSections.Count > 0) {
-                var orphan = unassignedSections.Last();
-
-                var neighbors = partition.GetNeighbors(orphan);
-
-                var neighboringChunks = finishedChunks.Where(chunk => chunk.Intersect(neighbors).Any()); 
-
-                if(neighboringChunks.Any()) {
-                    neighboringChunks.Random().Add(orphan);
-                    unassignedSections.Remove(orphan);
-                }else {
-                    throw new InvalidOperationException("Failed to assign orphaned section to any chunk");
-                }
-            }
             
+            foreach(var section in forbiddenSections) {
+                unassignedSections.Add(section);
+            }
+
             return finishedChunks;
         }
 
         #endregion
+
+        private void DrawForbiddenLine(
+            HashSet<MapSection> unassignedSections, HashSet<MapSection> forbiddenSections,
+            GridPartition partition, IMapTemplate mapTemplate
+        ) {
+            int lineXCoord = Mathf.RoundToInt(Grid.CellCountX * UnityEngine.Random.Range(
+                mapTemplate.ContinentSeparationLineXMin, mapTemplate.ContinentSeparationLineXMax
+            ));
+
+            IHexCell startCell = Grid.GetCellAtCoordinates(HexCoordinates.FromOffsetCoordinates(lineXCoord, 0));
+            IHexCell endCell   = Grid.GetCellAtCoordinates(HexCoordinates.FromOffsetCoordinates(lineXCoord, Grid.CellCountZ - 1));
+
+            var cellLine = Grid.GetCellsInLine(startCell, endCell);
+
+            var sectionsOnLine = cellLine.Select(cell => partition.GetSectionOfCell(cell)).Distinct();
+
+            var sectionsToForbid =  sectionsOnLine.SelectMany(section => partition.GetNeighbors(section))
+                                                  .Concat(sectionsOnLine).Distinct();
+
+            foreach(var section in sectionsToForbid) {
+                unassignedSections.Remove(section);
+                forbiddenSections.Add(section);
+            }            
+        }
 
         private MapSection GetStartingSection(
             HashSet<MapSection> unassignedSections, IEnumerable<MapSection> startingSections,

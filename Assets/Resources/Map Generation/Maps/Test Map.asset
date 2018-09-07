@@ -41,6 +41,9 @@ MonoBehaviour:
   _voronoiPointCount: 800
   _voronoiPartitionIterations: 2
   _minStartingLocationDistance: 6
+  _separateContinents: 1
+  _continentSeparationLineXMin: 0.4
+  _continentSeparationLineXMax: 0.6
   _neighborsInContinentWeight: 100
   _distanceFromSeedCentroidWeight: -50
   _startingUnits:

@@ -63,34 +63,6 @@ namespace Assets.Simulation.MapGeneration {
             float maxScore = homelandData.YieldAndResources.MaxScorePerCell * homelandData.Cells.Count();
 
             KeepScoreWithinBounds(homelandData, minScore, maxScore);
-
-            float minScorePerCell = minScore / homelandData.Cells.Count();
-            float maxScorePerCell = maxScore / homelandData.Cells.Count();
-            float currentScorePerCell = homelandData.Cells.Average(cell => CellScorer.GetScoreOfCell(cell));
-
-            if(currentScorePerCell < minScorePerCell) {
-                Debug.LogFormat(
-                    "A homeland has a score per cell of {0}, from a minimum of {1}",
-                    currentScorePerCell, minScorePerCell
-                );
-
-                foreach(var cell in homelandData.Cells) {
-                    cell.SetMapData(0f);
-                }
-            }else if(currentScorePerCell > maxScorePerCell) {
-                Debug.LogFormat(
-                    "A homeland has a score per cell of {0}, from a maximum of {1}",
-                    currentScorePerCell, maxScorePerCell
-                );
-
-                foreach(var cell in homelandData.Cells) {
-                    cell.SetMapData(1f);
-                }
-            }else {
-                foreach(var cell in homelandData.Cells) {
-                    cell.SetMapData(0.5f);
-                }
-            }
         }
 
         #endregion
