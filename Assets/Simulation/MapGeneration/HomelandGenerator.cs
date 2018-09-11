@@ -26,6 +26,7 @@ namespace Assets.Simulation.MapGeneration {
         private IVegetationPainter      VegetationPainter;
         private IHomelandBalancer       HomelandBalancer;
         private IStrategicDistributor   StrategicDistributor;
+        private IHexGrid                Grid;
 
         private List<IBalanceStrategy> AvailableBalanceStrategies;
 
@@ -38,7 +39,8 @@ namespace Assets.Simulation.MapGeneration {
             IRegionGenerator regionGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ILuxuryDistributor luxuryDistributor, IRiverGenerator riverGenerator,
             IVegetationPainter vegetationPainter, List<IBalanceStrategy> availableBalanceStrategies,
-            IHomelandBalancer homelandBalancer, IStrategicDistributor strategicDistributor
+            IHomelandBalancer homelandBalancer, IStrategicDistributor strategicDistributor,
+            IHexGrid grid
         ) {
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
@@ -48,6 +50,7 @@ namespace Assets.Simulation.MapGeneration {
             VegetationPainter          = vegetationPainter;
             HomelandBalancer           = homelandBalancer;
             StrategicDistributor       = strategicDistributor;
+            Grid                       = grid;
         }
 
         #endregion
@@ -63,12 +66,40 @@ namespace Assets.Simulation.MapGeneration {
             var landChunks  = new List<List<MapSection>>();
             var waterChunks = new List<List<MapSection>>();
 
+            IHexCell seedCentroid = landSections[0].CentroidCell;
+
+            var startingLandSections =
+                Grid.GetCellsInRadius(seedCentroid, homelandTemplate.StartingRegionRadius)
+                    .Select(cell => partition.GetSectionOfCell(cell))
+                    .Distinct()
+                    .Intersect(landSections);
+
+            var startingWaterSections =
+                Grid.GetCellsInRadius(seedCentroid, homelandTemplate.StartingRegionRadius)
+                    .Select(cell => partition.GetSectionOfCell(cell))
+                    .Distinct()
+                    .Intersect(waterSections);
+
+            var startingRegion = new MapRegion(
+                startingLandSections .SelectMany(section => section.Cells).ToList(),
+                startingWaterSections.SelectMany(section => section.Cells).ToList()
+            );
+
+            foreach(var cell in startingRegion.Cells) {
+                cell.SetMapData(1f);
+            }
+
+            var unassignedLand  = landSections.Except(startingLandSections);
+            var unassignedWater = waterSections.Except(startingWaterSections);
+
             DivideSectionsIntoRectangularChunks(
-                landSections, waterSections, homelandTemplate.RegionCount,
+                unassignedLand, unassignedWater, homelandTemplate.RegionCount,
                 out landChunks, out waterChunks
             );
 
             var regions = new List<MapRegion>();
+
+            regions.Add(startingRegion);
 
             for(int i = 0; i < landChunks.Count; i++) {
                 var region = new MapRegion(
@@ -78,8 +109,6 @@ namespace Assets.Simulation.MapGeneration {
 
                 regions.Add(region);
             }
-
-            var startingRegion = GetRegionNearestToCenter(regions);
 
             var startingData = new RegionData(
                 TemplateSelectionLogic.GetBiomeForLandRegion   (startingRegion, mapTemplate),
@@ -191,20 +220,6 @@ namespace Assets.Simulation.MapGeneration {
             int maxZCoord = chunkToSplit.Max(section => section.Cells.Max(cell => HexCoordinates.ToOffsetCoordinateZ(cell.Coordinates)));
 
             return maxXCoord - minXCoord > maxZCoord - minZCoord;
-        }
-
-        private MapRegion GetRegionNearestToCenter(IEnumerable<MapRegion> regions) {
-            var homelandCentroid = regions.Select(region => region.Centroid)
-                                          .Aggregate((total, nextCentroid) => total + nextCentroid);
-
-            homelandCentroid /= regions.Count();
-
-            return regions.Aggregate(delegate(MapRegion currentNearest, MapRegion next) {
-                float currentNearestDistance = Vector3.Distance(homelandCentroid, currentNearest.Centroid);
-                float nextDistance           = Vector3.Distance(homelandCentroid, next          .Centroid);
-
-                return nextDistance < currentNearestDistance ? next : currentNearest;
-            });
         }
 
         #endregion

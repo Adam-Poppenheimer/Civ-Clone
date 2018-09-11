@@ -29,6 +29,11 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private YieldAndResourcesTemplate _yieldAndResources;
 
+        public int StartingRegionRadius {
+            get { return _startingRegionRadius; }
+        }
+        [SerializeField, Range(1, 5)] private int _startingRegionRadius = 2;
+
         #endregion
 
         #endregion

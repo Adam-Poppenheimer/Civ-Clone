@@ -18,4 +18,4 @@ MonoBehaviour:
   _minScorePerCell: 4.5
   _maxScorePerCell: 5.5
   _landWeight: 1
-  _waterWeight: 0.5
+  _waterWeight: 0.85

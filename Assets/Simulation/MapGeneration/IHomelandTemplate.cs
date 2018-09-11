@@ -15,6 +15,8 @@ namespace Assets.Simulation.MapGeneration {
 
         IYieldAndResourcesTemplate YieldAndResources { get; }
 
+        int StartingRegionRadius { get; }
+
         #endregion
 
     }

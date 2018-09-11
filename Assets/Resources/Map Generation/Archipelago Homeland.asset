@@ -20,3 +20,4 @@ MonoBehaviour:
     _otherCount: 2
   _regionCount: 8
   _yieldAndResources: {fileID: 11400000, guid: 57b108943dc0be449b1bb9be53ecafb2, type: 2}
+  _startingRegionRadius: 2
