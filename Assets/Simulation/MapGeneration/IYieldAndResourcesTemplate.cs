@@ -11,7 +11,10 @@
         float MinProductionPerCell { get; }
 
         float MaxScorePerCell { get; }        
-        float MinScorePerCell { get; }        
+        float MinScorePerCell { get; }
+
+        float LandWeight  { get; }
+        float WaterWeight { get; }
 
         #endregion
 

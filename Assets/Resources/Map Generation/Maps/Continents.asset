@@ -41,12 +41,16 @@ MonoBehaviour:
   _voronoiPointCount: 800
   _voronoiPartitionIterations: 2
   _minStartingLocationDistance: 8
+  _homelandContiguousPercentage: 100
+  _homelandExpansionMaxCentroidSeparation: 2
   _separateContinents: 1
   _continentSeparationLineXMin: 0.4
   _continentSeparationLineXMax: 0.6
   _neighborsInContinentWeight: 100
   _distanceFromSeedCentroidWeight: -50
   _distanceFromMapCenterWeight: 0
+  _hardMapBorderX: 2
+  _hardMapBorderZ: 2
   _softMapBorderX: 3
   _softMapBorderZ: 3
   _softBorderAvoidanceWeight: 10

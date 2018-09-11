@@ -1,0 +1,22 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: acd855b66271eaf41980428aa08d6df0, type: 3}
+  m_Name: Archipelago Homeland
+  m_EditorClassIdentifier: 
+  _luxuryResourceData:
+  - _startingCount: 2
+    _otherCount: 0
+  - _startingCount: 1
+    _otherCount: 3
+  - _startingCount: 0
+    _otherCount: 2
+  _regionCount: 8
+  _yieldAndResources: {fileID: 11400000, guid: 57b108943dc0be449b1bb9be53ecafb2, type: 2}

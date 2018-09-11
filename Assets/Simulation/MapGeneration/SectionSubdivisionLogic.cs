@@ -65,10 +65,16 @@ namespace Assets.Simulation.MapGeneration {
                 unassignedSections.Remove(startingSection);
             }
 
+            int desiredContiguousCells = Mathf.RoundToInt(maxCellsPerChunk * mapTemplate.HomelandContiguousPercentage * 0.01f);
+
             while(unfinishedChunks.Count > 0 && unassignedSections.Count > 0) {
                 var chunk = unfinishedChunks.Random();
 
-                if(TryExpandChunk(chunk, unassignedSections, partition, weightFunction)) {
+                int cellCount = chunk.Sum(section => section.Cells.Count);
+
+                bool mustBeContiguous = desiredContiguousCells > cellCount;
+
+                if(TryExpandChunk(chunk, unassignedSections, partition, mapTemplate, weightFunction, mustBeContiguous)) {
                     int cellsInChunk = chunk.Sum(section => section.Cells.Count);
 
                     if(cellsInChunk >= maxCellsPerChunk) {
@@ -150,15 +156,35 @@ namespace Assets.Simulation.MapGeneration {
 
         private bool TryExpandChunk(
             List<MapSection> chunk, HashSet<MapSection> unassignedSections,
-            GridPartition partition, ExpansionWeightFunction weightFunction
+            GridPartition partition, IMapTemplate mapTemplate,
+            ExpansionWeightFunction weightFunction, bool mustBeContiguous
         ) {
             var expansionCandidates = new HashSet<MapSection>();
 
             foreach(var section in chunk) {
-                foreach(var neighbor in partition.GetNeighbors(section)) {
-                    if(unassignedSections.Contains(neighbor)) {
-                        expansionCandidates.Add(neighbor);
+                IEnumerable<MapSection> nearbySections;
+
+                if(mustBeContiguous) {
+                    nearbySections = partition.GetNeighbors(section).Intersect(unassignedSections);                    
+                }else {
+                    var sectionsWithinDistance = Grid.GetCellsInRadius(section.CentroidCell, mapTemplate.HomelandExpansionMaxCentroidSeparation)
+                                                     .Select(nearbyCell => partition.GetSectionOfCell(nearbyCell))
+                                                     .Intersect(unassignedSections)
+                                                     .Distinct();
+
+                    var sectionsSurroundedByUnassigned = sectionsWithinDistance.Where(
+                        nearby => partition.GetNeighbors(nearby).Count(neighbor => !unassignedSections.Contains(neighbor)) <= 0
+                    );
+
+                    if(sectionsSurroundedByUnassigned.Any()) {
+                        nearbySections = sectionsSurroundedByUnassigned;
+                    }else {
+                        nearbySections = sectionsWithinDistance;
                     }
+                }
+
+                foreach(var nearby in nearbySections) {
+                    expansionCandidates.Add(nearby);
                 }
             }
 

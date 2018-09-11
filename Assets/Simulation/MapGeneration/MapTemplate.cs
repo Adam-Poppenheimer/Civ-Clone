@@ -69,6 +69,17 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(1, 15)] private int _minStartingLocationDistance;
 
+        public int HomelandContiguousPercentage {
+            get { return _homelandContiguousPercentage; }
+        }
+        [SerializeField, Range(0, 100)] private int _homelandContiguousPercentage = 0;
+
+        public int HomelandExpansionMaxCentroidSeparation {
+            get { return _homelandExpansionMaxCentroidSeparation; }
+        }
+        [SerializeField, Range(2, 15)] private int _homelandExpansionMaxCentroidSeparation = 2;
+
+
 
         public bool SeparateContinents {
             get { return _separateContinents; }
@@ -84,6 +95,7 @@ namespace Assets.Simulation.MapGeneration {
             get { return _continentSeparationLineXMax; }
         }
         [SerializeField, Range(0.25f, 0.75f)] private float _continentSeparationLineXMax = 0.5f;
+
 
 
         public int NeighborsInContinentWeight {

@@ -30,12 +30,17 @@ namespace Assets.Simulation.MapGeneration {
 
         int MinStartingLocationDistance { get; }
 
+        int HomelandContiguousPercentage { get; }
+
+        int HomelandExpansionMaxCentroidSeparation { get; }
+
 
         bool SeparateContinents { get; }
 
         float ContinentSeparationLineXMin { get; }
         float ContinentSeparationLineXMax { get; }
 
+        
 
 
         int HardMapBorderX { get; }

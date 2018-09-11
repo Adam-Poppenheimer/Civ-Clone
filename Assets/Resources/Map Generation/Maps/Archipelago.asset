@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 15a82a245bf1d854a97bd6233e169f9d, type: 3}
-  m_Name: Pangaea
+  m_Name: Archipelago
   m_EditorClassIdentifier: 
   _civCount: 8
   _homelandTemplates:
-  - {fileID: 11400000, guid: 5d34c8d03c7c5224e8ee776bda3a58f5, type: 2}
+  - {fileID: 11400000, guid: 279f25fc44b2a7d46adb12318563d10a, type: 2}
   _oceanTemplates:
   - {fileID: 11400000, guid: dd61f4d8108f23340a8baed7014b7f63, type: 2}
   _regionBiomes:
@@ -28,7 +28,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 259e53b26ca4c3a43b354cb78a208c05, type: 2}
   _regionTopologies:
   - {fileID: 11400000, guid: cb152c931dbd5944bb72e18b555bdf18, type: 2}
-  - {fileID: 11400000, guid: cb152c931dbd5944bb72e18b555bdf18, type: 2}
   - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
   - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
   - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
@@ -36,24 +35,25 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 2a6aff0dc29630a48929b7f0cdc74c95, type: 2}
   - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
   - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
-  - {fileID: 11400000, guid: 660f8ed0c6ac6a44e9199cb834619617, type: 2}
-  _continentalLandPercentage: 40
+  - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
+  - {fileID: 11400000, guid: c47028e5b44fdac478b981d1b7af04ce, type: 2}
+  _continentalLandPercentage: 25
   _voronoiPointCount: 800
   _voronoiPartitionIterations: 2
-  _minStartingLocationDistance: 6
-  _homelandContiguousPercentage: 100
-  _homelandExpansionMaxCentroidSeparation: 2
+  _minStartingLocationDistance: 12
+  _homelandContiguousPercentage: 75
+  _homelandExpansionMaxCentroidSeparation: 5
   _separateContinents: 0
-  _continentSeparationLineXMin: 0.4
-  _continentSeparationLineXMax: 0.6
-  _neighborsInContinentWeight: 250
-  _distanceFromSeedCentroidWeight: 0
-  _distanceFromMapCenterWeight: -25
-  _hardMapBorderX: 4
-  _hardMapBorderZ: 3
-  _softMapBorderX: 8
+  _continentSeparationLineXMin: 0.25
+  _continentSeparationLineXMax: 0.25
+  _neighborsInContinentWeight: 100
+  _distanceFromSeedCentroidWeight: -50
+  _distanceFromMapCenterWeight: 0
+  _hardMapBorderX: 2
+  _hardMapBorderZ: 2
+  _softMapBorderX: 3
   _softMapBorderZ: 3
-  _softBorderAvoidanceWeight: 100
+  _softBorderAvoidanceWeight: 10
   _startingUnits:
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   - {fileID: 11400000, guid: 455a5132fff413241ba593a9be4026cb, type: 2}

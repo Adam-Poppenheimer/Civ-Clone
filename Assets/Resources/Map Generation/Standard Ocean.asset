@@ -14,5 +14,5 @@ MonoBehaviour:
   _deepOceanLandPercentage: 0
   _regionSubdivisionXStep: 15
   _regionSubdivisionZStep: 15
-  _archipelagoResources: {fileID: 11400000, guid: ba4d58ffde107f2448086f7a26e9ab0e,
+  _archipelagoResources: {fileID: 11400000, guid: 57c6b70d38561d14fa4ea767f9517b64,
     type: 2}

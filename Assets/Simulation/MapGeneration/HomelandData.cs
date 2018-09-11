@@ -51,6 +51,28 @@ namespace Assets.Simulation.MapGeneration {
         }
         private List<IHexCell> _cells;
 
+        public IEnumerable<IHexCell> LandCells {
+            get {
+                if(_landCells == null) {
+                    _landCells = AllRegions.SelectMany(region => region.LandCells).ToList();
+                }
+
+                return _landCells;
+            }
+        }
+        private List<IHexCell> _landCells;
+
+        public IEnumerable<IHexCell> WaterCells {
+            get {
+                if(_waterCells == null) {
+                    _waterCells = AllRegions.SelectMany(region => region.WaterCells).ToList();
+                }
+
+                return _waterCells;
+            }
+        }
+        private List<IHexCell> _waterCells;
+
 
         public IEnumerable<LuxuryResourceData> LuxuryResources { get; private set; }
 

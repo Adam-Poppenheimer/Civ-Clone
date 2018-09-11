@@ -42,6 +42,16 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField] private float _maxScorePerCell;
 
+        public float LandWeight {
+            get { return _landWeight; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _landWeight = 1f;
+
+        public float WaterWeight {
+            get { return _waterWeight; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _waterWeight = 1f;
+
         #endregion
 
     }

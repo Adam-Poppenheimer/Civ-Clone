@@ -14,15 +14,10 @@ MonoBehaviour:
   _useFixedSeed: 0
   _fixedSeed: 579225078
   _landPercentage: 30
-  _hardMapBorderX: 2
-  _hardMapBorderZ: 3
-  _softMapBorderX: 3
-  _softMapBorderZ: 4
-  _softBorderAvoidanceWeight: 50
   _lowTemperature: 0
   _highTemperature: 1
   _hemispheres: 0
-  _mapTemplate: {fileID: 11400000, guid: 888afbf945422bd43a9360a4f7c5cd27, type: 2}
+  _mapTemplate: {fileID: 11400000, guid: 74adc6ba23cbb7d478bed82cfca49c53, type: 2}
   _minStrategicCopies: 1
   _maxStrategicCopies: 10
   _yieldScoringWeights:
