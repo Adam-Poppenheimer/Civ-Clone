@@ -207,7 +207,7 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             weightOfResources = homelandData.StartingData.GetResourceWeights();
 
-            var retval = weightOfResources.Keys.ToList();
+            var retval = weightOfResources.Keys.Where(resource => resource.Type == ResourceType.Luxury).ToList();
 
             return retval;
         }
@@ -215,45 +215,51 @@ namespace Assets.Simulation.MapGeneration {
         private List<IResourceDefinition> GetLuxuriesForOtherRegions(
             HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
         ) {
-            weightOfResources = MashTogetherPriorityDictionaries(homelandData, homelandData.OtherRegions);
+            weightOfResources = new Dictionary<IResourceDefinition, int>();
 
-            var retval = weightOfResources.Keys.ToList();
-
-            return retval;
-        }
-
-        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(
-            HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
-        ) {
-            weightOfResources = MashTogetherPriorityDictionaries(homelandData, homelandData.AllRegions);
-
-            var retval = weightOfResources.Keys.ToList();
-
-            return retval;
-        }
-
-        private Dictionary<IResourceDefinition, int> MashTogetherPriorityDictionaries(
-            HomelandData homelandData, IEnumerable<MapRegion> allRegions
-        ) {
-            var allRegionData = allRegions.Select(region => homelandData.GetDataOfRegion(region));
-
-            var mashedTogetherPriorities = new Dictionary<IResourceDefinition, int>();
-
-            foreach(var regionData in allRegionData) {
+            foreach(var regionData in homelandData.OtherRegionData) {
                 var resourceWeights = regionData.GetResourceWeights();
 
                 foreach(var luxury in resourceWeights.Keys.Where(resource => resource.Type == ResourceType.Luxury)) {
                     int globalPriority;
 
-                    mashedTogetherPriorities.TryGetValue(luxury, out globalPriority);
+                    weightOfResources.TryGetValue(luxury, out globalPriority);
 
                     globalPriority += resourceWeights[luxury];
 
-                    mashedTogetherPriorities[luxury] = globalPriority;
+                    weightOfResources[luxury] = globalPriority;
                 }
             }
 
-            return mashedTogetherPriorities;
+            return weightOfResources.Keys.ToList();
+        }
+
+        private List<IResourceDefinition> GetLuxuriesForWholeHomeland(
+            HomelandData homelandData, out Dictionary<IResourceDefinition, int> weightOfResources
+        ) {
+            var startingRegionWeights = homelandData.StartingData.GetResourceWeights();
+
+            var otherRegionsByWeight = homelandData.OtherRegionData.Select(
+                regionData => regionData.GetResourceWeights()
+            );
+
+            weightOfResources = new Dictionary<IResourceDefinition, int>();
+
+            foreach(var resource in startingRegionWeights.Keys) {
+                if(resource.Type != ResourceType.Luxury || startingRegionWeights[resource] <= 0) {
+                    continue;
+                }
+
+                var otherRegionWeights = otherRegionsByWeight.Select(
+                    resourceWeight => resourceWeight.ContainsKey(resource) ? resourceWeight[resource] : 0
+                );
+
+                if(otherRegionWeights.Max() > 0) {
+                    weightOfResources[resource] = startingRegionWeights[resource] + otherRegionWeights.Sum();
+                }
+            }
+
+            return weightOfResources.Keys.ToList();
         }
 
         private Func<IHexCell, int> GetResourceWeightFunction(IResourceDefinition resource) {
