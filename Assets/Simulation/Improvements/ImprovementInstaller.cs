@@ -18,6 +18,8 @@ namespace Assets.Simulation.Improvements {
         [SerializeField] private GameObject ImprovementPrefab;
         [SerializeField] private GameObject ImprovementSitePrefab;
 
+        [SerializeField] private ImprovementTemplate FarmTemplate;
+
         #endregion
 
         #region instance methods
@@ -42,6 +44,8 @@ namespace Assets.Simulation.Improvements {
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
 
             Container.Bind<ImprovementSignals>().AsSingle();
+
+            Container.Bind<IImprovementTemplate>().WithId("Farm Template").FromInstance(FarmTemplate);
         }
 
         #endregion

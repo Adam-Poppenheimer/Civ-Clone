@@ -54,6 +54,16 @@ namespace Assets.Simulation.HexMap {
             get { return GetPeakElevationForShape(CellShape.Mountains) + GetFoundationElevationForTerrain(CellTerrain.Grassland); }
         }
 
+        public float FarmDivideIntoSquaresChance {
+            get { return _farmDivideIntoSquaresChance; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _farmDivideIntoSquaresChance = 0.25f;
+
+        public ReadOnlyCollection<Color> FarmlandColors {
+            get { return _farmlandColors.AsReadOnly(); }
+        }
+        [SerializeField] private List<Color> _farmlandColors;
+
         #endregion
 
         [SerializeField] private int BaseMoveCost;

@@ -29,6 +29,7 @@ namespace Assets.Simulation.HexMap {
         HexMesh Marsh            { get; }
         HexMesh FloodPlains      { get; }
         HexMesh Oases            { get; }
+        HexMesh Farmland         { get; }
 
         #endregion
 

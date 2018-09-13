@@ -37,10 +37,12 @@ namespace Assets.Simulation.HexMap {
         );
 
         protected void AddFeature(Transform prefab, Vector3 location, HexHash hash) {
-            Transform instance = GameObject.Instantiate(prefab);
-            instance.localPosition = NoiseGenerator.Perturb(location);
-            instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
-            instance.SetParent(FeatureContainer, false);
+            if(prefab != null) {
+                Transform instance = GameObject.Instantiate(prefab);
+                instance.localPosition = NoiseGenerator.Perturb(location);
+                instance.localRotation = Quaternion.Euler(0f, 360f * hash.B, 0f);
+                instance.SetParent(FeatureContainer, false);
+            }
         }
 
         #endregion

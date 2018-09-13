@@ -1,4 +1,6 @@
-﻿using System.Collections.ObjectModel;
+﻿using System.Collections.Generic;
+using System.Collections.ObjectModel;
+
 using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
@@ -20,6 +22,10 @@ namespace Assets.Simulation.HexMap {
         int MountainTerrainIndex { get; }
 
         int MaxElevation { get; }
+
+        float FarmDivideIntoSquaresChance { get; }
+
+        ReadOnlyCollection<Color> FarmlandColors { get; }
 
         #endregion
 

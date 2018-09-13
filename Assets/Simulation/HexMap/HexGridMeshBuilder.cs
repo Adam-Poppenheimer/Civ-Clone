@@ -72,6 +72,7 @@ namespace Assets.Simulation.HexMap {
         public HexMesh Marsh            { get; private set; }
         public HexMesh FloodPlains      { get; private set; }
         public HexMesh Oases            { get; private set; }
+        public HexMesh Farmland         { get; private set; }
 
         private INoiseGenerator NoiseGenerator;
         private IRiverCanon     RiverCanon;
@@ -95,6 +96,7 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Marsh")]             HexMesh marsh,
             [Inject(Id = "Flood Plains")]      HexMesh floodPlains,
             [Inject(Id = "Oases")]             HexMesh oases,
+            [Inject(Id = "Farmland")]          HexMesh farmland,
             INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
             IHexGrid grid
         ) {
@@ -111,6 +113,7 @@ namespace Assets.Simulation.HexMap {
             Marsh            = marsh;
             FloodPlains      = floodPlains;
             Oases            = oases;
+            Farmland         = farmland;
 
             NoiseGenerator = noiseGenerator;
             RiverCanon     = riverCanon;
@@ -137,6 +140,7 @@ namespace Assets.Simulation.HexMap {
             Marsh           .Clear();
             FloodPlains     .Clear();
             Oases           .Clear();
+            Farmland        .Clear();
         }
 
         public void ApplyMeshes() {
@@ -153,6 +157,7 @@ namespace Assets.Simulation.HexMap {
             Marsh           .Apply();
             FloodPlains     .Apply();
             Oases           .Apply();
+            Farmland        .Apply();
         }
 
         public CellTriangulationData GetTriangulationData(
