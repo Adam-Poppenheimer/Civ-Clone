@@ -73,16 +73,16 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IHexMapGenerator
 
-        public void GenerateMap(int chunkCountX, int chunkCountZ, IMapTemplate template) {
+        public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
             CellClimateLogic.Reset(template);
 
             var oldRandomState = SetRandomState();
 
-            Grid.Build(chunkCountX, chunkCountZ);
+            Grid.Build(variables.ChunkCountX, variables.ChunkCountZ);
 
-            GenerateCivs(template.CivCount);
+            GenerateCivs(variables.CivCount);
 
-            var oceansAndContinents = GenerateOceansAndContinents(template);
+            var oceansAndContinents = GenerateOceansAndContinents(template, variables);
 
             PaintMap(oceansAndContinents, template);
 
@@ -125,10 +125,10 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
-        private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate) {
+        private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {
             var partition = GridPartitionLogic.GetPartitionOfGrid(Grid, mapTemplate);
             
-            int totalLandCells = Mathf.RoundToInt(Grid.Cells.Count * mapTemplate.ContinentalLandPercentage * 0.01f);
+            int totalLandCells = Mathf.RoundToInt(Grid.Cells.Count * variables.ContinentalLandPercentage * 0.01f);
             int landCellsPerCiv = Mathf.RoundToInt((float)totalLandCells / CivFactory.AllCivilizations.Count);
 
             HashSet<MapSection> unassignedSections = new HashSet<MapSection>(partition.Sections);

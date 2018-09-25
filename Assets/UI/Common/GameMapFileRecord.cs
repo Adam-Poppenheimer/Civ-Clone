@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 using Assets.Simulation.MapManagement;
 
-namespace Assets.UI.MapManagement {
+namespace Assets.UI.Common {
 
     public class GameMapFileRecord : MonoBehaviour {
 

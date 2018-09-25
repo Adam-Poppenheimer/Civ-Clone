@@ -50,10 +50,15 @@ namespace Assets.UI.MapEditor {
         #endregion
 
         public void TryGeneratingMap() {
+            var variables = new MapGenerationVariables() {
+                ChunkCountX = Mathf.RoundToInt(MapChunkWidthSlider.value),
+                ChunkCountZ = Mathf.RoundToInt(MapChunkHeightSlider.value),
+                CivCount = 8,
+                ContinentalLandPercentage = 25
+            };
+
             MapGenerator.GenerateMap(
-                Mathf.RoundToInt(MapChunkWidthSlider.value),
-                Mathf.RoundToInt(MapChunkHeightSlider.value),
-                Config.MapTemplate
+                Config.TestTemplate, variables
             );
         }
 

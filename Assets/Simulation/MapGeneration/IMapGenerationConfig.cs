@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 using UnityEngine;
 
@@ -23,7 +24,7 @@ namespace Assets.Simulation.MapGeneration {
         HemisphereMode Hemispheres { get; }
 
 
-        IMapTemplate MapTemplate { get; }
+        IMapTemplate TestTemplate { get; }
 
         int MinStrategicCopies { get; }
         int MaxStrategicCopies { get; }
@@ -42,12 +43,20 @@ namespace Assets.Simulation.MapGeneration {
         int RiverEndpointOnDesertWeight { get; }
         int RiverEndpointOnArcticWeight { get; }
 
+
+
+        ReadOnlyCollection<IMapSizeCategory> MapSizes { get; }
+
+        IMapSizeCategory DefaultMapSize { get; }
+
         #endregion
 
         #region methods
 
         float GetIdealTemperatureForTerrain  (CellTerrain terrain);
         float GetIdealPrecipitationForTerrain(CellTerrain terrain);
+
+        int GetLandPercentageForSeaLevel(SeaLevelCategory seaLevel);
 
         #endregion
 

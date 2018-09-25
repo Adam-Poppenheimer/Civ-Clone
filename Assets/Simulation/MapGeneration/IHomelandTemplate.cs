@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -9,13 +6,13 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
-
         int RegionCount { get; }
 
-        IYieldAndResourcesTemplate YieldAndResources { get; }
-
         int StartingRegionRadius { get; }
+
+        IEnumerable<LuxuryResourceData> LuxuryResourceData { get; }
+        
+        IYieldAndResourcesTemplate YieldAndResources { get; }
 
         #endregion
 

@@ -9,7 +9,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        void GenerateMap(int chunkCountX, int chunkCountZ, IMapTemplate template);
+        void GenerateMap(IMapTemplate template, IMapGenerationVariables variables);
 
         #endregion
 

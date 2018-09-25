@@ -7,14 +7,17 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.UI.TitleScreen;
+
 namespace Assets.UI.StateMachine {
 
     public class TitleScreenInstaller : MonoInstaller {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject    TitleScreenStateSelectionDisplay;
-        [SerializeField] private RectTransform TitleScreenContainer;
+        [SerializeField] private GameObject     TitleScreenStateSelectionDisplay;
+        [SerializeField] private RectTransform  TitleScreenContainer;
+        [SerializeField] private NewGameDisplay NewGameDisplay;
 
         #endregion
 
@@ -30,6 +33,8 @@ namespace Assets.UI.StateMachine {
             Container.Bind<RectTransform>()
                 .WithId("Title Screen Container")
                 .FromInstance(TitleScreenContainer);
+
+            Container.Bind<NewGameDisplay>().FromInstance(NewGameDisplay);
         }
 
         #endregion

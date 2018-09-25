@@ -11,7 +11,7 @@ using Zenject;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 
-namespace Assets.UI.MapManagement {
+namespace Assets.UI.Common {
 
     public class SaveGameDisplay : MonoBehaviour {
 

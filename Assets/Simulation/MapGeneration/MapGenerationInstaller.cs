@@ -15,6 +15,8 @@ namespace Assets.Simulation.MapGeneration {
 
         [SerializeField] private MapGenerationConfig Config;
 
+        [SerializeField] private List<MapTemplate> MapTemplates;
+
         #endregion
 
         #region instance methods
@@ -32,13 +34,13 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<IRegionGenerator>           ().To<RegionGenerator>           ().AsSingle();
             Container.Bind<ICellClimateLogic>          ().To<CellClimateLogic>          ().AsSingle();
             Container.Bind<IGridTraversalLogic>        ().To<GridTraversalLogic>        ().AsSingle();
-            Container.Bind<IStrategicDistributor>       ().To<StrategicDistributor>       ().AsSingle();
+            Container.Bind<IStrategicDistributor>      ().To<StrategicDistributor>      ().AsSingle();
             Container.Bind<IMapScorer>                 ().To<MapScorer>                 ().AsSingle();
-            Container.Bind<IHomelandBalancer>            ().To<HomelandBalancer>            ().AsSingle();
+            Container.Bind<IHomelandBalancer>          ().To<HomelandBalancer>          ().AsSingle();
             Container.Bind<IYieldEstimator>            ().To<YieldEstimator>            ().AsSingle();
             Container.Bind<IStrategicCopiesLogic>      ().To<StrategicCopiesLogic>      ().AsSingle();
             Container.Bind<IStartingUnitPlacementLogic>().To<StartingUnitPlacementLogic>().AsSingle();
-            Container.Bind<IHomelandGenerator>      ().To<HomelandGenerator>      ().AsSingle();
+            Container.Bind<IHomelandGenerator>         ().To<HomelandGenerator>         ().AsSingle();
             Container.Bind<IGridPartitionLogic>        ().To<GridPartitionLogic>        ().AsSingle();
             Container.Bind<ITemplateSelectionLogic>    ().To<TemplateSelectionLogic>    ().AsSingle();
             Container.Bind<IWaterRationalizer>         ().To<WaterRationalizer>         ().AsSingle();
@@ -47,13 +49,15 @@ namespace Assets.Simulation.MapGeneration {
             Container.Bind<ILuxuryDistributor>         ().To<LuxuryDistributor>         ().AsSingle();
             Container.Bind<ICellScorer>                ().To<CellScorer>                ().AsSingle();
 
-            Container.Bind<IBalanceStrategy>().To<ResourceBalanceStrategy>().AsSingle();
+            Container.Bind<IBalanceStrategy>().To<ResourceBalanceStrategy>     ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<JungleBalanceStrategy>       ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<LakeBalanceStrategy>         ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<HillsBalanceStrategy>        ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<OasisBalanceStrategy>        ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<MountainBalanceStrategy>     ().AsSingle();
             Container.Bind<IBalanceStrategy>().To<ExpandOceanBalanceStrategy>  ().AsSingle();
+
+            Container.Bind<IEnumerable<IMapTemplate>>().FromInstance(MapTemplates.Cast<IMapTemplate>());
         }
 
         #endregion

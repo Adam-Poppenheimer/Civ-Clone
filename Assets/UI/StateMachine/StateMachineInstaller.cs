@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.UI.MapManagement;
+using Assets.UI.Common;
 using Assets.UI.HexMap;
 using Assets.UI.SocialPolicies;
 

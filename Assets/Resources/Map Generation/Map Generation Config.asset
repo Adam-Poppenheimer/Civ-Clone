@@ -17,7 +17,7 @@ MonoBehaviour:
   _lowTemperature: 0
   _highTemperature: 1
   _hemispheres: 0
-  _mapTemplate: {fileID: 11400000, guid: 74adc6ba23cbb7d478bed82cfca49c53, type: 2}
+  _testTemplate: {fileID: 11400000, guid: 6ec241d350ec5614a9da2e394c3eb076, type: 2}
   _minStrategicCopies: 1
   _maxStrategicCopies: 10
   _yieldScoringWeights:
@@ -32,9 +32,24 @@ MonoBehaviour:
   _terrainPrecipitationWeight: 100
   _riverEndpointOnDesertWeight: 50
   _riverEndpointOnArcticWeight: 50
+  _mapSizes:
+  - {fileID: 11400000, guid: b75dbcfd46af08a47b732fc0568321ed, type: 2}
+  - {fileID: 11400000, guid: ab43080acc865eb4898bab6cac27d8b0, type: 2}
+  - {fileID: 11400000, guid: 9db7b4ff2e3c77a438200ca31706d8f6, type: 2}
+  - {fileID: 11400000, guid: 7d060292f3b3aa745a697931226a5391, type: 2}
+  - {fileID: 11400000, guid: 2f4d7ed1daa147e459c6c9945a28a14c, type: 2}
+  _defaultMapSize: {fileID: 11400000, guid: 9db7b4ff2e3c77a438200ca31706d8f6, type: 2}
   IdealGrasslandTemperature: 0.5
   IdealPlainsTemperature: 0.5
   IdealDesertTemperature: 0.75
   IdealGrasslandPrecipitation: 0.6
   IdealPlainsPrecipitation: 0.35
   IdealDesertPrecipitation: 0.1
+  TinyChunkDimensions: {x: 11, y: 7}
+  SmallChunkDimensions: {x: 13, y: 8}
+  StandardChunkDimensions: {x: 16, y: 10}
+  LargeChunkDimensions: {x: 21, y: 13}
+  HugeChunkDimensions: {x: 25, y: 16}
+  LowSeaLevelLandPercentage: 40
+  NormalSeaLevelLandPercentage: 25
+  HighSeaLevelLandPercentage: 17

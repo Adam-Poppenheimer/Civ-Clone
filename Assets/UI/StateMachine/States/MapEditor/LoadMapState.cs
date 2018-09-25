@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.UI.MapManagement;
+using Assets.UI.Common;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 

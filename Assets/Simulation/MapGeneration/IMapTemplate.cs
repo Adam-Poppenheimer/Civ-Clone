@@ -14,15 +14,13 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        int CivCount { get; }
+        string name { get; }
 
         IEnumerable<IHomelandTemplate> HomelandTemplates { get; }
         IEnumerable<IOceanTemplate>    OceanTemplates    { get; }
 
         IEnumerable<IRegionBiomeTemplate>    RegionBiomes     { get; }
         IEnumerable<IRegionTopologyTemplate> RegionTopologies { get; }
-
-        int ContinentalLandPercentage { get; }
 
         int VoronoiPointCount { get; }
 

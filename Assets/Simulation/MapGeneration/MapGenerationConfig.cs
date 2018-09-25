@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -51,10 +52,10 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        public IMapTemplate MapTemplate {
-            get { return _mapTemplate; }
+        public IMapTemplate TestTemplate {
+            get { return _testTemplate; }
         }
-        [SerializeField] private MapTemplate _mapTemplate;
+        [SerializeField] private MapTemplate _testTemplate;
 
         public int MinStrategicCopies {
             get { return _minStrategicCopies; }
@@ -108,6 +109,24 @@ namespace Assets.Simulation.MapGeneration {
         }
         [SerializeField, Range(1, 100)] private int _riverEndpointOnArcticWeight = 50;
 
+
+
+        public ReadOnlyCollection<IMapSizeCategory> MapSizes {
+            get {
+                if(_castMapSizes == null) {
+                    _castMapSizes = _mapSizes.Cast<IMapSizeCategory>().ToList().AsReadOnly();
+                }
+                return _castMapSizes;
+            }
+        }
+        private ReadOnlyCollection<IMapSizeCategory> _castMapSizes;
+        [SerializeField] private List<MapSizeCategory> _mapSizes;
+
+        public IMapSizeCategory DefaultMapSize {
+            get { return _defaultMapSize; }
+        }
+        [SerializeField] private MapSizeCategory _defaultMapSize;
+
         #endregion
 
         [SerializeField, Range(0f, 1f)] private float IdealGrasslandTemperature;
@@ -117,6 +136,16 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField, Range(0f, 1f)] private float IdealGrasslandPrecipitation;
         [SerializeField, Range(0f, 1f)] private float IdealPlainsPrecipitation;
         [SerializeField, Range(0f, 1f)] private float IdealDesertPrecipitation;
+
+        [SerializeField] private Vector2 TinyChunkDimensions;
+        [SerializeField] private Vector2 SmallChunkDimensions;
+        [SerializeField] private Vector2 StandardChunkDimensions;
+        [SerializeField] private Vector2 LargeChunkDimensions;
+        [SerializeField] private Vector2 HugeChunkDimensions;
+
+        [SerializeField, Range(10, 100)] private int LowSeaLevelLandPercentage;
+        [SerializeField, Range(10, 100)] private int NormalSeaLevelLandPercentage;
+        [SerializeField, Range(10, 100)] private int HighSeaLevelLandPercentage;
 
         #endregion
 
@@ -139,6 +168,15 @@ namespace Assets.Simulation.MapGeneration {
                 case CellTerrain.Plains:    return IdealPlainsPrecipitation;
                 case CellTerrain.Desert:    return IdealDesertPrecipitation;
                 default: throw new NotImplementedException("No ideal precipitation for terrain " + terrain);
+            }
+        }
+
+        public int GetLandPercentageForSeaLevel(SeaLevelCategory size) {
+            switch(size) {
+                case SeaLevelCategory.Low:    return LowSeaLevelLandPercentage;
+                case SeaLevelCategory.Normal: return NormalSeaLevelLandPercentage;
+                case SeaLevelCategory.High:   return HighSeaLevelLandPercentage;
+                default: Debug.LogWarningFormat("Unsupported sea level {0}. Defaulting to normal", size); return NormalSeaLevelLandPercentage;
             }
         }
 
