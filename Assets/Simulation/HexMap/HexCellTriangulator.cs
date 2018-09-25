@@ -59,10 +59,6 @@ namespace Assets.Simulation.HexMap {
             for(HexDirection direction = HexDirection.NE; direction <= HexDirection.NW; ++direction) {
                 TriangulateInDirection(direction, cell);
             }
-
-            if(FarmTriangulator.ShouldTriangulateFarm(cell)) {
-                FarmTriangulator.TriangulateFarm(cell);
-            }
         }
 
         #endregion
@@ -119,6 +115,18 @@ namespace Assets.Simulation.HexMap {
 
             if(OasisTriangulator.ShouldTriangulateOasis(thisData)) {
                 OasisTriangulator.TriangulateOasis(thisData);
+            }
+
+            if(FarmTriangulator.ShouldTriangulateFarmCenter(thisData)) {
+                FarmTriangulator.TriangulateFarmCenter(thisData);
+            }
+
+            if(FarmTriangulator.ShouldTriangulateFarmEdge(thisData)) {
+                FarmTriangulator.TriangulateFarmEdge(thisData);
+            }
+
+            if(FarmTriangulator.ShouldTriangulateFarmCorner(thisData)) {
+                FarmTriangulator.TriangulateFarmCorner(thisData);
             }
         }
 

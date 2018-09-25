@@ -7,9 +7,14 @@ namespace Assets.Simulation.HexMap {
 
     public interface IFarmTriangulator {
 
-        bool ShouldTriangulateFarm(IHexCell cell);
+        bool ShouldTriangulateFarmCenter(CellTriangulationData data);
+        void TriangulateFarmCenter      (CellTriangulationData data);
 
-        void TriangulateFarm(IHexCell cell);
+        bool ShouldTriangulateFarmEdge(CellTriangulationData data);
+        void TriangulateFarmEdge      (CellTriangulationData data);
+
+        bool ShouldTriangulateFarmCorner(CellTriangulationData data);
+        void TriangulateFarmCorner      (CellTriangulationData data);
 
     }
 

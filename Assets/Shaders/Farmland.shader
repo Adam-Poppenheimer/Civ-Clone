@@ -19,16 +19,12 @@
 		sampler2D _MainTex;
 
 		struct Input {
-			float2 uv_MainTex;
-			float4 tint;
 			float3 worldPos;
 			float visibility;
 		};
 
 		void vert(inout appdata_full v, out Input data) {
 			UNITY_INITIALIZE_OUTPUT(Input, data);
-
-			data.tint = float4(v.texcoord1.xy, v.texcoord2.xy);
 
 			float4 cell0 = GetCellData(v, 0);
 			float4 cell1 = GetCellData(v, 1);
@@ -46,9 +42,13 @@
 		UNITY_INSTANCING_CBUFFER_END
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
-			fixed4 textureColor = tex2D(_MainTex, IN.uv_MainTex);
+			fixed2 uv = IN.worldPos.xz;
+			uv.x *= 1 / (4 * 8.66025404);
+			uv.y *= 1 / (2 * 15.0);
 
-			fixed4 c = saturate(textureColor) * saturate(IN.tint) * saturate(IN.visibility);
+			fixed4 textureColor = tex2D(_MainTex, uv);
+
+			fixed4 c = saturate(textureColor) * saturate(IN.visibility);
 
 			o.Albedo = c.rgb;
 			o.Metallic = _Metallic;

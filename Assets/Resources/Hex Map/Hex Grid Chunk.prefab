@@ -1324,12 +1324,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UseCollider: 0
-  UseUVCoordinates: 1
-  UseUV2Coordinates: 1
-  UseUV3Coordinates: 1
+  UseUVCoordinates: 0
+  UseUV2Coordinates: 0
+  UseUV3Coordinates: 0
   UseCellData: 1
-  UseColors: 1
-  WeldMesh: 0
+  UseColors: 0
+  WeldMesh: 1
 --- !u!114 &114777301484005622
 MonoBehaviour:
   m_ObjectHideFlags: 1
