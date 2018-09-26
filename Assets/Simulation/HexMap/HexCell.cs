@@ -91,7 +91,7 @@ namespace Assets.Simulation.HexMap {
                 _elevation = value;
                 var localPosition = transform.localPosition;
 
-                localPosition.y = _elevation * HexMetrics.ElevationStep;
+                localPosition.y = _elevation * RenderConfig.ElevationStep;
 
                 transform.localPosition = localPosition;
 
@@ -106,27 +106,27 @@ namespace Assets.Simulation.HexMap {
 
         public int EdgeElevation {
             get {
-                return FoundationElevation + Config.GetEdgeElevationForShape(Shape);
+                return FoundationElevation + RenderConfig.GetEdgeElevationForShape(Shape);
             }
         }
 
         public int PeakElevation {
             get {
-                return FoundationElevation + Config.GetPeakElevationForShape(Shape);
+                return FoundationElevation + RenderConfig.GetPeakElevationForShape(Shape);
             }
         }
 
         public float PeakY {
-            get { return transform.localPosition.y + (Config.GetPeakElevationForShape(Shape) * HexMetrics.ElevationStep); }
+            get { return transform.localPosition.y + (RenderConfig.GetPeakElevationForShape(Shape) * RenderConfig.ElevationStep); }
         }
 
         public float EdgeY {
-            get { return transform.localPosition.y + (Config.GetEdgeElevationForShape(Shape) * HexMetrics.ElevationStep); }
+            get { return transform.localPosition.y + (RenderConfig.GetEdgeElevationForShape(Shape) * RenderConfig.ElevationStep); }
         }
 
         public float StreamBedY {
             get {
-                return (FoundationElevation + HexMetrics.StreamBedElevationOffset) * HexMetrics.ElevationStep;
+                return (FoundationElevation + RenderConfig.StreamBedElevationOffset) * RenderConfig.ElevationStep;
             }
         }
 
@@ -135,7 +135,7 @@ namespace Assets.Simulation.HexMap {
                 if(Shape == CellShape.Flatlands) {
                     return WaterSurfaceY;
                 }else {
-                    return EdgeY + (HexMetrics.RiverElevationOffset * HexMetrics.ElevationStep);
+                    return EdgeY + (RenderConfig.RiverElevationOffset * RenderConfig.ElevationStep);
                 }
             }
         }
@@ -157,12 +157,12 @@ namespace Assets.Simulation.HexMap {
 
         public float WaterSurfaceY {
             get {
-                return (Config.WaterLevel + HexMetrics.OceanElevationOffset) * HexMetrics.ElevationStep;
+                return (RenderConfig.WaterLevel + RenderConfig.OceanElevationOffset) * RenderConfig.ElevationStep;
             }
         }
 
         public int ViewElevation {
-            get { return PeakElevation >= Config.WaterLevel ? PeakElevation : Config.WaterLevel; }
+            get { return PeakElevation >= RenderConfig.WaterLevel ? PeakElevation : RenderConfig.WaterLevel; }
         }
 
         public IWorkerSlot WorkerSlot { get; set; }
@@ -187,17 +187,17 @@ namespace Assets.Simulation.HexMap {
         public Vector3 UnitAnchorPoint {
             get {
                 var retval = transform.position;
-                retval.y += HexMetrics.ElevationStep * (PeakElevation - FoundationElevation);
+                retval.y += RenderConfig.ElevationStep * (PeakElevation - FoundationElevation);
                 return retval;
             }
         }
 
         #endregion
 
-        private IHexGrid        Grid;
-        private IRiverCanon     RiverCanon;
-        private HexCellSignals  Signals;
-        private IHexMapConfig   Config;
+        private IHexGrid                Grid;
+        private IRiverCanon             RiverCanon;
+        private HexCellSignals          Signals;
+        private IHexMapRenderConfig     RenderConfig;
 
         #endregion
 
@@ -205,13 +205,13 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            IHexGrid grid, IRiverCanon riverCanon,
-            HexCellSignals signals, IHexMapConfig config
+            IHexGrid grid, IRiverCanon riverCanon,HexCellSignals signals,
+            IHexMapRenderConfig renderConfig
         ){
-            Grid           = grid;
-            RiverCanon     = riverCanon;
-            Signals        = signals;
-            Config         = config;
+            Grid             = grid;
+            RiverCanon       = riverCanon;
+            Signals          = signals;
+            RenderConfig     = renderConfig;
         }
 
         #region Unity messages

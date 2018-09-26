@@ -73,15 +73,11 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(hit.collider == Collider) {
-                    var coordinates = HexCoordinates.FromPosition(hit.point);
+                    if(Grid.HasCellAtLocation(hit.point)) {
+                        var clickedCell = Grid.GetCellAtLocation(hit.point);
 
-                    if(!Grid.HasCellAtCoordinates(coordinates)) {
-                        return;
+                        CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(clickedCell, eventData));
                     }
-
-                    var clickedCell = Grid.GetCellAtCoordinates(coordinates);
-
-                    CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(clickedCell, eventData));
                 }
             }
         }
@@ -92,13 +88,11 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(hit.collider == Collider) {
-                    var coordinates = HexCoordinates.FromPosition(hit.point);
-
-                    if(!Grid.HasCellAtCoordinates(coordinates)) {
+                    if(!Grid.HasCellAtLocation(hit.point)) {
                         return;
                     }
 
-                    var clickedCell = Grid.GetCellAtCoordinates(coordinates);
+                    var clickedCell = Grid.GetCellAtLocation(hit.point);
 
                     var cityAtLocation = GetCityAtLocation(clickedCell);
                     if(cityAtLocation != null) {
@@ -170,8 +164,7 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
                 if(hit.collider == Collider) {
-                    var coordinates = HexCoordinates.FromPosition(hit.point);
-                    return Grid.HasCellAtCoordinates(coordinates) ? Grid.GetCellAtCoordinates(coordinates) : null;
+                    return Grid.HasCellAtLocation(hit.point) ? Grid.GetCellAtLocation(hit.point) : null;
                 }
             }
 

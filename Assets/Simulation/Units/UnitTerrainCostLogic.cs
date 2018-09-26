@@ -18,7 +18,7 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        private IHexMapConfig                                 Config;
+        private IHexMapSimulationConfig                       Config;
         private IUnitPositionCanon                            UnitPositionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
@@ -31,7 +31,7 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public UnitTerrainCostLogic(
-            IHexMapConfig config, IUnitPositionCanon unitPositionCanon,
+            IHexMapSimulationConfig config, IUnitPositionCanon unitPositionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
@@ -81,24 +81,12 @@ namespace Assets.Simulation.Units {
                 return -1;
             }
 
-            var edgeType = HexMetrics.GetEdgeType(currentCell, nextCell);
-
-            if(edgeType == HexEdgeType.Cliff){
-                return -1;
-            }
-
             var movementInfo = PromotionParser.GetMovementInfo(unit);
 
             int moveCost = Config.GetBaseMoveCostOfTerrain(nextCell.Terrain);
 
             if(currentCell.HasRoads && nextCell.HasRoads) {
                 return moveCost * Config.RoadMoveCostMultiplier;
-            }
-
-            if( edgeType == HexEdgeType.Slope && nextCell.EdgeElevation > currentCell.EdgeElevation &&
-                !movementInfo.IgnoresTerrainCosts
-            ) {
-                moveCost += Config.SlopeMoveCost;
             }
 
             var featureCost = Config.GetBaseMoveCostOfVegetation(nextCell.Vegetation);

@@ -13,15 +13,17 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
+        private IHexGrid            Grid;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public FeatureLocationLogic(IHexGrid grid) {
-            Grid = grid;
+        public FeatureLocationLogic(IHexGrid grid, IHexMapRenderConfig renderConfig) {
+            Grid         = grid;
+            RenderConfig = renderConfig;
         }
 
         #endregion
@@ -46,8 +48,8 @@ namespace Assets.Simulation.HexMap {
         //to the edge, with one vertex right in the middle of the cell.
         public IEnumerable<Vector3> GetDirectionalFeaturePoints(IHexCell cell, HexDirection direction) {
             var center = cell.LocalPosition;
-            var cornerOne = HexMetrics.GetFirstOuterSolidCorner (direction) + center;
-            var cornerTwo = HexMetrics.GetSecondOuterSolidCorner(direction) + center;
+            var cornerOne = RenderConfig.GetFirstOuterSolidCorner (direction) + center;
+            var cornerTwo = RenderConfig.GetSecondOuterSolidCorner(direction) + center;
 
             var edgeMidpoint = (cornerOne + cornerTwo) / 2f;
 

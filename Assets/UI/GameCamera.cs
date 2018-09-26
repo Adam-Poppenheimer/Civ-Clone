@@ -36,15 +36,20 @@ namespace Assets.UI {
 
         private float RotationAngle;
 
-        private IHexGrid Grid;
+
+
+
+        private IHexGrid            Grid;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid grid) {
-            Grid = grid;
+        public void InjectDependencies(IHexGrid grid, IHexMapRenderConfig renderConfig) {
+            Grid         = grid;
+            RenderConfig = renderConfig;
         }
 
         #region Unity messages
@@ -95,8 +100,8 @@ namespace Assets.UI {
         }
 
         private Vector3 ClampPosition(Vector3 position) {
-            float xMax = (Grid.ChunkCountX * HexMetrics.ChunkSizeX - 0.5f) * (2f   * HexMetrics.InnerRadius);
-            float zMax = (Grid.ChunkCountZ * HexMetrics.ChunkSizeZ - 1f)   * (1.5f * HexMetrics.OuterRadius);
+            float xMax = (Grid.ChunkCountX * RenderConfig.ChunkSizeX - 0.5f) * (2f   * RenderConfig.InnerRadius);
+            float zMax = (Grid.ChunkCountZ * RenderConfig.ChunkSizeZ - 1f)   * (1.5f * RenderConfig.OuterRadius);
 
             position.x = Mathf.Clamp(position.x, 0f, xMax);
             position.z = Mathf.Clamp(position.z, 0f, zMax);

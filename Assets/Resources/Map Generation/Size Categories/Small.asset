@@ -9,7 +9,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ccb4e85dfb2769548837998aa35d2067, type: 3}
-  m_Name: Small Size Category
+  m_Name: Small
   m_EditorClassIdentifier: 
   _dimensionsInChunks: {x: 13, y: 8}
   _validCivCounts: 0400000005000000060000000700000008000000

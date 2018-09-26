@@ -31,9 +31,10 @@ namespace Assets.UI.MapEditor {
 
 
 
-        private IRiverCanon    RiverCanon;
-        private IHexGrid       Grid;
-        private HexCellSignals CellSignals;
+        private IRiverCanon         RiverCanon;
+        private IHexGrid            Grid;
+        private HexCellSignals      CellSignals;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -41,11 +42,13 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            IRiverCanon riverCanon, IHexGrid grid, HexCellSignals cellSignals
+            IRiverCanon riverCanon, IHexGrid grid, HexCellSignals cellSignals,
+            IHexMapRenderConfig renderConfig
         ) {
-            RiverCanon  = riverCanon;
-            Grid        = grid;
-            CellSignals = cellSignals;
+            RiverCanon   = riverCanon;
+            Grid         = grid;
+            CellSignals  = cellSignals;
+            RenderConfig = renderConfig;
         }
 
         #region Unity messages
@@ -149,8 +152,8 @@ namespace Assets.UI.MapEditor {
             var directions = EnumUtil.GetValues<HexDirection>().ToList();
 
             directions.Sort(delegate(HexDirection directionOne, HexDirection directionTwo) {
-                var edgeOneMiddle = cell.Position + HexMetrics.GetOuterEdgeMiddle(directionOne);
-                var edgeTwoMiddle = cell.Position + HexMetrics.GetOuterEdgeMiddle(directionTwo);
+                var edgeOneMiddle = cell.Position + RenderConfig.GetOuterEdgeMiddle(directionOne);
+                var edgeTwoMiddle = cell.Position + RenderConfig.GetOuterEdgeMiddle(directionTwo);
 
                 return Vector3.Distance(mouseRayHit, edgeOneMiddle)
                     .CompareTo(Vector3.Distance(mouseRayHit, edgeTwoMiddle));
@@ -187,7 +190,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private RiverFlow? GetFlowFromEdgeMidpoint(IHexCell cell, HexDirection sextant) {
-            Vector2 toSextantMidpointFromCenter = HexMetrics.GetOuterEdgeMiddle(sextant);
+            Vector2 toSextantMidpointFromCenter = RenderConfig.GetOuterEdgeMiddle(sextant);
 
             Vector2 toMouseFromCenter = GetMouseRaycastPoint() - cell.Position;
 

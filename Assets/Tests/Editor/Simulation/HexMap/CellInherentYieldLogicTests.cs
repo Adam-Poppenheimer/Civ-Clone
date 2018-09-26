@@ -183,7 +183,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private Mock<IHexMapConfig> MockConfig;
+        private Mock<IHexMapSimulationConfig> MockConfig;
 
         #endregion
 
@@ -193,9 +193,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
         [SetUp]
         public void CommonInstall() {
-            MockConfig = new Mock<IHexMapConfig>();
+            MockConfig = new Mock<IHexMapSimulationConfig>();
 
-            Container.Bind<IHexMapConfig>().FromInstance(MockConfig.Object);
+            Container.Bind<IHexMapSimulationConfig>().FromInstance(MockConfig.Object);
 
             Container.Bind<InherentCellYieldLogic>().AsSingle();
         }

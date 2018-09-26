@@ -395,8 +395,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private Mock<IRiverCanon>   MockRiverCanon;        
-        private Mock<IHexMapConfig> MockConfig;
+        private Mock<IRiverCanon>         MockRiverCanon;        
+        private Mock<IHexMapRenderConfig> MockRenderConfig;
 
         #endregion
 
@@ -406,11 +406,11 @@ namespace Assets.Tests.Simulation.HexMap {
 
         [SetUp]
         public void CommonInstall() {
-            MockRiverCanon = new Mock<IRiverCanon>();
-            MockConfig     = new Mock<IHexMapConfig>();
+            MockRiverCanon   = new Mock<IRiverCanon>();
+            MockRenderConfig = new Mock<IHexMapRenderConfig>();
 
-            Container.Bind<IRiverCanon>  ().FromInstance(MockRiverCanon.Object);
-            Container.Bind<IHexMapConfig>().FromInstance(MockConfig    .Object);
+            Container.Bind<IRiverCanon>        ().FromInstance(MockRiverCanon  .Object);
+            Container.Bind<IHexMapRenderConfig>().FromInstance(MockRenderConfig.Object);
 
             Container.Bind<CellModificationLogic>().AsSingle();
         }
@@ -445,7 +445,7 @@ namespace Assets.Tests.Simulation.HexMap {
         public void ChangeTerrainOfCell_FoundationElevationReset() {
             var cellToTest = BuildCell();
 
-            MockConfig.Setup(config => config.GetFoundationElevationForTerrain(CellTerrain.ShallowWater)).Returns(-5);
+            MockRenderConfig.Setup(config => config.GetFoundationElevationForTerrain(CellTerrain.ShallowWater)).Returns(-5);
 
             var modLogic = Container.Resolve<CellModificationLogic>();
 

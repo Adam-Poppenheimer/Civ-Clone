@@ -24,6 +24,7 @@ namespace Assets.Simulation.HexMap {
         private IHexGridMeshBuilder  MeshBuilder;
         private IHexFeatureManager   FeatureManager;
         private IHexCellTriangulator Triangulator;
+        private IHexMapRenderConfig  RenderConfig;
 
         #endregion
 
@@ -32,17 +33,18 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             IHexGridMeshBuilder meshBuilder, IHexFeatureManager featureManager,
-            IHexCellTriangulator triangulator
+            IHexCellTriangulator triangulator, IHexMapRenderConfig renderConfig
         ){
             MeshBuilder    = meshBuilder;
             FeatureManager = featureManager;
             Triangulator   = triangulator;
+            RenderConfig   = renderConfig;
         }
 
         #region Unity messages
 
         private void Awake() {
-            Cells = new HexCell[HexMetrics.ChunkSizeX * HexMetrics.ChunkSizeZ];
+            Cells = new HexCell[RenderConfig.ChunkSizeX * RenderConfig.ChunkSizeZ];
         }
 
         private void LateUpdate() {

@@ -17,6 +17,7 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -24,10 +25,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public RiverTroughTriangulator(
-            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator,
+            IHexMapRenderConfig renderConfig
         ){
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
+            RenderConfig   = renderConfig;
         }
 
         #endregion
@@ -177,7 +180,7 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 offsetVector = (data.CenterRightTroughPoint - lowerCenterLeftTroughPoint).normalized *
-                                   HexMetrics.CornerWaterfallTroughProtrusion;
+                                   RenderConfig.CornerWaterfallTroughProtrusion;
 
             MeshBuilder.AddTriangleUnperturbed(
                 lowerRiverIntersectionPoint + offsetVector, data.Center.Index, lowerRiverIntersectionWeights,
@@ -273,7 +276,7 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 offsetVector = (data.CenterLeftTroughPoint - lowerCenterRightTroughPoint).normalized *
-                                   HexMetrics.CornerWaterfallTroughProtrusion;
+                                   RenderConfig.CornerWaterfallTroughProtrusion;
 
             MeshBuilder.AddTriangleUnperturbed(
                 lowerRiverIntersectionPoint + offsetVector, data.Center.Index, lowerRiverIntersectionWeights,
@@ -347,10 +350,10 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 stepVertex2 = NoiseGenerator.Perturb(
-                HexMetrics.TerraceLerp(data.LeftCorner, data.RightCorner, 1)
+                RenderConfig.TerraceLerp(data.LeftCorner, data.RightCorner, 1)
             );
 
-            Color stepWeights2 = HexMetrics.TerraceLerp(
+            Color stepWeights2 = RenderConfig.TerraceLerp(
                 MeshBuilder.Weights2, MeshBuilder.Weights3, 1
             );
 
@@ -366,15 +369,15 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 stepVertex1  = stepVertex2;
                 Color   stepWeights1 = stepWeights2;
 
                 stepVertex2 = NoiseGenerator.Perturb(
-                    HexMetrics.TerraceLerp(data.LeftCorner, data.RightCorner, i)
+                    RenderConfig.TerraceLerp(data.LeftCorner, data.RightCorner, i)
                 );
 
-                stepWeights2 = HexMetrics.TerraceLerp(
+                stepWeights2 = RenderConfig.TerraceLerp(
                     MeshBuilder.Weights2, MeshBuilder.Weights3, i
                 );
 
@@ -464,7 +467,7 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 offsetVector = (data.PerturbedLeftCorner - rightCornerAlignedWithConvergence).normalized *
-                                   HexMetrics.CornerWaterfallTroughProtrusion;
+                                   RenderConfig.CornerWaterfallTroughProtrusion;
 
             MeshBuilder.AddQuadUnperturbed(
                 rightCornerAlignedWithConvergence       + offsetVector, MeshBuilder.Weights3,
@@ -514,10 +517,10 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 stepVertex2 = NoiseGenerator.Perturb(
-                HexMetrics.TerraceLerp(data.RightCorner, data.LeftCorner, 1)
+                RenderConfig.TerraceLerp(data.RightCorner, data.LeftCorner, 1)
             );
 
-            Color stepWeights2 = HexMetrics.TerraceLerp(
+            Color stepWeights2 = RenderConfig.TerraceLerp(
                 MeshBuilder.Weights2, MeshBuilder.Weights3, 1
             );
 
@@ -533,15 +536,15 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 stepVertex1  = stepVertex2;
                 Color   stepWeights1 = stepWeights2;
 
                 stepVertex2 = NoiseGenerator.Perturb(
-                    HexMetrics.TerraceLerp(data.RightCorner, data.LeftCorner, i)
+                    RenderConfig.TerraceLerp(data.RightCorner, data.LeftCorner, i)
                 );
 
-                stepWeights2 = HexMetrics.TerraceLerp(
+                stepWeights2 = RenderConfig.TerraceLerp(
                     MeshBuilder.Weights2, MeshBuilder.Weights3, i
                 );
 
@@ -631,7 +634,7 @@ namespace Assets.Simulation.HexMap {
             );
 
             Vector3 offsetVector = (data.PerturbedRightCorner - leftCornerAlignedWithConvergence).normalized *
-                                   HexMetrics.CornerWaterfallTroughProtrusion;
+                                   RenderConfig.CornerWaterfallTroughProtrusion;
 
             MeshBuilder.AddQuadUnperturbed(
                 lowerRiverIntersectionPoint            + offsetVector, lowerRiverIntersectionWeights,
@@ -710,8 +713,8 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.RightCorner,     data.LeftCorner,      1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights1, 1);
+            Vector3 terraceVertexTwo  = RenderConfig.TerraceLerp(data.RightCorner,     data.LeftCorner,      1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights1, 1);
 
             //Builds out the terrace convergence between Left and Right
             MeshBuilder.AddTriangleUnperturbed(
@@ -721,12 +724,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terraceVertexOne  = terraceVertexTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terraceVertexTwo  = HexMetrics.TerraceLerp(data.RightCorner,     data.LeftCorner,      i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights1, i);
+                terraceVertexTwo  = RenderConfig.TerraceLerp(data.RightCorner,     data.LeftCorner,      i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights2, MeshBuilder.Weights1, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     convergencePoint,                         data.Left  .Index, convergenceWeights,
@@ -771,8 +774,8 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            Vector3 terraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Vector3 terraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             //Builds out the terrace convergence between Left and Right
             MeshBuilder.AddTriangleUnperturbed(
@@ -782,12 +785,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terraceVertexOne  = terraceVertexTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                terraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(terraceVertexOne), data.Left  .Index, terraceWeightsOne,
@@ -834,8 +837,8 @@ namespace Assets.Simulation.HexMap {
 
             //Builds out the terrace convergence from the terraced slope on Center/Left
             //to the convergence point between CenterRightTrough and CenterCorner
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Vector3 terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 NoiseGenerator.Perturb(terracePointTwo), data.Left  .Index, terraceWeightsTwo,
@@ -844,12 +847,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(terracePointTwo), data.Left  .Index, terraceWeightsTwo,
@@ -896,8 +899,8 @@ namespace Assets.Simulation.HexMap {
 
             //Builds out the terrace convergence from the terraced slope on Center/Left
             //to the convergence point between CenterRightTrough and LeftCorner
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.CenterCorner,    data.LeftCorner ,     1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights3, MeshBuilder.Weights1, 1);
+            Vector3 terracePointTwo   = RenderConfig.TerraceLerp(data.CenterCorner,    data.LeftCorner ,     1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights3, MeshBuilder.Weights1, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedCenterCorner,              data.Left  .Index, MeshBuilder.Weights3,
@@ -906,12 +909,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.CenterCorner,    data.LeftCorner,      i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights3, MeshBuilder.Weights1, i);
+                terracePointTwo   = RenderConfig.TerraceLerp(data.CenterCorner,    data.LeftCorner,      i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights3, MeshBuilder.Weights1, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(terracePointOne), data.Left  .Index, terraceWeightsOne,
@@ -935,17 +938,17 @@ namespace Assets.Simulation.HexMap {
         //out into that open water. This method converges all of the terraced edges
         //to the center trough of the river.
         public void CreateRiverTrough_Endpoint_ShallowWaterRiverDelta(CellTriangulationData data) {
-            Vector3 leftCenterTerracePointTwo = HexMetrics.TerraceLerp(
+            Vector3 leftCenterTerracePointTwo = RenderConfig.TerraceLerp(
                 data.LeftCorner, data.CenterCorner, 1
             );
-            Color leftCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(
+            Color leftCenterTerraceWeightsTwo = RenderConfig.TerraceLerp(
                 MeshBuilder.Weights1, MeshBuilder.Weights3, 1
             );
 
-            Vector3 leftRightTerracePointTwo = HexMetrics.TerraceLerp(
+            Vector3 leftRightTerracePointTwo = RenderConfig.TerraceLerp(
                 data.LeftCorner, data.RightCorner, 1
             );
-            Color leftRightTerraceWeightsTwo = HexMetrics.TerraceLerp(
+            Color leftRightTerraceWeightsTwo = RenderConfig.TerraceLerp(
                 MeshBuilder.Weights1, MeshBuilder.Weights2, 1
             );
 
@@ -963,24 +966,24 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 leftCenterTerracePointOne   = leftCenterTerracePointTwo;
                 Color   leftCenterTerraceWeightsOne = leftCenterTerraceWeightsTwo;
 
                 Vector3 leftRightTerracePointOne   = leftRightTerracePointTwo;
                 Color   leftRightTerraceWeightsOne = leftRightTerraceWeightsTwo;
 
-                leftCenterTerracePointTwo = HexMetrics.TerraceLerp(
+                leftCenterTerracePointTwo = RenderConfig.TerraceLerp(
                     data.LeftCorner, data.CenterCorner, i
                 );
-                leftCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(
+                leftCenterTerraceWeightsTwo = RenderConfig.TerraceLerp(
                     MeshBuilder.Weights1, MeshBuilder.Weights3, i
                 );
 
-                leftRightTerracePointTwo = HexMetrics.TerraceLerp(
+                leftRightTerracePointTwo = RenderConfig.TerraceLerp(
                     data.LeftCorner, data.RightCorner, i
                 );
-                leftRightTerraceWeightsTwo = HexMetrics.TerraceLerp(
+                leftRightTerraceWeightsTwo = RenderConfig.TerraceLerp(
                     MeshBuilder.Weights1, MeshBuilder.Weights2, i
                 );
 
@@ -1019,11 +1022,11 @@ namespace Assets.Simulation.HexMap {
         //down. This method simply connects the two terraces together and then creates a
         //vertical wall for the river to run into.
         public void CreateRiverTrough_Endpoint_DoubleTerraces(CellTriangulationData data) {
-            Vector3 toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
-            Color   toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Vector3 toCenterTerraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   toCenterTerraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
-            Vector3 toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
-            Color   toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Vector3 toRightTerraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   toRightTerraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             //Builds the first triangle between the terraces
             MeshBuilder.AddTriangleUnperturbed(
@@ -1034,18 +1037,18 @@ namespace Assets.Simulation.HexMap {
             );
 
             //Builds the quads between the terraces
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 toCenterTerraceVertexOne  = toCenterTerraceVertexTwo;
                 Color   toCenterTerraceWeightsOne = toCenterTerraceWeightsTwo;
 
                 Vector3 toRightTerraceVertexOne  = toRightTerraceVertexTwo;
                 Color   toRightTerraceWeightsOne = toRightTerraceWeightsTwo;
 
-                toCenterTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
-                toCenterTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                toCenterTerraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                toCenterTerraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
-                toRightTerraceVertexTwo  = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
-                toRightTerraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                toRightTerraceVertexTwo  = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                toRightTerraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.AddQuad(
                     toRightTerraceVertexOne, toRightTerraceWeightsOne,
@@ -1089,8 +1092,8 @@ namespace Assets.Simulation.HexMap {
 
             //Builds out the terraced edges attached to Center by converging them to the
             //trough point opposite Left
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Vector3 terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedLeftCorner,                data.Left  .Index, MeshBuilder.Weights1,
@@ -1099,12 +1102,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.CenterCorner,    i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(terracePointOne), data.Left  .Index, terraceWeightsOne,
@@ -1137,8 +1140,8 @@ namespace Assets.Simulation.HexMap {
 
             //Builds out the terraced edges attached to Right by converging them to the
             //trough point opposite Left
-            Vector3 terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
-            Color   terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Vector3 terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     1);
+            Color   terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedLeftCorner,                data.Left  .Index, MeshBuilder.Weights1,
@@ -1147,12 +1150,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 terracePointOne   = terracePointTwo;
                 Color   terraceWeightsOne = terraceWeightsTwo;
 
-                terracePointTwo   = HexMetrics.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
-                terraceWeightsTwo = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                terracePointTwo   = RenderConfig.TerraceLerp(data.LeftCorner,      data.RightCorner,     i);
+                terraceWeightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     NoiseGenerator.Perturb(terracePointOne), data.Left  .Index, terraceWeightsOne,

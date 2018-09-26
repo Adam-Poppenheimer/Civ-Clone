@@ -19,6 +19,7 @@ namespace Assets.Simulation.HexMap {
         private ICivilizationTerritoryLogic CivTerritoryLogic;
         private INoiseGenerator             NoiseGenerator;
         private IHexGridMeshBuilder         MeshBuilder;
+        private IHexMapRenderConfig         RenderConfig;
 
         #endregion
 
@@ -27,11 +28,13 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public CultureTriangulator(
             ICivilizationTerritoryLogic civTerritoryLogic,
-            INoiseGenerator noiseGenerator, IHexGridMeshBuilder meshBuilder
+            INoiseGenerator noiseGenerator, IHexGridMeshBuilder meshBuilder,
+            IHexMapRenderConfig renderConfig
         ) {
             CivTerritoryLogic = civTerritoryLogic;
             NoiseGenerator    = noiseGenerator;
             MeshBuilder       = meshBuilder;
+            RenderConfig      = renderConfig;
         }
 
         #endregion
@@ -114,9 +117,9 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCultureTerraces(
             CellTriangulationData data, ICivilization owner
         ) {
-            EdgeVertices edgeTwo  = EdgeVertices.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, 1);
-            float        v2       = HexMetrics.TerraceLerp(0f, 1f, 1);
-            Color        weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            EdgeVertices edgeTwo  = RenderConfig.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, 1);
+            float        v2       = RenderConfig.TerraceLerp(0f, 1f, 1);
+            Color        weights2 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             MeshBuilder.TriangulateEdgeStrip(
                 data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
@@ -124,14 +127,14 @@ namespace Assets.Simulation.HexMap {
                 owner.Color, MeshBuilder.Culture
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 EdgeVertices edgeOne  = edgeTwo;
                 float        v1       = v2;
                 Color        weights1 = weights2;
 
-                edgeTwo  = EdgeVertices.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, i);
-                v2       = HexMetrics.TerraceLerp(0f, 1f, i);
-                weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                edgeTwo  = RenderConfig.TerraceLerp(data.CenterToRightEdge, data.RightToCenterEdge, i);
+                v2       = RenderConfig.TerraceLerp(0f, 1f, i);
+                weights2 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.TriangulateEdgeStrip(
                     edgeOne, weights1, data.Center.Index, v1, false,
@@ -196,8 +199,8 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateCultureCornerTerraces(
             CellTriangulationData data, ICivilization owner
         ){
-            Vector3 vertex3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
-            Vector3 vertex4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
+            Vector3 vertex3 = RenderConfig.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
+            Vector3 vertex4 = RenderConfig.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
 
             float alphaMin, leftAlphaMax, rightAlphaMax;
             CalculateCultureAlphas(
@@ -205,11 +208,11 @@ namespace Assets.Simulation.HexMap {
                 out alphaMin, out leftAlphaMax, out rightAlphaMax
             );
 
-            float alpha3 = HexMetrics.TerraceLerp(alphaMin, leftAlphaMax,  1);
-            float alpha4 = HexMetrics.TerraceLerp(alphaMin, rightAlphaMax, 1);
+            float alpha3 = RenderConfig.TerraceLerp(alphaMin, leftAlphaMax,  1);
+            float alpha4 = RenderConfig.TerraceLerp(alphaMin, rightAlphaMax, 1);
 
-            Color weights3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
-            Color weights4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Color weights3 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Color weights4 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             Vector3 indices;
             indices.x = data.Center.Index;
@@ -223,7 +226,7 @@ namespace Assets.Simulation.HexMap {
                 owner.Color, indices, MeshBuilder.Culture
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 vertex1 = vertex3;
                 Vector3 vertex2 = vertex4;
                 float alpha1 = alpha3;
@@ -231,14 +234,14 @@ namespace Assets.Simulation.HexMap {
                 Color weights1 = weights3;
                 Color weights2 = weights4;
 
-                vertex3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
-                vertex4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, i);
+                vertex3 = RenderConfig.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
+                vertex4 = RenderConfig.TerraceLerp(data.CenterCorner, data.RightCorner, i);
 
-                alpha3 = HexMetrics.TerraceLerp(alphaMin, leftAlphaMax,  i);
-                alpha4 = HexMetrics.TerraceLerp(alphaMin, rightAlphaMax, i);
+                alpha3 = RenderConfig.TerraceLerp(alphaMin, leftAlphaMax,  i);
+                alpha4 = RenderConfig.TerraceLerp(alphaMin, rightAlphaMax, i);
 
-                weights3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
-                weights4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                weights3 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                weights4 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
                 MeshBuilder.AddQuad(
                     vertex1, weights1, new Vector2(0f, alpha1),
@@ -356,9 +359,9 @@ namespace Assets.Simulation.HexMap {
             Vector3 boundary, float boundaryAlpha, Color boundaryWeights,
             Vector3 indices, ICivilization owner
         ) {
-            Vector3 vertex2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-            float alpha2    = HexMetrics.TerraceLerp(beginAlpha,   leftAlpha,   1);
-            Color weights2  = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
+            Vector3 vertex2 = NoiseGenerator.Perturb(RenderConfig.TerraceLerp(begin, left, 1));
+            float alpha2    = RenderConfig.TerraceLerp(beginAlpha,   leftAlpha,   1);
+            Color weights2  = RenderConfig.TerraceLerp(beginWeights, leftWeights, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb), beginWeights,    new Vector2(0f, beginAlpha),
@@ -367,14 +370,14 @@ namespace Assets.Simulation.HexMap {
                 owner.Color, indices, MeshBuilder.Culture
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 vertex1 = vertex2;
                 float alpha1    = alpha2;
                 Color weights1  = weights2;
 
-                vertex2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
-                alpha2 = HexMetrics.TerraceLerp(beginAlpha, leftAlpha, i);
-                weights2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
+                vertex2 = NoiseGenerator.Perturb(RenderConfig.TerraceLerp(begin, left, i));
+                alpha2 = RenderConfig.TerraceLerp(beginAlpha, leftAlpha, i);
+                weights2 = RenderConfig.TerraceLerp(beginWeights, leftWeights, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     vertex1,  weights1,        new Vector2(0f, alpha1),

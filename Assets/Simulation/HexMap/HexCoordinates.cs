@@ -66,34 +66,6 @@ namespace Assets.Simulation.HexMap {
             return cubeCoords.Z;
         }
 
-        public static HexCoordinates FromPosition(Vector3 position) {
-            float x = position.x / (HexMetrics.InnerRadius * 2f);
-            float y = -x;
-
-            float offset = position.z / (HexMetrics.OuterRadius * 3f);
-
-            x -= offset;
-            y -= offset;
-
-            int roundedX = Mathf.RoundToInt(x);
-            int roundedY = Mathf.RoundToInt(y);
-            int roundedZ = Mathf.RoundToInt(-x - y);
-
-            if(roundedX + roundedY + roundedZ != 0) {
-                float deltaX = Mathf.Abs(x - roundedX);
-                float deltaY = Mathf.Abs(y - roundedY);
-                float deltaZ = Mathf.Abs(-x - y - roundedZ);
-
-                if(deltaX > deltaY && deltaX > deltaZ) {
-                    roundedX = -roundedY - roundedZ;
-                }else if(deltaZ > deltaY) {
-                    roundedZ = -roundedX - roundedY;
-                }
-            }
-
-            return new HexCoordinates(roundedX, roundedZ);
-        }
-
         public static HexCoordinates Add(HexCoordinates a, HexCoordinates b) {
             return new HexCoordinates(a.X + b.X, a.Z + b.Z);
         }
@@ -145,24 +117,6 @@ namespace Assets.Simulation.HexMap {
 			}
 
 			return results;
-        }
-
-        public static List<HexCoordinates> GetCoordinatesInLine(
-            HexCoordinates start, Vector3 startPosition,
-            HexCoordinates end, Vector3 endPosition
-        ){
-            int distanceBetween = HexCoordinates.GetDistanceBetween(start, end);
-
-            var results = new List<HexCoordinates>();
-            float step = 1.0f / Mathf.Max(distanceBetween, 1);
-
-            for(int i = 0; i < distanceBetween; i++) {
-                results.Add(FromPosition(
-                    Vector3.Lerp(startPosition, endPosition, step * i)
-                ));
-            }
-
-            return results;
         }
 
         #endregion

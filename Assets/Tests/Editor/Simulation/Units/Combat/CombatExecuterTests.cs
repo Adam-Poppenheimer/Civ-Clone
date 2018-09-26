@@ -457,58 +457,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         Range = 1,
                         LocationElevation = 0,
                         DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 2
-                    }
-                }).SetName("Basic terrain/attacking up cliff/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 2,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/attacking down cliff/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
                         CanMoveToDefender = false,
                         CanSeeDefender = true
                     },

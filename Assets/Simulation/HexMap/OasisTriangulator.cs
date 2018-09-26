@@ -15,6 +15,7 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -22,10 +23,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public OasisTriangulator(
-            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator,
+            IHexMapRenderConfig renderConfig
         ) {
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
+            RenderConfig   = renderConfig;
         }
 
         #endregion
@@ -41,13 +44,13 @@ namespace Assets.Simulation.HexMap {
         public void TriangulateOasis(CellTriangulationData data) {
             Vector3 perturbedPeak = NoiseGenerator.Perturb(data.CenterPeak);
 
-            Vector3 nearIntermediateV1 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V1, HexMetrics.OasisWaterLerp);
-            Vector3 nearIntermediateV3 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V3, HexMetrics.OasisWaterLerp);
-            Vector3 nearIntermediateV5 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V5, HexMetrics.OasisWaterLerp);
+            Vector3 nearIntermediateV1 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V1, RenderConfig.OasisWaterLerp);
+            Vector3 nearIntermediateV3 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V3, RenderConfig.OasisWaterLerp);
+            Vector3 nearIntermediateV5 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V5, RenderConfig.OasisWaterLerp);
 
-            Vector3 farIntermediateV1 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V1, HexMetrics.OasisVerdantEdgeLerp);
-            Vector3 farIntermediateV3 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V3, HexMetrics.OasisVerdantEdgeLerp);
-            Vector3 farIntermediateV5 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V5, HexMetrics.OasisVerdantEdgeLerp);
+            Vector3 farIntermediateV1 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V1, RenderConfig.OasisVerdantEdgeLerp);
+            Vector3 farIntermediateV3 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V3, RenderConfig.OasisVerdantEdgeLerp);
+            Vector3 farIntermediateV5 = Vector3.Lerp(perturbedPeak, data.CenterToRightEdgePerturbed.V5, RenderConfig.OasisVerdantEdgeLerp);
 
             Vector3 indices = new Vector3(data.Center.Index, data.Left.Index, data.Right.Index);
 

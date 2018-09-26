@@ -11,14 +11,14 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexMapConfig Config;
+        private IHexMapSimulationConfig Config;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public InherentCellYieldLogic(IHexMapConfig config) {
+        public InherentCellYieldLogic(IHexMapSimulationConfig config) {
             Config = config;
         }
 

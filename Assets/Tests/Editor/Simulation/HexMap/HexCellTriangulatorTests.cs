@@ -964,7 +964,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private CellTriangulationData BuildTriangulationDataInDirection(
             IHexCell cell, HexDirection direction
         ){
-            var newData = new CellTriangulationData(cell, null, null, null, direction, null, null);
+            var newData = new CellTriangulationData(cell, null, null, null, direction, null, null, null);
 
             MockMeshBuilder.Setup(
                 builder => builder.GetTriangulationData(cell, null, null, direction)

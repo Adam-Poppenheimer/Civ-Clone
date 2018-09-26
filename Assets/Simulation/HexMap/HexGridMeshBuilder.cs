@@ -73,9 +73,10 @@ namespace Assets.Simulation.HexMap {
         public HexMesh FloodPlains      { get; private set; }
         public HexMesh Oases            { get; private set; }
 
-        private INoiseGenerator NoiseGenerator;
-        private IRiverCanon     RiverCanon;
-        private IHexGrid        Grid;
+        private INoiseGenerator     NoiseGenerator;
+        private IHexGrid            Grid;
+        private IHexMapRenderConfig RenderConfig;
+        private IHexEdgeTypeLogic   EdgeTypeLogic;
 
         #endregion
 
@@ -95,8 +96,9 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Marsh")]             HexMesh marsh,
             [Inject(Id = "Flood Plains")]      HexMesh floodPlains,
             [Inject(Id = "Oases")]             HexMesh oases,
-            INoiseGenerator noiseGenerator, IRiverCanon riverCanon,
-            IHexGrid grid
+            INoiseGenerator noiseGenerator, IHexGrid grid,
+            IHexMapRenderConfig renderConfig,
+            IHexEdgeTypeLogic edgeTypeLogic
         ) {
             SmoothTerrain    = smoothTerrain;
             JaggedTerrain    = jaggedTerrain;
@@ -113,8 +115,9 @@ namespace Assets.Simulation.HexMap {
             Oases            = oases;
 
             NoiseGenerator = noiseGenerator;
-            RiverCanon     = riverCanon;
             Grid           = grid;
+            RenderConfig   = renderConfig;
+            EdgeTypeLogic  = edgeTypeLogic;
         }
 
         #endregion
@@ -160,7 +163,10 @@ namespace Assets.Simulation.HexMap {
         ) {
             var nextRight = Grid.GetNeighbor(center, direction.Next());
 
-            return new CellTriangulationData(center, left, right, nextRight, direction, NoiseGenerator, RiverCanon);
+            return new CellTriangulationData(
+                center, left, right, nextRight, direction,
+                NoiseGenerator, RenderConfig, EdgeTypeLogic
+            );
         }
 
         public void TriangulateEdgeFan(

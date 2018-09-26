@@ -15,6 +15,7 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -22,10 +23,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public RoadTriangulator(
-            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator,
+            IHexMapRenderConfig renderConfig
         ){
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
+            RenderConfig   = renderConfig;
         }
 
         #endregion
@@ -203,8 +206,8 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices nearEdge = data.CenterToRightEdge;
             EdgeVertices farEdge  = data.RightToCenterEdge;
 
-            EdgeVertices edgeTwo    = EdgeVertices.TerraceLerp(nearEdge, farEdge, 1);
-            Color        weightsTwo = HexMetrics  .TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            EdgeVertices edgeTwo    = RenderConfig.TerraceLerp(nearEdge, farEdge, 1);
+            Color        weightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
 
             Vector3 indices = new Vector3(data.Center.Index, data.Right.Index, 0f);
 
@@ -214,12 +217,12 @@ namespace Assets.Simulation.HexMap {
                 indices
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 EdgeVertices edgeOne    = edgeTwo;
                 Color        weightsOne = weightsTwo;
 
-                edgeTwo    = EdgeVertices.TerraceLerp(nearEdge, farEdge, i);
-                weightsTwo = HexMetrics  .TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                edgeTwo    = RenderConfig.TerraceLerp(nearEdge, farEdge, i);
+                weightsTwo = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 TriangulateRoadSegment(
                     edgeOne.V2, edgeOne.V3, edgeOne.V4, weightsOne, false,

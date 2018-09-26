@@ -92,7 +92,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            if(HexMetrics.GetEdgeType(attackerLocation, defenderLocation) == HexEdgeType.Cliff) {
+            if(defenderLocation.Shape == CellShape.Mountains) {
                 return false;
             }
 

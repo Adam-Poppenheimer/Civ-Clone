@@ -9,15 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6a3877a431fcd2546b439a69e11818cc, type: 3}
-  m_Name: Hex Map Config
+  m_Name: Hex Map Simulation Config
   m_EditorClassIdentifier: 
-  _randomSeed: 2659
   _slopeMoveCost: 1
   _cityMoveCost: 1
   _roadMoveCostMultiplier: 0.5
-  _waterLevel: 3
-  _waterTerrainIndex: 5
-  _mountainTerrainIndex: 6
   BaseMoveCost: 1
   GrasslandYield:
     Food: 2
@@ -114,11 +110,3 @@ MonoBehaviour:
   ForestMoveCost: 1
   JungleMoveCost: 1
   MarshMoveCost: 1
-  FreshWaterFoundationElevation: 2
-  ShallowWaterFoundationElevation: 2
-  DeepWaterFoundationElevation: 0
-  LandBaseFoundationElevation: 3
-  HillsEdgeElevation: 1
-  MountainsEdgeElevation: 1
-  HillsPeakElevation: 2
-  MountainsPeakElevation: 5

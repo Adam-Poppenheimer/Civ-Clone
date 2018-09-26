@@ -15,14 +15,16 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public GridPartitionLogic() { }
+        public GridPartitionLogic(IHexMapRenderConfig renderConfig) {
+            RenderConfig = renderConfig;
+        }
 
         #endregion
 
@@ -35,8 +37,8 @@ namespace Assets.Simulation.MapGeneration {
         //shapes more regular
         public GridPartition GetPartitionOfGrid(IHexGrid grid, IMapTemplate template) {
             float xMin = 0f, zMin = 0f;
-            float xMax = (grid.CellCountX + grid.CellCountZ * 0.5f - grid.CellCountZ / 2) * HexMetrics.InnerRadius * 2f;
-            float zMax = grid.CellCountZ * HexMetrics.OuterRadius * 1.5f;
+            float xMax = (grid.CellCountX + grid.CellCountZ * 0.5f - grid.CellCountZ / 2) * RenderConfig.InnerRadius * 2f;
+            float zMax = grid.CellCountZ * RenderConfig.OuterRadius * 1.5f;
 
             var randomPoints = new List<Vector3>();
 

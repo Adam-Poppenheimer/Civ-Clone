@@ -16,6 +16,7 @@ namespace Assets.Simulation.HexMap {
         private IHexGridMeshBuilder MeshBuilder;
         private IRiverCanon         RiverCanon;
         private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -24,11 +25,12 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public WaterTriangulator(
             IHexGridMeshBuilder meshBuilder, IRiverCanon riverCanon,
-            INoiseGenerator noiseGenerator
+            INoiseGenerator noiseGenerator, IHexMapRenderConfig renderConfig
         ) {
             MeshBuilder    = meshBuilder;
             RiverCanon     = riverCanon;
             NoiseGenerator = noiseGenerator;
+            RenderConfig   = renderConfig;
         }
 
         #endregion
@@ -207,41 +209,41 @@ namespace Assets.Simulation.HexMap {
                 //For the middle triangle
                 //Points are CenterToRightWaterEdge.V1, LeftCorner, and RightCorner
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f,   HexMetrics.RiverEdgeEndV + 0.45f),
-                    new Vector2(leftU,  HexMetrics.RiverEdgeEndV),
-                    new Vector2(rightU, HexMetrics.RiverEdgeEndV)
+                    new Vector2(0.5f,   RenderConfig.RiverEdgeEndV + 0.45f),
+                    new Vector2(leftU,  RenderConfig.RiverEdgeEndV),
+                    new Vector2(rightU, RenderConfig.RiverEdgeEndV)
                 );
 
                 //For the left quad
 
                 //Points are CenterToLeftWaterEdge.V5, CenterToLeftWaterEdge.V4, and leftShoreEdge.V5
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f,      HexMetrics.RiverEdgeEndV + 0.45f),
-                    new Vector2(nearLeftU, HexMetrics.RiverEdgeEndV + 0.6f),
-                    new Vector2(leftU,     HexMetrics.RiverEdgeEndV)
+                    new Vector2(0.5f,      RenderConfig.RiverEdgeEndV + 0.45f),
+                    new Vector2(nearLeftU, RenderConfig.RiverEdgeEndV + 0.6f),
+                    new Vector2(leftU,     RenderConfig.RiverEdgeEndV)
                 );
 
                 //Points are CenterToLeftWaterEdge.V4, leftShoreEdge.V4, and leftShoreEdge.V5
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearLeftU, HexMetrics.RiverEdgeEndV + 0.6f),
-                    new Vector2(farLeftU,  HexMetrics.RiverEdgeEndV + 0.4f),
-                    new Vector2(leftU,     HexMetrics.RiverEdgeEndV)
+                    new Vector2(nearLeftU, RenderConfig.RiverEdgeEndV + 0.6f),
+                    new Vector2(farLeftU,  RenderConfig.RiverEdgeEndV + 0.4f),
+                    new Vector2(leftU,     RenderConfig.RiverEdgeEndV)
                 );
 
                 //For the right quad
 
                 //Points are CenterToRightWaterEdge.V2, CenterToRightWaterEdge.V1, and rightShoreEdge.V1
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearRightU, HexMetrics.RiverEdgeEndV + 0.6f),
-                    new Vector2(0.5f,       HexMetrics.RiverEdgeEndV + 0.45f),
-                    new Vector2(rightU,     HexMetrics.RiverEdgeEndV)
+                    new Vector2(nearRightU, RenderConfig.RiverEdgeEndV + 0.6f),
+                    new Vector2(0.5f,       RenderConfig.RiverEdgeEndV + 0.45f),
+                    new Vector2(rightU,     RenderConfig.RiverEdgeEndV)
                 );
 
                 //Points are CenterToRightWaterEdge.V2, rightShoreEdge.V1, and rightShoreEdge.V2
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearRightU, HexMetrics.RiverEdgeEndV + 0.6f),
-                    new Vector2(rightU,     HexMetrics.RiverEdgeEndV),
-                    new Vector2(farRightU,  HexMetrics.RiverEdgeEndV + 0.4f)
+                    new Vector2(nearRightU, RenderConfig.RiverEdgeEndV + 0.6f),
+                    new Vector2(rightU,     RenderConfig.RiverEdgeEndV),
+                    new Vector2(farRightU,  RenderConfig.RiverEdgeEndV + 0.4f)
                 );
 
             }else {
@@ -251,41 +253,41 @@ namespace Assets.Simulation.HexMap {
                 //For the middle triangle
                 //Points are CenterToRightWaterEdge.V1, LeftCorner, and RightCorner
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f,   HexMetrics.RiverEdgeStartV - 0.45f),
-                    new Vector2(leftU,  HexMetrics.RiverEdgeStartV),
-                    new Vector2(rightU, HexMetrics.RiverEdgeStartV)
+                    new Vector2(0.5f,   RenderConfig.RiverEdgeStartV - 0.45f),
+                    new Vector2(leftU,  RenderConfig.RiverEdgeStartV),
+                    new Vector2(rightU, RenderConfig.RiverEdgeStartV)
                 );
 
                 //For the left quad
 
                 //Points are CenterToLeftWaterEdge.V5, CenterToLeftWaterEdge.V4, and leftShoreEdge.V5
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(0.5f,      HexMetrics.RiverEdgeStartV - 0.45f),
-                    new Vector2(nearLeftU, HexMetrics.RiverEdgeStartV - 0.6f),
-                    new Vector2(leftU,     HexMetrics.RiverEdgeStartV)
+                    new Vector2(0.5f,      RenderConfig.RiverEdgeStartV - 0.45f),
+                    new Vector2(nearLeftU, RenderConfig.RiverEdgeStartV - 0.6f),
+                    new Vector2(leftU,     RenderConfig.RiverEdgeStartV)
                 );
 
                 //Points are CenterToLeftWaterEdge.V4, leftShoreEdge.V4, and leftShoreEdge.V5
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearLeftU, HexMetrics.RiverEdgeStartV - 0.6f),
-                    new Vector2(-farLeftU, HexMetrics.RiverEdgeStartV - 0.4f),
-                    new Vector2(leftU,     HexMetrics.RiverEdgeStartV)
+                    new Vector2(nearLeftU, RenderConfig.RiverEdgeStartV - 0.6f),
+                    new Vector2(-farLeftU, RenderConfig.RiverEdgeStartV - 0.4f),
+                    new Vector2(leftU,     RenderConfig.RiverEdgeStartV)
                 );
 
                 //For the right quad
 
                 //Points are CenterToRightWaterEdge.V2, CenterToRightWaterEdge.V1, and rightShoreEdge.V1
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearRightU, HexMetrics.RiverEdgeStartV - 0.6f),
-                    new Vector2(0.5f,       HexMetrics.RiverEdgeStartV - 0.45f),
-                    new Vector2(rightU,     HexMetrics.RiverEdgeStartV)
+                    new Vector2(nearRightU, RenderConfig.RiverEdgeStartV - 0.6f),
+                    new Vector2(0.5f,       RenderConfig.RiverEdgeStartV - 0.45f),
+                    new Vector2(rightU,     RenderConfig.RiverEdgeStartV)
                 );
 
                 //Points are CenterToRightWaterEdge.V2, rightShoreEdge.V1, and rightShoreEdge.V2
                 MeshBuilder.Estuaries.AddTriangleUV2(
-                    new Vector2(nearRightU, HexMetrics.RiverEdgeStartV - 0.6f),
-                    new Vector2(rightU,     HexMetrics.RiverEdgeStartV),
-                    new Vector2(farRightU,  HexMetrics.RiverEdgeStartV - 0.4f)
+                    new Vector2(nearRightU, RenderConfig.RiverEdgeStartV - 0.6f),
+                    new Vector2(rightU,     RenderConfig.RiverEdgeStartV),
+                    new Vector2(farRightU,  RenderConfig.RiverEdgeStartV - 0.4f)
                 );
             }
         }

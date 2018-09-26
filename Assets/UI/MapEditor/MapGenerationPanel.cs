@@ -25,8 +25,9 @@ namespace Assets.UI.MapEditor {
 
 
 
-        private IMapGenerator     MapGenerator;
-        private IMapGenerationConfig Config;
+        private IMapGenerator        MapGenerator;
+        private IMapGenerationConfig GenerationConfig;
+        private IHexMapRenderConfig  RenderConfig;
 
         #endregion
 
@@ -34,10 +35,12 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void CommonInstall(
-            IMapGenerator mapGenerator, IMapGenerationConfig config
+            IMapGenerator mapGenerator, IMapGenerationConfig generationConfig,
+            IHexMapRenderConfig renderConfig
         ) {
-            MapGenerator = mapGenerator;
-            Config       = config;
+            MapGenerator     = mapGenerator;
+            GenerationConfig = generationConfig;
+            RenderConfig     = renderConfig;
         }
 
         #region Unity messages
@@ -58,16 +61,16 @@ namespace Assets.UI.MapEditor {
             };
 
             MapGenerator.GenerateMap(
-                Config.TestTemplate, variables
+                GenerationConfig.TestTemplate, variables
             );
         }
 
         public void UpdateMapChunkWidth(float newWidth) {
-            MapCellWidthField.text = (Mathf.RoundToInt(newWidth) * HexMetrics.ChunkSizeX).ToString();
+            MapCellWidthField.text = (Mathf.RoundToInt(newWidth) * RenderConfig.ChunkSizeX).ToString();
         }
 
         public void UpdateMapChunkHeight(float newHeight) {
-            MapCellHeightField.text = (Mathf.RoundToInt(newHeight) * HexMetrics.ChunkSizeZ).ToString();
+            MapCellHeightField.text = (Mathf.RoundToInt(newHeight) * RenderConfig.ChunkSizeZ).ToString();
         }
 
         #endregion

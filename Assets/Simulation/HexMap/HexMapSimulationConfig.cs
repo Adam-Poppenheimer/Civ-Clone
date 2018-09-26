@@ -8,17 +8,12 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    [CreateAssetMenu(fileName = "New Hex Map Config", menuName = "Civ Clone/Hex Map Config")]
-    public class HexMapConfig : ScriptableObject, IHexMapConfig {
+    [CreateAssetMenu(menuName = "Civ Clone/Hex Map Simulation Config")]
+    public class HexMapSimulationConfig : ScriptableObject, IHexMapSimulationConfig {
 
         #region instance fields and properties
 
         #region from IHexGridConfig
-
-        public int RandomSeed {
-            get { return _randomSeed; }
-        }
-        [SerializeField] private int _randomSeed;
 
         public int SlopeMoveCost {
             get { return _slopeMoveCost; }
@@ -34,25 +29,6 @@ namespace Assets.Simulation.HexMap {
             get { return _roadMoveCostMultiplier; }
         }
         [SerializeField] private float _roadMoveCostMultiplier;
-
-        public int WaterLevel {
-            get { return _waterLevel; }
-        }
-        [SerializeField] private int _waterLevel;
-
-        public int WaterTerrainIndex {
-            get { return _waterTerrainIndex; }
-        }
-        [SerializeField] private int _waterTerrainIndex;
-
-        public int MountainTerrainIndex {
-            get { return _mountainTerrainIndex; }
-        }
-        [SerializeField] private int _mountainTerrainIndex;
-
-        public int MaxElevation {
-            get { return GetPeakElevationForShape(CellShape.Mountains) + GetFoundationElevationForTerrain(CellTerrain.Grassland); }
-        }
 
         #endregion
 
@@ -83,17 +59,6 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private int ForestMoveCost;
         [SerializeField] private int JungleMoveCost;
         [SerializeField] private int MarshMoveCost;
-
-        [SerializeField] private int FreshWaterFoundationElevation;
-        [SerializeField] private int ShallowWaterFoundationElevation;
-        [SerializeField] private int DeepWaterFoundationElevation;
-        [SerializeField] private int LandBaseFoundationElevation;
-
-        [SerializeField] private int HillsEdgeElevation;
-        [SerializeField] private int MountainsEdgeElevation;
-
-        [SerializeField] private int HillsPeakElevation;
-        [SerializeField] private int MountainsPeakElevation;
 
         #endregion
 
@@ -166,33 +131,6 @@ namespace Assets.Simulation.HexMap {
                 case CellVegetation.Forest: return ForestMoveCost;
                 case CellVegetation.Jungle: return JungleMoveCost;
                 case CellVegetation.Marsh:  return MarshMoveCost;
-                default: throw new NotImplementedException();
-            }
-        }
-
-        public int GetFoundationElevationForTerrain(CellTerrain terrain) {
-            switch(terrain) {
-                case CellTerrain.FreshWater:   return FreshWaterFoundationElevation;
-                case CellTerrain.ShallowWater: return ShallowWaterFoundationElevation;
-                case CellTerrain.DeepWater:    return DeepWaterFoundationElevation;
-                default:                       return LandBaseFoundationElevation;
-            }
-        }
-
-        public int GetEdgeElevationForShape(CellShape shape) {
-            switch(shape) {
-                case CellShape.Flatlands: return 0;
-                case CellShape.Hills:     return HillsEdgeElevation;
-                case CellShape.Mountains: return MountainsEdgeElevation;
-                default: throw new NotImplementedException();
-            }
-        }
-
-        public int GetPeakElevationForShape(CellShape shape) {
-            switch(shape) {
-                case CellShape.Flatlands: return 0;
-                case CellShape.Hills:     return HillsPeakElevation;
-                case CellShape.Mountains: return MountainsPeakElevation;
                 default: throw new NotImplementedException();
             }
         }

@@ -45,19 +45,7 @@ namespace Assets.Simulation.HexMap {
 
         #region static methods
 
-        public static EdgeVertices TerraceLerp(EdgeVertices a, EdgeVertices b, int step) {
-            EdgeVertices result;
-
-            result.V1 = HexMetrics.TerraceLerp(a.V1, b.V1, step);
-            result.V2 = HexMetrics.TerraceLerp(a.V2, b.V2, step);
-            result.V3 = HexMetrics.TerraceLerp(a.V3, b.V3, step);
-            result.V4 = HexMetrics.TerraceLerp(a.V4, b.V4, step);
-            result.V5 = HexMetrics.TerraceLerp(a.V5, b.V5, step);
-
-            return result;
-        }
-
-        public static EdgeVertices LerpFromPoint( Vector3 point, EdgeVertices vertices, float param) {
+        public static EdgeVertices LerpFromPoint(Vector3 point, EdgeVertices vertices, float param) {
             return new EdgeVertices(
                 Vector3.Lerp(point, vertices.V1, param),
                 Vector3.Lerp(point, vertices.V2, param),

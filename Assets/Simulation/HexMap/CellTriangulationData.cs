@@ -159,8 +159,8 @@ namespace Assets.Simulation.HexMap {
                 if(_centerLeftTrough == null) {
                     var trough = GetRiverTrough(CenterToLeftEdgePerturbed, LeftToCenterEdgePerturbed, false);
 
-                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
-                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, RenderConfig.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, RenderConfig.RiverTroughEndpointPullback);
 
                     _centerLeftTrough = trough;
                 }
@@ -174,8 +174,8 @@ namespace Assets.Simulation.HexMap {
                 if(_centerRightTrough == null) {
                     var trough = GetRiverTrough(CenterToRightEdgePerturbed, RightToCenterEdgePerturbed, false);
 
-                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
-                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, RenderConfig.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, RenderConfig.RiverTroughEndpointPullback);
 
                     _centerRightTrough = trough;
                 }
@@ -189,8 +189,8 @@ namespace Assets.Simulation.HexMap {
                 if(_leftRightTrough == null) {
                     var trough = GetRiverTrough(LeftToRightEdgePerturbed, RightToLeftEdgePerturbed, true);
 
-                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, HexMetrics.RiverTroughEndpointPullback);
-                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, HexMetrics.RiverTroughEndpointPullback);
+                    trough.V1 = Vector3.Lerp(trough.V1, trough.V2, RenderConfig.RiverTroughEndpointPullback);
+                    trough.V5 = Vector3.Lerp(trough.V5, trough.V4, RenderConfig.RiverTroughEndpointPullback);
 
                     _leftRightTrough = trough;
                 }
@@ -226,7 +226,7 @@ namespace Assets.Simulation.HexMap {
         public HexEdgeType CenterToLeftEdgeType {
             get {
                 if(_centerToLeftEdgeType == null) {
-                    _centerToLeftEdgeType = GetEdgeType(Center, Left, Direction.Previous());
+                    _centerToLeftEdgeType = EdgeTypeLogic.GetEdgeTypeBetweenCells(Center, Left);
                 }
                 return _centerToLeftEdgeType.GetValueOrDefault();
             }
@@ -236,7 +236,7 @@ namespace Assets.Simulation.HexMap {
         public HexEdgeType CenterToRightEdgeType {
             get {
                 if(_centerToRightEdgeType == null) {
-                    _centerToRightEdgeType = GetEdgeType(Center, Right, Direction);
+                    _centerToRightEdgeType = EdgeTypeLogic.GetEdgeTypeBetweenCells(Center, Right);
                 }
                 return _centerToRightEdgeType.GetValueOrDefault();
             }
@@ -246,7 +246,7 @@ namespace Assets.Simulation.HexMap {
         public HexEdgeType LeftToRightEdgeType {
             get {
                 if(_leftToRightEdgeType == null) {
-                    _leftToRightEdgeType = GetEdgeType(Left, Right, Direction.Next());
+                    _leftToRightEdgeType = EdgeTypeLogic.GetEdgeTypeBetweenCells(Left, Right);
                 }
                 return _leftToRightEdgeType.GetValueOrDefault();
             }
@@ -256,7 +256,7 @@ namespace Assets.Simulation.HexMap {
         public HexEdgeType CenterToNextRightEdgeType {
             get {
                 if(_centerToNextRightEdgeType == null) {
-                    _centerToNextRightEdgeType = GetEdgeType(Center, NextRight, Direction.Next());
+                    _centerToNextRightEdgeType = EdgeTypeLogic.GetEdgeTypeBetweenCells(Center, NextRight);
                 }
                 return _centerToNextRightEdgeType.GetValueOrDefault();
             }
@@ -266,7 +266,7 @@ namespace Assets.Simulation.HexMap {
         public HexEdgeType RightToNextRightEdgeType {
             get {
                 if(_rightToNextRightEdgeType == null) {
-                    _rightToNextRightEdgeType = GetEdgeType(Right, NextRight, Direction.Next2());
+                    _rightToNextRightEdgeType = EdgeTypeLogic.GetEdgeTypeBetweenCells(Right, NextRight);
                 }
                 return _rightToNextRightEdgeType.GetValueOrDefault();
             }
@@ -349,8 +349,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerToRightInnerEdge == null) {
                     _centerToRightInnerEdge = new EdgeVertices(
-                        CenterPeak + HexMetrics.GetFirstInnerSolidCorner (Direction),
-                        CenterPeak + HexMetrics.GetSecondInnerSolidCorner(Direction)
+                        CenterPeak + RenderConfig.GetFirstInnerSolidCorner (Direction),
+                        CenterPeak + RenderConfig.GetSecondInnerSolidCorner(Direction)
                     );
                 }
 
@@ -363,8 +363,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_leftToRightInnerEdge == null) {
                     _leftToRightInnerEdge = new EdgeVertices(
-                        LeftPeak + HexMetrics.GetFirstInnerSolidCorner (Direction.Next()),
-                        LeftPeak + HexMetrics.GetSecondInnerSolidCorner(Direction.Next())
+                        LeftPeak + RenderConfig.GetFirstInnerSolidCorner (Direction.Next()),
+                        LeftPeak + RenderConfig.GetSecondInnerSolidCorner(Direction.Next())
                     );
                 }
 
@@ -377,8 +377,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_rightToLeftInnerEdge == null) {
                     _rightToLeftInnerEdge = new EdgeVertices(
-                        RightPeak + HexMetrics.GetFirstInnerSolidCorner (Direction.Previous2()),
-                        RightPeak + HexMetrics.GetSecondInnerSolidCorner(Direction.Previous2())
+                        RightPeak + RenderConfig.GetFirstInnerSolidCorner (Direction.Previous2()),
+                        RightPeak + RenderConfig.GetSecondInnerSolidCorner(Direction.Previous2())
                     );
                 }
 
@@ -406,8 +406,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerToRightWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Center.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction),
-                        Center.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction)
+                        Center.LocalPosition + RenderConfig.GetFirstWaterCorner (Direction),
+                        Center.LocalPosition + RenderConfig.GetSecondWaterCorner(Direction)
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Center.WaterSurfaceY;
@@ -424,8 +424,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_rightToCenterWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Right.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Opposite()),
-                        Right.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Opposite())
+                        Right.LocalPosition + RenderConfig.GetSecondWaterCorner(Direction.Opposite()),
+                        Right.LocalPosition + RenderConfig.GetFirstWaterCorner (Direction.Opposite())
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Right.WaterSurfaceY;
@@ -442,8 +442,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_centerToLeftWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Center.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Previous()),
-                        Center.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Previous())
+                        Center.LocalPosition + RenderConfig.GetFirstWaterCorner (Direction.Previous()),
+                        Center.LocalPosition + RenderConfig.GetSecondWaterCorner(Direction.Previous())
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Center.WaterSurfaceY;
@@ -460,8 +460,8 @@ namespace Assets.Simulation.HexMap {
             get {
                 if(_leftToCenterWaterEdge == null) {
                     var newEdge = new EdgeVertices(
-                        Left.LocalPosition + HexMetrics.GetFirstWaterCorner (Direction.Next2()),
-                        Left.LocalPosition + HexMetrics.GetSecondWaterCorner(Direction.Next2())
+                        Left.LocalPosition + RenderConfig.GetFirstWaterCorner (Direction.Next2()),
+                        Left.LocalPosition + RenderConfig.GetSecondWaterCorner(Direction.Next2())
                     );
 
                     newEdge.V1.y = newEdge.V2.y = newEdge.V3.y = newEdge.V4.y = newEdge.V5.y = Left.WaterSurfaceY;
@@ -488,18 +488,18 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private INoiseGenerator NoiseGenerator;
-        private IRiverCanon     RiverCanon;
+        private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
+        private IHexEdgeTypeLogic   EdgeTypeLogic;
 
         #endregion
 
         #region constructors
 
         public CellTriangulationData(
-            IHexCell center, IHexCell left,
-            IHexCell right, IHexCell nextRight,
-            HexDirection direction,
-            INoiseGenerator noiseGenerator, IRiverCanon riverCanon
+            IHexCell center, IHexCell left, IHexCell right, IHexCell nextRight,
+            HexDirection direction, INoiseGenerator noiseGenerator,
+            IHexMapRenderConfig renderConfig, IHexEdgeTypeLogic edgeTypeLogic
         ){
             Center    = center;
             Left      = left;
@@ -509,7 +509,8 @@ namespace Assets.Simulation.HexMap {
             Direction = direction;
 
             NoiseGenerator = noiseGenerator;
-            RiverCanon     = riverCanon;
+            RenderConfig   = renderConfig;
+            EdgeTypeLogic  = edgeTypeLogic;
         }
 
         #endregion
@@ -523,13 +524,13 @@ namespace Assets.Simulation.HexMap {
 
             if(invertEdge) {
                 retval = new EdgeVertices(
-                    center + HexMetrics.GetSecondOuterSolidCorner(direction),
-                    center + HexMetrics.GetFirstOuterSolidCorner (direction)
+                    center + RenderConfig.GetSecondOuterSolidCorner(direction),
+                    center + RenderConfig.GetFirstOuterSolidCorner (direction)
                 );
             }else {
                 retval = new EdgeVertices(
-                    center + HexMetrics.GetFirstOuterSolidCorner (direction),
-                    center + HexMetrics.GetSecondOuterSolidCorner(direction)
+                    center + RenderConfig.GetFirstOuterSolidCorner (direction),
+                    center + RenderConfig.GetSecondOuterSolidCorner(direction)
                 );
             }
 
@@ -556,21 +557,11 @@ namespace Assets.Simulation.HexMap {
                 farEdge .V1.y, farEdge .V2.y, farEdge .V3.y, farEdge .V4.y, farEdge .V5.y
             );
 
-            troughY += HexMetrics.StreamBedElevationOffset;
+            troughY += RenderConfig.StreamBedElevationOffset;
 
             troughEdge.V1.y = troughEdge.V2.y = troughEdge.V3.y = troughEdge.V4.y = troughEdge.V5.y = troughY;
 
             return troughEdge;
-        }
-
-        private HexEdgeType GetEdgeType(IHexCell cellOne, IHexCell cellTwo, HexDirection direction) {
-            if(cellOne == null || cellTwo == null) {
-                return HexEdgeType.Void;
-            }else if(RiverCanon.HasRiverAlongEdge(cellOne, direction)) {
-                return HexEdgeType.River;
-            }else {
-                return HexMetrics.GetEdgeType(cellOne, cellTwo);
-            }
         }
 
         #endregion

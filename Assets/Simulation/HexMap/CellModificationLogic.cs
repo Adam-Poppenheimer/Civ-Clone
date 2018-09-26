@@ -11,17 +11,19 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IRiverCanon   RiverCanon;
-        private IHexMapConfig Config;
+        private IRiverCanon         RiverCanon;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public CellModificationLogic(IRiverCanon riverCanon, IHexMapConfig config) {
-            RiverCanon = riverCanon;
-            Config     = config;
+        public CellModificationLogic(
+            IRiverCanon riverCanon, IHexMapRenderConfig renderConfig
+        ) {
+            RiverCanon   = riverCanon;
+            RenderConfig = renderConfig;
         }
 
         #endregion
@@ -45,7 +47,7 @@ namespace Assets.Simulation.HexMap {
 
             cell.Terrain = terrain;
 
-            cell.FoundationElevation = Config.GetFoundationElevationForTerrain(cell.Terrain);
+            cell.FoundationElevation = RenderConfig.GetFoundationElevationForTerrain(cell.Terrain);
 
             if(terrain != CellTerrain.Grassland && cell.Vegetation == CellVegetation.Marsh) {
                 ChangeVegetationOfCell(cell, CellVegetation.None);

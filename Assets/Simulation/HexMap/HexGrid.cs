@@ -56,6 +56,7 @@ namespace Assets.Simulation.HexMap {
         private DiContainer            Container;
         private IWorkerSlotFactory     WorkerSlotFactory;
         private ICellModificationLogic CellModificationLogic;
+        private IHexMapRenderConfig    RenderConfig;
 
         #endregion
 
@@ -64,11 +65,13 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             DiContainer container, IWorkerSlotFactory workerSlotFactory,
-            ICellModificationLogic cellModificationLogic
+            ICellModificationLogic cellModificationLogic,
+            IHexMapRenderConfig renderConfig
         ) {
             Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
             CellModificationLogic = cellModificationLogic;
+            RenderConfig          = renderConfig;
         }
 
         #region Unity message methods
@@ -83,8 +86,8 @@ namespace Assets.Simulation.HexMap {
             ChunkCountX = chunkCountX;
             ChunkCountZ = chunkCountZ;
 
-            CellCountX = ChunkCountX * HexMetrics.ChunkSizeX;
-            CellCountZ = ChunkCountZ * HexMetrics.ChunkSizeZ;
+            CellCountX = ChunkCountX * RenderConfig.ChunkSizeX;
+            CellCountZ = ChunkCountZ * RenderConfig.ChunkSizeZ;
 
             CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
             CellShaderData.Initialize(CellCountX, CellCountZ);
@@ -138,13 +141,13 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool HasCellAtLocation(Vector3 location) {
-		    HexCoordinates coordinates = HexCoordinates.FromPosition(transform.InverseTransformPoint(location));
+		    HexCoordinates coordinates = GetCoordinatesFromPosition(transform.InverseTransformPoint(location));
 
             return HasCellAtCoordinates(coordinates);
         }
 
         public IHexCell GetCellAtLocation(Vector3 location) {
-            HexCoordinates coordinates = HexCoordinates.FromPosition(transform.InverseTransformPoint(location));
+            HexCoordinates coordinates = GetCoordinatesFromPosition(transform.InverseTransformPoint(location));
 
             return GetCellAtCoordinates(coordinates);
         }
@@ -194,7 +197,7 @@ namespace Assets.Simulation.HexMap {
         public List<IHexCell> GetCellsInLine(IHexCell start, IHexCell end) {
             var retval = new List<IHexCell>();
 
-            var coordinateLine = HexCoordinates.GetCoordinatesInLine(
+            var coordinateLine = GetCoordinatesInLine(
                 start.Coordinates, start.Position,
                 end.Coordinates, end.Position
             );
@@ -346,9 +349,9 @@ namespace Assets.Simulation.HexMap {
 
         private void CreateCell(int x, int z, int i, HexCell[] newCells) {
             var position = new Vector3(
-                (x + z * 0.5f - z / 2) * HexMetrics.InnerRadius * 2f,
+                (x + z * 0.5f - z / 2) * RenderConfig.InnerRadius * 2f,
                 0f,
-                z * HexMetrics.OuterRadius * 1.5f
+                z * RenderConfig.OuterRadius * 1.5f
             );
 
             var newCell = newCells[i] = Container.InstantiatePrefabForComponent<HexCell>(CellPrefab);
@@ -371,14 +374,14 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void AddCellToChunk(int x, int z, HexCell cell) {
-            int chunkX = x / HexMetrics.ChunkSizeX;
-            int chunkZ = z / HexMetrics.ChunkSizeZ;
+            int chunkX = x / RenderConfig.ChunkSizeX;
+            int chunkZ = z / RenderConfig.ChunkSizeZ;
             HexGridChunk chunk = Chunks[chunkX + chunkZ * ChunkCountX];
 
-            int localX = x - chunkX * HexMetrics.ChunkSizeX;
-            int localZ = z - chunkZ * HexMetrics.ChunkSizeZ;
+            int localX = x - chunkX * RenderConfig.ChunkSizeX;
+            int localZ = z - chunkZ * RenderConfig.ChunkSizeZ;
 
-            chunk.AddCell(localX + localZ * HexMetrics.ChunkSizeX, cell);
+            chunk.AddCell(localX + localZ * RenderConfig.ChunkSizeX, cell);
 
             cell.Chunk = chunk;
         }
@@ -386,6 +389,52 @@ namespace Assets.Simulation.HexMap {
         private IEnumerator RevertVisibilityMode(bool oldVisibilityMode) {
             yield return new WaitForEndOfFrame();
             CellShaderData.ImmediateMode = oldVisibilityMode;
+        }
+
+        private HexCoordinates GetCoordinatesFromPosition(Vector3 position) {
+            float x = position.x / (RenderConfig.InnerRadius * 2f);
+            float y = -x;
+
+            float offset = position.z / (RenderConfig.OuterRadius * 3f);
+
+            x -= offset;
+            y -= offset;
+
+            int roundedX = Mathf.RoundToInt(x);
+            int roundedY = Mathf.RoundToInt(y);
+            int roundedZ = Mathf.RoundToInt(-x - y);
+
+            if(roundedX + roundedY + roundedZ != 0) {
+                float deltaX = Mathf.Abs(x - roundedX);
+                float deltaY = Mathf.Abs(y - roundedY);
+                float deltaZ = Mathf.Abs(-x - y - roundedZ);
+
+                if(deltaX > deltaY && deltaX > deltaZ) {
+                    roundedX = -roundedY - roundedZ;
+                }else if(deltaZ > deltaY) {
+                    roundedZ = -roundedX - roundedY;
+                }
+            }
+
+            return new HexCoordinates(roundedX, roundedZ);
+        }
+
+        private List<HexCoordinates> GetCoordinatesInLine(
+            HexCoordinates start, Vector3 startPosition,
+            HexCoordinates end, Vector3 endPosition
+        ){
+            int distanceBetween = HexCoordinates.GetDistanceBetween(start, end);
+
+            var results = new List<HexCoordinates>();
+            float step = 1.0f / Mathf.Max(distanceBetween, 1);
+
+            for(int i = 0; i < distanceBetween; i++) {
+                results.Add(GetCoordinatesFromPosition(
+                    Vector3.Lerp(startPosition, endPosition, step * i)
+                ));
+            }
+
+            return results;
         }
 
         #endregion

@@ -15,6 +15,7 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGridMeshBuilder MeshBuilder;
         private INoiseGenerator     NoiseGenerator;
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -22,10 +23,12 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public BasicTerrainTriangulator(
-            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator
+            IHexGridMeshBuilder meshBuilder, INoiseGenerator noiseGenerator,
+            IHexMapRenderConfig renderConfig
         ) {
             MeshBuilder    = meshBuilder;
             NoiseGenerator = noiseGenerator;
+            RenderConfig   = renderConfig;
         }
 
         #endregion
@@ -122,8 +125,8 @@ namespace Assets.Simulation.HexMap {
             EdgeVertices begin, IHexCell beginCell,
             EdgeVertices end, IHexCell endCell
         ) {
-            EdgeVertices edgeTwo = EdgeVertices.TerraceLerp(begin, end, 1);
-            Color weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            EdgeVertices edgeTwo = RenderConfig.TerraceLerp(begin, end, 1);
+            Color weights2 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
             float i1 = beginCell.Index;
             float i2 = endCell.Index;
 
@@ -133,12 +136,12 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 EdgeVertices edgeOne = edgeTwo;
                 Color weights1 = weights2;
 
-                edgeTwo  = EdgeVertices.TerraceLerp(begin, end, i);
-                weights2 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                edgeTwo  = RenderConfig.TerraceLerp(begin, end, i);
+                weights2 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
 
                 MeshBuilder.TriangulateEdgeStrip(
                     edgeOne, weights1, i1, false,
@@ -201,11 +204,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void TriangulateCornerTerraces(CellTriangulationData data){
-            Vector3 v3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
-            Vector3 v4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
+            Vector3 v3 = RenderConfig.TerraceLerp(data.CenterCorner, data.LeftCorner,  1);
+            Vector3 v4 = RenderConfig.TerraceLerp(data.CenterCorner, data.RightCorner, 1);
 
-            Color w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
-            Color w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
+            Color w3 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, 1);
+            Color w4 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 data.PerturbedCenterCorner, data.Center.Index, MeshBuilder.Weights1,
@@ -214,16 +217,16 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 v1 = v3;
                 Vector3 v2 = v4;
                 Color w1 = w3;
                 Color w2 = w4;
 
-                v3 = HexMetrics.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
-                v4 = HexMetrics.TerraceLerp(data.CenterCorner, data.RightCorner, i);
-                w3 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
-                w4 = HexMetrics.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
+                v3 = RenderConfig.TerraceLerp(data.CenterCorner, data.LeftCorner,  i);
+                v4 = RenderConfig.TerraceLerp(data.CenterCorner, data.RightCorner, i);
+                w3 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights2, i);
+                w4 = RenderConfig.TerraceLerp(MeshBuilder.Weights1, MeshBuilder.Weights3, i);
 
                 MeshBuilder.AddQuad(
                     v1, w1, v2, w2,
@@ -317,8 +320,8 @@ namespace Assets.Simulation.HexMap {
             Vector3 boundary, Color boundaryWeights,
             Vector3 indices
         ) {
-            Vector3 v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, 1));
-            Color w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, 1);
+            Vector3 v2 = NoiseGenerator.Perturb(RenderConfig.TerraceLerp(begin, left, 1));
+            Color w2 = RenderConfig.TerraceLerp(beginWeights, leftWeights, 1);
 
             MeshBuilder.AddTriangleUnperturbed(
                 NoiseGenerator.Perturb(begin, perturbBeginY), beginWeights,
@@ -326,11 +329,11 @@ namespace Assets.Simulation.HexMap {
                 indices, MeshBuilder.JaggedTerrain
             );
 
-            for(int i = 2; i < HexMetrics.TerraceSteps; i++) {
+            for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
                 Vector3 v1 = v2;
                 Color w1 = w2;
-                v2 = NoiseGenerator.Perturb(HexMetrics.TerraceLerp(begin, left, i));
-                w2 = HexMetrics.TerraceLerp(beginWeights, leftWeights, i);
+                v2 = NoiseGenerator.Perturb(RenderConfig.TerraceLerp(begin, left, i));
+                w2 = RenderConfig.TerraceLerp(beginWeights, leftWeights, i);
 
                 MeshBuilder.AddTriangleUnperturbed(
                     v1, w1, v2, w2, boundary, boundaryWeights,

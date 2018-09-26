@@ -17,8 +17,6 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexGrid Grid;
 
-        [SerializeField] private Texture2D NoiseSource;
-
         #endregion
 
         #region instance methods
@@ -28,14 +26,14 @@ namespace Assets.Simulation.HexMap {
         public override void InstallBindings() {
             Container.Bind<IHexGrid>().To<HexGrid>().FromInstance(Grid);
 
-            var hexConfig = Resources.Load<HexMapConfig>("Hex Map/Hex Map Config");
-            Container.Bind<IHexMapConfig>().To<HexMapConfig>().FromInstance(hexConfig);
+            var renderConfig = Resources.Load<HexMapRenderConfig>("Hex Map/Hex Map Render Config");
+            Container.Bind<IHexMapRenderConfig>().To<HexMapRenderConfig>().FromInstance(renderConfig);
+
+            var simulationConfig = Resources.Load<HexMapSimulationConfig>("Hex Map/Hex Map Simulation Config");
+            Container.Bind<IHexMapSimulationConfig>().To<HexMapSimulationConfig>().FromInstance(simulationConfig);
             
             var featureConfig = Resources.Load<FeatureConfig>("Hex Map/Feature Config");
             Container.Bind<IFeatureConfig>().To<FeatureConfig>().FromInstance(featureConfig);
-
-            Container.Bind<Texture2D>().WithId("Noise Source").FromInstance(NoiseSource);
-            Container.Bind<int>()      .WithId("Random Seed") .FromInstance(hexConfig.RandomSeed);
 
             Container.Bind<ICellYieldLogic>        ().To<CellYieldLogic>        ().AsSingle();
             Container.Bind<INoiseGenerator>        ().To<NoiseGenerator>        ().AsSingle();
@@ -44,6 +42,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IFreshWaterCanon>       ().To<FreshWaterCanon>       ().AsSingle();
             Container.Bind<ICellModificationLogic> ().To<CellModificationLogic> ().AsSingle();
             Container.Bind<IInherentCellYieldLogic>().To<InherentCellYieldLogic>().AsSingle();
+            Container.Bind<IHexEdgeTypeLogic>      ().To<HexEdgeTypeLogic>      ().AsSingle();
 
             Container.Bind<MeshWelder>().AsSingle();
 

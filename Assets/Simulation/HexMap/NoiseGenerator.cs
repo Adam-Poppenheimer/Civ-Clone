@@ -12,26 +12,20 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private const float NoiseScale = 0.003f;
-
-        private const int HashGridSize = 256;
-
-        private const float HashGridScale = 0.25f;
-
-        private Texture2D NoiseSource;
-
         private HexHash[] HashGrid;
+
+
+
+        private IHexMapRenderConfig RenderConfig;
 
         #endregion
 
         #region constructors
 
-        public NoiseGenerator(
-            [Inject(Id = "Noise Source")] Texture2D noiseSource,
-            [Inject(Id = "Random Seed")] int randomSeed
-        ) {
-            NoiseSource = noiseSource;
-            InitializeHashGrid(randomSeed);
+        public NoiseGenerator(IHexMapRenderConfig renderConfig) {
+            RenderConfig = renderConfig;
+
+            InitializeHashGrid(renderConfig.RandomSeed);
         }
 
         #endregion
@@ -41,20 +35,20 @@ namespace Assets.Simulation.HexMap {
         #region from INoiseGenerator
 
         public Vector4 SampleNoise(Vector3 position) {
-            return NoiseSource.GetPixelBilinear(
-                position.x * NoiseScale,
-                position.z * NoiseScale
+            return RenderConfig.NoiseSource.GetPixelBilinear(
+                position.x * RenderConfig.NoiseScale,
+                position.z * RenderConfig.NoiseScale
             );
         }
 
         public Vector3 Perturb(Vector3 position, bool perturbY = false) {
             Vector4 sample = SampleNoise(position);
 
-            position.x += (sample.x * 2f - 1f) * HexMetrics.CellPerturbStrengthXZ;
-            position.z += (sample.z * 2f - 1f) * HexMetrics.CellPerturbStrengthXZ;
+            position.x += (sample.x * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;
+            position.z += (sample.z * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;
 
             if(perturbY) {
-                position.y += Mathf.Max(sample.y * 2f - 1f, HexMetrics.MinHillPerturbation) * HexMetrics.CellPerturbStrengthY;
+                position.y += Mathf.Max(sample.y * 2f - 1f, RenderConfig.MinHillPerturbation) * RenderConfig.CellPerturbStrengthY;
             }
 
             return position;
@@ -68,19 +62,19 @@ namespace Assets.Simulation.HexMap {
         }
 
         public HexHash SampleHashGrid(Vector3 position) {
-            int x = (int)(position.x * HashGridScale) % HashGridSize;
-            int z = (int)(position.z * HashGridScale) % HashGridSize;
+            int x = (int)(position.x * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
+            int z = (int)(position.z * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
 
-            x = x < 0 ? x += HashGridSize : x;
-            z = z < 0 ? z += HashGridSize : z;
+            x = x < 0 ? x += RenderConfig.NoiseHashGridSize : x;
+            z = z < 0 ? z += RenderConfig.NoiseHashGridSize : z;
 
-            return HashGrid[x + z * HashGridSize];
+            return HashGrid[x + z * RenderConfig.NoiseHashGridSize];
         }
 
         #endregion
 
         private void InitializeHashGrid(int seed) {
-            HashGrid = new HexHash[HashGridSize * HashGridSize];
+            HashGrid = new HexHash[RenderConfig.NoiseHashGridSize * RenderConfig.NoiseHashGridSize];
 
             Random.State currentState = Random.state;
             Random.InitState(seed);
