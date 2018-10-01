@@ -20,7 +20,6 @@ namespace Assets.Simulation.Units.Combat {
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private ICivilizationHappinessLogic                   CivilizationHappinessLogic;
         private ICivilizationConfig                           CivConfig;
-        private IPromotionParser                              PromotionParser;
 
         #endregion
 
@@ -31,15 +30,14 @@ namespace Assets.Simulation.Units.Combat {
             IImprovementLocationCanon improvementLocationCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             ICivilizationHappinessLogic civilizationHappinessLogic,
-            ICivilizationConfig civConfig, IPromotionParser promotionParser
+            ICivilizationConfig civConfig
         ) {
-            UnitConfig                     = config;
+            UnitConfig                 = config;
             RiverCanon                 = riverCanon;
             ImprovementLocationCanon   = improvementLocationCanon;
             UnitPossessionCanon        = unitPossessionCanon;
             CivilizationHappinessLogic = civilizationHappinessLogic;
             CivConfig                  = civConfig;
-            PromotionParser            = promotionParser;
         }
 
         #endregion
@@ -48,7 +46,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from ICombatInfoLogic
 
-        public CombatInfo GetMeleeAttackInfo(IUnit attacker, IUnit defender, IHexCell location) {
+        public CombatInfo GetAttackInfo(IUnit attacker, IUnit defender, IHexCell location, CombatType combatType) {
             if(attacker == null) {
                 throw new ArgumentNullException("attacker");
             }
@@ -61,54 +59,50 @@ namespace Assets.Simulation.Units.Combat {
                 throw new ArgumentNullException("location");
             }
 
-            var combatInfo = PromotionParser.GetCombatInfo(attacker, defender, location, CombatType.Melee);
+            var combatInfo = new CombatInfo();
 
-            combatInfo.CombatType = CombatType.Melee;
+            combatInfo.CombatType = combatType;
 
-            if(RiverCanon.HasRiver(location) && !combatInfo.Attacker.IgnoresAmphibiousPenalty) {
-                combatInfo.Attacker.CombatModifier += UnitConfig.RiverCrossingAttackModifier;
+            ApplyAllModifiersToInfo(attacker, defender, location, combatType, combatInfo);
+
+            if(combatType == CombatType.Melee && RiverCanon.HasRiver(location) && !attacker.CombatSummary.IgnoresAmphibiousPenalty) {
+                combatInfo.AttackerCombatModifier += UnitConfig.RiverCrossingAttackModifier;
             }
 
-            if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
-                combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetVegetationDefensiveness(location.Vegetation);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
+            if(!defender.CombatSummary.IgnoresDefensiveTerrainBonus) {
+                combatInfo.DefenderCombatModifier += UnitConfig.GetTerrainDefensiveness   (location.Terrain);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetVegetationDefensiveness(location.Vegetation);
+                combatInfo.DefenderCombatModifier += UnitConfig.GetShapeDefensiveness     (location.Shape  );
 
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
                 if(improvementAtLocation != null) {
-                    combatInfo.Defender.CombatModifier += improvementAtLocation.Template.DefensiveBonus;
+                    combatInfo.DefenderCombatModifier += improvementAtLocation.Template.DefensiveBonus;
                 }
             }
 
-            combatInfo.Attacker.CombatModifier -= GetUnhappinessPenalty(attacker);
-            combatInfo.Defender.CombatModifier -= GetUnhappinessPenalty(defender);
-
-            return combatInfo;
-        }
-
-        public CombatInfo GetRangedAttackInfo(IUnit attacker, IUnit defender, IHexCell location) {
-            var combatInfo = PromotionParser.GetCombatInfo(attacker, defender, location, CombatType.Ranged);
-
-            combatInfo.CombatType = CombatType.Ranged;
-
-            if(!combatInfo.Defender.IgnoresDefensiveTerrainBonuses) {
-                combatInfo.Defender.CombatModifier += UnitConfig.GetTerrainDefensiveness(location.Terrain);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetVegetationDefensiveness(location.Vegetation);
-                combatInfo.Defender.CombatModifier += UnitConfig.GetShapeDefensiveness  (location.Shape  );
-
-                var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
-                if(improvementAtLocation != null) {
-                    combatInfo.Defender.CombatModifier += improvementAtLocation.Template.DefensiveBonus;
-                }
-            }
-
-            combatInfo.Attacker.CombatModifier -= GetUnhappinessPenalty(attacker);
-            combatInfo.Defender.CombatModifier -= GetUnhappinessPenalty(defender);
+            combatInfo.AttackerCombatModifier -= GetUnhappinessPenalty(attacker);
+            combatInfo.DefenderCombatModifier -= GetUnhappinessPenalty(defender);
 
             return combatInfo;
         }
 
         #endregion
+
+        private void ApplyAllModifiersToInfo(
+            IUnit attacker, IUnit defender, IHexCell location, CombatType combatType, CombatInfo info
+        ) {
+            foreach(var attackerModifier in attacker.CombatSummary.ModifiersWhenAttacking) {
+                if(attackerModifier.DoesModifierApply(attacker, defender, location, combatType)) {
+                    info.AttackerCombatModifier += attackerModifier.Modifier;
+                }
+            }
+
+            foreach(var defenderModifiers in defender.CombatSummary.ModifiersWhenDefending) {
+                if(defenderModifiers.DoesModifierApply(defender, attacker, location, combatType)) {
+                    info.DefenderCombatModifier += defenderModifiers.Modifier;
+                }
+            }
+        }
 
         private float GetUnhappinessPenalty(IUnit unit) {
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);

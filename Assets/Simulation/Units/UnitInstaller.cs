@@ -36,6 +36,10 @@ namespace Assets.Simulation.Units {
 
             unitTemplates.AddRange(Resources.LoadAll<UnitTemplate>("Units"));
 
+            foreach(var template in unitTemplates) {
+                Container.QueueForInject(template);
+            }
+
             Container.Bind<IEnumerable<IUnitTemplate>>()
                      .WithId("Available Unit Templates")
                      .FromInstance(unitTemplates);
@@ -46,7 +50,6 @@ namespace Assets.Simulation.Units {
 
             Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
-            Container.Bind<IUnitTerrainCostLogic>       ().To<UnitTerrainCostLogic>       ().AsSingle();
             Container.Bind<IUnitLineOfSightLogic>       ().To<UnitLineOfSightLogic>       ().AsSingle();
             Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();
             Container.Bind<ICityConquestLogic>          ().To<CityConquestLogic>          ().AsSingle();

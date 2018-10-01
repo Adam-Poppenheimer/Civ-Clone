@@ -50,14 +50,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var attackerOwner = BuildCivilization(100);
             var defenderOwner = BuildCivilization(200);
 
-            var attacker = BuildUnit(attackerOwner, UnitType.Melee);
+            var attacker = BuildUnit(attackerOwner, UnitType.Melee, 0.5f);
             var defender = BuildUnit(defenderOwner, UnitType.Melee);
 
             Container.Resolve<GoldRaidingLogic>();
 
-            var results = new UnitCombatResults(attacker, defender, 20, 20, new CombatInfo() {
-                Attacker = new UnitCombatInfo() { GoldRaidingPercentage = 0.5f }
-            });
+            var results = new UnitCombatResults(attacker, defender, 20, 20, new CombatInfo());
 
             UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
 
@@ -70,14 +68,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var attackerOwner = BuildCivilization(100);
             var defenderOwner = BuildCivilization(200);
 
-            var attacker = BuildUnit(attackerOwner, UnitType.Melee);
+            var attacker = BuildUnit(attackerOwner, UnitType.Melee, 0.5f);
             var defender = BuildUnit(defenderOwner, UnitType.City);
 
             Container.Resolve<GoldRaidingLogic>();
 
-            var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo() {
-                Attacker = new UnitCombatInfo() { GoldRaidingPercentage = 0.5f }
-            });
+            var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo());
 
             UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
 
@@ -90,14 +86,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var attackerOwner = BuildCivilization(100);
             var defenderOwner = BuildCivilization(2);
 
-            var attacker = BuildUnit(attackerOwner, UnitType.Melee);
+            var attacker = BuildUnit(attackerOwner, UnitType.Melee, 1f);
             var defender = BuildUnit(defenderOwner, UnitType.City);
 
             Container.Resolve<GoldRaidingLogic>();
 
-            var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo() {
-                Attacker = new UnitCombatInfo() { GoldRaidingPercentage = 1f }
-            });
+            var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo());
 
             UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
 
@@ -121,10 +115,15 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return newCiv;
         }
 
-        private IUnit BuildUnit(ICivilization owner, UnitType type) {
+        private IUnit BuildUnit(ICivilization owner, UnitType type, float goldRaidingPercentage = 0f) {
             var mockUnit = new Mock<IUnit>();
 
+            var combatSummary = new UnitCombatSummary() {
+                GoldRaidingPercentage = goldRaidingPercentage
+            }; 
+
             mockUnit.Setup(unit => unit.Type).Returns(type);
+            mockUnit.Setup(unit => unit.CombatSummary).Returns(combatSummary);           
 
             var newUnit = mockUnit.Object;
 

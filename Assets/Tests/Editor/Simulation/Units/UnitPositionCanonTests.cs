@@ -22,379 +22,12 @@ namespace Assets.Tests.Simulation.Units {
     [TestFixture]
     public class UnitPositionCanonTests : ZenjectUnitTestFixture {
 
-        #region internal types
-
-        public struct UnitTestData {
-
-            public string   Name;
-            public bool     IsAquatic;
-            public UnitType Type;
-            public bool     BelongsToThisCivilization;
-
-        }
-
-        public struct CellTestData {
-
-            public bool IsUnderwater;
-
-            public CellTestData(bool isUnderwater) {
-                IsUnderwater = isUnderwater;
-            }
-
-        }
-
-        public struct CanChangeOwnerTestData {
-
-            public UnitTestData UnitToTest;
-
-            public CellTestData CellToTest;
-
-            public List<UnitTestData> UnitsOnCell;
-
-            public bool HasCityOnCell;
-
-            public bool CityBelongsToThisCivilization;
-
-            public bool IsAttacking;
-
-        }
-
-        public struct CanPlaceUnitOfTypeTestData {
-
-            public UnitType Type;
-
-            public CellTestData CellToTest;
-
-            public bool IgnoreOccupancy;
-
-            public List<UnitTestData> UnitsOnCell;
-
-            public bool HasCityOnCell;
-
-        }
-
-        #endregion
-
-        #region static fields and properties
-
-        private static IEnumerable CanPlaceUnitAtLocationTestCases {
-            get {
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = false,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = false
-                }).SetName("Non-aquatic on dry, unoccupied grassland").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = true,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = false
-                }).SetName("Aquatic on dry, unoccupied grassland").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = false,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(true),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = false
-                }).SetName("Non-aquatic on submerged cell").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = true,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(true),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = false
-                }).SetName("Aquatic on submerged cell").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = true,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Aquatic on dry cell with friendly city").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = true,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = false
-                }).SetName("Aquatic on dry cell with foreign city").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = false,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "LandMilitary", IsAquatic = false,
-                            Type = UnitType.Melee, BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = false
-                }).SetName("Land Military supertype on cell with friendly Land Military unit").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test", IsAquatic = false,
-                        Type = UnitType.Melee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "LandCivilian", Type = UnitType.Civilian,
-                            BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = false
-                }).SetName("Land Military supertype on cell with friendly civilian unit").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        IsAquatic = false,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "WaterMilitary", Type = UnitType.NavalMelee,
-                            BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Land Military supertype on cell with friendly Water Military unit").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Civilian,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "LandMilitary",
-                            Type = UnitType.Melee,
-                            BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = false
-                }).SetName("Civilian on cell with friendly Land Military unit").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Civilian,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "Civilian", Type = UnitType.Civilian,
-                            BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = false
-                }).SetName("Civilian on cell with friendly civilian unit").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Civilian,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "WaterMilitary", Type = UnitType.NavalMelee,
-                            BelongsToThisCivilization = true
-                        }
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Civilian on cell with friendly Water Military").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.NavalMelee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "LandMilitary", Type = UnitType.Melee, BelongsToThisCivilization = true }
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Water Military supertype on cell with friendly Land Military").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.NavalMelee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "Civilian", Type = UnitType.Civilian, BelongsToThisCivilization = true }
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Water Military supertype on cell with friendly Civilian").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.NavalMelee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "Water Military", Type = UnitType.NavalMelee, BelongsToThisCivilization = true }
-                    },
-                    HasCityOnCell = true,
-                    CityBelongsToThisCivilization = true
-                }).SetName("Water Military supertype on cell with friendly WaterMilitary").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Melee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "LandCivilian", Type = UnitType.Civilian, BelongsToThisCivilization = false }
-                    },
-                    HasCityOnCell = false, IsAttacking = false
-                }).SetName("Land Military supertype on cell with foreign anything, is not attacking").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Melee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "LandCivilian", Type = UnitType.Civilian, BelongsToThisCivilization = false }
-                    },
-                    HasCityOnCell = false, IsAttacking = true
-                }).SetName("Land Military supertype on cell with foreign anything, is attacking").Returns(true);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Civilian,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "Land Military", Type = UnitType.Melee, BelongsToThisCivilization = false }
-                    },
-                    HasCityOnCell = false, IsAttacking = false
-                }).SetName("Civilian on cell with foreign anything, is not attacking").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test",
-                        Type = UnitType.Civilian,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(false),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() { Name = "Land Military", Type = UnitType.Melee, BelongsToThisCivilization = false }
-                    },
-                    HasCityOnCell = false, IsAttacking = true
-                }).SetName("Civilian on cell with foreign anything, is attacking").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test", IsAquatic = true,
-                        Type = UnitType.NavalMelee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(true),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "Civilian", Type = UnitType.Civilian,
-                            IsAquatic = true, BelongsToThisCivilization = false
-                        }
-                    },
-                    HasCityOnCell = false, IsAttacking = false
-                }).SetName("WaterMilitary on cell with foreign anything, is not attacking").Returns(false);
-
-                yield return new TestCaseData(new CanChangeOwnerTestData() {
-                    UnitToTest = new UnitTestData() {
-                        Name = "Unit to test", IsAquatic = true,
-                        Type = UnitType.NavalMelee,
-                        BelongsToThisCivilization = true
-                    },
-                    CellToTest = new CellTestData(true),
-                    UnitsOnCell = new List<UnitTestData>() {
-                        new UnitTestData() {
-                            Name = "Civilian", Type = UnitType.Civilian,
-                            IsAquatic = true, BelongsToThisCivilization = false
-                        }
-                    },
-                    HasCityOnCell = false, IsAttacking = true
-                }).SetName("WaterMilitary on cell with foreign anything, is attacking").Returns(true);
-
-            }
-        }
-
-        #endregion
-
         #region instance fields and properties
 
+        private Mock<IHexMapSimulationConfig>                       MockHexSimulationConfig;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
-        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<IHexGrid>                                      MockGrid;
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -408,54 +41,95 @@ namespace Assets.Tests.Simulation.Units {
         public void CommonInstall() {
             AllCities.Clear();
 
+            MockHexSimulationConfig = new Mock<IHexMapSimulationConfig>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGrid                = new Mock<IHexGrid>();
             MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
+            Container.Bind<IHexMapSimulationConfig>                      ().FromInstance(MockHexSimulationConfig.Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
 
             Container.Bind<UnitPositionCanon>().AsSingle();
 
             Container.Bind<UnitSignals>().AsSingle();
         }
 
+        private void SetConfigData(UnitPositionCanonTestData.ConfigData configData) {
+            MockHexSimulationConfig.Setup(config => config.GetBaseMoveCostOfTerrain   (It.IsAny<CellTerrain>()))   .Returns(configData.TerrainMoveCost);
+            MockHexSimulationConfig.Setup(config => config.GetBaseMoveCostOfShape     (It.IsAny<CellShape>()))     .Returns(configData.ShapeMoveCost);
+            MockHexSimulationConfig.Setup(config => config.GetBaseMoveCostOfVegetation(It.IsAny<CellVegetation>())).Returns(configData.VegetationMoveCost);
+            MockHexSimulationConfig.Setup(config => config.GetBaseMoveCostOfFeature   (It.IsAny<CellFeature>()))   .Returns(configData.FeatureMoveCost);
+
+            MockHexSimulationConfig.Setup(config => config.CityMoveCost).Returns(configData.CityMoveCost);
+
+            MockHexSimulationConfig.Setup(config => config.RoadMoveCostMultiplier).Returns(configData.RoadMoveCostMultipler);
+        }
+
         #endregion
 
         #region tests
 
-        [Test(Description = "CanChangeOwnerOfPossession should consider whether the argued cell is " + 
-            "underwater and the UnitType and ownership of other units on the cell when determining " + 
-            "whether a particular unit can be moved to a particular cell. It should also consider " + 
-            "the placement and ownership of cities.")]
-        [TestCaseSource("CanPlaceUnitAtLocationTestCases")]
-        public bool CanPlaceUnitAtLocationTests(CanChangeOwnerTestData data) {
-            var thisCiv = BuildCivilization("This Civilization");
-            var otherCiv = BuildCivilization("Other Civilization");
+        [Test]
+        [TestCaseSource(sourceType: typeof(UnitPositionCanonTestData), sourceName: "CanPlaceUnitAtLocationAttackingTestCases")]
+        [TestCaseSource(sourceType: typeof(UnitPositionCanonTestData), sourceName: "CanPlaceUnitAtLocationNormalTestCases")]        
+        public bool CanPlaceUnitAtLocationTests(UnitPositionCanonTestData.UnitAtLocationData testData) {
+            var domesticCiv = BuildCivilization("Domestic Civ");
+            var foreignCiv  = BuildCivilization("Foreign Civ");
 
-            var unitToTest = BuildUnit(data.UnitToTest, null, thisCiv, otherCiv);
+            var unit = BuildUnit(testData.Unit, domesticCiv, foreignCiv);
 
-            var cellToTest = BuildCell(data.CellToTest);
+            IHexCell location = null;
 
-            if(data.HasCityOnCell) {
-                var cityAtLocation = BuildCity(cellToTest);
-
-                MockCityPossessionCanon
-                    .Setup(canon => canon.GetOwnerOfPossession(cityAtLocation))
-                    .Returns(data.CityBelongsToThisCivilization ? thisCiv : otherCiv);
-            }
+            SetConfigData(testData.Config);
 
             var positionCanon = Container.Resolve<UnitPositionCanon>();
 
-            foreach(var unitData in data.UnitsOnCell) {
-                var unitAtLocation = BuildUnit(unitData, cellToTest, thisCiv, otherCiv);
-                positionCanon.ChangeOwnerOfPossession(unitAtLocation, cellToTest);
+            if(testData.Location != null) {
+                location = BuildCell(testData.Location, domesticCiv, foreignCiv, positionCanon);
             }
 
-            return positionCanon.CanPlaceUnitAtLocation(unitToTest, cellToTest, data.IsAttacking);
+            return positionCanon.CanPlaceUnitAtLocation(unit, location, testData.IsMeleeAttacking);
+        }
+
+        [Test]
+        [TestCaseSource(sourceType: typeof(UnitPositionCanonTestData), sourceName: "CanPlaceUnitTemplateAtLocationTestCases")]
+        public bool CanPlaceUnitTemplateAtLocationTests(UnitPositionCanonTestData.TemplateAtLocationData testData) {
+            var domesticCiv = BuildCivilization("Domestic Civ");
+            var foreignCiv  = BuildCivilization("Foreign Civ");
+
+            var template = BuildUnitTemplate(testData.Template);
+
+            IHexCell location = null;
+
+            SetConfigData(testData.Config);
+
+            var positionCanon = Container.Resolve<UnitPositionCanon>();
+
+            if(testData.Location != null) {
+                location = BuildCell(testData.Location, domesticCiv, foreignCiv, positionCanon);
+            }
+
+            return positionCanon.CanPlaceUnitTemplateAtLocation(template, location, domesticCiv);
+        }
+
+        [Test]
+        [TestCaseSource(sourceType: typeof(UnitPositionCanonTestData), sourceName: "GetTraversalCostForUnitTestCases")]
+        public float GetTraversalCostForUnitTests(UnitPositionCanonTestData.TraversalCostData testData) {
+            SetConfigData(testData.Config);
+
+            var domesticCiv = BuildCivilization("Domestic Civ");
+            var foreignCiv  = BuildCivilization("Foreign Civ");
+
+            var unit = BuildUnit(testData.Unit, domesticCiv, foreignCiv);
+
+            var positionCanon = Container.Resolve<UnitPositionCanon>();
+
+            var currentCell = BuildCell(testData.CurrentCell, domesticCiv, foreignCiv, positionCanon);
+            var nextCell    = BuildCell(testData.NextCell,    domesticCiv, foreignCiv, positionCanon);
+
+            return positionCanon.GetTraversalCostForUnit(unit, currentCell, nextCell, testData.IsMeleeAttacking);
         }
 
         #endregion
@@ -470,50 +144,76 @@ namespace Assets.Tests.Simulation.Units {
             return mockCiv.Object;
         }
 
-        private IUnit BuildUnit(
-            UnitTestData data,  IHexCell location,
-            ICivilization thisCivilization, ICivilization otherCivilization
-        ){
+        private IUnit BuildUnit(UnitPositionCanonTestData.UnitData unitData, ICivilization domesticCiv, ICivilization foreignCiv) {
             var mockUnit = new Mock<IUnit>();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
-
-            mockTemplate.Setup(template => template.Type     ).Returns(data.Type);
-            mockTemplate.Setup(template => template.IsAquatic).Returns(data.IsAquatic);
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
-
-            mockUnit.Setup(unit => unit.Name).Returns(data.Name);
-            mockUnit.Setup(unit => unit.Type).Returns(data.Type);
+            mockUnit.Setup(unit => unit.Type)           .Returns(unitData.Type);
+            mockUnit.Setup(unit => unit.MaxMovement)    .Returns(unitData.MaxMovement);
+            mockUnit.Setup(unit => unit.MovementSummary).Returns(unitData.MovementSummary);
 
             var newUnit = mockUnit.Object;
 
-            MockUnitPossessionCanon
-                .Setup(canon => canon.GetOwnerOfPossession(newUnit))
-                .Returns(data.BelongsToThisCivilization ? thisCivilization : otherCivilization);            
+            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit))
+                                   .Returns(unitData.BelongsToDomesticCiv ? domesticCiv : foreignCiv);
 
             return newUnit;
         }
 
-        private IHexCell BuildCell(CellTestData data) {
-            var mockCell = new Mock<IHexCell>();
+        private IUnitTemplate BuildUnitTemplate(UnitPositionCanonTestData.UnitTemplateData templateData) {
+            var mockTemplate = new Mock<IUnitTemplate>();
 
-            mockCell.Setup(cell => cell.Terrain).Returns(data.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
+            mockTemplate.Setup(template => template.Type)           .Returns(templateData.type);
+            mockTemplate.Setup(template => template.MovementSummary).Returns(templateData.MovementSummary);
 
-            return mockCell.Object;
+            return mockTemplate.Object;
         }
 
-        private ICity BuildCity(IHexCell location) {
-            var mockCity = new Mock<ICity>();
+        //Does not add units to the cells that it creates
+        private IHexCell BuildCell(
+            UnitPositionCanonTestData.HexCellData cellData,
+            ICivilization domesticCiv, ICivilization foreignCiv,
+            UnitPositionCanon positionCanonToTest
+        ) {
+            var mockCell = new Mock<IHexCell>();
 
-            var newCity = mockCity.Object;
+            mockCell.Setup(cell => cell.Terrain)   .Returns(cellData.Terrain);
+            mockCell.Setup(cell => cell.Shape)     .Returns(cellData.Shape);
+            mockCell.Setup(cell => cell.Vegetation).Returns(cellData.Vegetation);
+            mockCell.Setup(cell => cell.Feature)   .Returns(cellData.Feature);
+            mockCell.Setup(cell => cell.HasRoads)  .Returns(cellData.HasRoads);
 
-            MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
-            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location)).Returns(new List<ICity>() { newCity });
+            var newCell = mockCell.Object;
 
-            AllCities.Add(mockCity.Object);
+            if(cellData.City != null) {
+                BuildCity(cellData.City, newCell, domesticCiv, foreignCiv);
+            }
 
-            return mockCity.Object;
+            var unitsAtLocation = cellData.Units.Select(unitData => BuildUnit(unitData, domesticCiv, foreignCiv));
+
+            foreach(var unitAlreadyAt in unitsAtLocation) {
+                if(!positionCanonToTest.CanChangeOwnerOfPossession(unitAlreadyAt, newCell)) {
+                    throw new InvalidOperationException("Could not place a unit on the cell that should've been placeable");
+                }else {
+                    positionCanonToTest.ChangeOwnerOfPossession(unitAlreadyAt, newCell);
+                }
+            }
+
+            return newCell;
+        }
+
+        private ICity BuildCity(
+            UnitPositionCanonTestData.CityData cityData, IHexCell location,
+            ICivilization domesticCiv, ICivilization foreignCiv
+        ) {
+            var newCity = new Mock<ICity>().Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location))
+                                 .Returns(new List<ICity>() { newCity });
+
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity))
+                                   .Returns(cityData.BelongsToDomesticCiv ? domesticCiv : foreignCiv);
+
+            return newCity;
         }
 
         #endregion

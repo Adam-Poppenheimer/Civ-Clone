@@ -45,7 +45,7 @@ namespace Assets.Simulation.Units.Combat {
             var defenderOwner = UnitPossessionLogic.GetOwnerOfPossession(results.Defender);
 
             var goldStolen = Mathf.Min(
-                results.DamageToDefender * results.InfoOfAttack.Attacker.GoldRaidingPercentage,
+                results.DamageToDefender * results.Attacker.CombatSummary.GoldRaidingPercentage,
                 defenderOwner.GoldStockpile
             );
 

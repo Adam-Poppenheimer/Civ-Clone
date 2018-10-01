@@ -12,15 +12,7 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region methods
 
-        void ParsePromotionForAttacker(
-            IPromotion promotion, IUnit attacker, IUnit defender,
-            IHexCell location, CombatInfo combatInfo
-        );
-
-        void ParsePromotionForDefender(
-            IPromotion promotion, IUnit attacker, IUnit defender,
-            IHexCell location, CombatInfo combatInfo
-        );
+        void AddPromotionToCombatSummary(IPromotion promotion, UnitCombatSummary combatSummary);
 
         #endregion
 

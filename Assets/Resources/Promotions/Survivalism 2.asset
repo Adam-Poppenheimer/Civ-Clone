@@ -13,10 +13,29 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  Args: 0000000001000000
-  Float: 0.25
-  Int: 0
-  Terrain: 0
-  Shape: 0
-  Feature: 0
-  UnitType: 0
+  _permitsLandTraversal: 0
+  _permitsShallowWaterTraversal: 0
+  _permitsDeepWaterTraversal: 0
+  _bonusMovement: 0
+  _terrainsWithIgnoredCosts: 
+  _shapesWithIgnoredCosts: 
+  _vegetationsWithIgnoredCosts: 
+  _shapesConsumingFullMovement: 
+  _vegetationsConsumingFullMovement: 
+  _canMoveAfterAttacking: 0
+  _canAttackAfterAttacking: 0
+  _ignoresAmphibiousPenalty: 0
+  _ignoresDefensiveTerrainBonuses: 0
+  _ignoresLineOfSight: 0
+  _goldRaidingPercentage: 0
+  _bonusRange: 0
+  PermanentAttackModifiers: []
+  ConditionalAttackModifiers: []
+  PermanentDefenseModifiers:
+  - _modifier: 0.25
+  ConditionalDefenseModifiers: []
+  _requiresForeignTerritory: 1
+  _healsEveryTurn: 0
+  _bonusHealingToSelf: 5
+  _bonusHealingToAdjacent: 0
+  _alternativeNavalBaseHealing: 0

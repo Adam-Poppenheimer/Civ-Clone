@@ -19,7 +19,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Units {
 
-    [TestFixture]
+    /*[TestFixture]
     public class UnitTerrainCostLogicTests : ZenjectUnitTestFixture {
 
         #region internal types
@@ -40,9 +40,8 @@ namespace Assets.Tests.Simulation.Units {
             public CellVegetation Vegetation;
             public CellShape      Shape;
 
-            public bool IsUnderwater;
-
-            public bool HasCity;
+            public bool HasDomesticCity;
+            public bool HasForeignCity;
 
             public bool HasRoads;
 
@@ -50,11 +49,9 @@ namespace Assets.Tests.Simulation.Units {
 
         public class UnitTestData {
 
-            public bool IsAquatic;
-
             public int MaxMovement;
 
-            public MovementInfo MovementInfo = new MovementInfo();
+            public UnitMovementSummary MovementSummary = new UnitMovementSummary();
 
         }
 
@@ -68,108 +65,162 @@ namespace Assets.Tests.Simulation.Units {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Flatlands, IsUnderwater = false
+                        Shape = CellShape.Flatlands
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false,
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(1).SetName("Non-aquatic into flat empty grassland, no elevation change, no water");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        IsUnderwater = true
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = true
-                    }
-                }).Returns(1).SetName("Aquatic into underwater cell");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        IsUnderwater = false
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = true
-                    }
-                }).Returns(-1).SetName("Aquatic into land cell");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        IsUnderwater = true,
-                        HasCity = true
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = true
-                    }
-                }).Returns(1).SetName("Aquatic into land cell with city");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        IsUnderwater = true
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = false
-                    }
-                }).Returns(-1).SetName("Non-aquatic into underwater cell");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        IsUnderwater = false, Shape = CellShape.Flatlands
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = false
-                    }
-                }).Returns(2).SetName("Non-aquatic into flat forested grassland");
-
-                yield return new TestCaseData(new TestData() {
-                    CurrentCell = new HexCellTestData(),
-                    NextCell = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Flatlands, IsUnderwater = false
-                    },
-                    Unit = new UnitTestData() {
-                        IsAquatic = false
-                    }
-                }).Returns(2).SetName("Non-aquatic into flat forest");
+                }).Returns(1).SetName("flat empty grassland, CanTraverseLand is true");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Hills, IsUnderwater = false
+                        Shape = CellShape.Flatlands
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = false }
                     }
-                }).Returns(2).SetName("Non-aquatic into empty hills");
+                }).Returns(-1).SetName("flat empty grassland, CanTraverseLand is false");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.ShallowWater, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseShallowWater = false }
+                    }
+                }).Returns(-1).SetName("Shallow water, CanTraverseShallowWater is false");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.ShallowWater, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseShallowWater = true }
+                    }
+                }).Returns(1).SetName("Shallow water, CanTraverseShallowWater is true");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.FreshWater, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseShallowWater = true }
+                    }
+                }).Returns(1).SetName("Fresh water, CanTraverseShallowWater is true");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.DeepWater, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseDeepWater = true }
+                    }
+                }).Returns(1).SetName("Deep water, CanTraverseDeepWater is true");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.DeepWater, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseShallowWater = true, CanTraverseDeepWater = false
+                        }
+                    }
+                }).Returns(-1).SetName("Deep water, CanTraverseDeepWater is false, CanTraverseShallowWater is true");
+
+
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland,
+                        HasDomesticCity = true
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = false }
+                    }
+                }).Returns(1).SetName("Land cell with domestic city, unit cannot normally traverse land");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland,
+                        HasForeignCity = true
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
+                    }
+                }).Returns(-1).SetName("Land cell with foreign city, unit can normally traverse land");
+
+
+
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Hills, IsUnderwater = false
+                        Shape = CellShape.Flatlands
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(3).SetName("Non-aquatic into forested hills");
+                }).Returns(2).SetName("Permitted unit into flat forested grassland");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Flatlands
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
+                    }
+                }).Returns(2).SetName("Permitted unit into flat forest");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Mountains, IsUnderwater = false
+                        Shape = CellShape.Hills
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(-1).SetName("Non-aquatic into empty mountains");
+                }).Returns(2).SetName("Permitted unit into empty hills");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
+                    }
+                }).Returns(3).SetName("Permitted unit into forested hills");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
+                        Shape = CellShape.Mountains
+                    },
+                    Unit = new UnitTestData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
+                    }
+                }).Returns(-1).SetName("Permitted unit into empty mountains");
 
 
 
@@ -177,37 +228,79 @@ namespace Assets.Tests.Simulation.Units {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.None,
-                        Shape = CellShape.Hills, IsUnderwater = false
+                        Shape = CellShape.Hills
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 10,
-                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
+                        MaxMovement = 10,
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseLand = true,
+                            ShapesConsumingFullMovement = new HashSet<CellShape>() { CellShape.Hills }
+                        }
                     }
-                }).Returns(10).SetName("Non-aquatic into empty hills, unit has rough terrain penalty");
+                }).Returns(10).SetName("Permitted unit into empty hills, hills consume full movement");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Flatlands, IsUnderwater = false
+                        Shape = CellShape.Flatlands
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 10,
-                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
+                        MaxMovement = 10,
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseLand = true,
+                            VegetationConsumingFullMovement = new HashSet<CellVegetation>() { CellVegetation.Forest }
+                        }
                     }
-                }).Returns(10).SetName("Non-aquatic into flat forest, unit has rough terrain penalty");
+                }).Returns(10).SetName("Permitted unit into flat forest, forests consume full movement");
+
+
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Hills, IsUnderwater = false
+                        Shape = CellShape.Hills
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 10,
-                        MovementInfo = new MovementInfo() { HasRoughTerrainPenalty = true }
+                        MaxMovement = 2,
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseLand = true,
+                            TerrainsWithIgnoredCosts = new HashSet<CellTerrain>() { CellTerrain.Grassland }
+                        }
                     }
-                }).Returns(10).SetName("Non-aquatic into forested hills, unit has rough terrain penalty");
+                }).Returns(1).SetName("Permitted unit into forested hills, grassland causes movement costs to be ignored");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills
+                    },
+                    Unit = new UnitTestData() {
+                        MaxMovement = 2,
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseLand = true,
+                            ShapesWithIgnoredCosts = new HashSet<CellShape>() { CellShape.Hills }
+                        }
+                    }
+                }).Returns(1).SetName("Permitted unit into forested hills, hills cause movement costs to be ignored");
+
+                yield return new TestCaseData(new TestData() {
+                    CurrentCell = new HexCellTestData(),
+                    NextCell = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
+                        Shape = CellShape.Hills
+                    },
+                    Unit = new UnitTestData() {
+                        MaxMovement = 2,
+                        MovementSummary = new UnitMovementSummary() {
+                            CanTraverseLand = true,
+                            VegetationsWithIgnoredCosts = new HashSet<CellVegetation>() { CellVegetation.Forest }
+                        }
+                    }
+                }).Returns(1).SetName("Permitted unit into forested hills, forests cause movement costs to be ignored");
+                
 
 
 
@@ -217,12 +310,12 @@ namespace Assets.Tests.Simulation.Units {
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Hills, IsUnderwater = false, HasRoads = true
+                        Shape = CellShape.Hills, HasRoads = true
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 2
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(1f * 0.5f).SetName("Non-aquatic into forested hills, current and next have roads");
+                }).Returns(1f * 0.5f).SetName("Permitted unit into forested hills, current and next have roads");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData() {
@@ -230,23 +323,23 @@ namespace Assets.Tests.Simulation.Units {
                     },
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Hills, IsUnderwater = false
+                        Shape = CellShape.Hills
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 2
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(3).SetName("Non-aquatic into forested hills, current has roads");
+                }).Returns(3).SetName("Permitted unit into forested hills, current has roads");
 
                 yield return new TestCaseData(new TestData() {
                     CurrentCell = new HexCellTestData(),
                     NextCell = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Vegetation = CellVegetation.Forest,
-                        Shape = CellShape.Hills, IsUnderwater = false, HasRoads = true
+                        Shape = CellShape.Hills, HasRoads = true
                     },
                     Unit = new UnitTestData() {
-                        IsAquatic = false, MaxMovement = 2
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true }
                     }
-                }).Returns(3).SetName("Non-aquatic into forested hills, next has roads");
+                }).Returns(3).SetName("Permitted unit into forested hills, next has roads");
             }
         }
 
@@ -285,7 +378,6 @@ namespace Assets.Tests.Simulation.Units {
             MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockPromotionParser     = new Mock<IPromotionParser>();
 
             MockConfig.Setup(config => config.SlopeMoveCost).Returns(1);
 
@@ -299,12 +391,13 @@ namespace Assets.Tests.Simulation.Units {
 
             MockConfig.Setup(config => config.RoadMoveCostMultiplier).Returns(0.5f);
 
+            MockConfig.Setup(config => config.CityMoveCost).Returns(1);
+
             Container.Bind<IHexMapSimulationConfig>                      ().FromInstance(MockConfig             .Object);
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IPromotionParser>                             ().FromInstance(MockPromotionParser    .Object);
 
             Container.Bind<UnitTerrainCostLogic>().AsSingle();
         }
@@ -322,9 +415,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var nextCell = BuildCell(data.NextCell);
 
-            var unit = BuildUnit(data.Unit);
-
-            MockPromotionParser.Setup(parser => parser.GetMovementInfo(unit)).Returns(data.Unit.MovementInfo);
+            var unit = BuildUnit(data.Unit, data.Unit.MovementSummary);
 
             var costLogic = Container.Resolve<UnitTerrainCostLogic>();
 
@@ -339,7 +430,6 @@ namespace Assets.Tests.Simulation.Units {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.SetupAllProperties();
-            mockCell.Setup(cell => cell.Terrain ).Returns(testData.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
 
             var newCell = mockCell.Object;
 
@@ -352,31 +442,36 @@ namespace Assets.Tests.Simulation.Units {
                 .Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), newCell))
                 .Returns(true);
 
-            if(testData.HasCity) {
-                BuildCity(newCell);
+            if(testData.HasDomesticCity) {
+                BuildCity(newCell, null);
+
+            }else if(testData.HasForeignCity) {
+                BuildCity(newCell, new Mock<ICivilization>().Object);
             }
 
             return newCell;
         }
 
-        private IUnit BuildUnit(UnitTestData testData) {
-            var unitMock = new Mock<IUnit>();
+        private IUnit BuildUnit(UnitTestData testData, IUnitMovementSummary movementSummary) {
+            var mockUnit = new Mock<IUnit>();
 
             var mockTemplate = new Mock<IUnitTemplate>();
 
             mockTemplate.Setup(template => template.MaxMovement).Returns(testData.MaxMovement);
 
-            unitMock.Setup(unit => unit.Template).Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.Template)       .Returns(mockTemplate.Object);
+            mockUnit.Setup(unit => unit.MovementSummary).Returns(movementSummary);
 
-            unitMock.Setup(unit => unit.IsAquatic).Returns(testData.IsAquatic);
-
-            return unitMock.Object;
+            return mockUnit.Object;
         }
 
-        private ICity BuildCity(IHexCell location) {
+        private ICity BuildCity(IHexCell location, ICivilization owner) {
             var newCity = new Mock<ICity>().Object;
 
             MockCityLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(location)).Returns(new List<ICity>() { newCity });
+
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
             return newCity;
         }
@@ -385,6 +480,6 @@ namespace Assets.Tests.Simulation.Units {
 
         #endregion
 
-    }
+    }*/
 
 }

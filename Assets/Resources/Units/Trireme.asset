@@ -18,7 +18,6 @@ MonoBehaviour:
   _maxMovement: 4
   _productionCost: 45
   _type: 4
-  _isAquatic: 1
   _abilities: []
   _attackRange: 0
   _combatStrength: 10
@@ -29,5 +28,6 @@ MonoBehaviour:
   _mustSetUpToBombard: 0
   _visionRange: 2
   _ignoresLineOfSight: 0
-  _startingPromotions: []
+  _startingPromotions:
+  - {fileID: 11400000, guid: af6831de521a70f4e8d2c463219f5005, type: 2}
   _promotionTreeData: {fileID: 11400000, guid: e257e7dc7fe35c94bb3097819fa141d1, type: 2}

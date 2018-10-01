@@ -50,7 +50,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private ICombatExecuter                          CombatExecuter;
         private IUnitPositionCanon                       UnitPositionCanon;
         private IHexGrid                                 Grid;
-        private IUnitTerrainCostLogic                    TerrainCostLogic;
         private ICellPathDrawer                          PathDrawer;
         private CitySignals                              CitySignals;
         private UnitSignals                              UnitSignals;
@@ -70,7 +69,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             ICombatExecuter combatExecuter,
             IUnitPositionCanon unitPositionCanon,
             IHexGrid grid,
-            IUnitTerrainCostLogic terrainCostLogic,
             ICellPathDrawer pathDrawer,
             CitySignals citySignals,
             UnitSignals unitSignals,
@@ -84,7 +82,6 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CombatExecuter       = combatExecuter;
             UnitPositionCanon    = unitPositionCanon;
             Grid                 = grid;
-            TerrainCostLogic     = terrainCostLogic;
             PathDrawer           = pathDrawer;
             CitySignals          = citySignals;
             UnitSignals          = unitSignals;
@@ -284,7 +281,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             ProspectivePath = Grid.GetShortestPathBetween(
                 unitLocation, goal,
                 delegate(IHexCell currentCell, IHexCell nextCell) {
-                    return TerrainCostLogic.GetTraversalCostForUnit(SelectedUnit, currentCell, nextCell);
+                    return UnitPositionCanon.GetTraversalCostForUnit(
+                        SelectedUnit, currentCell, nextCell, false
+                    );
                 }
             );
 

@@ -18,7 +18,6 @@ MonoBehaviour:
   _maxMovement: 2
   _productionCost: 75
   _type: 6
-  _isAquatic: 0
   _abilities:
   - {fileID: 11400000, guid: 788ba96daf0d6c741825eb0395d363e9, type: 2}
   _attackRange: 2
@@ -33,4 +32,5 @@ MonoBehaviour:
   _startingPromotions:
   - {fileID: 11400000, guid: 32aa8816555fc5f4f95b58a99c3bcb10, type: 2}
   - {fileID: 11400000, guid: 595dd3d9205644749aeb81492155cf3c, type: 2}
+  - {fileID: 11400000, guid: 4016dabf6f50743449aac49b7dbc8ac6, type: 2}
   _promotionTreeData: {fileID: 11400000, guid: ec3564012f9619b47a5ce3b536d9440d, type: 2}

@@ -12,9 +12,9 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region methods
 
-        CombatInfo GetCombatInfo(IUnit attacker, IUnit defender, IHexCell location, CombatType combatType);
+        void SetCombatSummary(UnitCombatSummary summary, IEnumerable<IPromotion> promotions);
 
-        MovementInfo GetMovementInfo(IUnit unit);
+        void SetMovementSummary(UnitMovementSummary summary, IEnumerable<IPromotion> promotions);
 
         VisionInfo GetVisionInfo(IUnit unit);
 

@@ -13,10 +13,9 @@ using Moq;
 using UniRx;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.HexMap;
-
-using UnityCustomUtilities.Extensions;
 
 namespace Assets.Tests.Simulation.Units {
 
@@ -50,7 +49,6 @@ namespace Assets.Tests.Simulation.Units {
         #region instance fields and properties
 
         private Mock<IUnitConfig>               MockConfig;
-        private Mock<IUnitTerrainCostLogic>     MockTerrainCostLogic;
         private Mock<IUnitPositionCanon>        MockPositionCanon;
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
         private Mock<IHexGrid>                  MockGrid;
@@ -64,16 +62,16 @@ namespace Assets.Tests.Simulation.Units {
         [SetUp]
         public void CommonInstall() {
             MockConfig                   = new Mock<IUnitConfig>();
-            MockTerrainCostLogic         = new Mock<IUnitTerrainCostLogic>();
             MockPositionCanon            = new Mock<IUnitPositionCanon>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
             MockGrid                     = new Mock<IHexGrid>();
 
             Container.Bind<IUnitConfig>              ().FromInstance(MockConfig                  .Object);
-            Container.Bind<IUnitTerrainCostLogic>    ().FromInstance(MockTerrainCostLogic        .Object);
             Container.Bind<IUnitPositionCanon>       ().FromInstance(MockPositionCanon           .Object);
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
             Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
+
+            Container.Bind<IPromotionParser>().FromMock();
 
             Container.Bind<GameUnit>().FromNewComponentOnNewGameObject().AsSingle();
 
@@ -173,11 +171,9 @@ namespace Assets.Tests.Simulation.Units {
             MockPositionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<IUnit>(), cellMock.Object))
                 .Returns(true);
 
-            MockTerrainCostLogic.Setup(logic =>
-                logic.GetTraversalCostForUnit(
-                    It.IsAny<IUnit>(), It.IsAny<IHexCell>(), newCell
-                )
-            ).Returns(movementCost);
+            MockPositionCanon.Setup(logic => logic.GetTraversalCostForUnit(
+                It.IsAny<IUnit>(), It.IsAny<IHexCell>(), newCell, It.IsAny<bool>()
+            )).Returns(movementCost);
 
             return newCell;
         }

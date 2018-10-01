@@ -34,6 +34,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public int CurrentMovement;
 
+            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
+
         }
 
         #endregion
@@ -43,42 +45,42 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public static IEnumerable HandleAttackerMovementAfterCombatTestCases {
             get {
                 yield return new TestCaseData(new HandleAttackerMovementAfterCombatTestData() {
-                    Attacker = new UnitTestData() { CurrentMovement = 3 },
+                    Attacker = new UnitTestData() {
+                        CurrentMovement = 3,
+                        CombatSummary = new UnitCombatSummary() { CanMoveAfterAttacking = false }
+                    },
                     Defender = new UnitTestData(),
-                    TraversalCostBetweenLocations = 1,
-                    CombatInfo = new CombatInfo() {
-                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = false }
-                    }
+                    TraversalCostBetweenLocations = 1
                 }).SetName("AttackerCanMoveAfterAttacking false | clears movement").Returns(0f);
 
                 yield return new TestCaseData(new HandleAttackerMovementAfterCombatTestData() {
-                    Attacker = new UnitTestData() { CurrentMovement = 3 },
+                    Attacker = new UnitTestData() {
+                        CurrentMovement = 3,
+                        CombatSummary = new UnitCombatSummary() { CanMoveAfterAttacking = true }
+                    },
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 2,
-                    CombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee,
-                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
-                    }
+                    CombatInfo = new CombatInfo() { CombatType = CombatType.Melee }
                 }).SetName("AttackerCanMoveAfterAttacking true and melee combat | reduces movement by travel cost").Returns(1f);
 
                 yield return new TestCaseData(new HandleAttackerMovementAfterCombatTestData() {
-                    Attacker = new UnitTestData() { CurrentMovement = 3 },
+                    Attacker = new UnitTestData() {
+                        CurrentMovement = 3,
+                        CombatSummary = new UnitCombatSummary() { CanMoveAfterAttacking = true }
+                    },
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 2,
-                    CombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged,
-                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
-                    }
+                    CombatInfo = new CombatInfo() { CombatType = CombatType.Ranged }
                 }).SetName("AttackerCanMoveAfterAttacking true and ranged combat | reduces movement by one").Returns(2f);
 
                 yield return new TestCaseData(new HandleAttackerMovementAfterCombatTestData() {
-                    Attacker = new UnitTestData() { CurrentMovement = 3 },
+                    Attacker = new UnitTestData() {
+                        CurrentMovement = 3,
+                        CombatSummary = new UnitCombatSummary() { CanMoveAfterAttacking = true }
+                    },
                     Defender = new UnitTestData(),
                     TraversalCostBetweenLocations = 10,
-                    CombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee,
-                        Attacker = new UnitCombatInfo() { CanMoveAfterAttacking = true }
-                    }
+                    CombatInfo = new CombatInfo() { CombatType = CombatType.Melee }
                 }).SetName("AttackerCanMoveAfterAttacking true and melee combat | movement floors at 0").Returns(0f);
             }
         }
@@ -87,8 +89,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon>    MockUnitPositionCanon;
-        private Mock<IUnitTerrainCostLogic> MockTerrainCostLogic;
+        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
 
         #endregion
 
@@ -99,10 +100,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
         [SetUp]
         public void CommonInstall() {
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
-            MockTerrainCostLogic  = new Mock<IUnitTerrainCostLogic>();
 
-            Container.Bind<IUnitPositionCanon>   ().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<IUnitTerrainCostLogic>().FromInstance(MockTerrainCostLogic .Object);
+            Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
 
             Container.Bind<PostCombatMovementLogic>().AsSingle();
         }
@@ -120,8 +119,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var attacker = BuildUnit(testData.Attacker, attackerLocation);
             var defender = BuildUnit(testData.Defender, defenderLocation);
 
-            MockTerrainCostLogic
-                .Setup(logic => logic.GetTraversalCostForUnit(attacker, attackerLocation, defenderLocation))
+            MockUnitPositionCanon
+                .Setup(logic => logic.GetTraversalCostForUnit(attacker, attackerLocation, defenderLocation, true))
                 .Returns(testData.TraversalCostBetweenLocations);
 
             var movementLogic = Container.Resolve<PostCombatMovementLogic>();
@@ -143,6 +142,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.SetupAllProperties();
+
+            mockUnit.Setup(unit => unit.CombatSummary).Returns(unitData.CombatSummary);
 
             var newUnit = mockUnit.Object;
 

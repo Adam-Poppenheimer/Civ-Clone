@@ -11,19 +11,15 @@ namespace Assets.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon    UnitPositionCanon;
-        private IUnitTerrainCostLogic TerrainCostLogic;
+        private IUnitPositionCanon UnitPositionCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public PostCombatMovementLogic(
-            IUnitPositionCanon unitPositionCanon, IUnitTerrainCostLogic terrainCostLogic
-        ) {
+        public PostCombatMovementLogic(IUnitPositionCanon unitPositionCanon) {
             UnitPositionCanon = unitPositionCanon;
-            TerrainCostLogic  = terrainCostLogic;
         }
 
         #endregion
@@ -35,14 +31,16 @@ namespace Assets.Simulation.Units.Combat {
         public void HandleAttackerMovementAfterCombat(
             IUnit attacker, IUnit defender, CombatInfo combatInfo
         ){
-            if(!combatInfo.Attacker.CanMoveAfterAttacking) {
+            if(!attacker.CombatSummary.CanMoveAfterAttacking) {
                 attacker.CurrentMovement = 0;
 
             }else if(combatInfo.CombatType == CombatType.Melee) {
                 var attackerLocation = UnitPositionCanon.GetOwnerOfPossession(attacker);
                 var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-                var costToMove = TerrainCostLogic.GetTraversalCostForUnit(attacker, attackerLocation, defenderLocation);
+                var costToMove = UnitPositionCanon.GetTraversalCostForUnit(
+                    attacker, attackerLocation, defenderLocation, true
+                );
 
                 attacker.CurrentMovement = Math.Max(0, attacker.CurrentMovement - costToMove);
 

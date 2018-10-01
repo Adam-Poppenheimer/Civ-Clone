@@ -145,10 +145,6 @@ namespace Assets.Simulation.Cities {
             get { return false; }
         }
 
-        public bool IsImmobile {
-            get { return true; }
-        }
-
         public IEnumerable<UnitTypeCombatBonusData> CombatBonusesByType {
             get { return _emptyBonuses; }
         }
@@ -174,6 +170,12 @@ namespace Assets.Simulation.Cities {
         public IPromotionTreeTemplate PromotionTreeData {
             get { return EmptyPromotionTreeData.Instance; }
         }
+
+
+        public IUnitMovementSummary MovementSummary {
+            get { return _movementSummary; }
+        }
+        private IUnitMovementSummary _movementSummary = new UnitMovementSummary();
 
         #endregion
 

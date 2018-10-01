@@ -20,47 +20,39 @@ namespace Assets.Simulation.Units.Promotions {
 
         Sprite Icon { get; }
 
-        bool RestrictedByTerrains              { get; }
-        IEnumerable<CellTerrain> ValidTerrains { get; }
 
-        bool RestrictedByShapes            { get; }
-        IEnumerable<CellShape> ValidShapes { get; }
 
-        bool RestrictedByVegetations                 { get; }
-        IEnumerable<CellVegetation> ValidVegetations { get; }
+        bool PermitsLandTraversal         { get; }
+        bool PermitsShallowWaterTraversal { get; }
+        bool PermitsDeepWaterTraversal    { get; }
 
-        bool RestrictedByOpponentTypes           { get; }
-        IEnumerable<UnitType> ValidOpponentTypes { get; }
+        int BonusMovement { get; }
+        int BonusVision   { get; }
 
-        bool RequiresFlatTerrain  { get; }
-        bool RequiresRoughTerrain { get; }
+        IEnumerable<CellTerrain>    TerrainsWithIgnoredCosts    { get; }
+        IEnumerable<CellShape>      ShapesWithIgnoredCosts      { get; }
+        IEnumerable<CellVegetation> VegetationsWithIgnoredCosts { get; }
 
-        bool RestrictedByCombatType { get; }
-        CombatType ValidCombatType  { get; }
+        IEnumerable<CellShape>      ShapesConsumingFullMovement      { get; }
+        IEnumerable<CellVegetation> VegetationsConsumingFullMovement { get; }
 
-        bool AppliesWhileAttacking { get; }
-        bool AppliesWhileDefending { get; }
 
-        bool RequiresForeignTerritory { get; }
-
-        float CombatModifier { get; }
 
         bool CanMoveAfterAttacking    { get; }
         bool CanAttackAfterAttacking  { get; }
         bool IgnoresAmphibiousPenalty { get; }
 
         bool IgnoresDefensiveTerrainBonuses { get; }
+        bool IgnoresLineOfSight             { get; }
 
         float GoldRaidingPercentage { get; }
 
-        bool IgnoresLineOfSight { get; }
-
-        bool RestrictedByOpponentWoundedState { get; }
-        bool ValidOpponentWoundedState        { get; }
+        IEnumerable<ICombatModifier> ModifiersWhenAttacking { get; }
+        IEnumerable<ICombatModifier> ModifiersWhenDefending { get; }
 
 
-        bool IgnoresTerrainCosts { get; }
 
+        bool RequiresForeignTerritory { get; }
 
         bool HealsEveryTurn { get; }
 

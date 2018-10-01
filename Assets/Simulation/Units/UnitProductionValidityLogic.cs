@@ -52,12 +52,13 @@ namespace Assets.Simulation.Units {
 
         public bool IsTemplateValidForCity(IUnitTemplate template, ICity city) {
             var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
 
-            if(!UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, cityLocation, false)) {
+            if(!UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, cityLocation, cityOwner)) {
                 return false;
             }
 
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+            
             foreach(var resource in template.RequiredResources) {
                 if(FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, cityOwner) <= 0) {
                     return false;

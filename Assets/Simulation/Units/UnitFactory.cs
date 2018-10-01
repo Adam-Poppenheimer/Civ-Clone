@@ -11,6 +11,7 @@ using UniRx;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units {
 
@@ -58,8 +59,10 @@ namespace Assets.Simulation.Units {
         #region from IUnitFactory
 
         public bool CanBuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner) {
-            return UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, location, false)
-                && !DoesCellHaveUnitsForeignTo(location, owner);
+            var canPlace = UnitPositionCanon.CanPlaceUnitTemplateAtLocation(template, location, owner);
+            var hasForeignUnits = DoesCellHaveUnitsForeignTo(location, owner);;
+
+            return canPlace && !hasForeignUnits;
         }
 
         public IUnit BuildUnit(IHexCell location, IUnitTemplate template, ICivilization owner) {
@@ -89,11 +92,13 @@ namespace Assets.Simulation.Units {
 
             newUnit.Template = template;
 
-            newUnit.CurrentMovement = template.MaxMovement;
-            newUnit.CurrentHitpoints       = newUnit.MaxHitpoints;
-            newUnit.CanAttack       = true;
-            newUnit.Level           = 1;
-            newUnit.PromotionTree   = promotionTree;
+            newUnit.CurrentMovement  = template.MaxMovement;
+            newUnit.CurrentHitpoints = newUnit.MaxHitpoints;
+            newUnit.CanAttack        = true;
+            newUnit.Level            = 1;
+            newUnit.PromotionTree    = promotionTree;
+
+            newUnit.SetSummaries(new UnitMovementSummary(), new UnitCombatSummary());
 
             allUnits.Add(newUnit);
 

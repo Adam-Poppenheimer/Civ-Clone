@@ -23,7 +23,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region internal types
 
-        public class CombatInfoLogicTestData {
+        public class GetAttackInfoTestData {
 
             public UnitTestData Attacker = new UnitTestData();
 
@@ -31,17 +31,19 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public HexCellTestData Location = new HexCellTestData();
 
-            public CombatInfo CombatInfoFromPromotions = new CombatInfo();
-
             public CivConfigTestData CivConfig = new CivConfigTestData();
 
             public UnitConfigTestData UnitConfig = new UnitConfigTestData();
+
+            public CombatType CombatType = CombatType.Melee;
 
         }
 
         public class UnitTestData {
 
             public CivilizationTestData Owner = new CivilizationTestData();
+
+            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
 
         }
 
@@ -54,7 +56,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         public class HexCellTestData {
 
             public CellTerrain    Terrain;
-            public CellShape   Shape;
+            public CellShape      Shape;
             public CellVegetation Vegetation;
 
             public bool HasRiver;
@@ -79,25 +81,41 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public float TerrainDefensiveness    = 0;
             public float VegetationDefensiveness = 0;
-            public float ShapeDefensiveness   = 0;
+            public float ShapeDefensiveness      = 0;
 
             public float RiverCrossingAttackingModifier;
 
+        }
+
+        public class MockCombatModifier : ICombatModifier {
+
+            public float Modifier { get; set; }
+
+            private bool ModifierApplies;
+
+            public bool DoesModifierApply(IUnit self, IUnit opponent, IHexCell location, CombatType combatType) {
+                return ModifierApplies;
+            }
+
+            public MockCombatModifier(float modifier, bool modifierApplies) {
+                Modifier = modifier;
+                ModifierApplies = modifierApplies;
+            }
         }
 
         #endregion
 
         #region static fields and properties
 
-        public static IEnumerable GetMeleeAttackInfoTestCases {
+        public static IEnumerable GetAttackInfoTestCases {
             get {
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-
-                }).SetName("Empty promotion info | returned info's CombatType set to Melee").Returns(new CombatInfo() {
-                    CombatType = CombatType.Melee
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    CombatType = CombatType.Ranged
+                }).SetName("No modifiers | returned info's CombatType is argued combat type").Returns(new CombatInfo() {
+                    CombatType = CombatType.Ranged
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Location = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
                          Vegetation = CellVegetation.Jungle
@@ -107,12 +125,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         ShapeDefensiveness   = 2f,
                         VegetationDefensiveness = 4f
                     }
-                }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
+                }).SetName("No modifiers | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Defender = new UnitCombatInfo() { CombatModifier = 7f }
+                    DefenderCombatModifier = 7f
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Location = new HexCellTestData() {
                         Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
                          Vegetation = CellVegetation.Jungle,
@@ -123,48 +141,102 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         ShapeDefensiveness   = 2f,
                         VegetationDefensiveness = 4f
                     },
-                    CombatInfoFromPromotions = new CombatInfo() {
-                        Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
+                    Defender = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() { IgnoresDefensiveTerrainBonus = true }
                     }
-                }).SetName("Promotion info suppresses terrain defensiveness | terrain defensiveness not included").Returns(new CombatInfo() {
+                }).SetName("Defender suppresses terrain defensiveness | terrain defensiveness not included").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Defender = new UnitCombatInfo() { CombatModifier = 0f, IgnoresDefensiveTerrainBonuses = true }
+                    DefenderCombatModifier = 0f
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Location = new HexCellTestData() {
                         Improvement = new ImprovementTestData() {
                             DefensiveBonus = 5f
                         }
                     }
-                }).SetName("Empty promotion info | returned info contains defensiveness from improvements at location").Returns(new CombatInfo() {
+                }).SetName("Defender doesn't suppress terrain defensiveness | improvements contribute").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Defender = new UnitCombatInfo() { CombatModifier = 5f }
+                    DefenderCombatModifier = 5f
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Location = new HexCellTestData() {
-                        Improvement = new ImprovementTestData() {
-                            DefensiveBonus = 5f
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands,
+                        Vegetation = CellVegetation.None
+                    },
+                    Attacker = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() {
+                            modifiersWhenAttacking = new List<ICombatModifier>() {
+                                new MockCombatModifier(1f, true),
+                                new MockCombatModifier(2f, true),
+                                new MockCombatModifier(7f, false)
+                            }
                         }
-                    },
-                    CombatInfoFromPromotions = new CombatInfo() {
-                        Attacker = new UnitCombatInfo() {
-                            CombatModifier = 3f, CanMoveAfterAttacking = true,
-                            CanAttackAfterAttacking = true, IgnoresAmphibiousPenalty = false
-                        },
-                        Defender = new UnitCombatInfo() { CombatModifier = 5f }
                     }
-                }).SetName("Promotion info is non-empty | fields set from promotions carry through to output").Returns(new CombatInfo() {
+                }).SetName("Attacker's ModifiersWhenAttacking applied when DoesModifierApply returns true").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Attacker = new UnitCombatInfo() {
-                        CombatModifier = 3f, CanMoveAfterAttacking = true,
-                        CanAttackAfterAttacking = true, IgnoresAmphibiousPenalty = false
-                    },
-                    Defender = new UnitCombatInfo() { CombatModifier = 10f }
+                    AttackerCombatModifier = 3f
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    Location = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands,
+                        Vegetation = CellVegetation.None
+                    },
+                    Defender = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() {
+                            modifiersWhenDefending = new List<ICombatModifier>() {
+                                new MockCombatModifier(1f, true),
+                                new MockCombatModifier(2f, true),
+                                new MockCombatModifier(7f, false)
+                            }
+                        }
+                    }
+                }).SetName("Defender's ModifiersWhenDefending applied when DoesModifierApply returns true").Returns(new CombatInfo() {
+                    CombatType = CombatType.Melee,
+                    DefenderCombatModifier = 3f
+                });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    Location = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands,
+                        Vegetation = CellVegetation.None
+                    },
+                    Attacker = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() {
+                            modifiersWhenDefending = new List<ICombatModifier>() {
+                                new MockCombatModifier(1f, true),
+                                new MockCombatModifier(2f, true),
+                                new MockCombatModifier(7f, false)
+                            }
+                        }
+                    }
+                }).SetName("Attacker's ModifiersWhenDefending never applied").Returns(new CombatInfo() {
+                    CombatType = CombatType.Melee,
+                    AttackerCombatModifier = 0f
+                });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    Location = new HexCellTestData() {
+                        Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands,
+                        Vegetation = CellVegetation.None
+                    },
+                    Defender = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() {
+                            modifiersWhenAttacking = new List<ICombatModifier>() {
+                                new MockCombatModifier(1f, true),
+                                new MockCombatModifier(2f, true),
+                                new MockCombatModifier(7f, false)
+                            }
+                        }
+                    }
+                }).SetName("Defender's ModifiersWhenAttacking never applied").Returns(new CombatInfo() {
+                    CombatType = CombatType.Melee,
+                    DefenderCombatModifier = 0f
+                });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Attacker = new UnitTestData() {
                         Owner = new CivilizationTestData() { NetHappiness = -10 }
                     },
@@ -174,131 +246,43 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     CivConfig = new CivConfigTestData() { ModifierLossPerUnhappiness = -2f }
                 }).SetName("Unhappiness reduces attacker and defender modifier by configured amount").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Attacker = new UnitCombatInfo() { CombatModifier = -20f },
-                    Defender = new UnitCombatInfo() { CombatModifier = -30f }
+                    AttackerCombatModifier = -20f,
+                    DefenderCombatModifier = -30f 
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
                     Location = new HexCellTestData() {
                         HasRiver = true
                     },
                     UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f }
-                }).SetName("River crossing inflicts penalty on attacker").Returns(new CombatInfo() {
+                }).SetName("River crossing inflicts penalty when attack is melee").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Attacker = new UnitCombatInfo() { CombatModifier = -2f }
+                    AttackerCombatModifier = -2f
                 });
 
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    CombatType = CombatType.Ranged,
+                    Location = new HexCellTestData() {
+                        HasRiver = true
+                    },
+                    UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f }
+                }).SetName("River crossing inflicts ignored when attacked is ranged").Returns(new CombatInfo() {
+                    CombatType = CombatType.Ranged,
+                    AttackerCombatModifier = 0f
+                });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    CombatType = CombatType.Melee,
                     Location = new HexCellTestData() {
                         HasRiver = true
                     },
                     UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f },
-                    CombatInfoFromPromotions = new CombatInfo() {
-                        Attacker = new UnitCombatInfo() { IgnoresAmphibiousPenalty = true }
+                    Attacker = new UnitTestData() {
+                        CombatSummary = new UnitCombatSummary() { IgnoresAmphibiousPenalty = true }
                     }
                 }).SetName("River crossing penalty ignored if promotions say so").Returns(new CombatInfo() {
                     CombatType = CombatType.Melee,
-                    Attacker = new UnitCombatInfo() { IgnoresAmphibiousPenalty = true }
-                });
-            }
-        }
-
-        public static IEnumerable GetRangedAttackInfoTestCases {
-            get {
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-
-                }).SetName("Empty promotion info | returned info's CombatType set to Ranged").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Location = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
-                        Vegetation = CellVegetation.Jungle
-                    },
-                    UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = 1f,
-                        ShapeDefensiveness   = 2f,
-                        VegetationDefensiveness = 4f
-                    }
-                }).SetName("Empty promotion info | returned info contains defensiveness from terrain").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged,
-                    Defender = new UnitCombatInfo() { CombatModifier = 7f }
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Location = new HexCellTestData() {
-                        Terrain = CellTerrain.Grassland, Shape = CellShape.Hills,
-                        Vegetation = CellVegetation.Jungle,
-                        Improvement = new ImprovementTestData() { DefensiveBonus = 2f }
-                    },
-                    UnitConfig = new UnitConfigTestData() {
-                        TerrainDefensiveness = 1f,
-                        ShapeDefensiveness   = 2f,
-                        VegetationDefensiveness = 4f
-                    },
-                    CombatInfoFromPromotions = new CombatInfo() {
-                        Defender = new UnitCombatInfo() { IgnoresDefensiveTerrainBonuses = true }
-                    }
-                }).SetName("Promotion info suppresses terrain defensiveness | terrain defensiveness not included").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged,
-                    Defender = new UnitCombatInfo() { CombatModifier = 0f, IgnoresDefensiveTerrainBonuses = true }
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Location = new HexCellTestData() {
-                        Improvement = new ImprovementTestData() {
-                            DefensiveBonus = 5f
-                        }
-                    }
-                }).SetName("Empty promotion info | returned info contains defensiveness from improvements at location").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged,
-                    Defender = new UnitCombatInfo() { CombatModifier = 5f }
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Location = new HexCellTestData() {
-                        Improvement = new ImprovementTestData() {
-                            DefensiveBonus = 5f
-                        }
-                    },
-                    CombatInfoFromPromotions = new CombatInfo() {
-                        Attacker = new UnitCombatInfo() {
-                            CanMoveAfterAttacking = true, CanAttackAfterAttacking = true,
-                            IgnoresAmphibiousPenalty = false, CombatModifier = 3f
-                        },
-                        Defender = new UnitCombatInfo() { CombatModifier = 5f }
-                    }
-                }).SetName("Promotion info is non-empty | fields set from promotions carry through to output").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged,
-                    Attacker = new UnitCombatInfo() {
-                        CanMoveAfterAttacking = true, CanAttackAfterAttacking = true,
-                        IgnoresAmphibiousPenalty = false, CombatModifier = 3f
-                    },
-                    Defender = new UnitCombatInfo() { CombatModifier = 10f }
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Attacker = new UnitTestData() {
-                        Owner = new CivilizationTestData() { NetHappiness = -10 }
-                    },
-                    Defender = new UnitTestData() {
-                        Owner = new CivilizationTestData() { NetHappiness = -15 }
-                    },
-                    CivConfig = new CivConfigTestData() { ModifierLossPerUnhappiness = -2f }
-                }).SetName("Unhappiness reduces attacker and defender modifier by configured amount").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged,
-                    Attacker = new UnitCombatInfo() { CombatModifier = -20f },
-                    Defender = new UnitCombatInfo() { CombatModifier = -30f }
-                });
-
-                yield return new TestCaseData(new CombatInfoLogicTestData() {
-                    Location = new HexCellTestData() {
-                        HasRiver = true
-                    },
-                    UnitConfig = new UnitConfigTestData() { RiverCrossingAttackingModifier = -2f }
-                }).SetName("River crossing has no effect on attacker").Returns(new CombatInfo() {
-                    CombatType = CombatType.Ranged
+                    AttackerCombatModifier = 0f
                 });
             }
         }
@@ -313,7 +297,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
         private Mock<ICivilizationConfig>                           MockCivConfig;
-        private Mock<IPromotionParser>                              MockPromotionParser;
 
         #endregion
 
@@ -329,7 +312,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon        = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
             MockCivConfig                  = new Mock<ICivilizationConfig>();
-            MockPromotionParser            = new Mock<IPromotionParser>();
 
             Container.Bind<IUnitConfig>                                  ().FromInstance(MockUnitConfig                .Object);
             Container.Bind<IRiverCanon>                                  ().FromInstance(MockRiverCanon                .Object);
@@ -337,12 +319,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon       .Object);
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig                 .Object);
-            Container.Bind<IPromotionParser>                             ().FromInstance(MockPromotionParser           .Object);
 
             Container.Bind<CombatInfoLogic>().AsSingle();
         }
 
-        private void SetUpConfigs(CombatInfoLogicTestData testData) {
+        private void SetUpConfigs(GetAttackInfoTestData testData) {
             MockUnitConfig.Setup(config => config.GetTerrainDefensiveness(It.IsAny<CellTerrain>()))
                           .Returns(testData.UnitConfig.TerrainDefensiveness);
 
@@ -361,9 +342,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region tests
 
-        [TestCaseSource("GetMeleeAttackInfoTestCases")]
-        [Test(Description = "")]
-        public CombatInfo GetMeleeAttackInfoTests(CombatInfoLogicTestData testData) {
+        [Test]
+        [TestCaseSource("GetAttackInfoTestCases")]       
+        public CombatInfo GetAttackInfoTests(GetAttackInfoTestData testData) {
             SetUpConfigs(testData);
 
             var attacker = BuildUnit(testData.Attacker);
@@ -371,32 +352,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var location = BuildHexCell(testData.Location);
 
-            MockPromotionParser
-                .Setup(parser => parser.GetCombatInfo(attacker, defender, location, CombatType.Melee))
-                .Returns(testData.CombatInfoFromPromotions);
-
             var combatInfoLogic = Container.Resolve<CombatInfoLogic>();
 
-            return combatInfoLogic.GetMeleeAttackInfo(attacker, defender, location);
-        }
-
-        [TestCaseSource("GetRangedAttackInfoTestCases")]
-        [Test(Description = "")]
-        public CombatInfo GetRangedAttackInfoTests(CombatInfoLogicTestData testData) {
-            SetUpConfigs(testData);
-
-            var attacker = BuildUnit(testData.Attacker);
-            var defender = BuildUnit(testData.Defender);
-
-            var location = BuildHexCell(testData.Location);
-
-            MockPromotionParser
-                .Setup(parser => parser.GetCombatInfo(attacker, defender, location, CombatType.Ranged))
-                .Returns(testData.CombatInfoFromPromotions);
-
-            var combatInfoLogic = Container.Resolve<CombatInfoLogic>();
-
-            return combatInfoLogic.GetRangedAttackInfo(attacker, defender, location);
+            return combatInfoLogic.GetAttackInfo(attacker, defender, location, testData.CombatType);
         }
 
         #endregion
@@ -404,7 +362,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
         #region utilities
 
         private IUnit BuildUnit(UnitTestData data) {
-            var newUnit = new Mock<IUnit>().Object;
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.CombatSummary).Returns(data.CombatSummary);
+
+            var newUnit = mockUnit.Object;
 
             var owner = BuildCivilization(data.Owner);
 

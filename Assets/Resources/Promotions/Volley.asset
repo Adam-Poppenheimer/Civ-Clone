@@ -13,27 +13,50 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: -- Unimplemented --
   _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  RestrictedByTerrains: 0
-  ValidTerrains: 
-  RestrictedByShapes: 0
-  ValidShapes: 
-  RestrictedByFeatures: 0
-  ValidFeatures: 
-  RestrictedByAttackerTypes: 0
-  ValidAttackerTypes: 
-  RestrictedByDefenderTypes: 1
-  ValidDefenderTypes: 08000000
-  RequiresFlatTerrain: 0
-  RequiresRoughTerrain: 0
-  RestrictedByCombatType: 0
-  ValidCombatType: 0
-  AppliesWhileAttacking: 1
-  AppliesWhileDefending: 0
-  CombatModifier: 0.5
-  CanMoveAfterAttacking: 0
-  CanAttackAfterAttacking: 0
-  IgnoresAmphibiousPenalty: 0
-  IgnoresDefensiveTerrainBonuses: 0
-  GoldRaidingPercentage: 0
-  IgnoresLOSWhenAttacking: 0
-  IgnoresTerrainCosts: 0
+  _permitsLandTraversal: 0
+  _permitsShallowWaterTraversal: 0
+  _permitsDeepWaterTraversal: 0
+  _bonusMovement: 0
+  _bonusVision: 0
+  _terrainsWithIgnoredCosts: 
+  _shapesWithIgnoredCosts: 
+  _vegetationsWithIgnoredCosts: 
+  _shapesConsumingFullMovement: 
+  _vegetationsConsumingFullMovement: 
+  _canMoveAfterAttacking: 0
+  _canAttackAfterAttacking: 0
+  _ignoresAmphibiousPenalty: 0
+  _ignoresDefensiveTerrainBonuses: 0
+  _ignoresLineOfSight: 0
+  _goldRaidingPercentage: 0
+  _bonusRange: 0
+  PermanentAttackModifiers: []
+  ConditionalAttackModifiers:
+  - _modifier: 0.5
+    _conditions:
+    - Target: 1
+      Restriction: 0
+      UnitRestriction: 0
+      UnitTypeArguments: 08000000
+      LocationRestriction: 0
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 0
+    - Target: 3
+      Restriction: 0
+      UnitRestriction: 0
+      UnitTypeArguments: 
+      LocationRestriction: 0
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 1
+    _joinedTogetherBy: 0
+  PermanentDefenseModifiers: []
+  ConditionalDefenseModifiers: []
+  _requiresForeignTerritory: 0
+  _healsEveryTurn: 0
+  _bonusHealingToSelf: 0
+  _bonusHealingToAdjacent: 0
+  _alternativeNavalBaseHealing: 0

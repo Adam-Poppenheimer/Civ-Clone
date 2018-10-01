@@ -10,6 +10,7 @@ using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units.Promotions {
 
+    [CreateAssetMenu(menuName = "Civ Clone/Promotion")]
     public class Promotion : ScriptableObject, IPromotion {
 
         #region instance fields and properties
@@ -30,81 +31,58 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private Sprite _icon;
 
-        public bool RestrictedByTerrains {
-            get { return _restrictedByTerrains; }
+        public bool PermitsLandTraversal {
+            get { return _permitsLandTraversal; }
         }
-        [SerializeField] private bool _restrictedByTerrains;
+        [SerializeField] private bool _permitsLandTraversal;
 
-        public IEnumerable<CellTerrain> ValidTerrains {
-            get { return _validTerrains; }
+        public bool PermitsShallowWaterTraversal {
+            get { return _permitsShallowWaterTraversal; }
         }
-        [SerializeField] private List<CellTerrain> _validTerrains;
+        [SerializeField] private bool _permitsShallowWaterTraversal;
 
-        public bool RestrictedByShapes {
-            get { return _restrictedByShapes; }
+        public bool PermitsDeepWaterTraversal {
+            get { return _permitsDeepWaterTraversal; }
         }
-        [SerializeField] private bool _restrictedByShapes;
+        [SerializeField] private bool _permitsDeepWaterTraversal;
 
-        public IEnumerable<CellShape> ValidShapes {
-            get { return _validShapes; }
+        public int BonusMovement {
+            get { return _bonusMovement; }
         }
-        [SerializeField] private List<CellShape> _validShapes;
+        [SerializeField] private int _bonusMovement;
 
-        public bool RestrictedByVegetations {
-            get { return _restrictedByVegetations; }
+        public int BonusVision {
+            get { return _bonusVision; }
         }
-        [SerializeField] private bool _restrictedByVegetations;
+        [SerializeField] private int _bonusVision;
 
-        public IEnumerable<CellVegetation> ValidVegetations {
-            get { return _validVegetations; }
+        public IEnumerable<CellTerrain> TerrainsWithIgnoredCosts {
+            get { return _terrainsWithIgnoredCosts; }
         }
-        [SerializeField] private List<CellVegetation> _validVegetations;
+        [SerializeField] private List<CellTerrain> _terrainsWithIgnoredCosts;
 
-        public bool RestrictedByOpponentTypes {
-            get { return _restrictedByOpponentTypes; }
+        public IEnumerable<CellShape> ShapesWithIgnoredCosts {
+            get { return _shapesWithIgnoredCosts; }
         }
-        [SerializeField] private bool _restrictedByOpponentTypes;
+        [SerializeField] private List<CellShape> _shapesWithIgnoredCosts;
 
-        public IEnumerable<UnitType> ValidOpponentTypes {
-            get { return _validOpponentTypes; }
+        public IEnumerable<CellVegetation> VegetationsWithIgnoredCosts {
+            get { return _vegetationsWithIgnoredCosts; }
         }
-        [SerializeField] private List<UnitType> _validOpponentTypes;
+        [SerializeField] private List<CellVegetation> _vegetationsWithIgnoredCosts;
 
-        public bool RequiresFlatTerrain {
-            get { return _requiresFlatTerrain; }
-        }
-        [SerializeField] private bool _requiresFlatTerrain;
 
-        public bool RequiresRoughTerrain {
-            get { return _requiresRoughTerrain; }
+        public IEnumerable<CellShape> ShapesConsumingFullMovement {
+            get { return _shapesConsumingFullMovement; }
         }
-        [SerializeField] private bool _requiresRoughTerrain;
+        [SerializeField] private List<CellShape> _shapesConsumingFullMovement;
 
-        public bool RestrictedByCombatType {
-            get { return _restrictedByCombatType; }
+        public IEnumerable<CellVegetation> VegetationsConsumingFullMovement {
+            get { return _vegetationsConsumingFullMovement; }
         }
-        [SerializeField] private bool _restrictedByCombatType;
+        [SerializeField] private List<CellVegetation> _vegetationsConsumingFullMovement;
 
-        public CombatType ValidCombatType {
-            get { return _validCombatType; }
-        }
-        [SerializeField] private CombatType _validCombatType;
 
-        public bool AppliesWhileAttacking {
-            get { return _appliesWhileAttacking; }
-        }
-        [SerializeField] private bool _appliesWhileAttacking;
-
-        public bool AppliesWhileDefending {
-            get { return _appliesWhileDefending; }
-        }
-        [SerializeField] private bool _appliesWhileDefending;
-
-        public float CombatModifier {
-            get { return _combatModifier; }
-        }
-        [SerializeField] private float _combatModifier;
-        
         public bool CanMoveAfterAttacking {
             get { return _canMoveAfterAttacking; }
         }
@@ -125,32 +103,52 @@ namespace Assets.Simulation.Units.Promotions {
         }
         [SerializeField] private bool _ignoresDefensiveTerrainBonuses;
 
-        public float GoldRaidingPercentage {
-            get { return _goldRaidingPercentage; }
-        }
-        [SerializeField] private float _goldRaidingPercentage;
-
         public bool IgnoresLineOfSight {
             get { return _ignoresLineOfSight; }
         }
         [SerializeField] private bool _ignoresLineOfSight;
 
-        public bool RestrictedByOpponentWoundedState {
-            get { return _restrictedByOpponentWoundedState; }
+        public float GoldRaidingPercentage {
+            get { return _goldRaidingPercentage; }
         }
-        [SerializeField] private bool _restrictedByOpponentWoundedState;
+        [SerializeField] private float _goldRaidingPercentage;
 
-        public bool ValidOpponentWoundedState {
-            get { return _validOpponentWoundedState; }
+        public int BonusRange {
+            get { return _bonusRange; }
         }
-        [SerializeField] private bool _validOpponentWoundedState;
+        [SerializeField] private int _bonusRange;
 
+        public IEnumerable<ICombatModifier> ModifiersWhenAttacking {
+            get {
+                if(_attackModifiers == null) {
+                    var castPermanent   = PermanentAttackModifiers.Cast<ICombatModifier>();
+                    var castConditional = ConditionalAttackModifiers.Cast<ICombatModifier>();
 
-
-        public bool IgnoresTerrainCosts {
-            get { return _ignoresTerrainCosts; }
+                    _attackModifiers = castPermanent.Concat(castConditional).ToList();
+                }
+                return _attackModifiers;
+            }
         }
-        [SerializeField] private bool _ignoresTerrainCosts;
+        private List<ICombatModifier> _attackModifiers;
+        [SerializeField] private List<PermanentCombatModifier>   PermanentAttackModifiers;
+        [SerializeField] private List<ConditionalCombatModifier> ConditionalAttackModifiers;
+
+        public IEnumerable<ICombatModifier> ModifiersWhenDefending {
+            get {
+                if(_defenseModifiers == null) {
+                    var castPermanent   = PermanentDefenseModifiers.Cast<ICombatModifier>();
+                    var castConditional = ConditionalDefenseModifiers.Cast<ICombatModifier>();
+
+                    _defenseModifiers = castPermanent.Concat(castConditional).ToList();
+                }
+                return _defenseModifiers;
+            }
+        }
+        private List<ICombatModifier> _defenseModifiers;
+        [SerializeField] private List<PermanentCombatModifier>   PermanentDefenseModifiers;
+        [SerializeField] private List<ConditionalCombatModifier> ConditionalDefenseModifiers;
+
+
 
 
 

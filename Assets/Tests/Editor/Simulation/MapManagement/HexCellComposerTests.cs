@@ -64,6 +64,21 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
+        public void ComposeCells_ChunkCountRecorded() {
+            MockGrid.Setup(grid => grid.ChunkCountX).Returns(10);
+            MockGrid.Setup(grid => grid.ChunkCountZ).Returns(7);
+
+            var mapData = new SerializableMapData();
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            composer.ComposeCells(mapData);
+
+            Assert.AreEqual(10, mapData.ChunkCountX, "Incorrect ChunkCountX");
+            Assert.AreEqual(7,  mapData.ChunkCountZ, "Incorrect ChunkCountZ");
+        }
+
+        [Test]
         public void ComposeCells_CoordinatesRecorded() {
             var cellOne   = BuildHexCell(new HexCoordinates(0, 1));
             var cellTwo   = BuildHexCell(new HexCoordinates(2, 3));
@@ -385,6 +400,20 @@ namespace Assets.Tests.Simulation.MapManagement {
 
 
 
+
+        [Test]
+        public void DecomposeCells_GridBuiltWithProperChunkCount() {
+            var mapData = new SerializableMapData() {
+                ChunkCountX = 10, ChunkCountZ = 7,
+                HexCells = new List<SerializableHexCellData>()
+            };
+
+            var composer = Container.Resolve<HexCellComposer>();
+
+            composer.DecomposeCells(mapData);
+
+            MockGrid.Verify(grid => grid.Build(10, 7));
+        }
 
         [Test]
         public void DecomposeCells_TerrainChangedThroughCellModificationLogic() {

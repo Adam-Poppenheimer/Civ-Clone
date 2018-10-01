@@ -11,8 +11,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region methods
 
-        CombatInfo GetMeleeAttackInfo (IUnit attacker, IUnit defender, IHexCell location);
-        CombatInfo GetRangedAttackInfo(IUnit attacker, IUnit defender, IHexCell location);
+        CombatInfo GetAttackInfo(IUnit attacker, IUnit defender, IHexCell location, CombatType combatType);
 
         #endregion
 

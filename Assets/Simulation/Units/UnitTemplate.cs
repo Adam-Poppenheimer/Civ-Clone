@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.MapResources;
@@ -52,11 +54,6 @@ namespace Assets.Simulation.Units {
             get { return _type; }
         }
         [SerializeField] private UnitType _type;
-
-        public bool IsAquatic {
-            get { return _isAquatic; }
-        }
-        [SerializeField] private bool _isAquatic;
 
         public IEnumerable<IAbilityDefinition> Abilities {
             get { return _abilities.Cast<IAbilityDefinition>(); }
@@ -118,10 +115,25 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private PromotionTreeTemplate _promotionTreeData;
 
+        public IUnitMovementSummary MovementSummary { get; private set; }
+
         #endregion
 
         #endregion
-        
+
+        #region instance methods
+
+        [Inject]
+        public void InjectDependencies(IPromotionParser promotionParser) {
+            var movementSummary = new UnitMovementSummary();
+
+            promotionParser.SetMovementSummary(movementSummary, StartingPromotions);
+
+            MovementSummary = movementSummary;
+        }
+
+        #endregion
+
     }
 
 }

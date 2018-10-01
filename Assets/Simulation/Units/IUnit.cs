@@ -9,6 +9,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units {
 
@@ -23,8 +24,6 @@ namespace Assets.Simulation.Units {
         float CurrentMovement { get; set; }
 
         UnitType Type { get; }
-
-        bool IsAquatic { get; }
 
         IEnumerable<IAbilityDefinition> Abilities { get; }
 
@@ -62,6 +61,9 @@ namespace Assets.Simulation.Units {
         int Level      { get; set; }
 
         bool IsWounded { get; }
+
+        IUnitMovementSummary MovementSummary { get; }
+        IUnitCombatSummary   CombatSummary   { get; }
         
         #endregion
 

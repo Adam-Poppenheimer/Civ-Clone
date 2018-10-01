@@ -52,8 +52,8 @@ namespace Assets.Tests.Simulation.Units {
 
             Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 
-            Container.Bind<IUnitConfig>          ().FromMock();
-            Container.Bind<IUnitTerrainCostLogic>().FromMock();
+            Container.Bind<IUnitConfig>     ().FromMock();
+            Container.Bind<IPromotionParser>().FromMock();
 
             Container.Bind<UnitSignals>().AsSingle();
 
@@ -171,6 +171,19 @@ namespace Assets.Tests.Simulation.Units {
             var newUnit = factory.BuildUnit(cell, template, civilization, promotionTree);
 
             Assert.AreEqual(promotionTree, newUnit.PromotionTree);
+        }
+
+        [Test]
+        public void UnitCreated_MovementDataSet() {
+            var cell         = BuildHexCell(true);
+            var template     = BuildTemplate(BuildPromotionTreeData());
+            var civilization = BuildCivilization(true);
+
+            var factory = Container.Resolve<UnitFactory>();
+
+            var newUnit = factory.BuildUnit(cell, template, civilization);
+
+            Assert.NotNull(newUnit.MovementSummary);
         }
 
         [Test(Description = "Create should throw a UnitCreationException when the created unit " +

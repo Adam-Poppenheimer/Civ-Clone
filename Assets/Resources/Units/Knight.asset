@@ -18,7 +18,6 @@ MonoBehaviour:
   _maxMovement: 4
   _productionCost: 120
   _type: 7
-  _isAquatic: 0
   _abilities: []
   _attackRange: 0
   _combatStrength: 20
@@ -34,4 +33,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 3a8ff150af143604a9a2cf1c42179857, type: 2}
   - {fileID: 11400000, guid: 7ebf9a782b3802f4cbbefaae98cbfda5, type: 2}
   - {fileID: 11400000, guid: 595dd3d9205644749aeb81492155cf3c, type: 2}
+  - {fileID: 11400000, guid: 4016dabf6f50743449aac49b7dbc8ac6, type: 2}
   _promotionTreeData: {fileID: 11400000, guid: 4e0f05ba499004e40b52243b4e7cf49f, type: 2}

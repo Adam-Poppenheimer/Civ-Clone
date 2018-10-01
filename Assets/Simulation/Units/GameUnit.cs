@@ -16,6 +16,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Units.Combat;
 
 using UnityCustomUtilities.Extensions;
 
@@ -33,7 +34,7 @@ namespace Assets.Simulation.Units {
         }
 
         public float MaxMovement {
-            get { return Template.MaxMovement; }
+            get { return Template.MaxMovement + MovementSummary.BonusMovement; }
         }
 
         public float CurrentMovement { get; set; }
@@ -42,16 +43,12 @@ namespace Assets.Simulation.Units {
             get { return Template.Type; }
         }
 
-        public bool IsAquatic {
-            get { return Template.IsAquatic; }
-        }
-
         public IEnumerable<IAbilityDefinition> Abilities {
             get { return Template.Abilities; }
         }
 
         public int AttackRange {
-            get { return Template.AttackRange; }
+            get { return Template.AttackRange + CombatSummary.BonusRange; }
         }
 
         public int CombatStrength {
@@ -77,7 +74,7 @@ namespace Assets.Simulation.Units {
         public List<IHexCell> CurrentPath { get; set; }
 
         public int VisionRange {
-            get { return Template.VisionRange; }
+            get { return Template.VisionRange + MovementSummary.BonusVision; }
         }
 
         public bool CanAttack { get; set; }
@@ -170,6 +167,16 @@ namespace Assets.Simulation.Units {
             get { return MaxHitpoints - CurrentHitpoints >= Config.WoundedThreshold; }
         }
 
+        public IUnitMovementSummary MovementSummary {
+            get { return ConcreteMovementSummary; }
+        }
+        private UnitMovementSummary ConcreteMovementSummary;
+
+        public IUnitCombatSummary CombatSummary {
+            get { return ConcreteCombatSummary; }
+        }
+        private UnitCombatSummary ConcreteCombatSummary;
+
         #endregion
 
         [SerializeField] private Animator Animator;
@@ -180,9 +187,9 @@ namespace Assets.Simulation.Units {
 
         private IUnitConfig           Config;
         private UnitSignals           Signals;
-        private IUnitTerrainCostLogic TerrainCostLogic;
         private IUnitPositionCanon    PositionCanon;
         private IHexGrid              Grid;
+        private IPromotionParser      PromotionParser;
 
         #endregion
 
@@ -190,14 +197,14 @@ namespace Assets.Simulation.Units {
 
         [Inject]
         public void InjectDependencies(
-            IUnitConfig config, UnitSignals signals,  IUnitTerrainCostLogic terrainCostLogic,
-            IUnitPositionCanon positionCanon, IHexGrid grid
+            IUnitConfig config, UnitSignals signals, IUnitPositionCanon positionCanon,
+            IHexGrid grid, IPromotionParser promotionParser
         ){
-            Config           = config;
-            Signals          = signals;
-            TerrainCostLogic = terrainCostLogic;
-            PositionCanon    = positionCanon;
-            Grid             = grid;
+            Config          = config;
+            Signals         = signals;
+            PositionCanon   = positionCanon;
+            Grid            = grid;
+            PromotionParser = promotionParser;
         }
 
         #region Unity messages
@@ -311,6 +318,13 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
+        public void SetSummaries(UnitMovementSummary movementSummary, UnitCombatSummary combatSummary) {
+            ConcreteMovementSummary = movementSummary;
+            ConcreteCombatSummary   = combatSummary;
+
+            PromotionParser.SetMovementSummary(ConcreteMovementSummary, Promotions);
+            PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   Promotions);
+        }
 
         private IEnumerator PerformMovementCoroutine(bool ignoreMoveCosts) {
             Animator.SetTrigger("Moving Requested");
@@ -332,7 +346,7 @@ namespace Assets.Simulation.Units {
 
                 if(!ignoreMoveCosts) {
                     CurrentMovement = Math.Max(0,
-                        CurrentMovement - TerrainCostLogic.GetTraversalCostForUnit(this, currentCell, nextCell)
+                        CurrentMovement - PositionCanon.GetTraversalCostForUnit(this, currentCell, nextCell, false)
                     );
                 }                
 
@@ -391,6 +405,9 @@ namespace Assets.Simulation.Units {
         }
 
         private void OnNewPromotionChosen(object sender, EventArgs e) {
+            PromotionParser.SetMovementSummary(ConcreteMovementSummary, Promotions);
+            PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   Promotions);
+
             Signals.UnitGainedPromotionSignal.OnNext(this);
         }
 

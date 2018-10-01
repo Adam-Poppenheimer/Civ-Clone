@@ -3,13 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.Units.Promotions {
 
     public interface IMovementPromotionParser {
 
         #region methods
 
-        void ParsePromotionForUnitMovement(IPromotion promotion, IUnit unit, MovementInfo info);
+        void AddPromotionToMovementSummary(
+            IPromotion promotion, UnitMovementSummary summary
+        );
 
         #endregion
 

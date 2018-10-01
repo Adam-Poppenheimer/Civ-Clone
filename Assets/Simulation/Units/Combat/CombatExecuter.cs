@@ -149,9 +149,7 @@ namespace Assets.Simulation.Units.Combat {
                 return false;
             }
 
-            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
-
-            if( !combatInfo.Attacker.IgnoresLineOfSight &&
+            if( !attacker.CombatSummary.IgnoresLineOfSight &&
                 !UnitLineOfSightLogic.GetCellsVisibleToUnit(attacker).Contains(defenderLocation)
             ){
                 return false;
@@ -174,7 +172,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            var combatInfo = CombatInfoLogic.GetMeleeAttackInfo(attacker, defender, defenderLocation);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee);
 
             PerformCombat(attacker, defender, combatInfo);
 
@@ -198,7 +196,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged);
 
             PerformCombat(attacker, defender, combatInfo);
 
@@ -223,7 +221,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            var combatInfo = CombatInfoLogic.GetMeleeAttackInfo(attacker, defender, defenderLocation);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee);
 
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
@@ -241,7 +239,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
 
-            var combatInfo = CombatInfoLogic.GetRangedAttackInfo(attacker, defender, defenderLocation);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged);
 
             Tuple<int, int> results = CalculateCombat(attacker, defender, combatInfo);
 
@@ -264,7 +262,7 @@ namespace Assets.Simulation.Units.Combat {
 
             PostCombatMovementLogic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo);
 
-            if(combatInfo.Attacker.CanAttackAfterAttacking) {
+            if(attacker.CombatSummary.CanAttackAfterAttacking) {
                 attacker.CanAttack = true;
             }else {
                 attacker.CanAttack = false;
@@ -276,8 +274,8 @@ namespace Assets.Simulation.Units.Combat {
         ){
             float attackerBaseStrength = combatInfo.CombatType == CombatType.Melee ? attacker.CombatStrength : attacker.RangedAttackStrength;
 
-            float attackerStrength = attackerBaseStrength    * (1f + combatInfo.Attacker.CombatModifier);
-            float defenderStrength = defender.CombatStrength * (1f + combatInfo.Defender.CombatModifier);
+            float attackerStrength = attackerBaseStrength    * (1f + combatInfo.AttackerCombatModifier);
+            float defenderStrength = defender.CombatStrength * (1f + combatInfo.DefenderCombatModifier);
 
             int attackerDamage = 0, defenderDamage = 0;
 

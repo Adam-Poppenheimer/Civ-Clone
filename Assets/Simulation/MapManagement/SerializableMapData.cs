@@ -13,8 +13,8 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [DataMember()] public int CellCountX;
-        [DataMember()] public int CellCountZ;
+        [DataMember()] public int ChunkCountX;
+        [DataMember()] public int ChunkCountZ;
 
         [DataMember()] public List<SerializableHexCellData>      HexCells;
         [DataMember()] public List<SerializableCivilizationData> Civilizations;

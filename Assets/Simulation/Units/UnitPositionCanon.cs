@@ -19,6 +19,7 @@ namespace Assets.Simulation.Units {
         #region instance fields and properties
 
         private UnitSignals                                   Signals;
+        private IHexMapSimulationConfig                       HexSimulationConfig;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
@@ -28,12 +29,14 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitPositionCanon(UnitSignals signals,
+        public UnitPositionCanon(
+            UnitSignals signals, IHexMapSimulationConfig hexSimulationConfig,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon            
         ){
             Signals             = signals;
+            HexSimulationConfig = hexSimulationConfig;
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
             CityPossessionCanon = cityPossessionCanon;
@@ -56,7 +59,7 @@ namespace Assets.Simulation.Units {
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
             if(newOwner == null) {
                 return;
-            }         
+            }
 
             Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }
@@ -74,39 +77,144 @@ namespace Assets.Simulation.Units {
 
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
-            foreach(var unitAtLocation in GetPossessionsOfOwner(location)) {
-                var unitAtLocationOwner = UnitPossessionCanon.GetOwnerOfPossession(unitAtLocation);
-
-                if(unitOwner != unitAtLocationOwner && !isMeleeAttacking) {
-                    return false;
-                }
-            }
-
-            var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
-
-            if(cityAtLocation != null && CityPossessionCanon.GetOwnerOfPossession(cityAtLocation) != unitOwner && !isMeleeAttacking) {
-                return false;
-            }
-
-            return CanPlaceUnitTemplateAtLocation(unit.Template, location, isMeleeAttacking);
-        }
-
-        public bool CanPlaceUnitTemplateAtLocation(IUnitTemplate template, IHexCell location, bool isMeleeAttacking) {
-            if(location == null) {
-                return true;
-
-            }else if(!isMeleeAttacking && LocationHasUnitBlockingType(location, template.Type)) {
+            if(IsCellImpassableFor(unit.MovementSummary, location, unitOwner)) {
                 return false;
 
-            }else if(CityLocationCanon.GetPossessionsOfOwner(location).Count() > 0) {
-                return true;
+            }else if(CellHasDomesticUnits(location, unitOwner)) {
+                return !LocationHasUnitBlockingType(location, unit.Type);
+
+            }else if(CellHasForeignUnits(location, unitOwner)) {
+                return isMeleeAttacking;
 
             }else {
-                return template.IsAquatic == location.Terrain.IsWater();
+                return true;
+            }
+        }
+
+        public bool CanPlaceUnitTemplateAtLocation(IUnitTemplate template, IHexCell location, ICivilization owner) {
+            if(location == null) {
+                return true;
+            }
+
+            if(IsCellImpassableFor(template.MovementSummary, location, owner)) {
+                return false;
+
+            }else if(CellHasDomesticUnits(location, owner)) {
+                return !LocationHasUnitBlockingType(location, template.Type);
+
+            }else if(CellHasForeignUnits(location, owner)) {
+                return false;
+
+            }else {
+                return true;
+            }
+        }
+
+        public float GetTraversalCostForUnit(IUnit unit, IHexCell currentCell, IHexCell nextCell, bool isMeleeAttacking) {
+            if(!CanPlaceUnitAtLocation(unit, nextCell, isMeleeAttacking)) {
+                return -1f;
+
+            }else if(HasCityDomesticToUnit(nextCell, unit)) {
+                return HexSimulationConfig.CityMoveCost;
+
+            }else {
+                return GetTraversalCost(unit, currentCell, nextCell);
             }
         }
 
         #endregion
+
+        private float GetTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
+            int moveCost = HexSimulationConfig.GetBaseMoveCostOfTerrain(nextCell.Terrain);
+
+            if(currentCell.HasRoads && nextCell.HasRoads) {
+                return moveCost * HexSimulationConfig.RoadMoveCostMultiplier;
+
+            }else if(
+                unit.MovementSummary.DoesShapeConsumeFullMovement     (nextCell.Shape) ||
+                unit.MovementSummary.DoesVegetationConsumeFullMovement(nextCell.Vegetation)
+            ) {
+                return unit.MaxMovement;
+
+            }else if(
+                !unit.MovementSummary.IsCostIgnoredOnTerrain   (nextCell.Terrain)    &&
+                !unit.MovementSummary.IsCostIgnoredOnShape     (nextCell.Shape)      &&
+                !unit.MovementSummary.IsCostIgnoredOnVegetation(nextCell.Vegetation)
+            ) {
+                moveCost += HexSimulationConfig.GetBaseMoveCostOfVegetation(nextCell.Vegetation);
+                moveCost += HexSimulationConfig.GetBaseMoveCostOfShape     (nextCell.Shape);
+                moveCost += HexSimulationConfig.GetBaseMoveCostOfFeature   (nextCell.Feature);
+            }
+
+            return moveCost;
+        }
+
+        private bool IsCellImpassableFor(
+            IUnitMovementSummary movementSummary, IHexCell cell, ICivilization domesticCiv
+        ) {
+            if(HasCityOfOwner(cell, domesticCiv)) {
+                return false;
+            }
+
+            if(HasForeignCity(cell, domesticCiv)) {
+                return true;
+            }
+
+            if(!cell.Terrain.IsWater() && !movementSummary.CanTraverseLand) {
+                return true;
+
+            }else if(cell.Terrain == CellTerrain.DeepWater && !movementSummary.CanTraverseDeepWater) {
+                return true;
+
+            }else if(cell.Terrain.IsWater() && cell.Terrain != CellTerrain.DeepWater && !movementSummary.CanTraverseShallowWater) {
+                return true;
+            }
+
+            if(HexSimulationConfig.GetBaseMoveCostOfVegetation(cell.Vegetation) == -1) {
+                return true;
+            }
+
+            if(HexSimulationConfig.GetBaseMoveCostOfShape(cell.Shape) == -1) {
+                return true;
+            }
+
+            if(HexSimulationConfig.GetBaseMoveCostOfFeature(cell.Feature) == -1) {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool CellHasDomesticUnits(IHexCell cell, ICivilization domesticCiv) {
+            return GetPossessionsOfOwner(cell).Where(
+                unit => UnitPossessionCanon.GetOwnerOfPossession(unit) == domesticCiv
+            ).Any();
+        }
+
+        private bool CellHasForeignUnits(IHexCell cell, ICivilization domesticCiv) {
+            return GetPossessionsOfOwner(cell).Where(
+                unit => UnitPossessionCanon.GetOwnerOfPossession(unit) != domesticCiv
+            ).Any();
+        }
+
+        private bool HasCityOfOwner(IHexCell cell, ICivilization owner) {
+            return CityLocationCanon.GetPossessionsOfOwner(cell).Any(
+                city => CityPossessionCanon.GetOwnerOfPossession(city) == owner
+            );
+        }
+
+        private bool HasCityDomesticToUnit(IHexCell cell, IUnit unit) {
+            var cityAtNext = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            var ownerOf = UnitPossessionCanon.GetOwnerOfPossession(unit);
+
+            return cityAtNext != null && (ownerOf == CityPossessionCanon.GetOwnerOfPossession(cityAtNext));
+        }
+
+        private bool HasForeignCity(IHexCell cell, ICivilization domesticCiv) {
+            return CityLocationCanon.GetPossessionsOfOwner(cell).Any(
+                city => CityPossessionCanon.GetOwnerOfPossession(city) != domesticCiv
+            );
+        }
 
         private bool LocationHasUnitBlockingType(IHexCell location, UnitType type) {
             return GetPossessionsOfOwner(location).Where(unit => type.HasSameSupertypeAs(unit.Type)).Count() > 0;

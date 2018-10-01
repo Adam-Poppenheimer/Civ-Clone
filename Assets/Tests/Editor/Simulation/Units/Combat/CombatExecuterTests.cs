@@ -61,6 +61,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public bool CanMakeRangedAttack = true;
 
+            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
+
         }
 
         public class DefenderTestData {
@@ -68,6 +70,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             public int CombatStrength;
 
             public int LocationElevation;
+
+            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
 
         }
 
@@ -296,10 +300,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0
                     },
                     MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
+                        CombatType = CombatType.Melee, AttackerCombatModifier = 0.5f 
                     },
                     RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, Attacker = new UnitCombatInfo() { CombatModifier = 0.5f }
+                        CombatType = CombatType.Ranged, AttackerCombatModifier = 0.5f
                     }
                 }).SetName("Basic terrain/no inhibitors/even strength/50% attacker modifier")
                 .Returns(new CombatTestOutput() {
@@ -328,10 +332,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         LocationElevation = 0
                     },
                     MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
+                        CombatType = CombatType.Melee, DefenderCombatModifier = 0.5f
                     },
                     RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, Defender = new UnitCombatInfo() { CombatModifier = 0.5f }
+                        CombatType = CombatType.Ranged, DefenderCombatModifier = 0.5f
                     }
                 }).SetName("Basic terrain/no inhibitors/even strength/50% defender modifier")
                 .Returns(new CombatTestOutput() {
@@ -511,17 +515,17 @@ namespace Assets.Tests.Simulation.Units.Combat {
                         DistanceFromDefender = 1,
                         CanMoveToDefender = true,
                         CanSeeDefender = false,
+                        CombatSummary = new UnitCombatSummary() {
+                            IgnoresLineOfSight = true
+                        }
                     },
                     Defender = new DefenderTestData() {
                         CombatStrength = 100,
                         LocationElevation = 0
                     },
-                    MeleeCombatInfo = new CombatInfo() {
-                        Attacker = new UnitCombatInfo() { IgnoresLineOfSight = true }
-                    },
+                    MeleeCombatInfo = new CombatInfo(),
                     RangedCombatInfo = new CombatInfo() {
                         CombatType = CombatType.Ranged,
-                        Attacker = new UnitCombatInfo() { IgnoresLineOfSight = true }
                     },
                 }).SetName("Basic terrain/attacker cannot see defender/attacker ignores line of sight/no modifiers/even strength")
                 .Returns(new CombatTestOutput() {
@@ -768,11 +772,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
             }
 
             MockCombatInfoLogic.Setup(
-                logic => logic.GetMeleeAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>())
+                logic => logic.GetAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>(), CombatType.Melee)
             ).Returns(testData.MeleeCombatInfo);
 
             MockCombatInfoLogic.Setup(
-                logic => logic.GetRangedAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>())
+                logic => logic.GetAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>(), CombatType.Ranged)
             ).Returns(testData.RangedCombatInfo);
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
@@ -799,14 +803,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             if(results.CanPerformMeleeAttack) {
                 Assert.AreEqual(
-                    meleeAttacker.CanAttack, testData.MeleeCombatInfo.Attacker.CanAttackAfterAttacking,
+                    meleeAttacker.CanAttack, testData.Attacker.CombatSummary.CanAttackAfterAttacking,
                     "MeleeAttacker.CanAttack has an unexpected value"
                 );
             }
             
             if(results.CanPerformRangedAttack) {
                 Assert.AreEqual(
-                    rangedAttacker.CanAttack, testData.RangedCombatInfo.Attacker.CanAttackAfterAttacking,
+                    rangedAttacker.CanAttack, testData.Attacker.CombatSummary.CanAttackAfterAttacking,
                     "RangedAttacker.CanAttack has an unexpected value"
                 );
             }
@@ -843,14 +847,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
 
-            var combatInfo = new CombatInfo() {
-                CombatType = CombatType.Melee,
-                Attacker = new UnitCombatInfo() { CombatModifier = 1f, CanMoveAfterAttacking = true },
-                Defender = new UnitCombatInfo() { CombatModifier = 1f }
-            };
+            var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
             MockCombatInfoLogic
-                .Setup(logic => logic.GetMeleeAttackInfo(attacker, defender, defenderLocation))
+                .Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
                 .Returns(combatInfo);
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
@@ -905,13 +905,10 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
 
-            var combatInfo = new CombatInfo() {
-                Attacker = new UnitCombatInfo() { CombatModifier = 1f, CanMoveAfterAttacking = true },
-                Defender = new UnitCombatInfo() { CombatModifier = 1f }
-            };
+            var combatInfo = new CombatInfo() { CombatType = CombatType.Ranged };
 
             MockCombatInfoLogic
-                .Setup(logic => logic.GetRangedAttackInfo(attacker, defender, defenderLocation))
+                .Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
                 .Returns(combatInfo);
 
             var combatExecuter = Container.Resolve<CombatExecuter>();
@@ -966,7 +963,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 rangedAttackStrength:   attackerData.RangedAttackStrength,
                 attackRange:            attackerData.Range,
                 canAttack:              attackerData.CanAttack,
-                isReadyForRangedAttack: attackerData.CanMakeRangedAttack
+                isReadyForRangedAttack: attackerData.CanMakeRangedAttack,
+                combatSummary:          attackerData.CombatSummary
             );
         }
 
@@ -978,15 +976,15 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 rangedAttackStrength:   0,
                 attackRange:            0,
                 canAttack:              true,
-                isReadyForRangedAttack: true
+                isReadyForRangedAttack: true,
+                combatSummary:          defenderData.CombatSummary
             );
         }
 
         private IUnit BuildUnit(
-            IHexCell location, int currentMovement,
-            int combatStrength, int rangedAttackStrength,
-            int attackRange, bool canAttack,
-            bool isReadyForRangedAttack
+            IHexCell location, int currentMovement, int combatStrength,
+            int rangedAttackStrength, int attackRange, bool canAttack,
+            bool isReadyForRangedAttack, UnitCombatSummary combatSummary
         ){
             var mockUnit = new Mock<IUnit>();
 
@@ -1000,6 +998,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             mockUnit.Setup(unit => unit.RangedAttackStrength)  .Returns(rangedAttackStrength);
             mockUnit.Setup(unit => unit.AttackRange)           .Returns(attackRange);
             mockUnit.Setup(unit => unit.IsReadyForRangedAttack).Returns(isReadyForRangedAttack);
+            mockUnit.Setup(unit => unit.CombatSummary)         .Returns(combatSummary);
 
             mockUnit.Object.CurrentMovement = currentMovement;
 

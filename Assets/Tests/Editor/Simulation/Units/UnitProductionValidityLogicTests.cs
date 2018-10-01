@@ -235,7 +235,7 @@ namespace Assets.Tests.Simulation.Units {
             var newCell = new Mock<IHexCell>().Object;
 
             MockPositionCanon.Setup(
-                canon => canon.CanPlaceUnitTemplateAtLocation(It.IsAny<IUnitTemplate>(), newCell, It.IsAny<bool>())
+                canon => canon.CanPlaceUnitTemplateAtLocation(It.IsAny<IUnitTemplate>(), newCell, It.IsAny<ICivilization>())
             ).Returns(acceptsAllTemplates);
 
             return newCell;

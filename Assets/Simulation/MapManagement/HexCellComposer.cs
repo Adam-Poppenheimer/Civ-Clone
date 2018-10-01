@@ -41,6 +41,9 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void ComposeCells(SerializableMapData mapData) {
+            mapData.ChunkCountX = Grid.ChunkCountX;
+            mapData.ChunkCountZ = Grid.ChunkCountZ;
+
             mapData.HexCells = new List<SerializableHexCellData>();
 
             foreach(var cell in Grid.Cells) {
@@ -70,7 +73,7 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void DecomposeCells(SerializableMapData mapData) {
-            Grid.Build(mapData.CellCountX, mapData.CellCountZ);
+            Grid.Build(mapData.ChunkCountX, mapData.ChunkCountZ);
 
             foreach(var cellData in mapData.HexCells) {
                 var cellToModify = Grid.GetCellAtCoordinates(cellData.Coordinates);

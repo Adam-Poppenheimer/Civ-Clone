@@ -26,6 +26,7 @@ namespace Assets.Simulation.HexMap {
         int GetBaseMoveCostOfTerrain   (CellTerrain    terrain);
         int GetBaseMoveCostOfShape     (CellShape      shape);
         int GetBaseMoveCostOfVegetation(CellVegetation vegetation);
+        int GetBaseMoveCostOfFeature   (CellFeature    feature);
 
         #endregion
 

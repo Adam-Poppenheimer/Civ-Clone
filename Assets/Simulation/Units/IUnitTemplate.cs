@@ -31,8 +31,6 @@ namespace Assets.Simulation.Units {
 
         UnitType Type { get; }
 
-        bool IsAquatic { get; }
-
         IEnumerable<IAbilityDefinition> Abilities { get; }
 
         int AttackRange { get; }
@@ -45,8 +43,6 @@ namespace Assets.Simulation.Units {
 
         IEnumerable<IResourceDefinition> RequiredResources { get; }
 
-        bool IsImmobile { get; }
-
         bool MustSetUpToBombard { get; }
 
         int VisionRange { get; }
@@ -56,6 +52,8 @@ namespace Assets.Simulation.Units {
         IEnumerable<IPromotion> StartingPromotions { get; }
 
         IPromotionTreeTemplate PromotionTreeData { get; }
+
+        IUnitMovementSummary MovementSummary { get; }
 
         #endregion
 

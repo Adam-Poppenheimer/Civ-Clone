@@ -38,30 +38,20 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region from IPromotionParser
 
-        public CombatInfo GetCombatInfo(IUnit attacker, IUnit defender, IHexCell location, CombatType combatType) {
-            var retval = new CombatInfo();
+        public void SetCombatSummary(UnitCombatSummary summary, IEnumerable<IPromotion> promotions) {
+            summary.Reset();
 
-            retval.CombatType = combatType;
-
-            foreach(var promotion in attacker.Promotions) {
-                CombatParser.ParsePromotionForAttacker(promotion, attacker, defender, location, retval);
+            foreach(var promotion in promotions) {
+                CombatParser.AddPromotionToCombatSummary(promotion, summary);
             }
-
-            foreach(var promotion in defender.Promotions) {
-                CombatParser.ParsePromotionForDefender(promotion, attacker, defender, location, retval);
-            }
-
-            return retval;
         }
 
-        public MovementInfo GetMovementInfo(IUnit unit) {
-            var retval = new MovementInfo();
+        public void SetMovementSummary(UnitMovementSummary summary, IEnumerable<IPromotion> promotions) {
+            summary.Reset();
 
-            foreach(var promotion in unit.Promotions) {
-                MovementParser.ParsePromotionForUnitMovement(promotion, unit, retval);
+            foreach(var promotion in promotions) {
+                MovementParser.AddPromotionToMovementSummary(promotion, summary);
             }
-
-            return retval;
         }
 
         public VisionInfo GetVisionInfo(IUnit unit) {

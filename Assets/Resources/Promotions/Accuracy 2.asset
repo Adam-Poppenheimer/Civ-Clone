@@ -13,25 +13,47 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
-  _restrictedByTerrains: 0
-  _validTerrains: 
-  _restrictedByShapes: 0
-  _validShapes: 
-  _restrictedByFeatures: 0
-  _validFeatures: 
-  _restrictedByOpponentTypes: 0
-  _validOpponentTypes: 
-  _requiresFlatTerrain: 1
-  _requiresRoughTerrain: 0
-  _restrictedByCombatType: 1
-  _validCombatType: 1
-  _appliesWhileAttacking: 1
-  _appliesWhileDefending: 1
-  _combatModifier: 0.15
+  _permitsLandTraversal: 0
+  _permitsShallowWaterTraversal: 0
+  _permitsDeepWaterTraversal: 0
+  _terrainsWithIgnoredCosts: 
+  _shapesWithIgnoredCosts: 
+  _vegetationsWithIgnoredCosts: 
+  _shapesConsumingFullMovement: 
+  _vegetationsConsumingFullMovement: 
   _canMoveAfterAttacking: 0
   _canAttackAfterAttacking: 0
   _ignoresAmphibiousPenalty: 0
   _ignoresDefensiveTerrainBonuses: 0
+  _ignoresLineOfSight: 0
   _goldRaidingPercentage: 0
-  _ignoresLOSWhenAttacking: 0
-  _ignoresTerrainCosts: 0
+  PermanentAttackModifiers: []
+  ConditionalAttackModifiers:
+  - _modifier: 0.15
+    _conditions:
+    - Target: 2
+      Restriction: 1
+      UnitRestriction: 0
+      UnitTypeArguments: 
+      LocationRestriction: 3
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 0
+    - Target: 3
+      Restriction: 0
+      UnitRestriction: 0
+      UnitTypeArguments: 
+      LocationRestriction: 3
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 1
+    _joinedTogetherBy: 1
+  PermanentDefenseModifiers: []
+  ConditionalDefenseModifiers: []
+  _requiresForeignTerritory: 0
+  _healsEveryTurn: 0
+  _bonusHealingToSelf: 0
+  _bonusHealingToAdjacent: 0
+  _alternativeNavalBaseHealing: 0

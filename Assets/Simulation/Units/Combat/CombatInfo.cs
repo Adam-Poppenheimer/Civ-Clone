@@ -11,9 +11,8 @@ namespace Assets.Simulation.Units.Combat {
 
         public CombatType CombatType;
 
-        public UnitCombatInfo Attacker = new UnitCombatInfo();
-
-        public UnitCombatInfo Defender = new UnitCombatInfo();
+        public float AttackerCombatModifier;
+        public float DefenderCombatModifier;
 
         #endregion
 
@@ -24,17 +23,26 @@ namespace Assets.Simulation.Units.Combat {
         public override bool Equals(object obj) {
             var otherInfo = obj as CombatInfo;
 
-            return otherInfo != null && otherInfo.CombatType == CombatType 
-                && otherInfo.Attacker.Equals(Attacker) && otherInfo.Defender.Equals(Defender);
+            return otherInfo != null
+                && otherInfo.CombatType == CombatType 
+                && otherInfo.AttackerCombatModifier.Equals(AttackerCombatModifier)
+                && otherInfo.DefenderCombatModifier.Equals(DefenderCombatModifier);
         }
 
         public override int GetHashCode() {
             int hash = 13;
 
-            hash = (hash * 7) + Attacker.GetHashCode();
-            hash = (hash * 7) + Defender.GetHashCode();
+            hash = (hash * 7) + AttackerCombatModifier.GetHashCode();
+            hash = (hash * 7) + DefenderCombatModifier.GetHashCode();
 
             return hash;
+        }
+
+        public override string ToString() {
+            return string.Format(
+                "CombatType: {0} | AttackerCombatModifier: {1} | DefenderCombatModifier: {2}",
+                CombatType, AttackerCombatModifier, DefenderCombatModifier
+            );
         }
 
         #endregion
