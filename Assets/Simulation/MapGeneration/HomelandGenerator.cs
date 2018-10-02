@@ -181,14 +181,14 @@ namespace Assets.Simulation.MapGeneration {
             while(chunkQueue.Count() < chunkCount) {
                 var chunkToSplit = chunkQueue.Peek();
 
-                if(chunkToSplit.Count() < 2) {
+                var landInChunk = chunkToSplit.Intersect(landSections);
+
+                if(landInChunk.Count() < 2) {
                     Debug.LogWarning("Failed to get a splittable chunk while creating homeland regions");
                     break;
                 }
 
                 chunkQueue.DeleteMin();
-
-                var landInChunk = chunkToSplit.Intersect(landSections);
 
                 var landCentroid = landInChunk.Select(section => section.Centroid)
                                               .Aggregate((sum, nextCentroid) => sum + nextCentroid) / landInChunk.Count();
