@@ -76,7 +76,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.ApplyMeshes();            
         }
 
-        public IEnumerator PopulateAllFeatures() {
+        private IEnumerator PopulateAllFeatures() {
             yield return new WaitForEndOfFrame();
 
             FeatureManager.Clear();

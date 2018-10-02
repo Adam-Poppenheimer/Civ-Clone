@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.Technology {
 
             CollectionAssert.AreEquivalent(
                 new List<IResourceDefinition>() { resourceOne, resourceTwo },
-                techCanon.GetVisibleResourcesFromTechs(new List<ITechDefinition>() { discoveredTech })
+                techCanon.GetDiscoveredResourcesFromTechs(new List<ITechDefinition>() { discoveredTech })
             );
         }
 

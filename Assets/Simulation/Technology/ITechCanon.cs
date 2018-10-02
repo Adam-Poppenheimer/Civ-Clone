@@ -20,15 +20,13 @@ namespace Assets.Simulation.Technology {
 
         ReadOnlyCollection<ITechDefinition> AvailableTechs { get; }
 
-        bool IgnoreResourceVisibility { get; set; }
-
         #endregion
 
         #region methods
 
         IEnumerable<IImprovementTemplate> GetAvailableImprovementsFromTechs(IEnumerable<ITechDefinition> techs);
         IEnumerable<IBuildingTemplate>    GetAvailableBuildingsFromTechs   (IEnumerable<ITechDefinition> techs);
-        IEnumerable<IResourceDefinition>  GetVisibleResourcesFromTechs     (IEnumerable<ITechDefinition> techs);
+        IEnumerable<IResourceDefinition>  GetDiscoveredResourcesFromTechs  (IEnumerable<ITechDefinition> techs);
 
         IEnumerable<IBuildingTemplate>     GetResearchedBuildings  (ICivilization civilization);
         IEnumerable<IUnitTemplate>         GetResearchedUnits      (ICivilization civilization);
@@ -39,7 +37,7 @@ namespace Assets.Simulation.Technology {
         bool IsBuildingResearchedForCiv(IBuildingTemplate   template, ICivilization civilization);
         bool IsUnitResearchedForCiv    (IUnitTemplate       template, ICivilization civilization);
         bool IsAbilityResearchedForCiv (IAbilityDefinition  ability,  ICivilization civilization);
-        bool IsResourceVisibleToCiv    (IResourceDefinition resource, ICivilization civilization);
+        bool IsResourceDiscoveredByCiv (IResourceDefinition resource, ICivilization civilization);
 
         IEnumerable<ITechDefinition> GetTechsDiscoveredByCiv(ICivilization civilization);
         IEnumerable<ITechDefinition> GetTechsAvailableToCiv (ICivilization civilization);

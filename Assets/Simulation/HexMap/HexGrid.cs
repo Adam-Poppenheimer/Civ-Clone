@@ -94,15 +94,9 @@ namespace Assets.Simulation.HexMap {
 
             CellShaderData.enabled = true;
 
-            var oldVisibilityMode = CellShaderData.ImmediateMode;
-
-            CellShaderData.ImmediateMode = true;
-
             CreateChunks();
             CreateCells();
             ToggleUI(false);
-
-            StartCoroutine(RevertVisibilityMode(oldVisibilityMode));
         }
 
         public void Clear() {
@@ -384,11 +378,6 @@ namespace Assets.Simulation.HexMap {
             chunk.AddCell(localX + localZ * RenderConfig.ChunkSizeX, cell);
 
             cell.Chunk = chunk;
-        }
-
-        private IEnumerator RevertVisibilityMode(bool oldVisibilityMode) {
-            yield return new WaitForEndOfFrame();
-            CellShaderData.ImmediateMode = oldVisibilityMode;
         }
 
         private HexCoordinates GetCoordinatesFromPosition(Vector3 position) {

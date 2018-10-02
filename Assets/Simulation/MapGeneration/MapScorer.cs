@@ -44,7 +44,7 @@ namespace Assets.Simulation.MapGeneration {
                 return 0f;
             }
 
-            if(TechCanon.GetVisibleResourcesFromTechs(availableTechs).Contains(node.Resource)) {
+            if(TechCanon.GetDiscoveredResourcesFromTechs(availableTechs).Contains(node.Resource)) {
                 return node.Resource.Type != ResourceType.Bonus ? node.Resource.Score * node.Copies : 0;
             }else {
                 return 0f;

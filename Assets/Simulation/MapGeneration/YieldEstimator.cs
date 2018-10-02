@@ -119,7 +119,7 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             var retval = YieldSummary.Empty;
 
-            var visibleResources      = TechCanon.GetVisibleResourcesFromTechs     (availableTechs).ToList();
+            var visibleResources      = TechCanon.GetDiscoveredResourcesFromTechs     (availableTechs).ToList();
             var availableImprovements = TechCanon.GetAvailableImprovementsFromTechs(availableTechs).ToList();
             var availableBuildings    = TechCanon.GetAvailableBuildingsFromTechs   (availableTechs).ToList();
 

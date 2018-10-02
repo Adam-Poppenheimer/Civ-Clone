@@ -51,7 +51,7 @@ namespace Assets.Simulation.Civilizations {
         public int GetExtractedCopiesOfResourceForCiv(IResourceDefinition resource, ICivilization civ) {
             int retval = 0;
 
-            if(!TechCanon.IsResourceVisibleToCiv(resource, civ)) {
+            if(!TechCanon.IsResourceDiscoveredByCiv(resource, civ)) {
                 return 0;
             }
 

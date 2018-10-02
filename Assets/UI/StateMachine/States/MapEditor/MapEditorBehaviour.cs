@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Visibility;
 using Assets.Simulation.Technology;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
@@ -22,8 +23,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IHexGrid             Grid;
         private IMapComposer         MapComposer;
         private ICivilizationFactory CivFactory;
-        private ITechCanon           TechCanon;
         private IVisibilityResponder VisibilityResponder;
+        private IVisibilityCanon     VisibilityCanon;
 
         #endregion
 
@@ -32,15 +33,15 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory, ITechCanon techCanon,
-            IVisibilityResponder visibilityResponder
+            ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
+            IVisibilityCanon visibilityCanon
         ) {
             Brain               = brain;
             Grid                = grid;
             MapComposer         = mapComposer;
             CivFactory          = civFactory;
-            TechCanon           = techCanon;
             VisibilityResponder = visibilityResponder;
+            VisibilityCanon     = visibilityCanon;
         }
 
         #region from StateMachineBehaviour
@@ -48,19 +49,20 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
             Brain.ClearListeners();
             Brain.EnableCameraMovement();
+            
+            VisibilityResponder.UpdateVisibility = true;
+            VisibilityResponder.TryResetCellVisibility();
+
+            VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.RevealAll;
+            VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.RevealAll;
+            VisibilityCanon.RevealMode             = RevealMode.Immediate;
 
             Grid.Build(4, 3);
 
             CivFactory.Create("Player Civilization", Color.red);
-
-            TechCanon.IgnoreResourceVisibility   = true;
-            VisibilityResponder.UpdateVisibility = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            TechCanon.IgnoreResourceVisibility   = false;
-            VisibilityResponder.UpdateVisibility = false;
-
             MapComposer.ClearRuntime();
         }
 

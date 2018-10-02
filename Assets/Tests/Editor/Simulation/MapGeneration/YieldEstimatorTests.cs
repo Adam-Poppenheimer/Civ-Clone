@@ -65,7 +65,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
             MockTechCanon.Setup(canon => canon.GetAvailableImprovementsFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
                          .Returns(AvailableImprovements);
 
-            MockTechCanon.Setup(canon => canon.GetVisibleResourcesFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
+            MockTechCanon.Setup(canon => canon.GetDiscoveredResourcesFromTechs(It.IsAny<IEnumerable<ITechDefinition>>()))
                          .Returns(VisibleResources);
 
             Container.Bind<IInherentCellYieldLogic>                         ().FromInstance(MockInherentYieldLogic      .Object);

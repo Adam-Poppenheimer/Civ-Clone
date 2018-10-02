@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Assets.Simulation.Civilizations {
+namespace Assets.Simulation.Visibility {
 
     public interface IVisibilityResponder {
 
@@ -12,7 +12,8 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        void TryResetAllVisibility();
+        void TryResetCellVisibility();
+        void TryResetResourceVisibility();
 
         #endregion
 

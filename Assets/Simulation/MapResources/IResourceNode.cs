@@ -15,8 +15,6 @@ namespace Assets.Simulation.MapResources {
 
         int Copies { get; }
 
-        bool IsVisible { get; set; }
-
         #endregion
 
         #region methods

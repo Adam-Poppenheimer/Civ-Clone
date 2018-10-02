@@ -30,8 +30,6 @@ namespace Assets.Simulation.Technology {
         }
         private List<ITechDefinition> _availableTechs;
 
-        public bool IgnoreResourceVisibility { get; set; }
-
         #endregion
 
         private DictionaryOfLists<ICivilization, ITechDefinition> TechsResearchedByCiv =
@@ -84,7 +82,7 @@ namespace Assets.Simulation.Technology {
             return techs.SelectMany(tech => tech.BuildingsEnabled);
         }
 
-        public IEnumerable<IResourceDefinition> GetVisibleResourcesFromTechs(IEnumerable<ITechDefinition> techs) {
+        public IEnumerable<IResourceDefinition> GetDiscoveredResourcesFromTechs(IEnumerable<ITechDefinition> techs) {
             var excludedTechs = AvailableTechs.Except(techs);
             var excludedResources = excludedTechs.SelectMany(tech => tech.RevealedResources);
 
@@ -179,12 +177,10 @@ namespace Assets.Simulation.Technology {
         public IEnumerable<IResourceDefinition> GetResourcesVisibleToCiv(ICivilization civilization) {
             var retval = new HashSet<IResourceDefinition>(AvailableResources);
 
-            if(!IgnoreResourceVisibility) {
-                foreach(var tech in AvailableTechs) {
-                    if(!IsTechDiscoveredByCiv(tech, civilization)) {
-                        foreach(var resource in tech.RevealedResources) {
-                            retval.Remove(resource);
-                        }
+            foreach(var tech in AvailableTechs) {
+                if(!IsTechDiscoveredByCiv(tech, civilization)) {
+                    foreach(var resource in tech.RevealedResources) {
+                        retval.Remove(resource);
                     }
                 }
             }
@@ -222,7 +218,7 @@ namespace Assets.Simulation.Technology {
             return GetResearchedAbilities(civilization).Contains(ability);
         }
 
-        public bool IsResourceVisibleToCiv(IResourceDefinition resource, ICivilization civilization) {
+        public bool IsResourceDiscoveredByCiv(IResourceDefinition resource, ICivilization civilization) {
             return GetResourcesVisibleToCiv(civilization).Contains(resource);
         }
 

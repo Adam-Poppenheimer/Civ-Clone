@@ -61,6 +61,48 @@ namespace Assets.UI.TitleScreen {
 
         #endregion
 
+        public void UpdateSelectedMapTemplate(int optionIndex) {
+            SelectedMapTemplate = MapTemplates.Where(
+                template => template.name.Equals(MapTypeDropdown.options[optionIndex].text)
+            ).FirstOrDefault();
+        }
+
+        public void UpdateMapSize(int optionIndex) {
+            var mapSize = Config.MapSizes[optionIndex];
+
+            DimensionsInChunks = mapSize.DimensionsInChunks;
+
+            InitializeCivCountDropdown(mapSize.ValidCivCounts);
+
+            CivCountDropdown.value = mapSize.ValidCivCounts.IndexOf(mapSize.IdealCivCount);
+        }
+
+        public void UpdateSeaLevel(int optionIndex) {
+            ContinentalLandPercentage = Config.GetLandPercentageForSeaLevel((SeaLevelCategory)optionIndex);
+        }
+
+        public void UpdateCivCount(int optionIndex) {
+            if(!int.TryParse(CivCountDropdown.options[optionIndex].text, out CivCount)) {
+                Debug.LogErrorFormat("Detected invalid civ count string {0} when creating a new map", CivCountDropdown.options[optionIndex] );
+                CivCount = 8;
+            }
+        }
+
+        public void GenerateMap() {
+            var variables = new MapGenerationVariables() {
+                ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
+                ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
+                CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage
+            };
+
+            MapGenerator.GenerateMap(
+                SelectedMapTemplate,
+                variables
+            );
+
+            UIAnimator.SetTrigger("Play Mode Requested");
+        }
+
         private void InitializeTypeDropdown() {
             MapTypeDropdown.ClearOptions();
 
@@ -114,48 +156,6 @@ namespace Assets.UI.TitleScreen {
             ).ToList();
 
             CivCountDropdown.AddOptions(civCountOptions);
-        }
-
-        public void UpdateSelectedMapTemplate(int optionIndex) {
-            SelectedMapTemplate = MapTemplates.Where(
-                template => template.name.Equals(MapTypeDropdown.options[optionIndex].text)
-            ).FirstOrDefault();
-        }
-
-        public void UpdateMapSize(int optionIndex) {
-            var mapSize = Config.MapSizes[optionIndex];
-
-            DimensionsInChunks = mapSize.DimensionsInChunks;
-
-            InitializeCivCountDropdown(mapSize.ValidCivCounts);
-
-            CivCountDropdown.value = mapSize.ValidCivCounts.IndexOf(mapSize.IdealCivCount);
-        }
-
-        public void UpdateSeaLevel(int optionIndex) {
-            ContinentalLandPercentage = Config.GetLandPercentageForSeaLevel((SeaLevelCategory)optionIndex);
-        }
-
-        public void UpdateCivCount(int optionIndex) {
-            if(!int.TryParse(CivCountDropdown.options[optionIndex].text, out CivCount)) {
-                Debug.LogErrorFormat("Detected invalid civ count string {0} when creating a new map", CivCountDropdown.options[optionIndex] );
-                CivCount = 8;
-            }
-        }
-
-        public void GenerateMap() {
-            var variables = new MapGenerationVariables() {
-                ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
-                ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
-                CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage
-            };
-
-            MapGenerator.GenerateMap(
-                SelectedMapTemplate,
-                variables
-            );
-
-            UIAnimator.SetTrigger("Play Mode Requested");
         }
 
         #endregion

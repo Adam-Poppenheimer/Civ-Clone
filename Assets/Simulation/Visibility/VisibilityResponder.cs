@@ -13,8 +13,10 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.MapResources;
+using Assets.Simulation.Core;
 
-namespace Assets.Simulation.Civilizations {
+namespace Assets.Simulation.Visibility {
 
     public class VisibilityResponder : IVisibilityResponder {
 
@@ -27,17 +29,19 @@ namespace Assets.Simulation.Civilizations {
         #endregion
 
         private Coroutine ResetVisionCoroutine;
+        private Coroutine ResetResourceVisibilityCoroutine;
 
 
-
-        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private ICellVisibilityCanon                          VisibilityCanon;
-        private ICityLineOfSightLogic                         CityLineOfSightLogic;
-        private IUnitLineOfSightLogic                         UnitLineOfSightLogic;
-        private IUnitFactory                                  UnitFactory;
-        private ICityFactory                                  CityFactory;
-        private MonoBehaviour                                 CoroutineInvoker;
+        private IPossessionRelationship<ICivilization, IUnit>    UnitPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
+        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
+        private IVisibilityCanon                                 VisibilityCanon;
+        private ICityLineOfSightLogic                            CityLineOfSightLogic;
+        private IUnitLineOfSightLogic                            UnitLineOfSightLogic;
+        private IUnitFactory                                     UnitFactory;
+        private ICityFactory                                     CityFactory;
+        private IHexGrid                                         Grid;
+        private MonoBehaviour                                    CoroutineInvoker;
 
         #endregion
 
@@ -45,26 +49,32 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public VisibilityResponder(
-            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICellVisibilityCanon visibilityCanon,
+            IPossessionRelationship<ICivilization, IUnit>    unitPossessionCanon,
+            IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
+            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
+            IVisibilityCanon visibilityCanon,
             ICityLineOfSightLogic cityLineOfSightLogic,
             IUnitLineOfSightLogic unitLineOfSightLogic,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
             IUnitFactory unitFactory, 
             ICityFactory cityFactory,
+            IHexGrid grid,
             UnitSignals unitSignals,
             CitySignals citySignals,
             HexCellSignals cellSignals,
-            CivilizationSignals civSignals
+            CivilizationSignals civSignals,
+            VisibilitySignals visibilitySignals,
+            CoreSignals coreSignals
         ){
             UnitPossessionCanon  = unitPossessionCanon;
             CityPossessionCanon  = cityPossessionCanon;
+            NodeLocationCanon    = nodeLocationCanon;
             VisibilityCanon      = visibilityCanon;
             CityLineOfSightLogic = cityLineOfSightLogic;
             UnitLineOfSightLogic = unitLineOfSightLogic;
             UnitFactory          = unitFactory;
             CityFactory          = cityFactory;
+            Grid                 = grid;
             CoroutineInvoker     = coroutineInvoker;
 
             unitSignals.LeftLocationSignal   .Subscribe(OnUnitLeftLocation);
@@ -80,6 +90,10 @@ namespace Assets.Simulation.Civilizations {
 
             civSignals.CivLosingCitySignal.Subscribe(OnCivLosingCity);
             civSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity);
+
+            visibilitySignals.CellVisibilityModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
+
+            coreSignals.ActiveCivChangedSignal.Subscribe(OnActiveCivChanged);
         }
 
         #endregion
@@ -88,24 +102,30 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IVisibilityResponder
 
-        public void TryResetAllVisibility() {
+        public void TryResetCellVisibility() {
             if(ResetVisionCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
-                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetVisibility());
+                ResetVisionCoroutine = CoroutineInvoker.StartCoroutine(ResetCellVisibility());
+            }
+        }
+
+        public void TryResetResourceVisibility() {
+            if(ResetResourceVisibilityCoroutine == null && UpdateVisibility && !(CoroutineInvoker == null)) {
+                ResetResourceVisibilityCoroutine = CoroutineInvoker.StartCoroutine(ResetResourceVisibility());
             }
         }
 
         #endregion
 
-        private IEnumerator ResetVisibility() {
+        private IEnumerator ResetCellVisibility() {
             yield return new WaitForEndOfFrame();
 
-            VisibilityCanon.ClearVisibility();
+            VisibilityCanon.ClearCellVisibility();
 
             foreach(var unit in UnitFactory.AllUnits) {
                 var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
                 foreach(var visibleCell in UnitLineOfSightLogic.GetCellsVisibleToUnit(unit)) {
-                    VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, unitOwner);
+                    VisibilityCanon.IncreaseCellVisibilityToCiv(visibleCell, unitOwner);
                 }
             }
 
@@ -113,39 +133,58 @@ namespace Assets.Simulation.Civilizations {
                 var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
 
                 foreach(var visibleCell in CityLineOfSightLogic.GetCellsVisibleToCity(city)) {
-                    VisibilityCanon.IncreaseVisibilityToCiv(visibleCell, cityOwner);
+                    VisibilityCanon.IncreaseCellVisibilityToCiv(visibleCell, cityOwner);
                 }
+            }
+
+            foreach(var cell in Grid.Cells) {
+                cell.RefreshVisibility();
             }
 
             ResetVisionCoroutine = null;
         }
 
+        private IEnumerator ResetResourceVisibility() {
+            yield return new WaitForEndOfFrame();
+
+            foreach(var cellWithNode in Grid.Cells.Where(cell => NodeLocationCanon.GetPossessionsOfOwner(cell).Any())) {
+                cellWithNode.RefreshSelfOnly();
+            }
+
+            ResetResourceVisibilityCoroutine = null;
+        }
+
         private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnHexCellVisibilityPropertiesChanged(IHexCell cell) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnCivLosingCity(Tuple<ICivilization, ICity> data) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
         }
 
         private void OnCivGainedCity(Tuple<ICivilization, ICity> data) {
-            TryResetAllVisibility();
+            TryResetCellVisibility();
+        }
+
+        private void OnActiveCivChanged(ICivilization newActiveCiv) {
+            TryResetCellVisibility();
+            TryResetResourceVisibility();
         }
 
         #endregion

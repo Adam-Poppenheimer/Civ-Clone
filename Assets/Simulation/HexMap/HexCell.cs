@@ -261,7 +261,9 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RefreshVisibility() {
-            ShaderData.RefreshVisibility(this);
+            if(ShaderData != null) {
+                ShaderData.RefreshVisibility(this);
+            }
         }
 
         public void Destroy() {

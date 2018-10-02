@@ -9,7 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.HexMap;
+using Assets.Simulation.Visibility;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -26,7 +26,7 @@ namespace Assets.Simulation.MapManagement {
         private IResourceComposer     ResourceComposer;
         private IDiplomacyComposer    DiplomacyComposer;
         private IVisibilityResponder  VisibilityResponder;
-        private ICellVisibilityCanon  CellVisibilityCanon;
+        private IVisibilityCanon      VisibilityCanon;
         private MonoBehaviour         CoroutineInvoker;
 
         #endregion
@@ -44,7 +44,7 @@ namespace Assets.Simulation.MapManagement {
             IResourceComposer     resourceComposer,
             IDiplomacyComposer    diplomacyComposer,
             IVisibilityResponder  visibilityResponder,
-            ICellVisibilityCanon  cellVisibilityCanon,
+            IVisibilityCanon      visibilityCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer      = hexCellComposer;
@@ -56,7 +56,7 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer     = resourceComposer;
             DiplomacyComposer    = diplomacyComposer;
             VisibilityResponder  = visibilityResponder;
-            CellVisibilityCanon  = cellVisibilityCanon;
+            VisibilityCanon  = visibilityCanon;
             CoroutineInvoker     = coroutineInvoker;
         }
 
@@ -123,7 +123,7 @@ namespace Assets.Simulation.MapManagement {
 
             HexCellComposer.ClearRuntime();
 
-            CellVisibilityCanon.ClearVisibility();
+            VisibilityCanon.ClearCellVisibility();
 
             VisibilityResponder.UpdateVisibility = oldVisibility;
         }

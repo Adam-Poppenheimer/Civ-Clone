@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Visibility;
 
 namespace Assets.Simulation.HexMap {
 
@@ -17,6 +18,7 @@ namespace Assets.Simulation.HexMap {
 
         private IFeatureConfig                                   Config;
         private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
+        private IVisibilityCanon                                 VisibilityCanon;
 
         #endregion
 
@@ -24,11 +26,14 @@ namespace Assets.Simulation.HexMap {
 
         public ResourceFeaturePlacer(
             INoiseGenerator noiseGenerator, [Inject(Id = "Feature Container")] Transform featureContainer,
-            IFeatureConfig config, IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon
+            IFeatureConfig config, IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
+            IVisibilityCanon visibilityCanon
+
         ) : base(noiseGenerator, featureContainer) {
 
             Config                    = config;
             ResourceNodeLocationCanon = resourceNodeLocationCanon;
+            VisibilityCanon           = visibilityCanon;
         }
 
         #endregion
@@ -42,7 +47,10 @@ namespace Assets.Simulation.HexMap {
         ) {
             var nodeOnCell = ResourceNodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(nodeOnCell == null || (hash.A >= Config.ResourceAppearanceChance && locationIndex % Config.GuaranteedResourceModulo != 0)) {
+            if( nodeOnCell == null ||
+                (hash.A >= Config.ResourceAppearanceChance && locationIndex % Config.GuaranteedResourceModulo != 0) ||
+                !VisibilityCanon.IsResourceVisible(nodeOnCell.Resource)
+            ) {
                 return false;
             }
 

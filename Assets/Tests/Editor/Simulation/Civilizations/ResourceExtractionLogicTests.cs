@@ -524,7 +524,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var newResource = mockResource.Object;
 
-            MockTechCanon.Setup(canon => canon.IsResourceVisibleToCiv(newResource, It.IsAny<ICivilization>()))
+            MockTechCanon.Setup(canon => canon.IsResourceDiscoveredByCiv(newResource, It.IsAny<ICivilization>()))
                          .Returns(data.IsVisibleToCiv);
 
             return newResource;

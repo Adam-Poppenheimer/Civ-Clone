@@ -13,8 +13,6 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.MapResources;
-using Assets.Simulation.Technology;
 using Assets.Simulation.Diplomacy;
 
 using Assets.UI.Core;
@@ -32,7 +30,16 @@ namespace Assets.Simulation.Core {
         /// <summary>
         /// The civilization the player controls.
         /// </summary>
-        public ICivilization ActiveCivilization { get; set; }
+        public ICivilization ActiveCivilization {
+            get { return _activeCivilization; }
+            set {
+                if(_activeCivilization != value) {
+                    _activeCivilization = value;
+                    CoreSignals.ActiveCivChangedSignal.OnNext(_activeCivilization);
+                }
+            }
+        }
+        private ICivilization _activeCivilization;
 
         public int CurrentRound { get; private set; }
 
@@ -43,8 +50,6 @@ namespace Assets.Simulation.Core {
         private IRoundExecuter       RoundExecuter;
         private CoreSignals          CoreSignals;
         private IHexGrid             Grid;
-        private IResourceNodeFactory ResourceNodeFactory;
-        private ITechCanon           TechCanon;
         private IDiplomacyCore       DiplomacyCore;
 
         #endregion
@@ -56,19 +61,16 @@ namespace Assets.Simulation.Core {
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
             IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
             IRoundExecuter turnExecuter, CoreSignals coreSignals, IHexGrid grid,
-            IResourceNodeFactory resourceNodeFactory, ITechCanon techCanon,
-            IDiplomacyCore diplomacyCore,
-            PlayerSignals playerSignals, CivilizationSignals civSignals
+            IDiplomacyCore diplomacyCore, PlayerSignals playerSignals,
+            CivilizationSignals civSignals
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             UnitFactory         = unitFactory;
             AbilityExecuter     = abilityExecuter;
-            RoundExecuter        = turnExecuter;
+            RoundExecuter       = turnExecuter;
             CoreSignals         = coreSignals;
             Grid                = grid;
-            ResourceNodeFactory = resourceNodeFactory;
-            TechCanon           = techCanon;
             DiplomacyCore       = diplomacyCore;
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
@@ -146,15 +148,11 @@ namespace Assets.Simulation.Core {
                 cell.RefreshVisibility();
             }
 
-            var visibleResources = TechCanon.GetResourcesVisibleToCiv(ActiveCivilization);
-
-            foreach(var node in ResourceNodeFactory.AllNodes) {
-                node.IsVisible = visibleResources.Contains(node.Resource);
-            }
+            CoreSignals.TurnBeganSignal.OnNext(ActiveCivilization);
         }
 
         private void PerformEndOfTurnActions() {
-
+            CoreSignals.TurnEndedSignal.OnNext(ActiveCivilization);
         }
 
         private void OnEndTurnRequested(Unit unit) {

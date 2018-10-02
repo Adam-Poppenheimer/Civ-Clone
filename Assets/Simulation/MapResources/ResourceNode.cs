@@ -21,36 +21,17 @@ namespace Assets.Simulation.MapResources {
 
         public IResourceDefinition Resource { get; set; }
 
-        public bool IsVisible {
-            get { return _isVisible; }
-            set {
-                if(_isVisible != value) {
-                    _isVisible = value;
-                    var nodeLocation = NodeLocationCanon.GetOwnerOfPossession(this);
-                    if(nodeLocation != null) {
-                        nodeLocation.RefreshSelfOnly();
-                    }
-                }
-            }
-        }
-        private bool _isVisible = true;
-
         #endregion
 
-        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
-        private ResourceSignals                         Signals;
+        private ResourceSignals Signals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(
-            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon, 
-            ResourceSignals signals
-        ){
-            NodeLocationCanon = nodeLocationCanon;
-            Signals           = signals;
+        public void InjectDependencies(ResourceSignals signals){
+            Signals = signals;
         }
 
         #region Unity messages

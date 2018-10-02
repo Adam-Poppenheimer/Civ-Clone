@@ -216,50 +216,6 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
-        [Test(Description = "When EndTurn is called (and a new turn is subsequently begun) every " +
-            "ResourceNode on the map should have its visibility changed. Whether it is visible or invisible " +
-            "depends on whether its ResourceDefinition is considered visible by TechCanon")]
-        public void EndTurn_ResourceNodeVisibilityRefreshed() {
-            var visibleResource = BuildResourceDefinition();
-            var invisibleResource = BuildResourceDefinition();
-
-            var visibleNodes = new List<IResourceNode>() {
-                BuildResourceNode(visibleResource),
-                BuildResourceNode(visibleResource),
-                BuildResourceNode(visibleResource),
-            };
-
-            var invisibleNodes = new List<IResourceNode>() {
-                BuildResourceNode(invisibleResource),
-                BuildResourceNode(invisibleResource),
-            };
-
-            var gameCore = Container.Resolve<GameCore>();
-
-            var activeCiv = BuildCivilization();
-
-            MockGrid.Setup(grid => grid.Cells).Returns(new List<IHexCell>().AsReadOnly());
-
-            MockCivilizationFactory
-                .Setup(factory => factory.AllCivilizations)
-                .Returns(new List<ICivilization>() { activeCiv }.AsReadOnly());
-
-            MockTechCanon.Setup(canon => canon.GetResourcesVisibleToCiv(activeCiv))
-                .Returns(new List<IResourceDefinition>() { visibleResource });
-
-            gameCore.ActiveCivilization = activeCiv;
-
-            gameCore.EndTurn();
-
-            foreach(var node in visibleNodes) {
-                Assert.IsTrue(node.IsVisible, "A node with a visible resource in unexpectedly invisible");
-            }
-
-            foreach(var node in invisibleNodes) {
-                Assert.IsFalse(node.IsVisible, "A node with an invisible resource in unexpectedly visible");
-            }
-        }
-
         
 
         [Test(Description = "When EndRound is called, all cities in CityFactory " +

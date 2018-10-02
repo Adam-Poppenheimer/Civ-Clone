@@ -20,6 +20,8 @@ namespace Assets.Simulation.Core {
         public ISubject<ICivilization> TurnBeganSignal { get; private set; }
         public ISubject<ICivilization> TurnEndedSignal { get; private set; }
 
+        public ISubject<ICivilization> ActiveCivChangedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -30,6 +32,8 @@ namespace Assets.Simulation.Core {
 
             TurnBeganSignal = new Subject<ICivilization>();
             TurnEndedSignal = new Subject<ICivilization>();
+
+            ActiveCivChangedSignal = new Subject<ICivilization>();
         }
 
         #endregion
