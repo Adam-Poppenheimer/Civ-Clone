@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -48,6 +49,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IResourceDistributor
 
         public void DistributeStrategicsAcrossHomeland(HomelandData homelandData) {
+            Profiler.BeginSample("StrategicDistributor.DistributeStrategicsAcrossHomeland");
             int nodesLeft  = Mathf.CeilToInt(homelandData.YieldAndResources.StrategicNodesPerCell  * homelandData.Cells.Count());
             int copiesLeft = Mathf.CeilToInt(homelandData.YieldAndResources.StrategicCopiesPerCell * homelandData.Cells.Count());
 
@@ -96,6 +98,7 @@ namespace Assets.Simulation.MapGeneration {
                     copiesLeft -= copies;
                 }
             }
+            Profiler.EndSample();
         }
 
         #endregion

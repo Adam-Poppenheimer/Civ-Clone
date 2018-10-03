@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -46,7 +47,8 @@ namespace Assets.Simulation.MapGeneration {
         public void CreateRivers(
             IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
             int desiredRiveredCells
-        ) {              
+        ) {
+            Profiler.BeginSample("RiverGenerator.CreateRivers");
             var riveredCells = new HashSet<IHexCell>();
 
             var riverStartCandidates = landCells.Where(GetRiverStartFilter(waterCells)).ToList();
@@ -61,6 +63,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 HashSet<IHexCell> cellsAdjacentToNewRiver;
 
+                Profiler.BeginSample("TryBuildNewRiver");
                 if(TryBuildNewRiver(
                     landCells, waterCells, start, desiredRiveredCells - riveredCells.Count,
                     out cellsAdjacentToNewRiver
@@ -77,7 +80,9 @@ namespace Assets.Simulation.MapGeneration {
                         }
                     }
                 }
+                Profiler.EndSample();
             }
+            Profiler.EndSample();
         }
 
         #endregion
@@ -96,7 +101,11 @@ namespace Assets.Simulation.MapGeneration {
 
                 var riverPath = new List<IHexCell>() { start };
 
-                var pathFrom = Grid.GetShortestPathBetween(start, end, BuildRiverWeightFunction(waterCells));
+                Profiler.BeginSample("Pathfinding from start to end");
+                var weightFunction = BuildRiverWeightFunction(waterCells);
+
+                var pathFrom = Grid.GetShortestPathBetween(start, end, weightFunction);
+                Profiler.EndSample();
 
                 if(pathFrom == null) {
                     return false;
@@ -156,21 +165,27 @@ namespace Assets.Simulation.MapGeneration {
             IEnumerable<IHexCell> landCells, IHexCell start, IEnumerable<IHexCell> waterCells,
             int maxRiverLength, out IHexCell end
         ) {
+            Profiler.BeginSample("TryGetRiverEnd");
             var cellsAdjacentToOcean = landCells.Where(
                 cell => Grid.GetNeighbors(cell).Any(neighbor => waterCells.Contains(neighbor) || neighbor.Terrain.IsWater())
             );
 
             var validEndpoints = cellsAdjacentToOcean.Where(GetRiverEndpointFilter(waterCells, start, maxRiverLength));
 
+            bool retval;
+
             if(validEndpoints.Any()) {
                 end = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
                     validEndpoints, 1, RiverEndpointWeightFunction
                 ).FirstOrDefault();
-                return end != null;
+                retval = end != null;
             }else {
                 end = null;
-                return false;
+                retval = false;
             }
+            Profiler.EndSample();
+
+            return retval;
         }
 
         private void CreateRiverStartPoint(

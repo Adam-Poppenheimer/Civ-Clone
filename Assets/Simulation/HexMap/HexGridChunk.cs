@@ -5,13 +5,9 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
-
-using Assets.Simulation.Cities;
-using Assets.Simulation.Civilizations;
-
-using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.HexMap {
 
@@ -73,7 +69,7 @@ namespace Assets.Simulation.HexMap {
                 Triangulator.TriangulateCell(Cells[i]);
             }
 
-            MeshBuilder.ApplyMeshes();            
+            MeshBuilder.ApplyMeshes();
         }
 
         private IEnumerator PopulateAllFeatures() {

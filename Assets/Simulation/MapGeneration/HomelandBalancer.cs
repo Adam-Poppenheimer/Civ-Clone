@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -43,6 +44,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IRegionBalancer
 
         public void BalanceHomelandYields(HomelandData homelandData) {
+            Profiler.BeginSample("HomelandBalancer.BalanceHomelandYields");
             YieldSummary currentYield = YieldSummary.Empty;
             foreach(var cell in homelandData.Cells) {
                 currentYield += YieldEstimator.GetYieldEstimateForCell(cell, TechCanon.AvailableTechs);
@@ -66,6 +68,7 @@ namespace Assets.Simulation.MapGeneration {
             float maxScore = homelandData.YieldAndResources.MaxScorePerCell * weightedCellCount;
 
             KeepScoreWithinBounds(homelandData, minScore, maxScore);
+            Profiler.EndSample();
         }
 
         #endregion

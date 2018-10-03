@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Zenject;
+using UnityEngine.Profiling;
 
+using Zenject;
 
 using Assets.Simulation.HexMap;
 
@@ -39,6 +40,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from IWaterRationalizationLogic
 
         public void RationalizeWater(IEnumerable<IHexCell> cells) {
+            Profiler.BeginSample("WaterRationalizer.RationalizeWater");
             var unrationalizedWater = cells.Where(cell => cell.Terrain.IsWater()).ToList();
 
             while(unrationalizedWater.Count > 0) {
@@ -62,6 +64,7 @@ namespace Assets.Simulation.MapGeneration {
                     }
                 }
             }
+            Profiler.EndSample();
         }
 
         #endregion

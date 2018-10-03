@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -42,6 +43,7 @@ namespace Assets.Simulation.MapGeneration {
         #region from ILuxuryDistributor
 
         public void DistributeLuxuriesAcrossHomeland(HomelandData homelandData) {
+            Profiler.BeginSample("LuxuryDistributor.DistributeLuxuriesAcrossHomeland");
             Dictionary<IResourceDefinition, int> weightForStarting;
             Dictionary<IResourceDefinition, int> weightForOthers;
             Dictionary<IResourceDefinition, int> weightForWhole;
@@ -81,6 +83,7 @@ namespace Assets.Simulation.MapGeneration {
                     }
                 }
             }
+            Profiler.EndSample();
         }
 
         #endregion

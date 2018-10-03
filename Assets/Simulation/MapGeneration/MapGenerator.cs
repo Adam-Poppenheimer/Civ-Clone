@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -76,16 +77,22 @@ namespace Assets.Simulation.MapGeneration {
         public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
             CellClimateLogic.Reset(template);
 
+            Profiler.BeginSample("Build Grid");
             var oldRandomState = SetRandomState();
-
             Grid.Build(variables.ChunkCountX, variables.ChunkCountZ);
+            Profiler.EndSample();
 
             GenerateCivs(variables.CivCount);
-
+            
+            Profiler.BeginSample("Generate Oceans and Continents");
             var oceansAndContinents = GenerateOceansAndContinents(template, variables);
+            Profiler.EndSample();
 
+            Profiler.BeginSample("Paint Map");
             PaintMap(oceansAndContinents, template);
+            Profiler.EndSample();
 
+            
             foreach(var civ in oceansAndContinents.HomelandDataForCiv.Keys) {
                 var civHomeland = oceansAndContinents.HomelandDataForCiv[civ];
 

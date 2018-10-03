@@ -1,4 +1,15 @@
-Initialize engine version: 5.6.3p2 (b3d7a6428558)
+Mono path[0] = 'C:/Games/Civ-Clone/TestBuild_Data/Managed'
+Mono path[1] = 'C:/Games/Civ-Clone/TestBuild_Data/Mono'
+Mono config path = 'C:/Games/Civ-Clone/TestBuild_Data/Mono/etc'
+PlayerConnection initialized from C:/Games/Civ-Clone/TestBuild_Data (debug = 0)
+PlayerConnection initialized network socket : 0.0.0.0 55410
+Multi-casting "[IP] 192.168.2.103 [Port] 55410 [Flags] 3 [Guid] 2263333224 [EditorId] 3189310591 [Version] 1048832 [Id] WindowsPlayer(TheDanputer) [Debug] 1" to [225.0.0.222:54997]...
+Waiting for connection from host on [0.0.0.0:55410]...
+PlayerConnection accepted from [192.168.2.103] handle:0x27c
+Started listening to [0.0.0.0:55410]
+Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56224
+PlayerConnection already initialized - listening to [0.0.0.0:55410]
+Player data archive not found at `C:/Games/Civ-Clone/TestBuild_Data/data.unity3d`, using local filesystemInitialize engine version: 5.6.3p2 (b3d7a6428558)
 GfxDevice: creating device client; threaded=1
 Direct3D:
     Version:  Direct3D 11.0 [level 11.0]
@@ -27,22 +38,92 @@ Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll into Unity Child Domain
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll (this message is harmless)
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll into Unity Child Domain
-- Completed reload, in  0.081 seconds
+- Completed reload, in  0.070 seconds
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3600x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.286134 ms
+UnloadTime: 1.617534 ms
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 1b3c -> priority: 1 
-  Thread -> id: 10fc -> priority: 1 
-  Thread -> id: 3790 -> priority: 1 
-  Thread -> id: 1b70 -> priority: 1 
-Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Runtime.Serialization.dll (this message is harmless)
-Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Xml.dll (this message is harmless)
-Exiting Game...
+  Thread -> id: 1d50 -> priority: 1 
+  Thread -> id: 2c44 -> priority: 1 
+  Thread -> id: 4170 -> priority: 1 
+  Thread -> id: 18fc -> priority: 1 
+Using seed 587139673
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.MapGeneration.MapGenerator:SetRandomState() (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:112)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:80)
+Assets.UI.TitleScreen.NewGameDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\TitleScreen\NewGameDisplay.cs:98)
+UnityEngine.Events.InvokableCall:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:154)
+UnityEngine.Events.InvokableCallList:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:637)
+UnityEngine.Events.UnityEventBase:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:773)
+UnityEngine.Events.UnityEvent:Invoke() (at C:\buildslave\unity\build\Runtime\Export\UnityEvent_0.cs:52)
+UnityEngine.UI.Button:Press() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:35)
+UnityEngine.UI.Button:OnPointerClick(PointerEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:44)
+UnityEngine.EventSystems.ExecuteEvents:Execute(IPointerClickHandler, BaseEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:50)
+UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:261)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMousePress(MouseButtonEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:551)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent(Int32) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:450)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:430)
+UnityEngine.EventSystems.StandaloneInputModule:Process() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:204)
+UnityEngine.EventSystems.EventSystem:Update() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:285)
  
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/DebugBindings.gen.cpp Line: 51)
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/MapGenerator.cs Line: 112)
 
+Yield and resource distribution for oceans is currently unimplemented
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.MapGeneration.OceanGenerator:DistributeYieldAndResources(OceanData) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\OceanGenerator.cs:91)
+Assets.Simulation.MapGeneration.MapGenerator:PaintMap(OceanAndContinentData, IMapTemplate) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:186)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:87)
+Assets.UI.TitleScreen.NewGameDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\TitleScreen\NewGameDisplay.cs:98)
+UnityEngine.Events.InvokableCall:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:154)
+UnityEngine.Events.InvokableCallList:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:637)
+UnityEngine.Events.UnityEventBase:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:773)
+UnityEngine.Events.UnityEvent:Invoke() (at C:\buildslave\unity\build\Runtime\Export\UnityEvent_0.cs:52)
+UnityEngine.UI.Button:Press() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:35)
+UnityEngine.UI.Button:OnPointerClick(PointerEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:44)
+UnityEngine.EventSystems.ExecuteEvents:Execute(IPointerClickHandler, BaseEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:50)
+UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:261)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMousePress(MouseButtonEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:551)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent(Int32) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:450)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:430)
+UnityEngine.EventSystems.StandaloneInputModule:Process() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:204)
+UnityEngine.EventSystems.EventSystem:Update() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:285)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/OceanGenerator.cs Line: 91)
+
+Skipping profile frame. Receiver can not keep up with the amount of data sent
+ 
+(Filename: C:\buildslave\unity\build\Runtime/Network/PlayerCommunicator/GeneralConnection.cpp Line: 373)
+
+NullReferenceException
+  at (wrapper managed-to-native) UnityEngine.MonoBehaviour:StopCoroutine_Auto (UnityEngine.Coroutine)
+  at UnityEngine.MonoBehaviour.StopCoroutine (UnityEngine.Coroutine routine) [0x00003] in C:\buildslave\unity\build\artifacts\generated\common\runtime\MonoBehaviourBindings.gen.cs:99 
+  at Assets.UI.HexMap.HexCellSignalLogic.OnExitSignal (IHexCell exitedTile) [0x00019] in C:\Games\Civ-Clone\Assets\UI\HexMap\HexCellSignalLogic.cs:75 
+  at UniRx.Observer+Subscribe`1[Assets.Simulation.HexMap.IHexCell].OnNext (IHexCell value) [0x00014] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164 
+  at UniRx.Subject`1[Assets.Simulation.HexMap.IHexCell].OnNext (IHexCell value) [0x00008] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62 
+  at Assets.Simulation.HexMap.HexMeshEventEmitter.EmitExitMessage (IHexCell cell) [0x0000d] in C:\Games\Civ-Clone\Assets\Simulation\HexMap\HexMeshEventEmitter.cs:210 
+  at Assets.Simulation.HexMap.HexMeshEventEmitter.OnPointerExit (UnityEngine.EventSystems.PointerEventData eventData) [0x0003d] in C:\Games\Civ-Clone\Assets\Simulation\HexMap\HexMeshEventEmitter.cs:121 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute (IPointerExitHandler handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00008] in C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:29 
+  at UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerExitHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00073] in C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:261 
+UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
+UnityEngine.DebugLogHandler:LogException(Exception, Object)
+UnityEngine.Logger:LogException(Exception, Object)
+UnityEngine.Debug:LogException(Exception)
+UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:265)
+UnityEngine.EventSystems.BaseInputModule:HandlePointerExitAndEnter(PointerEventData, GameObject) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\BaseInputModule.cs:136)
+UnityEngine.EventSystems.PointerInputModule:ClearSelection() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\PointerInputModule.cs:297)
+UnityEngine.EventSystems.StandaloneInputModule:DeactivateModule() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:180)
+UnityEngine.EventSystems.EventSystem:OnDisable() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:224)
+ 
+(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/MonoBehaviourBindings.gen.cs Line: 99)
+
+Waiting for finish
