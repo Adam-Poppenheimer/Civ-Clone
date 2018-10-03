@@ -17,7 +17,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private IHexGrid                                 HexGrid;
+        private IHexPathfinder                           HexPathfinder;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
         private ICapitalCityCanon                        CapitalCityCanon;
         private IConnectionPathCostLogic                 ConnectionPathCostLogic;
@@ -28,10 +28,10 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public CivilizationConnectionLogic(
-            IHexGrid hexGrid, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IHexPathfinder hexPathfinder, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             ICapitalCityCanon capitalCityCanon, IConnectionPathCostLogic connectionPathCostLogic
         ) {
-            HexGrid                 = hexGrid;
+            HexPathfinder           = hexPathfinder;
             CityLocationCanon       = cityLocationCanon;
             CapitalCityCanon        = capitalCityCanon;
             ConnectionPathCostLogic = connectionPathCostLogic;
@@ -50,7 +50,7 @@ namespace Assets.Simulation.Civilizations {
             var capitalOneLocation = CityLocationCanon.GetOwnerOfPossession(capitalOne);
             var capitalTwoLocation = CityLocationCanon.GetOwnerOfPossession(capitalTwo);
 
-            return HexGrid.GetShortestPathBetween(
+            return HexPathfinder.GetShortestPathBetween(
                 capitalOneLocation, capitalTwoLocation, ConnectionPathCostLogic.BuildPathCostFunction(civOne, civTwo)
             ) != null;
         }

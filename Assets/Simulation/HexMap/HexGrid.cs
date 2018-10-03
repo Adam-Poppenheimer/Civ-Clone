@@ -216,69 +216,6 @@ namespace Assets.Simulation.HexMap {
                                .ToList();
         }
 
-        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end) {
-            return GetShortestPathBetween(start, end, (a, b) => 1);
-        }
-
-        public List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, float> costFunction) {
-            if(start == null) {
-                throw new ArgumentNullException("start");
-            }else if(end == null) {
-                throw new ArgumentNullException("end");
-            }
-
-            HexCoordinates startCoords = start.Coordinates;
-            HexCoordinates endCoords = end.Coordinates;
-            PriorityQueue<HexCoordinates> frontier = new PriorityQueue<HexCoordinates>();
-            frontier.Add(startCoords, 0);
-            Dictionary<HexCoordinates, HexCoordinates> cameFrom = new Dictionary<HexCoordinates, HexCoordinates>();
-            Dictionary<HexCoordinates, float> costSoFar = new Dictionary<HexCoordinates, float>();
-            cameFrom[startCoords] = null;
-            costSoFar[startCoords] = 0;
-
-            IHexCell nextHex;
-            HexCoordinates current = null;
-            while(frontier.Count() > 0) {
-                current = frontier.DeleteMin();
-                if(current.Equals(endCoords)) break;
-
-                foreach(var nextCoords in HexCoordinates.GetCoordinatesInRing(current, 1)) {
-                    if(!HasCellAtCoordinates(nextCoords)) {
-                        continue;
-                    }
-                    nextHex = GetCellAtCoordinates(nextCoords);
-
-                    float cost = costFunction(GetCellAtCoordinates(current), nextHex);
-                    if(cost < 0) {
-                        continue;
-                    }
-                    float newCost = costSoFar[current] + cost;
-
-                    if(!costSoFar.ContainsKey(nextCoords) || newCost < costSoFar[nextCoords]) {
-                        costSoFar[nextCoords] = newCost;
-                        frontier.Add(nextCoords, newCost);
-                        cameFrom[nextCoords] = current;
-                    }
-                }
-            }
-
-            if(cameFrom.ContainsKey(endCoords)) {
-                var results = new List<IHexCell>();
-                var lastHex = GetCellAtCoordinates(endCoords);
-                results.Add(lastHex);
-                HexCoordinates pathAncestor = cameFrom[endCoords];
-                while(pathAncestor != startCoords) {
-                    var currentHex = GetCellAtCoordinates(pathAncestor);
-                    results.Add(currentHex);
-                    pathAncestor = cameFrom[pathAncestor];
-                }
-                results.Reverse();
-                return results;
-            } else {
-                return null;
-            }
-        }
-
         public List<IHexCell> GetNeighbors(IHexCell center) {
             return GetCellsInRadius(center, 1);
         }

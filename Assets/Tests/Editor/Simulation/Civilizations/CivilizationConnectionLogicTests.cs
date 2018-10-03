@@ -56,7 +56,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid>                                 MockHexGrid;
+        private Mock<IHexPathfinder>                           MockHexPathfinder;
         private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
         private Mock<ICapitalCityCanon>                        MockCapitalCityCanon;
         private Mock<IConnectionPathCostLogic>                 MockConnectionPathCostLogic;
@@ -69,12 +69,12 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            MockHexGrid                 = new Mock<IHexGrid>();
+            MockHexPathfinder           = new Mock<IHexPathfinder>();
             MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             MockCapitalCityCanon        = new Mock<ICapitalCityCanon>();
             MockConnectionPathCostLogic = new Mock<IConnectionPathCostLogic>();
 
-            Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid                .Object);
+            Container.Bind<IHexPathfinder>                          ().FromInstance(MockHexPathfinder          .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon      .Object);
             Container.Bind<ICapitalCityCanon>                       ().FromInstance(MockCapitalCityCanon       .Object);
             Container.Bind<IConnectionPathCostLogic>                ().FromInstance(MockConnectionPathCostLogic.Object);
@@ -98,12 +98,12 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civOne = BuildCivilization(testData.CivOne, civOneCapital);
             var civTwo = BuildCivilization(testData.CivTwo, civTwoCapital);
 
-            MockHexGrid
+            MockHexPathfinder
                 .Setup(grid => grid.GetShortestPathBetween(
                     civOneCapitalLocation, civTwoCapitalLocation, It.IsAny<Func<IHexCell, IHexCell, float>>()
                 )).Returns(testData.PathExists ? new List<IHexCell>() : null);
 
-            MockHexGrid
+            MockHexPathfinder
                 .Setup(grid => grid.GetShortestPathBetween(
                     civTwoCapitalLocation, civOneCapitalLocation, It.IsAny<Func<IHexCell, IHexCell, float>>()
                 )).Returns(testData.PathExists ? new List<IHexCell>() : null);

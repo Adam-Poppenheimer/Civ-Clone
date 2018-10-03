@@ -42,6 +42,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<ICellModificationLogic> ().To<CellModificationLogic> ().AsSingle();
             Container.Bind<IInherentCellYieldLogic>().To<InherentCellYieldLogic>().AsSingle();
             Container.Bind<IHexEdgeTypeLogic>      ().To<HexEdgeTypeLogic>      ().AsSingle();
+            Container.Bind<IHexPathfinder>         ().To<HexPathfinder>         ().AsSingle();
 
             Container.Bind<MeshWelder>().AsSingle();
 

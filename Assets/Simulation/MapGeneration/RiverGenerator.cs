@@ -22,6 +22,7 @@ namespace Assets.Simulation.MapGeneration {
         private IRiverCanon            RiverCanon;
         private ICellModificationLogic ModLogic;
         private IMapGenerationConfig   Config;
+        private IHexPathfinder         HexPathfinder;
 
         #endregion
 
@@ -30,12 +31,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RiverGenerator(
             IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic modLogic,
-            IMapGenerationConfig config
+            IMapGenerationConfig config, IHexPathfinder hexPathfinder
         ) {
             Grid           = grid;
             RiverCanon     = riverCanon;
             ModLogic       = modLogic;
             Config         = config;
+            HexPathfinder  = hexPathfinder;
         }
 
         #endregion
@@ -104,7 +106,7 @@ namespace Assets.Simulation.MapGeneration {
                 Profiler.BeginSample("Pathfinding from start to end");
                 var weightFunction = BuildRiverWeightFunction(waterCells);
 
-                var pathFrom = Grid.GetShortestPathBetween(start, end, weightFunction);
+                var pathFrom = HexPathfinder.GetShortestPathBetween(start, end, weightFunction, landCells);
                 Profiler.EndSample();
 
                 if(pathFrom == null) {

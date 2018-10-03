@@ -46,10 +46,6 @@ namespace Assets.Simulation.HexMap {
 
         List<IHexCell> GetCellsInRing(IHexCell center, int radius);
 
-        List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end);
-
-        List<IHexCell> GetShortestPathBetween(IHexCell start, IHexCell end, Func<IHexCell, IHexCell, float> costFunction);
-
         List<IHexCell> GetNeighbors(IHexCell center);
 
         Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition);

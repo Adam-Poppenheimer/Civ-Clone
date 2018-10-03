@@ -49,7 +49,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private UIStateMachineBrain                      Brain;
         private ICombatExecuter                          CombatExecuter;
         private IUnitPositionCanon                       UnitPositionCanon;
-        private IHexGrid                                 Grid;
+        private IHexPathfinder                           HexPathfinder;
         private ICellPathDrawer                          PathDrawer;
         private CitySignals                              CitySignals;
         private UnitSignals                              UnitSignals;
@@ -68,7 +68,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             UIStateMachineBrain brain,
             ICombatExecuter combatExecuter,
             IUnitPositionCanon unitPositionCanon,
-            IHexGrid grid,
+            IHexPathfinder hexPathfinder,
             ICellPathDrawer pathDrawer,
             CitySignals citySignals,
             UnitSignals unitSignals,
@@ -81,7 +81,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Brain                = brain;
             CombatExecuter       = combatExecuter;
             UnitPositionCanon    = unitPositionCanon;
-            Grid                 = grid;
+            HexPathfinder        = hexPathfinder;
             PathDrawer           = pathDrawer;
             CitySignals          = citySignals;
             UnitSignals          = unitSignals;
@@ -278,7 +278,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Clear();
 
             ProspectiveTravelGoal = goal;
-            ProspectivePath = Grid.GetShortestPathBetween(
+            ProspectivePath = HexPathfinder.GetShortestPathBetween(
                 unitLocation, goal,
                 delegate(IHexCell currentCell, IHexCell nextCell) {
                     return UnitPositionCanon.GetTraversalCostForUnit(

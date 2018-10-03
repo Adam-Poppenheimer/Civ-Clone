@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
   _useFixedSeed: 0
-  _fixedSeed: 579225078
+  _fixedSeed: 671546828
   _landPercentage: 30
   _lowTemperature: 0
   _highTemperature: 1
