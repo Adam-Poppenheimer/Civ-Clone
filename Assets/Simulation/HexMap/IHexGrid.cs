@@ -52,7 +52,7 @@ namespace Assets.Simulation.HexMap {
 
         bool TryPerformIntersectionWithTerrainSurface(Vector3 xzPosition, out Vector3 hitpoint);
 
-        void ToggleUI(bool isVisible);
+        Vector3 GetAbsolutePositionFromRelative(Vector3 relativePosition);
 
         #endregion
 

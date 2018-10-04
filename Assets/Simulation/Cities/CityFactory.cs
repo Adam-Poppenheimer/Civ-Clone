@@ -83,7 +83,7 @@ namespace Assets.Simulation.Cities {
             var newCityGameObject = GameObject.Instantiate(CityPrefab);
             Container.InjectGameObject(newCityGameObject);
 
-            newCityGameObject.transform.position = location.Position;
+            newCityGameObject.transform.position = location.AbsolutePosition;
             newCityGameObject.name = string.Format("City {0}", allCities.Count);
 
             var newCity = newCityGameObject.GetComponent<City>();

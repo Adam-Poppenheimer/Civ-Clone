@@ -13,8 +13,8 @@ namespace Assets.Simulation.HexMap {
 
         #region properties
 
-        Vector3 Position      { get; }
-        Vector3 LocalPosition { get; }
+        Vector3 AbsolutePosition     { get; }
+        Vector3 GridRelativePosition { get; }
 
         HexCoordinates Coordinates { get; }
 
@@ -23,7 +23,7 @@ namespace Assets.Simulation.HexMap {
         CellVegetation Vegetation { get; set; }
         CellFeature    Feature    { get; set; }
 
-        int FoundationElevation { get; set; }
+        int FoundationElevation { get; }
         int EdgeElevation       { get; }
         int PeakElevation       { get; }
 
@@ -48,11 +48,10 @@ namespace Assets.Simulation.HexMap {
 
         int Index { get; }
 
-        IHexCellOverlay Overlay { get; }
-
         bool IsRoughTerrain { get; }
 
-        Vector3 UnitAnchorPoint { get; }
+        Vector3 UnitAnchorPoint    { get; }
+        Vector3 OverlayAnchorPoint { get; }
 
         #endregion
 
@@ -66,8 +65,6 @@ namespace Assets.Simulation.HexMap {
         void RefreshVisibility();
 
         void SetMapData(float data);
-
-        void Destroy();
 
         #endregion
 

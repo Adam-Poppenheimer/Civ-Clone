@@ -54,7 +54,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private CitySignals                              CitySignals;
         private UnitSignals                              UnitSignals;
         private HexCellSignals                           CellSignals;
-        private HexCellOverlayManager                    OverlayManager;
+        private IHexCellOverlayManager                   OverlayManager;
         private CombatSummaryDisplay                     CombatSummaryDisplay;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
@@ -73,7 +73,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             CitySignals citySignals,
             UnitSignals unitSignals,
             HexCellSignals cellSignals,
-            HexCellOverlayManager overlayManager,
+            IHexCellOverlayManager overlayManager,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){

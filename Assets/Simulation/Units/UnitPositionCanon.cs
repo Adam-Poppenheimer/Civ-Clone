@@ -33,13 +33,16 @@ namespace Assets.Simulation.Units {
             UnitSignals signals, IHexMapSimulationConfig hexSimulationConfig,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon            
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            HexCellSignals cellSignals
         ){
             Signals             = signals;
             HexSimulationConfig = hexSimulationConfig;
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
             CityPossessionCanon = cityPossessionCanon;
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
 
         #endregion

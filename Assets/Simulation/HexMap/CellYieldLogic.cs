@@ -23,7 +23,7 @@ namespace Assets.Simulation.HexMap {
         private IPossessionRelationship<ICity, IHexCell>         CellPossessionCanon;
         private IPossessionRelationship<ICity, IBuilding>        BuildingPossessionCanon;
         private ITechCanon                                       TechCanon;
-        private IFreshWaterCanon                                 FreshWaterCanon;
+        private IFreshWaterLogic                                 FreshWaterCanon;
 
         private IInherentCellYieldLogic                          InherentYieldLogic;
         private IResourceNodeYieldLogic                          NodeYieldLogic;
@@ -42,7 +42,7 @@ namespace Assets.Simulation.HexMap {
             IPossessionRelationship<ICity, IHexCell>         cellPossessionCanon,
             IPossessionRelationship<ICity, IBuilding>        buildingPossessionCanon,
             ITechCanon                                       techCanon,
-            IFreshWaterCanon                                 freshWaterCanon,
+            IFreshWaterLogic                                 freshWaterCanon,
 
             IInherentCellYieldLogic                          inherentYieldLogic,
             IResourceNodeYieldLogic                          nodeYieldLogic,

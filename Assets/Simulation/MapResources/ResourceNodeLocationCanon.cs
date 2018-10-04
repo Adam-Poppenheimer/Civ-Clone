@@ -14,17 +14,19 @@ namespace Assets.Simulation.MapResources {
 
         #region instance fields and properties
 
-        private ResourceSignals Signals;
+        private ResourceSignals ResourceSignals;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public ResourceNodeLocationCanon(ResourceSignals signals) {
-            Signals = signals;
+        public ResourceNodeLocationCanon(ResourceSignals resourceSignals, HexCellSignals cellSignals) {
+            ResourceSignals = resourceSignals;
 
-            signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
+            resourceSignals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
 
         #endregion
@@ -38,7 +40,7 @@ namespace Assets.Simulation.MapResources {
         }
 
         protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
-            Signals.ResourceNodeRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
+            ResourceSignals.ResourceNodeRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
         }
 
         #endregion

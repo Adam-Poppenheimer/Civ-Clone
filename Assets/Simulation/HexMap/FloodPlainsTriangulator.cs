@@ -126,8 +126,8 @@ namespace Assets.Simulation.HexMap {
         private void TriangulateOuterCorner(CellTriangulationData data) {
             var indices = new Vector3(data.Center.Index, data.Left.Index, data.Right.Index);
 
-            float leftY  = data.Left.LocalPosition.y;
-            float rightY = data.Right.LocalPosition.y;
+            float leftY  = data.Left.GridRelativePosition.y;
+            float rightY = data.Right.GridRelativePosition.y;
 
             Vector3 yAdjustedLeftCorner  = data.PerturbedLeftCorner;
             Vector3 yAdjustedRightCorner = data.PerturbedRightCorner;

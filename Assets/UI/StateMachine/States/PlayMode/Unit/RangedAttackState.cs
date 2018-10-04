@@ -56,7 +56,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private CombatSummaryDisplay CombatSummaryDisplay;
 
-        private HexCellOverlayManager OverlayManager;
+        private IHexCellOverlayManager OverlayManager;
 
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
@@ -71,7 +71,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             UIStateMachineBrain brain, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "Ranged Attack State Displays")] List<UnitDisplayBase> displaysToManage,
             [Inject(Id = "Combat Summary Display")] CombatSummaryDisplay combatSummaryDisplay,
-            HexCellOverlayManager overlayManager
+            IHexCellOverlayManager overlayManager
         ){
             UnitSignals          = unitSignals;
             CellSignals          = cellSignals;

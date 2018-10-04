@@ -152,8 +152,8 @@ namespace Assets.UI.MapEditor {
             var directions = EnumUtil.GetValues<HexDirection>().ToList();
 
             directions.Sort(delegate(HexDirection directionOne, HexDirection directionTwo) {
-                var edgeOneMiddle = cell.Position + RenderConfig.GetOuterEdgeMiddle(directionOne);
-                var edgeTwoMiddle = cell.Position + RenderConfig.GetOuterEdgeMiddle(directionTwo);
+                var edgeOneMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMiddle(directionOne);
+                var edgeTwoMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMiddle(directionTwo);
 
                 return Vector3.Distance(mouseRayHit, edgeOneMiddle)
                     .CompareTo(Vector3.Distance(mouseRayHit, edgeTwoMiddle));
@@ -192,7 +192,7 @@ namespace Assets.UI.MapEditor {
         private RiverFlow? GetFlowFromEdgeMidpoint(IHexCell cell, HexDirection sextant) {
             Vector2 toSextantMidpointFromCenter = RenderConfig.GetOuterEdgeMiddle(sextant);
 
-            Vector2 toMouseFromCenter = GetMouseRaycastPoint() - cell.Position;
+            Vector2 toMouseFromCenter = GetMouseRaycastPoint() - cell.AbsolutePosition;
 
             var midpointCCWAngle = toSextantMidpointFromCenter.GetCounterclockwiseAngleBetween(toMouseFromCenter);
 

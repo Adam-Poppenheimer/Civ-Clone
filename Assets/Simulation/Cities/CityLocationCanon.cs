@@ -15,8 +15,10 @@ namespace Assets.Simulation.Cities {
         #region constructors
 
         [Inject]
-        public CityLocationCanon(CitySignals signals) {
-            signals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+        public CityLocationCanon(CitySignals citySignals, HexCellSignals cellSignals) {
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
 
         #endregion

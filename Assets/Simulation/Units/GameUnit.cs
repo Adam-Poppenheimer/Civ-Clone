@@ -281,7 +281,7 @@ namespace Assets.Simulation.Units {
                 StopCoroutine(RelocationCoroutine);
             }
 
-            RelocationCoroutine = StartCoroutine(PlaceUnitOnGridCoroutine(newLocation.Position));            
+            RelocationCoroutine = StartCoroutine(PlaceUnitOnGridCoroutine(newLocation.AbsolutePosition));            
         }
 
         private IEnumerator PlaceUnitOnGridCoroutine(Vector3 xzPosition) {

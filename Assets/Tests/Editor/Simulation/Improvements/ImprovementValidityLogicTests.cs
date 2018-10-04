@@ -335,7 +335,7 @@ namespace Assets.Tests.Simulation.Improvements {
         private Mock<IHexGrid>                                         MockGrid;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodePositionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>         MockCityLocationCanon;
-        private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
+        private Mock<IFreshWaterLogic>                                 MockFreshWaterCanon;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -353,7 +353,7 @@ namespace Assets.Tests.Simulation.Improvements {
             MockGrid              = new Mock<IHexGrid>();
             MockNodePositionCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockFreshWaterCanon   = new Mock<IFreshWaterCanon>();
+            MockFreshWaterCanon   = new Mock<IFreshWaterLogic>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(() => AllCities.AsReadOnly());
 
@@ -361,7 +361,7 @@ namespace Assets.Tests.Simulation.Improvements {
             Container.Bind<IHexGrid>                                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>        ().FromInstance(MockCityLocationCanon.Object);
-            Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon  .Object);
+            Container.Bind<IFreshWaterLogic>                                ().FromInstance(MockFreshWaterCanon  .Object);
 
             Container.Bind<ImprovementValidityLogic>().AsSingle();
         }

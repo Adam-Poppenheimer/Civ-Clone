@@ -30,13 +30,16 @@ namespace Assets.Simulation.Cities.Territory {
         #region constructors
 
         [Inject]
-        public CellPossessionCanon(CitySignals citySignals,
+        public CellPossessionCanon(
+            CitySignals citySignals, HexCellSignals cellSignals,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             CitySignals       = citySignals;
             CityLocationCanon = cityLocationCanon;
 
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
 
         #endregion

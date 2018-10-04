@@ -6,11 +6,25 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.UI;
 
+using Zenject;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI.HexMap {
 
     public class HexCellOverlay : MonoBehaviour, IHexCellOverlay {
+
+        #region internal types
+
+        public class Pool : MonoMemoryPool<HexCellOverlay> {
+
+            protected override void Reinitialize(HexCellOverlay item) {
+                item.CellToDisplay = null;
+            }
+
+        }
+
+        #endregion
 
         #region instance fields and properties
 
@@ -24,7 +38,17 @@ namespace Assets.UI.HexMap {
 
         [SerializeField] private RectTransform SelectedIndicator;
 
-        public IHexCell Parent { get; set; }
+        public IHexCell CellToDisplay {
+            get { return _cellToDisplay; }
+            set {
+                _cellToDisplay = value;
+
+                if(_cellToDisplay != null) {
+                    transform.position = _cellToDisplay.OverlayAnchorPoint;
+                }
+            }
+        }
+        private IHexCell _cellToDisplay;
 
         #endregion
 
@@ -44,7 +68,7 @@ namespace Assets.UI.HexMap {
             Clear();
 
             if(type == CellOverlayType.Labels) {
-                CoordinateLabel.text = Parent.Coordinates.ToStringOnSeparateLines();
+                CoordinateLabel.text = CellToDisplay.Coordinates.ToStringOnSeparateLines();
                 CoordinateLabel.gameObject.SetActive(true);
 
             }else if(type == CellOverlayType.PathIndicator) {

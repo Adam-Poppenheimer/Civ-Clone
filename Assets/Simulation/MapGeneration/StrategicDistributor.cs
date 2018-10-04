@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapGeneration {
         #region instance fields and properties
 
         private IResourceNodeFactory      NodeFactory;
-        private IResourceRestrictionCanon ResourceRestrictionCanon;
+        private IResourceRestrictionLogic ResourceRestrictionCanon;
         private IStrategicCopiesLogic     StrategicCopiesLogic;
 
         private IEnumerable<IResourceDefinition> StrategicResources;
@@ -31,7 +31,7 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public StrategicDistributor(
-            IResourceNodeFactory nodeFactory, IResourceRestrictionCanon resourceRestrictionCanon,
+            IResourceNodeFactory nodeFactory, IResourceRestrictionLogic resourceRestrictionCanon,
             IStrategicCopiesLogic strategicCopiesLogic,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {

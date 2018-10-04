@@ -13,16 +13,18 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        private ImprovementSignals Signals;
+        private ImprovementSignals ImprovementSignals;
 
         #endregion
 
         #region constructors
 
-        public ImprovementLocationCanon(ImprovementSignals signals) {
-            Signals = signals;
+        public ImprovementLocationCanon(ImprovementSignals improvementSignals, HexCellSignals cellSignals) {
+            ImprovementSignals = improvementSignals;
 
-            signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
+            improvementSignals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
 
         #endregion
@@ -41,7 +43,7 @@ namespace Assets.Simulation.Improvements {
 
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
             oldOwner.RefreshSelfOnly();
-            Signals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
+            ImprovementSignals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 
         #endregion

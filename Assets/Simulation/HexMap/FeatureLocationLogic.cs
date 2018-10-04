@@ -35,7 +35,7 @@ namespace Assets.Simulation.HexMap {
         //This method adds a single feature point right in the middle of the cell
         public IEnumerable<Vector3> GetCenterFeaturePoints(IHexCell cell) {
             return new Vector3[]{
-                Grid.PerformIntersectionWithTerrainSurface(cell.LocalPosition)
+                Grid.PerformIntersectionWithTerrainSurface(cell.GridRelativePosition)
             };
         }
 
@@ -47,7 +47,7 @@ namespace Assets.Simulation.HexMap {
         //three is right in the middle of the sextant, and triangle four is closest
         //to the edge, with one vertex right in the middle of the cell.
         public IEnumerable<Vector3> GetDirectionalFeaturePoints(IHexCell cell, HexDirection direction) {
-            var center = cell.LocalPosition;
+            var center = cell.GridRelativePosition;
             var cornerOne = RenderConfig.GetFirstOuterSolidCorner (direction) + center;
             var cornerTwo = RenderConfig.GetSecondOuterSolidCorner(direction) + center;
 

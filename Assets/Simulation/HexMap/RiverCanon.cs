@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using UnityCustomUtilities.Extensions;
 
@@ -29,8 +30,10 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         [Inject]
-        public RiverCanon(IHexGrid grid) {
+        public RiverCanon(IHexGrid grid, HexCellSignals cellSignals) {
             Grid = grid;
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear());
         }
 
         #endregion
@@ -121,6 +124,11 @@ namespace Assets.Simulation.HexMap {
                     RemoveRiverFromCellInDirection(cell, riveredEdge);
                 }
             }
+        }
+
+        public void Clear() {
+            RiverPresenceDict .Clear();
+            RiverDirectionDict.Clear();
         }
 
         #endregion

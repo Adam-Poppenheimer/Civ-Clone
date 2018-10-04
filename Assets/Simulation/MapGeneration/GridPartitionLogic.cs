@@ -63,7 +63,7 @@ namespace Assets.Simulation.MapGeneration {
                     float shorestDistance = float.MaxValue;
 
                     foreach(var voronoiPoint in regionOfPoint.Keys) {
-                        float distanceTo = Vector3.Distance(cell.LocalPosition, voronoiPoint);
+                        float distanceTo = Vector3.Distance(cell.GridRelativePosition, voronoiPoint);
 
                         if(distanceTo < shorestDistance) {
                             nearestPoint = voronoiPoint;

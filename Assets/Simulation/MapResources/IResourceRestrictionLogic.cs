@@ -7,7 +7,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapResources {
 
-    public interface IResourceRestrictionCanon {
+    public interface IResourceRestrictionLogic {
 
         #region methods
 

@@ -79,6 +79,17 @@ namespace Assets.Simulation {
             }
         }
 
+        public void Clear(bool performPossessionUnassignment) {
+            if(performPossessionUnassignment) {
+                foreach(var possession in OwnerOfPossession.Keys) {
+                    ChangeOwnerOfPossession(possession, null);
+                }
+            }
+
+            OwnerOfPossession .Clear();
+            PossessionsOfOwner.Clear();
+        }
+
         #endregion
 
         protected virtual bool IsPossessionValid(TPossession possession, TOwner owner) { return true; }

@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapResources {
 
-    public class ResourceRestrictionCanon : IResourceRestrictionCanon {
+    public class ResourceRestrictionLogic : IResourceRestrictionLogic {
 
         #region instance fields and properties
 
@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapResources {
         #region constructors
 
         [Inject]
-        public ResourceRestrictionCanon(
+        public ResourceRestrictionLogic(
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon
         ) {
             NodeLocationCanon = nodeLocationCanon;

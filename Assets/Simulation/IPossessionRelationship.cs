@@ -18,6 +18,8 @@ namespace Assets.Simulation {
 
         void ChangeOwnerOfPossession(TPossession possession, TOwner newOwner);
 
+        void Clear(bool performPossessionUnassignment);
+
         #endregion
 
     }

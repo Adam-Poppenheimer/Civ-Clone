@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Assets.Simulation.HexMap {
 
-    public interface IFreshWaterCanon {
+    public interface IFreshWaterLogic {
 
         #region methods
 

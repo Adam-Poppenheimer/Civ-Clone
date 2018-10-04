@@ -12,25 +12,27 @@ using Assets.Simulation.WorkerSlots;
 
 namespace Assets.Simulation.HexMap {
 
-    public class HexCell : MonoBehaviour, IHexCell {
+    public class HexCell : IHexCell {
 
         #region instance fields and properties
 
         #region from IHexCell
 
-        public Vector3 Position {
-            get { return transform.position; }
+        public Vector3 AbsolutePosition {
+            get { return Grid.GetAbsolutePositionFromRelative(GridRelativePosition); }
         }
 
-        public Vector3 LocalPosition {
-            get { return transform.localPosition; }
-        }
+        public Vector3 GridRelativePosition { get; private set; }
 
         public HexCoordinates Coordinates { get; set; }
 
         public CellTerrain Terrain {
             get { return _terrain; }
             set {
+                if(_terrain == value) {
+                    return;
+                }
+
                 _terrain = value;
 
                 Refresh();
@@ -83,26 +85,8 @@ namespace Assets.Simulation.HexMap {
         private CellFeature _feature;
 
         public int FoundationElevation {
-            get { return _elevation; }
-            set {
-                if(_elevation == value) {
-                    return;
-                }
-                _elevation = value;
-                var localPosition = transform.localPosition;
-
-                localPosition.y = _elevation * RenderConfig.ElevationStep;
-
-                transform.localPosition = localPosition;
-
-                RiverCanon.ValidateRivers(this);
-
-                Refresh();
-
-                Signals.FoundationElevationChangedSignal.OnNext(this);
-            }
+            get { return RenderConfig.GetFoundationElevationForTerrain(Terrain); }
         }
-        private int _elevation;
 
         public int EdgeElevation {
             get {
@@ -117,11 +101,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         public float PeakY {
-            get { return transform.localPosition.y + (RenderConfig.GetPeakElevationForShape(Shape) * RenderConfig.ElevationStep); }
+            get { return GridRelativePosition.y + (RenderConfig.GetPeakElevationForShape(Shape) * RenderConfig.ElevationStep); }
         }
 
         public float EdgeY {
-            get { return transform.localPosition.y + (RenderConfig.GetEdgeElevationForShape(Shape) * RenderConfig.ElevationStep); }
+            get { return GridRelativePosition.y + (RenderConfig.GetEdgeElevationForShape(Shape) * RenderConfig.ElevationStep); }
         }
 
         public float StreamBedY {
@@ -175,52 +159,51 @@ namespace Assets.Simulation.HexMap {
 
         public int Index { get; set; }
 
-        public IHexCellOverlay Overlay {
-            get { return overlay; }
-        }
-        [SerializeField] private HexCellOverlay overlay;
-
         public bool IsRoughTerrain {
             get { return Vegetation == CellVegetation.Forest || Vegetation == CellVegetation.Jungle || Shape == CellShape.Hills; }
         }
 
         public Vector3 UnitAnchorPoint {
             get {
-                var retval = transform.position;
-                retval.y += RenderConfig.ElevationStep * (PeakElevation - FoundationElevation);
-                return retval;
+                return new Vector3(
+                    AbsolutePosition.x,
+                    AbsolutePosition.y + RenderConfig.ElevationStep * (PeakElevation - FoundationElevation),
+                    AbsolutePosition.z
+                );
+            }
+        }
+
+        public Vector3 OverlayAnchorPoint {
+            get {
+                return Grid.PerformIntersectionWithTerrainSurface(GridRelativePosition) + Vector3.up * 0.5f;
             }
         }
 
         #endregion
 
-        private IHexGrid                Grid;
-        private IRiverCanon             RiverCanon;
-        private HexCellSignals          Signals;
-        private IHexMapRenderConfig     RenderConfig;
+        private IHexGrid            Grid;
+        private HexCellSignals      Signals;
+        private IHexMapRenderConfig RenderConfig;
+
+        #endregion
+
+        #region constructors
+
+        [Inject]
+        public HexCell(
+            Vector3 gridRelativePosition, IHexGrid grid,
+            HexCellSignals signals, IHexMapRenderConfig renderConfig
+        ) {
+            GridRelativePosition = gridRelativePosition;
+
+            Grid         = grid;
+            Signals      = signals;
+            RenderConfig = renderConfig;
+        }
 
         #endregion
 
         #region instance methods
-
-        [Inject]
-        public void InjectDependencies(
-            IHexGrid grid, IRiverCanon riverCanon,HexCellSignals signals,
-            IHexMapRenderConfig renderConfig
-        ){
-            Grid             = grid;
-            RiverCanon       = riverCanon;
-            Signals          = signals;
-            RenderConfig     = renderConfig;
-        }
-
-        #region Unity messages
-
-        private void Awake() {
-            overlay.Parent = this;
-        }
-
-        #endregion
 
         #region from Object
 
@@ -246,6 +229,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void Refresh() {
+            PerformRefreshActions();
+
             if(Chunk != null) {
                 Chunk.Refresh();
                 foreach(var neighbor in Grid.GetNeighbors(this)) {
@@ -257,6 +242,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RefreshSelfOnly() {
+            PerformRefreshActions();
+
             Chunk.Refresh();
         }
 
@@ -266,15 +253,15 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public void Destroy() {
-            if(Application.isPlaying) {
-                Destroy(gameObject);
-            }else {
-                DestroyImmediate(gameObject);
-            }
-        }
-
         #endregion
+
+        private void PerformRefreshActions() {
+            var localPosition = GridRelativePosition;
+
+            localPosition.y = FoundationElevation * RenderConfig.ElevationStep;
+
+            GridRelativePosition = localPosition;
+        }
 
         #endregion
 

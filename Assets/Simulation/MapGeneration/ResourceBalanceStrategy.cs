@@ -34,7 +34,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private IYieldEstimator           YieldEstimator;
         private IResourceNodeFactory      ResourceNodeFactory;
-        private IResourceRestrictionCanon ResourceRestrictionCanon;
+        private IResourceRestrictionLogic ResourceRestrictionCanon;
         private ICellScorer               CellScorer;
         private ITechCanon                TechCanon;
         private IStrategicCopiesLogic     StrategicCopiesLogic;
@@ -46,7 +46,7 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public ResourceBalanceStrategy(
             IYieldEstimator yieldEstimator, IResourceNodeFactory resourceNodeFactory,
-            IResourceRestrictionCanon resourceRestrictionCanon, ICellScorer cellScorer, ITechCanon techCanon,
+            IResourceRestrictionLogic resourceRestrictionCanon, ICellScorer cellScorer, ITechCanon techCanon,
             IStrategicCopiesLogic strategicCopiesLogic,
             [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
         ) {

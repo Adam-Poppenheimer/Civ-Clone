@@ -111,7 +111,7 @@ namespace Assets.UI.Cities.Territory {
             ExpansionProgressSlider.value = currentCulture;
 
             NextTileIndicator.gameObject.SetActive(true);
-            NextTileIndicator.position = Camera.main.WorldToScreenPoint(nextCell.Position);          
+            NextTileIndicator.position = Camera.main.WorldToScreenPoint(nextCell.AbsolutePosition);          
         }
 
         #endregion

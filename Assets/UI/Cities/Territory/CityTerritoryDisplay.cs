@@ -69,7 +69,7 @@ namespace Assets.UI.Cities.Territory {
                 newSlot.SlotToDisplay = tile.WorkerSlot;
 
                 newSlot.transform.SetParent(SlotDisplayContainer, false);
-                newSlot.gameObject.transform.position = Camera.main.WorldToScreenPoint(tile.Position);
+                newSlot.gameObject.transform.position = Camera.main.WorldToScreenPoint(tile.AbsolutePosition);
                 newSlot.gameObject.SetActive(true);
 
                 InstantiatedDisplays.Add(newSlot);

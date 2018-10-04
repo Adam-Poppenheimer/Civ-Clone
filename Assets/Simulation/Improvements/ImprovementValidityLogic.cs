@@ -17,7 +17,7 @@ namespace Assets.Simulation.Improvements {
 
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
         private IPossessionRelationship<IHexCell, ICity>         CityLocationCanon;
-        private IFreshWaterCanon                                 FreshWaterCanon;
+        private IFreshWaterLogic                                 FreshWaterCanon;
 
         #endregion
 
@@ -27,7 +27,7 @@ namespace Assets.Simulation.Improvements {
         public ImprovementValidityLogic(
             IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IFreshWaterCanon freshWaterCanon
+            IFreshWaterLogic freshWaterCanon
         ){
             NodePositionCanon = nodePositionCanon;
             CityLocationCanon = cityLocationCanon;

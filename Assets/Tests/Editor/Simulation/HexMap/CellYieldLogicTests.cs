@@ -30,7 +30,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IPossessionRelationship<ICity, IHexCell>>         MockCellPossessionCanon;
         private Mock<IPossessionRelationship<ICity, IBuilding>>        MockBuildingPossessionCanon;
         private Mock<ITechCanon>                                       MockTechCanon;
-        private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
+        private Mock<IFreshWaterLogic>                                 MockFreshWaterCanon;
 
         private Mock<IInherentCellYieldLogic>                          MockInherentCellYieldLogic;
         private Mock<IResourceNodeYieldLogic>                          MockResourceNodeYieldLogic;
@@ -50,7 +50,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockCellPossessionCanon      = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockBuildingPossessionCanon  = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockTechCanon                = new Mock<ITechCanon>();
-            MockFreshWaterCanon          = new Mock<IFreshWaterCanon>();
+            MockFreshWaterCanon          = new Mock<IFreshWaterLogic>();
 
             MockInherentCellYieldLogic   = new Mock<IInherentCellYieldLogic>();
             MockResourceNodeYieldLogic   = new Mock<IResourceNodeYieldLogic>();
@@ -62,7 +62,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCellPossessionCanon     .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>       ().FromInstance(MockBuildingPossessionCanon .Object);
             Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon               .Object);
-            Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon         .Object);
+            Container.Bind<IFreshWaterLogic>                                ().FromInstance(MockFreshWaterCanon         .Object);
 
             Container.Bind<IInherentCellYieldLogic>                         ().FromInstance(MockInherentCellYieldLogic  .Object);
             Container.Bind<IResourceNodeYieldLogic>                         ().FromInstance(MockResourceNodeYieldLogic  .Object);

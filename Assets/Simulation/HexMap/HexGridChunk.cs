@@ -21,6 +21,7 @@ namespace Assets.Simulation.HexMap {
         private IHexFeatureManager   FeatureManager;
         private IHexCellTriangulator Triangulator;
         private IHexMapRenderConfig  RenderConfig;
+        private IRiverCanon          RiverCanon;
 
         #endregion
 
@@ -29,12 +30,14 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             IHexGridMeshBuilder meshBuilder, IHexFeatureManager featureManager,
-            IHexCellTriangulator triangulator, IHexMapRenderConfig renderConfig
+            IHexCellTriangulator triangulator, IHexMapRenderConfig renderConfig,
+            IRiverCanon riverCanon
         ){
             MeshBuilder    = meshBuilder;
             FeatureManager = featureManager;
             Triangulator   = triangulator;
             RenderConfig   = renderConfig;
+            RiverCanon     = riverCanon;
         }
 
         #region Unity messages
@@ -48,6 +51,10 @@ namespace Assets.Simulation.HexMap {
 
             StartCoroutine(PopulateAllFeatures());
 
+            foreach(var cell in Cells) {
+                RiverCanon.ValidateRivers(cell);
+            }
+
             enabled = false;
         }
 
@@ -55,7 +62,6 @@ namespace Assets.Simulation.HexMap {
 
         public void AddCell(int index, HexCell cell) {
             Cells[index] = cell;
-            cell.transform.SetParent(transform, false);
         }
 
         public void Refresh() {

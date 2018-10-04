@@ -25,7 +25,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockNodeLocationCanon;
         private Mock<IResourceNodeYieldLogic>                          MockNodeYieldLogic;
         private Mock<IImprovementYieldLogic>                           MockImprovementYieldLogic;
-        private Mock<IFreshWaterCanon>                                 MockFreshWaterCanon;
+        private Mock<IFreshWaterLogic>                                 MockFreshWaterCanon;
         private Mock<ICellYieldFromBuildingsLogic>                     MockYieldFromBuildingsLogic;
         private Mock<ITechCanon>                                       MockTechCanon;
         private Mock<IImprovementValidityLogic>                        MockImprovementValidityLogic;
@@ -53,7 +53,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
             MockNodeLocationCanon        = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
             MockNodeYieldLogic           = new Mock<IResourceNodeYieldLogic>();
             MockImprovementYieldLogic    = new Mock<IImprovementYieldLogic>();
-            MockFreshWaterCanon          = new Mock<IFreshWaterCanon>();
+            MockFreshWaterCanon          = new Mock<IFreshWaterLogic>();
             MockYieldFromBuildingsLogic  = new Mock<ICellYieldFromBuildingsLogic>();
             MockTechCanon                = new Mock<ITechCanon>();
             MockImprovementValidityLogic = new Mock<IImprovementValidityLogic>();
@@ -72,7 +72,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodeLocationCanon       .Object);
             Container.Bind<IResourceNodeYieldLogic>                         ().FromInstance(MockNodeYieldLogic          .Object);
             Container.Bind<IImprovementYieldLogic>                          ().FromInstance(MockImprovementYieldLogic   .Object);
-            Container.Bind<IFreshWaterCanon>                                ().FromInstance(MockFreshWaterCanon         .Object);
+            Container.Bind<IFreshWaterLogic>                                ().FromInstance(MockFreshWaterCanon         .Object);
             Container.Bind<ICellYieldFromBuildingsLogic>                    ().FromInstance(MockYieldFromBuildingsLogic .Object);
             Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon               .Object);
             Container.Bind<IImprovementValidityLogic>                       ().FromInstance(MockImprovementValidityLogic.Object);

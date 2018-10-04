@@ -15,11 +15,10 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private float MapTileHoverDelay;
-
+        [SerializeField] private float               MapTileHoverDelay;
         [SerializeField] private YieldSummaryDisplay MapTileHoverYieldDisplay;
-
-        [SerializeField] private GameObject PathIndicatorPrefab;
+        [SerializeField] private GameObject          PathIndicatorPrefab;
+        [SerializeField] private HexCellOverlay      HexCellOverlayPrefab;
 
         #endregion
 
@@ -40,7 +39,12 @@ namespace Assets.UI.HexMap {
 
             Container.Bind<ICellPathDrawer>().To<CellPathDrawer>().AsSingle();
 
-            Container.Bind<HexCellOverlayManager>().AsSingle();
+            Container.Bind<IHexCellOverlayManager>().To<HexCellOverlayManager>().AsSingle();
+
+            Container.BindMemoryPool<HexCellOverlay, HexCellOverlay.Pool>()
+                     .WithInitialSize(20)
+                     .FromComponentInNewPrefab(HexCellOverlayPrefab)
+                     .UnderTransformGroup("HexCell Overlays");
         }
 
         #endregion

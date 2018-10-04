@@ -38,7 +38,7 @@ namespace Assets.Simulation.MapGeneration {
         public Vector3 Centroid {
             get {
                 if(_centroid == null) {
-                    var positionSum = Cells.Select(cell => cell.Position)
+                    var positionSum = Cells.Select(cell => cell.AbsolutePosition)
                                            .Aggregate((total, nextPosition) => total + nextPosition);
 
                     _centroid = positionSum / Cells.Count;

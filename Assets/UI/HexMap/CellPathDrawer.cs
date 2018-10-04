@@ -20,14 +20,14 @@ namespace Assets.UI.HexMap {
 
 
 
-        private HexCellOverlayManager OverlayManager;
+        private IHexCellOverlayManager OverlayManager;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public CellPathDrawer(HexCellOverlayManager overlayManager){
+        public CellPathDrawer(IHexCellOverlayManager overlayManager){
             OverlayManager = overlayManager;
         }
 

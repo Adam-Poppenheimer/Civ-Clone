@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Assets.Simulation.HexMap {
 
-    public class FreshWaterCanon : IFreshWaterCanon {
+    public class FreshWaterLogic : IFreshWaterLogic {
 
         #region instance fields and properties
 
@@ -19,7 +19,7 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         [Inject]
-        public FreshWaterCanon(IHexGrid grid, IRiverCanon riverCanon) {
+        public FreshWaterLogic(IHexGrid grid, IRiverCanon riverCanon) {
             Grid       = grid;
             RiverCanon = riverCanon;
         }

@@ -18,7 +18,7 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IResourceRestrictionCanon ResourceRestrictionCanon;
+        private IResourceRestrictionLogic ResourceRestrictionCanon;
         private IMapGenerationConfig      Config;
         private IResourceNodeFactory      NodeFactory;
 
@@ -28,7 +28,7 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public LuxuryDistributor(
-            IResourceRestrictionCanon resourceRestrictionCanon, IMapGenerationConfig config,
+            IResourceRestrictionLogic resourceRestrictionCanon, IMapGenerationConfig config,
             IResourceNodeFactory nodeFactory
         ) {
             ResourceRestrictionCanon = resourceRestrictionCanon;

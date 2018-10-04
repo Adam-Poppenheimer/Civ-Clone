@@ -75,7 +75,7 @@ namespace Assets.Simulation.MapGeneration {
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
         private IResourceNodeYieldLogic                          NodeYieldLogic;
         private IImprovementYieldLogic                           ImprovementYieldLogic;
-        private IFreshWaterCanon                                 FreshWaterCanon;
+        private IFreshWaterLogic                                 FreshWaterCanon;
         private ICellYieldFromBuildingsLogic                     YieldFromBuildingsLogic;
         private ITechCanon                                       TechCanon;
         private IImprovementValidityLogic                        ImprovementValidityLogic;
@@ -91,7 +91,7 @@ namespace Assets.Simulation.MapGeneration {
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             IResourceNodeYieldLogic                          nodeYieldLogic,
             IImprovementYieldLogic                           improvementYieldLogic,
-            IFreshWaterCanon                                 freshWaterCanon,
+            IFreshWaterLogic                                 freshWaterCanon,
             ICellYieldFromBuildingsLogic                     yieldFromBuildingsLogic,
             ITechCanon                                       techCanon,
             IImprovementValidityLogic                        improvementValidityLogic,

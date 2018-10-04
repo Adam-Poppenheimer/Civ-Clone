@@ -140,7 +140,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IHexGrid>()   .FromInstance(MockGrid      .Object);
             Container.Bind<IRiverCanon>().FromInstance(MockRiverCanon.Object);
 
-            Container.Bind<FreshWaterCanon>().AsSingle();
+            Container.Bind<FreshWaterLogic>().AsSingle();
         }
 
         #endregion
@@ -155,7 +155,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockGrid.Setup(grid => grid.GetNeighbors(cell))
                     .Returns(testData.Neighbors.Select(cellData => BuildHexCell(cellData)).ToList());
 
-            var freshWaterCanon = Container.Resolve<FreshWaterCanon>();
+            var freshWaterCanon = Container.Resolve<FreshWaterLogic>();
 
             return freshWaterCanon.HasAccessToFreshWater(cell);
         }

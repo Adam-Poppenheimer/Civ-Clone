@@ -34,7 +34,7 @@ namespace Assets.Simulation.MapResources {
                 .WithId("Available Resources")
                 .FromInstance(allResources.Cast<IResourceDefinition>());
 
-            Container.Bind<IResourceRestrictionCanon>().To<ResourceRestrictionCanon>().AsSingle();
+            Container.Bind<IResourceRestrictionLogic>().To<ResourceRestrictionLogic>().AsSingle();
             Container.Bind<IResourceNodeFactory>     ().To<ResourceNodeFactory>     ().AsSingle();
             Container.Bind<IResourceNodeYieldLogic>  ().To<ResourceNodeYieldLogic>  ().AsSingle();
 

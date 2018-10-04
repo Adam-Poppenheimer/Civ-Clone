@@ -18,7 +18,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
         #region instance fields and properties
 
-        private Mock<IResourceRestrictionCanon>                        MockRestrictionCanon;
+        private Mock<IResourceRestrictionLogic>                        MockRestrictionCanon;
         private Mock<IPossessionRelationship<IHexCell, IResourceNode>> MockResourceNodeLocationCanon;
 
         #endregion
@@ -29,10 +29,10 @@ namespace Assets.Tests.Simulation.MapResources {
 
         [SetUp]
         public void CommonInstall() {
-            MockRestrictionCanon          = new Mock<IResourceRestrictionCanon>();
+            MockRestrictionCanon          = new Mock<IResourceRestrictionLogic>();
             MockResourceNodeLocationCanon = new Mock<IPossessionRelationship<IHexCell, IResourceNode>>();
 
-            Container.Bind<IResourceRestrictionCanon>                       ().FromInstance(MockRestrictionCanon         .Object);
+            Container.Bind<IResourceRestrictionLogic>                       ().FromInstance(MockRestrictionCanon         .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockResourceNodeLocationCanon.Object);
 
             Container.Bind<ResourceSignals>().AsSingle();

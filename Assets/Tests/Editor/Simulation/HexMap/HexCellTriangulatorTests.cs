@@ -956,7 +956,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private IHexCell BuildCell(Vector3 localPosition) {
             var mockCell = new Mock<IHexCell>();
 
-            mockCell.Setup(cell => cell.LocalPosition).Returns(localPosition);
+            mockCell.Setup(cell => cell.GridRelativePosition).Returns(localPosition);
 
             return mockCell.Object;
         }

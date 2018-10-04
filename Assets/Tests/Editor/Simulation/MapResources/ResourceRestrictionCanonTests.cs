@@ -37,7 +37,7 @@ namespace Assets.Tests.Simulation.MapResources {
             Container.Bind<IPossessionRelationship<IHexCell, IResourceNode>>().FromInstance(MockNodePositionCanon       .Object);
             Container.Bind<IPossessionRelationship<IHexCell, IImprovement>> ().FromInstance(MockImprovementLocationCanon.Object);
 
-            Container.Bind<ResourceRestrictionCanon>().AsSingle();
+            Container.Bind<ResourceRestrictionLogic>().AsSingle();
         }
 
         #endregion
@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(terrain: CellTerrain.Desert);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
 
@@ -72,7 +72,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(shape: CellShape.Mountains);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
 
@@ -92,7 +92,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(vegetation: CellVegetation.Jungle);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             int weight = restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest);
 
@@ -117,7 +117,7 @@ namespace Assets.Tests.Simulation.MapResources {
                 vegetation: CellVegetation.None, feature: CellFeature.Oasis
             );
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             Assert.AreEqual(0, restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest));
         }
@@ -137,7 +137,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             BuildResourceNode(cellToTest);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             Assert.AreEqual(0, restrictionCanon.GetPlacementWeightOnCell(mockResource.Object, cellToTest));
         }
@@ -150,7 +150,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             Assert.IsTrue(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }
@@ -163,7 +163,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             Assert.IsFalse(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }
@@ -176,7 +176,7 @@ namespace Assets.Tests.Simulation.MapResources {
 
             var cellToTest = BuildCell(terrain: CellTerrain.Grassland);
 
-            var restrictionCanon = Container.Resolve<ResourceRestrictionCanon>();
+            var restrictionCanon = Container.Resolve<ResourceRestrictionLogic>();
 
             Assert.IsFalse(restrictionCanon.IsResourceValidOnCell(mockResource.Object, cellToTest));
         }

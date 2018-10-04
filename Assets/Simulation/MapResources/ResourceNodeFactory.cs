@@ -27,7 +27,7 @@ namespace Assets.Simulation.MapResources{
 
         private DiContainer                                      Container;
 		private IPossessionRelationship<IHexCell, IResourceNode> ResourceNodeLocationCanon;
-        private IResourceRestrictionCanon                        RestrictionCanon;     
+        private IResourceRestrictionLogic                        RestrictionCanon;     
         private Transform                                        NodeContainer;   
 
         #endregion
@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapResources{
         [Inject]
 		public ResourceNodeFactory(
             DiContainer container, IPossessionRelationship<IHexCell, IResourceNode> resourceNodeLocationCanon,
-            IResourceRestrictionCanon restrictionCanon, ResourceSignals signals,
+            IResourceRestrictionLogic restrictionCanon, ResourceSignals signals,
             [InjectOptional(Id = "Resource Node Container")] Transform nodeContainer
 		){
 			Container                 = container;

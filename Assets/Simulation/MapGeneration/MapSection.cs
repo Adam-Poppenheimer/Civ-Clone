@@ -33,7 +33,7 @@ namespace Assets.Simulation.MapGeneration {
                     if(Cells.Count == 0) {
                         _centroid = Vector3.zero;
                     }else {
-                        _centroid = Cells.Select(cell => cell.LocalPosition)
+                        _centroid = Cells.Select(cell => cell.GridRelativePosition)
                                          .Aggregate((current, next) => current + next) / Cells.Count;
                     }
                 }

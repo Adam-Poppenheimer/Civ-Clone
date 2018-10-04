@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
@@ -27,7 +28,7 @@ namespace Assets.Simulation.Visibility {
             set {
                 if(_cellVisibilityMode != value) {
                     _cellVisibilityMode = value;
-                    Signals.CellVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
+                    VisibilitySignals.CellVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
                 }
             }
         }
@@ -40,7 +41,7 @@ namespace Assets.Simulation.Visibility {
             set {
                 if(_resourceVisibilityMode != value) {
                     _resourceVisibilityMode = value;
-                    Signals.ResourceVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
+                    VisibilitySignals.ResourceVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
                 }
             }
         }
@@ -55,7 +56,7 @@ namespace Assets.Simulation.Visibility {
 
         private IGameCore         GameCore;
         private ITechCanon        TechCanon;
-        private VisibilitySignals Signals;
+        private VisibilitySignals VisibilitySignals;
 
         #endregion
 
@@ -63,11 +64,14 @@ namespace Assets.Simulation.Visibility {
 
         [Inject]
         public VisibilityCanon(
-            IGameCore gameCore, ITechCanon techCanon, VisibilitySignals signals
+            IGameCore gameCore, ITechCanon techCanon, VisibilitySignals visibilitySignals,
+            HexCellSignals cellSignals
         ) {
-            GameCore  = gameCore;
-            TechCanon = techCanon;
-            Signals   = signals;
+            GameCore          = gameCore;
+            TechCanon         = techCanon;
+            VisibilitySignals = visibilitySignals;
+
+            cellSignals.MapBeingClearedSignal.Subscribe(unit => ClearCellVisibility());
         }
 
         #endregion

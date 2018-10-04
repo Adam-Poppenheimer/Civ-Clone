@@ -26,6 +26,8 @@ namespace Assets.Simulation.HexMap {
 
         void ValidateRivers(IHexCell cell);
 
+        void Clear();
+
         #endregion
 
     }

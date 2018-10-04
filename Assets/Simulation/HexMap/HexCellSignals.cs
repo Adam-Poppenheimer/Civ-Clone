@@ -27,8 +27,10 @@ namespace Assets.Simulation.HexMap {
 
         public ISubject<IHexCell> FoundationElevationChangedSignal { get; private set; }
         public ISubject<IHexCell> ShapeChangedSignal               { get; private set; }
-        public ISubject<IHexCell> VegetationChangedSignal             { get; private set; }
+        public ISubject<IHexCell> VegetationChangedSignal          { get; private set; }
         public ISubject<IHexCell> WaterLevelChangedSignal          { get; private set; }
+
+        public ISubject<Unit> MapBeingClearedSignal { get; set; }
 
         #endregion
 
@@ -47,8 +49,10 @@ namespace Assets.Simulation.HexMap {
 
             FoundationElevationChangedSignal = new Subject<IHexCell>();
             ShapeChangedSignal               = new Subject<IHexCell>();
-            VegetationChangedSignal             = new Subject<IHexCell>();
+            VegetationChangedSignal          = new Subject<IHexCell>();
             WaterLevelChangedSignal          = new Subject<IHexCell>();
+
+            MapBeingClearedSignal = new Subject<Unit>();
         }
 
         #endregion

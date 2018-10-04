@@ -6,7 +6,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
-using UnityEngine.UI;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -57,6 +57,7 @@ namespace Assets.Simulation.HexMap {
         private IWorkerSlotFactory     WorkerSlotFactory;
         private ICellModificationLogic CellModificationLogic;
         private IHexMapRenderConfig    RenderConfig;
+        private HexCellSignals         CellSignals;
 
         #endregion
 
@@ -66,12 +67,13 @@ namespace Assets.Simulation.HexMap {
         public void InjectDependencies(
             DiContainer container, IWorkerSlotFactory workerSlotFactory,
             ICellModificationLogic cellModificationLogic,
-            IHexMapRenderConfig renderConfig
+            IHexMapRenderConfig renderConfig, HexCellSignals cellSignals
         ) {
             Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
             CellModificationLogic = cellModificationLogic;
             RenderConfig          = renderConfig;
+            CellSignals           = cellSignals;
         }
 
         #region Unity message methods
@@ -81,7 +83,9 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build(int chunkCountX, int chunkCountZ) {
+            Profiler.BeginSample("Clear Grid");
             Clear();
+            Profiler.EndSample();
 
             ChunkCountX = chunkCountX;
             ChunkCountZ = chunkCountZ;
@@ -89,14 +93,19 @@ namespace Assets.Simulation.HexMap {
             CellCountX = ChunkCountX * RenderConfig.ChunkSizeX;
             CellCountZ = ChunkCountZ * RenderConfig.ChunkSizeZ;
 
+            Profiler.BeginSample("Set up HexCellShaderData");
             CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
             CellShaderData.Initialize(CellCountX, CellCountZ);
 
             CellShaderData.enabled = true;
+            Profiler.EndSample();
 
             CreateChunks();
             CreateCells();
-            ToggleUI(false);
+
+            foreach(var cell in Cells) {
+                cell.RefreshSelfOnly();
+            }
         }
 
         public void Clear() {
@@ -104,9 +113,9 @@ namespace Assets.Simulation.HexMap {
                 return;
             }
 
-            for(int i = Cells.Count - 1; i >= 0; i--) {
-                Cells[i].Destroy();
-            }
+            CellSignals.MapBeingClearedSignal.OnNext(new UniRx.Unit());
+
+             cells.Clear();
 
             for(int i = Chunks.Length - 1; i >= 0; i--) {
                 Destroy(Chunks[i].gameObject);
@@ -192,8 +201,8 @@ namespace Assets.Simulation.HexMap {
             var retval = new List<IHexCell>();
 
             var coordinateLine = GetCoordinatesInLine(
-                start.Coordinates, start.Position,
-                end.Coordinates, end.Position
+                start.Coordinates, start.AbsolutePosition,
+                end.Coordinates, end.AbsolutePosition
             );
 
             foreach(var coordinates in coordinateLine){
@@ -242,20 +251,14 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public void ToggleUI(bool isVisible) {
-            foreach(var cell in Cells) {
-                cell.Overlay.SetDisplayType(UI.HexMap.CellOverlayType.Labels);
-                if(isVisible) {
-                    cell.Overlay.Show();
-                }else {
-                    cell.Overlay.Hide();
-                }
-            }
+        public Vector3 GetAbsolutePositionFromRelative(Vector3 relativePosition) {
+            return transform.TransformPoint(relativePosition);
         }
 
         #endregion
 
         private void CreateChunks() {
+            Profiler.BeginSample("CreateChunks");
             Chunks = new HexGridChunk[ChunkCountX * ChunkCountZ];
 
             for(int z = 0, i = 0; z < ChunkCountZ; z++) {
@@ -264,9 +267,11 @@ namespace Assets.Simulation.HexMap {
                     chunk.transform.SetParent(transform);
                 }
             }
+            Profiler.EndSample();
         }
 
         private void CreateCells() {
+            Profiler.BeginSample("CreateCells");
             var newCells = new HexCell[CellCountX * CellCountZ];
 
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
@@ -276,6 +281,7 @@ namespace Assets.Simulation.HexMap {
             }
 
             cells = newCells.Cast<IHexCell>().ToList();
+            Profiler.EndSample();
         }
 
         private void CreateCell(int x, int z, int i, HexCell[] newCells) {
@@ -285,9 +291,7 @@ namespace Assets.Simulation.HexMap {
                 z * RenderConfig.OuterRadius * 1.5f
             );
 
-            var newCell = newCells[i] = Container.InstantiatePrefabForComponent<HexCell>(CellPrefab);
-
-            newCell.transform.localPosition = position;
+            var newCell = newCells[i] = new HexCell(position, this, CellSignals, RenderConfig);
 
             newCell.WorkerSlot = WorkerSlotFactory.BuildSlot(newCell);
 
@@ -297,9 +301,7 @@ namespace Assets.Simulation.HexMap {
 
             CellModificationLogic.ChangeTerrainOfCell   (newCell, CellTerrain.Grassland);
             CellModificationLogic.ChangeShapeOfCell     (newCell, CellShape.Flatlands);
-            CellModificationLogic.ChangeVegetationOfCell(newCell, CellVegetation.None);            
-
-            newCell.gameObject.name = string.Format("Cell {0}", newCell.Coordinates);
+            CellModificationLogic.ChangeVegetationOfCell(newCell, CellVegetation.None);
 
             AddCellToChunk(x, z, newCell);
         }

@@ -228,8 +228,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3e14ad4149ced4db3bc876c9487ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  CellPrefab: {fileID: 114287632469189624, guid: 18e8accca100eb548bc4d8a368598c70,
-    type: 2}
   ChunkPrefab: {fileID: 114137592705337108, guid: 3543181dd3150494d8af40abab06a3cd,
     type: 2}
   TerrainCollisionMask:
@@ -36856,6 +36854,8 @@ MonoBehaviour:
   MapTileHoverDelay: 1
   MapTileHoverYieldDisplay: {fileID: 385197837}
   PathIndicatorPrefab: {fileID: 1196564049541204, guid: 32d31385bce1dd346b1e9d9ccd150edd,
+    type: 2}
+  HexCellOverlayPrefab: {fileID: 114674894453571472, guid: 250c439a4c0a4de40b594772aae4e713,
     type: 2}
 --- !u!4 &963436562
 Transform:
