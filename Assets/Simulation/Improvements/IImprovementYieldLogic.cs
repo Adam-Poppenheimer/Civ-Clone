@@ -24,6 +24,13 @@ namespace Assets.Simulation.Improvements {
             IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
         );
 
+        YieldSummary GetYieldOfImprovementTemplate(
+            IImprovementTemplate template, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<IImprovementModificationData> improvementModifications,
+            bool hasFreshWater
+        );
+
         #endregion
 
     }

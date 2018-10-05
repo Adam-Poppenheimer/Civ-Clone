@@ -11,9 +11,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region methods
 
-        YieldSummary GetYieldEstimateForCell(
-            IHexCell cell, IEnumerable<ITechDefinition> availableTechs
-        );
+        YieldSummary GetYieldEstimateForCell(IHexCell cell, IEnumerable<ITechDefinition> availableTechs);
+        YieldSummary GetYieldEstimateForCell(IHexCell cell, CachedTechData techData);
 
         YieldSummary GetYieldEstimateForResource(IResourceDefinition resource);
 

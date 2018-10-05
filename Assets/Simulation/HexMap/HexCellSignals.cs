@@ -26,6 +26,7 @@ namespace Assets.Simulation.HexMap {
         public ISubject<HexCellDragData> EndDragSignal   { get; private set; }
 
         public ISubject<IHexCell> FoundationElevationChangedSignal { get; private set; }
+        public ISubject<IHexCell> TerrainChangedSignal             { get; private set; }
         public ISubject<IHexCell> ShapeChangedSignal               { get; private set; }
         public ISubject<IHexCell> VegetationChangedSignal          { get; private set; }
         public ISubject<IHexCell> WaterLevelChangedSignal          { get; private set; }
@@ -48,6 +49,7 @@ namespace Assets.Simulation.HexMap {
             EndDragSignal   = new Subject<HexCellDragData>();
 
             FoundationElevationChangedSignal = new Subject<IHexCell>();
+            TerrainChangedSignal             = new Subject<IHexCell>();
             ShapeChangedSignal               = new Subject<IHexCell>();
             VegetationChangedSignal          = new Subject<IHexCell>();
             WaterLevelChangedSignal          = new Subject<IHexCell>();

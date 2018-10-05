@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine.Profiling;
+
 using Zenject;
 
 using Assets.Simulation.MapResources;
@@ -11,6 +13,12 @@ using Assets.Simulation.Technology;
 namespace Assets.Simulation.Improvements {
 
     public class ImprovementYieldLogic : IImprovementYieldLogic {
+
+        #region instance fields and properties
+
+        
+
+        #endregion
 
         #region constructors
 
@@ -43,6 +51,19 @@ namespace Assets.Simulation.Improvements {
             IEnumerable<IResourceDefinition> visibleResources,
             IEnumerable<ITechDefinition> discoveredTechs, bool hasFreshWater
         ) {
+            var improvementModification = discoveredTechs.SelectMany(tech => tech.ImprovementYieldModifications);
+
+            return GetYieldOfImprovementTemplate(
+                template, nodeAtLocation, visibleResources, improvementModification, hasFreshWater
+            );
+        }
+
+        public YieldSummary GetYieldOfImprovementTemplate(
+            IImprovementTemplate template, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> visibleResources,
+            IEnumerable<IImprovementModificationData> improvementModifications,
+            bool hasFreshWater
+        ) {
             YieldSummary retval = YieldSummary.Empty;
 
             if( nodeAtLocation == null || nodeAtLocation.Resource.Extractor != template ||
@@ -51,10 +72,7 @@ namespace Assets.Simulation.Improvements {
                 retval += template.BonusYieldNormal;
             }
 
-            var applicableTechMods = discoveredTechs.SelectMany(tech => tech.ImprovementYieldModifications)
-                                                    .Where(mod => mod.Template == template);
-
-            foreach(var mod in applicableTechMods) {
+            foreach(var mod in improvementModifications.Where(modification => modification.Template == template)) {
                 if(!mod.RequiresFreshWater || hasFreshWater) {
                     retval += mod.BonusYield;
                 }

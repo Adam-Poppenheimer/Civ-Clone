@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine.Profiling;
+
 using Zenject;
 
 using Assets.Simulation.HexMap;
@@ -71,6 +73,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
+
+
+
+
         private IInherentCellYieldLogic                          InherentYieldLogic;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
         private IResourceNodeYieldLogic                          NodeYieldLogic;
@@ -117,37 +123,60 @@ namespace Assets.Simulation.MapGeneration {
         public YieldSummary GetYieldEstimateForCell(
             IHexCell cell, IEnumerable<ITechDefinition> availableTechs
         ) {
-            var retval = YieldSummary.Empty;
+            var improvementModifications = new HashSet<IImprovementModificationData>(availableTechs.SelectMany(tech => tech.ImprovementYieldModifications));
+            var visibleResources         = new HashSet<IResourceDefinition>         (TechCanon.GetDiscoveredResourcesFromTechs  (availableTechs));
+            var availableImprovements    = new HashSet<IImprovementTemplate>        (TechCanon.GetAvailableImprovementsFromTechs(availableTechs));
+            var availableBuildings       = new HashSet<IBuildingTemplate>           (TechCanon.GetAvailableBuildingsFromTechs   (availableTechs));
 
-            var visibleResources      = TechCanon.GetDiscoveredResourcesFromTechs     (availableTechs).ToList();
-            var availableImprovements = TechCanon.GetAvailableImprovementsFromTechs(availableTechs).ToList();
-            var availableBuildings    = TechCanon.GetAvailableBuildingsFromTechs   (availableTechs).ToList();
+            return GetYieldEstimateForCell(
+                cell,
+                new CachedTechData() {
+                    ImprovementModifications = improvementModifications,
+                    VisibleResources         = visibleResources,
+                    AvailableImprovements    = availableImprovements,
+                    AvailableBuildings       = availableBuildings
+                }
+            );
+        }
+
+
+        public YieldSummary GetYieldEstimateForCell(IHexCell cell, CachedTechData techData) {
+            Profiler.BeginSample("GetYieldEstimateForCell");
+            var retval = YieldSummary.Empty;
 
             var nodeAtLocation = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
             var validImprovements = GetImprovementsValidFor(
-                cell, nodeAtLocation, visibleResources, availableImprovements
+                cell, nodeAtLocation, techData.VisibleResources, techData.AvailableImprovements
             );
 
             var yieldOfImprovements = validImprovements.Select(
                 improvement => GetYieldEstimateForCellWithImprovement(
-                    cell, nodeAtLocation, visibleResources, availableTechs,
-                    availableBuildings, improvement
+                    cell, nodeAtLocation, techData.VisibleResources, techData.ImprovementModifications,
+                    techData.AvailableBuildings, improvement
                 )
             );
 
             YieldSummary bestYield = YieldSummary.Empty;
             float bestScore = int.MinValue;
 
-            foreach(var yield in yieldOfImprovements) {
-                var score = MapScorer.GetScoreOfYield(yield);
+            if(yieldOfImprovements.Any()) {
+                foreach(var yield in yieldOfImprovements) {
+                    var score = MapScorer.GetScoreOfYield(yield);
 
-                if(score > bestScore) {
-                    bestYield = yield;
-                    bestScore = score;
+                    if(score > bestScore) {
+                        bestYield = yield;
+                        bestScore = score;
+                    }
                 }
+            }else {
+                bestYield = GetYieldEstimateForCellWithImprovement(
+                    cell, nodeAtLocation, techData.VisibleResources,
+                    techData.ImprovementModifications, techData.AvailableBuildings, null
+                );
             }
 
+            Profiler.EndSample();
             return bestYield;
         }
 
@@ -159,8 +188,8 @@ namespace Assets.Simulation.MapGeneration {
 
         private YieldSummary GetYieldEstimateForCellWithImprovement(
             IHexCell cell, IResourceNode nodeAtLocation, IEnumerable<IResourceDefinition> visibleResources,
-            IEnumerable<ITechDefinition> availableTechs, IEnumerable<IBuildingTemplate> availableBuildings,
-            IImprovementTemplate improvement
+            IEnumerable<IImprovementModificationData> improvementModifications,
+            IEnumerable<IBuildingTemplate> availableBuildings, IImprovementTemplate improvement
         ) {
             var retval = YieldSummary.Empty;
 
@@ -173,7 +202,7 @@ namespace Assets.Simulation.MapGeneration {
             bool clearVegetation = false;
             if(improvement != null) {
                 retval += ImprovementYieldLogic.GetYieldOfImprovementTemplate(
-                    improvement, nodeAtLocation, visibleResources, availableTechs,
+                    improvement, nodeAtLocation, visibleResources, improvementModifications,
                     FreshWaterCanon.HasAccessToFreshWater(cell)
                 );
 
@@ -188,7 +217,8 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private IEnumerable<IImprovementTemplate> GetImprovementsValidFor(
-            IHexCell cell, IResourceNode nodeAtLocation, IEnumerable<IResourceDefinition> availableResources,
+            IHexCell cell, IResourceNode nodeAtLocation,
+            IEnumerable<IResourceDefinition> availableResources,
             IEnumerable<IImprovementTemplate> availableImprovements
         ) {
             if( nodeAtLocation != null &&

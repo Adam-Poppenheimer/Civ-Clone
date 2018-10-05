@@ -161,12 +161,10 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         public void DistributeYieldAndResources(HomelandData homelandData, IMapTemplate mapTemplate) {
-            Profiler.BeginSample("HomelandGenerator.DistributeYieldAndResources");
             LuxuryDistributor   .DistributeLuxuriesAcrossHomeland  (homelandData);
             StrategicDistributor.DistributeStrategicsAcrossHomeland(homelandData);
 
             HomelandBalancer.BalanceHomelandYields(homelandData);
-            Profiler.EndSample();
         }
 
         #endregion
