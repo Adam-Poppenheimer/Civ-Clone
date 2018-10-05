@@ -74,6 +74,7 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
+        //There is a river not adjacent to Center leading into the corner between Center, Left, and Right
         private void TriangulateWaterShoreEdgeWithEstuary_Previous(CellTriangulationData data) {
             var leftShoreEdge  = data.LeftToCenterEdge;
             var rightShoreEdge = data.RightToCenterEdge;            
@@ -92,12 +93,11 @@ namespace Assets.Simulation.HexMap {
             TriangulateEstuarySection(data, leftShoreEdge, rightShoreEdge, riverIsFeedingWater);
         }
 
+        //There is a river not adjacent to Center leading into the corner between Center, Right, and NextRight
         private void TriangulateWaterShoreEdgeWithEstuary_Next(CellTriangulationData data) {
-            var leftShoreEdge  = data.LeftToCenterEdge;
             var rightShoreEdge = data.RightToCenterEdge;            
 
             rightShoreEdge.V1.y = rightShoreEdge.V2.y = rightShoreEdge.V3.y = rightShoreEdge.V4.y = rightShoreEdge.V5.y = data.Center.WaterSurfaceY;
-            leftShoreEdge .V1.y = leftShoreEdge .V2.y = leftShoreEdge .V3.y = leftShoreEdge .V4.y = leftShoreEdge .V5.y = data.Center.WaterSurfaceY;
 
             MeshBuilder.TriangulateEdgeStripPartial(
                 data.CenterToRightWaterEdge, MeshBuilder.Weights1, data.Center.Index, 0f, false,
@@ -108,6 +108,8 @@ namespace Assets.Simulation.HexMap {
             TriangulateShoreCorner(data, rightShoreEdge);
         }
 
+        //There are rivers not adjacent to Center that are leading into both of the corners flanking
+        //Right.
         private void TriangulateWaterShoreEdgeWithEstuary_PreviousAndNext(CellTriangulationData data) {
             var leftShoreEdge  = data.LeftToCenterEdge;
             var rightShoreEdge = data.RightToCenterEdge;            
