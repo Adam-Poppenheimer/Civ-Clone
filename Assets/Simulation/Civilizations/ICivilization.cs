@@ -17,15 +17,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region properties
 
-        /// <summary>
-        /// The civilization's non-ID name.
-        /// </summary>
-        string Name { get; set; }
-
-        /// <summary>
-        /// The color of the civilization's borders, cities, and units.
-        /// </summary>
-        Color Color { get; set; }
+        ICivilizationTemplate Template { get; }
 
         /// <summary>
         /// The current amount of gold the civilization has to spend.

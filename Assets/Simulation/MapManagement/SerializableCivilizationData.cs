@@ -13,8 +13,7 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [DataMember()] public string                  Name;
-        [DataMember()] public SerializableColor       Color;
+        [DataMember()] public string                  TemplateName;
         [DataMember()] public int                     GoldStockpile;
         [DataMember()] public int                     CultureStockpile;
 

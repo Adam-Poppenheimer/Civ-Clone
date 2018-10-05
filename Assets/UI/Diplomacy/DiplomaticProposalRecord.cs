@@ -26,7 +26,7 @@ namespace Assets.UI.Diplomacy {
 
         private void OnEnable() {
             if(SummaryField != null && ProposalToSummarize != null) {
-                SummaryField.text = String.Format("From {0}", ProposalToSummarize.Sender.Name);
+                SummaryField.text = String.Format("From {0}", ProposalToSummarize.Sender.Template.Name);
             }
 
             SelectionButton.onClick.RemoveAllListeners();

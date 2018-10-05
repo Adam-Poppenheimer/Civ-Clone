@@ -45,7 +45,7 @@ namespace Assets.UI.Diplomacy {
                 return;
             }
 
-            CivNameField.text = CivilizationToRecord.Name;
+            CivNameField.text = CivilizationToRecord.Template.Name;
         }
 
         #endregion

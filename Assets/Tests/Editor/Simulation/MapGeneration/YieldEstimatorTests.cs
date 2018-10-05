@@ -186,7 +186,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
             MockImprovementYieldLogic.Setup(
                 logic => logic.GetYieldOfImprovementTemplate(
                     improvement, It.IsAny<IResourceNode>(), VisibleResources,
-                    AvailableTechs, true
+                    It.IsAny<IEnumerable<IImprovementModificationData>>(), true
                 )
             ).Returns(new YieldSummary(food: 1, production: 20));
 

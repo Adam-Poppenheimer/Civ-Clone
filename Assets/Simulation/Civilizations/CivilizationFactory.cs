@@ -55,15 +55,14 @@ namespace Assets.Simulation.Civilizations {
         #region from IFactory<ICivilization>
 
         /// <inheritdoc/>
-        public ICivilization Create(string name, Color color) {
-            if(name == null) {
-                throw new ArgumentNullException("name");
+        public ICivilization Create(ICivilizationTemplate template) {
+            if(template == null) {
+                throw new ArgumentNullException("template");
             }
 
             var newCivilization = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
-            newCivilization.Name = name;
-            newCivilization.Color = color;
+            newCivilization.Template = template;
 
             if(CivContainer != null) {
                 newCivilization.transform.SetParent(CivContainer, false);

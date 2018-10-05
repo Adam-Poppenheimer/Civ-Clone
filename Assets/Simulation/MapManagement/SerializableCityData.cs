@@ -14,6 +14,8 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
+        [DataMember(EmitDefaultValue = true)] public string Name;
+
         [DataMember()] public HexCoordinates Location;
         [DataMember()] public string         Owner;
 

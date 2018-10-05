@@ -67,7 +67,7 @@ namespace Assets.UI.MapEditor {
 
             List<Dropdown.OptionData> civilizationOptions = new List<Dropdown.OptionData>();
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                civilizationOptions.Add(new Dropdown.OptionData(civilization.Name));
+                civilizationOptions.Add(new Dropdown.OptionData(civilization.Template.Name));
             }
 
             CivilizationDropdown.AddOptions(civilizationOptions);

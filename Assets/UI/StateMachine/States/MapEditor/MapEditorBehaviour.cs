@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -19,12 +19,13 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain  Brain;
-        private IHexGrid             Grid;
-        private IMapComposer         MapComposer;
-        private ICivilizationFactory CivFactory;
-        private IVisibilityResponder VisibilityResponder;
-        private IVisibilityCanon     VisibilityCanon;
+        private UIStateMachineBrain                       Brain;
+        private IHexGrid                                  Grid;
+        private IMapComposer                              MapComposer;
+        private ICivilizationFactory                      CivFactory;
+        private IVisibilityResponder                      VisibilityResponder;
+        private IVisibilityCanon                          VisibilityCanon;
+        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
-            IVisibilityCanon visibilityCanon
+            IVisibilityCanon visibilityCanon, ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -42,6 +43,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivFactory          = civFactory;
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
+            CivTemplates        = civTemplates;
         }
 
         #region from StateMachineBehaviour
@@ -59,7 +61,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Grid.Build(4, 3);
 
-            CivFactory.Create("Player Civilization", Color.red);
+            CivFactory.Create(CivTemplates[0]);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

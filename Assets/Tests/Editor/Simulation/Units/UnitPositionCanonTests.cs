@@ -51,9 +51,10 @@ namespace Assets.Tests.Simulation.Units {
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
 
-            Container.Bind<UnitPositionCanon>().AsSingle();
+            Container.Bind<UnitSignals>   ().AsSingle();
+            Container.Bind<HexCellSignals>().AsSingle();
 
-            Container.Bind<UnitSignals>().AsSingle();
+            Container.Bind<UnitPositionCanon>().AsSingle();
         }
 
         private void SetConfigData(UnitPositionCanonTestData.ConfigData configData) {
@@ -139,7 +140,7 @@ namespace Assets.Tests.Simulation.Units {
         private ICivilization BuildCivilization(string name) {
             var mockCiv = new Mock<ICivilization>();
 
-            mockCiv.Setup(civ => civ.Name).Returns(name);
+            mockCiv.Name = name;
 
             return mockCiv.Object;
         }

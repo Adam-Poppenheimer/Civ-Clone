@@ -442,19 +442,6 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
-        public void ChangeTerrainOfCell_FoundationElevationReset() {
-            var cellToTest = BuildCell();
-
-            MockRenderConfig.Setup(config => config.GetFoundationElevationForTerrain(CellTerrain.ShallowWater)).Returns(-5);
-
-            var modLogic = Container.Resolve<CellModificationLogic>();
-
-            modLogic.ChangeTerrainOfCell(cellToTest, CellTerrain.ShallowWater);
-
-            Assert.AreEqual(-5, cellToTest.FoundationElevation);
-        }
-
-        [Test]
         public void ChangeTerrainOfCell_MarshRemovedIfNewTerrainNotGrassland() {
             var cellToTest = BuildCell(vegetation: CellVegetation.Marsh);
 

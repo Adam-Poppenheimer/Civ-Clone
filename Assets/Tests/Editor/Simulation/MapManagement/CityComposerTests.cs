@@ -63,9 +63,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
             MockCityFactory.Setup(
-                factory => factory.Create(It.IsAny<IHexCell>(), It.IsAny<ICivilization>())
-            ).Returns<IHexCell, ICivilization>(
-                (location, owner) => BuildCity(location, owner, BuildUnit())
+                factory => factory.Create(It.IsAny<IHexCell>(), It.IsAny<ICivilization>(), It.IsAny<string>())
+            ).Returns<IHexCell, ICivilization, string>(
+                (location, owner, name) => BuildCity(location, owner, name, BuildUnit())
             );
 
             MockProjectFactory.Setup(factory => factory.ConstructProject(It.IsAny<IBuildingTemplate>()))
@@ -96,9 +96,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ClearRuntime_AllCitesRemovedFromLocation() {
-            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit());
-            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit());
-            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit());
+            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City One",   BuildUnit());
+            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Two",   BuildUnit());
+            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Three", BuildUnit());
 
             var composer = Container.Resolve<CityComposer>();
 
@@ -124,9 +124,9 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void ClearRuntime_AllCitiesDestroyed() {
             Mock<ICity> mockCityOne, mockCityTwo, mockCityThree;
 
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityOne);
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityTwo);
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityThree);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City One",   BuildUnit(), out mockCityOne);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Two",   BuildUnit(), out mockCityTwo);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Three", BuildUnit(), out mockCityThree);
 
             var composer = Container.Resolve<CityComposer>();
 
@@ -139,9 +139,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCities_StoresLocationAsCoordinates() {
-            BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), BuildUnit());
-            BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnit());
-            BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), "City One",   BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), "City Two",   BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), "City Three", BuildUnit());
 
             var mapData = new SerializableMapData();
 
@@ -167,9 +167,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCities_StoresOwnerAsName() {
-            BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization("Civ One"),   BuildUnit());
-            BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization("Civ Two"),   BuildUnit());
-            BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization("Civ Three"), BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization("Civ One"),   "City One",   BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization("Civ Two"),   "City Two",   BuildUnit());
+            BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization("Civ Three"), "City Three", BuildUnit());
 
             var mapData = new SerializableMapData();
 
@@ -195,13 +195,13 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCities_StoresIntrinsicFieldsProperly() {
-            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), BuildUnit());
-            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnit());
-            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnit());
+            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), "City One",   BuildUnit());
+            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), "City Two",   BuildUnit());
+            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), "City Three", BuildUnit());
 
-            SetCityFields(cityOne,   1,  11, -1, YieldFocusType.TotalYield);
-            SetCityFields(cityTwo,   2,  -2, 22, YieldFocusType.Culture);
-            SetCityFields(cityThree, -3, 33, 3,  YieldFocusType.Production);
+            SetCityFields(cityOne,   "City One",    1,  11, -1,  YieldFocusType.TotalYield);
+            SetCityFields(cityTwo,   "City Two",    2, -2,   22, YieldFocusType.Culture);
+            SetCityFields(cityThree, "City Three", -3,  33,  3,  YieldFocusType.Production);
 
             var mapData = new SerializableMapData();
 
@@ -209,27 +209,27 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             composer.ComposeCities(mapData);
 
-            Assert.AreEqual(1,                            mapData.Cities[0].Population,       "CityOne data has an unexpected Population");
-            Assert.AreEqual(11,                           mapData.Cities[0].FoodStockpile,    "CityOne data has an unexpected FoodStockpile");
-            Assert.AreEqual(-1,                           mapData.Cities[0].CultureStockpile, "CityOne data has an unexpected CultureStockpile");
-            Assert.AreEqual(YieldFocusType.TotalYield, mapData.Cities[0].YieldFocus,    "CityOne data has an unexpected ResourceFocus");
+            Assert.AreEqual(1,                         mapData.Cities[0].Population,       "CityOne data has an unexpected Population");
+            Assert.AreEqual(11,                        mapData.Cities[0].FoodStockpile,    "CityOne data has an unexpected FoodStockpile");
+            Assert.AreEqual(-1,                        mapData.Cities[0].CultureStockpile, "CityOne data has an unexpected CultureStockpile");
+            Assert.AreEqual(YieldFocusType.TotalYield, mapData.Cities[0].YieldFocus,       "CityOne data has an unexpected ResourceFocus");
 
-            Assert.AreEqual(2,                         mapData.Cities[1].Population,       "CityTwo data has an unexpected Population");
-            Assert.AreEqual(-2,                        mapData.Cities[1].FoodStockpile,    "CityTwo data has an unexpected FoodStockpile");
-            Assert.AreEqual(22,                        mapData.Cities[1].CultureStockpile, "CityTwo data has an unexpected CultureStockpile");
-            Assert.AreEqual(YieldFocusType.Culture, mapData.Cities[1].YieldFocus,    "CityTwo data has an unexpected ResourceFocus");
+            Assert.AreEqual(2,                      mapData.Cities[1].Population,       "CityTwo data has an unexpected Population");
+            Assert.AreEqual(-2,                     mapData.Cities[1].FoodStockpile,    "CityTwo data has an unexpected FoodStockpile");
+            Assert.AreEqual(22,                     mapData.Cities[1].CultureStockpile, "CityTwo data has an unexpected CultureStockpile");
+            Assert.AreEqual(YieldFocusType.Culture, mapData.Cities[1].YieldFocus,       "CityTwo data has an unexpected ResourceFocus");
 
-            Assert.AreEqual(-3,                           mapData.Cities[2].Population,       "CityThree data has an unexpected Population");
-            Assert.AreEqual(33,                           mapData.Cities[2].FoodStockpile,    "CityThree data has an unexpected FoodStockpile");
-            Assert.AreEqual(3,                            mapData.Cities[2].CultureStockpile, "CityThree data has an unexpected CultureStockpile");
-            Assert.AreEqual(YieldFocusType.Production, mapData.Cities[2].YieldFocus,    "CityThree data has an unexpected ResourceFocus");
+            Assert.AreEqual(-3,                        mapData.Cities[2].Population,       "CityThree data has an unexpected Population");
+            Assert.AreEqual(33,                        mapData.Cities[2].FoodStockpile,    "CityThree data has an unexpected FoodStockpile");
+            Assert.AreEqual(3,                         mapData.Cities[2].CultureStockpile, "CityThree data has an unexpected CultureStockpile");
+            Assert.AreEqual(YieldFocusType.Production, mapData.Cities[2].YieldFocus,       "CityThree data has an unexpected ResourceFocus");
         }
 
         [Test]
         public void ComposeCities_StoresCombatFacadeFieldsProperly() {
-            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), BuildUnit());
-            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), BuildUnit());
-            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), BuildUnit());
+            var cityOne   = BuildCity(BuildHexCell(new HexCoordinates(0, 1)), BuildCivilization(), "City One",   BuildUnit());
+            var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), "City Two",   BuildUnit());
+            var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), "City Three", BuildUnit());
 
             cityOne.CombatFacade.CurrentHitpoints       = 100;
             cityOne.CombatFacade.CurrentMovement = 1;
@@ -260,9 +260,9 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void ComposeCities_StoresActiveProjectProperly() {
             Mock<ICity> mockCityOne, mockCityTwo, mockCityThree;
 
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityOne);
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityTwo);
-            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), BuildUnit(), out mockCityThree);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City One",   BuildUnit(), out mockCityOne);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Two",   BuildUnit(), out mockCityTwo);
+            BuildCity(BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City Three", BuildUnit(), out mockCityThree);
 
             var buildingTemplateOne = BuildBuildingTemplate("Building Template One");
             var buildingTemplateTwo = BuildBuildingTemplate("Building Template Two");
@@ -309,9 +309,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var mapData = new SerializableMapData() {
                 Cities = new List<SerializableCityData>() {
-                    new SerializableCityData() { Location = new HexCoordinates(1, 1), Owner = "Civ One" },
-                    new SerializableCityData() { Location = new HexCoordinates(2, 2), Owner = "Civ Two" },
-                    new SerializableCityData() { Location = new HexCoordinates(3, 3), Owner = "Civ Three" },
+                    new SerializableCityData() { Name = "City One",   Location = new HexCoordinates(1, 1), Owner = "Civ One" },
+                    new SerializableCityData() { Name = "City Two",   Location = new HexCoordinates(2, 2), Owner = "Civ Two" },
+                    new SerializableCityData() { Name = "City Three", Location = new HexCoordinates(3, 3), Owner = "Civ Three" },
                 }
             };
 
@@ -322,17 +322,17 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(3, AllCities.Count, "An unexpected number of cities were created");
 
             MockCityFactory.Verify(
-                factory => factory.Create(cellOne, civOne), Times.Once,
+                factory => factory.Create(cellOne, civOne, "City One"), Times.Once,
                 "The expected creation of CityOne did not happen as expected"
             );
 
             MockCityFactory.Verify(
-                factory => factory.Create(cellTwo, civTwo), Times.Once,
+                factory => factory.Create(cellTwo, civTwo, "City Two"), Times.Once,
                 "The expected creation of CityTwo did not happen as expected"
             );
 
             MockCityFactory.Verify(
-                factory => factory.Create(cellThree, civThree), Times.Once,
+                factory => factory.Create(cellThree, civThree, "City Three"), Times.Once,
                 "The expected creation of CityThree did not happen as expected"
             );
         }
@@ -514,7 +514,11 @@ namespace Assets.Tests.Simulation.MapManagement {
         private ICivilization BuildCivilization(string name = "") {
             var mockCiv = new Mock<ICivilization>();
 
-            mockCiv.Setup(civ => civ.Name).Returns(name);
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.Name).Returns(name);
+
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
 
             var newCiv = mockCiv.Object;
 
@@ -533,12 +537,12 @@ namespace Assets.Tests.Simulation.MapManagement {
             return newUnit;
         }
 
-        private ICity BuildCity(IHexCell location, ICivilization owner, IUnit combatFacade) {
+        private ICity BuildCity(IHexCell location, ICivilization owner, string name, IUnit combatFacade) {
             Mock<ICity> mock;
-            return BuildCity(location, owner, combatFacade, out mock);
+            return BuildCity(location, owner, name, combatFacade, out mock);
         }
 
-        private ICity BuildCity(IHexCell location, ICivilization owner, IUnit combatFacade, out Mock<ICity> mock) {
+        private ICity BuildCity(IHexCell location, ICivilization owner, string name, IUnit combatFacade, out Mock<ICity> mock) {
             mock = new Mock<ICity>();
 
             mock.SetupAllProperties();
@@ -546,6 +550,8 @@ namespace Assets.Tests.Simulation.MapManagement {
             mock.Setup(city => city.CombatFacade).Returns(combatFacade);
 
             var newCity = mock.Object;
+
+            newCity.Name = name;
 
             MockCityLocationCanon  .Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
             MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
@@ -556,12 +562,13 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         private void SetCityFields(
-            ICity city, int population, int foodStockpile, int cultureStockpile, YieldFocusType resourceFocus
+            ICity city, string name, int population, int foodStockpile, int cultureStockpile, YieldFocusType resourceFocus
         ){
+            city.Name             = name;
             city.Population       = population;
             city.FoodStockpile    = foodStockpile;
             city.CultureStockpile = cultureStockpile;
-            city.YieldFocus    = resourceFocus;
+            city.YieldFocus       = resourceFocus;
         }
 
         private IBuildingTemplate BuildBuildingTemplate(string name) {

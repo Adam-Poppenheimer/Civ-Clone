@@ -43,8 +43,8 @@ namespace Assets.Simulation.MapManagement {
             var retval = new SerializableOngoingDiplomaticExchange();
 
             retval.Type          = ongoingExchange.Type;
-            retval.Sender        = ongoingExchange.Sender       .Name;
-            retval.Receiver      = ongoingExchange.Receiver     .Name;
+            retval.Sender        = ongoingExchange.Sender  .Template.Name;
+            retval.Receiver      = ongoingExchange.Receiver.Template.Name;
             retval.ResourceInput = ongoingExchange.ResourceInput.name;
             retval.IntInput      = ongoingExchange.IntegerInput;
 
@@ -54,8 +54,8 @@ namespace Assets.Simulation.MapManagement {
         public IOngoingDiplomaticExchange DecomposeOngoingExchange(SerializableOngoingDiplomaticExchange ongoingData) {
             var retval = ExchangeFactory.BuildOngoingExchangeForType(ongoingData.Type);
 
-            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(ongoingData.Sender))  .FirstOrDefault();
-            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(ongoingData.Receiver)).FirstOrDefault();
+            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(ongoingData.Sender))  .FirstOrDefault();
+            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(ongoingData.Receiver)).FirstOrDefault();
 
             if(sender == null) {
                 throw new InvalidOperationException("Could not find a sender of the specified name");

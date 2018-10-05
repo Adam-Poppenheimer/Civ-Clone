@@ -38,7 +38,8 @@ namespace Assets.Tests.Simulation.Cities {
             Container.DeclareSignal<CityDistributionPerformedSignal>();
             Container.DeclareSignal<CityProjectChangedSignal>();
 
-            Container.Bind<CitySignals>().AsSingle();
+            Container.Bind<CitySignals>   ().AsSingle();
+            Container.Bind<HexCellSignals>().AsSingle();
 
             Container.Bind<CellPossessionCanon>().AsSingle();
 

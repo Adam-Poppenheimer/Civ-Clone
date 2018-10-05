@@ -56,7 +56,7 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var war in WarCanon.GetAllActiveWars()) {
                 diplomacyData.ActiveWars.Add(
-                    new Tuple<string, string>(war.Attacker.Name, war.Defender.Name)
+                    new Tuple<string, string>(war.Attacker.Template.Name, war.Defender.Template.Name)
                 );
             }
 
@@ -83,13 +83,13 @@ namespace Assets.Simulation.MapManagement {
             var allCivs = CivFactory.AllCivilizations;
 
             foreach(var warData in diplomacyData.ActiveWars) {
-                var attacker = allCivs.Where(civ => civ.Name.Equals(warData.Item1)).FirstOrDefault();
+                var attacker = allCivs.Where(civ => civ.Template.Name.Equals(warData.Item1)).FirstOrDefault();
 
                 if(attacker == null) {
                     throw new InvalidOperationException("Could not find a civ with name " + warData.Item1);
                 }
 
-                var defender = allCivs.Where(civ => civ.Name.Equals(warData.Item2)).FirstOrDefault();
+                var defender = allCivs.Where(civ => civ.Template.Name.Equals(warData.Item2)).FirstOrDefault();
 
                 if(defender == null) {
                     throw new InvalidOperationException("Could not find a civ with name " + warData.Item2);
@@ -98,7 +98,7 @@ namespace Assets.Simulation.MapManagement {
                 if(!WarCanon.CanDeclareWar(attacker, defender)) {
                     throw new InvalidOperationException(string.Format(
                         "Cannot declare the specified war between {0} and {1}",
-                        attacker.Name, defender.Name
+                        attacker.Template.Name, defender.Template.Name
                     ));
                 }
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -30,6 +31,11 @@ namespace Assets.Simulation.Civilizations {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
+            var civTemplates = Resources.LoadAll<CivilizationTemplate>("Civilizations");
+
+            Container.Bind<ReadOnlyCollection<ICivilizationTemplate>>()
+                     .FromInstance(civTemplates.Cast<ICivilizationTemplate>().ToList().AsReadOnly());
+
             Container.Bind<Transform>().WithId("Civ Container").FromInstance(CivContainer);
 
             Container.Bind<ICivilizationFactory>().To<CivilizationFactory>().AsSingle();

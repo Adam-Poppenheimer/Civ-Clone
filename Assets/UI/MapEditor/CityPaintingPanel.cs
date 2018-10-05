@@ -37,12 +37,13 @@ namespace Assets.UI.MapEditor {
 
 
 
-        private ICityFactory                             CityFactory;
-        private ICivilizationFactory                     CivilizationFactory;
-        private ICityValidityLogic                       CityValidityLogic;
-        private HexCellSignals                           CellSignals;
-        private CitySignals                              CitySignals;
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private ICityFactory                                  CityFactory;
+        private ICivilizationFactory                          CivilizationFactory;
+        private ICityValidityLogic                            CityValidityLogic;
+        private HexCellSignals                                CellSignals;
+        private CitySignals                                   CitySignals;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -52,7 +53,8 @@ namespace Assets.UI.MapEditor {
         public void InjectDependencies(
             ICivilizationFactory civilizationFactory, ICityValidityLogic cityValidityLogic,
             HexCellSignals cellSignals, CitySignals citySignals, ICityFactory cityFactory,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ){
             CivilizationFactory = civilizationFactory;
             CityValidityLogic   = cityValidityLogic;
@@ -60,6 +62,7 @@ namespace Assets.UI.MapEditor {
             CitySignals         = citySignals;
             CityFactory         = cityFactory;
             CityLocationCanon   = cityLocationCanon;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #region Unity messages
@@ -93,7 +96,7 @@ namespace Assets.UI.MapEditor {
 
             List<Dropdown.OptionData> civilizationOptions = new List<Dropdown.OptionData>();
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                civilizationOptions.Add(new Dropdown.OptionData(civilization.Name));
+                civilizationOptions.Add(new Dropdown.OptionData(civilization.Template.Name));
             }
 
             CivilizationDropdown.AddOptions(civilizationOptions);
@@ -105,7 +108,9 @@ namespace Assets.UI.MapEditor {
 
             if(IsAdding) {
                 if(CityValidityLogic.IsCellValidForCity(cell)) {
-                    CityFactory.Create(cell, ActiveCivilization);
+                    var citiesOfCiv = CityPossessionCanon.GetPossessionsOfOwner(ActiveCivilization);
+
+                    CityFactory.Create(cell, ActiveCivilization, ActiveCivilization.Template.GetNextName(citiesOfCiv));
                 }
             }else {
                 var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();

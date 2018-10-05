@@ -263,8 +263,12 @@ namespace Assets.Tests.Simulation.MapManagement {
         private ICivilization BuildCivilization(string name) {
             var mockCiv = new Mock<ICivilization>();
 
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.Name).Returns(name);
+
             mockCiv.Name = name;
-            mockCiv.Setup(civ => civ.Name).Returns(name);
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
 
             var newCiv = mockCiv.Object;
 

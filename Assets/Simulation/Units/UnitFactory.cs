@@ -116,7 +116,7 @@ namespace Assets.Simulation.Units {
             
             var meshRenderer = newUnit.GetComponentInChildren<MeshRenderer>();
             if(meshRenderer != null) {
-                meshRenderer.material.color = owner.Color;
+                meshRenderer.material.color = owner.Template.Color;
             }
 
             return newUnit;

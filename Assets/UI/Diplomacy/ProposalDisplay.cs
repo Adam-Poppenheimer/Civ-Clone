@@ -119,7 +119,7 @@ namespace Assets.UI.Diplomacy {
             foreach(var civilization in CivilizationFactory.AllCivilizations.Where(civ => civ != GameCore.ActiveCivilization)) {
                 CivOfDropdownIndex[dropdownOptions.Count] = civilization;
 
-                dropdownOptions.Add(new Dropdown.OptionData(civilization.Name));
+                dropdownOptions.Add(new Dropdown.OptionData(civilization.Template.Name));
             }
 
             ReceiverDropdown.AddOptions(dropdownOptions);
