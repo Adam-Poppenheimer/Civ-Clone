@@ -33,6 +33,7 @@ namespace Assets.Simulation.HexMap {
 
         private IGameCore           GameCore;
         private IVisibilityCanon    VisibilityCanon;
+        private IExplorationCanon   ExplorationCanon;
         private IHexMapRenderConfig RenderConfig;
 
         #endregion
@@ -42,11 +43,12 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             IGameCore gameCore, IVisibilityCanon visibilityCanon,
-            IHexMapRenderConfig renderConfig
+            IExplorationCanon explorationCanon, IHexMapRenderConfig renderConfig
         ) {
-            GameCore        = gameCore;
-            VisibilityCanon = visibilityCanon;
-            RenderConfig    = renderConfig;
+            GameCore         = gameCore;
+            VisibilityCanon  = visibilityCanon;
+            ExplorationCanon = explorationCanon;
+            RenderConfig     = renderConfig;
         }
 
         #region Unity messages
@@ -114,8 +116,8 @@ namespace Assets.Simulation.HexMap {
         public void RefreshVisibility(IHexCell cell) {
             if(VisibilityCanon.RevealMode == RevealMode.Immediate) {
                 if(GameCore.ActiveCivilization != null) {
-                    CellTextureData[cell.Index].r = 
-                        VisibilityCanon.IsCellVisible(cell) ? (byte)255 : (byte)0;
+                    CellTextureData[cell.Index].r = VisibilityCanon .IsCellVisible(cell)  ? (byte)255 : (byte)0;
+
                 }else if(CellTextureData[cell.Index].b != 255) {
                     CellTextureData[cell.Index].b = 255;
                     CellTextureData[cell.Index].r = 0;
@@ -125,6 +127,8 @@ namespace Assets.Simulation.HexMap {
             }else {
                 throw new NotImplementedException("No behavior specified for RevealMode " + VisibilityCanon.RevealMode);
             }
+
+            CellTextureData[cell.Index].g = ExplorationCanon.IsCellExplored(cell) ? (byte)255 : (byte)0;
             
             enabled = true;
         }

@@ -164,14 +164,14 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.AddTriangle(
                 data.CenterToLeftWaterEdge.V5, MeshBuilder.Weights1, new Vector2(0f, 0f),
                 data.CenterToLeftWaterEdge.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                leftShoreEdge.V5,              MeshBuilder.Weights1, new Vector2(1f, 1f),
+                leftShoreEdge.V5,              MeshBuilder.Weights2, new Vector2(1f, 1f),
                 indices, MeshBuilder.Estuaries
             );            
 
             MeshBuilder.AddTriangle(
                 data.CenterToLeftWaterEdge.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                leftShoreEdge.V4,              MeshBuilder.Weights1, new Vector2(0f, 1f),
-                leftShoreEdge.V5,              MeshBuilder.Weights1, new Vector2(1f, 1f),
+                leftShoreEdge.V4,              MeshBuilder.Weights2, new Vector2(0f, 1f),
+                leftShoreEdge.V5,              MeshBuilder.Weights2, new Vector2(1f, 1f),
                 indices, MeshBuilder.Estuaries
             );
 
@@ -179,14 +179,14 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.AddTriangle(
                 data.CenterToRightWaterEdge.V2, MeshBuilder.Weights1, new Vector2(0f, 0f),
                 data.CenterToRightWaterEdge.V1, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                rightShoreEdge.V1,              MeshBuilder.Weights1, new Vector2(1f, 1f),
+                rightShoreEdge.V1,              MeshBuilder.Weights3, new Vector2(1f, 1f),
                 indices, MeshBuilder.Estuaries
             );            
 
             MeshBuilder.AddTriangle(
                 data.CenterToRightWaterEdge.V2, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                rightShoreEdge.V1,              MeshBuilder.Weights1, new Vector2(1f, 1f),
-                rightShoreEdge.V2,              MeshBuilder.Weights1, new Vector2(0f, 1f),
+                rightShoreEdge.V1,              MeshBuilder.Weights3, new Vector2(1f, 1f),
+                rightShoreEdge.V2,              MeshBuilder.Weights3, new Vector2(0f, 1f),
                 indices, MeshBuilder.Estuaries
             );
 

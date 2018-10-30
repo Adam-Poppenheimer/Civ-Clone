@@ -26,7 +26,7 @@ namespace Assets.Simulation.Visibility {
 
         bool IsCellVisibleToCiv(IHexCell cell, ICivilization civ);
 
-        IEnumerable<IHexCell> GetCellsVisibleToCiv(ICivilization civ);
+        int GetVisibilityOfCellToCiv(IHexCell cell, ICivilization civ);
 
         void IncreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ);
         void DecreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ);

@@ -6,6 +6,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.MapManagement {
 
     [Serializable, DataContract]
@@ -23,6 +25,8 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public Dictionary<string, int> ProgressOnTechs;
 
         [DataMember()] public SerializableSocialPolicyData SocialPolicies;
+
+        [DataMember()] public List<HexCoordinates> ExploredCells;
 
         #endregion
 

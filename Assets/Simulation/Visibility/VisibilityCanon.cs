@@ -82,7 +82,7 @@ namespace Assets.Simulation.Visibility {
 
         public bool IsCellVisible(IHexCell cell) {
             switch(CellVisibilityMode) {
-                case CellVisibilityMode.ActiveCiv: return IsCellVisibleToCiv(cell, GameCore.ActiveCivilization);
+                case CellVisibilityMode.ActiveCiv: return GameCore.ActiveCivilization != null && IsCellVisibleToCiv(cell, GameCore.ActiveCivilization);
                 case CellVisibilityMode.RevealAll: return true;
                 case CellVisibilityMode.HideAll:   return false;
                 default: throw new NotImplementedException();
@@ -90,45 +90,10 @@ namespace Assets.Simulation.Visibility {
         }
 
         public bool IsCellVisibleToCiv(IHexCell cell, ICivilization civ) {
-            return GetVisibility(cell, civ) > 0;
+            return GetVisibilityOfCellToCiv(cell, civ) > 0;
         }
 
-        public IEnumerable<IHexCell> GetCellsVisibleToCiv(ICivilization civ) {
-            throw new NotImplementedException();
-        }
-
-        public void DecreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ) {
-            int visibility = GetVisibility(cell, civ) - 1;
-            SetVisibility(cell, civ, visibility);
-            if(visibility <= 0) {
-                cell.RefreshVisibility();
-            }
-        }
-
-        public void IncreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ) {
-            int visibility =  GetVisibility(cell, civ) + 1;
-            SetVisibility(cell, civ, visibility);
-            if(visibility >= 1) {
-                cell.RefreshVisibility();
-            }
-        }
-
-        public void ClearCellVisibility() {
-            VisibilityOfCellToCiv.Clear();
-        }
-
-        public bool IsResourceVisible(IResourceDefinition resource) {
-            switch(ResourceVisibilityMode) {
-                case ResourceVisibilityMode.ActiveCiv: return TechCanon.IsResourceDiscoveredByCiv(resource, GameCore.ActiveCivilization);
-                case ResourceVisibilityMode.RevealAll: return true;
-                case ResourceVisibilityMode.HideAll:   return false;
-                default: throw new NotImplementedException("No behavior defined for ResourceVisibilityMode " + ResourceVisibilityMode);
-            }
-        }
-
-        #endregion
-
-        private int GetVisibility(IHexCell cell, ICivilization civ) {
+        public int GetVisibilityOfCellToCiv(IHexCell cell, ICivilization civ) {
             Dictionary<ICivilization, int> visibilityDictForCell;
 
             if(!VisibilityOfCellToCiv.ContainsKey(cell)) {
@@ -142,6 +107,45 @@ namespace Assets.Simulation.Visibility {
             visibilityDictForCell.TryGetValue(civ, out retval);
             return retval;
         }
+
+        public void DecreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ) {
+            int oldVisibility = GetVisibilityOfCellToCiv(cell, civ);
+
+            int newVisibility = oldVisibility - 1;
+
+            SetVisibility(cell, civ, newVisibility);
+
+            if(oldVisibility == 1) {
+                cell.RefreshVisibility();
+            }
+        }
+
+        public void IncreaseCellVisibilityToCiv(IHexCell cell, ICivilization civ) {
+            int oldVisibility = GetVisibilityOfCellToCiv(cell, civ);
+
+            int newVisibility =  oldVisibility + 1;
+
+            SetVisibility(cell, civ, newVisibility);
+
+            if(oldVisibility <= 0) {
+                cell.RefreshVisibility();
+            }
+        }
+
+        public void ClearCellVisibility() {
+            VisibilityOfCellToCiv.Clear();
+        }
+
+        public bool IsResourceVisible(IResourceDefinition resource) {
+            switch(ResourceVisibilityMode) {
+                case ResourceVisibilityMode.ActiveCiv: return GameCore.ActiveCivilization != null && TechCanon.IsResourceDiscoveredByCiv(resource, GameCore.ActiveCivilization);
+                case ResourceVisibilityMode.RevealAll: return true;
+                case ResourceVisibilityMode.HideAll:   return false;
+                default: throw new NotImplementedException("No behavior defined for ResourceVisibilityMode " + ResourceVisibilityMode);
+            }
+        }
+
+        #endregion
 
         private void SetVisibility(IHexCell cell, ICivilization civ, int value) {
             Dictionary<ICivilization, int> visibilityDictForCell;

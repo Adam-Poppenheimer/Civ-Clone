@@ -21,6 +21,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IMapComposer         MapComposer;
         private IVisibilityResponder VisibilityResponder;
         private IVisibilityCanon     VisibilityCanon;
+        private IExplorationCanon    ExplorationCanon;
 
         #endregion
 
@@ -29,12 +30,14 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IMapComposer mapComposer,
-            IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon
+            IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
+            IExplorationCanon explorationCanon
         ){
             Brain               = brain;
             MapComposer         = mapComposer;
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
+            ExplorationCanon    = explorationCanon;
         }
 
         #region from StateMachineBehaviour
@@ -49,6 +52,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.ActiveCiv;
             VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.ActiveCiv;
             VisibilityCanon.RevealMode             = RevealMode.Fade;
+
+            ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

@@ -10,6 +10,8 @@ using Zenject;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Core;
+using Assets.Simulation.Visibility;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -21,6 +23,8 @@ namespace Assets.Simulation.MapManagement {
         private ITechCanon            TechCanon;
         private IGameCore             GameCore;
         private ISocialPolicyComposer PolicyComposer;
+        private IExplorationCanon     ExplorationCanon;
+        private IHexGrid              Grid;
 
         private List<ITechDefinition> AvailableTechs;
 
@@ -31,13 +35,15 @@ namespace Assets.Simulation.MapManagement {
         [Inject]
         public CivilizationComposer(
             ICivilizationFactory civilizationFactory, ITechCanon techCanon, IGameCore gameCore,
-            ISocialPolicyComposer policyComposer,
+            ISocialPolicyComposer policyComposer, IExplorationCanon explorationCanon, IHexGrid grid,
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs
         ) {
             CivilizationFactory = civilizationFactory;
             TechCanon           = techCanon;
             GameCore            = gameCore;
             PolicyComposer      = policyComposer;
+            ExplorationCanon    = explorationCanon;
+            Grid                = grid;
             AvailableTechs      = availableTechs;
         }
 
@@ -62,7 +68,7 @@ namespace Assets.Simulation.MapManagement {
                     GoldStockpile    = civilization.GoldStockpile,
                     CultureStockpile = civilization.CultureStockpile,
                     DiscoveredTechs  = TechCanon.GetTechsDiscoveredByCiv(civilization).Select(tech => tech.Name).ToList(),
-                    SocialPolicies   = PolicyComposer.ComposePoliciesFromCiv(civilization)
+                    SocialPolicies   = PolicyComposer.ComposePoliciesFromCiv(civilization),
                 };
 
                 if(civilization.TechQueue != null && civilization.TechQueue.Count > 0) {
@@ -86,7 +92,11 @@ namespace Assets.Simulation.MapManagement {
                     }
                 }else {
                     civData.ProgressOnTechs = null;
-                }                
+                }   
+                
+                var exploredCells = Grid.Cells.Where(cell => ExplorationCanon.IsCellExploredByCiv(cell, civilization));
+
+                civData.ExploredCells = exploredCells.Select(cell => cell.Coordinates).ToList();             
 
                 mapData.Civilizations.Add(civData);
             }
@@ -139,6 +149,12 @@ namespace Assets.Simulation.MapManagement {
 
                         TechCanon.SetProgressOnTechByCiv(techOfName, newCiv, civData.ProgressOnTechs[techInProgressName]);
                     }
+                }
+
+                foreach(var exploredCoords in civData.ExploredCells) {
+                    var exploredCell = Grid.GetCellAtCoordinates(exploredCoords);
+
+                    ExplorationCanon.SetCellAsExploredByCiv(exploredCell, newCiv);
                 }
             }
 

@@ -36,6 +36,7 @@ namespace Assets.Simulation.Visibility {
         private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
         private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
         private IVisibilityCanon                                 VisibilityCanon;
+        private IExplorationCanon                                ExplorationCanon;
         private ICityLineOfSightLogic                            CityLineOfSightLogic;
         private IUnitLineOfSightLogic                            UnitLineOfSightLogic;
         private IUnitFactory                                     UnitFactory;
@@ -52,7 +53,7 @@ namespace Assets.Simulation.Visibility {
             IPossessionRelationship<ICivilization, IUnit>    unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
-            IVisibilityCanon visibilityCanon,
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICityLineOfSightLogic cityLineOfSightLogic,
             IUnitLineOfSightLogic unitLineOfSightLogic,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
@@ -70,6 +71,7 @@ namespace Assets.Simulation.Visibility {
             CityPossessionCanon  = cityPossessionCanon;
             NodeLocationCanon    = nodeLocationCanon;
             VisibilityCanon      = visibilityCanon;
+            ExplorationCanon     = explorationCanon;
             CityLineOfSightLogic = cityLineOfSightLogic;
             UnitLineOfSightLogic = unitLineOfSightLogic;
             UnitFactory          = unitFactory;
@@ -91,7 +93,8 @@ namespace Assets.Simulation.Visibility {
             civSignals.CivLosingCitySignal.Subscribe(OnCivLosingCity);
             civSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity);
 
-            visibilitySignals.CellVisibilityModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
+            visibilitySignals.CellVisibilityModeChangedSignal .Subscribe(unit => TryResetCellVisibility());
+            visibilitySignals.CellExplorationModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
 
             coreSignals.ActiveCivChangedSignal.Subscribe(OnActiveCivChanged);
         }
@@ -126,6 +129,7 @@ namespace Assets.Simulation.Visibility {
 
                 foreach(var visibleCell in UnitLineOfSightLogic.GetCellsVisibleToUnit(unit)) {
                     VisibilityCanon.IncreaseCellVisibilityToCiv(visibleCell, unitOwner);
+                    ExplorationCanon.SetCellAsExploredByCiv(visibleCell, unitOwner);
                 }
             }
 
@@ -134,6 +138,7 @@ namespace Assets.Simulation.Visibility {
 
                 foreach(var visibleCell in CityLineOfSightLogic.GetCellsVisibleToCity(city)) {
                     VisibilityCanon.IncreaseCellVisibilityToCiv(visibleCell, cityOwner);
+                    ExplorationCanon.SetCellAsExploredByCiv(visibleCell, cityOwner);
                 }
             }
 

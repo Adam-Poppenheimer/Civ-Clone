@@ -3,15 +3,16 @@
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Terrain Texture Array", 2DArray) = "white" {}
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_Specular ("Specular", Color) = (0.2, 0.2, 0.2)
 		[Toggle(SHOW_MAP_DATA)] _ShowMapData("Show Map Data", Float) = 0
+		_BackgroundColor("Background Color", Color) = (0, 0, 0)
 	}
 	SubShader {
 		Tags { "RenderType"="Opaque" }
 		LOD 200
 		
 		CGPROGRAM
-		#pragma surface surf Standard fullforwardshadows vertex:vert
+		#pragma surface surf StandardSpecular fullforwardshadows vertex:vert
 		#pragma target 3.5
 		#pragma shader_feature SHOW_MAP_DATA
 
@@ -23,7 +24,7 @@
 			float4 color : COLOR;
 			float3 worldPos;
 			float3 terrain;
-			float3 visibility;
+			float4 visibility;
 
 			#if defined(SHOW_MAP_DATA)
 			float mapData;
@@ -46,7 +47,8 @@
 			data.visibility.x = cell0.x;
 			data.visibility.y = cell1.x;
 			data.visibility.z = cell2.x;
-			data.visibility = lerp(0.25, 1, data.visibility);
+			data.visibility.xyz = lerp(0.25, 1, data.visibility.xyz);
+			data.visibility.w = cell0.y * v.color.x + cell1.y * v.color.y + cell2.y * v.color.z;
 
 			#if defined(SHOW_MAP_DATA)
 			data.mapData = cell0.z * v.color.x + cell1.z * v.color.y + cell2.z * v.color.z;
@@ -54,8 +56,9 @@
 		}
 
 		half _Glossiness;
-		half _Metallic;
+		fixed3 _Specular;
 		fixed4 _Color;
+		half3 _BackgroundColor;
 
 		float4 GetTerrainColor(Input IN, int index) {
 			float3 uvw = float3(IN.worldPos.xz * 0.02, IN.terrain[index]);
@@ -63,20 +66,24 @@
 			return c * (IN.color[index] * IN.visibility[index]);
 		}
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
+		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 			fixed4 c =
 				GetTerrainColor(IN, 0) +
 				GetTerrainColor(IN, 1) +
 				GetTerrainColor(IN, 2);
 
-			o.Albedo = c.rgb * _Color;
+			float explored = IN.visibility.w;
+
+			o.Albedo = c.rgb * _Color * explored;
 
 			#if defined(SHOW_MAP_DATA)
 			o.Albedo = IN.mapData;
 			#endif
 
-			o.Metallic = _Metallic;
+			o.Specular = _Specular * explored;
 			o.Smoothness = _Glossiness;
+			o.Occlusion = explored;
+			o.Emission = _BackgroundColor * (1 - explored);
 			o.Alpha = c.a;
 		}
 		ENDCG

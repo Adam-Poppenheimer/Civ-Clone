@@ -25,6 +25,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private ICivilizationFactory CivFactory;
         private IVisibilityResponder VisibilityResponder;
         private IVisibilityCanon     VisibilityCanon;
+        private IExplorationCanon    ExplorationCanon;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
-            IVisibilityCanon visibilityCanon
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -42,6 +43,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivFactory          = civFactory;
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
+            ExplorationCanon    = explorationCanon;
         }
 
         #region from StateMachineBehaviour
@@ -56,6 +58,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.RevealAll;
             VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.RevealAll;
             VisibilityCanon.RevealMode             = RevealMode.Immediate;
+
+            ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
             Grid.Build(4, 3);
 

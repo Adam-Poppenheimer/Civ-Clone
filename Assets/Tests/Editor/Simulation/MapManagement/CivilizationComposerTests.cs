@@ -253,6 +253,14 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
+        public void ComposeCivilizations_RecordsExploredCells() {
+            throw new NotImplementedException();
+        }
+
+
+
+
+        [Test]
         public void DecomposeCivilizations_CallsIntoFactoryWithNameAndColor() {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
@@ -503,6 +511,11 @@ namespace Assets.Tests.Simulation.MapManagement {
             var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
 
             MockGameCore.VerifySet(core => core.ActiveCivilization = civTwo);
+        }
+
+        [Test]
+        public void DecomposeCivilizations_RebuildsExploredCellsProperly() {
+            throw new NotImplementedException();
         }
 
         #endregion

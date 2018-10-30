@@ -17,7 +17,6 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private IHexGrid                  Grid;
         private IHexGridMeshBuilder       MeshBuilder;
         private IRiverTroughTriangulator  TroughTriangulator;
         private IRiverSurfaceTriangulator SurfaceTriangulator;
@@ -28,11 +27,10 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public RiverTriangulator(
-            IHexGrid grid, IHexGridMeshBuilder meshBuilder,
+            IHexGridMeshBuilder meshBuilder,
             IRiverTroughTriangulator troughTriangulator,
             IRiverSurfaceTriangulator surfaceTriangulator
         ){
-            Grid                = grid;
             MeshBuilder         = meshBuilder;
             TroughTriangulator  = troughTriangulator;
             SurfaceTriangulator = surfaceTriangulator;
@@ -48,13 +46,7 @@ namespace Assets.Simulation.HexMap {
             return thisData.Direction <= HexDirection.SE && thisData.IsRiverCorner;
         }
 
-        public void TriangulateRiver(CellTriangulationData data) {          
-            IHexCell nextNeighbor = Grid.GetNeighbor(data.Center, data.Direction.Next());
-
-            var nextData = MeshBuilder.GetTriangulationData(
-                data.Center, data.Right, nextNeighbor, data.Direction.Next()
-            );            
-
+        public void TriangulateRiver(CellTriangulationData data) {
             if(data.Direction > HexDirection.SE) {
                 return;
             }
@@ -63,8 +55,7 @@ namespace Assets.Simulation.HexMap {
             if(data.CenterToRightEdgeType == HexEdgeType.River) {
                 TroughTriangulator.CreateRiverTrough_Edge(data);
 
-                SurfaceTriangulator.CreateRiverSurface_ThisCornerToMiddle(data);
-                SurfaceTriangulator.CreateRiverSurface_MiddleToNextCorner(nextData);
+                SurfaceTriangulator.CreateRiverSurface_StraightEdge(data);
             }
 
             if(data.Direction > HexDirection.E || data.Left == null || !data.IsRiverCorner) {
@@ -198,6 +189,7 @@ namespace Assets.Simulation.HexMap {
             if(data.CenterToLeftEdgeType == HexEdgeType.Flat) {
                 if(data.LeftToRightEdgeType == HexEdgeType.Flat) {
                     TroughTriangulator.CreateRiverTrough_Endpoint_DoubleFlat(data);
+
                     SurfaceTriangulator.CreateRiverEndpointSurface_Default(data);
 
                 }else if(data.LeftToRightEdgeType == HexEdgeType.Slope) {

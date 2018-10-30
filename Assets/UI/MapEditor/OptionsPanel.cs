@@ -21,12 +21,14 @@ namespace Assets.UI.MapEditor {
         #region instance fields and properties
 
         [SerializeField] private Dropdown VisibilityModeDropdown;
+        [SerializeField] private Dropdown ExplorationModeDropdown;
         [SerializeField] private Dropdown ActiveCivDropdown;
 
 
 
 
         private IVisibilityCanon     VisibilityCanon;
+        private IExplorationCanon    ExplorationCanon;
         private ICivilizationFactory CivFactory;
         private IGameCore            GameCore;
 
@@ -36,17 +38,20 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            IVisibilityCanon visibilityCanon, ICivilizationFactory civFactory, IGameCore gameCore
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
+            ICivilizationFactory civFactory, IGameCore gameCore
         ) {
-            VisibilityCanon = visibilityCanon;
-            CivFactory      = civFactory;
-            GameCore        = gameCore;
+            VisibilityCanon  = visibilityCanon;
+            ExplorationCanon = explorationCanon;
+            CivFactory       = civFactory;
+            GameCore         = gameCore;
         }
 
         #region Unity messages
 
         private void Start() {
-            InitializeVisibilityModeDropdown();
+            InitializeVisibilityDropdown();
+            InitializeExplorationDropdown();
         }
 
         private void OnEnable() {
@@ -65,6 +70,16 @@ namespace Assets.UI.MapEditor {
             VisibilityCanon.CellVisibilityMode = newMode;
         }
 
+        public void UpdateSelectedExplorationMode(int optionIndex) {
+            var modeName = ExplorationModeDropdown.options[optionIndex].text;
+
+            var newMode = EnumUtil.GetValues<CellExplorationMode>().Where(
+                mode => mode.ToString().Equals(modeName)
+            ).FirstOrDefault();
+
+            ExplorationCanon.ExplorationMode = newMode;
+        }
+
         public void UpdateActiveCiv(int optionIndex) {
             var civName = ActiveCivDropdown.options[optionIndex].text;
 
@@ -73,7 +88,7 @@ namespace Assets.UI.MapEditor {
             GameCore.ActiveCivilization = newActiveCiv;
         }
 
-        private void InitializeVisibilityModeDropdown() {
+        private void InitializeVisibilityDropdown() {
             VisibilityModeDropdown.ClearOptions();
 
             List<Dropdown.OptionData> modeOptions = EnumUtil.GetValues<CellVisibilityMode>().Select(
@@ -87,6 +102,22 @@ namespace Assets.UI.MapEditor {
             )).FirstOrDefault();
 
             VisibilityModeDropdown.value = VisibilityModeDropdown.options.IndexOf(currentModeOption);
+        }
+
+        private void InitializeExplorationDropdown() {
+            ExplorationModeDropdown.ClearOptions();
+
+            List<Dropdown.OptionData> modeOptions = EnumUtil.GetValues<CellExplorationMode>().Select(
+                mode => new Dropdown.OptionData(mode.ToString())
+            ).ToList();
+
+            ExplorationModeDropdown.AddOptions(modeOptions);
+
+            Dropdown.OptionData currentModeOption = ExplorationModeDropdown.options.Where(
+                option => option.text.Equals(ExplorationCanon.ExplorationMode.ToString()
+            )).FirstOrDefault();
+
+            ExplorationModeDropdown.value = ExplorationModeDropdown.options.IndexOf(currentModeOption);
         }
 
         private void SetUpActiveCivDropdown() {

@@ -15,6 +15,7 @@ namespace Assets.Simulation.Visibility {
 
         public override void InstallBindings() {
             Container.Bind<IVisibilityCanon>    ().To<VisibilityCanon>    ().AsSingle();
+            Container.Bind<IExplorationCanon>   ().To<ExplorationCanon>   ().AsSingle();
             Container.Bind<IVisibilityResponder>().To<VisibilityResponder>().AsSingle().NonLazy();
 
             Container.Bind<VisibilitySignals>().AsSingle();

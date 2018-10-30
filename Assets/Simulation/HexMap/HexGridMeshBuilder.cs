@@ -652,7 +652,7 @@ namespace Assets.Simulation.HexMap {
             Vector3 bottomLeft, Vector3 bottomRight,
             Vector3 topLeft, Vector3 topRight,
             float vMin, float vMax,
-             bool isReversed, Vector3 indices
+            bool isReversed, Vector3 indices
         ) {
             Rivers.AddQuadUnperturbed(bottomLeft, bottomRight, topLeft, topRight);
 
@@ -663,7 +663,7 @@ namespace Assets.Simulation.HexMap {
 
             Rivers.AddQuadUV(u1, u2, v1, v2);
 
-            Rivers.AddQuadCellData(indices, Weights1, Weights2);
+            Rivers.AddQuadCellData(indices, Weights3, Weights1, Weights3, Weights1);
         }
 
         public void TriangulateRiverQuadUnperturbed(

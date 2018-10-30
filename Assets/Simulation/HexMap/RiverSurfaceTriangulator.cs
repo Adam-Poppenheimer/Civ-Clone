@@ -108,23 +108,28 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        public void CreateRiverSurface_ThisCornerToMiddle(CellTriangulationData thisData) {
+        public void CreateRiverSurface_StraightEdge(CellTriangulationData thisData) {
             float riverSurfaceY = Mathf.Min(thisData.Center.RiverSurfaceY, thisData.Right.RiverSurfaceY);
 
             Vector3 leftOne   = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V1);
             Vector3 leftTwo   = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V2);
             Vector3 leftThree = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V3);
+            Vector3 leftFour  = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V4);
+            Vector3 leftFive  = NoiseGenerator.Perturb(thisData.RightToCenterEdge.V5);
 
             Vector3 rightOne   = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V1);
             Vector3 rightTwo   = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V2);
             Vector3 rightThree = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V3);
+            Vector3 rightFour  = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V4);
+            Vector3 rightFive  = NoiseGenerator.Perturb(thisData.CenterToRightEdge.V5);
 
-            leftOne.y = leftTwo.y = leftThree.y = rightOne.y = rightTwo.y = rightThree.y = riverSurfaceY;
+            leftOne .y = leftTwo .y = leftThree .y = leftFour .y = leftFive .y = riverSurfaceY;
+            rightOne.y = rightTwo.y = rightThree.y = rightFour.y = rightFive.y = riverSurfaceY;
 
             bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(thisData.Center, thisData.Direction) == RiverFlow.Counterclockwise;
 
             Vector3 indices = new Vector3(
-                thisData.Center.Index, thisData.Center.Index, thisData.Center.Index
+                thisData.Center.Index, thisData.Left.Index, thisData.Right.Index
             );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
@@ -138,26 +143,6 @@ namespace Assets.Simulation.HexMap {
                 RenderConfig.GetRiverEdgeV(1), RenderConfig.GetRiverEdgeV(2),
                 isReversed, indices
             );
-        }
-
-        public void CreateRiverSurface_MiddleToNextCorner(CellTriangulationData nextData) {
-            float riverSurfaceY = Mathf.Min(nextData.Center.RiverSurfaceY, nextData.Left.RiverSurfaceY);
-
-            Vector3 leftThree = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V3);
-            Vector3 leftFour  = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V4);
-            Vector3 leftFive  = NoiseGenerator.Perturb(nextData.LeftToCenterEdge.V5);
-
-            Vector3 rightThree = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V3);
-            Vector3 rightFour  = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V4);
-            Vector3 rightFive  = NoiseGenerator.Perturb(nextData.CenterToLeftEdge.V5);
-
-            leftThree.y = leftFour.y = leftFive.y = rightThree.y = rightFour.y = rightFive.y = riverSurfaceY;
-
-            bool isReversed = RiverCanon.GetFlowOfRiverAtEdge(nextData.Center, nextData.Direction.Previous()) == RiverFlow.Counterclockwise;
-
-            Vector3 indices = new Vector3(
-                nextData.Center.Index, nextData.Center.Index, nextData.Center.Index
-            );
 
             MeshBuilder.TriangulateRiverQuadUnperturbed(
                 leftThree, rightThree, leftFour, rightFour,
@@ -169,32 +154,53 @@ namespace Assets.Simulation.HexMap {
                 leftFour, rightFour, leftFive, rightFive,
                 RenderConfig.GetRiverEdgeV(3), RenderConfig.GetRiverEdgeV(4),
                 isReversed, indices
-            );            
+            );
         }
 
+        /*
+         * This method tries to draw a curve triangle with Center on its inside point
+         * and Left and Right making up its outer edge. It does this by performing 
+         * rotational operations much like corner triangulation in the terrain mesh.
+         * 
+         * We use UV2 and UV3 to pass in barycentric coordinates to the shader.
+         * The shader uses those to determine its UV, since river corners require
+         * a somewhat complex UV animation. This is not considered a great solution
+         * to the problem.
+         * 
+         * the current implementation also includes waterfalls. The organization
+         * for waterfall creation is unpleasant to say the least, but waterfalls are
+         * probably going to be removed from the final product, so it's not clear
+         * that a refactor for comprehension is useful.
+         */
         public void CreateRiverSurface_CurveCorner(CellTriangulationData data) {
             float riverSurfaceY = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
 
             bool isReversed = false;
             bool waterfallHasOppositeReversal = false;
 
-            Vector3 centerCorner = Vector3.zero, leftCorner = Vector3.zero, rightCorner = Vector3.zero;
+            Vector3 innerCorner  = Vector3.zero, outerLeftCorner  = Vector3.zero, outerRightCorner  = Vector3.zero;
+            Color   innerWeights = Color.black,  outerLeftWeights = Color.black,  outerRightWeights = Color.black;
 
-            bool buildCorner    = false;
+            bool buildCorner = false;
             bool buildWaterfall = false;
 
             Vector3 waterfallUpRiverLeft   = Vector3.zero, waterfallUpRiverRight   = Vector3.zero;
             Vector3 waterfallDownRiverLeft = Vector3.zero, waterfallDownRiverRight = Vector3.zero;
 
+            //If Center is already on the inside of the corner
             if(data.CenterToRightEdgeType == HexEdgeType.River) {
                 if(data.CenterToLeftEdgeType == HexEdgeType.River) {
                     buildCorner = true;
 
-                    centerCorner = data.PerturbedCenterCorner;
-                    leftCorner   = data.PerturbedLeftCorner;
-                    rightCorner  = data.PerturbedRightCorner;
+                    innerCorner      = data.PerturbedCenterCorner;
+                    outerLeftCorner  = data.PerturbedLeftCorner;
+                    outerRightCorner = data.PerturbedRightCorner;
 
-                    centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+                    innerWeights      = MeshBuilder.Weights1;
+                    outerLeftWeights  = MeshBuilder.Weights2;
+                    outerRightWeights = MeshBuilder.Weights3;
+
+                    innerCorner.y = outerLeftCorner.y = outerRightCorner.y = riverSurfaceY;
 
                     isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Center, data.Direction) == RiverFlow.Counterclockwise;
 
@@ -203,8 +209,8 @@ namespace Assets.Simulation.HexMap {
 
                         waterfallUpRiverLeft    = data.PerturbedLeftCorner;
                         waterfallUpRiverRight   = data.PerturbedCenterCorner;
-                        waterfallDownRiverLeft  = leftCorner;
-                        waterfallDownRiverRight = centerCorner;
+                        waterfallDownRiverLeft  = outerLeftCorner;
+                        waterfallDownRiverRight = innerCorner;
 
                         waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
 
@@ -214,20 +220,25 @@ namespace Assets.Simulation.HexMap {
 
                         waterfallUpRiverLeft    = data.PerturbedCenterCorner;
                         waterfallUpRiverRight   = data.PerturbedRightCorner;
-                        waterfallDownRiverLeft  = centerCorner;
-                        waterfallDownRiverRight = rightCorner;
+                        waterfallDownRiverLeft  = innerCorner;
+                        waterfallDownRiverRight = outerRightCorner;
 
                         waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
                     }
 
+                //If right is on the inside of the corner
                 }else if(data.LeftToRightEdgeType == HexEdgeType.River) {
                     buildCorner = true;
 
-                    centerCorner = data.PerturbedRightCorner;
-                    leftCorner   = data.PerturbedCenterCorner;
-                    rightCorner  = data.PerturbedLeftCorner;
+                    innerCorner      = data.PerturbedRightCorner;
+                    outerLeftCorner  = data.PerturbedCenterCorner;
+                    outerRightCorner = data.PerturbedLeftCorner;
 
-                    centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+                    innerWeights      = MeshBuilder.Weights3;
+                    outerLeftWeights  = MeshBuilder.Weights1;
+                    outerRightWeights = MeshBuilder.Weights2;
+
+                    innerCorner.y = outerLeftCorner.y = outerRightCorner.y = riverSurfaceY;
 
                     isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Right, data.Direction.Previous2()) == RiverFlow.Counterclockwise;
 
@@ -236,8 +247,8 @@ namespace Assets.Simulation.HexMap {
 
                         waterfallUpRiverLeft    = data.PerturbedCenterCorner;
                         waterfallUpRiverRight   = data.PerturbedRightCorner;
-                        waterfallDownRiverLeft  = leftCorner;
-                        waterfallDownRiverRight = centerCorner;
+                        waterfallDownRiverLeft  = outerLeftCorner;
+                        waterfallDownRiverRight = innerCorner;
 
                         waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Right.RiverSurfaceY);
 
@@ -247,21 +258,26 @@ namespace Assets.Simulation.HexMap {
 
                         waterfallUpRiverLeft    = data.PerturbedRightCorner;
                         waterfallUpRiverRight   = data.PerturbedLeftCorner;
-                        waterfallDownRiverLeft  = centerCorner;
-                        waterfallDownRiverRight = rightCorner;
+                        waterfallDownRiverLeft  = innerCorner;
+                        waterfallDownRiverRight = outerRightCorner;
 
                         waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
                     }
                 }
 
+            //If left is on the inside of the corner
             }else if(data.CenterToLeftEdgeType == HexEdgeType.River && data.LeftToRightEdgeType == HexEdgeType.River) {
                 buildCorner = true;
 
-                centerCorner = data.PerturbedLeftCorner;
-                leftCorner   = data.PerturbedRightCorner;
-                rightCorner  = data.PerturbedCenterCorner;
+                innerCorner      = data.PerturbedLeftCorner;
+                outerLeftCorner  = data.PerturbedRightCorner;
+                outerRightCorner = data.PerturbedCenterCorner;
 
-                centerCorner.y = leftCorner.y = rightCorner.y = riverSurfaceY;
+                innerWeights      = MeshBuilder.Weights2;
+                outerLeftWeights  = MeshBuilder.Weights3;
+                outerRightWeights = MeshBuilder.Weights1;
+
+                innerCorner.y = outerLeftCorner.y = outerRightCorner.y = riverSurfaceY;
 
                 isReversed = RiverCanon.GetFlowOfRiverAtEdge(data.Left, data.Direction.Next()) == RiverFlow.Counterclockwise;
 
@@ -271,8 +287,8 @@ namespace Assets.Simulation.HexMap {
 
                     waterfallUpRiverLeft    = data.PerturbedLeftCorner;
                     waterfallUpRiverRight   = data.PerturbedCenterCorner;
-                    waterfallDownRiverLeft  = centerCorner;
-                    waterfallDownRiverRight = rightCorner;
+                    waterfallDownRiverLeft  = innerCorner;
+                    waterfallDownRiverRight = outerRightCorner;
 
                     waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Center.RiverSurfaceY, data.Left.RiverSurfaceY);
 
@@ -281,11 +297,10 @@ namespace Assets.Simulation.HexMap {
 
                     waterfallUpRiverLeft    = data.PerturbedRightCorner;
                     waterfallUpRiverRight   = data.PerturbedLeftCorner;
-                    waterfallDownRiverLeft  = leftCorner;
-                    waterfallDownRiverRight = centerCorner;
+                    waterfallDownRiverLeft  = outerLeftCorner;
+                    waterfallDownRiverRight = innerCorner;
 
                     waterfallUpRiverLeft.y = waterfallUpRiverRight.y = Mathf.Min(data.Left.RiverSurfaceY, data.Right.RiverSurfaceY);
-
                 }
             }
 
@@ -293,22 +308,26 @@ namespace Assets.Simulation.HexMap {
                 return;
             }
 
+            MeshBuilder.AddTriangleUnperturbed(
+                innerCorner,      data.Center.Index, innerWeights,
+                outerLeftCorner,  data.Left  .Index, outerLeftWeights,
+                outerRightCorner, data.Right .Index, outerRightWeights,
+                MeshBuilder.RiverCorners 
+            );
+
+            //The inner point of the curve is always at barycentric coordinate (1, 0, 0).
+            //Upriver is always at (0, 1, 0) and downriver at (0, 0, 1). Because of this,
+            //flow direction affects how we assign the barycentric coordinates.
             if(isReversed) {
-                MeshBuilder.AddTriangleUnperturbed(
-                    centerCorner, data.Center.Index, MeshBuilder.Weights1,
-                    leftCorner,   data.Left  .Index, MeshBuilder.Weights3,
-                    rightCorner,  data.Right .Index, MeshBuilder.Weights2,
-                    MeshBuilder.RiverCorners 
-                );
                 MeshBuilder.RiverCorners.AddTriangleUV(new Vector2(1f, 1f), new Vector2(1f, 1f), new Vector2(1f, 1f));
+
+                MeshBuilder.RiverCorners.AddTriangleUV2(new Vector2(1f, 0f), Vector2.zero, new Vector2(0f, 1f));
+                MeshBuilder.RiverCorners.AddTriangleUV3(Vector2.zero, new Vector2(1f, 0f), Vector2.zero);
             }else {
-                MeshBuilder.AddTriangleUnperturbed(
-                    centerCorner, data.Center.Index, MeshBuilder.Weights1,
-                    leftCorner,   data.Left  .Index, MeshBuilder.Weights2,
-                    rightCorner,  data.Right .Index, MeshBuilder.Weights3,
-                    MeshBuilder.RiverCorners 
-                );
                 MeshBuilder.RiverCorners.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 0f));
+
+                MeshBuilder.RiverCorners.AddTriangleUV2(new Vector2(1f, 0f), new Vector2(0f, 1f), Vector2.zero);
+                MeshBuilder.RiverCorners.AddTriangleUV3(Vector2.zero, Vector2.zero, new Vector2(1f, 0f));
             }
 
             if(buildWaterfall) {
@@ -433,6 +452,10 @@ namespace Assets.Simulation.HexMap {
         //Creates the water surface for a river endpoint. The river lies between
         //Center and Right and is facing Left.
         public void CreateRiverEndpointSurface_Default(CellTriangulationData data) {
+            if(data.Left.Terrain.IsWater()) {
+                return;
+            }
+
             var indices = new Vector3(data.Center.Index, data.Left.Index, data.Right.Index);
 
             Vector3 yAdjustedCenter = data.PerturbedCenterCorner,

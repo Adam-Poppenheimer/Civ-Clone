@@ -14,6 +14,8 @@ namespace Assets.Simulation.Visibility {
         public ISubject<Unit> CellVisibilityModeChangedSignal     { get; private set; }
         public ISubject<Unit> ResourceVisibilityModeChangedSignal { get; private set; }
 
+        public ISubject<Unit> CellExplorationModeChangedSignal    { get; private set; }
+
         #endregion
 
         #region constructors
@@ -21,6 +23,8 @@ namespace Assets.Simulation.Visibility {
         public VisibilitySignals() {
             CellVisibilityModeChangedSignal     = new Subject<Unit>();
             ResourceVisibilityModeChangedSignal = new Subject<Unit>();
+
+            CellExplorationModeChangedSignal    = new Subject<Unit>();
         }
 
         #endregion
