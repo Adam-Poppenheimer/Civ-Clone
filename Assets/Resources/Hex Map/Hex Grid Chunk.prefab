@@ -1264,8 +1264,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UseCollider: 0
   UseUVCoordinates: 1
-  UseUV2Coordinates: 0
-  UseUV3Coordinates: 0
+  UseUV2Coordinates: 1
+  UseUV3Coordinates: 1
   UseCellData: 1
   UseColors: 0
   WeldMesh: 0

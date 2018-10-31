@@ -4,7 +4,7 @@
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 		_SplatMap("Splat Map", 2D) = "white" {}
 		_Glossiness("Smoothness", Range(0,1)) = 0.5
-		_Metallic("Metallic", Range(0,1)) = 0.0
+		_Specular("Specular", Color) = (0.2, 0.2, 0.2)
 	}
 	SubShader{
 		Tags{ "RenderType"="Opaque" "Queue"="Transparent" }
@@ -12,7 +12,7 @@
 		Offset -0.1, -0.1
 
 		CGPROGRAM
-		#pragma surface surf Standard alpha:fade vertex:vert
+		#pragma surface surf StandardSpecular alpha:fade vertex:vert
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.5
@@ -25,7 +25,7 @@
 		struct Input {
 			float2 uv_MainTex;
 			float3 worldPos;
-			float3 visibility;
+			float2 visibility;
 		};
 
 		void vert(inout appdata_full v, out Input data) {
@@ -35,13 +35,14 @@
 			float4 cell1 = GetCellData(v, 1);
 			float4 cell2 = GetCellData(v, 2);
 
-			data.visibility =
-				cell0.x * v.color.x + cell1.x * v.color.y + cell2.x * v.color.z;
-			data.visibility = lerp(0.25, 1, data.visibility);
+			data.visibility.x = cell0.x * v.color.x + cell1.x * v.color.y + cell2.x * v.color.z;
+			data.visibility.x = lerp(0.25, 1, data.visibility.x);
+
+			data.visibility.y = cell0.y * v.color.x + cell1.y * v.color.y + cell2.y * v.color.z;
 		}
 
 		half _Glossiness;
-		half _Metallic;
+		fixed3 _Specular;
 		fixed4 _Color;
 
 
@@ -55,14 +56,17 @@
 			return min(min(textureAlpha, colorAlpha), rolloffAlpha * rolloffAlpha);
 		}
 
-		void surf(Input IN, inout SurfaceOutputStandard o) {
+		void surf(Input IN, inout SurfaceOutputStandardSpecular o) {
 			fixed4 color = tex2D(_MainTex, IN.worldPos.xz * 0.02);
 			float alpha = GetAlpha(IN.worldPos.xz, _SplatMap, color.a, IN.uv_MainTex.y);
 
-			o.Albedo = color.rgb * _Color * IN.visibility;
-			o.Metallic = _Metallic;
+			float explored = IN.visibility.y;
+
+			o.Albedo = color.rgb * _Color * IN.visibility.x;
+			o.Specular = _Specular * explored;
 			o.Smoothness = _Glossiness;
-			o.Alpha = alpha;
+			o.Occlusion = explored;
+			o.Alpha = alpha * explored;
 		}
 		ENDCG
 	}

@@ -3,7 +3,7 @@
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
-		_Metallic ("Metallic", Range(0,1)) = 0.0
+		_Specular ("Specular", Color) = (0.2, 0.2, 0.2)
 	}
 	SubShader {
 		Tags { "RenderType"="Transparent" "Queue"="AlphaTest" }
@@ -11,7 +11,7 @@
 		LOD 200
 		
 		CGPROGRAM
-		#pragma surface surf Standard alpha:fade vertex:vert
+		#pragma surface surf StandardSpecular alpha:fade vertex:vert
 
 		#pragma target 3.0
 
@@ -22,11 +22,11 @@
 		struct Input {
 			float2 uv_MainTex;
 			float4 color : COLOR;
-			float3 visibility;
+			float2 visibility;
 		};
 
 		half _Glossiness;
-		half _Metallic;
+		fixed3 _Specular;
 		fixed4 _Color;
 
 		void vert(inout appdata_full v, out Input data) {
@@ -36,25 +36,30 @@
 			float4 cell1 = GetCellData(v, 1);
 			float4 cell2 = GetCellData(v, 2);
 
-			float allVisibility = cell0.x;
-			allVisibility = max(allVisibility, cell1.x);
-			allVisibility = max(allVisibility, cell2.x);
+			data.visibility.x = cell0.x;
+			data.visibility.x = max(data.visibility.x, cell1.x);
+			data.visibility.x = max(data.visibility.x, cell2.x);
 
-			data.visibility.x = allVisibility;
-			data.visibility.y = allVisibility;
-			data.visibility.z = allVisibility;
-			data.visibility = lerp(0.25, 1, data.visibility);
+			data.visibility.x = lerp(0.25, 1, data.visibility.x);
+
+			data.visibility.y = cell0.y;
+			data.visibility.y = max(data.visibility.y, cell1.y);
+			data.visibility.y = max(data.visibility.y, cell2.y);
 		}
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
+		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 			fixed4 c = _Color;
-			o.Albedo = c.rgb * IN.color * IN.visibility;
-			o.Metallic = _Metallic;
+
+			float explored = IN.visibility.y;
+
+			o.Albedo = c.rgb * IN.color * IN.visibility.x;
+			o.Specular = _Specular * explored;
+			o.Occlusion = explored;
 			o.Smoothness = _Glossiness;
 
 			float uvAlpha = IN.uv_MainTex.y;
 			if (uvAlpha <= 0.5) {
-				o.Alpha = IN.uv_MainTex.y * 2;
+				o.Alpha = min(IN.uv_MainTex.y * 2, explored);
 			}
 			else {
 				o.Alpha = 0;
