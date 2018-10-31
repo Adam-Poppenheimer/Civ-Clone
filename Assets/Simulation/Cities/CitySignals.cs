@@ -44,6 +44,8 @@ namespace Assets.Simulation.Cities {
         public ISubject<Tuple<ICity, IHexCell>> LostCellFromBoundariesSignal { get; private set; }
         public ISubject<Tuple<ICity, IHexCell>> GainedCellToBoundariesSignal { get; private set; }
 
+        public ISubject<CityCaptureData> CityCapturedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -69,6 +71,8 @@ namespace Assets.Simulation.Cities {
 
             LostCellFromBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
             GainedCellToBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
+
+            CityCapturedSignal = new Subject<CityCaptureData>();
         }
 
         #endregion

@@ -65,6 +65,9 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICellYieldFromBuildingsLogic>             ().To<CellYieldFromBuildingsLogic>    ().AsSingle();
             Container.Bind<IUnemploymentLogic>                       ().To<UnemploymentLogic>              ().AsSingle();
             Container.Bind<ICityLineOfSightLogic>                    ().To<CityLineOfSightLogic>           ().AsSingle();
+            Container.Bind<ICityRazer>                               ().To<CityRazer>                      ().AsSingle();
+
+            Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 
             Container.Bind<IBuildingFactory>         ().To<BuildingFactory>         ().AsSingle();
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();

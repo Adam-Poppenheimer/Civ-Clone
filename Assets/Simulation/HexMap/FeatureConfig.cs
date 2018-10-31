@@ -35,6 +35,11 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private float _improvementAppearanceChance;
 
+        public float RuinsAppearanceChance {
+            get { return _ruinsAppearanceChance; }
+        }
+        [SerializeField] private float _ruinsAppearanceChance;
+
         public ReadOnlyCollection<Transform> BuildingPrefabs {
             get { return _buildingPrefabs.AsReadOnly(); }
         }
@@ -49,6 +54,11 @@ namespace Assets.Simulation.HexMap {
             get { return _jungleTreePrefabs.AsReadOnly(); }
         }
         [SerializeField] private List<Transform> _jungleTreePrefabs;
+
+        public ReadOnlyCollection<Transform> RuinsPrefabs {
+            get { return _ruinsPrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _ruinsPrefabs;
 
         public int GuaranteedTreeModulo {
             get { return _guaranteedTreeModulo; }
@@ -69,6 +79,11 @@ namespace Assets.Simulation.HexMap {
             get { return _guaranteedImprovementModulo; }
         }
         [SerializeField] private int _guaranteedImprovementModulo;
+
+        public int GuaranteedRuinsModulo {
+            get { return _guaranteedRuinsModulo; }
+        }
+        [SerializeField] private int _guaranteedRuinsModulo;
 
         #endregion
 

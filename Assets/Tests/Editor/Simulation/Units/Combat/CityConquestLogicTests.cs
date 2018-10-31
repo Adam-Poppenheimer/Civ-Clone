@@ -232,6 +232,11 @@ namespace Assets.Tests.Simulation.Units.Combat {
             );
         }
 
+        [Test]
+        public void HandleCityCaptureFromCombat_CityCaptureSignalFired() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

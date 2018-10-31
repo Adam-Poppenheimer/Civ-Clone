@@ -61,6 +61,7 @@ namespace Assets.Simulation.HexMap {
         [SerializeField] private int MarshMoveCost;
 
         [SerializeField] private int OasisMoveCost;
+        [SerializeField] private int CityRuinsMoveCost;
         #endregion
 
         #region instance methods
@@ -107,8 +108,9 @@ namespace Assets.Simulation.HexMap {
 
         public YieldSummary GetYieldOfFeature(CellFeature feature) {
             switch(feature) {
-                case CellFeature.None: return YieldSummary.Empty;
-                case CellFeature.Oasis: return OasisYield;
+                case CellFeature.None:      return YieldSummary.Empty;
+                case CellFeature.Oasis:     return OasisYield;
+                case CellFeature.CityRuins: return YieldSummary.Empty;
                 default: throw new NotImplementedException();
             }
         }
@@ -138,8 +140,9 @@ namespace Assets.Simulation.HexMap {
 
         public int GetBaseMoveCostOfFeature(CellFeature feature) {
             switch(feature) {
-                case CellFeature.None:  return 0;
-                case CellFeature.Oasis: return OasisMoveCost;
+                case CellFeature.None:      return 0;
+                case CellFeature.Oasis:     return OasisMoveCost;
+                case CellFeature.CityRuins: return CityRuinsMoveCost;
                 default: throw new NotImplementedException(string.Format("No configured move cost for feature {0}", feature));
             }
         }

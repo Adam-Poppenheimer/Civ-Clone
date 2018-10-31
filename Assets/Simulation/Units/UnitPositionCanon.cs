@@ -80,7 +80,7 @@ namespace Assets.Simulation.Units {
 
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
-            if(IsCellImpassableFor(unit.MovementSummary, location, unitOwner)) {
+            if(IsCellImpassableFor(unit.MovementSummary, location, unitOwner, isMeleeAttacking)) {
                 return false;
 
             }else if(CellHasDomesticUnits(location, unitOwner)) {
@@ -99,7 +99,7 @@ namespace Assets.Simulation.Units {
                 return true;
             }
 
-            if(IsCellImpassableFor(template.MovementSummary, location, owner)) {
+            if(IsCellImpassableFor(template.MovementSummary, location, owner, false)) {
                 return false;
 
             }else if(CellHasDomesticUnits(location, owner)) {
@@ -153,14 +153,14 @@ namespace Assets.Simulation.Units {
         }
 
         private bool IsCellImpassableFor(
-            IUnitMovementSummary movementSummary, IHexCell cell, ICivilization domesticCiv
+            IUnitMovementSummary movementSummary, IHexCell cell, ICivilization domesticCiv, bool isMeleeAttacking
         ) {
             if(HasCityOfOwner(cell, domesticCiv)) {
                 return false;
             }
 
             if(HasForeignCity(cell, domesticCiv)) {
-                return true;
+                return !isMeleeAttacking;
             }
 
             if(!cell.Terrain.IsWater() && !movementSummary.CanTraverseLand) {

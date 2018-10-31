@@ -19,14 +19,13 @@ namespace Assets.UI.Cities {
         #region instance fields and properties
 
         [SerializeField] private GameObject SlotDisplayPrefab;
-
         [SerializeField] private GameObject BuildingDisplayPrefab;
-
         [SerializeField] private GameObject CityDisplayRoot;
 
-        [SerializeField] CitySummaryDisplay CitySummaryPrefab;
+        [SerializeField] private CitySummaryDisplay CitySummaryPrefab;
+        [SerializeField] private RectTransform      CitySummaryContainer;
 
-        [SerializeField] RectTransform CitySummaryContainer;
+        [SerializeField] private CityCaptureDisplay CityCaptureDisplay;
 
         #endregion
 
@@ -47,6 +46,8 @@ namespace Assets.UI.Cities {
             Container.Bind<RectTransform>().WithId("City Summary Container").FromInstance(CitySummaryContainer);
 
             Container.Bind<CitySummaryManager>().AsSingle();
+
+            Container.Bind<ICityCaptureDisplay>().To<CityCaptureDisplay>().FromInstance(CityCaptureDisplay);
         }
 
         #endregion

@@ -797,6 +797,11 @@ namespace Assets.Tests.Simulation.HexMap {
             return modLogic.CanChangeFeatureOfCell(cellToTest, testData.Feature);
         }
 
+        [Test]
+        public void MissingCityRuinsTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region Road tests

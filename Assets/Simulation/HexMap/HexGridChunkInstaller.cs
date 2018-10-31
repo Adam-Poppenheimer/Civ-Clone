@@ -72,6 +72,7 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IFeaturePlacer>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
             Container.Bind<IFeaturePlacer>().WithId("Improvement Feature Placer").To<ImprovementFeaturePlacer>().AsSingle();
             Container.Bind<IFeaturePlacer>().WithId("Tree Feature Placer")       .To<TreeFeaturePlacer>       ().AsSingle();
+            Container.Bind<IFeaturePlacer>().WithId("Ruins Feature Placer")      .To<RuinsFeaturePlacer>      ().AsSingle();
         }
 
         #endregion

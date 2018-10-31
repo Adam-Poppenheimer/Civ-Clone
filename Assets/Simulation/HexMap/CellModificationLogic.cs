@@ -144,7 +144,10 @@ namespace Assets.Simulation.HexMap {
             }else if(feature == CellFeature.Oasis) {
                 return cell.Terrain == CellTerrain.Desert && cell.Shape == CellShape.Flatlands;
 
-            }else {
+            }else if(feature == CellFeature.CityRuins) {
+                return true;
+
+            } else {
                 return false;
             }
         }

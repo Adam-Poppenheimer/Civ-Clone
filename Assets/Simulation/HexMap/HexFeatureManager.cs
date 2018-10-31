@@ -31,6 +31,7 @@ namespace Assets.Simulation.HexMap {
         private IFeaturePlacer        ResourceFeaturePlacer;
         private IFeaturePlacer        ImprovementFeaturePlacer;
         private IFeaturePlacer        TreeFeaturePlacer;
+        private IFeaturePlacer        RuinsFeaturePlacer;
         private Transform             FeatureContainer;
 
         #endregion
@@ -44,6 +45,7 @@ namespace Assets.Simulation.HexMap {
             [Inject(Id = "Resource Feature Placer")]    IFeaturePlacer resourceFeaturePlacer,
             [Inject(Id = "Improvement Feature Placer")] IFeaturePlacer improvementFeaturePlacer,
             [Inject(Id = "Tree Feature Placer")]        IFeaturePlacer treeFeaturePlacer,
+            [Inject(Id = "Ruins Feature Placer")]       IFeaturePlacer ruinsFeaturePlacer,
             [InjectOptional(Id = "Feature Container")] Transform featureContainer
         ){
             NoiseGenerator           = noiseGenerator;
@@ -52,6 +54,7 @@ namespace Assets.Simulation.HexMap {
             ResourceFeaturePlacer    = resourceFeaturePlacer;
             ImprovementFeaturePlacer = improvementFeaturePlacer;
             TreeFeaturePlacer        = treeFeaturePlacer;
+            RuinsFeaturePlacer       = ruinsFeaturePlacer;
             FeatureContainer         = featureContainer;
         }
 
@@ -112,6 +115,9 @@ namespace Assets.Simulation.HexMap {
                     continue;
 
                 }else if(ResourceFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
+                    continue;
+
+                }else if(RuinsFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
                     continue;
 
                 }else {

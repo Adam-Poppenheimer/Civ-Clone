@@ -281,6 +281,18 @@ namespace Assets.Tests.Simulation.Units {
                     },
                     IsMeleeAttacking = true
                 }).SetName("Cell has foreign units, but unit is melee attacking").Returns(true);
+
+                yield return new TestCaseData(new UnitAtLocationData() {
+                    Location = new HexCellData() {
+                        Terrain = CellTerrain.Grassland,
+                        City = new CityData() { BelongsToDomesticCiv = false }
+                    },
+                    Unit = new UnitData() {
+                        MovementSummary = new UnitMovementSummary() { CanTraverseLand = true },
+                        BelongsToDomesticCiv = true
+                    },
+                    IsMeleeAttacking = true
+                }).SetName("Cell is land and has a foreign city, but unit is melee attacking").Returns(true);
             }
         }
 

@@ -29,6 +29,8 @@ namespace Assets.Tests.Simulation.Units {
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
+        private HexCellSignals CellSignals;
+
         private List<ICity> AllCities = new List<ICity>();
 
         #endregion
@@ -46,10 +48,14 @@ namespace Assets.Tests.Simulation.Units {
             MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
+            CellSignals = new HexCellSignals();
+
             Container.Bind<IHexMapSimulationConfig>                      ().FromInstance(MockHexSimulationConfig.Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+
+            Container.Bind<HexCellSignals>().FromInstance(CellSignals);
 
             Container.Bind<UnitPositionCanon>().AsSingle();
 

@@ -22,6 +22,7 @@ namespace Assets.Simulation.Units.Combat {
         private ICityFactory                                  CityFactory;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IUnitPositionCanon                            UnitPositionCanon;
+        private CitySignals                                   CitySignals;
 
         #endregion
 
@@ -33,13 +34,15 @@ namespace Assets.Simulation.Units.Combat {
             IPossessionRelationship<IHexCell, ICity>      cityLocationCanon,
             ICityFactory                                  cityFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IUnitPositionCanon                            unitPositionCanon
+            IUnitPositionCanon                            unitPositionCanon,
+            CitySignals                                   citySignals
         ) {
             UnitPossessionCanon = unitPossessionCanon;
             CityLocationCanon   = cityLocationCanon;
             CityFactory         = cityFactory;
             CityPossessionCanon = cityPossessionCanon;
             UnitPositionCanon   = unitPositionCanon;
+            CitySignals         = citySignals;
         }
 
         #endregion
@@ -57,7 +60,8 @@ namespace Assets.Simulation.Units.Combat {
 
             var cityCaptured = CityFactory.AllCities.Where(city => city.CombatFacade == defendingFacade).FirstOrDefault();
 
-            var cityLocation = CityLocationCanon.GetOwnerOfPossession(cityCaptured);
+            var cityLocation = CityLocationCanon  .GetOwnerOfPossession(cityCaptured);
+            var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(cityCaptured);
 
             foreach(var unit in new List<IUnit>(UnitPositionCanon.GetPossessionsOfOwner(cityLocation))) {
                 if(unit.Type != UnitType.City) {
@@ -67,6 +71,10 @@ namespace Assets.Simulation.Units.Combat {
             }
 
             CityPossessionCanon.ChangeOwnerOfPossession(cityCaptured, attackerOwner);
+
+            CitySignals.CityCapturedSignal.OnNext(new CityCaptureData() {
+                City = cityCaptured, OldOwner = cityOwner, NewOwner = attackerOwner
+            });
 
             attacker.CurrentPath = new List<IHexCell>() { cityLocation };
             attacker.PerformMovement(true);
