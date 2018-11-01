@@ -105,6 +105,20 @@ namespace Assets.Tests.Simulation.Cities {
                 "CanChangeOwnerOfPossession falsely permitted the assignment of a city's location to a different city");
         }
 
+        [Test(Description = "CanChangeOwnerOfPossession should return true if the argued cell " +
+            "is the location of the argued city")]
+        public void CanChangeOwnerOfPossession_TrueIfLocationOfCity() {
+            var possessionCanon = Container.Resolve<CellPossessionCanon>();
+
+            var locationOfCity = BuildCell();
+            var city           = BuildCity();
+
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(locationOfCity)).Returns(new List<ICity>() { city });
+            
+            Assert.IsTrue(possessionCanon.CanChangeOwnerOfPossession(locationOfCity, city),
+                "CanChangeOwnerOfPossession failed to permit the assignment of a city's location to that city");
+        }
+
         [Test(Description = "When ChangeOwnerOfPossession is called, GetCityOfTile should return the " +
             "argued city when passed the argued tile")]
         public void ChangeOwnerOfPossession_ChangeReflectedInGetCityOfTile() {

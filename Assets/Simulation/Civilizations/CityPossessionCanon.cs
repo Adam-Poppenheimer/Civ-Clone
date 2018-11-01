@@ -75,6 +75,8 @@ namespace Assets.Simulation.Civilizations {
 
                 CapitalCityCanon.SetCapitalOfCiv(oldOwner, nextCapital);
             }
+
+            CivSignals.CivLostCitySignal.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));
         }
 
         #endregion

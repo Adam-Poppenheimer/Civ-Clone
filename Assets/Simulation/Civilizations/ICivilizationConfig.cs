@@ -28,6 +28,7 @@ namespace Assets.Simulation.Civilizations {
 
         float PolicyCostPerCityCoefficient { get; }
 
+        CivilizationDefeatMode DefeatMode { get; }
 
         #endregion
 

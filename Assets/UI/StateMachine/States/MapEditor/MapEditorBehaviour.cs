@@ -26,6 +26,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IVisibilityResponder VisibilityResponder;
         private IVisibilityCanon     VisibilityCanon;
         private IExplorationCanon    ExplorationCanon;
+        private ICivDefeatExecutor   CivDefeatExecutor;
 
         #endregion
 
@@ -35,7 +36,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
-            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
+            ICivDefeatExecutor civDefeatExecutor
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -44,6 +46,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
             ExplorationCanon    = explorationCanon;
+            CivDefeatExecutor   = civDefeatExecutor;
         }
 
         #region from StateMachineBehaviour
@@ -60,6 +63,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityCanon.RevealMode             = RevealMode.Immediate;
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
+
+            CivDefeatExecutor.CheckForDefeat = false;
 
             Grid.Build(4, 3);
 

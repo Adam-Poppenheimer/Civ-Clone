@@ -57,6 +57,11 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private float _policyCostPerCityCoefficient;
 
+        public CivilizationDefeatMode DefeatMode {
+            get { return _defeatMode; }
+        }
+        [SerializeField] private CivilizationDefeatMode _defeatMode;
+
         #endregion
 
         #endregion

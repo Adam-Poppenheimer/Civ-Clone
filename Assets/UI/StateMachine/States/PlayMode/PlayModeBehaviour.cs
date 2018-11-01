@@ -9,7 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Visibility;
 using Assets.Simulation.MapManagement;
-using Assets.Simulation.Technology;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -22,6 +22,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IVisibilityResponder VisibilityResponder;
         private IVisibilityCanon     VisibilityCanon;
         private IExplorationCanon    ExplorationCanon;
+        private ICivDefeatExecutor   CivDefeatExecutor;
 
         #endregion
 
@@ -31,13 +32,14 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             UIStateMachineBrain brain, IMapComposer mapComposer,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon
+            IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor
         ){
             Brain               = brain;
             MapComposer         = mapComposer;
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
             ExplorationCanon    = explorationCanon;
+            CivDefeatExecutor   = civDefeatExecutor;
         }
 
         #region from StateMachineBehaviour
@@ -54,6 +56,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             VisibilityCanon.RevealMode             = RevealMode.Fade;
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
+
+            CivDefeatExecutor.CheckForDefeat = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
