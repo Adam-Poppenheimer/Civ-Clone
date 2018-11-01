@@ -29,7 +29,7 @@ namespace Assets.UI.Cities {
 
         private ICityUIConfig CityUIConfig;
 
-        private GameCamera GameCamera;
+        private IGameCamera GameCamera;
 
         private RectTransform CitySummaryContainer;
 
@@ -40,7 +40,7 @@ namespace Assets.UI.Cities {
         [Inject]
         public CitySummaryManager(
             CitySummaryDisplay summaryPrefab, ICityFactory cityFactory,
-            DiContainer container, ICityUIConfig cityUIConfig, GameCamera gameCamera,
+            DiContainer container, ICityUIConfig cityUIConfig, IGameCamera gameCamera,
             [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer,
             CitySignals citySignals
         ){

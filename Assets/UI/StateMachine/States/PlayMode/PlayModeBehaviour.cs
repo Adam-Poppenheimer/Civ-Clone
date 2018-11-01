@@ -23,6 +23,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IVisibilityCanon     VisibilityCanon;
         private IExplorationCanon    ExplorationCanon;
         private ICivDefeatExecutor   CivDefeatExecutor;
+        private ICameraFocuser       CameraFocuser;
 
         #endregion
 
@@ -30,12 +31,13 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, IMapComposer mapComposer,
+            UIStateMachineBrain brain, IMapComposer mapComposer, ICameraFocuser cameraFocuser,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor
         ){
             Brain               = brain;
             MapComposer         = mapComposer;
+            CameraFocuser       = cameraFocuser;
             VisibilityResponder = visibilityResponder;
             VisibilityCanon     = visibilityCanon;
             ExplorationCanon    = explorationCanon;
@@ -58,9 +60,13 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
 
             CivDefeatExecutor.CheckForDefeat = true;
+
+            CameraFocuser.ActivateBeginTurnFocusing();
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
+            CameraFocuser.DeactivateBeginTurnFocusing();
+
             VisibilityResponder.UpdateVisibility = false;
 
             MapComposer.ClearRuntime();

@@ -58,7 +58,7 @@ namespace Assets.UI.StateMachine {
         private CompositeCitySignals CompositeCitySignals;
         private CompositeUnitSignals CompositeUnitSignals;
         private PlayerSignals        PlayerSignals;
-        private GameCamera           GameCamera;
+        private IGameCamera          GameCamera;
         private DescriptionTooltip   DescriptionTooltip;
         private CellHoverDisplay     CellHoverDisplay;
         private CivilizationSignals  CivSignals;
@@ -70,7 +70,7 @@ namespace Assets.UI.StateMachine {
         [Inject]
         public UIStateMachineBrain(
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
-            CompositeUnitSignals compositeUnitSignals, PlayerSignals playerSignals, GameCamera gameCamera,
+            CompositeUnitSignals compositeUnitSignals, PlayerSignals playerSignals, IGameCamera gameCamera,
             DescriptionTooltip descriptionTooltip, CellHoverDisplay cellHoverDisplay,
             CivilizationSignals civSignals, CoreSignals coreSignals
         ) {

@@ -20,14 +20,14 @@ namespace Assets.UI {
 
 
 
-        private GameCamera GameCamera;
+        private IGameCamera GameCamera;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(GameCamera gameCamera) {
+        public void InjectDependencies(IGameCamera gameCamera) {
             GameCamera = gameCamera;
         }
 

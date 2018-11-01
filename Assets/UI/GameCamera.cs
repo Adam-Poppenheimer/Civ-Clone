@@ -12,7 +12,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.UI {
 
-    public class GameCamera : MonoBehaviour {
+    public class GameCamera : MonoBehaviour, IGameCamera {
 
         #region instance fields and properties
 
@@ -77,6 +77,14 @@ namespace Assets.UI {
             if(!SuppressMovemnent && xDelta != 0f || zDelta != 0f) {
                 AdjustPosition(xDelta, zDelta);
             }
+        }
+
+        #endregion
+
+        #region from IGameCamera
+
+        public void SnapToCell(IHexCell cell) {
+            transform.position = cell.AbsolutePosition;
         }
 
         #endregion

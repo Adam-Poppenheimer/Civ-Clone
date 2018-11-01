@@ -57,6 +57,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private IHexCellOverlayManager                   OverlayManager;
         private CombatSummaryDisplay                     CombatSummaryDisplay;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IGameCamera                              GameCamera;
 
         #endregion
 

@@ -42,16 +42,11 @@ namespace Assets.UI.MapEditor {
 
 
         private ICivilizationFactory CivilizationFactory;
-
-        private IUnitFactory UnitFactory;
-
-        private HexCellSignals CellSignals;
-
-        private List<IUnitTemplate> AvailableTemplates;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private UnitSignals UnitSignals;
+        private IUnitFactory         UnitFactory;
+        private HexCellSignals       CellSignals;
+        private List<IUnitTemplate>  AvailableTemplates;
+        private IUnitPositionCanon   UnitPositionCanon;
+        private UnitSignals          UnitSignals;
 
         #endregion
 

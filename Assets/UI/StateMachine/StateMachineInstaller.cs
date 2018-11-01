@@ -39,9 +39,9 @@ namespace Assets.UI.StateMachine {
                 .WithId("Options Display")
                 .FromInstance(OptionsDisplay);
 
-            Container.Bind<GameCamera>           ().FromInstance(GameCamera);
-            Container.Bind<CellHoverDisplay>     ().FromInstance(CellHoverDisplay);
-            Container.Bind<SocialPoliciesDisplay>().FromInstance(SocialPoliciesDisplay);
+            Container.Bind<IGameCamera>          ().To<GameCamera>().FromInstance(GameCamera);
+            Container.Bind<CellHoverDisplay>     ()                 .FromInstance(CellHoverDisplay);
+            Container.Bind<SocialPoliciesDisplay>()                 .FromInstance(SocialPoliciesDisplay);
 
             Container.Bind<UIStateMachineBrain>().AsSingle();
 
