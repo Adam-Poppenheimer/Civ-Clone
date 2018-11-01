@@ -62,14 +62,9 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>        ().FromInstance(MockCityTerritoryCanon       .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>   ().FromInstance(MockCityPossessionCanon      .Object);
 
-            Container.Bind<ImprovementSignals>      ().FromInstance(ImprovementSignals);
-            Container.Bind<ResourceSignals>().FromInstance(ResourceSignals);
-            Container.Bind<CivilizationSignals>     ().FromInstance(CivSignals);
-
-            Container.Bind<SignalManager>().AsSingle();
-
-            Container.DeclareSignal<CityProjectChangedSignal>();
-            Container.DeclareSignal<CityDistributionPerformedSignal>();
+            Container.Bind<ImprovementSignals> ().FromInstance(ImprovementSignals);
+            Container.Bind<ResourceSignals>    ().FromInstance(ResourceSignals);
+            Container.Bind<CivilizationSignals>().FromInstance(CivSignals);
 
             Container.Bind<CitySignals>().AsSingle();
 

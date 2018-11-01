@@ -339,6 +339,13 @@ namespace Assets.Tests.Simulation.HexMap {
                     },
                     Feature = CellFeature.None
                 }).SetName("None always valid").Returns(true);
+
+                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
+                    Cell = new HexCellTestData() {
+                        Terrain = CellTerrain.ShallowWater, Shape = CellShape.Mountains,
+                        Vegetation = CellVegetation.Jungle, Feature = CellFeature.Oasis
+                    }
+                }).SetName("Feature always valid").Returns(true);
             }
         }
 
@@ -439,19 +446,6 @@ namespace Assets.Tests.Simulation.HexMap {
             modLogic.ChangeTerrainOfCell(cellToTest, CellTerrain.Tundra);
 
             Assert.AreEqual(CellTerrain.Tundra, cellToTest.Terrain);
-        }
-
-        [Test]
-        public void ChangeTerrainOfCell_FoundationElevationReset() {
-            var cellToTest = BuildCell();
-
-            MockRenderConfig.Setup(config => config.GetFoundationElevationForTerrain(CellTerrain.ShallowWater)).Returns(-5);
-
-            var modLogic = Container.Resolve<CellModificationLogic>();
-
-            modLogic.ChangeTerrainOfCell(cellToTest, CellTerrain.ShallowWater);
-
-            Assert.AreEqual(-5, cellToTest.FoundationElevation);
         }
 
         [Test]
@@ -795,11 +789,6 @@ namespace Assets.Tests.Simulation.HexMap {
             var modLogic = Container.Resolve<CellModificationLogic>();
 
             return modLogic.CanChangeFeatureOfCell(cellToTest, testData.Feature);
-        }
-
-        [Test]
-        public void MissingCityRuinsTests() {
-            throw new NotImplementedException();
         }
 
         #endregion

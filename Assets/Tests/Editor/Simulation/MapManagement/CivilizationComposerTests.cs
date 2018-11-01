@@ -13,6 +13,8 @@ using Assets.Simulation.Core;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
+using Assets.Simulation.Visibility;
+using Assets.Simulation.HexMap;
 
 namespace Assets.Tests.Simulation.MapManagement {
 
@@ -25,9 +27,13 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<ITechCanon>            MockTechCanon;
         private Mock<IGameCore>             MockGameCore;
         private Mock<ISocialPolicyComposer> MockPolicyComposer;
+        private Mock<IExplorationCanon>     MockExplorationCanon;
+        private Mock<IHexGrid>              MockGrid;
 
-        private List<ITechDefinition> AvailableTechs = new List<ITechDefinition>();
-        private List<ICivilization> AllCivilizations = new List<ICivilization>();
+        private List<ITechDefinition> AvailableTechs   = new List<ITechDefinition>();
+        private List<ICivilization>   AllCivilizations = new List<ICivilization>();
+        private List<IHexCell>        AllCells         = new List<IHexCell>();
+        
 
         #endregion
 
@@ -39,11 +45,14 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void CommonInstall() {
             AvailableTechs  .Clear();
             AllCivilizations.Clear();
+            AllCells        .Clear();
 
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
             MockGameCore            = new Mock<IGameCore>();
             MockPolicyComposer      = new Mock<ISocialPolicyComposer>();
+            MockExplorationCanon    = new Mock<IExplorationCanon>();
+            MockGrid                = new Mock<IHexGrid>();
 
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
@@ -53,10 +62,14 @@ namespace Assets.Tests.Simulation.MapManagement {
                 (name, color) => BuildCivilization(name, color, 0, 0)
             );
 
+            MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
+
             Container.Bind<ICivilizationFactory> ().FromInstance(MockCivilizationFactory.Object);
             Container.Bind<ITechCanon>           ().FromInstance(MockTechCanon          .Object);
             Container.Bind<IGameCore>            ().FromInstance(MockGameCore           .Object);
             Container.Bind<ISocialPolicyComposer>().FromInstance(MockPolicyComposer     .Object);
+            Container.Bind<IExplorationCanon>    ().FromInstance(MockExplorationCanon   .Object);
+            Container.Bind<IHexGrid>             ().FromInstance(MockGrid               .Object);
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
 
@@ -254,7 +267,26 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsExploredCells() {
-            throw new NotImplementedException();
+            var civOne = BuildCivilization("Civ One", Color.black, 0 , 0);
+
+            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
+
+            var exploredCell   = BuildCell(new HexCoordinates(1, 1));
+            var unexploredCell = BuildCell(new HexCoordinates(2, 2));
+
+            MockExplorationCanon.Setup(canon => canon.IsCellExploredByCiv(exploredCell,   civOne)).Returns(true);
+            MockExplorationCanon.Setup(canon => canon.IsCellExploredByCiv(unexploredCell, civOne)).Returns(false);
+
+            var mapData = new SerializableMapData();
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.ComposeCivilizations(mapData);
+
+            CollectionAssert.AreEquivalent(
+                new List<HexCoordinates>() { new HexCoordinates(1, 1) },
+                mapData.Civilizations[0].ExploredCells
+            );
         }
 
 
@@ -515,7 +547,31 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void DecomposeCivilizations_RebuildsExploredCellsProperly() {
-            throw new NotImplementedException();
+            var cellOne   = BuildCell(new HexCoordinates(1, 1));
+            var cellTwo   = BuildCell(new HexCoordinates(2, 2));
+            var cellThree = BuildCell(new HexCoordinates(3, 3));
+
+            var mapData = new SerializableMapData() {
+                Civilizations = new List<SerializableCivilizationData>() {
+                    new SerializableCivilizationData() {
+                        Name = "Civ One",
+                        ExploredCells = new List<HexCoordinates>() {
+                            new HexCoordinates(1, 1), new HexCoordinates(3, 3)
+                        }
+                    }
+                },
+                ActiveCivilization = "Civ One"
+            };
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.DecomposeCivilizations(mapData);
+
+            var civ = AllCivilizations[0];
+
+            MockExplorationCanon.Verify(canon => canon.SetCellAsExploredByCiv(cellOne,   civ), Times.Once,  "CellOne incorrectly left unexplored");
+            MockExplorationCanon.Verify(canon => canon.SetCellAsExploredByCiv(cellTwo,   civ), Times.Never, "CellTwo incorrectly set as explored");
+            MockExplorationCanon.Verify(canon => canon.SetCellAsExploredByCiv(cellThree, civ), Times.Once,  "CellThree incorrectly left unexplored");
         }
 
         #endregion
@@ -569,6 +625,20 @@ namespace Assets.Tests.Simulation.MapManagement {
             AvailableTechs.Add(newTech);
 
             return newTech;
+        }
+
+        private IHexCell BuildCell(HexCoordinates coords) {
+            var mockCell = new Mock<IHexCell>();
+
+            mockCell.Setup(cell => cell.Coordinates).Returns(coords);
+
+            var newCell = mockCell.Object;
+
+            MockGrid.Setup(grid => grid.GetCellAtCoordinates(coords)).Returns(newCell);
+
+            AllCells.Add(newCell);
+
+            return newCell;
         }
 
         #endregion

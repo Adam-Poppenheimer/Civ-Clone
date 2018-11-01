@@ -32,12 +32,12 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// Signal that fires whenever a city's ActiveProject is changed.
         /// </summary>
-        public CityProjectChangedSignal ProjectChangedSignal { get; private set; }
+        public ISubject<Tuple<ICity, IProductionProject>> ProjectChangedSignal { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city has its PerformDistribution method called.
         /// </summary>
-        public CityDistributionPerformedSignal DistributionPerformedSignal { get; private set; }
+        public ISubject<ICity> DistributionPerformedSignal { get; private set; }
 
         public ISubject<ICity> CityBeingDestroyedSignal { get; private set; }
 
@@ -50,18 +50,10 @@ namespace Assets.Simulation.Cities {
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="projectChangedSignal"></param>
-        /// <param name="distributionPerformedSignal"></param>
         [Inject]
-        public CitySignals(
-            CityProjectChangedSignal projectChangedSignal,
-            CityDistributionPerformedSignal distributionPerformedSignal
-        ){
-            ProjectChangedSignal        = projectChangedSignal;
-            DistributionPerformedSignal = distributionPerformedSignal;
+        public CitySignals(){
+            ProjectChangedSignal        = new Subject<Tuple<ICity, IProductionProject>>();
+            DistributionPerformedSignal = new Subject<ICity>();
 
             PointerClickedSignal = new Subject<ICity>();
             PointerEnteredSignal = new Subject<ICity>();
@@ -78,15 +70,5 @@ namespace Assets.Simulation.Cities {
         #endregion
 
     }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class CityProjectChangedSignal : Signal<CityProjectChangedSignal, ICity, IProductionProject> { }
-
-    /// <summary>
-    /// 
-    /// </summary>
-    public class CityDistributionPerformedSignal : Signal<CityDistributionPerformedSignal, ICity> { }
 
 }

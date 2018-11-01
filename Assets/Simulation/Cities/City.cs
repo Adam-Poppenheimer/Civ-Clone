@@ -73,7 +73,7 @@ namespace Assets.Simulation.Cities {
             set {
                 if(_activeProject != value) {
                     _activeProject = value;
-                    Signals.ProjectChangedSignal.Fire(this, _activeProject);
+                    Signals.ProjectChangedSignal.OnNext(new UniRx.Tuple<ICity, IProductionProject>(this, _activeProject));
                 }
             }
         }
@@ -183,7 +183,7 @@ namespace Assets.Simulation.Cities {
 
             DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, YieldFocus);
 
-            Signals.DistributionPerformedSignal.Fire(this);
+            Signals.DistributionPerformedSignal.OnNext(this);
         }
 
         /// <inheritdoc/>

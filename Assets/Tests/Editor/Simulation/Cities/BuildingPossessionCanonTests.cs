@@ -37,11 +37,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IResourceLockingCanon>                        ().FromInstance(MockResourceLockingCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
 
-            Container.Bind<SignalManager>().AsSingle();
-
-            Container.DeclareSignal<CityProjectChangedSignal>();
-            Container.DeclareSignal<CityDistributionPerformedSignal>();
-
             Container.Bind<CitySignals>().AsSingle();
 
             Container.Bind<BuildingPossessionCanon>().AsSingle();

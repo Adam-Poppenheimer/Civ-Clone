@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Units;
@@ -27,6 +28,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
 
+        private CitySignals                                         CitySignals;
+
         #endregion
 
         #region instance methods
@@ -41,11 +44,14 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
 
+            CitySignals             = new CitySignals();
+
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
             Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
 
             Container.Bind<CityConquestLogic>().AsSingle();
         }
@@ -234,7 +240,33 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void HandleCityCaptureFromCombat_CityCaptureSignalFired() {
-            throw new NotImplementedException();
+            var attackerOwner = BuildCivilization();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee, out attackerMock);
+
+            var cityOwner = BuildCivilization();
+            var cityLocation = BuildHexCell();
+
+            var cityBeingCaptured = BuildCity(
+                cityLocation, cityOwner, BuildUnit(cityOwner, 0, UnitType.City), new List<IUnit>()
+            );
+
+            var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
+
+            var conquestLogic = Container.Resolve<CityConquestLogic>();
+
+            CitySignals.CityCapturedSignal.Subscribe(delegate(CityCaptureData captureData) {
+                Assert.AreEqual(cityBeingCaptured, captureData.City,     "Incorrect City passed");
+                Assert.AreEqual(cityOwner,         captureData.OldOwner, "Incorrect OldOwner passed");
+                Assert.AreEqual(attackerOwner,     captureData.NewOwner, "Incorrect NewOwner passed");
+
+                Assert.Pass();
+            });
+
+            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+
+            Assert.Fail("Event not evoked");
         }
 
         #endregion

@@ -73,9 +73,6 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
             Container.Bind<ICityFactory>             ().To<CityFactory>             ().AsSingle();
 
-            Container.DeclareSignal<CityProjectChangedSignal>();
-            Container.DeclareSignal<CityDistributionPerformedSignal>();
-
             Container.Bind<CitySignals>().AsSingle();
 
             Container.Bind<CompositeCitySignals>().AsSingle();

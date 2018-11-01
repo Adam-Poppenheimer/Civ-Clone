@@ -52,9 +52,7 @@ namespace Assets.Simulation.Cities.Territory {
             if(owner == null) {
                 return true;
             }else {
-                var currentOwner = GetOwnerOfPossession(possession);
-
-                return currentOwner == null || CityLocationCanon.GetOwnerOfPossession(currentOwner) != possession;
+                return !CityLocationCanon.GetPossessionsOfOwner(possession).Any();
             }
         }
 

@@ -646,6 +646,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
         private Mock<IHexGrid> MockGrid;
 
+        private HexCellSignals CellSignals;
+
         #endregion
 
         #region instance methods
@@ -656,7 +658,10 @@ namespace Assets.Tests.Simulation.HexMap {
         public void CommonInstall() {
             MockGrid = new Mock<IHexGrid>();
 
+            CellSignals = new HexCellSignals();
+
             Container.Bind<IHexGrid>().FromInstance(MockGrid.Object);
+            Container.Bind<HexCellSignals>().FromInstance(CellSignals);
 
             Container.Bind<RiverCanon>().AsSingle();
         }

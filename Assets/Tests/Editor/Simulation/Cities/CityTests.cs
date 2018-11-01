@@ -56,6 +56,8 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
         private Mock<ICityConfig>                               MockCityConfig;
 
+        private CitySignals                                     CitySignals;
+
         #endregion
 
         #region instance methods
@@ -66,31 +68,28 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             MockGrowthLogic             = new Mock<IPopulationGrowthLogic>();
             MockProductionLogic         = new Mock<IProductionLogic>();
-            MockYieldGenerationLogic = new Mock<IYieldGenerationLogic>();
+            MockYieldGenerationLogic    = new Mock<IYieldGenerationLogic>();
             MockExpansionLogic          = new Mock<IBorderExpansionLogic>();
             MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic       = new Mock<IWorkerDistributionLogic>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityConfig              = new Mock<ICityConfig>();
 
+            CitySignals                 = new CitySignals();
+
 
             Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic            .Object);
             Container.Bind<IProductionLogic>                         ().FromInstance(MockProductionLogic        .Object);
-            Container.Bind<IYieldGenerationLogic>                 ().FromInstance(MockYieldGenerationLogic.Object);
+            Container.Bind<IYieldGenerationLogic>                    ().FromInstance(MockYieldGenerationLogic   .Object);
             Container.Bind<IBorderExpansionLogic>                    ().FromInstance(MockExpansionLogic         .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon    .Object);
             Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic      .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
 
-            Container.Bind<SignalManager>().AsSingle();
+            Container.Bind<CitySignals>                              ().FromInstance(CitySignals);
 
             Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromInstance(new Subject<ICity>());
-
-            Container.DeclareSignal<CityProjectChangedSignal>();
-            Container.DeclareSignal<CityDistributionPerformedSignal>();
-
-            Container.Bind<CitySignals>().AsSingle();
 
             Container.Bind<City>().FromNewComponentOnNewGameObject().AsSingle();
         }
@@ -511,8 +510,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformDistribution_DistributionPerformedSignalFired() {
             var city = Container.Resolve<City>();
 
-            var signal = Container.Resolve<CityDistributionPerformedSignal>();
-            signal.Listen(delegate(ICity sourceCity) {
+            
+            CitySignals.DistributionPerformedSignal.Subscribe(delegate(ICity sourceCity) {
                 Assert.AreEqual(city, sourceCity, "Signal was not fired on the correct city");
                 Assert.Pass();
             });
@@ -606,12 +605,10 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            var citySignals = Container.Resolve<CitySignals>();
+            CitySignals.ProjectChangedSignal.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+                Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
-            citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
-                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
-
-                Assert.AreEqual(mockProject.Object, project, "ClickedSignal was passed an unexpected project");
+                Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");
                 Assert.Pass();
             });
 
@@ -629,12 +626,10 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            var citySignals = Container.Resolve<CitySignals>();
+            CitySignals.ProjectChangedSignal.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+                Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
-            citySignals.ProjectChangedSignal.Listen(delegate(ICity city, IProductionProject project) {
-                Assert.AreEqual(city, cityToTest, "ClickedSignal was passed the wrong city");
-
-                Assert.AreEqual(mockProject.Object, project, "ClickedSignal was passed an unexpected project");
+                Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");
                 Assert.Pass();
             });
 

@@ -27,6 +27,7 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IFeaturePlacer>        MockCityFeaturePlacer;
         private Mock<IFeaturePlacer>        MockResourceFeaturePlacer;
         private Mock<IFeaturePlacer>        MockImprovementFeaturePlacer;
+        private Mock<IFeaturePlacer>        MockRuinsFeaturePlacer;
         private Mock<IFeaturePlacer>        MockTreeFeaturePlacer;
 
 
@@ -45,6 +46,7 @@ namespace Assets.Tests.Simulation.HexMap {
             MockCityFeaturePlacer        = new Mock<IFeaturePlacer>();
             MockResourceFeaturePlacer    = new Mock<IFeaturePlacer>();
             MockImprovementFeaturePlacer = new Mock<IFeaturePlacer>();
+            MockRuinsFeaturePlacer       = new Mock<IFeaturePlacer>();
             MockTreeFeaturePlacer        = new Mock<IFeaturePlacer>();
 
             Container.Bind<INoiseGenerator>      ().FromInstance(MockNoiseGenerator      .Object);
@@ -53,6 +55,7 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IFeaturePlacer>().WithId("City Feature Placer")       .FromInstance(MockCityFeaturePlacer       .Object);
             Container.Bind<IFeaturePlacer>().WithId("Resource Feature Placer")   .FromInstance(MockResourceFeaturePlacer   .Object);
             Container.Bind<IFeaturePlacer>().WithId("Improvement Feature Placer").FromInstance(MockImprovementFeaturePlacer.Object);
+            Container.Bind<IFeaturePlacer>().WithId("Ruins Feature Placer")      .FromInstance(MockRuinsFeaturePlacer      .Object);
             Container.Bind<IFeaturePlacer>().WithId("Tree Feature Placer")       .FromInstance(MockTreeFeaturePlacer       .Object);
 
             Container.Bind<HexFeatureManager>().AsSingle();
@@ -232,7 +235,7 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
-        public void Apply_PassesPointsToTreeFeaturePlacerIfResourceFeaturePlacerFails() {
+        public void Apply_PassesPointsToRuinsFeaturePlacerIfResourceFeaturePlacerFails() {
             var cell = BuildCell();
 
             var locations = new List<Vector3>() {
@@ -245,6 +248,43 @@ namespace Assets.Tests.Simulation.HexMap {
             MockResourceFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[0], 0, It.IsAny<HexHash>())).Returns(true);
             MockResourceFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[1], 1, It.IsAny<HexHash>())).Returns(false);
             MockResourceFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[2], 2, It.IsAny<HexHash>())).Returns(true);
+
+            var featureManager = Container.Resolve<HexFeatureManager>();
+
+            featureManager.AddFeatureLocationsForCell(cell);
+
+            featureManager.Apply();
+
+            MockRuinsFeaturePlacer.Verify(
+                placer => placer.TryPlaceFeatureAtLocation(cell, locations[0], 0, It.IsAny<HexHash>()),
+                Times.Never, "TryPlaceFeatureAtLocation unexpectedly called on locations[0]"
+            );
+
+            MockRuinsFeaturePlacer.Verify(
+                placer => placer.TryPlaceFeatureAtLocation(cell, locations[1], 1, It.IsAny<HexHash>()),
+                Times.Once, "TryPlaceFeatureAtLocation not called on locations[1] as expected"
+            );
+
+            MockRuinsFeaturePlacer.Verify(
+                placer => placer.TryPlaceFeatureAtLocation(cell, locations[2], 2, It.IsAny<HexHash>()),
+                Times.Never, "TryPlaceFeatureAtLocation unexpectedly called on locations[2]"
+            );
+        }
+
+        [Test]
+        public void Apply_PassesPointsToTreeFeaturePlacerIfRuinsFeaturePlacerFails() {
+            var cell = BuildCell();
+
+            var locations = new List<Vector3>() {
+                new Vector3(1, 1, 1), new Vector3(2, 2, 2), new Vector3(3, 3, 3)
+            };
+
+            MockFeatureLocationLogic.Setup(logic => logic.GetCenterFeaturePoints(cell))
+                                    .Returns(locations);
+
+            MockRuinsFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[0], 0, It.IsAny<HexHash>())).Returns(true);
+            MockRuinsFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[1], 1, It.IsAny<HexHash>())).Returns(false);
+            MockRuinsFeaturePlacer.Setup(placer => placer.TryPlaceFeatureAtLocation(cell, locations[2], 2, It.IsAny<HexHash>())).Returns(true);
 
             var featureManager = Container.Resolve<HexFeatureManager>();
 

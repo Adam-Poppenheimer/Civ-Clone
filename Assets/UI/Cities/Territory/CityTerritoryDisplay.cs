@@ -43,7 +43,7 @@ namespace Assets.UI.Cities.Territory {
             PossessionCanon = possessionCanon;
             Container       = container;
             
-            signals.DistributionPerformedSignal.Listen(OnDistributionPerformed);
+            signals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed);
         }
 
         #region from CityDisplayBase

@@ -151,11 +151,13 @@ namespace Assets.Simulation.MapManagement {
                     }
                 }
 
-                foreach(var exploredCoords in civData.ExploredCells) {
-                    var exploredCell = Grid.GetCellAtCoordinates(exploredCoords);
+                if(civData.ExploredCells != null) {
+                    foreach(var exploredCoords in civData.ExploredCells) {
+                        var exploredCell = Grid.GetCellAtCoordinates(exploredCoords);
 
-                    ExplorationCanon.SetCellAsExploredByCiv(exploredCell, newCiv);
-                }
+                        ExplorationCanon.SetCellAsExploredByCiv(exploredCell, newCiv);
+                    }
+                }                
             }
 
             GameCore.ActiveCivilization = CivilizationFactory.AllCivilizations.Where(

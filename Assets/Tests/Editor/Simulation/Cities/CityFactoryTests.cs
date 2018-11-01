@@ -89,11 +89,6 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<ISubject<ICity>>().WithId("City Clicked Subject").FromMock();
 
-            Container.Bind<SignalManager>().AsSingle();
-
-            Container.DeclareSignal<CityProjectChangedSignal>();
-            Container.DeclareSignal<CityDistributionPerformedSignal>();
-
             Container.Bind<CitySignals>().AsSingle();
             Container.Bind<UnitSignals>().AsSingle();
 

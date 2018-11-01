@@ -40,12 +40,12 @@ namespace Assets.UI.Cities.Production {
         [Inject]
         public void InjectDependencies(
             IProductionLogic productionLogic, IYieldFormatter yieldFormatter,
-            CityProjectChangedSignal projectChangedSignal, ICoreConfig coreConfig
+            CitySignals citySignals, ICoreConfig coreConfig
         ){
             ProductionLogic = productionLogic;
             YieldFormatter  = yieldFormatter;
 
-            projectChangedSignal.AsObservable.Subscribe(OnProjectChanged);            
+            citySignals.ProjectChangedSignal.Subscribe(OnProjectChanged);            
 
             ProgressSliderFill.color = coreConfig.GetColorForYieldType(YieldType.Production);
         }
@@ -61,22 +61,6 @@ namespace Assets.UI.Cities.Production {
                 ClearProjectDisplay();
             }else{
                 DisplayProjectOfCity(ObjectToDisplay);
-            }
-        }
-
-        #endregion
-
-        #region signal responses
-
-        private void OnProjectChanged(Tuple<ICity, IProductionProject> cityProjectTuple) {
-            if(cityProjectTuple.Item1.Equals(ObjectToDisplay)) {
-
-                if(ObjectToDisplay.ActiveProject != null) {
-                    DisplayProjectOfCity(ObjectToDisplay);
-                }else {
-                    ClearProjectDisplay();
-                }
-                               
             }
         }
 
@@ -109,6 +93,18 @@ namespace Assets.UI.Cities.Production {
             ProductionProgressSlider.minValue = 0;
             ProductionProgressSlider.maxValue = 0;
             ProductionProgressSlider.value = 0;
+        }
+
+        private void OnProjectChanged(Tuple<ICity, IProductionProject> cityProjectTuple) {
+            if(cityProjectTuple.Item1.Equals(ObjectToDisplay)) {
+
+                if(ObjectToDisplay.ActiveProject != null) {
+                    DisplayProjectOfCity(ObjectToDisplay);
+                }else {
+                    ClearProjectDisplay();
+                }
+                               
+            }
         }
 
         #endregion
