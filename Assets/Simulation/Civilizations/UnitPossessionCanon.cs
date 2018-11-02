@@ -9,8 +9,6 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.MapResources;
-using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Civilizations {
 
