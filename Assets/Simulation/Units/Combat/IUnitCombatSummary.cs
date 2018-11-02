@@ -12,6 +12,7 @@ namespace Assets.Simulation.Units.Combat {
         bool IgnoresAmphibiousPenalty     { get; }
         bool IgnoresDefensiveTerrainBonus { get; }
         bool IgnoresLineOfSight           { get; }
+        bool BenefitsFromFortifications   { get; }
 
         int BonusRange { get; }
 

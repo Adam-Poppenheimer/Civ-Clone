@@ -44,6 +44,9 @@ namespace Assets.Simulation.Units {
 
         float CityRepairPercentPerTurn { get; }
 
+        float FortificationBonusPerTurn { get; }
+        float MaxFortificationBonus     { get; }
+
         #endregion
 
         #region methods

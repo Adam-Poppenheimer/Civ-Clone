@@ -58,6 +58,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
             Container.Bind<IUnitHealingLogic>           ().To<UnitHealingLogic>           ().AsSingle();
             Container.Bind<ICanBuildCityLogic>          ().To<CanBuildCityLogic>          ().AsSingle();
+            Container.Bind<IUnitFortificationLogic>     ().To<UnitFortificationLogic>     ().AsSingle();
 
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();

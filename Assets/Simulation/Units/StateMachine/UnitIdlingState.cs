@@ -31,7 +31,7 @@ namespace Assets.Simulation.Units.StateMachine {
 
         #region from StateMachineBehaviour
 
-        public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+        public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             UnitSignals.BecameIdleSignal.OnNext(UnitToControl);
         }
 

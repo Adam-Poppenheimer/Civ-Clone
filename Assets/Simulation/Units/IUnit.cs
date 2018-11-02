@@ -52,6 +52,7 @@ namespace Assets.Simulation.Units {
         bool IsSetUpToBombard       { get; }
         bool LockedIntoConstruction { get; }
         bool IsIdling               { get; }
+        bool IsFortified            { get; }
 
         IEnumerable<IPromotion> Promotions { get; }
 
@@ -78,6 +79,7 @@ namespace Assets.Simulation.Units {
         void SetUpToBombard();
         void LockIntoConstruction();
         void BeginIdling();
+        void BeginFortifying();
 
         void Destroy();
 

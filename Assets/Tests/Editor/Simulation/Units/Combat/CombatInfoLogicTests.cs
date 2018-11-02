@@ -45,6 +45,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             public UnitCombatSummary CombatSummary = new UnitCombatSummary();
 
+            public float FortificationModifier = 0f;
+
         }
 
         public class CivilizationTestData {
@@ -284,6 +286,26 @@ namespace Assets.Tests.Simulation.Units.Combat {
                     CombatType = CombatType.Melee,
                     AttackerCombatModifier = 0f
                 });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    CombatType = CombatType.Melee,
+                    Defender = new UnitTestData() {
+                        FortificationModifier = 0.5f,
+                        CombatSummary = new UnitCombatSummary() { IgnoresDefensiveTerrainBonus = false }
+                    }
+                }).SetName("Defender adds fortification bonus when defender doesn't ignore defensive terrain bonus").Returns(new CombatInfo() {
+                    CombatType = CombatType.Melee, DefenderCombatModifier = 0.5f
+                });
+
+                yield return new TestCaseData(new GetAttackInfoTestData() {
+                    CombatType = CombatType.Melee,
+                    Defender = new UnitTestData() {
+                        FortificationModifier = 0.5f,
+                        CombatSummary = new UnitCombatSummary() { IgnoresDefensiveTerrainBonus = true }
+                    }
+                }).SetName("Defender doesn't add fortification bonus when defender ignores defensive terrain bonus").Returns(new CombatInfo() {
+                    CombatType = CombatType.Melee, DefenderCombatModifier = 0f
+                });
             }
         }
 
@@ -297,6 +319,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
         private Mock<ICivilizationConfig>                           MockCivConfig;
+        private Mock<IUnitFortificationLogic>                       MockFortificationLogic;
 
         #endregion
 
@@ -312,6 +335,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon        = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
             MockCivConfig                  = new Mock<ICivilizationConfig>();
+            MockFortificationLogic         = new Mock<IUnitFortificationLogic>();
 
             Container.Bind<IUnitConfig>                                  ().FromInstance(MockUnitConfig                .Object);
             Container.Bind<IRiverCanon>                                  ().FromInstance(MockRiverCanon                .Object);
@@ -319,6 +343,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon       .Object);
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig                 .Object);
+            Container.Bind<IUnitFortificationLogic>                      ().FromInstance(MockFortificationLogic        .Object);
 
             Container.Bind<CombatInfoLogic>().AsSingle();
         }
@@ -371,6 +396,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var owner = BuildCivilization(data.Owner);
 
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(owner);
+
+            MockFortificationLogic.Setup(logic => logic.GetFortificationModifierForUnit(newUnit)).Returns(data.FortificationModifier);
 
             return newUnit;
         }

@@ -5,17 +5,11 @@ using System.Text;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    public class SetUpToBombardAbilityHandler : IAbilityHandler {
-
-        #region instance fields and properties
-
-
-
-        #endregion
+    public class FortifyAbilityHandler : IAbilityHandler {
 
         #region constructors
 
-        public SetUpToBombardAbilityHandler() { }
+
 
         #endregion
 
@@ -24,8 +18,8 @@ namespace Assets.Simulation.Units.Abilities {
         #region from IAbilityHandler
 
         public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(ability.CommandRequests.Any(request => request.CommandType == AbilityCommandType.SetUpToBombard)) {
-                return unit.CurrentMovement > 0 && !unit.IsSetUpToBombard;
+            if(ability.CommandRequests.Any(request => request.CommandType == AbilityCommandType.Fortify)) {
+                return unit.CurrentMovement > 0 && !unit.IsFortified;
             }else {
                 return false;
             }
@@ -33,8 +27,7 @@ namespace Assets.Simulation.Units.Abilities {
 
         public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
-                unit.SetUpToBombard();
-                unit.CurrentMovement -= 1;             
+                unit.BeginFortifying();
 
                 return new AbilityExecutionResults(true, null);
             }else {

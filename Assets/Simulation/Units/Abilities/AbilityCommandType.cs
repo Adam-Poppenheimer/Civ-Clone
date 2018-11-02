@@ -11,6 +11,7 @@ namespace Assets.Simulation.Units.Abilities {
         BuildRoad        = 2,
         ClearVegetation  = 3,
         SetUpToBombard   = 4,
+        Fortify          = 5,
     }
 
 }

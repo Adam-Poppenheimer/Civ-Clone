@@ -30,13 +30,15 @@ MonoBehaviour:
   _friendlyNavalHealingPerTurn: 20
   _garrisonedNavalHealingPerTurn: 25
   _cityRepairPercentPerTurn: 15
+  _fortificationBonusPerTurn: 0.2
+  _maxFortificationBonus: 0.4
   TerrainDefensiveness: []
   ShapeDefensiveness:
   - 0
   - 0.25
   - 0
-  FeatureDefensiveness:
+  VegetationDefensiveness:
   - 0
-  - 0.25
-  - 0.25
+  - 0.2
+  - 0.2
   - 0

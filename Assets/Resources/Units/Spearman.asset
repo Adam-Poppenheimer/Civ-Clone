@@ -18,7 +18,8 @@ MonoBehaviour:
   _maxMovement: 2
   _productionCost: 56
   _type: 2
-  _abilities: []
+  _abilities:
+  - {fileID: 11400000, guid: a8578fa98c460534db218d6d960b4eca, type: 2}
   _attackRange: 0
   _combatStrength: 11
   _rangedAttackStrength: 0

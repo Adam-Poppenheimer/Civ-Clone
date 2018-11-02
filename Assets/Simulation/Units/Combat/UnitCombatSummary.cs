@@ -13,12 +13,13 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from IUnitCombatSummary
 
+        public bool CanMoveAfterAttacking   { get; set; }
+        public bool CanAttackAfterAttacking { get; set; }
+
         public bool IgnoresAmphibiousPenalty     { get; set; }
         public bool IgnoresDefensiveTerrainBonus { get; set; }
         public bool IgnoresLineOfSight           { get; set; }
-
-        public bool CanMoveAfterAttacking   { get; set; }
-        public bool CanAttackAfterAttacking { get; set; }
+        public bool BenefitsFromFortifications   { get; set; }
 
         public float GoldRaidingPercentage { get; set; }
 
@@ -41,12 +42,13 @@ namespace Assets.Simulation.Units.Combat {
         #region instance methods
 
         public void Reset() {
-            IgnoresAmphibiousPenalty     = false;
-            IgnoresDefensiveTerrainBonus = false;
-
-            IgnoresLineOfSight      = false;
             CanMoveAfterAttacking   = false;
             CanAttackAfterAttacking = false;
+
+            IgnoresAmphibiousPenalty     = false;
+            IgnoresDefensiveTerrainBonus = false;
+            IgnoresLineOfSight           = false;
+            BenefitsFromFortifications   = false;            
 
             GoldRaidingPercentage = 0f;
             BonusRange = 0;

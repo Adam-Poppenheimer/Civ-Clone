@@ -121,6 +121,13 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public bool IsFortified {
+            get {
+                var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Fortified");
+            }
+        }
+
         public IEnumerable<IPromotion> Promotions {
             get { return Template.StartingPromotions.Concat(PromotionTree.GetChosenPromotions()); }
         }
@@ -305,6 +312,12 @@ namespace Assets.Simulation.Units {
         public void BeginIdling() {
             if(!IsIdling) {
                 Animator.SetTrigger("Idling Requested");
+            }
+        }
+
+        public void BeginFortifying() {
+            if(!IsFortified) {
+                Animator.SetTrigger("Fortified Requested");
             }
         }
 

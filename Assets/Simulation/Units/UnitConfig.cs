@@ -111,6 +111,16 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _cityRepairPercentPerTurn;
 
+        public float FortificationBonusPerTurn {
+            get { return _fortificationBonusPerTurn; }
+        }
+        [SerializeField] private float _fortificationBonusPerTurn;
+
+        public float MaxFortificationBonus {
+            get { return _maxFortificationBonus; }
+        }
+        [SerializeField] private float _maxFortificationBonus;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        
