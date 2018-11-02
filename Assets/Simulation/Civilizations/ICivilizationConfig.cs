@@ -30,6 +30,8 @@ namespace Assets.Simulation.Civilizations {
 
         CivilizationDefeatMode DefeatMode { get; }
 
+        int MaintenanceFreeUnits { get; }
+
         #endregion
 
     }

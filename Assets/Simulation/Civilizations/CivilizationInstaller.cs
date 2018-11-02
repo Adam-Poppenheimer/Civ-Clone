@@ -54,6 +54,8 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IConnectionPathCostLogic>    ().To<ConnectionPathCostLogic>    ().AsSingle();
             Container.Bind<ICivilizationConnectionLogic>().To<CivilizationConnectionLogic>().AsSingle();
             Container.Bind<ICivilizationTerritoryLogic> ().To<CivilizationTerritoryLogic> ().AsSingle();
+            Container.Bind<IFreeUnitsLogic>             ().To<FreeUnitsLogic>             ().AsSingle();
+            Container.Bind<IUnitMaintenanceLogic>       ().To<UnitMaintenanceLogic>       ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

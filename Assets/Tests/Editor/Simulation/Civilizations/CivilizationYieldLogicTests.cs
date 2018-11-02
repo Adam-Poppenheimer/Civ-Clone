@@ -20,8 +20,8 @@ namespace Assets.Tests.Simulation.Civilizations {
         #region instance fields and properties
 
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-
-        private Mock<IYieldGenerationLogic> MockGenerationLogic;
+        private Mock<IYieldGenerationLogic>                         MockGenerationLogic;
+        private Mock<IUnitMaintenanceLogic>                         MockUnitMaintenanceLogic;
 
         private List<ICity> AllCities = new List<ICity>();
 
@@ -35,14 +35,16 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CommonInstall() {
             AllCities.Clear();
 
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGenerationLogic     = new Mock<IYieldGenerationLogic>();
+            MockCityPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockGenerationLogic      = new Mock<IYieldGenerationLogic>();
+            MockUnitMaintenanceLogic = new Mock<IUnitMaintenanceLogic>();
 
             MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICivilization>()))
                 .Returns(AllCities);
 
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IYieldGenerationLogic>().FromInstance(MockGenerationLogic.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
+            Container.Bind<IYieldGenerationLogic>                        ().FromInstance(MockGenerationLogic     .Object);
+            Container.Bind<IUnitMaintenanceLogic>                        ().FromInstance(MockUnitMaintenanceLogic.Object);
 
             Container.Bind<CivilizationYieldLogic>().AsSingle();
         }
@@ -65,6 +67,25 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Assert.AreEqual(
                 new YieldSummary(food: 1f, gold: 2f, culture: 3f),
+                yieldLogic.GetYieldOfCivilization(civilization),
+                "GetYieldOfCivilization returned an unexpected value"
+            );
+        }
+
+        [Test]
+        public void GetYieldOfCivilization_SubtractsUnitMaintenanceFromGold() {
+            BuildCity(new YieldSummary(food: 1f));
+            BuildCity(new YieldSummary(gold: 2f));
+            BuildCity(new YieldSummary(culture: 3f));
+
+            var civilization = BuildCivilization();
+
+            MockUnitMaintenanceLogic.Setup(logic => logic.GetMaintenanceOfUnitsForCiv(civilization)).Returns(20f);
+
+            var yieldLogic = Container.Resolve<CivilizationYieldLogic>();
+
+            Assert.AreEqual(
+                new YieldSummary(food: 1f, gold: -18f, culture: 3f),
                 yieldLogic.GetYieldOfCivilization(civilization),
                 "GetYieldOfCivilization returned an unexpected value"
             );

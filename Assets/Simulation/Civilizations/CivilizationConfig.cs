@@ -62,6 +62,11 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private CivilizationDefeatMode _defeatMode;
 
+        public int MaintenanceFreeUnits {
+            get { return _maintenanceFreeUnits; }
+        }
+        [SerializeField] private int _maintenanceFreeUnits;
+
         #endregion
 
         #endregion
