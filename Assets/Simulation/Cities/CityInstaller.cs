@@ -73,6 +73,11 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IProductionProjectFactory>().To<ProductionProjectFactory>().AsSingle();
             Container.Bind<ICityFactory>             ().To<CityFactory>             ().AsSingle();
 
+            Container.Bind<IBuildingRestriction>().To<ResourceBuildingRestriction>      ().AsSingle();
+            Container.Bind<IBuildingRestriction>().To<ImprovementBuildingRestriction>   ().AsSingle();
+            Container.Bind<IBuildingRestriction>().To<OtherBuildingsBuildingRestriction>().AsSingle();
+            Container.Bind<IBuildingRestriction>().To<TerritoryBuildingRestriction>     ().AsSingle();
+
             Container.Bind<CitySignals>().AsSingle();
 
             Container.Bind<CompositeCitySignals>().AsSingle();
