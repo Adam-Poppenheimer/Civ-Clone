@@ -30,7 +30,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         public void CommonInstall() {
             AllAbilityHandlers.Clear();
 
-            Container.Bind<IEnumerable<IAbilityHandler>>().WithId("Unit Ability Handlers").FromInstance(AllAbilityHandlers);
+            Container.Bind<List<IAbilityHandler>>().FromInstance(AllAbilityHandlers);
 
             Container.Bind<UnitSignals>().AsSingle();
 

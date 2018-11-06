@@ -21,6 +21,7 @@ MonoBehaviour:
   _type: 0
   _abilities:
   - {fileID: 11400000, guid: a8578fa98c460534db218d6d960b4eca, type: 2}
+  - {fileID: 11400000, guid: a5fbfcd7f02fa9d42a702303532a3eb6, type: 2}
   _attackRange: 2
   _combatStrength: 5
   _rangedAttackStrength: 7

@@ -12,6 +12,7 @@ namespace Assets.Simulation.Units.Abilities {
         ClearVegetation  = 3,
         SetUpToBombard   = 4,
         Fortify          = 5,
+        Pillage          = 6,
     }
 
 }

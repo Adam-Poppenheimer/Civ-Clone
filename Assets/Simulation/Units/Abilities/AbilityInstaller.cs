@@ -16,16 +16,13 @@ namespace Assets.Simulation.Units.Abilities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IEnumerable<IAbilityHandler>>().WithId("Unit Ability Handlers").FromMethod(
-                context => new List<IAbilityHandler>() {
-                    context.Container.Instantiate<FoundCityAbilityHandler>(),
-                    context.Container.Instantiate<BuildImprovementAbilityHandler>(),
-                    context.Container.Instantiate<BuildRoadAbilityHandler>(),
-                    context.Container.Instantiate<ClearVegetationAbilityHandler>(),
-                    context.Container.Instantiate<SetUpToBombardAbilityHandler>(),
-                    context.Container.Instantiate<FortifyAbilityHandler>()
-                }
-            );
+            Container.Bind<IAbilityHandler>().To<FoundCityAbilityHandler>       ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<BuildImprovementAbilityHandler>().AsSingle();
+            Container.Bind<IAbilityHandler>().To<BuildRoadAbilityHandler>       ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<ClearVegetationAbilityHandler> ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<SetUpToBombardAbilityHandler>  ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<FortifyAbilityHandler>         ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<PillageAbilityHandler>         ().AsSingle();
 
             var availableAbilities = Resources.LoadAll<AbilityDefinition>("Unit Abilities");
 

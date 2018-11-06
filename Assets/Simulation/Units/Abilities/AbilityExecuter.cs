@@ -27,8 +27,8 @@ namespace Assets.Simulation.Units.Abilities {
         #region constructors
 
         [Inject]
-        public AbilityExecuter(UnitSignals signals,
-            [Inject(Id = "Unit Ability Handlers")] IEnumerable<IAbilityHandler> abilityHandlers
+        public AbilityExecuter(
+            UnitSignals signals, List<IAbilityHandler> abilityHandlers
         ){
             Signals         = signals;
             AbilityHandlers = abilityHandlers;
