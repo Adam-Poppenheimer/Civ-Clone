@@ -83,7 +83,9 @@ namespace Assets.Simulation.Visibility {
                 CivsHavingExploredCell[cell] = explorationData;
             }
 
-            explorationData.Add(civ);
+            if(explorationData.Add(civ)) {
+                VisibilitySignals.CellBecameExploredByCivSignal.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+            }
         }
 
         public void SetCellAsUnexploredByCiv(IHexCell cell, ICivilization civ) {

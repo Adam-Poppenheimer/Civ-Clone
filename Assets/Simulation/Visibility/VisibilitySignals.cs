@@ -5,6 +5,9 @@ using System.Text;
 
 using UniRx;
 
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Civilizations;
+
 namespace Assets.Simulation.Visibility {
 
     public class VisibilitySignals {
@@ -16,6 +19,8 @@ namespace Assets.Simulation.Visibility {
 
         public ISubject<Unit> CellExplorationModeChangedSignal    { get; private set; }
 
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCivSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -25,6 +30,8 @@ namespace Assets.Simulation.Visibility {
             ResourceVisibilityModeChangedSignal = new Subject<Unit>();
 
             CellExplorationModeChangedSignal    = new Subject<Unit>();
+
+            CellBecameExploredByCivSignal = new Subject<Tuple<IHexCell, ICivilization>>();
         }
 
         #endregion

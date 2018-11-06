@@ -20,15 +20,16 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region instance fields and properties
 
+        private IDisposable OnTurnBeganSubscription;
+
+
+
         private List<CivilizationDisplayBase> CivilizationDisplays;
-
-        private List<RectTransform> DefaultPanels;
-
-        private IGameCore GameCore;
-
-        private UIStateMachineBrain Brain;
-
-        private CitySummaryManager CitySummaryManager;
+        private CoreSignals                   CoreSignals;
+        private List<RectTransform>           DefaultPanels;
+        private IGameCore                     GameCore;
+        private UIStateMachineBrain           Brain;
+        private CitySummaryManager            CitySummaryManager;
 
         #endregion
 
@@ -36,11 +37,12 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            List<CivilizationDisplayBase> civilizationDisplays,
+            List<CivilizationDisplayBase> civilizationDisplays, CoreSignals coreSignals,
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
             IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager
         ){
             CivilizationDisplays = civilizationDisplays;
+            CoreSignals          = coreSignals;
             DefaultPanels        = defaultPanels;
             GameCore             = gameCore;
             Brain                = brain;
@@ -69,6 +71,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             );
 
             CitySummaryManager.BuildSummaries();
+
+            OnTurnBeganSubscription = CoreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -86,9 +90,17 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             }
 
             CitySummaryManager.ClearSummaries();
+
+            OnTurnBeganSubscription.Dispose();
+            OnTurnBeganSubscription = null;
         }
 
         #endregion
+
+        private void OnTurnBegan(ICivilization civ) {
+            CitySummaryManager.ClearSummaries();
+            CitySummaryManager.BuildSummaries();
+        }
 
         #endregion
 

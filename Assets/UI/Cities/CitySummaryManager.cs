@@ -9,7 +9,11 @@ using UnityEngine.UI;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Visibility;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.UI.Cities {
 
@@ -21,17 +25,14 @@ namespace Assets.UI.Cities {
 
 
 
-        private CitySummaryDisplay SummaryPrefab;
-
-        private ICityFactory CityFactory;
-
-        private DiContainer Container;
-
-        private ICityUIConfig CityUIConfig;
-
-        private IGameCamera GameCamera;
-
-        private RectTransform CitySummaryContainer;
+        private CitySummaryDisplay                       SummaryPrefab;
+        private ICityFactory                             CityFactory;
+        private DiContainer                              Container;
+        private ICityUIConfig                            CityUIConfig;
+        private IGameCamera                              GameCamera;
+        private RectTransform                            CitySummaryContainer;
+        private IExplorationCanon                        ExplorationCanon;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
@@ -42,7 +43,9 @@ namespace Assets.UI.Cities {
             CitySummaryDisplay summaryPrefab, ICityFactory cityFactory,
             DiContainer container, ICityUIConfig cityUIConfig, IGameCamera gameCamera,
             [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer,
-            CitySignals citySignals
+            CitySignals citySignals, IExplorationCanon explorationCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            VisibilitySignals visibilitySignals
         ){
             SummaryPrefab        = summaryPrefab;
             CityFactory          = cityFactory;
@@ -50,8 +53,11 @@ namespace Assets.UI.Cities {
             CityUIConfig         = cityUIConfig;
             GameCamera           = gameCamera;
             CitySummaryContainer = citySummaryContainer;
+            ExplorationCanon     = explorationCanon;
+            CityLocationCanon    = cityLocationCanon;
 
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.CityBeingDestroyedSignal           .Subscribe(OnCityBeingDestroyed);
+            visibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv);
         }
 
         #endregion
@@ -60,15 +66,13 @@ namespace Assets.UI.Cities {
 
         public void BuildSummaries() {
             foreach(var city in CityFactory.AllCities) {
-                var newSummary = Container.InstantiatePrefabForComponent<CitySummaryDisplay>(SummaryPrefab);
+                var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
 
-                newSummary.transform.SetParent(CitySummaryContainer, false);
-                newSummary.gameObject.SetActive(true);
+                if(!ExplorationCanon.IsCellExplored(cityLocation)) {
+                    continue;
+                }
 
-                newSummary.ObjectToDisplay = city;
-                newSummary.Refresh();
-
-                InstantiatedSummaries.Add(newSummary);
+                BuildSummaryForCity(city);
             }
         }
 
@@ -90,12 +94,32 @@ namespace Assets.UI.Cities {
             InstantiatedSummaries.Clear();
         }
 
+        private void BuildSummaryForCity(ICity city) {
+            var newSummary = Container.InstantiatePrefabForComponent<CitySummaryDisplay>(SummaryPrefab);
+
+            newSummary.transform.SetParent(CitySummaryContainer, false);
+            newSummary.gameObject.SetActive(true);
+
+            newSummary.ObjectToDisplay = city;
+            newSummary.Refresh();
+
+            InstantiatedSummaries.Add(newSummary);
+        }
+
         private void OnCityBeingDestroyed(ICity city) {
             var summaryDisplayingCity = InstantiatedSummaries.Where(summary => summary.ObjectToDisplay == city).FirstOrDefault();
             if(summaryDisplayingCity != null) {
                 GameObject.Destroy(summaryDisplayingCity.gameObject);
                 InstantiatedSummaries.Remove(summaryDisplayingCity);
             }            
+        }
+
+        private void OnCellBecameExploredByCiv(Tuple<IHexCell, ICivilization> data) {
+            var cityAtCell = CityLocationCanon.GetPossessionsOfOwner(data.Item1).FirstOrDefault();
+
+            if(cityAtCell != null && ExplorationCanon.IsCellExplored(data.Item1)) {
+                BuildSummaryForCity(cityAtCell);
+            }
         }
 
         #endregion
