@@ -82,7 +82,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             retval += GetYieldOfUnemployedPersonForCity(city) * UnemploymentLogic.GetUnemployedPeopleInCity(city);
 
-            return retval;
+            return retval * (YieldSummary.Ones + additionalBonuses);
         }
 
         public YieldSummary GetBaseYieldOfCity(ICity city) {

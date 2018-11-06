@@ -514,8 +514,8 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
             Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic    .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<ICellYieldLogic>                           ().FromInstance(MockCellResourceLogic      .Object);
-            Container.Bind<IBuildingInherentYieldLogic>                       ().FromInstance(MockBuildingResourceLogic  .Object);
+            Container.Bind<ICellYieldLogic>                              ().FromInstance(MockCellResourceLogic      .Object);
+            Container.Bind<IBuildingInherentYieldLogic>                  ().FromInstance(MockBuildingResourceLogic  .Object);
             Container.Bind<IUnemploymentLogic>                           ().FromInstance(MockUnemploymentLogic      .Object);
 
             Container.Bind<YieldGenerationLogic>().AsSingle();
@@ -597,6 +597,25 @@ namespace Assets.Tests.Simulation.Cities {
             var resourceLogic = Container.Resolve<YieldGenerationLogic>();
 
             return resourceLogic.GetTotalYieldForCity(city);
+        }
+
+        [Test]
+        public void GetTotalYieldForCityTests_ResultMultipliedByOnePlusAdditionalBonuses() {
+            SetupConfig(new CityConfigTestData() {
+                LocationYield = YieldSummary.Empty,
+                UnemployedYield = new YieldSummary(food: 1, production: 1)
+            });
+
+            var city = BuildCity(new CityTestData() {
+                Population = 2, UnemployedPeople = 2
+            });
+
+            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
+            
+            Assert.AreEqual(
+                new YieldSummary(food: 4, production: 10),
+                resourceLogic.GetTotalYieldForCity(city, new YieldSummary(food: 1, production: 4, science: -1))
+            );
         }
 
         #endregion

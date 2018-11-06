@@ -160,13 +160,15 @@ namespace Assets.UI.Cities {
         private void DisplayGrowthData() {
             YieldSummary income = YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay);
 
-            int currentFoodStockpile = ObjectToDisplay.FoodStockpile;
+            float currentFoodStockpile = ObjectToDisplay.FoodStockpile;
             int foodUntilNextGrowth = GrowthLogic.GetFoodStockpileToGrow(ObjectToDisplay);
             float netFoodIncome = income[YieldType.Food] - GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
 
-            int turnsToGrow = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / netFoodIncome);
+            float realFoodGain = GrowthLogic.GetFoodStockpileAdditionFromIncome(ObjectToDisplay, netFoodIncome);
 
-            if(netFoodIncome > 0) {
+            int turnsToGrow = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / realFoodGain);
+
+            if(realFoodGain > 0) {
                 TurnsUntilGrowthField.text = turnsToGrow.ToString();
             }else {
                 TurnsUntilGrowthField.text = "--";
@@ -178,7 +180,7 @@ namespace Assets.UI.Cities {
 
             GrowthSlider.minValue = 0;
             GrowthSlider.maxValue = foodUntilNextGrowth;
-            GrowthSlider.value    = currentFoodStockpile;
+            GrowthSlider.value    = Mathf.FloorToInt(currentFoodStockpile);
         }
 
         private void DisplayProductionData() {

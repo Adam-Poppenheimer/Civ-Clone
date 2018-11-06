@@ -34,7 +34,7 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// The amount of food currently stockpiled in the city.
         /// </summary>
-        int FoodStockpile { get; set; }
+        float FoodStockpile { get; set; }
 
         /// <summary>
         /// The amount of culture currently stockpiled in the city.

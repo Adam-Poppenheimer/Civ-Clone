@@ -94,34 +94,39 @@ namespace Assets.UI.Cities.Growth {
                 return;
             }
 
-            DisplayGrowthInformation(ObjectToDisplay.Population, ObjectToDisplay.FoodStockpile, GrowthLogic.GetFoodStockpileToGrow(ObjectToDisplay));
+            DisplayGrowthInformation(
+                ObjectToDisplay.Population, ObjectToDisplay.FoodStockpile,
+                GrowthLogic.GetFoodStockpileToGrow(ObjectToDisplay)
+            );
         }
 
         #endregion
 
-        private void DisplayGrowthInformation(int currentPopulation, int currentFoodStockpile,
-            int foodUntilNextGrowth) {
-
+        private void DisplayGrowthInformation(
+            int currentPopulation, float currentFoodStockpile, int foodUntilNextGrowth
+        ) {
             CurrentPopulationField.text = currentPopulation.ToString();
-            if(CurrentFoodStockpileField != null) { CurrentFoodStockpileField.text = currentFoodStockpile.ToString(); }
-            if(FoodUntilNextGrowthField  != null) { FoodUntilNextGrowthField.text  = foodUntilNextGrowth .ToString(); }
+            if(CurrentFoodStockpileField != null) { CurrentFoodStockpileField.text = Mathf.RoundToInt(currentFoodStockpile).ToString(); }
+            if(FoodUntilNextGrowthField  != null) { FoodUntilNextGrowthField .text = foodUntilNextGrowth.ToString(); }
 
             GrowthSlider.minValue = 0;
             GrowthSlider.maxValue = foodUntilNextGrowth;
-            GrowthSlider.value = currentFoodStockpile;
+            GrowthSlider.value = Mathf.RoundToInt(currentFoodStockpile);
 
-            var netIncome = 
+            float netIncome = 
                 GenerationLogic.GetTotalYieldForCity(ObjectToDisplay)[YieldType.Food] -
                 GrowthLogic.GetFoodConsumptionPerTurn(ObjectToDisplay);
 
+            float foodGain = GrowthLogic.GetFoodStockpileAdditionFromIncome(ObjectToDisplay, netIncome);
+
             if(netIncome > 0) {
-                int turnsUntilGrowth = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / (float)netIncome);
+                int turnsUntilGrowth = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / (float)foodGain);
 
                 ChangeStatusField.text = string.Format("{0} turns until growth", turnsUntilGrowth);
             }else if(netIncome == 0) {
                 ChangeStatusField.text = "Stagnation";
             }else {
-                int turnsUntilStarvation = Mathf.CeilToInt(currentFoodStockpile / -(float)netIncome);
+                int turnsUntilStarvation = Mathf.CeilToInt(currentFoodStockpile / -foodGain);
                 ChangeStatusField.text = string.Format("{0} turns until starvation", turnsUntilStarvation);
             }
         }

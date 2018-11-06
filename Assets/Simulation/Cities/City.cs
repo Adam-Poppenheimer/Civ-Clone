@@ -49,11 +49,11 @@ namespace Assets.Simulation.Cities {
         [SerializeField] private int _population;
 
         /// <inheritdoc/>
-        public int FoodStockpile {
+        public float FoodStockpile {
             get { return _foodStockpile; }
             set { _foodStockpile = value; }
         }
-        [SerializeField] private int _foodStockpile;
+        [SerializeField] private float _foodStockpile;
 
         /// <inheritdoc/>
         public int CultureStockpile {
@@ -195,11 +195,11 @@ namespace Assets.Simulation.Cities {
 
             int foodConsumption = GrowthLogic.GetFoodConsumptionPerTurn(this);
             if(foodConsumption <= LastIncome[YieldType.Food]) {
-                FoodStockpile += Mathf.FloorToInt(GrowthLogic.GetFoodStockpileAdditionFromIncome(
+                FoodStockpile += GrowthLogic.GetFoodStockpileAdditionFromIncome(
                     this, LastIncome[YieldType.Food] - foodConsumption
-                ));
+                );
             }else {
-                FoodStockpile -= Mathf.CeilToInt(foodConsumption - LastIncome[YieldType.Food]);
+                FoodStockpile -= foodConsumption - LastIncome[YieldType.Food];
             }
         }
 

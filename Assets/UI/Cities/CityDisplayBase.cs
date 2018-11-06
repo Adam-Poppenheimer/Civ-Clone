@@ -19,7 +19,20 @@ namespace Assets.UI.Cities {
 
         #region instance methods
 
-        
+        #region Unity messages
+
+        private void OnEnable() {
+            DoOnEnable();
+        }
+
+        private void OnDisable() {
+            DoOnDisable();
+        }
+
+        protected virtual void DoOnEnable () { }
+        protected virtual void DoOnDisable() { }
+
+        #endregion
 
         #endregion
 

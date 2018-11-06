@@ -29,9 +29,14 @@ namespace Assets.UI.Cities.Production {
         [SerializeField] private Slider ProductionProgressSlider;
         [SerializeField] private Image ProgressSliderFill;
 
-        private IProductionLogic ProductionLogic;
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
-        private IYieldFormatter YieldFormatter;
+
+
+
+        private IProductionLogic ProductionLogic;
+        private IYieldFormatter  YieldFormatter;
+        private CitySignals      CitySignals;
 
         #endregion
 
@@ -44,13 +49,25 @@ namespace Assets.UI.Cities.Production {
         ){
             ProductionLogic = productionLogic;
             YieldFormatter  = yieldFormatter;
-
-            citySignals.ProjectChangedSignal.Subscribe(OnProjectChanged);            
+            CitySignals     = citySignals;          
 
             ProgressSliderFill.color = coreConfig.GetColorForYieldType(YieldType.Production);
         }
 
         #region from CityDisplayBase
+
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals.ProjectChangedSignal       .Subscribe(OnProjectChanged));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
+        }
+
+        protected override void DoOnDisable() {
+            foreach(var subscription in SignalSubscriptions) {
+                subscription.Dispose();
+            }
+
+            SignalSubscriptions.Clear();
+        }
 
         public override void Refresh() {
             if(ObjectToDisplay == null) {
@@ -97,13 +114,13 @@ namespace Assets.UI.Cities.Production {
 
         private void OnProjectChanged(Tuple<ICity, IProductionProject> cityProjectTuple) {
             if(cityProjectTuple.Item1.Equals(ObjectToDisplay)) {
+                Refresh();
+            }
+        }
 
-                if(ObjectToDisplay.ActiveProject != null) {
-                    DisplayProjectOfCity(ObjectToDisplay);
-                }else {
-                    ClearProjectDisplay();
-                }
-                               
+        private void OnDistributionPerformed(ICity city) {
+            if(city == ObjectToDisplay) {
+                Refresh();
             }
         }
 

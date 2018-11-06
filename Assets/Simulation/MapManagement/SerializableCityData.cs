@@ -19,7 +19,7 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public int Population;
 
-        [DataMember()] public int            FoodStockpile;
+        [DataMember()] public float          FoodStockpile;
         [DataMember()] public int            CultureStockpile;
         [DataMember()] public YieldFocusType YieldFocus;
 

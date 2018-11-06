@@ -88,8 +88,9 @@ namespace Assets.Simulation.Cities.Production {
                 city, new YieldSummary(production: productionModifier)
             )[YieldType.Production];
 
-            return Mathf.FloorToInt(totalProduction);
+            return Mathf.RoundToInt(totalProduction);
         }
+
 
         #endregion
 

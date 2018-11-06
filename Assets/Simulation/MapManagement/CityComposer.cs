@@ -73,7 +73,7 @@ namespace Assets.Simulation.MapManagement {
                     Population       = city.Population,
                     FoodStockpile    = city.FoodStockpile,
                     CultureStockpile = city.CultureStockpile,
-                    YieldFocus    = city.YieldFocus,
+                    YieldFocus       = city.YieldFocus,
                     Hitpoints        = city.CombatFacade.CurrentHitpoints,
                     CurrentMovement  = city.CombatFacade.CurrentMovement
                 };

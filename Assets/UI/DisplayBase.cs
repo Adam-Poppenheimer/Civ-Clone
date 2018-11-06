@@ -35,7 +35,6 @@ namespace Assets.UI {
         private void OnDestroy() {
             RoundBeganSubscription.Dispose();
         }
-
         protected virtual void DoOnDestroy() { }
 
         #endregion

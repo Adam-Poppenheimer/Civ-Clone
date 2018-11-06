@@ -19,21 +19,34 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         [SerializeField] private YieldSummaryDisplay YieldDisplay;
 
+        private IDisposable DistributionPerformedSubscription;
 
 
 
         private IYieldGenerationLogic YieldGenerationLogic;
+        private CitySignals           CitySignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IYieldGenerationLogic resourceGenerationLogic) {
+        public void InjectDependencies(
+            IYieldGenerationLogic resourceGenerationLogic, CitySignals citySignals
+        ) {
             YieldGenerationLogic = resourceGenerationLogic;
+            CitySignals          = citySignals;
         }
 
         #region from CityDisplayBase
+
+        protected override void DoOnEnable() {
+            DistributionPerformedSubscription = CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed);
+        }
+
+        protected override void DoOnDisable() {
+            DistributionPerformedSubscription.Dispose();
+        }
 
         public override void Refresh() {
             if(ObjectToDisplay == null) {
@@ -44,6 +57,12 @@ namespace Assets.UI.Cities.ResourceGeneration {
         }
 
         #endregion
+
+        private void OnDistributionPerformed(ICity city) {
+            if(ObjectToDisplay == city) {
+                Refresh();
+            }
+        }
 
         #endregion
 
