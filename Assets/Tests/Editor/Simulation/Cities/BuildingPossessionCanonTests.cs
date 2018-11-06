@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Cities;
@@ -22,6 +23,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<IResourceLockingCanon>                         MockResourceLockingCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private CitySignals                                         CitySignals;
 
         #endregion
 
@@ -33,11 +35,11 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             MockResourceLockingCanon = new Mock<IResourceLockingCanon>();
             MockCityPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            CitySignals              = new CitySignals();
 
             Container.Bind<IResourceLockingCanon>                        ().FromInstance(MockResourceLockingCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
-
-            Container.Bind<CitySignals>().AsSingle();
+            Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
 
             Container.Bind<BuildingPossessionCanon>().AsSingle();
         }
@@ -81,6 +83,26 @@ namespace Assets.Tests.Simulation.Cities {
             );
         }
 
+        [Test]
+        public void OnPossessionEstablished_CityGainedBuildingSignalFired() {
+            var building = BuildBuilding(BuildTemplate());
+
+            var city = BuildCity();
+
+            var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
+
+            CitySignals.CityGainedBuildingSignal.Subscribe(delegate(Tuple<ICity, IBuilding> data) {
+                Assert.AreEqual(city,     data.Item1, "Incorrect city passed");
+                Assert.AreEqual(building, data.Item2, "Incorrect building passed");
+
+                Assert.Pass();
+            });
+
+            possessionCanon.ChangeOwnerOfPossession(building, city);
+
+            Assert.Fail("CityGainedBuildingSignal wasn't fired");
+        }
+
         [Test(Description = "When an existing possession relationship is broken, " +
             "BuildingPossessionCanon unreserves all required specialty resource " +
             "marked by the building's template. It does this for the civilization " +
@@ -115,6 +137,28 @@ namespace Assets.Tests.Simulation.Cities {
                 canon => canon.UnlockCopyOfResourceForCiv(resourceThree, civilization),
                 Times.Never, "Resource Three was unlocked unexpectedly"
             );
+        }
+
+        [Test]
+        public void OnPossessionBroken_CityLostBuildingSignalFired() {
+            var building = BuildBuilding(BuildTemplate());
+
+            var city = BuildCity();
+
+            var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
+
+            possessionCanon.ChangeOwnerOfPossession(building, city);
+
+            CitySignals.CityLostBuildingSignal.Subscribe(delegate(Tuple<ICity, IBuilding> data) {
+                Assert.AreEqual(city,     data.Item1, "Incorrect city passed");
+                Assert.AreEqual(building, data.Item2, "Incorrect building passed");
+
+                Assert.Pass();
+            });
+
+            possessionCanon.ChangeOwnerOfPossession(building, null);
+
+            Assert.Fail("CityLostBuildingSignal wasn't fired");
         }
 
         #endregion

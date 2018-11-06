@@ -31,6 +31,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private Sprite _icon;
 
+        public BuildingType Type {
+            get { return _type; }
+        }
+        [SerializeField] private BuildingType _type = BuildingType.Normal;
+
         /// <inheritdoc/>
         public int ProductionCost {
             get { return _productionCost; }

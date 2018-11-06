@@ -45,12 +45,13 @@ namespace Assets.UI.Cities.Production {
         public void InjectDependencies(IBuildingProductionValidityLogic buildingValidityLogic,
             IUnitProductionValidityLogic unitValidityLogic, ITechCanon techCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            DiContainer container
+            IProductionProjectFactory projectFactory, DiContainer container
         ){
             BuildingValidityLogic = buildingValidityLogic;
             UnitValidityLogic     = unitValidityLogic;
             TechCanon             = techCanon;
             CityPossessionCanon   = cityPossessionCanon;
+            ProjectFactory        = projectFactory;
             Container             = container;
         }
 

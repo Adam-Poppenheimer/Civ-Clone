@@ -66,6 +66,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IUnemploymentLogic>                       ().To<UnemploymentLogic>              ().AsSingle();
             Container.Bind<ICityLineOfSightLogic>                    ().To<CityLineOfSightLogic>           ().AsSingle();
             Container.Bind<ICityRazer>                               ().To<CityRazer>                      ().AsSingle();
+            Container.Bind<ICityProductionResolver>                  ().To<CityProductionResolver>         ().AsSingle();
 
             Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 
@@ -77,6 +78,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IBuildingRestriction>().To<ImprovementBuildingRestriction>   ().AsSingle();
             Container.Bind<IBuildingRestriction>().To<OtherBuildingsBuildingRestriction>().AsSingle();
             Container.Bind<IBuildingRestriction>().To<TerritoryBuildingRestriction>     ().AsSingle();
+            Container.Bind<IBuildingRestriction>().To<WonderBuildingRestriction>        ().AsSingle();
 
             Container.Bind<CitySignals>().AsSingle();
 

@@ -20,8 +20,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IPossessionRelationship<ICity, IHexCell>>        MockCellPossessionCanon;
-        private Mock<IPossessionRelationship<IHexCell, IImprovement>> MockImprovementLocationCanon;
+        private Mock<IPossessionRelationship<ICity, IHexCell>> MockCellPossessionCanon;
+        private Mock<IImprovementLocationCanon>                MockImprovementLocationCanon;
 
         #endregion
 
@@ -32,10 +32,10 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockCellPossessionCanon      = new Mock<IPossessionRelationship<ICity, IHexCell>>();
-            MockImprovementLocationCanon = new Mock<IPossessionRelationship<IHexCell, IImprovement>>();
+            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
 
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>       ().FromInstance(MockCellPossessionCanon     .Object);
-            Container.Bind<IPossessionRelationship<IHexCell, IImprovement>>().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockCellPossessionCanon     .Object);
+            Container.Bind<IImprovementLocationCanon>               ().FromInstance(MockImprovementLocationCanon.Object);
 
             Container.Bind<ImprovementBuildingRestriction>().AsSingle();
         }

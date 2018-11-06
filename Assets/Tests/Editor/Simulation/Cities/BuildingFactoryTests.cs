@@ -67,27 +67,6 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region tests
 
-        [Test(Description = "CanConstructTemplateInCity should return true with the argued template " +
-            "is considered valid by IBuildingProductionValidityLogic and when IBuildingPossessionCanon " +
-            "registers no building with the same template. Otherwise, it should return false")]
-        [TestCaseSource("TemplateValidityCases")]
-        public bool CanConstructTemplateInCity_MustBeValidAndNonExistent(string templateName,
-            bool templateIsValid, bool templateAlreadyExists
-        ){
-            var template = BuildTemplate(templateName, templateIsValid);
-
-            ICity city;
-            if(templateAlreadyExists) {
-                city = BuildCity(BuildBuilding(template));
-            }else {
-                city = BuildCity();
-            }
-
-            var factory = Container.Resolve<BuildingFactory>();
-
-            return factory.CanConstructTemplateInCity(template, city);
-        }
-
         [Test(Description = "When a new building is created, it should be initialized with " +
             "the argued IBuildingTemplate")]
         public void BuildingCreated_InitializedWithTemplate() {
@@ -97,7 +76,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<BuildingFactory>();
 
-            var newBuilding = factory.Create(template, city);
+            var newBuilding = factory.BuildBuilding(template, city);
 
             Assert.AreEqual(template, newBuilding.Template, "newBuilding has an unexpected template");
         }
@@ -111,7 +90,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<BuildingFactory>();
 
-            var newBuilding = factory.Create(template, city);
+            var newBuilding = factory.BuildBuilding(template, city);
 
             MockPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(newBuilding, city),
                 Times.AtLeastOnce, "BuildingFactory did not check BuildingPossessionCanon before " +
@@ -130,30 +109,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<BuildingFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.CanConstructTemplateInCity(null, city),
-                "CanConstructTemplateInCity failed to throw on a null template argument");
+            Assert.Throws<ArgumentNullException>(() => factory.BuildBuilding(null, city),
+                "BuildBuilding failed to throw on a null template argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.CanConstructTemplateInCity(template, null),
-                "CanConstructTemplateInCity failed to throw on a null city argument");
-
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null, city),
-                "Create failed to throw on a null template argument");
-
-            Assert.Throws<ArgumentNullException>(() => factory.Create(template, null),
-                "Create failed to throw on a null city argument");
-        }
-
-        [Test(Description = "If Create is called and CanConstructTemplateInCity would return false, " +
-            "CityFactory should throw a BuildingConstructionException")]
-        public void CreateCalled_ThrowsIfTemplateInvalid() {
-            var template = BuildTemplate("Template", false);
-
-            ICity city = BuildCity();
-
-            var factory = Container.Resolve<BuildingFactory>();
-            
-            Assert.Throws<BuildingCreationException>(() => factory.Create(template, city),
-                "BuildingFactory.Create failed to throw as expected");
+            Assert.Throws<ArgumentNullException>(() => factory.BuildBuilding(template, null),
+                "BuildBuilding failed to throw on a null city argument");
         }
 
         [Test(Description = "If Create is called and BuildingPossessionCanon.CanChangeOwnerOfPossession" +
@@ -167,7 +127,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<BuildingFactory>();
 
-            Assert.Throws<BuildingCreationException>(() => factory.Create(template, city),
+            Assert.Throws<BuildingCreationException>(() => factory.BuildBuilding(template, city),
                 "BuildingFactory.Create failed to throw as expected");
         }
 

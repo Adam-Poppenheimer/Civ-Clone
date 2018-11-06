@@ -78,12 +78,13 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory          .Object);
             Container.Bind<ICellModificationLogic>                       ().FromInstance(MockCellModificationLogic.Object);
 
-            Container.Bind<IPopulationGrowthLogic>  ().FromMock();
-            Container.Bind<IProductionLogic>        ().FromMock();
-            Container.Bind<IYieldGenerationLogic>().FromMock();
-            Container.Bind<IBorderExpansionLogic>   ().FromMock();
-            Container.Bind<ICityCombatLogic>        ().FromMock();
-            Container.Bind<IUnitPositionCanon>      ().FromMock();
+            Container.Bind<IPopulationGrowthLogic> ().FromMock();
+            Container.Bind<IProductionLogic>       ().FromMock();
+            Container.Bind<IYieldGenerationLogic>  ().FromMock();
+            Container.Bind<IBorderExpansionLogic>  ().FromMock();
+            Container.Bind<ICityCombatLogic>       ().FromMock();
+            Container.Bind<IUnitPositionCanon>     ().FromMock();
+            Container.Bind<ICityProductionResolver>().FromMock();
             
             Container.Bind<IProductionProjectFactory>().FromMock();
 

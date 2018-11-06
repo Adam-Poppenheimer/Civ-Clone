@@ -15,8 +15,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private IPossessionRelationship<ICity, IHexCell>        CellPossessionCanon;
-        private IPossessionRelationship<IHexCell, IImprovement> ImprovementLocationCanon;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
+        private IImprovementLocationCanon                ImprovementLocationCanon;
 
         #endregion
 
@@ -25,7 +25,7 @@ namespace Assets.Simulation.Cities.Buildings {
         [Inject]
         public ImprovementBuildingRestriction(
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            IPossessionRelationship<IHexCell, IImprovement> improvementLocationCanon
+            IImprovementLocationCanon improvementLocationCanon
         ) {
             CellPossessionCanon      = cellPossessionCanon;
             ImprovementLocationCanon = improvementLocationCanon;

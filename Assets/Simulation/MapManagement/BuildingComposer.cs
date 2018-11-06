@@ -75,7 +75,7 @@ namespace Assets.Simulation.MapManagement {
                 var cellAtCoords   = Grid.GetCellAtCoordinates(buildingData.CityLocation);
                 var cityAtLocation = CityLocationCanon.GetPossessionsOfOwner(cellAtCoords).First();
 
-                var newBuilding = BuildingFactory.Create(templateToBuild, cityAtLocation);
+                var newBuilding = BuildingFactory.BuildBuilding(templateToBuild, cityAtLocation);
 
                 for(int i = 0; i < newBuilding.Slots.Count; i++) {
                     var slot = newBuilding.Slots[i];

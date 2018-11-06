@@ -10,7 +10,7 @@ namespace Assets.Simulation.Cities.Buildings {
     /// <summary>
     /// The base interface for all building factories.
     /// </summary>
-    public interface IBuildingFactory : IFactory<IBuildingTemplate, ICity, IBuilding> {
+    public interface IBuildingFactory {
 
         #region properties
 
@@ -20,14 +20,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region methods
 
-        /// <summary>
-        /// Determines whether a building of the given template could be constructed in
-        /// the given city.
-        /// </summary>
-        /// <param name="template">The template being considered</param>
-        /// <param name="city">The city the hypothetical building would be placed into</param>
-        /// <returns>Whether the given template is valid in the given city</returns>
-        bool CanConstructTemplateInCity(IBuildingTemplate template, ICity city);
+        IBuilding BuildBuilding(IBuildingTemplate template, ICity city);
 
         #endregion
 

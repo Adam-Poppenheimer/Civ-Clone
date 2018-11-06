@@ -53,7 +53,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IBorderExpansionLogic>                     MockExpansionLogic;
         private Mock<IPossessionRelationship<ICity, IHexCell>>  MockCellPossessionCanon;
         private Mock<IWorkerDistributionLogic>                  MockDistributionLogic;
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<ICityProductionResolver>                   MockProductionResolver;
         private Mock<ICityConfig>                               MockCityConfig;
 
         private CitySignals                                     CitySignals;
@@ -72,20 +72,20 @@ namespace Assets.Tests.Simulation.Cities {
             MockExpansionLogic          = new Mock<IBorderExpansionLogic>();
             MockCellPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockDistributionLogic       = new Mock<IWorkerDistributionLogic>();
-            MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockProductionResolver      = new Mock<ICityProductionResolver>();
             MockCityConfig              = new Mock<ICityConfig>();
 
             CitySignals                 = new CitySignals();
 
 
-            Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic            .Object);
-            Container.Bind<IProductionLogic>                         ().FromInstance(MockProductionLogic        .Object);
-            Container.Bind<IYieldGenerationLogic>                    ().FromInstance(MockYieldGenerationLogic   .Object);
-            Container.Bind<IBorderExpansionLogic>                    ().FromInstance(MockExpansionLogic         .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon    .Object);
-            Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic      .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
-            Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig             .Object);
+            Container.Bind<IPopulationGrowthLogic>                   ().FromInstance(MockGrowthLogic         .Object);
+            Container.Bind<IProductionLogic>                         ().FromInstance(MockProductionLogic     .Object);
+            Container.Bind<IYieldGenerationLogic>                    ().FromInstance(MockYieldGenerationLogic.Object);
+            Container.Bind<IBorderExpansionLogic>                    ().FromInstance(MockExpansionLogic      .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>> ().FromInstance(MockCellPossessionCanon .Object);
+            Container.Bind<IWorkerDistributionLogic>                 ().FromInstance(MockDistributionLogic   .Object);
+            Container.Bind<ICityProductionResolver>                  ().FromInstance(MockProductionResolver  .Object);
+            Container.Bind<ICityConfig>                              ().FromInstance(MockCityConfig          .Object);
 
             Container.Bind<CitySignals>                              ().FromInstance(CitySignals);
 
@@ -210,20 +210,21 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(14, mockProject.Object.Progress, "CurrentProject has an incorrect Progress");
         }
 
-        [Test(Description = "When PerformProduction is called on a city whose CurrentProject has " +
-            "sufficient progress to complete, CurrentProject should have its ExecuteProject method called")]
-        public void PerformProduction_ExecutesProjectWhenComplete() {
+        [Test]
+        public void PerformProduction_AndProjectCompleted_ProductionRequestSentToProductionResolver() {
             var mockProject = new Mock<IProductionProject>();
             mockProject.SetupAllProperties();
             mockProject.Object.Progress = 5;
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
+            var newProject = mockProject.Object;
+
             var city = Container.Resolve<City>();
-            city.ActiveProject = mockProject.Object;
+            city.ActiveProject = newProject;
 
             city.PerformProduction();
 
-            mockProject.Verify(project => project.Execute(city), Times.Once, "ExecuteProject on CurrentProject was not called");
+            MockProductionResolver.Verify(resolver =>resolver.MakeProductionRequest(newProject, city), Times.Once);
         }
 
         [Test(Description = "When PerformProduction is called on a city whose CurrentProject has " +
@@ -378,8 +379,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockCell(new CellMockData()) }.AsReadOnly());
 
-            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
-
             city.PerformDistribution();
 
             MockDistributionLogic.Verify(
@@ -451,8 +450,6 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(tiles);
 
-            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city)).Returns(new List<IBuilding>().AsReadOnly());
-
             MockDistributionLogic.Setup(
                 logic => logic.DistributeWorkersIntoSlots(
                     It.IsAny<int>(),
@@ -486,10 +483,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon
                 .Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(tiles);
-
-            MockBuildingPossessionCanon
-                .Setup(canon => canon.GetPossessionsOfOwner(city))
-                .Returns(new List<IBuilding>().AsReadOnly());
 
             MockDistributionLogic.Setup(
                 logic => logic.DistributeWorkersIntoSlots(1, It.IsAny<IEnumerable<IWorkerSlot>>(), city, It.IsAny<YieldFocusType>())

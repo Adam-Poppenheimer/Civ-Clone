@@ -50,7 +50,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockBuildingFactory.Setup(factory => factory.AllBuildings).Returns(AllBuildings);
 
             MockBuildingFactory.Setup(
-                factory => factory.Create(It.IsAny<IBuildingTemplate>(), It.IsAny<ICity>())
+                factory => factory.BuildBuilding(It.IsAny<IBuildingTemplate>(), It.IsAny<ICity>())
             ).Returns<IBuildingTemplate, ICity>(
                 (template, city) => BuildBuilding(template, city)
             );
@@ -218,17 +218,17 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.DecomposeBuildings(mapData);
 
             MockBuildingFactory.Verify(
-                factory => factory.Create(templateOne, cityOne), Times.Once,
+                factory => factory.BuildBuilding(templateOne, cityOne), Times.Once,
                 "Factory was not called as expected on TemplateOne and CityOne"
             );
 
             MockBuildingFactory.Verify(
-                factory => factory.Create(templateTwo, cityTwo), Times.Once,
+                factory => factory.BuildBuilding(templateTwo, cityTwo), Times.Once,
                 "Factory was not called as expected on TemplateOne and CityOne"
             );
 
             MockBuildingFactory.Verify(
-                factory => factory.Create(templateThree, cityThree), Times.Once,
+                factory => factory.BuildBuilding(templateThree, cityThree), Times.Once,
                 "Factory was not called as expected on TemplateOne and CityOne"
             );
         }

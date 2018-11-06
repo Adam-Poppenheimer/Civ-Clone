@@ -104,7 +104,7 @@ namespace Assets.Tests.Simulation.Cities {
 
            projectToTest.Execute(city);
 
-            MockBuildingFactory.Verify(factory => factory.Create(buildingTemplate, city), Times.Once);
+            MockBuildingFactory.Verify(factory => factory.BuildBuilding(buildingTemplate, city), Times.Once);
         }
 
         [Test]

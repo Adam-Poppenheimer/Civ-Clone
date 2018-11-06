@@ -83,7 +83,7 @@ namespace Assets.Simulation.Cities.Production {
 
         public void Execute(ICity targetCity) {
             if(BuildingToConstruct != null) {
-                BuildingFactory.Create(BuildingToConstruct, targetCity);
+                BuildingFactory.BuildBuilding(BuildingToConstruct, targetCity);
             }else {
                 var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(targetCity);
                 var cityLocation = CityLocationCanon.GetOwnerOfPossession(targetCity);

@@ -5,13 +5,11 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
-using UnityEngine.EventSystems;
 
 using Zenject;
 
 using Assets.Simulation.HexMap;
 
-using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Growth;
@@ -95,6 +93,7 @@ namespace Assets.Simulation.Cities {
         private IBorderExpansionLogic                    ExpansionLogic;
         private IPossessionRelationship<ICity, IHexCell> TilePossessionCanon;
         private IWorkerDistributionLogic                 DistributionLogic;
+        private ICityProductionResolver                  ProductionResolver;
         private CitySignals                              Signals;
 
         #endregion
@@ -105,16 +104,18 @@ namespace Assets.Simulation.Cities {
         public void InjectDependencies(
             IPopulationGrowthLogic growthLogic, IProductionLogic productionLogic, 
             IYieldGenerationLogic resourceGenerationLogic, IBorderExpansionLogic expansionLogic,
-            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IWorkerDistributionLogic distributionLogic,
+            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon,
+            IWorkerDistributionLogic distributionLogic, ICityProductionResolver cityProductionResolver,
             CitySignals signals
         ){
-            GrowthLogic             = growthLogic;
-            ProductionLogic         = productionLogic;
+            GrowthLogic          = growthLogic;
+            ProductionLogic      = productionLogic;
             YieldGenerationLogic = resourceGenerationLogic;
-            ExpansionLogic          = expansionLogic;
-            TilePossessionCanon     = tilePossessionCanon;
-            DistributionLogic       = distributionLogic;
-            Signals                 = signals;
+            ExpansionLogic       = expansionLogic;
+            TilePossessionCanon  = tilePossessionCanon;
+            DistributionLogic    = distributionLogic;
+            ProductionResolver   = cityProductionResolver;
+            Signals              = signals;
         }
 
         #region Unity messages
@@ -148,7 +149,7 @@ namespace Assets.Simulation.Cities {
             ActiveProject.Progress += ProductionLogic.GetProductionProgressPerTurnOnProject(this, ActiveProject);
 
             if( ActiveProject.Progress >= ActiveProject.ProductionToComplete) {
-                ActiveProject.Execute(this);
+                ProductionResolver.MakeProductionRequest(ActiveProject, this);
                 ActiveProject = null;
             }
         }

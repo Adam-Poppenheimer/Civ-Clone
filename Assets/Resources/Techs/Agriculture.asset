@@ -19,6 +19,8 @@ MonoBehaviour:
   _prerequisites: []
   _buildingsEnabled:
   - {fileID: 11400000, guid: ce572b53a96d06140b505df1538b79ee, type: 2}
+  - {fileID: 11400000, guid: bb06b9e1b5ad878418fa2b7125f8cae3, type: 2}
+  - {fileID: 11400000, guid: f478831f282ff6b4b9f0d587edff6f70, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
   - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}

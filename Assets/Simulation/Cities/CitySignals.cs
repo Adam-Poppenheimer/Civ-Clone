@@ -9,8 +9,8 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Cities {
 
@@ -46,6 +46,9 @@ namespace Assets.Simulation.Cities {
 
         public ISubject<CityCaptureData> CityCapturedSignal { get; private set; }
 
+        public ISubject<Tuple<ICity, IBuilding>> CityGainedBuildingSignal { get; private set; }
+        public ISubject<Tuple<ICity, IBuilding>> CityLostBuildingSignal   { get; private set; }
+
         #endregion
 
         #region constructors
@@ -65,6 +68,9 @@ namespace Assets.Simulation.Cities {
             GainedCellToBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
 
             CityCapturedSignal = new Subject<CityCaptureData>();
+
+            CityGainedBuildingSignal = new Subject<Tuple<ICity, IBuilding>>();
+            CityLostBuildingSignal   = new Subject<Tuple<ICity, IBuilding>>();
         }
 
         #endregion

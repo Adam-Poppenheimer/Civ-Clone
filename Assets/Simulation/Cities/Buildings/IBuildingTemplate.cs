@@ -28,6 +28,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         Sprite Icon { get; }
 
+        BuildingType Type { get; }
+
         /// <summary>
         /// The production required to construct the template.
         /// </summary>

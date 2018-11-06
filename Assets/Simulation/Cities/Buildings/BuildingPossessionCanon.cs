@@ -21,8 +21,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private IResourceLockingCanon ResourceLockingCanon;
-
+        private CitySignals                                   CitySignals;
+        private IResourceLockingCanon                         ResourceLockingCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;        
 
         #endregion
@@ -34,6 +34,8 @@ namespace Assets.Simulation.Cities.Buildings {
             CitySignals citySignals, IResourceLockingCanon resourceLockingCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
             ){
+            CitySignals = citySignals;
+
             citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
 
             ResourceLockingCanon = resourceLockingCanon;
@@ -56,6 +58,8 @@ namespace Assets.Simulation.Cities.Buildings {
             foreach(var resource in building.Template.ResourcesConsumed) {
                 ResourceLockingCanon.LockCopyOfResourceForCiv(resource, cityOwner);
             }
+
+            CitySignals.CityGainedBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(newOwner, building));
         }
 
         protected override void DoOnPossessionBroken(IBuilding building, ICity oldOwner) {
@@ -68,6 +72,8 @@ namespace Assets.Simulation.Cities.Buildings {
             foreach(var resource in building.Template.ResourcesConsumed) {
                 ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, cityOwner);
             }
+
+            CitySignals.CityLostBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(oldOwner, building));
         }
 
         #endregion
