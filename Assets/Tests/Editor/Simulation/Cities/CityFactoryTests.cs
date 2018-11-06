@@ -60,6 +60,8 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
 
+            Container.Bind<Transform>().WithId("City Container").FromInstance(new GameObject().transform);
+
             MockCityPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGrid                  = new Mock<IHexGrid>();
             MockCellPossessionCanon   = new Mock<IPossessionRelationship<ICity, IHexCell>>();

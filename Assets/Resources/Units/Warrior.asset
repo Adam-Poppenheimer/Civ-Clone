@@ -14,7 +14,8 @@ MonoBehaviour:
   _description: Warrior Description
   _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
-  _prefab: {fileID: 1293392051610162, guid: f30f2e13c75e39f4fb4fde971b50ec24, type: 2}
+  _displayPrefab: {fileID: 1373363049366270, guid: 01762923d8dda7840abc5587352dcf50,
+    type: 2}
   _maxMovement: 2
   _productionCost: 40
   _type: 2

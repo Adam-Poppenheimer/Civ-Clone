@@ -91,7 +91,7 @@ namespace Assets.Simulation.Cities {
 
         Sprite CombatantIcon { get; }
 
-        GameObject CombatantPrefab { get; }
+        GameObject CombatantDisplayPrefab { get; }
 
         #endregion
 

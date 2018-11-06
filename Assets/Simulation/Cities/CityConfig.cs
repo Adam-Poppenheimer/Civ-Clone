@@ -148,10 +148,10 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private Sprite _combatantIcon;
 
-        public GameObject CombatantPrefab {
-            get { return _combatantPrefab; }
+        public GameObject CombatantDisplayPrefab {
+            get { return _combatantDisplayPrefab; }
         }
-        [SerializeField] private GameObject _combatantPrefab;
+        [SerializeField] private GameObject _combatantDisplayPrefab;
 
         #endregion
 

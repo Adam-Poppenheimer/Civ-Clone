@@ -121,6 +121,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private float _maxFortificationBonus;
 
+        public GameObject UnitPrefab {
+            get { return _unitPrefab; }
+        }
+        [SerializeField] private GameObject _unitPrefab;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        

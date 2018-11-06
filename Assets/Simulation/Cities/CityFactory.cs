@@ -41,6 +41,7 @@ namespace Assets.Simulation.Cities {
         private IUnitFactory                                  UnitFactory;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private ICellModificationLogic                        CellModificationLogic;
+        private Transform                                     CityContainer;
 
         #endregion
 
@@ -51,7 +52,8 @@ namespace Assets.Simulation.Cities {
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon, IHexGrid grid, 
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon, CitySignals citySignals,
             IUnitFactory unitFactory, IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            ICellModificationLogic cellModificationLogic
+            ICellModificationLogic cellModificationLogic,
+            [Inject(Id = "City Container")] Transform cityContainer
         ){
             Container             = container;
             CityPrefab            = cityPrefab;
@@ -61,6 +63,7 @@ namespace Assets.Simulation.Cities {
             UnitFactory           = unitFactory;
             CityLocationCanon     = cityLocationCanon;
             CellModificationLogic = cellModificationLogic;
+            CityContainer         = cityContainer;
 
             if(citySignals != null) {
                 citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
@@ -85,6 +88,7 @@ namespace Assets.Simulation.Cities {
 
             newCityGameObject.transform.position = location.AbsolutePosition;
             newCityGameObject.name = string.Format("City {0}", allCities.Count);
+            newCityGameObject.transform.SetParent(CityContainer, true);
 
             var newCity = newCityGameObject.GetComponent<City>();
 

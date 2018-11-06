@@ -83,8 +83,8 @@ namespace Assets.Simulation.Cities {
             get { return CityConfig.CombatantIcon; }
         }
 
-        public GameObject Prefab {
-            get { return CityConfig.CombatantPrefab; }
+        public GameObject DisplayPrefab {
+            get { return CityConfig.CombatantDisplayPrefab; }
         }
 
         public int ProductionCost {

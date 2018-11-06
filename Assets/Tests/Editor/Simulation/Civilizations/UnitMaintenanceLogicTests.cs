@@ -106,6 +106,23 @@ namespace Assets.Tests.Simulation.Civilizations {
             return maintenanceLogic.GetMaintenanceOfUnitsForCiv(civ);
         }
 
+        [Test]
+        public void GetMaintenanceOfUnitsForCiv_IgnoresCities() {
+            var civ = BuildCiv();
+
+            var units = new List<IUnit>() {
+                BuildUnit(UnitType.City),
+                BuildUnit(UnitType.City),
+                BuildUnit(UnitType.City)
+            };            
+
+            MockUnitPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(civ)).Returns(units);
+
+            var maintenanceLogic = Container.Resolve<UnitMaintenanceLogic>();
+
+            Assert.AreEqual(0, maintenanceLogic.GetMaintenanceOfUnitsForCiv(civ));
+        }
+
         #endregion
 
         #region utilities
@@ -114,8 +131,12 @@ namespace Assets.Tests.Simulation.Civilizations {
             return new Mock<ICivilization>().Object;
         }
 
-        private IUnit BuildUnit() {
-            return new Mock<IUnit>().Object;
+        private IUnit BuildUnit(UnitType type = UnitType.Melee) {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.Type).Returns(type);
+
+            return mockUnit.Object;
         }
 
         #endregion

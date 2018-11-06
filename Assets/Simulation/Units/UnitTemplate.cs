@@ -35,10 +35,10 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private Sprite _icon;
 
-        public GameObject Prefab {
-            get { return _prefab; }
+        public GameObject DisplayPrefab {
+            get { return _displayPrefab; }
         }
-        [SerializeField] private GameObject _prefab;
+        [SerializeField] private GameObject _displayPrefab;
 
         public int MaxMovement {
             get { return _maxMovement; }

@@ -35,7 +35,7 @@ namespace Assets.Simulation.Civilizations {
         #region from IUnitMaintenanceLogic
 
         public float GetMaintenanceOfUnitsForCiv(ICivilization civ) {
-            int unitCount = UnitPossessionCanon.GetPossessionsOfOwner(civ).Count();
+            int unitCount = UnitPossessionCanon.GetPossessionsOfOwner(civ).Where(unit => unit.Type != UnitType.City).Count();
 
             int unitsRequiringMaintenance = Math.Max(0, unitCount - FreeUnitsLogic.GetMaintenanceFreeUnitsForCiv(civ));
 

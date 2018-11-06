@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
@@ -46,6 +48,8 @@ namespace Assets.Simulation.Units {
 
         float FortificationBonusPerTurn { get; }
         float MaxFortificationBonus     { get; }
+
+        GameObject UnitPrefab { get; }
 
         #endregion
 

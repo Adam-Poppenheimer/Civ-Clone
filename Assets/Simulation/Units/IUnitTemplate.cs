@@ -23,7 +23,7 @@ namespace Assets.Simulation.Units {
 
         Sprite Icon { get; }
 
-        GameObject Prefab { get; }
+        GameObject DisplayPrefab { get; }
 
         int ProductionCost { get; }
 

@@ -25,8 +25,10 @@ namespace Assets.Tests.Simulation.Units {
         private Mock<IUnitPositionCanon>                            MockPositionCanon;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockPossessionCanon;
         private Mock<IHexGrid>                                      MockGrid;
+        private Mock<IUnitConfig>                                   MockUnitConfig;
 
         private GameObject UnitPrefab;
+        private GameObject DisplayPrefab;
         private Transform  UnitContainer;
 
         #endregion
@@ -40,19 +42,23 @@ namespace Assets.Tests.Simulation.Units {
             MockPositionCanon   = new Mock<IUnitPositionCanon>();
             MockPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockGrid            = new Mock<IHexGrid>();
+            MockUnitConfig      = new Mock<IUnitConfig>();
 
             UnitPrefab = new GameObject();
             UnitPrefab.AddComponent<GameUnit>();
+            MockUnitConfig.Setup(config => config.UnitPrefab).Returns(UnitPrefab);
+
+            DisplayPrefab = new GameObject();
 
             UnitContainer = new GameObject().transform;
 
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockPositionCanon  .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockPossessionCanon.Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid           .Object);
+            Container.Bind<IUnitConfig>                                  ().FromInstance(MockUnitConfig     .Object);
 
             Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 
-            Container.Bind<IUnitConfig>     ().FromMock();
             Container.Bind<IPromotionParser>().FromMock();
 
             Container.Bind<UnitSignals>().AsSingle();
@@ -249,7 +255,7 @@ namespace Assets.Tests.Simulation.Units {
             var mockTemplate = new Mock<IUnitTemplate>();
 
             mockTemplate.Setup(template => template.MaxMovement)      .Returns(maxMovement);
-            mockTemplate.Setup(template => template.Prefab)           .Returns(UnitPrefab);
+            mockTemplate.Setup(template => template.DisplayPrefab)    .Returns(DisplayPrefab);
             mockTemplate.Setup(template => template.PromotionTreeData).Returns(promotionTreeData);
 
             return mockTemplate.Object;

@@ -31,6 +31,7 @@ namespace Assets.Simulation.Cities {
         #region instance fields and properties
 
         [SerializeField] private GameObject CityPrefab;
+        [SerializeField] private Transform  CityContainer;
 
         #endregion
 
@@ -40,7 +41,8 @@ namespace Assets.Simulation.Cities {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
-            Container.Bind<GameObject>().WithId("City Prefab").FromInstance(CityPrefab);
+            Container.Bind<GameObject>().WithId("City Prefab")   .FromInstance(CityPrefab);
+            Container.Bind<Transform> ().WithId("City Container").FromInstance(CityContainer);
 
             Container.Bind<ICityConfig>().To<CityConfig>().FromResource("Cities");
 
