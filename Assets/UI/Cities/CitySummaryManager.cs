@@ -44,8 +44,7 @@ namespace Assets.UI.Cities {
             DiContainer container, ICityUIConfig cityUIConfig, IGameCamera gameCamera,
             [Inject(Id = "City Summary Container")] RectTransform citySummaryContainer,
             CitySignals citySignals, IExplorationCanon explorationCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            VisibilitySignals visibilitySignals
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             SummaryPrefab        = summaryPrefab;
             CityFactory          = cityFactory;
@@ -56,8 +55,7 @@ namespace Assets.UI.Cities {
             ExplorationCanon     = explorationCanon;
             CityLocationCanon    = cityLocationCanon;
 
-            citySignals.CityBeingDestroyedSignal           .Subscribe(OnCityBeingDestroyed);
-            visibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv);
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion
@@ -94,7 +92,7 @@ namespace Assets.UI.Cities {
             InstantiatedSummaries.Clear();
         }
 
-        private void BuildSummaryForCity(ICity city) {
+        public void BuildSummaryForCity(ICity city) {
             var newSummary = Container.InstantiatePrefabForComponent<CitySummaryDisplay>(SummaryPrefab);
 
             newSummary.transform.SetParent(CitySummaryContainer, false);
@@ -112,14 +110,6 @@ namespace Assets.UI.Cities {
                 GameObject.Destroy(summaryDisplayingCity.gameObject);
                 InstantiatedSummaries.Remove(summaryDisplayingCity);
             }            
-        }
-
-        private void OnCellBecameExploredByCiv(Tuple<IHexCell, ICivilization> data) {
-            var cityAtCell = CityLocationCanon.GetPossessionsOfOwner(data.Item1).FirstOrDefault();
-
-            if(cityAtCell != null && ExplorationCanon.IsCellExplored(data.Item1)) {
-                BuildSummaryForCity(cityAtCell);
-            }
         }
 
         #endregion

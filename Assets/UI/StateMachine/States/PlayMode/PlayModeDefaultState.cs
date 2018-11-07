@@ -8,8 +8,12 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation;
 using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
+using Assets.Simulation.Visibility;
 
 using Assets.UI.Civilizations;
 using Assets.UI.Cities;
@@ -20,16 +24,19 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region instance fields and properties
 
-        private IDisposable OnTurnBeganSubscription;
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
 
 
-        private List<CivilizationDisplayBase> CivilizationDisplays;
-        private CoreSignals                   CoreSignals;
-        private List<RectTransform>           DefaultPanels;
-        private IGameCore                     GameCore;
-        private UIStateMachineBrain           Brain;
-        private CitySummaryManager            CitySummaryManager;
+        private List<CivilizationDisplayBase>            CivilizationDisplays;
+        private CoreSignals                              CoreSignals;
+        private List<RectTransform>                      DefaultPanels;
+        private IGameCore                                GameCore;
+        private UIStateMachineBrain                      Brain;
+        private CitySummaryManager                       CitySummaryManager;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IExplorationCanon                        ExplorationCanon;
+        private VisibilitySignals                        VisibilitySignals;
 
         #endregion
 
@@ -39,7 +46,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             List<CivilizationDisplayBase> civilizationDisplays, CoreSignals coreSignals,
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
-            IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager
+            IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IExplorationCanon explorationCanon, VisibilitySignals visibilitySignals
         ){
             CivilizationDisplays = civilizationDisplays;
             CoreSignals          = coreSignals;
@@ -47,6 +56,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             GameCore             = gameCore;
             Brain                = brain;
             CitySummaryManager   = citySummaryManager;
+            CityLocationCanon    = cityLocationCanon;
+            ExplorationCanon     = explorationCanon;
+            VisibilitySignals    = visibilitySignals;
         }
 
         #region from StateMachineBehaviour
@@ -72,7 +84,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.BuildSummaries();
 
-            OnTurnBeganSubscription = CoreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
+            SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
+            SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -91,8 +104,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.ClearSummaries();
 
-            OnTurnBeganSubscription.Dispose();
-            OnTurnBeganSubscription = null;
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
         }
 
         #endregion
@@ -100,6 +113,14 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private void OnTurnBegan(ICivilization civ) {
             CitySummaryManager.ClearSummaries();
             CitySummaryManager.BuildSummaries();
+        }
+
+        private void OnCellBecameExploredByCiv(Tuple<IHexCell, ICivilization> data) {
+            var cityAtCell = CityLocationCanon.GetPossessionsOfOwner(data.Item1).FirstOrDefault();
+
+            if(cityAtCell != null && ExplorationCanon.IsCellExplored(data.Item1)) {
+                CitySummaryManager.BuildSummaryForCity(cityAtCell);
+            }
         }
 
         #endregion
