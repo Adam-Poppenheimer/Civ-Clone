@@ -17,17 +17,19 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private IHexCellComposer      HexCellComposer;
-        private ICivilizationComposer CivilizationComposer;
-        private ICityComposer         CityComposer;
-        private IBuildingComposer     BuildingComposer;
-        private IUnitComposer         UnitComposer;
-        private IImprovementComposer  ImprovementComposer;
-        private IResourceComposer     ResourceComposer;
-        private IDiplomacyComposer    DiplomacyComposer;
-        private IVisibilityResponder  VisibilityResponder;
-        private IVisibilityCanon      VisibilityCanon;
-        private MonoBehaviour         CoroutineInvoker;
+        private IHexCellComposer         HexCellComposer;
+        private ICivilizationComposer    CivilizationComposer;
+        private ICityComposer            CityComposer;
+        private IBuildingComposer        BuildingComposer;
+        private IUnitComposer            UnitComposer;
+        private IImprovementComposer     ImprovementComposer;
+        private IResourceComposer        ResourceComposer;
+        private IDiplomacyComposer       DiplomacyComposer;
+        private ICapitalCityComposer     CapitalCityComposer;
+        private IVisibilityResponder     VisibilityResponder;
+        private IVisibilityCanon         VisibilityCanon;
+        private ICapitalCitySynchronizer CapitalCitySynchronizer;
+        private MonoBehaviour            CoroutineInvoker;
 
         #endregion
 
@@ -35,29 +37,33 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public void InjectDependencies(
-            IHexCellComposer      hexCellComposer,
-            ICivilizationComposer civilizationComposer,
-            ICityComposer         cityComposer,
-            IBuildingComposer     buildingComposer,
-            IUnitComposer         unitComposer,
-            IImprovementComposer  improvementComposer,
-            IResourceComposer     resourceComposer,
-            IDiplomacyComposer    diplomacyComposer,
-            IVisibilityResponder  visibilityResponder,
-            IVisibilityCanon      visibilityCanon,
+            IHexCellComposer         hexCellComposer,
+            ICivilizationComposer    civilizationComposer,
+            ICityComposer            cityComposer,
+            IBuildingComposer        buildingComposer,
+            IUnitComposer            unitComposer,
+            IImprovementComposer     improvementComposer,
+            IResourceComposer        resourceComposer,
+            IDiplomacyComposer       diplomacyComposer,
+            ICapitalCityComposer     capitalCityComposer,
+            IVisibilityResponder     visibilityResponder,
+            IVisibilityCanon         visibilityCanon,
+            ICapitalCitySynchronizer capitalCitySynchronizer,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
-            HexCellComposer      = hexCellComposer;
-            CivilizationComposer = civilizationComposer;
-            CityComposer         = cityComposer;
-            BuildingComposer     = buildingComposer;
-            UnitComposer         = unitComposer;
-            ImprovementComposer  = improvementComposer;
-            ResourceComposer     = resourceComposer;
-            DiplomacyComposer    = diplomacyComposer;
-            VisibilityResponder  = visibilityResponder;
-            VisibilityCanon  = visibilityCanon;
-            CoroutineInvoker     = coroutineInvoker;
+            HexCellComposer         = hexCellComposer;
+            CivilizationComposer    = civilizationComposer;
+            CityComposer            = cityComposer;
+            BuildingComposer        = buildingComposer;
+            UnitComposer            = unitComposer;
+            ImprovementComposer     = improvementComposer;
+            ResourceComposer        = resourceComposer;
+            DiplomacyComposer       = diplomacyComposer;
+            CapitalCityComposer     = capitalCityComposer;
+            VisibilityResponder     = visibilityResponder;
+            VisibilityCanon         = visibilityCanon;
+            CapitalCitySynchronizer = capitalCitySynchronizer;
+            CoroutineInvoker        = coroutineInvoker;
         }
 
         public SerializableMapData ComposeRuntimeIntoData() {
@@ -71,6 +77,7 @@ namespace Assets.Simulation.MapManagement {
             ImprovementComposer .ComposeImprovements (mapData);
             ResourceComposer    .ComposeResources    (mapData);
             DiplomacyComposer   .ComposeDiplomacy    (mapData);
+            CapitalCityComposer .ComposeCapitalCities(mapData);
 
             return mapData;
         }
@@ -86,6 +93,8 @@ namespace Assets.Simulation.MapManagement {
 
             yield return new WaitForEndOfFrame();
 
+            CapitalCitySynchronizer.SetCapitalUpdating(false);
+
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);
             BuildingComposer    .DecomposeBuildings    (mapData);
@@ -93,9 +102,13 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer    .DecomposeResources    (mapData);
             ImprovementComposer .DecomposeImprovements (mapData);
 
+            CapitalCitySynchronizer.SetCapitalUpdating(true);
+
             yield return new WaitForEndOfFrame();
 
-            DiplomacyComposer.DecomposeDiplomacy(mapData);
+            DiplomacyComposer  .DecomposeDiplomacy    (mapData);
+            CapitalCityComposer.DecomposeCapitalCities(mapData);
+            
 
             if(performAfterDecomposition != null) {
                 performAfterDecomposition();
@@ -111,6 +124,8 @@ namespace Assets.Simulation.MapManagement {
 
             VisibilityResponder.UpdateVisibility = false;
 
+            CapitalCitySynchronizer.SetCapitalUpdating(false);
+
             ImprovementComposer .ClearRuntime();
             CityComposer        .ClearRuntime();
             BuildingComposer    .ClearRuntime();
@@ -120,6 +135,8 @@ namespace Assets.Simulation.MapManagement {
             CivilizationComposer.ClearRuntime();
 
             yield return new WaitForEndOfFrame();
+
+            CapitalCitySynchronizer.SetCapitalUpdating(true);
 
             HexCellComposer.ClearRuntime();
 

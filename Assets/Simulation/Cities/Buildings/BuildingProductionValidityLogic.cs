@@ -65,7 +65,8 @@ namespace Assets.Simulation.Cities.Buildings {
             
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
 
-            return BuildingRestrictions.All(restriction => restriction.IsTemplateValidForCity(template, city, cityOwner));
+            return template.CanBeConstructed
+                && BuildingRestrictions.All(restriction => restriction.IsTemplateValidForCity(template, city, cityOwner));
         }
 
         #endregion

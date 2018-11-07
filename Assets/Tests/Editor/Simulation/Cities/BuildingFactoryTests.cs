@@ -40,9 +40,9 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IBuildingProductionValidityLogic> MockValidityLogic;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockPossessionCanon;
-        private Mock<IWorkerSlotFactory> MockWorkerSlotFactory;
+        private Mock<IWorkerSlotFactory>                        MockWorkerSlotFactory;
+        private CitySignals                                     CitySignals;
 
         #endregion
 
@@ -52,13 +52,13 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockValidityLogic     = new Mock<IBuildingProductionValidityLogic>();
             MockPossessionCanon   = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockWorkerSlotFactory = new Mock<IWorkerSlotFactory>();
+            CitySignals           = new CitySignals();
 
-            Container.Bind<IBuildingProductionValidityLogic>         ().FromInstance(MockValidityLogic    .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockPossessionCanon  .Object);
             Container.Bind<IWorkerSlotFactory>                       ().FromInstance(MockWorkerSlotFactory.Object);
+            Container.Bind<CitySignals>                              ().FromInstance(CitySignals);
 
             Container.Bind<BuildingFactory>().AsSingle();
         }
@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When a new building is created, it should be initialized with " +
             "the argued IBuildingTemplate")]
         public void BuildingCreated_InitializedWithTemplate() {
-            var template = BuildTemplate("Template", true);
+            var template = BuildTemplate("Template");
 
             var city = BuildCity();
 
@@ -84,7 +84,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "When a new building is created, BuildingFactory should call " +
             "into BuildingPossessionCanon and assign the new building to the argued city")]
         public void BuildingCreated_PlacedInCity() {
-            var template = BuildTemplate("Template", true);
+            var template = BuildTemplate("Template");
 
             var city = BuildCity();
 
@@ -103,7 +103,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "All methods should throw an ArgumentNullException on any null arguments")]
         public void AllMethods_ThrowOnNullArguments() {
-            var template = BuildTemplate("Template", true);
+            var template = BuildTemplate("Template");
 
             var city = BuildCity();
 
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "If Create is called and BuildingPossessionCanon.CanChangeOwnerOfPossession" +
             "would return false, CityFactory should throw a BuildingConstructionException")]
         public void CreateCalled_ThrowsIfCityLocationInvalid() {
-            var template = BuildTemplate("Template", true);
+            var template = BuildTemplate("Template");
 
             ICity city = BuildCity();
 
@@ -131,17 +131,60 @@ namespace Assets.Tests.Simulation.Cities {
                 "BuildingFactory.Create failed to throw as expected");
         }
 
+        [Test]
+        public void DestroyBuilding_BuildingPossessionSetToNull() {
+            var building = BuildBuilding(BuildTemplate("Template"));
+
+            var factory = Container.Resolve<BuildingFactory>();
+
+            factory.DestroyBuilding(building);
+
+            MockPossessionCanon.Verify(canon => canon.ChangeOwnerOfPossession(building, null), Times.Once);
+        }
+
+        [Test]
+        public void DestroyBuilding_RemovedFromAllBuildings() {
+            var building = BuildBuilding(BuildTemplate("Template"));
+
+            var factory = Container.Resolve<BuildingFactory>();
+
+            factory.DestroyBuilding(building);
+
+            CollectionAssert.DoesNotContain(factory.AllBuildings, building);
+        }
+
+        [Test]
+        public void OnCityBeingDestroyed_AllBuildingsBelongingToCityDestroyed() {
+            var factory = Container.Resolve<BuildingFactory>();
+
+            var cityOne = BuildCity();
+            var cityTwo = BuildCity();
+
+            var buildingOne   = factory.BuildBuilding(BuildTemplate("Template One"),   cityOne);
+            var buildingTwo   = factory.BuildBuilding(BuildTemplate("Template Two"),   cityOne);
+            var buildingThree = factory.BuildBuilding(BuildTemplate("Template Three"), cityTwo);
+
+            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(cityOne))
+                               .Returns(new IBuilding[] { buildingOne, buildingTwo });
+
+            MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(cityTwo))
+                               .Returns(new IBuilding[] { buildingThree });
+
+            CitySignals.CityBeingDestroyedSignal.OnNext(cityOne);
+
+            CollectionAssert.DoesNotContain(factory.AllBuildings, buildingOne,   "BuildingOne not destroyed as expected");
+            CollectionAssert.DoesNotContain(factory.AllBuildings, buildingTwo,   "BuildingTwo not destroyed as expected");
+            CollectionAssert.Contains      (factory.AllBuildings, buildingThree, "BuildingThree unexpectedly destroyed");
+        }
+
         #endregion
 
         #region utilities
 
-        private IBuildingTemplate BuildTemplate(string name, bool isValid) {
+        private IBuildingTemplate BuildTemplate(string name) {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
             mockTemplate.Setup(template => template.name).Returns(name);
-
-            MockValidityLogic.Setup(logic => logic.IsTemplateValidForCity(mockTemplate.Object, It.IsAny<ICity>()))
-                .Returns(isValid);
 
             return mockTemplate.Object;
         }

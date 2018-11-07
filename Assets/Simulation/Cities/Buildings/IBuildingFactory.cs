@@ -22,6 +22,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IBuilding BuildBuilding(IBuildingTemplate template, ICity city);
 
+        void DestroyBuilding(IBuilding building);
+
         #endregion
 
     }

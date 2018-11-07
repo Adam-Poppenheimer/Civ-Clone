@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.Cities {
 
     /// <summary>
@@ -92,6 +94,8 @@ namespace Assets.Simulation.Cities {
         Sprite CombatantIcon { get; }
 
         GameObject CombatantDisplayPrefab { get; }
+
+        IEnumerable<IBuildingTemplate> CapitalTemplates { get; }
 
         #endregion
 

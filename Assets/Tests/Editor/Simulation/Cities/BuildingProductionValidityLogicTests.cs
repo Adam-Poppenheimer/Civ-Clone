@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test]
         public void IsTemplateValidForCity_TrueIfAllRestrictionsMet() {
-            var template = BuildTemplate();
+            var template = BuildTemplate(true);
             var city = BuildCity();
 
             BuildRestriction(template);
@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test]
         public void IsTemplateValidForCity_FalseIfAnyRestrictionUnmet() {
-            var template = BuildTemplate();
+            var template = BuildTemplate(true);
             var city = BuildCity();
 
             BuildRestriction(template);
@@ -79,11 +79,21 @@ namespace Assets.Tests.Simulation.Cities {
         }
 
         [Test]
+        public void IsTemplateValidForCity_FalseIfTemplateCannotBeConstructed() {
+            var template = BuildTemplate(false);
+            var city = BuildCity();
+
+            var validityLogic = Container.Resolve<BuildingProductionValidityLogic>();
+
+            Assert.IsFalse(validityLogic.IsTemplateValidForCity(template, city));
+        }
+
+        [Test]
         public void GetTemplatesValidForCity_ReturnsAllTemplatesThatAreValid() {
-            var templateOne   = BuildTemplate();
-            var templateTwo   = BuildTemplate();
-            var templateThree = BuildTemplate();
-            var templateFour  = BuildTemplate();
+            var templateOne   = BuildTemplate(true);
+            var templateTwo   = BuildTemplate(true);
+            var templateThree = BuildTemplate(true);
+            var templateFour  = BuildTemplate(true);
 
             BuildRestriction(templateOne, templateTwo);
             BuildRestriction(templateOne, templateTwo, templateThree);
@@ -103,8 +113,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private IBuildingTemplate BuildTemplate() {
-            var newTemplate = new Mock<IBuildingTemplate>().Object;
+        private IBuildingTemplate BuildTemplate(bool canBeConstructed) {
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.CanBeConstructed).Returns(canBeConstructed);
+
+            var newTemplate = mockTemplate.Object;
 
             AvailableTemplates.Add(newTemplate);
 

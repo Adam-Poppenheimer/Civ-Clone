@@ -47,3 +47,5 @@ MonoBehaviour:
   _combatantIcon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _combatantDisplayPrefab: {fileID: 1032685054468800, guid: 25f9e701644509e4881d1b87e8c8b683,
     type: 2}
+  _capitalTemplates:
+  - {fileID: 11400000, guid: fc118e0a12088cc4f80fda89b41bc364, type: 2}

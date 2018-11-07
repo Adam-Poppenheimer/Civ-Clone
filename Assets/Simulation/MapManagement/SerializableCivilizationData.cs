@@ -28,6 +28,8 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public List<HexCoordinates> ExploredCells;
 
+        [DataMember()] public HexCoordinates CapitalLocation;
+
         #endregion
 
     }

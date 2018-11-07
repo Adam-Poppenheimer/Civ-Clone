@@ -56,6 +56,7 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<ICivilizationTerritoryLogic> ().To<CivilizationTerritoryLogic> ().AsSingle();
             Container.Bind<IFreeUnitsLogic>             ().To<FreeUnitsLogic>             ().AsSingle();
             Container.Bind<IUnitMaintenanceLogic>       ().To<UnitMaintenanceLogic>       ().AsSingle();
+            Container.Bind<ICapitalCitySynchronizer>    ().To<CapitalCitySynchronizer>    ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

@@ -40,6 +40,7 @@ namespace Assets.Simulation.MapManagement {
             Container.Bind<IImprovementComposer> ().To<ImprovementComposer> ().AsSingle();
             Container.Bind<IResourceComposer>    ().To<ResourceComposer>    ().AsSingle();
             Container.Bind<IDiplomacyComposer>   ().To<DiplomacyComposer>   ().AsSingle();
+            Container.Bind<ICapitalCityComposer> ().To<CapitalCityComposer> ().AsSingle();
 
             Container.Bind<IMapComposer>().To<MapComposer>().AsSingle();
 

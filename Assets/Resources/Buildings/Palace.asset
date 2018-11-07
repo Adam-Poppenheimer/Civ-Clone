@@ -1,0 +1,68 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
+  m_Name: Palace
+  m_EditorClassIdentifier: 
+  _description: 
+  _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
+  _type: 1
+  _productionCost: 0
+  _maintenance: 0
+  _slotCount: 0
+  _slotYield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _staticYield:
+    Food: 0
+    Production: 3
+    Gold: 3
+    Culture: 1
+    Science: 3
+  _civilizationYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _cityYieldModifier:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _localHappiness: 0
+  _globalHappiness: 0
+  _unhappiness: 0
+  _resourcesConsumed: []
+  _resourceYieldModifications: []
+  _cellYieldModifications: []
+  _foodStockpilePreservationBonus: 0
+  _cityCombatStrengthBonus: 2
+  _cityMaxHitpointBonus: 0
+  _bonusYieldPerPopulation:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 0
+  _prerequisiteBuildings: []
+  _prerequisiteResourcesNearCity: []
+  _prerequisiteImprovementsNearCity: []
+  _landUnitProductionBonus: 0
+  _mountedUnitProductionBonus: 0
+  _requiresAdjacentRiver: 0
+  _requiresCoastalCity: 0
+  _providesOverseaConnection: 0
+  _bonusExperience: 0
+  _canBeConstructed: 0

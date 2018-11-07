@@ -97,6 +97,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int BonusExperience { get; }
 
+        bool CanBeConstructed { get; }
+
         #endregion
 
     }

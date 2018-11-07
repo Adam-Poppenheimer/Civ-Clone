@@ -19,7 +19,6 @@ namespace Assets.Simulation.Civilizations {
 
         private CivilizationSignals                      CivSignals;
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-        private ICapitalCityCanon                        CapitalCityCanon;
 
         #endregion
 
@@ -29,11 +28,10 @@ namespace Assets.Simulation.Civilizations {
         public CityPossessionCanon(
             CitySignals citySignals, CivilizationSignals civSignals,
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
-            ICapitalCityCanon capitalCityCanon, HexCellSignals cellSignals
+            HexCellSignals cellSignals
         ) {
             CivSignals          = civSignals;
             CellPossessionCanon = cellPossessionCanon;
-            CapitalCityCanon    = capitalCityCanon;
 
             citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
             civSignals .CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
@@ -57,10 +55,6 @@ namespace Assets.Simulation.Civilizations {
             }
 
             if(newOwner != null) {
-                if(CapitalCityCanon.GetCapitalOfCiv(newOwner) == null) {
-                    CapitalCityCanon.SetCapitalOfCiv(newOwner, city);
-                }
-
                 CivSignals.CivGainedCitySignal.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
             }
         }
@@ -68,12 +62,6 @@ namespace Assets.Simulation.Civilizations {
         protected override void DoOnPossessionBroken(ICity city, ICivilization oldOwner) {
             foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
                 cell.RefreshSelfOnly();
-            }
-
-            if(oldOwner != null && CapitalCityCanon.GetCapitalOfCiv(oldOwner) == city) {
-                var nextCapital = GetPossessionsOfOwner(oldOwner).FirstOrDefault();
-
-                CapitalCityCanon.SetCapitalOfCiv(oldOwner, nextCapital);
             }
 
             CivSignals.CivLostCitySignal.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));

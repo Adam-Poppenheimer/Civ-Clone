@@ -171,6 +171,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _bonusExperience;
 
+        public bool CanBeConstructed {
+            get { return _canBeConstructed; }
+        }
+        [SerializeField] private bool _canBeConstructed = true;
+
         #endregion
 
         #endregion

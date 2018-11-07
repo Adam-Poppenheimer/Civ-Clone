@@ -23,7 +23,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         private CitySignals                                   CitySignals;
         private IResourceLockingCanon                         ResourceLockingCanon;
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;        
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -34,10 +34,7 @@ namespace Assets.Simulation.Cities.Buildings {
             CitySignals citySignals, IResourceLockingCanon resourceLockingCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
             ){
-            CitySignals = citySignals;
-
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
-
+            CitySignals          = citySignals;
             ResourceLockingCanon = resourceLockingCanon;
             CityPossessionCanon  = cityPossessionCanon;
         }
@@ -77,12 +74,6 @@ namespace Assets.Simulation.Cities.Buildings {
         }
 
         #endregion
-
-        private void OnCityBeingDestroyed(ICity city) {
-            foreach(var building in new List<IBuilding>(GetPossessionsOfOwner(city))) {
-                ChangeOwnerOfPossession(building, null);
-            }
-        }
 
         #endregion
 

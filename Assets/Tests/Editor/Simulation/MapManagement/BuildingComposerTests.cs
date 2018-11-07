@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         #region tests
 
         [Test]
-        public void ClearRuntime_AllBuildingsRemovedFromLocation() {
+        public void ClearRuntime_AllBuildingsDestroyed() {
             var buildingOne   = BuildBuilding(BuildTemplate("Template One"));
             var buildingTwo   = BuildBuilding(BuildTemplate("Template Two"));
             var buildingThree = BuildBuilding(BuildTemplate("Template Three"));
@@ -79,18 +79,18 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             composer.ClearRuntime();
 
-            MockBuildingPossessionCanon.Verify(
-                canon => canon.ChangeOwnerOfPossession(buildingOne, null), Times.Once,
+            MockBuildingFactory.Verify(
+                factory => factory.DestroyBuilding(buildingOne), Times.Once,
                 "BuildingOne was not removed from its location"
             );
 
-            MockBuildingPossessionCanon.Verify(
-                canon => canon.ChangeOwnerOfPossession(buildingTwo, null), Times.Once,
+            MockBuildingFactory.Verify(
+                factory => factory.DestroyBuilding(buildingTwo), Times.Once,
                 "BuildingTwo was not removed from its location"
             );
 
-            MockBuildingPossessionCanon.Verify(
-                canon => canon.ChangeOwnerOfPossession(buildingThree, null), Times.Once,
+            MockBuildingFactory.Verify(
+                factory => factory.DestroyBuilding(buildingThree), Times.Once,
                 "BuildingThree was not removed from its location"
             );
         }

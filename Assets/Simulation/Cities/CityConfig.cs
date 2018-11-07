@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.Cities {
 
     /// <summary>
@@ -152,6 +154,11 @@ namespace Assets.Simulation.Cities {
             get { return _combatantDisplayPrefab; }
         }
         [SerializeField] private GameObject _combatantDisplayPrefab;
+
+        public IEnumerable<IBuildingTemplate> CapitalTemplates {
+            get { return _capitalTemplates.Cast<IBuildingTemplate>(); }
+        }
+        [SerializeField] private List<BuildingTemplate> _capitalTemplates;
 
         #endregion
 

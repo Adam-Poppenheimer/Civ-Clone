@@ -4,8 +4,10 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -16,13 +18,28 @@ namespace Assets.Simulation.Civilizations {
         private Dictionary<ICivilization, ICity> CapitalDictionary = 
             new Dictionary<ICivilization, ICity>();
 
+
+
+
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
+        private ICityConfig                                   CityConfig;
+        private IBuildingFactory                              BuildingFactory;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+
         #endregion
 
         #region constructors
 
         [Inject]
-        public CapitalCityCanon() {
-            
+        public CapitalCityCanon(
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            ICityConfig cityConfig, IBuildingFactory buildingFactory,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
+        ) {
+            BuildingPossessionCanon = buildingPossessionCanon;
+            CityConfig              = cityConfig;
+            BuildingFactory         = buildingFactory;
+            CityPossessionCanon     = cityPossessionCanon;
         }
 
         #endregion
@@ -38,15 +55,45 @@ namespace Assets.Simulation.Civilizations {
         }
 
         public bool CanSetCapitalOfCiv(ICivilization civ, ICity city) {
-            return GetCapitalOfCiv(civ) != city;
+            if(civ == null) {
+                throw new ArgumentNullException("civ");
+            }
+            if(city == null) {
+                throw new ArgumentNullException("city");
+            }
+
+            return GetCapitalOfCiv(civ) != city && CityPossessionCanon.GetOwnerOfPossession(city) == civ;
         }
 
-        public void SetCapitalOfCiv(ICivilization civ, ICity city) {
-            if(!CanSetCapitalOfCiv(civ, city)) {
+        public void SetCapitalOfCiv(ICivilization civ, ICity newCapital) {
+            if(civ == null) {
+                throw new ArgumentNullException("civ");
+            }
+
+            if(!CanSetCapitalOfCiv(civ, newCapital)) {
                 throw new InvalidOperationException("CanSetCapitalOfCiv must return true on the given arguments");
             }
 
-            CapitalDictionary[civ] = city;
+            ICity oldCapital;
+            CapitalDictionary.TryGetValue(civ, out oldCapital);
+
+            if(oldCapital != null) {
+                foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(oldCapital).ToArray()) {
+                    if(CityConfig.CapitalTemplates.Contains(building.Template)) {
+                        BuildingFactory.DestroyBuilding(building);
+                    }
+                }
+            }
+
+            CapitalDictionary[civ] = newCapital;
+
+            if(newCapital != null) {
+                var templatesInCapital = BuildingPossessionCanon.GetPossessionsOfOwner(newCapital).Select(building => building.Template);
+
+                foreach(var template in CityConfig.CapitalTemplates.Except(templatesInCapital)) {
+                    BuildingFactory.BuildBuilding(template, newCapital);
+                }
+            }
         }
 
         #endregion

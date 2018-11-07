@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.WorkerSlots;
 
@@ -31,10 +32,13 @@ namespace Assets.Simulation.Cities.Buildings {
 
         [Inject]
         public BuildingFactory(
-            IPossessionRelationship<ICity, IBuilding> possessionCanon, IWorkerSlotFactory workerSlotFactory
+            IPossessionRelationship<ICity, IBuilding> possessionCanon, IWorkerSlotFactory workerSlotFactory,
+            CitySignals citySignals
         ){
             PossessionCanon   = possessionCanon;
             WorkerSlotFactory = workerSlotFactory;
+
+            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion
@@ -67,9 +71,21 @@ namespace Assets.Simulation.Cities.Buildings {
             allBuildings.Add(newBuilding);
 
             return newBuilding;
-        }        
+        }
+
+        public void DestroyBuilding(IBuilding building) {
+            PossessionCanon.ChangeOwnerOfPossession(building, null);
+
+            allBuildings.Remove(building);
+        }
 
         #endregion
+
+        private void OnCityBeingDestroyed(ICity city) {
+            foreach(var building in PossessionCanon.GetPossessionsOfOwner(city).ToArray()) {
+                DestroyBuilding(building);
+            }
+        }
 
         #endregion
 

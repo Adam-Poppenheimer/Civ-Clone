@@ -45,8 +45,8 @@ namespace Assets.Simulation.MapManagement {
         #region instance methods
 
         public void ClearRuntime() {
-            foreach(var building in new List<IBuilding>(BuildingFactory.AllBuildings)) {
-                BuildingPossessionCanon.ChangeOwnerOfPossession(building, null);
+            foreach(var building in BuildingFactory.AllBuildings.ToArray()) {
+                BuildingFactory.DestroyBuilding(building);
             }
         }
 
