@@ -69,6 +69,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityLineOfSightLogic>                    ().To<CityLineOfSightLogic>           ().AsSingle();
             Container.Bind<ICityRazer>                               ().To<CityRazer>                      ().AsSingle();
             Container.Bind<ICityProductionResolver>                  ().To<CityProductionResolver>         ().AsSingle();
+            Container.Bind<ILocalPromotionLogic>                     ().To<LocalPromotionLogic>            ().AsSingle();
 
             Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 

@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 0}
-  _type: 1
+  _type: 0
   _productionCost: 1
   _maintenance: 0
   _slotCount: 0
@@ -67,5 +67,6 @@ MonoBehaviour:
   _providesOverseaConnection: 0
   _bonusExperience: 0
   _canBeConstructed: 1
-  _globalPromotions:
+  _globalPromotions: []
+  _localPromotions:
   - {fileID: 11400000, guid: 3f1322dcdace09042915197ebe8e35fd, type: 2}

@@ -60,11 +60,9 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         YieldSummary CityYieldModifier { get; }
 
-        int LocalHappiness { get; }
-
+        int LocalHappiness  { get; }
         int GlobalHappiness { get; }
-
-        int Unhappiness { get; }
+        int Unhappiness     { get; }
 
         IEnumerable<IResourceDefinition> ResourcesConsumed { get; }
 
@@ -102,6 +100,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         bool CanBeConstructed { get; }
 
+        IEnumerable<IPromotion> LocalPromotions  { get; }
         IEnumerable<IPromotion> GlobalPromotions { get; }
 
         #endregion

@@ -28,8 +28,11 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
         private Mock<IStartingExperienceLogic>                      MockStartingExperienceLogic;
+        private Mock<ILocalPromotionLogic>                          MockLocalPromotionLogic;
 
         private List<IUnit> AllUnits = new List<IUnit>();
+
+        private Mock<IPromotionTree> LastMockPromotionTree;
 
         #endregion
 
@@ -40,12 +43,14 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             AllUnits.Clear();
+            LastMockPromotionTree = null;
 
             MockBuildingFactory         = new Mock<IBuildingFactory>();
             MockUnitFactory             = new Mock<IUnitFactory>();
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
             MockStartingExperienceLogic = new Mock<IStartingExperienceLogic>();
+            MockLocalPromotionLogic     = new Mock<ILocalPromotionLogic>();
 
             MockUnitFactory.Setup(factory => factory.BuildUnit(
                 It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(), It.IsAny<ICivilization>()
@@ -140,6 +145,26 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.AreEqual(50, AllUnits[0].Experience);
         }
 
+        [Test]
+        public void Execute_AndIsUnit_LocalPromotionsAppendedToUnitsPromotionTree() {
+            var unitTemplate = BuildUnitTemplate("Unit Template One", 200);          
+
+            var city = BuildCity(BuildCivilization(), BuildCell());
+
+            var promotionOne = BuildPromotion();
+            var promotionTwo = BuildPromotion();
+
+            MockLocalPromotionLogic.Setup(logic => logic.GetLocalPromotionsForCity(city))
+                                   .Returns(new List<IPromotion>() { promotionOne, promotionTwo });
+
+            var projectToTest = BuildProductionProject(unitTemplate);
+
+            projectToTest.Execute(city);
+
+            LastMockPromotionTree.Verify(tree => tree.AppendPromotion(promotionOne), Times.Once, "PromotionOne not appended as expected");
+            LastMockPromotionTree.Verify(tree => tree.AppendPromotion(promotionTwo), Times.Once, "PromotionTwo not appended as expected");
+        }
+
         #endregion
 
         #region utilities
@@ -151,7 +176,8 @@ namespace Assets.Tests.Simulation.Cities {
         private ProductionProject BuildProductionProject(IUnitTemplate unitToConstruct) {
             return new ProductionProject(
                 unitToConstruct, MockUnitFactory.Object, MockCityPossessionCanon.Object,
-                MockCityLocationCanon.Object, MockStartingExperienceLogic.Object
+                MockCityLocationCanon.Object, MockStartingExperienceLogic.Object,
+                MockLocalPromotionLogic.Object
             );
         }
 
@@ -193,13 +219,21 @@ namespace Assets.Tests.Simulation.Cities {
         private IUnit BuildUnit() {
             var mockUnit = new Mock<IUnit>();
 
+            LastMockPromotionTree = new Mock<IPromotionTree>();
+
             mockUnit.SetupAllProperties();
+
+            mockUnit.Setup(unit => unit.PromotionTree).Returns(LastMockPromotionTree.Object);
 
             var newUnit = mockUnit.Object;
 
             AllUnits.Add(newUnit);
 
             return newUnit;
+        }
+
+        private IPromotion BuildPromotion() {
+            return new Mock<IPromotion>().Object;
         }
 
         #endregion

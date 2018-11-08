@@ -14,9 +14,6 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    /// <summary>
-    /// the standard implementation for IBuildingPossessionCanon.
-    /// </summary>
     public class BuildingPossessionCanon : PossessionRelationship<ICity, IBuilding> {
 
         #region instance fields and properties

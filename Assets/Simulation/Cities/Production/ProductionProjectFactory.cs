@@ -25,6 +25,7 @@ namespace Assets.Simulation.Cities.Production {
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IStartingExperienceLogic                      StartingExperienceLogic;
+        private ILocalPromotionLogic                          LocalPromotionLogic;
 
         #endregion
 
@@ -41,13 +42,15 @@ namespace Assets.Simulation.Cities.Production {
             IBuildingFactory buildingFactory, IUnitFactory unitFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IStartingExperienceLogic startingExperienceLogic
+            IStartingExperienceLogic startingExperienceLogic,
+            ILocalPromotionLogic localPromotionLogic
         ){
             BuildingFactory         = buildingFactory;
             UnitFactory             = unitFactory;
             CityPossessionCanon     = cityPossessionCanon;
             CityLocationCanon       = cityLocationCanon;
             StartingExperienceLogic = startingExperienceLogic;
+            LocalPromotionLogic     = localPromotionLogic;
         }
 
         #endregion
@@ -65,7 +68,8 @@ namespace Assets.Simulation.Cities.Production {
         public IProductionProject ConstructProject(IUnitTemplate template) {
             return new ProductionProject(
                 template, UnitFactory, CityPossessionCanon,
-                CityLocationCanon, StartingExperienceLogic
+                CityLocationCanon, StartingExperienceLogic,
+                LocalPromotionLogic
             );
         }
 

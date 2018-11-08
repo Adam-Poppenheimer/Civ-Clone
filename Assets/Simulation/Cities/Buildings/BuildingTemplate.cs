@@ -187,6 +187,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<Promotion> _globalPromotions;
 
+        public IEnumerable<IPromotion> LocalPromotions {
+            get { return _localPromotions.Cast<IPromotion>(); }
+        }
+        [SerializeField] private List<Promotion> _localPromotions;
+
         #endregion
 
         #endregion

@@ -42,6 +42,7 @@ namespace Assets.Simulation.Cities.Production {
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IStartingExperienceLogic                      StartingExperienceLogic;
+        private ILocalPromotionLogic                          LocalPromotionLogic;
 
         #endregion
 
@@ -60,7 +61,8 @@ namespace Assets.Simulation.Cities.Production {
             IUnitTemplate unitToConstruct, IUnitFactory unitFactory,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IStartingExperienceLogic startingExperienceLogic
+            IStartingExperienceLogic startingExperienceLogic,
+            ILocalPromotionLogic localPromotionLogic
         ){
             if(unitToConstruct == null) {
                 throw new ArgumentNullException("unitToConstruct");
@@ -71,6 +73,7 @@ namespace Assets.Simulation.Cities.Production {
             CityPossessionCanon     = cityPossessionCanon;
             CityLocationCanon       = cityLocationCanon;
             StartingExperienceLogic = startingExperienceLogic;
+            LocalPromotionLogic     = localPromotionLogic;
         }
 
         private ProductionProject() { }
@@ -91,6 +94,10 @@ namespace Assets.Simulation.Cities.Production {
                 var newUnit = UnitFactory.BuildUnit(cityLocation, UnitToConstruct, cityOwner);
 
                 newUnit.Experience = StartingExperienceLogic.GetStartingExperienceForUnit(newUnit, targetCity);
+
+                foreach(var promotion in LocalPromotionLogic.GetLocalPromotionsForCity(targetCity)) {
+                    newUnit.PromotionTree.AppendPromotion(promotion);
+                }
             }
         }
 
