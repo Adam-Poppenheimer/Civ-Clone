@@ -12,13 +12,18 @@ MonoBehaviour:
   m_Name: Philosophy
   m_EditorClassIdentifier: 
   _cost: 175
+  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
+  _era: 0
+  _techTableRow: 1
+  _techTableColumn: 4
   _prerequisites:
   - {fileID: 11400000, guid: 36b1b7c4b8462f243bd7b42281f962fb, type: 2}
   - {fileID: 11400000, guid: 70b24b435e9801c4fa7f45659aa6450f, type: 2}
-  _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _techTableRow: 1
-  _techTableColumn: 4
-  _buildingsEnabled: []
+  _buildingsEnabled:
+  - {fileID: 11400000, guid: 4eab47bf62ff67843bfa6fbbe7c42643, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
+  _improvementsEnabled: []
   _improvementYieldModifications: []
+  _revealedResources: []
+  _policyTreesEnabled: []

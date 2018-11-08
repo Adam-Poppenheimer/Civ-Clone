@@ -141,6 +141,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<ImprovementTemplate> _prerequisiteImprovementsNearCity;
 
+        public IEnumerable<IBuildingTemplate> GlobalPrerequisiteBuildings {
+            get { return _globalPrerequisiteBuildings.Cast<IBuildingTemplate>(); }
+        }
+        [SerializeField] private List<BuildingTemplate> _globalPrerequisiteBuildings;
+
         public float LandUnitProductionBonus {
             get { return _landUnitProductionBonus; }
         }

@@ -85,6 +85,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<IImprovementTemplate> PrerequisiteImprovementsNearCity { get; }
 
+        IEnumerable<IBuildingTemplate> GlobalPrerequisiteBuildings { get; }
+
         float LandUnitProductionBonus { get; }
 
         float MountedUnitProductionBonus { get; }

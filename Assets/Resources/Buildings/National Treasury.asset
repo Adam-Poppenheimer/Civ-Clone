@@ -9,12 +9,12 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
-  m_Name: Test World Wonder
+  m_Name: National Treasury
   m_EditorClassIdentifier: 
   _description: 
-  _icon: {fileID: 0}
-  _type: 2
-  _productionCost: 3
+  _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
+  _type: 1
+  _productionCost: 120
   _maintenance: 0
   _slotCount: 0
   _slotYield:
@@ -26,8 +26,8 @@ MonoBehaviour:
   _staticYield:
     Food: 0
     Production: 0
-    Gold: 0
-    Culture: 0
+    Gold: 8
+    Culture: 1
     Science: 0
   _civilizationYieldModifier:
     Food: 0
@@ -38,7 +38,7 @@ MonoBehaviour:
   _cityYieldModifier:
     Food: 0
     Production: 0
-    Gold: 300
+    Gold: 0
     Culture: 0
     Science: 0
   _localHappiness: 0
@@ -59,9 +59,12 @@ MonoBehaviour:
   _prerequisiteBuildings: []
   _prerequisiteResourcesNearCity: []
   _prerequisiteImprovementsNearCity: []
+  _globalPrerequisiteBuildings:
+  - {fileID: 11400000, guid: adca354f209848542adf9482b74b1324, type: 2}
   _landUnitProductionBonus: 0
   _mountedUnitProductionBonus: 0
   _requiresAdjacentRiver: 0
   _requiresCoastalCity: 0
   _providesOverseaConnection: 0
   _bonusExperience: 0
+  _canBeConstructed: 1

@@ -16,9 +16,16 @@ namespace Assets.Tests.Simulation.Cities {
 
     public class OtherBuildingsBuildingRestrictionTests : ZenjectUnitTestFixture {
 
+        #region static fields and properties
+
+        private IBuildingTemplate[] NoPrereqs = new IBuildingTemplate[1];
+
+        #endregion
+
         #region instance fields and properties
 
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
 
         #endregion
 
@@ -29,8 +36,10 @@ namespace Assets.Tests.Simulation.Cities {
         [SetUp]
         public void CommonInstall() {
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
 
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
 
             Container.Bind<OtherBuildingsBuildingRestriction>().AsSingle();
         }
@@ -41,10 +50,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test]
         public void IsTemplateValidForCity_TrueIfAllPrerequisitesPresent() {
-            var prereqTemplateOne = BuildTemplate();
-            var prereqTemplateTwo = BuildTemplate();
+            var prereqTemplateOne = BuildTemplate(NoPrereqs, NoPrereqs);
+            var prereqTemplateTwo = BuildTemplate(NoPrereqs, NoPrereqs);
 
-            var templateToTest = BuildTemplate(prereqTemplateOne, prereqTemplateTwo);
+            var prereqList = new List<IBuildingTemplate>() { prereqTemplateOne, prereqTemplateTwo };
+
+            var templateToTest = BuildTemplate(localPrereqs: prereqList, globalPrereqs: NoPrereqs);
 
             var city = BuildCity(
                 BuildBuilding(prereqTemplateOne), BuildBuilding(prereqTemplateTwo)
@@ -59,10 +70,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test]
         public void IsTemplateValidForCity_FalseIfAnyPrerequisiteNotPresent() {
-            var prereqTemplateOne = BuildTemplate();
-            var prereqTemplateTwo = BuildTemplate();
+            var prereqTemplateOne = BuildTemplate(NoPrereqs, NoPrereqs);
+            var prereqTemplateTwo = BuildTemplate(NoPrereqs, NoPrereqs);
 
-            var templateToTest = BuildTemplate(prereqTemplateOne, prereqTemplateTwo);
+            var prereqList = new List<IBuildingTemplate>() { prereqTemplateOne, prereqTemplateTwo };
+
+            var templateToTest = BuildTemplate(localPrereqs: prereqList, globalPrereqs: NoPrereqs);
 
             var city = BuildCity(BuildBuilding(prereqTemplateOne));
 
@@ -75,10 +88,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test]
         public void IsTemplateValidForCity_FalseIfTemplateAlreadyThere() {
-            var prereqTemplateOne = BuildTemplate();
-            var prereqTemplateTwo = BuildTemplate();
+            var prereqTemplateOne = BuildTemplate(NoPrereqs, NoPrereqs);
+            var prereqTemplateTwo = BuildTemplate(NoPrereqs, NoPrereqs);
 
-            var templateToTest = BuildTemplate(prereqTemplateOne, prereqTemplateTwo);
+            var prereqList = new List<IBuildingTemplate>() { prereqTemplateOne, prereqTemplateTwo };
+
+            var templateToTest = BuildTemplate(localPrereqs: prereqList, globalPrereqs: NoPrereqs);
 
             var city = BuildCity(
                 BuildBuilding(prereqTemplateOne), BuildBuilding(prereqTemplateTwo),
@@ -92,14 +107,42 @@ namespace Assets.Tests.Simulation.Cities {
             Assert.IsFalse(restriction.IsTemplateValidForCity(templateToTest, city, civ));
         }
 
+        [Test]
+        public void IsTemplateValidForCity_FalseIfSomeCityLacksSomeGlobalPrerequisite() {
+            var prereqTemplateOne = BuildTemplate(NoPrereqs, NoPrereqs);
+            var prereqTemplateTwo = BuildTemplate(NoPrereqs, NoPrereqs);
+
+            var prereqList = new List<IBuildingTemplate>() { prereqTemplateOne, prereqTemplateTwo };
+
+            var templateToTest = BuildTemplate(localPrereqs: NoPrereqs, globalPrereqs: prereqList);
+
+            var city = BuildCity(BuildBuilding(prereqTemplateOne), BuildBuilding(prereqTemplateTwo));
+
+            var otherCityOne   = BuildCity(BuildBuilding(prereqTemplateOne), BuildBuilding(prereqTemplateTwo));
+            var otherCityTwo   = BuildCity(BuildBuilding(prereqTemplateOne), BuildBuilding(prereqTemplateTwo));
+            var otherCityThree = BuildCity(BuildBuilding(prereqTemplateOne));
+
+            var civ = BuildCiv();
+
+            MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(civ))
+                                   .Returns(new List<ICity>() { otherCityOne, otherCityTwo, otherCityThree });
+
+            var restriction = Container.Resolve<OtherBuildingsBuildingRestriction>();
+
+            Assert.IsFalse(restriction.IsTemplateValidForCity(templateToTest, city, civ));
+        }
+
         #endregion
 
         #region utilities
 
-        private IBuildingTemplate BuildTemplate(params IBuildingTemplate[] buildingPrereqs) {
+        private IBuildingTemplate BuildTemplate(
+            IEnumerable<IBuildingTemplate> localPrereqs, IEnumerable<IBuildingTemplate> globalPrereqs
+        ) {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
-            mockTemplate.Setup(template => template.PrerequisiteBuildings).Returns(buildingPrereqs);
+            mockTemplate.Setup(template => template.PrerequisiteBuildings)      .Returns(localPrereqs);
+            mockTemplate.Setup(template => template.GlobalPrerequisiteBuildings).Returns(globalPrereqs);
 
             return mockTemplate.Object;
         }

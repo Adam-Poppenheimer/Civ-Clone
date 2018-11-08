@@ -19,10 +19,12 @@ MonoBehaviour:
   _prerequisites:
   - {fileID: 11400000, guid: bb9c6be021a4d9c48924a3b458bc57ae, type: 2}
   - {fileID: 11400000, guid: 13c70b295543ce347a71267a26edc038, type: 2}
-  _buildingsEnabled: []
+  _buildingsEnabled:
+  - {fileID: 11400000, guid: 3b6f63024f53c9241b5a5fde0d342b91, type: 2}
   _unitsEnabled:
   - {fileID: 11400000, guid: 1bf665c532e23094c9eb3351fc319ef6, type: 2}
   _abilitiesEnabled: []
+  _improvementsEnabled: []
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []

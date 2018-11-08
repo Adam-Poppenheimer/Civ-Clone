@@ -13,7 +13,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance fields and properties
 
-        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -21,9 +22,11 @@ namespace Assets.Simulation.Cities.Buildings {
 
         [Inject]
         public OtherBuildingsBuildingRestriction(
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ) {
             BuildingPossessionCanon = buildingPossessionCanon;
+            CityPossessionCanon     = cityPossessionCanon;
         }
 
         #endregion
@@ -43,10 +46,31 @@ namespace Assets.Simulation.Cities.Buildings {
                 prerequisite => templatesAlreadyThere.Contains(prerequisite)
             );
 
-            return !templateAlreadyExists && allPrerequisitesExist;
+            bool meetsGlobalBuildingPrerequisites = true;
+
+            if(template.GlobalPrerequisiteBuildings.Any()) {
+                meetsGlobalBuildingPrerequisites = template.GlobalPrerequisiteBuildings.All(
+                    globalPrereq => DoAllCitiesHaveTemplate(globalPrereq, cityOwner)
+                );
+            }
+
+            return meetsGlobalBuildingPrerequisites && !templateAlreadyExists && allPrerequisitesExist;
         }
 
         #endregion
+
+        private bool DoAllCitiesHaveTemplate(IBuildingTemplate template, ICivilization owner) {
+            var allCities = CityPossessionCanon.GetPossessionsOfOwner(owner);
+
+            foreach(var city in allCities) {
+                var templatesOf = BuildingPossessionCanon.GetPossessionsOfOwner(city).Select(building => building.Template);
+
+                if(!templatesOf.Contains(template)) {
+                    return false;
+                }
+            }
+            return true;
+        }
 
         #endregion
         

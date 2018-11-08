@@ -21,8 +21,10 @@ MonoBehaviour:
   _buildingsEnabled:
   - {fileID: 11400000, guid: adca354f209848542adf9482b74b1324, type: 2}
   - {fileID: 11400000, guid: 4c1d97671eab1a5438c15371e67be6cb, type: 2}
+  - {fileID: 11400000, guid: 3a8bfdefdd6ce3f449e8b81dcdd10e1f, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
+  _improvementsEnabled: []
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []
