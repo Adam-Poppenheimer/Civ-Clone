@@ -11,6 +11,7 @@ using UniRx;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.MapResources;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -186,9 +187,26 @@ namespace Assets.Tests.Simulation.Civilizations {
             return mock.Object;
         }
 
+        private IUnit BuildUnit(IPromotionTree promotionTree) {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.PromotionTree).Returns(promotionTree);
+
+            return mockUnit.Object;
+        }
+
         private ICivilization BuildCiv() {
             return new Mock<ICivilization>().Object;
+        }
 
+        private IPromotion BuildPromotion() {
+            return new Mock<IPromotion>().Object;
+        }
+
+        private IPromotionTree BuildPromotionTree(out Mock<IPromotionTree> mock) {
+            mock = new Mock<IPromotionTree>();
+
+            return mock.Object;
         }
 
         #endregion

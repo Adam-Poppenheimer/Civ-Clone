@@ -8,6 +8,7 @@ using UnityEngine;
 
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -180,6 +181,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return _canBeConstructed; }
         }
         [SerializeField] private bool _canBeConstructed = true;
+
+        public IEnumerable<IPromotion> GlobalPromotions {
+            get { return _globalPromotions.Cast<IPromotion>(); }
+        }
+        [SerializeField] private List<Promotion> _globalPromotions;
 
         #endregion
 

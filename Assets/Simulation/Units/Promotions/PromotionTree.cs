@@ -18,12 +18,13 @@ namespace Assets.Simulation.Units.Promotions {
         #endregion
 
         private List<IPromotion> ChosenPromotions;
+        private List<IPromotion> AppendedPromotions;
 
         #endregion
 
         #region events
 
-        public event EventHandler<EventArgs> NewPromotionChosen;
+        public event EventHandler<EventArgs> PromotionsChanged;
 
         #endregion
 
@@ -32,7 +33,8 @@ namespace Assets.Simulation.Units.Promotions {
         public PromotionTree(IPromotionTreeTemplate template) {
             Template = template;
 
-            ChosenPromotions = new List<IPromotion>();
+            ChosenPromotions   = new List<IPromotion>();
+            AppendedPromotions = new List<IPromotion>();
         }
 
         public PromotionTree(IPromotionTreeTemplate template, IEnumerable<IPromotion> chosenPromotions) {
@@ -70,6 +72,14 @@ namespace Assets.Simulation.Units.Promotions {
             return retval.Except(ChosenPromotions);
         }
 
+        public IEnumerable<IPromotion> GetAppendedPromotions() {
+            return AppendedPromotions;
+        }
+
+        public IEnumerable<IPromotion> GetAllPromotions() {
+            return AppendedPromotions.Concat(ChosenPromotions);
+        }
+
         public bool CanChoosePromotion(IPromotion promotion) {
             return GetAvailablePromotions().Contains(promotion);
         }
@@ -81,8 +91,22 @@ namespace Assets.Simulation.Units.Promotions {
 
             ChosenPromotions.Add(promotion);
 
-            if(NewPromotionChosen != null) {
-                NewPromotionChosen(this, EventArgs.Empty);
+            if(PromotionsChanged != null) {
+                PromotionsChanged(this, EventArgs.Empty);
+            }
+        }
+
+        public void AppendPromotion(IPromotion promotion) {
+            AppendedPromotions.Add(promotion);
+
+            if(PromotionsChanged != null) {
+                PromotionsChanged(this, EventArgs.Empty);
+            }
+        }
+
+        public void RemoveAppendedPromotion(IPromotion promotion) {
+            if(AppendedPromotions.Remove(promotion) && PromotionsChanged != null) {
+                PromotionsChanged(this, EventArgs.Empty);
             }
         }
 

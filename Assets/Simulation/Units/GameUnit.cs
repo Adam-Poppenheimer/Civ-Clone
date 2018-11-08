@@ -129,20 +129,20 @@ namespace Assets.Simulation.Units {
         }
 
         public IEnumerable<IPromotion> Promotions {
-            get { return Template.StartingPromotions.Concat(PromotionTree.GetChosenPromotions()); }
+            get { return Template.StartingPromotions.Concat(PromotionTree.GetAllPromotions()); }
         }
 
         public IPromotionTree PromotionTree {
             get { return _promotionTree; }
             set {
                 if(_promotionTree != null) {
-                    _promotionTree.NewPromotionChosen -= OnNewPromotionChosen;
+                    _promotionTree.PromotionsChanged -= OnNewPromotionChosen;
                 }
 
                 _promotionTree = value;
 
                 if(_promotionTree != null) {
-                    _promotionTree.NewPromotionChosen += OnNewPromotionChosen;
+                    _promotionTree.PromotionsChanged += OnNewPromotionChosen;
                 }
             }
         }

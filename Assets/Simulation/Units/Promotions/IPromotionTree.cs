@@ -15,7 +15,7 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region events
 
-        event EventHandler<EventArgs> NewPromotionChosen;
+        event EventHandler<EventArgs> PromotionsChanged;
 
         #endregion
 
@@ -25,9 +25,14 @@ namespace Assets.Simulation.Units.Promotions {
 
         IEnumerable<IPromotion> GetChosenPromotions();
         IEnumerable<IPromotion> GetAvailablePromotions();
+        IEnumerable<IPromotion> GetAppendedPromotions();
+        IEnumerable<IPromotion> GetAllPromotions();
 
         bool CanChoosePromotion(IPromotion promotion);
         void ChoosePromotion   (IPromotion promotion);
+
+        void AppendPromotion        (IPromotion promotion);
+        void RemoveAppendedPromotion(IPromotion promotion);
 
         #endregion
 

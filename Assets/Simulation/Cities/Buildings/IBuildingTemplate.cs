@@ -8,6 +8,7 @@ using UnityEngine;
 
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -100,6 +101,8 @@ namespace Assets.Simulation.Cities.Buildings {
         int BonusExperience { get; }
 
         bool CanBeConstructed { get; }
+
+        IEnumerable<IPromotion> GlobalPromotions { get; }
 
         #endregion
 

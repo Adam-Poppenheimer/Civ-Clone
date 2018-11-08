@@ -30,7 +30,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         #region tests
 
         [Test]
-        public void ContainsPromotion_DrivenByPrerequisiteData() {
+        public void GetAvailablePromotions_DrivenByPrerequisiteData() {
             var prerequisiteData = new List<IPromotionPrerequisiteData>() {
                 BuildPrereqData(BuildPromotion("Promotion One"),   new List<IPromotion>()),
                 BuildPrereqData(BuildPromotion("Promotion Two"),   new List<IPromotion>()),
@@ -196,7 +196,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         }
 
         [Test]
-        public void ChoosePromotion_NewPromotionChosenEventFired() {
+        public void ChoosePromotion_PromotionsChangedEventFired() {
             var promotionOne   = BuildPromotion("Promotion One");
             var promotionTwo   = BuildPromotion("Promotion Two");
 
@@ -207,13 +207,110 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             var promotionTree = new PromotionTree(treeData);
 
-            promotionTree.NewPromotionChosen += delegate(object sender, EventArgs e) {
+            promotionTree.PromotionsChanged += delegate(object sender, EventArgs e) {
                 Assert.Pass();
             };
 
             promotionTree.ChoosePromotion(promotionOne);
 
             Assert.Fail("NewPromotionChosen was never fired");
+        }
+
+        [Test]
+        public void AppendPromotion_ReflectedInAppendedPromotions() {
+            var promotionOne = BuildPromotion("Promotion One");
+            var promotionTwo = BuildPromotion("Promotion Two");
+
+            var treeData = BuildPromotionTreeData(new List<IPromotionPrerequisiteData>());
+
+            var promotionTree = new PromotionTree(treeData);
+
+            promotionTree.AppendPromotion(promotionOne);
+            promotionTree.AppendPromotion(promotionTwo);
+            promotionTree.AppendPromotion(promotionTwo);
+
+            CollectionAssert.AreEquivalent(
+                new List<IPromotion>() { promotionOne, promotionTwo, promotionTwo },
+                promotionTree.GetAppendedPromotions()
+            );
+        }
+
+        [Test]
+        public void AppendPromotion_PromotionsChangedEventFired() {
+            var promotionOne = BuildPromotion("Promotion One");
+
+            var treeData = BuildPromotionTreeData(new List<IPromotionPrerequisiteData>());
+
+            var promotionTree = new PromotionTree(treeData);
+
+            promotionTree.PromotionsChanged += (sender, e) => Assert.Pass();
+
+            promotionTree.AppendPromotion(promotionOne);
+
+            Assert.Fail("PromotionsChanged not fired");
+        }
+
+        [Test]
+        public void RemoveAppendedPromotion_ReflectedInAppendedPromotions() {
+            var promotionOne = BuildPromotion("Promotion One");
+            var promotionTwo = BuildPromotion("Promotion Two");
+
+            var treeData = BuildPromotionTreeData(new List<IPromotionPrerequisiteData>());
+
+            var promotionTree = new PromotionTree(treeData);
+
+            promotionTree.AppendPromotion(promotionOne);
+            promotionTree.AppendPromotion(promotionTwo);
+
+            promotionTree.RemoveAppendedPromotion(promotionOne);
+
+            CollectionAssert.AreEquivalent(
+                new List<IPromotion>() { promotionTwo },
+                promotionTree.GetAppendedPromotions()
+            );
+        }
+
+        [Test]
+        public void RemoveAppendedPromotion_PromotionsChangedEvenFired() {
+            var promotionOne = BuildPromotion("Promotion One");
+
+            var treeData = BuildPromotionTreeData(new List<IPromotionPrerequisiteData>());
+
+            var promotionTree = new PromotionTree(treeData);
+
+            promotionTree.AppendPromotion(promotionOne);
+
+            promotionTree.PromotionsChanged += (sender, e) => Assert.Pass();
+
+            promotionTree.RemoveAppendedPromotion(promotionOne);
+
+            Assert.Fail("PromotionsChanged not fired");
+        }
+
+        [Test]
+        public void AllPromotions_ContainsAllChosenAndAppendedPromotions() {
+            var promotionOne   = BuildPromotion("Promotion One");
+            var promotionTwo   = BuildPromotion("Promotion Two");
+
+            var promotionThree = BuildPromotion("Promotion Three");
+            BuildPromotion("Promotion Three");
+
+            var treeData = BuildPromotionTreeData(new List<IPromotionPrerequisiteData>() {
+                BuildPrereqData(promotionOne, new List<IPromotion>()),
+                BuildPrereqData(promotionTwo, new List<IPromotion>()),
+            });
+
+            var promotionTree = new PromotionTree(treeData);
+
+            promotionTree.ChoosePromotion(promotionOne);
+            promotionTree.ChoosePromotion(promotionTwo);
+
+            promotionTree.AppendPromotion(promotionThree);
+
+            CollectionAssert.AreEquivalent(
+                new List<IPromotion>() { promotionOne, promotionTwo, promotionThree },
+                promotionTree.GetAllPromotions()
+            );
         }
 
         #endregion
