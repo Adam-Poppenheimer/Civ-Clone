@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Test Building
   m_EditorClassIdentifier: 
   _description: 
-  _icon: {fileID: 0}
+  _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _type: 0
   _productionCost: 1
   _maintenance: 0
@@ -68,5 +68,5 @@ MonoBehaviour:
   _bonusExperience: 0
   _canBeConstructed: 1
   _globalPromotions: []
-  _localPromotions:
-  - {fileID: 11400000, guid: 3f1322dcdace09042915197ebe8e35fd, type: 2}
+  _localPromotions: []
+  _providesFreeTech: 1

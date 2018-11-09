@@ -14,6 +14,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Technology;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -21,11 +22,12 @@ namespace Assets.Tests.Simulation.Cities {
     public class BuildingPossessionCanonTests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
-
+        
+        private CitySignals                                         CitySignals;
         private Mock<IResourceLockingCanon>                         MockResourceLockingCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IGlobalPromotionCanon>                         MockGlobalPromotionCanon;
-        private CitySignals                                         CitySignals;
+        private Mock<ITechCanon>                                    MockTechCanon;
 
         #endregion
 
@@ -35,15 +37,17 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
+            CitySignals              = new CitySignals();
             MockResourceLockingCanon = new Mock<IResourceLockingCanon>();
             MockCityPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockGlobalPromotionCanon = new Mock<IGlobalPromotionCanon>();
-            CitySignals              = new CitySignals();
+            MockTechCanon            = new Mock<ITechCanon>();
 
+            Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
             Container.Bind<IResourceLockingCanon>                        ().FromInstance(MockResourceLockingCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
             Container.Bind<IGlobalPromotionCanon>                        ().FromInstance(MockGlobalPromotionCanon.Object);
-            Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
+            Container.Bind<ITechCanon>                                   ().FromInstance(MockTechCanon           .Object);
 
             Container.Bind<BuildingPossessionCanon>().AsSingle();
         }
@@ -142,6 +146,23 @@ namespace Assets.Tests.Simulation.Cities {
 
             Assert.Fail("CityGainedBuildingSignal wasn't fired");
         }
+
+        [Test]
+        public void OnPossessionEstablished_FreeTechAddedIfTemplateAddsFreeTechs() {
+            var building = BuildBuilding(BuildTemplate(providesFreeTech: true));
+
+            var cityOwner = BuildCivilization();
+
+            var city = BuildCity(cityOwner);
+
+            var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
+
+            possessionCanon.ChangeOwnerOfPossession(building, city);
+
+            MockTechCanon.Verify(canon => canon.AddFreeTechToCiv(cityOwner), Times.Once);
+        }
+
+
 
         [Test(Description = "When an existing possession relationship is broken, " +
             "BuildingPossessionCanon unreserves all required specialty resource " +
@@ -270,6 +291,14 @@ namespace Assets.Tests.Simulation.Cities {
             var mockTemplate = new Mock<IBuildingTemplate>();
 
             mockTemplate.Setup(template => template.GlobalPromotions).Returns(globalPromotions);
+
+            return mockTemplate.Object;
+        }
+
+        private IBuildingTemplate BuildTemplate(bool providesFreeTech) {
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.ProvidesFreeTech).Returns(providesFreeTech);
 
             return mockTemplate.Object;
         }

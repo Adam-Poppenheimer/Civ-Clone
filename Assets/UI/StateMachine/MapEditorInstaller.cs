@@ -24,7 +24,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private CivManagementPanel       CivManagementPanel;
         [SerializeField] private UnitPaintingPanel        UnitPaintingPanel;
         [SerializeField] private CityPaintingPanel        CityPaintingPanel;
-        [SerializeField] private TechManagementPanel      TechManagementPanel;
+        [SerializeField] private CivSelectionPanel        CivSelectionPanel;
         [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel;
         [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
         [SerializeField] private UnitEditingPanel         UnitEditingPanel;
@@ -58,7 +58,7 @@ namespace Assets.UI.StateMachine {
             Container.Bind<CivManagementPanel>      ().FromInstance(CivManagementPanel);
             Container.Bind<UnitPaintingPanel>       ().FromInstance(UnitPaintingPanel);
             Container.Bind<CityPaintingPanel>       ().FromInstance(CityPaintingPanel);
-            Container.Bind<TechManagementPanel>     ().FromInstance(TechManagementPanel);
+            Container.Bind<CivSelectionPanel>       ().FromInstance(CivSelectionPanel);
             Container.Bind<ResourcePaintingPanel>   ().FromInstance(ResourcePaintingPanel);
             Container.Bind<ImprovementPaintingPanel>().FromInstance(ImprovementPaintingPanel);
             Container.Bind<UnitEditingPanel>        ().FromInstance(UnitEditingPanel);

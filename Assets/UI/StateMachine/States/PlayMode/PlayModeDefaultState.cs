@@ -14,6 +14,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Visibility;
+using Assets.Simulation.Technology;
 
 using Assets.UI.Civilizations;
 using Assets.UI.Cities;
@@ -37,6 +38,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
         private IExplorationCanon                        ExplorationCanon;
         private VisibilitySignals                        VisibilitySignals;
+        private RectTransform                            FreeTechsDisplay;
+        private ITechCanon                               TechCanon;
 
         #endregion
 
@@ -48,7 +51,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
             IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IExplorationCanon explorationCanon, VisibilitySignals visibilitySignals
+            IExplorationCanon explorationCanon, VisibilitySignals visibilitySignals,
+            [Inject(Id = "Free Techs Display")] RectTransform freeTechsDisplay, ITechCanon techCanon
         ){
             CivilizationDisplays = civilizationDisplays;
             CoreSignals          = coreSignals;
@@ -59,6 +63,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             CityLocationCanon    = cityLocationCanon;
             ExplorationCanon     = explorationCanon;
             VisibilitySignals    = visibilitySignals;
+            FreeTechsDisplay     = freeTechsDisplay;
+            TechCanon            = techCanon;
         }
 
         #region from StateMachineBehaviour
@@ -84,12 +90,16 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.BuildSummaries();
 
+            FreeTechsDisplay.gameObject.SetActive(TechCanon.GetFreeTechsForCiv(GameCore.ActiveCivilization) > 0);
+
             SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             CitySummaryManager.RepositionSummaries();
+
+            FreeTechsDisplay.gameObject.SetActive(TechCanon.GetFreeTechsForCiv(GameCore.ActiveCivilization) > 0);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -106,6 +116,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             SignalSubscriptions.ForEach(subscription => subscription.Dispose());
             SignalSubscriptions.Clear();
+            FreeTechsDisplay.gameObject.SetActive(false);
         }
 
         #endregion

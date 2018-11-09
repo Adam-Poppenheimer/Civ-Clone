@@ -38,12 +38,16 @@ namespace Assets.Simulation.Technology {
         private Dictionary<ICivilization, Dictionary<ITechDefinition, int>> ProgressByCivAndTech =
             new Dictionary<ICivilization, Dictionary<ITechDefinition, int>>();
 
+        private Dictionary<ICivilization, int> FreeTechsForCiv =
+            new Dictionary<ICivilization, int>();
+
 
 
 
         private IEnumerable<IAbilityDefinition>   AvailableAbilities;
         private IEnumerable<IResourceDefinition>  AvailableResources;
         private IEnumerable<IImprovementTemplate> AvailableImprovements;
+        private CivilizationSignals               CivSignals;
 
         #endregion
 
@@ -61,6 +65,7 @@ namespace Assets.Simulation.Technology {
             AvailableAbilities    = availableAbilities;
             AvailableResources    = availableResources;
             AvailableImprovements = availableImprovements;
+            CivSignals            = civSignals;
 
             civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
@@ -301,6 +306,7 @@ namespace Assets.Simulation.Technology {
 
             if(!IsTechDiscoveredByCiv(tech, civilization)) {
                 TechsResearchedByCiv[civilization].Add(tech);
+                CivSignals.CivDiscoveredTechSignal.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civilization, tech));
             }
         }
 
@@ -320,6 +326,52 @@ namespace Assets.Simulation.Technology {
 
         public TechnologyEra GetEraOfCiv(ICivilization civilization) {
             return (TechnologyEra)GetTechsDiscoveredByCiv(civilization).Select(tech => (int)tech.Era).Max();
+        }
+
+        public HashSet<ITechDefinition> GetDiscoveredPostrequisiteTechs(ITechDefinition prereq, ICivilization civ) {
+            var retval = new HashSet<ITechDefinition>();
+
+            var directPostrequisites = AvailableTechs.Where(tech => tech.Prerequisites.Contains(prereq)).ToArray();
+
+            foreach(var directPostreq in directPostrequisites) {
+                if(IsTechDiscoveredByCiv(directPostreq, civ)) {
+                    retval.Add(directPostreq);
+
+                    foreach(var indirectPostreq in GetDiscoveredPostrequisiteTechs(directPostreq, civ)) {
+                        retval.Add(indirectPostreq);
+                    }
+                }
+            }
+
+            return retval;
+        }
+
+        public int GetFreeTechsForCiv(ICivilization civ) {
+            int retval;
+
+            FreeTechsForCiv.TryGetValue(civ, out retval);
+
+            return retval;
+        }
+
+        public void AddFreeTechToCiv(ICivilization civ) {
+            int freeTechs;
+
+            FreeTechsForCiv.TryGetValue(civ, out freeTechs);
+
+            freeTechs++;
+
+            FreeTechsForCiv[civ] = freeTechs;
+        }
+
+        public void RemoveFreeTechFromCiv(ICivilization civ) {
+            int freeTechs;
+
+            FreeTechsForCiv.TryGetValue(civ, out freeTechs);
+
+            freeTechs--;
+
+            FreeTechsForCiv[civ] = freeTechs;
         }
 
         #endregion

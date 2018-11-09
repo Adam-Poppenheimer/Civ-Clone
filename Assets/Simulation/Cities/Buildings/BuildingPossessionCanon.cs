@@ -8,7 +8,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -22,6 +22,7 @@ namespace Assets.Simulation.Cities.Buildings {
         private IResourceLockingCanon                         ResourceLockingCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IGlobalPromotionCanon                         GlobalPromotionCanon;
+        private ITechCanon                                    TechCanon;
 
         #endregion
 
@@ -31,12 +32,13 @@ namespace Assets.Simulation.Cities.Buildings {
         public BuildingPossessionCanon(
             CitySignals citySignals, IResourceLockingCanon resourceLockingCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IGlobalPromotionCanon globalPromotionCanon
+            IGlobalPromotionCanon globalPromotionCanon, ITechCanon techCanon
         ) {
             CitySignals          = citySignals;
             ResourceLockingCanon = resourceLockingCanon;
             CityPossessionCanon  = cityPossessionCanon;
             GlobalPromotionCanon = globalPromotionCanon;
+            TechCanon            = techCanon;
         }
 
         #endregion
@@ -58,6 +60,10 @@ namespace Assets.Simulation.Cities.Buildings {
 
             foreach(var promotion in building.Template.GlobalPromotions) {
                 GlobalPromotionCanon.AddGlobalPromotionToCiv(promotion, cityOwner);
+            }
+
+            if(building.Template.ProvidesFreeTech) {
+                TechCanon.AddFreeTechToCiv(cityOwner);
             }
 
             CitySignals.CityGainedBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(newOwner, building));

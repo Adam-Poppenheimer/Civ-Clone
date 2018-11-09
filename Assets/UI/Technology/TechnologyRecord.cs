@@ -21,7 +21,7 @@ namespace Assets.UI.Technology {
         #region internal types
 
         public enum TechStatus {
-            Available, Discovered, BeingResearched, InQueue
+            Available, Discovered, BeingResearched, InQueue, Unavailable
         }
 
         #endregion
@@ -35,13 +35,11 @@ namespace Assets.UI.Technology {
 
         #region instance fields and properties
 
-        public ITechDefinition TechToDisplay { get; set; }
-
-        public TechStatus Status { get; set; }
-
-        public int TurnsToResearch { get; set; }
-
-        public int CurrentProgress { get; set; }
+        public ITechDefinition TechToDisplay   { get; set; }
+        public TechStatus      Status          { get; set; }
+        public int             TurnsToResearch { get; set; }
+        public int             CurrentProgress { get; set; }
+        public bool            CanBeClicked    { get; set; }
 
         public Button SelectionButton {
             get {
@@ -76,6 +74,7 @@ namespace Assets.UI.Technology {
         [SerializeField] private Color AvailableColor;
         [SerializeField] private Color BeingResearchedColor;
         [SerializeField] private Color InQueueColor;
+        [SerializeField] private Color UnavailableColor;
 
         private List<TechnologyBoonRecord> InstantiatedBoonRecords = 
             new List<TechnologyBoonRecord>();
@@ -133,20 +132,21 @@ namespace Assets.UI.Technology {
             if(SelectionButton != null) {
                 if(Status == TechStatus.Discovered) {
                     SelectionButton.image.color = DiscoveredColor;
-                    SelectionButton.interactable = false;
 
                 }else if(Status == TechStatus.Available){
                     SelectionButton.image.color = AvailableColor;
-                    SelectionButton.interactable = true;
 
                 }else if(Status == TechStatus.BeingResearched) {
                     SelectionButton.image.color = BeingResearchedColor;
-                    SelectionButton.interactable = true;
 
                 }else if(Status == TechStatus.InQueue) {
                     SelectionButton.image.color = InQueueColor;
-                    SelectionButton.interactable = true;
+
+                }else if(Status == TechStatus.Unavailable) {
+                    SelectionButton.image.color = UnavailableColor;
                 }
+
+                SelectionButton.interactable = CanBeClicked;
             }
 
             if(IconField != null) {

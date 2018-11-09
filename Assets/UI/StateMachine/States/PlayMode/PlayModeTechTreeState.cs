@@ -12,15 +12,12 @@ using Assets.UI.Technology;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
-    public class TechTreeState : StateMachineBehaviour {
+    public class PlayModeTechTreeState : StateMachineBehaviour {
 
         #region instance fields and properties
 
         private UIStateMachineBrain Brain;
-
-        private TechTreeDisplay TechTreeDisplay;
-
-        private IGameCore GameCore;
+        private TechTreeDisplay     TechTreeDisplay;
 
         #endregion
 
@@ -28,11 +25,10 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, TechTreeDisplay techTreeDisplay, IGameCore gameCore
+            UIStateMachineBrain brain, TechTreeDisplay techTreeDisplay
         ){
             Brain           = brain;
             TechTreeDisplay = techTreeDisplay;
-            GameCore        = gameCore;
         }
 
         #region from StateMachineBehaviour
@@ -41,7 +37,6 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.ClearListeners();
             Brain.ListenForTransitions(TransitionType.ReturnViaButton);
 
-            TechTreeDisplay.ObjectToDisplay = GameCore.ActiveCivilization;
             TechTreeDisplay.gameObject.SetActive(true);
             TechTreeDisplay.Refresh();
         }

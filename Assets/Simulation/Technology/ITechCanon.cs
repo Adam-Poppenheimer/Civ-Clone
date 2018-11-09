@@ -57,6 +57,12 @@ namespace Assets.Simulation.Technology {
 
         TechnologyEra GetEraOfCiv(ICivilization civilization);
 
+        HashSet<ITechDefinition> GetDiscoveredPostrequisiteTechs(ITechDefinition tech, ICivilization civ);
+
+        int  GetFreeTechsForCiv   (ICivilization civ);
+        void AddFreeTechToCiv     (ICivilization civ);
+        void RemoveFreeTechFromCiv(ICivilization civ);
+
         #endregion
 
     }

@@ -468,6 +468,51 @@ namespace Assets.Tests.Simulation.Technology {
             Assert.AreEqual(TechnologyEra.Classical, techCanon.GetEraOfCiv(civ));
         }
 
+        [Test]
+        public void GetDiscoveredPostrequisiteTechs_GetsAllDiscoveredTechsWhosePrereqChainContainsTech() {
+            var techOne   = BuildTech("Tech One");
+            var techTwo   = BuildTech("Tech Two",   prerequisities: new List<ITechDefinition>() { techOne            });
+            var techThree = BuildTech("Tech Three", prerequisities: new List<ITechDefinition>() { techTwo            });
+            var techFour  = BuildTech("Tech Four",  prerequisities: new List<ITechDefinition>() { techTwo, techThree });
+                            BuildTech("Tech Five",  prerequisities: new List<ITechDefinition>() { techOne            });
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            techCanon.SetTechAsDiscoveredForCiv(techOne,   civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo,   civ);
+            techCanon.SetTechAsDiscoveredForCiv(techThree, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techFour,  civ);
+
+            CollectionAssert.AreEquivalent(
+                new List<ITechDefinition>() { techTwo, techThree, techFour },
+                techCanon.GetDiscoveredPostrequisiteTechs(techOne, civ)
+            );
+        }
+
+        [Test]
+        public void AddFreeTechToCiv_ValueReflectedInGetFreeTechsForCiv() {
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            techCanon.AddFreeTechToCiv(civ);
+
+            Assert.AreEqual(1, techCanon.GetFreeTechsForCiv(civ));
+        }
+
+        [Test]
+        public void RemoveFreeTechFromCiv_ValueReflectedInGetFreeTechsForCiv() {
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            techCanon.RemoveFreeTechFromCiv(civ);
+
+            Assert.AreEqual(-1, techCanon.GetFreeTechsForCiv(civ));
+        }
+
         #endregion
 
         #region utilities

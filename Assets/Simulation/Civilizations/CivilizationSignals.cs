@@ -11,6 +11,7 @@ using UniRx;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
 using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Civilizations {
 
@@ -41,6 +42,8 @@ namespace Assets.Simulation.Civilizations {
 
         public ISubject<ICivilization> CivDefeatedSignal { get; private set; }
 
+        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTechSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -68,6 +71,8 @@ namespace Assets.Simulation.Civilizations {
             CivLockedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
 
             CivDefeatedSignal = new Subject<ICivilization>();
+
+            CivDiscoveredTechSignal = new Subject<Tuple<ICivilization, ITechDefinition>>();
         }
 
         #endregion

@@ -103,6 +103,8 @@ namespace Assets.Simulation.Cities.Buildings {
         IEnumerable<IPromotion> LocalPromotions  { get; }
         IEnumerable<IPromotion> GlobalPromotions { get; }
 
+        bool ProvidesFreeTech { get; }
+
         #endregion
 
     }

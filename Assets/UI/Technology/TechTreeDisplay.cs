@@ -20,26 +20,24 @@ namespace Assets.UI.Technology {
 
         #region instance fields and properties
 
+        public TechSelectionMode SelectionMode { get; set; }
+
         [SerializeField] private TechnologyRecord TechRecordPrefab;
 
         [SerializeField] private UILineRenderer PrerequisiteLines;
 
-
         [SerializeField] private TableLayoutGroup TechTable;
-
         [SerializeField] private int TechTableRowCount;
-
         [SerializeField] private RectTransform TechTableCellPrefab;
-
 
         private List<TechnologyRecord> TechRecords;
 
 
-        private ITechCanon TechCanon;
 
+
+        private ITechCanon              TechCanon;
         private ICivilizationYieldLogic YieldLogic;
-
-        private DiContainer Container;
+        private DiContainer             Container;
 
         #endregion
 
@@ -80,11 +78,18 @@ namespace Assets.UI.Technology {
                         techRecord.Status = TechnologyRecord.TechStatus.InQueue;
                     }
 
-                }else {
-
+                }else if(
+                    SelectionMode != TechSelectionMode.ResearchFreeTech ||
+                    TechCanon.IsTechAvailableToCiv(recordedTech, ObjectToDisplay)
+                ){
                     techRecord.Status = TechnologyRecord.TechStatus.Available;
 
+                }else {
+                    techRecord.Status = TechnologyRecord.TechStatus.Unavailable;
                 }
+
+                techRecord.CanBeClicked = SelectionMode != TechSelectionMode.SetTechQueue
+                                       || !TechCanon.IsTechDiscoveredByCiv(recordedTech, ObjectToDisplay);
 
                 techRecord.TurnsToResearch = (int)Math.Ceiling(
                     (techRecord.TechToDisplay.Cost - techRecord.CurrentProgress) /
@@ -161,6 +166,15 @@ namespace Assets.UI.Technology {
         }
 
         private void OnTechRecordClicked(TechnologyRecord techRecord) {
+            switch(SelectionMode) {
+                case TechSelectionMode.SetTechQueue:       OnTechRecordClicked_SetTechQueue      (techRecord); break;
+                case TechSelectionMode.SetDiscoveredTechs: OnTechRecordClicked_SetDiscoveredTechs(techRecord); break;
+                case TechSelectionMode.ResearchFreeTech:   OnTechRecordClicked_ResearchFreeTech  (techRecord); break;
+                default: throw new NotImplementedException();
+            }
+        }
+
+        private void OnTechRecordClicked_SetTechQueue(TechnologyRecord techRecord) {
             if(!Input.GetButton("Shift")) {
                 ObjectToDisplay.TechQueue.Clear();
             }
@@ -172,6 +186,37 @@ namespace Assets.UI.Technology {
             }
 
             Refresh();
+        }
+
+        private void OnTechRecordClicked_SetDiscoveredTechs(TechnologyRecord techRecord) {
+            var techClicked = techRecord.TechToDisplay;
+
+            if(TechCanon.IsTechDiscoveredByCiv(techClicked, ObjectToDisplay)) {
+                foreach(var postrequisiteTech in TechCanon.GetDiscoveredPostrequisiteTechs(techClicked, ObjectToDisplay)) {
+                    TechCanon.SetTechAsUndiscoveredForCiv(postrequisiteTech, ObjectToDisplay);
+                }
+
+                TechCanon.SetTechAsUndiscoveredForCiv(techClicked, ObjectToDisplay);
+
+            }else {
+                foreach(var tech in TechCanon.GetPrerequisiteChainToResearchTech(techClicked, ObjectToDisplay)) {
+                    TechCanon.SetTechAsDiscoveredForCiv(tech, ObjectToDisplay);
+                }
+            }
+
+            Refresh();
+        }
+
+        private void OnTechRecordClicked_ResearchFreeTech(TechnologyRecord techRecord) {
+            if( TechCanon.IsTechAvailableToCiv(techRecord.TechToDisplay, ObjectToDisplay) &&
+                TechCanon.GetFreeTechsForCiv(ObjectToDisplay) > 0
+            ) {
+                TechCanon.SetTechAsDiscoveredForCiv(techRecord.TechToDisplay, ObjectToDisplay);
+
+                TechCanon.RemoveFreeTechFromCiv(ObjectToDisplay);
+
+                Refresh();
+            }
         }
 
         #endregion

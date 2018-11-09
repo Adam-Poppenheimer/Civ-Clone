@@ -192,6 +192,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<Promotion> _localPromotions;
 
+        public bool ProvidesFreeTech {
+            get { return _providesFreeTech; }
+        }
+        [SerializeField] private bool _providesFreeTech;
+
         #endregion
 
         #endregion

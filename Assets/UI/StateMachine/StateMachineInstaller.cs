@@ -10,6 +10,7 @@ using Zenject;
 using Assets.UI.Common;
 using Assets.UI.HexMap;
 using Assets.UI.SocialPolicies;
+using Assets.UI.Technology;
 
 namespace Assets.UI.StateMachine {
 
@@ -23,6 +24,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private GameCamera            GameCamera;
         [SerializeField] private CellHoverDisplay      CellHoverDisplay;
         [SerializeField] private SocialPoliciesDisplay SocialPoliciesDisplay;
+        [SerializeField] private TechTreeDisplay       TechTreeDisplay;
 
         #endregion
 
@@ -39,9 +41,11 @@ namespace Assets.UI.StateMachine {
                 .WithId("Options Display")
                 .FromInstance(OptionsDisplay);
 
-            Container.Bind<IGameCamera>          ().To<GameCamera>().FromInstance(GameCamera);
-            Container.Bind<CellHoverDisplay>     ()                 .FromInstance(CellHoverDisplay);
-            Container.Bind<SocialPoliciesDisplay>()                 .FromInstance(SocialPoliciesDisplay);
+            Container.Bind<IGameCamera>().To<GameCamera>().FromInstance(GameCamera);
+
+            Container.Bind<CellHoverDisplay>     ().FromInstance(CellHoverDisplay);
+            Container.Bind<SocialPoliciesDisplay>().FromInstance(SocialPoliciesDisplay);
+            Container.Bind<TechTreeDisplay>      ().FromInstance(TechTreeDisplay);
 
             Container.Bind<UIStateMachineBrain>().AsSingle();
 

@@ -33,7 +33,6 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
 
-        [SerializeField] private TechTreeDisplay                 TechTreeDisplay;
         [SerializeField] private SpecialtyResourceSummaryDisplay SpecialtyResourceSummaryDisplay;
 
         [SerializeField] private List<UnitDisplayBase> RangedAttackStateDisplays;
@@ -45,6 +44,7 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private RectTransform ProposalDisplay;
         [SerializeField] private RectTransform DealsReceivedDisplay;
         [SerializeField] private RectTransform DeclareWarDisplay;
+        [SerializeField] private RectTransform FreeTechsDisplay;
 
         #endregion
 
@@ -60,7 +60,6 @@ namespace Assets.UI.StateMachine {
             Container.Bind<List<CivilizationDisplayBase>>().FromInstance(AllCivilizationDisplays);
             Container.Bind<List<UnitDisplayBase>>        ().FromInstance(AllUnitDisplays);
 
-            Container.Bind<TechTreeDisplay>                ().FromInstance(TechTreeDisplay);
             Container.Bind<SpecialtyResourceSummaryDisplay>().FromInstance(SpecialtyResourceSummaryDisplay);
 
             Container.Bind<List<RectTransform>>  ().WithId("Play Mode Default Panels")    .FromInstance(PlayModeDefaultPanels);
@@ -70,6 +69,7 @@ namespace Assets.UI.StateMachine {
             Container.Bind<RectTransform>        ().WithId("Proposal Display")            .FromInstance(ProposalDisplay);
             Container.Bind<RectTransform>        ().WithId("Deals Received Display")      .FromInstance(DealsReceivedDisplay);
             Container.Bind<RectTransform>        ().WithId("Declare War Display")         .FromInstance(DeclareWarDisplay);
+            Container.Bind<RectTransform>        ().WithId("Free Techs Display")          .FromInstance(FreeTechsDisplay);
         }
 
         #endregion
