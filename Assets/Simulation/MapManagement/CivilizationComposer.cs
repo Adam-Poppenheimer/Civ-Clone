@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +20,15 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private ICivilizationFactory  CivilizationFactory;
-        private ITechCanon            TechCanon;
-        private IGameCore             GameCore;
-        private ISocialPolicyComposer PolicyComposer;
-        private IExplorationCanon     ExplorationCanon;
-        private IHexGrid              Grid;
+        private ICivilizationFactory                      CivilizationFactory;
+        private ITechCanon                                TechCanon;
+        private IGameCore                                 GameCore;
+        private ISocialPolicyComposer                     PolicyComposer;
+        private IExplorationCanon                         ExplorationCanon;
+        private IHexGrid                                  Grid;
 
-        private List<ITechDefinition> AvailableTechs;
+        private List<ITechDefinition>                     AvailableTechs;
+        private ReadOnlyCollection<ICivilizationTemplate> AvailableCivTemplates;
 
         #endregion
 
@@ -36,15 +38,17 @@ namespace Assets.Simulation.MapManagement {
         public CivilizationComposer(
             ICivilizationFactory civilizationFactory, ITechCanon techCanon, IGameCore gameCore,
             ISocialPolicyComposer policyComposer, IExplorationCanon explorationCanon, IHexGrid grid,
-            [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs
+            [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
+            ReadOnlyCollection<ICivilizationTemplate> availableCivTemplates
         ) {
-            CivilizationFactory = civilizationFactory;
-            TechCanon           = techCanon;
-            GameCore            = gameCore;
-            PolicyComposer      = policyComposer;
-            ExplorationCanon    = explorationCanon;
-            Grid                = grid;
-            AvailableTechs      = availableTechs;
+            CivilizationFactory   = civilizationFactory;
+            TechCanon             = techCanon;
+            GameCore              = gameCore;
+            PolicyComposer        = policyComposer;
+            ExplorationCanon      = explorationCanon;
+            Grid                  = grid;
+            AvailableTechs        = availableTechs;
+            AvailableCivTemplates = availableCivTemplates;
         }
 
         #endregion
@@ -63,8 +67,7 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
                 var civData = new SerializableCivilizationData() {
-                    Name             = civilization.Name,
-                    Color            = civilization.Color,
+                    TemplateName     = civilization.Template.Name,
                     GoldStockpile    = civilization.GoldStockpile,
                     CultureStockpile = civilization.CultureStockpile,
                     DiscoveredTechs  = TechCanon.GetTechsDiscoveredByCiv(civilization).Select(tech => tech.Name).ToList(),
@@ -101,14 +104,16 @@ namespace Assets.Simulation.MapManagement {
                 mapData.Civilizations.Add(civData);
             }
 
-            mapData.ActiveCivilization = GameCore.ActiveCivilization.Name;
+            mapData.ActiveCivilization = GameCore.ActiveCivilization.Template.Name;
         }
 
         public void DecomposeCivilizations(SerializableMapData mapData) {
             foreach(var civData in mapData.Civilizations) {
-                var newCiv = CivilizationFactory.Create(civData.Name, civData.Color);
+                var civTemplate = AvailableCivTemplates.Where(template => template.Name.Equals(civData.TemplateName)).FirstOrDefault();
 
-                newCiv.GoldStockpile = civData.GoldStockpile;
+                var newCiv = CivilizationFactory.Create(civTemplate);
+
+                newCiv.GoldStockpile    = civData.GoldStockpile;
                 newCiv.CultureStockpile = civData.CultureStockpile;
 
                 PolicyComposer.DecomposePoliciesIntoCiv(civData.SocialPolicies, newCiv);
@@ -161,7 +166,7 @@ namespace Assets.Simulation.MapManagement {
             }
 
             GameCore.ActiveCivilization = CivilizationFactory.AllCivilizations.Where(
-                civ => civ.Name.Equals(mapData.ActiveCivilization)
+                civ => civ.Template.Name.Equals(mapData.ActiveCivilization)
             ).FirstOrDefault();
         }
 

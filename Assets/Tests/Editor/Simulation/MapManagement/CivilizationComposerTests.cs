@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -30,9 +31,10 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IExplorationCanon>     MockExplorationCanon;
         private Mock<IHexGrid>              MockGrid;
 
-        private List<ITechDefinition> AvailableTechs   = new List<ITechDefinition>();
-        private List<ICivilization>   AllCivilizations = new List<ICivilization>();
-        private List<IHexCell>        AllCells         = new List<IHexCell>();
+        private List<ITechDefinition>       AvailableTechs        = new List<ITechDefinition>();
+        private List<ICivilization>         AllCivilizations      = new List<ICivilization>();
+        private List<IHexCell>              AllCells              = new List<IHexCell>();
+        private List<ICivilizationTemplate> AvailableCivTemplates = new List<ICivilizationTemplate>();
         
 
         #endregion
@@ -43,9 +45,10 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [SetUp]
         public void CommonInstall() {
-            AvailableTechs  .Clear();
-            AllCivilizations.Clear();
-            AllCells        .Clear();
+            AvailableTechs       .Clear();
+            AllCivilizations     .Clear();
+            AllCells             .Clear();
+            AvailableCivTemplates.Clear();
 
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
@@ -57,9 +60,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
             MockCivilizationFactory.Setup(
-                factory => factory.Create(It.IsAny<string>(), It.IsAny<Color>())
-            ).Returns<string, Color>(
-                (name, color) => BuildCivilization(name, color, 0, 0)
+                factory => factory.Create(It.IsAny<ICivilizationTemplate>())
+            ).Returns<ICivilizationTemplate>(
+                template => BuildCivilization(template, 0, 0)
             );
 
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
@@ -72,6 +75,8 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IHexGrid>             ().FromInstance(MockGrid               .Object);
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
+
+            Container.Bind<ReadOnlyCollection<ICivilizationTemplate>>().FromInstance(AvailableCivTemplates.AsReadOnly());
 
             Container.Bind<CivilizationComposer>().AsSingle();
         }
@@ -108,8 +113,11 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsIntrinsicCivilizationData() {
-            var civOne = BuildCivilization("Civ One", Color.black, 1, 10);
-            var civTwo = BuildCivilization("Civ Two", Color.white, 2, 20);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+            var templateTwo = BuildCivTemplate("Civ Two", Color.white);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
+            var civTwo = BuildCivilization(templateTwo, 2, 20);
 
             MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
@@ -120,16 +128,14 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.ComposeCivilizations(mapData);
 
             var dataLikeCivOne = mapData.Civilizations.Where(
-                civ => civ.Name          .Equals(civOne.Name)  &&
-                       ((Color)civ.Color).Equals(civOne.Color) &&
-                       civ.GoldStockpile    == civOne.GoldStockpile &&
+                civ => civ.TemplateName.Equals(civOne.Template.Name)   &&
+                       civ.GoldStockpile    == civOne.GoldStockpile    &&
                        civ.CultureStockpile == civOne.CultureStockpile
             );
 
             var dataLikeCivTwo = mapData.Civilizations.Where(
-                civ => civ.Name          .Equals(civTwo.Name)  &&
-                       ((Color)civ.Color).Equals(civTwo.Color) &&
-                       civ.GoldStockpile    == civTwo.GoldStockpile &&
+                civ => civ.TemplateName.Equals(templateTwo.Name)       &&
+                       civ.GoldStockpile    == civTwo.GoldStockpile    &&
                        civ.CultureStockpile == civTwo.CultureStockpile
             );
 
@@ -139,7 +145,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsTechQueue() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             var queuedTechOne = BuildTechDefinition("Queued One");
             var queuedTechTwo = BuildTechDefinition("Queued Two");
@@ -166,7 +174,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsDiscoveredTechs() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             var discoveredTechs = new List<ITechDefinition>() {
                 BuildTechDefinition("Discovered One"), BuildTechDefinition("Discovered Two")
@@ -193,7 +203,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsProgressOnAvailableTechs() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             var techOne   = BuildTechDefinition("Tech One",   1);
             var techTwo   = BuildTechDefinition("Tech Two",   2);
@@ -234,7 +246,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_CallsIntoPolicyComposerForPolicyData() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
@@ -252,7 +266,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsActiveCivilization() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0, 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
@@ -267,7 +283,9 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         [Test]
         public void ComposeCivilizations_RecordsExploredCells() {
-            var civOne = BuildCivilization("Civ One", Color.black, 0 , 0);
+            var templateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(templateOne, 1, 10);
 
             MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
@@ -293,29 +311,32 @@ namespace Assets.Tests.Simulation.MapManagement {
 
 
         [Test]
-        public void DecomposeCivilizations_CallsIntoFactoryWithNameAndColor() {
+        public void DecomposeCivilizations_CallsIntoFactoryWithTemplate() {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", Color = Color.white
+                        TemplateName = "Template One"
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", Color = Color.red
+                        TemplateName = "Template Two"
                     }
                 }
             };
+
+            var templateOne = BuildCivTemplate("Template One", Color.white);
+            var templateTwo = BuildCivTemplate("Template Two", Color.red);
 
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
             MockCivilizationFactory.Verify(
-                factory => factory.Create("Civ One", Color.white), Times.Once,
+                factory => factory.Create(templateOne), Times.Once,
                 "CivFactory did not receive the expected call to create Civ One"
             );
 
             MockCivilizationFactory.Verify(
-                factory => factory.Create("Civ Two", Color.red), Times.Once,
+                factory => factory.Create(templateTwo), Times.Once,
                 "CivFactory did not receive the expected call to create Civ Two"
             );
         }
@@ -325,20 +346,23 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", GoldStockpile = 1, CultureStockpile = 10
+                        TemplateName = "Template One", GoldStockpile = 1, CultureStockpile = 10
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", GoldStockpile = 2, CultureStockpile = 20
+                        TemplateName = "Template Two", GoldStockpile = 2, CultureStockpile = 20
                     }
                 }
             };
+
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.red);
 
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
-            var civOne = AllCivilizations.Where(civ => civ.Name.Equals("Civ One")).First();
-            var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
+            var civOne = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template One")).First();
+            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
 
             Assert.AreEqual(1,  civOne.GoldStockpile,    "CivOne.GoldStockpile has an unexpected value");
             Assert.AreEqual(10, civOne.CultureStockpile, "CivOne.CultureStockpile has an unexpected value");
@@ -355,10 +379,10 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", TechQueue = civOneQueue
+                        TemplateName = "Template One", TechQueue = civOneQueue
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", TechQueue = civTwoQueue
+                        TemplateName = "Template Two", TechQueue = civTwoQueue
                     }
                 }
             };
@@ -367,12 +391,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             var techTwo   = BuildTechDefinition("Tech Two");
             var techThree = BuildTechDefinition("Tech Three");
 
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.red);
+
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
-            var civOne = AllCivilizations.Where(civ => civ.Name.Equals("Civ One")).First();
-            var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
+            var civOne = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template One")).First();
+            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
 
             CollectionAssert.AreEqual(
                 new List<ITechDefinition>() { techOne, techThree, techTwo },
@@ -392,12 +419,12 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", DiscoveredTechs = new List<string>() {
+                        TemplateName = "Template One", DiscoveredTechs = new List<string>() {
                             "Tech One", "Tech Two"
                         }
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", DiscoveredTechs = new List<string>() {
+                        TemplateName = "Template Two", DiscoveredTechs = new List<string>() {
                             "Tech Two", "Tech Three"
                         }
                     }
@@ -408,12 +435,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             var techTwo   = BuildTechDefinition("Tech Two");
             var techThree = BuildTechDefinition("Tech Three");
 
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.black);
+
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
-            var civOne = AllCivilizations.Where(civ => civ.Name.Equals("Civ One")).First();
-            var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
+            var civOne = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template One")).First();
+            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
 
             MockTechCanon.Verify(
                 canon => canon.SetTechAsDiscoveredForCiv(techOne, civOne),
@@ -441,12 +471,12 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", ProgressOnTechs = new Dictionary<string, int>() {
+                        TemplateName = "Template One", ProgressOnTechs = new Dictionary<string, int>() {
                             { "Tech One", 1 }, { "Tech Two", 2 },
                         }
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", ProgressOnTechs = new Dictionary<string, int>() {
+                        TemplateName = "Template Two", ProgressOnTechs = new Dictionary<string, int>() {
                             { "Tech Two", 20 }, { "Tech Three", 30 },
                         }
                     }
@@ -457,21 +487,24 @@ namespace Assets.Tests.Simulation.MapManagement {
             var techTwo   = BuildTechDefinition("Tech Two");
             var techThree = BuildTechDefinition("Tech Three");
 
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.red);
+
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
-            var civOne = AllCivilizations.Where(civ => civ.Name.Equals("Civ One")).First();
-            var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
+            var civOne = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template One")).First();
+            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
 
             MockTechCanon.Verify(
                 canon => canon.SetProgressOnTechByCiv(techOne, civOne, 1),
-                Times.Once, "SetProgressOnTechByCiv was not calld as expected between CivOne and TechOne"
+                Times.Once, "SetProgressOnTechByCiv was not called as expected between CivOne and TechOne"
             );
 
             MockTechCanon.Verify(
                 canon => canon.SetProgressOnTechByCiv(techTwo, civOne, 2),
-                Times.Once, "SetProgressOnTechByCiv was not calld as expected between CivOne and TechTwo"
+                Times.Once, "SetProgressOnTechByCiv was not called as expected between CivOne and TechTwo"
             );
 
             MockTechCanon.Verify(
@@ -493,13 +526,16 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One", SocialPolicies = policyDataOne
+                        TemplateName = "Template One", SocialPolicies = policyDataOne
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two", SocialPolicies = policyDataTwo
+                        TemplateName = "Template Two", SocialPolicies = policyDataTwo
                     }
                 }
             };
+
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.red);
 
             var civComposer = Container.Resolve<CivilizationComposer>();
 
@@ -507,7 +543,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockPolicyComposer.Verify(
                 composer => composer.DecomposePoliciesIntoCiv(
-                    policyDataOne, It.Is<ICivilization>(civ => civ.Name.Equals("Civ One"))
+                    policyDataOne, It.Is<ICivilization>(civ => civ.Template.Name.Equals("Template One"))
                 ),
                 Times.Once,
                 "DecomposePoliciesIntoCiv not called as expected on anticipated civOne and policyDataOne"
@@ -515,7 +551,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockPolicyComposer.Verify(
                 composer => composer.DecomposePoliciesIntoCiv(
-                    policyDataTwo, It.Is<ICivilization>(civ => civ.Name.Equals("Civ Two"))
+                    policyDataTwo, It.Is<ICivilization>(civ => civ.Template.Name.Equals("Template Two"))
                 ),
                 Times.Once,
                 "DecomposePoliciesIntoCiv not called as expected on anticipated civTwo and policyDataTwo"
@@ -527,20 +563,23 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One"
+                        TemplateName = "Template One"
                     },
                     new SerializableCivilizationData() {
-                        Name = "Civ Two"
+                        TemplateName = "Template Two"
                     }
                 },
-                ActiveCivilization = "Civ Two"
+                ActiveCivilization = "Template Two"
             };
+
+            BuildCivTemplate("Template One", Color.white);
+            BuildCivTemplate("Template Two", Color.red);
 
             var composer = Container.Resolve<CivilizationComposer>();
 
             composer.DecomposeCivilizations(mapData);
 
-            var civTwo = AllCivilizations.Where(civ => civ.Name.Equals("Civ Two")).First();
+            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
 
             MockGameCore.VerifySet(core => core.ActiveCivilization = civTwo);
         }
@@ -554,14 +593,16 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
                     new SerializableCivilizationData() {
-                        Name = "Civ One",
+                        TemplateName = "Template One",
                         ExploredCells = new List<HexCoordinates>() {
                             new HexCoordinates(1, 1), new HexCoordinates(3, 3)
                         }
                     }
                 },
-                ActiveCivilization = "Civ One"
+                ActiveCivilization = "Template One"
             };
+
+            BuildCivTemplate("Template One", Color.white);
 
             var composer = Container.Resolve<CivilizationComposer>();
 
@@ -589,14 +630,13 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         private ICivilization BuildCivilization(
-            string name, Color color, int goldStockpile, int cultureStockpile
+            ICivilizationTemplate template, int goldStockpile, int cultureStockpile
         ){
             var mockCiv = new Mock<ICivilization>();
 
             mockCiv.SetupAllProperties();
 
-            mockCiv.Setup(civ => civ.Name)     .Returns(name);
-            mockCiv.Setup(civ => civ.Color)    .Returns(color);
+            mockCiv.Setup(civ => civ.Template) .Returns(template);
             mockCiv.Setup(civ => civ.TechQueue).Returns(new Queue<ITechDefinition>());
 
             var newCiv = mockCiv.Object;
@@ -607,6 +647,19 @@ namespace Assets.Tests.Simulation.MapManagement {
             AllCivilizations.Add(newCiv);
 
             return newCiv;
+        }
+
+        private ICivilizationTemplate BuildCivTemplate(string name, Color color) {
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.Name) .Returns(name);
+            mockTemplate.Setup(template => template.Color).Returns(color);
+
+            var newTemplate = mockTemplate.Object;
+
+            AvailableCivTemplates.Add(newTemplate);
+
+            return newTemplate;
         }
 
         private ITechDefinition BuildTechDefinition(string name, int progress = 0) {

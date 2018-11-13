@@ -53,9 +53,9 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void ComposeCapitalCities_AssignsCapitalCoordinatesToCorrespondingCivData() {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
-                    new SerializableCivilizationData() { Name = "Civ One"   },
-                    new SerializableCivilizationData() { Name = "Civ Two"   },
-                    new SerializableCivilizationData() { Name = "Civ Three" }
+                    new SerializableCivilizationData() { TemplateName = "Civ One"   },
+                    new SerializableCivilizationData() { TemplateName = "Civ Two"   },
+                    new SerializableCivilizationData() { TemplateName = "Civ Three" }
                 }
             };
 
@@ -83,9 +83,9 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void DecomposeCapitalCities_AssignsCapitalCityFromCorrespondingCoordinatesInCivData() {
             var mapData = new SerializableMapData() {
                 Civilizations = new List<SerializableCivilizationData>() {
-                    new SerializableCivilizationData() { Name = "Civ One",   CapitalLocation = new HexCoordinates(1, 1) },
-                    new SerializableCivilizationData() { Name = "Civ Two",   CapitalLocation = new HexCoordinates(2, 2) },
-                    new SerializableCivilizationData() { Name = "Civ Three", CapitalLocation = new HexCoordinates(3, 3) }
+                    new SerializableCivilizationData() { TemplateName = "Civ One",   CapitalLocation = new HexCoordinates(1, 1) },
+                    new SerializableCivilizationData() { TemplateName = "Civ Two",   CapitalLocation = new HexCoordinates(2, 2) },
+                    new SerializableCivilizationData() { TemplateName = "Civ Three", CapitalLocation = new HexCoordinates(3, 3) }
                 }
             };
 
@@ -140,8 +140,12 @@ namespace Assets.Tests.Simulation.MapManagement {
         private ICivilization BuildCiv(string name, ICity capital) {
             var mockCiv = new Mock<ICivilization>();
 
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.Name).Returns(name);
+
             mockCiv.Name = name;
-            mockCiv.Setup(civ => civ.Name).Returns(name);
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
 
             var newCiv = mockCiv.Object;
 

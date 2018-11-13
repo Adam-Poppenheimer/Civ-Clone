@@ -660,10 +660,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             CellSignals = new HexCellSignals();
 
-            Container.Bind<IHexGrid>().FromInstance(MockGrid.Object);
+            Container.Bind<IHexGrid>      ().FromInstance(MockGrid.Object);
             Container.Bind<HexCellSignals>().FromInstance(CellSignals);
-
-            Container.Bind<HexCellSignals>().AsSingle();
 
             Container.Bind<RiverCanon>().AsSingle();
         }

@@ -76,7 +76,7 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityFactory
 
-        public ICity Create(IHexCell location, ICivilization owner){
+        public ICity Create(IHexCell location, ICivilization owner, string name) {
             if(location == null) {
                 throw new ArgumentNullException("location");
             }else if(owner == null) {
@@ -87,7 +87,7 @@ namespace Assets.Simulation.Cities {
             Container.InjectGameObject(newCityGameObject);
 
             newCityGameObject.transform.position = location.AbsolutePosition;
-            newCityGameObject.name = string.Format("City {0}", allCities.Count);
+            newCityGameObject.name = string.Format("{0} (City)", name);
             newCityGameObject.transform.SetParent(CityContainer, true);
 
             var newCity = newCityGameObject.GetComponent<City>();

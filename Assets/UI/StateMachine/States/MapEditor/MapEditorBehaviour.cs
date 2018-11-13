@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -19,14 +20,15 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain  Brain;
-        private IHexGrid             Grid;
-        private IMapComposer         MapComposer;
-        private ICivilizationFactory CivFactory;
-        private IVisibilityResponder VisibilityResponder;
-        private IVisibilityCanon     VisibilityCanon;
-        private IExplorationCanon    ExplorationCanon;
-        private ICivDefeatExecutor   CivDefeatExecutor;
+        private UIStateMachineBrain                       Brain;
+        private IHexGrid                                  Grid;
+        private IMapComposer                              MapComposer;
+        private ICivilizationFactory                      CivFactory;
+        private IVisibilityResponder                      VisibilityResponder;
+        private IVisibilityCanon                          VisibilityCanon;
+        private IExplorationCanon                         ExplorationCanon;
+        private ICivDefeatExecutor                        CivDefeatExecutor;
+        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
 
         #endregion
 
@@ -37,7 +39,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            ICivDefeatExecutor civDefeatExecutor
+            ICivDefeatExecutor civDefeatExecutor, ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -47,6 +49,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityCanon     = visibilityCanon;
             ExplorationCanon    = explorationCanon;
             CivDefeatExecutor   = civDefeatExecutor;
+            CivTemplates        = civTemplates;
         }
 
         #region from StateMachineBehaviour
@@ -68,7 +71,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Grid.Build(4, 3);
 
-            CivFactory.Create("Player Civilization", Color.red);
+            CivFactory.Create(CivTemplates[0]);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

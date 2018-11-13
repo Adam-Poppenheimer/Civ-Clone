@@ -145,7 +145,11 @@ namespace Assets.Tests.Simulation.Units {
         private ICivilization BuildCivilization(string name) {
             var mockCiv = new Mock<ICivilization>();
 
-            mockCiv.Setup(civ => civ.Name).Returns(name);
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.Name).Returns(name);
+
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
 
             return mockCiv.Object;
         }
