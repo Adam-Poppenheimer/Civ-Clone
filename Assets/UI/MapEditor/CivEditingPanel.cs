@@ -40,7 +40,7 @@ namespace Assets.UI.MapEditor {
                 return;
             }
 
-            NameField.text = CivToEdit.Name;
+            NameField.text = CivToEdit.Template.Name;
 
             GoldStockpileField.text    = CivToEdit.GoldStockpile   .ToString();
             CultureStockpileField.text = CivToEdit.CultureStockpile.ToString();

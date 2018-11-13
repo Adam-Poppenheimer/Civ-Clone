@@ -68,7 +68,7 @@ namespace Assets.Simulation.MapManagement {
                 var unitData = new SerializableUnitData() {
                     Location         = unitLocation.Coordinates,
                     Template         = unit.Template.name,
-                    Owner            = unitOwner.Name,
+                    Owner            = unitOwner.Template.Name,
                     CurrentMovement  = unit.CurrentMovement,
                     Hitpoints        = unit.CurrentHitpoints,
                     CurrentPath      = unit.CurrentPath != null ? unit.CurrentPath.Select(cell => cell.Coordinates).ToList() : null,
@@ -86,7 +86,7 @@ namespace Assets.Simulation.MapManagement {
             foreach(var unitData in mapData.Units) {
                 var unitLocation    = Grid.GetCellAtCoordinates(unitData.Location);
                 var templateToBuild = AvailableUnitTemplates.Where(template => template.name.Equals(unitData.Template)).First();
-                var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(unitData.Owner)).First();    
+                var unitOwner       = CivilizationFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(unitData.Owner)).First();    
                 var promotionTree   = PromotionTreeComposer.DecomposePromotionTree(unitData.PromotionTree);            
 
                 var newUnit = UnitFactory.BuildUnit(unitLocation, templateToBuild, unitOwner, promotionTree);

@@ -141,7 +141,9 @@ namespace Assets.UI.Cities {
             return CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay) == GameCore.ActiveCivilization;
         }
 
-        private void DisplayData() {   
+        private void DisplayData() {
+            NameField.text = ObjectToDisplay.Name;
+
             DisplayGrowthData();
             
             if(ObjectToDisplay.ActiveProject != null) {

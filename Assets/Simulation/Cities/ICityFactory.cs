@@ -12,7 +12,7 @@ namespace Assets.Simulation.Cities {
     /// The base interface for all city factories, which construct cities belonging to
     /// a particular city on a particular cell.
     /// </summary>
-    public interface ICityFactory : IFactory<IHexCell, ICivilization, ICity> {
+    public interface ICityFactory : IFactory<IHexCell, ICivilization, string, ICity> {
 
         #region properties
 

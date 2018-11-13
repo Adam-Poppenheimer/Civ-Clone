@@ -113,7 +113,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            var newCity = factory.Create(tile, civilization);
+            var newCity = factory.Create(tile, civilization, "City One");
 
             Assert.AreEqual(1, newCity.Population, "newCity.Population has an unexpected value");
         }
@@ -128,7 +128,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            var newCity = factory.Create(cell, civilization);
+            var newCity = factory.Create(cell, civilization, "City One");
 
             MockCityLocationCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(newCity, cell), Times.Once,
@@ -149,7 +149,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            var cityWithValidNeighbors = factory.Create(location, civilization);
+            var cityWithValidNeighbors = factory.Create(location, civilization, "City One");
 
             MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(location, cityWithValidNeighbors), Times.AtLeastOnce,
                 "CityFactory failed to call TilePossessionCanon.CanChangeOwnerOfPossession on its location");
@@ -167,7 +167,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var invalidNeighbors = BuildNeighborsFor(location, 3, false);
             
-            var cityWithInvalidNeighbors = factory.Create(location, civilization);
+            var cityWithInvalidNeighbors = factory.Create(location, civilization, "City One");
 
             foreach(var neighbor in invalidNeighbors) {
                 MockCellPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(neighbor, cityWithInvalidNeighbors), Times.AtLeastOnce,
@@ -192,7 +192,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockCityPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<ICity>(), civilization))
                 .Returns(true);
 
-            var nonExceptionalCity = factory.Create(tile, civilization);
+            var nonExceptionalCity = factory.Create(tile, civilization, "City One");
 
             MockCityPossessionCanon.Verify(canon => canon.CanChangeOwnerOfPossession(nonExceptionalCity, civilization),
                 Times.AtLeastOnce, "CityFactory did not check CityPossessionCanon on nonExceptionalCity as expected");
@@ -203,7 +203,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockCityPossessionCanon.Setup(canon => canon.CanChangeOwnerOfPossession(It.IsAny<ICity>(), civilization))
                 .Returns(false);
 
-            Assert.Throws<CityCreationException>(() => factory.Create(tile, civilization),
+            Assert.Throws<CityCreationException>(() => factory.Create(tile, civilization, "City One"),
                 "CityFactory.Create failed to throw when assignment of the " + 
                 "newly created city to the argued civilization was impossible"
             );
@@ -220,7 +220,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            var newCity = factory.Create(tile, civilization);
+            var newCity = factory.Create(tile, civilization, "City One");
 
             Assert.AreEqual(YieldFocusType.TotalYield, newCity.YieldFocus, "newCity.ResourceFocus has an unexpected value");
 
@@ -241,7 +241,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            var newCity = factory.Create(tile, civilization);
+            var newCity = factory.Create(tile, civilization, "City One");
 
             CollectionAssert.Contains(factory.AllCities, newCity, "AllCities does not contain the newly created factory");
         }
@@ -255,10 +255,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null, civilization),
+            Assert.Throws<ArgumentNullException>(() => factory.Create(null, civilization, "City One"),
                 "CityFactory.Create failed to throw on a null location argument");
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(tile, null),
+            Assert.Throws<ArgumentNullException>(() => factory.Create(tile, null, "City One"),
                 "CityFactory.Create failed to throw on a null owner argument");
         }
 
@@ -272,7 +272,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var factory = Container.Resolve<CityFactory>();
 
-            Assert.Throws<CityCreationException>(() => factory.Create(tile, civilization),
+            Assert.Throws<CityCreationException>(() => factory.Create(tile, civilization, "City One"),
                 "CityFactory.Create failed to throw on a tile on which a new city cannot be located");
         }
 

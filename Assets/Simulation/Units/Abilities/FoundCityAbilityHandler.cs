@@ -16,13 +16,11 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
-        private ICityValidityLogic CityValidityLogic;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private ICityFactory CityFactory;
-
+        private ICityValidityLogic                            CityValidityLogic;
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private ICityFactory                                  CityFactory;
         private IPossessionRelationship<ICivilization, IUnit> UnitOwnershipCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
 
         #endregion
 
@@ -31,12 +29,14 @@ namespace Assets.Simulation.Units.Abilities {
         [Inject]
         public FoundCityAbilityHandler(ICityValidityLogic cityValidityLogic,
             IUnitPositionCanon unitPositionCanon, ICityFactory cityFactory,
-            IPossessionRelationship<ICivilization, IUnit> unitOwnershipCanon
+            IPossessionRelationship<ICivilization, IUnit> unitOwnershipCanon,
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon
         ){
-            CityValidityLogic  = cityValidityLogic;
-            UnitPositionCanon  = unitPositionCanon;
-            CityFactory        = cityFactory;
-            UnitOwnershipCanon = unitOwnershipCanon;
+            CityValidityLogic   = cityValidityLogic;
+            UnitPositionCanon   = unitPositionCanon;
+            CityFactory         = cityFactory;
+            UnitOwnershipCanon  = unitOwnershipCanon;
+            CityPossessionCanon = cityPossessionCanon;
         }
 
         #endregion
@@ -58,7 +58,12 @@ namespace Assets.Simulation.Units.Abilities {
 
         public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
             if(CanHandleAbilityOnUnit(ability, unit)) {
-                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), UnitOwnershipCanon.GetOwnerOfPossession(unit));              
+                var unitOwner = UnitOwnershipCanon.GetOwnerOfPossession(unit);
+                var citiesOfOwner = CityPossessionCanon.GetPossessionsOfOwner(unitOwner);
+
+                var cityName = unitOwner.Template.GetNextName(citiesOfOwner);
+
+                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), unitOwner, cityName);              
 
                 return new AbilityExecutionResults(true, null);
             }else {

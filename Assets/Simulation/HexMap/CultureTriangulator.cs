@@ -75,7 +75,7 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.TriangulateEdgeStrip(
                     data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
                     data.RightToCenterEdge, MeshBuilder.Weights2, data.Right.Index,  1f, data.Right .RequiresYPerturb,
-                    owner.Color, MeshBuilder.Culture
+                    owner.Template.Color, MeshBuilder.Culture
                 );
             }
 
@@ -124,7 +124,7 @@ namespace Assets.Simulation.HexMap {
             MeshBuilder.TriangulateEdgeStrip(
                 data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
                 edgeTwo,                weights2,             data.Right .Index, v2, false,
-                owner.Color, MeshBuilder.Culture
+                owner.Template.Color, MeshBuilder.Culture
             );
 
             for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
@@ -139,14 +139,14 @@ namespace Assets.Simulation.HexMap {
                 MeshBuilder.TriangulateEdgeStrip(
                     edgeOne, weights1, data.Center.Index, v1, false,
                     edgeTwo, weights2, data.Right .Index, v2, false,
-                    owner.Color, MeshBuilder.Culture
+                    owner.Template.Color, MeshBuilder.Culture
                 );
             }
 
             MeshBuilder.TriangulateEdgeStrip(
                 edgeTwo,                weights2,             data.Center.Index, v2, false,
                 data.RightToCenterEdge, MeshBuilder.Weights2, data.Right .Index, 1f, data.Right.RequiresYPerturb,
-                owner.Color, MeshBuilder.Culture
+                owner.Template.Color, MeshBuilder.Culture
             );
         }
 
@@ -223,7 +223,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner, MeshBuilder.Weights1, new Vector2(0f, alphaMin),
                 NoiseGenerator.Perturb(vertex3), weights3,        new Vector2(0f, alpha3),
                 NoiseGenerator.Perturb(vertex4), weights4,        new Vector2(0f, alpha4),
-                owner.Color, indices, MeshBuilder.Culture
+                owner.Template.Color, indices, MeshBuilder.Culture
             );
 
             for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
@@ -248,7 +248,7 @@ namespace Assets.Simulation.HexMap {
                     vertex2, weights2, new Vector2(0f, alpha2),
                     vertex3, weights3, new Vector2(0f, alpha3),
                     vertex4, weights4, new Vector2(0f, alpha4),
-                    owner.Color, indices, MeshBuilder.Culture
+                    owner.Template.Color, indices, MeshBuilder.Culture
                 );
             }
 
@@ -257,7 +257,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(vertex4), weights4,             new Vector2(0f, alpha4),
                 data.PerturbedLeftCorner,        MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
                 data.PerturbedRightCorner,       MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
-                owner.Color, indices, MeshBuilder.Culture
+                owner.Template.Color, indices, MeshBuilder.Culture
             );
         }
 
@@ -302,7 +302,7 @@ namespace Assets.Simulation.HexMap {
                     data.PerturbedLeftCorner,  MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
                     data.PerturbedRightCorner, MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
                     boundary,                  boundaryWeights,      new Vector2(0f, boundaryAlpha),
-                    owner.Color, indices, MeshBuilder.Culture
+                    owner.Template.Color, indices, MeshBuilder.Culture
                 );
             }
         }
@@ -348,7 +348,7 @@ namespace Assets.Simulation.HexMap {
                     data.PerturbedLeftCorner,  MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
                     data.PerturbedRightCorner, MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
                     boundary,                  boundaryWeights,      new Vector2(0f, boundaryAlpha),
-                    owner.Color, indices, MeshBuilder.Culture
+                    owner.Template.Color, indices, MeshBuilder.Culture
                 );
             }
         }
@@ -367,7 +367,7 @@ namespace Assets.Simulation.HexMap {
                 NoiseGenerator.Perturb(begin, beginCell.RequiresYPerturb), beginWeights,    new Vector2(0f, beginAlpha),
                 vertex2,                                                   weights2,        new Vector2(0f, alpha2),
                 boundary,                                                  boundaryWeights, new Vector2(0f, boundaryAlpha),
-                owner.Color, indices, MeshBuilder.Culture
+                owner.Template.Color, indices, MeshBuilder.Culture
             );
 
             for(int i = 2; i < RenderConfig.TerraceSteps; i++) {
@@ -383,7 +383,7 @@ namespace Assets.Simulation.HexMap {
                     vertex1,  weights1,        new Vector2(0f, alpha1),
                     vertex2,  weights2,        new Vector2(0f, alpha2),
                     boundary, boundaryWeights, new Vector2(0f, boundaryAlpha),
-                    owner.Color, indices, MeshBuilder.Culture
+                    owner.Template.Color, indices, MeshBuilder.Culture
                 );
             }
 
@@ -391,7 +391,7 @@ namespace Assets.Simulation.HexMap {
                 vertex2,                                                 weights2,        new Vector2(0f, alpha2),
                 NoiseGenerator.Perturb(left, leftCell.RequiresYPerturb), leftWeights,     new Vector2(0f, leftAlpha),
                 boundary,                                                boundaryWeights, new Vector2(0f, boundaryAlpha),
-                owner.Color, indices, MeshBuilder.Culture
+                owner.Template.Color, indices, MeshBuilder.Culture
             );
         }
 
@@ -416,7 +416,7 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedCenterCorner, MeshBuilder.Weights1, new Vector2(0f, alphaMin),
                 data.PerturbedLeftCorner,   MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
                 data.PerturbedRightCorner,  MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
-                owner.Color, indices, MeshBuilder.Culture
+                owner.Template.Color, indices, MeshBuilder.Culture
             );
         }
 

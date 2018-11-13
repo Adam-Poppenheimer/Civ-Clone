@@ -83,7 +83,7 @@ namespace Assets.UI.MapEditor {
         public void UpdateActiveCiv(int optionIndex) {
             var civName = ActiveCivDropdown.options[optionIndex].text;
 
-            var newActiveCiv = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(civName)).FirstOrDefault();
+            var newActiveCiv = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(civName)).FirstOrDefault();
 
             GameCore.ActiveCivilization = newActiveCiv;
         }
@@ -124,13 +124,13 @@ namespace Assets.UI.MapEditor {
             ActiveCivDropdown.ClearOptions();
 
             List<Dropdown.OptionData> civOptions = CivFactory.AllCivilizations.Select(
-                civ => new Dropdown.OptionData(civ.Name)
+                civ => new Dropdown.OptionData(civ.Template.Name)
             ).ToList();
 
             ActiveCivDropdown.AddOptions(civOptions);
 
             var activeCivOption = ActiveCivDropdown.options.Where(
-                option => GameCore.ActiveCivilization != null ? option.text.Equals(GameCore.ActiveCivilization.Name) : false
+                option => GameCore.ActiveCivilization != null ? option.text.Equals(GameCore.ActiveCivilization.Template.Name) : false
             ).FirstOrDefault();
 
             if(activeCivOption != null) {

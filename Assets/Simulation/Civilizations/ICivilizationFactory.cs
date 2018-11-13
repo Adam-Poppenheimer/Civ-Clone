@@ -26,7 +26,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        ICivilization Create(string name, Color color);
+        ICivilization Create(ICivilizationTemplate template);
 
         void Clear();
 

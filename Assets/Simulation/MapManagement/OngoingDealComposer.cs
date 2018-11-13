@@ -39,8 +39,8 @@ namespace Assets.Simulation.MapManagement {
         public SerializableOngoingDealData ComposeOngoingDeal(IOngoingDeal ongoingDeal) {
             var retval = new SerializableOngoingDealData();
 
-            retval.Sender    = ongoingDeal.Sender.Name;
-            retval.Receiver  = ongoingDeal.Receiver.Name;
+            retval.Sender    = ongoingDeal.Sender.Template.Name;
+            retval.Receiver  = ongoingDeal.Receiver.Template.Name;
             retval.TurnsLeft = ongoingDeal.TurnsLeft;
 
             foreach(var offer in ongoingDeal.ExchangesFromSender) {
@@ -59,8 +59,8 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public IOngoingDeal DecomposeOngoingDeal(SerializableOngoingDealData ongoingDealData) {
-            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(ongoingDealData.Sender))  .FirstOrDefault();
-            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(ongoingDealData.Receiver)).FirstOrDefault();
+            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(ongoingDealData.Sender))  .FirstOrDefault();
+            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(ongoingDealData.Receiver)).FirstOrDefault();
 
             if(sender == null) {
                 throw new InvalidOperationException("Could not find a sender of the specified name");

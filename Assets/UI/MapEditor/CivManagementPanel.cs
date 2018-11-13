@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 
@@ -16,22 +17,22 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private Button CreateCivilizationButton;
-
+        [SerializeField] private Dropdown            CivTemplateDropdown;
+        [SerializeField] private Button              CreateCivilizationButton;
         [SerializeField] private CivManagementRecord RecordPrefab;
-
-        [SerializeField] private RectTransform RecordContainer;
-
-        [SerializeField] private List<Color> Colors;
+        [SerializeField] private RectTransform       RecordContainer;
 
         private List<CivManagementRecord> InstantiatedRecords = new List<CivManagementRecord>();
 
+        private ICivilizationTemplate SelectedTemplate;
 
 
 
 
-        private ICivilizationFactory CivilizationFactory;
-        private CivilizationSignals  CivSignals;
+
+        private ICivilizationFactory                      CivilizationFactory;
+        private CivilizationSignals                       CivSignals;
+        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         
         #endregion
 
@@ -39,10 +40,12 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            ICivilizationFactory civilizationFactory, CivilizationSignals civSignals
+            ICivilizationFactory civilizationFactory, CivilizationSignals civSignals,
+            ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ){
             CivilizationFactory = civilizationFactory;
             CivSignals          = civSignals;
+            CivTemplates        = civTemplates;
         }
 
         #region Unity messages
@@ -58,9 +61,15 @@ namespace Assets.UI.MapEditor {
         #endregion
 
         public void CreateNewCivilization() {
-            CivilizationFactory.Create("New Civilization", Color.gray);
+            CivilizationFactory.Create(SelectedTemplate);
 
             Refresh();
+        }
+
+        public void UpdateSelectedCivTemplate(int optionIndex) {
+            var templateName = CivTemplateDropdown.options[optionIndex].text;
+
+            SelectedTemplate = CivTemplates.Where(template => template.Name.Equals(templateName)).FirstOrDefault();
         }
 
         private void Clear() {
@@ -79,12 +88,7 @@ namespace Assets.UI.MapEditor {
 
                 newRecord.gameObject.SetActive(true);
                 newRecord.transform.SetParent(RecordContainer, false);
-
-                newRecord.NameField.text = civilization.Name;
-                newRecord.NameField.onEndEdit.AddListener(text => civilization.Name = text);
-
-                newRecord.ColorDropdown.value = Colors.FindIndex(color => color == civilization.Color);
-                newRecord.ColorDropdown.onValueChanged.AddListener(newColorIndex => civilization.Color = Colors[newColorIndex]);
+                newRecord.NameField.text = civilization.Template.Name;
 
                 var cachedCiv = civilization;
                 newRecord.EditButton.onClick.AddListener(() => CivSignals.CivSelectedSignal.OnNext(cachedCiv));
@@ -93,6 +97,23 @@ namespace Assets.UI.MapEditor {
             }
 
             CreateCivilizationButton.transform.SetAsLastSibling();
+
+            RefreshCivTemplateDropdown();
+        }
+
+        private void RefreshCivTemplateDropdown() {
+            CivTemplateDropdown.ClearOptions();
+
+            List<Dropdown.OptionData> templateOptions = CivTemplates
+                .Where (template => !CivilizationFactory.AllCivilizations.Any(civ => civ.Template == template))
+                .Select(template => new Dropdown.OptionData(template.Name))
+                .ToList();
+
+            CivTemplateDropdown.AddOptions(templateOptions);
+
+            CivTemplateDropdown.value = 0;
+
+            UpdateSelectedCivTemplate(0);
         }
 
         #endregion

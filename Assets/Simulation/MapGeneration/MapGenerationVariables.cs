@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.Civilizations;
+
 namespace Assets.Simulation.MapGeneration {
 
     public class MapGenerationVariables : IMapGenerationVariables {
@@ -17,6 +19,8 @@ namespace Assets.Simulation.MapGeneration {
         public int CivCount { get; set; }
 
         public int ContinentalLandPercentage { get; set; }
+
+        public List<ICivilizationTemplate> Civilizations { get; set; }
 
         #endregion
 

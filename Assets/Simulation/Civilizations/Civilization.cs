@@ -21,11 +21,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from ICivilization
 
-        /// <inheritdoc/>
-        public string Name { get; set; }
-
-        /// <inheritdoc/>
-        public Color Color { get; set; }
+        public ICivilizationTemplate Template { get; set; }
 
         /// <inheritdoc/>
         public int GoldStockpile    { get; set; }
@@ -40,10 +36,8 @@ namespace Assets.Simulation.Civilizations {
         #endregion
 
         private ICivilizationYieldLogic YieldLogic;
-
-        private ITechCanon TechCanon;
-
-        private CivilizationSignals Signals;
+        private ITechCanon              TechCanon;
+        private CivilizationSignals     Signals;
 
         #endregion
 
@@ -52,13 +46,11 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public void InjectDependencies(
             ICivilizationYieldLogic yieldLogic, ITechCanon techCanon,
-            CivilizationSignals signals, string name = ""
+            CivilizationSignals signals
         ){
             YieldLogic        = yieldLogic;
             TechCanon         = techCanon;
             Signals           = signals;
-
-            Name = name;
 
             TechQueue = new Queue<ITechDefinition>();
         }

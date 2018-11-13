@@ -41,14 +41,15 @@ namespace Assets.Tests.Simulation.Civilizations {
         #region tests
 
         [Test(Description = "When a civilization is created, it should be initialized with " +
-            "the argued name")]
+            "the argued template")]
         public void CivilizationCreated_NameInitialized() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            var newCivilization = factory.Create("Civilization One", Color.black);
+            var template = new Mock<ICivilizationTemplate>().Object;
 
-            Assert.AreEqual("Civilization One", newCivilization.Name,
-                "newCivilization did not have the expected name");
+            var newCivilization = factory.Create(template);
+
+            Assert.AreEqual(template, newCivilization.Template, "newCivilization did not have the expected name");
         }
         
         [Test(Description = "When a civilization is created, it should be added to the " +
@@ -56,18 +57,18 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CivilizationCreated_AddedToAllCivilizations() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            var newCivilization = factory.Create("Civilization One", Color.black);
+            var newCivilization = factory.Create(new Mock<ICivilizationTemplate>().Object);
 
             CollectionAssert.Contains(factory.AllCivilizations, newCivilization,
                 "newCivilization did not appear in CivilizationFactory.AllCivilizations");
         }
 
         [Test(Description = "CivilizationFactory.Create should throw an ArgumentNullException " +
-            "when passed a null name")]
+            "when passed a null template")]
         public void Create_ThrowsOnNullArgument() {
             var factory = Container.Resolve<CivilizationFactory>();
 
-            Assert.Throws<ArgumentNullException>(() => factory.Create(null, Color.black),
+            Assert.Throws<ArgumentNullException>(() => factory.Create(null),
                 "Create did not throw on a null name as expected");
         }
 

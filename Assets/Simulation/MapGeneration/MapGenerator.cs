@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapGeneration {
         private IStartingUnitPlacementLogic StartingUnitPlacementLogic;
         private IGridPartitionLogic         GridPartitionLogic;
         private IWaterRationalizer          WaterRationalizer;
-        private IHomelandGenerator       HomelandGenerator;
+        private IHomelandGenerator          HomelandGenerator;
         private ITemplateSelectionLogic     TemplateSelectionLogic;
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
@@ -82,7 +82,7 @@ namespace Assets.Simulation.MapGeneration {
             Grid.Build(variables.ChunkCountX, variables.ChunkCountZ);
             Profiler.EndSample();
 
-            GenerateCivs(variables.CivCount);
+            GenerateCivs(variables);
             
             Profiler.BeginSample("Generate Oceans and Continents");
             var oceansAndContinents = GenerateOceansAndContinents(template, variables);
@@ -124,11 +124,11 @@ namespace Assets.Simulation.MapGeneration {
             return originalState;
         }
 
-        private void GenerateCivs(int civCount) {
+        private void GenerateCivs(IMapGenerationVariables variables) {
             CivFactory.Clear();
 
-            for(int i = 0; i < civCount; i++) {
-                CivFactory.Create(string.Format("Civ {0}", i + 1), UnityEngine.Random.ColorHSV());
+            for(int i = 0; i < variables.CivCount; i++) {
+                CivFactory.Create(variables.Civilizations[i]);
             }
         }
 

@@ -88,13 +88,13 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region instance fields and properties
 
-        private Mock<ICityValidityLogic> MockCityValidityLogic;
-
-        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
-
-        private Mock<ICityFactory> MockCityFactory;
-
+        private Mock<ICityValidityLogic>                            MockCityValidityLogic;
+        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
+        private Mock<ICityFactory>                                  MockCityFactory;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitOwnershipCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+
+        private List<ICity> AllCities = new List<ICity>();
 
         #endregion
 
@@ -104,15 +104,22 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         [SetUp]
         public void CommonInstall() {
-            MockCityValidityLogic  = new Mock<ICityValidityLogic>();
-            MockUnitPositionCanon  = new Mock<IUnitPositionCanon>();
-            MockCityFactory        = new Mock<ICityFactory>();
-            MockUnitOwnershipCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            AllCities.Clear();
 
-            Container.Bind<ICityValidityLogic>                           ().FromInstance(MockCityValidityLogic .Object);
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon .Object);
-            Container.Bind<ICityFactory>                    ().FromInstance(MockCityFactory       .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitOwnershipCanon.Object);
+            MockCityValidityLogic   = new Mock<ICityValidityLogic>();
+            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
+            MockCityFactory         = new Mock<ICityFactory>();
+            MockUnitOwnershipCanon  = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+
+            MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<ICivilization>()))
+                                   .Returns(AllCities);
+
+            Container.Bind<ICityValidityLogic>                           ().FromInstance(MockCityValidityLogic  .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory        .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitOwnershipCanon .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
 
             Container.Bind<FoundCityAbilityHandler>().AsSingle();
         }
@@ -125,12 +132,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             "\t1. CommandRequests contains a request whose type if FoundCity\n" +
             "\t2. the tile the activating unit is on is a valid location for a city")]
         [TestCaseSource("TestCases")]
-        public bool CanHandleAbilityOnUnitTests(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
-            bool unitTileValidForCity
+        public bool CanHandleAbilityOnUnitTests(
+            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests, bool unitTileValidForCity
         ){
             var ability = BuildAbility(abilityName, commandRequests);
 
-            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization());
+            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization("City One"));
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
@@ -140,12 +147,12 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
             "but should also create a city on the location and with the owner of the argued unit")]
         [TestCaseSource("TestCases")]
-        public bool TryHandleAbilityOnUnit_CityCreatedWhenValid(string abilityName, IEnumerable<AbilityCommandRequest> commandRequests,
-            bool unitTileValidForCity
+        public bool TryHandleAbilityOnUnit_CityCreatedWhenValid(
+            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests, bool unitTileValidForCity
         ){
             var ability = BuildAbility(abilityName, commandRequests);
 
-            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization());
+            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization("City One"));
 
             var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
 
@@ -155,14 +162,19 @@ namespace Assets.Tests.Simulation.Units.Abilities {
                 MockCityFactory.Verify(
                     factory => factory.Create(
                         MockUnitPositionCanon .Object.GetOwnerOfPossession(unit),
-                        MockUnitOwnershipCanon.Object.GetOwnerOfPossession(unit)
+                        MockUnitOwnershipCanon.Object.GetOwnerOfPossession(unit),
+                        "City One"
                     ),
                     Times.Once,
                     "CityFactory.Create was not called as expected"
                 );
             }else {
-                MockCityFactory.Verify(factory => factory.Create(It.IsAny<IHexCell>(), It.IsAny<ICivilization>()),
-                    Times.Never, "CityFactory.Create was unexpectedly called");
+                MockCityFactory.Verify(
+                    factory => factory.Create(
+                        It.IsAny<IHexCell>(), It.IsAny<ICivilization>(), It.IsAny<string>()
+                    ),
+                    Times.Never, "CityFactory.Create was unexpectedly called"
+                );
             }
 
             return handleResponse.AbilityHandled;
@@ -199,8 +211,16 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             return mockCell.Object;
         }
 
-        private ICivilization BuildCivilization() {
-            return new Mock<ICivilization>().Object;
+        private ICivilization BuildCivilization(string cityName) {
+            var mockCiv = new Mock<ICivilization>();
+
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.GetNextName(It.IsAny<IEnumerable<ICity>>())).Returns(cityName);
+
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
+
+            return mockCiv.Object;
         }
 
         #endregion

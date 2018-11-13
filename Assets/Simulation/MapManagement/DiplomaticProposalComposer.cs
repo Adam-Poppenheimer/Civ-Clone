@@ -38,8 +38,8 @@ namespace Assets.Simulation.MapManagement {
         public SerializableProposalData ComposeProposal(IDiplomaticProposal proposal) {
             var retval = new SerializableProposalData();
 
-            retval.Sender   = proposal.Sender.Name;
-            retval.Receiver = proposal.Receiver.Name;
+            retval.Sender   = proposal.Sender.Template.Name;
+            retval.Receiver = proposal.Receiver.Template.Name;
 
             foreach(var offer in proposal.OfferedBySender) {
                 retval.OfferedBySender.Add(ExchangeComposer.ComposeExchange(offer));
@@ -57,8 +57,8 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public IDiplomaticProposal DecomposeProposal(SerializableProposalData proposalData) {
-            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(proposalData.Sender))  .FirstOrDefault();
-            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Name.Equals(proposalData.Receiver)).FirstOrDefault();
+            var sender   = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(proposalData.Sender))  .FirstOrDefault();
+            var receiver = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(proposalData.Receiver)).FirstOrDefault();
 
             if(sender == null) {
                 throw new InvalidOperationException("Could not find a sender of the specified name");

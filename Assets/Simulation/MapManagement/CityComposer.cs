@@ -68,8 +68,9 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var city in CityFactory.AllCities) {
                 var cityData = new SerializableCityData() {
+                    Name             = city.Name,
                     Location         = CityLocationCanon.GetOwnerOfPossession(city).Coordinates,
-                    Owner            = CityPossessionCanon.GetOwnerOfPossession(city).Name,
+                    Owner            = CityPossessionCanon.GetOwnerOfPossession(city).Template.Name,
                     Population       = city.Population,
                     FoodStockpile    = city.FoodStockpile,
                     CultureStockpile = city.CultureStockpile,
@@ -96,17 +97,17 @@ namespace Assets.Simulation.MapManagement {
         public void DecomposeCities(SerializableMapData mapData) {
             foreach(var cityData in mapData.Cities) {
 
-                var owner = CivilizationFactory.AllCivilizations.Where(civ => civ.Name.Equals(cityData.Owner)).FirstOrDefault();
+                var owner = CivilizationFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(cityData.Owner)).FirstOrDefault();
                 var location = Grid.GetCellAtCoordinates(cityData.Location);
 
-                var newCity = CityFactory.Create(location, owner);
+                var newCity = CityFactory.Create(location, owner, cityData.Name);
 
-                newCity.Population                   = cityData.Population;
-                newCity.FoodStockpile                = cityData.FoodStockpile;
-                newCity.CultureStockpile             = cityData.CultureStockpile;
-                newCity.YieldFocus                = cityData.YieldFocus;
-                newCity.CombatFacade.CurrentHitpoints       = cityData.Hitpoints;
-                newCity.CombatFacade.CurrentMovement = cityData.CurrentMovement;
+                newCity.Population                    = cityData.Population;
+                newCity.FoodStockpile                 = cityData.FoodStockpile;
+                newCity.CultureStockpile              = cityData.CultureStockpile;
+                newCity.YieldFocus                    = cityData.YieldFocus;
+                newCity.CombatFacade.CurrentHitpoints = cityData.Hitpoints;
+                newCity.CombatFacade.CurrentMovement  = cityData.CurrentMovement;
 
                 if(cityData.ActiveProject != null) {
                     if(cityData.ActiveProject.BuildingToConstruct != null) {
