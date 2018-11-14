@@ -22,7 +22,7 @@ namespace Assets.Simulation.Cities {
 
         #region properties
 
-        string Name { get; set; }
+        string Name { get; }
 
         Vector3 Position { get; }
 

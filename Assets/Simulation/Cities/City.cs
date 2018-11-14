@@ -33,7 +33,9 @@ namespace Assets.Simulation.Cities {
 
         #region from ICity
 
-        public string Name { get; set; }
+        public string Name {
+            get { return gameObject.name; }
+        }
 
         public Vector3 Position {
             get { return transform.position; }

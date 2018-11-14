@@ -199,9 +199,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), "City Two",   BuildUnit());
             var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), "City Three", BuildUnit());
 
-            SetCityFields(cityOne,   "City One",    1,  11, -1,  YieldFocusType.TotalYield);
-            SetCityFields(cityTwo,   "City Two",    2, -2,   22, YieldFocusType.Culture);
-            SetCityFields(cityThree, "City Three", -3,  33,  3,  YieldFocusType.Production);
+            SetCityFields(cityOne,    1,  11, -1,  YieldFocusType.TotalYield);
+            SetCityFields(cityTwo,    2, -2,   22, YieldFocusType.Culture);
+            SetCityFields(cityThree, -3,  33,  3,  YieldFocusType.Production);
 
             var mapData = new SerializableMapData();
 
@@ -548,10 +548,9 @@ namespace Assets.Tests.Simulation.MapManagement {
             mock.SetupAllProperties();
 
             mock.Setup(city => city.CombatFacade).Returns(combatFacade);
+            mock.Setup(city => city.Name).Returns(name);
 
             var newCity = mock.Object;
-
-            newCity.Name = name;
 
             MockCityLocationCanon  .Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(location);
             MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
@@ -562,9 +561,8 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         private void SetCityFields(
-            ICity city, string name, int population, int foodStockpile, int cultureStockpile, YieldFocusType resourceFocus
+            ICity city, int population, int foodStockpile, int cultureStockpile, YieldFocusType resourceFocus
         ){
-            city.Name             = name;
             city.Population       = population;
             city.FoodStockpile    = foodStockpile;
             city.CultureStockpile = cultureStockpile;

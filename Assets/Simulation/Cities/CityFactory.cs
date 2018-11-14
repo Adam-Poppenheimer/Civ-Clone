@@ -87,7 +87,7 @@ namespace Assets.Simulation.Cities {
             Container.InjectGameObject(newCityGameObject);
 
             newCityGameObject.transform.position = location.AbsolutePosition;
-            newCityGameObject.name = string.Format("{0} (City)", name);
+            newCityGameObject.name = name;
             newCityGameObject.transform.SetParent(CityContainer, true);
 
             var newCity = newCityGameObject.GetComponent<City>();

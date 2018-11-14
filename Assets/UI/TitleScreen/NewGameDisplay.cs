@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ using UnityEngine.UI;
 using Zenject;
 
 using Assets.Simulation.MapGeneration;
+using Assets.Simulation.Civilizations;
 
 using UnityCustomUtilities.Extensions;
 
@@ -23,6 +25,12 @@ namespace Assets.UI.TitleScreen {
         [SerializeField] private Dropdown SeaLevelDropdown;
         [SerializeField] private Dropdown CivCountDropdown;
 
+        [SerializeField] private CivTemplateRecord TemplateRecordPrefab;
+        [SerializeField] private RectTransform     TemplateRecordContainer;
+
+        private List<CivTemplateRecord> InstantiatedTemplateRecords = 
+            new List<CivTemplateRecord>();
+
         private IMapTemplate SelectedMapTemplate;
         private Vector2      DimensionsInChunks;
         private int          ContinentalLandPercentage;
@@ -31,10 +39,11 @@ namespace Assets.UI.TitleScreen {
 
 
 
-        private IMapGenerationConfig      Config;
-        private IEnumerable<IMapTemplate> MapTemplates;
-        private IMapGenerator             MapGenerator;
-        private Animator                  UIAnimator;
+        private IMapGenerationConfig                      Config;
+        private IEnumerable<IMapTemplate>                 MapTemplates;
+        private IMapGenerator                             MapGenerator;
+        private Animator                                  UIAnimator;
+        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
 
         #endregion
 
@@ -43,12 +52,14 @@ namespace Assets.UI.TitleScreen {
         [Inject]
         public void InjectDependencies(
             IMapGenerationConfig config, IEnumerable<IMapTemplate> mapTemplates,
-            IMapGenerator mapGenerator, [Inject(Id = "UI Animator")] Animator uiAnimator
+            IMapGenerator mapGenerator, [Inject(Id = "UI Animator")] Animator uiAnimator,
+            ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ) {
             Config       = config;
             MapTemplates = mapTemplates;
             MapGenerator = mapGenerator;
             UIAnimator   = uiAnimator;
+            CivTemplates = civTemplates;
         }
 
         #region Unity messages
@@ -86,13 +97,33 @@ namespace Assets.UI.TitleScreen {
                 Debug.LogErrorFormat("Detected invalid civ count string {0} when creating a new map", CivCountDropdown.options[optionIndex] );
                 CivCount = 8;
             }
+
+            foreach(var record in InstantiatedTemplateRecords) {
+                Destroy(record.gameObject);
+            }
+
+            InstantiatedTemplateRecords.Clear();
+
+            for(int i = 0; i < CivCount; i++) {
+                var newTemplateRecord = Instantiate(TemplateRecordPrefab);
+
+                newTemplateRecord.gameObject.SetActive(true);
+                newTemplateRecord.transform.SetParent(TemplateRecordContainer, false);
+
+                newTemplateRecord.Refresh(CivTemplates, i);
+
+                InstantiatedTemplateRecords.Add(newTemplateRecord);
+            }
         }
 
         public void GenerateMap() {
+            var selectedTemplates = InstantiatedTemplateRecords.Select(record => record.SelectedTemplate).ToList();
+
             var variables = new MapGenerationVariables() {
                 ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
                 ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
-                CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage
+                CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage,
+                Civilizations = selectedTemplates
             };
 
             MapGenerator.GenerateMap(
