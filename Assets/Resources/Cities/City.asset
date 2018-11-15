@@ -16,6 +16,8 @@ MonoBehaviour:
   _growthPreviousPopulationCoefficient: 6
   _growthPreviousPopulationExponent: 1.8
   _hurryCostPerProduction: 2
+  _hurryAbilityBaseProduction: 300
+  _hurryAbilityPerPopProduction: 50
   _maxBorderRange: 3
   _previousTileCountCoefficient: 10
   _previousTileCountExponent: 1.1
@@ -26,6 +28,10 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _minimumSeparation: 3
   _cityAttackRange: 2
   _baseCombatStrength: 20
@@ -43,6 +49,10 @@ MonoBehaviour:
     Gold: 1
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _combatantImage: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _combatantIcon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
   _combatantDisplayPrefab: {fileID: 1032685054468800, guid: 25f9e701644509e4881d1b87e8c8b683,

@@ -121,10 +121,10 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
-    GreatArtist: 100
+    GreatArtist: 0
     GreatEngineer: 100
-    GreatMerchant: 100
-    GreatScientist: 100
+    GreatMerchant: 0
+    GreatScientist: 0
   ForestYield:
     Food: 1
     Production: 1

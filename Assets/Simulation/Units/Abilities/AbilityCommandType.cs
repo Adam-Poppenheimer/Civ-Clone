@@ -13,6 +13,8 @@ namespace Assets.Simulation.Units.Abilities {
         SetUpToBombard   = 4,
         Fortify          = 5,
         Pillage          = 6,
+        GainFreeTech     = 7,
+        HurryProduction  = 8,
     }
 
 }

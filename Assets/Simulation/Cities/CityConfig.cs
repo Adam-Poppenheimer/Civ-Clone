@@ -49,6 +49,16 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _hurryCostPerProduction;
 
+        public float HurryAbilityBaseProduction {
+            get { return _hurryAbilityBaseProduction; }
+        }
+        [SerializeField] private float _hurryAbilityBaseProduction;
+
+        public float HurryAbilityPerPopProduction {
+            get { return _hurryAbilityPerPopProduction; }
+        }
+        [SerializeField] private float _hurryAbilityPerPopProduction;
+
         /// <inheritdoc/>
         public int MaxBorderRange {
             get { return _maxBorderRange; }

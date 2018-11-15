@@ -39,6 +39,9 @@ namespace Assets.Simulation.Cities {
         /// </summary>
         float HurryCostPerProduction { get; }
 
+        float HurryAbilityBaseProduction   { get; }
+        float HurryAbilityPerPopProduction { get; }
+
         /// <summary>
         /// The amount of food that each citizen consumes every turn.
         /// </summary>

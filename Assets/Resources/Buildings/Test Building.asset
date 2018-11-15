@@ -14,7 +14,7 @@ MonoBehaviour:
   _description: 
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _type: 0
-  _productionCost: 1
+  _productionCost: 1500
   _maintenance: 0
   _slotCount: 0
   _slotYield:
@@ -23,24 +23,40 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _staticYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _civilizationYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _cityYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _localHappiness: 0
   _globalHappiness: 0
   _unhappiness: 0
@@ -56,6 +72,10 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _prerequisiteBuildings: []
   _prerequisiteResourcesNearCity: []
   _prerequisiteImprovementsNearCity: []
