@@ -58,6 +58,7 @@ namespace Assets.Simulation.Core {
         public void BeginRoundOnCivilization(ICivilization civilization) {
             civilization.PerformIncome();
             civilization.PerformResearch();
+            civilization.PerformGreatPeopleGeneration();
         }
 
         /// <inheritdoc/>

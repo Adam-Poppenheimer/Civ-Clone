@@ -67,6 +67,21 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private int _maintenanceFreeUnits;
 
+        public float CivilianGreatPersonStartingCost {
+            get { return _civilizationGreatPersonStartingCost; }
+        }
+        [SerializeField] private float _civilizationGreatPersonStartingCost;
+
+        public float MilitaryGreatPersonStartingCost {
+            get { return _militaryGreatPersonStartingCost; }
+        }
+        [SerializeField] private float _militaryGreatPersonStartingCost;
+
+        public float GreatPersonPredecessorCostMultiplier {
+            get { return _greatPersonPredecessorCostMultiplier; }
+        }
+        [SerializeField] private float _greatPersonPredecessorCostMultiplier;
+
         #endregion
 
         #endregion

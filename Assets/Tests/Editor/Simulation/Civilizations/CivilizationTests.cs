@@ -12,6 +12,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
+using Assets.Simulation.Units;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -20,8 +21,11 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private Mock<ICivilizationYieldLogic>             MockYieldLogic;
-        private Mock<ITechCanon>                          MockTechCanon;
+        private Mock<ICivilizationYieldLogic> MockYieldLogic;
+        private Mock<ITechCanon>              MockTechCanon;
+        private Mock<IGreatPersonCanon>       MockGreatPersonCanon;
+        private Mock<IGreatPersonFactory>     MockGreatPersonFactory;
+        private CivilizationSignals           CivSignals;
 
         #endregion
 
@@ -31,14 +35,17 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            MockYieldLogic                = new Mock<ICivilizationYieldLogic>();
-            MockTechCanon                 = new Mock<ITechCanon>();
+            MockYieldLogic         = new Mock<ICivilizationYieldLogic>();
+            MockTechCanon          = new Mock<ITechCanon>();
+            MockGreatPersonCanon   = new Mock<IGreatPersonCanon>();
+            MockGreatPersonFactory = new Mock<IGreatPersonFactory>();
+            CivSignals             = new CivilizationSignals();
 
-            Container.Bind<ICivilizationConfig>                ().FromMock();
-            Container.Bind<ICivilizationYieldLogic>            ().FromInstance(MockYieldLogic               .Object);
-            Container.Bind<ITechCanon>                         ().FromInstance(MockTechCanon                .Object);
-
-            Container.Bind<CivilizationSignals>().AsSingle();
+            Container.Bind<ICivilizationYieldLogic>().FromInstance(MockYieldLogic        .Object);
+            Container.Bind<ITechCanon>             ().FromInstance(MockTechCanon         .Object);
+            Container.Bind<IGreatPersonCanon>      ().FromInstance(MockGreatPersonCanon  .Object);
+            Container.Bind<IGreatPersonFactory>    ().FromInstance(MockGreatPersonFactory.Object);
+            Container.Bind<CivilizationSignals>    ().FromInstance(CivSignals);
         }
 
         #endregion
@@ -59,6 +66,36 @@ namespace Assets.Tests.Simulation.Civilizations {
             Assert.AreEqual(2,  civilization.GoldStockpile,    "Civilization has an unexpected GoldStockpile");
             Assert.AreEqual(5,  civilization.CultureStockpile, "Civilization has an unexpected CultureStockpile");
             Assert.AreEqual(10, civilization.LastScienceYield, "Civilization has an unexpected LastScienceYield");
+        }
+
+        [Test]
+        public void PerformIncome_GreatPersonYieldsAddedToGreatPersonCanon() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockYieldLogic.Setup(logic => logic.GetYieldOfCivilization(civ))
+                .Returns(new YieldSummary(greatArtist: 5f, greatEngineer: 2f, greatMerchant: -1f, greatScientist: 0f));
+
+            civ.PerformIncome();
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ, 5f),
+                Times.Once, "Points not added to GreatArtist as expected"
+            );
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ, 2f),
+                Times.Once, "Points not added to GreatEngineer as expected"
+            );
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatMerchant, civ, -1f),
+                Times.Once, "Points not added to GreatMerchant as expected"
+            );
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatScientist, civ, 0f),
+                Times.Once, "Points not added to GreatScientist as expected"
+            );
         }
 
         [Test(Description = "When PerformResearch is called, if there are any techs " +
@@ -116,6 +153,93 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CollectionAssert.DoesNotContain(civilization.TechQueue, technology,
                 "TechQueue still contains the discovered tech");
+        }
+
+        [Test]
+        public void PerformGreatPeopleGeneration_MakesPeopleFromTypesWhereProgressExceedsPointsNeeded() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsNeededForTypeForCiv(It.IsAny<GreatPersonType>(), civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ))
+                                .Returns(110f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
+                                .Returns(90f);
+
+            civ.PerformGreatPeopleGeneration();
+
+            MockGreatPersonFactory.Verify(
+                factory => factory.BuildGreatPerson(GreatPersonType.GreatAdmiral, civ), Times.Once,
+                "GreatAdmiral not built as expected"
+            );
+
+            MockGreatPersonFactory.Verify(
+                factory => factory.BuildGreatPerson(GreatPersonType.GreatArtist, civ), Times.Once,
+                "GreatArtist not built as expected"
+            );
+        }
+
+        [Test]
+        public void PerformGreatPeopleGeneration_DoesNothingWithTypesWhereProgressLessThanPointsNeeded() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsNeededForTypeForCiv(It.IsAny<GreatPersonType>(), civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ))
+                                .Returns(110f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
+                                .Returns(90f);
+
+            civ.PerformGreatPeopleGeneration();
+
+            MockGreatPersonFactory.Verify(
+                factory => factory.BuildGreatPerson(GreatPersonType.GreatEngineer, civ), Times.Never,
+                "GreatEngineer unexpectedly built"
+            );
+        }
+
+        [Test]
+        public void PerformGreatPeopleGeneration_SubtractsPointsWhenCreatingGreatPerson() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsNeededForTypeForCiv(It.IsAny<GreatPersonType>(), civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ))
+                                .Returns(110f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
+                                .Returns(90f);
+
+            civ.PerformGreatPeopleGeneration();
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.SetPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 10f), Times.Once,
+                "GreatAdmiral not set as expected"
+            );
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.SetPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ, 0f), Times.Once,
+                "GreatArtist not set as expected"
+            );
+
+            MockGreatPersonCanon.Verify(
+                canon => canon.SetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ, It.IsAny<float>()),
+                Times.Never, "GreatArtist unexpectedly set"
+            );
         }
 
         #endregion

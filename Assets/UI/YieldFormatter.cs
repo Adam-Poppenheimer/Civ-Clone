@@ -31,16 +31,16 @@ namespace Assets.UI {
         #region instance methods
 
         public string GetTMProFormattedYieldString(
-            YieldSummary summary, bool includeEmptyValues = false,
-            bool plusOnPositiveNumbers = true
+            YieldSummary summary, IEnumerable<YieldType> typesToDisplay,
+            bool includeEmptyValues = false, bool plusOnPositiveNumbers = true
         ){
             if(includeEmptyValues) {
                 return GetTMProFormattedYieldString(
-                    summary, EnumUtil.GetValues<YieldType>(), plusOnPositiveNumbers
+                    summary, typesToDisplay, plusOnPositiveNumbers
                 );
             }else {
                 return GetTMProFormattedYieldString(
-                    summary, EnumUtil.GetValues<YieldType>().Where(type => summary[type] != 0f),
+                    summary, typesToDisplay.Where(type => summary[type] != 0f),
                     plusOnPositiveNumbers
                 );
             }

@@ -1,6 +1,6 @@
 fileFormatVersion: 2
 guid: cf43d29d177a69a48b87b148390b3d98
-timeCreated: 1520460991
+timeCreated: 1542225440
 licenseType: Free
 TextureImporter:
   fileIDToRecycleName:
@@ -9,6 +9,10 @@ TextureImporter:
     21300004: Yield Icon Sprite Sheet_2
     21300006: Yield Icon Sprite Sheet_3
     21300008: Yield Icon Sprite Sheet_4
+    21300010: Yield Icon Sprite Sheet_5
+    21300012: Yield Icon Sprite Sheet_6
+    21300014: Yield Icon Sprite Sheet_7
+    21300016: Yield Icon Sprite Sheet_8
   serializedVersion: 4
   mipmaps:
     mipMapMode: 0
@@ -139,6 +143,58 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 512
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Yield Icon Sprite Sheet_5
+      rect:
+        serializedVersion: 2
+        x: 640
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Yield Icon Sprite Sheet_6
+      rect:
+        serializedVersion: 2
+        x: 768
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Yield Icon Sprite Sheet_7
+      rect:
+        serializedVersion: 2
+        x: 896
+        y: 0
+        width: 128
+        height: 128
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      tessellationDetail: 0
+    - serializedVersion: 2
+      name: Yield Icon Sprite Sheet_8
+      rect:
+        serializedVersion: 2
+        x: 1024
         y: 0
         width: 128
         height: 128

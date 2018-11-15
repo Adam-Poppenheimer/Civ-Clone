@@ -21,92 +21,154 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   PlainsYield:
     Food: 1
     Production: 1
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   DesertYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   TundraYield:
     Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   SnowYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   ShallowWaterYield:
     Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   DeepWaterYield:
     Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   FreshWaterYield:
     Food: 2
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   FloodPlainsYield:
     Food: 2
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   HillsYield:
     Food: 0
     Production: 2
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   MountainsYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 100
+    GreatEngineer: 100
+    GreatMerchant: 100
+    GreatScientist: 100
   ForestYield:
     Food: 1
     Production: 1
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   JungleYield:
     Food: 2
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   MarshYield:
     Food: 1
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   OasisYield:
     Food: 3
     Production: 0
     Gold: 1
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   HillsMoveCost: 1
   MountainsMoveCost: -1
   ForestMoveCost: 1
   JungleMoveCost: 1
   MarshMoveCost: 1
+  OasisMoveCost: 0
+  CityRuinsMoveCost: 0

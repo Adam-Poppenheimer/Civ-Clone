@@ -126,11 +126,28 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private GameObject _unitPrefab;
 
+        public IEnumerable<GreatPersonType> GreatPeopleCivilianTypes {
+            get { return _greatPeopleCivilianTypes; }
+        }
+        [SerializeField] private List<GreatPersonType> _greatPeopleCivilianTypes;
+
+        public IEnumerable<GreatPersonType> GreatPeopleMilitaryTypes {
+            get { return _greatPeopleMilitaryTypes; }
+        }
+        [SerializeField] private List<GreatPersonType> _greatPeopleMilitaryTypes;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        
         [SerializeField] private List<float> ShapeDefensiveness;
         [SerializeField] private List<float> VegetationDefensiveness;
+
+        [SerializeField] private UnitTemplate GreatAdmiralTemplate;
+        [SerializeField] private UnitTemplate GreatAristTemplate;
+        [SerializeField] private UnitTemplate GreatEngineerTemplate;
+        [SerializeField] private UnitTemplate GreatGeneralTemplate;
+        [SerializeField] private UnitTemplate GreatMerchantTemplate;
+        [SerializeField] private UnitTemplate GreatScientistTemplate;
 
         #endregion
 
@@ -165,6 +182,18 @@ namespace Assets.Simulation.Units {
                 return 0;
             }else {
                 return VegetationDefensiveness[index];
+            }
+        }
+
+        public IUnitTemplate GetTemplateForGreatPersonType(GreatPersonType type) {
+            switch(type) {
+                case GreatPersonType.GreatAdmiral:   return GreatAdmiralTemplate;
+                case GreatPersonType.GreatArtist:    return GreatAristTemplate;
+                case GreatPersonType.GreatEngineer:  return GreatEngineerTemplate;
+                case GreatPersonType.GreatGeneral:   return GreatGeneralTemplate;
+                case GreatPersonType.GreatMerchant:  return GreatMerchantTemplate;
+                case GreatPersonType.GreatScientist: return GreatScientistTemplate;
+                default: throw new NotImplementedException("No template for great person type " + type);
             }
         }
 

@@ -201,8 +201,7 @@ namespace Assets.Tests.Simulation.Core {
             mockCity.VerifyAll();
         }
 
-        [Test(Description = "When BeginRoundOnCivilization is called on a civilization, that " +
-            "city's PerformIncome and PerformResearch methods should be called")]
+        [Test]
         public void BeginRoundOnCivilization_PerformanceHappensInOrder() {
             var mockCivilization = new Mock<ICivilization>(MockBehavior.Strict);
 
@@ -210,6 +209,7 @@ namespace Assets.Tests.Simulation.Core {
 
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
+            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformGreatPeopleGeneration());
 
             var executer = Container.Resolve<RoundExecuter>();
             executer.BeginRoundOnCivilization(mockCivilization.Object);

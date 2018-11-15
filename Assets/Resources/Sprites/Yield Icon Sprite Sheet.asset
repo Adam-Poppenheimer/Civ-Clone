@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Name: Yield Icon Sprite Sheet
   m_EditorClassIdentifier: 
   hashCode: -1542951632
-  material: {fileID: 21378621535897008}
+  material: {fileID: 21780328551134114}
   materialHashCode: 0
   spriteSheet: {fileID: 2800000, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
   spriteInfoList:
@@ -22,11 +22,11 @@ MonoBehaviour:
     width: 128
     height: 128
     xOffset: 0
-    yOffset: 114
+    yOffset: 100
     xAdvance: 128
     scale: 1
-    name: Food Icon Small
-    hashCode: -799364522
+    name: Yield Icon Food
+    hashCode: -1688622796
     unicode: 0
     pivot: {x: -64, y: 64}
     sprite: {fileID: 21300002, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
@@ -36,11 +36,11 @@ MonoBehaviour:
     width: 128
     height: 128
     xOffset: 0
-    yOffset: 114
+    yOffset: 100
     xAdvance: 128
     scale: 1
-    name: Production Icon Small
-    hashCode: 1935522423
+    name: Yield Icon Production
+    hashCode: 50477045
     unicode: 0
     pivot: {x: -64, y: 64}
     sprite: {fileID: 21300006, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
@@ -50,11 +50,11 @@ MonoBehaviour:
     width: 128
     height: 128
     xOffset: 0
-    yOffset: 114
+    yOffset: 100
     xAdvance: 128
     scale: 1
-    name: Gold Icon Small
-    hashCode: -1198394732
+    name: Yield Icon Gold
+    hashCode: -1688662858
     unicode: 0
     pivot: {x: -64, y: 64}
     sprite: {fileID: 21300004, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
@@ -64,11 +64,11 @@ MonoBehaviour:
     width: 128
     height: 128
     xOffset: 0
-    yOffset: 114
+    yOffset: 100
     xAdvance: 128
     scale: 1
-    name: Culture Icon Small
-    hashCode: -1716710472
+    name: Yield Icon Culture
+    hashCode: 2131633434
     unicode: 0
     pivot: {x: -64, y: 64}
     sprite: {fileID: 21300000, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
@@ -78,16 +78,72 @@ MonoBehaviour:
     width: 128
     height: 128
     xOffset: 0
-    yOffset: 114
+    yOffset: 100
     xAdvance: 128
     scale: 1
-    name: Science Icon Small
-    hashCode: 568889056
+    name: Yield Icon Science
+    hashCode: -649333182
     unicode: 0
     pivot: {x: -64, y: 64}
     sprite: {fileID: 21300008, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 5
+    x: 640
+    y: 0
+    width: 128
+    height: 128
+    xOffset: 0
+    yOffset: 100
+    xAdvance: 128
+    scale: 1
+    name: Yield Icon Great Artist
+    hashCode: -601785222
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300010, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 6
+    x: 768
+    y: 0
+    width: 128
+    height: 128
+    xOffset: 0
+    yOffset: 100
+    xAdvance: 128
+    scale: 1
+    name: Yield Icon Great Engineer
+    hashCode: 62323722
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300012, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 7
+    x: 896
+    y: 0
+    width: 128
+    height: 128
+    xOffset: 0
+    yOffset: 100
+    xAdvance: 128
+    scale: 1
+    name: Yield Icon Great Merchant
+    hashCode: -263144039
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300014, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
+  - id: 8
+    x: 1024
+    y: 0
+    width: 128
+    height: 128
+    xOffset: 0
+    yOffset: 100
+    xAdvance: 128
+    scale: 1
+    name: Yield Icon Great Scientist
+    hashCode: -1797051813
+    unicode: 0
+    pivot: {x: -64, y: 64}
+    sprite: {fileID: 21300016, guid: cf43d29d177a69a48b87b148390b3d98, type: 3}
   fallbackSpriteAssets: []
---- !u!21 &21378621535897008
+--- !u!21 &21780328551134114
 Material:
   serializedVersion: 6
   m_ObjectHideFlags: 1

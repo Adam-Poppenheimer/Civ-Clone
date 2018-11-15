@@ -32,6 +32,11 @@ namespace Assets.Simulation.Civilizations {
 
         int MaintenanceFreeUnits { get; }
 
+        float CivilianGreatPersonStartingCost { get; }
+        float MilitaryGreatPersonStartingCost { get; }
+
+        float GreatPersonPredecessorCostMultiplier { get; }
+
         #endregion
 
     }

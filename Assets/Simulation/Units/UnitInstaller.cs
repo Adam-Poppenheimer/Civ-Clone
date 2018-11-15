@@ -59,6 +59,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitHealingLogic>           ().To<UnitHealingLogic>           ().AsSingle();
             Container.Bind<ICanBuildCityLogic>          ().To<CanBuildCityLogic>          ().AsSingle();
             Container.Bind<IUnitFortificationLogic>     ().To<UnitFortificationLogic>     ().AsSingle();
+            Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
 
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();

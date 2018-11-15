@@ -1,0 +1,34 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2bd350c19ba6fd747aa41465c4441395, type: 3}
+  m_Name: Customs House
+  m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
+  _bonusYield:
+    Food: 0
+    Production: 0
+    Gold: 6
+    Culture: 0
+    Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
+  _restrictedToVegetations: 
+  _restrictedToTerrains: 
+  _restrictedToShapes: 
+  _clearsVegetationWhenBuilt: 1
+  _defensiveBonus: 0
+  _requiresResourceToExtract: 0
+  _appearancePrefab: {fileID: 4094079125385020, guid: d3349b8705c0c37438b79f4dac2aa625,
+    type: 2}
+  _turnsToConstruct: 0
+  _freshWaterAlwaysEnables: 0

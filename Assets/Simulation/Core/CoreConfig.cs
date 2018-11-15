@@ -39,6 +39,11 @@ namespace Assets.Simulation.Core {
         }
         [SerializeField] private Sprite _scienceIcon;
 
+        public Sprite GreatPersonIcon {
+            get { return _greatPersonYieldIcon; }
+        }
+        [SerializeField] private Sprite _greatPersonYieldIcon;
+
         public Sprite YieldModificationIcon {
             get { return _yieldModificationIcon; }
         }
@@ -70,6 +75,11 @@ namespace Assets.Simulation.Core {
         }
         [SerializeField] private Color _scienceColor;
 
+        public Color GreatPersonColor {
+            get { return _greatPersonColor; }
+        }
+        [SerializeField] private Color _greatPersonColor;
+
 
         public Color PositiveHappinessColor {
             get { return _positiveHappinessColor; }
@@ -91,6 +101,17 @@ namespace Assets.Simulation.Core {
         }
         [SerializeField] private int _unhappinessIconIndex;
 
+
+        public IEnumerable<YieldType> NormalYields {
+            get { return _normalYields; }
+        }
+        [SerializeField] private List<YieldType> _normalYields;
+
+        public IEnumerable<YieldType> GreatPersonYields {
+            get { return _greatPersonYields; }
+        }
+        [SerializeField] private List<YieldType> _greatPersonYields;
+
         #endregion
 
         #endregion
@@ -101,23 +122,31 @@ namespace Assets.Simulation.Core {
 
         public Sprite GetIconForYieldType(YieldType type) {
             switch(type) {
-                case YieldType.Food:       return FoodIcon;
-                case YieldType.Production: return ProductionIcon;
-                case YieldType.Gold:       return GoldIcon;
-                case YieldType.Culture:    return CultureIcon;
-                case YieldType.Science:    return ScienceIcon;
-                default: return null;
+                case YieldType.Food:           return FoodIcon;
+                case YieldType.Production:     return ProductionIcon;
+                case YieldType.Gold:           return GoldIcon;
+                case YieldType.Culture:        return CultureIcon;
+                case YieldType.Science:        return ScienceIcon;
+                case YieldType.GreatArtist:    return GreatPersonIcon;
+                case YieldType.GreatEngineer:  return GreatPersonIcon;
+                case YieldType.GreatMerchant:  return GreatPersonIcon;
+                case YieldType.GreatScientist: return GreatPersonIcon;
+                default: throw new NotImplementedException("No icon defined for yield type " + type.ToString());
             }
         }
 
         public Color GetColorForYieldType(YieldType type) {
             switch(type) {
-                case YieldType.Food:       return FoodColor;
-                case YieldType.Production: return ProductionColor;
-                case YieldType.Gold:       return GoldColor;
-                case YieldType.Culture:    return CultureColor;
-                case YieldType.Science:    return ScienceColor;
-                default: return Color.magenta;
+                case YieldType.Food:           return FoodColor;
+                case YieldType.Production:     return ProductionColor;
+                case YieldType.Gold:           return GoldColor;
+                case YieldType.Culture:        return CultureColor;
+                case YieldType.Science:        return ScienceColor;
+                case YieldType.GreatArtist:    return GreatPersonColor;
+                case YieldType.GreatEngineer:  return GreatPersonColor;
+                case YieldType.GreatMerchant:  return GreatPersonColor;
+                case YieldType.GreatScientist: return GreatPersonColor;
+                default: throw new NotImplementedException("No color defined for yield type " + type.ToString());
             }
         }
 

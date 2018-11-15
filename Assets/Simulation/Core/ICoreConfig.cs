@@ -11,25 +11,30 @@ namespace Assets.Simulation.Core {
 
         #region properties
         
-        Sprite FoodIcon       { get; }
-        Sprite ProductionIcon { get; }
-        Sprite GoldIcon       { get; }
-        Sprite CultureIcon    { get; }
-        Sprite ScienceIcon    { get; }
+        Sprite FoodIcon        { get; }
+        Sprite ProductionIcon  { get; }
+        Sprite GoldIcon        { get; }
+        Sprite CultureIcon     { get; }
+        Sprite ScienceIcon     { get; }
+        Sprite GreatPersonIcon { get; }
 
         Sprite YieldModificationIcon { get; }
 
-        Color FoodColor       { get; }
-        Color ProductionColor { get; }
-        Color GoldColor       { get; }
-        Color CultureColor    { get; }
-        Color ScienceColor    { get; }
+        Color FoodColor        { get; }
+        Color ProductionColor  { get; }
+        Color GoldColor        { get; }
+        Color CultureColor     { get; }
+        Color ScienceColor     { get; }
+        Color GreatPersonColor { get; }
 
         Color PositiveHappinessColor { get; }
         Color NegativeHappinessColor { get; }
 
         int HappinessIconIndex   { get; }
         int UnhappinessIconIndex { get; }
+
+        IEnumerable<YieldType> NormalYields      { get; }
+        IEnumerable<YieldType> GreatPersonYields { get; }
 
         #endregion
 

@@ -1,4 +1,6 @@
-﻿using Assets.Simulation;
+﻿using System.Collections.Generic;
+
+using Assets.Simulation;
 
 namespace Assets.UI {
 
@@ -6,7 +8,10 @@ namespace Assets.UI {
 
         #region methods
 
-        string GetTMProFormattedYieldString(YieldSummary summary, bool includeEmptyValues = false, bool plusOnPositiveNumbers = false);
+        string GetTMProFormattedYieldString(
+            YieldSummary summary, IEnumerable<YieldType> typesToDisplay,
+            bool includeEmptyValues = false, bool plusOnPositiveNumbers = false
+        );
 
         string GetTMProFormattedSingleResourceString(YieldType type, float value);
 

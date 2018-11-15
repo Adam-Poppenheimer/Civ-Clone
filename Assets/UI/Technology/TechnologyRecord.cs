@@ -8,11 +8,11 @@ using UnityEngine.UI;
 
 using Zenject;
 
+using Assets.Simulation;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Core;
-using Assets.Simulation.Civilizations;
-using Assets.Simulation.Units;
-using Assets.Simulation.Cities.Buildings;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.UI.Technology {
 
@@ -174,7 +174,9 @@ namespace Assets.UI.Technology {
             foreach(var yieldModification in TechToDisplay.ImprovementYieldModifications) {
                 var description = String.Format(
                     yieldModification.RequiresFreshWater ? RequiresFreshWaterFormat : DoesNotRequireFreshWaterFormat,
-                    YieldFormatter.GetTMProFormattedYieldString(yieldModification.BonusYield, false),
+                    YieldFormatter.GetTMProFormattedYieldString(
+                        yieldModification.BonusYield, EnumUtil.GetValues<YieldType>(), false
+                    ),
                     yieldModification.Template.name
                 );
 

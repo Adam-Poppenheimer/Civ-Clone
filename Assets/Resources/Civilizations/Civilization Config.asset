@@ -19,3 +19,8 @@ MonoBehaviour:
   _policyCostPerPolicyCoefficient: 21.03
   _policyCostPerPolicyExponent: 1.7
   _policyCostPerCityCoefficient: 0.3
+  _defeatMode: 0
+  _maintenanceFreeUnits: 0
+  _civilizationGreatPersonStartingCost: 100
+  _militaryGreatPersonStartingCost: 200
+  _greatPersonPredecessorCostMultiplier: 2

@@ -51,6 +51,9 @@ namespace Assets.Simulation.Units {
 
         GameObject UnitPrefab { get; }
 
+        IEnumerable<GreatPersonType> GreatPeopleCivilianTypes { get; }
+        IEnumerable<GreatPersonType> GreatPeopleMilitaryTypes { get; }
+
         #endregion
 
         #region methods
@@ -58,6 +61,8 @@ namespace Assets.Simulation.Units {
         float GetTerrainDefensiveness   (CellTerrain    terrain);        
         float GetShapeDefensiveness     (CellShape      shape);
         float GetVegetationDefensiveness(CellVegetation vegetation);
+
+        IUnitTemplate GetTemplateForGreatPersonType(GreatPersonType type);
 
         #endregion
 

@@ -44,6 +44,8 @@ namespace Assets.Simulation.Civilizations {
 
         public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTechSignal { get; private set; }
 
+        public ISubject<GreatPersonBirthData> GreatPersonBornSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -73,6 +75,8 @@ namespace Assets.Simulation.Civilizations {
             CivDefeatedSignal = new Subject<ICivilization>();
 
             CivDiscoveredTechSignal = new Subject<Tuple<ICivilization, ITechDefinition>>();
+
+            GreatPersonBornSignal = new Subject<GreatPersonBirthData>();
         }
 
         #endregion

@@ -16,6 +16,8 @@ MonoBehaviour:
   _goldIcon: {fileID: 21300000, guid: bf07726956d2167478487c0dba41a56a, type: 3}
   _cultureIcon: {fileID: 21300000, guid: d027dc15f2d42c8468de79b4ddde48ac, type: 3}
   _scienceIcon: {fileID: 21300000, guid: 58c28ab76f0014d4a97dcb81424ba3cd, type: 3}
+  _greatPersonYieldIcon: {fileID: 21300000, guid: 82dbd0c8aca0dde42a95afcf3ebf1bb8,
+    type: 3}
   _yieldModificationIcon: {fileID: 21300000, guid: 78171f34add42c14e99fd22f32c896c9,
     type: 3}
   _foodColor: {r: 0, g: 1, b: 0.048275948, a: 1}
@@ -23,7 +25,10 @@ MonoBehaviour:
   _goldColor: {r: 0.9578094, g: 1, b: 0.2352941, a: 1}
   _cultureColor: {r: 1, g: 0, b: 0.972414, a: 1}
   _scienceColor: {r: 0.45588237, g: 0.6397567, b: 1, a: 1}
+  _greatPersonColor: {r: 0.6654785, g: 0.5669334, b: 0.78676474, a: 1}
   _positiveHappinessColor: {r: 0.05233564, g: 0.8897059, b: 0.19670984, a: 1}
   _negativeHappinessColor: {r: 1, g: 0.32048684, b: 0.014705896, a: 1}
   _happinessIconIndex: 0
   _unhappinessIconIndex: 1
+  _normalYields: 0000000001000000020000000300000004000000
+  _greatPersonYields: 05000000060000000700000008000000

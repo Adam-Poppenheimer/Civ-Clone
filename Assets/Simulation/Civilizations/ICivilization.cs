@@ -8,25 +8,13 @@ using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Civilizations {
 
-    /// <summary>
-    /// The base interface for civilizations, which represent the largest agent in the game.
-    /// Every player controls a single civilization, which in turn controls a number of cities
-    /// and units.
-    /// </summary>
     public interface ICivilization {
 
         #region properties
 
         ICivilizationTemplate Template { get; }
 
-        /// <summary>
-        /// The current amount of gold the civilization has to spend.
-        /// </summary>
         int GoldStockpile    { get; set; }
-
-        /// <summary>
-        /// The current amount of culture the civilization has to spend.
-        /// </summary>
         int CultureStockpile { get; set; }
 
         Queue<ITechDefinition> TechQueue { get; }
@@ -35,13 +23,11 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        /// <summary>
-        /// Modifies the current gold and culture stockpile of this civilization
-        /// based on the per-turn yield of its cities.
-        /// </summary>
         void PerformIncome();
 
         void PerformResearch();
+
+        void PerformGreatPeopleGeneration();
 
         void Destroy();
 

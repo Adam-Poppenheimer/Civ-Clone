@@ -21,30 +21,49 @@ namespace Assets.UI {
         #region instance fields and properties
 
         [SerializeField] private TextMeshProUGUI SummaryField;
-
-        [SerializeField] private bool DisplayEmptyResources;
-
-        [SerializeField] private bool PlusSignOnPositiveNumbers = true;
+        [SerializeField] private bool            DisplayEmptyResources;
+        [SerializeField] private bool            PlusSignOnPositiveNumbers = true;
+        [SerializeField] private bool            IncludeNormalYield        = true;
+        [SerializeField] private bool            IncludeGreatPersonYield   = true;
 
 
 
         private IYieldFormatter YieldFormatter;
+        private ICoreConfig     CoreConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IYieldFormatter yieldFormatter) {
+        public void InjectDependencies(IYieldFormatter yieldFormatter, ICoreConfig coreConfig) {
             YieldFormatter = yieldFormatter;
+            CoreConfig     = coreConfig;
         }
 
         #region from IResourceSummaryDisplay
 
         public void DisplaySummary(YieldSummary summary) {
-            SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
-                summary, DisplayEmptyResources, PlusSignOnPositiveNumbers
-            );
+            if(IncludeNormalYield) {
+                if(IncludeGreatPersonYield) {
+                    SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
+                        summary, EnumUtil.GetValues<YieldType>(), DisplayEmptyResources,
+                        PlusSignOnPositiveNumbers
+                    );
+
+                }else {
+                    SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
+                        summary, CoreConfig.NormalYields, DisplayEmptyResources,
+                        PlusSignOnPositiveNumbers
+                    );
+                }
+            }else if(IncludeGreatPersonYield) {
+                SummaryField.text = YieldFormatter.GetTMProFormattedYieldString(
+                    summary, CoreConfig.GreatPersonYields, DisplayEmptyResources,
+                    PlusSignOnPositiveNumbers
+                );
+            }
+            
         }
 
         #endregion

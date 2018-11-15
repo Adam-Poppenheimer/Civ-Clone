@@ -17,7 +17,8 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        [SerializeField] private YieldSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay NormalYieldDisplay;
+        [SerializeField] private YieldSummaryDisplay GreatPersonYieldDisplay;
 
         private IDisposable DistributionPerformedSubscription;
 
@@ -53,7 +54,10 @@ namespace Assets.UI.Cities.ResourceGeneration {
                 return;
             }
 
-            YieldDisplay.DisplaySummary(YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay));
+            var cityYield = YieldGenerationLogic.GetTotalYieldForCity(ObjectToDisplay);
+
+            NormalYieldDisplay     .DisplaySummary(cityYield);
+            GreatPersonYieldDisplay.DisplaySummary(cityYield);
         }
 
         #endregion
