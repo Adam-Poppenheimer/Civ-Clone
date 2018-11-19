@@ -50,7 +50,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             attackerMock.Verify(unit => unit.Destroy(), Times.Once, "Attacker was not destroyed");
         }
@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             attackerMock.Verify(unit => unit.Destroy(), Times.Never, "Attacker was unexpectedly destroyed");
         }
@@ -82,7 +82,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             attackerMock.Verify(unit => unit.Destroy(), Times.Never, "Attacker was unexpectedly destroyed");
         }
@@ -98,7 +98,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             defenderMock.Verify(unit => unit.Destroy(), Times.Once, "Defender was not destroyed as expected");
         }
@@ -114,7 +114,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             defenderMock.Verify(unit => unit.Destroy(), Times.Never, "Defender was unexpectedly destroyed");
         }
@@ -130,7 +130,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             Assert.AreEqual(1, defender.CurrentHitpoints);
         }
@@ -146,7 +146,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             defenderMock.Verify(unit => unit.Destroy(), Times.Never, "Defender was unexpectedly destroyed");
         }
@@ -166,7 +166,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             CollectionAssert.AreEqual(
                 new List<IHexCell>() { defenderLocation }, attacker.CurrentPath,
@@ -192,7 +192,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             Assert.Null(
                 attacker.CurrentPath,
@@ -218,7 +218,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var destructionLogic = Container.Resolve<CombatDestructionLogic>();
 
-            destructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
+            destructionLogic.RespondToCombat(attacker, defender, combatInfo);
 
             Assert.Null(
                 attacker.CurrentPath,

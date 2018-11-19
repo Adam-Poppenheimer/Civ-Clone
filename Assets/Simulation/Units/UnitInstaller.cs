@@ -52,14 +52,17 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
             Container.Bind<IUnitLineOfSightLogic>       ().To<UnitLineOfSightLogic>       ().AsSingle();
             Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();
-            Container.Bind<ICityConquestLogic>          ().To<CityConquestLogic>          ().AsSingle();
-            Container.Bind<IPostCombatMovementLogic>    ().To<PostCombatMovementLogic>    ().AsSingle();
-            Container.Bind<ICombatDestructionLogic>     ().To<CombatDestructionLogic>     ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
+            Container.Bind<ICombatAuraLogic>            ().To<CombatAuraLogic>            ().AsSingle();
             Container.Bind<IUnitHealingLogic>           ().To<UnitHealingLogic>           ().AsSingle();
             Container.Bind<ICanBuildCityLogic>          ().To<CanBuildCityLogic>          ().AsSingle();
             Container.Bind<IUnitFortificationLogic>     ().To<UnitFortificationLogic>     ().AsSingle();
             Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
+
+            
+            Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
+            Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();
+            Container.Bind<IPostCombatResponder>().To<PostCombatMovementLogic>().AsSingle();
 
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();

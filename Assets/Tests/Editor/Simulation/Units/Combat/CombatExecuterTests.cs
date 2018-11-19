@@ -685,10 +685,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<ICombatInfoLogic>                              MockCombatInfoLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
         private Mock<IWarCanon>                                     MockWarCanon;
-        private Mock<ICityConquestLogic>                            MockCityConquestLogic;
-        private Mock<IPostCombatMovementLogic>                      MockPostCombatMovementLogic;
-        private Mock<ICombatDestructionLogic>                       MockCombatDestructionLogic;
-
 
         private IUnitConfig UnitConfig;
         
@@ -707,9 +703,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockCombatInfoLogic         = new Mock<ICombatInfoLogic>();
             MockUnitPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
             MockWarCanon                = new Mock<IWarCanon>();
-            MockCityConquestLogic       = new Mock<ICityConquestLogic>();
-            MockPostCombatMovementLogic = new Mock<IPostCombatMovementLogic>();
-            MockCombatDestructionLogic  = new Mock<ICombatDestructionLogic>();
 
             Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon     .Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
@@ -717,9 +710,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<ICombatInfoLogic>                             ().FromInstance(MockCombatInfoLogic        .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon    .Object);
             Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon               .Object);
-            Container.Bind<ICityConquestLogic>                           ().FromInstance(MockCityConquestLogic      .Object);
-            Container.Bind<IPostCombatMovementLogic>                     ().FromInstance(MockPostCombatMovementLogic.Object);
-            Container.Bind<ICombatDestructionLogic>                      ().FromInstance(MockCombatDestructionLogic .Object);
 
             Container.Bind<UnitSignals>().AsSingle();
 
@@ -818,13 +808,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return results;
         }
 
-        [Test(Description = "When PerformMeleeCombat is called on a valid melee combat, " +
-            "it should call into ICityConquestLogic.HandleCityCaptureFromCombat, " +
-            "ICombatDestructionLogic.HandleUnitDestructionFromCombat, and " +
-            "IPostCombatMovementLogic.HandleAttackerMovementAfterCombat. These methods should " +
-            "be provided with the attacker and defender passed into PerformMeleeCombat as well " +
-            "as the CombatInfo provided by ICombatInfoLogic")]
-        public void PerformMeleeCombat_CallsIntoCombatPerformanceLogicsCorrectly() {
+        [Test]
+        public void PerformMeleeCombat_CallsIntoPostCombatRespondersCorrectly() {
             var attackerLocation = BuildCell(0);
             var defenderLocation = BuildCell(0);
 
@@ -857,32 +842,35 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var executionSequence = new MockSequence();
 
-            MockCityConquestLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleCityCaptureFromCombat(attacker, defender, combatInfo)
+            var mockResponderOne   = new Mock<IPostCombatResponder>();
+            var mockResponderTwo   = new Mock<IPostCombatResponder>();
+            var mockResponderThree = new Mock<IPostCombatResponder>();
+
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderOne  .Object);
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderTwo  .Object);
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderThree.Object);
+
+            mockResponderOne.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
-            MockCombatDestructionLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo)
+            mockResponderTwo.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
-            MockPostCombatMovementLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo)
+            mockResponderThree.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
             combatExecuter.PerformMeleeAttack(attacker, defender);
 
-            MockCityConquestLogic      .VerifyAll();
-            MockCombatDestructionLogic .VerifyAll();
-            MockPostCombatMovementLogic.VerifyAll();
+            mockResponderOne  .VerifyAll();
+            mockResponderTwo  .VerifyAll();
+            mockResponderThree.VerifyAll();
         }
 
-        [Test(Description = "When PerformRangedCombat is called on a valid ranged combat, " +
-            "it should call into ICityConquestLogic.HandleCityCaptureFromCombat, " +
-            "ICombatDestructionLogic.HandleUnitDestructionFromCombat, and " +
-            "IPostCombatMovementLogic.HandleAttackerMovementAfterCombat. These methods should " +
-            "be provided with the attacker and defender passed into PerformRangedCombat as well " +
-            "as the CombatInfo provided by ICombatInfoLogic")]
-        public void PerformRangedCombat_CallsIntoCombatPerformanceLogicsCorrectly() {
+        [Test]
+        public void PerformRangedCombat_CallsIntoPostCombatRespondersCorrectly() {
             var attackerLocation = BuildCell(0);
             var defenderLocation = BuildCell(0);
 
@@ -915,23 +903,31 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var executionSequence = new MockSequence();
 
-            MockCityConquestLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleCityCaptureFromCombat(attacker, defender, combatInfo)
+            var mockResponderOne   = new Mock<IPostCombatResponder>();
+            var mockResponderTwo   = new Mock<IPostCombatResponder>();
+            var mockResponderThree = new Mock<IPostCombatResponder>();
+
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderOne  .Object);
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderTwo  .Object);
+            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderThree.Object);
+
+            mockResponderOne.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
-            MockCombatDestructionLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo)
+            mockResponderTwo.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
-            MockPostCombatMovementLogic.InSequence(executionSequence).Setup(
-                logic => logic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo)
+            mockResponderThree.InSequence(executionSequence).Setup(
+                responder => responder.RespondToCombat(attacker, defender, combatInfo)
             );
 
             combatExecuter.PerformRangedAttack(attacker, defender);
 
-            MockCityConquestLogic      .VerifyAll();
-            MockCombatDestructionLogic .VerifyAll();
-            MockPostCombatMovementLogic.VerifyAll();
+            mockResponderOne  .VerifyAll();
+            mockResponderTwo  .VerifyAll();
+            mockResponderThree.VerifyAll();
         }
 
         #endregion

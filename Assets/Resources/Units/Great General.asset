@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f89e244982008e4289a5cf58a5bc61f, type: 3}
+  m_Name: Great General
+  m_EditorClassIdentifier: 
+  _description: 
+  _image: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _icon: {fileID: 21300000, guid: fa88c08c0f7bdef41885e9b0dff76372, type: 3}
+  _displayPrefab: {fileID: 1373363049366270, guid: 01762923d8dda7840abc5587352dcf50,
+    type: 2}
+  _maxMovement: 2
+  _productionCost: 0
+  _type: 1
+  _abilities: []
+  _attackRange: 0
+  _combatStrength: 0
+  _rangedAttackStrength: 0
+  _maxHitpoints: 100
+  _requiredResources: []
+  _isImmobile: 0
+  _mustSetUpToBombard: 0
+  _visionRange: 2
+  _ignoresLineOfSight: 0
+  _startingPromotions:
+  - {fileID: 11400000, guid: 4016dabf6f50743449aac49b7dbc8ac6, type: 2}
+  - {fileID: 11400000, guid: 2e00ee60a316d9248ba63ca8abd93308, type: 2}
+  _promotionTreeData: {fileID: 11400000, guid: 7cd960090d043224bbcaf385c5a100df, type: 2}

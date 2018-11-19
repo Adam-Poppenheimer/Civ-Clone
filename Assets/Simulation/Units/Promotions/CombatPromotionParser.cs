@@ -23,6 +23,9 @@ namespace Assets.Simulation.Units.Promotions {
 
             combatSummary.modifiersWhenAttacking.AddRange(promotion.ModifiersWhenAttacking);
             combatSummary.modifiersWhenDefending.AddRange(promotion.ModifiersWhenDefending);
+
+            combatSummary.auraModifiersWhenAttacking.AddRange(promotion.AuraModifiersWhenAttacking);
+            combatSummary.auraModifiersWhenDefending.AddRange(promotion.AuraModifiersWhenDefending);
         }
 
         #endregion

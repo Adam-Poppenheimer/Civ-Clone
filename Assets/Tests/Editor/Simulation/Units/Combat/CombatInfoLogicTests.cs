@@ -320,6 +320,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
         private Mock<ICivilizationConfig>                           MockCivConfig;
         private Mock<IUnitFortificationLogic>                       MockFortificationLogic;
+        private Mock<ICombatAuraLogic>                              MockCombatAuraLogic;
 
         #endregion
 
@@ -336,6 +337,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
             MockCivConfig                  = new Mock<ICivilizationConfig>();
             MockFortificationLogic         = new Mock<IUnitFortificationLogic>();
+            MockCombatAuraLogic            = new Mock<ICombatAuraLogic>();
 
             Container.Bind<IUnitConfig>                                  ().FromInstance(MockUnitConfig                .Object);
             Container.Bind<IRiverCanon>                                  ().FromInstance(MockRiverCanon                .Object);
@@ -344,6 +346,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig                 .Object);
             Container.Bind<IUnitFortificationLogic>                      ().FromInstance(MockFortificationLogic        .Object);
+            Container.Bind<ICombatAuraLogic>                             ().FromInstance(MockCombatAuraLogic           .Object);
 
             Container.Bind<CombatInfoLogic>().AsSingle();
         }
@@ -380,6 +383,20 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var combatInfoLogic = Container.Resolve<CombatInfoLogic>();
 
             return combatInfoLogic.GetAttackInfo(attacker, defender, location, testData.CombatType);
+        }
+
+        [Test]
+        public void GetAttackInfo_CallsIntoCombatAuraLogic() {
+            var attacker = BuildUnit(new UnitTestData());
+            var defender = BuildUnit(new UnitTestData());
+
+            var location = BuildHexCell(new HexCellTestData());
+
+            var combatInfoLogic = Container.Resolve<CombatInfoLogic>();
+
+            var combatInfo = combatInfoLogic.GetAttackInfo(attacker, defender, location, CombatType.Melee);
+
+            MockCombatAuraLogic.Verify(logic => logic.ApplyAurasToCombat(attacker, defender, combatInfo), Times.Once);
         }
 
         #endregion

@@ -36,6 +36,7 @@ MonoBehaviour:
     type: 2}
   _greatPeopleCivilianTypes: 00000000010000000300000004000000
   _greatPeopleMilitaryTypes: 0500000002000000
+  _auraRange: 2
   TerrainDefensiveness: []
   ShapeDefensiveness:
   - 0
@@ -46,11 +47,13 @@ MonoBehaviour:
   - 0.2
   - 0.2
   - 0
-  GreatAdmiralTemplate: {fileID: 0}
+  GreatAdmiralTemplate: {fileID: 11400000, guid: fc988f5946ac7484db69a6a894493c24,
+    type: 2}
   GreatAristTemplate: {fileID: 11400000, guid: 6e5a5ac96f098cb4385d82898efae071, type: 2}
   GreatEngineerTemplate: {fileID: 11400000, guid: 811301e4d0231d44ba4a53371a32bdf0,
     type: 2}
-  GreatGeneralTemplate: {fileID: 0}
+  GreatGeneralTemplate: {fileID: 11400000, guid: 9546580e567b807409aca649cea9bce8,
+    type: 2}
   GreatMerchantTemplate: {fileID: 11400000, guid: 3a4035b2f08f93947a955b8919806dfa,
     type: 2}
   GreatScientistTemplate: {fileID: 11400000, guid: 665c91f32346c3845b37d8c0056a7ba7,

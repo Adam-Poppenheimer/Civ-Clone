@@ -37,6 +37,8 @@ namespace Assets.Simulation.Civilizations {
 
         float GreatPersonPredecessorCostMultiplier { get; }
 
+        float ExperienceToGreatPersonPointRatio { get; }
+
         #endregion
 
     }

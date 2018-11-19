@@ -152,8 +152,13 @@ namespace Assets.Simulation.Units {
             get { return _experience; }
             set {
                 if(_experience != value) {
+                    int experienceGained = value - _experience;
+
                     _experience = value;
                     Signals.ExperienceChangedSignal.OnNext(this);
+                    if(experienceGained > 0) {
+                        Signals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(this, experienceGained));
+                    }
                 }
             }
         }

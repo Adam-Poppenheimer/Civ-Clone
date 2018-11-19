@@ -125,7 +125,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var movementLogic = Container.Resolve<PostCombatMovementLogic>();
 
-            movementLogic.HandleAttackerMovementAfterCombat(attacker, defender, testData.CombatInfo);
+            movementLogic.RespondToCombat(attacker, defender, testData.CombatInfo);
 
             return attacker.CurrentMovement;
         }

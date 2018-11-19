@@ -82,7 +82,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             MockCityPossessionCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(cityBeingCaptured, attackerOwner),
@@ -110,7 +110,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             CollectionAssert.AreEqual(
                 new List<IHexCell>() { cityLocation }, attacker.CurrentPath,
@@ -156,7 +156,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             mockMeleeInCity   .Verify(unit => unit.Destroy(), Times.Once,  "MeleeInCity was not destroyed");
             mockCivilianInCity.Verify(unit => unit.Destroy(), Times.Once,  "CivilianInCity was not destroyed");
@@ -180,7 +180,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             MockCityPossessionCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(cityBeingCaptured, attackerOwner),
@@ -205,7 +205,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             MockCityPossessionCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(cityBeingCaptured, attackerOwner),
@@ -230,7 +230,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestLogic>();
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             MockCityPossessionCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(cityBeingCaptured, attackerOwner),
@@ -264,7 +264,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 Assert.Pass();
             });
 
-            conquestLogic.HandleCityCaptureFromCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
             Assert.Fail("Event not evoked");
         }

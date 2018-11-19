@@ -122,7 +122,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             };
 
             var promotion = BuildPromotion(
-                modifiersWhenAttacking: modifiers, modifiersWhenDefending: new List<ICombatModifier>()
+                modifiersWhenAttacking:     modifiers,
+                modifiersWhenDefending:     new List<ICombatModifier>(),
+                auraModifiersWhenAttacking: new List<ICombatModifier>(),
+                auraModifiersWhenDefending: new List<ICombatModifier>()
             );
 
             var combatSummary = new UnitCombatSummary();
@@ -131,7 +134,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             parser.AddPromotionToCombatSummary(promotion, combatSummary);
 
-            CollectionAssert.AreEquivalent(modifiers, combatSummary.modifiersWhenAttacking);
+            CollectionAssert.AreEquivalent(modifiers, combatSummary.ModifiersWhenAttacking);
         }
 
         [Test]
@@ -141,7 +144,10 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             };
 
             var promotion = BuildPromotion(
-                modifiersWhenAttacking: new List<ICombatModifier>(), modifiersWhenDefending: modifiers
+                modifiersWhenAttacking:     new List<ICombatModifier>(),
+                modifiersWhenDefending:     modifiers,
+                auraModifiersWhenAttacking: new List<ICombatModifier>(),
+                auraModifiersWhenDefending: new List<ICombatModifier>()
             );
 
             var combatSummary = new UnitCombatSummary();
@@ -150,7 +156,51 @@ namespace Assets.Tests.Simulation.Units.Promotions {
 
             parser.AddPromotionToCombatSummary(promotion, combatSummary);
 
-            CollectionAssert.AreEquivalent(modifiers, combatSummary.modifiersWhenDefending);
+            CollectionAssert.AreEquivalent(modifiers, combatSummary.ModifiersWhenDefending);
+        }
+
+        [Test]
+        public void AddPromotionToCombatSummary_AddsAuraModifiersWhenAttackingToSummary() {
+            var modifiers = new List<ICombatModifier>() {
+                BuildCombatModifier(), BuildCombatModifier(), BuildCombatModifier()
+            };
+
+            var promotion = BuildPromotion(
+                modifiersWhenAttacking:     new List<ICombatModifier>(),
+                modifiersWhenDefending:     new List<ICombatModifier>(),
+                auraModifiersWhenAttacking: modifiers,
+                auraModifiersWhenDefending: new List<ICombatModifier>()
+            );
+
+            var combatSummary = new UnitCombatSummary();
+
+            var parser = Container.Resolve<CombatPromotionParser>();
+
+            parser.AddPromotionToCombatSummary(promotion, combatSummary);
+
+            CollectionAssert.AreEquivalent(modifiers, combatSummary.AuraModifiersWhenAttacking);
+        }
+
+        [Test]
+        public void AddPromotionToCombatSummary_AddsAuraModifiersWhenDefendingToSummary() {
+            var modifiers = new List<ICombatModifier>() {
+                BuildCombatModifier(), BuildCombatModifier(), BuildCombatModifier()
+            };
+
+            var promotion = BuildPromotion(
+                modifiersWhenAttacking:     new List<ICombatModifier>(),
+                modifiersWhenDefending:     new List<ICombatModifier>(),
+                auraModifiersWhenAttacking: new List<ICombatModifier>(),
+                auraModifiersWhenDefending: modifiers
+            );
+
+            var combatSummary = new UnitCombatSummary();
+
+            var parser = Container.Resolve<CombatPromotionParser>();
+
+            parser.AddPromotionToCombatSummary(promotion, combatSummary);
+
+            CollectionAssert.AreEquivalent(modifiers, combatSummary.AuraModifiersWhenDefending);
         }
 
         #endregion
@@ -158,11 +208,13 @@ namespace Assets.Tests.Simulation.Units.Promotions {
         #region utilities
 
         private IPromotion BuildPromotion(
-            List<ICombatModifier> modifiersWhenAttacking, List<ICombatModifier> modifiersWhenDefending
+            List<ICombatModifier> modifiersWhenAttacking, List<ICombatModifier> modifiersWhenDefending,
+            List<ICombatModifier> auraModifiersWhenAttacking, List<ICombatModifier> auraModifiersWhenDefending
         ) {
             return BuildPromotion(
                 false, false, false, false, false,
-                modifiersWhenAttacking, modifiersWhenDefending
+                modifiersWhenAttacking, modifiersWhenDefending,
+                auraModifiersWhenAttacking, auraModifiersWhenDefending
             );
         }
 
@@ -176,7 +228,7 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             return BuildPromotion(
                 canMoveAfterAttacking, canAttackAfterAttacking, ignoresAmphibiousPenalty,
                 ignoresDefensiveTerrainBonus, ignoresLineOfSight, new List<ICombatModifier>(),
-                new List<ICombatModifier>()
+                new List<ICombatModifier>(), new List<ICombatModifier>(), new List<ICombatModifier>()
             );
         }
 
@@ -184,7 +236,9 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             bool canMoveAfterAttacking, bool canAttackAfterAttacking,
             bool ignoresAmphibiousPenalty, bool ignoresDefensiveTerrainBonus,
             bool ignoresLineOfSight, List<ICombatModifier> modifiersWhenAttacking,
-            List<ICombatModifier> modifiersWhenDefending
+            List<ICombatModifier> modifiersWhenDefending,
+            List<ICombatModifier> auraModifiersWhenAttacking,
+            List<ICombatModifier> auraModifiersWhenDefending
         ) {
             var mockPromotion = new Mock<IPromotion>();
 
@@ -195,6 +249,8 @@ namespace Assets.Tests.Simulation.Units.Promotions {
             mockPromotion.Setup(promotion => promotion.IgnoresLineOfSight)            .Returns(ignoresLineOfSight);
             mockPromotion.Setup(promotion => promotion.ModifiersWhenAttacking)        .Returns(modifiersWhenAttacking);
             mockPromotion.Setup(promotion => promotion.ModifiersWhenDefending)        .Returns(modifiersWhenDefending);
+            mockPromotion.Setup(promotion => promotion.AuraModifiersWhenAttacking)    .Returns(auraModifiersWhenAttacking);
+            mockPromotion.Setup(promotion => promotion.AuraModifiersWhenDefending)    .Returns(auraModifiersWhenDefending);
 
             return mockPromotion.Object;
         }

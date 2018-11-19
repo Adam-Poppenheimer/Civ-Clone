@@ -27,9 +27,7 @@ namespace Assets.Simulation.Units.Combat {
         private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IWarCanon                                     WarCanon;
-        private ICityConquestLogic                            CityConquestLogic;
-        private ICombatDestructionLogic                       CombatDestructionLogic;
-        private IPostCombatMovementLogic                      PostCombatMovementLogic;
+        private List<IPostCombatResponder>                    PostCombatResponders;
 
         #endregion
 
@@ -40,20 +38,17 @@ namespace Assets.Simulation.Units.Combat {
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, IUnitLineOfSightLogic unitLineOfSightLogic,
             ICombatInfoLogic combatModifierLogic, IUnitConfig unitConfig, UnitSignals unitSignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon, IWarCanon warCanon,
-            ICityConquestLogic cityConquestLogic, ICombatDestructionLogic combatDestructionLogic,
-            IPostCombatMovementLogic postCombatMovementLogic
+            List<IPostCombatResponder> postCombatResponders
         ){
-            UnitPositionCanon       = unitPositionCanon;
-            Grid                    = grid;
-            UnitLineOfSightLogic    = unitLineOfSightLogic;
-            CombatInfoLogic         = combatModifierLogic;
-            UnitConfig              = unitConfig;
-            UnitSignals             = unitSignals;
-            UnitPossessionCanon     = unitPossessionCanon;
-            WarCanon                = warCanon;
-            CityConquestLogic       = cityConquestLogic;
-            CombatDestructionLogic  = combatDestructionLogic;
-            PostCombatMovementLogic = postCombatMovementLogic;
+            UnitPositionCanon    = unitPositionCanon;
+            Grid                 = grid;
+            UnitLineOfSightLogic = unitLineOfSightLogic;
+            CombatInfoLogic      = combatModifierLogic;
+            UnitConfig           = unitConfig;
+            UnitSignals          = unitSignals;
+            UnitPossessionCanon  = unitPossessionCanon;
+            WarCanon             = warCanon;
+            PostCombatResponders = postCombatResponders;
         }
 
         #endregion
@@ -256,11 +251,9 @@ namespace Assets.Simulation.Units.Combat {
             attacker.CurrentHitpoints -= results.Item1;
             defender.CurrentHitpoints -= results.Item2;
 
-            CityConquestLogic.HandleCityCaptureFromCombat(attacker, defender, combatInfo);
-
-            CombatDestructionLogic.HandleUnitDestructionFromCombat(attacker, defender, combatInfo);
-
-            PostCombatMovementLogic.HandleAttackerMovementAfterCombat(attacker, defender, combatInfo);
+            foreach(var responder in PostCombatResponders) {
+                responder.RespondToCombat(attacker, defender, combatInfo);
+            }
 
             if(attacker.CombatSummary.CanAttackAfterAttacking) {
                 attacker.CanAttack = true;

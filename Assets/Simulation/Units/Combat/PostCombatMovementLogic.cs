@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public class PostCombatMovementLogic : IPostCombatMovementLogic {
+    public class PostCombatMovementLogic : IPostCombatResponder {
 
         #region instance fields and properties
 
@@ -28,9 +28,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from IPostCombatMovementLogic
 
-        public void HandleAttackerMovementAfterCombat(
-            IUnit attacker, IUnit defender, CombatInfo combatInfo
-        ){
+        public void RespondToCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo){
             if(!attacker.CombatSummary.CanMoveAfterAttacking) {
                 attacker.CurrentMovement = 0;
 

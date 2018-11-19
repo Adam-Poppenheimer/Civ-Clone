@@ -48,16 +48,16 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from ICombatModifier
 
-        public bool DoesModifierApply(IUnit subject, IUnit opponent, IHexCell location, CombatType combatType) {
+        public bool DoesModifierApply(IUnit candidate, IUnit opponent, IHexCell location, CombatType combatType) {
             if(Conditions.Count == 0) {
                 return true;
             }
 
             foreach(var condition in Conditions) {
-                if(JoinedTogetherBy == JoinType.And && !condition.IsConditionMet(subject, opponent, location, combatType)) {
+                if(JoinedTogetherBy == JoinType.And && !condition.IsConditionMet(candidate, opponent, location, combatType)) {
                     return false;
 
-                }else if(JoinedTogetherBy == JoinType.Or && condition.IsConditionMet(subject, opponent, location, combatType)) {
+                }else if(JoinedTogetherBy == JoinType.Or && condition.IsConditionMet(candidate, opponent, location, combatType)) {
                     return true;
                 }
             }

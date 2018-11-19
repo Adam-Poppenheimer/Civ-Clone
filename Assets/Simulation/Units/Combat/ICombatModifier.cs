@@ -17,7 +17,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region methods
 
-        bool DoesModifierApply(IUnit self, IUnit opponent, IHexCell location, CombatType combatType);
+        bool DoesModifierApply(IUnit candidate, IUnit opponent, IHexCell location, CombatType combatType);
 
         #endregion
 

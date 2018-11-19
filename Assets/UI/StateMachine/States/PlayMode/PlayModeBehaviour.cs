@@ -17,13 +17,14 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain  Brain;
-        private IMapComposer         MapComposer;
-        private IVisibilityResponder VisibilityResponder;
-        private IVisibilityCanon     VisibilityCanon;
-        private IExplorationCanon    ExplorationCanon;
-        private ICivDefeatExecutor   CivDefeatExecutor;
-        private ICameraFocuser       CameraFocuser;
+        private UIStateMachineBrain          Brain;
+        private IMapComposer                 MapComposer;
+        private IVisibilityResponder         VisibilityResponder;
+        private IVisibilityCanon             VisibilityCanon;
+        private IExplorationCanon            ExplorationCanon;
+        private ICivDefeatExecutor           CivDefeatExecutor;
+        private ICameraFocuser               CameraFocuser;
+        private IGreatMilitaryPointGainLogic GreatMilitaryPointGainLogic;
 
         #endregion
 
@@ -33,15 +34,17 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             UIStateMachineBrain brain, IMapComposer mapComposer, ICameraFocuser cameraFocuser,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor
+            IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor,
+            IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic
         ){
-            Brain               = brain;
-            MapComposer         = mapComposer;
-            CameraFocuser       = cameraFocuser;
-            VisibilityResponder = visibilityResponder;
-            VisibilityCanon     = visibilityCanon;
-            ExplorationCanon    = explorationCanon;
-            CivDefeatExecutor   = civDefeatExecutor;
+            Brain                       = brain;
+            MapComposer                 = mapComposer;
+            CameraFocuser               = cameraFocuser;
+            VisibilityResponder         = visibilityResponder;
+            VisibilityCanon             = visibilityCanon;
+            ExplorationCanon            = explorationCanon;
+            CivDefeatExecutor           = civDefeatExecutor;
+            GreatMilitaryPointGainLogic = greatMilitaryPointGainLogic;
         }
 
         #region from StateMachineBehaviour
@@ -62,12 +65,16 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             CivDefeatExecutor.CheckForDefeat = true;
 
             CameraFocuser.ActivateBeginTurnFocusing();
+
+            GreatMilitaryPointGainLogic.TrackPointGain = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             CameraFocuser.DeactivateBeginTurnFocusing();
 
             VisibilityResponder.UpdateVisibility = false;
+
+            GreatMilitaryPointGainLogic.TrackPointGain = false;
 
             MapComposer.ClearRuntime();
         }

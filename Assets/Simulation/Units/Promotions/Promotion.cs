@@ -148,6 +148,36 @@ namespace Assets.Simulation.Units.Promotions {
         [SerializeField] private List<PermanentCombatModifier>   PermanentDefenseModifiers;
         [SerializeField] private List<ConditionalCombatModifier> ConditionalDefenseModifiers;
 
+        public IEnumerable<ICombatModifier> AuraModifiersWhenAttacking {
+            get {
+                if(_auraAttackModifiers == null) {
+                    var castPermanent   = PermanentAuraAttackModifiers.Cast<ICombatModifier>();
+                    var castConditional = ConditionalAuraAttackModifiers.Cast<ICombatModifier>();
+
+                    _auraAttackModifiers = castPermanent.Concat(castConditional).ToList();
+                }
+                return _auraAttackModifiers;
+            }
+        }
+        private List<ICombatModifier> _auraAttackModifiers;
+        [SerializeField] private List<PermanentCombatModifier>   PermanentAuraAttackModifiers;
+        [SerializeField] private List<ConditionalCombatModifier> ConditionalAuraAttackModifiers;
+
+        public IEnumerable<ICombatModifier> AuraModifiersWhenDefending {
+            get {
+                if(_auraDefenseModifiers == null) {
+                    var castPermanent   = PermanentAuraDefenseModifiers.Cast<ICombatModifier>();
+                    var castConditional = ConditionalAuraDefenseModifiers.Cast<ICombatModifier>();
+
+                    _auraDefenseModifiers = castPermanent.Concat(castConditional).ToList();
+                }
+                return _auraDefenseModifiers;
+            }
+        }
+        private List<ICombatModifier> _auraDefenseModifiers;
+        [SerializeField] private List<PermanentCombatModifier>   PermanentAuraDefenseModifiers;
+        [SerializeField] private List<ConditionalCombatModifier> ConditionalAuraDefenseModifiers;
+
 
 
 

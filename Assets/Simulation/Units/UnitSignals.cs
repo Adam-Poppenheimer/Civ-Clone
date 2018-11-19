@@ -46,6 +46,8 @@ namespace Assets.Simulation.Units {
         public ISubject<IUnit> ExperienceChangedSignal { get; private set; }
         public ISubject<IUnit> LevelChangedSignal      { get; private set; }
 
+        public ISubject<Tuple<IUnit, int>> UnitGainedExperienceSignal { get; private set; }
+
         public ISubject<IUnit> UnitGainedPromotionSignal { get; private set; }
 
         #endregion
@@ -78,6 +80,8 @@ namespace Assets.Simulation.Units {
 
             ExperienceChangedSignal = new Subject<IUnit>();
             LevelChangedSignal      = new Subject<IUnit>();
+
+            UnitGainedExperienceSignal = new Subject<Tuple<IUnit, int>>();
 
             UnitGainedPromotionSignal = new Subject<IUnit>();
         }

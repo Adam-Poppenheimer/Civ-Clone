@@ -54,6 +54,8 @@ namespace Assets.Simulation.Units {
         IEnumerable<GreatPersonType> GreatPeopleCivilianTypes { get; }
         IEnumerable<GreatPersonType> GreatPeopleMilitaryTypes { get; }
 
+        int AuraRange { get; }
+
         #endregion
 
         #region methods

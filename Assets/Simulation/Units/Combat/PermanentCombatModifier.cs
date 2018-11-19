@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units.Combat {
         #region from ICombatModifier
 
         public bool DoesModifierApply(
-            IUnit self, IUnit opponent, IHexCell location, CombatType combatType
+            IUnit candidate, IUnit opponent, IHexCell location, CombatType combatType
         ) {
             return true;
         }

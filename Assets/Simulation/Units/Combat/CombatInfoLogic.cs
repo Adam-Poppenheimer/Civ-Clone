@@ -6,7 +6,6 @@ using System.Text;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -21,6 +20,7 @@ namespace Assets.Simulation.Units.Combat {
         private ICivilizationHappinessLogic                   CivilizationHappinessLogic;
         private ICivilizationConfig                           CivConfig;
         private IUnitFortificationLogic                       FortificationLogic;
+        private ICombatAuraLogic                              CombatAuraLogic;
 
         #endregion
 
@@ -31,7 +31,8 @@ namespace Assets.Simulation.Units.Combat {
             IImprovementLocationCanon improvementLocationCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             ICivilizationHappinessLogic civilizationHappinessLogic,
-            ICivilizationConfig civConfig, IUnitFortificationLogic fortificationLogic
+            ICivilizationConfig civConfig, IUnitFortificationLogic fortificationLogic,
+            ICombatAuraLogic combatAuraLogic
         ) {
             UnitConfig                 = config;
             RiverCanon                 = riverCanon;
@@ -40,6 +41,7 @@ namespace Assets.Simulation.Units.Combat {
             CivilizationHappinessLogic = civilizationHappinessLogic;
             CivConfig                  = civConfig;
             FortificationLogic         = fortificationLogic;
+            CombatAuraLogic            = combatAuraLogic;
         }
 
         #endregion
@@ -83,6 +85,8 @@ namespace Assets.Simulation.Units.Combat {
 
                 combatInfo.DefenderCombatModifier += FortificationLogic.GetFortificationModifierForUnit(defender);
             }
+
+            CombatAuraLogic.ApplyAurasToCombat(attacker, defender, combatInfo);
 
             combatInfo.AttackerCombatModifier -= GetUnhappinessPenalty(attacker);
             combatInfo.DefenderCombatModifier -= GetUnhappinessPenalty(defender);

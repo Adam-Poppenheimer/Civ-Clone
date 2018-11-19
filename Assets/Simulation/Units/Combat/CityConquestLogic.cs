@@ -13,7 +13,7 @@ using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public class CityConquestLogic : ICityConquestLogic {
+    public class CityConquestLogic : IPostCombatResponder {
 
         #region instance fields and properties
 
@@ -51,14 +51,14 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from ICityConquestLogic
 
-        public void HandleCityCaptureFromCombat(IUnit attacker, IUnit defendingFacade, CombatInfo combatInfo) {
-            if(!ShouldCombatResultInCityCapture(attacker, defendingFacade, combatInfo)) {
+        public void RespondToCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
+            if(!ShouldCombatResultInCityCapture(attacker, defender, combatInfo)) {
                 return;
             }
 
             var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
 
-            var cityCaptured = CityFactory.AllCities.Where(city => city.CombatFacade == defendingFacade).FirstOrDefault();
+            var cityCaptured = CityFactory.AllCities.Where(city => city.CombatFacade == defender).FirstOrDefault();
 
             var cityLocation = CityLocationCanon  .GetOwnerOfPossession(cityCaptured);
             var cityOwner    = CityPossessionCanon.GetOwnerOfPossession(cityCaptured);

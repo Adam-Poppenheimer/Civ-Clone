@@ -68,8 +68,9 @@ namespace Assets.Simulation.Civilizations {
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
-            Container.Bind<CityPossessionResponder>()                        .AsSingle().NonLazy();
-            Container.Bind<ICivDefeatExecutor>     ().To<CivDefeatExecutor>().AsSingle().NonLazy();
+            Container.Bind<CityPossessionResponder>     ()                                  .AsSingle().NonLazy();
+            Container.Bind<ICivDefeatExecutor>          ().To<CivDefeatExecutor>          ().AsSingle().NonLazy();
+            Container.Bind<IGreatMilitaryPointGainLogic>().To<GreatMilitaryPointGainLogic>().AsSingle().NonLazy();
 
             Container.Bind<ResourceTransferCanonSynchronizer>().AsSingle().NonLazy();
         }

@@ -82,6 +82,11 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private float _greatPersonPredecessorCostMultiplier;
 
+        public float ExperienceToGreatPersonPointRatio {
+            get { return _experienceToGreatPersonPointRatio; }
+        }
+        [SerializeField] private float _experienceToGreatPersonPointRatio = 1f;
+
         #endregion
 
         #endregion

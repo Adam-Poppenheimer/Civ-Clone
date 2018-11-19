@@ -40,7 +40,8 @@ namespace Assets.Simulation.Units.Promotions {
         public PromotionTree(IPromotionTreeTemplate template, IEnumerable<IPromotion> chosenPromotions) {
             Template = template;
 
-            ChosenPromotions = new List<IPromotion>(chosenPromotions);
+            ChosenPromotions   = new List<IPromotion>(chosenPromotions);
+            AppendedPromotions = new List<IPromotion>();
         }
 
         #endregion

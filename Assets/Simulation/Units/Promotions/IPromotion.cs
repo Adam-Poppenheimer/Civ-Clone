@@ -50,6 +50,9 @@ namespace Assets.Simulation.Units.Promotions {
         IEnumerable<ICombatModifier> ModifiersWhenAttacking { get; }
         IEnumerable<ICombatModifier> ModifiersWhenDefending { get; }
 
+        IEnumerable<ICombatModifier> AuraModifiersWhenAttacking { get; }
+        IEnumerable<ICombatModifier> AuraModifiersWhenDefending { get; }
+
 
 
         bool RequiresForeignTerritory { get; }

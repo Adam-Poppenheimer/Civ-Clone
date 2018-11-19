@@ -1,0 +1,69 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b1eb4a0e223fc7d418c4513d13163333, type: 3}
+  m_Name: Leadership
+  m_EditorClassIdentifier: 
+  _description: 
+  _icon: {fileID: 10905, guid: 0000000000000000f000000000000000, type: 0}
+  _permitsLandTraversal: 0
+  _permitsShallowWaterTraversal: 0
+  _permitsDeepWaterTraversal: 0
+  _bonusMovement: 0
+  _bonusVision: 0
+  _terrainsWithIgnoredCosts: 
+  _shapesWithIgnoredCosts: 
+  _vegetationsWithIgnoredCosts: 
+  _shapesConsumingFullMovement: 
+  _vegetationsConsumingFullMovement: 
+  _canMoveAfterAttacking: 0
+  _canAttackAfterAttacking: 0
+  _ignoresAmphibiousPenalty: 0
+  _ignoresDefensiveTerrainBonuses: 0
+  _ignoresLineOfSight: 0
+  _goldRaidingPercentage: 0
+  _bonusRange: 0
+  PermanentAttackModifiers: []
+  ConditionalAttackModifiers: []
+  PermanentDefenseModifiers: []
+  ConditionalDefenseModifiers: []
+  PermanentAuraAttackModifiers: []
+  ConditionalAuraAttackModifiers:
+  - _modifier: 0.15
+    _conditions:
+    - Target: 0
+      Restriction: 0
+      UnitRestriction: 0
+      UnitTypeArguments: 0000000002000000030000000600000007000000
+      LocationRestriction: 0
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 0
+    _joinedTogetherBy: 0
+  PermanentAuraDefenseModifiers: []
+  ConditionalAuraDefenseModifiers:
+  - _modifier: 0.15
+    _conditions:
+    - Target: 0
+      Restriction: 0
+      UnitRestriction: 0
+      UnitTypeArguments: 0000000002000000030000000600000007000000
+      LocationRestriction: 0
+      TerrainArguments: 
+      ShapeArguments: 
+      VegetationArguments: 
+      CombatTypeArgument: 0
+    _joinedTogetherBy: 0
+  _requiresForeignTerritory: 0
+  _healsEveryTurn: 0
+  _bonusHealingToSelf: 0
+  _bonusHealingToAdjacent: 0
+  _alternativeNavalBaseHealing: 0

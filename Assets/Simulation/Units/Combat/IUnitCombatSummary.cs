@@ -21,6 +21,9 @@ namespace Assets.Simulation.Units.Combat {
         IEnumerable<ICombatModifier> ModifiersWhenAttacking { get; }
         IEnumerable<ICombatModifier> ModifiersWhenDefending { get; }
 
+        IEnumerable<ICombatModifier> AuraModifiersWhenAttacking { get; }
+        IEnumerable<ICombatModifier> AuraModifiersWhenDefending { get; }
+
         #endregion
 
     }

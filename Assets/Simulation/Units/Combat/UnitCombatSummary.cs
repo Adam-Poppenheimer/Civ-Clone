@@ -35,6 +35,16 @@ namespace Assets.Simulation.Units.Combat {
         }
         public List<ICombatModifier> modifiersWhenDefending = new List<ICombatModifier>();
 
+        public IEnumerable<ICombatModifier> AuraModifiersWhenAttacking {
+            get { return auraModifiersWhenAttacking; }
+        }
+        public List<ICombatModifier> auraModifiersWhenAttacking = new List<ICombatModifier>();
+
+        public IEnumerable<ICombatModifier> AuraModifiersWhenDefending {
+            get { return auraModifiersWhenDefending; }
+        }
+        public List<ICombatModifier> auraModifiersWhenDefending = new List<ICombatModifier>();
+
         #endregion
 
         #endregion
@@ -53,8 +63,10 @@ namespace Assets.Simulation.Units.Combat {
             GoldRaidingPercentage = 0f;
             BonusRange = 0;
 
-            modifiersWhenAttacking.Clear();
-            modifiersWhenDefending.Clear();
+            modifiersWhenAttacking    .Clear();
+            modifiersWhenDefending    .Clear();
+            auraModifiersWhenAttacking.Clear();
+            auraModifiersWhenDefending.Clear();
         }
 
         #endregion

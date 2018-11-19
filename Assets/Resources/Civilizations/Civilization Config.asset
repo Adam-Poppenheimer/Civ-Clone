@@ -22,5 +22,6 @@ MonoBehaviour:
   _defeatMode: 0
   _maintenanceFreeUnits: 0
   _civilizationGreatPersonStartingCost: 100
-  _militaryGreatPersonStartingCost: 200
+  _militaryGreatPersonStartingCost: 10
   _greatPersonPredecessorCostMultiplier: 2
+  _experienceToGreatPersonPointRatio: 1

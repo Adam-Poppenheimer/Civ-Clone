@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public class CombatDestructionLogic : ICombatDestructionLogic {
+    public class CombatDestructionLogic : IPostCombatResponder {
 
         #region instance fields and properties
 
@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from ICombatDestructionLogic
 
-        public void HandleUnitDestructionFromCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
+        public void RespondToCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
             if(attacker.CurrentHitpoints <= 0 && attacker.Type != UnitType.City) {
                 DestroyUnit(attacker);
             }

@@ -136,6 +136,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private List<GreatPersonType> _greatPeopleMilitaryTypes;
 
+        public int AuraRange {
+            get { return _auraRange; }
+        }
+        [SerializeField] private int _auraRange;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        
