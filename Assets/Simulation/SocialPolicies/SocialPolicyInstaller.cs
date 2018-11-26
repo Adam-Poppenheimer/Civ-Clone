@@ -36,8 +36,9 @@ namespace Assets.Simulation.SocialPolicies {
                      .WithId("Available Policies")
                      .FromInstance(availablePolicies);
 
-            Container.Bind<ISocialPolicyCanon>    ().To<SocialPolicyCanon>    ().AsSingle();
-            Container.Bind<ISocialPolicyCostLogic>().To<SocialPolicyCostLogic>().AsSingle();
+            Container.Bind<ISocialPolicyCanon>     ().To<SocialPolicyCanon>     ().AsSingle();
+            Container.Bind<ISocialPolicyCostLogic> ().To<SocialPolicyCostLogic> ().AsSingle();
+            Container.Bind<ISocialPolicyBonusLogic>().To<SocialPolicyBonusLogic>().AsSingle();
         }
 
         #endregion

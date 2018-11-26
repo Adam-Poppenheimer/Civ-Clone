@@ -15,8 +15,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         YieldSummary GetTotalYieldForCity(ICity city);
 
         YieldSummary GetTotalYieldForCity(ICity city, YieldSummary additionalBonuses);
-
-        YieldSummary GetBaseYieldOfCity(ICity city);
         
         YieldSummary GetYieldOfUnemployedPersonForCity(ICity city);
 

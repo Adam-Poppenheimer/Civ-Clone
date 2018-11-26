@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using NUnit.Framework;
 using Moq;
@@ -11,6 +13,7 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -24,6 +27,9 @@ namespace Assets.Tests.Simulation.Cities {
             public CityTestData City;
 
             public ConfigTestData Config;
+
+            public float PerPopulationHappinessModifier   = 0f;
+            public float PerPopulationUnhappinessModifier = 0f;
 
         }
 
@@ -97,6 +103,14 @@ namespace Assets.Tests.Simulation.Cities {
                         UnhappinessPerCity = 0, UnhappinessPerPopulation = 0
                     }
                 }).SetName("Considers unhappiness of buildings").Returns(3);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() {
+                        Population = 10
+                    },
+                    Config = new ConfigTestData() { },
+                    PerPopulationUnhappinessModifier = -2.5f
+                }).SetName("Considers per-population unhappiness modifiers").Returns(Mathf.FloorToInt(-2.5f * 10));
             }
         }
 
@@ -117,6 +131,14 @@ namespace Assets.Tests.Simulation.Cities {
                     },
                     Config = new ConfigTestData() { }
                 }).SetName("Considers local happiness of buildings").Returns(4);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() {
+                        Population = 10
+                    },
+                    Config = new ConfigTestData() { },
+                    PerPopulationHappinessModifier = 2.5f
+                }).SetName("Considers per-population happiness modifiers").Returns(Mathf.FloorToInt(2.5f * 10));
             }
         }
 
@@ -144,9 +166,9 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<ICityConfig> MockConfig;
-
+        private Mock<ICityConfig>                               MockConfig;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<ICityModifiers>                   MockCityHappinessModifiers;
 
         #endregion
 
@@ -158,16 +180,30 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             MockConfig                  = new Mock<ICityConfig>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockCityHappinessModifiers  = new Mock<ICityModifiers>();
 
-            Container.Bind<ICityConfig>().FromInstance(MockConfig.Object);
+            Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<ICityModifiers>                  ().FromInstance(MockCityHappinessModifiers .Object);
 
             Container.Bind<CityHappinessLogic>().AsSingle();
         }
 
-        private void SetupConfig(ConfigTestData data) {
-            MockConfig.Setup(config => config.UnhappinessPerCity      ).Returns(data.UnhappinessPerCity);
-            MockConfig.Setup(config => config.UnhappinessPerPopulation).Returns(data.UnhappinessPerPopulation);
+        private void SetupConfig(CityHappinessLogicTestData testData) {
+            MockConfig.Setup(config => config.UnhappinessPerCity      ).Returns(testData.Config.UnhappinessPerCity);
+            MockConfig.Setup(config => config.UnhappinessPerPopulation).Returns(testData.Config.UnhappinessPerPopulation);
+
+            var mockHappinessModifier   = new Mock<ICityModifier<float>>();
+            var mockUnhappinessModifier = new Mock<ICityModifier<float>>();
+
+            mockHappinessModifier.Setup(modifier => modifier.GetValueForCity(It.IsAny<ICity>()))
+                                 .Returns(testData.PerPopulationHappinessModifier);
+
+            mockUnhappinessModifier.Setup(modifier => modifier.GetValueForCity(It.IsAny<ICity>()))
+                                   .Returns(testData.PerPopulationUnhappinessModifier);
+
+            MockCityHappinessModifiers.Setup(modifiers => modifiers.PerPopulationHappiness)  .Returns(mockHappinessModifier  .Object);
+            MockCityHappinessModifiers.Setup(modifiers => modifiers.PerPopulationUnhappiness).Returns(mockUnhappinessModifier.Object);
         }
 
         #endregion
@@ -179,7 +215,7 @@ namespace Assets.Tests.Simulation.Cities {
         public int GetUnhappinessOfCityTests(CityHappinessLogicTestData testData) {
             var city = BuildCity(testData.City);
 
-            SetupConfig(testData.Config);
+            SetupConfig(testData);
 
             var happinessLogic = Container.Resolve<CityHappinessLogic>();
 
@@ -191,7 +227,7 @@ namespace Assets.Tests.Simulation.Cities {
         public int GetLocalHappinessOfCityTests(CityHappinessLogicTestData testData) {
             var city = BuildCity(testData.City);
 
-            SetupConfig(testData.Config);
+            SetupConfig(testData);
 
             var happinessLogic = Container.Resolve<CityHappinessLogic>();
 
@@ -203,7 +239,7 @@ namespace Assets.Tests.Simulation.Cities {
         public int GetGlobalHappinessOfCityTests(CityHappinessLogicTestData testData) {
             var city = BuildCity(testData.City);
 
-            SetupConfig(testData.Config);
+            SetupConfig(testData);
 
             var happinessLogic = Container.Resolve<CityHappinessLogic>();
 

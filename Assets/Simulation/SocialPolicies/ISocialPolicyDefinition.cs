@@ -22,6 +22,8 @@ namespace Assets.Simulation.SocialPolicies {
         float TreeNormalizedX { get; }
         float TreeNormalizedY { get; }
 
+        ISocialPolicyBonusesData Bonuses { get; }
+
         #endregion
 
     }

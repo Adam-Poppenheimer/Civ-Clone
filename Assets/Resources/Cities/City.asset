@@ -43,7 +43,7 @@ MonoBehaviour:
   _visionRange: 2
   _unhappinessPerCity: 3
   _unhappinessPerPopulation: 1
-  _locationYield:
+  _cityCenterBaseYield:
     Food: 2
     Production: 1
     Gold: 1

@@ -32,4 +32,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 01cc9549d3a8da645bc658cc5514827a, type: 2}
   _improvementYieldModifications: []
   _revealedResources: []
-  _policyTreesEnabled: []
+  _policyTreesEnabled:
+  - {fileID: 11400000, guid: 8412d2bceee21c7409478dd8f57976ce, type: 2}

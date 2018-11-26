@@ -5,9 +5,12 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Units;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -18,28 +21,25 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
-        private ICityConfig Config;
-
-        private IYieldGenerationLogic GenerationLogic;
-
+        private ICityConfig                               Config;
+        private IYieldGenerationLogic                     GenerationLogic;
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+        private ICityModifiers                            CityModifiers;
 
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="config"></param>
-        /// <param name="generationLogic"></param>
+        [Inject]
         public ProductionLogic(
             ICityConfig config, IYieldGenerationLogic generationLogic,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            ICityModifiers cityModifiers
         ){
             Config                  = config;
             GenerationLogic         = generationLogic;
             BuildingPossessionCanon = buildingPossessionCanon;
+            CityModifiers           = cityModifiers;
         }
 
         #endregion
@@ -80,6 +80,12 @@ namespace Assets.Simulation.Cities.Production {
                     foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                         productionModifier += building.Template.LandUnitProductionBonus;
                     }
+                }
+
+            }else if(project.BuildingToConstruct != null) {
+
+                if(project.BuildingToConstruct.Type.IsWonder()) {
+                    productionModifier += CityModifiers.WonderProduction.GetValueForCity(city);
                 }
 
             }

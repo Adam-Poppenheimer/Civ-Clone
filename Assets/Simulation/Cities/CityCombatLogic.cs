@@ -13,16 +13,15 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        private ICityConfig Config;
-
+        private ICityConfig                               Config;
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
 
         #endregion
 
         #region constructors
 
-        public CityCombatLogic(ICityConfig config,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+        public CityCombatLogic(
+            ICityConfig config, IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
         ){
             Config                  = config;
             BuildingPossessionCanon = buildingPossessionCanon;

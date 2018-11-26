@@ -58,7 +58,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<ICanBuildCityLogic>          ().To<CanBuildCityLogic>          ().AsSingle();
             Container.Bind<IUnitFortificationLogic>     ().To<UnitFortificationLogic>     ().AsSingle();
             Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
-
+            Container.Bind<ICityCombatModifierLogic>    ().To<CityCombatModifierLogic>    ().AsSingle();
             
             Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();

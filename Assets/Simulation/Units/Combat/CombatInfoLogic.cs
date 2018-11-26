@@ -21,6 +21,7 @@ namespace Assets.Simulation.Units.Combat {
         private ICivilizationConfig                           CivConfig;
         private IUnitFortificationLogic                       FortificationLogic;
         private ICombatAuraLogic                              CombatAuraLogic;
+        private ICityCombatModifierLogic                      CityCombatModifierLogic;
 
         #endregion
 
@@ -32,7 +33,7 @@ namespace Assets.Simulation.Units.Combat {
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             ICivilizationHappinessLogic civilizationHappinessLogic,
             ICivilizationConfig civConfig, IUnitFortificationLogic fortificationLogic,
-            ICombatAuraLogic combatAuraLogic
+            ICombatAuraLogic combatAuraLogic, ICityCombatModifierLogic cityCombatModifierLogic
         ) {
             UnitConfig                 = config;
             RiverCanon                 = riverCanon;
@@ -42,6 +43,7 @@ namespace Assets.Simulation.Units.Combat {
             CivConfig                  = civConfig;
             FortificationLogic         = fortificationLogic;
             CombatAuraLogic            = combatAuraLogic;
+            CityCombatModifierLogic    = cityCombatModifierLogic;
         }
 
         #endregion
@@ -86,7 +88,8 @@ namespace Assets.Simulation.Units.Combat {
                 combatInfo.DefenderCombatModifier += FortificationLogic.GetFortificationModifierForUnit(defender);
             }
 
-            CombatAuraLogic.ApplyAurasToCombat(attacker, defender, combatInfo);
+            CombatAuraLogic        .ApplyAurasToCombat        (attacker, defender, combatInfo);
+            CityCombatModifierLogic.ApplyCityModifiersToCombat(attacker, defender, combatInfo);
 
             combatInfo.AttackerCombatModifier -= GetUnhappinessPenalty(attacker);
             combatInfo.DefenderCombatModifier -= GetUnhappinessPenalty(defender);

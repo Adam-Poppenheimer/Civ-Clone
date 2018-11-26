@@ -15,9 +15,9 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        private ICityConfig Config;
-
+        private ICityConfig                               Config;
         private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
+        private ICityModifiers                            CityModifiers;
 
         #endregion
 
@@ -25,11 +25,12 @@ namespace Assets.Simulation.Cities {
         
         [Inject]
         public CityHappinessLogic(
-            ICityConfig config,
-            IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
+            ICityConfig config, IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
+            ICityModifiers cityModifiers
         ){
             Config                  = config;
             BuildingPossessionCanon = buildingPossessionCanon;
+            CityModifiers           = cityModifiers;
         }
 
         #endregion
@@ -48,6 +49,10 @@ namespace Assets.Simulation.Cities {
             foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                 retval += building.Template.LocalHappiness;
             }
+
+            retval += Mathf.FloorToInt(
+                city.Population * CityModifiers.PerPopulationHappiness.GetValueForCity(city)
+            );
 
             return retval;
         }
@@ -82,6 +87,10 @@ namespace Assets.Simulation.Cities {
             foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
                 retval += building.Template.Unhappiness;
             }
+
+            retval += Mathf.FloorToInt(
+                city.Population * CityModifiers.PerPopulationUnhappiness.GetValueForCity(city)
+            );
 
             return retval;
         }

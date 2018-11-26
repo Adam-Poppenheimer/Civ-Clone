@@ -155,7 +155,7 @@ namespace Assets.Simulation.Cities {
         }
 
         public int VisionRange {
-            get { return 0; }
+            get { return 2; }
         }
 
         public bool IgnoresLineOfSight {

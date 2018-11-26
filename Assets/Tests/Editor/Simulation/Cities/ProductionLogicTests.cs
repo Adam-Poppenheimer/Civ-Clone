@@ -16,6 +16,7 @@ using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -24,9 +25,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<IYieldGenerationLogic>                  MockGenerationLogic;
+        private Mock<IYieldGenerationLogic>                     MockGenerationLogic;
         private Mock<ICityConfig>                               MockConfig;
         private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
+        private Mock<ICityModifiers>                            MockCityModifiers;
+
+        private Mock<ICityModifier<float>> MockWonderProductionModifier;
 
         #endregion
 
@@ -39,10 +43,16 @@ namespace Assets.Tests.Simulation.Cities {
             MockGenerationLogic         = new Mock<IYieldGenerationLogic>();
             MockConfig                  = new Mock<ICityConfig>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockCityModifiers           = new Mock<ICityModifiers>();
 
-            Container.Bind<IYieldGenerationLogic>                 ().FromInstance(MockGenerationLogic        .Object);
+            MockWonderProductionModifier = new Mock<ICityModifier<float>>();
+
+            MockCityModifiers.Setup(modifiers => modifiers.WonderProduction).Returns(MockWonderProductionModifier.Object);
+
+            Container.Bind<IYieldGenerationLogic>                    ().FromInstance(MockGenerationLogic        .Object);
             Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<ICityModifiers>                           ().FromInstance(MockCityModifiers          .Object);
 
             Container.Bind<ProductionLogic>().AsSingle();
         }
@@ -68,35 +78,52 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "")]
         public void GetProductionProgressPerTurnOnProject_ChangedByBuildingProductionBonus() {
-            var landTemplateProject    = BuildProject(BuildUnitTemplate(UnitType.Archery));
-            var mountedTemplateProject = BuildProject(BuildUnitTemplate(UnitType.Mounted));
+            var archeryProject = BuildProject(BuildUnitTemplate(UnitType.Archery));
+            var mountedProject = BuildProject(BuildUnitTemplate(UnitType.Mounted));
 
             var buildingInCity = BuildBuilding(
                 BuildBuildingTemplate(mountedUnitProductionBonus: 1f, landUnitProductionBonus: 2f)
             );
 
-            var city = new Mock<ICity>().Object;
+            var cityToTest = new Mock<ICity>().Object;
 
-            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
+            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(cityToTest))
                 .Returns(new List<IBuilding>() { buildingInCity });
 
             var totalYield = new YieldSummary(production: 10f);
-            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(city, It.IsAny<YieldSummary>())).Returns(totalYield);
+            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(cityToTest, It.IsAny<YieldSummary>()))
+                               .Returns<ICity, YieldSummary>((city, modifiers) => totalYield * (YieldSummary.Ones + modifiers));
 
             var productionLogic = Container.Resolve<ProductionLogic>();
 
-            var expectedAdditionalModifiersFromLandProject    = new YieldSummary(production: 2f);
-            var expectedAdditionalModifiersFromMountedProject = new YieldSummary(production: 3f);
+            Assert.AreEqual(
+                10f * 3f, productionLogic.GetProductionProgressPerTurnOnProject(cityToTest, archeryProject),
+                "ArcheryProject returned an unexpected progress per turn"
+            );
 
-            productionLogic.GetProductionProgressPerTurnOnProject(city, landTemplateProject);            
+            Assert.AreEqual(
+                10f * 4f, productionLogic.GetProductionProgressPerTurnOnProject(cityToTest, mountedProject),
+                "MountedProject returned an unexpected progress per turn"
+            );
+        }
 
-            MockGenerationLogic.Verify(logic => logic.GetTotalYieldForCity(city, expectedAdditionalModifiersFromLandProject),
-                Times.AtLeastOnce, "GetTotalYieldForCity was passed unexpected arguments for the land template project");
+        [Test]
+        public void GetProductionProgressPerTurnOnProject_AndBuildingWonder_AffectedByWonderProductionModifier() {
+            var wonderProject    = BuildProject(BuildBuildingTemplate(BuildingType.WorldWonder));
+            var nonWonderProject = BuildProject(BuildBuildingTemplate(BuildingType.Normal));
 
-            productionLogic.GetProductionProgressPerTurnOnProject(city, mountedTemplateProject);
+            var cityToTest = new Mock<ICity>().Object;
 
-            MockGenerationLogic.Verify(logic => logic.GetTotalYieldForCity(city, expectedAdditionalModifiersFromMountedProject),
-                Times.AtLeastOnce, "GetTotalYieldForCity was passed unexpected arguments for the mounted template project");
+            var totalYield = new YieldSummary(production: 10f);
+            MockGenerationLogic.Setup(logic => logic.GetTotalYieldForCity(cityToTest, It.IsAny<YieldSummary>()))
+                               .Returns<ICity, YieldSummary>((city, modifiers) => totalYield * (YieldSummary.Ones + modifiers));
+
+            MockWonderProductionModifier.Setup(logic => logic.GetValueForCity(cityToTest)).Returns(1.5f);
+
+            var productionLogic = Container.Resolve<ProductionLogic>();
+
+            Assert.AreEqual(10f * 2.5f, productionLogic.GetProductionProgressPerTurnOnProject(cityToTest, wonderProject));
+            Assert.AreEqual(10f,        productionLogic.GetProductionProgressPerTurnOnProject(cityToTest, nonWonderProject));
         }
 
         [Test(Description = "When GetGoldCostToHurryProject is called, it returns the production left to " +
@@ -148,6 +175,14 @@ namespace Assets.Tests.Simulation.Cities {
             return mockProject.Object;
         }
 
+        private IProductionProject BuildProject(IBuildingTemplate buildingToConstruct) {
+            var mockProject = new Mock<IProductionProject>();
+
+            mockProject.Setup(project => project.BuildingToConstruct).Returns(buildingToConstruct);
+
+            return mockProject.Object;
+        }
+
         private IBuilding BuildBuilding(IBuildingTemplate template) {
             var mockBuilding = new Mock<IBuilding>();
 
@@ -163,6 +198,14 @@ namespace Assets.Tests.Simulation.Cities {
 
             mockTemplate.Setup(template => template.MountedUnitProductionBonus).Returns(mountedUnitProductionBonus);
             mockTemplate.Setup(template => template.LandUnitProductionBonus   ).Returns(landUnitProductionBonus);
+
+            return mockTemplate.Object;
+        }
+
+        private IBuildingTemplate BuildBuildingTemplate(BuildingType type) {
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.Type).Returns(type);
 
             return mockTemplate.Object;
         }

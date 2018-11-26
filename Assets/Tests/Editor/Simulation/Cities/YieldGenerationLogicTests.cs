@@ -85,7 +85,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             public YieldSummary UnemployedYield = YieldSummary.Empty;
 
-            public YieldSummary LocationYield = YieldSummary.Empty;
+            public YieldSummary CityCenterYield = YieldSummary.Empty;
 
         }
 
@@ -313,59 +313,6 @@ namespace Assets.Tests.Simulation.Cities {
             }
         }
 
-        public static IEnumerable GetBaseYieldOfCityTestCases {
-            get {
-                yield return new TestCaseData(
-                    new CityTestData() {  },
-                    new CityConfigTestData() {
-                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
-                    }
-                ).SetName("Considers the configured yield of the city's location").Returns(new YieldSummary(
-                    food: 2f, production: 1f, gold: 1f
-                ));
-
-                yield return new TestCaseData(
-                    new CityTestData() {
-                        CityYieldMultipliers = new YieldSummary(food: 1f, production: -1f),
-                        OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new YieldSummary(production: 0.5f, gold: 3f)
-                        }
-                    },
-                    new CityConfigTestData() {
-                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
-                    }
-                ).SetName("Location yield modified by multipliers").Returns(new YieldSummary(
-                    food: 4f, production: 0.5f, gold: 4f
-                ));
-
-                yield return new TestCaseData(
-                    new CityTestData() {
-                        Population = 5
-                    },
-                    new CityConfigTestData() {
-
-                    }
-                ).SetName("Adds 1 science for each person in the city").Returns(new YieldSummary(
-                    science: 5f
-                ));
-
-                yield return new TestCaseData(
-                    new CityTestData() {
-                        Population = 5,
-                        CityYieldMultipliers = new YieldSummary(science: 1f),
-                        OwningCivilization = new CivilizationTestData() {
-                            YieldMultipliers = new YieldSummary(science: 1.5f)
-                        }
-                    },
-                    new CityConfigTestData() {
-                        
-                    }
-                ).SetName("Science per population modified by multipliers").Returns(new YieldSummary(
-                    science: 5f * 3.5f
-                ));
-            }
-        }
-
         public static IEnumerable GetTotalYieldForCityTestCases {
             get {
                 yield return new TestCaseData(
@@ -471,10 +418,10 @@ namespace Assets.Tests.Simulation.Cities {
                         Population = 5
                     },
                     new CityConfigTestData() {
-                        LocationYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
+                        CityCenterYield = new YieldSummary(food: 2f, production: 1f, gold: 1f)
                     }
-                ).SetName("Accounts for base city yield").Returns(new YieldSummary(
-                    food: 2f, production: 1f, gold: 1f, science: 5f
+                ).SetName("Accounts for city center yield").Returns(new YieldSummary(
+                    food: 2f, production: 1f, gold: 1f
                 ));
             }
         }
@@ -488,9 +435,10 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
         private Mock<IIncomeModifierLogic>                          MockIncomeModifierLogic;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<ICellYieldLogic>                            MockCellResourceLogic;
-        private Mock<IBuildingInherentYieldLogic>                        MockBuildingResourceLogic;
+        private Mock<ICellYieldLogic>                               MockCellResourceLogic;
+        private Mock<IBuildingInherentYieldLogic>                   MockBuildingResourceLogic;
         private Mock<IUnemploymentLogic>                            MockUnemploymentLogic;
+        private Mock<ICityCenterYieldLogic>                         MockCityCenterYieldLogic;
 
         #endregion
 
@@ -508,6 +456,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellResourceLogic       = new Mock<ICellYieldLogic>();
             MockBuildingResourceLogic   = new Mock<IBuildingInherentYieldLogic>();
             MockUnemploymentLogic       = new Mock<IUnemploymentLogic>();
+            MockCityCenterYieldLogic    = new Mock<ICityCenterYieldLogic>();
 
             Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon    .Object);
@@ -517,13 +466,16 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<ICellYieldLogic>                              ().FromInstance(MockCellResourceLogic      .Object);
             Container.Bind<IBuildingInherentYieldLogic>                  ().FromInstance(MockBuildingResourceLogic  .Object);
             Container.Bind<IUnemploymentLogic>                           ().FromInstance(MockUnemploymentLogic      .Object);
+            Container.Bind<ICityCenterYieldLogic>                        ().FromInstance(MockCityCenterYieldLogic   .Object);
 
             Container.Bind<YieldGenerationLogic>().AsSingle();
         }
 
         private void SetupConfig(CityConfigTestData configData) {
             MockConfig.Setup(config => config.UnemployedYield).Returns(configData.UnemployedYield);
-            MockConfig.Setup(config => config.LocationYield  ).Returns(configData.LocationYield);
+
+            MockCityCenterYieldLogic.Setup(logic => logic.GetYieldOfCityCenter(It.IsAny<ICity>()))
+                                    .Returns(configData.CityCenterYield);
         }
 
         #endregion
@@ -575,18 +527,6 @@ namespace Assets.Tests.Simulation.Cities {
             return resourceLogic.GetYieldOfBuildingSlotsForCity(building, city);
         }
 
-        [TestCaseSource("GetBaseYieldOfCityTestCases")]
-        [Test(Description = "")]
-        public YieldSummary GetBaseYieldOfCityTests(CityTestData cityData, CityConfigTestData configData) {
-            var city = BuildCity(cityData);
-
-            SetupConfig(configData);
-
-            var resourceLogic = Container.Resolve<YieldGenerationLogic>();
-
-            return resourceLogic.GetBaseYieldOfCity(city);
-        }
-
         [TestCaseSource("GetTotalYieldForCityTestCases")]
         [Test(Description = "")]
         public YieldSummary GetTotalYieldForCityTests(CityTestData cityData, CityConfigTestData configData) {
@@ -602,7 +542,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test]
         public void GetTotalYieldForCityTests_ResultMultipliedByOnePlusAdditionalBonuses() {
             SetupConfig(new CityConfigTestData() {
-                LocationYield = YieldSummary.Empty,
+                CityCenterYield = YieldSummary.Empty,
                 UnemployedYield = new YieldSummary(food: 1, production: 1)
             });
 

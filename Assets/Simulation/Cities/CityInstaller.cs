@@ -70,6 +70,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityRazer>                               ().To<CityRazer>                      ().AsSingle();
             Container.Bind<ICityProductionResolver>                  ().To<CityProductionResolver>         ().AsSingle();
             Container.Bind<ILocalPromotionLogic>                     ().To<LocalPromotionLogic>            ().AsSingle();
+            Container.Bind<ICityCenterYieldLogic>                    ().To<CityCenterYieldLogic>           ().AsSingle();
 
             Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 
@@ -82,6 +83,8 @@ namespace Assets.Simulation.Cities {
             Container.Bind<IBuildingRestriction>().To<OtherBuildingsBuildingRestriction>().AsSingle();
             Container.Bind<IBuildingRestriction>().To<TerritoryBuildingRestriction>     ().AsSingle();
             Container.Bind<IBuildingRestriction>().To<WonderBuildingRestriction>        ().AsSingle();
+
+            Container.Bind<ICityModifiers>().To<CityModifiers>().AsSingle();
 
             Container.Bind<CitySignals>().AsSingle();
 

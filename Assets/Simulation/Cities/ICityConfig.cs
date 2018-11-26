@@ -90,7 +90,7 @@ namespace Assets.Simulation.Cities {
 
         float UnhappinessPerPopulation { get; }
 
-        YieldSummary LocationYield { get; }
+        YieldSummary CityCenterBaseYield { get; }
 
         Sprite CombatantImage { get; }
 

@@ -26,6 +26,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private ICellYieldLogic                               CellYieldLogic;
         private IBuildingInherentYieldLogic                   BuildingYieldLogic;
         private IUnemploymentLogic                            UnemploymentLogic;
+        private ICityCenterYieldLogic                         CityCenterYieldLogic;
 
         #endregion
 
@@ -40,7 +41,8 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             ICellYieldLogic                               cellResourceLogic,
             IBuildingInherentYieldLogic                   buildingResourceLogic,
-            IUnemploymentLogic                            unemploymentLogic
+            IUnemploymentLogic                            unemploymentLogic,
+            ICityCenterYieldLogic                         cityCenterYieldLogic
         ){
             Config                  = config;
             CellPossessionCanon     = cellPossessionCanon;
@@ -50,6 +52,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             CellYieldLogic          = cellResourceLogic;
             BuildingYieldLogic      = buildingResourceLogic;
             UnemploymentLogic       = unemploymentLogic;
+            CityCenterYieldLogic    = cityCenterYieldLogic;
         }
 
         #endregion
@@ -68,7 +71,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
                 throw new ArgumentNullException("city");
             }
 
-            var retval = GetBaseYieldOfCity(city);
+            var retval = CityCenterYieldLogic.GetYieldOfCityCenter(city);
 
             foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
                 if(!cell.SuppressSlot && cell.WorkerSlot.IsOccupied) {
@@ -83,17 +86,6 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             retval += GetYieldOfUnemployedPersonForCity(city) * UnemploymentLogic.GetUnemployedPeopleInCity(city);
 
             return retval * (YieldSummary.Ones + additionalBonuses);
-        }
-
-        public YieldSummary GetBaseYieldOfCity(ICity city) {
-            var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city);
-            var civMultipliers  = IncomeModifierLogic.GetYieldMultipliersForCivilization(CityPossessionCanon.GetOwnerOfPossession(city));
-
-            var retval = Config.LocationYield * (YieldSummary.Ones + cityMultipliers + civMultipliers);
-
-            retval += new YieldSummary(science: 1) * city.Population * (YieldSummary.Ones + cityMultipliers + civMultipliers);
-
-            return retval;
         }
 
         /// <inheritdoc/>

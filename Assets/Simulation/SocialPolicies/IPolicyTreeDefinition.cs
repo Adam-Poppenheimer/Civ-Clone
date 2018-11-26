@@ -19,7 +19,10 @@ namespace Assets.Simulation.SocialPolicies {
 
         Sprite Icon { get; }
 
-        int Row    { get; }
+        int Row { get; }
+
+        ISocialPolicyBonusesData UnlockingBonuses  { get; }
+        ISocialPolicyBonusesData CompletionBonuses { get; }
 
         #endregion
 

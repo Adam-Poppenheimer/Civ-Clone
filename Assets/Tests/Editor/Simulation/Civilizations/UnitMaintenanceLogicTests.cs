@@ -11,6 +11,9 @@ using Moq;
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Civilizations {
 
@@ -64,6 +67,9 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<IFreeUnitsLogic>                               MockFreeUnitsLogic;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<ICivModifier<bool>>                            MockSuppressGarrisionMaintenanceModifier;
+        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
+        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
 
         #endregion
 
@@ -73,11 +79,20 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            MockFreeUnitsLogic      = new Mock<IFreeUnitsLogic>();
-            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockFreeUnitsLogic                       = new Mock<IFreeUnitsLogic>();
+            MockUnitPossessionCanon                  = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockSuppressGarrisionMaintenanceModifier = new Mock<ICivModifier<bool>>();
+            MockCityLocationCanon                    = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockUnitPositionCanon                    = new Mock<IUnitPositionCanon>();
 
             Container.Bind<IFreeUnitsLogic>                              ().FromInstance(MockFreeUnitsLogic     .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+
+            Container.Bind<ICivModifier<bool>>()
+                     .WithId("Suppress Garrision Maintenance Modifier")
+                     .FromInstance(MockSuppressGarrisionMaintenanceModifier.Object);
 
             Container.Bind<UnitMaintenanceLogic>().AsSingle();
         }
@@ -123,6 +138,26 @@ namespace Assets.Tests.Simulation.Civilizations {
             Assert.AreEqual(0, maintenanceLogic.GetMaintenanceOfUnitsForCiv(civ));
         }
 
+        [Test]
+        public void GetMaintenanceOfUnitsForCiv_AndGarrisionMaintenanceBeingSuppressed_IgnoresUnitsOnCities() {
+            var cellWithCity    = BuildCell(BuildCity());
+            var cellWithoutCity = BuildCell();
+
+            var units = new List<IUnit>() {
+                BuildUnit(UnitType.Melee, cellWithCity),
+                BuildUnit(UnitType.Melee, cellWithoutCity),
+                BuildUnit(UnitType.Melee, cellWithoutCity),
+            };
+
+            var civ = BuildCiv(units);
+
+            MockSuppressGarrisionMaintenanceModifier.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(true);
+
+            var maintenanceLogic = Container.Resolve<UnitMaintenanceLogic>();
+
+            Assert.AreEqual(4, maintenanceLogic.GetMaintenanceOfUnitsForCiv(civ));
+        }
+
         #endregion
 
         #region utilities
@@ -131,12 +166,44 @@ namespace Assets.Tests.Simulation.Civilizations {
             return new Mock<ICivilization>().Object;
         }
 
+        private ICivilization BuildCiv(List<IUnit> units) {
+            var newCiv = new Mock<ICivilization>().Object;
+
+            MockUnitPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCiv)).Returns(units);
+
+            return newCiv;
+        }
+
         private IUnit BuildUnit(UnitType type = UnitType.Melee) {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.Setup(unit => unit.Type).Returns(type);
 
             return mockUnit.Object;
+        }
+
+        private ICity BuildCity() {
+            return new Mock<ICity>().Object;
+        }
+
+        private IHexCell BuildCell(params ICity[] cities) {
+            var newCell = new Mock<IHexCell>().Object;
+
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(newCell)).Returns(cities);
+
+            return newCell;
+        }
+
+        private IUnit BuildUnit(UnitType type, IHexCell location) {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.Type).Returns(type);
+
+            var newUnit = mockUnit.Object;
+
+            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
+
+            return newUnit;
         }
 
         #endregion

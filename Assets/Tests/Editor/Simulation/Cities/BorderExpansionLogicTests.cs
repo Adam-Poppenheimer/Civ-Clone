@@ -17,6 +17,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Distribution;
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -30,6 +31,9 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<ICityConfig>                              MockConfig;
         private Mock<IYieldGenerationLogic>                    MockYieldGenerationLogic;
         private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
+        private Mock<ICityModifiers>                           MockCityModifiers;
+
+        private Mock<ICityModifier<float>> MockBorderExpansion;
 
         #endregion
 
@@ -42,14 +46,20 @@ namespace Assets.Tests.Simulation.Cities {
             MockHexGrid                  = new Mock<IHexGrid>();
             MockTerritoryPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
             MockConfig                   = new Mock<ICityConfig>();
-            MockYieldGenerationLogic  = new Mock<IYieldGenerationLogic>();
+            MockYieldGenerationLogic     = new Mock<IYieldGenerationLogic>();
             MockCityLocationCanon        = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockCityModifiers            = new Mock<ICityModifiers>();
+
+            MockBorderExpansion   = new Mock<ICityModifier<float>>();
+
+            MockCityModifiers.Setup(modifiers => modifiers.BorderExpansion).Returns(MockBorderExpansion.Object);
 
             Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockTerritoryPossessionCanon.Object);
             Container.Bind<ICityConfig>                             ().FromInstance(MockConfig                  .Object);
-            Container.Bind<IYieldGenerationLogic>                ().FromInstance(MockYieldGenerationLogic .Object);
+            Container.Bind<IYieldGenerationLogic>                   ().FromInstance(MockYieldGenerationLogic    .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon       .Object);
+            Container.Bind<ICityModifiers>                          ().FromInstance(MockCityModifiers           .Object);
 
             Container.Bind<BorderExpansionLogic>().AsSingle();
         }
@@ -293,8 +303,8 @@ namespace Assets.Tests.Simulation.Cities {
 
         [Test(Description = "GetCultureCostOfAcquiringCell should respond to Config and " +
             "operate under the following equation, where t is the current number of cells:\n\n" +
-            "\tCellCostBase + (PreviousCellCountCoefficient * (t - 1)) ^ PreviousCellCountExponen\n\n" + 
-            "The returned value should be rounded down")]
+            "\tCellCostBase + (PreviousCellCountCoefficient * (t - 1)) ^ PreviousCellCountExponent\n\n" + 
+            "The returned value should be rounded")]
         public void GetCultureCostOfAcquiringCell_FollowsEquationAndConfig() {
             var city = new Mock<ICity>().Object;
             var newCell = new Mock<IHexCell>().Object;
@@ -312,10 +322,26 @@ namespace Assets.Tests.Simulation.Cities {
             MockConfig.SetupGet(config => config.PreviousCellCountCoefficient).Returns(10);
             MockConfig.SetupGet(config => config.PreviousCellCountExponent).Returns(1.1f);
 
-            var logic = Container.Resolve<BorderExpansionLogic>();
+            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(1f);
 
-            Assert.AreEqual(93, logic.GetCultureCostOfAcquiringCell(city, newCell),
+            var expansionLogic = Container.Resolve<BorderExpansionLogic>();
+
+            Assert.AreEqual(93, expansionLogic.GetCultureCostOfAcquiringCell(city, newCell),
                 "GetCultureCostOfAcquiringCell returned an incorrect value on a city with 6 cells");
+        }
+
+        [Test]
+        public void GetCultureCostOfAcquiringCell_AppliesModifiersAsExpected() {
+            var city    = new Mock<ICity>   ().Object;
+            var newCell = new Mock<IHexCell>().Object;
+
+            MockConfig.Setup(config => config.CellCostBase).Returns(20);
+
+            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(5f);
+
+            var expansionLogic = Container.Resolve<BorderExpansionLogic>();
+
+            Assert.AreEqual(105, expansionLogic.GetCultureCostOfAcquiringCell(city, newCell));
         }
 
         [Test(Description = "GetGoldCostOfAcquiringCell should return the same value as " +
@@ -333,13 +359,15 @@ namespace Assets.Tests.Simulation.Cities {
                new Mock<IHexCell>().Object,
             });
 
+            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(1f);
+
             MockConfig.SetupGet(config => config.CellCostBase).Returns(20);
             MockConfig.SetupGet(config => config.PreviousCellCountCoefficient).Returns(10);
             MockConfig.SetupGet(config => config.PreviousCellCountExponent).Returns(1.1f);
 
-            var logic = Container.Resolve<BorderExpansionLogic>();
+            var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
-            Assert.AreEqual(93, logic.GetGoldCostOfAcquiringCell(city, newCell),
+            Assert.AreEqual(93, expansionLogic.GetGoldCostOfAcquiringCell(city, newCell),
                 "GetCultureCostOfAcquiringCell returned an incorrect value on a city with 6 cells");
         }
 

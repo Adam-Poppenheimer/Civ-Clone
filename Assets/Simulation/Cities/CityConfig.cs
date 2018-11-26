@@ -145,10 +145,10 @@ namespace Assets.Simulation.Cities {
         }
         [SerializeField] private float _unhappinessPerPopulation;
 
-        public YieldSummary LocationYield {
-            get { return _locationYield; }
+        public YieldSummary CityCenterBaseYield {
+            get { return _cityCenterBaseYield; }
         }
-        [SerializeField] private YieldSummary _locationYield;
+        [SerializeField] private YieldSummary _cityCenterBaseYield;
 
         public Sprite CombatantImage {
             get { return _combatantImage; }

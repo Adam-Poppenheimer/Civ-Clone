@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Simulation.Cities.Growth {
 
@@ -19,11 +20,12 @@ namespace Assets.Simulation.Cities.Growth {
 
         #region instance fields and properties
 
-        private ICityConfig Config;
-
+        private ICityConfig                                   CityConfig;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private ICityModifiers                                CityModifiers;
         private ICivilizationHappinessLogic                   CivilizationHappinessLogic;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
+        
 
         #endregion
 
@@ -34,13 +36,14 @@ namespace Assets.Simulation.Cities.Growth {
         /// </summary>
         /// <param name="config"></param>
         [Inject]
-        public PopulationGrowthLogic(ICityConfig config,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICivilizationHappinessLogic civilizationHappinessLogic,
+        public PopulationGrowthLogic(
+            ICityConfig config, IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            ICivilizationHappinessLogic civilizationHappinessLogic, ICityModifiers cityModifiers,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
-        ){
-            Config                     = config;
+        ) {
+            CityConfig                 = config;
             CityPossessionCanon        = cityPossessionCanon;
+            CityModifiers              = cityModifiers;
             CivilizationHappinessLogic = civilizationHappinessLogic;
             BuildingPossessionCanon    = buildingPossessionCanon;
         }
@@ -57,7 +60,7 @@ namespace Assets.Simulation.Cities.Growth {
                 throw new ArgumentNullException("city");
             }
 
-            return city.Population * Config.FoodConsumptionPerPerson;
+            return city.Population * CityConfig.FoodConsumptionPerPerson;
         }
 
         /// <inheritdoc/>
@@ -93,9 +96,9 @@ namespace Assets.Simulation.Cities.Growth {
             int previousPopulation = city.Population -1;
 
             return Mathf.FloorToInt(
-                Config.BaseGrowthStockpile + 
-                Config.GrowthPreviousPopulationCoefficient * previousPopulation +
-                Mathf.Pow(previousPopulation, Config.GrowthPreviousPopulationExponent)
+                CityConfig.BaseGrowthStockpile + 
+                CityConfig.GrowthPreviousPopulationCoefficient * previousPopulation +
+                Mathf.Pow(previousPopulation, CityConfig.GrowthPreviousPopulationExponent)
             );
         }
 
@@ -104,15 +107,21 @@ namespace Assets.Simulation.Cities.Growth {
 
             var ownerHappiness = CivilizationHappinessLogic.GetNetHappinessOfCiv(cityOwner);
 
+            float unmodifiedFoodGained;
+
             if(ownerHappiness < 0) {
                 if(ownerHappiness > -10) {
-                    return foodIncome / 4f;
+                    unmodifiedFoodGained = foodIncome / 4f;
                 }else {
-                    return 0;
+                    unmodifiedFoodGained = 0;
                 }
             }else {
-                return foodIncome;
+                unmodifiedFoodGained = foodIncome;
             }
+
+            float growthModifier = CityModifiers.Growth.GetValueForCity(city);
+
+            return unmodifiedFoodGained * growthModifier;
         }
 
         #endregion

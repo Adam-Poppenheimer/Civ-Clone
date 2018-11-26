@@ -11,6 +11,7 @@ using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Simulation.Cities.Territory {
 
@@ -26,29 +27,25 @@ namespace Assets.Simulation.Cities.Territory {
         private ICityConfig                              Config;
         private IYieldGenerationLogic                    YieldGenerationLogic;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private ICityModifiers                           CityModifiers;
 
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="hexGrid"></param>
-        /// <param name="possessionCanon"></param>
-        /// <param name="config"></param>
-        /// <param name="resourceGenerationLogic"></param>
         [Inject]
         public BorderExpansionLogic(
             IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
             ICityConfig config, IYieldGenerationLogic resourceGenerationLogic,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            ICityModifiers cityModifiers
         ){
-            HexGrid                 = hexGrid;
-            PossessionCanon         = possessionCanon;
-            Config                  = config;
+            HexGrid              = hexGrid;
+            PossessionCanon      = possessionCanon;
+            Config               = config;
             YieldGenerationLogic = resourceGenerationLogic;
-            CityLocationCanon       = cityLocationCanon;
+            CityLocationCanon    = cityLocationCanon;
+            CityModifiers        = cityModifiers;
         }
 
         #endregion
@@ -67,7 +64,6 @@ namespace Assets.Simulation.Cities.Territory {
                     if(IsCellAvailable(city, neighbor)) {
                         retval.Add(neighbor);
                     }
-
                 }
             }
 
@@ -113,13 +109,14 @@ namespace Assets.Simulation.Cities.Territory {
 
             var tileCount = PossessionCanon.GetPossessionsOfOwner(city).Count();
 
-            return Mathf.FloorToInt(
-                Config.CellCostBase + 
-                Mathf.Pow(
-                    Config.PreviousCellCountCoefficient * (tileCount - 1),
-                    Config.PreviousCellCountExponent
-                )
+            var unmodifiedExpansionCost = Config.CellCostBase + Mathf.Pow(
+                Config.PreviousCellCountCoefficient * (tileCount - 1),
+                Config.PreviousCellCountExponent
             );
+
+            var expansionModifiers = CityModifiers.BorderExpansion.GetValueForCity(city);
+
+            return Mathf.FloorToInt(unmodifiedExpansionCost * expansionModifiers);
         }
 
         /// <inheritdoc/>

@@ -46,7 +46,7 @@ namespace Assets.Simulation.Units {
             }
 
             foreach(var cell in Grid.GetCellsInRing(unitLocation, unit.VisionRange + 1)) {
-                if(!HasObstructionsBetween(unitLocation, cell, 1)) {
+                if(!HasObstructionsBetween(unitLocation, cell, 1) && cell.Terrain.IsWater()) {
                     retval.Add(cell);
                 }
             }

@@ -19,14 +19,6 @@ using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
-    /// <summary>
-    /// The standard implementation of ICity.
-    /// </summary>
-    /// <remarks>
-    /// This class makes heavy use of the Humble Object pattern. Most of its logic involves
-    /// calling into various logic- and canon-suffixed classes that handle the bulk of 
-    /// behavior. Bugs are more likely to emerge from those classes rather than this one.
-    /// </remarks>
     public class City : MonoBehaviour, ICity {
 
         #region instance fields and properties

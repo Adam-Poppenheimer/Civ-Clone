@@ -34,6 +34,16 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private int _row;
 
+        public ISocialPolicyBonusesData UnlockingBonuses {
+            get { return _unlockingBonuses; }
+        }
+        [SerializeField] private SocialPolicyBonusesData _unlockingBonuses;
+
+        public ISocialPolicyBonusesData CompletionBonuses {
+            get { return _completionBonuses; }
+        }
+        [SerializeField] private SocialPolicyBonusesData _completionBonuses;      
+
         #endregion
 
         #endregion

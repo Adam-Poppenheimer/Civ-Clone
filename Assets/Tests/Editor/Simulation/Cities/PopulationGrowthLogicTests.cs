@@ -12,6 +12,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -24,6 +25,9 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<ICivilizationHappinessLogic>                   MockCivilizationHappinessLogic;
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
+        private Mock<ICityModifiers>                                MockCityModifiers;
+
+        private Mock<ICityModifier<float>> MockGrowthModifier;
 
         #endregion
 
@@ -37,11 +41,17 @@ namespace Assets.Tests.Simulation.Cities {
             MockCityPossessionCanon        = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockCivilizationHappinessLogic = new Mock<ICivilizationHappinessLogic>();
             MockBuildingPossessionCanon    = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockCityModifiers              = new Mock<ICityModifiers>();
+
+            MockGrowthModifier = new Mock<ICityModifier<float>>();
+
+            MockCityModifiers.Setup(modifiers => modifiers.Growth).Returns(MockGrowthModifier.Object);
 
             Container.Bind<ICityConfig>                                  ().FromInstance(ConfigMock                    .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon       .Object);
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivilizationHappinessLogic.Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon   .Object);
+            Container.Bind<ICityModifiers>                               ().FromInstance(MockCityModifiers             .Object);
 
             Container.Bind<PopulationGrowthLogic>().AsSingle();
         }
@@ -151,6 +161,8 @@ namespace Assets.Tests.Simulation.Cities {
             var cityTwo   = BuildCity(1, BuildCivilization(-7));
             var cityThree = BuildCity(1, BuildCivilization(-11));
 
+            MockGrowthModifier.Setup(logic => logic.GetValueForCity(It.IsAny<ICity>())).Returns(1f);
+
             var growthLogic = Container.Resolve<PopulationGrowthLogic>();
 
             Assert.AreEqual(
@@ -165,6 +177,17 @@ namespace Assets.Tests.Simulation.Cities {
                 0, growthLogic.GetFoodStockpileAdditionFromIncome(cityThree, 10),
                 "GetFoodStockpileAdditionFromIncome returned an unexpected value on a city whose owner has -11 happiness"
             );
+        }
+
+        [Test]
+        public void GetFoodStockpileAdditionFromIncome_ModifiedByGrowthModifier() {
+            var city = BuildCity(1, BuildCivilization(0));
+
+            MockGrowthModifier.Setup(logic => logic.GetValueForCity(city)).Returns(5f);
+
+            var growthLogic = Container.Resolve<PopulationGrowthLogic>();
+
+            Assert.AreEqual(10 * 5f, growthLogic.GetFoodStockpileAdditionFromIncome(city, 10f));
         }
 
         [Test(Description = "")]

@@ -39,6 +39,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _treeNormalizedY;
 
+        public ISocialPolicyBonusesData Bonuses {
+            get { return _bonuses; }
+        }
+        [SerializeField] private SocialPolicyBonusesData _bonuses;
+
         #endregion
 
         #endregion
