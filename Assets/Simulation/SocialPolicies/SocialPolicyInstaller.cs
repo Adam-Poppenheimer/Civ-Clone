@@ -39,6 +39,8 @@ namespace Assets.Simulation.SocialPolicies {
             Container.Bind<ISocialPolicyCanon>     ().To<SocialPolicyCanon>     ().AsSingle();
             Container.Bind<ISocialPolicyCostLogic> ().To<SocialPolicyCostLogic> ().AsSingle();
             Container.Bind<ISocialPolicyBonusLogic>().To<SocialPolicyBonusLogic>().AsSingle();
+
+            Container.Bind<FreeBuildingsPolicyResponder>().AsSingle().NonLazy();
         }
 
         #endregion

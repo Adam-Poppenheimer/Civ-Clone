@@ -30,6 +30,8 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public int   Hitpoints;
         [DataMember()] public float CurrentMovement;
 
+        [DataMember()] public List<string> AppliedFreeBuildings;
+
         #endregion
 
     }

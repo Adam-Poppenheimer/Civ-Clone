@@ -29,6 +29,7 @@ namespace Assets.Simulation.MapManagement {
         private IVisibilityResponder     VisibilityResponder;
         private IVisibilityCanon         VisibilityCanon;
         private ICapitalCitySynchronizer CapitalCitySynchronizer;
+        private IFreeBuildingsCanon      FreeBuildingsCanon;
         private MonoBehaviour            CoroutineInvoker;
 
         #endregion
@@ -49,6 +50,7 @@ namespace Assets.Simulation.MapManagement {
             IVisibilityResponder     visibilityResponder,
             IVisibilityCanon         visibilityCanon,
             ICapitalCitySynchronizer capitalCitySynchronizer,
+            IFreeBuildingsCanon      freeBuildingsCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer         = hexCellComposer;
@@ -63,6 +65,7 @@ namespace Assets.Simulation.MapManagement {
             VisibilityResponder     = visibilityResponder;
             VisibilityCanon         = visibilityCanon;
             CapitalCitySynchronizer = capitalCitySynchronizer;
+            FreeBuildingsCanon      = freeBuildingsCanon;
             CoroutineInvoker        = coroutineInvoker;
         }
 
@@ -94,6 +97,7 @@ namespace Assets.Simulation.MapManagement {
             yield return new WaitForEndOfFrame();
 
             CapitalCitySynchronizer.SetCapitalUpdating(false);
+            FreeBuildingsCanon.ApplyBuildingsToCities = false;
 
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);

@@ -16,6 +16,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Tests.Simulation.MapManagement {
 
@@ -30,12 +31,13 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<ISocialPolicyComposer> MockPolicyComposer;
         private Mock<IExplorationCanon>     MockExplorationCanon;
         private Mock<IHexGrid>              MockGrid;
+        private Mock<IFreeBuildingsCanon>   MockFreeBuildingsCanon;
 
         private List<ITechDefinition>       AvailableTechs        = new List<ITechDefinition>();
         private List<ICivilization>         AllCivilizations      = new List<ICivilization>();
         private List<IHexCell>              AllCells              = new List<IHexCell>();
         private List<ICivilizationTemplate> AvailableCivTemplates = new List<ICivilizationTemplate>();
-        
+        private List<IBuildingTemplate>     AvailableBuildings    = new List<IBuildingTemplate>();
 
         #endregion
 
@@ -49,6 +51,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             AllCivilizations     .Clear();
             AllCells             .Clear();
             AvailableCivTemplates.Clear();
+            AvailableBuildings   .Clear();
 
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
@@ -56,6 +59,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockPolicyComposer      = new Mock<ISocialPolicyComposer>();
             MockExplorationCanon    = new Mock<IExplorationCanon>();
             MockGrid                = new Mock<IHexGrid>();
+            MockFreeBuildingsCanon  = new Mock<IFreeBuildingsCanon>();
 
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
@@ -73,10 +77,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<ISocialPolicyComposer>().FromInstance(MockPolicyComposer     .Object);
             Container.Bind<IExplorationCanon>    ().FromInstance(MockExplorationCanon   .Object);
             Container.Bind<IHexGrid>             ().FromInstance(MockGrid               .Object);
+            Container.Bind<IFreeBuildingsCanon>  ().FromInstance(MockFreeBuildingsCanon .Object);
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
 
             Container.Bind<ReadOnlyCollection<ICivilizationTemplate>>().FromInstance(AvailableCivTemplates.AsReadOnly());
+
+            Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildings);
 
             Container.Bind<CivilizationComposer>().AsSingle();
         }
@@ -109,6 +116,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             civComposer.ClearRuntime();
 
             MockPolicyComposer.Verify(composer => composer.ClearPolicyRuntime(), Times.Once);
+        }
+
+        [Test]
+        public void ClearRuntime_FreeBuildingsCanonCleared() {
+            var civComposer = Container.Resolve<CivilizationComposer>();
+
+            civComposer.ClearRuntime();
+
+            MockFreeBuildingsCanon.Verify(canon => canon.Clear(), Times.Once);
         }
 
         [Test]
@@ -304,6 +320,51 @@ namespace Assets.Tests.Simulation.MapManagement {
             CollectionAssert.AreEquivalent(
                 new List<HexCoordinates>() { new HexCoordinates(1, 1) },
                 mapData.Civilizations[0].ExploredCells
+            );
+        }
+
+        [Test]
+        public void ComposeCivilizations_RecordsFreeBuildings() {
+            var buildingTemplateOne   = BuildBuildingTemplate("Building One");
+            var buildingTemplateTwo   = BuildBuildingTemplate("Building Two");
+            var buildingTemplateThree = BuildBuildingTemplate("Building Three");
+
+            var freeBuildingsOne = new List<IBuildingTemplate>() {
+                buildingTemplateOne, buildingTemplateTwo, buildingTemplateThree
+            };
+
+            var freeBuildingsTwo = new List<IBuildingTemplate>() {
+                buildingTemplateTwo, buildingTemplateThree
+            };
+
+            var civTemplateOne = BuildCivTemplate("Civ One", Color.black);
+
+            var civOne = BuildCivilization(civTemplateOne, 1, 10);
+
+            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
+
+            MockFreeBuildingsCanon.Setup(canon => canon.GetFreeBuildingsForCiv(civOne)).Returns(
+                new List<IEnumerable<IBuildingTemplate>>() { freeBuildingsOne, freeBuildingsTwo }
+            );
+
+            var mapData = new SerializableMapData();
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.ComposeCivilizations(mapData);
+
+            Assert.AreEqual(2, mapData.Civilizations[0].FreeBuildings.Count, "Incorrect number of free buildings");
+
+            CollectionAssert.AreEquivalent(
+                freeBuildingsOne.Select(template => template.name),
+                mapData.Civilizations[0].FreeBuildings[0],
+                "First free buildings set has unexpected elements"
+            );
+
+            CollectionAssert.AreEquivalent(
+                freeBuildingsTwo.Select(template => template.name),
+                mapData.Civilizations[0].FreeBuildings[1],
+                "Second free buildings set has unexpected elements"
             );
         }
 
@@ -615,6 +676,57 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockExplorationCanon.Verify(canon => canon.SetCellAsExploredByCiv(cellThree, civ), Times.Once,  "CellThree incorrectly left unexplored");
         }
 
+        [Test]
+        public void DecomposeCivilizations_RebuildsFreeBuildingsProperly() {
+            var buildingOne   = BuildBuildingTemplate("Building One");
+            var buildingTwo   = BuildBuildingTemplate("Building Two");
+            var buildingThree = BuildBuildingTemplate("Building Three");
+
+            var mapData = new SerializableMapData() {
+                Civilizations = new List<SerializableCivilizationData>() {
+                    new SerializableCivilizationData() {
+                        TemplateName = "Civ One",
+                        FreeBuildings = new List<List<string>>() {
+                            new List<string>() { "Building One", "Building Two", "Building Three" },
+                            new List<string>() { "Building Two", "Building Three" }
+                        }
+                    }
+                },
+                ActiveCivilization = "Civ One"
+            };
+
+            BuildCivTemplate("Civ One", Color.white);
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.DecomposeCivilizations(mapData);
+
+            var civ = AllCivilizations[0];
+
+            var buildingListOne = new List<IBuildingTemplate>() { buildingOne, buildingTwo, buildingThree };
+            var buildingListTwo = new List<IBuildingTemplate>() { buildingTwo, buildingThree };
+
+            MockFreeBuildingsCanon.Verify(
+                canon => canon.SubscribeFreeBuildingToCiv(
+                    It.Is<IEnumerable<IBuildingTemplate>>(
+                        set => new HashSet<IBuildingTemplate>(set).SetEquals(buildingListOne)
+                    ), civ
+                ),
+                Times.Once,
+                "SubscribeFreeBuildingToCiv not called correctly on the first free buildings set"
+            );
+
+            MockFreeBuildingsCanon.Verify(
+                canon => canon.SubscribeFreeBuildingToCiv(
+                    It.Is<IEnumerable<IBuildingTemplate>>(
+                        set => new HashSet<IBuildingTemplate>(set).SetEquals(buildingListTwo)
+                    ), civ
+                ),
+                Times.Once,
+                "SubscribeFreeBuildingToCiv not called correctly on the second free buildings set"
+            );
+        }
+
         #endregion
 
         #region utilities
@@ -692,6 +804,19 @@ namespace Assets.Tests.Simulation.MapManagement {
             AllCells.Add(newCell);
 
             return newCell;
+        }
+
+        private IBuildingTemplate BuildBuildingTemplate(string name) {
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Name = name;
+            mockTemplate.Setup(template => template.name).Returns(name);
+
+            var newTemplate = mockTemplate.Object;
+
+            AvailableBuildings.Add(newTemplate);
+
+            return newTemplate;
         }
 
         #endregion

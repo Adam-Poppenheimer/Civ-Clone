@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.Cities.Buildings;
+
 namespace Assets.Simulation.SocialPolicies {
 
     [Serializable]
@@ -67,15 +69,25 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _cityUnhappinessPerPopulation;
 
-        public bool SuppressesGarrisionedUnitMaintenance {
-            get { return _suppressesGarrisionedUnitMaintenance; }
+        public bool SuppressesGarrisonedUnitMaintenance {
+            get { return _suppressesGarrisonedUnitMaintenance; }
         }
-        [SerializeField] private bool _suppressesGarrisionedUnitMaintenance;
+        [SerializeField] private bool _suppressesGarrisonedUnitMaintenance;
 
-        public float GarrisionedCityBonusStrength {
+        public float GarrisonedCityBonusStrength {
             get { return _garrisionedCityBonusStrength; }
         }
         [SerializeField] private float _garrisionedCityBonusStrength;
+
+        public IEnumerable<IBuildingTemplate> FreeBuildingTemplates {
+            get { return _freeBuildingTemplates.Cast<IBuildingTemplate>(); }
+        }
+        [SerializeField] private List<BuildingTemplate> _freeBuildingTemplates;
+
+        public int FreeBuildingCount {
+            get { return _freeBuildingCount; }
+        }
+        [SerializeField] private int _freeBuildingCount;
 
         #endregion
 

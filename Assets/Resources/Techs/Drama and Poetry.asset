@@ -22,6 +22,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 437510262c28308419511171ff0c2aec, type: 2}
   _unitsEnabled: []
   _abilitiesEnabled: []
+  _improvementsEnabled: []
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []

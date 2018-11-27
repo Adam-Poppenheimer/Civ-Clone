@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation.SocialPolicies;
 using Assets.Simulation.Technology;
@@ -44,12 +45,38 @@ namespace Assets.Tests.Simulation.SocialPolicies {
             Container.Bind<ITechCanon>         ().FromInstance(MockTechCanon.Object);
             Container.Bind<CivilizationSignals>().FromInstance(CivSignals);
 
+            Container.Bind<IEnumerable<IPolicyTreeDefinition>>().WithId("Available Policy Trees").FromInstance(AvailableTrees);
+
             Container.Bind<SocialPolicyCanon>().AsSingle();
         }
 
         #endregion
 
         #region tests
+
+        [Test]
+        public void GetTreeWithPolicy_ReturnsTreeContainingPolicy() {
+            var policies = new List<ISocialPolicyDefinition>() {
+                BuildPolicy("Policy One", new List<ISocialPolicyDefinition>()),
+                BuildPolicy("Policy Two", new List<ISocialPolicyDefinition>()),
+                BuildPolicy("Policy Three", new List<ISocialPolicyDefinition>()),
+            };
+
+            var tree = BuildPolicyTree("Tree One", policies);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            Assert.AreEqual(tree, policyCanon.GetTreeWithPolicy(policies[1]));
+        }
+        
+        [Test]
+        public void GetTreeWithPolicy_ReturnsNullIfNoTreeHasPolicy() {
+            var policy = BuildPolicy("Policy", new List<ISocialPolicyDefinition>());
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            Assert.IsNull(policyCanon.GetTreeWithPolicy(policy));
+        }
 
         [Test]
         public void GetPoliciesUnlockedFor_StartsAsEmptyCollection() {
@@ -673,6 +700,145 @@ namespace Assets.Tests.Simulation.SocialPolicies {
                 policies, policyCanon.GetPoliciesUnlockedFor(civOne),
                 "GetPoliciesUnlockedFor returned an unexpected value"
             );
+        }
+
+        [Test]
+        public void SetPolicyAsUnlockedForCiv_FiresPolicyUnlockedEvent() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            CivSignals.CivUnlockedPolicySignal.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+                Assert.AreEqual(civOne,    data.Item1, "Incorrect civilization passed");
+                Assert.AreEqual(policyOne, data.Item2, "Incorrect policy passed");
+                Assert.Pass();
+            });
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+
+            Assert.Fail("CivUnlockedPolicySignal never fired");
+        }
+
+        [Test]
+        public void SetPolicyAsUnlockedForCiv_FiresTreeFinishedEventIfParentTreeCompleted() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            CivSignals.CivFinishedPolicyTreeSignal.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+                Assert.AreEqual(civOne,  data.Item1, "Incorrect civilization passed");
+                Assert.AreEqual(treeOne, data.Item2, "Incorrect tree passed");
+                Assert.Pass();
+            });
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+
+            Assert.Fail("CivFinishedPolicyTreeSignal never fired");
+        }
+
+        [Test]
+        public void SetPolicyAsUnlockedForCiv_DoesntFireTreeFinishedEventIfParentTreeNotCompleted() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+            BuildPolicy("Policy Two", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            CivSignals.CivFinishedPolicyTreeSignal.Subscribe(data => Assert.Fail());
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+        }
+
+        [Test]
+        public void SetPolicyAsLockedForCiv_FiresPolicyLockedEvent() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            CivSignals.CivLockedPolicySignal.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+                Assert.AreEqual(civOne,    data.Item1, "Incorrect civilization passed");
+                Assert.AreEqual(policyOne, data.Item2, "Incorrect policy passed");
+                Assert.Pass();
+            });
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+            policyCanon.SetPolicyAsLockedForCiv  (policyOne, civOne);
+
+            Assert.Fail("CivLockedPolicySignal never fired");
+        }
+
+        [Test]
+        public void SetPolicyAsLockedForCiv_FiresTreeUnfinishedEventIfTreeWasFinishedBefore() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+            var policyTwo = BuildPolicy("Policy Two", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyTwo, civOne);
+
+            CivSignals.CivUnfinishedPolicyTreeSignal.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+                Assert.AreEqual(civOne,  data.Item1, "Incorrect civilization passed");
+                Assert.AreEqual(treeOne, data.Item2, "Incorrect tree passed");
+                Assert.Pass();
+            });
+
+            policyCanon.SetPolicyAsLockedForCiv(policyTwo, civOne);
+        }
+
+        [Test]
+        public void SetPolicyAsLockedForCiv_DoesNotFireTreeUnfinishedEventIfTreeWasntFinishedBefore() {
+            var civOne = BuildCivilization("Civ One");
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+            BuildPolicy("Policy Two", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civOne)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
+
+            CivSignals.CivUnfinishedPolicyTreeSignal.Subscribe(data => Assert.Fail());
+
+            policyCanon.SetPolicyAsLockedForCiv(policyOne, civOne);
         }
 
         #endregion

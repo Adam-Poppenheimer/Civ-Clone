@@ -29,6 +29,8 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public HexCoordinates CapitalLocation;
 
+        [DataMember()] public List<List<string>> FreeBuildings;
+
         #endregion
 
     }

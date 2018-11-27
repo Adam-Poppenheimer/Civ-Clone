@@ -38,3 +38,18 @@ MonoBehaviour:
       GreatEngineer: 0
       GreatMerchant: 0
       GreatScientist: 0
+    _capitalBorderExpansionModifier: 0
+    _cityBorderExpansionModifier: 0
+    _capitalGrowthModifier: 0
+    _cityGrowthModifier: 0
+    _cityWonderProductionModifier: 0
+    _capitalHappinessPerPopulation: 0
+    _cityHappinessPerPopulation: 0
+    _capitalUnhappinessPerPopulation: 0
+    _cityUnhappinessPerPopulation: 0
+    _suppressesGarrisonedUnitMaintenance: 0
+    _garrisionedCityBonusStrength: 0
+    _freeBuildingTemplates:
+    - {fileID: 11400000, guid: ce572b53a96d06140b505df1538b79ee, type: 2}
+    - {fileID: 11400000, guid: 437510262c28308419511171ff0c2aec, type: 2}
+    _freeBuildingCount: 4

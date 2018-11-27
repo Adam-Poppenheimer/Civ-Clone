@@ -28,6 +28,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IVisibilityCanon                          VisibilityCanon;
         private IExplorationCanon                         ExplorationCanon;
         private ICivDefeatExecutor                        CivDefeatExecutor;
+        private IFreeBuildingsCanon                       FreeBuildingsCanon;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
 
         #endregion
@@ -39,7 +40,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            ICivDefeatExecutor civDefeatExecutor, ReadOnlyCollection<ICivilizationTemplate> civTemplates
+            ICivDefeatExecutor civDefeatExecutor, IFreeBuildingsCanon freeBuildingsCanon,
+            ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -49,6 +51,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityCanon     = visibilityCanon;
             ExplorationCanon    = explorationCanon;
             CivDefeatExecutor   = civDefeatExecutor;
+            FreeBuildingsCanon  = freeBuildingsCanon;
             CivTemplates        = civTemplates;
         }
 
@@ -68,6 +71,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
             CivDefeatExecutor.CheckForDefeat = false;
+            FreeBuildingsCanon.ApplyBuildingsToCities = false;
 
             Grid.Build(4, 3);
 

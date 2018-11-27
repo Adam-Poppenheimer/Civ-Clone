@@ -11,6 +11,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         #region methods
 
+        IPolicyTreeDefinition GetTreeWithPolicy(ISocialPolicyDefinition policy);
+
         IEnumerable<ISocialPolicyDefinition> GetPoliciesUnlockedFor(ICivilization civ);        
         IEnumerable<IPolicyTreeDefinition>   GetTreesUnlockedFor   (ICivilization civ);
 

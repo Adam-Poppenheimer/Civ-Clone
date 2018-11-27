@@ -31,6 +31,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
         private Mock<ICivilizationFactory>                          MockCivilizationFactory;
         private Mock<IProductionProjectFactory>                     MockProjectFactory;
+        private Mock<IFreeBuildingApplier>                          MockFreeBuildingApplier;
 
         private List<IBuildingTemplate> AvailableBuildingTemplates = new List<IBuildingTemplate>();
         private List<IUnitTemplate>     AvailableUnitTemplates     = new List<IUnitTemplate>();
@@ -52,12 +53,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             AllCities       .Clear();
             AllCivilizations.Clear();
 
-            MockGrid                    = new Mock<IHexGrid>();
-            MockCityFactory             = new Mock<ICityFactory>();
-            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockCivilizationFactory     = new Mock<ICivilizationFactory>();
-            MockProjectFactory          = new Mock<IProductionProjectFactory>();
+            MockGrid                = new Mock<IHexGrid>();
+            MockCityFactory         = new Mock<ICityFactory>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockCivilizationFactory = new Mock<ICivilizationFactory>();
+            MockProjectFactory      = new Mock<IProductionProjectFactory>();
+            MockFreeBuildingApplier = new Mock<IFreeBuildingApplier>();
 
             MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(AllCities       .AsReadOnly());
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
@@ -74,12 +76,13 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockProjectFactory.Setup(factory => factory.ConstructProject(It.IsAny<IUnitTemplate>()))
                               .Returns<IUnitTemplate>(template => BuildProject(null, template, 0));
 
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
-            Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory            .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon      .Object);
-            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivilizationFactory    .Object);
-            Container.Bind<IProductionProjectFactory>                    ().FromInstance(MockProjectFactory         .Object);
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid               .Object);
+            Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory        .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
+            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivilizationFactory.Object);
+            Container.Bind<IProductionProjectFactory>                    ().FromInstance(MockProjectFactory     .Object);
+            Container.Bind<IFreeBuildingApplier>                         ().FromInstance(MockFreeBuildingApplier.Object);
 
             Container.Bind<List<IBuildingTemplate>>().FromInstance(AvailableBuildingTemplates);
 
@@ -135,6 +138,15 @@ namespace Assets.Tests.Simulation.MapManagement {
             mockCityOne  .Verify(city => city.Destroy(), Times.Once, "CityOne was not destroyed as expected");
             mockCityTwo  .Verify(city => city.Destroy(), Times.Once, "CityTwo was not destroyed as expected");
             mockCityThree.Verify(city => city.Destroy(), Times.Once, "CityThree was not destroyed as expected");
+        }
+
+        [Test]
+        public void ClearRuntime_FreeBuildingApplierCleared() {
+            var composer = Container.Resolve<CityComposer>();
+
+            composer.ClearRuntime();
+
+            MockFreeBuildingApplier.Verify(applier => applier.Clear(), Times.Once);
         }
 
         [Test]
@@ -231,14 +243,14 @@ namespace Assets.Tests.Simulation.MapManagement {
             var cityTwo   = BuildCity(BuildHexCell(new HexCoordinates(2, 3)), BuildCivilization(), "City Two",   BuildUnit());
             var cityThree = BuildCity(BuildHexCell(new HexCoordinates(4, 5)), BuildCivilization(), "City Three", BuildUnit());
 
-            cityOne.CombatFacade.CurrentHitpoints       = 100;
-            cityOne.CombatFacade.CurrentMovement = 1;
+            cityOne.CombatFacade.CurrentHitpoints = 100;
+            cityOne.CombatFacade.CurrentMovement  = 1;
+            
+            cityTwo.CombatFacade.CurrentHitpoints = 200;
+            cityTwo.CombatFacade.CurrentMovement  = 2;
 
-            cityTwo.CombatFacade.CurrentHitpoints       = 200;
-            cityTwo.CombatFacade.CurrentMovement = 2;
-
-            cityThree.CombatFacade.CurrentHitpoints       = 300;
-            cityThree.CombatFacade.CurrentMovement = 3;
+            cityThree.CombatFacade.CurrentHitpoints = 300;
+            cityThree.CombatFacade.CurrentMovement  = 3;
 
             var mapData = new SerializableMapData();
 
@@ -292,6 +304,32 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             Assert.AreEqual("Building Template Two", projectThree.BuildingToConstruct, "ProjectThree has an unexpected BuildingToConstruct value");
             Assert.AreEqual("Unit Template Two",     projectThree.UnitToConstruct,     "ProjectThree has an unexpected UnitToConstruct value");
+        }
+
+        [Test]
+        public void ComposeCities_StoresAppliedFreeBuildingsByName() {
+            var appliedBuildings = new List<IBuildingTemplate>() {
+                BuildBuildingTemplate("Building One"), BuildBuildingTemplate("Building Two"),
+                BuildBuildingTemplate("Building Three"),
+            };
+
+            var cityOne = BuildCity(
+                BuildHexCell(new HexCoordinates(0, 0)), BuildCivilization(), "City One", BuildUnit()
+            );
+
+            MockFreeBuildingApplier.Setup(applier => applier.GetTemplatesAppliedToCity(cityOne))
+                                   .Returns(appliedBuildings);
+
+            var mapData = new SerializableMapData();
+
+            var composer = Container.Resolve<CityComposer>();
+
+            composer.ComposeCities(mapData);
+            
+            CollectionAssert.AreEquivalent(
+                appliedBuildings.Select(template => template.name),
+                mapData.Cities[0].AppliedFreeBuildings
+            );
         }
 
 
@@ -493,6 +531,46 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(null,            projectThree.BuildingToConstruct, "Project of CityThree has an incorrect BuildingToConstruct");
             Assert.AreEqual(unitTemplateTwo, projectThree.UnitToConstruct,     "Project of CityThree has an incorrect UnitToConstruct");
             Assert.AreEqual(20,              projectThree.Progress,            "Project of CityThree has an incorrect Progress");
+        }
+
+        [Test]
+        public void DecomposeCities_AppliesFreeBuildingTemplatesProperly() {
+            BuildHexCell(new HexCoordinates(0, 0));
+
+            BuildCivilization("Civ One");
+
+            var buildingOne = BuildBuildingTemplate("Building One");
+            var buildingTwo = BuildBuildingTemplate("Building Two");
+            BuildBuildingTemplate("Building Three");
+
+            var mapData = new SerializableMapData() {
+                Cities = new List<SerializableCityData>() {
+                    new SerializableCityData() {
+                        Location = new HexCoordinates(0, 0), Owner = "Civ One",
+                        AppliedFreeBuildings = new List<string>() {
+                            "Building One", "Building Two"
+                        }
+                    }
+                }
+            };
+
+            var composer = Container.Resolve<CityComposer>();
+
+            composer.DecomposeCities(mapData);
+
+            var expectedTemplates = new HashSet<IBuildingTemplate>();
+
+            expectedTemplates.Add(buildingOne);
+            expectedTemplates.Add(buildingTwo);
+
+            MockFreeBuildingApplier.Verify(
+                applier => applier.OverrideTemplatesAppliedToCity(
+                    AllCities[0],
+                    It.Is<IEnumerable<IBuildingTemplate>>(
+                        templates => expectedTemplates.SetEquals(templates)
+                    )
+                ), Times.Once
+            );
         }
 
         #endregion

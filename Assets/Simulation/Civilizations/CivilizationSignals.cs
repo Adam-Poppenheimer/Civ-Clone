@@ -40,6 +40,9 @@ namespace Assets.Simulation.Civilizations {
         public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTreeSignal { get; private set; }
         public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTreeSignal   { get; private set; }
 
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivFinishedPolicyTreeSignal   { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnfinishedPolicyTreeSignal { get; private set; }
+
         public ISubject<ICivilization> CivDefeatedSignal { get; private set; }
 
         public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTechSignal { get; private set; }
@@ -71,6 +74,9 @@ namespace Assets.Simulation.Civilizations {
 
             CivUnlockedPolicyTreeSignal = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
             CivLockedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+
+            CivFinishedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivUnfinishedPolicyTreeSignal = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
 
             CivDefeatedSignal = new Subject<ICivilization>();
 

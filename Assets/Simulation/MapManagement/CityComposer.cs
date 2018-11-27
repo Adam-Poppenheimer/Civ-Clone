@@ -26,6 +26,7 @@ namespace Assets.Simulation.MapManagement {
         private IEnumerable<IBuildingTemplate>                AvailableBuildingTemplates;
         private IEnumerable<IUnitTemplate>                    AvailableUnitTemplates;
         private IProductionProjectFactory                     ProjectFactory;
+        private IFreeBuildingApplier                          FreeBuildingApplier;
 
         #endregion
 
@@ -40,7 +41,8 @@ namespace Assets.Simulation.MapManagement {
             ICivilizationFactory civilizationFactory,
             List<IBuildingTemplate> availableBuildingTemplates, 
             [Inject(Id = "Available Unit Templates")] IEnumerable<IUnitTemplate> availableUnitTemplates,
-            IProductionProjectFactory projectFactory
+            IProductionProjectFactory projectFactory,
+            IFreeBuildingApplier freeBuildingApplier
         ) {
             Grid                       = grid;
             CityFactory                = cityFactory;
@@ -50,17 +52,22 @@ namespace Assets.Simulation.MapManagement {
             AvailableBuildingTemplates = availableBuildingTemplates;
             AvailableUnitTemplates     = availableUnitTemplates;
             ProjectFactory             = projectFactory;
+            FreeBuildingApplier        = freeBuildingApplier;
         }
 
         #endregion
 
         #region instance methods
 
+        #region from ICityComposer
+
         public void ClearRuntime() {
             foreach(var city in new List<ICity>(CityFactory.AllCities)) {
                 CityLocationCanon.ChangeOwnerOfPossession(city, null);
                 city.Destroy();
             }
+
+            FreeBuildingApplier.Clear();
         }
 
         public void ComposeCities(SerializableMapData mapData) {
@@ -90,6 +97,10 @@ namespace Assets.Simulation.MapManagement {
                     };
                 }
 
+                cityData.AppliedFreeBuildings = FreeBuildingApplier.GetTemplatesAppliedToCity(city)
+                                                                       .Select(template => template.name)
+                                                                       .ToList();
+
                 mapData.Cities.Add(cityData);
             }
         }
@@ -109,25 +120,54 @@ namespace Assets.Simulation.MapManagement {
                 newCity.CombatFacade.CurrentHitpoints = cityData.Hitpoints;
                 newCity.CombatFacade.CurrentMovement  = cityData.CurrentMovement;
 
-                if(cityData.ActiveProject != null) {
-                    if(cityData.ActiveProject.BuildingToConstruct != null) {
+                DecomposeActiveProject   (cityData, newCity);
+                DecomposeAppliedTemplates(cityData, newCity);
+            }
+        }
 
-                        var buildingTemplate = AvailableBuildingTemplates.Where(
-                            template => template.name.Equals(cityData.ActiveProject.BuildingToConstruct)
-                        ).First();
+        #endregion
+
+        private void DecomposeActiveProject(SerializableCityData cityData, ICity newCity) {
+            if(cityData.ActiveProject != null) {
+                if(cityData.ActiveProject.BuildingToConstruct != null) {
+
+                    var buildingTemplate = AvailableBuildingTemplates.Where(
+                        template => template.name.Equals(cityData.ActiveProject.BuildingToConstruct)
+                    ).First();
                         
-                        newCity.ActiveProject = ProjectFactory.ConstructProject(buildingTemplate);
+                    newCity.ActiveProject = ProjectFactory.ConstructProject(buildingTemplate);
 
-                    }else {
-                        var unitTemplate = AvailableUnitTemplates.Where(
-                            template => template.name.Equals(cityData.ActiveProject.UnitToConstruct)
-                        ).First();
+                }else {
+                    var unitTemplate = AvailableUnitTemplates.Where(
+                        template => template.name.Equals(cityData.ActiveProject.UnitToConstruct)
+                    ).First();
 
-                        newCity.ActiveProject = ProjectFactory.ConstructProject(unitTemplate);
+                    newCity.ActiveProject = ProjectFactory.ConstructProject(unitTemplate);
+                }
+
+                newCity.ActiveProject.Progress = cityData.ActiveProject.Progress;
+            }
+        }
+
+        private void DecomposeAppliedTemplates(SerializableCityData cityData, ICity newCity) {
+            if(cityData.AppliedFreeBuildings != null) {
+                var appliedBuildings = new List<IBuildingTemplate>();
+
+                foreach(var templateName in cityData.AppliedFreeBuildings) {
+                    var templateOfName = AvailableBuildingTemplates.Where(
+                        template => template.name.Equals(templateName)
+                    ).FirstOrDefault();
+
+                    if(templateOfName == null) {
+                        throw new InvalidOperationException(string.Format(
+                            "CityData.AppliedBuildingTemplates contained invalid building name {0}", templateName
+                        ));
                     }
 
-                    newCity.ActiveProject.Progress = cityData.ActiveProject.Progress;
+                    appliedBuildings.Add(templateOfName);
                 }
+
+                FreeBuildingApplier.OverrideTemplatesAppliedToCity(newCity, appliedBuildings);
             }
         }
 

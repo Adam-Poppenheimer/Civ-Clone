@@ -65,6 +65,8 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<ICapitalCitySynchronizer>    ().To<CapitalCitySynchronizer>    ().AsSingle();
             Container.Bind<IGlobalPromotionCanon>       ().To<GlobalPromotionCanon>       ().AsSingle();
             Container.Bind<IGreatPersonCanon>           ().To<GreatPersonCanon>           ().AsSingle();
+            Container.Bind<IFreeBuildingApplier>        ().To<FreeBuildingApplier>        ().AsSingle();
+            Container.Bind<IFreeBuildingsCanon>         ().To<FreeBuildingsCanon>         ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

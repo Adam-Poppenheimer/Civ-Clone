@@ -25,6 +25,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private ICivDefeatExecutor           CivDefeatExecutor;
         private ICameraFocuser               CameraFocuser;
         private IGreatMilitaryPointGainLogic GreatMilitaryPointGainLogic;
+        private IFreeBuildingsCanon          FreeBuildingsCanon;
 
         #endregion
 
@@ -35,7 +36,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             UIStateMachineBrain brain, IMapComposer mapComposer, ICameraFocuser cameraFocuser,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor,
-            IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic
+            IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic,
+            IFreeBuildingsCanon freeBuildingsCanon
         ){
             Brain                       = brain;
             MapComposer                 = mapComposer;
@@ -45,6 +47,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             ExplorationCanon            = explorationCanon;
             CivDefeatExecutor           = civDefeatExecutor;
             GreatMilitaryPointGainLogic = greatMilitaryPointGainLogic;
+            FreeBuildingsCanon          = freeBuildingsCanon;
         }
 
         #region from StateMachineBehaviour
@@ -67,6 +70,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             CameraFocuser.ActivateBeginTurnFocusing();
 
             GreatMilitaryPointGainLogic.TrackPointGain = true;
+
+            FreeBuildingsCanon.ApplyBuildingsToCities = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

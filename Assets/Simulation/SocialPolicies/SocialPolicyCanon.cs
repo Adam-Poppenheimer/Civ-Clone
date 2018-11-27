@@ -25,17 +25,22 @@ namespace Assets.Simulation.SocialPolicies {
 
 
 
-        private ITechCanon          TechCanon;
-        private CivilizationSignals CivSignals;
+        private ITechCanon                         TechCanon;
+        private CivilizationSignals                CivSignals;
+        private IEnumerable<IPolicyTreeDefinition> AvailablePolicyTrees;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public SocialPolicyCanon(ITechCanon techCanon, CivilizationSignals civSignals){
-            TechCanon  = techCanon;
-            CivSignals = civSignals;
+        public SocialPolicyCanon(
+            ITechCanon techCanon, CivilizationSignals civSignals,
+            [Inject(Id = "Available Policy Trees")] IEnumerable<IPolicyTreeDefinition> availablePolicyTrees
+        ) {
+            TechCanon            = techCanon;
+            CivSignals           = civSignals;
+            AvailablePolicyTrees = availablePolicyTrees;
         }
 
         #endregion
@@ -43,6 +48,12 @@ namespace Assets.Simulation.SocialPolicies {
         #region instance methods
 
         #region from ISocialPolicyCanon
+
+        public IPolicyTreeDefinition GetTreeWithPolicy(ISocialPolicyDefinition policy) {
+            return AvailablePolicyTrees.FirstOrDefault(
+                tree => tree.Policies.Contains(policy)
+            );
+        }
 
         public IEnumerable<ISocialPolicyDefinition> GetPoliciesUnlockedFor(ICivilization civ) {
             return PoliciesUnlockedByCiv[civ];
@@ -82,6 +93,14 @@ namespace Assets.Simulation.SocialPolicies {
             }else {
                 PoliciesUnlockedByCiv[civ].Add(policy);
 
+                var treeOfPolicy = GetTreeWithPolicy(policy);
+
+                if(treeOfPolicy != null && IsTreeCompletedByCiv(treeOfPolicy, civ)) {
+                    CivSignals.CivFinishedPolicyTreeSignal.OnNext(
+                        new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, treeOfPolicy)
+                    );
+                }
+
                 CivSignals.CivUnlockedPolicySignal.OnNext(
                     new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
                 );
@@ -93,11 +112,21 @@ namespace Assets.Simulation.SocialPolicies {
                 throw new InvalidOperationException("Policy already locked for the given civ");
 
             }else {
+                var treeOfPolicy = GetTreeWithPolicy(policy);
+
+                bool treeWasCompleted = treeOfPolicy != null && IsTreeCompletedByCiv(treeOfPolicy, civ);
+
                 PoliciesUnlockedByCiv[civ].Remove(policy);
 
                 CivSignals.CivLockedPolicySignal.OnNext(
                     new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
                 );
+
+                if(treeWasCompleted) {
+                    CivSignals.CivUnfinishedPolicyTreeSignal.OnNext(
+                        new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, treeOfPolicy)
+                    );
+                }
             }
         }
 
@@ -122,10 +151,11 @@ namespace Assets.Simulation.SocialPolicies {
                 throw new InvalidOperationException("Tree must be unlocked for the given civ");
 
             }else {
-                TreesUnlockedByCiv[civ].Remove(tree);
                 foreach(var policy in tree.Policies) {
                     SetPolicyAsLockedForCiv(policy, civ);
                 }
+
+                TreesUnlockedByCiv[civ].Remove(tree);
 
                 CivSignals.CivLockedPolicyTreeSignal.OnNext(
                     new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, tree)

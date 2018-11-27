@@ -18,7 +18,7 @@ namespace Assets.Simulation.Civilizations {
         public override void InstallBindings() {
             var suppressGarrisionMaintenanceModifier = new CivModifier<bool>(
                 new CivModifier<bool>.ExtractionData() {
-                    Extractor    = bonuses => bonuses.SuppressesGarrisionedUnitMaintenance,
+                    Extractor    = bonuses => bonuses.SuppressesGarrisonedUnitMaintenance,
                     Aggregator   = (a, b)  => a || b,
                     UnitaryValue = false
                 }

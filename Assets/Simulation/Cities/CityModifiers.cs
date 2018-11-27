@@ -80,7 +80,7 @@ namespace Assets.Simulation.Cities {
             GarrisionedRangedCombatStrength = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
                     CapitalBonusesExtractor = bonuses => 0f,
-                    CityBonusesExtractor    = bonuses => bonuses.GarrisionedCityBonusStrength,
+                    CityBonusesExtractor    = bonuses => bonuses.GarrisonedCityBonusStrength,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }

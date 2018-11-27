@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Civilizations;
+
 namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
 
     public class EscapeMenuBehaviour : StateMachineBehaviour {
@@ -14,8 +16,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         #region instance fields and properties
 
         private UIStateMachineBrain Brain;
-
-        private RectTransform EscapeMenuContainer;
+        private IFreeBuildingsCanon FreeBuildingsCanon;
+        private RectTransform       EscapeMenuContainer;
 
         #endregion
 
@@ -23,10 +25,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain,
+            UIStateMachineBrain brain, IFreeBuildingsCanon freeBuildingsCanon,
             [Inject(Id = "Escape Menu Container")] RectTransform escapeMenuContainer
         ) {
             Brain               = brain;
+            FreeBuildingsCanon  = freeBuildingsCanon;
             EscapeMenuContainer = escapeMenuContainer;
         }
 
@@ -35,12 +38,16 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
             EscapeMenuContainer.gameObject.SetActive(true);
 
+            FreeBuildingsCanon.ApplyBuildingsToCities = false;
+
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             EscapeMenuContainer.gameObject.SetActive(false);
+
+            FreeBuildingsCanon.ApplyBuildingsToCities = true;
 
             Brain.EnableCameraMovement();
         }

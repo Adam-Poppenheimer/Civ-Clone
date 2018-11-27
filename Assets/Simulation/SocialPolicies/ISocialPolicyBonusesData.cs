@@ -1,6 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using Assets.Simulation.Modifiers;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -25,9 +27,12 @@ namespace Assets.Simulation.SocialPolicies {
         float CapitalUnhappinessPerPopulation { get; }
         float CityUnhappinessPerPopulation    { get; }
 
-        bool SuppressesGarrisionedUnitMaintenance { get; }
+        bool SuppressesGarrisonedUnitMaintenance { get; }
 
-        float GarrisionedCityBonusStrength { get; }
+        float GarrisonedCityBonusStrength { get; }
+
+        IEnumerable<IBuildingTemplate> FreeBuildingTemplates { get; }
+        int                            FreeBuildingCount     { get; }
 
         #endregion
 
