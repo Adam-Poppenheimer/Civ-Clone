@@ -9,7 +9,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Visibility;
-using Assets.Simulation.Technology;
+using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
@@ -30,6 +30,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private ICivDefeatExecutor                        CivDefeatExecutor;
         private IFreeBuildingsCanon                       FreeBuildingsCanon;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
+        private IFreeUnitsResponder                       FreeUnitsResponder;
 
         #endregion
 
@@ -41,7 +42,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICivDefeatExecutor civDefeatExecutor, IFreeBuildingsCanon freeBuildingsCanon,
-            ReadOnlyCollection<ICivilizationTemplate> civTemplates
+            ReadOnlyCollection<ICivilizationTemplate> civTemplates,
+            IFreeUnitsResponder freeUnitsResponder
         ) {
             Brain               = brain;
             Grid                = grid;
@@ -53,6 +55,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivDefeatExecutor   = civDefeatExecutor;
             FreeBuildingsCanon  = freeBuildingsCanon;
             CivTemplates        = civTemplates;
+            FreeUnitsResponder  = freeUnitsResponder;
         }
 
         #region from StateMachineBehaviour
@@ -72,6 +75,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             CivDefeatExecutor.CheckForDefeat = false;
             FreeBuildingsCanon.ApplyBuildingsToCities = false;
+            FreeUnitsResponder.IsActive = false;
 
             Grid.Build(4, 3);
 

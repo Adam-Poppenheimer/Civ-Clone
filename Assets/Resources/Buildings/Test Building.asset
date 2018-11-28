@@ -80,8 +80,6 @@ MonoBehaviour:
   _prerequisiteResourcesNearCity: []
   _prerequisiteImprovementsNearCity: []
   _globalPrerequisiteBuildings: []
-  _landUnitProductionBonus: 0
-  _mountedUnitProductionBonus: 0
   _requiresAdjacentRiver: 0
   _requiresCoastalCity: 0
   _providesOverseaConnection: 0
@@ -90,3 +88,11 @@ MonoBehaviour:
   _globalPromotions: []
   _localPromotions: []
   _providesFreeTech: 1
+  _productionModifier:
+    _value: 0
+    _conditions: []
+    _joinedTogetherBy: 0
+  _freeUnits:
+  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
+  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
+  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}

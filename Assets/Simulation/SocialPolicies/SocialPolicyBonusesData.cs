@@ -7,6 +7,7 @@ using UnityEngine;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -89,6 +90,11 @@ namespace Assets.Simulation.SocialPolicies {
             get { return _productionModifier; }
         }
         [SerializeField] private ProductionModifier _productionModifier;
+
+        public IEnumerable<IUnitTemplate> FreeUnits {
+            get { return _freeUnits.Cast<IUnitTemplate>(); }
+        }
+        [SerializeField] private List<UnitTemplate> _freeUnits;
 
         #endregion
 

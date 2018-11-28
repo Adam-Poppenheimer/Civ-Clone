@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -33,6 +34,8 @@ namespace Assets.Simulation.SocialPolicies {
         int                            FreeBuildingCount     { get; }
 
         IProductionModifier ProductionModifier { get; }
+
+        IEnumerable<IUnitTemplate> FreeUnits { get; }
 
         #endregion
 

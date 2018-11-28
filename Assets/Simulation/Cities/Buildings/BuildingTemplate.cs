@@ -10,6 +10,7 @@ using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -192,6 +193,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return _productionModifier; }
         }
         [SerializeField] private ProductionModifier _productionModifier;
+
+        public IEnumerable<IUnitTemplate> FreeUnits {
+            get { return _freeUnits.Cast<IUnitTemplate>(); }
+        }
+        [SerializeField] private List<UnitTemplate> _freeUnits;
 
         #endregion
 

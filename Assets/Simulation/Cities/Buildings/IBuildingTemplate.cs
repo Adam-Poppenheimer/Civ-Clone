@@ -10,6 +10,7 @@ using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Cities.Production;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -103,6 +104,8 @@ namespace Assets.Simulation.Cities.Buildings {
         IEnumerable<IPromotion> GlobalPromotions { get; }
 
         bool ProvidesFreeTech { get; }
+
+        IEnumerable<IUnitTemplate> FreeUnits { get; }
 
         #endregion
 

@@ -67,6 +67,8 @@ namespace Assets.Simulation.Units {
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();
 
+            Container.Bind<IFreeUnitsResponder>().To<FreeUnitsResponder>().AsSingle().NonLazy();
+
             Container.Bind<CompositeUnitSignals>().AsSingle().NonLazy();
             Container.Bind<UnitSignals>().AsSingle();
         }
