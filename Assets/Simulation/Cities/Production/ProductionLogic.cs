@@ -9,8 +9,8 @@ using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.ResourceGeneration;
-using Assets.Simulation.Units;
-using Assets.Simulation.Modifiers;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.SocialPolicies;
 
 namespace Assets.Simulation.Cities.Production {
 
@@ -21,10 +21,11 @@ namespace Assets.Simulation.Cities.Production {
 
         #region instance fields and properties
 
-        private ICityConfig                               Config;
-        private IYieldGenerationLogic                     GenerationLogic;
-        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
-        private ICityModifiers                            CityModifiers;
+        private ICityConfig                                   Config;
+        private IYieldGenerationLogic                         GenerationLogic;
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private ISocialPolicyCanon                            SocialPolicyCanon;
 
         #endregion
 
@@ -34,12 +35,14 @@ namespace Assets.Simulation.Cities.Production {
         public ProductionLogic(
             ICityConfig config, IYieldGenerationLogic generationLogic,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
-            ICityModifiers cityModifiers
+            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
+            ISocialPolicyCanon socialPolicyCanon
         ){
             Config                  = config;
             GenerationLogic         = generationLogic;
             BuildingPossessionCanon = buildingPossessionCanon;
-            CityModifiers           = cityModifiers;
+            CityPossessionCanon     = cityPossessionCanon;
+            SocialPolicyCanon       = socialPolicyCanon;
         }
 
         #endregion
@@ -69,25 +72,18 @@ namespace Assets.Simulation.Cities.Production {
 
             float productionModifier = 0f;
 
-            if(project.UnitToConstruct != null) {
-
-                if(project.UnitToConstruct.Type == UnitType.Mounted) {
-                    foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
-                        productionModifier += building.Template.MountedUnitProductionBonus;
-                    }
+            foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
+                if(building.Template.ProductionModifier.DoesModifierApply(project, city)) {
+                    productionModifier += building.Template.ProductionModifier.Value;
                 }
-                if(project.UnitToConstruct.Type.IsLandMilitary()) {
-                    foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
-                        productionModifier += building.Template.LandUnitProductionBonus;
-                    }
+            }
+
+            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
+
+            foreach(var policyBonuses in SocialPolicyCanon.GetPolicyBonusesForCiv(cityOwner)) {
+                if(policyBonuses.ProductionModifier.DoesModifierApply(project, city)) {
+                    productionModifier += policyBonuses.ProductionModifier.Value;
                 }
-
-            }else if(project.BuildingToConstruct != null) {
-
-                if(project.BuildingToConstruct.Type.IsWonder()) {
-                    productionModifier += CityModifiers.WonderProduction.GetValueForCity(city);
-                }
-
             }
 
             float totalProduction = GenerationLogic.GetTotalYieldForCity(

@@ -13,11 +13,10 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        #region from ICityHappinessModifiers
+        #region from ICityModifiers
 
         public ICityModifier<float> Growth           { get; private set; }
         public ICityModifier<float> BorderExpansion  { get; private set; }
-        public ICityModifier<float> WonderProduction { get; private set; }
 
         public ICityModifier<float> PerPopulationHappiness   { get; private set; }
         public ICityModifier<float> PerPopulationUnhappiness { get; private set; }
@@ -45,15 +44,6 @@ namespace Assets.Simulation.Cities {
                 new CityModifier<float>.ExtractionData() {
                     CapitalBonusesExtractor = bonuses => bonuses.CapitalBorderExpansionModifier,
                     CityBonusesExtractor    = bonuses => bonuses.CityBorderExpansionModifier,
-                    Aggregator              = (a, b) => a + b,
-                    UnitaryValue            = 1f
-                }
-            );
-
-            WonderProduction = new CityModifier<float>(
-                new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => 0,
-                    CityBonusesExtractor    = bonuses => bonuses.CityWonderProductionModifier,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }
@@ -88,7 +78,6 @@ namespace Assets.Simulation.Cities {
 
             container.QueueForInject(Growth);
             container.QueueForInject(BorderExpansion);
-            container.QueueForInject(WonderProduction);
             container.QueueForInject(PerPopulationHappiness);
             container.QueueForInject(PerPopulationUnhappiness);
             container.QueueForInject(GarrisionedRangedCombatStrength);

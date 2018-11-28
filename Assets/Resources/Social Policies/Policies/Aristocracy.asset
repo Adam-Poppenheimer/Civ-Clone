@@ -41,8 +41,23 @@ MonoBehaviour:
     _cityBorderExpansionModifier: 0
     _capitalGrowthModifier: 0
     _cityGrowthModifier: 0
-    _cityWonderProductionModifier: 0.15
     _capitalHappinessPerPopulation: 0
     _cityHappinessPerPopulation: 0.1
     _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
+    _suppressesGarrisonedUnitMaintenance: 0
+    _garrisionedCityBonusStrength: 0
+    _freeBuildingTemplates: []
+    _freeBuildingCount: 0
+    _productionModifier:
+      _value: 0.15
+      _conditions:
+      - Target: 0
+        Restriction: 0
+        ProjectRestriction: 1
+        UnitRestriction: 0
+        UnitTypeArguments: 
+        BuildingRestriction: 0
+        BuildingTypeArguments: 0100000002000000
+        NameArguments: []
+      _joinedTogetherBy: 0

@@ -9,6 +9,7 @@ using UnityEngine;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Cities.Production;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -86,9 +87,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         IEnumerable<IBuildingTemplate> GlobalPrerequisiteBuildings { get; }
 
-        float LandUnitProductionBonus { get; }
-
-        float MountedUnitProductionBonus { get; }
+        IProductionModifier ProductionModifier { get; }
 
         bool RequiresAdjacentRiver { get; }
 

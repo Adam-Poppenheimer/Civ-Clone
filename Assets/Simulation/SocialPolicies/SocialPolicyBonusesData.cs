@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Cities.Production;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -43,11 +44,6 @@ namespace Assets.Simulation.SocialPolicies {
             get { return _cityGrowthModifier; }
         }
         [SerializeField] private float _cityGrowthModifier;
-
-        public float CityWonderProductionModifier {
-            get { return _cityWonderProductionModifier; }
-        }
-        [SerializeField] private float _cityWonderProductionModifier;
 
         public float CapitalHappinessPerPopulation {
             get { return _capitalHappinessPerPopulation; }
@@ -88,6 +84,11 @@ namespace Assets.Simulation.SocialPolicies {
             get { return _freeBuildingCount; }
         }
         [SerializeField] private int _freeBuildingCount;
+
+        public IProductionModifier ProductionModifier {
+            get { return _productionModifier; }
+        }
+        [SerializeField] private ProductionModifier _productionModifier;
 
         #endregion
 

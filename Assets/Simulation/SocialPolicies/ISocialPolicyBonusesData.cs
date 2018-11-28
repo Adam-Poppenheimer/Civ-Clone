@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-using Assets.Simulation.Modifiers;
+using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.SocialPolicies {
@@ -19,8 +19,6 @@ namespace Assets.Simulation.SocialPolicies {
         float CapitalGrowthModifier { get; }
         float CityGrowthModifier    { get; }
 
-        float CityWonderProductionModifier { get; }
-
         float CapitalHappinessPerPopulation { get; }
         float CityHappinessPerPopulation    { get; }
 
@@ -33,6 +31,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         IEnumerable<IBuildingTemplate> FreeBuildingTemplates { get; }
         int                            FreeBuildingCount     { get; }
+
+        IProductionModifier ProductionModifier { get; }
 
         #endregion
 

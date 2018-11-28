@@ -45,7 +45,6 @@ MonoBehaviour:
     _cityBorderExpansionModifier: -0.25
     _capitalGrowthModifier: 0
     _cityGrowthModifier: 0
-    _cityWonderProductionModifier: 0
     _capitalHappinessPerPopulation: 0
     _cityHappinessPerPopulation: 0
     _capitalUnhappinessPerPopulation: 0
@@ -54,6 +53,18 @@ MonoBehaviour:
     _garrisionedCityBonusStrength: 0
     _freeBuildingTemplates: []
     _freeBuildingCount: 0
+    _productionModifier:
+      _value: 5
+      _conditions:
+      - Target: 0
+        Restriction: 0
+        ProjectRestriction: 0
+        UnitRestriction: 0
+        UnitTypeArguments: 0200000004000000
+        BuildingRestriction: 0
+        BuildingTypeArguments: 
+        NameArguments: []
+      _joinedTogetherBy: 0
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -79,7 +90,6 @@ MonoBehaviour:
     _cityBorderExpansionModifier: 0
     _capitalGrowthModifier: 0
     _cityGrowthModifier: 0.15
-    _cityWonderProductionModifier: 0
     _capitalHappinessPerPopulation: 0
     _cityHappinessPerPopulation: 0
     _capitalUnhappinessPerPopulation: 0
@@ -89,3 +99,7 @@ MonoBehaviour:
     _freeBuildingTemplates:
     - {fileID: 11400000, guid: 18f16b9ac5768384b89178b903047b44, type: 2}
     _freeBuildingCount: 4
+    _productionModifier:
+      _value: 0
+      _conditions: []
+      _joinedTogetherBy: 0

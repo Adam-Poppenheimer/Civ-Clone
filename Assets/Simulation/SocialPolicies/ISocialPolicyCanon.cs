@@ -32,6 +32,8 @@ namespace Assets.Simulation.SocialPolicies {
         void OverrideUnlockedTreesForCiv   (IEnumerable<IPolicyTreeDefinition>   newUnlockedTrees,    ICivilization civ);
         void OverrideUnlockedPoliciesForCiv(IEnumerable<ISocialPolicyDefinition> newUnlockedPolicies, ICivilization civ);
 
+        IEnumerable<ISocialPolicyBonusesData> GetPolicyBonusesForCiv(ICivilization civ);
+
         #endregion
 
     }

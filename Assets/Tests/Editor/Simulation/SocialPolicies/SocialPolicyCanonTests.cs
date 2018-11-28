@@ -841,6 +841,81 @@ namespace Assets.Tests.Simulation.SocialPolicies {
             policyCanon.SetPolicyAsLockedForCiv(policyOne, civOne);
         }
 
+        [Test]
+        public void GetPolicyBonusesForCiv_ContainsBonusesFromUnlockedPolicies() {
+            var civ = BuildCivilization("Civ");
+
+            var bonusesOne   = BuildBonusesData();
+            var bonusesTwo   = BuildBonusesData();
+            var bonusesThree = BuildBonusesData();
+
+            var policyOne = BuildPolicy(bonusesOne);
+            var policyTwo = BuildPolicy(bonusesTwo);
+            BuildPolicy(bonusesThree);
+
+            var treeOne = BuildPolicyTree("Policy Tree One", AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civ)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civ);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civ);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyTwo, civ);
+
+            CollectionAssert.Contains(
+                policyCanon.GetPolicyBonusesForCiv(civ), bonusesOne,
+                "Does not contain bonusesOne"
+            );
+
+            CollectionAssert.Contains(
+                policyCanon.GetPolicyBonusesForCiv(civ), bonusesTwo,
+                "Does not contain bonusesTwo"
+            );
+        }
+
+        [Test]
+        public void GetPolicyBonusesForCiv_ContainsUnlockingBonusesFromUnlockedTrees() {
+            var civ = BuildCivilization("Civ");
+
+            var bonusesOne = BuildBonusesData();
+
+            var treeOne = BuildPolicyTree(bonusesOne, null, AvailablePolicies);
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civ)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civ);
+
+            CollectionAssert.Contains(policyCanon.GetPolicyBonusesForCiv(civ), bonusesOne);
+        }
+
+        [Test]
+        public void GetPolicyBonusesForCiv_ContainsCompletionBonusesFromCompletedTrees() {
+            var civ = BuildCivilization("Civ");
+
+            var bonusesOne = BuildBonusesData();
+            var bonusesTwo = BuildBonusesData();
+
+            var policyOne = BuildPolicy("Policy One", new List<ISocialPolicyDefinition>());
+            var policyTwo = BuildPolicy("Policy Two", new List<ISocialPolicyDefinition>());
+
+            var treeOne = BuildPolicyTree(null, bonusesOne, new List<ISocialPolicyDefinition>() { policyOne });
+            var treeTwo = BuildPolicyTree(null, bonusesTwo, new List<ISocialPolicyDefinition>() { policyTwo });
+
+            MockTechCanon.Setup(canon => canon.GetResearchedPolicyTrees(civ)).Returns(AvailableTrees);
+
+            var policyCanon = Container.Resolve<SocialPolicyCanon>();
+
+            policyCanon.SetTreeAsUnlockedForCiv(treeOne, civ);
+            policyCanon.SetTreeAsUnlockedForCiv(treeTwo, civ);
+            policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civ);
+
+            CollectionAssert.Contains      (policyCanon.GetPolicyBonusesForCiv(civ), bonusesOne, "Does not contain BonusesOne");
+            CollectionAssert.DoesNotContain(policyCanon.GetPolicyBonusesForCiv(civ), bonusesTwo, "Falsely contains BonusesOne");
+        }
+
         #endregion
 
         #region utilities
@@ -877,6 +952,39 @@ namespace Assets.Tests.Simulation.SocialPolicies {
             AvailableTrees.Add(newTree);
 
             return newTree;
+        }
+
+        private IPolicyTreeDefinition BuildPolicyTree(
+            ISocialPolicyBonusesData unlockingBonuses, ISocialPolicyBonusesData completionBonuses,
+            List<ISocialPolicyDefinition> policies
+        ) {
+            var mockTree = new Mock<IPolicyTreeDefinition>();
+
+            mockTree.Setup(tree => tree.UnlockingBonuses) .Returns(unlockingBonuses);
+            mockTree.Setup(tree => tree.CompletionBonuses).Returns(completionBonuses);
+            mockTree.Setup(tree => tree.Policies)         .Returns(policies);
+
+            var newTree = mockTree.Object;
+
+            AvailableTrees.Add(newTree);
+
+            return newTree;
+        }
+
+        private ISocialPolicyBonusesData BuildBonusesData() {
+            return new Mock<ISocialPolicyBonusesData>().Object;
+        }
+
+        private ISocialPolicyDefinition BuildPolicy(ISocialPolicyBonusesData bonuses) {
+            var mockPolicy = new Mock<ISocialPolicyDefinition>();
+
+            mockPolicy.Setup(policy => policy.Bonuses).Returns(bonuses);
+
+            var newPolicy = mockPolicy.Object;
+
+            AvailablePolicies.Add(newPolicy);
+
+            return newPolicy;
         }
 
         #endregion

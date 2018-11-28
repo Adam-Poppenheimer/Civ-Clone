@@ -9,6 +9,7 @@ using UnityEngine;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Units.Promotions;
+using Assets.Simulation.Cities.Production;
 
 namespace Assets.Simulation.Cities.Buildings {
 
@@ -147,16 +148,6 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<BuildingTemplate> _globalPrerequisiteBuildings;
 
-        public float LandUnitProductionBonus {
-            get { return _landUnitProductionBonus; }
-        }
-        [SerializeField] private float _landUnitProductionBonus;
-
-        public float MountedUnitProductionBonus {
-            get { return _mountedUnitProductionBonus; }
-        }
-        [SerializeField] private float _mountedUnitProductionBonus;
-
         public bool RequiresAdjacentRiver {
             get { return _requiresAdjacentRiver; }
         }
@@ -196,6 +187,11 @@ namespace Assets.Simulation.Cities.Buildings {
             get { return _providesFreeTech; }
         }
         [SerializeField] private bool _providesFreeTech;
+
+        public IProductionModifier ProductionModifier {
+            get { return _productionModifier; }
+        }
+        [SerializeField] private ProductionModifier _productionModifier;
 
         #endregion
 

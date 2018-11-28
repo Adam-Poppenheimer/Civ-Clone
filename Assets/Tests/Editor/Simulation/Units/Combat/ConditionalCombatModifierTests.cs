@@ -15,19 +15,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
     public class ConditionalCombatModifierTests : ZenjectUnitTestFixture {
 
-        #region instance fields and properties
-
-
-
-        #endregion
-
         #region instance methods
-
-        #region setup
-
-
-
-        #endregion
 
         #region tests
 

@@ -176,6 +176,21 @@ namespace Assets.Simulation.SocialPolicies {
             PoliciesUnlockedByCiv[civ] = newUnlockedPolicies.ToList();
         }
 
+        public IEnumerable<ISocialPolicyBonusesData> GetPolicyBonusesForCiv(ICivilization civ) {
+            var retval = GetPoliciesUnlockedFor(civ).Select(policy => policy.Bonuses);
+
+            retval = retval.Concat(
+                GetTreesUnlockedFor(civ).Select(tree => tree.UnlockingBonuses)
+            );
+
+            retval = retval.Concat(
+                GetTreesUnlockedFor(civ).Where(tree => IsTreeCompletedByCiv(tree, civ))
+                                        .Select(tree => tree.CompletionBonuses)
+            );
+
+            return retval;
+        }
+
         #endregion
 
         #endregion
