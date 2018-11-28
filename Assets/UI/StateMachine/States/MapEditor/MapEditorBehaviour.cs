@@ -13,6 +13,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -31,6 +32,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IFreeBuildingsCanon                       FreeBuildingsCanon;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         private IFreeUnitsResponder                       FreeUnitsResponder;
+        private IFreeBuildingsResponder                   FreeBuildingsResponder;
 
         #endregion
 
@@ -43,19 +45,20 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICivDefeatExecutor civDefeatExecutor, IFreeBuildingsCanon freeBuildingsCanon,
             ReadOnlyCollection<ICivilizationTemplate> civTemplates,
-            IFreeUnitsResponder freeUnitsResponder
+            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder
         ) {
-            Brain               = brain;
-            Grid                = grid;
-            MapComposer         = mapComposer;
-            CivFactory          = civFactory;
-            VisibilityResponder = visibilityResponder;
-            VisibilityCanon     = visibilityCanon;
-            ExplorationCanon    = explorationCanon;
-            CivDefeatExecutor   = civDefeatExecutor;
-            FreeBuildingsCanon  = freeBuildingsCanon;
-            CivTemplates        = civTemplates;
-            FreeUnitsResponder  = freeUnitsResponder;
+            Brain                  = brain;
+            Grid                   = grid;
+            MapComposer            = mapComposer;
+            CivFactory             = civFactory;
+            VisibilityResponder    = visibilityResponder;
+            VisibilityCanon        = visibilityCanon;
+            ExplorationCanon       = explorationCanon;
+            CivDefeatExecutor      = civDefeatExecutor;
+            FreeBuildingsCanon     = freeBuildingsCanon;
+            CivTemplates           = civTemplates;
+            FreeUnitsResponder     = freeUnitsResponder;
+            FreeBuildingsResponder = freeBuildingsResponder;
         }
 
         #region from StateMachineBehaviour
@@ -76,6 +79,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivDefeatExecutor.CheckForDefeat = false;
             FreeBuildingsCanon.ApplyBuildingsToCities = false;
             FreeUnitsResponder.IsActive = false;
+            FreeBuildingsResponder.IsActive = false;
 
             Grid.Build(4, 3);
 

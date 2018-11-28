@@ -11,6 +11,7 @@ using Assets.Simulation.Visibility;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -28,6 +29,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IGreatMilitaryPointGainLogic GreatMilitaryPointGainLogic;
         private IFreeBuildingsCanon          FreeBuildingsCanon;
         private IFreeUnitsResponder          FreeUnitsResponder;
+        private IFreeBuildingsResponder      FreeBuildingsResponder;
 
         #endregion
 
@@ -39,7 +41,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor,
             IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic,
-            IFreeBuildingsCanon freeBuildingsCanon, IFreeUnitsResponder freeUnitsResponder
+            IFreeBuildingsCanon freeBuildingsCanon, IFreeUnitsResponder freeUnitsResponder,
+            IFreeBuildingsResponder freeBuildingsResponder
         ){
             Brain                       = brain;
             MapComposer                 = mapComposer;
@@ -51,6 +54,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             GreatMilitaryPointGainLogic = greatMilitaryPointGainLogic;
             FreeBuildingsCanon          = freeBuildingsCanon;
             FreeUnitsResponder          = freeUnitsResponder;
+            FreeBuildingsResponder      = freeBuildingsResponder;
         }
 
         #region from StateMachineBehaviour
@@ -74,8 +78,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             GreatMilitaryPointGainLogic.TrackPointGain = true;
 
-            FreeBuildingsCanon.ApplyBuildingsToCities = true;
-            FreeUnitsResponder.IsActive               = true;
+            FreeBuildingsCanon    .ApplyBuildingsToCities = true;
+            FreeUnitsResponder    .IsActive               = true;
+            FreeBuildingsResponder.IsActive               = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

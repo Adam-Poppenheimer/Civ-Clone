@@ -199,6 +199,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<UnitTemplate> _freeUnits;
 
+        public IEnumerable<IBuildingTemplate> FreeBuildings {
+            get { return _freeBuildings.Cast<IBuildingTemplate>(); }
+        }
+        [SerializeField] private List<BuildingTemplate> _freeBuildings;
+
         #endregion
 
         #endregion

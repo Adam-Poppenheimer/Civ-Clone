@@ -11,6 +11,7 @@ using Zenject;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Units;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -32,6 +33,7 @@ namespace Assets.Simulation.MapManagement {
         private ICapitalCitySynchronizer CapitalCitySynchronizer;
         private IFreeBuildingsCanon      FreeBuildingsCanon;
         private IFreeUnitsResponder      FreeUnitsResponder;
+        private IFreeBuildingsResponder  FreeBuildingsResponder;
         private MonoBehaviour            CoroutineInvoker;
 
         #endregion
@@ -54,6 +56,7 @@ namespace Assets.Simulation.MapManagement {
             ICapitalCitySynchronizer capitalCitySynchronizer,
             IFreeBuildingsCanon      freeBuildingsCanon,
             IFreeUnitsResponder      freeUnitsResponder,
+            IFreeBuildingsResponder  freeBuildingsResponder,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer         = hexCellComposer;
@@ -70,6 +73,7 @@ namespace Assets.Simulation.MapManagement {
             CapitalCitySynchronizer = capitalCitySynchronizer;
             FreeBuildingsCanon      = freeBuildingsCanon;
             FreeUnitsResponder      = freeUnitsResponder;
+            FreeBuildingsResponder  = freeBuildingsResponder;
             CoroutineInvoker        = coroutineInvoker;
         }
 
@@ -102,7 +106,8 @@ namespace Assets.Simulation.MapManagement {
 
             CapitalCitySynchronizer.SetCapitalUpdating(false);
             FreeBuildingsCanon.ApplyBuildingsToCities = false;
-            FreeUnitsResponder.IsActive = false;
+            FreeUnitsResponder    .IsActive = false;
+            FreeBuildingsResponder.IsActive = false;
 
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);

@@ -105,7 +105,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         bool ProvidesFreeTech { get; }
 
-        IEnumerable<IUnitTemplate> FreeUnits { get; }
+        IEnumerable<IUnitTemplate>     FreeUnits     { get; }
+        IEnumerable<IBuildingTemplate> FreeBuildings { get; }
 
         #endregion
 

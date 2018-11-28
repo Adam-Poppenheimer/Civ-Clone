@@ -71,6 +71,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityProductionResolver>                  ().To<CityProductionResolver>         ().AsSingle();
             Container.Bind<ILocalPromotionLogic>                     ().To<LocalPromotionLogic>            ().AsSingle();
             Container.Bind<ICityCenterYieldLogic>                    ().To<CityCenterYieldLogic>           ().AsSingle();
+            Container.Bind<IFreeBuildingsResponder>                  ().To<FreeBuildingsResponder>         ().AsSingle().NonLazy();
 
             Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 

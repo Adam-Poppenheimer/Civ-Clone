@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
 
@@ -16,10 +17,11 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain Brain;
-        private IFreeBuildingsCanon FreeBuildingsCanon;
-        private RectTransform       EscapeMenuContainer;
-        private IFreeUnitsResponder FreeUnitsResponder;
+        private UIStateMachineBrain     Brain;
+        private IFreeBuildingsCanon     FreeBuildingsCanon;
+        private RectTransform           EscapeMenuContainer;
+        private IFreeUnitsResponder     FreeUnitsResponder;
+        private IFreeBuildingsResponder FreeBuildingsResponder;
 
         #endregion
 
@@ -29,12 +31,13 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         public void InjectDependencies(
             UIStateMachineBrain brain, IFreeBuildingsCanon freeBuildingsCanon,
             [Inject(Id = "Escape Menu Container")] RectTransform escapeMenuContainer,
-            IFreeUnitsResponder freeUnitsResponder
+            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder
         ) {
-            Brain               = brain;
-            FreeBuildingsCanon  = freeBuildingsCanon;
-            EscapeMenuContainer = escapeMenuContainer;
-            FreeUnitsResponder  = freeUnitsResponder;
+            Brain                  = brain;
+            FreeBuildingsCanon     = freeBuildingsCanon;
+            EscapeMenuContainer    = escapeMenuContainer;
+            FreeUnitsResponder     = freeUnitsResponder;
+            FreeBuildingsResponder = freeBuildingsResponder;
         }
 
         #region from StateMachineBehaviour
@@ -42,8 +45,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         public override void OnStateMachineEnter(Animator animator, int stateMachinePathHash) {
             EscapeMenuContainer.gameObject.SetActive(true);
 
-            FreeBuildingsCanon.ApplyBuildingsToCities = false;
-            FreeUnitsResponder.IsActive               = false;
+            FreeBuildingsCanon    .ApplyBuildingsToCities = false;
+            FreeUnitsResponder    .IsActive               = false;
+            FreeBuildingsResponder.IsActive               = false;
 
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
@@ -52,8 +56,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
             EscapeMenuContainer.gameObject.SetActive(false);
 
-            FreeBuildingsCanon.ApplyBuildingsToCities = true;
-            FreeUnitsResponder.IsActive               = true;
+            FreeBuildingsCanon    .ApplyBuildingsToCities = true;
+            FreeUnitsResponder    .IsActive               = true;
+            FreeBuildingsResponder.IsActive               = true;
 
             Brain.EnableCameraMovement();
         }
