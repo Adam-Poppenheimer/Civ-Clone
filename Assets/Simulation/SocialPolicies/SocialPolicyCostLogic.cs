@@ -42,6 +42,7 @@ namespace Assets.Simulation.SocialPolicies {
 
         public int GetCostOfNextPolicyForCiv(ICivilization civ) {
             int cityCount = CityPossessionCanon.GetPossessionsOfOwner(civ).Count();
+
             int policyCount = PolicyCanon.GetPoliciesUnlockedFor(civ).Count();
 
             float fromPolicies = CivConfig.BasePolicyCost + (
@@ -49,13 +50,17 @@ namespace Assets.Simulation.SocialPolicies {
                 (Mathf.Pow(policyCount, CivConfig.PolicyCostPerPolicyExponent))
             );
 
-            float fromCities = CivConfig.PolicyCostPerCityCoefficient * Math.Max(cityCount - 1, 1);
+            float fromCities = 1 + CivConfig.PolicyCostPerCityCoefficient * (cityCount - 1);
 
-            float unroundedValue = fromPolicies * fromCities;
+            float cityCostModifier = 1f + PolicyCanon.GetPolicyBonusesForCiv(civ).Sum(
+                bonuses => bonuses.PolicyCostFromCityCountModifier
+            );
 
-            int roundRem5 = (int)unroundedValue % 5;
+            float unroundedValue = fromPolicies * fromCities * cityCostModifier;
 
-            return Mathf.FloorToInt(unroundedValue) + 5 - roundRem5;
+            int distanceFromLastMultipleOf5 = (int)unroundedValue % 5;
+
+            return Mathf.FloorToInt(unroundedValue)- distanceFromLastMultipleOf5;
         }
 
         #endregion

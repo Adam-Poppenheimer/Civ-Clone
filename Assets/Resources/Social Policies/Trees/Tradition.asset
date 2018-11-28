@@ -54,17 +54,11 @@ MonoBehaviour:
     _freeBuildingTemplates: []
     _freeBuildingCount: 0
     _productionModifier:
-      _value: 5
-      _conditions:
-      - Target: 0
-        Restriction: 0
-        ProjectRestriction: 0
-        UnitRestriction: 0
-        UnitTypeArguments: 0200000004000000
-        BuildingRestriction: 0
-        BuildingTypeArguments: 
-        NameArguments: []
+      _value: 0
+      _conditions: []
       _joinedTogetherBy: 0
+    _freeUnits: []
+    _policyCostFromCityCountModifier: 0
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -103,3 +97,5 @@ MonoBehaviour:
       _value: 0
       _conditions: []
       _joinedTogetherBy: 0
+    _freeUnits: []
+    _policyCostFromCityCountModifier: 0

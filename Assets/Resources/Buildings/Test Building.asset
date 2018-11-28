@@ -14,7 +14,7 @@ MonoBehaviour:
   _description: 
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _type: 0
-  _productionCost: 1500
+  _productionCost: 1
   _maintenance: 0
   _slotCount: 0
   _slotYield:

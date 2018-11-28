@@ -37,6 +37,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         IEnumerable<IUnitTemplate> FreeUnits { get; }
 
+        float PolicyCostFromCityCountModifier { get; }
+
         #endregion
 
     }

@@ -96,6 +96,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private List<UnitTemplate> _freeUnits;
 
+        public float PolicyCostFromCityCountModifier {
+            get { return _policyCostFromCityCountModifier; }
+        }
+        [SerializeField] private float _policyCostFromCityCountModifier;
+
         #endregion
 
     }
