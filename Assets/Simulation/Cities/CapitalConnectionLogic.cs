@@ -50,8 +50,12 @@ namespace Assets.Simulation.Cities {
 
             var capitalOfOwner = CapitalCityCanon.GetCapitalOfCiv(cityOwner);
 
-            if(capitalOfOwner == cityOwner) {
+            if(capitalOfOwner == city) {
                 return true;
+            }
+
+            if(capitalOfOwner == null) {
+                return false;
             }
 
             var cityLocation    = CityLocationCanon.GetOwnerOfPossession(city);

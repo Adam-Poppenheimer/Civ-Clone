@@ -49,6 +49,7 @@ MonoBehaviour:
     _cityHappinessPerPopulation: 0
     _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
+    _connectedToCapitalHappiness: 0
     _suppressesGarrisonedUnitMaintenance: 0
     _garrisionedCityBonusStrength: 0
     _freeBuildingTemplates: []
@@ -88,6 +89,7 @@ MonoBehaviour:
     _cityHappinessPerPopulation: 0
     _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
+    _connectedToCapitalHappiness: 0
     _suppressesGarrisonedUnitMaintenance: 0
     _garrisionedCityBonusStrength: 0
     _freeBuildingTemplates:

@@ -149,6 +149,8 @@ namespace Assets.Tests.Simulation.Cities {
             MockCityPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCiv))
                                    .Returns(otherCities);
 
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(capital)).Returns(newCiv);
+
             foreach(var city in otherCities) {
                 MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(city)).Returns(newCiv);
             }

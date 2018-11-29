@@ -66,6 +66,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _cityUnhappinessPerPopulation;
 
+        public int ConnectedToCapitalHappiness {
+            get { return _connectedToCapitalHappiness; }
+        }
+        [SerializeField] private int _connectedToCapitalHappiness;
+
         public bool SuppressesGarrisonedUnitMaintenance {
             get { return _suppressesGarrisonedUnitMaintenance; }
         }

@@ -26,6 +26,8 @@ namespace Assets.Simulation.SocialPolicies {
         float CapitalUnhappinessPerPopulation { get; }
         float CityUnhappinessPerPopulation    { get; }
 
+        int ConnectedToCapitalHappiness { get; }
+
         bool SuppressesGarrisonedUnitMaintenance { get; }
 
         float GarrisonedCityBonusStrength { get; }

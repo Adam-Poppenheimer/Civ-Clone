@@ -14,6 +14,8 @@ using Assets.Simulation;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Modifiers;
+using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -26,10 +28,12 @@ namespace Assets.Tests.Simulation.Cities {
 
             public CityTestData City;
 
+            public CivilizationTestData Owner = new CivilizationTestData();
+
             public ConfigTestData Config;
 
             public float PerPopulationHappinessModifier   = 0f;
-            public float PerPopulationUnhappinessModifier = 0f;
+            public float PerPopulationUnhappinessModifier = 0f;            
 
         }
 
@@ -38,6 +42,20 @@ namespace Assets.Tests.Simulation.Cities {
             public int Population;
 
             public List<BuildingTestData> Buildings = new List<BuildingTestData>();
+
+            public bool IsConnectedToCapital;
+
+        }
+
+        public class CivilizationTestData {
+
+            public List<SocialPolicyBonusesTestData> PolicyBonuses = new List<SocialPolicyBonusesTestData>();
+
+        }
+
+        public class SocialPolicyBonusesTestData {
+
+            public int ConnectedToCapitalHappiness;
 
         }
 
@@ -54,6 +72,12 @@ namespace Assets.Tests.Simulation.Cities {
             public int UnhappinessPerCity;
 
             public float UnhappinessPerPopulation;
+
+        }
+
+        public class SocialPolicyTestData {
+
+            public int CapitalConnectionHappiness;
 
         }
 
@@ -159,6 +183,30 @@ namespace Assets.Tests.Simulation.Cities {
                     },
                     Config = new ConfigTestData() { }
                 }).SetName("Considers global happiness of buildings").Returns(18);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() { IsConnectedToCapital = true },
+                    Owner = new CivilizationTestData() {
+                        PolicyBonuses = new List<SocialPolicyBonusesTestData>() {
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 1 },
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 2 },
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 4 },
+                        }
+                    },
+                    Config = new ConfigTestData(),
+                }).SetName("Considers capital connection happiness from owner policies if connected to capital").Returns(7);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() { IsConnectedToCapital = false },
+                    Owner = new CivilizationTestData() {
+                        PolicyBonuses = new List<SocialPolicyBonusesTestData>() {
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 1 },
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 2 },
+                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 4 },
+                        }
+                    },
+                    Config = new ConfigTestData(),
+                }).SetName("Ignores capital connection happiness from owner policies if not connected to capital").Returns(0);
             }
         }
 
@@ -166,9 +214,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region instance fields and properties
 
-        private Mock<ICityConfig>                               MockConfig;
-        private Mock<IPossessionRelationship<ICity, IBuilding>> MockBuildingPossessionCanon;
-        private Mock<ICityModifiers>                   MockCityHappinessModifiers;
+        private Mock<ICityConfig>                                   MockConfig;
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
+        private Mock<ICityModifiers>                                MockCityHappinessModifiers;
+        private Mock<ISocialPolicyCanon>                            MockSocialPolicyCanon;
+        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<ICapitalConnectionLogic>                       MockCapitalConnectionLogic;
 
         #endregion
 
@@ -181,10 +232,16 @@ namespace Assets.Tests.Simulation.Cities {
             MockConfig                  = new Mock<ICityConfig>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockCityHappinessModifiers  = new Mock<ICityModifiers>();
-
-            Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
-            Container.Bind<ICityModifiers>                  ().FromInstance(MockCityHappinessModifiers .Object);
+            MockSocialPolicyCanon       = new Mock<ISocialPolicyCanon>();
+            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCapitalConnectionLogic  = new Mock<ICapitalConnectionLogic>();
+;
+            Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig                 .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<ICityModifiers>                               ().FromInstance(MockCityHappinessModifiers .Object);
+            Container.Bind<ISocialPolicyCanon>                           ().FromInstance(MockSocialPolicyCanon      .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
+            Container.Bind<ICapitalConnectionLogic>                      ().FromInstance(MockCapitalConnectionLogic .Object);
 
             Container.Bind<CityHappinessLogic>().AsSingle();
         }
@@ -213,7 +270,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetUnhappinessOfCityTestCases")]
         public int GetUnhappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var city = BuildCity(testData.City);
+            var civ = BuildCiv(testData.Owner);
+
+            var city = BuildCity(testData.City, civ);
 
             SetupConfig(testData);
 
@@ -225,7 +284,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetLocalHappinessOfCityTestCases")]
         public int GetLocalHappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var city = BuildCity(testData.City);
+            var civ = BuildCiv(testData.Owner);
+
+            var city = BuildCity(testData.City, civ);
 
             SetupConfig(testData);
 
@@ -237,7 +298,9 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetGlobalHappinessOfCityTestCases")]
         public int GetGlobalHappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var city = BuildCity(testData.City);
+            var civ = BuildCiv(testData.Owner);
+
+            var city = BuildCity(testData.City, civ);
 
             SetupConfig(testData);
 
@@ -250,14 +313,21 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private ICity BuildCity(CityTestData cityData) {
+        private ICity BuildCity(CityTestData cityData, ICivilization owner) {
             var mockCity = new Mock<ICity>();
 
             mockCity.Setup(city => city.Population).Returns(cityData.Population);
 
+            var newCity = mockCity.Object;
+
             MockBuildingPossessionCanon
-                .Setup(canon => canon.GetPossessionsOfOwner(mockCity.Object))
+                .Setup(canon => canon.GetPossessionsOfOwner(newCity))
                 .Returns(cityData.Buildings.Select(buildingData => BuildBuilding(buildingData)));
+
+            MockCapitalConnectionLogic.Setup(logic => logic.IsCityConnectedToCapital(newCity))
+                                      .Returns(cityData.IsConnectedToCapital);
+
+            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
 
             return mockCity.Object;
         }
@@ -274,6 +344,25 @@ namespace Assets.Tests.Simulation.Cities {
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 
             return mockBuilding.Object;
+        }
+
+        private ICivilization BuildCiv(CivilizationTestData civData) {
+            var newCiv = new Mock<ICivilization>().Object;
+
+            var policyBonuses = civData.PolicyBonuses.Select(data => BuildPolicyBonuses(data));
+
+            MockSocialPolicyCanon.Setup(canon => canon.GetPolicyBonusesForCiv(newCiv)).Returns(policyBonuses);
+
+            return newCiv;
+        }
+
+        private ISocialPolicyBonusesData BuildPolicyBonuses(SocialPolicyBonusesTestData bonusesData) {
+            var mockBonuses = new Mock<ISocialPolicyBonusesData>();
+
+            mockBonuses.Setup(bonuses => bonuses.ConnectedToCapitalHappiness)
+                       .Returns(bonusesData.ConnectedToCapitalHappiness);
+
+            return mockBonuses.Object;
         }
 
         #endregion
