@@ -51,7 +51,7 @@ namespace Assets.Simulation.Civilizations {
             var capitalTwoLocation = CityLocationCanon.GetOwnerOfPossession(capitalTwo);
 
             return HexPathfinder.GetShortestPathBetween(
-                capitalOneLocation, capitalTwoLocation, ConnectionPathCostLogic.BuildPathCostFunction(civOne, civTwo)
+                capitalOneLocation, capitalTwoLocation, ConnectionPathCostLogic.BuildCivConnectionPathCostFunction(civOne, civTwo)
             ) != null;
         }
 

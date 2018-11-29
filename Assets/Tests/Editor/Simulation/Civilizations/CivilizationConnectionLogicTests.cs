@@ -113,7 +113,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var oneConnectedToTwo = connectionLogic.AreCivilizationsConnected(civOne, civTwo);
 
             MockConnectionPathCostLogic.Verify(
-                logic => logic.BuildPathCostFunction(civOne, civTwo), Times.Once,
+                logic => logic.BuildCivConnectionPathCostFunction(civOne, civTwo), Times.Once,
                 "ConnectionPathCostLogic.BuildPathCostFunction was not called as expected"
             );
 
