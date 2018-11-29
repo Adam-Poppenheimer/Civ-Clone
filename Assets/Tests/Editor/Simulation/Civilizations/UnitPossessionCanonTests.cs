@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             possessionCanon.ChangeOwnerOfPossession(unitOne, civ);
             possessionCanon.ChangeOwnerOfPossession(unitTwo, civ);
 
-            CivSignals.CivilizationBeingDestroyedSignal.OnNext(civ);
+            CivSignals.CivBeingDestroyedSignal.OnNext(civ);
 
             unitOneMock.Verify(unit => unit.Destroy(), "UnitOne not destroyed");
             unitTwoMock.Verify(unit => unit.Destroy(), "UnitTwo not destroyed");

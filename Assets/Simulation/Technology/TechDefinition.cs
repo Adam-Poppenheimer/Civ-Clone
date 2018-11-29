@@ -93,6 +93,11 @@ namespace Assets.Simulation.Technology {
         }
         [SerializeField] private List<PolicyTreeDefinition> _policyTreesEnabled;
 
+        public int FreeGreatPeopleProvided {
+            get { return _freeGreatPeopleProvided; }
+        }
+        [SerializeField] private int _freeGreatPeopleProvided;
+
         #endregion
 
         #endregion

@@ -41,6 +41,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         float PolicyCostFromCityCountModifier { get; }
 
+        int FreeGreatPeople { get; }
+
         #endregion
 
     }

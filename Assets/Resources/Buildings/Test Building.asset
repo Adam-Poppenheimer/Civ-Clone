@@ -98,3 +98,4 @@ MonoBehaviour:
   - {fileID: 11400000, guid: c40a96340e746404cb3badd82ef46bfc, type: 2}
   _localBorderExpansionModifier: -0.5
   _globalBorderExpansionModifier: -0.25
+  _freeGreatPeople: 2

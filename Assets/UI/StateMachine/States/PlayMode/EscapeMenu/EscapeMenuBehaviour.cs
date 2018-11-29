@@ -22,6 +22,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         private RectTransform           EscapeMenuContainer;
         private IFreeUnitsResponder     FreeUnitsResponder;
         private IFreeBuildingsResponder FreeBuildingsResponder;
+        private IFreeGreatPeopleCanon   FreeGreatPeopleCanon;
 
         #endregion
 
@@ -31,13 +32,15 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
         public void InjectDependencies(
             UIStateMachineBrain brain, IFreeBuildingsCanon freeBuildingsCanon,
             [Inject(Id = "Escape Menu Container")] RectTransform escapeMenuContainer,
-            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder
+            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder,
+            IFreeGreatPeopleCanon freeGreatPeopleCanon
         ) {
             Brain                  = brain;
             FreeBuildingsCanon     = freeBuildingsCanon;
             EscapeMenuContainer    = escapeMenuContainer;
             FreeUnitsResponder     = freeUnitsResponder;
             FreeBuildingsResponder = freeBuildingsResponder;
+            FreeGreatPeopleCanon   = freeGreatPeopleCanon;
         }
 
         #region from StateMachineBehaviour
@@ -48,6 +51,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
             FreeBuildingsCanon    .ApplyBuildingsToCities = false;
             FreeUnitsResponder    .IsActive               = false;
             FreeBuildingsResponder.IsActive               = false;
+            FreeGreatPeopleCanon  .IsActive               = false;
 
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
@@ -59,6 +63,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.EscapeMenu {
             FreeBuildingsCanon    .ApplyBuildingsToCities = true;
             FreeUnitsResponder    .IsActive               = true;
             FreeBuildingsResponder.IsActive               = true;
+            FreeGreatPeopleCanon  .IsActive               = true;
 
             Brain.EnableCameraMovement();
         }

@@ -236,6 +236,12 @@ AnimatorController:
     m_DefaultInt: 0
     m_DefaultBool: 0
     m_Controller: {fileID: 0}
+  - m_Name: Free Great People Requested
+    m_Type: 9
+    m_DefaultFloat: 0
+    m_DefaultInt: 0
+    m_DefaultBool: 0
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -346,6 +352,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 615979d2cb21ab441a55aa421cdd6f64, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114268633775869430
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1967cdc597f99c64d8f92c749c35ec81, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!114 &114269629376179700
@@ -903,6 +920,30 @@ AnimatorStateTransition:
   m_InterruptionSource: 0
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
+--- !u!1101 &1101072078962372988
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Free Great People Requested
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102091426441128316}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
 --- !u!1101 &1101077199928525344
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
@@ -1432,6 +1473,30 @@ AnimatorStateTransition:
   m_OrderedInterruption: 1
   m_CanTransitionToSelf: 1
 --- !u!1101 &1101270309443440290
+AnimatorStateTransition:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: 
+  m_Conditions:
+  - m_ConditionMode: 1
+    m_ConditionEvent: Return Requested
+    m_EventTreshold: 0
+  m_DstStateMachine: {fileID: 0}
+  m_DstState: {fileID: 1102254978444817082}
+  m_Solo: 0
+  m_Mute: 0
+  m_IsExit: 0
+  serializedVersion: 3
+  m_TransitionDuration: 0
+  m_TransitionOffset: 0
+  m_ExitTime: 0.75
+  m_HasExitTime: 0
+  m_HasFixedDuration: 1
+  m_InterruptionSource: 0
+  m_OrderedInterruption: 1
+  m_CanTransitionToSelf: 1
+--- !u!1101 &1101275825815962332
 AnimatorStateTransition:
   m_ObjectHideFlags: 1
   m_PrefabParentObject: {fileID: 0}
@@ -3017,6 +3082,31 @@ AnimatorState:
   m_SpeedParameter: 
   m_MirrorParameter: 
   m_CycleOffsetParameter: 
+--- !u!1102 &1102091426441128316
+AnimatorState:
+  serializedVersion: 5
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_Name: Free Great People
+  m_Speed: 1
+  m_CycleOffset: 0
+  m_Transitions:
+  - {fileID: 1101275825815962332}
+  m_StateMachineBehaviours:
+  - {fileID: 114268633775869430}
+  m_Position: {x: 50, y: 50, z: 0}
+  m_IKOnFeet: 0
+  m_WriteDefaultValues: 1
+  m_Mirror: 0
+  m_SpeedParameterActive: 0
+  m_MirrorParameterActive: 0
+  m_CycleOffsetParameterActive: 0
+  m_Motion: {fileID: 0}
+  m_Tag: 
+  m_SpeedParameter: 
+  m_MirrorParameter: 
+  m_CycleOffsetParameter: 
 --- !u!1102 &1102104464544346772
 AnimatorState:
   serializedVersion: 5
@@ -3231,6 +3321,7 @@ AnimatorState:
   - {fileID: 1101174379876415282}
   - {fileID: 1101644484521429486}
   - {fileID: 1101120851095952562}
+  - {fileID: 1101072078962372988}
   m_StateMachineBehaviours:
   - {fileID: 114924754137884592}
   m_Position: {x: 50, y: 50, z: 0}
@@ -4133,14 +4224,17 @@ AnimatorStateMachine:
     m_Position: {x: 420, y: -276, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 1102049912485085782}
-    m_Position: {x: 348, y: -360, z: 0}
+    m_Position: {x: 348, y: -324, z: 0}
+  - serializedVersion: 1
+    m_State: {fileID: 1102091426441128316}
+    m_Position: {x: -96, y: -12, z: 0}
   m_ChildStateMachines:
   - serializedVersion: 1
     m_StateMachine: {fileID: 1107639837750173572}
     m_Position: {x: -216, y: -336, z: 0}
   - serializedVersion: 1
     m_StateMachine: {fileID: 1107702915718807178}
-    m_Position: {x: 204, y: -12, z: 0}
+    m_Position: {x: 252, y: -12, z: 0}
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
@@ -4154,7 +4248,7 @@ AnimatorStateMachine:
       - {fileID: 1109614000608483040}
   m_StateMachineBehaviours:
   - {fileID: 114104159532668200}
-  m_AnyStatePosition: {x: 360, y: -432, z: 0}
+  m_AnyStatePosition: {x: 360, y: -444, z: 0}
   m_EntryPosition: {x: 132, y: -312, z: 0}
   m_ExitPosition: {x: 120, y: 108, z: 0}
   m_ParentStateMachinePosition: {x: 108, y: -420, z: 0}

@@ -111,6 +111,8 @@ namespace Assets.Simulation.Cities.Buildings {
         float LocalBorderExpansionModifier  { get; }
         float GlobalBorderExpansionModifier { get; }
 
+        int FreeGreatPeople { get; }
+
         #endregion
 
     }

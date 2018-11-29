@@ -67,7 +67,7 @@ namespace Assets.Simulation.Technology {
             AvailableImprovements = availableImprovements;
             CivSignals            = civSignals;
 
-            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion

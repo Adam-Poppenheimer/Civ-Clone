@@ -9,17 +9,17 @@ using Zenject;
 
 using Assets.Simulation.Core;
 
-using Assets.UI.SocialPolicies;
+using Assets.UI.Units;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
-    public class SocialPoliciesState : StateMachineBehaviour {
+    public class FreeGreatPeopleState : StateMachineBehaviour {
 
         #region instance fields and properties
 
-        private SocialPoliciesDisplay SocialPoliciesDisplay;
-        private UIStateMachineBrain   Brain;
-        private IGameCore             GameCore;
+        private UIStateMachineBrain    Brain;
+        private IGameCore              GameCore;
+        private FreeGreatPeopleDisplay FreeGreatPeopleDisplay;
 
         #endregion
 
@@ -27,22 +27,21 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            SocialPoliciesDisplay socialPoliciesDisplay, UIStateMachineBrain brain,
-            IGameCore gameCore
-        ){
-            SocialPoliciesDisplay = socialPoliciesDisplay;
-            Brain                 = brain;
-            GameCore              = gameCore;
+            UIStateMachineBrain brain, IGameCore gameCore,
+            FreeGreatPeopleDisplay freeGreatPeopleDisplay
+        ) {
+            Brain                  = brain;
+            GameCore               = gameCore;
+            FreeGreatPeopleDisplay = freeGreatPeopleDisplay;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            SocialPoliciesDisplay.ObjectToDisplay = GameCore.ActiveCivilization;
-            SocialPoliciesDisplay.IgnoreCost = false;
+            FreeGreatPeopleDisplay.ObjectToDisplay = GameCore.ActiveCivilization;
 
-            SocialPoliciesDisplay.gameObject.SetActive(true);
-            SocialPoliciesDisplay.Refresh();
+            FreeGreatPeopleDisplay.gameObject.SetActive(true);
+            FreeGreatPeopleDisplay.Refresh();
 
             Brain.ClearListeners();
             Brain.DisableCameraMovement();
@@ -51,8 +50,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            SocialPoliciesDisplay.ObjectToDisplay = null;
-            SocialPoliciesDisplay.gameObject.SetActive(false);
+            FreeGreatPeopleDisplay.ObjectToDisplay = null;
+            FreeGreatPeopleDisplay.gameObject.SetActive(false);
         }
 
         #endregion

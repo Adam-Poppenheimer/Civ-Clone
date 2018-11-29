@@ -15,6 +15,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Technology;
+using Assets.Simulation.Units;
 
 using Assets.UI.Civilizations;
 using Assets.UI.Cities;
@@ -31,15 +32,17 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         private List<CivilizationDisplayBase>            CivilizationDisplays;
         private CoreSignals                              CoreSignals;
-        private List<RectTransform>                      DefaultPanels;
         private IGameCore                                GameCore;
         private UIStateMachineBrain                      Brain;
         private CitySummaryManager                       CitySummaryManager;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private ITechCanon                               TechCanon;
         private IExplorationCanon                        ExplorationCanon;
         private VisibilitySignals                        VisibilitySignals;
+        private IFreeGreatPeopleCanon                    FreeGreatPeopleCanon;
         private RectTransform                            FreeTechsDisplay;
-        private ITechCanon                               TechCanon;
+        private List<RectTransform>                      DefaultPanels;
+        private RectTransform                            FreeGreatPeopleNotification;
 
         #endregion
 
@@ -48,23 +51,27 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         [Inject]
         public void InjectDependencies(
             List<CivilizationDisplayBase> civilizationDisplays, CoreSignals coreSignals,
-            [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
             IGameCore gameCore, UIStateMachineBrain brain, CitySummaryManager citySummaryManager,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon, ITechCanon techCanon,
             IExplorationCanon explorationCanon, VisibilitySignals visibilitySignals,
-            [Inject(Id = "Free Techs Display")] RectTransform freeTechsDisplay, ITechCanon techCanon
+            IFreeGreatPeopleCanon freeGreatPeopleCanon,
+            [Inject(Id = "Free Techs Display")] RectTransform freeTechsDisplay, 
+            [Inject(Id = "Play Mode Default Panels")] List<RectTransform> defaultPanels,
+            [Inject(Id = "Free Great People Notification")] RectTransform freeGreatPeopleNotification
         ){
-            CivilizationDisplays = civilizationDisplays;
-            CoreSignals          = coreSignals;
-            DefaultPanels        = defaultPanels;
-            GameCore             = gameCore;
-            Brain                = brain;
-            CitySummaryManager   = citySummaryManager;
-            CityLocationCanon    = cityLocationCanon;
-            ExplorationCanon     = explorationCanon;
-            VisibilitySignals    = visibilitySignals;
-            FreeTechsDisplay     = freeTechsDisplay;
-            TechCanon            = techCanon;
+            CivilizationDisplays        = civilizationDisplays;
+            CoreSignals                 = coreSignals;
+            GameCore                    = gameCore;
+            Brain                       = brain;
+            CitySummaryManager          = citySummaryManager;
+            CityLocationCanon           = cityLocationCanon;
+            TechCanon                   = techCanon;
+            ExplorationCanon            = explorationCanon;
+            VisibilitySignals           = visibilitySignals;
+            FreeGreatPeopleCanon        = freeGreatPeopleCanon;
+            FreeTechsDisplay            = freeTechsDisplay;
+            DefaultPanels               = defaultPanels;
+            FreeGreatPeopleNotification = freeGreatPeopleNotification;
         }
 
         #region from StateMachineBehaviour
@@ -90,7 +97,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.BuildSummaries();
 
-            FreeTechsDisplay.gameObject.SetActive(TechCanon.GetFreeTechsForCiv(GameCore.ActiveCivilization) > 0);
+            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCivilization) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCivilization) > 0);
 
             SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
@@ -99,7 +107,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             CitySummaryManager.RepositionSummaries();
 
-            FreeTechsDisplay.gameObject.SetActive(TechCanon.GetFreeTechsForCiv(GameCore.ActiveCivilization) > 0);
+            FreeTechsDisplay        .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCivilization) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCivilization) > 0);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -116,7 +125,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             SignalSubscriptions.ForEach(subscription => subscription.Dispose());
             SignalSubscriptions.Clear();
-            FreeTechsDisplay.gameObject.SetActive(false);
+
+            FreeTechsDisplay        .gameObject.SetActive(false);
+            FreeGreatPeopleNotification.gameObject.SetActive(false);
         }
 
         #endregion

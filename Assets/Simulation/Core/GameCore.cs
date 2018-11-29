@@ -75,7 +75,7 @@ namespace Assets.Simulation.Core {
             
             playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
 
-            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
             civSignals.NewCivilizationCreatedSignal    .Subscribe(OnNewCivilizationCreated);
         }
 

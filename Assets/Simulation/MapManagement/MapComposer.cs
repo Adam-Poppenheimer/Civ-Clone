@@ -34,6 +34,7 @@ namespace Assets.Simulation.MapManagement {
         private IFreeBuildingsCanon      FreeBuildingsCanon;
         private IFreeUnitsResponder      FreeUnitsResponder;
         private IFreeBuildingsResponder  FreeBuildingsResponder;
+        private IFreeGreatPeopleCanon    FreeGreatPeopleCanon;
         private MonoBehaviour            CoroutineInvoker;
 
         #endregion
@@ -57,6 +58,7 @@ namespace Assets.Simulation.MapManagement {
             IFreeBuildingsCanon      freeBuildingsCanon,
             IFreeUnitsResponder      freeUnitsResponder,
             IFreeBuildingsResponder  freeBuildingsResponder,
+            IFreeGreatPeopleCanon    freeGreatPeopleCanon,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             HexCellComposer         = hexCellComposer;
@@ -74,6 +76,7 @@ namespace Assets.Simulation.MapManagement {
             FreeBuildingsCanon      = freeBuildingsCanon;
             FreeUnitsResponder      = freeUnitsResponder;
             FreeBuildingsResponder  = freeBuildingsResponder;
+            FreeGreatPeopleCanon    = freeGreatPeopleCanon;
             CoroutineInvoker        = coroutineInvoker;
         }
 
@@ -108,6 +111,7 @@ namespace Assets.Simulation.MapManagement {
             FreeBuildingsCanon.ApplyBuildingsToCities = false;
             FreeUnitsResponder    .IsActive = false;
             FreeBuildingsResponder.IsActive = false;
+            FreeGreatPeopleCanon  .IsActive = false;
 
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);

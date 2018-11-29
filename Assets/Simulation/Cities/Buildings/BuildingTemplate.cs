@@ -214,6 +214,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _globalBorderExpansionModifier;
 
+        public int FreeGreatPeople {
+            get { return _freeGreatPeople; }
+        }
+        [SerializeField] private int _freeGreatPeople;
+
         #endregion
 
         #endregion

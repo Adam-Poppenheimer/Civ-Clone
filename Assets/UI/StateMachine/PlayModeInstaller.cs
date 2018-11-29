@@ -45,6 +45,9 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private RectTransform DealsReceivedDisplay;
         [SerializeField] private RectTransform DeclareWarDisplay;
         [SerializeField] private RectTransform FreeTechsDisplay;
+        [SerializeField] private RectTransform FreeGreatPeopleNotification;
+
+        [SerializeField] private FreeGreatPeopleDisplay FreeGreatPeopleDisplay;
 
         #endregion
 
@@ -62,14 +65,17 @@ namespace Assets.UI.StateMachine {
 
             Container.Bind<SpecialtyResourceSummaryDisplay>().FromInstance(SpecialtyResourceSummaryDisplay);
 
-            Container.Bind<List<RectTransform>>  ().WithId("Play Mode Default Panels")    .FromInstance(PlayModeDefaultPanels);
-            Container.Bind<List<UnitDisplayBase>>().WithId("Ranged Attack State Displays").FromInstance(RangedAttackStateDisplays);
-            Container.Bind<GameObject>           ().WithId("Escape Menu Options Display") .FromInstance(EscapeMenuOptionsDisplay);
-            Container.Bind<GameObject>           ().WithId("Save Game Display")           .FromInstance(SaveGameDisplay);
-            Container.Bind<RectTransform>        ().WithId("Proposal Display")            .FromInstance(ProposalDisplay);
-            Container.Bind<RectTransform>        ().WithId("Deals Received Display")      .FromInstance(DealsReceivedDisplay);
-            Container.Bind<RectTransform>        ().WithId("Declare War Display")         .FromInstance(DeclareWarDisplay);
-            Container.Bind<RectTransform>        ().WithId("Free Techs Display")          .FromInstance(FreeTechsDisplay);
+            Container.Bind<List<RectTransform>>  ().WithId("Play Mode Default Panels")      .FromInstance(PlayModeDefaultPanels);
+            Container.Bind<List<UnitDisplayBase>>().WithId("Ranged Attack State Displays")  .FromInstance(RangedAttackStateDisplays);
+            Container.Bind<GameObject>           ().WithId("Escape Menu Options Display")   .FromInstance(EscapeMenuOptionsDisplay);
+            Container.Bind<GameObject>           ().WithId("Save Game Display")             .FromInstance(SaveGameDisplay);
+            Container.Bind<RectTransform>        ().WithId("Proposal Display")              .FromInstance(ProposalDisplay);
+            Container.Bind<RectTransform>        ().WithId("Deals Received Display")        .FromInstance(DealsReceivedDisplay);
+            Container.Bind<RectTransform>        ().WithId("Declare War Display")           .FromInstance(DeclareWarDisplay);
+            Container.Bind<RectTransform>        ().WithId("Free Techs Display")            .FromInstance(FreeTechsDisplay);
+            Container.Bind<RectTransform>        ().WithId("Free Great People Notification").FromInstance(FreeGreatPeopleNotification);
+
+            Container.Bind<FreeGreatPeopleDisplay>().FromInstance(FreeGreatPeopleDisplay);
         }
 
         #endregion

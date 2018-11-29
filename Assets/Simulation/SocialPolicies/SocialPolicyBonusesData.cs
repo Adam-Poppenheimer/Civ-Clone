@@ -106,6 +106,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _policyCostFromCityCountModifier;
 
+        public int FreeGreatPeople {
+            get { return _freeGreatPeople; }
+        }
+        [SerializeField] private int _freeGreatPeople;
+
         #endregion
 
     }

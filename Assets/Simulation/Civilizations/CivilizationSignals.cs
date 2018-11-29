@@ -20,7 +20,7 @@ namespace Assets.Simulation.Civilizations {
         #region instance fields and properties
 
         public ISubject<ICivilization> NewCivilizationCreatedSignal     { get; private set; }
-        public ISubject<ICivilization> CivilizationBeingDestroyedSignal { get; private set; }
+        public ISubject<ICivilization> CivBeingDestroyedSignal { get; private set; }
 
         public ISubject<Tuple<ICivilization, ICity>> CivGainedCitySignal { get; private set; }
         public ISubject<Tuple<ICivilization, ICity>> CivLosingCitySignal { get; private set; }
@@ -55,7 +55,7 @@ namespace Assets.Simulation.Civilizations {
 
         public CivilizationSignals(){
             NewCivilizationCreatedSignal     = new Subject<ICivilization>();
-            CivilizationBeingDestroyedSignal = new Subject<ICivilization>();
+            CivBeingDestroyedSignal = new Subject<ICivilization>();
 
             CivGainedCitySignal = new Subject<Tuple<ICivilization, ICity>>();
             CivLosingCitySignal = new Subject<Tuple<ICivilization, ICity>>();

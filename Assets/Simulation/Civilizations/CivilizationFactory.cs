@@ -45,7 +45,7 @@ namespace Assets.Simulation.Civilizations {
             Signals      = signals;
             CivContainer = civContainer;
 
-            signals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            signals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion

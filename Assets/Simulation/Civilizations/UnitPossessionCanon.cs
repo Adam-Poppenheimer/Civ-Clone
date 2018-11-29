@@ -30,7 +30,7 @@ namespace Assets.Simulation.Civilizations {
             ResourceLockingCanon = resourceLockingCanon;
             CivSignals           = civSignals;
 
-            civSignals.CivilizationBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion

@@ -30,6 +30,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IFreeBuildingsCanon          FreeBuildingsCanon;
         private IFreeUnitsResponder          FreeUnitsResponder;
         private IFreeBuildingsResponder      FreeBuildingsResponder;
+        private IFreeGreatPeopleCanon        FreeGreatPeopleCanon;
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor,
             IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic,
             IFreeBuildingsCanon freeBuildingsCanon, IFreeUnitsResponder freeUnitsResponder,
-            IFreeBuildingsResponder freeBuildingsResponder
+            IFreeBuildingsResponder freeBuildingsResponder, IFreeGreatPeopleCanon freeGreatPeopleCanon
         ){
             Brain                       = brain;
             MapComposer                 = mapComposer;
@@ -55,6 +56,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             FreeBuildingsCanon          = freeBuildingsCanon;
             FreeUnitsResponder          = freeUnitsResponder;
             FreeBuildingsResponder      = freeBuildingsResponder;
+            FreeGreatPeopleCanon        = freeGreatPeopleCanon;
         }
 
         #region from StateMachineBehaviour
@@ -81,6 +83,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             FreeBuildingsCanon    .ApplyBuildingsToCities = true;
             FreeUnitsResponder    .IsActive               = true;
             FreeBuildingsResponder.IsActive               = true;
+            FreeGreatPeopleCanon  .IsActive               = true;
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

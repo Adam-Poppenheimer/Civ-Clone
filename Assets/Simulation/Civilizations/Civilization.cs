@@ -65,7 +65,7 @@ namespace Assets.Simulation.Civilizations {
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.CivilizationBeingDestroyedSignal.OnNext(this);
+            Signals.CivBeingDestroyedSignal.OnNext(this);
         }
 
         #endregion

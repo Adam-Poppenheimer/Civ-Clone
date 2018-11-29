@@ -33,6 +33,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         private IFreeUnitsResponder                       FreeUnitsResponder;
         private IFreeBuildingsResponder                   FreeBuildingsResponder;
+        private IFreeGreatPeopleCanon                     FreeGreatPeopleCanon;
 
         #endregion
 
@@ -45,7 +46,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICivDefeatExecutor civDefeatExecutor, IFreeBuildingsCanon freeBuildingsCanon,
             ReadOnlyCollection<ICivilizationTemplate> civTemplates,
-            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder
+            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder,
+            IFreeGreatPeopleCanon freeGreatPeopleCanon
         ) {
             Brain                  = brain;
             Grid                   = grid;
@@ -59,6 +61,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             CivTemplates           = civTemplates;
             FreeUnitsResponder     = freeUnitsResponder;
             FreeBuildingsResponder = freeBuildingsResponder;
+            FreeGreatPeopleCanon   = freeGreatPeopleCanon;
         }
 
         #region from StateMachineBehaviour
@@ -78,8 +81,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             CivDefeatExecutor.CheckForDefeat = false;
             FreeBuildingsCanon.ApplyBuildingsToCities = false;
-            FreeUnitsResponder.IsActive = false;
+            FreeUnitsResponder    .IsActive = false;
             FreeBuildingsResponder.IsActive = false;
+            FreeGreatPeopleCanon  .IsActive = false;
 
             Grid.Build(4, 3);
 

@@ -46,6 +46,8 @@ namespace Assets.Simulation.Technology {
 
         IEnumerable<IPolicyTreeDefinition> PolicyTreesEnabled { get; }
 
+        int FreeGreatPeopleProvided { get; }
+
         #endregion
 
     }
