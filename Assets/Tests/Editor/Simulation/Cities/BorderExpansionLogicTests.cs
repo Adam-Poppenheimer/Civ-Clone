@@ -31,9 +31,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<ICityConfig>                              MockConfig;
         private Mock<IYieldGenerationLogic>                    MockYieldGenerationLogic;
         private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
-        private Mock<ICityModifiers>                           MockCityModifiers;
-
-        private Mock<ICityModifier<float>> MockBorderExpansion;
+        private Mock<IBorderExpansionModifierLogic>            MockBorderExpansionModifierLogic;
 
         #endregion
 
@@ -43,23 +41,19 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockHexGrid                  = new Mock<IHexGrid>();
-            MockTerritoryPossessionCanon = new Mock<IPossessionRelationship<ICity, IHexCell>>();
-            MockConfig                   = new Mock<ICityConfig>();
-            MockYieldGenerationLogic     = new Mock<IYieldGenerationLogic>();
-            MockCityLocationCanon        = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockCityModifiers            = new Mock<ICityModifiers>();
+            MockHexGrid                      = new Mock<IHexGrid>();
+            MockTerritoryPossessionCanon     = new Mock<IPossessionRelationship<ICity, IHexCell>>();
+            MockConfig                       = new Mock<ICityConfig>();
+            MockYieldGenerationLogic         = new Mock<IYieldGenerationLogic>();
+            MockCityLocationCanon            = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockBorderExpansionModifierLogic = new Mock<IBorderExpansionModifierLogic>();
 
-            MockBorderExpansion   = new Mock<ICityModifier<float>>();
-
-            MockCityModifiers.Setup(modifiers => modifiers.BorderExpansion).Returns(MockBorderExpansion.Object);
-
-            Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid                 .Object);
-            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockTerritoryPossessionCanon.Object);
-            Container.Bind<ICityConfig>                             ().FromInstance(MockConfig                  .Object);
-            Container.Bind<IYieldGenerationLogic>                   ().FromInstance(MockYieldGenerationLogic    .Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon       .Object);
-            Container.Bind<ICityModifiers>                          ().FromInstance(MockCityModifiers           .Object);
+            Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid                     .Object);
+            Container.Bind<IPossessionRelationship<ICity, IHexCell>>().FromInstance(MockTerritoryPossessionCanon    .Object);
+            Container.Bind<ICityConfig>                             ().FromInstance(MockConfig                      .Object);
+            Container.Bind<IYieldGenerationLogic>                   ().FromInstance(MockYieldGenerationLogic        .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon           .Object);
+            Container.Bind<IBorderExpansionModifierLogic>           ().FromInstance(MockBorderExpansionModifierLogic.Object);
 
             Container.Bind<BorderExpansionLogic>().AsSingle();
         }
@@ -322,7 +316,9 @@ namespace Assets.Tests.Simulation.Cities {
             MockConfig.SetupGet(config => config.PreviousCellCountCoefficient).Returns(10);
             MockConfig.SetupGet(config => config.PreviousCellCountExponent).Returns(1.1f);
 
-            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(1f);
+            MockBorderExpansionModifierLogic.Setup(
+                logic => logic.GetBorderExpansionModifierForCity(city)
+            ).Returns(1f);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -337,7 +333,9 @@ namespace Assets.Tests.Simulation.Cities {
 
             MockConfig.Setup(config => config.CellCostBase).Returns(20);
 
-            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(5f);
+            MockBorderExpansionModifierLogic.Setup(
+                logic => logic.GetBorderExpansionModifierForCity(city)
+            ).Returns(5f);
 
             var expansionLogic = Container.Resolve<BorderExpansionLogic>();
 
@@ -359,7 +357,9 @@ namespace Assets.Tests.Simulation.Cities {
                new Mock<IHexCell>().Object,
             });
 
-            MockBorderExpansion.Setup(logic => logic.GetValueForCity(city)).Returns(1f);
+            MockBorderExpansionModifierLogic.Setup(
+                logic => logic.GetBorderExpansionModifierForCity(city)
+            ).Returns(1f);
 
             MockConfig.SetupGet(config => config.CellCostBase).Returns(20);
             MockConfig.SetupGet(config => config.PreviousCellCountCoefficient).Returns(10);

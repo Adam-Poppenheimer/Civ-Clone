@@ -108,6 +108,9 @@ namespace Assets.Simulation.Cities.Buildings {
         IEnumerable<IUnitTemplate>     FreeUnits     { get; }
         IEnumerable<IBuildingTemplate> FreeBuildings { get; }
 
+        float LocalBorderExpansionModifier  { get; }
+        float GlobalBorderExpansionModifier { get; }
+
         #endregion
 
     }

@@ -204,6 +204,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private List<BuildingTemplate> _freeBuildings;
 
+        public float LocalBorderExpansionModifier {
+            get { return _localBorderExpansionModifier; }
+        }
+        [SerializeField] private float _localBorderExpansionModifier;
+
+        public float GlobalBorderExpansionModifier {
+            get { return _globalBorderExpansionModifier; }
+        }
+        [SerializeField] private float _globalBorderExpansionModifier;
+
         #endregion
 
         #endregion

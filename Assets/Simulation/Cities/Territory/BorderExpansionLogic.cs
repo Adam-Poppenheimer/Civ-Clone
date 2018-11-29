@@ -27,7 +27,7 @@ namespace Assets.Simulation.Cities.Territory {
         private ICityConfig                              Config;
         private IYieldGenerationLogic                    YieldGenerationLogic;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
-        private ICityModifiers                           CityModifiers;
+        private IBorderExpansionModifierLogic            BorderExpansionModifierLogic;
 
         #endregion
 
@@ -38,14 +38,14 @@ namespace Assets.Simulation.Cities.Territory {
             IHexGrid hexGrid, IPossessionRelationship<ICity, IHexCell> possessionCanon,
             ICityConfig config, IYieldGenerationLogic resourceGenerationLogic,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            ICityModifiers cityModifiers
+            IBorderExpansionModifierLogic borderExpansionModifierLogic
         ){
-            HexGrid              = hexGrid;
-            PossessionCanon      = possessionCanon;
-            Config               = config;
-            YieldGenerationLogic = resourceGenerationLogic;
-            CityLocationCanon    = cityLocationCanon;
-            CityModifiers        = cityModifiers;
+            HexGrid                      = hexGrid;
+            PossessionCanon              = possessionCanon;
+            Config                       = config;
+            YieldGenerationLogic         = resourceGenerationLogic;
+            CityLocationCanon            = cityLocationCanon;
+            BorderExpansionModifierLogic = borderExpansionModifierLogic;
         }
 
         #endregion
@@ -100,21 +100,21 @@ namespace Assets.Simulation.Cities.Territory {
         }
 
         /// <inheritdoc/>
-        public int GetCultureCostOfAcquiringCell(ICity city, IHexCell tile) {
+        public int GetCultureCostOfAcquiringCell(ICity city, IHexCell cell) {
             if(city == null) {
                 throw new ArgumentNullException("city");
-            }else if(tile == null) {
-                throw new ArgumentNullException("tile");
+            }else if(cell == null) {
+                throw new ArgumentNullException("cell");
             }
 
-            var tileCount = PossessionCanon.GetPossessionsOfOwner(city).Count();
+            var cellCount = PossessionCanon.GetPossessionsOfOwner(city).Count();
 
             var unmodifiedExpansionCost = Config.CellCostBase + Mathf.Pow(
-                Config.PreviousCellCountCoefficient * (tileCount - 1),
+                Config.PreviousCellCountCoefficient * (cellCount - 1),
                 Config.PreviousCellCountExponent
             );
 
-            var expansionModifiers = CityModifiers.BorderExpansion.GetValueForCity(city);
+            var expansionModifiers = BorderExpansionModifierLogic.GetBorderExpansionModifierForCity(city);
 
             return Mathf.FloorToInt(unmodifiedExpansionCost * expansionModifiers);
         }

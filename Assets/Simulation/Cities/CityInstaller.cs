@@ -73,6 +73,7 @@ namespace Assets.Simulation.Cities {
             Container.Bind<ICityCenterYieldLogic>                    ().To<CityCenterYieldLogic>           ().AsSingle();
             Container.Bind<IFreeBuildingsResponder>                  ().To<FreeBuildingsResponder>         ().AsSingle().NonLazy();
             Container.Bind<ICapitalConnectionLogic>                  ().To<CapitalConnectionLogic>         ().AsSingle();
+            Container.Bind<IBorderExpansionModifierLogic>            ().To<BorderExpansionModifierLogic>   ().AsSingle();
 
             Container.Bind<CityCaptureResponder>().AsSingle().NonLazy();
 
