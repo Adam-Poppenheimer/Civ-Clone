@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 using UniRx;
 
@@ -14,15 +16,19 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region instance fields and properties
 
-        private IUnitConfig Config;
+        private IUnitConfig    Config;
+        private IUnitModifiers UnitModifiers;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public UnitExperienceLogic(IUnitConfig config, UnitSignals unitSignals) {
-            Config = config;
+        public UnitExperienceLogic(
+            IUnitConfig config, IUnitModifiers unitModifiers, UnitSignals unitSignals
+        ) {
+            Config        = config;
+            UnitModifiers = unitModifiers;
             
             unitSignals.MeleeCombatWithUnitSignal .Subscribe(OnMeleeCombat);
             unitSignals.RangedCombatWithUnitSignal.Subscribe(OnRangedCombat);
@@ -53,11 +59,15 @@ namespace Assets.Simulation.Units.Promotions {
             }
 
             if(attacker.Type != UnitType.City && attacker.CurrentHitpoints > 0) {
-                attacker.Experience += Config.MeleeAttackerExperience;
+                attacker.Experience += Mathf.RoundToInt( 
+                    Config.MeleeAttackerExperience * UnitModifiers.ExperienceGain.GetValueForUnit(attacker)
+                );
             }
 
             if(defender.Type != UnitType.City && defender.CurrentHitpoints > 0) {
-                defender.Experience += Config.MeleeDefenderExperience;
+                defender.Experience += Mathf.RoundToInt(
+                    Config.MeleeDefenderExperience * UnitModifiers.ExperienceGain.GetValueForUnit(defender)
+                );
             }
         }
 
@@ -71,12 +81,16 @@ namespace Assets.Simulation.Units.Promotions {
 
             if(attacker.Type != UnitType.City && attacker.CurrentHitpoints > 0) {
                 if(defender.Type != UnitType.City || combatResults.DamageToDefender > 0) {
-                    attacker.Experience += Config.RangedAttackerExperience;
+                    attacker.Experience += Mathf.RoundToInt(
+                        Config.RangedAttackerExperience * UnitModifiers.ExperienceGain.GetValueForUnit(attacker)
+                    );
                 }
             }
 
             if(defender.Type != UnitType.City && defender.CurrentHitpoints > 0) {
-                defender.Experience += Config.RangedDefenderExperience;
+                defender.Experience += Mathf.RoundToInt(
+                    Config.RangedDefenderExperience * UnitModifiers.ExperienceGain.GetValueForUnit(defender)
+                );
             }
         }
 

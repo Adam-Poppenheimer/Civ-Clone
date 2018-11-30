@@ -116,6 +116,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _improvementSpeedModifier;
 
+        public float UnitExperienceGainModifier {
+            get { return _unitExperienceGainModifier; }
+        }
+        [SerializeField] private float _unitExperienceGainModifier;
+
         #endregion
 
     }

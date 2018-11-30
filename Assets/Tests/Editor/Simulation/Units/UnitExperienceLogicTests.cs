@@ -46,6 +46,8 @@ namespace Assets.Tests.Simulation.Units {
 
             public int Hitpoints;
 
+            public float ExperienceGainModifier = 1f;
+
         }
 
         public class UnitConfigTestData {
@@ -189,6 +191,13 @@ namespace Assets.Tests.Simulation.Units {
                     DamageToDefender = 50,
                     UnitConfig = new UnitConfigTestData() { MeleeAttackerExperience = 5 }
                 }).SetName("Defender is civilian").Returns(0);
+
+                yield return new TestCaseData(new CombatExperienceGainTestData() {
+                    Attacker = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50, ExperienceGainModifier = 2f },
+                    Defender = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50 },
+                    DamageToDefender = 50,
+                    UnitConfig = new UnitConfigTestData() { MeleeAttackerExperience = 5 }
+                }).SetName("Attacker experience increased by experience gain modifier").Returns(10);
             }
         }
 
@@ -242,6 +251,13 @@ namespace Assets.Tests.Simulation.Units {
                     DamageToDefender = 50,
                     UnitConfig = new UnitConfigTestData() { MeleeDefenderExperience = 5 }
                 }).SetName("Defender is civilian").Returns(0);
+
+                yield return new TestCaseData(new CombatExperienceGainTestData() {
+                    Attacker = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50 },
+                    Defender = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50, ExperienceGainModifier = 2 },
+                    DamageToDefender = 50,
+                    UnitConfig = new UnitConfigTestData() { MeleeDefenderExperience = 5 }
+                }).SetName("Defender experience increased by experience gain modifier").Returns(10);
             }
         }
 
@@ -302,6 +318,13 @@ namespace Assets.Tests.Simulation.Units {
                     DamageToDefender = 50,
                     UnitConfig = new UnitConfigTestData() { RangedAttackerExperience = 5 }
                 }).SetName("Defender is civilian").Returns(0);
+
+                yield return new TestCaseData(new CombatExperienceGainTestData() {
+                    Attacker = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50, ExperienceGainModifier = 2 },
+                    Defender = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50 },
+                    DamageToDefender = 50,
+                    UnitConfig = new UnitConfigTestData() { RangedAttackerExperience = 5 }
+                }).SetName("Attacker experience increased by experience gain modifier").Returns(10);
             }
         }
 
@@ -355,6 +378,13 @@ namespace Assets.Tests.Simulation.Units {
                     DamageToDefender = 50,
                     UnitConfig = new UnitConfigTestData() { RangedDefenderExperience = 5 }
                 }).SetName("Defender is civilian").Returns(0);
+
+                yield return new TestCaseData(new CombatExperienceGainTestData() {
+                    Attacker = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50 },
+                    Defender = new UnitTestData() { Type = UnitType.Melee, Hitpoints = 50, ExperienceGainModifier = 2 },
+                    DamageToDefender = 50,
+                    UnitConfig = new UnitConfigTestData() { RangedDefenderExperience = 5 }
+                }).SetName("Defender experience increased by experience gain modifier").Returns(10);
             }
         }
 
@@ -362,7 +392,10 @@ namespace Assets.Tests.Simulation.Units {
 
         #region instance fields and properties
 
-        private Mock<IUnitConfig> MockUnitConfig;
+        private Mock<IUnitConfig>    MockUnitConfig;
+        private Mock<IUnitModifiers> MockUnitModifiers;
+
+        private Mock<IUnitModifier<float>> MockExperienceGainModifier;
 
         #endregion
 
@@ -372,10 +405,16 @@ namespace Assets.Tests.Simulation.Units {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitConfig = new Mock<IUnitConfig>();
+            MockUnitConfig    = new Mock<IUnitConfig>();
+            MockUnitModifiers = new Mock<IUnitModifiers>();
 
-            Container.Bind<IUnitConfig>().FromInstance(MockUnitConfig.Object);
-            Container.Bind<UnitSignals>().AsSingle();
+            MockExperienceGainModifier = new Mock<IUnitModifier<float>>();
+
+            MockUnitModifiers.Setup(modifiers => modifiers.ExperienceGain).Returns(MockExperienceGainModifier.Object);
+
+            Container.Bind<IUnitConfig>   ().FromInstance(MockUnitConfig   .Object);
+            Container.Bind<IUnitModifiers>().FromInstance(MockUnitModifiers.Object);
+            Container.Bind<UnitSignals>   ().AsSingle();
 
             Container.Bind<UnitExperienceLogic>().AsSingle().NonLazy();
         }
@@ -500,6 +539,9 @@ namespace Assets.Tests.Simulation.Units {
 
             newUnit.Level     = unitData.Level;
             newUnit.CurrentHitpoints = unitData.Hitpoints;
+
+            MockExperienceGainModifier.Setup(modifier => modifier.GetValueForUnit(newUnit))
+                                      .Returns(unitData.ExperienceGainModifier);
 
             return newUnit;
         }

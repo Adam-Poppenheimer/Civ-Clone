@@ -60,6 +60,9 @@ MonoBehaviour:
       _joinedTogetherBy: 0
     _freeUnits: []
     _policyCostFromCityCountModifier: 0
+    _freeGreatPeople: 0
+    _improvementSpeedModifier: 0
+    _unitExperienceGainModifier: 10
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -101,3 +104,6 @@ MonoBehaviour:
       _joinedTogetherBy: 0
     _freeUnits: []
     _policyCostFromCityCountModifier: 0
+    _freeGreatPeople: 0
+    _improvementSpeedModifier: 0
+    _unitExperienceGainModifier: 0

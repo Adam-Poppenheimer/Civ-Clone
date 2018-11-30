@@ -60,6 +60,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
             Container.Bind<ICityCombatModifierLogic>    ().To<CityCombatModifierLogic>    ().AsSingle();
             Container.Bind<IFreeGreatPeopleCanon>       ().To<FreeGreatPeopleCanon>       ().AsSingle();
+            Container.Bind<IUnitModifiers>              ().To<UnitModifiers>              ().AsSingle();
             
             Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();

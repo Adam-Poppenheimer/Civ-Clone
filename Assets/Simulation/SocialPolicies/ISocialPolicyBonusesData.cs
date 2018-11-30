@@ -45,6 +45,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         float ImprovementSpeedModifier { get; }
 
+        float UnitExperienceGainModifier { get; }
+
         #endregion
 
     }

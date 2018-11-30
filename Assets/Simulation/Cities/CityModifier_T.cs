@@ -33,12 +33,15 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
+        private ExtractionData DataForExtraction;
+
+
+
+
         private ISocialPolicyCanon                            SocialPolicyCanon;
         private ICapitalCityCanon                             CapitalCityCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
-
-        private ExtractionData DataForExtraction;
 
         #endregion
 
