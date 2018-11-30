@@ -17,7 +17,7 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public string Template;
 
-        [DataMember()] public int WorkInvested;
+        [DataMember()] public float WorkInvested;
 
         [DataMember()] public bool IsPillaged;
 

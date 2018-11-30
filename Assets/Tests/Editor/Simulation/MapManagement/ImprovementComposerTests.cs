@@ -31,7 +31,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             public string TemplateName;
 
-            public int WorkInvested;
+            public float WorkInvested;
 
             public bool IsConstructed;
 
@@ -220,7 +220,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockImprovementFactory.Verify(
                 factory => factory.BuildImprovement(
-                    It.IsAny<IImprovementTemplate>(), location, It.IsAny<int>(),
+                    It.IsAny<IImprovementTemplate>(), location, It.IsAny<float>(),
                     It.IsAny<bool>(), It.IsAny<bool>()
                 ), Times.Once, "BuildImprovement was not called with the expected location argument"
             );
@@ -246,7 +246,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockImprovementFactory.Verify(
                 factory => factory.BuildImprovement(
-                    templateToBuild, It.IsAny<IHexCell>(), It.IsAny<int>(),
+                    templateToBuild, It.IsAny<IHexCell>(), It.IsAny<float>(),
                     It.IsAny<bool>(), It.IsAny<bool>()
                 ), Times.Once, "BuildImprovement was not called with the expected template argument"
             );

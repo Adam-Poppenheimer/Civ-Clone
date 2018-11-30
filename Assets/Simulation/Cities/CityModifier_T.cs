@@ -33,7 +33,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        private ISocialPolicyBonusLogic                       SocialPolicyBonusLogic;
+        private ISocialPolicyCanon                            SocialPolicyCanon;
         private ICapitalCityCanon                             CapitalCityCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
@@ -55,11 +55,11 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public void InjectDependencies(
-            ISocialPolicyBonusLogic socialPolicyBonusLogic, ICapitalCityCanon capitalCityCanon,
+            ISocialPolicyCanon socialPolicyCanon, ICapitalCityCanon capitalCityCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon
         ) {
-            SocialPolicyBonusLogic  = socialPolicyBonusLogic;
+            SocialPolicyCanon       = socialPolicyCanon;
             CapitalCityCanon        = capitalCityCanon;
             CityPossessionCanon     = cityPossessionCanon;
             BuildingPossessionCanon = buildingPossessionCanon;
@@ -75,18 +75,26 @@ namespace Assets.Simulation.Cities {
             var ownerCapital = CapitalCityCanon.GetCapitalOfCiv(cityOwner);
 
             if(city == ownerCapital) {
-                T policyCapitalMod = SocialPolicyBonusLogic.ExtractBonusFromCiv(
-                    cityOwner, DataForExtraction.PolicyCapitalBonusesExtractor, DataForExtraction.Aggregator
-                );
+                IEnumerable<T> capitalValues = SocialPolicyCanon
+                    .GetPolicyBonusesForCiv(cityOwner)
+                    .Select(bonuses => DataForExtraction.PolicyCapitalBonusesExtractor(bonuses));
 
-                retval = DataForExtraction.Aggregator(retval, policyCapitalMod);
+                if(capitalValues.Any()) {
+                    retval = DataForExtraction.Aggregator(
+                        retval, capitalValues.Aggregate(DataForExtraction.Aggregator)
+                    );
+                }
             }
 
-            T policyCityMod = SocialPolicyBonusLogic.ExtractBonusFromCiv(
-                cityOwner, DataForExtraction.PolicyCityBonusesExtractor, DataForExtraction.Aggregator
-            );
+            IEnumerable<T> cityValues = SocialPolicyCanon
+                    .GetPolicyBonusesForCiv(cityOwner)
+                    .Select(bonuses => DataForExtraction.PolicyCityBonusesExtractor(bonuses));
 
-            retval = DataForExtraction.Aggregator(retval, policyCityMod);
+            if(cityValues.Any()) {
+                retval = DataForExtraction.Aggregator(
+                    retval, cityValues.Aggregate(DataForExtraction.Aggregator)
+                );
+            }
 
             if(DataForExtraction.BuildingLocalBonusesExtractor != null) {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {

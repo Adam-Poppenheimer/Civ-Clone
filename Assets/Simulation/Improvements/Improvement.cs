@@ -37,7 +37,7 @@ namespace Assets.Simulation.Improvements {
             }
         }
 
-        public int WorkInvested { get; set; }
+        public float WorkInvested { get; set; }
 
         #endregion
 

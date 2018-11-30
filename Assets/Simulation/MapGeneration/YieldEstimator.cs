@@ -33,7 +33,7 @@ namespace Assets.Simulation.MapGeneration {
 
             public Transform transform { get; set; }
 
-            public int WorkInvested { get; set; }
+            public float WorkInvested { get; set; }
 
             #endregion
 

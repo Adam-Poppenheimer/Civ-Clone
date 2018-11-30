@@ -12,7 +12,6 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Cities;
 using Assets.Simulation.HexMap;
-using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 

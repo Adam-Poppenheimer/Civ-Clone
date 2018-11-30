@@ -17,8 +17,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private IIncomeModifierLogic                          IncomeModifierLogic;
         private ICityConfig                                   CityConfig;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private ICapitalCityCanon                             CapitalCityCanon;
-        private ISocialPolicyBonusLogic                       SocialPolicyBonusLogic;
+        private ICityModifiers                                CityModifiers;
         
 
         #endregion
@@ -29,13 +28,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public CityCenterYieldLogic(
             IIncomeModifierLogic incomeModifierLogic, ICityConfig cityConfig,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICapitalCityCanon capitalCityCanon, ISocialPolicyBonusLogic socialPolicyYieldLogic
+            ICityModifiers cityModifiers
         ) {
-            IncomeModifierLogic    = incomeModifierLogic;
-            CityPossessionCanon    = cityPossessionCanon;
-            CityConfig             = cityConfig;
-            CapitalCityCanon       = capitalCityCanon;
-            SocialPolicyBonusLogic = socialPolicyYieldLogic;
+            IncomeModifierLogic = incomeModifierLogic;
+            CityPossessionCanon = cityPossessionCanon;
+            CityConfig          = cityConfig;
+            CityModifiers       = cityModifiers;
         }
 
         #endregion
@@ -49,15 +47,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
             centerYield += new YieldSummary(science: 1) * city.Population;
 
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
-
-            var ownerCapital = CapitalCityCanon.GetCapitalOfCiv(cityOwner);
-
-            if(ownerCapital == city) {
-                centerYield += SocialPolicyBonusLogic.GetBonusCapitalYieldForCiv(cityOwner);
-            }
-
-            centerYield += SocialPolicyBonusLogic.GetBonusCityYieldForCiv(cityOwner);
+            centerYield += CityModifiers.BonusYield.GetValueForCity(city);
 
             var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city);
             var civMultipliers  = IncomeModifierLogic.GetYieldMultipliersForCivilization(CityPossessionCanon.GetOwnerOfPossession(city));

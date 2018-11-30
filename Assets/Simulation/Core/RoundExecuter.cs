@@ -21,6 +21,7 @@ namespace Assets.Simulation.Core {
         private IUnitPositionCanon        UnitPositionCanon;
         private IImprovementLocationCanon ImprovementLocationCanon;
         private IUnitHealingLogic         UnitHealingLogic;
+        private IImprovementWorkLogic     ImprovementWorkLogic;
 
         #endregion
 
@@ -28,11 +29,12 @@ namespace Assets.Simulation.Core {
 
         public RoundExecuter(
             IUnitPositionCanon unitPositionCanon, IImprovementLocationCanon improvementLocationCanon,
-            IUnitHealingLogic unitHealingLogic
+            IUnitHealingLogic unitHealingLogic, IImprovementWorkLogic improvementWorkLogic
         ){
             UnitPositionCanon        = unitPositionCanon;
             ImprovementLocationCanon = improvementLocationCanon;
             UnitHealingLogic         = unitHealingLogic;
+            ImprovementWorkLogic     = improvementWorkLogic;
         }
 
         #endregion
@@ -88,7 +90,7 @@ namespace Assets.Simulation.Core {
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
                 if(improvementAtLocation != null && !improvementAtLocation.IsConstructed) {
-                    improvementAtLocation.WorkInvested++;
+                    improvementAtLocation.WorkInvested += ImprovementWorkLogic.GetWorkOfUnitOnImprovement(unit, improvementAtLocation);
                     unit.CurrentMovement = 0f;
 
                     if(improvementAtLocation.IsReadyToConstruct) {

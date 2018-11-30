@@ -111,6 +111,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private int _freeGreatPeople;
 
+        public float ImprovementSpeedModifier {
+            get { return _improvementSpeedModifier; }
+        }
+        [SerializeField] private float _improvementSpeedModifier;
+
         #endregion
 
     }

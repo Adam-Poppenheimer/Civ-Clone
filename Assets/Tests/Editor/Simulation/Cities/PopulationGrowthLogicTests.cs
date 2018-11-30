@@ -12,7 +12,6 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Growth;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 

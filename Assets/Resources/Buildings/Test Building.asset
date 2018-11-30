@@ -99,3 +99,4 @@ MonoBehaviour:
   _freeGreatPeople: 0
   _localGrowthModifier: 1
   _globalGrowthModifier: 3
+  _globalImprovementSpeedModifier: 10

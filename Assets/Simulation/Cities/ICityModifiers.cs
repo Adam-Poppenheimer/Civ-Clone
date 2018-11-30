@@ -3,13 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using Assets.Simulation.Modifiers;
-
 namespace Assets.Simulation.Cities {
 
     public interface ICityModifiers {
 
         #region properties
+
+        ICityModifier<YieldSummary> BonusYield { get; }
 
         ICityModifier<float> Growth           { get; }
         ICityModifier<float> BorderExpansion  { get; }

@@ -43,6 +43,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         int FreeGreatPeople { get; }
 
+        float ImprovementSpeedModifier { get; }
+
         #endregion
 
     }

@@ -12,15 +12,14 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.SocialPolicies;
-using Assets.Simulation.Modifiers;
 
 namespace Assets.Tests.Simulation.Cities {
 
-    public class CityModifierLogicTests : ZenjectUnitTestFixture {
+    public class CityModifier_T_Tests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
 
-        private Mock<ISocialPolicyBonusLogic>                       MockSocialPolicyBonusLogic;
+        private Mock<ISocialPolicyCanon>                            MockSocialPolicyCanon;
         private Mock<ICapitalCityCanon>                             MockCapitalCityCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
@@ -33,12 +32,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockSocialPolicyBonusLogic  = new Mock<ISocialPolicyBonusLogic>();
+            MockSocialPolicyCanon       = new Mock<ISocialPolicyCanon>();
             MockCapitalCityCanon        = new Mock<ICapitalCityCanon>();
             MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
 
-            Container.Bind<ISocialPolicyBonusLogic>                      ().FromInstance(MockSocialPolicyBonusLogic .Object);
+            Container.Bind<ISocialPolicyCanon>                           ().FromInstance(MockSocialPolicyCanon      .Object);
             Container.Bind<ICapitalCityCanon>                            ().FromInstance(MockCapitalCityCanon       .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
@@ -76,19 +75,23 @@ namespace Assets.Tests.Simulation.Cities {
             Func<ISocialPolicyBonusesData, int> cityExtractor    = bonuses => 0;
             Func<int, int, int>                 aggregator       = (a, b) => a + b;
 
-            var modLogic = new CityModifier<int>(
+            var modifier = new CityModifier<int>(
                 new CityModifier<int>.ExtractionData() {
                     PolicyCapitalBonusesExtractor = capitalExtractor, PolicyCityBonusesExtractor = cityExtractor,
                     Aggregator = aggregator, UnitaryValue = 1
                 }
             );
 
-            MockSocialPolicyBonusLogic.Setup(logic => logic.ExtractBonusFromCiv(civ, capitalExtractor, aggregator))
-                                      .Returns(300);
+            MockSocialPolicyCanon.Setup(canon => canon.GetPolicyBonusesForCiv(civ)).Returns(
+                new List<ISocialPolicyBonusesData>() {
+                    BuildSocialPolicyBonuses(), BuildSocialPolicyBonuses(),
+                    BuildSocialPolicyBonuses(),
+                }
+            );
 
-            Container.Inject(modLogic);
+            Container.Inject(modifier);
 
-            Assert.AreEqual(301, modLogic.GetValueForCity(city));
+            Assert.AreEqual(4, modifier.GetValueForCity(city));
         }
 
         [Test]
@@ -98,22 +101,26 @@ namespace Assets.Tests.Simulation.Cities {
             var civ = BuildCiv(null, city);
 
             Func<ISocialPolicyBonusesData, int> capitalExtractor = bonuses => 0;
-            Func<ISocialPolicyBonusesData, int> cityExtractor    = bonuses => 0;
+            Func<ISocialPolicyBonusesData, int> cityExtractor    = bonuses => 1;
             Func<int, int, int>                 aggregator       = (a, b) => a + b;
 
-            var modLogic = new CityModifier<int>(
+            var modifier = new CityModifier<int>(
                 new CityModifier<int>.ExtractionData() {
                     PolicyCapitalBonusesExtractor = capitalExtractor, PolicyCityBonusesExtractor = cityExtractor,
                     Aggregator = aggregator, UnitaryValue = 1
                 }
             );
 
-            MockSocialPolicyBonusLogic.Setup(logic => logic.ExtractBonusFromCiv(civ, cityExtractor, aggregator))
-                                      .Returns(300);
+            MockSocialPolicyCanon.Setup(canon => canon.GetPolicyBonusesForCiv(civ)).Returns(
+                new List<ISocialPolicyBonusesData>() {
+                    BuildSocialPolicyBonuses(), BuildSocialPolicyBonuses(),
+                    BuildSocialPolicyBonuses(),
+                }
+            );
 
-            Container.Inject(modLogic);
+            Container.Inject(modifier);
 
-            Assert.AreEqual(301, modLogic.GetValueForCity(city));
+            Assert.AreEqual(4, modifier.GetValueForCity(city));
         }
 
         [Test]
@@ -132,7 +139,7 @@ namespace Assets.Tests.Simulation.Cities {
             Func<IBuildingTemplate, int>        globalBuildingExtractor = null;
             Func<int, int, int>                 aggregator              = (a, b) => a + b;
 
-            var modLogic = new CityModifier<int>(
+            var modifier = new CityModifier<int>(
                 new CityModifier<int>.ExtractionData() {
                     PolicyCapitalBonusesExtractor = capitalExtractor,
                     PolicyCityBonusesExtractor = cityExtractor,
@@ -142,9 +149,9 @@ namespace Assets.Tests.Simulation.Cities {
                 }
             );
 
-            Container.Inject(modLogic);
+            Container.Inject(modifier);
 
-            Assert.AreEqual(4, modLogic.GetValueForCity(city));
+            Assert.AreEqual(4, modifier.GetValueForCity(city));
         }
 
         [Test]
@@ -166,7 +173,7 @@ namespace Assets.Tests.Simulation.Cities {
             Func<IBuildingTemplate, int>        globalBuildingExtractor = template => 20;
             Func<int, int, int>                 aggregator              = (a, b) => a + b;
 
-            var modLogic = new CityModifier<int>(
+            var modifier = new CityModifier<int>(
                 new CityModifier<int>.ExtractionData() {
                     PolicyCapitalBonusesExtractor = capitalExtractor,
                     PolicyCityBonusesExtractor = cityExtractor,
@@ -176,10 +183,10 @@ namespace Assets.Tests.Simulation.Cities {
                 }
             );
 
-            Container.Inject(modLogic);
+            Container.Inject(modifier);
 
-            Assert.AreEqual(81, modLogic.GetValueForCity(cityOne));
-            Assert.AreEqual(81, modLogic.GetValueForCity(cityTwo));
+            Assert.AreEqual(81, modifier.GetValueForCity(cityOne));
+            Assert.AreEqual(81, modifier.GetValueForCity(cityTwo));
         }
 
         #endregion
@@ -221,6 +228,10 @@ namespace Assets.Tests.Simulation.Cities {
                                    .Returns(cities.Concat(new ICity[] { capital }));
 
             return newCiv;
+        }
+
+        private ISocialPolicyBonusesData BuildSocialPolicyBonuses() {
+            return new Mock<ISocialPolicyBonusesData>().Object;
         }
 
         #endregion

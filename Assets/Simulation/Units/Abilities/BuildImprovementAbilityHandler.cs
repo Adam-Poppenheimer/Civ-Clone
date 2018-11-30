@@ -21,6 +21,7 @@ namespace Assets.Simulation.Units.Abilities {
         private IEnumerable<IImprovementTemplate> AvailableTemplates;
         private IImprovementFactory               ImprovementFactory;
         private IImprovementLocationCanon         ImprovementLocationCanon;
+        private IImprovementWorkLogic             ImprovementWorkLogic;
 
         #endregion
 
@@ -30,13 +31,15 @@ namespace Assets.Simulation.Units.Abilities {
         public BuildImprovementAbilityHandler(
             IImprovementValidityLogic validityLogic, IUnitPositionCanon unitPositionCanon,
             [Inject(Id = "Available Improvement Templates")] IEnumerable<IImprovementTemplate> availableTemplates,
-            IImprovementFactory improvementFactory, IImprovementLocationCanon improvementLocationCanon
+            IImprovementFactory improvementFactory, IImprovementLocationCanon improvementLocationCanon,
+            IImprovementWorkLogic improvementWorkLogic
         ){
             ValidityLogic            = validityLogic;
             UnitPositionCanon        = unitPositionCanon;
             AvailableTemplates       = availableTemplates;
             ImprovementFactory       = improvementFactory;
             ImprovementLocationCanon = improvementLocationCanon;
+            ImprovementWorkLogic     = improvementWorkLogic;
         }
 
         #endregion
@@ -81,7 +84,7 @@ namespace Assets.Simulation.Units.Abilities {
 
                 var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
-                improvementOnCell.WorkInvested++;
+                improvementOnCell.WorkInvested += ImprovementWorkLogic.GetWorkOfUnitOnImprovement(unit, improvementOnCell);
 
                 if(improvementOnCell.IsReadyToConstruct) {
                     improvementOnCell.Construct();
@@ -104,7 +107,7 @@ namespace Assets.Simulation.Units.Abilities {
 
                 unit.LockIntoConstruction();
 
-                newImprovement.WorkInvested++;
+                newImprovement.WorkInvested += ImprovementWorkLogic.GetWorkOfUnitOnImprovement(unit, newImprovement);
 
                 if(newImprovement.IsReadyToConstruct) {
                     newImprovement.Construct();

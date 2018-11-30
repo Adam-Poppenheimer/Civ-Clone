@@ -5,8 +5,6 @@ using System.Text;
 
 using Zenject;
 
-using Assets.Simulation.Modifiers;
-
 namespace Assets.Simulation.Cities {
 
     public class CityModifiers : ICityModifiers {
@@ -15,8 +13,10 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityModifiers
 
-        public ICityModifier<float> Growth           { get; private set; }
-        public ICityModifier<float> BorderExpansion  { get; private set; }
+        public ICityModifier<YieldSummary> BonusYield { get; private set; }
+
+        public ICityModifier<float> Growth          { get; private set; }
+        public ICityModifier<float> BorderExpansion { get; private set; }
 
         public ICityModifier<float> PerPopulationHappiness   { get; private set; }
         public ICityModifier<float> PerPopulationUnhappiness { get; private set; }
@@ -31,6 +31,17 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CityModifiers(DiContainer container) {
+            BonusYield = new CityModifier<YieldSummary>(
+                new CityModifier<YieldSummary>.ExtractionData() {
+                    PolicyCapitalBonusesExtractor  = bonuses => bonuses.CapitalYield,
+                    PolicyCityBonusesExtractor     = bonuses => bonuses.CityYield,
+                    BuildingLocalBonusesExtractor  = null,
+                    BuildingGlobalBonusesExtractor = null,
+                    Aggregator = (a, b) => a + b,
+                    UnitaryValue = YieldSummary.Empty
+                }
+            );
+
             Growth = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
                     PolicyCapitalBonusesExtractor  = bonuses  => bonuses .CapitalGrowthModifier,
@@ -78,6 +89,7 @@ namespace Assets.Simulation.Cities {
                 }
             );
 
+            container.QueueForInject(BonusYield);
             container.QueueForInject(Growth);
             container.QueueForInject(BorderExpansion);
             container.QueueForInject(PerPopulationHappiness);

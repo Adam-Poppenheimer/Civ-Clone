@@ -19,7 +19,7 @@ namespace Assets.Simulation.Improvements {
 
         bool IsReadyToConstruct { get; }
 
-        int WorkInvested { get; set; }
+        float WorkInvested { get; set; }
 
         Transform transform { get; }
 

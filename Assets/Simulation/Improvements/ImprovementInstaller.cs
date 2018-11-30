@@ -38,6 +38,7 @@ namespace Assets.Simulation.Improvements {
 
             Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
             Container.Bind<IImprovementYieldLogic>   ().To<ImprovementYieldLogic>   ().AsSingle();
+            Container.Bind<IImprovementWorkLogic>    ().To<ImprovementWorkLogic>    ().AsSingle();
 
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
 

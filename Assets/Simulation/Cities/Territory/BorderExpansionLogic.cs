@@ -11,7 +11,6 @@ using Assets.Simulation.HexMap;
 
 using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.Cities.ResourceGeneration;
-using Assets.Simulation.Modifiers;
 
 namespace Assets.Simulation.Cities.Territory {
 

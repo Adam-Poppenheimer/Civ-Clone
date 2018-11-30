@@ -22,8 +22,9 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IIncomeModifierLogic>                          MockIncomeModifierLogic;
         private Mock<ICityConfig>                                   MockCityConfig;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<ICapitalCityCanon>                             MockCapitalCityCanon;
-        private Mock<ISocialPolicyBonusLogic>                       MockSocialPolicyBonusLogic;
+        private Mock<ICityModifiers>                                MockCityModifiers;
+
+        private Mock<ICityModifier<YieldSummary>> MockBonusYieldModifier;
 
         #endregion
 
@@ -33,17 +34,19 @@ namespace Assets.Tests.Simulation.Cities {
 
         [SetUp]
         public void CommonInstall() {
-            MockIncomeModifierLogic    = new Mock<IIncomeModifierLogic>();
-            MockCityConfig             = new Mock<ICityConfig>();
-            MockCityPossessionCanon    = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockCapitalCityCanon       = new Mock<ICapitalCityCanon>();
-            MockSocialPolicyBonusLogic = new Mock<ISocialPolicyBonusLogic>();
+            MockIncomeModifierLogic = new Mock<IIncomeModifierLogic>();
+            MockCityConfig          = new Mock<ICityConfig>();
+            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityModifiers       = new Mock<ICityModifiers>();
 
-            Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic   .Object);
-            Container.Bind<ICityConfig>                                  ().FromInstance(MockCityConfig            .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon   .Object);
-            Container.Bind<ICapitalCityCanon>                            ().FromInstance(MockCapitalCityCanon      .Object);
-            Container.Bind<ISocialPolicyBonusLogic>                      ().FromInstance(MockSocialPolicyBonusLogic.Object);
+            MockBonusYieldModifier = new Mock<ICityModifier<YieldSummary>>();
+
+            MockCityModifiers.Setup(modifiers => modifiers.BonusYield).Returns(MockBonusYieldModifier.Object);
+
+            Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic.Object);
+            Container.Bind<ICityConfig>                                  ().FromInstance(MockCityConfig         .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<ICityModifiers>                               ().FromInstance(MockCityModifiers      .Object);
 
             Container.Bind<CityCenterYieldLogic>().AsSingle();
         }
@@ -59,7 +62,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(0);
 
-            BuildCiv(new List<ICity>() { city }, null);
+            BuildCiv(new List<ICity>() { city });
 
             var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
 
@@ -72,27 +75,11 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(15);
 
-            BuildCiv(new List<ICity>() { city }, null);
+            BuildCiv(new List<ICity>() { city });
 
             var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
 
             Assert.AreEqual(new YieldSummary(science: 15), yieldLogic.GetYieldOfCityCenter(city));
-        }
-
-        [Test]
-        public void GetYieldOfCityCenter_AndCityCapital_IncludesCapitalCityPolicyBonuses() {
-            MockCityConfig.Setup(config => config.CityCenterBaseYield).Returns(new YieldSummary());
-
-            var city = BuildCity(0);
-
-            var civ = BuildCiv(new List<ICity>() { city }, city);
-
-            MockSocialPolicyBonusLogic.Setup(logic => logic.GetBonusCapitalYieldForCiv(civ))
-                                      .Returns(new YieldSummary(culture: 12f));
-
-            var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
-
-            Assert.AreEqual(new YieldSummary(culture: 12f), yieldLogic.GetYieldOfCityCenter(city));
         }
 
         [Test]
@@ -101,10 +88,10 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(0);
 
-            var civ = BuildCiv(new List<ICity>() { city }, null);
+            BuildCiv(new List<ICity>() { city });
 
-            MockSocialPolicyBonusLogic.Setup(logic => logic.GetBonusCityYieldForCiv(civ))
-                                      .Returns(new YieldSummary(gold: 12f));
+            MockBonusYieldModifier.Setup(modifier => modifier.GetValueForCity(city))
+                                  .Returns(new YieldSummary(gold: 12f));
 
             var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
 
@@ -117,7 +104,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(15);
 
-            BuildCiv(new List<ICity>() { city }, null);
+            BuildCiv(new List<ICity>() { city });
 
             MockIncomeModifierLogic.Setup(logic => logic.GetYieldMultipliersForCity(city)).Returns(
                 new YieldSummary(science: 1.5f)
@@ -134,7 +121,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var city = BuildCity(15);
 
-            var civ = BuildCiv(new List<ICity>() { city }, null);
+            var civ = BuildCiv(new List<ICity>() { city });
 
             MockIncomeModifierLogic.Setup(logic => logic.GetYieldMultipliersForCivilization(civ)).Returns(
                 new YieldSummary(science: 2.5f)
@@ -157,14 +144,12 @@ namespace Assets.Tests.Simulation.Cities {
             return mockCity.Object;
         }
 
-        private ICivilization BuildCiv(List<ICity> cities, ICity capital) {
+        private ICivilization BuildCiv(List<ICity> cities) {
             var newCiv = new Mock<ICivilization>().Object;
 
             foreach(var city in cities) {
                 MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(city)).Returns(newCiv);
             }
-
-            MockCapitalCityCanon.Setup(canon => canon.GetCapitalOfCiv(newCiv)).Returns(capital);
 
             return newCiv;
         }

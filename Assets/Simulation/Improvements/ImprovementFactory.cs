@@ -60,7 +60,7 @@ namespace Assets.Simulation.Improvements {
         }
 
         public IImprovement BuildImprovement(
-            IImprovementTemplate template, IHexCell location, int workInvested,
+            IImprovementTemplate template, IHexCell location, float workInvested,
             bool isConstructed, bool isPillaged
         ){
             if(template == null) {

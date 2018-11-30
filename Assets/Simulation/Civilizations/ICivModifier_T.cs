@@ -5,7 +5,7 @@ using System.Text;
 
 using Assets.Simulation.Civilizations;
 
-namespace Assets.Simulation.Modifiers {
+namespace Assets.Simulation.Civilizations {
 
     public interface ICivModifier<T> {
 

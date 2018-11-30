@@ -67,6 +67,7 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IGreatPersonCanon>           ().To<GreatPersonCanon>           ().AsSingle();
             Container.Bind<IFreeBuildingApplier>        ().To<FreeBuildingApplier>        ().AsSingle();
             Container.Bind<IFreeBuildingsCanon>         ().To<FreeBuildingsCanon>         ().AsSingle();
+            Container.Bind<ICivModifiers>               ().To<CivModifiers>               ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

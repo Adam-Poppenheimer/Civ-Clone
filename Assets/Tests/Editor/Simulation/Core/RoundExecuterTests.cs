@@ -47,6 +47,8 @@ namespace Assets.Tests.Simulation.Core {
 
             public int ExpectedMovement;
 
+            public float UnitWorkOutput;
+
         }
 
         public class ImprovementTestData {
@@ -59,7 +61,7 @@ namespace Assets.Tests.Simulation.Core {
 
             public bool ExpectsToBeConstructed;
 
-            public int ExpectedWorkInvested;
+            public float ExpectedWorkInvested;
 
         }
 
@@ -79,11 +81,12 @@ namespace Assets.Tests.Simulation.Core {
                     LocationOfUnit = new HexCellTestData() {  },
                     UnitToTest = new UnitTestData() {
                         CurrentMovement = 1, ExpectedMovement = 0,
-                        LockedIntoConstruction = true, MaxMovement = 1
+                        LockedIntoConstruction = true, MaxMovement = 1,
+                        UnitWorkOutput = 3f
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
                         WorkInvested = 0, IsConstructed = false, IsReadyToConstruct = false,
-                        ExpectedWorkInvested = 1, ExpectsToBeConstructed = false
+                        ExpectedWorkInvested = 3f, ExpectsToBeConstructed = false
                     }
                 }).SetName("Locked unit with spare movement, unconstructed improvement not ready for construction");
 
@@ -91,11 +94,12 @@ namespace Assets.Tests.Simulation.Core {
                     LocationOfUnit = new HexCellTestData() {  },
                     UnitToTest = new UnitTestData() {
                         CurrentMovement = 1, ExpectedMovement = 0,
-                        LockedIntoConstruction = true, MaxMovement = 1
+                        LockedIntoConstruction = true, MaxMovement = 1,
+                        UnitWorkOutput = 3f
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
                         WorkInvested = 1, IsConstructed = false, IsReadyToConstruct = true,
-                        ExpectedWorkInvested = 2, ExpectsToBeConstructed = true
+                        ExpectedWorkInvested = 4f, ExpectsToBeConstructed = true
                     }
                 }).SetName("Locked unit with spare movement, unconstructed improvement ready for construction");
 
@@ -103,7 +107,8 @@ namespace Assets.Tests.Simulation.Core {
                     LocationOfUnit = new HexCellTestData() {  },
                     UnitToTest = new UnitTestData() {
                         CurrentMovement = 0, ExpectedMovement = 0,
-                        LockedIntoConstruction = true, MaxMovement = 1
+                        LockedIntoConstruction = true, MaxMovement = 1,
+                        UnitWorkOutput = 3f
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
                         WorkInvested = 0, IsConstructed = false,
@@ -115,7 +120,8 @@ namespace Assets.Tests.Simulation.Core {
                     LocationOfUnit = new HexCellTestData() {  },
                     UnitToTest = new UnitTestData() {
                         CurrentMovement = 1, ExpectedMovement = 1,
-                        LockedIntoConstruction = false, MaxMovement = 1
+                        LockedIntoConstruction = false, MaxMovement = 1,
+                        UnitWorkOutput = 3f
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
                         WorkInvested = 0, IsConstructed = false,
@@ -127,7 +133,8 @@ namespace Assets.Tests.Simulation.Core {
                     LocationOfUnit = new HexCellTestData() {  },
                     UnitToTest = new UnitTestData() {
                         CurrentMovement = 1, ExpectedMovement = 1,
-                        LockedIntoConstruction = true, MaxMovement = 1
+                        LockedIntoConstruction = true, MaxMovement = 1,
+                        UnitWorkOutput = 3f
                     },
                     ImprovementAtLocation = new ImprovementTestData() {
                         WorkInvested = 0, IsConstructed = true,
@@ -144,6 +151,7 @@ namespace Assets.Tests.Simulation.Core {
         private Mock<IUnitPositionCanon>        MockUnitPositionCanon;
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
         private Mock<IUnitHealingLogic>         MockHealingLogic;
+        private Mock<IImprovementWorkLogic>     MockImprovementWorkLogic;
 
         #endregion
 
@@ -156,10 +164,12 @@ namespace Assets.Tests.Simulation.Core {
             MockUnitPositionCanon        = new Mock<IUnitPositionCanon>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
             MockHealingLogic             = new Mock<IUnitHealingLogic>();
+            MockImprovementWorkLogic     = new Mock<IImprovementWorkLogic>();
 
             Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon       .Object);
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
             Container.Bind<IUnitHealingLogic>        ().FromInstance(MockHealingLogic            .Object);
+            Container.Bind<IImprovementWorkLogic>    ().FromInstance(MockImprovementWorkLogic    .Object);
 
             Container.Bind<RoundExecuter>().AsSingle();
         }
@@ -308,6 +318,10 @@ namespace Assets.Tests.Simulation.Core {
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
 
+            MockImprovementWorkLogic.Setup(
+                logic => logic.GetWorkOfUnitOnImprovement(newUnit, It.IsAny<IImprovement>())
+            ).Returns(unitData.UnitWorkOutput);
+
             return newUnit;
         }
 
@@ -338,9 +352,12 @@ namespace Assets.Tests.Simulation.Core {
             mockUnit.SetupAllProperties();
 
             mockUnit.Setup(unit => unit.MaxMovement).Returns(maxMovement);
-            mockUnit.Object.CurrentMovement = currentMovement;
 
-            return mockUnit.Object;
+            var newUnit = mockUnit.Object;
+
+            newUnit.CurrentMovement = currentMovement;
+
+            return newUnit;
         }
 
         #endregion

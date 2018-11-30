@@ -6,7 +6,6 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Units;
-using Assets.Simulation.Modifiers;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 
@@ -17,8 +16,8 @@ namespace Assets.Simulation.Civilizations {
         #region instance fields and properties
 
         private IFreeUnitsLogic                               FreeUnitsLogic;
+        private ICivModifiers                                 CivModifiers;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-        private ICivModifier<bool>                            SuppressGarrisionMaintenanceModifier;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IUnitPositionCanon                            UnitPositionCanon;
 
@@ -28,15 +27,16 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public UnitMaintenanceLogic(
-            IFreeUnitsLogic freeUnitsLogic, IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            [Inject(Id = "Suppress Garrision Maintenance Modifier")] ICivModifier<bool> suppressGarrisionMaintenanceModifier,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon, IUnitPositionCanon unitPositionCanon
+            IFreeUnitsLogic freeUnitsLogic, ICivModifiers civModifiers,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IUnitPositionCanon unitPositionCanon
         ) {
-            FreeUnitsLogic                       = freeUnitsLogic;
-            UnitPossessionCanon                  = unitPossessionCanon;
-            SuppressGarrisionMaintenanceModifier = suppressGarrisionMaintenanceModifier;
-            CityLocationCanon                    = cityLocationCanon;
-            UnitPositionCanon                    = unitPositionCanon;
+            FreeUnitsLogic      = freeUnitsLogic;
+            CivModifiers        = civModifiers;
+            UnitPossessionCanon = unitPossessionCanon;
+            CityLocationCanon   = cityLocationCanon;
+            UnitPositionCanon   = unitPositionCanon;
         }
 
         #endregion
@@ -46,7 +46,7 @@ namespace Assets.Simulation.Civilizations {
         #region from IUnitMaintenanceLogic
 
         public float GetMaintenanceOfUnitsForCiv(ICivilization civ) {
-            bool suppressGarrisioned = SuppressGarrisionMaintenanceModifier.GetValueForCiv(civ);
+            bool suppressGarrisioned = CivModifiers.SuppressGarrisonMaintenance.GetValueForCiv(civ);
 
             int countRequiringMaintenance = 0;
 

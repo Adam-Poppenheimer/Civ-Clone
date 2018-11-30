@@ -116,6 +116,8 @@ namespace Assets.Simulation.Cities.Buildings {
         float LocalGrowthModifier  { get; }
         float GlobalGrowthModifier { get; }
 
+        float GlobalImprovementSpeedModifier { get; }
+
         #endregion
 
     }

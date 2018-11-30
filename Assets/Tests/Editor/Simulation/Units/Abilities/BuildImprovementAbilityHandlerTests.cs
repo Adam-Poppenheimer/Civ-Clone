@@ -396,8 +396,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         private Mock<IUnitPositionCanon>        MockUnitPositionCanon;
         private Mock<IImprovementFactory>       MockImprovementFactory;
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+        private Mock<IImprovementWorkLogic>     MockImprovementWorkLogic;
 
         private List<IImprovementTemplate> AllTemplates = new List<IImprovementTemplate>();
+
+        private IImprovement LastImprovementCreated;
 
         #endregion
 
@@ -408,11 +411,13 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         [SetUp]
         public void CommonInstall() {
             AllTemplates.Clear();
+            LastImprovementCreated = null;
 
             MockImprovementValidityLogic = new Mock<IImprovementValidityLogic>();
             MockUnitPositionCanon        = new Mock<IUnitPositionCanon>();
             MockImprovementFactory       = new Mock<IImprovementFactory>();
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            MockImprovementWorkLogic     = new Mock<IImprovementWorkLogic>();
 
             MockImprovementLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(It.IsAny<IHexCell>()))
                 .Returns(new List<IImprovement>());
@@ -427,6 +432,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
             Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon       .Object);
             Container.Bind<IImprovementFactory>      ().FromInstance(MockImprovementFactory      .Object);
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<IImprovementWorkLogic>    ().FromInstance(MockImprovementWorkLogic    .Object);
 
             Container.Bind<BuildImprovementAbilityHandler>().AsSingle();
         }
@@ -436,7 +442,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [TestCaseSource("CanHandleAbilityOnUnitTestCases")]
-        [Test(Description = "")]
+        [Test]
         public bool CanHandleAbilityOnUnitTests(CanHandleAbilityOnUnitTestData testData) {
             var allImprovementTemplates = testData.ImprovementTemplates.Select(data => BuildImprovementTemplate(data)).ToList();
             
@@ -449,7 +455,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         }
 
         [TestCaseSource("TryHandleAbilityOnUnitTestCases")]
-        [Test(Description = "")]
+        [Test]
         public AbilityExecutionResults TryHandleAbilityOnUnitTests(TryHandleAbilityOnUnitTestData testData) {
             var allImprovementTemplates = testData.ImprovementTemplates.Select(data => BuildImprovementTemplate(data)).ToList();
             
@@ -490,6 +496,40 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             return retval;
         }
+
+        [Test]
+        public void TryHandleAbilityOnUnit_SetsWorkInvestedInNewImprovementFromImprovementWorkLogic() {
+            var improvementTemplates = new List<IImprovementTemplate>() {
+                BuildImprovementTemplate(new ImprovementTemplateTestData() {
+                    IsValid = true, TurnsToConstruct = 10, Name = "Improvement One"
+                })
+            };
+
+            var ability = BuildAbility(new AbilityTestData() {
+                CommandRequests = new List<AbilityCommandRequest>() {
+                    new AbilityCommandRequest() {
+                        CommandType = AbilityCommandType.BuildImprovement,
+                        ArgsToPass = new List<string>() { "Improvement One" }
+                    }
+                }
+            });
+
+            var unit = BuildUnit(
+                new UnitTestData() { Location = new HexCellTestData() },
+                availableTemplates: improvementTemplates
+            );
+
+            MockImprovementWorkLogic.Setup(logic => logic.GetWorkOfUnitOnImprovement(unit, It.IsAny<IImprovement>()))
+                                    .Returns(5);
+
+            var abilityHandler = Container.Resolve<BuildImprovementAbilityHandler>();
+
+            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+
+            Assert.AreEqual(5, LastImprovementCreated.WorkInvested);
+        }
+
+
 
         #endregion
 
@@ -579,6 +619,8 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             MockImprovementLocationCanon.Setup(canon => canon.GetOwnerOfPossession(newImprovement))
                 .Returns(location);
+
+            LastImprovementCreated = newImprovement;
 
             return newImprovement;
         }

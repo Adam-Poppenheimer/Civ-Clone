@@ -22,7 +22,7 @@ namespace Assets.Simulation.Improvements {
         IImprovement BuildImprovement(IImprovementTemplate template, IHexCell location);
 
         IImprovement BuildImprovement(
-            IImprovementTemplate template, IHexCell location, int workInvested,
+            IImprovementTemplate template, IHexCell location, float workInvested,
             bool isConstructed, bool isPillaged
         );
 
