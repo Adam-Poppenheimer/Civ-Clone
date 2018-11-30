@@ -219,6 +219,16 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _freeGreatPeople;
 
+        public float LocalGrowthModifier {
+            get { return _localGrowthModifier; }
+        }
+        [SerializeField] private float _localGrowthModifier;
+
+        public float GlobalGrowthModifier {
+            get { return _globalGrowthModifier; }
+        }
+        [SerializeField] private float _globalGrowthModifier;
+
         #endregion
 
         #endregion

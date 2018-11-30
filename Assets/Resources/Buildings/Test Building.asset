@@ -93,9 +93,9 @@ MonoBehaviour:
     _conditions: []
     _joinedTogetherBy: 0
   _freeUnits: []
-  _freeBuildings:
-  - {fileID: 11400000, guid: ce572b53a96d06140b505df1538b79ee, type: 2}
-  - {fileID: 11400000, guid: c40a96340e746404cb3badd82ef46bfc, type: 2}
-  _localBorderExpansionModifier: -0.5
-  _globalBorderExpansionModifier: -0.25
-  _freeGreatPeople: 2
+  _freeBuildings: []
+  _localBorderExpansionModifier: 0
+  _globalBorderExpansionModifier: 0
+  _freeGreatPeople: 0
+  _localGrowthModifier: 1
+  _globalGrowthModifier: 3

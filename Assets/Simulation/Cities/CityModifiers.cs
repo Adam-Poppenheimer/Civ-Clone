@@ -33,8 +33,10 @@ namespace Assets.Simulation.Cities {
         public CityModifiers(DiContainer container) {
             Growth = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => bonuses.CapitalGrowthModifier,
-                    CityBonusesExtractor    = bonuses => bonuses.CityGrowthModifier,
+                    PolicyCapitalBonusesExtractor  = bonuses  => bonuses .CapitalGrowthModifier,
+                    PolicyCityBonusesExtractor     = bonuses  => bonuses .CityGrowthModifier,
+                    BuildingLocalBonusesExtractor  = template => template.LocalGrowthModifier,
+                    BuildingGlobalBonusesExtractor = template => template.GlobalGrowthModifier,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }
@@ -42,8 +44,8 @@ namespace Assets.Simulation.Cities {
 
             BorderExpansion = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => bonuses.CapitalBorderExpansionModifier,
-                    CityBonusesExtractor    = bonuses => bonuses.CityBorderExpansionModifier,
+                    PolicyCapitalBonusesExtractor = bonuses => bonuses.CapitalBorderExpansionModifier,
+                    PolicyCityBonusesExtractor    = bonuses => bonuses.CityBorderExpansionModifier,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }
@@ -51,8 +53,8 @@ namespace Assets.Simulation.Cities {
 
             PerPopulationHappiness = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => bonuses.CapitalHappinessPerPopulation,
-                    CityBonusesExtractor    = bonuses => bonuses.CityHappinessPerPopulation,
+                    PolicyCapitalBonusesExtractor = bonuses => bonuses.CapitalHappinessPerPopulation,
+                    PolicyCityBonusesExtractor    = bonuses => bonuses.CityHappinessPerPopulation,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }
@@ -60,8 +62,8 @@ namespace Assets.Simulation.Cities {
 
             PerPopulationUnhappiness = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => bonuses.CapitalUnhappinessPerPopulation,
-                    CityBonusesExtractor    = bonuses => bonuses.CityUnhappinessPerPopulation,
+                    PolicyCapitalBonusesExtractor = bonuses => bonuses.CapitalUnhappinessPerPopulation,
+                    PolicyCityBonusesExtractor    = bonuses => bonuses.CityUnhappinessPerPopulation,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }
@@ -69,8 +71,8 @@ namespace Assets.Simulation.Cities {
 
             GarrisionedRangedCombatStrength = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
-                    CapitalBonusesExtractor = bonuses => 0f,
-                    CityBonusesExtractor    = bonuses => bonuses.GarrisonedCityBonusStrength,
+                    PolicyCapitalBonusesExtractor = bonuses => 0f,
+                    PolicyCityBonusesExtractor    = bonuses => bonuses.GarrisonedCityBonusStrength,
                     Aggregator              = (a, b) => a + b,
                     UnitaryValue            = 1f
                 }

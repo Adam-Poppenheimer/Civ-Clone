@@ -113,6 +113,9 @@ namespace Assets.Simulation.Cities.Buildings {
 
         int FreeGreatPeople { get; }
 
+        float LocalGrowthModifier  { get; }
+        float GlobalGrowthModifier { get; }
+
         #endregion
 
     }

@@ -5,7 +5,7 @@ using System.Text;
 
 using Assets.Simulation.Cities;
 
-namespace Assets.Simulation.Modifiers {
+namespace Assets.Simulation.Cities {
 
     public interface ICityModifier<T> {
 
