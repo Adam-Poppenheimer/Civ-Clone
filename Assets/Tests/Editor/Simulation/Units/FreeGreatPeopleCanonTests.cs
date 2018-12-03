@@ -143,7 +143,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
 
-            CivSignals.CivBeingDestroyedSignal.OnNext(civ);
+            CivSignals.CivBeingDestroyed.OnNext(civ);
 
             Assert.AreEqual(0, peopleCanon.GetFreeGreatPeopleForCiv(civ));
         }
@@ -160,7 +160,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
 
-            CivSignals.CivBeingDestroyedSignal.OnNext(civ);
+            CivSignals.CivBeingDestroyed.OnNext(civ);
 
             Assert.AreEqual(3, peopleCanon.GetFreeGreatPeopleForCiv(civ));
         }
@@ -175,7 +175,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
 
-            CivSignals.CivDiscoveredTechSignal.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
+            CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
 
             Assert.AreEqual(5, peopleCanon.GetFreeGreatPeopleForCiv(civ));
         }
@@ -190,7 +190,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
 
-            CivSignals.CivDiscoveredTechSignal.OnNext(
+            CivSignals.CivDiscoveredTech.OnNext(
                 new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech)
             );
 
@@ -207,7 +207,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
 
-            CivSignals.CivUnlockedPolicySignal.OnNext(
+            CivSignals.CivUnlockedPolicy.OnNext(
                 new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
             );
 
@@ -224,7 +224,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
 
-            CivSignals.CivUnlockedPolicySignal.OnNext(
+            CivSignals.CivUnlockedPolicy.OnNext(
                 new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
             );
 
@@ -243,7 +243,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
 
-            CivSignals.CivUnlockedPolicyTreeSignal.OnNext(
+            CivSignals.CivUnlockedPolicyTree.OnNext(
                 new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, policyTree)
             );
 
@@ -262,7 +262,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
 
-            CivSignals.CivUnlockedPolicyTreeSignal.OnNext(
+            CivSignals.CivUnlockedPolicyTree.OnNext(
                 new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, policyTree)
             );
 
@@ -281,7 +281,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
 
-            CivSignals.CivFinishedPolicyTreeSignal.OnNext(
+            CivSignals.CivFinishedPolicyTree.OnNext(
                 new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, policyTree)
             );
 
@@ -300,7 +300,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
 
-            CivSignals.CivFinishedPolicyTreeSignal.OnNext(
+            CivSignals.CivFinishedPolicyTree.OnNext(
                 new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, policyTree)
             );
 

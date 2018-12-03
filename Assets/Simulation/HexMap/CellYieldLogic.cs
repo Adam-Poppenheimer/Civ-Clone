@@ -24,6 +24,8 @@ namespace Assets.Simulation.HexMap {
         private IPossessionRelationship<ICity, IBuilding>        BuildingPossessionCanon;
         private ITechCanon                                       TechCanon;
         private IFreshWaterLogic                                 FreshWaterCanon;
+        private IGoldenAgeCanon                                  GoldenAgeCanon;
+        private ICivilizationConfig                              CivConfig;
 
         private IInherentCellYieldLogic                          InherentYieldLogic;
         private IResourceNodeYieldLogic                          NodeYieldLogic;
@@ -43,6 +45,8 @@ namespace Assets.Simulation.HexMap {
             IPossessionRelationship<ICity, IBuilding>        buildingPossessionCanon,
             ITechCanon                                       techCanon,
             IFreshWaterLogic                                 freshWaterCanon,
+            IGoldenAgeCanon                                  goldenAgeCanon,
+            ICivilizationConfig                              civConfig,
 
             IInherentCellYieldLogic                          inherentYieldLogic,
             IResourceNodeYieldLogic                          nodeYieldLogic,
@@ -55,6 +59,8 @@ namespace Assets.Simulation.HexMap {
             BuildingPossessionCanon  = buildingPossessionCanon;
             TechCanon                = techCanon;
             FreshWaterCanon          = freshWaterCanon;
+            GoldenAgeCanon           = goldenAgeCanon;
+            CivConfig                = civConfig;
 
             InherentYieldLogic       = inherentYieldLogic;
             NodeYieldLogic           = nodeYieldLogic;
@@ -90,7 +96,7 @@ namespace Assets.Simulation.HexMap {
 
             if(cityOwningCell != null) {
                 var buildingsOnCell = BuildingPossessionCanon.GetPossessionsOfOwner(cityOwningCell)
-                                                                .Select(building => building.Template);
+                                                             .Select(building => building.Template);
 
                 retval += BuildingYieldLogic.GetBonusCellYieldFromBuildings(cell, buildingsOnCell);
             }
@@ -103,6 +109,10 @@ namespace Assets.Simulation.HexMap {
                 retval += ImprovementYieldLogic.GetYieldOfImprovement(
                     improvementOnCell, nodeAtLocation, visibleResources, discoveredTechs, hasFreshWater
                 );
+            }
+
+            if(perspectiveCiv != null && GoldenAgeCanon.IsCivInGoldenAge(perspectiveCiv) && retval[YieldType.Gold] > 0f) {
+                retval[YieldType.Gold] += CivConfig.GoldenAgeBonusGoldOnCells;
             }
 
             return retval;

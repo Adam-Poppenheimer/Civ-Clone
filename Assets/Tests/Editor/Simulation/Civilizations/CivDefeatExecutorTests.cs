@@ -74,7 +74,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
 
-            CivSignals.CivDefeatedSignal.Subscribe(delegate(ICivilization civ) {
+            CivSignals.CivDefeated.Subscribe(delegate(ICivilization civ) {
                 Assert.AreEqual(civToDefeat, civ, "Incorrect civ passed");
                 Assert.Pass();
             });
@@ -108,7 +108,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsFalse(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -122,7 +122,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsTrue(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -138,7 +138,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsTrue(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsFalse(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -170,7 +170,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsFalse(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -184,7 +184,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsTrue(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }
@@ -200,13 +200,13 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             AllUnits.Remove(unitBeingLost);
 
-            CivSignals.CivDefeatedSignal.Subscribe(civ => Assert.Pass());
+            CivSignals.CivDefeated.Subscribe(civ => Assert.Pass());
 
-            CivSignals.CivLostUnitSignal.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
+            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
 
             Assert.Fail("Civ not defeated as expected");
         }
@@ -223,13 +223,13 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             AllUnits.Remove(unitBeingLost);
 
-            CivSignals.CivDefeatedSignal.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
+            CivSignals.CivDefeated.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
 
-            CivSignals.CivLostUnitSignal.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
+            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
         }
 
         [Test]
@@ -243,13 +243,13 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             AllCities.Remove(cityBeingLost);
 
-            CivSignals.CivDefeatedSignal.Subscribe(civ => Assert.Pass());
+            CivSignals.CivDefeated.Subscribe(civ => Assert.Pass());
 
-            CivSignals.CivLostCitySignal.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
+            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
 
             Assert.Fail("Civ not defeated as expected");
         }
@@ -266,13 +266,13 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = true;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             AllCities.Remove(cityBeingLost);
 
-            CivSignals.CivDefeatedSignal.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
+            CivSignals.CivDefeated.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
 
-            CivSignals.CivLostCitySignal.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
+            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
         }
 
         [Test]
@@ -284,7 +284,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
             defeatExecutor.CheckForDefeat = false;
 
-            CivSignals.NewCivilizationCreatedSignal.OnNext(civToCheck);
+            CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
             Assert.IsFalse(defeatExecutor.ShouldCivBeDefeated(civToCheck));
         }

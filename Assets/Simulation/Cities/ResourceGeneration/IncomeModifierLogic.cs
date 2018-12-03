@@ -19,13 +19,11 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        private IPossessionRelationship<ICity, IBuilding> BuildingPossessionCanon;
-
+        private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private ICivilizationHappinessLogic CivHappinessLogic;
-
-        private ICivilizationConfig CivilizationConfig;
+        private ICivilizationHappinessLogic                   CivHappinessLogic;
+        private ICivilizationConfig                           CivConfig;
+        private IGoldenAgeCanon                               GoldenAgeCanon;
 
         #endregion
 
@@ -36,12 +34,13 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
             ICivilizationHappinessLogic civHappinessLogic,
-            ICivilizationConfig civilizationConfig
+            ICivilizationConfig civConfig, IGoldenAgeCanon goldenAgeCanon
         ){
-            BuildingPossessionCanon  = buildingPossessionCanon;
-            CityPossessionCanon      = cityPossessionCanon;
-            CivHappinessLogic        = civHappinessLogic;
-            CivilizationConfig       = civilizationConfig;
+            BuildingPossessionCanon = buildingPossessionCanon;
+            CityPossessionCanon     = cityPossessionCanon;
+            CivHappinessLogic       = civHappinessLogic;
+            CivConfig               = civConfig;
+            GoldenAgeCanon          = goldenAgeCanon;
         }
 
         #endregion
@@ -66,29 +65,33 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         }
 
         /// <inheritdoc/>
-        public YieldSummary GetYieldMultipliersForCivilization(ICivilization civilization) {
-            if(civilization == null) {
+        public YieldSummary GetYieldMultipliersForCivilization(ICivilization civ) {
+            if(civ == null) {
                 throw new ArgumentNullException("civilization");
             }
 
-            var baseModifier = YieldSummary.Empty;            
+            var retval = YieldSummary.Empty;            
 
-            foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civilization)) {
+            foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civ)) {
                 foreach(var building in BuildingPossessionCanon.GetPossessionsOfOwner(city)) {
-                    baseModifier += building.CivilizationYieldModifier;
+                    retval += building.CivilizationYieldModifier;
                 }
             }
 
-            int civHappiness = CivHappinessLogic.GetNetHappinessOfCiv(civilization);
+            int civHappiness = CivHappinessLogic.GetNetHappinessOfCiv(civ);
 
             if(civHappiness < 0) {
-                var goldAndProductionLoss = civHappiness * CivilizationConfig.YieldLossPerUnhappiness;
+                var goldAndProductionLoss = civHappiness * CivConfig.YieldLossPerUnhappiness;
 
-                baseModifier[YieldType.Gold]       += goldAndProductionLoss;
-                baseModifier[YieldType.Production] += goldAndProductionLoss;
+                retval[YieldType.Gold]       += goldAndProductionLoss;
+                retval[YieldType.Production] += goldAndProductionLoss;
             }
 
-            return  baseModifier;
+            if(GoldenAgeCanon.IsCivInGoldenAge(civ)) {
+                retval += CivConfig.GoldenAgeProductionModifiers;
+            }
+
+            return  retval;
         }
 
         /// <inheritdoc/>

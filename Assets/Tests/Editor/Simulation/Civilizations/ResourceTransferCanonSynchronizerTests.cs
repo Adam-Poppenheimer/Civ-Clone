@@ -185,7 +185,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            CivSignals.CivLosingCitySignal.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivLosingCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
 
             foreach(var resource in resources) {
                 MockResourceTransferCanon.Verify(

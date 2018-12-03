@@ -34,7 +34,7 @@ namespace Assets.Simulation.Civilizations {
             CellPossessionCanon = cellPossessionCanon;
 
             citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
-            civSignals .CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals .CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
@@ -46,7 +46,7 @@ namespace Assets.Simulation.Civilizations {
         #region from PossessionRelationship<ICivilization, ICity>
 
         protected override void DoOnPossessionBeingBroken(ICity possession, ICivilization oldOwner) {
-            CivSignals.CivLosingCitySignal.OnNext(new Tuple<ICivilization, ICity>(oldOwner, possession));
+            CivSignals.CivLosingCity.OnNext(new Tuple<ICivilization, ICity>(oldOwner, possession));
         }
 
         protected override void DoOnPossessionEstablished(ICity city, ICivilization newOwner) {
@@ -55,7 +55,7 @@ namespace Assets.Simulation.Civilizations {
             }
 
             if(newOwner != null) {
-                CivSignals.CivGainedCitySignal.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
+                CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
             }
         }
 
@@ -64,7 +64,7 @@ namespace Assets.Simulation.Civilizations {
                 cell.RefreshSelfOnly();
             }
 
-            CivSignals.CivLostCitySignal.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));
+            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));
         }
 
         #endregion

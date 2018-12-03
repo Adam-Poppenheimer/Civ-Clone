@@ -133,7 +133,7 @@ namespace Assets.UI.StateMachine {
                 EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
 
             }else if(type == TransitionType.CivSelected) {
-                CivSelectedSubscription = CivSignals.CivSelectedSignal.Subscribe(OnCivSelected);
+                CivSelectedSubscription = CivSignals.CivSelected.Subscribe(OnCivSelected);
             }
         }
 

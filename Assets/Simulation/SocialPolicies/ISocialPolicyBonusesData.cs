@@ -49,6 +49,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         float GreatMilitaryGainSpeedModifier { get; }
 
+        float GoldenAgeLengthModifier { get; }
+
         #endregion
 
     }

@@ -714,7 +714,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
             var policyCanon = Container.Resolve<SocialPolicyCanon>();
 
-            CivSignals.CivUnlockedPolicySignal.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+            CivSignals.CivUnlockedPolicy.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
                 Assert.AreEqual(civOne,    data.Item1, "Incorrect civilization passed");
                 Assert.AreEqual(policyOne, data.Item2, "Incorrect policy passed");
                 Assert.Pass();
@@ -738,7 +738,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
             var policyCanon = Container.Resolve<SocialPolicyCanon>();
 
-            CivSignals.CivFinishedPolicyTreeSignal.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+            CivSignals.CivFinishedPolicyTree.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
                 Assert.AreEqual(civOne,  data.Item1, "Incorrect civilization passed");
                 Assert.AreEqual(treeOne, data.Item2, "Incorrect tree passed");
                 Assert.Pass();
@@ -763,7 +763,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
             var policyCanon = Container.Resolve<SocialPolicyCanon>();
 
-            CivSignals.CivFinishedPolicyTreeSignal.Subscribe(data => Assert.Fail());
+            CivSignals.CivFinishedPolicyTree.Subscribe(data => Assert.Fail());
 
             policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
             policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
@@ -781,7 +781,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
 
             var policyCanon = Container.Resolve<SocialPolicyCanon>();
 
-            CivSignals.CivLockedPolicySignal.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+            CivSignals.CivLockedPolicy.Subscribe(delegate(Tuple<ICivilization, ISocialPolicyDefinition> data) {
                 Assert.AreEqual(civOne,    data.Item1, "Incorrect civilization passed");
                 Assert.AreEqual(policyOne, data.Item2, "Incorrect policy passed");
                 Assert.Pass();
@@ -811,7 +811,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
             policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
             policyCanon.SetPolicyAsUnlockedForCiv(policyTwo, civOne);
 
-            CivSignals.CivUnfinishedPolicyTreeSignal.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+            CivSignals.CivUnfinishedPolicyTree.Subscribe(delegate(Tuple<ICivilization, IPolicyTreeDefinition> data) {
                 Assert.AreEqual(civOne,  data.Item1, "Incorrect civilization passed");
                 Assert.AreEqual(treeOne, data.Item2, "Incorrect tree passed");
                 Assert.Pass();
@@ -836,7 +836,7 @@ namespace Assets.Tests.Simulation.SocialPolicies {
             policyCanon.SetTreeAsUnlockedForCiv(treeOne, civOne);
             policyCanon.SetPolicyAsUnlockedForCiv(policyOne, civOne);
 
-            CivSignals.CivUnfinishedPolicyTreeSignal.Subscribe(data => Assert.Fail());
+            CivSignals.CivUnfinishedPolicyTree.Subscribe(data => Assert.Fail());
 
             policyCanon.SetPolicyAsLockedForCiv(policyOne, civOne);
         }

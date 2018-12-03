@@ -19,70 +19,76 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        public ISubject<ICivilization> NewCivilizationCreatedSignal     { get; private set; }
-        public ISubject<ICivilization> CivBeingDestroyedSignal { get; private set; }
+        public ISubject<ICivilization> NewCivilizationCreated { get; private set; }
+        public ISubject<ICivilization> CivBeingDestroyed      { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ICity>> CivGainedCitySignal { get; private set; }
-        public ISubject<Tuple<ICivilization, ICity>> CivLosingCitySignal { get; private set; }
-        public ISubject<Tuple<ICivilization, ICity>> CivLostCitySignal   { get; private set; }
+        public ISubject<Tuple<ICivilization, ICity>> CivGainedCity { get; private set; }
+        public ISubject<Tuple<ICivilization, ICity>> CivLosingCity { get; private set; }
+        public ISubject<Tuple<ICivilization, ICity>> CivLostCity   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IUnit>> CivGainedUnitSignal { get; private set; }
-        public ISubject<Tuple<ICivilization, IUnit>> CivLosingUnitSignal { get; private set; }
-        public ISubject<Tuple<ICivilization, IUnit>> CivLostUnitSignal   { get; private set; }
+        public ISubject<Tuple<ICivilization, IUnit>> CivGainedUnit { get; private set; }
+        public ISubject<Tuple<ICivilization, IUnit>> CivLosingUnit { get; private set; }
+        public ISubject<Tuple<ICivilization, IUnit>> CivLostUnit   { get; private set; }
 
-        public ISubject<ResourceTransfer> ResourceTransferCanceledSignal { get; private set; }
+        public ISubject<ResourceTransfer> ResourceTransferCancelled { get; private set; }
 
-        public ISubject<ICivilization> CivSelectedSignal { get; private set; }
+        public ISubject<ICivilization> CivSelected { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivUnlockedPolicySignal { get; private set; }
-        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivLockedPolicySignal   { get; private set; }
+        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivUnlockedPolicy { get; private set; }
+        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivLockedPolicy   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTreeSignal { get; private set; }
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTreeSignal   { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTree { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTree   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivFinishedPolicyTreeSignal   { get; private set; }
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnfinishedPolicyTreeSignal { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivFinishedPolicyTree   { get; private set; }
+        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnfinishedPolicyTree { get; private set; }
 
-        public ISubject<ICivilization> CivDefeatedSignal { get; private set; }
+        public ISubject<ICivilization> CivDefeated { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTechSignal { get; private set; }
+        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTech { get; private set; }
 
-        public ISubject<GreatPersonBirthData> GreatPersonBornSignal { get; private set; }
+        public ISubject<GreatPersonBirthData> GreatPersonBorn { get; private set; }
+
+        public ISubject<ICivilization> CivEnteredGoldenAge { get; private set; }
+        public ISubject<ICivilization> CivLeftGoldenAge    { get; private set; }
 
         #endregion
 
         #region constructors
 
         public CivilizationSignals(){
-            NewCivilizationCreatedSignal     = new Subject<ICivilization>();
-            CivBeingDestroyedSignal = new Subject<ICivilization>();
+            NewCivilizationCreated = new Subject<ICivilization>();
+            CivBeingDestroyed      = new Subject<ICivilization>();
 
-            CivGainedCitySignal = new Subject<Tuple<ICivilization, ICity>>();
-            CivLosingCitySignal = new Subject<Tuple<ICivilization, ICity>>();
-            CivLostCitySignal   = new Subject<Tuple<ICivilization, ICity>>();
+            CivGainedCity = new Subject<Tuple<ICivilization, ICity>>();
+            CivLosingCity = new Subject<Tuple<ICivilization, ICity>>();
+            CivLostCity   = new Subject<Tuple<ICivilization, ICity>>();
 
-            CivGainedUnitSignal = new Subject<Tuple<ICivilization, IUnit>>();
-            CivLosingUnitSignal = new Subject<Tuple<ICivilization, IUnit>>();
-            CivLostUnitSignal   = new Subject<Tuple<ICivilization, IUnit>>();
+            CivGainedUnit = new Subject<Tuple<ICivilization, IUnit>>();
+            CivLosingUnit = new Subject<Tuple<ICivilization, IUnit>>();
+            CivLostUnit   = new Subject<Tuple<ICivilization, IUnit>>();
 
-            ResourceTransferCanceledSignal = new Subject<ResourceTransfer>();
+            ResourceTransferCancelled = new Subject<ResourceTransfer>();
 
-            CivSelectedSignal = new Subject<ICivilization>();
+            CivSelected = new Subject<ICivilization>();
 
-            CivUnlockedPolicySignal = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
-            CivLockedPolicySignal   = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
+            CivUnlockedPolicy = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
+            CivLockedPolicy   = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
 
-            CivUnlockedPolicyTreeSignal = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
-            CivLockedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivUnlockedPolicyTree = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivLockedPolicyTree   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
 
-            CivFinishedPolicyTreeSignal   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
-            CivUnfinishedPolicyTreeSignal = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivFinishedPolicyTree   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivUnfinishedPolicyTree = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
 
-            CivDefeatedSignal = new Subject<ICivilization>();
+            CivDefeated = new Subject<ICivilization>();
 
-            CivDiscoveredTechSignal = new Subject<Tuple<ICivilization, ITechDefinition>>();
+            CivDiscoveredTech = new Subject<Tuple<ICivilization, ITechDefinition>>();
 
-            GreatPersonBornSignal = new Subject<GreatPersonBirthData>();
+            GreatPersonBorn = new Subject<GreatPersonBirthData>();
+
+            CivEnteredGoldenAge = new Subject<ICivilization>();
+            CivLeftGoldenAge    = new Subject<ICivilization>();
         }
 
         #endregion

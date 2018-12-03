@@ -27,9 +27,9 @@ namespace Assets.Simulation.Units {
                     _isActive = value;
 
                     if(_isActive) {
-                        SignalSubscriptions.Add(CivSignals.CivUnlockedPolicySignal    .Subscribe(OnCivUnlockedPolicy));
-                        SignalSubscriptions.Add(CivSignals.CivUnlockedPolicyTreeSignal.Subscribe(OnCivUnlockedPolicyTree));
-                        SignalSubscriptions.Add(CivSignals.CivFinishedPolicyTreeSignal.Subscribe(OnCivFinishedPolicyTree));
+                        SignalSubscriptions.Add(CivSignals.CivUnlockedPolicy    .Subscribe(OnCivUnlockedPolicy));
+                        SignalSubscriptions.Add(CivSignals.CivUnlockedPolicyTree.Subscribe(OnCivUnlockedPolicyTree));
+                        SignalSubscriptions.Add(CivSignals.CivFinishedPolicyTree.Subscribe(OnCivFinishedPolicyTree));
 
                         SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal.Subscribe(OnCityGainedBuilding));
 

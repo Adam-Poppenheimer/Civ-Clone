@@ -31,6 +31,9 @@ namespace Assets.Tests.Simulation.HexMap {
         private Mock<IPossessionRelationship<ICity, IBuilding>>        MockBuildingPossessionCanon;
         private Mock<ITechCanon>                                       MockTechCanon;
         private Mock<IFreshWaterLogic>                                 MockFreshWaterCanon;
+        private Mock<ICivilizationTerritoryLogic>                      MockCivTerritoryLogic;
+        private Mock<IGoldenAgeCanon>                                  MockGoldenAgeCanon;
+        private Mock<ICivilizationConfig>                              MockCivConfig;
 
         private Mock<IInherentCellYieldLogic>                          MockInherentCellYieldLogic;
         private Mock<IResourceNodeYieldLogic>                          MockResourceNodeYieldLogic;
@@ -51,6 +54,9 @@ namespace Assets.Tests.Simulation.HexMap {
             MockBuildingPossessionCanon  = new Mock<IPossessionRelationship<ICity, IBuilding>>();
             MockTechCanon                = new Mock<ITechCanon>();
             MockFreshWaterCanon          = new Mock<IFreshWaterLogic>();
+            MockCivTerritoryLogic        = new Mock<ICivilizationTerritoryLogic>();
+            MockGoldenAgeCanon           = new Mock<IGoldenAgeCanon>();
+            MockCivConfig                = new Mock<ICivilizationConfig>();
 
             MockInherentCellYieldLogic   = new Mock<IInherentCellYieldLogic>();
             MockResourceNodeYieldLogic   = new Mock<IResourceNodeYieldLogic>();
@@ -63,6 +69,9 @@ namespace Assets.Tests.Simulation.HexMap {
             Container.Bind<IPossessionRelationship<ICity, IBuilding>>       ().FromInstance(MockBuildingPossessionCanon .Object);
             Container.Bind<ITechCanon>                                      ().FromInstance(MockTechCanon               .Object);
             Container.Bind<IFreshWaterLogic>                                ().FromInstance(MockFreshWaterCanon         .Object);
+            Container.Bind<ICivilizationTerritoryLogic>                     ().FromInstance(MockCivTerritoryLogic       .Object);
+            Container.Bind<IGoldenAgeCanon>                                 ().FromInstance(MockGoldenAgeCanon          .Object);
+            Container.Bind<ICivilizationConfig>                             ().FromInstance(MockCivConfig               .Object);
 
             Container.Bind<IInherentCellYieldLogic>                         ().FromInstance(MockInherentCellYieldLogic  .Object);
             Container.Bind<IResourceNodeYieldLogic>                         ().FromInstance(MockResourceNodeYieldLogic  .Object);
@@ -263,6 +272,63 @@ namespace Assets.Tests.Simulation.HexMap {
             );
         }
 
+        [Test]
+        public void GetYieldOfCell_AddsConfiguredBonusGoldIfCellProducesGold_AndPerspectiveCivInAGoldenAge() {
+            var cell = BuildCell();
+
+            var cellYield = new YieldSummary(food: 1, production: 2, gold: 3);
+
+            MockInherentCellYieldLogic.Setup(logic => logic.GetInherentCellYield(cell, false)).Returns(cellYield);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBonusGoldOnCells).Returns(3);
+
+            var civ = BuildCivilization(new List<IResourceDefinition>(), new List<ITechDefinition>(), true);
+
+            var yieldLogic = Container.Resolve<CellYieldLogic>();
+
+            Assert.AreEqual(
+                new YieldSummary(food: 1f, production: 2f, gold: 6f), yieldLogic.GetYieldOfCell(cell, civ)
+            );
+        }
+
+        [Test]
+        public void GetYieldOfCell_IgnoresBonusGoldIfPerspectiveCivNotInAGoldenAge() {
+            var cell = BuildCell();
+
+            var cellYield = new YieldSummary(food: 1, production: 2, gold: 3);
+
+            MockInherentCellYieldLogic.Setup(logic => logic.GetInherentCellYield(cell, false)).Returns(cellYield);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBonusGoldOnCells).Returns(3);
+
+            var civ = BuildCivilization(new List<IResourceDefinition>(), new List<ITechDefinition>(), false);
+
+            var yieldLogic = Container.Resolve<CellYieldLogic>();
+
+            Assert.AreEqual(
+                new YieldSummary(food: 1f, production: 2f, gold: 3f), yieldLogic.GetYieldOfCell(cell, civ)
+            );
+        }
+
+        [Test]
+        public void GetYieldOfCell_IgnoresBonusGoldIfCellDoesntProduceGold() {
+            var cell = BuildCell();
+
+            var cellYield = new YieldSummary(food: 1, production: 2);
+
+            MockInherentCellYieldLogic.Setup(logic => logic.GetInherentCellYield(cell, false)).Returns(cellYield);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBonusGoldOnCells).Returns(3);
+
+            var civ = BuildCivilization(new List<IResourceDefinition>(), new List<ITechDefinition>(), true);
+
+            var yieldLogic = Container.Resolve<CellYieldLogic>();
+
+            Assert.AreEqual(
+                new YieldSummary(food: 1f, production: 2f), yieldLogic.GetYieldOfCell(cell, civ)
+            );
+        }
+
         #endregion
 
         #region utilities
@@ -305,12 +371,15 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         private ICivilization BuildCivilization(
-            IEnumerable<IResourceDefinition> visibleResources, IEnumerable<ITechDefinition> discoveredTechs 
+            IEnumerable<IResourceDefinition> visibleResources, IEnumerable<ITechDefinition> discoveredTechs,
+            bool isInGoldenAge = false
         ) {
             var newCiv = new Mock<ICivilization>().Object;
 
             MockTechCanon.Setup(canon => canon.GetResourcesVisibleToCiv(newCiv)).Returns(visibleResources);
             MockTechCanon.Setup(canon => canon.GetTechsDiscoveredByCiv (newCiv)).Returns(discoveredTechs);
+
+            MockGoldenAgeCanon.Setup(canon => canon.IsCivInGoldenAge(newCiv)).Returns(isInGoldenAge);
 
             return newCiv;
         }

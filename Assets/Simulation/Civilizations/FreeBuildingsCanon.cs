@@ -27,8 +27,8 @@ namespace Assets.Simulation.Civilizations {
                     _applyBuildingsToCities = value;
 
                     if(_applyBuildingsToCities) {
-                        CivGainedCitySubscription     = CivSignals.CivGainedCitySignal    .Subscribe(OnCivGainedCity);
-                        CivDiscoveredTechSubscription = CivSignals.CivDiscoveredTechSignal.Subscribe(OnCivDiscoveredTech);
+                        CivGainedCitySubscription     = CivSignals.CivGainedCity    .Subscribe(OnCivGainedCity);
+                        CivDiscoveredTechSubscription = CivSignals.CivDiscoveredTech.Subscribe(OnCivDiscoveredTech);
 
                     }else {
                         CivGainedCitySubscription    .Dispose();

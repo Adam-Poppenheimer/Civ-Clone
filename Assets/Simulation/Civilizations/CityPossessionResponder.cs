@@ -27,7 +27,7 @@ namespace Assets.Simulation.Civilizations {
         ) {
             UnitPossessionCanon = unitPossessionCanon;
 
-            civSignals.CivGainedCitySignal.Subscribe(OnCityOwnershipChanged);
+            civSignals.CivGainedCity.Subscribe(OnCityOwnershipChanged);
         }
 
         #endregion

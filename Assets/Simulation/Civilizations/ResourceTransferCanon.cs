@@ -94,7 +94,7 @@ namespace Assets.Simulation.Civilizations {
 
         public void CancelTransfer(ResourceTransfer transfer) {
             AllActiveTransfers.Remove(transfer);
-            CivSignals.ResourceTransferCanceledSignal.OnNext(transfer);
+            CivSignals.ResourceTransferCancelled.OnNext(transfer);
         }
 
         #endregion

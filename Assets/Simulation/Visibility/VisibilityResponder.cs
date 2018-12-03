@@ -90,8 +90,8 @@ namespace Assets.Simulation.Visibility {
             cellSignals.ShapeChangedSignal              .Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.VegetationChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
 
-            civSignals.CivLosingCitySignal.Subscribe(OnCivLosingCity);
-            civSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity);
+            civSignals.CivLosingCity.Subscribe(OnCivLosingCity);
+            civSignals.CivGainedCity.Subscribe(OnCivGainedCity);
 
             visibilitySignals.CellVisibilityModeChangedSignal .Subscribe(unit => TryResetCellVisibility());
             visibilitySignals.CellExplorationModeChangedSignal.Subscribe(unit => TryResetCellVisibility());

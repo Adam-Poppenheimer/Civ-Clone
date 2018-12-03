@@ -87,6 +87,36 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private float _experienceToGreatPersonPointRatio = 1f;
 
+        public float GoldenAgeBaseCost {
+            get { return _goldenAgeBaseCost; }
+        }
+        [SerializeField] private float _goldenAgeBaseCost;
+
+        public float GoldenAgeCostPerPreviousAge {
+            get { return _goldenAgeCostPerPreviousAge; }
+        }
+        [SerializeField] private float _goldenAgeCostPerPreviousAge;
+
+        public float GoldenAgePerCityMultiplier {
+            get { return _goldenAgePerCityMultiplier; }
+        }
+        [SerializeField] private float _goldenAgePerCityMultiplier;
+
+        public float GoldenAgeBaseLength {
+            get { return _goldenAgeBaseLength; }
+        }
+        [SerializeField] private float _goldenAgeBaseLength;
+
+        public YieldSummary GoldenAgeProductionModifiers {
+            get { return _goldenAgeProductionModifiers; }
+        }
+        [SerializeField] private YieldSummary _goldenAgeProductionModifiers;
+
+        public int GoldenAgeBonusGoldOnCells {
+            get { return _goldenAgeBonusGoldOnCells; }
+        }
+        [SerializeField] private int _goldenAgeBonusGoldOnCells;
+
         #endregion
 
         #endregion

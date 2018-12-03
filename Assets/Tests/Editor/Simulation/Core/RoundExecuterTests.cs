@@ -220,6 +220,7 @@ namespace Assets.Tests.Simulation.Core {
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
             mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformGreatPeopleGeneration());
+            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformGoldenAgeTasks());
 
             var executer = Container.Resolve<RoundExecuter>();
             executer.BeginRoundOnCivilization(mockCivilization.Object);

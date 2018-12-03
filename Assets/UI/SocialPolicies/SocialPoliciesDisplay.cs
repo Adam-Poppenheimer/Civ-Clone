@@ -70,10 +70,10 @@ namespace Assets.UI.SocialPolicies {
         #region Unity messages
 
         private void OnEnable() {
-            CivUnlockedPolicyTreeSubscription = CivSignals.CivUnlockedPolicyTreeSignal.Subscribe(data => Refresh());
-            CivLockedPolicyTreeSubscription   = CivSignals.CivLockedPolicyTreeSignal  .Subscribe(data => Refresh());
-            CivUnlockedPolicySubscription     = CivSignals.CivUnlockedPolicySignal    .Subscribe(data => Refresh());
-            CivLockedPolicySubscription       = CivSignals.CivLockedPolicySignal      .Subscribe(data => Refresh());
+            CivUnlockedPolicyTreeSubscription = CivSignals.CivUnlockedPolicyTree.Subscribe(data => Refresh());
+            CivLockedPolicyTreeSubscription   = CivSignals.CivLockedPolicyTree  .Subscribe(data => Refresh());
+            CivUnlockedPolicySubscription     = CivSignals.CivUnlockedPolicy    .Subscribe(data => Refresh());
+            CivLockedPolicySubscription       = CivSignals.CivLockedPolicy      .Subscribe(data => Refresh());
         }
 
         private void OnDisable() {

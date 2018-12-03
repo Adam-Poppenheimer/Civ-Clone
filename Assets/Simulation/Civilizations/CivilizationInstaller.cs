@@ -68,6 +68,7 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IFreeBuildingApplier>        ().To<FreeBuildingApplier>        ().AsSingle();
             Container.Bind<IFreeBuildingsCanon>         ().To<FreeBuildingsCanon>         ().AsSingle();
             Container.Bind<ICivModifiers>               ().To<CivModifiers>               ().AsSingle();
+            Container.Bind<IGoldenAgeCanon>             ().To<GoldenAgeCanon>             ().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 

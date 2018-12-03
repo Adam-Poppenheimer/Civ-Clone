@@ -42,7 +42,7 @@ namespace Assets.Simulation.Civilizations {
             CivConfig  = civConfig;
             UnitConfig = unitConfig;
 
-            civSignals.GreatPersonBornSignal.Subscribe(OnGreatPersonBorn);
+            civSignals.GreatPersonBorn.Subscribe(OnGreatPersonBorn);
         }
 
         #endregion

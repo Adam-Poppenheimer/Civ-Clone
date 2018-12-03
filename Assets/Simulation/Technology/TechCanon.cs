@@ -67,7 +67,7 @@ namespace Assets.Simulation.Technology {
             AvailableImprovements = availableImprovements;
             CivSignals            = civSignals;
 
-            civSignals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -306,7 +306,7 @@ namespace Assets.Simulation.Technology {
 
             if(!IsTechDiscoveredByCiv(tech, civilization)) {
                 TechsResearchedByCiv[civilization].Add(tech);
-                CivSignals.CivDiscoveredTechSignal.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civilization, tech));
+                CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civilization, tech));
             }
         }
 

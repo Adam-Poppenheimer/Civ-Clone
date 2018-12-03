@@ -91,7 +91,7 @@ namespace Assets.UI.MapEditor {
                 newRecord.NameField.text = civilization.Template.Name;
 
                 var cachedCiv = civilization;
-                newRecord.EditButton.onClick.AddListener(() => CivSignals.CivSelectedSignal.OnNext(cachedCiv));
+                newRecord.EditButton.onClick.AddListener(() => CivSignals.CivSelected.OnNext(cachedCiv));
 
                 InstantiatedRecords.Add(newRecord);
             }

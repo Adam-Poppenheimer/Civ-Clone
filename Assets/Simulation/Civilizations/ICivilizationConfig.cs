@@ -39,6 +39,14 @@ namespace Assets.Simulation.Civilizations {
 
         float ExperienceToGreatPersonPointRatio { get; }
 
+        float GoldenAgeBaseCost           { get; }
+        float GoldenAgeCostPerPreviousAge { get; }
+        float GoldenAgePerCityMultiplier  { get; }
+        float GoldenAgeBaseLength         { get; }
+
+        YieldSummary GoldenAgeProductionModifiers { get; }
+        int          GoldenAgeBonusGoldOnCells    { get; }
+
         #endregion
 
     }

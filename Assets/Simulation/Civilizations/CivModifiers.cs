@@ -19,6 +19,8 @@ namespace Assets.Simulation.Civilizations {
 
         public ICivModifier<float> GreatMilitaryGainSpeed { get; private set; }
 
+        public ICivModifier<float> GoldenAgeLength { get; private set; }
+
         #endregion
 
         #endregion
@@ -54,9 +56,19 @@ namespace Assets.Simulation.Civilizations {
                 }
             );
 
+            GoldenAgeLength = new CivModifier<float>(
+                new CivModifier<float>.ExtractionData() {
+                    PolicyExtractor         = bonuses  => bonuses .GoldenAgeLengthModifier,
+                    GlobalBuildingExtractor = template => template.GoldenAgeLengthModifier,
+                    Aggregator = (a, b) => a + b,
+                    UnitaryValue = 1f
+                }
+            );
+
             container.QueueForInject(SuppressGarrisonMaintenance);
             container.QueueForInject(ImprovementBuildSpeed);
             container.QueueForInject(GreatMilitaryGainSpeed);
+            container.QueueForInject(GoldenAgeLength);
         }
 
         #endregion

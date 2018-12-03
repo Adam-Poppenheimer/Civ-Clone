@@ -162,7 +162,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
 
             Assert.AreEqual(
                 200, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatArtist, civ),
@@ -174,7 +174,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 "GreatEngineer needs an unexpected number of points"
             );
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
 
             Assert.AreEqual(
                 400, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatArtist, civ),
@@ -228,7 +228,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
 
             Assert.AreEqual(
                 600, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatArtist, civ),
@@ -240,7 +240,7 @@ namespace Assets.Tests.Simulation.Civilizations {
                 "GreatEngineer needs an unexpected number of points"
             );
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatScientist });
 
             Assert.AreEqual(
                 1200, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatArtist, civ),
@@ -276,11 +276,11 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatAdmiral });
 
             Assert.AreEqual(200, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatAdmiral, civ));
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatEngineer });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatEngineer });
 
             Assert.AreEqual(200, greatPeopleCanon.GetPointsNeededForTypeForCiv(GreatPersonType.GreatAdmiral, civ));
         }
@@ -291,7 +291,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civ, Type = GreatPersonType.GreatAdmiral });
             
             Assert.AreEqual(1, greatPeopleCanon.GetPredecessorsOfTypeForCiv(GreatPersonType.GreatAdmiral, civ));
         }
@@ -323,10 +323,10 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatAdmiral });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatArtist });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatAdmiral });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatArtist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatArtist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatArtist });
 
             greatPeopleCanon.Clear();
 
@@ -376,10 +376,10 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var greatPeopleCanon = Container.Resolve<GreatPersonCanon>();
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatAdmiral });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatArtist });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatAdmiral });
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatArtist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civOne, Type = GreatPersonType.GreatArtist });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatAdmiral });
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() { Owner = civTwo, Type = GreatPersonType.GreatArtist });
 
             greatPeopleCanon.ClearCiv(civOne);
 

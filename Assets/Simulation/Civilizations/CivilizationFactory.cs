@@ -45,7 +45,7 @@ namespace Assets.Simulation.Civilizations {
             Signals      = signals;
             CivContainer = civContainer;
 
-            signals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            signals.CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -70,7 +70,7 @@ namespace Assets.Simulation.Civilizations {
 
             allCivilizations.Add(newCivilization);
 
-            Signals.NewCivilizationCreatedSignal.OnNext(newCivilization);
+            Signals.NewCivilizationCreated.OnNext(newCivilization);
 
             return newCivilization;
         }

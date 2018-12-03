@@ -120,6 +120,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         float GreatMilitaryGainSpeedModifier { get; }
 
+        float GoldenAgeLengthModifier { get; }
+
         #endregion
 
     }

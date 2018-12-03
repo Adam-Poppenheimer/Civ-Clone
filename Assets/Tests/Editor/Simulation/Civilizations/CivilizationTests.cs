@@ -21,11 +21,17 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private Mock<ICivilizationYieldLogic> MockYieldLogic;
-        private Mock<ITechCanon>              MockTechCanon;
-        private Mock<IGreatPersonCanon>       MockGreatPersonCanon;
-        private Mock<IGreatPersonFactory>     MockGreatPersonFactory;
-        private CivilizationSignals           CivSignals;
+        private Mock<ICivilizationYieldLogic>     MockYieldLogic;
+        private Mock<ITechCanon>                  MockTechCanon;
+        private CivilizationSignals               CivSignals;
+        private Mock<IGreatPersonCanon>           MockGreatPersonCanon;
+        private Mock<IGreatPersonFactory>         MockGreatPersonFactory;
+        private Mock<IGoldenAgeCanon>             MockGoldenAgeCanon;
+        private Mock<ICivilizationHappinessLogic> MockCivHappinessLogic;
+        private Mock<ICivilizationConfig>         MockCivConfig;
+        private Mock<ICivModifiers>               MockCivModifiers;
+
+        private Mock<ICivModifier<float>> MockGoldenAgeLengthModifier;
 
         #endregion
 
@@ -37,15 +43,27 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CommonInstall() {
             MockYieldLogic         = new Mock<ICivilizationYieldLogic>();
             MockTechCanon          = new Mock<ITechCanon>();
+            CivSignals             = new CivilizationSignals();
             MockGreatPersonCanon   = new Mock<IGreatPersonCanon>();
             MockGreatPersonFactory = new Mock<IGreatPersonFactory>();
-            CivSignals             = new CivilizationSignals();
+            MockGoldenAgeCanon     = new Mock<IGoldenAgeCanon>();
+            MockCivHappinessLogic  = new Mock<ICivilizationHappinessLogic>();
+            MockCivConfig          = new Mock<ICivilizationConfig>();
+            MockCivModifiers       = new Mock<ICivModifiers>();
 
-            Container.Bind<ICivilizationYieldLogic>().FromInstance(MockYieldLogic        .Object);
-            Container.Bind<ITechCanon>             ().FromInstance(MockTechCanon         .Object);
-            Container.Bind<IGreatPersonCanon>      ().FromInstance(MockGreatPersonCanon  .Object);
-            Container.Bind<IGreatPersonFactory>    ().FromInstance(MockGreatPersonFactory.Object);
-            Container.Bind<CivilizationSignals>    ().FromInstance(CivSignals);
+            MockGoldenAgeLengthModifier = new Mock<ICivModifier<float>>();
+
+            MockCivModifiers.Setup(modifiers => modifiers.GoldenAgeLength).Returns(MockGoldenAgeLengthModifier.Object);
+
+            Container.Bind<ICivilizationYieldLogic>    ().FromInstance(MockYieldLogic        .Object);
+            Container.Bind<ITechCanon>                 ().FromInstance(MockTechCanon         .Object);
+            Container.Bind<CivilizationSignals>        ().FromInstance(CivSignals);
+            Container.Bind<IGreatPersonCanon>          ().FromInstance(MockGreatPersonCanon  .Object);
+            Container.Bind<IGreatPersonFactory>        ().FromInstance(MockGreatPersonFactory.Object);
+            Container.Bind<IGoldenAgeCanon>            ().FromInstance(MockGoldenAgeCanon    .Object);
+            Container.Bind<ICivilizationHappinessLogic>().FromInstance(MockCivHappinessLogic .Object);
+            Container.Bind<ICivilizationConfig>        ().FromInstance(MockCivConfig         .Object);
+            Container.Bind<ICivModifiers>              ().FromInstance(MockCivModifiers      .Object);
         }
 
         #endregion
@@ -240,6 +258,96 @@ namespace Assets.Tests.Simulation.Civilizations {
                 canon => canon.SetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ, It.IsAny<float>()),
                 Times.Never, "GreatArtist unexpectedly set"
             );
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_ChangesGoldenAgeProgressByHappinessOfCiv() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockCivHappinessLogic.Setup(logic => logic.GetHappinessOfCiv(civ)).Returns(10);
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(0);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.ChangeGoldenAgeProgressForCiv(civ, 10f), Times.Once);
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_DoesNotChangeGoldenAgeProgressIfAlreadyInGoldenAge() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockCivHappinessLogic.Setup(logic => logic.GetHappinessOfCiv(civ)).Returns(10);
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(0);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            MockGoldenAgeCanon.Setup(canon => canon.IsCivInGoldenAge(civ)).Returns(true);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.ChangeGoldenAgeProgressForCiv(civ, It.IsAny<float>()), Times.Never);
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_AndProgressAtLeastNextCost_ResetsProgressToZero() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(100);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.SetGoldenAgeProgressForCiv(civ, 0f), Times.Once);
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_AndProgressGreaterThanNextCost_GoldenAgeStartedFromConfiguredLength() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(100);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBaseLength).Returns(15);
+
+            MockGoldenAgeLengthModifier.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.StartGoldenAgeForCiv(civ, 15), Times.Once);
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_AndNewGoldenAgeBeingStarted_GoldenAgeLengthModifiedByAppropriateModifier() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(100);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBaseLength).Returns(15);
+
+            MockGoldenAgeLengthModifier.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(3f);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.StartGoldenAgeForCiv(civ, 45), Times.Once);
+        }
+
+        [Test]
+        public void PerformGoldenAgeTasks_DoesntStartANewGoldenAgeIfOneInProgress() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(100);
+            MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);
+
+            MockGoldenAgeCanon.Setup(canon => canon.IsCivInGoldenAge(civ)).Returns(true);
+
+            MockCivConfig.Setup(config => config.GoldenAgeBaseLength).Returns(15);
+
+            civ.PerformGoldenAgeTasks();
+
+            MockGoldenAgeCanon.Verify(canon => canon.StartGoldenAgeForCiv(civ, It.IsAny<int>()), Times.Never);
         }
 
         #endregion

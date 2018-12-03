@@ -36,8 +36,8 @@ namespace Assets.Simulation.Civilizations {
         ) {
             UnitPossessionCanon = unitPossessionCanon;
             
-            civSignals.CivGainedUnitSignal.Subscribe(OnCivGainedUnit);
-            civSignals.CivLostUnitSignal  .Subscribe(OnCivLostUnit);
+            civSignals.CivGainedUnit.Subscribe(OnCivGainedUnit);
+            civSignals.CivLostUnit  .Subscribe(OnCivLostUnit);
         }
 
         #endregion

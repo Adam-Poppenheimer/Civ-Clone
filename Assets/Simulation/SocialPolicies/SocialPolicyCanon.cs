@@ -96,12 +96,12 @@ namespace Assets.Simulation.SocialPolicies {
                 var treeOfPolicy = GetTreeWithPolicy(policy);
 
                 if(treeOfPolicy != null && IsTreeCompletedByCiv(treeOfPolicy, civ)) {
-                    CivSignals.CivFinishedPolicyTreeSignal.OnNext(
+                    CivSignals.CivFinishedPolicyTree.OnNext(
                         new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, treeOfPolicy)
                     );
                 }
 
-                CivSignals.CivUnlockedPolicySignal.OnNext(
+                CivSignals.CivUnlockedPolicy.OnNext(
                     new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
                 );
             }
@@ -118,12 +118,12 @@ namespace Assets.Simulation.SocialPolicies {
 
                 PoliciesUnlockedByCiv[civ].Remove(policy);
 
-                CivSignals.CivLockedPolicySignal.OnNext(
+                CivSignals.CivLockedPolicy.OnNext(
                     new UniRx.Tuple<ICivilization, ISocialPolicyDefinition>(civ, policy)
                 );
 
                 if(treeWasCompleted) {
-                    CivSignals.CivUnfinishedPolicyTreeSignal.OnNext(
+                    CivSignals.CivUnfinishedPolicyTree.OnNext(
                         new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, treeOfPolicy)
                     );
                 }
@@ -140,7 +140,7 @@ namespace Assets.Simulation.SocialPolicies {
             }else {
                 TreesUnlockedByCiv[civ].Add(tree);
 
-                CivSignals.CivUnlockedPolicyTreeSignal.OnNext(
+                CivSignals.CivUnlockedPolicyTree.OnNext(
                     new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, tree)
                 );
             }
@@ -157,7 +157,7 @@ namespace Assets.Simulation.SocialPolicies {
 
                 TreesUnlockedByCiv[civ].Remove(tree);
 
-                CivSignals.CivLockedPolicyTreeSignal.OnNext(
+                CivSignals.CivLockedPolicyTree.OnNext(
                     new UniRx.Tuple<ICivilization, IPolicyTreeDefinition>(civ, tree)
                 );
             }

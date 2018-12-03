@@ -67,7 +67,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CapitalCitySynchronizer>();
 
-            CivSignals.CivGainedCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, city), Times.Once);
         }
@@ -82,7 +82,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CapitalCitySynchronizer>();
 
-            CivSignals.CivGainedCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, newCity));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, newCity));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, newCity), Times.Never);
         }
@@ -96,7 +96,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             synchronizer.SetCapitalUpdating(false);
 
-            CivSignals.CivGainedCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, city), Times.Never);
         }
@@ -113,7 +113,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CapitalCitySynchronizer>();
 
-            CivSignals.CivLostCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, otherCity), Times.Once);
         }
@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CapitalCitySynchronizer>();
 
-            CivSignals.CivLostCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, null), Times.Once);
         }
@@ -146,7 +146,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             synchronizer.SetCapitalUpdating(false);
 
-            CivSignals.CivLostCitySignal.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, oldCapital));
 
             MockCapitalCityCanon.Verify(canon => canon.SetCapitalOfCiv(civ, otherCity), Times.Never);
         }

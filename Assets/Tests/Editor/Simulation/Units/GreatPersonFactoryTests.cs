@@ -130,7 +130,7 @@ namespace Assets.Tests.Simulation.Units {
             var factory = Container.Resolve<GreatPersonFactory>();
 
             GreatPersonBirthData? birthData = null;
-            CivSignals.GreatPersonBornSignal.Subscribe(data => birthData = data);
+            CivSignals.GreatPersonBorn.Subscribe(data => birthData = data);
 
             var greatPerson = factory.BuildGreatPerson(GreatPersonType.GreatEngineer, civ);
 

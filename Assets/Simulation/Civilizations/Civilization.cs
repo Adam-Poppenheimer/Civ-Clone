@@ -37,11 +37,15 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private ICivilizationYieldLogic YieldLogic;
-        private ITechCanon              TechCanon;
-        private CivilizationSignals     Signals;
-        private IGreatPersonCanon       GreatPersonCanon;
-        private IGreatPersonFactory     GreatPersonFactory;
+        private ICivilizationYieldLogic     YieldLogic;
+        private ITechCanon                  TechCanon;
+        private CivilizationSignals         Signals;
+        private IGreatPersonCanon           GreatPersonCanon;
+        private IGreatPersonFactory         GreatPersonFactory;
+        private IGoldenAgeCanon             GoldenAgeCanon;
+        private ICivilizationHappinessLogic CivHappinessLogic;
+        private ICivilizationConfig         CivConfig;
+        private ICivModifiers               CivModifiers;
 
         #endregion
 
@@ -51,13 +55,19 @@ namespace Assets.Simulation.Civilizations {
         public void InjectDependencies(
             ICivilizationYieldLogic yieldLogic, ITechCanon techCanon,
             CivilizationSignals signals, IGreatPersonCanon greatPersonCanon,
-            IGreatPersonFactory greatPersonFactory
+            IGreatPersonFactory greatPersonFactory, IGoldenAgeCanon goldenAgeCanon,
+            ICivilizationHappinessLogic civHappinessLogic, ICivilizationConfig civConfig,
+            ICivModifiers civModifiers
         ){
             YieldLogic         = yieldLogic;
             TechCanon          = techCanon;
             Signals            = signals;
             GreatPersonCanon   = greatPersonCanon;
             GreatPersonFactory = greatPersonFactory;
+            GoldenAgeCanon     = goldenAgeCanon;
+            CivHappinessLogic  = civHappinessLogic;
+            CivConfig          = civConfig;
+            CivModifiers       = civModifiers;
 
             TechQueue = new Queue<ITechDefinition>();
         }
@@ -65,7 +75,7 @@ namespace Assets.Simulation.Civilizations {
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.CivBeingDestroyedSignal.OnNext(this);
+            Signals.CivBeingDestroyed.OnNext(this);
         }
 
         #endregion
@@ -126,6 +136,28 @@ namespace Assets.Simulation.Civilizations {
 
                     GreatPersonFactory.BuildGreatPerson(greatPersonType, this);
                 }
+            }
+        }
+
+        public void PerformGoldenAgeTasks() {
+            if(GoldenAgeCanon.IsCivInGoldenAge(this)) {
+                return;
+            }
+
+            int happiness = CivHappinessLogic.GetHappinessOfCiv(this);
+
+            GoldenAgeCanon.ChangeGoldenAgeProgressForCiv(this, happiness);
+
+            float progressTowards = GoldenAgeCanon.GetGoldenAgeProgressForCiv(this);
+            float progressNeeded  = GoldenAgeCanon.GetNextGoldenAgeCostForCiv(this);
+
+            if(progressTowards >= progressNeeded) {
+                int goldenAgeLength = Mathf.RoundToInt(
+                    CivConfig.GoldenAgeBaseLength * CivModifiers.GoldenAgeLength.GetValueForCiv(this)
+                );
+
+                GoldenAgeCanon.SetGoldenAgeProgressForCiv(this, 0f);
+                GoldenAgeCanon.StartGoldenAgeForCiv(this, goldenAgeLength);
             }
         }
 

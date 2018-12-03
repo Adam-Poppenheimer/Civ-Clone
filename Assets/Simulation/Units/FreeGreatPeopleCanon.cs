@@ -27,11 +27,11 @@ namespace Assets.Simulation.Units {
                     _isActive = value;
 
                     if(_isActive) {
-                        SignalSubscriptions.Add(CivSignals .CivBeingDestroyedSignal    .Subscribe(OnCivBeingDestroyed));
-                        SignalSubscriptions.Add(CivSignals .CivDiscoveredTechSignal    .Subscribe(OnCivDiscoveredTech));
-                        SignalSubscriptions.Add(CivSignals .CivUnlockedPolicySignal    .Subscribe(OnCivUnlockedPolicy));
-                        SignalSubscriptions.Add(CivSignals .CivUnlockedPolicyTreeSignal.Subscribe(OnCivUnlockedPolicyTree));
-                        SignalSubscriptions.Add(CivSignals .CivFinishedPolicyTreeSignal.Subscribe(OnCivFinishedPolicyTree));
+                        SignalSubscriptions.Add(CivSignals .CivBeingDestroyed    .Subscribe(OnCivBeingDestroyed));
+                        SignalSubscriptions.Add(CivSignals .CivDiscoveredTech    .Subscribe(OnCivDiscoveredTech));
+                        SignalSubscriptions.Add(CivSignals .CivUnlockedPolicy    .Subscribe(OnCivUnlockedPolicy));
+                        SignalSubscriptions.Add(CivSignals .CivUnlockedPolicyTree.Subscribe(OnCivUnlockedPolicyTree));
+                        SignalSubscriptions.Add(CivSignals .CivFinishedPolicyTree.Subscribe(OnCivFinishedPolicyTree));
                         SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal   .Subscribe(OnCityGainedBuilding));
                     }else {
                         SignalSubscriptions.ForEach(subscription => subscription.Dispose());

@@ -26,14 +26,14 @@ namespace Assets.Simulation.SocialPolicies {
         ) {
             FreeBuildingsCanon = freeBuildingsCanon;
 
-            civSignals.CivUnlockedPolicySignal.Subscribe(OnCivUnlockedPolicy);
-            civSignals.CivLockedPolicySignal  .Subscribe(OnCivLockedPolicy);
+            civSignals.CivUnlockedPolicy.Subscribe(OnCivUnlockedPolicy);
+            civSignals.CivLockedPolicy  .Subscribe(OnCivLockedPolicy);
 
-            civSignals.CivUnlockedPolicyTreeSignal.Subscribe(OnCivUnlockedPolicyTree);
-            civSignals.CivLockedPolicyTreeSignal  .Subscribe(OnCivLockedPolicyTree);
+            civSignals.CivUnlockedPolicyTree.Subscribe(OnCivUnlockedPolicyTree);
+            civSignals.CivLockedPolicyTree  .Subscribe(OnCivLockedPolicyTree);
 
-            civSignals.CivFinishedPolicyTreeSignal  .Subscribe(OnCivFinishedPolicyTree);
-            civSignals.CivUnfinishedPolicyTreeSignal.Subscribe(OnCivUnfinishedPolicyTree);
+            civSignals.CivFinishedPolicyTree  .Subscribe(OnCivFinishedPolicyTree);
+            civSignals.CivUnfinishedPolicyTree.Subscribe(OnCivUnfinishedPolicyTree);
         }
 
         #endregion

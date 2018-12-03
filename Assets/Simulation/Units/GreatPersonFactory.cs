@@ -55,7 +55,7 @@ namespace Assets.Simulation.Units {
 
             var newPerson = UnitFactory.BuildUnit(location, personTemplate, owner);
 
-            CivSignals.GreatPersonBornSignal.OnNext(new GreatPersonBirthData() {
+            CivSignals.GreatPersonBorn.OnNext(new GreatPersonBirthData() {
                 Owner = owner, GreatPerson = newPerson, Type = type
             });
             

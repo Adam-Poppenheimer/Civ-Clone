@@ -27,6 +27,7 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IHexGrid>                                      MockGrid;
         private Mock<ICivilizationHappinessLogic>                   MockCivHappinessLogic;
         private Mock<ICivilizationConfig>                           MockCivConfig;
+        private Mock<IGoldenAgeCanon>                               MockGoldenAgeCanon;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -45,6 +46,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockGrid               = new Mock<IHexGrid>();
             MockCivHappinessLogic  = new Mock<ICivilizationHappinessLogic>();
             MockCivConfig          = new Mock<ICivilizationConfig>();
+            MockGoldenAgeCanon     = new Mock<IGoldenAgeCanon>();
 
             MockGrid.Setup(map => map.Cells).Returns(AllCells.AsReadOnly());
 
@@ -53,6 +55,7 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid              .Object);
             Container.Bind<ICivilizationHappinessLogic>                  ().FromInstance(MockCivHappinessLogic .Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig         .Object);
+            Container.Bind<IGoldenAgeCanon>                              ().FromInstance(MockGoldenAgeCanon    .Object);
 
             Container.Bind<IncomeModifierLogic>().AsSingle();
         }
@@ -113,6 +116,39 @@ namespace Assets.Tests.Simulation.Cities {
                 new YieldSummary(food: 0, gold: -15 * 0.02f, production: -15 * 0.02f, culture: 0, science: 0),
                 modifierLogic.GetYieldMultipliersForCivilization(civilization),
                 "GetYieldMultipliersForCivilization returned an unexpected value"
+            );
+        }
+
+        [Test]
+        public void GetYieldMultipliersForCivilization_IncludesGoldenAgeModifiersIfCivInGoldenAge() {
+            var civ = BuildCivilization();
+
+            MockCivConfig.Setup(config => config.GoldenAgeProductionModifiers)
+                         .Returns(new YieldSummary(food: 2f, gold: 3f));
+
+            MockGoldenAgeCanon.Setup(canon => canon.IsCivInGoldenAge(civ)).Returns(true);
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(
+                new YieldSummary(food: 2f, gold: 3f),
+                modifierLogic.GetYieldMultipliersForCivilization(civ)
+            );
+        }
+
+        [Test]
+        public void GetYieldMultipliersForCivilization_IgnoresGoldenAgeModifiersIfCivNotInGoldenAge() {
+            var civ = BuildCivilization();
+
+            MockCivConfig.Setup(config => config.GoldenAgeProductionModifiers)
+                         .Returns(new YieldSummary(food: 2f, gold: 3f));
+
+            MockGoldenAgeCanon.Setup(canon => canon.IsCivInGoldenAge(civ)).Returns(false);
+
+            var modifierLogic = Container.Resolve<IncomeModifierLogic>();
+
+            Assert.AreEqual(
+                YieldSummary.Empty, modifierLogic.GetYieldMultipliersForCivilization(civ)
             );
         }
 

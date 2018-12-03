@@ -68,7 +68,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var possessionCanon = Container.Resolve<UnitPossessionCanon>();
 
-            CivSignals.CivGainedUnitSignal.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
+            CivSignals.CivGainedUnit.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
                 Assert.AreEqual(civ,  data.Item1, "Incorrect civ passed");
                 Assert.AreEqual(unit, data.Item2, "Incorrect unit passed");
 
@@ -106,7 +106,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var possessionCanon = Container.Resolve<UnitPossessionCanon>();
 
-            CivSignals.CivLosingUnitSignal.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
+            CivSignals.CivLosingUnit.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
                 Assert.AreEqual(civ,  data.Item1, "Incorrect civ passed");
                 Assert.AreEqual(unit, data.Item2, "Incorrect unit passed");
 
@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var possessionCanon = Container.Resolve<UnitPossessionCanon>();
 
-            CivSignals.CivLostUnitSignal.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
+            CivSignals.CivLostUnit.Subscribe(delegate(Tuple<ICivilization, IUnit> data) {
                 Assert.AreEqual(civ,  data.Item1, "Incorrect civ passed");
                 Assert.AreEqual(unit, data.Item2, "Incorrect unit passed");
 
@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             possessionCanon.ChangeOwnerOfPossession(unitOne, civ);
             possessionCanon.ChangeOwnerOfPossession(unitTwo, civ);
 
-            CivSignals.CivBeingDestroyedSignal.OnNext(civ);
+            CivSignals.CivBeingDestroyed.OnNext(civ);
 
             unitOneMock.Verify(unit => unit.Destroy(), "UnitOne not destroyed");
             unitTwoMock.Verify(unit => unit.Destroy(), "UnitTwo not destroyed");

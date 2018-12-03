@@ -239,6 +239,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _greatMilitaryGainSpeedModifier;
 
+        public float GoldenAgeLengthModifier {
+            get { return _goldenAgeLengthModifier; }
+        }
+        [SerializeField] private float _goldenAgeLengthModifier;
+
         #endregion
 
         #endregion

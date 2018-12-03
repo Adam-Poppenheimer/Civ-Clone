@@ -25,3 +25,18 @@ MonoBehaviour:
   _militaryGreatPersonStartingCost: 10
   _greatPersonPredecessorCostMultiplier: 2
   _experienceToGreatPersonPointRatio: 1
+  _goldenAgeBaseCost: 500
+  _goldenAgeCostPerPreviousAge: 250
+  _goldenAgePerCityMultiplier: 0.05
+  _goldenAgeBaseLength: 10
+  _goldenAgeProductionModifiers:
+    Food: 0
+    Production: 0.2
+    Gold: 0
+    Culture: 0.2
+    Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
+  _goldenAgeBonusGoldOnCells: 1

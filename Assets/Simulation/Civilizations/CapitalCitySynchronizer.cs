@@ -56,8 +56,8 @@ namespace Assets.Simulation.Civilizations {
                 IsUpdatingCapitals = updateCapitals;
 
                 if(IsUpdatingCapitals) {
-                    SignalSubscriptions.Add(CivSignals.CivGainedCitySignal.Subscribe(OnCivGainedCity));
-                    SignalSubscriptions.Add(CivSignals.CivLostCitySignal  .Subscribe(OnCivLostCity));
+                    SignalSubscriptions.Add(CivSignals.CivGainedCity.Subscribe(OnCivGainedCity));
+                    SignalSubscriptions.Add(CivSignals.CivLostCity  .Subscribe(OnCivLostCity));
                 }else {
                     SignalSubscriptions.ForEach(subscription => subscription.Dispose());
                     SignalSubscriptions.Clear();

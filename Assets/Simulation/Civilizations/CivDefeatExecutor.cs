@@ -48,10 +48,10 @@ namespace Assets.Simulation.Civilizations {
             UnitPossessionCanon = unitPossessionCanon;
             CivSignals          = civSignals;
 
-            CivSignals.CivLostUnitSignal.Subscribe(OnLostUnit);
-            CivSignals.CivLostCitySignal.Subscribe(OnLostCity);
+            CivSignals.CivLostUnit.Subscribe(OnLostUnit);
+            CivSignals.CivLostCity.Subscribe(OnLostCity);
 
-            CivSignals.NewCivilizationCreatedSignal.Subscribe(civ => CivsToCheck.Add(civ));
+            CivSignals.NewCivilizationCreated.Subscribe(civ => CivsToCheck.Add(civ));
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace Assets.Simulation.Civilizations {
         #region from ICivDefeatExecutor
 
         public void PerformDefeatOfCiv(ICivilization civ) {
-            CivSignals.CivDefeatedSignal.OnNext(civ);
+            CivSignals.CivDefeated.OnNext(civ);
 
             CivsToCheck.Remove(civ);
 

@@ -368,7 +368,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var transfer = transferCanon.ExportCopiesOfResource(resource, 3, exporter, importer);
 
-            CivSignals.ResourceTransferCanceledSignal.Subscribe(delegate(ResourceTransfer canceledTransfer) {
+            CivSignals.ResourceTransferCancelled.Subscribe(delegate(ResourceTransfer canceledTransfer) {
                 Assert.AreEqual(transfer, canceledTransfer, "Event was fired on an incorrect transfer");
                 Assert.Pass();
             });

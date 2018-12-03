@@ -30,7 +30,7 @@ namespace Assets.Simulation.Civilizations {
             ResourceLockingCanon = resourceLockingCanon;
             CivSignals           = civSignals;
 
-            civSignals.CivBeingDestroyedSignal.Subscribe(OnCivilizationBeingDestroyed);
+            civSignals.CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
         }
 
         #endregion
@@ -44,11 +44,11 @@ namespace Assets.Simulation.Civilizations {
                 ResourceLockingCanon.LockCopyOfResourceForCiv(resource, newOwner);
             }
             
-            CivSignals.CivGainedUnitSignal.OnNext(new Tuple<ICivilization, IUnit>(newOwner, unit));
+            CivSignals.CivGainedUnit.OnNext(new Tuple<ICivilization, IUnit>(newOwner, unit));
         }
 
         protected override void DoOnPossessionBeingBroken(IUnit possession, ICivilization oldOwner) {
-            CivSignals.CivLosingUnitSignal.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, possession));
+            CivSignals.CivLosingUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, possession));
         }
 
         protected override void DoOnPossessionBroken(IUnit unit, ICivilization oldOwner) {
@@ -56,7 +56,7 @@ namespace Assets.Simulation.Civilizations {
                 ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, oldOwner);
             }
 
-            CivSignals.CivLostUnitSignal.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, unit));
+            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, unit));
         }
 
         #endregion

@@ -135,7 +135,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             promotionCanon.AddGlobalPromotionToCiv(promotionOne, civ);
             promotionCanon.AddGlobalPromotionToCiv(promotionTwo, civ);
 
-            CivSignals.CivGainedUnitSignal.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civ, unitOne));
+            CivSignals.CivGainedUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civ, unitOne));
 
             mockTreeOne.Verify(tree => tree.AppendPromotion(promotionOne), Times.Once, "PromotionOne not appended as expected");
             mockTreeOne.Verify(tree => tree.AppendPromotion(promotionTwo), Times.Once, "PromotionTwo not appended as expected");
@@ -157,7 +157,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             promotionCanon.AddGlobalPromotionToCiv(promotionOne, civ);
             promotionCanon.AddGlobalPromotionToCiv(promotionTwo, civ);
 
-            CivSignals.CivLostUnitSignal.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civ, unitOne));
+            CivSignals.CivLostUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civ, unitOne));
 
             mockTreeOne.Verify(tree => tree.RemoveAppendedPromotion(promotionOne), Times.Once, "PromotionOne not removed as expected");
             mockTreeOne.Verify(tree => tree.RemoveAppendedPromotion(promotionTwo), Times.Once, "PromotionTwo not removed as expected");

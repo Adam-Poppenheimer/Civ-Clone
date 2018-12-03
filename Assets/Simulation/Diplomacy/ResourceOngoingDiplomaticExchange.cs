@@ -66,7 +66,7 @@ namespace Assets.Simulation.Diplomacy {
         public void Start() {
             ActiveTransfer = ResourceTransferCanon.ExportCopiesOfResource(ResourceInput, IntegerInput, Sender, Receiver);
 
-            CancellationSubscription = CivSignals.ResourceTransferCanceledSignal.Subscribe(OnResourceTransferCanceled);
+            CancellationSubscription = CivSignals.ResourceTransferCancelled.Subscribe(OnResourceTransferCanceled);
         }
 
         public void End() {

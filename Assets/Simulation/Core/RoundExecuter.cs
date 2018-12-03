@@ -61,6 +61,7 @@ namespace Assets.Simulation.Core {
             civilization.PerformIncome();
             civilization.PerformResearch();
             civilization.PerformGreatPeopleGeneration();
+            civilization.PerformGoldenAgeTasks();
         }
 
         /// <inheritdoc/>

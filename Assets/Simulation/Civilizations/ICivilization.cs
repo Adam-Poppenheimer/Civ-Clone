@@ -23,11 +23,10 @@ namespace Assets.Simulation.Civilizations {
 
         #region methods
 
-        void PerformIncome();
-
-        void PerformResearch();
-
+        void PerformIncome               ();
+        void PerformResearch             ();
         void PerformGreatPeopleGeneration();
+        void PerformGoldenAgeTasks       ();
 
         void Destroy();
 

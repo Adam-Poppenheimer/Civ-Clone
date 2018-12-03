@@ -15,6 +15,8 @@ namespace Assets.Simulation.Civilizations {
 
         ICivModifier<float> GreatMilitaryGainSpeed { get; }
 
+        ICivModifier<float> GoldenAgeLength { get; }
+
         #endregion
 
     }
