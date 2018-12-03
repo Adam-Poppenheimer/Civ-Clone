@@ -63,6 +63,7 @@ MonoBehaviour:
     _freeGreatPeople: 0
     _improvementSpeedModifier: 0
     _unitExperienceGainModifier: 10
+    _greatMilitaryGainSpeedModifier: 0
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -107,3 +108,4 @@ MonoBehaviour:
     _freeGreatPeople: 0
     _improvementSpeedModifier: 0
     _unitExperienceGainModifier: 0
+    _greatMilitaryGainSpeedModifier: 0

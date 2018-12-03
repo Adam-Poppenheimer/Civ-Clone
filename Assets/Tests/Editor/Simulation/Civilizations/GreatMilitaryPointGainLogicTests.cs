@@ -20,7 +20,10 @@ namespace Assets.Tests.Simulation.Civilizations {
         private Mock<IGreatPersonCanon>                             MockGreatPersonCanon;
         private Mock<ICivilizationConfig>                           MockCivConfig;
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<ICivModifiers>                                 MockCivModifiers;
         private UnitSignals                                         UnitSignals;
+
+        private Mock<ICivModifier<float>> MockGreatMilitaryGainSpeed;
 
         #endregion
 
@@ -33,11 +36,17 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockGreatPersonCanon    = new Mock<IGreatPersonCanon>();
             MockCivConfig           = new Mock<ICivilizationConfig>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCivModifiers        = new Mock<ICivModifiers>();
             UnitSignals             = new UnitSignals();
+
+            MockGreatMilitaryGainSpeed = new Mock<ICivModifier<float>>();
+
+            MockCivModifiers.Setup(modifiers => modifiers.GreatMilitaryGainSpeed).Returns(MockGreatMilitaryGainSpeed.Object);
 
             Container.Bind<IGreatPersonCanon>                            ().FromInstance(MockGreatPersonCanon   .Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig          .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<ICivModifiers>                                ().FromInstance(MockCivModifiers       .Object);
             Container.Bind<UnitSignals>                                  ().FromInstance(UnitSignals);
 
             Container.Bind<GreatMilitaryPointGainLogic>().AsSingle();
@@ -54,6 +63,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civ = BuildCiv();
 
             var unit = BuildUnit(UnitType.NavalMelee, civ);
+
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
@@ -72,6 +83,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var unit = BuildUnit(UnitType.NavalRanged, civ);
 
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
             pointGainLogic.TrackPointGain = true;
@@ -88,6 +101,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civ = BuildCiv();
 
             var unit = BuildUnit(UnitType.Melee, civ);
+
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
@@ -106,6 +121,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var unit = BuildUnit(UnitType.Archery, civ);
 
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
             pointGainLogic.TrackPointGain = true;
@@ -122,6 +139,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             var civ = BuildCiv();
 
             var unit = BuildUnit(UnitType.City, civ);
+
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
@@ -144,6 +163,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var unit = BuildUnit(UnitType.Civilian, civ);
 
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
             pointGainLogic.TrackPointGain = true;
@@ -165,6 +186,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var unit = BuildUnit(UnitType.NavalMelee, civ);
 
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
             pointGainLogic.TrackPointGain = false;
@@ -175,6 +198,25 @@ namespace Assets.Tests.Simulation.Civilizations {
                 canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f),
                 Times.Never
             );
+        }
+
+        [Test]
+        public void UnitGainedExperienceFired_ModifiedByGreatPersonGenerationModifier() {
+            MockCivConfig.Setup(config => config.ExperienceToGreatPersonPointRatio).Returns(3f);
+
+            var civ = BuildCiv();
+
+            var unit = BuildUnit(UnitType.NavalMelee, civ);
+
+            MockGreatMilitaryGainSpeed.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(3f);
+
+            var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
+
+            pointGainLogic.TrackPointGain = true;
+
+            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+
+            MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f * 3f));
         }
 
         #endregion

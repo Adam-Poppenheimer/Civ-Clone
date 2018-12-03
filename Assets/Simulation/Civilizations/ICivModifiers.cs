@@ -13,6 +13,8 @@ namespace Assets.Simulation.Civilizations {
 
         ICivModifier<float> ImprovementBuildSpeed { get; }
 
+        ICivModifier<float> GreatMilitaryGainSpeed { get; }
+
         #endregion
 
     }

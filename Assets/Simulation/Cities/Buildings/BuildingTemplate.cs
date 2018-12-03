@@ -234,6 +234,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _globalImprovementSpeedModifier;
 
+        public float GreatMilitaryGainSpeedModifier {
+            get { return _greatMilitaryGainSpeedModifier; }
+        }
+        [SerializeField] private float _greatMilitaryGainSpeedModifier;
+
         #endregion
 
         #endregion

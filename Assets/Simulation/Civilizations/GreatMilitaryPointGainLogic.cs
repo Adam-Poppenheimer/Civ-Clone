@@ -43,6 +43,7 @@ namespace Assets.Simulation.Civilizations {
         private ICivilizationConfig                           CivConfig;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private UnitSignals                                   UnitSignals;
+        private ICivModifiers                                 CivModifiers;
 
         #endregion
 
@@ -52,12 +53,13 @@ namespace Assets.Simulation.Civilizations {
         public GreatMilitaryPointGainLogic(
             IGreatPersonCanon greatPersonCanon, ICivilizationConfig civConfig,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            UnitSignals unitSignals
+            UnitSignals unitSignals, ICivModifiers civModifiers
         ) {
             GreatPersonCanon    = greatPersonCanon;
             CivConfig           = civConfig;
             UnitPossessionCanon = unitPossessionCanon;
             UnitSignals         = unitSignals;
+            CivModifiers        = civModifiers;
         }
 
         #endregion
@@ -70,15 +72,17 @@ namespace Assets.Simulation.Civilizations {
 
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
+            float modifier = CivModifiers.GreatMilitaryGainSpeed.GetValueForCiv(unitOwner);
+
             if(unit.Type == UnitType.NavalMelee || unit.Type == UnitType.NavalRanged) {
                 GreatPersonCanon.AddPointsTowardsTypeForCiv(
                     GreatPersonType.GreatAdmiral, unitOwner,
-                    experienceGained * CivConfig.ExperienceToGreatPersonPointRatio
+                    experienceGained * CivConfig.ExperienceToGreatPersonPointRatio * modifier
                 );
             }else if(unit.Type != UnitType.Civilian && unit.Type != UnitType.City) {
                 GreatPersonCanon.AddPointsTowardsTypeForCiv(
                     GreatPersonType.GreatGeneral, unitOwner,
-                    experienceGained * CivConfig.ExperienceToGreatPersonPointRatio
+                    experienceGained * CivConfig.ExperienceToGreatPersonPointRatio * modifier
                 );
             }
         }

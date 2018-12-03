@@ -118,6 +118,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         float GlobalImprovementSpeedModifier { get; }
 
+        float GreatMilitaryGainSpeedModifier { get; }
+
         #endregion
 
     }

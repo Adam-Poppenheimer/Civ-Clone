@@ -121,6 +121,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private float _unitExperienceGainModifier;
 
+        public float GreatMilitaryGainSpeedModifier {
+            get { return _greatMilitaryGainSpeedModifier; }
+        }
+        [SerializeField] private float _greatMilitaryGainSpeedModifier;
+
         #endregion
 
     }

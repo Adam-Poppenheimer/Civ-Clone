@@ -17,6 +17,8 @@ namespace Assets.Simulation.Civilizations {
 
         public ICivModifier<float> ImprovementBuildSpeed { get; private set; }
 
+        public ICivModifier<float> GreatMilitaryGainSpeed { get; private set; }
+
         #endregion
 
         #endregion
@@ -36,8 +38,17 @@ namespace Assets.Simulation.Civilizations {
 
             ImprovementBuildSpeed = new CivModifier<float>(
                 new CivModifier<float>.ExtractionData() {
-                    PolicyExtractor         = bonuses  => bonuses.ImprovementSpeedModifier,
+                    PolicyExtractor         = bonuses  => bonuses .ImprovementSpeedModifier,
                     GlobalBuildingExtractor = template => template.GlobalImprovementSpeedModifier,
+                    Aggregator = (a, b) => a + b,
+                    UnitaryValue = 1f
+                }
+            );
+
+            GreatMilitaryGainSpeed = new CivModifier<float>(
+                new CivModifier<float>.ExtractionData() {
+                    PolicyExtractor         = bonuses  => bonuses .GreatMilitaryGainSpeedModifier,
+                    GlobalBuildingExtractor = template => template.GreatMilitaryGainSpeedModifier,
                     Aggregator = (a, b) => a + b,
                     UnitaryValue = 1f
                 }
@@ -45,6 +56,7 @@ namespace Assets.Simulation.Civilizations {
 
             container.QueueForInject(SuppressGarrisonMaintenance);
             container.QueueForInject(ImprovementBuildSpeed);
+            container.QueueForInject(GreatMilitaryGainSpeed);
         }
 
         #endregion
