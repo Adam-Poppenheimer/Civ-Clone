@@ -12,6 +12,7 @@ using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Core;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -19,18 +20,13 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain          Brain;
-        private IMapComposer                 MapComposer;
-        private IVisibilityResponder         VisibilityResponder;
-        private IVisibilityCanon             VisibilityCanon;
-        private IExplorationCanon            ExplorationCanon;
-        private ICivDefeatExecutor           CivDefeatExecutor;
-        private ICameraFocuser               CameraFocuser;
-        private IGreatMilitaryPointGainLogic GreatMilitaryPointGainLogic;
-        private IFreeBuildingsCanon          FreeBuildingsCanon;
-        private IFreeUnitsResponder          FreeUnitsResponder;
-        private IFreeBuildingsResponder      FreeBuildingsResponder;
-        private IFreeGreatPeopleCanon        FreeGreatPeopleCanon;
+        private UIStateMachineBrain             Brain;
+        private IMapComposer                    MapComposer;
+        private IVisibilityResponder            VisibilityResponder;
+        private IVisibilityCanon                VisibilityCanon;
+        private IExplorationCanon               ExplorationCanon;
+        private ICameraFocuser                  CameraFocuser;
+        private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
 
         #endregion
 
@@ -40,10 +36,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public void InjectDependencies(
             UIStateMachineBrain brain, IMapComposer mapComposer, ICameraFocuser cameraFocuser,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon, ICivDefeatExecutor civDefeatExecutor,
-            IGreatMilitaryPointGainLogic greatMilitaryPointGainLogic,
-            IFreeBuildingsCanon freeBuildingsCanon, IFreeUnitsResponder freeUnitsResponder,
-            IFreeBuildingsResponder freeBuildingsResponder, IFreeGreatPeopleCanon freeGreatPeopleCanon
+            IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements
         ){
             Brain                       = brain;
             MapComposer                 = mapComposer;
@@ -51,12 +44,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             VisibilityResponder         = visibilityResponder;
             VisibilityCanon             = visibilityCanon;
             ExplorationCanon            = explorationCanon;
-            CivDefeatExecutor           = civDefeatExecutor;
-            GreatMilitaryPointGainLogic = greatMilitaryPointGainLogic;
-            FreeBuildingsCanon          = freeBuildingsCanon;
-            FreeUnitsResponder          = freeUnitsResponder;
-            FreeBuildingsResponder      = freeBuildingsResponder;
-            FreeGreatPeopleCanon        = freeGreatPeopleCanon;
+            PlayModeSensitiveElements   = playModeSensitiveElements;
         }
 
         #region from StateMachineBehaviour
@@ -74,16 +62,11 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
 
-            CivDefeatExecutor.CheckForDefeat = true;
-
             CameraFocuser.ActivateBeginTurnFocusing();
 
-            GreatMilitaryPointGainLogic.TrackPointGain = true;
-
-            FreeBuildingsCanon    .ApplyBuildingsToCities = true;
-            FreeUnitsResponder    .IsActive               = true;
-            FreeBuildingsResponder.IsActive               = true;
-            FreeGreatPeopleCanon  .IsActive               = true;
+            foreach(var element in PlayModeSensitiveElements) {
+                element.IsActive = true;
+            }
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
@@ -91,7 +74,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             VisibilityResponder.UpdateVisibility = false;
 
-            GreatMilitaryPointGainLogic.TrackPointGain = false;
+            foreach(var element in PlayModeSensitiveElements) {
+                element.IsActive = false;
+            }
 
             MapComposer.ClearRuntime();
         }

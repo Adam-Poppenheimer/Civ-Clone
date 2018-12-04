@@ -31,7 +31,7 @@ MonoBehaviour:
     Food: 0
     Production: 0
     Gold: 0
-    Culture: 0
+    Culture: 10
     Science: 0
     GreatArtist: 0
     GreatEngineer: 0
@@ -97,6 +97,9 @@ MonoBehaviour:
   _localBorderExpansionModifier: 0
   _globalBorderExpansionModifier: 0
   _freeGreatPeople: 0
-  _localGrowthModifier: 1
-  _globalGrowthModifier: 3
-  _globalImprovementSpeedModifier: 10
+  _localGrowthModifier: 0
+  _globalGrowthModifier: 0
+  _globalImprovementSpeedModifier: 0
+  _greatMilitaryGainSpeedModifier: 0
+  _goldenAgeLengthModifier: 0
+  _startsGoldenAge: 1

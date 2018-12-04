@@ -21,6 +21,9 @@ namespace Assets.Tests.Simulation.Civilizations {
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<ICivilizationConfig>                           MockCivConfig;        
         private CivilizationSignals                                 CivSignals;
+        private Mock<ICivModifiers>                                 MockCivModifiers;
+
+        private Mock<ICivModifier<float>> MockGoldenAgeLengthModifier;
 
         #endregion
 
@@ -33,10 +36,16 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
             MockCivConfig           = new Mock<ICivilizationConfig>();            
             CivSignals              = new CivilizationSignals();
+            MockCivModifiers        = new Mock<ICivModifiers>();
+
+            MockGoldenAgeLengthModifier = new Mock<ICivModifier<float>>();
+
+            MockCivModifiers.Setup(modifiers => modifiers.GoldenAgeLength).Returns(MockGoldenAgeLengthModifier.Object);
 
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
             Container.Bind<ICivilizationConfig>                          ().FromInstance(MockCivConfig          .Object);
             Container.Bind<CivilizationSignals>                          ().FromInstance(CivSignals);
+            Container.Bind<ICivModifiers>                                ().FromInstance(MockCivModifiers       .Object);
 
             Container.Bind<GoldenAgeCanon>().AsSingle();
         }
@@ -254,6 +263,32 @@ namespace Assets.Tests.Simulation.Civilizations {
             goldenAgeCanon.ChangeTurnsOfGoldenAgeForCiv(civ, 5);
 
             Assert.AreEqual(15, goldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(civ));
+        }
+
+        [Test]
+        public void GetGoldenAgeLengthForCiv_ReturnsConfiguredBaseAsDefault() {
+            var civ = BuildCiv();
+
+            MockCivConfig.Setup(config => config.GoldenAgeBaseLength).Returns(15);
+
+            MockGoldenAgeLengthModifier.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(1f);
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            Assert.AreEqual(15, goldenAgeCanon.GetGoldenAgeLengthForCiv(civ));
+        }
+
+        [Test]
+        public void GetGoldenAgeLengthForCiv_ReturnedValueModifiedByGoldenAgeLengthModifier() {
+            var civ = BuildCiv();
+
+            MockCivConfig.Setup(config => config.GoldenAgeBaseLength).Returns(15);
+
+            MockGoldenAgeLengthModifier.Setup(modifier => modifier.GetValueForCiv(civ)).Returns(3f);
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            Assert.AreEqual(45, goldenAgeCanon.GetGoldenAgeLengthForCiv(civ));
         }
 
 

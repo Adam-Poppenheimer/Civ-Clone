@@ -106,7 +106,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCities);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -120,7 +120,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCities);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -136,7 +136,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCities);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -152,7 +152,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCitiesOrUnits);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -168,7 +168,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCitiesOrUnits);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -182,7 +182,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCitiesOrUnits);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -198,7 +198,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var unitBeingLost = BuildUnit(civToCheck);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -221,7 +221,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var unitBeingLost = BuildUnit(civToCheck);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -241,7 +241,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var cityBeingLost = BuildCity(civToCheck);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -264,7 +264,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             var cityBeingLost = BuildCity(civToCheck);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = true;
+            defeatExecutor.IsActive = true;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 
@@ -276,13 +276,13 @@ namespace Assets.Tests.Simulation.Civilizations {
         }
 
         [Test]
-        public void ShouldCivBeDefeated_AndCheckForDefeatFalse_ReturnsFalseEvenIfDefeatConditionsOtherwiseValid() {
+        public void ShouldCivBeDefeated_AndIsActiveFalse_ReturnsFalseEvenIfDefeatConditionsOtherwiseValid() {
             var civToCheck = BuildCiv();
 
             MockCivConfig.Setup(config => config.DefeatMode).Returns(CivilizationDefeatMode.NoMoreCities);
 
             var defeatExecutor = Container.Resolve<CivDefeatExecutor>();
-            defeatExecutor.CheckForDefeat = false;
+            defeatExecutor.IsActive = false;
 
             CivSignals.NewCivilizationCreated.OnNext(civToCheck);
 

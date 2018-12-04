@@ -14,6 +14,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Core;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -28,12 +29,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IVisibilityResponder                      VisibilityResponder;
         private IVisibilityCanon                          VisibilityCanon;
         private IExplorationCanon                         ExplorationCanon;
-        private ICivDefeatExecutor                        CivDefeatExecutor;
-        private IFreeBuildingsCanon                       FreeBuildingsCanon;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
-        private IFreeUnitsResponder                       FreeUnitsResponder;
-        private IFreeBuildingsResponder                   FreeBuildingsResponder;
-        private IFreeGreatPeopleCanon                     FreeGreatPeopleCanon;
+        private List<IPlayModeSensitiveElement>           PlayModeSensitiveElements;
 
         #endregion
 
@@ -44,24 +41,19 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            ICivDefeatExecutor civDefeatExecutor, IFreeBuildingsCanon freeBuildingsCanon,
             ReadOnlyCollection<ICivilizationTemplate> civTemplates,
-            IFreeUnitsResponder freeUnitsResponder, IFreeBuildingsResponder freeBuildingsResponder,
-            IFreeGreatPeopleCanon freeGreatPeopleCanon
+            List<IPlayModeSensitiveElement> playModeSensitiveElements
+
         ) {
-            Brain                  = brain;
-            Grid                   = grid;
-            MapComposer            = mapComposer;
-            CivFactory             = civFactory;
-            VisibilityResponder    = visibilityResponder;
-            VisibilityCanon        = visibilityCanon;
-            ExplorationCanon       = explorationCanon;
-            CivDefeatExecutor      = civDefeatExecutor;
-            FreeBuildingsCanon     = freeBuildingsCanon;
-            CivTemplates           = civTemplates;
-            FreeUnitsResponder     = freeUnitsResponder;
-            FreeBuildingsResponder = freeBuildingsResponder;
-            FreeGreatPeopleCanon   = freeGreatPeopleCanon;
+            Brain                     = brain;
+            Grid                      = grid;
+            MapComposer               = mapComposer;
+            CivFactory                = civFactory;
+            VisibilityResponder       = visibilityResponder;
+            VisibilityCanon           = visibilityCanon;
+            ExplorationCanon          = explorationCanon;
+            CivTemplates              = civTemplates;
+            PlayModeSensitiveElements = playModeSensitiveElements;
         }
 
         #region from StateMachineBehaviour
@@ -79,11 +71,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
-            CivDefeatExecutor.CheckForDefeat = false;
-            FreeBuildingsCanon.ApplyBuildingsToCities = false;
-            FreeUnitsResponder    .IsActive = false;
-            FreeBuildingsResponder.IsActive = false;
-            FreeGreatPeopleCanon  .IsActive = false;
+            foreach(var element in PlayModeSensitiveElements) {
+                element.IsActive = false;
+            }
 
             Grid.Build(4, 3);
 

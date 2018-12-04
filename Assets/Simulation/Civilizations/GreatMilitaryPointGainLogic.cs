@@ -7,22 +7,23 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.Civilizations {
 
-    public class GreatMilitaryPointGainLogic : IGreatMilitaryPointGainLogic {
+    public class GreatMilitaryPointGainLogic : IPlayModeSensitiveElement {
 
         #region instance fields and properties
 
         #region from IGreatMilitaryPointGainLogic
 
-        public bool TrackPointGain {
-            get { return _trackPointGain; }
+        public bool IsActive {
+            get { return _isActive; }
             set {
-                if(_trackPointGain != value) {
-                    _trackPointGain = value;
+                if(_isActive != value) {
+                    _isActive = value;
 
-                    if(_trackPointGain) {
+                    if(_isActive) {
                         UnitGainedExperienceSubscription = UnitSignals.UnitGainedExperienceSignal.Subscribe(OnUnitGainedExperience);
                     }else {
                         UnitGainedExperienceSubscription.Dispose();
@@ -31,7 +32,7 @@ namespace Assets.Simulation.Civilizations {
                 }
             }
         }
-        private bool _trackPointGain;
+        private bool _isActive;
 
         #endregion
 

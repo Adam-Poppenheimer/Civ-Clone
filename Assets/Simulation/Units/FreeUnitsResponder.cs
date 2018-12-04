@@ -11,10 +11,11 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.SocialPolicies;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.Units {
 
-    public class FreeUnitsResponder : IFreeUnitsResponder {
+    public class FreeUnitsResponder : IPlayModeSensitiveElement {
 
         #region instance fields and properties
 

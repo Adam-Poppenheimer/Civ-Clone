@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
@@ -85,7 +85,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
@@ -164,7 +164,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
@@ -188,7 +188,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
@@ -210,7 +210,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
@@ -237,7 +237,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civOne);
@@ -271,11 +271,11 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
 
@@ -302,11 +302,11 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
 
@@ -332,11 +332,11 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
 
@@ -359,7 +359,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
@@ -390,11 +390,11 @@ namespace Assets.Tests.Simulation.Civilizations {
             
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
 
@@ -432,11 +432,11 @@ namespace Assets.Tests.Simulation.Civilizations {
             
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
 
@@ -461,11 +461,11 @@ namespace Assets.Tests.Simulation.Civilizations {
             
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            freeBuildingsCanon.ApplyBuildingsToCities = true;
+            freeBuildingsCanon.IsActive = true;
 
             CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
 
@@ -490,7 +490,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             
             var freeBuildingsCanon = Container.Resolve<FreeBuildingsCanon>();
 
-            freeBuildingsCanon.ApplyBuildingsToCities = false;
+            freeBuildingsCanon.IsActive = false;
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 

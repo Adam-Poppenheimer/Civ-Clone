@@ -59,7 +59,6 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitFortificationLogic>     ().To<UnitFortificationLogic>     ().AsSingle();
             Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
             Container.Bind<ICityCombatModifierLogic>    ().To<CityCombatModifierLogic>    ().AsSingle();
-            Container.Bind<IFreeGreatPeopleCanon>       ().To<FreeGreatPeopleCanon>       ().AsSingle();
             Container.Bind<IUnitModifiers>              ().To<UnitModifiers>              ().AsSingle();
             
             Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
@@ -69,7 +68,8 @@ namespace Assets.Simulation.Units {
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();
 
-            Container.Bind<IFreeUnitsResponder>().To<FreeUnitsResponder>().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<FreeUnitsResponder>  ().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<FreeGreatPeopleCanon>().AsSingle();
 
             Container.Bind<CompositeUnitSignals>().AsSingle().NonLazy();
             Container.Bind<UnitSignals>().AsSingle();

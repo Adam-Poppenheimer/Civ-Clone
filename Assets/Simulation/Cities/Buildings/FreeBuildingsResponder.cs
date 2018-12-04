@@ -6,9 +6,11 @@ using System.Text;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.Core;
+
 namespace Assets.Simulation.Cities.Buildings {
 
-    public class FreeBuildingsResponder : IFreeBuildingsResponder {
+    public class FreeBuildingsResponder : IPlayModeSensitiveElement {
 
         #region instance fields and properties
 

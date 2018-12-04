@@ -4,16 +4,11 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.Civilizations {
 
-    public interface IFreeBuildingsCanon {
-
-        #region properties
-
-        bool ApplyBuildingsToCities { get; set; }
-
-        #endregion
+    public interface IFreeBuildingsCanon : IPlayModeSensitiveElement {
 
         #region methods
 

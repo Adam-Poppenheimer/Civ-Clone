@@ -12,6 +12,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Units;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -19,23 +20,20 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private IHexCellComposer         HexCellComposer;
-        private ICivilizationComposer    CivilizationComposer;
-        private ICityComposer            CityComposer;
-        private IBuildingComposer        BuildingComposer;
-        private IUnitComposer            UnitComposer;
-        private IImprovementComposer     ImprovementComposer;
-        private IResourceComposer        ResourceComposer;
-        private IDiplomacyComposer       DiplomacyComposer;
-        private ICapitalCityComposer     CapitalCityComposer;
-        private IVisibilityResponder     VisibilityResponder;
-        private IVisibilityCanon         VisibilityCanon;
-        private ICapitalCitySynchronizer CapitalCitySynchronizer;
-        private IFreeBuildingsCanon      FreeBuildingsCanon;
-        private IFreeUnitsResponder      FreeUnitsResponder;
-        private IFreeBuildingsResponder  FreeBuildingsResponder;
-        private IFreeGreatPeopleCanon    FreeGreatPeopleCanon;
-        private MonoBehaviour            CoroutineInvoker;
+        private IHexCellComposer                HexCellComposer;
+        private ICivilizationComposer           CivilizationComposer;
+        private ICityComposer                   CityComposer;
+        private IBuildingComposer               BuildingComposer;
+        private IUnitComposer                   UnitComposer;
+        private IImprovementComposer            ImprovementComposer;
+        private IResourceComposer               ResourceComposer;
+        private IDiplomacyComposer              DiplomacyComposer;
+        private ICapitalCityComposer            CapitalCityComposer;
+        private IVisibilityResponder            VisibilityResponder;
+        private IVisibilityCanon                VisibilityCanon;
+        private ICapitalCitySynchronizer        CapitalCitySynchronizer;
+        private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
+        private MonoBehaviour                   CoroutineInvoker;
 
         #endregion
 
@@ -55,29 +53,23 @@ namespace Assets.Simulation.MapManagement {
             IVisibilityResponder     visibilityResponder,
             IVisibilityCanon         visibilityCanon,
             ICapitalCitySynchronizer capitalCitySynchronizer,
-            IFreeBuildingsCanon      freeBuildingsCanon,
-            IFreeUnitsResponder      freeUnitsResponder,
-            IFreeBuildingsResponder  freeBuildingsResponder,
-            IFreeGreatPeopleCanon    freeGreatPeopleCanon,
+            List<IPlayModeSensitiveElement> playModeSensitiveElements,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
-            HexCellComposer         = hexCellComposer;
-            CivilizationComposer    = civilizationComposer;
-            CityComposer            = cityComposer;
-            BuildingComposer        = buildingComposer;
-            UnitComposer            = unitComposer;
-            ImprovementComposer     = improvementComposer;
-            ResourceComposer        = resourceComposer;
-            DiplomacyComposer       = diplomacyComposer;
-            CapitalCityComposer     = capitalCityComposer;
-            VisibilityResponder     = visibilityResponder;
-            VisibilityCanon         = visibilityCanon;
-            CapitalCitySynchronizer = capitalCitySynchronizer;
-            FreeBuildingsCanon      = freeBuildingsCanon;
-            FreeUnitsResponder      = freeUnitsResponder;
-            FreeBuildingsResponder  = freeBuildingsResponder;
-            FreeGreatPeopleCanon    = freeGreatPeopleCanon;
-            CoroutineInvoker        = coroutineInvoker;
+            HexCellComposer           = hexCellComposer;
+            CivilizationComposer      = civilizationComposer;
+            CityComposer              = cityComposer;
+            BuildingComposer          = buildingComposer;
+            UnitComposer              = unitComposer;
+            ImprovementComposer       = improvementComposer;
+            ResourceComposer          = resourceComposer;
+            DiplomacyComposer         = diplomacyComposer;
+            CapitalCityComposer       = capitalCityComposer;
+            VisibilityResponder       = visibilityResponder;
+            VisibilityCanon           = visibilityCanon;
+            CapitalCitySynchronizer   = capitalCitySynchronizer;
+            PlayModeSensitiveElements = playModeSensitiveElements;
+            CoroutineInvoker          = coroutineInvoker;
         }
 
         public SerializableMapData ComposeRuntimeIntoData() {
@@ -108,10 +100,10 @@ namespace Assets.Simulation.MapManagement {
             yield return new WaitForEndOfFrame();
 
             CapitalCitySynchronizer.SetCapitalUpdating(false);
-            FreeBuildingsCanon.ApplyBuildingsToCities = false;
-            FreeUnitsResponder    .IsActive = false;
-            FreeBuildingsResponder.IsActive = false;
-            FreeGreatPeopleCanon  .IsActive = false;
+
+            foreach(var element in PlayModeSensitiveElements) {
+                element.IsActive = false;
+            }
 
             CivilizationComposer.DecomposeCivilizations(mapData);
             CityComposer        .DecomposeCities       (mapData);
@@ -143,6 +135,10 @@ namespace Assets.Simulation.MapManagement {
             VisibilityResponder.UpdateVisibility = false;
 
             CapitalCitySynchronizer.SetCapitalUpdating(false);
+
+            foreach(var element in PlayModeSensitiveElements) {
+                element.IsActive = false;
+            }
 
             ImprovementComposer .ClearRuntime();
             CityComposer        .ClearRuntime();

@@ -26,6 +26,8 @@ namespace Assets.Simulation.Civilizations {
         int  GetPreviousGoldenAgesForCiv(ICivilization civ);
         void SetPreviousGoldenAgesForCiv(ICivilization civ, int previousAges);
 
+        int GetGoldenAgeLengthForCiv(ICivilization civ);
+
         void ClearCiv(ICivilization civ);
         void Clear();
 

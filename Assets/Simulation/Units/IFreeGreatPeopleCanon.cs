@@ -4,16 +4,11 @@ using System.Linq;
 using System.Text;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Core;
 
 namespace Assets.Simulation.Units {
 
-    public interface IFreeGreatPeopleCanon {
-
-        #region properties
-
-        bool IsActive { get; set; }
-
-        #endregion
+    public interface IFreeGreatPeopleCanon : IPlayModeSensitiveElement {
 
         #region methods
 

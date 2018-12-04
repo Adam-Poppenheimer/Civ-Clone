@@ -17,7 +17,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region from ICivDefeatExecutor
 
-        public bool CheckForDefeat { get; set; }
+        public bool IsActive { get; set; }
 
         #endregion
 
@@ -69,7 +69,7 @@ namespace Assets.Simulation.Civilizations {
         }
 
         public bool ShouldCivBeDefeated(ICivilization civ) {
-            if(!CheckForDefeat || !CivsToCheck.Contains(civ)) {
+            if(!IsActive || !CivsToCheck.Contains(civ)) {
                 return false;
             }
 

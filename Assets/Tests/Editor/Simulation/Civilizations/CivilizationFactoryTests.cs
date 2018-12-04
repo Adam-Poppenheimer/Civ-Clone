@@ -26,12 +26,15 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         [SetUp]
         public void CommonInstall() {
-            Container.Bind<ICivilizationConfig>                          ().FromMock();
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromMock();
             Container.Bind<ICivilizationYieldLogic>                      ().FromMock();
             Container.Bind<ITechCanon>                                   ().FromMock();
             Container.Bind<IGreatPersonCanon>                            ().FromMock();
             Container.Bind<IGreatPersonFactory>                          ().FromMock();
+            Container.Bind<IGoldenAgeCanon>                              ().FromMock();
+            Container.Bind<ICivilizationHappinessLogic>                  ().FromMock();
+            Container.Bind<ICivilizationConfig>                          ().FromMock();
+            Container.Bind<ICivModifiers>                                ().FromMock();
 
             Container.Bind<CivilizationFactory>().AsSingle();
 

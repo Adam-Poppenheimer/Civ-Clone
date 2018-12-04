@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.Cities;
@@ -28,6 +30,7 @@ namespace Assets.Simulation.Civilizations {
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private ICivilizationConfig                           CivConfig;        
         private CivilizationSignals                           CivSignals;
+        private ICivModifiers                                 CivModifiers;
 
         #endregion
 
@@ -36,11 +39,13 @@ namespace Assets.Simulation.Civilizations {
         [Inject]
         public GoldenAgeCanon(
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICivilizationConfig civConfig, CivilizationSignals civSignals
+            ICivilizationConfig civConfig, CivilizationSignals civSignals,
+            ICivModifiers civModifiers
         ) {
             CityPossessionCanon = cityPossessionCanon;
             CivConfig           = civConfig;
             CivSignals          = civSignals;
+            CivModifiers        = civModifiers;
         }
 
         #endregion
@@ -137,6 +142,12 @@ namespace Assets.Simulation.Civilizations {
 
         public void SetPreviousGoldenAgesForCiv(ICivilization civ, int previousAges) {
             PreviousGoldenAgesForCiv[civ] = previousAges;
+        }
+
+        public int GetGoldenAgeLengthForCiv(ICivilization civ) {
+            return Mathf.RoundToInt(
+                CivConfig.GoldenAgeBaseLength * CivModifiers.GoldenAgeLength.GetValueForCiv(civ)
+            );
         }
 
         public void ClearCiv(ICivilization civ) {

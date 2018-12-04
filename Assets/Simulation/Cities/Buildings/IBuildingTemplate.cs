@@ -122,6 +122,8 @@ namespace Assets.Simulation.Cities.Buildings {
 
         float GoldenAgeLengthModifier { get; }
 
+        bool StartsGoldenAge { get; }
+
         #endregion
 
     }

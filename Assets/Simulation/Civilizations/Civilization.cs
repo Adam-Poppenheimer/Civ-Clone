@@ -44,8 +44,6 @@ namespace Assets.Simulation.Civilizations {
         private IGreatPersonFactory         GreatPersonFactory;
         private IGoldenAgeCanon             GoldenAgeCanon;
         private ICivilizationHappinessLogic CivHappinessLogic;
-        private ICivilizationConfig         CivConfig;
-        private ICivModifiers               CivModifiers;
 
         #endregion
 
@@ -56,8 +54,7 @@ namespace Assets.Simulation.Civilizations {
             ICivilizationYieldLogic yieldLogic, ITechCanon techCanon,
             CivilizationSignals signals, IGreatPersonCanon greatPersonCanon,
             IGreatPersonFactory greatPersonFactory, IGoldenAgeCanon goldenAgeCanon,
-            ICivilizationHappinessLogic civHappinessLogic, ICivilizationConfig civConfig,
-            ICivModifiers civModifiers
+            ICivilizationHappinessLogic civHappinessLogic
         ){
             YieldLogic         = yieldLogic;
             TechCanon          = techCanon;
@@ -66,8 +63,6 @@ namespace Assets.Simulation.Civilizations {
             GreatPersonFactory = greatPersonFactory;
             GoldenAgeCanon     = goldenAgeCanon;
             CivHappinessLogic  = civHappinessLogic;
-            CivConfig          = civConfig;
-            CivModifiers       = civModifiers;
 
             TechQueue = new Queue<ITechDefinition>();
         }
@@ -141,23 +136,27 @@ namespace Assets.Simulation.Civilizations {
 
         public void PerformGoldenAgeTasks() {
             if(GoldenAgeCanon.IsCivInGoldenAge(this)) {
-                return;
-            }
 
-            int happiness = CivHappinessLogic.GetHappinessOfCiv(this);
+                GoldenAgeCanon.ChangeTurnsOfGoldenAgeForCiv(this, -1);
 
-            GoldenAgeCanon.ChangeGoldenAgeProgressForCiv(this, happiness);
+                if(GoldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(this) <= 0) {
+                    GoldenAgeCanon.StopGoldenAgeForCiv(this);
+                }
+                
+            }else {
 
-            float progressTowards = GoldenAgeCanon.GetGoldenAgeProgressForCiv(this);
-            float progressNeeded  = GoldenAgeCanon.GetNextGoldenAgeCostForCiv(this);
+                int happiness = CivHappinessLogic.GetHappinessOfCiv(this);
 
-            if(progressTowards >= progressNeeded) {
-                int goldenAgeLength = Mathf.RoundToInt(
-                    CivConfig.GoldenAgeBaseLength * CivModifiers.GoldenAgeLength.GetValueForCiv(this)
-                );
+                GoldenAgeCanon.ChangeGoldenAgeProgressForCiv(this, happiness);
 
-                GoldenAgeCanon.SetGoldenAgeProgressForCiv(this, 0f);
-                GoldenAgeCanon.StartGoldenAgeForCiv(this, goldenAgeLength);
+                float progressTowards = GoldenAgeCanon.GetGoldenAgeProgressForCiv(this);
+                float progressNeeded  = GoldenAgeCanon.GetNextGoldenAgeCostForCiv(this);
+
+                if(progressTowards >= progressNeeded) {
+                    GoldenAgeCanon.SetGoldenAgeProgressForCiv(this, 0f);
+                    GoldenAgeCanon.StartGoldenAgeForCiv(this, GoldenAgeCanon.GetGoldenAgeLengthForCiv(this));
+                }
+
             }
         }
 

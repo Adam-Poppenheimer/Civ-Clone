@@ -68,7 +68,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -87,7 +87,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -106,7 +106,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -125,7 +125,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -144,7 +144,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -167,7 +167,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -190,7 +190,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = false;
+            pointGainLogic.IsActive = false;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
@@ -212,7 +212,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var pointGainLogic = Container.Resolve<GreatMilitaryPointGainLogic>();
 
-            pointGainLogic.TrackPointGain = true;
+            pointGainLogic.IsActive = true;
 
             UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 

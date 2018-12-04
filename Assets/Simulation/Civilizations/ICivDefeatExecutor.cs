@@ -1,14 +1,10 @@
 ﻿using System;
 
+using Assets.Simulation.Core;
+
 namespace Assets.Simulation.Civilizations {
 
-    public interface ICivDefeatExecutor {
-
-        #region properties
-
-        bool CheckForDefeat { get; set; }
-
-        #endregion
+    public interface ICivDefeatExecutor : IPlayModeSensitiveElement {
 
         #region methods
 

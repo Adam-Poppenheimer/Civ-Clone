@@ -51,6 +51,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         float GoldenAgeLengthModifier { get; }
 
+        bool StartsGoldenAge { get; }
+
         #endregion
 
     }

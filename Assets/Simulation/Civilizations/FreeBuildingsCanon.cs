@@ -20,13 +20,13 @@ namespace Assets.Simulation.Civilizations {
 
         #region from IFreeBuildingsCanon
 
-        public bool ApplyBuildingsToCities {
-            get { return _applyBuildingsToCities; }
+        public bool IsActive {
+            get { return _isActive; }
             set {
-                if(_applyBuildingsToCities != value) {
-                    _applyBuildingsToCities = value;
+                if(_isActive != value) {
+                    _isActive = value;
 
-                    if(_applyBuildingsToCities) {
+                    if(_isActive) {
                         CivGainedCitySubscription     = CivSignals.CivGainedCity    .Subscribe(OnCivGainedCity);
                         CivDiscoveredTechSubscription = CivSignals.CivDiscoveredTech.Subscribe(OnCivDiscoveredTech);
 
@@ -37,7 +37,7 @@ namespace Assets.Simulation.Civilizations {
                 }
             }
         }
-        private bool _applyBuildingsToCities;
+        private bool _isActive;
 
         #endregion
 
@@ -78,7 +78,7 @@ namespace Assets.Simulation.Civilizations {
         public void SubscribeFreeBuildingToCiv(
             IEnumerable<IBuildingTemplate> validTemplates, ICivilization civ
         ) {
-            if(ApplyBuildingsToCities) {
+            if(IsActive) {
                 foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civ)) {
                     if(FreeBuildingApplier.CanApplyFreeBuildingToCity(validTemplates, city)) {
                         FreeBuildingApplier.ApplyFreeBuildingToCity(validTemplates, city);

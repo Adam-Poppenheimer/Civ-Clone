@@ -244,6 +244,11 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private float _goldenAgeLengthModifier;
 
+        public bool StartsGoldenAge {
+            get { return _startsGoldenAge; }
+        }
+        [SerializeField] private bool _startsGoldenAge;
+
         #endregion
 
         #endregion

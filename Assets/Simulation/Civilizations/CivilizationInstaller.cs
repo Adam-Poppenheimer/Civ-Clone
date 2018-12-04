@@ -66,15 +66,18 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IGlobalPromotionCanon>       ().To<GlobalPromotionCanon>       ().AsSingle();
             Container.Bind<IGreatPersonCanon>           ().To<GreatPersonCanon>           ().AsSingle();
             Container.Bind<IFreeBuildingApplier>        ().To<FreeBuildingApplier>        ().AsSingle();
-            Container.Bind<IFreeBuildingsCanon>         ().To<FreeBuildingsCanon>         ().AsSingle();
             Container.Bind<ICivModifiers>               ().To<CivModifiers>               ().AsSingle();
             Container.Bind<IGoldenAgeCanon>             ().To<GoldenAgeCanon>             ().AsSingle();
 
+            Container.BindInterfacesAndSelfTo<FreeBuildingsCanon>().AsSingle();
+
             Container.Bind<CivilizationSignals>().AsSingle();
 
-            Container.Bind<CityPossessionResponder>     ()                                  .AsSingle().NonLazy();
-            Container.Bind<ICivDefeatExecutor>          ().To<CivDefeatExecutor>          ().AsSingle().NonLazy();
-            Container.Bind<IGreatMilitaryPointGainLogic>().To<GreatMilitaryPointGainLogic>().AsSingle().NonLazy();
+            Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
+
+            Container.BindInterfacesAndSelfTo<CivDefeatExecutor>          ().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<FreeGoldenAgeResponder>     ().AsSingle().NonLazy();
+            Container.BindInterfacesAndSelfTo<GreatMilitaryPointGainLogic>().AsSingle().NonLazy();
 
             Container.Bind<ResourceTransferCanonSynchronizer>().AsSingle().NonLazy();
         }
