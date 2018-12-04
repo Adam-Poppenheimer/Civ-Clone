@@ -32,6 +32,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IExplorationCanon>     MockExplorationCanon;
         private Mock<IHexGrid>              MockGrid;
         private Mock<IFreeBuildingsCanon>   MockFreeBuildingsCanon;
+        private Mock<IGoldenAgeCanon>       MockGoldenAgeCanon;
 
         private List<ITechDefinition>       AvailableTechs        = new List<ITechDefinition>();
         private List<ICivilization>         AllCivilizations      = new List<ICivilization>();
@@ -60,6 +61,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockExplorationCanon    = new Mock<IExplorationCanon>();
             MockGrid                = new Mock<IHexGrid>();
             MockFreeBuildingsCanon  = new Mock<IFreeBuildingsCanon>();
+            MockGoldenAgeCanon      = new Mock<IGoldenAgeCanon>();
 
             MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivilizations.AsReadOnly());
 
@@ -78,6 +80,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             Container.Bind<IExplorationCanon>    ().FromInstance(MockExplorationCanon   .Object);
             Container.Bind<IHexGrid>             ().FromInstance(MockGrid               .Object);
             Container.Bind<IFreeBuildingsCanon>  ().FromInstance(MockFreeBuildingsCanon .Object);
+            Container.Bind<IGoldenAgeCanon>      ().FromInstance(MockGoldenAgeCanon     .Object);
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(AvailableTechs);
 
@@ -91,6 +94,8 @@ namespace Assets.Tests.Simulation.MapManagement {
         #endregion
 
         #region tests
+
+        #region ClearRuntime
 
         [Test]
         public void ClearRuntime_AllCivsDestroyed() {
@@ -126,6 +131,19 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockFreeBuildingsCanon.Verify(canon => canon.Clear(), Times.Once);
         }
+
+        [Test]
+        public void ClearRuntime_GoldenAgeCanonCleared() {
+            var civComposer = Container.Resolve<CivilizationComposer>();
+
+            civComposer.ClearRuntime();
+
+            MockGoldenAgeCanon.Verify(canon => canon.Clear(), Times.Once);
+        }
+
+        #endregion
+
+        #region ComposeCivilizations
 
         [Test]
         public void ComposeCivilizations_RecordsIntrinsicCivilizationData() {
@@ -368,8 +386,44 @@ namespace Assets.Tests.Simulation.MapManagement {
             );
         }
 
+        [Test]
+        public void ComposeCivilizations_RecordsGoldenAgeData() {
+            var civOne = BuildCivilization(BuildCivTemplate("", Color.black), 0, 0);
+            var civTwo = BuildCivilization(BuildCivTemplate("", Color.black), 0, 0);
 
+            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
+            MockGoldenAgeCanon.Setup(canon => canon.GetPreviousGoldenAgesForCiv(civOne)).Returns(1);
+            MockGoldenAgeCanon.Setup(canon => canon.GetPreviousGoldenAgesForCiv(civTwo)).Returns(2);
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civOne)).Returns(11);
+            MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civTwo)).Returns(22);
+
+            MockGoldenAgeCanon.Setup(canon => canon.GetTurnsLeftOnGoldenAgeForCiv(civOne)).Returns(111);
+            MockGoldenAgeCanon.Setup(canon => canon.GetTurnsLeftOnGoldenAgeForCiv(civTwo)).Returns(222);
+
+            var mapData = new SerializableMapData();
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.ComposeCivilizations(mapData);
+
+            var civDataOne = mapData.Civilizations[0];
+            var civDataTwo = mapData.Civilizations[1];
+
+            Assert.AreEqual(1, civDataOne.PreviousGoldenAges, "CivOne.PreviousGoldenAges not stored correctly");
+            Assert.AreEqual(2, civDataTwo.PreviousGoldenAges, "CivTwo.PreviousGoldenAges not stored correctly");
+
+            Assert.AreEqual(11, civDataOne.GoldenAgeProgress, "CivOne.GoldenAgeProgress not stored correctly");
+            Assert.AreEqual(22, civDataTwo.GoldenAgeProgress, "CivTwo.GoldenAgeProgress not stored correctly");
+
+            Assert.AreEqual(111, civDataOne.GoldenAgeTurnsLeft, "CivOne.GoldenAgeTurnsLeft not stored correctly");
+            Assert.AreEqual(222, civDataTwo.GoldenAgeTurnsLeft, "CivTwo.GoldenAgeTurnsLeft not stored correctly");
+        }
+
+        #endregion
+
+        #region DecomposeCivilizations
 
         [Test]
         public void DecomposeCivilizations_CallsIntoFactoryWithTemplate() {
@@ -726,6 +780,73 @@ namespace Assets.Tests.Simulation.MapManagement {
                 "SubscribeFreeBuildingToCiv not called correctly on the second free buildings set"
             );
         }
+
+        [Test]
+        public void DecomposeCivilizations_RebuildsGoldenAgeDataProperly() {
+            var mapData = new SerializableMapData() {
+                Civilizations = new List<SerializableCivilizationData>() {
+                    new SerializableCivilizationData() {
+                        TemplateName = "Civ One",
+                        GoldenAgeProgress  = 1,
+                        PreviousGoldenAges = 22,
+                        GoldenAgeTurnsLeft = 333
+                    }
+                },
+                ActiveCivilization = "Civ One"
+            };
+
+            BuildCivTemplate("Civ One", Color.white);
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.DecomposeCivilizations(mapData);
+
+            var civ = AllCivilizations[0];
+
+            MockGoldenAgeCanon.Verify(
+                canon => canon.SetGoldenAgeProgressForCiv(civ, 1), Times.Once,
+                "SetGoldenAgeProgressForCiv not called as expected"
+            );
+
+            MockGoldenAgeCanon.Verify(
+                canon => canon.SetPreviousGoldenAgesForCiv(civ, 22), Times.Once,
+                "SetPreviousGoldenAgesForCiv not called as expected"
+            );
+
+            MockGoldenAgeCanon.Verify(
+                canon => canon.StartGoldenAgeForCiv(civ, 333), Times.Once,
+                "StartGoldenAgeForCiv not called as expected"
+            );
+        }
+
+        [Test]
+        public void DecomposeCivilizations_DoesntStartGoldenAgeIfStoredTurnsLeftIsZero() {
+            var mapData = new SerializableMapData() {
+                Civilizations = new List<SerializableCivilizationData>() {
+                    new SerializableCivilizationData() {
+                        TemplateName = "Civ One",
+                        GoldenAgeProgress  = 1,
+                        PreviousGoldenAges = 22,
+                        GoldenAgeTurnsLeft = 0
+                    }
+                },
+                ActiveCivilization = "Civ One"
+            };
+
+            BuildCivTemplate("Civ One", Color.white);
+
+            var composer = Container.Resolve<CivilizationComposer>();
+
+            composer.DecomposeCivilizations(mapData);
+
+            var civ = AllCivilizations[0];
+
+            MockGoldenAgeCanon.Verify(
+                canon => canon.StartGoldenAgeForCiv(civ, It.IsAny<int>()), Times.Never
+            );
+        }
+
+        #endregion
 
         #endregion
 

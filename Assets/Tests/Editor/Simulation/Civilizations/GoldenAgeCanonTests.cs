@@ -291,6 +291,135 @@ namespace Assets.Tests.Simulation.Civilizations {
             Assert.AreEqual(45, goldenAgeCanon.GetGoldenAgeLengthForCiv(civ));
         }
 
+        [Test]
+        public void ClearCiv_CurrentGoldenAgeEnded() {
+            var civ = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.StartGoldenAgeForCiv(civ, 10);
+
+            goldenAgeCanon.ClearCiv(civ);
+
+            Assert.IsFalse(goldenAgeCanon.IsCivInGoldenAge(civ));
+        }
+
+        [Test]
+        public void ClearCiv_GoldenAgeTurnsLeftResetToZero() {
+            var civ = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.StartGoldenAgeForCiv(civ, 10);
+
+            goldenAgeCanon.ClearCiv(civ);
+
+            Assert.AreEqual(0, goldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(civ));
+        }
+
+        [Test]
+        public void ClearCiv_PreviousGoldenAgesResetToZero() {
+            var civ = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.SetPreviousGoldenAgesForCiv(civ, 5);
+
+            goldenAgeCanon.ClearCiv(civ);
+
+            Assert.AreEqual(0, goldenAgeCanon.GetPreviousGoldenAgesForCiv(civ));
+        }
+
+        [Test]
+        public void ClearCiv_GoldenAgeProgressResetToZero() {
+            var civ = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.SetGoldenAgeProgressForCiv(civ, 5);
+
+            goldenAgeCanon.ClearCiv(civ);
+
+            Assert.AreEqual(0, goldenAgeCanon.GetGoldenAgeProgressForCiv(civ));
+        }
+
+        [Test]
+        public void Clear_AllGoldenAgesEnded() {
+            var civOne = BuildCiv();
+            var civTwo = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.StartGoldenAgeForCiv(civOne, 10);
+            goldenAgeCanon.StartGoldenAgeForCiv(civTwo, 10);
+
+            goldenAgeCanon.Clear();
+
+            Assert.IsFalse(goldenAgeCanon.IsCivInGoldenAge(civOne), "CivOne not cleared");
+            Assert.IsFalse(goldenAgeCanon.IsCivInGoldenAge(civTwo), "CivTwo not cleared");
+        }
+
+        [Test]
+        public void Clear_AllGoldenAgeTurnsLeftResetToZero() {
+            var civOne = BuildCiv();
+            var civTwo = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.StartGoldenAgeForCiv(civOne, 10);
+            goldenAgeCanon.StartGoldenAgeForCiv(civTwo, 10);
+
+            goldenAgeCanon.Clear();
+
+            Assert.AreEqual(0, goldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(civOne), "CivOne not cleared");
+            Assert.AreEqual(0, goldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(civTwo), "CivTwo not cleared");
+        }
+
+        [Test]
+        public void Clear_AllPreviousGoldenAgesResetToZero() {
+            var civOne = BuildCiv();
+            var civTwo = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.SetPreviousGoldenAgesForCiv(civOne, 10);
+            goldenAgeCanon.SetPreviousGoldenAgesForCiv(civTwo, 10);
+
+            goldenAgeCanon.Clear();
+
+            Assert.AreEqual(0, goldenAgeCanon.GetPreviousGoldenAgesForCiv(civOne), "CivOne not cleared");
+            Assert.AreEqual(0, goldenAgeCanon.GetPreviousGoldenAgesForCiv(civTwo), "CivTwo not cleared");
+        }
+
+        [Test]
+        public void Clear_AllGoldenAgeProgressResetToZero() {
+            var civOne = BuildCiv();
+            var civTwo = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.SetGoldenAgeProgressForCiv(civOne, 10);
+            goldenAgeCanon.SetGoldenAgeProgressForCiv(civTwo, 10);
+
+            goldenAgeCanon.Clear();
+
+            Assert.AreEqual(0, goldenAgeCanon.GetGoldenAgeProgressForCiv(civOne), "CivOne not cleared");
+            Assert.AreEqual(0, goldenAgeCanon.GetGoldenAgeProgressForCiv(civTwo), "CivTwo not cleared");
+        }
+
+        [Test]
+        public void CivBeingDestroyedSignalFired_CivIsCleared() {
+            var civ = BuildCiv();
+
+            var goldenAgeCanon = Container.Resolve<GoldenAgeCanon>();
+
+            goldenAgeCanon.SetGoldenAgeProgressForCiv(civ, 10);
+
+            CivSignals.CivBeingDestroyed.OnNext(civ);
+
+            Assert.AreEqual(0, goldenAgeCanon.GetGoldenAgeProgressForCiv(civ));
+        }
+
 
 
 

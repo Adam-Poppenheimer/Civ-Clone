@@ -21,17 +21,17 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        private ICivilizationFactory  CivilizationFactory;
-        private ITechCanon            TechCanon;
-        private IGameCore             GameCore;
-        private ISocialPolicyComposer PolicyComposer;
-        private IExplorationCanon     ExplorationCanon;
-        private IHexGrid              Grid;
-        private IFreeBuildingsCanon   FreeBuildingsCanon;
-
+        private ICivilizationFactory                      CivilizationFactory;
+        private ITechCanon                                TechCanon;
+        private IGameCore                                 GameCore;
+        private ISocialPolicyComposer                     PolicyComposer;
+        private IExplorationCanon                         ExplorationCanon;
+        private IHexGrid                                  Grid;
+        private IFreeBuildingsCanon                       FreeBuildingsCanon;
         private List<IBuildingTemplate>                   BuildingTemplates;
         private List<ITechDefinition>                     AvailableTechs;
         private ReadOnlyCollection<ICivilizationTemplate> AvailableCivTemplates;
+        private IGoldenAgeCanon                           GoldenAgeCanon;
 
         #endregion
 
@@ -43,7 +43,8 @@ namespace Assets.Simulation.MapManagement {
             ISocialPolicyComposer policyComposer, IExplorationCanon explorationCanon, IHexGrid grid,
             IFreeBuildingsCanon freeBuildingsCanon, List<IBuildingTemplate> availableBuildings,
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
-            ReadOnlyCollection<ICivilizationTemplate> availableCivTemplates
+            ReadOnlyCollection<ICivilizationTemplate> availableCivTemplates,
+            IGoldenAgeCanon goldenAgeCanon
         ) {
             CivilizationFactory   = civilizationFactory;
             TechCanon             = techCanon;
@@ -55,6 +56,7 @@ namespace Assets.Simulation.MapManagement {
             BuildingTemplates     = availableBuildings;
             AvailableTechs        = availableTechs;
             AvailableCivTemplates = availableCivTemplates;
+            GoldenAgeCanon        = goldenAgeCanon;
         }
 
         #endregion
@@ -67,8 +69,11 @@ namespace Assets.Simulation.MapManagement {
             foreach(var civ in new List<ICivilization>(CivilizationFactory.AllCivilizations)) {
                 civ.Destroy();                
             }
+
             PolicyComposer.ClearPolicyRuntime();
+
             FreeBuildingsCanon.Clear();
+            GoldenAgeCanon    .Clear();
         }
 
         public void ComposeCivilizations(SerializableMapData mapData) {
@@ -115,6 +120,10 @@ namespace Assets.Simulation.MapManagement {
                     .Select(buildingList => buildingList.Select(buildingTemplate => buildingTemplate.name).ToList())
                     .ToList(); 
 
+                civData.GoldenAgeTurnsLeft = GoldenAgeCanon.GetTurnsLeftOnGoldenAgeForCiv(civilization);
+                civData.GoldenAgeProgress  = GoldenAgeCanon.GetGoldenAgeProgressForCiv   (civilization);
+                civData.PreviousGoldenAges = GoldenAgeCanon.GetPreviousGoldenAgesForCiv  (civilization);
+
                 mapData.Civilizations.Add(civData);
             }
 
@@ -143,6 +152,13 @@ namespace Assets.Simulation.MapManagement {
                 }
 
                 DecomposeFreeBuildings(civData, newCiv);
+
+                GoldenAgeCanon.SetGoldenAgeProgressForCiv(newCiv, civData.GoldenAgeProgress);
+                GoldenAgeCanon.SetPreviousGoldenAgesForCiv(newCiv, civData.PreviousGoldenAges);
+
+                if(civData.GoldenAgeTurnsLeft > 0) {
+                    GoldenAgeCanon.StartGoldenAgeForCiv(newCiv, civData.GoldenAgeTurnsLeft);
+                }
             }
 
             GameCore.ActiveCivilization = CivilizationFactory.AllCivilizations.Where(

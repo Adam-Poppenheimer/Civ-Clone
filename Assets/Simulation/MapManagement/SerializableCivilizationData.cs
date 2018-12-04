@@ -31,6 +31,10 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public List<List<string>> FreeBuildings;
 
+        [DataMember()] public int   GoldenAgeTurnsLeft;
+        [DataMember()] public float GoldenAgeProgress;
+        [DataMember()] public int   PreviousGoldenAges;
+
         #endregion
 
     }

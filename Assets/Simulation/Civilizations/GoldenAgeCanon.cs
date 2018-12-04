@@ -6,6 +6,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 
@@ -46,6 +47,8 @@ namespace Assets.Simulation.Civilizations {
             CivConfig           = civConfig;
             CivSignals          = civSignals;
             CivModifiers        = civModifiers;
+
+            CivSignals.CivBeingDestroyed.Subscribe(civ => ClearCiv(civ));
         }
 
         #endregion
@@ -153,13 +156,13 @@ namespace Assets.Simulation.Civilizations {
         public void ClearCiv(ICivilization civ) {
             GoldenAgeTurnsLeftForCiv.Remove(civ);
             PreviousGoldenAgesForCiv.Remove(civ);
-            GoldenAgeTurnsLeftForCiv.Remove(civ);
+            GoldenAgeProgressForCiv .Remove(civ);
         }
 
         public void Clear() {
             GoldenAgeTurnsLeftForCiv.Clear();
             PreviousGoldenAgesForCiv.Clear();
-            GoldenAgeTurnsLeftForCiv.Clear();
+            GoldenAgeProgressForCiv .Clear();
         }
 
         #endregion
