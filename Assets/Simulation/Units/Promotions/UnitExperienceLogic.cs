@@ -38,7 +38,7 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region instance methods
 
-        #region from IExperienceForNextLevelLogic
+        #region from IUnitExperienceLogic
 
         public int GetExperienceForNextLevelOnUnit(IUnit unit) {
             if(unit.Level < Config.MaxLevel) {

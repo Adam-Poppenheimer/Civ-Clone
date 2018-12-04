@@ -9,17 +9,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2264ff3d680d69d409afd9a5241a125a, type: 3}
-  m_Name: Monarchy
+  m_Name: Landed Elite
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 21300000, guid: b2aa574b4cdb086449043c645467753f, type: 3}
   _prerequisites:
   - {fileID: 11400000, guid: 18ca3e3e1fd24544ab1f0e7102c4cc53, type: 2}
-  _treeNormalizedX: 0.75
+  _treeNormalizedX: 0.45
   _treeNormalizedY: 0.2
   _bonuses:
     _capitalYield:
-      Food: 0
+      Food: 2
       Production: 0
       Gold: 0
       Culture: 0
@@ -40,11 +40,11 @@ MonoBehaviour:
       GreatScientist: 0
     _capitalBorderExpansionModifier: 0
     _cityBorderExpansionModifier: 0
-    _capitalGrowthModifier: 0
+    _capitalGrowthModifier: 0.1
     _cityGrowthModifier: 0
     _capitalHappinessPerPopulation: 0
     _cityHappinessPerPopulation: 0
-    _capitalUnhappinessPerPopulation: -0.5
+    _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
     _connectedToCapitalHappiness: 0
     _suppressesGarrisonedUnitMaintenance: 0
@@ -63,3 +63,4 @@ MonoBehaviour:
     _greatMilitaryGainSpeedModifier: 0
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
+    _goldBountyPerProduction: 0

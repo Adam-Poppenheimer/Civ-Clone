@@ -17,6 +17,8 @@ namespace Assets.Simulation.Civilizations {
 
         ICivModifier<float> GoldenAgeLength { get; }
 
+        ICivModifier<float> GoldBountyPerProduction { get; }
+
         #endregion
 
     }

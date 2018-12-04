@@ -53,6 +53,8 @@ namespace Assets.Simulation.SocialPolicies {
 
         bool StartsGoldenAge { get; }
 
+        float GoldBountyPerProduction { get; }
+
         #endregion
 
     }

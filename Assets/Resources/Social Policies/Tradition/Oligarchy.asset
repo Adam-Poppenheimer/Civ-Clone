@@ -62,3 +62,4 @@ MonoBehaviour:
     _greatMilitaryGainSpeedModifier: 0
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
+    _goldBountyPerProduction: 0

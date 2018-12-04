@@ -136,6 +136,11 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private bool _startsGoldenAge;
 
+        public float GoldBountyPerProduction {
+            get { return _goldBountyPerProduction; }
+        }
+        [SerializeField] private float _goldBountyPerProduction;
+
         #endregion
 
     }

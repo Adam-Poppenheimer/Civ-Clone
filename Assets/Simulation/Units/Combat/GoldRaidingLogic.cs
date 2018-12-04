@@ -17,6 +17,7 @@ namespace Assets.Simulation.Units.Combat {
         #region instance fields and properties
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionLogic;
+        private ICivModifiers                                 CivModifiers;
 
         #endregion
 
@@ -25,11 +26,13 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public GoldRaidingLogic(
             IPossessionRelationship<ICivilization, IUnit> unitPossessionLogic,
-            UnitSignals signals
+            ICivModifiers civModifiers, UnitSignals signals
         ){
             UnitPossessionLogic = unitPossessionLogic;
+            CivModifiers        = civModifiers;
 
-            signals.MeleeCombatWithUnitSignal.Subscribe(OnMeleeCombatWithUnit);
+            signals.MeleeCombatWithUnitSignal .Subscribe(OnMeleeCombatWithUnit);
+            signals.RangedCombatWithUnitSignal.Subscribe(HandleBounty);
         }
 
         #endregion
@@ -37,6 +40,8 @@ namespace Assets.Simulation.Units.Combat {
         #region instance methods
 
         public void OnMeleeCombatWithUnit(UnitCombatResults results) {
+            HandleBounty(results);
+
             if(results.Defender.Type != UnitType.City) {
                 return;
             }
@@ -51,6 +56,23 @@ namespace Assets.Simulation.Units.Combat {
 
             defenderOwner.GoldStockpile -= Mathf.FloorToInt(goldStolen);
             attackerOwner.GoldStockpile += Mathf.FloorToInt(goldStolen);
+        }
+
+        private void HandleBounty(UnitCombatResults results) {
+            if(results.Attacker.CurrentHitpoints > 0 && results.Defender.CurrentHitpoints <= 0) {
+                var attackerOwner = UnitPossessionLogic.GetOwnerOfPossession(results.Attacker);
+
+                float modifier = CivModifiers.GoldBountyPerProduction.GetValueForCiv(attackerOwner);
+
+                attackerOwner.GoldStockpile += Mathf.RoundToInt(results.Defender.Template.ProductionCost * modifier);
+
+            }else if(results.Defender.CurrentHitpoints > 0 && results.Attacker.CurrentHitpoints <= 0) {
+                var defenderOwner = UnitPossessionLogic.GetOwnerOfPossession(results.Defender);
+
+                float modifier = CivModifiers.GoldBountyPerProduction.GetValueForCiv(defenderOwner);
+
+                defenderOwner.GoldStockpile += Mathf.RoundToInt(results.Attacker.Template.ProductionCost * modifier);
+            }
         }
 
         #endregion
