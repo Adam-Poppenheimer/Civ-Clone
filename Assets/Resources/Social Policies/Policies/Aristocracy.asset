@@ -45,6 +45,7 @@ MonoBehaviour:
     _cityHappinessPerPopulation: 0.1
     _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
+    _connectedToCapitalHappiness: 0
     _suppressesGarrisonedUnitMaintenance: 0
     _garrisionedCityBonusStrength: 0
     _freeBuildingTemplates: []
@@ -61,3 +62,11 @@ MonoBehaviour:
         BuildingTypeArguments: 0100000002000000
         NameArguments: []
       _joinedTogetherBy: 0
+    _freeUnits: []
+    _policyCostFromCityCountModifier: 0
+    _freeGreatPeople: 0
+    _improvementSpeedModifier: 0
+    _unitExperienceGainModifier: 0
+    _greatMilitaryGainSpeedModifier: 0
+    _goldenAgeLengthModifier: 0
+    _startsGoldenAge: 0

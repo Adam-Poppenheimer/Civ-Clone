@@ -41,10 +41,24 @@ MonoBehaviour:
     _cityBorderExpansionModifier: 0
     _capitalGrowthModifier: 0
     _cityGrowthModifier: 0
-    _cityWonderProductionModifier: 0
     _capitalHappinessPerPopulation: 0
     _cityHappinessPerPopulation: 0
     _capitalUnhappinessPerPopulation: 0
     _cityUnhappinessPerPopulation: 0
-    _suppressesGarrisionedUnitMaintenance: 1
+    _connectedToCapitalHappiness: 0
+    _suppressesGarrisonedUnitMaintenance: 0
     _garrisionedCityBonusStrength: 0.5
+    _freeBuildingTemplates: []
+    _freeBuildingCount: 0
+    _productionModifier:
+      _value: 0
+      _conditions: []
+      _joinedTogetherBy: 0
+    _freeUnits: []
+    _policyCostFromCityCountModifier: 0
+    _freeGreatPeople: 0
+    _improvementSpeedModifier: 0
+    _unitExperienceGainModifier: 0
+    _greatMilitaryGainSpeedModifier: 0
+    _goldenAgeLengthModifier: 0
+    _startsGoldenAge: 0

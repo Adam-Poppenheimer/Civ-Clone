@@ -9,14 +9,14 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 2264ff3d680d69d409afd9a5241a125a, type: 3}
-  m_Name: Legalism
+  m_Name: Professional Army
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 21300000, guid: b2aa574b4cdb086449043c645467753f, type: 3}
   _prerequisites:
-  - {fileID: 11400000, guid: 3598e37803407fc4e92d3a0072aa0a31, type: 2}
-  _treeNormalizedX: 0.6
-  _treeNormalizedY: 0.5
+  - {fileID: 11400000, guid: 472fb18f9250a394c94b8cc5a3077f7b, type: 2}
+  _treeNormalizedX: 0.65
+  _treeNormalizedY: 0.05
   _bonuses:
     _capitalYield:
       Food: 0
@@ -49,13 +49,21 @@ MonoBehaviour:
     _connectedToCapitalHappiness: 0
     _suppressesGarrisonedUnitMaintenance: 0
     _garrisionedCityBonusStrength: 0
-    _freeBuildingTemplates:
-    - {fileID: 11400000, guid: ce572b53a96d06140b505df1538b79ee, type: 2}
-    - {fileID: 11400000, guid: 437510262c28308419511171ff0c2aec, type: 2}
-    _freeBuildingCount: 4
+    _freeBuildingTemplates: []
+    _freeBuildingCount: 0
     _productionModifier:
-      _value: 0
-      _conditions: []
+      _value: 0.5
+      _conditions:
+      - Target: 0
+        Restriction: 0
+        ProjectRestriction: 1
+        UnitRestriction: 0
+        UnitTypeArguments: 
+        BuildingRestriction: 1
+        BuildingTypeArguments: 
+        NameArguments:
+        - Barracks
+        - Armory
       _joinedTogetherBy: 0
     _freeUnits: []
     _policyCostFromCityCountModifier: 0
