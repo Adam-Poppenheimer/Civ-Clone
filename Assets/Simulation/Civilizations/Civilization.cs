@@ -145,7 +145,7 @@ namespace Assets.Simulation.Civilizations {
                 
             }else {
 
-                int happiness = CivHappinessLogic.GetHappinessOfCiv(this);
+                int happiness = CivHappinessLogic.GetNetHappinessOfCiv(this);
 
                 GoldenAgeCanon.ChangeGoldenAgeProgressForCiv(this, happiness);
 

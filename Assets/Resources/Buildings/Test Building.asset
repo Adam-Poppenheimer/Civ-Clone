@@ -58,7 +58,7 @@ MonoBehaviour:
     GreatMerchant: 0
     GreatScientist: 0
   _localHappiness: 0
-  _globalHappiness: 0
+  _globalHappiness: 10
   _unhappiness: 0
   _resourcesConsumed: []
   _resourceYieldModifications: []

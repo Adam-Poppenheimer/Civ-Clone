@@ -252,7 +252,7 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void PerformGoldenAgeTasks_ChangesGoldenAgeProgressByHappinessOfCiv() {
             var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
 
-            MockCivHappinessLogic.Setup(logic => logic.GetHappinessOfCiv(civ)).Returns(10);
+            MockCivHappinessLogic.Setup(logic => logic.GetNetHappinessOfCiv(civ)).Returns(10);
 
             MockGoldenAgeCanon.Setup(canon => canon.GetGoldenAgeProgressForCiv(civ)).Returns(0);
             MockGoldenAgeCanon.Setup(canon => canon.GetNextGoldenAgeCostForCiv(civ)).Returns(100);

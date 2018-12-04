@@ -18,6 +18,10 @@ namespace Assets.UI.Civilizations {
 
         [SerializeField] private TextMeshProUGUI HappinessField;
 
+
+
+
+
         private ICivilizationHappinessLogic CivHappinessLogic;
         private IYieldFormatter             YieldFormatter;
 
