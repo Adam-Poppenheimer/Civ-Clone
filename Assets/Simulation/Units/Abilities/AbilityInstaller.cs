@@ -16,16 +16,17 @@ namespace Assets.Simulation.Units.Abilities {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IAbilityHandler>().To<FoundCityAbilityHandler>       ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<BuildImprovementAbilityHandler>().AsSingle();
-            Container.Bind<IAbilityHandler>().To<BuildRoadAbilityHandler>       ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<ClearVegetationAbilityHandler> ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<SetUpToBombardAbilityHandler>  ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<FortifyAbilityHandler>         ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<PillageAbilityHandler>         ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<GainFreeTechAbilityHandler>    ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<HurryProductionAbilityHandler> ().AsSingle();
-            Container.Bind<IAbilityHandler>().To<StartGoldenAgeAbilityHandler>  ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<FoundCityAbilityHandler>          ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<BuildImprovementAbilityHandler>   ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<BuildRoadAbilityHandler>          ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<ClearVegetationAbilityHandler>    ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<SetUpToBombardAbilityHandler>     ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<FortifyAbilityHandler>            ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<PillageAbilityHandler>            ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<GainFreeTechAbilityHandler>       ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<HurryProductionAbilityHandler>    ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<StartGoldenAgeAbilityHandler>     ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<RepairAdjacentShipsAbilityHandler>().AsSingle();
 
             var availableAbilities = Resources.LoadAll<AbilityDefinition>("Unit Abilities");
 
