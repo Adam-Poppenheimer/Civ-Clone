@@ -7,14 +7,11 @@ using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Civilizations {
 
-    public interface IGlobalPromotionCanon {
+    public interface IGlobalPromotionLogic {
 
         #region methods
 
         IEnumerable<IPromotion> GetGlobalPromotionsOfCiv(ICivilization civ);
-
-        void AddGlobalPromotionToCiv     (IPromotion promotion, ICivilization civ);
-        void RemoveGlobalPromotionFromCiv(IPromotion promotion, ICivilization civ);
 
         #endregion
 

@@ -26,7 +26,6 @@ namespace Assets.Tests.Simulation.Cities {
         private CitySignals                                         CitySignals;
         private Mock<IResourceLockingCanon>                         MockResourceLockingCanon;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
-        private Mock<IGlobalPromotionCanon>                         MockGlobalPromotionCanon;
         private Mock<ITechCanon>                                    MockTechCanon;
 
         #endregion
@@ -40,13 +39,11 @@ namespace Assets.Tests.Simulation.Cities {
             CitySignals              = new CitySignals();
             MockResourceLockingCanon = new Mock<IResourceLockingCanon>();
             MockCityPossessionCanon  = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockGlobalPromotionCanon = new Mock<IGlobalPromotionCanon>();
             MockTechCanon            = new Mock<ITechCanon>();
 
             Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
             Container.Bind<IResourceLockingCanon>                        ().FromInstance(MockResourceLockingCanon.Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon .Object);
-            Container.Bind<IGlobalPromotionCanon>                        ().FromInstance(MockGlobalPromotionCanon.Object);
             Container.Bind<ITechCanon>                                   ().FromInstance(MockTechCanon           .Object);
 
             Container.Bind<BuildingPossessionCanon>().AsSingle();
@@ -88,42 +85,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockResourceLockingCanon.Verify(
                 canon => canon.LockCopyOfResourceForCiv(resourceThree, civilization),
                 Times.Never, "Resource Three was locked unexpectedly"
-            );
-        }
-
-        [Test]
-        public void OnPossessionEstablished_GlobalPromotionsAdded() {
-            var promotionOne   = BuildPromotion();
-            var promotionTwo   = BuildPromotion();
-            var promotionThree = BuildPromotion();
-
-            var promotions = new List<IPromotion>() {
-                promotionOne, promotionTwo, promotionThree
-            };
-
-            var building = BuildBuilding(BuildTemplate(promotions));
-
-            var civ = BuildCivilization();
-
-            var city = BuildCity(civ);
-
-            var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
-
-            possessionCanon.ChangeOwnerOfPossession(building, city);
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.AddGlobalPromotionToCiv(promotionOne, civ),
-                Times.Once, "PromotionOne not added as expected"
-            );
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.AddGlobalPromotionToCiv(promotionTwo, civ),
-                Times.Once, "PromotionTwo not added as expected"
-            );
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.AddGlobalPromotionToCiv(promotionThree, civ),
-                Times.Once, "PromotionThree not added as expected"
             );
         }
 
@@ -197,43 +158,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockResourceLockingCanon.Verify(
                 canon => canon.UnlockCopyOfResourceForCiv(resourceThree, civilization),
                 Times.Never, "Resource Three was unlocked unexpectedly"
-            );
-        }
-
-        [Test]
-        public void OnPossessionBroken_GlobalPromotionsRemoved() {
-            var promotionOne   = BuildPromotion();
-            var promotionTwo   = BuildPromotion();
-            var promotionThree = BuildPromotion();
-
-            var promotions = new List<IPromotion>() {
-                promotionOne, promotionTwo, promotionThree
-            };
-
-            var building = BuildBuilding(BuildTemplate(promotions));
-
-            var civ = BuildCivilization();
-
-            var city = BuildCity(civ);
-
-            var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
-
-            possessionCanon.ChangeOwnerOfPossession(building, city);
-            possessionCanon.ChangeOwnerOfPossession(building, null);
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.RemoveGlobalPromotionFromCiv(promotionOne, civ),
-                Times.Once, "PromotionOne not removed as expected"
-            );
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.RemoveGlobalPromotionFromCiv(promotionTwo, civ),
-                Times.Once, "PromotionTwo not removed as expected"
-            );
-
-            MockGlobalPromotionCanon.Verify(
-                canon => canon.RemoveGlobalPromotionFromCiv(promotionThree, civ),
-                Times.Once, "PromotionThree not removed as expected"
             );
         }
 

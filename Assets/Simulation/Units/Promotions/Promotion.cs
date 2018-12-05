@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Zenject;
+
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Combat;
 
@@ -208,6 +210,23 @@ namespace Assets.Simulation.Units.Promotions {
         [SerializeField] private int _alternativeNavalBaseHealing;
 
         #endregion
+
+        #endregion
+
+        #region instance methods
+
+        [Inject]
+        private void InjectDependencies(DiContainer container) {
+            var modifiersToInject = ConditionalAttackModifiers
+                .Concat(ConditionalDefenseModifiers)
+                .Concat(ConditionalAuraAttackModifiers)
+                .Concat(ConditionalAuraDefenseModifiers);
+
+            foreach(var modifier in modifiersToInject) {
+                container.Inject(modifier);
+            }
+        }
+
 
         #endregion
 

@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Zenject;
+
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -25,8 +28,9 @@ namespace Assets.Simulation.Units.Combat {
         }
 
         public enum UnitRestrictionCategory {
-            OfType  = 0,
-            Wounded = 1,
+            OfType         = 0,
+            Wounded        = 1,
+            AdjacentToAlly = 2,
         }
 
         public enum LocationRestrictionCategory {
@@ -53,9 +57,26 @@ namespace Assets.Simulation.Units.Combat {
 
         public CombatType CombatTypeArgument;
 
+
+
+
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private IHexGrid                                      Grid;
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+
         #endregion
 
         #region instance methods
+
+        [Inject]
+        private void InjectDependencies(
+            IUnitPositionCanon unitPositionCanon, IHexGrid grid,
+            IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon
+        ) {
+            UnitPositionCanon   = unitPositionCanon;
+            Grid                = grid;
+            UnitPossessionCanon = unitPossessionCanon;
+        }
 
         public bool IsConditionMet(
             IUnit subject, IUnit opponent, IHexCell location, CombatType combatType
@@ -78,9 +99,30 @@ namespace Assets.Simulation.Units.Combat {
             }else if(UnitRestriction == UnitRestrictionCategory.Wounded) {
                 return Restriction == RestrictionType.MustBe ? unit.IsWounded : !unit.IsWounded;
 
+            }else if(UnitRestriction == UnitRestrictionCategory.AdjacentToAlly) {
+                return IsConditionMetByAdjacentUnits(unit);
+
             }else {
                 return false;
             }
+        }
+
+        private bool IsConditionMetByAdjacentUnits(IUnit centerUnit) {
+            var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(centerUnit);
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(centerUnit);
+
+            foreach(var adjacentCell in Grid.GetNeighbors(unitLocation)) {
+                foreach(var adjacentUnit in UnitPositionCanon.GetPossessionsOfOwner(adjacentCell)) {
+
+                    var adjacentOwner = UnitPossessionCanon.GetOwnerOfPossession(adjacentUnit);
+
+                    if(adjacentOwner == unitOwner && UnitTypeArguments.Contains(adjacentUnit.Type)) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         private bool IsConditionMetByCell(IHexCell cell) {

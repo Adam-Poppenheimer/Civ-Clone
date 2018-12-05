@@ -32,7 +32,8 @@ namespace Assets.UI.Units {
 
 
 
-        private IUnitExperienceLogic ExperienceLogic;
+        private IUnitExperienceLogic UnitExperienceLogic;
+        private IUnitPromotionLogic  UnitPromotionLogic;
         private UnitSignals          UnitSignals;
         private DiContainer          Container;
 
@@ -42,11 +43,13 @@ namespace Assets.UI.Units {
 
         [Inject]
         public void InjectDependencies(
-            IUnitExperienceLogic experienceLogic, UnitSignals unitSignals, DiContainer container
+            IUnitExperienceLogic experienceLogic, IUnitPromotionLogic unitPromotionLogic,
+            UnitSignals unitSignals, DiContainer container
         ){
-            ExperienceLogic = experienceLogic;
-            UnitSignals     = unitSignals;
-            Container       = container;
+            UnitExperienceLogic = experienceLogic;
+            UnitPromotionLogic  = unitPromotionLogic;
+            UnitSignals         = unitSignals;
+            Container           = container;
         }
 
         #region from UnitDisplayBase
@@ -66,11 +69,11 @@ namespace Assets.UI.Units {
                 return;
             }
 
-            foreach(var chosenPromotion in ObjectToDisplay.Promotions) {
+            foreach(var chosenPromotion in UnitPromotionLogic.GetPromotionsForUnit(ObjectToDisplay)) {
                 BuildRecordForChosenPromotion(chosenPromotion);
             }
 
-            if(ObjectToDisplay.Experience >= ExperienceLogic.GetExperienceForNextLevelOnUnit(ObjectToDisplay)) {
+            if(ObjectToDisplay.Experience >= UnitExperienceLogic.GetExperienceForNextLevelOnUnit(ObjectToDisplay)) {
                 foreach(var availablePromotion in ObjectToDisplay.PromotionTree.GetAvailablePromotions()) {
                     BuildRecordForAvailablePromotion(availablePromotion);
                 }
@@ -114,7 +117,7 @@ namespace Assets.UI.Units {
         private void OnAvailablePromotionClicked(IPromotion promotion) {
             if(ObjectToDisplay.PromotionTree.CanChoosePromotion(promotion)) {
 
-                ObjectToDisplay.Experience -= ExperienceLogic.GetExperienceForNextLevelOnUnit(ObjectToDisplay);
+                ObjectToDisplay.Experience -= UnitExperienceLogic.GetExperienceForNextLevelOnUnit(ObjectToDisplay);
                 ObjectToDisplay.Level++;
 
                 ObjectToDisplay.PromotionTree.ChoosePromotion(promotion);

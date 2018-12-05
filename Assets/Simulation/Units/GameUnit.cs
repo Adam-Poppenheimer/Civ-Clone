@@ -17,6 +17,7 @@ using Assets.Simulation.Units.Abilities;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.Units.Combat;
+using Assets.Simulation.Civilizations;
 
 using UnityCustomUtilities.Extensions;
 
@@ -128,10 +129,6 @@ namespace Assets.Simulation.Units {
             }
         }
 
-        public IEnumerable<IPromotion> Promotions {
-            get { return Template.StartingPromotions.Concat(PromotionTree.GetAllPromotions()); }
-        }
-
         public IPromotionTree PromotionTree {
             get { return _promotionTree; }
             set {
@@ -182,12 +179,36 @@ namespace Assets.Simulation.Units {
         public IUnitMovementSummary MovementSummary {
             get { return ConcreteMovementSummary; }
         }
-        private UnitMovementSummary ConcreteMovementSummary;
+
+        private UnitMovementSummary ConcreteMovementSummary {
+            get {
+                if(_concreteMovementSummary == null) {
+                    _concreteMovementSummary = new UnitMovementSummary();
+
+                    PromotionParser.SetMovementSummary(_concreteMovementSummary, this);
+                }
+
+                return _concreteMovementSummary;
+            }
+        }
+        private UnitMovementSummary _concreteMovementSummary;
 
         public IUnitCombatSummary CombatSummary {
             get { return ConcreteCombatSummary; }
         }
-        private UnitCombatSummary ConcreteCombatSummary;
+
+        private UnitCombatSummary ConcreteCombatSummary {
+            get {
+                if(_concreteCombatSummary == null) {
+                    _concreteCombatSummary = new UnitCombatSummary();
+
+                    PromotionParser.SetCombatSummary(_concreteCombatSummary, this);
+                }
+
+                return _concreteCombatSummary;
+            }
+        }
+        private UnitCombatSummary _concreteCombatSummary;
 
         #endregion
 
@@ -217,6 +238,8 @@ namespace Assets.Simulation.Units {
             PositionCanon   = positionCanon;
             Grid            = grid;
             PromotionParser = promotionParser;
+
+            signals.UnitGainedNewOwnerSignal.Subscribe(OnUnitGainedNewOwner);
         }
 
         #region Unity messages
@@ -336,14 +359,6 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        public void SetSummaries(UnitMovementSummary movementSummary, UnitCombatSummary combatSummary) {
-            ConcreteMovementSummary = movementSummary;
-            ConcreteCombatSummary   = combatSummary;
-
-            PromotionParser.SetMovementSummary(ConcreteMovementSummary, Promotions);
-            PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   Promotions);
-        }
-
         private IEnumerator PerformMovementCoroutine(bool ignoreMoveCosts) {
             Animator.SetTrigger("Moving Requested");
 
@@ -423,10 +438,17 @@ namespace Assets.Simulation.Units {
         }
 
         private void OnNewPromotionChosen(object sender, EventArgs e) {
-            PromotionParser.SetMovementSummary(ConcreteMovementSummary, Promotions);
-            PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   Promotions);
+            PromotionParser.SetMovementSummary(ConcreteMovementSummary, this);
+            PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   this);
 
             Signals.UnitGainedPromotionSignal.OnNext(this);
+        }
+
+        private void OnUnitGainedNewOwner(UniRx.Tuple<IUnit, ICivilization> data) {
+            if((this as IUnit) == data.Item1) {
+                PromotionParser.SetMovementSummary(ConcreteMovementSummary, this);
+                PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   this);
+            }
         }
 
         #endregion

@@ -226,7 +226,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         public List<IHexCell> GetNeighbors(IHexCell center) {
-            return GetCellsInRadius(center, 1);
+            return GetCellsInRing(center, 1);
         }
 
         public Vector3 PerformIntersectionWithTerrainSurface(Vector3 xzPosition) {

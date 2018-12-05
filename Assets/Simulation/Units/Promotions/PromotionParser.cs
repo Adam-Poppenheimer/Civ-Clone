@@ -17,6 +17,7 @@ namespace Assets.Simulation.Units.Promotions {
         private ICombatPromotionParser   CombatParser;
         private IMovementPromotionParser MovementParser;
         private IHealingPromotionParser  HealingParser;
+        private IUnitPromotionLogic      UnitPromotionLogic;
 
         #endregion
 
@@ -25,11 +26,12 @@ namespace Assets.Simulation.Units.Promotions {
         [Inject]
         public PromotionParser(
             ICombatPromotionParser combatParser, IMovementPromotionParser movementParser,
-            IHealingPromotionParser healingParser
+            IHealingPromotionParser healingParser, IUnitPromotionLogic unitPromotionLogic
         ){
-            CombatParser   = combatParser;
-            MovementParser = movementParser;
-            HealingParser  = healingParser;
+            CombatParser       = combatParser;
+            MovementParser     = movementParser;
+            HealingParser      = healingParser;
+            UnitPromotionLogic = unitPromotionLogic;
         }
 
         #endregion
@@ -38,12 +40,20 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region from IPromotionParser
 
+        public void SetCombatSummary(UnitCombatSummary summary, IUnit unit) {
+            SetCombatSummary(summary, UnitPromotionLogic.GetPromotionsForUnit(unit));
+        }
+
         public void SetCombatSummary(UnitCombatSummary summary, IEnumerable<IPromotion> promotions) {
             summary.Reset();
 
             foreach(var promotion in promotions) {
                 CombatParser.AddPromotionToCombatSummary(promotion, summary);
             }
+        }
+
+        public void SetMovementSummary(UnitMovementSummary summary, IUnit unit) {
+            SetMovementSummary(summary, UnitPromotionLogic.GetPromotionsForUnit(unit));
         }
 
         public void SetMovementSummary(UnitMovementSummary summary, IEnumerable<IPromotion> promotions) {
@@ -61,7 +71,7 @@ namespace Assets.Simulation.Units.Promotions {
         public HealingInfo GetHealingInfo(IUnit unit) {
             var retval = new HealingInfo();
 
-            foreach(var promotion in unit.Promotions) {
+            foreach(var promotion in UnitPromotionLogic.GetPromotionsForUnit(unit)) {
                 HealingParser.ParsePromotionForHealingInfo(promotion, unit, retval);
             }
 

@@ -31,7 +31,7 @@ MonoBehaviour:
     Food: 0
     Production: 0
     Gold: 0
-    Culture: 10
+    Culture: 0
     Science: 0
     GreatArtist: 0
     GreatEngineer: 0
@@ -94,7 +94,7 @@ MonoBehaviour:
     _joinedTogetherBy: 0
   _freeUnits: []
   _freeBuildings: []
-  _localBorderExpansionModifier: 0
+  _localBorderExpansionModifier: -0.75
   _globalBorderExpansionModifier: 0
   _freeGreatPeople: 0
   _localGrowthModifier: 0

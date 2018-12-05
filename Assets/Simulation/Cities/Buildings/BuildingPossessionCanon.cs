@@ -10,8 +10,6 @@ using UniRx;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
 
-using UnityCustomUtilities.Extensions;
-
 namespace Assets.Simulation.Cities.Buildings {
 
     public class BuildingPossessionCanon : PossessionRelationship<ICity, IBuilding> {
@@ -21,7 +19,6 @@ namespace Assets.Simulation.Cities.Buildings {
         private CitySignals                                   CitySignals;
         private IResourceLockingCanon                         ResourceLockingCanon;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-        private IGlobalPromotionCanon                         GlobalPromotionCanon;
         private ITechCanon                                    TechCanon;
 
         #endregion
@@ -32,12 +29,11 @@ namespace Assets.Simulation.Cities.Buildings {
         public BuildingPossessionCanon(
             CitySignals citySignals, IResourceLockingCanon resourceLockingCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IGlobalPromotionCanon globalPromotionCanon, ITechCanon techCanon
+            ITechCanon techCanon
         ) {
             CitySignals          = citySignals;
             ResourceLockingCanon = resourceLockingCanon;
             CityPossessionCanon  = cityPossessionCanon;
-            GlobalPromotionCanon = globalPromotionCanon;
             TechCanon            = techCanon;
         }
 
@@ -58,10 +54,6 @@ namespace Assets.Simulation.Cities.Buildings {
                 ResourceLockingCanon.LockCopyOfResourceForCiv(resource, cityOwner);
             }
 
-            foreach(var promotion in building.Template.GlobalPromotions) {
-                GlobalPromotionCanon.AddGlobalPromotionToCiv(promotion, cityOwner);
-            }
-
             if(building.Template.ProvidesFreeTech) {
                 TechCanon.AddFreeTechToCiv(cityOwner);
             }
@@ -78,10 +70,6 @@ namespace Assets.Simulation.Cities.Buildings {
 
             foreach(var resource in building.Template.ResourcesConsumed) {
                 ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, cityOwner);
-            }
-
-            foreach(var promotion in building.Template.GlobalPromotions) {
-                GlobalPromotionCanon.RemoveGlobalPromotionFromCiv(promotion, cityOwner);
             }
 
             CitySignals.CityLostBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(oldOwner, building));

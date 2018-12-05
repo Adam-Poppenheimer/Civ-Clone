@@ -103,8 +103,6 @@ namespace Assets.Simulation.Units {
             newUnit.Level            = 1;
             newUnit.PromotionTree    = promotionTree;
 
-            newUnit.SetSummaries(new UnitMovementSummary(), new UnitCombatSummary());
-
             allUnits.Add(newUnit);
 
             if(UnitPossessionCanon.CanChangeOwnerOfPossession(newUnit, owner)) {

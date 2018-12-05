@@ -11,6 +11,7 @@ using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units.Combat;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.Units {
 
@@ -44,6 +45,10 @@ namespace Assets.Simulation.Units {
                      .WithId("Available Unit Templates")
                      .FromInstance(unitTemplates);
 
+            foreach(var promotion in Resources.LoadAll<Promotion>("Promotions")) {
+                Container.QueueForInject(promotion);
+            }
+
             Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 
             Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
@@ -60,6 +65,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IGreatPersonFactory>         ().To<GreatPersonFactory>         ().AsSingle();
             Container.Bind<ICityCombatModifierLogic>    ().To<CityCombatModifierLogic>    ().AsSingle();
             Container.Bind<IUnitModifiers>              ().To<UnitModifiers>              ().AsSingle();
+            Container.Bind<IUnitPromotionLogic>         ().To<UnitPromotionLogic>         ().AsSingle();
             
             Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();

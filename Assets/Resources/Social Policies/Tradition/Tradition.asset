@@ -67,6 +67,7 @@ MonoBehaviour:
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
     _goldBountyPerProduction: 0
+    _globalPromotions: []
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -115,3 +116,4 @@ MonoBehaviour:
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
     _goldBountyPerProduction: 0
+    _globalPromotions: []

@@ -8,6 +8,7 @@ using UnityEngine;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -140,6 +141,11 @@ namespace Assets.Simulation.SocialPolicies {
             get { return _goldBountyPerProduction; }
         }
         [SerializeField] private float _goldBountyPerProduction;
+
+        public IEnumerable<IPromotion> GlobalPromotions {
+            get { return _globalPromotions.Cast<IPromotion>(); }
+        }
+        [SerializeField] private List<Promotion> _globalPromotions;
 
         #endregion
 

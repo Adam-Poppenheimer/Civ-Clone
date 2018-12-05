@@ -12,9 +12,11 @@ namespace Assets.Simulation.Units.Promotions {
 
         #region methods
 
+        void SetCombatSummary(UnitCombatSummary summary, IUnit unit);
         void SetCombatSummary(UnitCombatSummary summary, IEnumerable<IPromotion> promotions);
 
-        void SetMovementSummary(UnitMovementSummary summary, IEnumerable<IPromotion> promotions);
+        void SetMovementSummary(UnitMovementSummary summary, IUnit unit);
+        void SetMovementSummary(UnitMovementSummary summary, IEnumerable<IPromotion> unit);
 
         VisionInfo GetVisionInfo(IUnit unit);
 

@@ -63,17 +63,17 @@ namespace Assets.Simulation.Civilizations {
             Container.Bind<IFreeUnitsLogic>             ().To<FreeUnitsLogic>             ().AsSingle();
             Container.Bind<IUnitMaintenanceLogic>       ().To<UnitMaintenanceLogic>       ().AsSingle();
             Container.Bind<ICapitalCitySynchronizer>    ().To<CapitalCitySynchronizer>    ().AsSingle();
-            Container.Bind<IGlobalPromotionCanon>       ().To<GlobalPromotionCanon>       ().AsSingle();
             Container.Bind<IGreatPersonCanon>           ().To<GreatPersonCanon>           ().AsSingle();
             Container.Bind<IFreeBuildingApplier>        ().To<FreeBuildingApplier>        ().AsSingle();
             Container.Bind<ICivModifiers>               ().To<CivModifiers>               ().AsSingle();
             Container.Bind<IGoldenAgeCanon>             ().To<GoldenAgeCanon>             ().AsSingle();
+            Container.Bind<IGlobalPromotionLogic>       ().To<GlobalPromotionLogic>       ().AsSingle();
 
             Container.BindInterfacesAndSelfTo<FreeBuildingsCanon>().AsSingle();
 
             Container.Bind<CivilizationSignals>().AsSingle();
 
-            Container.Bind<CityPossessionResponder>().AsSingle().NonLazy();
+            Container.Bind<CityPossessionResponder> ().AsSingle().NonLazy();
 
             Container.BindInterfacesAndSelfTo<CivDefeatExecutor>          ().AsSingle().NonLazy();
             Container.BindInterfacesAndSelfTo<FreeGoldenAgeResponder>     ().AsSingle().NonLazy();

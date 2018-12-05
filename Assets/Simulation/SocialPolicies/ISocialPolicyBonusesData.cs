@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Assets.Simulation.Cities.Production;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Promotions;
 
 namespace Assets.Simulation.SocialPolicies {
 
@@ -54,6 +55,8 @@ namespace Assets.Simulation.SocialPolicies {
         bool StartsGoldenAge { get; }
 
         float GoldBountyPerProduction { get; }
+
+        IEnumerable<IPromotion> GlobalPromotions { get; }
 
         #endregion
 

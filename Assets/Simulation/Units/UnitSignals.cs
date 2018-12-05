@@ -50,6 +50,8 @@ namespace Assets.Simulation.Units {
 
         public ISubject<IUnit> UnitGainedPromotionSignal { get; private set; }
 
+        public ISubject<Tuple<IUnit, ICivilization>> UnitGainedNewOwnerSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -84,6 +86,8 @@ namespace Assets.Simulation.Units {
             UnitGainedExperienceSignal = new Subject<Tuple<IUnit, int>>();
 
             UnitGainedPromotionSignal = new Subject<IUnit>();
+
+            UnitGainedNewOwnerSignal = new Subject<Tuple<IUnit, ICivilization>>();
         }
 
         #endregion

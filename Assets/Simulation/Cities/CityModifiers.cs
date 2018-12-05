@@ -15,8 +15,8 @@ namespace Assets.Simulation.Cities {
 
         public ICityModifier<YieldSummary> BonusYield { get; private set; }
 
-        public ICityModifier<float> Growth          { get; private set; }
-        public ICityModifier<float> BorderExpansion { get; private set; }
+        public ICityModifier<float> Growth              { get; private set; }
+        public ICityModifier<float> BorderExpansionCost { get; private set; }
 
         public ICityModifier<float> PerPopulationHappiness   { get; private set; }
         public ICityModifier<float> PerPopulationUnhappiness { get; private set; }
@@ -53,7 +53,7 @@ namespace Assets.Simulation.Cities {
                 }
             );
 
-            BorderExpansion = new CityModifier<float>(
+            BorderExpansionCost = new CityModifier<float>(
                 new CityModifier<float>.ExtractionData() {
                     PolicyCapitalBonusesExtractor = bonuses => bonuses.CapitalBorderExpansionModifier,
                     PolicyCityBonusesExtractor    = bonuses => bonuses.CityBorderExpansionModifier,
@@ -91,7 +91,7 @@ namespace Assets.Simulation.Cities {
 
             container.QueueForInject(BonusYield);
             container.QueueForInject(Growth);
-            container.QueueForInject(BorderExpansion);
+            container.QueueForInject(BorderExpansionCost);
             container.QueueForInject(PerPopulationHappiness);
             container.QueueForInject(PerPopulationUnhappiness);
             container.QueueForInject(GarrisionedRangedCombatStrength);

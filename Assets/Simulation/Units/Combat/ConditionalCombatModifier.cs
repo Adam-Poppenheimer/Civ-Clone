@@ -2,8 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Assets.Simulation.HexMap;
+
 using UnityEngine;
+
+using Zenject;
+
+using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units.Combat {
 
@@ -45,6 +49,13 @@ namespace Assets.Simulation.Units.Combat {
         #endregion
 
         #region instance methods
+
+        [Inject]
+        private void InjectDependencies(DiContainer container) {
+            foreach(var condition in Conditions) {
+                container.Inject(condition);
+            }
+        }
 
         #region from ICombatModifier
 

@@ -12,7 +12,7 @@ namespace Assets.Simulation.Cities {
         ICityModifier<YieldSummary> BonusYield { get; }
 
         ICityModifier<float> Growth           { get; }
-        ICityModifier<float> BorderExpansion  { get; }
+        ICityModifier<float> BorderExpansionCost  { get; }
 
         ICityModifier<float> PerPopulationHappiness   { get; }
         ICityModifier<float> PerPopulationUnhappiness { get; }

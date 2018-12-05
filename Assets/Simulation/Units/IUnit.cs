@@ -54,8 +54,6 @@ namespace Assets.Simulation.Units {
         bool IsIdling               { get; }
         bool IsFortified            { get; }
 
-        IEnumerable<IPromotion> Promotions { get; }
-
         IPromotionTree PromotionTree { get; }
 
         int Experience { get; set; }

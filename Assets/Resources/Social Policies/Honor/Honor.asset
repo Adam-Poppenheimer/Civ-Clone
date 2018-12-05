@@ -67,6 +67,9 @@ MonoBehaviour:
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
     _goldBountyPerProduction: 0
+    _globalPromotions:
+    - {fileID: 11400000, guid: ec64fb0da07ea6640aeb449289a483e4, type: 2}
+    - {fileID: 11400000, guid: 150d1796769291040a4f83be12381bcd, type: 2}
   _completionBonuses:
     _capitalYield:
       Food: 0
@@ -114,3 +117,4 @@ MonoBehaviour:
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
     _goldBountyPerProduction: 1
+    _globalPromotions: []
