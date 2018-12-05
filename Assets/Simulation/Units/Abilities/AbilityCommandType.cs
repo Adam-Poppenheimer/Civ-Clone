@@ -15,6 +15,7 @@ namespace Assets.Simulation.Units.Abilities {
         Pillage          = 6,
         GainFreeTech     = 7,
         HurryProduction  = 8,
+        StartGoldenAge   = 9,
     }
 
 }

@@ -25,6 +25,7 @@ namespace Assets.Simulation.Units.Abilities {
             Container.Bind<IAbilityHandler>().To<PillageAbilityHandler>         ().AsSingle();
             Container.Bind<IAbilityHandler>().To<GainFreeTechAbilityHandler>    ().AsSingle();
             Container.Bind<IAbilityHandler>().To<HurryProductionAbilityHandler> ().AsSingle();
+            Container.Bind<IAbilityHandler>().To<StartGoldenAgeAbilityHandler>  ().AsSingle();
 
             var availableAbilities = Resources.LoadAll<AbilityDefinition>("Unit Abilities");
 

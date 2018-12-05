@@ -11,9 +11,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8a3fd6b2a3501ff418947e0f73f0a5b0, type: 3}
   m_Name: Start Golden Age
   m_EditorClassIdentifier: 
-  _description: -- Unimplemented --
+  _description: Starts a Golden Age lasting 10 turns, or extends an existing golden
+    age by 10 turns.
   _icon: {fileID: 21300000, guid: b2aa574b4cdb086449043c645467753f, type: 3}
   _requiresMovement: 1
   _consumesMovement: 1
   _destroysUnit: 1
-  _commandRequests: []
+  _commandRequests:
+  - CommandType: 9
+    ArgsToPass:
+    - 10
