@@ -9,11 +9,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
-  m_Name: Test Building
+  m_Name: Test Building 2
   m_EditorClassIdentifier: 
   _description: 
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
-  _type: 0
+  _type: 2
   _productionCost: 1
   _maintenance: 0
   _slotCount: 0

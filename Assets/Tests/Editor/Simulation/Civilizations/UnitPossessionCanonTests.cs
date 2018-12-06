@@ -21,6 +21,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<IResourceLockingCanon> MockResourceLockingCanon;
         private CivilizationSignals         CivSignals;
+        private UnitSignals                 UnitSignals;
 
         #endregion
 
@@ -32,9 +33,11 @@ namespace Assets.Tests.Simulation.Civilizations {
         public void CommonInstall() {
             MockResourceLockingCanon = new Mock<IResourceLockingCanon>();
             CivSignals               = new CivilizationSignals();
+            UnitSignals              = new UnitSignals();
 
             Container.Bind<IResourceLockingCanon>().FromInstance(MockResourceLockingCanon.Object);
             Container.Bind<CivilizationSignals>  ().FromInstance(CivSignals);
+            Container.Bind<UnitSignals>          ().FromInstance(UnitSignals);
 
             Container.Bind<UnitPossessionCanon>().AsSingle();
         }
@@ -78,6 +81,25 @@ namespace Assets.Tests.Simulation.Civilizations {
             possessionCanon.ChangeOwnerOfPossession(unit, civ);
 
             Assert.Fail("CivGainedUnitSignal not fired");
+        }
+
+        [Test]
+        public void PossessionEstablished_UnitGainedNewOwnerSignalFired() {
+            var unit = BuildUnit();
+            var civ  = BuildCiv();
+
+            var possessionCanon = Container.Resolve<UnitPossessionCanon>();
+
+            UnitSignals.UnitGainedNewOwnerSignal.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
+                Assert.AreEqual(unit, data.Item1, "Incorrect unit passed");
+                Assert.AreEqual(civ,  data.Item2, "Incorrect civ passed");
+
+                Assert.Pass();
+            });
+
+            possessionCanon.ChangeOwnerOfPossession(unit, civ);
+
+            Assert.Fail("UnitGainedNewOwnerSignal not fired");
         }
 
         [Test]
@@ -135,6 +157,28 @@ namespace Assets.Tests.Simulation.Civilizations {
             });
 
             possessionCanon.ChangeOwnerOfPossession(unit, civ);
+            possessionCanon.ChangeOwnerOfPossession(unit, null);
+
+            Assert.Fail("CivLostUnitSignal not fired");
+        }
+
+        [Test]
+        public void PossessionBroken_UnitGainedNewOwnerSignalFiredOnNullOwner() {
+            var unit = BuildUnit();
+
+            var civ = BuildCiv();
+
+            var possessionCanon = Container.Resolve<UnitPossessionCanon>();
+
+            possessionCanon.ChangeOwnerOfPossession(unit, civ);
+
+            UnitSignals.UnitGainedNewOwnerSignal.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
+                Assert.AreEqual(unit, data.Item1, "Incorrect unit passed");
+                Assert.IsNull(data.Item2, "Incorrect civ passed");
+
+                Assert.Pass();
+            });
+
             possessionCanon.ChangeOwnerOfPossession(unit, null);
 
             Assert.Fail("CivLostUnitSignal not fired");

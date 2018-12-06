@@ -67,7 +67,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitModifiers>              ().To<UnitModifiers>              ().AsSingle();
             Container.Bind<IUnitPromotionLogic>         ().To<UnitPromotionLogic>         ().AsSingle();
             
-            Container.Bind<IPostCombatResponder>().To<CityConquestLogic>      ().AsSingle();
+            Container.Bind<IPostCombatResponder>().To<CityConquestResponder>      ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<PostCombatMovementLogic>().AsSingle();
 

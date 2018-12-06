@@ -14,11 +14,12 @@ using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Cities.Buildings;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
     [TestFixture]
-    public class CityConquestLogicTests : ZenjectUnitTestFixture {
+    public class CityConquestResponderTests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
 
@@ -27,8 +28,9 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<ICityFactory>                                  MockCityFactory;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
-
-        private CitySignals                                         CitySignals;
+        private CitySignals                                         CitySignals;        
+        private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
+        private Mock<IBuildingFactory>                              MockBuildingFactory;
 
         #endregion
 
@@ -38,22 +40,25 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockCityFactory         = new Mock<ICityFactory>();
-            MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
-            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
+            MockUnitPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockCityLocationCanon       = new Mock<IPossessionRelationship<IHexCell, ICity>>();
+            MockCityFactory             = new Mock<ICityFactory>();
+            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockUnitPositionCanon       = new Mock<IUnitPositionCanon>();
+            CitySignals                 = new CitySignals();
+            MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
+            MockBuildingFactory         = new Mock<IBuildingFactory>();
 
-            CitySignals             = new CitySignals();
-
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
-            Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory        .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon    .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon      .Object);
+            Container.Bind<ICityFactory>                                 ().FromInstance(MockCityFactory            .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon      .Object);
             Container.Bind<CitySignals>                                  ().FromInstance(CitySignals);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<IBuildingFactory>                             ().FromInstance(MockBuildingFactory        .Object);
 
-            Container.Bind<CityConquestLogic>().AsSingle();
+            Container.Bind<CityConquestResponder>().AsSingle();
         }
 
         #endregion
@@ -66,7 +71,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             "\n3. CombatInfo.CombatType equals CombatType.Melee" + 
             "\nThis should result in the conquest of the city for which defender is the CombatFacade. " +
             "That city should be transferred to the civilization that owns the attacker.")]
-        public void HandleCityCaptureFromCombat_AttackerChangesDefendingOwnerOfDefendingCity() {
+        public void RespondToCombat_AndValidCityCapture_AttackerChangesDefendingOwnerOfDefendingCity() {
             var attackerOwner = BuildCivilization();
 
             var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee);
@@ -80,7 +85,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -93,7 +98,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         [Test(Description = "When HandleCityCaptureFromCombat is called and the attacker " +
             "conquers a city, that attacker should have its current path set to the city's location " +
             "and have its PerformMovement method called, with movement costs being ignored")]
-        public void HandleCityCaptureFromCombat_AttackerMovesIntoCity() {
+        public void RespondToCombat_AndValidCityCapture_AttackerMovesIntoCity() {
             var attackerOwner = BuildCivilization();
 
             Mock<IUnit> attackerMock;
@@ -108,7 +113,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -126,7 +131,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         [Test(Description = "When HandleCityCaptureFromCombat is called and the attacker " +
             "conquers a city, all units previously on that city not of type City should be " +
             "moved to the null location and destroyed")]
-        public void HandleCityCaptureFromCombat_AllOccupantsDislocatedAndDestroyed() {
+        public void RespondToCombat_AndValidCityCapture_AllOccupantsDislocatedAndDestroyed() {
             var attackerOwner = BuildCivilization();
 
             Mock<IUnit> attackerMock;
@@ -154,7 +159,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -163,8 +168,44 @@ namespace Assets.Tests.Simulation.Units.Combat {
             mockCombatFacade  .Verify(unit => unit.Destroy(), Times.Never, "CombatFacade was unexpectedly destroyed");
         }
 
-        [Test(Description = "")]
-        public void HandleCityCaptureFromCombat_DoesNothingIfDefenderHasPositiveHitpoints() {
+        [Test]
+        public void RespnondToCombat_AndValidCityCapture_AllNationalWondersDestroyed() {
+            var attackerOwner = BuildCivilization();
+
+            var attacker = BuildUnit(attackerOwner, 100, UnitType.Melee);
+            
+            var cityOwner = BuildCivilization();
+
+            var cityLocation = BuildHexCell();
+
+            var cityBeingCaptured = BuildCity(
+                cityLocation, cityOwner, BuildUnit(cityOwner, 0, UnitType.City), new List<IUnit>()
+            );
+
+            var buildings = new List<IBuilding>() {
+                BuildBuilding(BuildBuildingTemplate(BuildingType.Normal)),
+                BuildBuilding(BuildBuildingTemplate(BuildingType.NationalWonder)),
+                BuildBuilding(BuildBuildingTemplate(BuildingType.WorldWonder)),
+                BuildBuilding(BuildBuildingTemplate(BuildingType.NationalWonder)),
+            };
+
+            MockBuildingPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(cityBeingCaptured))
+                                       .Returns(buildings);
+
+            var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
+
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
+
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+
+            MockBuildingFactory.Verify(factory => factory.DestroyBuilding(buildings[0]), Times.Never, "Buildings[0] incorrectly destroyed");
+            MockBuildingFactory.Verify(factory => factory.DestroyBuilding(buildings[1]), Times.Once,  "Buildings[1] not destroyed as expected");
+            MockBuildingFactory.Verify(factory => factory.DestroyBuilding(buildings[2]), Times.Never, "Buildings[2] incorrectly destroyed");
+            MockBuildingFactory.Verify(factory => factory.DestroyBuilding(buildings[3]), Times.Once,  "Buildings[3] not destroyed as expected");
+        }
+
+        [Test]
+        public void RespondToCombat_DoesNothingIfDefenderHasPositiveHitpoints() {
             var attackerOwner = BuildCivilization();
 
             var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee);
@@ -178,7 +219,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -188,8 +229,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             );
         }
 
-        [Test(Description = "")]
-        public void HandleCityCaptureFromCombat_DoesNothingIfDefenderNotOfTypeCity() {
+        [Test]
+        public void RespondToCombat_DoesNothingIfDefenderNotOfTypeCity() {
             var attackerOwner = BuildCivilization();
 
             var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee);
@@ -203,7 +244,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -213,8 +254,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             );
         }
 
-        [Test(Description = "")]
-        public void HandleCityCaptureFromCombat_DoesNothingIfCombatTypeNotMelee() {
+        [Test]
+        public void RespondToCombat_DoesNothingIfCombatTypeNotMelee() {
             var attackerOwner = BuildCivilization();
 
             var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee);
@@ -228,7 +269,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Ranged };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
 
@@ -239,7 +280,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         [Test]
-        public void HandleCityCaptureFromCombat_CityCaptureSignalFired() {
+        public void RespondToCombat_AndCityWasCaptured_CityCaptureSignalFired() {
             var attackerOwner = BuildCivilization();
 
             Mock<IUnit> attackerMock;
@@ -254,7 +295,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
 
-            var conquestLogic = Container.Resolve<CityConquestLogic>();
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
 
             CitySignals.CityCapturedSignal.Subscribe(delegate(CityCaptureData captureData) {
                 Assert.AreEqual(cityBeingCaptured, captureData.City,     "Incorrect City passed");
@@ -318,6 +359,22 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(owner);
 
             return newUnit;
+        }
+
+        private IBuildingTemplate BuildBuildingTemplate(BuildingType type) {
+            var mockTemplate = new Mock<IBuildingTemplate>();
+
+            mockTemplate.Setup(template => template.Type).Returns(type);
+
+            return mockTemplate.Object;
+        }
+
+        private IBuilding BuildBuilding(IBuildingTemplate template) {
+            var mockBuilding = new Mock<IBuilding>();
+
+            mockBuilding.Setup(building => building.Template).Returns(template);
+
+            return mockBuilding.Object;
         }
 
         #endregion

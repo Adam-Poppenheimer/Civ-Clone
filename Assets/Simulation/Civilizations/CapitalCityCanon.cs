@@ -58,11 +58,8 @@ namespace Assets.Simulation.Civilizations {
             if(civ == null) {
                 throw new ArgumentNullException("civ");
             }
-            if(city == null) {
-                throw new ArgumentNullException("city");
-            }
 
-            return GetCapitalOfCiv(civ) != city && CityPossessionCanon.GetOwnerOfPossession(city) == civ;
+            return city == null || (GetCapitalOfCiv(civ) != city && CityPossessionCanon.GetOwnerOfPossession(city) == civ);
         }
 
         public void SetCapitalOfCiv(ICivilization civ, ICity newCapital) {

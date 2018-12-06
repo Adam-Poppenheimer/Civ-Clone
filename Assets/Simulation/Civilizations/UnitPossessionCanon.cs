@@ -61,6 +61,7 @@ namespace Assets.Simulation.Civilizations {
             }
 
             CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, unit));
+            UnitSignals.UnitGainedNewOwnerSignal.OnNext(new Tuple<IUnit, ICivilization>(unit, null));
         }
 
         #endregion
