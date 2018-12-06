@@ -148,10 +148,11 @@ namespace Assets.Tests.Simulation.Core {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon>        MockUnitPositionCanon;
-        private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
-        private Mock<IUnitHealingLogic>         MockHealingLogic;
-        private Mock<IImprovementWorkLogic>     MockImprovementWorkLogic;
+        private Mock<IUnitPositionCanon>         MockUnitPositionCanon;
+        private Mock<IImprovementLocationCanon>  MockImprovementLocationCanon;
+        private Mock<IUnitHealingLogic>          MockHealingLogic;
+        private Mock<IImprovementWorkLogic>      MockImprovementWorkLogic;
+        private Mock<IImprovementDamageExecuter> MockImprovementDamageExecuter;
 
         #endregion
 
@@ -161,15 +162,17 @@ namespace Assets.Tests.Simulation.Core {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPositionCanon        = new Mock<IUnitPositionCanon>();
-            MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
-            MockHealingLogic             = new Mock<IUnitHealingLogic>();
-            MockImprovementWorkLogic     = new Mock<IImprovementWorkLogic>();
+            MockUnitPositionCanon         = new Mock<IUnitPositionCanon>();
+            MockImprovementLocationCanon  = new Mock<IImprovementLocationCanon>();
+            MockHealingLogic              = new Mock<IUnitHealingLogic>();
+            MockImprovementWorkLogic      = new Mock<IImprovementWorkLogic>();
+            MockImprovementDamageExecuter = new Mock<IImprovementDamageExecuter>();
 
-            Container.Bind<IUnitPositionCanon>       ().FromInstance(MockUnitPositionCanon       .Object);
-            Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
-            Container.Bind<IUnitHealingLogic>        ().FromInstance(MockHealingLogic            .Object);
-            Container.Bind<IImprovementWorkLogic>    ().FromInstance(MockImprovementWorkLogic    .Object);
+            Container.Bind<IUnitPositionCanon>        ().FromInstance(MockUnitPositionCanon        .Object);
+            Container.Bind<IImprovementLocationCanon> ().FromInstance(MockImprovementLocationCanon .Object);
+            Container.Bind<IUnitHealingLogic>         ().FromInstance(MockHealingLogic             .Object);
+            Container.Bind<IImprovementWorkLogic>     ().FromInstance(MockImprovementWorkLogic     .Object);
+            Container.Bind<IImprovementDamageExecuter>().FromInstance(MockImprovementDamageExecuter.Object);
 
             Container.Bind<RoundExecuter>().AsSingle();
         }
@@ -300,6 +303,19 @@ namespace Assets.Tests.Simulation.Core {
                     );
                 }                
             }
+        }
+
+        [Test]
+        public void EndRoundOnUnit_CallsIntoImprovementDamageExecuter() {
+            var unit = BuildUnit(0, 0);
+
+            var roundExecuter = Container.Resolve<RoundExecuter>();
+
+            roundExecuter.EndRoundOnUnit(unit);
+
+            MockImprovementDamageExecuter.Verify(
+                executer => executer.PerformDamageOnUnitFromImprovements(unit), Times.Once
+            );
         }
 
         #endregion

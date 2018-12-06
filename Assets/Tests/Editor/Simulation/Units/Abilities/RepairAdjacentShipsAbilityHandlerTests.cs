@@ -47,40 +47,30 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueOfSomeCommandHasTypeRepairAdjacentShips() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.RepairAdjacentShips },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildRoad }
-            );
+        public void CanHandleCommandOnUnit_TrueIfHasTypeRepairAdjacentShips() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.RepairAdjacentShips };
 
             var unit = BuildUnit(BuildCiv(), 0, 0, UnitType.Mounted);
 
             var abilityHandler = Container.Resolve<RepairAdjacentShipsAbilityHandler>();
 
-            Assert.IsTrue(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfNoCommandHasTypeRepairAdjacentShips() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildRoad }
-            );
+        public void CanHandleCommandOnUnit_FalseIfDoesntHaveTypeRepairAdjacentShips() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement };
 
             var unit = BuildUnit(BuildCiv(), 0, 0, UnitType.NavalMelee);
 
             var abilityHandler = Container.Resolve<RepairAdjacentShipsAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndCanHandleAbility_RepairsAllNearbyMilitaryNavalUnitsWithSameOwner() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.RepairAdjacentShips }
-            );
+        public void HandleCommandOnUnit_AndCanHandleCommand_RepairsAllNearbyMilitaryNavalUnitsWithSameOwner() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.RepairAdjacentShips };
 
             var domesticCiv = BuildCiv();
             var foreignCiv  = BuildCiv();
@@ -103,7 +93,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<RepairAdjacentShipsAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unitToTest);
+            abilityHandler.HandleCommandOnUnit(command, unitToTest);
 
             Assert.AreEqual(100, unitToTest.CurrentHitpoints, "UnitToTest has an unexpected CurrentHitpoints");
 
@@ -114,43 +104,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_ReturnsCorrectResultsIfAbilityCanBeHandled() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.RepairAdjacentShips },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildRoad }
-            );
-
-            var unit = BuildUnit(BuildCiv(), 0, 0, UnitType.Mounted);
-
-            var unitLocation = BuildCell(unit);
-
-            MockGrid.Setup(grid => grid.GetCellsInRadius(unitLocation, 1)).Returns(new List<IHexCell>());
-
-            var abilityHandler = Container.Resolve<RepairAdjacentShipsAbilityHandler>();
-
-            Assert.AreEqual(
-                new AbilityExecutionResults(true, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
-        }
-
-        [Test]
-        public void TryHandleAbilityOnUnit_ReturnsCorrectResultsIfAbilityCannotBeHandled() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildRoad }
-            );
+        public void HandleCommandOnUnit_ThrowsInvalidOperationExceptionIfCommandCannotBeHandled() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement };
 
             var unit = BuildUnit(BuildCiv(), 0, 0, UnitType.NavalMelee);
 
             var abilityHandler = Container.Resolve<RepairAdjacentShipsAbilityHandler>();
 
-            Assert.AreEqual(
-                new AbilityExecutionResults(false, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
+            Assert.Throws<InvalidOperationException>(() => abilityHandler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion

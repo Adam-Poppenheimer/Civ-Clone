@@ -56,85 +56,82 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfLocationHasDomesticCityWithAnActiveProject() {
+        public void CanHandleCommandOnUnit_TrueIfLocationHasDomesticCityWithAnActiveProject() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
             BuildCity(location, civ, BuildProject(0), 0);
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.HurryProduction };
             var unit    = BuildUnit(location, civ);
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.IsTrue(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfAbilityHasNoAppropriateCommandRequest() {
+        public void CanHandleCommandOnUnit_FalseIfCommandHasWrongType() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
             BuildCity(location, civ, BuildProject(0), 0);
 
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement }
-            );
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.SetUpToBombard };
 
             var unit = BuildUnit(location, civ);
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfNoCityAtLocation() {
+        public void CanHandleCommandOnUnit_FalseIfNoCityAtLocation() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.HurryProduction };
             var unit    = BuildUnit(location, civ);
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfCityNotDomesticToUnit() {
+        public void CanHandleCommandOnUnit_FalseIfCityNotDomesticToUnit() {
             var location    = BuildCell();
             var domesticCiv = BuildCiv();
             var foreignCiv  = BuildCiv();
 
             BuildCity(location, foreignCiv, BuildProject(0), 0);
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.HurryProduction };
             var unit    = BuildUnit(location, domesticCiv);
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfCityHasNoActiveProject() {
+        public void CanHandleCommandOnUnit_FalseIfCityHasNoActiveProject() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
             BuildCity(location, civ, null, 0);
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.HurryProduction };
             var unit    = BuildUnit(location, civ);
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndAbilityValid_CalculatesAddedProgressFromConfiguration_AndCityPopulation() {
+        public void HandleCommandOnUnit_AndCommandValid_CalculatesAddedProgressFromConfiguration_AndCityPopulation() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
@@ -142,7 +139,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             BuildCity(location, civ, project, 10);
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.HurryProduction };
             var unit    = BuildUnit(location, civ);
 
             MockCityConfig.Setup(config => config.HurryAbilityBaseProduction)  .Returns(300);
@@ -150,13 +147,13 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            abilityHandler.HandleCommandOnUnit(command, unit);
 
             Assert.AreEqual(865, project.Progress);
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndAbilityValid_ReturnsCorrectExecutionResults() {
+        public void HandleCommandOnUnit_AndCommandInvalid_ThrowsInvalidOperationException() {
             var location = BuildCell();
             var civ      = BuildCiv();
 
@@ -164,7 +161,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             BuildCity(location, civ, project, 10);
 
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.HurryProduction });
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.ClearVegetation };
             var unit    = BuildUnit(location, civ);
 
             MockCityConfig.Setup(config => config.HurryAbilityBaseProduction)  .Returns(300);
@@ -172,55 +169,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
 
-            Assert.AreEqual(
-                new AbilityExecutionResults(true, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
-        }
-
-        [Test]
-        public void TryHandleAbilityOnUnit_AndAbilityInvalid_DoesntModifyProjectProgress() {
-            var location = BuildCell();
-            var civ      = BuildCiv();
-
-            var project = BuildProject(15);
-
-            BuildCity(location, civ, project, 10);
-
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.ClearVegetation });
-            var unit    = BuildUnit(location, civ);
-
-            MockCityConfig.Setup(config => config.HurryAbilityBaseProduction)  .Returns(300);
-            MockCityConfig.Setup(config => config.HurryAbilityPerPopProduction).Returns(55);
-
-            var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
-
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
-
-            Assert.AreEqual(15, project.Progress);
-        }
-
-        [Test]
-        public void TryHandleAbilityOnUnit_AndAbilityInvalid_ReturnsCorrectExecutionResults() {
-            var location = BuildCell();
-            var civ      = BuildCiv();
-
-            var project = BuildProject(15);
-
-            BuildCity(location, civ, project, 10);
-
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.ClearVegetation });
-            var unit    = BuildUnit(location, civ);
-
-            MockCityConfig.Setup(config => config.HurryAbilityBaseProduction)  .Returns(300);
-            MockCityConfig.Setup(config => config.HurryAbilityPerPopProduction).Returns(55);
-
-            var abilityHandler = Container.Resolve<HurryProductionAbilityHandler>();
-
-            Assert.AreEqual(
-                new AbilityExecutionResults(false, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
+            Assert.Throws<InvalidOperationException>(() => abilityHandler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion

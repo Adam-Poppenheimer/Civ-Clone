@@ -37,6 +37,8 @@ namespace Assets.Simulation.Improvements {
 
         bool FreshWaterAlwaysEnables { get; }
 
+        float AdjacentEnemyDamagePercentage { get; }
+
         #endregion
 
     }

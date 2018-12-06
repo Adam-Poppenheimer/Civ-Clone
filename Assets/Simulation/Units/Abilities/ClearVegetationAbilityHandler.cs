@@ -36,27 +36,23 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            var firstCommand = ability.CommandRequests.FirstOrDefault();
-
-            if(ability.CommandRequests.Count() == 1 && firstCommand.CommandType == AbilityCommandType.ClearVegetation) {
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(command.Type == AbilityCommandType.ClearVegetation) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                return unitLocation.Vegetation.ToString().Equals(firstCommand.ArgsToPass.FirstOrDefault());
+                return unitLocation.Vegetation.ToString().Equals(command.ArgsToPass.FirstOrDefault());
             }else {
                 return false;
             }
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 CellModificationLogic.ChangeVegetationOfCell(unitLocation, CellVegetation.None);
-
-                return new AbilityExecutionResults(true, null);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

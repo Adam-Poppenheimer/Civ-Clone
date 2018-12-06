@@ -23,22 +23,20 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(ability.CommandRequests.Any(request => request.CommandType == AbilityCommandType.SetUpToBombard)) {
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(command.Type == AbilityCommandType.SetUpToBombard) {
                 return unit.CurrentMovement > 0 && !unit.IsSetUpToBombard;
             }else {
                 return false;
             }
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 unit.SetUpToBombard();
-                unit.CurrentMovement -= 1;             
-
-                return new AbilityExecutionResults(true, null);
+                unit.CurrentMovement -= 1;
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

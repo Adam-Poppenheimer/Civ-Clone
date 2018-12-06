@@ -71,6 +71,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private bool _freshWaterAlwaysEnables;
 
+        public float AdjacentEnemyDamagePercentage {
+            get { return _adjacentEnemyDamagePercentage; }
+        }
+        [SerializeField] private float _adjacentEnemyDamagePercentage;
+
         #endregion
 
         #endregion

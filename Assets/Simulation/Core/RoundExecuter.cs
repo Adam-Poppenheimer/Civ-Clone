@@ -18,10 +18,11 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon        UnitPositionCanon;
-        private IImprovementLocationCanon ImprovementLocationCanon;
-        private IUnitHealingLogic         UnitHealingLogic;
-        private IImprovementWorkLogic     ImprovementWorkLogic;
+        private IUnitPositionCanon         UnitPositionCanon;
+        private IImprovementLocationCanon  ImprovementLocationCanon;
+        private IUnitHealingLogic          UnitHealingLogic;
+        private IImprovementWorkLogic      ImprovementWorkLogic;
+        private IImprovementDamageExecuter ImprovementDamageExecuter;
 
         #endregion
 
@@ -29,12 +30,14 @@ namespace Assets.Simulation.Core {
 
         public RoundExecuter(
             IUnitPositionCanon unitPositionCanon, IImprovementLocationCanon improvementLocationCanon,
-            IUnitHealingLogic unitHealingLogic, IImprovementWorkLogic improvementWorkLogic
+            IUnitHealingLogic unitHealingLogic, IImprovementWorkLogic improvementWorkLogic,
+            IImprovementDamageExecuter improvementDamageExecuter
         ){
-            UnitPositionCanon        = unitPositionCanon;
-            ImprovementLocationCanon = improvementLocationCanon;
-            UnitHealingLogic         = unitHealingLogic;
-            ImprovementWorkLogic     = improvementWorkLogic;
+            UnitPositionCanon         = unitPositionCanon;
+            ImprovementLocationCanon  = improvementLocationCanon;
+            UnitHealingLogic          = unitHealingLogic;
+            ImprovementWorkLogic      = improvementWorkLogic;
+            ImprovementDamageExecuter = improvementDamageExecuter;
         }
 
         #endregion
@@ -79,7 +82,9 @@ namespace Assets.Simulation.Core {
         public void EndRoundOnUnit(IUnit unit) {
             unit.PerformMovement();
             PerformConstruction(unit);
-            unit.CanAttack = true;            
+            unit.CanAttack = true;
+
+            ImprovementDamageExecuter.PerformDamageOnUnitFromImprovements(unit);
         }
 
         #endregion

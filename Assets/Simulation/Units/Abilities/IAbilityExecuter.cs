@@ -13,8 +13,6 @@ namespace Assets.Simulation.Units.Abilities {
 
         void ExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit);
 
-        void PerformOngoingAbilities();
-
         #endregion
 
     }

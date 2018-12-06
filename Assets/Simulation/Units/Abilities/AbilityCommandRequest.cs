@@ -8,11 +8,11 @@ using UnityEngine;
 namespace Assets.Simulation.Units.Abilities {
 
     [Serializable]
-    public struct AbilityCommandRequest {
+    public class AbilityCommandRequest {
 
         #region instance fields and properties
 
-        public AbilityCommandType CommandType;
+        public AbilityCommandType Type;
 
         public List<string> ArgsToPass;
 

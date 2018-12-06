@@ -55,37 +55,37 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfAbilityDoesntHavePillagingRequest() {
+        public void CanHandleCommandOnUnit_FalseIfCommandHasWrongType() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(true, null, new List<IImprovement>());
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Fortify);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Fortify };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsFalse(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfNoImprovementsOrRoadsAtLocation() {
+        public void CanHandleCommandOnUnit_FalseIfNoImprovementsOrRoadsAtLocation() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(false, null, new List<IImprovement>());
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsFalse(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfImprovementsAndNoCellOwner() {
+        public void CanHandleCommandOnUnit_TrueIfImprovementsAndNoCellOwner() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(
@@ -94,30 +94,30 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsTrue(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfRoadsAndNoCellOwner() {
+        public void CanHandleCommandOnUnit_TrueIfRoadsAndNoCellOwner() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(true, null, new List<IImprovement>());
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsTrue(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfCellIsOwnedAndAtPeaceWithOwner() {
+        public void CanHandleCommandOnUnit_FalseIfCellIsOwnedAndAtPeaceWithOwner() {
             var domesticCiv = BuildCiv();
             var foreignCiv  = BuildCiv();
 
@@ -125,15 +125,15 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsFalse(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfCellIsOwnedAndAtWarWithOwner() {
+        public void CanHandleCommandOnUnit_TrueIfCellIsOwnedAndAtWarWithOwner() {
             var domesticCiv = BuildCiv();
             var foreignCiv  = BuildCiv();
 
@@ -144,15 +144,15 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            Assert.IsTrue(handler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(handler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_PillagesOneImprovementIfOneExists() {
+        public void HandleCommandOnUnit_PillagesOneImprovementIfOneExists() {
             var domesticCiv = BuildCiv();
 
             Mock<IImprovement> mockImprovementOne, mockImprovementTwo;
@@ -164,11 +164,11 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            handler.TryHandleAbilityOnUnit(ability, unit);
+            handler.HandleCommandOnUnit(command, unit);
 
             mockImprovementOne.Verify(improvement => improvement.Pillage(), Times.Once,  "ImprovementOne not pillaged");
             mockImprovementTwo.Verify(improvement => improvement.Pillage(), Times.Never, "ImprovementTwo unexpectedly pillaged");
@@ -177,37 +177,52 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_RemovesRoadsIfNoImprovementExists() {
+        public void HandleCommandOnUnit_RemovesRoadsIfNoImprovementExists() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(true, null, new List<IImprovement>());
 
             var unit = BuildUnit(location, domesticCiv, 0);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            handler.TryHandleAbilityOnUnit(ability, unit);
+            handler.HandleCommandOnUnit(command, unit);
 
             Assert.IsFalse(location.HasRoads);
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_MovementDecreasedByOne() {
+        public void HandleCommandOnUnit_MovementDecreasedByOne() {
             var domesticCiv = BuildCiv();
 
             var location = BuildCell(true, null, new List<IImprovement>());
 
             var unit = BuildUnit(location, domesticCiv, 2);
 
-            var ability = BuildAbility(AbilityCommandType.Pillage);
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
 
             var handler = Container.Resolve<PillageAbilityHandler>();
 
-            handler.TryHandleAbilityOnUnit(ability, unit);
+            handler.HandleCommandOnUnit(command, unit);
 
             Assert.AreEqual(1, unit.CurrentMovement);
+        }
+
+        [Test]
+        public void HandleCommandOnUnit_ThrowsInvalidOperationExceptionIfCannotHandle() {
+            var domesticCiv = BuildCiv();
+
+            var location = BuildCell(true, null, new List<IImprovement>());
+
+            var unit = BuildUnit(location, domesticCiv, 0);
+
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Fortify };
+
+            var handler = Container.Resolve<PillageAbilityHandler>();
+
+            Assert.Throws<InvalidOperationException>(() => handler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion
@@ -265,7 +280,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             mockAbility.Setup(ability => ability.CommandRequests).Returns(
                 new List<AbilityCommandRequest>() {
-                    new AbilityCommandRequest() { CommandType = commandType }
+                    new AbilityCommandRequest() { Type = commandType }
                 }
             );
 

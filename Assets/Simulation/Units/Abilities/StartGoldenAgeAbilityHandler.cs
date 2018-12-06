@@ -35,19 +35,19 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            return ability.CommandRequests.Any(CommandFilter);
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            int argAsInt;
+
+            return command.Type == AbilityCommandType.StartGoldenAge
+                && command.ArgsToPass.Count == 1
+                && int.TryParse(command.ArgsToPass[0], out argAsInt);
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
-                var goldenAgeCommand = ability.CommandRequests.First(
-                    command => command.CommandType == AbilityCommandType.StartGoldenAge
-                );
-
-                int ageDuration = int.Parse(goldenAgeCommand.ArgsToPass[0]);
+                int ageDuration = int.Parse(command.ArgsToPass[0]);
 
                 if(GoldenAgeCanon.IsCivInGoldenAge(unitOwner)) {
                     GoldenAgeCanon.ChangeTurnsOfGoldenAgeForCiv(unitOwner, ageDuration);
@@ -55,23 +55,12 @@ namespace Assets.Simulation.Units.Abilities {
                 }else {
                     GoldenAgeCanon.StartGoldenAgeForCiv(unitOwner, ageDuration);
                 }
-
-                return new AbilityExecutionResults(true, null);
-
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 
         #endregion
-
-        private bool CommandFilter(AbilityCommandRequest command) {
-            int argAsInt;
-
-            return command.CommandType == AbilityCommandType.StartGoldenAge
-                && command.ArgsToPass.Count == 1
-                && int.TryParse(command.ArgsToPass[0], out argAsInt);
-        }
 
         #endregion
         

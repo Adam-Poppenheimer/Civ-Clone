@@ -9,9 +9,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region methods
 
-        bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit);
-
-        AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit);
+        bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit);
+        void HandleCommandOnUnit   (AbilityCommandRequest command, IUnit unit);
 
         #endregion
 

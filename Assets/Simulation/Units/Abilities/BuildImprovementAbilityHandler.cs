@@ -48,36 +48,17 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            return CanHandleWithExistingSite(ability, unit) || CanHandleWithNewSite(ability, unit);
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            return command.Type == AbilityCommandType.BuildImprovement
+                && (CanHandleWithExistingSite(command, unit) || CanHandleWithNewSite(command, unit));
         }
 
-        private bool CanHandleWithExistingSite(IAbilityDefinition ability, IUnit unit) {
-            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(!CanHandleCommandOnUnit(command, unit)) {
+                throw new InvalidOperationException("Cannot handle command");
+            }
 
-            var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
-            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
-
-            return templateOfName != null
-                && improvementOnCell != null
-                && templateOfName == improvementOnCell.Template
-                && !improvementOnCell.IsConstructed
-                && !improvementOnCell.IsPillaged;
-        }
-
-        private bool CanHandleWithNewSite(IAbilityDefinition ability, IUnit unit) {
-            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
-
-            var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
-            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
-
-            return templateOfName != null
-                && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation, false)
-                && (improvementOnCell == null || improvementOnCell.Template != templateOfName);
-        }
-
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleWithExistingSite(ability, unit)) {
+            if(CanHandleWithExistingSite(command, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 unit.LockIntoConstruction();
@@ -90,12 +71,10 @@ namespace Assets.Simulation.Units.Abilities {
                     improvementOnCell.Construct();
                 }
 
-                return new AbilityExecutionResults(true, null);
-
-            }else if(CanHandleWithNewSite(ability, unit)) {
+            }else {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                var templateOfName = GetTemplateOfName(GetRequestedImprovementName(ability));
+                var templateOfName = GetTemplateOfName(command.ArgsToPass.FirstOrDefault());
                 var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
 
                 if(improvementAtLocation != null) {
@@ -112,27 +91,37 @@ namespace Assets.Simulation.Units.Abilities {
                 if(newImprovement.IsReadyToConstruct) {
                     newImprovement.Construct();
                 }
-
-                return new AbilityExecutionResults(true, null);
-            }else {
-                return new AbilityExecutionResults(false, null);
             }
         }
 
         #endregion
 
-        public IImprovementTemplate GetTemplateOfName(string name) {
-            return name == null ? null : AvailableTemplates.Where(template => template.name.Equals(name)).FirstOrDefault();
+        private bool CanHandleWithExistingSite(AbilityCommandRequest command, IUnit unit) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            var templateOfName = GetTemplateOfName(command.ArgsToPass.FirstOrDefault());
+            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+            return templateOfName != null
+                && improvementOnCell != null
+                && templateOfName == improvementOnCell.Template
+                && !improvementOnCell.IsConstructed
+                && !improvementOnCell.IsPillaged;
         }
 
-        private string GetRequestedImprovementName(IAbilityDefinition ability) {
-            var improvementCommands = ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.BuildImprovement);
+        private bool CanHandleWithNewSite(AbilityCommandRequest command, IUnit unit) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-            if(improvementCommands.Count() != 1) {
-                return null;
-            }else {
-                return improvementCommands.First().ArgsToPass.FirstOrDefault();
-            }
+            var templateOfName = GetTemplateOfName(command.ArgsToPass.FirstOrDefault());
+            var improvementOnCell = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+
+            return templateOfName != null
+                && ValidityLogic.IsTemplateValidForCell(templateOfName, unitLocation, false)
+                && (improvementOnCell == null || improvementOnCell.Template != templateOfName);
+        }
+
+        private IImprovementTemplate GetTemplateOfName(string name) {
+            return name == null ? null : AvailableTemplates.Where(template => template.name.Equals(name)).FirstOrDefault();
         }
 
         #endregion

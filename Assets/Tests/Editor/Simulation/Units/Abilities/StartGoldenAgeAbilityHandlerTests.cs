@@ -43,86 +43,67 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfSomeCommandIsOfTypeStartGoldenAge_AndHasNumericFirstArgument() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "10" }
-                },
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildImprovement
-                }
-            );
+        public void CanHandleCommandOnUnit_TrueIfCommandOfTypeStartGoldenAge_AndHasNumericFirstArgument() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.StartGoldenAge,
+                ArgsToPass = new List<string>() { "10" }
+            };
 
             var unit = BuildUnit(BuildCiv(false));
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            Assert.IsTrue(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfNoCommandIsOfTypeStartGoldenAge() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildRoad,
-                    ArgsToPass = new List<string>() { "10" }
-                },
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildImprovement
-                }
-            );
+        public void CanHandleCommandOnUnit_FalseIfCommandIsNotOfTypeStartGoldenAge() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.BuildRoad,
+                ArgsToPass = new List<string>() { "10" }
+            };
 
             var unit = BuildUnit(BuildCiv(false));
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfHasMoreThanOneArgument() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "10", "15" }
-                }
-            );
+        public void CanHandleCommandOnUnit_FalseIfCommandHasMoreThanOneArgument() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.StartGoldenAge,
+                ArgsToPass = new List<string>() { "10", "15" }
+            };
 
             var unit = BuildUnit(BuildCiv(false));
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfArgumentIsntAValidInt() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "Gary" }
-                }
-            );
+        public void CanHandleCommandOnUnit_FalseIfArgumentIsntAValidInt() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.StartGoldenAge,
+                ArgsToPass = new List<string>() { "Gary" }
+            };
 
             var unit = BuildUnit(BuildCiv(false));
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_StartsNewGoldenAgeWithArguedLengthIsOwnerNotInOne() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "10" }
-                },
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildImprovement
-                }
-            );
+        public void HandleCommandOnUnit_StartsNewGoldenAgeWithArguedLengthIsOwnerNotInOne() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.StartGoldenAge,
+                ArgsToPass = new List<string>() { "10" }
+            };
 
             var civ = BuildCiv(false);
 
@@ -130,22 +111,17 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            abilityHandler.HandleCommandOnUnit(command, unit);
 
             MockGoldenAgeCanon.Verify(canon => canon.StartGoldenAgeForCiv(civ, 10), Times.Once);
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_ExtendsExistingGoldenAgeWithArguedLengthIfOwnerInOne() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "10" }
-                },
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildImprovement
-                }
-            );
+        public void HandleCommandOnUnit_ExtendsExistingGoldenAgeWithArguedLengthIfOwnerInOne() {
+            var command = new AbilityCommandRequest() {
+                Type = AbilityCommandType.StartGoldenAge,
+                ArgsToPass = new List<string>() { "10" }
+            };
 
             var civ = BuildCiv(true);
 
@@ -153,19 +129,14 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            abilityHandler.HandleCommandOnUnit(command, unit);
 
             MockGoldenAgeCanon.Verify(canon => canon.ChangeTurnsOfGoldenAgeForCiv(civ, 10), Times.Once);
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_ReturnsCorrectResultsWhenOperationValid() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.StartGoldenAge,
-                    ArgsToPass = new List<string>() { "10" }
-                }
-            );
+        public void HandleCommandOnUnit_ThrowsInvalidOperationExceptionWhenCannotBeHandled() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement};
 
             var civ = BuildCiv(false);
 
@@ -173,30 +144,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
 
-            Assert.AreEqual(
-                new AbilityExecutionResults(true, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
-        }
-
-        [Test]
-        public void TryHandleAbilityOnUnit_ReturnsCorrectResultsWhenOperationInvalid() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() {
-                    CommandType = AbilityCommandType.BuildImprovement
-                }
-            );
-
-            var civ = BuildCiv(false);
-
-            var unit = BuildUnit(civ);
-
-            var abilityHandler = Container.Resolve<StartGoldenAgeAbilityHandler>();
-
-            Assert.AreEqual(
-                new AbilityExecutionResults(false, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
+            Assert.Throws<InvalidOperationException>(() => abilityHandler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion

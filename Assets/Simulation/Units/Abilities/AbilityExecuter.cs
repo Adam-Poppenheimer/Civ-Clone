@@ -45,53 +45,37 @@ namespace Assets.Simulation.Units.Abilities {
                 return false;
             }
 
-            foreach(var handler in AbilityHandlers) {
-                if(handler.CanHandleAbilityOnUnit(ability, unit)) {
-                    return true;
+            foreach(var command in ability.CommandRequests) {
+                if(!AbilityHandlers.Any(handler => handler.CanHandleCommandOnUnit(command, unit))) {
+                    return false;
                 }
             }
 
-            return false;
+            return true;
         }
 
         public void ExecuteAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            foreach(var handler in AbilityHandlers) {
-                if(!CanExecuteAbilityOnUnit(ability, unit)) {
-                    throw new InvalidOperationException("CanExecuterAbilityOnUnit must return true on the arguments");
-                }
-
-                var results = handler.TryHandleAbilityOnUnit(ability, unit);
-                if(results.AbilityHandled) {
-
-                    if(ability.ConsumesMovement) {
-                        unit.CurrentMovement = 0;
-                    }
-
-                    if(ability.DestroysUnit) {
-                        unit.Destroy(); 
-                    }
-
-                    if(results.NewAbilityActivated != null) {
-                        results.NewAbilityActivated.BeginExecution();
-                        ongoingAbilities.Add(results.NewAbilityActivated);
-                    }
-                    Signals.ActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
-                    return;
-                }
+            if(!CanExecuteAbilityOnUnit(ability, unit)) {
+                throw new InvalidOperationException("CanExecuterAbilityOnUnit must return true on the arguments");
             }
 
-            throw new AbilityNotHandledException("No handler was able to handle the ability");
-        }
+            foreach(var command in ability.CommandRequests) {
+                var firstValidHandler = AbilityHandlers.First(
+                    handler => handler.CanHandleCommandOnUnit(command, unit)
+                );
 
-        public void PerformOngoingAbilities() {
-            foreach(var ability in new List<IOngoingAbility>(ongoingAbilities)) {
-                ability.TickExecution();
-
-                if(ability.IsReadyToTerminate()) {
-                    ability.TerminateExecution();
-                    ongoingAbilities.Remove(ability);
-                }
+                firstValidHandler.HandleCommandOnUnit(command, unit);
             }
+
+            if(ability.ConsumesMovement) {
+                unit.CurrentMovement = 0;
+            }
+
+            if(ability.DestroysUnit) {
+                unit.Destroy(); 
+            }
+
+            Signals.ActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
         }
 
         #endregion

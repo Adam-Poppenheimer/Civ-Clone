@@ -36,9 +36,10 @@ namespace Assets.Simulation.Improvements {
                 .WithId("Available Improvement Templates")
                 .FromInstance(allImprovements);
 
-            Container.Bind<IImprovementValidityLogic>().To<ImprovementValidityLogic>().AsSingle();
-            Container.Bind<IImprovementYieldLogic>   ().To<ImprovementYieldLogic>   ().AsSingle();
-            Container.Bind<IImprovementWorkLogic>    ().To<ImprovementWorkLogic>    ().AsSingle();
+            Container.Bind<IImprovementValidityLogic> ().To<ImprovementValidityLogic> ().AsSingle();
+            Container.Bind<IImprovementYieldLogic>    ().To<ImprovementYieldLogic>    ().AsSingle();
+            Container.Bind<IImprovementWorkLogic>     ().To<ImprovementWorkLogic>     ().AsSingle();
+            Container.Bind<IImprovementDamageExecuter>().To<ImprovementDamageExecuter>().AsSingle();
 
             Container.Bind<IImprovementFactory>().To<ImprovementFactory>().AsSingle();
 

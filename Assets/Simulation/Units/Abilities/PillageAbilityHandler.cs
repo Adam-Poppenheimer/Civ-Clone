@@ -44,8 +44,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(!ability.CommandRequests.Any(request => request.CommandType == AbilityCommandType.Pillage)) {
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(command.Type != AbilityCommandType.Pillage) {
                 return false;
             }
 
@@ -65,8 +65,8 @@ namespace Assets.Simulation.Units.Abilities {
             }
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 var firstImprovement = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
@@ -78,10 +78,8 @@ namespace Assets.Simulation.Units.Abilities {
                 }
 
                 unit.CurrentMovement--;
-
-                return new AbilityExecutionResults(true, null);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

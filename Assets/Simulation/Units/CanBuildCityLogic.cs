@@ -23,7 +23,7 @@ namespace Assets.Simulation.Units {
         public bool CanUnitBuildCity(IUnit unit) {
             var possibleCommandRequests = unit.Abilities.SelectMany(ability => ability.CommandRequests);
 
-            return possibleCommandRequests.Where(request => request.CommandType == Abilities.AbilityCommandType.FoundCity).Any();
+            return possibleCommandRequests.Where(request => request.Type == Abilities.AbilityCommandType.FoundCity).Any();
         }
 
         #endregion

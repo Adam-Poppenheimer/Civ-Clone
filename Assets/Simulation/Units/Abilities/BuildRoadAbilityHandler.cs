@@ -30,27 +30,21 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            var roadBuildingCommands = ability.CommandRequests.Where(command => command.CommandType == AbilityCommandType.BuildRoad);
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-            if(roadBuildingCommands.Count() > 0) {
-                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
-
-                return unitLocation != null && !unitLocation.HasRoads;
-            }else {
-                return false;
-            }
+            return command.Type == AbilityCommandType.BuildRoad
+                && unitLocation != null
+                && !unitLocation.HasRoads;
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
                 unitLocation.HasRoads = true;
-
-                return new AbilityExecutionResults(true, null);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

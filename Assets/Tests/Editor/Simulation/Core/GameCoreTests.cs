@@ -31,7 +31,6 @@ namespace Assets.Tests.Simulation.Core {
         private Mock<ICityFactory>         MockCityFactory;
         private Mock<ICivilizationFactory> MockCivilizationFactory;
         private Mock<IUnitFactory>         MockUnitFactory;
-        private Mock<IAbilityExecuter>     MockAbilityExecuter;
         private Mock<IRoundExecuter>       MockRoundExecuter;
         private Mock<IHexGrid>             MockGrid;
         private Mock<IResourceNodeFactory> MockResourceNodeFactory;
@@ -54,7 +53,6 @@ namespace Assets.Tests.Simulation.Core {
             MockCityFactory         = new Mock<ICityFactory>();
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockUnitFactory         = new Mock<IUnitFactory>();
-            MockAbilityExecuter     = new Mock<IAbilityExecuter>();
             MockGrid                = new Mock<IHexGrid>();
             MockResourceNodeFactory = new Mock<IResourceNodeFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
@@ -68,7 +66,6 @@ namespace Assets.Tests.Simulation.Core {
             Container.Bind<ICityFactory>        ().FromInstance(MockCityFactory        .Object);
             Container.Bind<ICivilizationFactory>().FromInstance(MockCivilizationFactory.Object);
             Container.Bind<IUnitFactory>        ().FromInstance(MockUnitFactory        .Object);
-            Container.Bind<IAbilityExecuter>    ().FromInstance(MockAbilityExecuter    .Object);
             Container.Bind<IRoundExecuter>      ().FromInstance(MockRoundExecuter      .Object);
             Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
             Container.Bind<IResourceNodeFactory>().FromInstance(MockResourceNodeFactory.Object);
@@ -301,8 +298,6 @@ namespace Assets.Tests.Simulation.Core {
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity        (city));
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCivilization(civilization));
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnUnit        (unit));
-
-            MockAbilityExecuter.InSequence(executionSequence).Setup(executer => executer.PerformOngoingAbilities());
 
             MockDiplomacyCore.InSequence(executionSequence).Setup(core => core.UpdateOngoingDeals());
 

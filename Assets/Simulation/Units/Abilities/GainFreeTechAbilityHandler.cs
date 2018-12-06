@@ -35,19 +35,17 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            return ability.CommandRequests.Any(request => request.CommandType == AbilityCommandType.GainFreeTech);
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            return command.Type == AbilityCommandType.GainFreeTech;
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
                 TechCanon.AddFreeTechToCiv(unitOwner);
-
-                return new AbilityExecutionResults(true, null);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

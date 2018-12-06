@@ -45,8 +45,8 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IUnitAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(ability.CommandRequests.Where(request => request.CommandType == AbilityCommandType.FoundCity).Count() != 0) {
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(command.Type == AbilityCommandType.FoundCity) {
 
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
@@ -56,18 +56,16 @@ namespace Assets.Simulation.Units.Abilities {
             }
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitOwner = UnitOwnershipCanon.GetOwnerOfPossession(unit);
                 var citiesOfOwner = CityPossessionCanon.GetPossessionsOfOwner(unitOwner);
 
                 var cityName = unitOwner.Template.GetNextName(citiesOfOwner);
 
-                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), unitOwner, cityName);              
-
-                return new AbilityExecutionResults(true, null);
+                CityFactory.Create(UnitPositionCanon.GetOwnerOfPossession(unit), unitOwner, cityName);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

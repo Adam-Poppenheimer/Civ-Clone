@@ -31,17 +31,17 @@ namespace Assets.Tests.Simulation.Units {
         public void CanUnitBuildCity_TrueIfSomeCommandRequestHasTypeFoundCity() {
             var abilityOne = BuildAbility(
                 new List<AbilityCommandRequest>() {
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.SetUpToBombard },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.FoundCity },
                 }
             );
 
             var abilityTwo = BuildAbility(
                 new List<AbilityCommandRequest>() {
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.ClearVegetation },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.SetUpToBombard },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.ClearVegetation },
                 }
             );
 
@@ -56,17 +56,17 @@ namespace Assets.Tests.Simulation.Units {
         public void CanUnitBuildCity_FalseIfNoCommandRequestHasTypeFoundCity() {
             var abilityOne = BuildAbility(
                 new List<AbilityCommandRequest>() {
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildRoad },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.SetUpToBombard },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.BuildRoad },
                 }
             );
 
             var abilityTwo = BuildAbility(
                 new List<AbilityCommandRequest>() {
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.SetUpToBombard },
-                    new AbilityCommandRequest() { CommandType = AbilityCommandType.ClearVegetation },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.SetUpToBombard },
+                    new AbilityCommandRequest() { Type = AbilityCommandType.ClearVegetation },
                 }
             );
 

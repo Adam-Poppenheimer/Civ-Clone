@@ -46,7 +46,6 @@ namespace Assets.Simulation.Core {
         private ICityFactory         CityFactory;
         private ICivilizationFactory CivilizationFactory;
         private IUnitFactory         UnitFactory;
-        private IAbilityExecuter     AbilityExecuter;
         private IRoundExecuter       RoundExecuter;
         private CoreSignals          CoreSignals;
         private IHexGrid             Grid;
@@ -59,15 +58,13 @@ namespace Assets.Simulation.Core {
         [Inject]
         public GameCore(
             ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
-            IUnitFactory unitFactory, IAbilityExecuter abilityExecuter,
-            IRoundExecuter turnExecuter, CoreSignals coreSignals, IHexGrid grid,
-            IDiplomacyCore diplomacyCore, PlayerSignals playerSignals,
-            CivilizationSignals civSignals
+            IUnitFactory unitFactory, IRoundExecuter turnExecuter,
+            CoreSignals coreSignals, IHexGrid grid, IDiplomacyCore diplomacyCore,
+            PlayerSignals playerSignals, CivilizationSignals civSignals
         ){
             CityFactory         = cityFactory;
             CivilizationFactory = civilizationFactory;
             UnitFactory         = unitFactory;
-            AbilityExecuter     = abilityExecuter;
             RoundExecuter       = turnExecuter;
             CoreSignals         = coreSignals;
             Grid                = grid;
@@ -133,8 +130,6 @@ namespace Assets.Simulation.Core {
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
                 RoundExecuter.EndRoundOnCivilization(civilization);
             }
-
-            AbilityExecuter.PerformOngoingAbilities();
 
             DiplomacyCore.UpdateOngoingDeals();
 

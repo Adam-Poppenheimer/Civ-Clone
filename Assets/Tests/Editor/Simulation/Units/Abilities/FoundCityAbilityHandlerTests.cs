@@ -22,70 +22,6 @@ namespace Assets.Tests.Simulation.Units.Abilities {
     [TestFixture]
     public class FoundCityAbilityHandlerTests : ZenjectUnitTestFixture {
 
-        #region static fields and properties
-
-        #region test cases
-
-        private static IEnumerable TestCases {
-            get {
-                yield return new TestCaseData(
-                    "Found City",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
-                    },
-                    true
-                ).SetName("True on correct command type and valid unit location").Returns(true);
-
-                yield return new TestCaseData(
-                    "Chad",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
-                    },
-                    true
-                ).SetName("True regardless of AbilityName").Returns(true);
-
-                yield return new TestCaseData(
-                    "Chad",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() {
-                            CommandType = AbilityCommandType.FoundCity,
-                            ArgsToPass = new List<string>() { "Arg1", "Arg2" }
-                        }
-                    },
-                    true
-                ).SetName("True regardless of Args").Returns(true);
-
-                yield return new TestCaseData(
-                    "Found City",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
-                    },
-                    false
-                ).SetName("False on correct command type but invalid unit location").Returns(false);
-
-                yield return new TestCaseData(
-                    "Found City",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement }
-                    },
-                    true
-                ).SetName("false on incorrect command type and valid unit location").Returns(false);
-
-                yield return new TestCaseData(
-                    "Found City",
-                    new List<AbilityCommandRequest>() {
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity },
-                        new AbilityCommandRequest() { CommandType = AbilityCommandType.FoundCity }
-                    },
-                    true
-                ).SetName("True on redundant FoundCity commands").Returns(true);
-            }
-        }
-
-        #endregion
-
-        #endregion
-
         #region instance fields and properties
 
         private Mock<ICityValidityLogic>                            MockCityValidityLogic;
@@ -128,76 +64,91 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
         #region tests
 
-        [Test(Description = "CanHandleAbilityOnUnit should return true if and only if the following conditions are met:\n" +
-            "\t1. CommandRequests contains a request whose type if FoundCity\n" +
-            "\t2. the tile the activating unit is on is a valid location for a city")]
-        [TestCaseSource("TestCases")]
-        public bool CanHandleAbilityOnUnitTests(
-            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests, bool unitTileValidForCity
-        ){
-            var ability = BuildAbility(abilityName, commandRequests);
+        [Test]
+        public void CanHandleCommandOnUnit_ReturnsTrueIfUnitLocationIsValidCellForCity() {
+            var unitLocation = BuildHexCell(true);
 
-            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization("City One"));
+            var owner = BuildCivilization("");
 
-            var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.FoundCity };
 
-            return abilityHandler.CanHandleAbilityOnUnit(ability, unit);
+            var unit = BuildUnit(unitLocation, owner);
+
+            var handler = Container.Resolve<FoundCityAbilityHandler>();
+
+            Assert.IsTrue(handler.CanHandleCommandOnUnit(command, unit));
         }
 
-        [Test(Description = "TryHandleAbilityOnUnitTests should return the same value that CanHandleAbilityOnUnit does, " +
-            "but should also create a city on the location and with the owner of the argued unit")]
-        [TestCaseSource("TestCases")]
-        public bool TryHandleAbilityOnUnit_CityCreatedWhenValid(
-            string abilityName, IEnumerable<AbilityCommandRequest> commandRequests, bool unitTileValidForCity
-        ){
-            var ability = BuildAbility(abilityName, commandRequests);
+        [Test]
+        public void CanHandleCommandOnUnit_FalseIfCommandTypeNotFoundCity() {
+            var unitLocation = BuildHexCell(true);
 
-            var unit = BuildUnit(BuildHexCell(unitTileValidForCity), BuildCivilization("City One"));
+            var owner = BuildCivilization("");
 
-            var abilityHandler = Container.Resolve<FoundCityAbilityHandler>();
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.RepairAdjacentShips };
 
-            var handleResponse = abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            var unit = BuildUnit(unitLocation, owner);
 
-            if(handleResponse.AbilityHandled) {
-                MockCityFactory.Verify(
-                    factory => factory.Create(
-                        MockUnitPositionCanon .Object.GetOwnerOfPossession(unit),
-                        MockUnitOwnershipCanon.Object.GetOwnerOfPossession(unit),
-                        "City One"
-                    ),
-                    Times.Once,
-                    "CityFactory.Create was not called as expected"
-                );
-            }else {
-                MockCityFactory.Verify(
-                    factory => factory.Create(
-                        It.IsAny<IHexCell>(), It.IsAny<ICivilization>(), It.IsAny<string>()
-                    ),
-                    Times.Never, "CityFactory.Create was unexpectedly called"
-                );
-            }
+            var handler = Container.Resolve<FoundCityAbilityHandler>();
 
-            return handleResponse.AbilityHandled;
+            Assert.IsFalse(handler.CanHandleCommandOnUnit(command, unit));
+        }
+
+        [Test]
+        public void CanHandleCommandOnUnit_FalseIfUnitLocationNotValidForCity() {
+            var unitLocation = BuildHexCell(false);
+
+            var owner = BuildCivilization("");
+
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.FoundCity };
+
+            var unit = BuildUnit(unitLocation, owner);
+
+            var handler = Container.Resolve<FoundCityAbilityHandler>();
+
+            Assert.IsFalse(handler.CanHandleCommandOnUnit(command, unit));
+        }
+
+        [Test]
+        public void HandleCommandOnUnit_AndCommandCanBeHandled_CityCreatedAtUnitLocation_WithCorrectNextName() {
+            var unitLocation = BuildHexCell(true);
+
+            var owner = BuildCivilization("Washington");
+
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.FoundCity };
+
+            var unit = BuildUnit(unitLocation, owner);
+
+            var handler = Container.Resolve<FoundCityAbilityHandler>();
+
+            handler.HandleCommandOnUnit(command, unit);
+
+            MockCityFactory.Verify(factory => factory.Create(unitLocation, owner, "Washington"), Times.Once);
+        }
+
+        [Test]
+        public void HandleCommandOnUnit_AndCommandCannotBeHandled_ThrowsInvalidOperationException() {
+            var unitLocation = BuildHexCell(true);
+
+            var owner = BuildCivilization("Washington");
+
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildRoad };
+
+            var unit = BuildUnit(unitLocation, owner);
+
+            var handler = Container.Resolve<FoundCityAbilityHandler>();
+
+            Assert.Throws<InvalidOperationException>(() => handler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion
 
         #region utilities
 
-        private IAbilityDefinition BuildAbility(string name, IEnumerable<AbilityCommandRequest> commandRequests) {
-            var mockAbility = new Mock<IAbilityDefinition>();
-
-            mockAbility.Setup(ability => ability.name).Returns(name);
-            mockAbility.Setup(ability => ability.CommandRequests).Returns(commandRequests);
-
-            return mockAbility.Object;
-        }
-
         private IUnit BuildUnit(IHexCell location, ICivilization owner) {
             var mockUnit = new Mock<IUnit>();
 
-            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
-
+            MockUnitPositionCanon .Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(location);
             MockUnitOwnershipCanon.Setup(canon => canon.GetOwnerOfPossession(mockUnit.Object)).Returns(owner);
 
             return mockUnit.Object;

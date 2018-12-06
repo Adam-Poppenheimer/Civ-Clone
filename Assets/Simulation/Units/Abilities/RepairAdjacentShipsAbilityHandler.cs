@@ -38,12 +38,12 @@ namespace Assets.Simulation.Units.Abilities {
 
         #region from IAbilityHandler
 
-        public bool CanHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            return ability.CommandRequests.Any(command => command.CommandType == AbilityCommandType.RepairAdjacentShips);
+        public bool CanHandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            return command.Type == AbilityCommandType.RepairAdjacentShips;
         }
 
-        public AbilityExecutionResults TryHandleAbilityOnUnit(IAbilityDefinition ability, IUnit unit) {
-            if(CanHandleAbilityOnUnit(ability, unit)) {
+        public void HandleCommandOnUnit(AbilityCommandRequest command, IUnit unit) {
+            if(CanHandleCommandOnUnit(command, unit)) {
                 var unitPosition = UnitPositionCanon.GetOwnerOfPossession(unit);
                 var unitOwner    = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
@@ -56,10 +56,8 @@ namespace Assets.Simulation.Units.Abilities {
                         nearbyUnit.CurrentHitpoints = nearbyUnit.MaxHitpoints;
                     }
                 }
-
-                return new AbilityExecutionResults(true, null);
             }else {
-                return new AbilityExecutionResults(false, null);
+                throw new InvalidOperationException("Cannot handle command");
             }
         }
 

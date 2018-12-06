@@ -17,6 +17,6 @@ MonoBehaviour:
   _consumesMovement: 1
   _destroysUnit: 0
   _commandRequests:
-  - CommandType: 3
+  - Type: 3
     ArgsToPass:
     - Jungle

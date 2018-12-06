@@ -17,5 +17,5 @@ MonoBehaviour:
   _consumesMovement: 0
   _destroysUnit: 0
   _commandRequests:
-  - CommandType: 4
+  - Type: 4
     ArgsToPass: []

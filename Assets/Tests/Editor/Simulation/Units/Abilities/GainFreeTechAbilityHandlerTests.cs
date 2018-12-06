@@ -44,92 +44,64 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         #region tests
 
         [Test]
-        public void CanHandleAbilityOnUnit_TrueIfHasCommandRequestOfTypeGainFreeTech() {
-            var ability = BuildAbility(new AbilityCommandRequest() { CommandType = AbilityCommandType.GainFreeTech });
+        public void CanHandleCommandOnUnit_TrueIfCommandHasTypeGainFreeTech() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.GainFreeTech };
             var unit = BuildUnit(BuildCiv());
 
             var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
 
-            Assert.IsTrue(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsTrue(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void CanHandleAbilityOnUnit_FalseIfHasNoCommandRequestOfTypeGainFreeTech() {
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.BuildImprovement },
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.ClearVegetation }
-            );
+        public void CanHandleCommandOnUnit_FalseIfCommandDoesNotHaveTypeGainFreeTech() {
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement };
             var unit = BuildUnit(BuildCiv());
 
             var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
 
-            Assert.IsFalse(abilityHandler.CanHandleAbilityOnUnit(ability, unit));
+            Assert.IsFalse(abilityHandler.CanHandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndExecutionValid_AddsFreeTechToUnitOwner() {
+        public void TryHandleCommandOnUnit_AndExecutionValid_AddsFreeTechToUnitOwner() {
             var civ = BuildCiv();
 
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.GainFreeTech }
-            );
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.GainFreeTech };
 
             var unit = BuildUnit(civ);
 
             var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
+            abilityHandler.HandleCommandOnUnit(command, unit);
 
             MockTechCanon.Verify(canon => canon.AddFreeTechToCiv(civ), Times.Once);
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndExecutionValid_ReturnsCorrectResults() {
+        public void TryHandleCommandOnUnit_AndExecutionValid_DoesNotThrow() {
             var civ = BuildCiv();
 
-            var ability = BuildAbility(
-                new AbilityCommandRequest() { CommandType = AbilityCommandType.GainFreeTech }
-            );
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.GainFreeTech };
 
             var unit = BuildUnit(civ);
 
             var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
 
-            Assert.AreEqual(
-                new AbilityExecutionResults(true, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
+            Assert.DoesNotThrow(() => abilityHandler.HandleCommandOnUnit(command, unit));
         }
 
         [Test]
-        public void TryHandleAbilityOnUnit_AndExecutionInvalid_DoesNotAddFreeTechToUnitOwner() {
+        public void TryHandleCommandOnUnit_AndExecutionInvalid_ReturnsCorrectResults() {
             var civ = BuildCiv();
 
-            var ability = BuildAbility();
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.BuildImprovement };
 
             var unit = BuildUnit(civ);
 
             var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
 
-            abilityHandler.TryHandleAbilityOnUnit(ability, unit);
-
-            MockTechCanon.Verify(canon => canon.AddFreeTechToCiv(civ), Times.Never);
-        }
-
-        [Test]
-        public void TryHandleAbilityOnUnit_AndExecutionInvalid_ReturnsCorrectResults() {
-            var civ = BuildCiv();
-
-            var ability = BuildAbility();
-
-            var unit = BuildUnit(civ);
-
-            var abilityHandler = Container.Resolve<GainFreeTechAbilityHandler>();
-
-            Assert.AreEqual(
-                new AbilityExecutionResults(false, null),
-                abilityHandler.TryHandleAbilityOnUnit(ability, unit)
-            );
+            Assert.Throws<InvalidOperationException>(() => abilityHandler.HandleCommandOnUnit(command, unit));
         }
 
         #endregion
