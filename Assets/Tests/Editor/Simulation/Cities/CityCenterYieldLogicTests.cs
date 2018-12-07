@@ -11,7 +11,7 @@ using Assets.Simulation;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Units;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -22,9 +22,11 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IIncomeModifierLogic>                          MockIncomeModifierLogic;
         private Mock<ICityConfig>                                   MockCityConfig;
         private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<IUnitGarrisonLogic>                            MockUnitGarrisonLogic;
         private Mock<ICityModifiers>                                MockCityModifiers;
 
         private Mock<ICityModifier<YieldSummary>> MockBonusYieldModifier;
+        private Mock<ICityModifier<YieldSummary>> MockGarrisonedYieldModifier;
 
         #endregion
 
@@ -37,15 +39,19 @@ namespace Assets.Tests.Simulation.Cities {
             MockIncomeModifierLogic = new Mock<IIncomeModifierLogic>();
             MockCityConfig          = new Mock<ICityConfig>();
             MockCityPossessionCanon = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockUnitGarrisonLogic   = new Mock<IUnitGarrisonLogic>();
             MockCityModifiers       = new Mock<ICityModifiers>();
 
-            MockBonusYieldModifier = new Mock<ICityModifier<YieldSummary>>();
+            MockBonusYieldModifier      = new Mock<ICityModifier<YieldSummary>>();
+            MockGarrisonedYieldModifier = new Mock<ICityModifier<YieldSummary>>();
 
-            MockCityModifiers.Setup(modifiers => modifiers.BonusYield).Returns(MockBonusYieldModifier.Object);
+            MockCityModifiers.Setup(modifiers => modifiers.BonusYield)         .Returns(MockBonusYieldModifier     .Object);
+            MockCityModifiers.Setup(modifiers => modifiers.GarrisonedYield).Returns(MockGarrisonedYieldModifier.Object);
 
             Container.Bind<IIncomeModifierLogic>                         ().FromInstance(MockIncomeModifierLogic.Object);
             Container.Bind<ICityConfig>                                  ().FromInstance(MockCityConfig         .Object);
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon.Object);
+            Container.Bind<IUnitGarrisonLogic>                           ().FromInstance(MockUnitGarrisonLogic  .Object);
             Container.Bind<ICityModifiers>                               ().FromInstance(MockCityModifiers      .Object);
 
             Container.Bind<CityCenterYieldLogic>().AsSingle();
@@ -96,6 +102,42 @@ namespace Assets.Tests.Simulation.Cities {
             var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
 
             Assert.AreEqual(new YieldSummary(gold: 12f), yieldLogic.GetYieldOfCityCenter(city));
+        }
+
+        [Test]
+        public void GetYieldOfCityCenter_IncludesGarrisonedYieldIfCityGarrisoned() {
+            MockCityConfig.Setup(config => config.CityCenterBaseYield).Returns(new YieldSummary());
+
+            var city = BuildCity(0);
+
+            BuildCiv(new List<ICity>() { city });
+
+            MockGarrisonedYieldModifier.Setup(modifier => modifier.GetValueForCity(city))
+                                       .Returns(new YieldSummary(gold: 12f));
+
+            MockUnitGarrisonLogic.Setup(logic => logic.IsCityGarrisoned(city)).Returns(true);
+
+            var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
+
+            Assert.AreEqual(new YieldSummary(gold: 12f), yieldLogic.GetYieldOfCityCenter(city));
+        }
+
+        [Test]
+        public void GetYieldOfCityCenter_IgnoresGarrisonedYieldIfCityNotGarrisoned() {
+            MockCityConfig.Setup(config => config.CityCenterBaseYield).Returns(new YieldSummary());
+
+            var city = BuildCity(0);
+
+            BuildCiv(new List<ICity>() { city });
+
+            MockGarrisonedYieldModifier.Setup(modifier => modifier.GetValueForCity(city))
+                                       .Returns(new YieldSummary(gold: 12f));
+
+            MockUnitGarrisonLogic.Setup(logic => logic.IsCityGarrisoned(city)).Returns(false);
+
+            var yieldLogic = Container.Resolve<CityCenterYieldLogic>();
+
+            Assert.AreEqual(YieldSummary.Empty, yieldLogic.GetYieldOfCityCenter(city));
         }
 
         [Test]

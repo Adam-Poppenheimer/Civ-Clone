@@ -147,6 +147,16 @@ namespace Assets.Simulation.SocialPolicies {
         }
         [SerializeField] private List<Promotion> _globalPromotions;
 
+        public YieldSummary GarrisonedCityYield {
+            get { return _garrisonedCityYield; }
+        }
+        [SerializeField] private YieldSummary _garrisonedCityYield;
+
+        public int GarrisonedCityHappiness {
+            get { return _garrisonedCityHappiness; }
+        }
+        [SerializeField] private int _garrisonedCityHappiness;
+
         #endregion
 
     }

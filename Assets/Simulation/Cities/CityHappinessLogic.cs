@@ -8,8 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Cities.Buildings;
-using Assets.Simulation.SocialPolicies;
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities {
 
@@ -20,9 +19,8 @@ namespace Assets.Simulation.Cities {
         private ICityConfig                                   Config;
         private IPossessionRelationship<ICity, IBuilding>     BuildingPossessionCanon;
         private ICityModifiers                                CityModifiers;
-        private ISocialPolicyCanon                            SocialPolicyCanon;
-        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private ICapitalConnectionLogic                       CapitalConnectionLogic;
+        private IUnitGarrisonLogic                            UnitGarrisonLogic;
 
         #endregion
 
@@ -31,16 +29,14 @@ namespace Assets.Simulation.Cities {
         [Inject]
         public CityHappinessLogic(
             ICityConfig config, IPossessionRelationship<ICity, IBuilding> buildingPossessionCanon,
-            ICityModifiers cityModifiers, ISocialPolicyCanon socialPolicyCanon,
-            IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICapitalConnectionLogic capitalConnectionLogic
+            ICityModifiers cityModifiers, ICapitalConnectionLogic capitalConnectionLogic,
+            IUnitGarrisonLogic unitGarrisonLogic
         ){
             Config                  = config;
             BuildingPossessionCanon = buildingPossessionCanon;
             CityModifiers           = cityModifiers;
-            SocialPolicyCanon       = socialPolicyCanon;
-            CityPossessionCanon     = cityPossessionCanon;
             CapitalConnectionLogic  = capitalConnectionLogic;
+            UnitGarrisonLogic       = unitGarrisonLogic;
         }
 
         #endregion
@@ -78,10 +74,12 @@ namespace Assets.Simulation.Cities {
                 retval += building.Template.GlobalHappiness;
             }
 
-            var cityOwner = CityPossessionCanon.GetOwnerOfPossession(city);
-
             if(CapitalConnectionLogic.IsCityConnectedToCapital(city)) {
-                retval += SocialPolicyCanon.GetPolicyBonusesForCiv(cityOwner).Sum(bonuses => bonuses.ConnectedToCapitalHappiness);
+                retval += CityModifiers.CapitalConnectionHappiness.GetValueForCity(city);
+            }
+
+            if(UnitGarrisonLogic.IsCityGarrisoned(city)) {
+                retval += CityModifiers.GarrisonedHappiness.GetValueForCity(city);
             }
 
             return retval;

@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Units;
 
 namespace Assets.Simulation.Cities.ResourceGeneration {
 
@@ -17,6 +17,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         private IIncomeModifierLogic                          IncomeModifierLogic;
         private ICityConfig                                   CityConfig;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IUnitGarrisonLogic                            UnitGarrisonLogic;
         private ICityModifiers                                CityModifiers;
         
 
@@ -28,11 +29,12 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public CityCenterYieldLogic(
             IIncomeModifierLogic incomeModifierLogic, ICityConfig cityConfig,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            ICityModifiers cityModifiers
+            IUnitGarrisonLogic unitGarrisonLogic, ICityModifiers cityModifiers
         ) {
             IncomeModifierLogic = incomeModifierLogic;
             CityPossessionCanon = cityPossessionCanon;
             CityConfig          = cityConfig;
+            UnitGarrisonLogic   = unitGarrisonLogic;
             CityModifiers       = cityModifiers;
         }
 
@@ -48,6 +50,10 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
             centerYield += new YieldSummary(science: 1) * city.Population;
 
             centerYield += CityModifiers.BonusYield.GetValueForCity(city);
+
+            if(UnitGarrisonLogic.IsCityGarrisoned(city)) {
+                centerYield += CityModifiers.GarrisonedYield.GetValueForCity(city);
+            }
 
             var cityMultipliers = IncomeModifierLogic.GetYieldMultipliersForCity(city);
             var civMultipliers  = IncomeModifierLogic.GetYieldMultipliersForCivilization(CityPossessionCanon.GetOwnerOfPossession(city));

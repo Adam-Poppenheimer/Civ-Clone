@@ -15,6 +15,7 @@ using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Cities;
 using Assets.Simulation.SocialPolicies;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Units;
 
 namespace Assets.Tests.Simulation.Cities {
 
@@ -26,8 +27,6 @@ namespace Assets.Tests.Simulation.Cities {
         public class CityHappinessLogicTestData {
 
             public CityTestData City;
-
-            public CivilizationTestData Owner = new CivilizationTestData();
 
             public ConfigTestData Config;
 
@@ -43,18 +42,10 @@ namespace Assets.Tests.Simulation.Cities {
             public List<BuildingTestData> Buildings = new List<BuildingTestData>();
 
             public bool IsConnectedToCapital;
-
-        }
-
-        public class CivilizationTestData {
-
-            public List<SocialPolicyBonusesTestData> PolicyBonuses = new List<SocialPolicyBonusesTestData>();
-
-        }
-
-        public class SocialPolicyBonusesTestData {
+            public bool IsGarrisoned;
 
             public int ConnectedToCapitalHappiness;
+            public int GarrisonedCityHappiness;
 
         }
 
@@ -71,12 +62,6 @@ namespace Assets.Tests.Simulation.Cities {
             public int UnhappinessPerCity;
 
             public float UnhappinessPerPopulation;
-
-        }
-
-        public class SocialPolicyTestData {
-
-            public int CapitalConnectionHappiness;
 
         }
 
@@ -184,28 +169,32 @@ namespace Assets.Tests.Simulation.Cities {
                 }).SetName("Considers global happiness of buildings").Returns(18);
 
                 yield return new TestCaseData(new CityHappinessLogicTestData() {
-                    City = new CityTestData() { IsConnectedToCapital = true },
-                    Owner = new CivilizationTestData() {
-                        PolicyBonuses = new List<SocialPolicyBonusesTestData>() {
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 1 },
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 2 },
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 4 },
-                        }
+                    City = new CityTestData() {
+                        IsConnectedToCapital = true, ConnectedToCapitalHappiness = 7
                     },
                     Config = new ConfigTestData(),
                 }).SetName("Considers capital connection happiness from owner policies if connected to capital").Returns(7);
 
                 yield return new TestCaseData(new CityHappinessLogicTestData() {
-                    City = new CityTestData() { IsConnectedToCapital = false },
-                    Owner = new CivilizationTestData() {
-                        PolicyBonuses = new List<SocialPolicyBonusesTestData>() {
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 1 },
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 2 },
-                            new SocialPolicyBonusesTestData() { ConnectedToCapitalHappiness = 4 },
-                        }
+                    City = new CityTestData() {
+                        IsConnectedToCapital = false, ConnectedToCapitalHappiness = 7
                     },
                     Config = new ConfigTestData(),
                 }).SetName("Ignores capital connection happiness from owner policies if not connected to capital").Returns(0);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() {
+                        IsGarrisoned = true, GarrisonedCityHappiness = 5
+                    },
+                    Config = new ConfigTestData(),
+                }).SetName("Considers garrisoned city happiness if city is garrisoned").Returns(5);
+
+                yield return new TestCaseData(new CityHappinessLogicTestData() {
+                    City = new CityTestData() {
+                        IsGarrisoned = false, GarrisonedCityHappiness = 5
+                    },
+                    Config = new ConfigTestData(),
+                }).SetName("Ignores garrisoned city happiness if city is not garrisoned").Returns(0);
             }
         }
 
@@ -215,10 +204,12 @@ namespace Assets.Tests.Simulation.Cities {
 
         private Mock<ICityConfig>                                   MockConfig;
         private Mock<IPossessionRelationship<ICity, IBuilding>>     MockBuildingPossessionCanon;
-        private Mock<ICityModifiers>                                MockCityHappinessModifiers;
-        private Mock<ISocialPolicyCanon>                            MockSocialPolicyCanon;
-        private Mock<IPossessionRelationship<ICivilization, ICity>> MockCityPossessionCanon;
+        private Mock<ICityModifiers>                                MockCityModifiers;
         private Mock<ICapitalConnectionLogic>                       MockCapitalConnectionLogic;
+        private Mock<IUnitGarrisonLogic>                            MockUnitGarrisonLogic;
+
+        private Mock<ICityModifier<int>> MockGarrisonedCityHappinessModifier;
+        private Mock<ICityModifier<int>> MockCapitalConnectionHappinessModifier;
 
         #endregion
 
@@ -230,17 +221,21 @@ namespace Assets.Tests.Simulation.Cities {
         public void CommonInstall() {
             MockConfig                  = new Mock<ICityConfig>();
             MockBuildingPossessionCanon = new Mock<IPossessionRelationship<ICity, IBuilding>>();
-            MockCityHappinessModifiers  = new Mock<ICityModifiers>();
-            MockSocialPolicyCanon       = new Mock<ISocialPolicyCanon>();
-            MockCityPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, ICity>>();
+            MockCityModifiers           = new Mock<ICityModifiers>();
             MockCapitalConnectionLogic  = new Mock<ICapitalConnectionLogic>();
-;
-            Container.Bind<ICityConfig>                                  ().FromInstance(MockConfig                 .Object);
-            Container.Bind<IPossessionRelationship<ICity, IBuilding>>    ().FromInstance(MockBuildingPossessionCanon.Object);
-            Container.Bind<ICityModifiers>                               ().FromInstance(MockCityHappinessModifiers .Object);
-            Container.Bind<ISocialPolicyCanon>                           ().FromInstance(MockSocialPolicyCanon      .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon    .Object);
-            Container.Bind<ICapitalConnectionLogic>                      ().FromInstance(MockCapitalConnectionLogic .Object);
+            MockUnitGarrisonLogic       = new Mock<IUnitGarrisonLogic>();
+
+            MockGarrisonedCityHappinessModifier    = new Mock<ICityModifier<int>>();
+            MockCapitalConnectionHappinessModifier = new Mock<ICityModifier<int>>();
+
+            MockCityModifiers.Setup(modifiers => modifiers.GarrisonedHappiness)       .Returns(MockGarrisonedCityHappinessModifier   .Object);
+            MockCityModifiers.Setup(modifiers => modifiers.CapitalConnectionHappiness).Returns(MockCapitalConnectionHappinessModifier.Object);
+
+            Container.Bind<ICityConfig>                              ().FromInstance(MockConfig                 .Object);
+            Container.Bind<IPossessionRelationship<ICity, IBuilding>>().FromInstance(MockBuildingPossessionCanon.Object);
+            Container.Bind<ICityModifiers>                           ().FromInstance(MockCityModifiers          .Object);
+            Container.Bind<ICapitalConnectionLogic>                  ().FromInstance(MockCapitalConnectionLogic .Object);
+            Container.Bind<IUnitGarrisonLogic>                       ().FromInstance(MockUnitGarrisonLogic      .Object);
 
             Container.Bind<CityHappinessLogic>().AsSingle();
         }
@@ -258,8 +253,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockUnhappinessModifier.Setup(modifier => modifier.GetValueForCity(It.IsAny<ICity>()))
                                    .Returns(testData.PerPopulationUnhappinessModifier);
 
-            MockCityHappinessModifiers.Setup(modifiers => modifiers.PerPopulationHappiness)  .Returns(mockHappinessModifier  .Object);
-            MockCityHappinessModifiers.Setup(modifiers => modifiers.PerPopulationUnhappiness).Returns(mockUnhappinessModifier.Object);
+            MockCityModifiers.Setup(modifiers => modifiers.PerPopulationHappiness)  .Returns(mockHappinessModifier  .Object);
+            MockCityModifiers.Setup(modifiers => modifiers.PerPopulationUnhappiness).Returns(mockUnhappinessModifier.Object);
         }
 
         #endregion
@@ -269,9 +264,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetUnhappinessOfCityTestCases")]
         public int GetUnhappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var civ = BuildCiv(testData.Owner);
-
-            var city = BuildCity(testData.City, civ);
+            var city = BuildCity(testData.City);
 
             SetupConfig(testData);
 
@@ -283,9 +276,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetLocalHappinessOfCityTestCases")]
         public int GetLocalHappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var civ = BuildCiv(testData.Owner);
-
-            var city = BuildCity(testData.City, civ);
+            var city = BuildCity(testData.City);
 
             SetupConfig(testData);
 
@@ -297,9 +288,7 @@ namespace Assets.Tests.Simulation.Cities {
         [Test(Description = "")]
         [TestCaseSource("GetGlobalHappinessOfCityTestCases")]
         public int GetGlobalHappinessOfCityTests(CityHappinessLogicTestData testData) {
-            var civ = BuildCiv(testData.Owner);
-
-            var city = BuildCity(testData.City, civ);
+            var city = BuildCity(testData.City);
 
             SetupConfig(testData);
 
@@ -312,7 +301,7 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
-        private ICity BuildCity(CityTestData cityData, ICivilization owner) {
+        private ICity BuildCity(CityTestData cityData) {
             var mockCity = new Mock<ICity>();
 
             mockCity.Setup(city => city.Population).Returns(cityData.Population);
@@ -326,7 +315,13 @@ namespace Assets.Tests.Simulation.Cities {
             MockCapitalConnectionLogic.Setup(logic => logic.IsCityConnectedToCapital(newCity))
                                       .Returns(cityData.IsConnectedToCapital);
 
-            MockCityPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newCity)).Returns(owner);
+            MockCapitalConnectionHappinessModifier.Setup(modifier => modifier.GetValueForCity(newCity))
+                                                  .Returns(cityData.ConnectedToCapitalHappiness);
+
+            MockUnitGarrisonLogic.Setup(logic => logic.IsCityGarrisoned(newCity)).Returns(cityData.IsGarrisoned);
+
+            MockGarrisonedCityHappinessModifier.Setup(modifier => modifier.GetValueForCity(newCity))
+                                               .Returns(cityData.GarrisonedCityHappiness);
 
             return mockCity.Object;
         }
@@ -343,25 +338,6 @@ namespace Assets.Tests.Simulation.Cities {
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 
             return mockBuilding.Object;
-        }
-
-        private ICivilization BuildCiv(CivilizationTestData civData) {
-            var newCiv = new Mock<ICivilization>().Object;
-
-            var policyBonuses = civData.PolicyBonuses.Select(data => BuildPolicyBonuses(data));
-
-            MockSocialPolicyCanon.Setup(canon => canon.GetPolicyBonusesForCiv(newCiv)).Returns(policyBonuses);
-
-            return newCiv;
-        }
-
-        private ISocialPolicyBonusesData BuildPolicyBonuses(SocialPolicyBonusesTestData bonusesData) {
-            var mockBonuses = new Mock<ISocialPolicyBonusesData>();
-
-            mockBonuses.Setup(bonuses => bonuses.ConnectedToCapitalHappiness)
-                       .Returns(bonusesData.ConnectedToCapitalHappiness);
-
-            return mockBonuses.Object;
         }
 
         #endregion

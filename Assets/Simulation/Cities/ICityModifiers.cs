@@ -17,7 +17,12 @@ namespace Assets.Simulation.Cities {
         ICityModifier<float> PerPopulationHappiness   { get; }
         ICityModifier<float> PerPopulationUnhappiness { get; }
 
+        ICityModifier<int> CapitalConnectionHappiness { get; }
+
         ICityModifier<float> GarrisionedRangedCombatStrength { get; }
+
+        ICityModifier<YieldSummary> GarrisonedYield     { get; }
+        ICityModifier<int>          GarrisonedHappiness { get; }
 
         #endregion
 

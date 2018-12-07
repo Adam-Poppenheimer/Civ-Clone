@@ -18,8 +18,7 @@ namespace Assets.Simulation.Civilizations {
         private IFreeUnitsLogic                               FreeUnitsLogic;
         private ICivModifiers                                 CivModifiers;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
-        private IUnitPositionCanon                            UnitPositionCanon;
+        private IUnitGarrisonLogic                            UnitGarrisonLogic;
 
         #endregion
 
@@ -29,14 +28,12 @@ namespace Assets.Simulation.Civilizations {
         public UnitMaintenanceLogic(
             IFreeUnitsLogic freeUnitsLogic, ICivModifiers civModifiers,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
-            IUnitPositionCanon unitPositionCanon
+            IUnitGarrisonLogic unitGarrisonLogic
         ) {
             FreeUnitsLogic      = freeUnitsLogic;
             CivModifiers        = civModifiers;
             UnitPossessionCanon = unitPossessionCanon;
-            CityLocationCanon   = cityLocationCanon;
-            UnitPositionCanon   = unitPositionCanon;
+            UnitGarrisonLogic   = unitGarrisonLogic;
         }
 
         #endregion
@@ -51,11 +48,7 @@ namespace Assets.Simulation.Civilizations {
             int countRequiringMaintenance = 0;
 
             foreach(IUnit candidate in UnitPossessionCanon.GetPossessionsOfOwner(civ).Where(unit => unit.Type != UnitType.City)) {
-                var unitLocation = UnitPositionCanon.GetOwnerOfPossession(candidate);
-
-                var citiesAtLocation = CityLocationCanon.GetPossessionsOfOwner(unitLocation);
-
-                if(!suppressGarrisioned || !citiesAtLocation.Any()) {
+                if(!suppressGarrisioned || !UnitGarrisonLogic.IsUnitGarrisoned(candidate)) {
                     countRequiringMaintenance++;
                 }
             }

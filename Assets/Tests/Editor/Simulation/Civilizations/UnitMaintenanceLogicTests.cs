@@ -66,9 +66,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
         private Mock<IFreeUnitsLogic>                               MockFreeUnitsLogic;
         private Mock<ICivModifiers>                                 MockCivModifiers;
-        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;        
-        private Mock<IPossessionRelationship<IHexCell, ICity>>      MockCityLocationCanon;
-        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
+        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
+        private Mock<IUnitGarrisonLogic>                            MockUnitGarrisonLogic;
 
         private Mock<ICivModifier<bool>> MockSuppressGarrisionMaintenanceModifier;
 
@@ -83,8 +82,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockFreeUnitsLogic      = new Mock<IFreeUnitsLogic>();
             MockCivModifiers        = new Mock<ICivModifiers>();
             MockUnitPossessionCanon = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockCityLocationCanon   = new Mock<IPossessionRelationship<IHexCell, ICity>>();
-            MockUnitPositionCanon   = new Mock<IUnitPositionCanon>();
+            MockUnitGarrisonLogic   = new Mock<IUnitGarrisonLogic>();
 
             MockSuppressGarrisionMaintenanceModifier = new Mock<ICivModifier<bool>>();
 
@@ -94,8 +92,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Bind<IFreeUnitsLogic>                              ().FromInstance(MockFreeUnitsLogic     .Object);
             Container.Bind<ICivModifiers>                                ().FromInstance(MockCivModifiers       .Object);
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<IPossessionRelationship<IHexCell, ICity>>     ().FromInstance(MockCityLocationCanon  .Object);
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon  .Object);
+            Container.Bind<IUnitGarrisonLogic>                           ().FromInstance(MockUnitGarrisonLogic  .Object);
 
             Container.Bind<UnitMaintenanceLogic>().AsSingle();
         }
@@ -142,14 +139,11 @@ namespace Assets.Tests.Simulation.Civilizations {
         }
 
         [Test]
-        public void GetMaintenanceOfUnitsForCiv_AndGarrisionMaintenanceBeingSuppressed_IgnoresUnitsOnCities() {
-            var cellWithCity    = BuildCell(BuildCity());
-            var cellWithoutCity = BuildCell();
-
+        public void GetMaintenanceOfUnitsForCiv_AndGarrisionMaintenanceBeingSuppressed_IgnoresGarrisonedUnits() {
             var units = new List<IUnit>() {
-                BuildUnit(UnitType.Melee, cellWithCity),
-                BuildUnit(UnitType.Melee, cellWithoutCity),
-                BuildUnit(UnitType.Melee, cellWithoutCity),
+                BuildUnit(UnitType.Melee, true),
+                BuildUnit(UnitType.Melee, false),
+                BuildUnit(UnitType.Melee, false),
             };
 
             var civ = BuildCiv(units);
@@ -177,34 +171,14 @@ namespace Assets.Tests.Simulation.Civilizations {
             return newCiv;
         }
 
-        private IUnit BuildUnit(UnitType type = UnitType.Melee) {
-            var mockUnit = new Mock<IUnit>();
-
-            mockUnit.Setup(unit => unit.Type).Returns(type);
-
-            return mockUnit.Object;
-        }
-
-        private ICity BuildCity() {
-            return new Mock<ICity>().Object;
-        }
-
-        private IHexCell BuildCell(params ICity[] cities) {
-            var newCell = new Mock<IHexCell>().Object;
-
-            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(newCell)).Returns(cities);
-
-            return newCell;
-        }
-
-        private IUnit BuildUnit(UnitType type, IHexCell location) {
+        private IUnit BuildUnit(UnitType type = UnitType.Melee, bool isGarrisoned = false) {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.Setup(unit => unit.Type).Returns(type);
 
             var newUnit = mockUnit.Object;
 
-            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
+            MockUnitGarrisonLogic.Setup(logic => logic.IsUnitGarrisoned(newUnit)).Returns(isGarrisoned);
 
             return newUnit;
         }

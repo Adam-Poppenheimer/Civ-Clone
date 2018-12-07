@@ -58,6 +58,10 @@ namespace Assets.Simulation.SocialPolicies {
 
         IEnumerable<IPromotion> GlobalPromotions { get; }
 
+        YieldSummary GarrisonedCityYield { get; }
+
+        int GarrisonedCityHappiness { get; }
+
         #endregion
 
     }

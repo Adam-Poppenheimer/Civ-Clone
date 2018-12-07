@@ -63,3 +63,16 @@ MonoBehaviour:
     _greatMilitaryGainSpeedModifier: 0
     _goldenAgeLengthModifier: 0
     _startsGoldenAge: 0
+    _goldBountyPerProduction: 0
+    _globalPromotions: []
+    _garrisonedCityYield:
+      Food: 0
+      Production: 0
+      Gold: 0
+      Culture: 2
+      Science: 0
+      GreatArtist: 0
+      GreatEngineer: 0
+      GreatMerchant: 0
+      GreatScientist: 0
+    _garrisonedCityHappiness: 1
