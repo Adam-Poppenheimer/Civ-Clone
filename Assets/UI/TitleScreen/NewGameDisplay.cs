@@ -35,6 +35,8 @@ namespace Assets.UI.TitleScreen {
         private Vector2      DimensionsInChunks;
         private int          ContinentalLandPercentage;
         private int          CivCount;
+
+        private HashSet<ICivilizationTemplate> ChosenTemplates = new HashSet<ICivilizationTemplate>();
         
 
 
@@ -43,7 +45,7 @@ namespace Assets.UI.TitleScreen {
         private IEnumerable<IMapTemplate>                 MapTemplates;
         private IMapGenerator                             MapGenerator;
         private Animator                                  UIAnimator;
-        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
+        private ReadOnlyCollection<ICivilizationTemplate> AllCivTemplates;
 
         #endregion
 
@@ -59,7 +61,7 @@ namespace Assets.UI.TitleScreen {
             MapTemplates = mapTemplates;
             MapGenerator = mapGenerator;
             UIAnimator   = uiAnimator;
-            CivTemplates = civTemplates;
+            AllCivTemplates = civTemplates;
         }
 
         #region Unity messages
@@ -104,26 +106,42 @@ namespace Assets.UI.TitleScreen {
 
             InstantiatedTemplateRecords.Clear();
 
+            ChosenTemplates.Clear();
+
             for(int i = 0; i < CivCount; i++) {
                 var newTemplateRecord = Instantiate(TemplateRecordPrefab);
 
                 newTemplateRecord.gameObject.SetActive(true);
                 newTemplateRecord.transform.SetParent(TemplateRecordContainer, false);
 
-                newTemplateRecord.Refresh(CivTemplates, i);
-
                 InstantiatedTemplateRecords.Add(newTemplateRecord);
+            }
+
+            ResetSelectedCivs();
+        }
+
+        public void UpdateChosenCivs() {
+            ChosenTemplates.Clear();
+
+            foreach(var templateRecord in InstantiatedTemplateRecords) {
+                var templateChosen = AllCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
+
+                ChosenTemplates.Add(templateChosen);
+            }
+
+            foreach(var templateRecord in InstantiatedTemplateRecords) {
+                var templateChosen = AllCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
+
+                templateRecord.PopulateValidTemplatesDropdown(AllCivTemplates, ChosenTemplates, templateChosen);
             }
         }
 
         public void GenerateMap() {
-            var selectedTemplates = InstantiatedTemplateRecords.Select(record => record.SelectedTemplate).ToList();
-
             var variables = new MapGenerationVariables() {
                 ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
                 ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
                 CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage,
-                Civilizations = selectedTemplates
+                Civilizations = ChosenTemplates.ToList()
             };
 
             MapGenerator.GenerateMap(
@@ -187,6 +205,23 @@ namespace Assets.UI.TitleScreen {
             ).ToList();
 
             CivCountDropdown.AddOptions(civCountOptions);
+        }
+
+        private void ResetSelectedCivs() {
+            ChosenTemplates.Clear();
+
+            var templatesToChoose = AllCivTemplates.Take(CivCount).ToArray();
+
+            foreach(var template in templatesToChoose) {
+                ChosenTemplates.Add(template);
+            }
+
+            for(int i = 0; i < templatesToChoose.Length; i++) {
+                var thisTemplateRecord = InstantiatedTemplateRecords[i];
+                var selectedTemplate = templatesToChoose[i];
+
+                thisTemplateRecord.PopulateValidTemplatesDropdown(AllCivTemplates, ChosenTemplates, selectedTemplate);
+            }
         }
 
         #endregion

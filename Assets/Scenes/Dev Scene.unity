@@ -18633,7 +18633,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3195a838ab3ad84fb7c186f2265133b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  TemplateDropdown: {fileID: 1339280071}
+  ValidTemplatesDropdown: {fileID: 1339280071}
 --- !u!1 &460271201
 GameObject:
   m_ObjectHideFlags: 0
@@ -51872,9 +51872,9 @@ MonoBehaviour:
   m_OnValueChanged:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 459984279}
-        m_MethodName: UpdateSelectedTemplate
-        m_Mode: 0
+      - m_Target: {fileID: 956490660}
+        m_MethodName: UpdateChosenCivs
+        m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine

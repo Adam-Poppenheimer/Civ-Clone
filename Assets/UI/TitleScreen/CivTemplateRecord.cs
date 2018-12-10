@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -15,37 +14,39 @@ namespace Assets.UI.TitleScreen {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown TemplateDropdown;
+        [SerializeField] private Dropdown ValidTemplatesDropdown;
 
-        public ICivilizationTemplate SelectedTemplate { get; private set; }
-
-        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
+        public string SelectedDropdownText {
+            get { return ValidTemplatesDropdown.options[ValidTemplatesDropdown.value].text; }
+        }
 
         #endregion
 
         #region instance methods
 
-        public void Refresh(ReadOnlyCollection<ICivilizationTemplate> availableTemplates, int startingOptionIndex) {
-            SetDropdownOptions(availableTemplates, startingOptionIndex);
+        public void PopulateValidTemplatesDropdown(
+            IEnumerable<ICivilizationTemplate> allTemplates, HashSet<ICivilizationTemplate> chosenTemplates,
+            ICivilizationTemplate selectedTemplate
+        ) {
+            ValidTemplatesDropdown.ClearOptions();
 
-            UpdateSelectedTemplate(startingOptionIndex);
-        }
+            var validTemplates = allTemplates.Where(
+                template => template == selectedTemplate || !chosenTemplates.Contains(template)
+            );
 
-        public void UpdateSelectedTemplate(int optionIndex) {
-            var templateName = TemplateDropdown.options[optionIndex].text;
+            List<Dropdown.OptionData> options = validTemplates.Select(
+                template => new Dropdown.OptionData(template.Name)
+            ).ToList();
 
-            SelectedTemplate = CivTemplates.Where(template => template.Name.Equals(templateName)).FirstOrDefault();
-        }
+            ValidTemplatesDropdown.AddOptions(options);
 
-        private void SetDropdownOptions(ReadOnlyCollection<ICivilizationTemplate> availableTemplates, int startingOptionIndex) {
-            CivTemplates = availableTemplates;
+            var selectedDropdown = ValidTemplatesDropdown.options.Where(
+                option => option.text.Equals(selectedTemplate.Name)
+            ).FirstOrDefault();
 
-            TemplateDropdown.ClearOptions();
-
-            List<Dropdown.OptionData> options = availableTemplates.Select(template => new Dropdown.OptionData(template.Name)).ToList();
-
-            TemplateDropdown.options = options;
-            TemplateDropdown.value = startingOptionIndex;
+            if(selectedDropdown != null) {
+                ValidTemplatesDropdown.value = ValidTemplatesDropdown.options.IndexOf(selectedDropdown);
+            }
         }
 
         #endregion
