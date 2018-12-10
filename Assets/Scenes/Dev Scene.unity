@@ -899,11 +899,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -3772,6 +3772,7 @@ GameObject:
   - component: {fileID: 91587490}
   - component: {fileID: 91587488}
   - component: {fileID: 91587486}
+  - component: {fileID: 91587491}
   - component: {fileID: 91587489}
   m_Layer: 5
   m_Name: Exploration Mode Dropdown
@@ -3918,6 +3919,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 91587485}
+--- !u!114 &91587491
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 91587485}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &91784315
 GameObject:
   m_ObjectHideFlags: 0
@@ -6969,6 +6981,7 @@ GameObject:
   - component: {fileID: 175179894}
   - component: {fileID: 175179893}
   - component: {fileID: 175179892}
+  - component: {fileID: 175179895}
   m_Layer: 5
   m_Name: Civ Template Dropdown
   m_TagString: Untagged
@@ -7090,6 +7103,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 175179890}
+--- !u!114 &175179895
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 175179890}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &175712081
 GameObject:
   m_ObjectHideFlags: 0
@@ -18158,6 +18182,7 @@ GameObject:
   - component: {fileID: 456474913}
   - component: {fileID: 456474912}
   - component: {fileID: 456474911}
+  - component: {fileID: 456474915}
   - component: {fileID: 456474914}
   m_Layer: 5
   m_Name: Resource Focus Dropdown
@@ -18299,6 +18324,17 @@ MonoBehaviour:
   m_PreferredHeight: 50
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &456474915
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 456474909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &456796858
 GameObject:
   m_ObjectHideFlags: 0
@@ -28776,6 +28812,7 @@ GameObject:
   - component: {fileID: 718857163}
   - component: {fileID: 718857162}
   - component: {fileID: 718857161}
+  - component: {fileID: 718857165}
   m_Layer: 5
   m_Name: Civilization Dropdown
   m_TagString: Untagged
@@ -28915,6 +28952,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 718857159}
+--- !u!114 &718857165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 718857159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &719675258
 GameObject:
   m_ObjectHideFlags: 0
@@ -31389,11 +31437,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -37219,7 +37267,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: 191.16, y: -31.806}
+  m_AnchoredPosition: {x: 191.16, y: -31.80603}
   m_SizeDelta: {x: 181, y: 43}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &906880372
@@ -44127,11 +44175,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -50090,6 +50138,7 @@ GameObject:
   - component: {fileID: 1296305145}
   - component: {fileID: 1296305144}
   - component: {fileID: 1296305143}
+  - component: {fileID: 1296305148}
   m_Layer: 5
   m_Name: Civilization Dropdown
   m_TagString: Untagged
@@ -50247,6 +50296,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1296305141}
+--- !u!114 &1296305148
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1296305141}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1297778855
 GameObject:
   m_ObjectHideFlags: 0
@@ -55674,6 +55734,7 @@ GameObject:
   - component: {fileID: 1446093392}
   - component: {fileID: 1446093391}
   - component: {fileID: 1446093390}
+  - component: {fileID: 1446093393}
   - component: {fileID: 1446093389}
   m_Layer: 5
   m_Name: Civilization Dropdown
@@ -55814,6 +55875,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1446093387}
+--- !u!114 &1446093393
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1446093387}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1446234550
 GameObject:
   m_ObjectHideFlags: 0
@@ -58863,6 +58935,7 @@ GameObject:
   - component: {fileID: 1520066968}
   - component: {fileID: 1520066967}
   - component: {fileID: 1520066966}
+  - component: {fileID: 1520066969}
   - component: {fileID: 1520066965}
   m_Layer: 5
   m_Name: Active Civ Dropdown
@@ -59009,6 +59082,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1520066963}
+--- !u!114 &1520066969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1520066963}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1520832038
 GameObject:
   m_ObjectHideFlags: 0
@@ -62513,11 +62597,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -63391,11 +63475,11 @@ MonoBehaviour:
     lineCount: 1
     pageCount: 1
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -66418,6 +66502,7 @@ GameObject:
   - component: {fileID: 1696888136}
   - component: {fileID: 1696888135}
   - component: {fileID: 1696888134}
+  - component: {fileID: 1696888137}
   - component: {fileID: 1696888133}
   m_Layer: 5
   m_Name: Receiver Choice Dropdown
@@ -66575,6 +66660,17 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1696888131}
+--- !u!114 &1696888137
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1696888131}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1698967903
 GameObject:
   m_ObjectHideFlags: 0
@@ -69173,7 +69269,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 1}
   m_AnchorMax: {x: 0.5, y: 1}
-  m_AnchoredPosition: {x: -158, y: -10.806}
+  m_AnchoredPosition: {x: -158, y: -10.80603}
   m_SizeDelta: {x: 497, y: 42.5}
   m_Pivot: {x: 0.5, y: 1}
 --- !u!114 &1754464546
@@ -74702,6 +74798,7 @@ GameObject:
   - component: {fileID: 1885426143}
   - component: {fileID: 1885426142}
   - component: {fileID: 1885426141}
+  - component: {fileID: 1885426145}
   - component: {fileID: 1885426144}
   m_Layer: 5
   m_Name: Visibility Mode Dropdown
@@ -74848,6 +74945,17 @@ MonoBehaviour:
   m_PreferredHeight: -1
   m_FlexibleWidth: -1
   m_FlexibleHeight: -1
+--- !u!114 &1885426145
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1885426139}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8108bdcf859ebf943a69036b3986798c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1886142893
 GameObject:
   m_ObjectHideFlags: 0
