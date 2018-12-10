@@ -42,7 +42,7 @@ namespace Assets.Simulation.MapManagement {
             get {
                 if(_mapDirectory == null) {
                     _mapDirectory = Directory.CreateDirectory(
-                        string.Format("{0}\\{1}", Application.streamingAssetsPath, MapPath)
+                        string.Format("{0}\\{1}", Application.persistentDataPath, MapPath)
                     );
                 }
                 return _mapDirectory;
@@ -50,21 +50,8 @@ namespace Assets.Simulation.MapManagement {
         }
         private DirectoryInfo _mapDirectory;
 
-        private DirectoryInfo SavedGameDirectory {
-            get {
-                if(_savedGameDirectory == null) {
-                    _savedGameDirectory = Directory.CreateDirectory(
-                        string.Format("{0}\\{1}", Application.persistentDataPath, SavedGamePath)
-                    );
-                }
-                return _savedGameDirectory;
-            }
-        }
-        private DirectoryInfo _savedGameDirectory;
 
 
-
-        private string SavedGamePath;
 
         private string MapPath;
 
@@ -74,11 +61,9 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public FileSystemLiaison(
-            [Inject(Id = "Saved Game Path")] string savedGamePath,
             [Inject(Id = "Map Path")] string mapPath
         ){
-            SavedGamePath = savedGamePath;
-            MapPath       = mapPath;
+            MapPath = mapPath;
         }
 
         #endregion
@@ -87,25 +72,11 @@ namespace Assets.Simulation.MapManagement {
 
         #region from IFileSystemLiaison
 
-        public void WriteMapDataAsSavedGameToFile(SerializableMapData mapData, string filename) {
+        public void WriteMapDataToFile(SerializableMapData mapData, string filename) {
             WriteMapToFile(mapData, string.Format(
                 "{0}\\{1}\\{2}.xml",
-                Application.persistentDataPath, SavedGamePath, filename
+                Application.persistentDataPath, MapPath, filename
             ));
-        }
-
-        public void WriteMapDataAsMapToFile(SerializableMapData mapData, string filename) {
-            WriteMapToFile(mapData, string.Format(
-                "{0}\\{1}\\{2}.xml",
-                Application.streamingAssetsPath, MapPath, filename
-            ));
-        }
-
-        public void DeleteSavedGame(string filename) {
-            var filesToDelete = SavedGameDirectory.GetFiles(filename + ".xml");
-            foreach(var file in filesToDelete) {
-                file.Delete();
-            }
         }
 
         public void DeleteMap(string filename) {
@@ -116,20 +87,9 @@ namespace Assets.Simulation.MapManagement {
         }
 
         public void RefreshMaps() {
-            availableMaps.Clear();
-
-            foreach(var file in MapDirectory.GetFiles()) {
-                if(file.Extension.Equals(".xml")) {
-                    var mapOfFile = ReadMapFromFile(file);
-                    availableMaps.Add(new MapFileData(mapOfFile, file.Name, file.LastWriteTime));
-                }
-            }
-        }
-
-        public void RefreshSavedGames() {
             savedGames.Clear();
 
-            foreach(var file in SavedGameDirectory.GetFiles()) {
+            foreach(var file in MapDirectory.GetFiles()) {
                 if(file.Extension.Equals(".xml")) {
                     var savedGameOfFile = ReadMapFromFile(file);
                     savedGames.Add(new MapFileData(savedGameOfFile, file.Name, file.LastWriteTime));

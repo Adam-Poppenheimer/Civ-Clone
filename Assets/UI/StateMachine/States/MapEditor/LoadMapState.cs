@@ -39,7 +39,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            LoadGameDisplay.LoadMode          = MapFileType.Map;
             LoadGameDisplay.TitleLabel        = TitleLabel;
             LoadGameDisplay.AcceptButtonLabel = AcceptButtonLabel;
             LoadGameDisplay.LoadAction        = () => animator.SetTrigger("Return Requested");

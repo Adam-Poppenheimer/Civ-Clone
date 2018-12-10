@@ -17,13 +17,9 @@ namespace Assets.Simulation.MapManagement {
 
         #region methods
 
-        void WriteMapDataAsSavedGameToFile(SerializableMapData map, string filename);
+        void WriteMapDataToFile(SerializableMapData map, string filename);
 
-        void WriteMapDataAsMapToFile(SerializableMapData map, string filename);
-
-        void DeleteSavedGame(string filename);
-
-        void RefreshSavedGames();
+        void DeleteMap(string filename);
 
         void RefreshMaps();
 

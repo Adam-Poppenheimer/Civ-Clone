@@ -38,7 +38,6 @@ namespace Assets.UI.StateMachine.States {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            LoadGameDisplay.LoadMode          = MapFileType.SavedGame;
             LoadGameDisplay.TitleLabel        = TitleLabel;
             LoadGameDisplay.AcceptButtonLabel = AcceptButtonLabel;
             LoadGameDisplay.LoadAction = () => animator.SetTrigger("Play Mode Requested");

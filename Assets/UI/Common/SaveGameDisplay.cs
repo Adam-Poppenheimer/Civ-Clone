@@ -19,7 +19,6 @@ namespace Assets.UI.Common {
 
         [SerializeField] private RectTransform     FileRecordContainer;
         [SerializeField] private InputField        NewFileNameInput;
-        [SerializeField] private MapFileType       SaveMode;
         [SerializeField] private GameMapFileRecord FileRecordPrefab;
 
         private List<GameMapFileRecord> InstantiatedFileRecords =
@@ -45,13 +44,8 @@ namespace Assets.UI.Common {
         private void OnEnable() {
             IEnumerable<MapFileData> filesToDisplay;
 
-            if(SaveMode == MapFileType.Map) {
-                FileSystemLiaison.RefreshMaps();
-                filesToDisplay = FileSystemLiaison.AvailableMaps;
-            }else {
-                FileSystemLiaison.RefreshSavedGames();
-                filesToDisplay = FileSystemLiaison.SavedGames;
-            }
+            FileSystemLiaison.RefreshMaps();
+            filesToDisplay = FileSystemLiaison.SavedGames;
 
             foreach(var savedGame in filesToDisplay) {
                 var newRecord = Instantiate(FileRecordPrefab);
@@ -77,13 +71,8 @@ namespace Assets.UI.Common {
 
             var mapToSave = MapComposer.ComposeRuntimeIntoData();
 
-            if(SaveMode == MapFileType.Map) {
-                FileSystemLiaison.WriteMapDataAsMapToFile(mapToSave, fileName);
-                FileSystemLiaison.RefreshMaps();
-            }else {
-                FileSystemLiaison.WriteMapDataAsSavedGameToFile(mapToSave, fileName);
-                FileSystemLiaison.RefreshSavedGames();
-            }
+            FileSystemLiaison.WriteMapDataToFile(mapToSave, fileName);
+            FileSystemLiaison.RefreshMaps();
         }
 
         #endregion

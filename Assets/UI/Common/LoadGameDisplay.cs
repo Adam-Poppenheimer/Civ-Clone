@@ -23,8 +23,6 @@ namespace Assets.UI.Common {
         [SerializeField] private Text              TitleText;
         [SerializeField] private Text              LoadButtonText;
 
-        public MapFileType LoadMode { get; set; }
-
         public string TitleLabel {
             get { return TitleText.text; }
             set { TitleText.text = value; }
@@ -64,13 +62,8 @@ namespace Assets.UI.Common {
         private void OnEnable() {
             IEnumerable<MapFileData> filesToDisplay;
 
-            if(LoadMode == MapFileType.Map) {
-                FileSystemLiaison.RefreshMaps();
-                filesToDisplay = FileSystemLiaison.AvailableMaps;
-            }else {
-                FileSystemLiaison.RefreshSavedGames();
-                filesToDisplay = FileSystemLiaison.SavedGames;
-            }
+            FileSystemLiaison.RefreshMaps();
+            filesToDisplay = FileSystemLiaison.SavedGames;
 
             foreach(var savedGame in filesToDisplay) {
                 var newRecord = Instantiate(FileRecordPrefab);

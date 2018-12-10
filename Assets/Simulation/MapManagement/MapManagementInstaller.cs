@@ -13,7 +13,6 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [SerializeField] private string SavedGamePath;
         [SerializeField] private string MapPath;
 
         #endregion
@@ -44,8 +43,7 @@ namespace Assets.Simulation.MapManagement {
 
             Container.Bind<IMapComposer>().To<MapComposer>().AsSingle();
 
-            Container.Bind<string>().WithId("Saved Game Path").FromInstance(SavedGamePath);
-            Container.Bind<string>().WithId("Map Path")       .FromInstance(MapPath);
+            Container.Bind<string>().WithId("Map Path").FromInstance(MapPath);
 
             Container.Bind<IFileSystemLiaison>().To<FileSystemLiaison>().AsSingle();
         }
