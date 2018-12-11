@@ -21,6 +21,7 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private RectTransform ImprovementRecordPrefab;
         [SerializeField] private RectTransform ImprovementRecordContainer;
+        [SerializeField] private RectTransform ImprovementRecordSection;
 
         [SerializeField] private Toggle IsAddingToggle;
         [SerializeField] private Toggle IsRemovingToggle;
@@ -84,6 +85,14 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
+        public void RefreshMode() {
+            IsAdding    = IsAddingToggle   .isOn;
+            IsRemoving  = IsRemovingToggle .isOn;
+            IsPillaging = IsPillagingToggle.isOn;
+
+            ImprovementRecordSection.gameObject.SetActive(IsAdding);
+        }
+
         private void PopulateImprovementList() {
             foreach(var improvementTemplate in AvailableImprovementTemplates) {
                 var newRecord = Instantiate(ImprovementRecordPrefab);
@@ -104,6 +113,10 @@ namespace Assets.UI.MapEditor {
 
                 if(recordToggle.isOn) {
                     SelectedTemplate = improvementTemplate;
+                }
+
+                if(SelectedTemplate == improvementTemplate) {
+                    recordToggle.isOn = true;
                 }
 
                 InstantiatedRecords.Add(newRecord);
@@ -142,12 +155,6 @@ namespace Assets.UI.MapEditor {
                     improvement.Pillage();
                 }
             }
-        }
-
-        public void RefreshMode() {
-            IsAdding    = IsAddingToggle   .isOn;
-            IsRemoving  = IsRemovingToggle .isOn;
-            IsPillaging = IsPillagingToggle.isOn;
         }
 
         #endregion
