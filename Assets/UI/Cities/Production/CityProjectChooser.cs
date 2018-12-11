@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
@@ -28,6 +29,8 @@ namespace Assets.UI.Cities.Production {
 
         private List<CityProjectRecord> InstantiatedProjectRecords = new List<CityProjectRecord>();
 
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
+
 
 
         private IBuildingProductionValidityLogic              BuildingValidityLogic;
@@ -36,6 +39,9 @@ namespace Assets.UI.Cities.Production {
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
         private IProductionProjectFactory                     ProjectFactory;
         private DiContainer                                   Container;
+        private List<IBuildingTemplate>                       AllBuildingTemplates;
+        private IBuildingFactory                              BuildingFactory;
+        private CitySignals                                   CitySignals;
 
         #endregion
 
@@ -45,7 +51,9 @@ namespace Assets.UI.Cities.Production {
         public void InjectDependencies(IBuildingProductionValidityLogic buildingValidityLogic,
             IUnitProductionValidityLogic unitValidityLogic, ITechCanon techCanon,
             IPossessionRelationship<ICivilization, ICity> cityPossessionCanon,
-            IProductionProjectFactory projectFactory, DiContainer container
+            IProductionProjectFactory projectFactory, DiContainer container,
+            List<IBuildingTemplate> allBuildingTemplates, IBuildingFactory buildingFactory,
+            CitySignals citySignals
         ){
             BuildingValidityLogic = buildingValidityLogic;
             UnitValidityLogic     = unitValidityLogic;
@@ -53,7 +61,24 @@ namespace Assets.UI.Cities.Production {
             CityPossessionCanon   = cityPossessionCanon;
             ProjectFactory        = projectFactory;
             Container             = container;
+            AllBuildingTemplates  = allBuildingTemplates;
+            BuildingFactory       = buildingFactory;
+            CitySignals           = citySignals;
         }
+
+        #region Unity messages
+
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal.Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal  .Subscribe(data => Refresh()));
+        }
+
+        protected override void DoOnDisable() {
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
+        }
+
+        #endregion
 
         #region from CityDisplayBase
 
@@ -69,6 +94,25 @@ namespace Assets.UI.Cities.Production {
 
             var cityOwner = CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay);
 
+            if(DisplayType == CityDisplayType.PlayMode) {
+                AddUnitProjects(cityOwner);
+
+                AddBuildingProjects(
+                    cityOwner, TechCanon.GetResearchedBuildings(cityOwner),
+                    template => ObjectToDisplay.ActiveProject = ProjectFactory.ConstructProject(template)
+                );
+
+            }else if(DisplayType == CityDisplayType.MapEditor) {
+                AddBuildingProjects(
+                    cityOwner, AllBuildingTemplates,
+                    template => BuildingFactory.BuildBuilding(template, ObjectToDisplay)
+                );
+            }
+        }
+
+        #endregion
+
+        private void AddUnitProjects(ICivilization cityOwner) {
             foreach(var unitTemplate in TechCanon.GetResearchedUnits(cityOwner)) {
                 var newRecord = BuildRecord();
 
@@ -82,23 +126,25 @@ namespace Assets.UI.Cities.Production {
 
                 InstantiatedProjectRecords.Add(newRecord);
             }
+        }
 
-            foreach(var buildingTemplate in TechCanon.GetResearchedBuildings(cityOwner)) {
+        private void AddBuildingProjects(
+            ICivilization cityOwner, IEnumerable<IBuildingTemplate> validTemplates,
+            Action<IBuildingTemplate> recordSelectionAction
+        ) {
+            foreach(var buildingTemplate in validTemplates) {
                 var newRecord = BuildRecord();
 
                 newRecord.BuildingTemplate = buildingTemplate;
+
                 newRecord.SelectionButton.interactable = BuildingValidityLogic.IsTemplateValidForCity(buildingTemplate, ObjectToDisplay);
-                newRecord.SelectionButton.onClick.AddListener(
-                    () => ObjectToDisplay.ActiveProject = ProjectFactory.ConstructProject(buildingTemplate)
-                );
+                newRecord.SelectionButton.onClick.AddListener(() => recordSelectionAction(buildingTemplate));
 
                 newRecord.Refresh();
 
                 InstantiatedProjectRecords.Add(newRecord);
             }
         }
-
-        #endregion
 
         private CityProjectRecord BuildRecord() {
             var newRecord = Container.InstantiatePrefabForComponent<CityProjectRecord>(ProjectRecordPrefab);

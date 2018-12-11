@@ -20,7 +20,7 @@ namespace Assets.UI.Cities.ResourceGeneration {
         [SerializeField] private YieldSummaryDisplay NormalYieldDisplay;
         [SerializeField] private YieldSummaryDisplay GreatPersonYieldDisplay;
 
-        private IDisposable DistributionPerformedSubscription;
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
 
 
@@ -42,11 +42,14 @@ namespace Assets.UI.Cities.ResourceGeneration {
         #region from CityDisplayBase
 
         protected override void DoOnEnable() {
-            DistributionPerformedSubscription = CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed);
+            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
+            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal   .Subscribe(data => Refresh()));            
+            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal     .Subscribe(data => Refresh()));
         }
 
         protected override void DoOnDisable() {
-            DistributionPerformedSubscription.Dispose();
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
         }
 
         public override void Refresh() {

@@ -61,6 +61,7 @@ namespace Assets.Simulation.Cities.Territory {
         protected override void DoOnPossessionBroken(IHexCell possession, ICity oldOwner) {
             if(oldOwner != null) {
                 CitySignals.LostCellFromBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(oldOwner, possession));
+                oldOwner.PerformDistribution();
             }
 
             possession.Refresh();
@@ -70,6 +71,7 @@ namespace Assets.Simulation.Cities.Territory {
         protected override void DoOnPossessionEstablished(IHexCell possession, ICity newOwner) {
             if(newOwner != null) {
                 CitySignals.GainedCellToBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(newOwner, possession));
+                newOwner.PerformDistribution();
             }
 
             possession.Refresh();

@@ -23,7 +23,7 @@ namespace Assets.UI.Cities.Buildings {
 
         #region methods
 
-        void Refresh();
+        void Refresh(bool includeDestroyButton);
 
         #endregion
 

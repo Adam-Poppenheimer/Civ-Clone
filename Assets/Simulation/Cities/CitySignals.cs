@@ -49,6 +49,10 @@ namespace Assets.Simulation.Cities {
         public ISubject<Tuple<ICity, IBuilding>> CityGainedBuildingSignal { get; private set; }
         public ISubject<Tuple<ICity, IBuilding>> CityLostBuildingSignal   { get; private set; }
 
+        public ISubject<ICity> PopulationChangedSignal { get; private set; }
+
+        public ISubject<ICity> FoodStockpileChangedSignal { get; private set; }
+
         #endregion
 
         #region constructors
@@ -71,6 +75,10 @@ namespace Assets.Simulation.Cities {
 
             CityGainedBuildingSignal = new Subject<Tuple<ICity, IBuilding>>();
             CityLostBuildingSignal   = new Subject<Tuple<ICity, IBuilding>>();
+
+            PopulationChangedSignal = new Subject<ICity>();
+
+            FoodStockpileChangedSignal = new Subject<ICity>();
         }
 
         #endregion

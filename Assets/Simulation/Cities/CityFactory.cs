@@ -92,8 +92,6 @@ namespace Assets.Simulation.Cities {
 
             var newCity = newCityGameObject.GetComponent<City>();
 
-            newCity.Population = 1;
-
             CityLocationCanon.ChangeOwnerOfPossession(newCity, location);
 
             location.SuppressSlot = true;
@@ -122,7 +120,8 @@ namespace Assets.Simulation.Cities {
             }
 
             newCity.YieldFocus = YieldFocusType.TotalYield;
-            newCity.PerformDistribution();
+            
+            newCity.Population = 1;
 
             allCities.Add(newCity);
 

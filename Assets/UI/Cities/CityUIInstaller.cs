@@ -18,9 +18,7 @@ namespace Assets.UI.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject SlotDisplayPrefab;
         [SerializeField] private GameObject BuildingDisplayPrefab;
-        [SerializeField] private GameObject CityDisplayRoot;
 
         [SerializeField] private CitySummaryDisplay CitySummaryPrefab;
         [SerializeField] private RectTransform      CitySummaryContainer;

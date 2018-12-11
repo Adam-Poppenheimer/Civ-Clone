@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.Distribution;
@@ -19,7 +20,13 @@ namespace Assets.UI.Cities.Distribution {
 
         [SerializeField] private Text UnemployedPeopleField;
 
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
+
+
+
+
         private IUnemploymentLogic UnemploymentLogic;
+        private CitySignals        CitySignals;
 
         #endregion
 
@@ -27,20 +34,28 @@ namespace Assets.UI.Cities.Distribution {
 
         [Inject]
         public void InjectDependencies(
-            IUnemploymentLogic unemploymentLogic,
-            [InjectOptional(Id = "Unemployed People Field")] Text unemployedPeopleField
+            IUnemploymentLogic unemploymentLogic, CitySignals citySignals
         ) {
             UnemploymentLogic = unemploymentLogic;
-
-            UnemployedPeopleField = unemployedPeopleField != null ? unemployedPeopleField : UnemployedPeopleField;
+            CitySignals       = citySignals;
         }
 
         #region from CityDisplayBase
+
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(data => Refresh()));
+        }
+
+        protected override void DoOnDisable() {
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
+        }
 
         public override void Refresh() {
             if(ObjectToDisplay == null) {
                 return;
             }
+
             UnemployedPeopleField.text = UnemploymentLogic.GetUnemployedPeopleInCity(ObjectToDisplay).ToString();
         }
 

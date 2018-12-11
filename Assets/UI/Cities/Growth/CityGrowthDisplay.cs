@@ -7,8 +7,10 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation;
+using Assets.Simulation.Cities;
 using Assets.Simulation.Cities.ResourceGeneration;
 using Assets.Simulation.Cities.Growth;
 
@@ -18,74 +20,51 @@ namespace Assets.UI.Cities.Growth {
 
         #region instance fields and properties
 
-        [InjectOptional(Id = "Current Population Field")]
-        public Text CurrentPopulationField {
-            get { return _currentPopulationField; }
-            set {
-                if(value != null) {
-                    _currentPopulationField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _currentPopulationField;
+        [SerializeField] private Text       CurrentPopulationTextField;
+        [SerializeField] private InputField CurrentPopulationInputField;
 
-        [InjectOptional(Id = "Current Food Stockpile Field")]
-        public Text CurrentFoodStockpileField {
-            get { return _currentFoodStockpileField; }
-            set {
-                if(value != null) {
-                    _currentFoodStockpileField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _currentFoodStockpileField;
+        [SerializeField] private Text       CurrentFoodStockpileTextField;
+        [SerializeField] private InputField CurrentFoodStockpileInputField;
 
-        [InjectOptional(Id = "Food Until Next Growth Field")]
-        public Text FoodUntilNextGrowthField {
-            get { return _foodUntilNextGrowthField; }
-            set {
-                if(value != null) {
-                    _foodUntilNextGrowthField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _foodUntilNextGrowthField;
+        [SerializeField] private Text NetGainField;
 
-        [InjectOptional(Id = "Change Status Field")]
-        public Text ChangeStatusField {
-            get { return _changeStatusField; }
-            set {
-                if(value != null) {
-                    _changeStatusField = value;
-                }
-            }
-        }
-        [SerializeField] private Text _changeStatusField;
+        [SerializeField] private Text FoodUntilNextGrowthField;
+        [SerializeField] private Text ChangeStatusField;
 
-        [InjectOptional(Id = "Growth Slider")]
-        public Slider GrowthSlider {
-            get { return _growthSlider; }
-            set {
-                if(value != null) {
-                    _growthSlider = value;
-                }
-            }
-        }
-        [SerializeField] private Slider _growthSlider;
+        [SerializeField] private Slider GrowthSlider;
+
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
+
+
+
+
 
         private IPopulationGrowthLogic GrowthLogic;
-
-        private IYieldGenerationLogic GenerationLogic;
+        private IYieldGenerationLogic  GenerationLogic;
+        private CitySignals            CitySignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IPopulationGrowthLogic growthLogic, IYieldGenerationLogic generationLogic) {
-            GrowthLogic = growthLogic;
+        public void InjectDependencies(
+            IPopulationGrowthLogic growthLogic, IYieldGenerationLogic generationLogic,
+            CitySignals citySignals
+        ) {
+            GrowthLogic     = growthLogic;
             GenerationLogic = generationLogic;
+            CitySignals     = citySignals;
         }
+
+        #region Unity messages
+
+        private void Awake() {
+            CurrentPopulationInputField   .onEndEdit.AddListener(OnPopulationInputFieldChanged);
+            CurrentFoodStockpileInputField.onEndEdit.AddListener(OnFoodStockpileInputFieldChanged);
+        }
+
+        #endregion
 
         #region from CityDisplayBase
 
@@ -100,14 +79,46 @@ namespace Assets.UI.Cities.Growth {
             );
         }
 
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals.PopulationChangedSignal    .Subscribe(city => Refresh()));
+            SignalSubscriptions.Add(CitySignals.FoodStockpileChangedSignal .Subscribe(city => Refresh()));
+            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal   .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal     .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(city => Refresh()));
+        }
+
+        protected override void DoOnDisable() {
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
+        }
+
         #endregion
 
         private void DisplayGrowthInformation(
             int currentPopulation, float currentFoodStockpile, int foodUntilNextGrowth
         ) {
-            CurrentPopulationField.text = currentPopulation.ToString();
-            if(CurrentFoodStockpileField != null) { CurrentFoodStockpileField.text = Mathf.RoundToInt(currentFoodStockpile).ToString(); }
-            if(FoodUntilNextGrowthField  != null) { FoodUntilNextGrowthField .text = foodUntilNextGrowth.ToString(); }
+            if(DisplayType == CityDisplayType.PlayMode) {
+                CurrentPopulationTextField   .gameObject.SetActive(true);
+                CurrentFoodStockpileTextField.gameObject.SetActive(true);
+
+                CurrentPopulationInputField  .gameObject.SetActive(false);
+                CurrentFoodStockpileInputField.gameObject.SetActive(false);
+
+                CurrentPopulationTextField   .text = currentPopulation.ToString();
+                CurrentFoodStockpileTextField.text = Mathf.RoundToInt(currentFoodStockpile).ToString();
+
+            }else if(DisplayType == CityDisplayType.MapEditor) {
+                CurrentPopulationTextField   .gameObject.SetActive(false);
+                CurrentFoodStockpileTextField.gameObject.SetActive(false);
+
+                CurrentPopulationInputField   .gameObject.SetActive(true);
+                CurrentFoodStockpileInputField.gameObject.SetActive(true);
+
+                CurrentPopulationInputField   .text = currentPopulation.ToString();
+                CurrentFoodStockpileInputField.text = Mathf.RoundToInt(currentFoodStockpile).ToString();
+            }
+            
+            FoodUntilNextGrowthField.text = foodUntilNextGrowth.ToString();
 
             GrowthSlider.minValue = 0;
             GrowthSlider.maxValue = foodUntilNextGrowth;
@@ -119,15 +130,37 @@ namespace Assets.UI.Cities.Growth {
 
             float foodGain = GrowthLogic.GetFoodStockpileAdditionFromIncome(ObjectToDisplay, netIncome);
 
+            
+
             if(netIncome > 0) {
                 int turnsUntilGrowth = Mathf.CeilToInt((foodUntilNextGrowth - currentFoodStockpile) / (float)foodGain);
-
                 ChangeStatusField.text = string.Format("{0} turns until growth", turnsUntilGrowth);
+                NetGainField.text = string.Format("(+{0})", foodGain);
+
             }else if(netIncome == 0) {
-                ChangeStatusField.text = "Stagnation";
+                ChangeStatusField.text = "Stagnation";                
+                NetGainField.text = "(-)";
+
             }else {
                 int turnsUntilStarvation = Mathf.CeilToInt(currentFoodStockpile / -foodGain);
                 ChangeStatusField.text = string.Format("{0} turns until starvation", turnsUntilStarvation);
+                NetGainField.text = string.Format("({0})", netIncome);
+            }
+        }
+
+        private void OnPopulationInputFieldChanged(string text) {
+            int newPopulation;
+
+            if(int.TryParse(text, out newPopulation)) {
+                ObjectToDisplay.Population = newPopulation;
+            }
+        }
+
+        private void OnFoodStockpileInputFieldChanged(string text) {
+            float newFood;
+
+            if(float.TryParse(text, out newFood)) {
+                ObjectToDisplay.FoodStockpile = newFood;
             }
         }
 

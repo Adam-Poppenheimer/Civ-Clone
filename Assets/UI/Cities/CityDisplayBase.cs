@@ -17,6 +17,12 @@ namespace Assets.UI.Cities {
 
     public abstract class CityDisplayBase : DisplayBase<ICity> {
 
+        #region instance fields and properties
+
+        public CityDisplayType DisplayType { get; set; }
+
+        #endregion
+
         #region instance methods
 
         #region Unity messages

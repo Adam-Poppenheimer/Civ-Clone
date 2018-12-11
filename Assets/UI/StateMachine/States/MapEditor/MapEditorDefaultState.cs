@@ -43,7 +43,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Brain.EnableCameraMovement();
             Brain.EnableCellHovering();
-            Brain.ListenForTransition(TransitionType.UnitSelected);
+            Brain.ListenForTransitions(TransitionType.UnitSelected, TransitionType.CitySelected);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

@@ -6,7 +6,6 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
-
 using UniRx;
 
 using Assets.Simulation;
@@ -23,18 +22,28 @@ namespace Assets.UI.Cities.Buildings {
 
         private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
 
-        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
-        private BuildingDisplayFactory DisplayFactory;
+
+
+
+
+        private IPossessionRelationship<ICity, IBuilding> PossessionCanon;
+        private BuildingDisplayFactory                    DisplayFactory;
+        private CitySignals                               CitySignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IPossessionRelationship<ICity, IBuilding> possessionCanon, BuildingDisplayFactory displayFactory) {
+        public void InjectDependencies(
+            IPossessionRelationship<ICity, IBuilding> possessionCanon,
+            BuildingDisplayFactory displayFactory, CitySignals citySignals
+        ) {
             PossessionCanon = possessionCanon;
-            DisplayFactory = displayFactory;
+            DisplayFactory  = displayFactory;
+            CitySignals     = citySignals;
         }
 
         #region from CityDisplayBase
@@ -43,7 +52,19 @@ namespace Assets.UI.Cities.Buildings {
             if(ObjectToDisplay == null) {
                 return;
             }
+
             DisplayBuildings(PossessionCanon.GetPossessionsOfOwner(ObjectToDisplay));
+        }
+
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal.Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal  .Subscribe(data => Refresh()));
+        }
+
+        protected override void DoOnDisable() {
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+
+            SignalSubscriptions.Clear();
         }
 
         #endregion
@@ -62,7 +83,7 @@ namespace Assets.UI.Cities.Buildings {
                 buildingDisplay.BuildingToDisplay = building;                
 
                 buildingDisplay.gameObject.SetActive(true);
-                buildingDisplay.Refresh();
+                buildingDisplay.Refresh(DisplayType == CityDisplayType.MapEditor);
             }
         }
 

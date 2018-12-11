@@ -36,23 +36,37 @@ namespace Assets.Simulation.Cities {
         /// <inheritdoc/>
         public int Population {
             get { return _population; }
-            set { _population = value; }
+            set {
+                if(_population != value) {
+                    _population = value;
+
+                    PerformDistribution();
+
+                    Signals.PopulationChangedSignal.OnNext(this);
+                }
+            }
         }
-        [SerializeField] private int _population;
+        private int _population;
 
         /// <inheritdoc/>
         public float FoodStockpile {
             get { return _foodStockpile; }
-            set { _foodStockpile = value; }
+            set {
+                if(_foodStockpile != value) {
+                    _foodStockpile = value;
+
+                    Signals.FoodStockpileChangedSignal.OnNext(this);
+                }
+            }
         }
-        [SerializeField] private float _foodStockpile;
+        private float _foodStockpile;
 
         /// <inheritdoc/>
         public int CultureStockpile {
             get { return _cultureStockpile; }
             set { _cultureStockpile = value; }
         }
-        [SerializeField] private int _cultureStockpile;
+        private int _cultureStockpile;
 
         /// <inheritdoc/>
         public YieldSummary LastIncome { get; private set; }

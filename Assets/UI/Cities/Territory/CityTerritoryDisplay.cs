@@ -5,12 +5,14 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using UniRx;
 
 using Assets.Simulation;
 using Assets.Simulation.Cities;
+using Assets.Simulation.Cities.Territory;
 using Assets.Simulation.HexMap;
 
 namespace Assets.UI.Cities.Territory {
@@ -24,12 +26,17 @@ namespace Assets.UI.Cities.Territory {
 
         private List<WorkerSlotDisplay> InstantiatedDisplays = new List<WorkerSlotDisplay>();
 
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
+
 
 
 
         private IPossessionRelationship<ICity, IHexCell> PossessionCanon;
-        
-        private DiContainer Container;
+        private CitySignals                              CitySignals;
+        private HexCellSignals                           HexCellSignals;
+        private DiContainer                              Container;
+        private IBorderExpansionLogic                    BorderExpansionLogic;
+        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
 
         #endregion
 
@@ -37,16 +44,29 @@ namespace Assets.UI.Cities.Territory {
 
         [Inject]
         public void InjectDependencies(
-            IPossessionRelationship<ICity, IHexCell> possessionCanon, CitySignals signals,
-            DiContainer container
+            IPossessionRelationship<ICity, IHexCell> possessionCanon, CitySignals citySignals,
+            HexCellSignals hexCellSignals, DiContainer container, IBorderExpansionLogic borderExpansionLogic,
+            IPossessionRelationship<ICity, IHexCell> cellPossessionCanon
         ){
-            PossessionCanon = possessionCanon;
-            Container       = container;
-            
-            signals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed);
+            PossessionCanon      = possessionCanon;
+            CitySignals          = citySignals;
+            HexCellSignals       = hexCellSignals;
+            Container            = container;
+            BorderExpansionLogic = borderExpansionLogic;
+            CellPossessionCanon  = cellPossessionCanon;
         }
 
         #region from CityDisplayBase
+
+        protected override void DoOnEnable() {
+            SignalSubscriptions.Add(CitySignals   .DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
+            SignalSubscriptions.Add(HexCellSignals.ClickedSignal              .Subscribe(OnCellClicked));
+        }
+
+        protected override void DoOnDisable() {
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
+        }
 
         public override void Refresh() {
             if(ObjectToDisplay == null) {
@@ -81,6 +101,23 @@ namespace Assets.UI.Cities.Territory {
         private void OnDistributionPerformed(ICity city) {
             if(city == ObjectToDisplay) {
                 Refresh();
+            }
+        }
+
+        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+            if(DisplayType != CityDisplayType.MapEditor) {
+                return;
+            }
+
+            var cell = data.Item1;
+
+            if(CellPossessionCanon.GetOwnerOfPossession(cell) == ObjectToDisplay) {
+                if(CellPossessionCanon.CanChangeOwnerOfPossession(cell, null)) {
+                    CellPossessionCanon.ChangeOwnerOfPossession(cell, null);
+                }
+
+            }else if(BorderExpansionLogic.IsCellAvailable(ObjectToDisplay, cell)) {
+                CellPossessionCanon.ChangeOwnerOfPossession(cell, ObjectToDisplay);
             }
         }
 

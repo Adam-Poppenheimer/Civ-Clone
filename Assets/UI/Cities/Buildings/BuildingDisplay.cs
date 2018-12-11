@@ -29,23 +29,28 @@ namespace Assets.UI.Cities.Buildings {
         [SerializeField] private Transform SlotDisplayContainer;
         [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
 
+        [SerializeField] private Button DestroyButton;
+
         private List<WorkerSlotDisplay> InstantiatedSlotDisplays = new List<WorkerSlotDisplay>();
 
 
 
 
-        private DiContainer Container;
-
+        private DiContainer        Container;
         private DescriptionTooltip Tooltip;
+        private IBuildingFactory   BuildingFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(DiContainer container, DescriptionTooltip tooltip){
-            Container      = container;
-            Tooltip        = tooltip;
+        public void InjectDependencies(
+            DiContainer container, DescriptionTooltip tooltip, IBuildingFactory buildingFactory
+        ){
+            Container       = container;
+            Tooltip         = tooltip;
+            BuildingFactory = buildingFactory;
         }
 
         #region EventSystem implementations
@@ -65,7 +70,7 @@ namespace Assets.UI.Cities.Buildings {
 
         #region from IBuildingDisplay
 
-        public void Refresh() {
+        public void Refresh(bool includeDestroyButton) {
             foreach(var slotDisplay in InstantiatedSlotDisplays) {
                 Destroy(slotDisplay.gameObject);
             }
@@ -83,6 +88,7 @@ namespace Assets.UI.Cities.Buildings {
                     newSlotDisplay.SlotToDisplay = slot;                    
 
                     newSlotDisplay.transform.SetParent(SlotDisplayContainer, false);
+                    newSlotDisplay.transform.SetAsFirstSibling();
                     newSlotDisplay.gameObject.SetActive(true);
 
                     InstantiatedSlotDisplays.Add(newSlotDisplay);
@@ -90,9 +96,15 @@ namespace Assets.UI.Cities.Buildings {
             }else {
                 SlotDisplayContainer.gameObject.SetActive(false);
             }
+
+            DestroyButton.gameObject.SetActive(includeDestroyButton);
         }
 
         #endregion
+
+        public void BuildingDestructionRequested() {
+            BuildingFactory.DestroyBuilding(BuildingToDisplay);
+        }
 
         #endregion
 

@@ -6,12 +6,13 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.UI.Cities;
 
-namespace Assets.UI.StateMachine.States.PlayMode {
+namespace Assets.UI.StateMachine.States.MapEditor {
 
-    public class CitySelectedState : StateMachineBehaviour {
+    public class CityEditingState : StateMachineBehaviour {
 
         #region instance fields and properties
 
@@ -23,7 +24,9 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(List<CityDisplayBase> displaysToManage, UIStateMachineBrain brain){
+        public void InjectDependencies(
+            List<CityDisplayBase> displaysToManage, UIStateMachineBrain brain
+        ) {
             DisplaysToManage = displaysToManage;
             Brain            = brain;
         }
@@ -34,8 +37,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             foreach(var display in DisplaysToManage) {
                 display.gameObject.SetActive(true);
                 display.ObjectToDisplay = Brain.LastCityClicked;
-                display.DisplayType = CityDisplayType.PlayMode;
-                display.Refresh();               
+                display.DisplayType = CityDisplayType.MapEditor;
+                display.Refresh();
             }
 
             Brain.ClearListeners();
