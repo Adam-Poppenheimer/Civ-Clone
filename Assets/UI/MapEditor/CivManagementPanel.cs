@@ -9,6 +9,7 @@ using UnityEngine;
 using UnityEngine.UI;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Civilizations;
 
@@ -24,6 +25,8 @@ namespace Assets.UI.MapEditor {
         [SerializeField] private RectTransform       RecordContainer;
 
         private List<CivManagementRecord> InstantiatedRecords = new List<CivManagementRecord>();
+
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
         private ICivilizationTemplate SelectedTemplate;
 
@@ -53,10 +56,15 @@ namespace Assets.UI.MapEditor {
 
         private void OnEnable() {
             Refresh();
+
+            SignalSubscriptions.Add(CivSignals.CivBeingDestroyed.Subscribe(civ => Refresh()));
         }
 
         private void OnDisable() {
             Clear();
+
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
+            SignalSubscriptions.Clear();
         }
 
         #endregion
@@ -92,7 +100,8 @@ namespace Assets.UI.MapEditor {
                 newRecord.NameField.text = civilization.Template.Name;
 
                 var cachedCiv = civilization;
-                newRecord.EditButton.onClick.AddListener(() => CivSignals.CivSelected.OnNext(cachedCiv));
+                newRecord.EditButton   .onClick.AddListener(() => CivSignals.CivSelected.OnNext(cachedCiv));
+                newRecord.DestroyButton.onClick.AddListener(() => DestroyCiv(cachedCiv));
 
                 InstantiatedRecords.Add(newRecord);
             }
@@ -112,9 +121,19 @@ namespace Assets.UI.MapEditor {
 
             CivTemplateDropdown.AddOptions(templateOptions);
 
-            CivTemplateDropdown.value = 0;
+            if(templateOptions.Count > 0) {
+                CivTemplateDropdown.value = 0;
 
-            UpdateSelectedCivTemplate(0);
+                UpdateSelectedCivTemplate(0);
+
+                CreateCivilizationButton.interactable = true;
+            }else {
+                CreateCivilizationButton.interactable = false;
+            }
+        }
+
+        private void DestroyCiv(ICivilization civ) {
+            civ.Destroy();
         }
 
         #endregion

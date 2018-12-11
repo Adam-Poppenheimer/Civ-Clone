@@ -16,6 +16,7 @@ namespace Assets.UI.MapEditor {
 
         public Text   NameField;
         public Button EditButton;
+        public Button DestroyButton;
 
         #endregion
 
