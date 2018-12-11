@@ -22,7 +22,6 @@ namespace Assets.Tests.Simulation.Cities {
         private Mock<IHexGrid>                                 MockHexGrid;
         private Mock<ICityFactory>                             MockCityFactory;
         private Mock<ICityConfig>                              MockConfig;
-        private Mock<IRiverCanon>                              MockRiverCanon;
         private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
 
         private List<ICity> AllCities = new List<ICity>();
@@ -41,7 +40,6 @@ namespace Assets.Tests.Simulation.Cities {
             MockHexGrid           = new Mock<IHexGrid>();
             MockCityFactory       = new Mock<ICityFactory>();
             MockConfig            = new Mock<ICityConfig>();
-            MockRiverCanon        = new Mock<IRiverCanon>();
             MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(AllCities.AsReadOnly());
@@ -50,7 +48,6 @@ namespace Assets.Tests.Simulation.Cities {
             Container.Bind<IHexGrid>                                ().FromInstance(MockHexGrid          .Object);
             Container.Bind<ICityFactory>                            ().FromInstance(MockCityFactory      .Object);
             Container.Bind<ICityConfig>                             ().FromInstance(MockConfig           .Object);
-            Container.Bind<IRiverCanon>                             ().FromInstance(MockRiverCanon       .Object);
             Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
 
             Container.Bind<CityValidityLogic>().AsSingle();
@@ -118,41 +115,39 @@ namespace Assets.Tests.Simulation.Cities {
                 "IsCellValidForCity returns false for a cell that should be valid");
         }
 
-        [Test(Description = "IsCellValidForCity should return false on any cell that " +
-            "has a river or is underwater")]
-        public void IsCellValidForCity_ConsidersRiversAndWater() {
-            var underwaterCell        = BuildCell(null, true, false);
-            var riveredCell           = BuildCell(null, false, true);
-            var underwaterRiveredCell = BuildCell(null, true, true);
+        public void IsCellValidForCity_FalseIfCellIsWater() {
+            var waterCell = BuildCell(null, true);
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
 
-            Assert.IsFalse(validityLogic.IsCellValidForCity(underwaterCell),
-                "An underwater cell is incorrectly considered valid for city placement");
-
-            Assert.IsFalse(validityLogic.IsCellValidForCity(riveredCell),
-                "A rivered cell is incorrectly considered valid for city placement");
-
-            Assert.IsFalse(validityLogic.IsCellValidForCity(underwaterRiveredCell),
-                "An underwater rivered cell is incorrectly considered valid for city placement");
+            Assert.IsFalse(validityLogic.IsCellValidForCity(waterCell));
         }
 
 
         [Test]
-        public void IsCellValidFOrCity_FalseIfCellFeatureNotNone() {
+        public void IsCellValidForCity_FalseIfCellFeatureOasis() {
             var cell = BuildCell(null, feature: CellFeature.Oasis);
 
             var validityLogic = Container.Resolve<CityValidityLogic>();
 
             Assert.IsFalse(validityLogic.IsCellValidForCity(cell));
         }
+
+        [Test]
+        public void IsCellValidForCity_FalseIfCellFeatureRuins() {
+            var cell = BuildCell(null, feature: CellFeature.CityRuins);
+
+            var validityLogic = Container.Resolve<CityValidityLogic>();
+
+            Assert.IsFalse(validityLogic.IsCellValidForCity(cell));
+        }
+
         #endregion
 
         #region utilities
 
         private IHexCell BuildCell(
-            ICity owner, bool isUnderwater = false, bool hasRiver = false,
-            CellFeature feature = CellFeature.None
+            ICity owner, bool isUnderwater = false, CellFeature feature = CellFeature.None
         ) {
             var mockCell = new Mock<IHexCell>();
 
@@ -160,8 +155,6 @@ namespace Assets.Tests.Simulation.Cities {
             mockCell.Setup(cell => cell.Feature).Returns(feature);
 
             MockPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(mockCell.Object)).Returns(owner);
-
-            MockRiverCanon.Setup(canon => canon.HasRiver(mockCell.Object)).Returns(hasRiver);
 
             return mockCell.Object;
         }

@@ -21,40 +21,25 @@ namespace Assets.Simulation.Cities {
         #region instance fields and properties
 
         private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
-
-        private IHexGrid HexGrid;
-
-        private ICityFactory CityFactory;
-
-        private ICityConfig Config;
-
-        private IRiverCanon RiverCanon;
-
+        private IHexGrid                                 HexGrid;
+        private ICityFactory                             CityFactory;
+        private ICityConfig                              Config;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
         #region constructors
 
-        /// <summary>
-        /// The standard constructor for a CityValidityLogic object.
-        /// </summary>
-        /// <param name="tilePossessionCanon"></param>
-        /// <param name="hexGrid"></param>
-        /// <param name="cityFactory"></param>
-        /// <param name="config"></param>
-        /// <param name="riverCanon"></param>
         [Inject]
         public CityValidityLogic(
-            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon, IHexGrid hexGrid,
-            ICityFactory cityFactory, ICityConfig config, IRiverCanon riverCanon,
+            IPossessionRelationship<ICity, IHexCell> tilePossessionCanon,
+             IHexGrid hexGrid, ICityFactory cityFactory, ICityConfig config,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon
         ){
             CellPossessionCanon = tilePossessionCanon;
             HexGrid             = hexGrid;
             CityFactory         = cityFactory;
             Config              = config;
-            RiverCanon          = riverCanon;
             CityLocationCanon   = cityLocationCanon;
         }
 
@@ -64,20 +49,16 @@ namespace Assets.Simulation.Cities {
 
         #region from ICityValidityLogic
 
-        /// <inheritdoc/>
-        /// <remarks>
-        /// Check CityValidityLogicTests to learn exactly what constitutes a valid city placement.
-        /// </remarks>
         public bool IsCellValidForCity(IHexCell cell) {
             if(CellPossessionCanon.GetOwnerOfPossession(cell) != null) {
                 return false;
             }
 
-            if(cell.Terrain.IsWater() || RiverCanon.HasRiver(cell)) {
+            if(cell.Terrain.IsWater()) {
                 return false;
             }
 
-            if(cell.Feature == CellFeature.Oasis) {
+            if(cell.Feature != CellFeature.None) {
                 return false;
             }
 
