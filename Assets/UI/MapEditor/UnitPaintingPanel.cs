@@ -75,7 +75,7 @@ namespace Assets.UI.MapEditor {
             UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
             CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
-            IsAddingToggle.onValueChanged.AddListener(isOn => IsAdding = isOn);
+            IsAddingToggle  .onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);
         }
 
@@ -132,6 +132,9 @@ namespace Assets.UI.MapEditor {
 
                 if(recordToggle.isOn) {
                     ActiveTemplate = unitTemplate;
+
+                }else if(ActiveTemplate == unitTemplate) {
+                    recordToggle.isOn = true;
                 }
 
                 InstantiatedRecords.Add(newRecord);
