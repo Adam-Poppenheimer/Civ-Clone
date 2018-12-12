@@ -315,7 +315,10 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(1, dataLikeCellThree.Count(), "Unexpected number of data representing CellThree");
         }
 
-        [Test]
+        [Test(Description =
+            "River data should only be stored along the NE, E, and SE directions of the cell. " +
+            "Other directions will be covered by the cell's neighbors."
+        )]
         public void ComposeCells_RiverDataRecorded() {
             var cellOne = BuildHexCell(new HexCoordinates(0, 0));
 
@@ -333,7 +336,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.ComposeCells(mapData);
 
             CollectionAssert.AreEqual(
-                new List<bool>() { false, true, true, false, true, false },
+                new List<bool>() { false, true, true, false, false, false },
                 mapData.HexCells[0].HasRiverAtEdge,
                 "HexCells[0].HasRiverAtEdge not populated as expected"
             );
@@ -346,11 +349,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             Assert.AreEqual(
                 RiverFlow.Counterclockwise, mapData.HexCells[0].DirectionOfRiverAtEdge[2],
                 "Unexpected flow for river along HexDirection.SE"
-            );
-
-            Assert.AreEqual(
-                RiverFlow.Counterclockwise, mapData.HexCells[0].DirectionOfRiverAtEdge[4],
-                "Unexpected flow for river along HexDirection.W"
             );
         }
 
@@ -613,12 +611,23 @@ namespace Assets.Tests.Simulation.MapManagement {
                 }
             };
 
+            MockRiverCanon.Setup(canon => canon.CanAddRiverToCell(It.IsAny<IHexCell>(), HexDirection.NE, RiverFlow.Counterclockwise)).Returns(true);
+
+            MockRiverCanon.SetupSequence(canon => canon.CanAddRiverToCell(It.IsAny<IHexCell>(), HexDirection.SE, RiverFlow.Clockwise))
+                          .Returns(false)
+                          .Returns(true);
+
             var composer = Container.Resolve<HexCellComposer>();
 
             composer.DecomposeCells(mapData);
 
             var cellOne = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(0, 0))).First();
             var cellTwo = AllCells.Where(cell => cell.Coordinates.Equals(new HexCoordinates(1, 1))).First();
+
+            MockRiverCanon.Verify(
+                canon => canon.AddRiverToCell(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<RiverFlow>()),
+                Times.Exactly(3), "Unexpected number of calls to RiverCanon.AddRiverToCell"
+            );
 
             MockRiverCanon.Verify(
                 canon => canon.AddRiverToCell(cellOne, HexDirection.NE, RiverFlow.Counterclockwise),
@@ -633,11 +642,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockRiverCanon.Verify(
                 canon => canon.AddRiverToCell(cellTwo, HexDirection.SE, RiverFlow.Clockwise),
                 Times.Once, "River not added to cellTwo's southeastern edge as expected"
-            );
-
-            MockRiverCanon.Verify(
-                canon => canon.AddRiverToCell(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<RiverFlow>()),
-                Times.Exactly(3), "Unexpected number of calls to RiverCanon.AddRiverToCell"
             );
         }
 

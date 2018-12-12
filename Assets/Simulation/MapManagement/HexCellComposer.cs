@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using UnityEngine;
+
 using Zenject;
 
 using Assets.Simulation.HexMap;
@@ -12,6 +14,14 @@ using UnityCustomUtilities.Extensions;
 namespace Assets.Simulation.MapManagement {
 
     public class HexCellComposer : IHexCellComposer {
+
+        #region static fields and properties
+
+        private static HexDirection[] RiverDirections = new HexDirection[] {
+            HexDirection.NE, HexDirection.E, HexDirection.SE
+        };
+
+        #endregion
 
         #region instance fields and properties
 
@@ -61,7 +71,12 @@ namespace Assets.Simulation.MapManagement {
                     DirectionOfRiverAtEdge = new List<RiverFlow>(new RiverFlow[6])
                 };
 
-                foreach(var edgeWithRiver in RiverCanon.GetEdgesWithRivers(cell)) {
+                //We only need to compose rivers on three sides of the cell.
+                //The other three will be handled by the cell's neighbors.
+                //It's guaranteed to have a neighbor in any rivered direction
+                //because rivers cannot be placed along an edge without two
+                //living neighbors.
+                foreach(var edgeWithRiver in RiverCanon.GetEdgesWithRivers(cell).Intersect(RiverDirections)) {
                     newCellData.HasRiverAtEdge[(int)edgeWithRiver] = true;
 
                     newCellData.DirectionOfRiverAtEdge[(int)edgeWithRiver]
@@ -86,12 +101,40 @@ namespace Assets.Simulation.MapManagement {
 
                 cellToModify.SuppressSlot = cellData.SuppressSlot;
 
+                //Converging rivers (where two rivers combine and flow into a third) have
+                //order-sensitive creation, since attempting to place both of the inflow
+                //rivers before the outflow river has been created is invalid. To account for
+                //this, we delay the creation of any invalid rivers (since those represent
+                //an inflow being attached to another inflow) until after all other rivers
+                //have been placed.  
+                var delayedRivers = new List<Tuple<IHexCell, HexDirection, RiverFlow>>();
+
                 for(int i = 0; i < 6; i++) {
                     var edge = (HexDirection)i;
 
                     if(cellData.HasRiverAtEdge[i] && !RiverCanon.HasRiverAlongEdge(cellToModify, edge)) {
-                        RiverCanon.AddRiverToCell(cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]);
+
+                        if(RiverCanon.CanAddRiverToCell(cellToModify, edge, cellData.DirectionOfRiverAtEdge[i])) {
+                            RiverCanon.AddRiverToCell(cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]);
+
+                        }else {
+                            delayedRivers.Add(new Tuple<IHexCell, HexDirection, RiverFlow>(
+                                cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]
+                            ));
+                        }
+
                     }
+                }
+
+                foreach(var river in delayedRivers) {
+                    if(RiverCanon.CanAddRiverToCell(river.Item1, river.Item2, river.Item3)) {
+                        RiverCanon.AddRiverToCell(river.Item1, river.Item2, river.Item3);
+                    }else {
+                        throw new InvalidOperationException(string.Format(
+                            "Failed to decompose river ({0}, {1}, {2})",
+                            river.Item1, river.Item2, river.Item3
+                        ));
+                    }                    
                 }
 
                 cellToModify.WorkerSlot.IsOccupied = cellData.IsSlotOccupied;
