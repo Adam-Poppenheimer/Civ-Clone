@@ -61,10 +61,11 @@ namespace Assets.Simulation.MapManagement {
 
         #region from ICityComposer
 
-        public void ClearRuntime() {
+        public void ClearRuntime(bool immediateMode) {
             foreach(var city in new List<ICity>(CityFactory.AllCities)) {
                 CityLocationCanon.ChangeOwnerOfPossession(city, null);
-                city.Destroy();
+
+                city.Destroy(immediateMode);
             }
 
             FreeBuildingApplier.Clear();

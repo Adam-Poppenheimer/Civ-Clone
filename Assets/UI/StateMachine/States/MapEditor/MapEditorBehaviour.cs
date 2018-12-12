@@ -81,7 +81,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            MapComposer.ClearRuntime();
+            MapComposer.ClearRuntime(false);
         }
 
         #endregion

@@ -105,7 +105,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var composer = Container.Resolve<CityComposer>();
 
-            composer.ClearRuntime();
+            composer.ClearRuntime(false);
 
             MockCityLocationCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(cityOne, null), Times.Once,
@@ -133,18 +133,18 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var composer = Container.Resolve<CityComposer>();
 
-            composer.ClearRuntime();
+            composer.ClearRuntime(false);
 
-            mockCityOne  .Verify(city => city.Destroy(), Times.Once, "CityOne was not destroyed as expected");
-            mockCityTwo  .Verify(city => city.Destroy(), Times.Once, "CityTwo was not destroyed as expected");
-            mockCityThree.Verify(city => city.Destroy(), Times.Once, "CityThree was not destroyed as expected");
+            mockCityOne  .Verify(city => city.Destroy(false), Times.Once, "CityOne was not destroyed as expected");
+            mockCityTwo  .Verify(city => city.Destroy(false), Times.Once, "CityTwo was not destroyed as expected");
+            mockCityThree.Verify(city => city.Destroy(false), Times.Once, "CityThree was not destroyed as expected");
         }
 
         [Test]
         public void ClearRuntime_FreeBuildingApplierCleared() {
             var composer = Container.Resolve<CityComposer>();
 
-            composer.ClearRuntime();
+            composer.ClearRuntime(false);
 
             MockFreeBuildingApplier.Verify(applier => applier.Clear(), Times.Once);
         }

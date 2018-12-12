@@ -123,7 +123,7 @@ namespace Assets.Simulation.Cities {
         /// </remarks>
         void PerformIncome();
 
-        void Destroy();
+        void Destroy(bool immediateMode = false);
 
         #endregion
 

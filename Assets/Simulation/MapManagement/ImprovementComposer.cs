@@ -38,10 +38,10 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance methods
 
-        public void ClearRuntime() {
+        public void ClearRuntime(bool immediateMode) {
             foreach(var improvement in new List<IImprovement>(ImprovementFactory.AllImprovements)) {
                 ImprovementLocationCanon.ChangeOwnerOfPossession(improvement, null);
-                improvement.Destroy();
+                improvement.Destroy(immediateMode);
             }
         }
 

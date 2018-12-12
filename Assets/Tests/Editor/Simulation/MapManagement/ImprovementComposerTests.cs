@@ -138,7 +138,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var composer = Container.Resolve<ImprovementComposer>();
 
-            composer.ClearRuntime();
+            composer.ClearRuntime(false);
 
             MockImprovementLocationCanon.Verify(
                 canon => canon.ChangeOwnerOfPossession(improvementOne, null), Times.Once,
@@ -166,11 +166,11 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var composer = Container.Resolve<ImprovementComposer>();
 
-            composer.ClearRuntime();
+            composer.ClearRuntime(true);
 
-            mockOne  .Verify(improvement => improvement.Destroy(), Times.Once, "ImprovementOne was not destroyed");
-            mockTwo  .Verify(improvement => improvement.Destroy(), Times.Once, "ImprovementTwo was not destroyed");
-            mockThree.Verify(improvement => improvement.Destroy(), Times.Once, "ImprovementThree was not destroyed");
+            mockOne  .Verify(improvement => improvement.Destroy(true), Times.Once, "ImprovementOne was not destroyed");
+            mockTwo  .Verify(improvement => improvement.Destroy(true), Times.Once, "ImprovementTwo was not destroyed");
+            mockThree.Verify(improvement => improvement.Destroy(true), Times.Once, "ImprovementThree was not destroyed");
         }
 
         [Test]

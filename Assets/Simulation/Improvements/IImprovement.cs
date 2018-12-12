@@ -31,7 +31,7 @@ namespace Assets.Simulation.Improvements {
 
         void Pillage();
 
-        void Destroy();
+        void Destroy(bool immediateMode = false);
 
         #endregion
 

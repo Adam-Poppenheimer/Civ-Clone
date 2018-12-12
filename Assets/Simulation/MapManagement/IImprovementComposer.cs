@@ -6,7 +6,7 @@ namespace Assets.Simulation.MapManagement {
 
         #region methods
 
-        void ClearRuntime();
+        void ClearRuntime(bool immediateMode);
 
         void ComposeImprovements  (SerializableMapData mapData);
         void DecomposeImprovements(SerializableMapData mapData);

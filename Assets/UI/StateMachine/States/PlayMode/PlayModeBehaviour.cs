@@ -78,7 +78,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
                 element.IsActive = false;
             }
 
-            MapComposer.ClearRuntime();
+            MapComposer.ClearRuntime(false);
         }
 
         #endregion

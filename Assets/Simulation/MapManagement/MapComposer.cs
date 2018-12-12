@@ -93,7 +93,7 @@ namespace Assets.Simulation.MapManagement {
         }
 
         private IEnumerator DecomposeDataIntoRuntimeCoroutine(SerializableMapData mapData, Action performAfterDecomposition) {
-            yield return ClearRuntimeCoroutine();
+            yield return ClearRuntimeCoroutine(false);
 
             HexCellComposer.DecomposeCells(mapData);
 
@@ -125,11 +125,11 @@ namespace Assets.Simulation.MapManagement {
             }
         }
 
-        public void ClearRuntime() {
-            CoroutineInvoker.StartCoroutine(ClearRuntimeCoroutine());
+        public void ClearRuntime(bool immediateMode) {
+            CoroutineInvoker.StartCoroutine(ClearRuntimeCoroutine(immediateMode));
         }
 
-        private IEnumerator ClearRuntimeCoroutine() {
+        private IEnumerator ClearRuntimeCoroutine(bool immediateMode) {
             var oldVisibility = VisibilityResponder.UpdateVisibility;
 
             VisibilityResponder.UpdateVisibility = false;
@@ -140,15 +140,15 @@ namespace Assets.Simulation.MapManagement {
                 element.IsActive = false;
             }
 
-            ImprovementComposer .ClearRuntime();
-            CityComposer        .ClearRuntime();
+            ImprovementComposer .ClearRuntime(immediateMode);
+            CityComposer        .ClearRuntime(immediateMode);
             BuildingComposer    .ClearRuntime();
             UnitComposer        .ClearRuntime();
             ResourceComposer    .ClearRuntime();
             DiplomacyComposer   .ClearRuntime();
             CivilizationComposer.ClearRuntime();
 
-            yield return new WaitForEndOfFrame();
+            if(!immediateMode) { yield return new WaitForEndOfFrame(); }
 
             CapitalCitySynchronizer.SetCapitalUpdating(true);
 

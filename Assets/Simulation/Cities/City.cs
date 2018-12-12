@@ -217,8 +217,8 @@ namespace Assets.Simulation.Cities {
             }
         }
 
-        public void Destroy() {
-            if(Application.isPlaying) {
+        public void Destroy(bool immediateMode = false) {
+            if(Application.isPlaying && !immediateMode) {
                 Destroy(gameObject);
             }else {
                 DestroyImmediate(gameObject);

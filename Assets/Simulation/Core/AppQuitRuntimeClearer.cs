@@ -29,7 +29,7 @@ namespace Assets.Simulation.Core {
         #region Unity messages
 
         private void OnApplicationQuit() {
-            MapComposer.ClearRuntime();
+            MapComposer.ClearRuntime(true);
         }
 
         #endregion

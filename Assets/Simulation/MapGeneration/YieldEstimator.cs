@@ -51,7 +51,7 @@ namespace Assets.Simulation.MapGeneration {
                 throw new NotImplementedException();
             }
 
-            public void Destroy() {
+            public void Destroy(bool immediateMode) {
                 throw new NotImplementedException();
             }
 
