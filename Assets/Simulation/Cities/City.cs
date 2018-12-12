@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -93,6 +94,9 @@ namespace Assets.Simulation.Cities {
 
         #endregion
 
+
+
+
         private IPopulationGrowthLogic                   GrowthLogic;
         private IProductionLogic                         ProductionLogic;
         private IYieldGenerationLogic                    YieldGenerationLogic;
@@ -179,6 +183,10 @@ namespace Assets.Simulation.Cities {
 
         /// <inheritdoc/>
         public void PerformDistribution() {
+            if(!isActiveAndEnabled) {
+                return;
+            }
+
             var allSlots = DistributionLogic.GetSlotsAvailableToCity(this);
             var occupiedAndLockedSlots = allSlots.Where(slot => slot.IsOccupied && slot.IsLocked);
 
