@@ -104,8 +104,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             SelectedUnit = Brain.LastUnitClicked;
             Brain.ClearListeners();
 
-            Brain.ListenForTransitions(TransitionType.ReturnViaButton, TransitionType.ReturnViaClick,
-                TransitionType.UnitSelected, TransitionType.CitySelected);
+            Brain.ListenForTransitions(
+                TransitionType.ReturnViaButton,       TransitionType.ReturnViaClick,
+                TransitionType.ActiveCivUnitSelected, TransitionType.CitySelected
+            );
             Brain.EnableCameraMovement();
             Brain.EnableCellHovering();
 

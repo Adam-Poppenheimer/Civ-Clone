@@ -92,7 +92,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             Brain.EnableCellHovering();
 
             Brain.ListenForTransitions(
-                TransitionType.CitySelected, TransitionType.UnitSelected, TransitionType.ToEscapeMenu
+                TransitionType.CitySelected, TransitionType.ActiveCivUnitSelected, TransitionType.ToEscapeMenu
             );
 
             CitySummaryManager.BuildSummaries();

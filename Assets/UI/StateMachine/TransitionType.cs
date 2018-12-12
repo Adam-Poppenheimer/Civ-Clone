@@ -11,10 +11,11 @@ namespace Assets.UI.StateMachine {
         ReturnViaClick,
         ToMapEditor,
         ToPlayMode,
+        UnitSelected,
 
         //PlayMode
         CitySelected,
-        UnitSelected,
+        ActiveCivUnitSelected,
         ToRangedAttack,
         ToEscapeMenu,
         

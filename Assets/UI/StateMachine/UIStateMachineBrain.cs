@@ -62,6 +62,7 @@ namespace Assets.UI.StateMachine {
         private DescriptionTooltip   DescriptionTooltip;
         private CellHoverDisplay     CellHoverDisplay;
         private CivilizationSignals  CivSignals;
+        private UnitSignals          UnitSignals;
 
         #endregion
 
@@ -72,7 +73,7 @@ namespace Assets.UI.StateMachine {
             [Inject(Id = "UI Animator")] Animator animator, CompositeCitySignals compositeCitySignals,
             CompositeUnitSignals compositeUnitSignals, PlayerSignals playerSignals, IGameCamera gameCamera,
             DescriptionTooltip descriptionTooltip, CellHoverDisplay cellHoverDisplay,
-            CivilizationSignals civSignals, CoreSignals coreSignals
+            CivilizationSignals civSignals, CoreSignals coreSignals, UnitSignals unitSignals
         ) {
             Animator             = animator;
             CompositeCitySignals = compositeCitySignals;
@@ -82,6 +83,7 @@ namespace Assets.UI.StateMachine {
             DescriptionTooltip   = descriptionTooltip;
             CellHoverDisplay     = cellHoverDisplay;
             CivSignals           = civSignals;
+            UnitSignals          = unitSignals;
             
             coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
         }
@@ -127,9 +129,12 @@ namespace Assets.UI.StateMachine {
                 CityClickedSubscription = CompositeCitySignals.ActiveCivCityClickedSignal.Subscribe(OnCityClicked);
 
             }else if(type == TransitionType.UnitSelected) {
+                UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
+
+            }else if(type == TransitionType.ActiveCivUnitSelected) {
                 UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);
 
-            }else if(type == TransitionType.ToEscapeMenu) {
+            } else if(type == TransitionType.ToEscapeMenu) {
                 EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
 
             }else if(type == TransitionType.CivSelected) {
