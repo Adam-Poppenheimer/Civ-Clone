@@ -16,17 +16,8 @@ MonoBehaviour:
   _type: 0
   _productionCost: 1
   _maintenance: 0
-  _slotCount: 0
-  _slotYield:
-    Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
-    GreatArtist: 0
-    GreatEngineer: 0
-    GreatMerchant: 0
-    GreatScientist: 0
+  _specialistCount: 3
+  _specialist: {fileID: 11400000, guid: 997b4731f471a5543b8a6abe1815cde5, type: 2}
   _staticYield:
     Food: 0
     Production: 0

@@ -48,9 +48,9 @@ namespace Assets.Simulation.Cities.Buildings {
         /// </summary>
         YieldSummary StaticYield { get; }
 
-        int SlotCount { get; }
+        int SpecialistCount { get; }
 
-        YieldSummary SlotYield { get; }
+        ISpecialistDefinition Specialist { get; }
 
         /// <summary>
         /// The yield modifier the building provides to the civilization of the city it's in.

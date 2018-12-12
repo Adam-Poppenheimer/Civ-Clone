@@ -51,15 +51,15 @@ namespace Assets.Simulation.Cities.Buildings {
         }
         [SerializeField] private int _maintenance;
 
-        public int SlotCount {
-            get { return _slotCount; }
+        public int SpecialistCount {
+            get { return _specialistCount; }
         }
-        [SerializeField] private int _slotCount;
+        [SerializeField] private int _specialistCount;
         
-        public YieldSummary SlotYield {
-            get { return _slotYield; }
+        public ISpecialistDefinition Specialist {
+            get { return _specialist; }
         }
-        [SerializeField] private YieldSummary _slotYield;
+        [SerializeField] private SpecialistDefinition _specialist;
 
         /// <inheritdoc/>
         public YieldSummary StaticYield {

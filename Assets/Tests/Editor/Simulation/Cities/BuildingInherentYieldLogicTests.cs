@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             public YieldSummary StaticYield = YieldSummary.Empty;
 
-            public YieldSummary SlotYield = YieldSummary.Empty;
+            public YieldSummary SpecialistYield = YieldSummary.Empty;
 
             public YieldSummary BonusYieldPerPopulation = YieldSummary.Empty;
 
@@ -71,7 +71,7 @@ namespace Assets.Tests.Simulation.Cities {
 
                 yield return new TestCaseData(
                     new BuildingTestData() {
-                        SlotYield = new YieldSummary(food: 1f, production: 1f),
+                        SpecialistYield = new YieldSummary(food: 1f, production: 1f),
                         Slots = new List<SlotTestData>() {
                             new SlotTestData() { IsOccupied = true },
                             new SlotTestData() { IsOccupied = true },
@@ -125,6 +125,14 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
+        private ISpecialistDefinition BuildSpecialist(YieldSummary yield) {
+            var mockSpecialist = new Mock<ISpecialistDefinition>();
+
+            mockSpecialist.Setup(specialist => specialist.Yield).Returns(yield);
+
+            return mockSpecialist.Object;
+        }
+
         private IBuilding BuildBuilding(BuildingTestData buildingData) {
             var mockBuilding = new Mock<IBuilding>();
 
@@ -132,7 +140,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             mockTemplate.Setup(template => template.StaticYield            ).Returns(buildingData.StaticYield);
             mockTemplate.Setup(template => template.BonusYieldPerPopulation).Returns(buildingData.BonusYieldPerPopulation);
-            mockTemplate.Setup(template => template.SlotYield              ).Returns(buildingData.SlotYield);
+            mockTemplate.Setup(template => template.Specialist             ).Returns(BuildSpecialist(buildingData.SpecialistYield));
 
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 

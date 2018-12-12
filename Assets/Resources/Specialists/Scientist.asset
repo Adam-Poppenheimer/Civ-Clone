@@ -1,0 +1,24 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecf9978bbf1b29149a874d6c3f17caae, type: 3}
+  m_Name: Scientist
+  m_EditorClassIdentifier: 
+  _icon: {fileID: 0}
+  _yield:
+    Food: 0
+    Production: 0
+    Gold: 0
+    Culture: 0
+    Science: 3
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 3

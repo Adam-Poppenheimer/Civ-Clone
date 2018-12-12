@@ -342,7 +342,7 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             mockTemplate.Name = name;
             mockTemplate.Setup(template => template.name)     .Returns(name);
-            mockTemplate.Setup(template => template.SlotCount).Returns(slotCount);
+            mockTemplate.Setup(template => template.SpecialistCount).Returns(slotCount);
 
             var newTemplate = mockTemplate.Object;
 
@@ -359,7 +359,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             var mockBuilding = new Mock<IBuilding>();
 
             var slots = new List<IWorkerSlot>();
-            for(int i = 0; i < template.SlotCount; i++) {
+            for(int i = 0; i < template.SpecialistCount; i++) {
                 slots.Add(BuildWorkerSlot());
             }
 

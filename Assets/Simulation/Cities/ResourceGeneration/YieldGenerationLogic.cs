@@ -120,7 +120,7 @@ namespace Assets.Simulation.Cities.ResourceGeneration {
         public YieldSummary GetYieldOfBuildingSlotsForCity(IBuilding building, ICity city) {
             var multiplier = GetMultiplier(city);
 
-            var slotYield = building.Template.SlotYield * multiplier;
+            var slotYield = building.Template.Specialist.Yield * multiplier;
 
             return slotYield;
         }

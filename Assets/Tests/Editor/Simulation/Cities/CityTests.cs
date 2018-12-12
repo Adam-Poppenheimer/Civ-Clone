@@ -379,6 +379,8 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockCell(new CellMockData()) }.AsReadOnly());
 
+            MockDistributionLogic.ResetCalls();
+
             city.PerformDistribution();
 
             MockDistributionLogic.Verify(
@@ -421,7 +423,10 @@ namespace Assets.Tests.Simulation.Cities {
                 )
             ).Callback(
                 delegate(int workers, IEnumerable<IWorkerSlot> availableSlots, ICity calledCity, YieldFocusType preferences) {
-                    CollectionAssert.IsSupersetOf(availableSlots, allSlots);
+                    CollectionAssert.AreEquivalent(
+                        availableSlots,
+                        allSlots.Where(slot => !slot.IsLocked)
+                    );
                 }
             );                
 

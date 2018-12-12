@@ -13,31 +13,45 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _description: Walls Description
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
+  _type: 0
   _productionCost: 75
   _maintenance: 0
-  _slotYields: []
+  _specialistCount: 2
+  _specialist: {fileID: 11400000, guid: 58fb1b3816346054b87e048f5ab21d10, type: 2}
   _staticYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _civilizationYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _cityYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _localHappiness: 0
   _globalHappiness: 0
   _unhappiness: 0
-  _requiredResources: []
+  _resourcesConsumed: []
   _resourceYieldModifications: []
   _cellYieldModifications: []
   _foodStockpilePreservationBonus: 0
@@ -49,7 +63,34 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _prerequisiteBuildings: []
-  _landUnitProductionBonus: 0
-  _mountedUnitProductionBonus: 0
+  _prerequisiteResourcesNearCity: []
+  _prerequisiteImprovementsNearCity: []
+  _globalPrerequisiteBuildings: []
   _requiresAdjacentRiver: 0
+  _requiresCoastalCity: 0
+  _providesOverseaConnection: 0
+  _bonusExperience: 0
+  _canBeConstructed: 1
+  _globalPromotions: []
+  _localPromotions: []
+  _providesFreeTech: 0
+  _productionModifier:
+    _value: 0
+    _conditions: []
+    _joinedTogetherBy: 0
+  _freeUnits: []
+  _freeBuildings: []
+  _localBorderExpansionModifier: 0
+  _globalBorderExpansionModifier: 0
+  _freeGreatPeople: 0
+  _localGrowthModifier: 0
+  _globalGrowthModifier: 0
+  _globalImprovementSpeedModifier: 0
+  _greatMilitaryGainSpeedModifier: 0
+  _goldenAgeLengthModifier: 0
+  _startsGoldenAge: 0

@@ -562,6 +562,14 @@ namespace Assets.Tests.Simulation.Cities {
 
         #region utilities
 
+        private ISpecialistDefinition BuildSpecialist(YieldSummary yield) {
+            var mockSpecialist = new Mock<ISpecialistDefinition>();
+
+            mockSpecialist.Setup(specialist => specialist.Yield).Returns(yield);
+
+            return mockSpecialist.Object;
+        }
+
         private ICity BuildCity(CityTestData cityData) {
             var mockCity = new Mock<ICity>();
 
@@ -611,7 +619,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var mockTemplate = new Mock<IBuildingTemplate>();
 
-            mockTemplate.Setup(template => template.SlotYield).Returns(buildingData.SlotYield);
+            mockTemplate.Setup(template => template.Specialist).Returns(BuildSpecialist(buildingData.SlotYield));
 
             mockBuilding.Setup(building => building.Template).Returns(mockTemplate.Object);
 

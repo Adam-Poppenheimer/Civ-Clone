@@ -57,7 +57,7 @@ namespace Assets.Simulation.Cities.Buildings {
             var newBuilding = new Building(template);
 
             var slots = new List<IWorkerSlot>();
-            for(int i = 0; i < template.SlotCount; i++) {
+            for(int i = 0; i < template.SpecialistCount; i++) {
                 slots.Add(WorkerSlotFactory.BuildSlot(newBuilding));
             }
 

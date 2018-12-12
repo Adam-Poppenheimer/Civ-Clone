@@ -37,9 +37,11 @@ namespace Assets.Simulation.Cities.Buildings {
 
             retval += building.Template.BonusYieldPerPopulation * buildingOwner.Population;
 
-            int occupiedSlots = building.Slots.Where(slot => slot.IsOccupied).Count();
+            if(building.Template.Specialist != null) {
+                int occupiedSlots = building.Slots.Where(slot => slot.IsOccupied).Count();
 
-            retval += building.Template.SlotYield * occupiedSlots;
+                retval += building.Template.Specialist.Yield * occupiedSlots;
+            }
 
             return retval;
         }
