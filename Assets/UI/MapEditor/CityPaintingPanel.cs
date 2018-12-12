@@ -73,8 +73,8 @@ namespace Assets.UI.MapEditor {
             CellClickedSubscription = CellSignals.ClickedSignal       .Subscribe(OnCellClicked);
             CityClickedSubscription = CitySignals.PointerClickedSignal.Subscribe(OnCityClicked);
 
-            IsAddingToggle  .onValueChanged.AddListener(isOn => IsAdding = isOn);
-            IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);
+            IsAddingToggle  .onValueChanged.AddListener(isOn => UpdatePaintingState( isOn));
+            IsRemovingToggle.onValueChanged.AddListener(isOn => UpdatePaintingState(!isOn));
         }
 
         private void OnDisable() {
@@ -124,6 +124,12 @@ namespace Assets.UI.MapEditor {
             if(!IsAdding) {
                 city.Destroy();
             }
+        }
+
+        private void UpdatePaintingState(bool isAdding) {
+            IsAdding = isAdding;
+
+            CivilizationDropdown.gameObject.SetActive(isAdding);
         }
 
         #endregion
