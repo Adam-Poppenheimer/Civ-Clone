@@ -43,6 +43,7 @@ namespace Assets.UI.Common {
             SelectionToggle.isOn = false;
 
             group.RegisterToggle(SelectionToggle);
+            SelectionToggle.group = group;
 
             SelectionToggle.onValueChanged.AddListener(delegate(bool isOn) {
                 if(isOn) {

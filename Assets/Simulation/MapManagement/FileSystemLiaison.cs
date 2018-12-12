@@ -28,15 +28,10 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        public ReadOnlyCollection<MapFileData> SavedGames {
+        public ReadOnlyCollection<MapFileData> AvailableMaps {
             get { return savedGames.AsReadOnly(); }
         }
         private List<MapFileData> savedGames = new List<MapFileData>();
-
-        public ReadOnlyCollection<MapFileData> AvailableMaps {
-            get { return availableMaps.AsReadOnly(); }
-        }
-        private List<MapFileData> availableMaps = new List<MapFileData>();
 
         private DirectoryInfo MapDirectory {
             get {

@@ -63,7 +63,7 @@ namespace Assets.UI.Common {
             IEnumerable<MapFileData> filesToDisplay;
 
             FileSystemLiaison.RefreshMaps();
-            filesToDisplay = FileSystemLiaison.SavedGames;
+            filesToDisplay = FileSystemLiaison.AvailableMaps;
 
             foreach(var savedGame in filesToDisplay) {
                 var newRecord = Instantiate(FileRecordPrefab);
