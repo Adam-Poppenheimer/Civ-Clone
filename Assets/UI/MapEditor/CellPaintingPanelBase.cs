@@ -19,7 +19,6 @@ namespace Assets.UI.MapEditor {
         
         public int BrushSize { get; set; }
 
-        private bool         IsDragging;
         private HexDirection DragDirection;
         private IHexCell     PreviousCell;
 
@@ -44,35 +43,23 @@ namespace Assets.UI.MapEditor {
         #region Unity messages
 
         private void OnEnable() {
-            SignalSubscriptions.Add(CellSignals.BeginDragSignal   .Subscribe(OnCellBeginDrag));
-            SignalSubscriptions.Add(CellSignals.EndDragSignal     .Subscribe(OnCellEndDrag));
             SignalSubscriptions.Add(CellSignals.PointerDownSignal .Subscribe(OnCellPointerDown));
             SignalSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
         }
 
         private void OnDisable() {
             SignalSubscriptions.ForEach(subscription => subscription.Dispose());
-
             SignalSubscriptions.Clear();
         }
 
         #endregion
-
-        private void OnCellBeginDrag(HexCellDragData dragData) {
-            IsDragging = true;
-            EditCells(dragData.CellBeingDragged);
-        }
-
-        private void OnCellEndDrag(HexCellDragData dragData) {
-            IsDragging = false;
-        }
 
         private void OnCellPointerDown(Tuple<IHexCell, PointerEventData> data) {
             EditCells(data.Item1);
         }
 
         private void OnCellPointerEnter(IHexCell cell) {
-            if(IsDragging) {
+            if(Input.GetMouseButton(0)) {
                 EditCells(cell);
             }
         }

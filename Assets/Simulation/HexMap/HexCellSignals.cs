@@ -18,6 +18,7 @@ namespace Assets.Simulation.HexMap {
 
         public ISubject<Tuple<IHexCell, PointerEventData>> ClickedSignal      { get; private set; }
         public ISubject<Tuple<IHexCell, PointerEventData>> PointerDownSignal  { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> PointerUpSignal    { get; private set; }
         public ISubject<IHexCell>                          PointerEnterSignal { get; private set; }
         public ISubject<IHexCell>                          PointerExitSignal  { get; private set; }
 
@@ -38,9 +39,9 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         public HexCellSignals() {
-
             ClickedSignal      = new Subject<Tuple<IHexCell, PointerEventData>>();
             PointerDownSignal  = new Subject<Tuple<IHexCell, PointerEventData>>();
+            PointerUpSignal    = new Subject<Tuple<IHexCell, PointerEventData>>();
             PointerEnterSignal = new Subject<IHexCell>();
             PointerExitSignal  = new Subject<IHexCell>();
 

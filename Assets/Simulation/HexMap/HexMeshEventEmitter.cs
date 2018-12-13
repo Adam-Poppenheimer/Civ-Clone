@@ -14,8 +14,8 @@ using Assets.Simulation.Cities;
 namespace Assets.Simulation.HexMap {
 
     public class HexMeshEventEmitter : MonoBehaviour, IPointerDownHandler,
-        IPointerClickHandler, IPointerEnterHandler, IPointerExitHandler,
-        IBeginDragHandler, IDragHandler, IEndDragHandler {
+        IPointerUpHandler, IPointerClickHandler, IPointerEnterHandler,
+        IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
         #region instance fields and properties
 
@@ -30,12 +30,9 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private HexCellSignals CellSignals;
-
-        private IHexGrid Grid;
-
-        private CitySignals CitySignals;
-
+        private HexCellSignals                           CellSignals;
+        private IHexGrid                                 Grid;
+        private CitySignals                              CitySignals;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
@@ -77,6 +74,21 @@ namespace Assets.Simulation.HexMap {
                         var clickedCell = Grid.GetCellAtLocation(hit.point);
 
                         CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(clickedCell, eventData));
+                    }
+                }
+            }
+        }
+
+        public void OnPointerUp(PointerEventData eventData) {
+            var pointerRay = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+            if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
+
+                if(hit.collider == Collider) {
+                    if(Grid.HasCellAtLocation(hit.point)) {
+                        var unclickedCell = Grid.GetCellAtLocation(hit.point);
+
+                        CellSignals.PointerUpSignal.OnNext(new Tuple<IHexCell, PointerEventData>(unclickedCell, eventData));
                     }
                 }
             }
