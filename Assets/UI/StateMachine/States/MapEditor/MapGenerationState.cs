@@ -39,6 +39,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Brain.DisableCameraMovement();
             Brain.DisableCellHovering();
+
+            Brain.ListenForTransition(TransitionType.ReturnViaButton);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
