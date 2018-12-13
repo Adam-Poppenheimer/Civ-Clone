@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Unit Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Units/Config")]
     public class UnitConfig : ScriptableObject, IUnitConfig {
 
         #region instance fields and properties

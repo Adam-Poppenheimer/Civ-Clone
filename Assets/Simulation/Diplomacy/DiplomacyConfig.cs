@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Diplomacy {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Diplomacy Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Diplomacy/Config")]
     public class DiplomacyConfig : ScriptableObject, IDiplomacyConfig {
 
         #region instance fields and properties

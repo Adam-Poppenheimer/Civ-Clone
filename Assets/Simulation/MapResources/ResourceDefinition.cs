@@ -10,7 +10,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapResources {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Specialty Resource")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Resources/Resource")]
     public class ResourceDefinition : ScriptableObject, IResourceDefinition {
 
         #region instance fields and properties

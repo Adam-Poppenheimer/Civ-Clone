@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Hex Map Render Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Hex Map/Render Config")]
     public class HexMapRenderConfig : ScriptableObject, IHexMapRenderConfig {
 
         #region instance fields and properties

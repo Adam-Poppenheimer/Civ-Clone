@@ -9,7 +9,7 @@ using Assets.Simulation.Cities;
 
 namespace Assets.Simulation.Civilizations {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Civilizations/Civ Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Civilizations/Civ")]
     public class CivilizationTemplate : ScriptableObject, ICivilizationTemplate {
 
         #region instance fields and properties

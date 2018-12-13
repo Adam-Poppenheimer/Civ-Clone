@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Cities.Buildings {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Specialist")]
+    [CreateAssetMenu(menuName = "Civ Clone/Cities/Specialist")]
     public class SpecialistDefinition : ScriptableObject, ISpecialistDefinition {
 
         #region instance fields and properties

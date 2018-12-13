@@ -12,7 +12,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Map Generation Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Map Template")]
     public class MapTemplate : ScriptableObject, IMapTemplate {
 
         #region instance fields and properties

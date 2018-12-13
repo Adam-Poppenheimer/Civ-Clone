@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Units.Abilities {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Ability")]
+    [CreateAssetMenu(menuName = "Civ Clone/Units/Ability")]
     public class AbilityDefinition : ScriptableObject, IAbilityDefinition {
 
         #region instance fields and properties

@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Improvements {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Improvement")]
+    [CreateAssetMenu(menuName = "Civ Clone/Improvements/Improvement")]
     public class ImprovementTemplate : ScriptableObject, IImprovementTemplate {
 
         #region instance fields and properties

@@ -13,7 +13,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Region Generation Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Region Biome Template")]
     public class RegionBiomeTemplate : ScriptableObject, IRegionBiomeTemplate {
 
         #region instance fields and properties

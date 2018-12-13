@@ -17,7 +17,7 @@ using Assets.Simulation.Improvements;
 
 namespace Assets.Simulation.Technology {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Technology")]
+    [CreateAssetMenu(menuName = "Civ Clone/Technology/Technology")]
     public class TechDefinition : ScriptableObject, ITechDefinition {
 
         #region instance fields and properties

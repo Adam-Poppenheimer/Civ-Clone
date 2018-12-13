@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.HexMap {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Feature Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Hex Map/Feature Config")]
     public class FeatureConfig : ScriptableObject, IFeatureConfig {
 
         #region instance fields and properties

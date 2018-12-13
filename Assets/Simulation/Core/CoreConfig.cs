@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Core {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Yield Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Core/Config")]
     public class CoreConfig : ScriptableObject, ICoreConfig {
 
         #region instance fields and properties

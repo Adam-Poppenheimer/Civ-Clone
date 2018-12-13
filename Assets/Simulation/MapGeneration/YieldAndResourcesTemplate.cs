@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Yield and Resources Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Yield and Resources Template")]
     public class YieldAndResourcesTemplate : ScriptableObject, IYieldAndResourcesTemplate {
 
         #region instance fields and properties

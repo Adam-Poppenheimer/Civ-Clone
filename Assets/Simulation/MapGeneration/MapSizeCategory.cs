@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [Serializable, CreateAssetMenu(menuName = "Civ Clone/Map Size Category")]
+    [Serializable, CreateAssetMenu(menuName = "Civ Clone/Map Generation/Map Size Category")]
     public class MapSizeCategory : ScriptableObject, IMapSizeCategory {
 
         #region instance fields and properties

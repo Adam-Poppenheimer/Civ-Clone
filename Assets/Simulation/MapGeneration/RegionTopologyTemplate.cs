@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Region Topology Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Region Topology Template")]
     public class RegionTopologyTemplate : ScriptableObject, IRegionTopologyTemplate {
 
         #region instance fields and properties

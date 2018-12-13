@@ -10,7 +10,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Map Generation Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Config")]
     public class MapGenerationConfig : ScriptableObject, IMapGenerationConfig {
 
         #region instance fields and properties

@@ -12,7 +12,7 @@ namespace Assets.Simulation.Cities {
     /// <summary>
     /// The standard implementation of ICityConfig.
     /// </summary>
-    [CreateAssetMenu(menuName = "Civ Clone/City Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Cities/Config")]
     public class CityConfig : ScriptableObject, ICityConfig {
 
         #region instance fields and properties

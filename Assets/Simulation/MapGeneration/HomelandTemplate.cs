@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.MapGeneration {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Civ Homeland Template")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Generation/Homeland Template")]
     public class HomelandTemplate : ScriptableObject, IHomelandTemplate {
 
         #region instance fields and properties

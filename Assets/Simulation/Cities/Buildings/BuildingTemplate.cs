@@ -17,7 +17,7 @@ namespace Assets.Simulation.Cities.Buildings {
     /// <summary>
     /// The standard implementation for IBuildingTemplate.
     /// </summary>
-    [CreateAssetMenu(menuName = "Civ Clone/Building")]
+    [CreateAssetMenu(menuName = "Civ Clone/Cities/Building")]
     public class BuildingTemplate : ScriptableObject, IBuildingTemplate {
 
         #region instance fields and properties

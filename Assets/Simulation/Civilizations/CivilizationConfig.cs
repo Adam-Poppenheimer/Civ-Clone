@@ -10,7 +10,7 @@ namespace Assets.Simulation.Civilizations {
     /// <summary>
     /// The standard implementation of ICivilizationConfig
     /// </summary>
-    [CreateAssetMenu(menuName = "Civ Clone/Civilization Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Civilizations/Config")]
     public class CivilizationConfig : ScriptableObject, ICivilizationConfig {
 
         #region instance fields and properties

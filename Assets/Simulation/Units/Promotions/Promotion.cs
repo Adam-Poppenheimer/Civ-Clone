@@ -12,7 +12,7 @@ using Assets.Simulation.Units.Combat;
 
 namespace Assets.Simulation.Units.Promotions {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Promotion")]
+    [CreateAssetMenu(menuName = "Civ Clone/Units/Promotion")]
     public class Promotion : ScriptableObject, IPromotion {
 
         #region instance fields and properties

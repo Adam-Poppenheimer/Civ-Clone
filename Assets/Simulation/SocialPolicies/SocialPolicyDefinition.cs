@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.SocialPolicies {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Social Policy")]
+    [CreateAssetMenu(menuName = "Civ Clone/Social Policies/Policy")]
     public class SocialPolicyDefinition : ScriptableObject, ISocialPolicyDefinition {
 
         #region instance fields and properties

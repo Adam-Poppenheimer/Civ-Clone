@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.Simulation.Units.Promotions {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Promotion Tree Data")]
+    [CreateAssetMenu(menuName = "Civ Clone/Units/Promotion Tree")]
     public class PromotionTreeTemplate : ScriptableObject, IPromotionTreeTemplate {
 
         #region instance fields and properties

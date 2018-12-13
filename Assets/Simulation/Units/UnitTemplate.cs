@@ -13,7 +13,7 @@ using Assets.Simulation.MapResources;
 
 namespace Assets.Simulation.Units {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Unit")]
+    [CreateAssetMenu(menuName = "Civ Clone/Units/Unit")]
     public class UnitTemplate : ScriptableObject, IUnitTemplate {
 
         #region instance fields and properties

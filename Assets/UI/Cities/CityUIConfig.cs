@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace Assets.UI.Cities {
 
-    [CreateAssetMenu(menuName = "Civ Clone/City UI Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Cities/UI Config")]
     public class CityUIConfig : ScriptableObject, ICityUIConfig {
 
         #region instance fields and properties
