@@ -40,33 +40,31 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private RectTransform ResourceRecordPrefab;
         [SerializeField] private RectTransform ResourceRecordContainer;
+        [SerializeField] private RectTransform ResourceSection;
 
         private IDisposable CellClickedSubscription;
 
 
 
 
-        private IResourceNodeFactory ResourceNodeFactory;
-
-        private List<IResourceDefinition> AvailableResources;
-
-        private HexCellSignals CellSignals;
-
+        private IResourceNodeFactory                             ResourceNodeFactory;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
+        private List<IResourceDefinition>                        AvailableResources;
+        private HexCellSignals                                   CellSignals;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IResourceNodeFactory resourceNodeFactory,
-            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
-            HexCellSignals cellSignals, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
+        public void InjectDependencies(
+            IResourceNodeFactory resourceNodeFactory, IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources, HexCellSignals cellSignals
         ){
             ResourceNodeFactory = resourceNodeFactory;
+            NodePositionCanon   = nodePositionCanon;
             AvailableResources  = new List<IResourceDefinition>(availableResources);
             CellSignals         = cellSignals;
-            NodePositionCanon   = nodePositionCanon;
         }
 
         #region Unity messages
@@ -91,12 +89,15 @@ namespace Assets.UI.MapEditor {
 
         public void SetIsDeleting(bool newValue) {
             IsDeleting = newValue;
+
+            CopiesSection  .gameObject.SetActive(!IsDeleting);
+            ResourceSection.gameObject.SetActive(!IsDeleting);
         }
 
         public void SetActiveResource(int index) {
             ActiveResource = AvailableResources[index];
 
-            var shouldHaveCopies = ActiveResource.Type == Simulation.MapResources.ResourceType.Strategic;
+            var shouldHaveCopies = ActiveResource.Type == ResourceType.Strategic;
 
             CopiesSection.gameObject.SetActive(shouldHaveCopies);
 
