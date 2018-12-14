@@ -149,7 +149,7 @@ namespace Assets.Simulation.HexMap {
                 int newVisibility = data.r + delta;
                 data.r = newVisibility >= 255 ? (byte)255 : (byte)newVisibility;
 
-            }else if(data.r > 0) {
+            }else if(!VisibilityCanon.IsCellVisible(cell) && data.r > 0) {
                 stillUpdating = true;
                 int newVisibility = data.r - delta;
                 data.r = newVisibility < 0 ? (byte)0 : (byte)newVisibility;
