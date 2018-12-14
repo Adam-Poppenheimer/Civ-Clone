@@ -13,7 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _cost: 175
   _icon: {fileID: 21300000, guid: f1883f68015645e4bbb33f27c3fdcb15, type: 3}
-  _era: 0
+  _era: 1
   _techTableRow: 1
   _techTableColumn: 4
   _prerequisites:
@@ -27,3 +27,4 @@ MonoBehaviour:
   _improvementYieldModifications: []
   _revealedResources: []
   _policyTreesEnabled: []
+  _freeGreatPeopleProvided: 0

@@ -53,7 +53,9 @@ namespace Assets.Simulation.Technology {
         void SetTechAsDiscoveredForCiv  (ITechDefinition tech, ICivilization civilization);
         void SetTechAsUndiscoveredForCiv(ITechDefinition tech, ICivilization civilization);
 
-        IEnumerable<ITechDefinition> GetTechsOfEra(TechnologyEra era);
+        IEnumerable<ITechDefinition> GetTechsOfEra         (TechnologyEra era);
+        IEnumerable<ITechDefinition> GetTechsOfPreviousEras(TechnologyEra currentEra);
+        IEnumerable<ITechDefinition> GetEntryTechsOfEra    (TechnologyEra era);
 
         TechnologyEra GetEraOfCiv(ICivilization civilization);
 

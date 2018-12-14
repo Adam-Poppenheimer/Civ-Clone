@@ -11,6 +11,7 @@ using Zenject;
 
 using Assets.Simulation.MapGeneration;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
@@ -24,6 +25,7 @@ namespace Assets.UI.TitleScreen {
         [SerializeField] private Dropdown MapSizeDropdown;
         [SerializeField] private Dropdown SeaLevelDropdown;
         [SerializeField] private Dropdown CivCountDropdown;
+        [SerializeField] private Dropdown StartingEraDropdown;
 
         [SerializeField] private CivTemplateRecord TemplateRecordPrefab;
         [SerializeField] private RectTransform     TemplateRecordContainer;
@@ -31,21 +33,23 @@ namespace Assets.UI.TitleScreen {
         private List<CivTemplateRecord> InstantiatedTemplateRecords = 
             new List<CivTemplateRecord>();
 
-        private IMapTemplate SelectedMapTemplate;
-        private Vector2      DimensionsInChunks;
-        private int          ContinentalLandPercentage;
-        private int          CivCount;
+        private IMapTemplate  SelectedMapTemplate;
+        private Vector2       DimensionsInChunks;
+        private int           ContinentalLandPercentage;
+        private int           CivCount;
+        private TechnologyEra StartingEra;
 
         private HashSet<ICivilizationTemplate> ChosenTemplates = new HashSet<ICivilizationTemplate>();
         
 
 
 
-        private IMapGenerationConfig                      Config;
+        private IMapGenerationConfig                      MapGenerationConfig;
         private IEnumerable<IMapTemplate>                 MapTemplates;
         private IMapGenerator                             MapGenerator;
         private Animator                                  UIAnimator;
         private ReadOnlyCollection<ICivilizationTemplate> AllCivTemplates;
+        private ITechCanon                                TechCanon;
 
         #endregion
 
@@ -55,21 +59,23 @@ namespace Assets.UI.TitleScreen {
         public void InjectDependencies(
             IMapGenerationConfig config, IEnumerable<IMapTemplate> mapTemplates,
             IMapGenerator mapGenerator, [Inject(Id = "UI Animator")] Animator uiAnimator,
-            ReadOnlyCollection<ICivilizationTemplate> civTemplates
+            ReadOnlyCollection<ICivilizationTemplate> civTemplates, ITechCanon techCanon
         ) {
-            Config       = config;
-            MapTemplates = mapTemplates;
-            MapGenerator = mapGenerator;
-            UIAnimator   = uiAnimator;
-            AllCivTemplates = civTemplates;
+            MapGenerationConfig = config;
+            MapTemplates        = mapTemplates;
+            MapGenerator        = mapGenerator;
+            UIAnimator          = uiAnimator;
+            AllCivTemplates     = civTemplates;
+            TechCanon           = techCanon;
         }
 
         #region Unity messages
 
         private void Start() {
-            InitializeTypeDropdown();
-            InitializeSizeDropdown();
-            InitializeSeaLevelDropdown();
+            InitializeTypeDropdown       ();
+            InitializeSizeDropdown       ();
+            InitializeSeaLevelDropdown   ();
+            InitializeStartingEraDropdown();
         }
 
         #endregion
@@ -81,7 +87,7 @@ namespace Assets.UI.TitleScreen {
         }
 
         public void UpdateMapSize(int optionIndex) {
-            var mapSize = Config.MapSizes[optionIndex];
+            var mapSize = MapGenerationConfig.MapSizes[optionIndex];
 
             DimensionsInChunks = mapSize.DimensionsInChunks;
 
@@ -91,7 +97,7 @@ namespace Assets.UI.TitleScreen {
         }
 
         public void UpdateSeaLevel(int optionIndex) {
-            ContinentalLandPercentage = Config.GetLandPercentageForSeaLevel((SeaLevelCategory)optionIndex);
+            ContinentalLandPercentage = MapGenerationConfig.GetLandPercentageForSeaLevel((SeaLevelCategory)optionIndex);
         }
 
         public void UpdateCivCount(int optionIndex) {
@@ -120,6 +126,10 @@ namespace Assets.UI.TitleScreen {
             ResetSelectedCivs();
         }
 
+        public void UpdateStartingEra(int optionIndex) {
+            StartingEra = (TechnologyEra)optionIndex;
+        }
+
         public void UpdateChosenCivs() {
             ChosenTemplates.Clear();
 
@@ -137,11 +147,14 @@ namespace Assets.UI.TitleScreen {
         }
 
         public void GenerateMap() {
+            var startingTechs = TechCanon.GetTechsOfPreviousEras(StartingEra).Concat(TechCanon.GetEntryTechsOfEra(StartingEra));
+
             var variables = new MapGenerationVariables() {
                 ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
                 ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
                 ContinentalLandPercentage = ContinentalLandPercentage,
-                Civilizations = ChosenTemplates.ToList()
+                Civilizations = ChosenTemplates.ToList(),
+                StartingTechs = startingTechs
             };
 
             MapGenerator.GenerateMap(
@@ -168,13 +181,13 @@ namespace Assets.UI.TitleScreen {
         private void InitializeSizeDropdown() {
             MapSizeDropdown.ClearOptions();
 
-            List<Dropdown.OptionData> sizeOptions = Config.MapSizes.Select(
+            List<Dropdown.OptionData> sizeOptions = MapGenerationConfig.MapSizes.Select(
                 size => new Dropdown.OptionData(size.name)
             ).ToList();
 
             MapSizeDropdown.AddOptions(sizeOptions);
             
-            var standardOption = MapSizeDropdown.options.Where(option => option.text.Equals(Config.DefaultMapSize.name)).FirstOrDefault();
+            var standardOption = MapSizeDropdown.options.Where(option => option.text.Equals(MapGenerationConfig.DefaultMapSize.name)).FirstOrDefault();
 
             MapSizeDropdown.value = MapSizeDropdown.options.IndexOf(standardOption);
 
@@ -195,6 +208,22 @@ namespace Assets.UI.TitleScreen {
             SeaLevelDropdown.value = SeaLevelDropdown.options.IndexOf(standardOption);
 
             UpdateSeaLevel(SeaLevelDropdown.value);
+        }
+
+        private void InitializeStartingEraDropdown() {
+            StartingEraDropdown.ClearOptions();
+
+            List<Dropdown.OptionData> eraOptions = EnumUtil.GetValues<TechnologyEra>().Select(
+                era => new Dropdown.OptionData(era.ToString())
+            ).ToList();
+
+            StartingEraDropdown.AddOptions(eraOptions);
+            
+            var standardOption = StartingEraDropdown.options.Where(option => option.text.Equals(TechnologyEra.Ancient.ToString())).FirstOrDefault();
+
+            StartingEraDropdown.value = StartingEraDropdown.options.IndexOf(standardOption);
+
+            UpdateStartingEra(StartingEraDropdown.value);
         }
 
         private void InitializeCivCountDropdown(IEnumerable<int> validCivCounts) {

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -15,6 +16,8 @@ namespace Assets.Simulation.MapGeneration {
         int ContinentalLandPercentage { get; }
 
         List<ICivilizationTemplate> Civilizations { get; }
+
+        IEnumerable<ITechDefinition> StartingTechs { get; }
 
         #endregion
 

@@ -9,6 +9,8 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.Technology;
+
 namespace Assets.Simulation.Civilizations {
 
     /// <summary>
@@ -30,6 +32,7 @@ namespace Assets.Simulation.Civilizations {
 
         private DiContainer         Container;
         private CivilizationSignals Signals;
+        private ITechCanon          TechCanon;
         private Transform           CivContainer;
 
         #endregion
@@ -38,11 +41,12 @@ namespace Assets.Simulation.Civilizations {
 
         [Inject]
         public CivilizationFactory(
-            DiContainer container, CivilizationSignals signals,
+            DiContainer container, CivilizationSignals signals, ITechCanon techCanon,
             [InjectOptional(Id = "Civ Container")] Transform civContainer
         ) {
             Container    = container;
             Signals      = signals;
+            TechCanon    = techCanon;
             CivContainer = civContainer;
 
             signals.CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
@@ -56,6 +60,10 @@ namespace Assets.Simulation.Civilizations {
 
         /// <inheritdoc/>
         public ICivilization Create(ICivilizationTemplate template) {
+            return Create(template, new List<ITechDefinition>());
+        }
+
+        public ICivilization Create(ICivilizationTemplate template, IEnumerable<ITechDefinition> startingTechs) {
             if(template == null) {
                 throw new ArgumentNullException("template");
             }
@@ -69,6 +77,10 @@ namespace Assets.Simulation.Civilizations {
             }
 
             allCivilizations.Add(newCivilization);
+
+            foreach(var tech in startingTechs) {
+                TechCanon.SetTechAsDiscoveredForCiv(tech, newCivilization);
+            }
 
             Signals.NewCivilizationCreated.OnNext(newCivilization);
 

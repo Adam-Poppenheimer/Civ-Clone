@@ -128,7 +128,7 @@ namespace Assets.Simulation.MapGeneration {
             CivFactory.Clear();
 
             foreach(var civTemplate in variables.Civilizations) {
-                CivFactory.Create(civTemplate);
+                CivFactory.Create(civTemplate, variables.StartingTechs);
             }
         }
 

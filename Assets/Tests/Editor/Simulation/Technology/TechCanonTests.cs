@@ -453,10 +453,89 @@ namespace Assets.Tests.Simulation.Technology {
         }
 
         [Test]
+        public void GetTechsOfPreviousEras_AndEraHasNoPreviousEra_ReturnsEmptySet() {
+            BuildTech("Tech One", era: TechnologyEra.Ancient);
+            BuildTech("Tech Two", era: TechnologyEra.Ancient);
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.IsEmpty(techCanon.GetTechsOfPreviousEras(TechnologyEra.Ancient));
+        }
+
+        [Test]
+        public void GetTechsOfPreviousEras_ReturnsAllTechsFromPreviousEra() {
+            var ancientTechs = new List<ITechDefinition>() {
+                BuildTech("Tech One", era: TechnologyEra.Ancient),
+                BuildTech("Tech Two", era: TechnologyEra.Ancient),
+            };
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.AreEquivalent(
+                ancientTechs, techCanon.GetTechsOfPreviousEras(TechnologyEra.Classical)
+            );
+        }
+
+        [Test]
+        public void GetTechsofPreviousEras_ReturnsAllTechsFromErasBeforeThePreviousEra() {
+            var ancientTechs = new List<ITechDefinition>() {
+                BuildTech("Tech One", era: TechnologyEra.Ancient),
+                BuildTech("Tech Two", era: TechnologyEra.Ancient),
+            };
+
+            var classicalTechs = new List<ITechDefinition>() {
+                BuildTech("Tech Three", era: TechnologyEra.Classical),
+                BuildTech("Tech Four",  era: TechnologyEra.Classical),
+            };
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.AreEquivalent(
+                ancientTechs.Concat(classicalTechs), techCanon.GetTechsOfPreviousEras(TechnologyEra.Medieval)
+            );
+        }
+
+        [Test]
+        public void GetEntryTechsOfEra_AndEraHasPreviousEra_ReturnsOnlyTechsOfEra_WithPrereqsFromThePreviousEra() {
+            var ancientTechs = new List<ITechDefinition>() {
+                BuildTech("Tech One", era: TechnologyEra.Ancient),
+                BuildTech("Tech Two", era: TechnologyEra.Ancient),
+            };
+
+            BuildTech("Tech Three", prerequisities: new List<ITechDefinition>());
+
+            var entryTechs = new List<ITechDefinition>() {                
+                BuildTech("Tech Four", era: TechnologyEra.Classical, prerequisities: new List<ITechDefinition>() { ancientTechs[0] }),
+                BuildTech("Tech Five", era: TechnologyEra.Classical, prerequisities: new List<ITechDefinition>() { ancientTechs[1] }),
+                BuildTech("Tech Six",  era: TechnologyEra.Classical, prerequisities: new List<ITechDefinition>() { ancientTechs[0], ancientTechs[1] })
+            };
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.AreEquivalent(entryTechs, techCanon.GetEntryTechsOfEra(TechnologyEra.Classical));
+        }
+
+        [Test]
+        public void GetEntryTechsOfEra_AndEraHasNoPreviousEra_ReturnsOnlyTechsOfEra_WithNoPrerequisites() {
+            var entryTechs = new List<ITechDefinition>() {
+                BuildTech("Tech One", era: TechnologyEra.Ancient),
+                BuildTech("Tech Two", era: TechnologyEra.Ancient),
+            };
+
+            BuildTech("Tech Four", era: TechnologyEra.Ancient, prerequisities: new List<ITechDefinition>() { entryTechs[0] });
+            BuildTech("Tech Five", era: TechnologyEra.Ancient, prerequisities: new List<ITechDefinition>() { entryTechs[1] });
+            BuildTech("Tech Six",  era: TechnologyEra.Ancient, prerequisities: new List<ITechDefinition>() { entryTechs[0], entryTechs[1] });
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CollectionAssert.AreEquivalent(entryTechs, techCanon.GetEntryTechsOfEra(TechnologyEra.Ancient));
+        }
+
+        [Test]
         public void GetEraOfCiv_GetsMostAdvancedEraAmongDiscoveredTechs() {
-            var techOne   = BuildTech("Tech One",   era: TechnologyEra.Ancient);
-            var techTwo   = BuildTech("Tech Two",   era: TechnologyEra.Classical);
-                            BuildTech("Tech Three", era: TechnologyEra.Medieval);
+            var techOne = BuildTech("Tech One",   era: TechnologyEra.Ancient);
+            var techTwo = BuildTech("Tech Two",   era: TechnologyEra.Classical);
+                          BuildTech("Tech Three", era: TechnologyEra.Medieval);
 
             var civ = BuildCivilization();
 

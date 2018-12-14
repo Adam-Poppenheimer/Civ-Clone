@@ -8,6 +8,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Technology;
+
 namespace Assets.Simulation.Civilizations {
 
     /// <summary>
@@ -27,6 +29,7 @@ namespace Assets.Simulation.Civilizations {
         #region methods
 
         ICivilization Create(ICivilizationTemplate template);
+        ICivilization Create(ICivilizationTemplate template, IEnumerable<ITechDefinition> startingTechs);
 
         void Clear();
 

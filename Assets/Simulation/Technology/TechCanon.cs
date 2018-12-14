@@ -324,6 +324,30 @@ namespace Assets.Simulation.Technology {
             return AvailableTechs.Where(tech => tech.Era == era);
         }
 
+        public IEnumerable<ITechDefinition> GetTechsOfPreviousEras(TechnologyEra currentEra) {
+            var activeEra = currentEra;
+
+            var retval = new List<ITechDefinition>();
+
+            while(activeEra.HasPreviousEra()) {
+                activeEra = activeEra.GetPreviousEra();
+
+                retval.AddRange(GetTechsOfEra(activeEra));
+            }
+
+            return retval;
+        }
+
+        public IEnumerable<ITechDefinition> GetEntryTechsOfEra(TechnologyEra era) {
+            if(era.HasPreviousEra()) {
+                var previousEra = era.GetPreviousEra();
+
+                return GetTechsOfEra(era).Where(tech => !tech.Prerequisites.Any(prereq => prereq.Era != previousEra));
+            }else {
+                return GetTechsOfEra(era).Where(tech => !tech.Prerequisites.Any());
+            }
+        }
+
         public TechnologyEra GetEraOfCiv(ICivilization civilization) {
             return (TechnologyEra)GetTechsDiscoveredByCiv(civilization).Select(tech => (int)tech.Era).Max();
         }
