@@ -16,8 +16,6 @@ namespace Assets.Simulation.MapGeneration {
         public int ChunkCountX { get; set; }
         public int ChunkCountZ { get; set; }
 
-        public int CivCount { get; set; }
-
         public int ContinentalLandPercentage { get; set; }
 
         public List<ICivilizationTemplate> Civilizations { get; set; }

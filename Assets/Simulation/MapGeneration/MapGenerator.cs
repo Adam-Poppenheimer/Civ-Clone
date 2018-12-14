@@ -127,8 +127,8 @@ namespace Assets.Simulation.MapGeneration {
         private void GenerateCivs(IMapGenerationVariables variables) {
             CivFactory.Clear();
 
-            for(int i = 0; i < variables.CivCount; i++) {
-                CivFactory.Create(variables.Civilizations[i]);
+            foreach(var civTemplate in variables.Civilizations) {
+                CivFactory.Create(civTemplate);
             }
         }
 

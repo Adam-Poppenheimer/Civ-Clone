@@ -10,6 +10,7 @@ using Zenject;
 
 using Assets.Simulation.MapGeneration;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.UI.MapEditor {
 
@@ -56,8 +57,8 @@ namespace Assets.UI.MapEditor {
             var variables = new MapGenerationVariables() {
                 ChunkCountX = Mathf.RoundToInt(MapChunkWidthSlider.value),
                 ChunkCountZ = Mathf.RoundToInt(MapChunkHeightSlider.value),
-                CivCount = 8,
-                ContinentalLandPercentage = 25
+                ContinentalLandPercentage = 25,
+                Civilizations = new List<ICivilizationTemplate>()
             };
 
             MapGenerator.GenerateMap(

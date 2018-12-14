@@ -122,7 +122,7 @@ MonoBehaviour:
     Culture: 0
     Science: 0
     GreatArtist: 0
-    GreatEngineer: 100
+    GreatEngineer: 0
     GreatMerchant: 0
     GreatScientist: 0
   ForestYield:

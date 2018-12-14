@@ -11,7 +11,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 12dbe6e8a6bd62f498cef8c2c5f92b36, type: 3}
   m_Name: Map Generation Config
   m_EditorClassIdentifier: 
-  _useFixedSeed: 1
+  _useFixedSeed: 0
   _fixedSeed: 817861110
   _landPercentage: 30
   _lowTemperature: 0
@@ -26,6 +26,10 @@ MonoBehaviour:
     Gold: 1
     Culture: 2
     Science: 0.6
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _maxLakeSize: 6
   _baseTerrainWeight: 201
   _terrainTemperatureWeight: 100

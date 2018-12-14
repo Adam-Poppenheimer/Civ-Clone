@@ -140,7 +140,7 @@ namespace Assets.UI.TitleScreen {
             var variables = new MapGenerationVariables() {
                 ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
                 ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
-                CivCount = CivCount, ContinentalLandPercentage = ContinentalLandPercentage,
+                ContinentalLandPercentage = ContinentalLandPercentage,
                 Civilizations = ChosenTemplates.ToList()
             };
 

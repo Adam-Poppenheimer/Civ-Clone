@@ -66,6 +66,7 @@ namespace Assets.UI.HexMap {
         private ICellYieldLogic                                  CellYieldLogic;
         private IGameCore                                        GameCore;
         private IVisibilityCanon                                 VisibilityCanon;
+        private IExplorationCanon                                ExplorationCanon;
 
         #endregion
 
@@ -80,7 +81,8 @@ namespace Assets.UI.HexMap {
             IImprovementLocationCanon                        improvementLocationCanon,
             ICellYieldLogic                                  cellResourceLogic,
             IGameCore                                        gameCore,
-            IVisibilityCanon                                 visibilityCanon
+            IVisibilityCanon                                 visibilityCanon,
+            IExplorationCanon                                explorationCanon
         ){
             SignalLogic               = signalLogic;
             GenerationLogic           = generationLogic;
@@ -90,9 +92,14 @@ namespace Assets.UI.HexMap {
             CellYieldLogic            = cellResourceLogic;
             GameCore                  = gameCore;
             VisibilityCanon           = visibilityCanon;
+            ExplorationCanon          = explorationCanon;
         }
 
         private void OnBeginHoverFired(IHexCell hoveredCell) {
+            if(!ExplorationCanon.IsCellExplored(hoveredCell)) {
+                return;
+            }
+
             SetCellDataField      (hoveredCell);
             SetYieldDisplay       (hoveredCell);
             SetResourceNodeDisplay(hoveredCell);
