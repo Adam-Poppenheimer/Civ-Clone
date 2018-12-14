@@ -15,9 +15,9 @@ using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
 
-namespace Assets.UI.TitleScreen {
+namespace Assets.UI.Common {
 
-    public class NewGameDisplay : MonoBehaviour {
+    public class MapGenerationDisplay : MonoBehaviour {
 
         #region instance fields and properties
 
@@ -29,6 +29,8 @@ namespace Assets.UI.TitleScreen {
 
         [SerializeField] private CivTemplateRecord TemplateRecordPrefab;
         [SerializeField] private RectTransform     TemplateRecordContainer;
+
+        public string UIAnimatorTrigger { get; set; }
 
         private List<CivTemplateRecord> InstantiatedTemplateRecords = 
             new List<CivTemplateRecord>();
@@ -162,7 +164,7 @@ namespace Assets.UI.TitleScreen {
                 variables
             );
 
-            UIAnimator.SetTrigger("Play Mode Requested");
+            UIAnimator.SetTrigger(UIAnimatorTrigger);
         }
 
         private void InitializeTypeDropdown() {

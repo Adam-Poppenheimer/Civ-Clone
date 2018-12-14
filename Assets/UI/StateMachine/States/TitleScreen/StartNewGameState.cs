@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.UI.TitleScreen;
+using Assets.UI.Common;
 
 namespace Assets.UI.StateMachine.States.TitleScreen {
 
@@ -15,8 +15,8 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain Brain;
-        private NewGameDisplay      NewGameDisplay;
+        private UIStateMachineBrain  Brain;
+        private MapGenerationDisplay NewGameDisplay;
 
         #endregion
 
@@ -24,7 +24,7 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, NewGameDisplay newGameDisplay
+            UIStateMachineBrain brain, MapGenerationDisplay newGameDisplay
         ){
             Brain          = brain;
             NewGameDisplay = newGameDisplay;
@@ -33,6 +33,8 @@ namespace Assets.UI.StateMachine.States.TitleScreen {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
+            NewGameDisplay.UIAnimatorTrigger = "Play Mode Requested";
+
             NewGameDisplay.gameObject.SetActive(true);
 
             Brain.ClearListeners();

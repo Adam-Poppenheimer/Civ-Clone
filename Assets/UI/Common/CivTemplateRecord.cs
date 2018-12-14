@@ -8,7 +8,7 @@ using UnityEngine.UI;
 
 using Assets.Simulation.Civilizations;
 
-namespace Assets.UI.TitleScreen {
+namespace Assets.UI.Common {
 
     public class CivTemplateRecord : MonoBehaviour {
 

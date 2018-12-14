@@ -31,7 +31,6 @@ namespace Assets.UI.StateMachine {
         [SerializeField] private CivEditingPanel          CivEditingPanel;
         [SerializeField] private BrushPanel               BrushPanel;
         [SerializeField] private RiverPaintingPanel       RiverPaintingPanel;
-        [SerializeField] private MapGenerationPanel       MapGenerationPanel;
         [SerializeField] private OptionsPanel             OptionsPanel;
 
         [SerializeField] private CellPaintingPanelBase TerrainPaintingPanel;
@@ -65,7 +64,6 @@ namespace Assets.UI.StateMachine {
             Container.Bind<CivEditingPanel>         ().FromInstance(CivEditingPanel);
             Container.Bind<BrushPanel>              ().FromInstance(BrushPanel);
             Container.Bind<RiverPaintingPanel>      ().FromInstance(RiverPaintingPanel);
-            Container.Bind<MapGenerationPanel>      ().FromInstance(MapGenerationPanel);
             Container.Bind<OptionsPanel>            ().FromInstance(OptionsPanel);
 
             Container.Bind<CellPaintingPanelBase>().WithId("Terrain Painting Panel")   .FromInstance(TerrainPaintingPanel);

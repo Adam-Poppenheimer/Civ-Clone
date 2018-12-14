@@ -7,7 +7,7 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.UI.MapEditor;
+using Assets.UI.Common;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -15,8 +15,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private MapGenerationPanel  MapGenerationPanel;
-        private UIStateMachineBrain Brain;
+        private MapGenerationDisplay MapGenerationDisplay;
+        private UIStateMachineBrain  Brain;
 
         #endregion
 
@@ -24,16 +24,17 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            MapGenerationPanel mapGenerationPanel, UIStateMachineBrain brain
+            MapGenerationDisplay mapGenerationDisplay, UIStateMachineBrain brain
         ) {
-            MapGenerationPanel = mapGenerationPanel;
-            Brain              = brain;
+            MapGenerationDisplay = mapGenerationDisplay;
+            Brain                = brain;
         }
 
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            MapGenerationPanel.gameObject.SetActive(true);
+            MapGenerationDisplay.UIAnimatorTrigger = "Return Requested";
+            MapGenerationDisplay.gameObject.SetActive(true);
 
             Brain.ClearListeners();
 
@@ -44,7 +45,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            MapGenerationPanel.gameObject.SetActive(false);
+            MapGenerationDisplay.gameObject.SetActive(false);
         }
 
         #endregion
