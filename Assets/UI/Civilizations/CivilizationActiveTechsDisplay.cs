@@ -22,8 +22,7 @@ namespace Assets.UI.Civilizations {
 
 
         private ICivilizationYieldLogic YieldLogic;
-
-        private ITechCanon TechCanon;
+        private ITechCanon              TechCanon;
 
         #endregion
 

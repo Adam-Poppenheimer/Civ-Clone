@@ -10,6 +10,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Core;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.UI {
 
@@ -19,7 +20,7 @@ namespace Assets.UI {
 
         public T ObjectToDisplay { get; set; }     
         
-        private IDisposable RoundBeganSubscription;
+        private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
         #endregion
 
@@ -27,14 +28,15 @@ namespace Assets.UI {
 
         [Inject]
         private void InjectSignals(CoreSignals coreSignals) {
-            RoundBeganSubscription = coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan);
+            SignalSubscriptions.Add(coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan));
         }
 
         #region Unity messages
 
         private void OnDestroy() {
-            RoundBeganSubscription.Dispose();
+            SignalSubscriptions.ForEach(subscription => subscription.Dispose());
         }
+
         protected virtual void DoOnDestroy() { }
 
         #endregion
