@@ -137,6 +137,121 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         #endregion
 
+        private void SetUnitToAttack(IUnit unit) {
+            Clear();
+            UnitToAttack = unit;
+
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
+            OverlayManager.ShowOverlayOfCell(unitLocation, CellOverlayType.AttackIndicator);
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = unit;
+            CombatSummaryDisplay.IsMeleeAttack = true;
+
+            CombatSummaryDisplay.gameObject.SetActive(true);
+
+            CombatSummaryDisplay.Refresh();
+        }
+
+        private void SetCityToAttack(ICity city) {
+            Clear();
+            CityToAttack = city;
+            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
+
+            OverlayManager.ShowOverlayOfCell(cityLocation, CellOverlayType.AttackIndicator);
+
+            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
+            CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
+            CombatSummaryDisplay.IsMeleeAttack = true;
+
+            CombatSummaryDisplay.gameObject.SetActive(true);
+
+            CombatSummaryDisplay.Refresh();
+        }
+
+        private void SetProspectiveTravelGoal(IHexCell unitLocation, IHexCell goal) {
+            Clear();
+
+            ProspectiveTravelGoal = goal;
+            ProspectivePath = HexPathfinder.GetShortestPathBetween(
+                unitLocation, goal,
+                delegate(IHexCell currentCell, IHexCell nextCell) {
+                    return UnitPositionCanon.GetTraversalCostForUnit(
+                        SelectedUnit, currentCell, nextCell, false
+                    );
+                }
+            );
+
+            PathDrawer.ClearPath();
+
+            if(ProspectivePath != null) {
+                PathDrawer.DrawPath(ProspectivePath);
+            }else {
+                OverlayManager.ShowOverlayOfCell(ProspectiveTravelGoal, CellOverlayType.UnreachableIndicator);
+            }
+        }
+
+        private bool IsCombatValid() {
+            if(UnitToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, UnitToAttack)) {
+                return true;
+            }else {
+                return CityToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
+            }
+        }
+
+        private bool IsMovementValid() {
+            return ProspectiveTravelGoal != null && ProspectivePath != null;
+        }
+
+        private void PerformCombat() {
+            if(CityToAttack != null) {
+                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
+
+            }else if(UnitToAttack != null) {
+                CombatExecuter.PerformMeleeAttack(SelectedUnit, UnitToAttack);
+            }
+        }
+
+        private void PerformMovement() {
+            SelectedUnit.CurrentPath = ProspectivePath;
+            SelectedUnit.PerformMovement();
+        }
+
+        private void Clear() {
+            OverlayManager.ClearAllOverlays();
+            if(SelectedUnit != null && SelectedUnitPosition != null) {
+                OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);
+            }
+
+            UnitToAttack = null;
+            CityToAttack = null;
+            ProspectiveTravelGoal = null;
+            ProspectivePath = null;
+
+            PathDrawer.ClearPath();
+
+            CombatSummaryDisplay.gameObject.SetActive(false);
+        }
+
+        private void AttachEvents() {
+            EventSubscriptions.Add(UnitSignals.BeginDragSignal         .Subscribe(OnUnitBeginDrag));
+            EventSubscriptions.Add(UnitSignals.EndDragSignal           .Subscribe(OnUnitEndDrag));
+            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal    .Subscribe(OnUnitPointerEntered));
+            EventSubscriptions.Add(UnitSignals.PointerExitedSignal     .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed));
+            EventSubscriptions.Add(UnitSignals.EnteredLocationSignal   .Subscribe(OnUnitEnteredLocation));
+
+            EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
+            EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
+            EventSubscriptions.Add(CellSignals.PointerEnterSignal  .Subscribe(OnCellPointerEntered));
+            EventSubscriptions.Add(CellSignals.PointerExitSignal   .Subscribe(OnCellPointerExited));
+        }
+
+        private void DetachEvents() {
+            EventSubscriptions.ForEach(subscription => subscription.Dispose());
+            EventSubscriptions.Clear();
+        }
+
         private void OnUnitBeginDrag(Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == SelectedUnit) {
                 IsDragging = true;
@@ -245,120 +360,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }
         }
 
-        private void SetUnitToAttack(IUnit unit) {
+        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> data) {
             Clear();
-            UnitToAttack = unit;
-
-            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToAttack);
-            OverlayManager.ShowOverlayOfCell(unitLocation, CellOverlayType.AttackIndicator);
-
-            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
-            CombatSummaryDisplay.DefendingUnit = unit;
-            CombatSummaryDisplay.IsMeleeAttack = true;
-
-            CombatSummaryDisplay.gameObject.SetActive(true);
-
-            CombatSummaryDisplay.Refresh();
-        }
-
-        private void SetCityToAttack(ICity city) {
-            Clear();
-            CityToAttack = city;
-            var cityLocation = CityLocationCanon.GetOwnerOfPossession(city);
-
-            OverlayManager.ShowOverlayOfCell(cityLocation, CellOverlayType.AttackIndicator);
-
-            CombatSummaryDisplay.AttackingUnit = SelectedUnit;
-            CombatSummaryDisplay.DefendingUnit = city.CombatFacade;
-            CombatSummaryDisplay.IsMeleeAttack = true;
-
-            CombatSummaryDisplay.gameObject.SetActive(true);
-
-            CombatSummaryDisplay.Refresh();
-        }
-
-        private void SetProspectiveTravelGoal(IHexCell unitLocation, IHexCell goal) {
-            Clear();
-
-            ProspectiveTravelGoal = goal;
-            ProspectivePath = HexPathfinder.GetShortestPathBetween(
-                unitLocation, goal,
-                delegate(IHexCell currentCell, IHexCell nextCell) {
-                    return UnitPositionCanon.GetTraversalCostForUnit(
-                        SelectedUnit, currentCell, nextCell, false
-                    );
-                }
-            );
-
-            PathDrawer.ClearPath();
-
-            if(ProspectivePath != null) {
-                PathDrawer.DrawPath(ProspectivePath);
-            }else {
-                OverlayManager.ShowOverlayOfCell(ProspectiveTravelGoal, CellOverlayType.UnreachableIndicator);
-            }
-        }
-
-        private bool IsCombatValid() {
-            if(UnitToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, UnitToAttack)) {
-                return true;
-            }else {
-                return CityToAttack != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
-            }
-        }
-
-        private bool IsMovementValid() {
-            return ProspectiveTravelGoal != null && ProspectivePath != null;
-        }
-
-        private void PerformCombat() {
-            if(CityToAttack != null) {
-                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
-
-            }else if(UnitToAttack != null) {
-                CombatExecuter.PerformMeleeAttack(SelectedUnit, UnitToAttack);
-            }
-        }
-
-        private void PerformMovement() {
-            SelectedUnit.CurrentPath = ProspectivePath;
-            SelectedUnit.PerformMovement();
-        }
-
-        private void Clear() {
-            OverlayManager.ClearAllOverlays();
-            if(SelectedUnit != null && SelectedUnitPosition != null) {
-                OverlayManager.ShowOverlayOfCell(SelectedUnitPosition, CellOverlayType.SelectedIndicator);
-            }
-
-            UnitToAttack = null;
-            CityToAttack = null;
-            ProspectiveTravelGoal = null;
-            ProspectivePath = null;
-
-            PathDrawer.ClearPath();
-
-            CombatSummaryDisplay.gameObject.SetActive(false);
-        }
-
-        private void AttachEvents() {
-            EventSubscriptions.Add(UnitSignals.BeginDragSignal         .Subscribe(OnUnitBeginDrag));
-            EventSubscriptions.Add(UnitSignals.EndDragSignal           .Subscribe(OnUnitEndDrag));
-            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal    .Subscribe(OnUnitPointerEntered));
-            EventSubscriptions.Add(UnitSignals.PointerExitedSignal     .Subscribe(OnUnitPointerExited));
-            EventSubscriptions.Add(UnitSignals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed));
-
-            EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
-            EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
-            EventSubscriptions.Add(CellSignals.PointerEnterSignal  .Subscribe(OnCellPointerEntered));
-            EventSubscriptions.Add(CellSignals.PointerExitSignal   .Subscribe(OnCellPointerExited));
-        }
-
-        private void DetachEvents() {
-            foreach(var subscription in EventSubscriptions) {
-                subscription.Dispose();
-            }
-            EventSubscriptions.Clear();
         }
 
         #endregion

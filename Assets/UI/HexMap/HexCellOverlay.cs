@@ -31,11 +31,8 @@ namespace Assets.UI.HexMap {
         [SerializeField] private Text CoordinateLabel;
 
         [SerializeField] private RectTransform PathIndicator;
-
         [SerializeField] private RectTransform AttackIndicator;
-
         [SerializeField] private RectTransform UnreachableIndicator;
-
         [SerializeField] private RectTransform SelectedIndicator;
 
         public IHexCell CellToDisplay {
