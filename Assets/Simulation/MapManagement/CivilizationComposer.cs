@@ -7,6 +7,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Technology;
@@ -32,6 +33,7 @@ namespace Assets.Simulation.MapManagement {
         private List<ITechDefinition>                     AvailableTechs;
         private ReadOnlyCollection<ICivilizationTemplate> AvailableCivTemplates;
         private IGoldenAgeCanon                           GoldenAgeCanon;
+        private ICivDiscoveryCanon                        CivDiscoveryCanon;
 
         #endregion
 
@@ -44,7 +46,7 @@ namespace Assets.Simulation.MapManagement {
             IFreeBuildingsCanon freeBuildingsCanon, List<IBuildingTemplate> availableBuildings,
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
             ReadOnlyCollection<ICivilizationTemplate> availableCivTemplates,
-            IGoldenAgeCanon goldenAgeCanon
+            IGoldenAgeCanon goldenAgeCanon, ICivDiscoveryCanon civDiscoveryCanon
         ) {
             CivilizationFactory   = civilizationFactory;
             TechCanon             = techCanon;
@@ -57,6 +59,7 @@ namespace Assets.Simulation.MapManagement {
             AvailableTechs        = availableTechs;
             AvailableCivTemplates = availableCivTemplates;
             GoldenAgeCanon        = goldenAgeCanon;
+            CivDiscoveryCanon     = civDiscoveryCanon;
         }
 
         #endregion
@@ -74,6 +77,7 @@ namespace Assets.Simulation.MapManagement {
 
             FreeBuildingsCanon.Clear();
             GoldenAgeCanon    .Clear();
+            CivDiscoveryCanon .Clear();
         }
 
         public void ComposeCivilizations(SerializableMapData mapData) {
@@ -127,6 +131,10 @@ namespace Assets.Simulation.MapManagement {
                 mapData.Civilizations.Add(civData);
             }
 
+            mapData.CivDiscoveryPairs = CivDiscoveryCanon.GetDiscoveryPairs().Select(
+                pair => new Tuple<string, string>(pair.Item1.Template.Name, pair.Item2.Template.Name)
+            ).ToList();
+
             mapData.ActiveCivilization = GameCore.ActiveCivilization.Template.Name;
         }
 
@@ -164,6 +172,19 @@ namespace Assets.Simulation.MapManagement {
             GameCore.ActiveCivilization = CivilizationFactory.AllCivilizations.Where(
                 civ => civ.Template.Name.Equals(mapData.ActiveCivilization)
             ).FirstOrDefault();
+
+            foreach(var discoveryPair in mapData.CivDiscoveryPairs) {
+                var civOne = CivilizationFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(discoveryPair.Item1)).FirstOrDefault();
+                var civTwo = CivilizationFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(discoveryPair.Item2)).FirstOrDefault();
+
+                if(CivDiscoveryCanon.CanEstablishDiscoveryBetweenCivs(civOne, civTwo)) {
+                    CivDiscoveryCanon.EstablishDiscoveryBetweenCivs(civOne, civTwo);
+                }else {
+                    throw new InvalidOperationException(
+                        string.Format("Invalid discovery for civs of template names {0} and {1}", discoveryPair.Item1, discoveryPair.Item2)
+                    );
+                }
+            }
         }
 
         #endregion

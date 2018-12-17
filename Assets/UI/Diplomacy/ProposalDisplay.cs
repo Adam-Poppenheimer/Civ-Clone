@@ -39,13 +39,10 @@ namespace Assets.UI.Diplomacy {
 
 
 
-        private IGameCore GameCore;
-
-        private IDiplomacyCore DiplomacyCore;
-
-        private IExchangeBuilder ExchangeBuilder;
-
-        private ICivilizationFactory CivilizationFactory;
+        private IGameCore            GameCore;
+        private ICivDiscoveryCanon   CivDiscoveryCanon;
+        private IDiplomacyCore       DiplomacyCore;
+        private IExchangeBuilder     ExchangeBuilder;
 
         #endregion
 
@@ -53,13 +50,13 @@ namespace Assets.UI.Diplomacy {
 
         [Inject]
         public void InjectDependencies(
-            IGameCore gameCore, IDiplomacyCore diplomacyCore,
-            IExchangeBuilder exchangeBuilder, ICivilizationFactory civilizationFactory
+            IGameCore gameCore, ICivDiscoveryCanon civDiscoveryCanon,
+            IDiplomacyCore diplomacyCore, IExchangeBuilder exchangeBuilder
         ){
             GameCore            = gameCore;
+            CivDiscoveryCanon   = civDiscoveryCanon;
             DiplomacyCore       = diplomacyCore;
             ExchangeBuilder     = exchangeBuilder;
-            CivilizationFactory = civilizationFactory;
         }
 
         #region Unity messages
@@ -116,10 +113,10 @@ namespace Assets.UI.Diplomacy {
 
             var dropdownOptions = new List<Dropdown.OptionData>();
 
-            foreach(var civilization in CivilizationFactory.AllCivilizations.Where(civ => civ != GameCore.ActiveCivilization)) {
-                CivOfDropdownIndex[dropdownOptions.Count] = civilization;
+            foreach(var validPartners in  CivDiscoveryCanon.GetCivsDiscoveredByCiv(GameCore.ActiveCivilization)) {
+                CivOfDropdownIndex[dropdownOptions.Count] = validPartners;
 
-                dropdownOptions.Add(new Dropdown.OptionData(civilization.Template.Name));
+                dropdownOptions.Add(new Dropdown.OptionData(validPartners.Template.Name));
             }
 
             ReceiverDropdown.AddOptions(dropdownOptions);

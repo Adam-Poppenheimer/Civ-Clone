@@ -4,7 +4,7 @@ using System.Runtime.Serialization;
 using System.Linq;
 using System.Text;
 
-using UnityCustomUtilities.Extensions;
+using UniRx;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -25,6 +25,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public List<SerializableResourceNodeData> ResourceNodes;
         [DataMember()] public SerializableDiplomacyData          DiplomacyData;
         [DataMember()] public string                             ActiveCivilization;
+        [DataMember()] public List<Tuple<string, string>>        CivDiscoveryPairs;
 
         #endregion
 
