@@ -53,6 +53,27 @@ namespace Assets.UI.Units {
             unitSignals.SetUpForBombardmentSignal.Subscribe(CheckForRefreshCondition);
         }
 
+        #region Unity messages
+
+        private void Update() {
+            if(!Input.anyKeyDown) {
+                return;
+            }
+
+            var hotkeyActivatedAbility = ActiveAbilityDisplays
+                .Select(display => display.AbilityToDisplay)
+                .FirstOrDefault(ability => Input.GetButtonDown(ability.name));
+
+            if( hotkeyActivatedAbility != null &&
+                AbilityExecuter.CanExecuteAbilityOnUnit(hotkeyActivatedAbility, ObjectToDisplay)
+            ) {
+                AbilityExecuter.ExecuteAbilityOnUnit(hotkeyActivatedAbility, ObjectToDisplay);
+                Refresh();
+            }
+        }
+
+        #endregion
+
         #region from UnitDisplayBase
 
         public override void Refresh() {
