@@ -14,6 +14,7 @@ MonoBehaviour:
   _slopeMoveCost: 1
   _cityMoveCost: 1
   _roadMoveCostMultiplier: 0.5
+  _shapesWithSuppressedSlots: 02000000
   BaseMoveCost: 1
   GrasslandYield:
     Food: 2

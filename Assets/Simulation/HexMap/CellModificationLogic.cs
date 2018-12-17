@@ -5,21 +5,27 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.Cities;
+
 namespace Assets.Simulation.HexMap {
 
     public class CellModificationLogic : ICellModificationLogic {
 
         #region instance fields and properties
 
-        private IRiverCanon RiverCanon;
+        private IRiverCanon                              RiverCanon;
+        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public CellModificationLogic(IRiverCanon riverCanon) {
-            RiverCanon = riverCanon;
+        public CellModificationLogic(
+            IRiverCanon riverCanon, IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+        ) {
+            RiverCanon        = riverCanon;
+            CityLocationCanon = cityLocationCanon;
         }
 
         #endregion
@@ -108,6 +114,8 @@ namespace Assets.Simulation.HexMap {
                     ChangeHasRoadsOfCell(cell, false);
                 }
             }
+
+            cell.SuppressSlot = CityLocationCanon.GetPossessionsOfOwner(cell).Any() || cell.Shape == CellShape.Mountains;
         }
 
         public bool CanChangeVegetationOfCell(IHexCell cell, CellVegetation vegetation) {

@@ -8,7 +8,9 @@ using Zenject;
 using NUnit.Framework;
 using Moq;
 
+using Assets.Simulation;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Cities;
 
 namespace Assets.Tests.Simulation.HexMap {
 
@@ -402,8 +404,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private Mock<IRiverCanon>         MockRiverCanon;        
-        private Mock<IHexMapRenderConfig> MockRenderConfig;
+        private Mock<IRiverCanon>                              MockRiverCanon;
+        private Mock<IPossessionRelationship<IHexCell, ICity>> MockCityLocationCanon;
 
         #endregion
 
@@ -413,11 +415,11 @@ namespace Assets.Tests.Simulation.HexMap {
 
         [SetUp]
         public void CommonInstall() {
-            MockRiverCanon   = new Mock<IRiverCanon>();
-            MockRenderConfig = new Mock<IHexMapRenderConfig>();
+            MockRiverCanon        = new Mock<IRiverCanon>();
+            MockCityLocationCanon = new Mock<IPossessionRelationship<IHexCell, ICity>>();
 
-            Container.Bind<IRiverCanon>        ().FromInstance(MockRiverCanon  .Object);
-            Container.Bind<IHexMapRenderConfig>().FromInstance(MockRenderConfig.Object);
+            Container.Bind<IRiverCanon>                             ().FromInstance(MockRiverCanon       .Object);
+            Container.Bind<IPossessionRelationship<IHexCell, ICity>>().FromInstance(MockCityLocationCanon.Object);
 
             Container.Bind<CellModificationLogic>().AsSingle();
         }
@@ -722,6 +724,53 @@ namespace Assets.Tests.Simulation.HexMap {
             Assert.IsFalse(cellToTest.HasRoads);
         }
 
+        [Test]
+        public void ChangeShapeOfCell_MountainsSuppressWorkerSlot() {
+            var cellToTest = BuildCell();
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
+
+            Assert.IsTrue(cellToTest.SuppressSlot);
+        }
+
+        [Test]
+        public void ChangeShapeOfCell_FlatlandsUnsuppressWorkerSlot() {
+            var cellToTest = BuildCell();
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Flatlands);
+
+            Assert.IsFalse(cellToTest.SuppressSlot);
+        }
+
+        [Test]
+        public void ChangeShapeOfCell_HillsUnsuppressWorkerSlot() {
+            var cellToTest = BuildCell();
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Hills);
+
+            Assert.IsFalse(cellToTest.SuppressSlot);
+        }
+
+        [Test]
+        public void ChangeShapeOfCell_CityPreventsCitySlotUnsuppression() {
+            var cellToTest = BuildCell(city: BuildCity());
+
+            var modLogic = Container.Resolve<CellModificationLogic>();
+
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Mountains);
+            modLogic.ChangeShapeOfCell(cellToTest, CellShape.Hills);
+
+            Assert.IsTrue(cellToTest.SuppressSlot);
+        }
+
         #endregion
 
         #region Vegetation tests
@@ -843,7 +892,8 @@ namespace Assets.Tests.Simulation.HexMap {
             CellVegetation vegetation = CellVegetation.None,
             CellFeature    feature    = CellFeature.None,
             bool           hasRoads   = false,
-            bool           hasRiver   = false
+            bool           hasRiver   = false,
+            ICity          city       = null
         ) {
             var mockCell = new Mock<IHexCell>();
 
@@ -859,7 +909,14 @@ namespace Assets.Tests.Simulation.HexMap {
 
             MockRiverCanon.Setup(canon => canon.HasRiver(newCell)).Returns(hasRiver);
 
+            MockCityLocationCanon.Setup(canon => canon.GetPossessionsOfOwner(newCell))
+                                 .Returns(city != null ? new List<ICity>() { city } : new List<ICity>());
+
             return newCell;
+        }
+
+        private ICity BuildCity() {
+            return new Mock<ICity>().Object;
         }
 
         #endregion
