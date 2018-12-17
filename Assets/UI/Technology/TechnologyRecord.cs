@@ -81,11 +81,9 @@ namespace Assets.UI.Technology {
 
 
 
-        private ICoreConfig CoreConfig;
-
+        private ICoreConfig     CoreConfig;
         private IYieldFormatter YieldFormatter;
-
-        private DiContainer Container;
+        private DiContainer     Container;
 
         #endregion
 
@@ -119,7 +117,12 @@ namespace Assets.UI.Technology {
                     TurnsToResearchField.gameObject.SetActive(false);
                 }else {
                     TurnsToResearchField.gameObject.SetActive(true);
-                    TurnsToResearchField.text = string.Format("{0} Turns", TurnsToResearch);
+
+                    if(TurnsToResearch < 0) {
+                        TurnsToResearchField.text = "--";
+                    }else {
+                        TurnsToResearchField.text = string.Format("{0} Turns", TurnsToResearch);
+                    }
                 }
             }
 

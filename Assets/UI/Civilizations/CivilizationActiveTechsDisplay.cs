@@ -48,10 +48,16 @@ namespace Assets.UI.Civilizations {
                 CurrentTechRecord.Status          = TechnologyRecord.TechStatus.BeingResearched;
                 CurrentTechRecord.CurrentProgress = TechCanon.GetProgressOnTechByCiv(activeTech, ObjectToDisplay);
 
-                CurrentTechRecord.TurnsToResearch = (int)Math.Ceiling(
-                    (activeTech.Cost - CurrentTechRecord.CurrentProgress) /
-                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science]
-                );
+                float sciencePerTurn = YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science];
+
+                if(sciencePerTurn > 0) {
+                    CurrentTechRecord.TurnsToResearch = (int)Math.Ceiling(
+                        (activeTech.Cost - CurrentTechRecord.CurrentProgress) / sciencePerTurn                    
+                    );
+                }else {
+                    CurrentTechRecord.TurnsToResearch = -1;
+                }
+                
             }else {
                 CurrentTechRecord.TechToDisplay = null;
             }

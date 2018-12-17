@@ -91,10 +91,15 @@ namespace Assets.UI.Technology {
                 techRecord.CanBeClicked = SelectionMode != TechSelectionMode.SetTechQueue
                                        || !TechCanon.IsTechDiscoveredByCiv(recordedTech, ObjectToDisplay);
 
-                techRecord.TurnsToResearch = (int)Math.Ceiling(
-                    (techRecord.TechToDisplay.Cost - techRecord.CurrentProgress) /
-                    YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science]
-                );
+                float sciencePerTurn = YieldLogic.GetYieldOfCivilization(ObjectToDisplay)[Simulation.YieldType.Science];
+
+                if(sciencePerTurn > 0) {
+                    techRecord.TurnsToResearch = (int)Math.Ceiling(
+                        (techRecord.TechToDisplay.Cost - techRecord.CurrentProgress) / sciencePerTurn
+                    );
+                }else {
+                    techRecord.TurnsToResearch = -1;
+                }
 
                 techRecord.Refresh();
             }
