@@ -59,11 +59,10 @@ namespace Assets.UI.Cities.Buildings {
             Tooltip.SetDescriptionFrom(BuildingToDisplay.Template);
 
             Tooltip.gameObject.SetActive(true);
-            Tooltip.transform.position = Input.mousePosition;
         }
 
         public void OnPointerExit(PointerEventData eventData) {
-            Tooltip.gameObject.SetActive(false);
+            //Tooltip.gameObject.SetActive(false);
         }
 
         #endregion

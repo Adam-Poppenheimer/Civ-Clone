@@ -38371,7 +38371,7 @@ RectTransform:
   - {fileID: 394039047}
   - {fileID: 1361392699}
   m_Father: {fileID: 1945435208}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -50419,7 +50419,7 @@ RectTransform:
   - {fileID: 1341831550}
   - {fileID: 1706804896}
   m_Father: {fileID: 1945435208}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 1, y: 1}
@@ -75762,13 +75762,13 @@ RectTransform:
   m_Children:
   - {fileID: 1350266347}
   m_Father: {fileID: 1945435208}
-  m_RootOrder: 9
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 466.19446, y: 159.4211}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 0, y: 0}
+  m_AnchoredPosition: {x: 984, y: 510}
   m_SizeDelta: {x: 320, y: 46.809998}
-  m_Pivot: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1908533215
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -75849,6 +75849,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   DescriptionField: {fileID: 1350266348}
+  RectTransform: {fileID: 1908533214}
+  ParentCanvas: {fileID: 1945435207}
+  CanvasScaler: {fileID: 1945435206}
 --- !u!1 &1909782283
 GameObject:
   m_ObjectHideFlags: 0
@@ -77472,9 +77475,9 @@ RectTransform:
   - {fileID: 1374084004}
   - {fileID: 1970412910}
   - {fileID: 528707094}
-  - {fileID: 1908533214}
   - {fileID: 956490657}
   - {fileID: 1317493248}
+  - {fileID: 1908533214}
   m_Father: {fileID: 0}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
