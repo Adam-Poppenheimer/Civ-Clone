@@ -71,6 +71,12 @@ namespace Assets.Tests.Simulation.Cities {
             MockUnitFactory           = new Mock<IUnitFactory>();
             MockCellModificationLogic = new Mock<ICellModificationLogic>();
 
+            MockUnitFactory.Setup(
+                factory => factory.BuildUnit(It.IsAny<IHexCell>(), It.IsAny<IUnitTemplate>(), It.IsAny<ICivilization>())
+            ).Returns(
+                new Mock<IUnit>().Object
+            );
+
             Container.Bind<IPossessionRelationship<ICivilization, ICity>>().FromInstance(MockCityPossessionCanon  .Object);
             Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                 .Object);
             Container.Bind<IPossessionRelationship<ICity, IHexCell>>     ().FromInstance(MockCellPossessionCanon  .Object);

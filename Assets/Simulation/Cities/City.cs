@@ -39,7 +39,11 @@ namespace Assets.Simulation.Cities {
             get { return _population; }
             set {
                 if(_population != value) {
+                    float facadeHealthPercent = (float)CombatFacade.CurrentHitpoints / CombatFacade.MaxHitpoints;
+
                     _population = value;
+
+                    CombatFacade.CurrentHitpoints = Mathf.CeilToInt(facadeHealthPercent * CombatFacade.MaxHitpoints);
 
                     PerformDistribution();
 

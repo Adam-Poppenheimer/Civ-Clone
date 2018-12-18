@@ -103,6 +103,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformGrowth_NegativeStockpileDecreasesPopulation() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
             city.Population = 2;
             city.FoodStockpile = -1;
 
@@ -116,6 +117,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformGrowth_ChecksGrowthLogicForStarvationStockpileReset() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
             city.Population = 2;
             city.FoodStockpile = -1;
 
@@ -134,6 +136,8 @@ namespace Assets.Tests.Simulation.Cities {
             "never become negative")]
         public void PerformGrowth_SinglePopulationDoesntCauseNegativeFood() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             
             MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(10);
 
@@ -152,6 +156,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformGrowth_ChecksGrowthLogicForPopulationGrowth() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
+
             city.PerformGrowth();
 
             MockGrowthLogic.Verify(logic => logic.GetFoodStockpileToGrow(city), Times.AtLeastOnce, 
@@ -162,6 +168,8 @@ namespace Assets.Tests.Simulation.Cities {
             "its population should increase by 1")]
         public void PerformGrowth_SufficientStockpileIncreasesPopulation() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.Population = 1;
             city.FoodStockpile = 15;
 
@@ -176,6 +184,7 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformGrowth_ChecksGrowthLogicForStockpileReduction() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
             city.Population = 1;
             city.FoodStockpile = 15;
 
@@ -198,6 +207,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(30);
 
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.ActiveProject = mockProject.Object;
 
             MockProductionLogic.Setup(logic => logic.GetProductionProgressPerTurnOnProject(city, mockProject.Object)).Returns(9);
@@ -220,6 +231,8 @@ namespace Assets.Tests.Simulation.Cities {
             var newProject = mockProject.Object;
 
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.ActiveProject = newProject;
 
             city.PerformProduction();
@@ -236,6 +249,8 @@ namespace Assets.Tests.Simulation.Cities {
             mockProject.SetupGet(project => project.ProductionToComplete).Returns(5);
 
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.ActiveProject = mockProject.Object;
 
             city.PerformProduction();
@@ -247,6 +262,8 @@ namespace Assets.Tests.Simulation.Cities {
             "ExpansionLogic's GetNextTileToPursue method to determine the tile it's pursuing")]
         public void PerformExpansion_ChecksExpansionLogicForTileToPursue() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
 
             var tile = new Mock<IHexCell>().Object;
 
@@ -265,6 +282,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_ChecksExpansionLogicForTileAcquisition() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
+
             var tile = new Mock<IHexCell>().Object;
 
             MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
@@ -280,6 +299,8 @@ namespace Assets.Tests.Simulation.Cities {
             "its TileBeingPursued or not")]
         public void PerformExpansion_ChecksPosessionCanonForTileAcquisition() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
 
             var tile = new Mock<IHexCell>().Object;
 
@@ -297,6 +318,8 @@ namespace Assets.Tests.Simulation.Cities {
             "stockpile should be decreased, and decrease the stockpile accordingly")]
         public void PerformExpansion_ChecksExpansionLogicForCultureStockpileDecrease() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.CultureStockpile = 10;
 
             var tile = new Mock<IHexCell>().Object;
@@ -318,6 +341,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformExpansion_RequestsOwnershipChangeFromPossessionCanon() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
+
             var tile = new Mock<IHexCell>().Object;
 
             MockExpansionLogic.Setup(logic => logic.GetNextCellToPursue(city)).Returns(tile);
@@ -337,6 +362,8 @@ namespace Assets.Tests.Simulation.Cities {
             "should be pursuing")]
         public void PerformExpansion_ChecksExpansionLogicAfterAcquisition() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
 
             var firstTile = new Mock<IHexCell>().Object;
             var secondTile = new Mock<IHexCell>().Object;
@@ -373,6 +400,8 @@ namespace Assets.Tests.Simulation.Cities {
             "call into DistributionLogic with the correct city, worker count, and preferences")]
         public void PerformDistribution_SendsRequestToDistributionLogic() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.Population = 7;
             city.YieldFocus = YieldFocusType.TotalYield;
 
@@ -397,6 +426,8 @@ namespace Assets.Tests.Simulation.Cities {
             "send DistributionLogic all of the slots that distributionLogic claims are available to it")]
         public void PerformDistribution_CallsIntoGetSlotsAvailableToCity() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
 
             var buildingMockOne = new Mock<IBuilding>();
             var firstSlots = new List<IWorkerSlot>() { new Mock<IWorkerSlot>().Object };
@@ -441,6 +472,8 @@ namespace Assets.Tests.Simulation.Cities {
         public void PerformDistribution_SuppressedSlotsNotPassed() {
             var city = Container.Resolve<City>();
 
+            city.CombatFacade = BuildUnit(city);
+
             var tileMockOne = new Mock<IHexCell>();
             tileMockOne.Setup(tile => tile.WorkerSlot).Returns(new Mock<IWorkerSlot>().Object);
 
@@ -477,6 +510,8 @@ namespace Assets.Tests.Simulation.Cities {
             "are occupied should also reduce WorkerCount")]
         public void PerformDistribution_LockedSlotsNotPassed() {
             var city = Container.Resolve<City>();
+
+            city.CombatFacade = BuildUnit(city);
             city.Population = 2;
 
             var unlockedSlotTile         = BuildMockCell(new CellMockData());
@@ -634,6 +669,56 @@ namespace Assets.Tests.Simulation.Cities {
             cityToTest.ActiveProject = mockProject.Object;
         }
 
+        [Test]
+        public void PopulationSet_PopulationChangedSignalFired() {
+            var cityToTest = Container.Resolve<City>();
+
+            cityToTest.CombatFacade = BuildUnit(cityToTest);
+
+            cityToTest.Population = 5;
+
+            CitySignals.PopulationChangedSignal.Subscribe(delegate(ICity city) {
+                Assert.AreEqual(cityToTest, city, "Incorrect city passed into signals");
+                Assert.Pass();
+            });
+
+            cityToTest.Population = 10;
+
+            Assert.Fail("PopulationChangedSignal never fired");
+        }
+
+        [Test]
+        public void PopulationSet_SignalNotFiredIfValueNotDifferent() {
+            var cityToTest = Container.Resolve<City>();
+
+            cityToTest.CombatFacade = BuildUnit(cityToTest);
+
+            cityToTest.Population = 5;
+
+            CitySignals.PopulationChangedSignal.Subscribe(delegate(ICity city) {
+                Assert.Fail("Signal unexpectedly fired");
+            });
+
+            cityToTest.Population = 5;
+        }
+
+        [Test]
+        public void PopulationSet_PreservesCombatFacadeCurrentHealth_AsPercentageOfMaxHealth() {
+            var cityToTest = Container.Resolve<City>();
+
+            var combatFacade = BuildUnit(cityToTest);
+
+            cityToTest.CombatFacade = combatFacade;
+
+            cityToTest.Population = 10;
+
+            combatFacade.CurrentHitpoints = 750;
+            
+            cityToTest.Population = 20;
+
+            Assert.AreEqual(1500, combatFacade.CurrentHitpoints);
+        }
+
         #endregion
 
         #region utilities
@@ -656,10 +741,13 @@ namespace Assets.Tests.Simulation.Cities {
             return mockCell.Object;
         }
 
-        private IUnit BuildUnit() {
+        private IUnit BuildUnit(ICity parentCity) {
             var mockUnit = new Mock<IUnit>();
 
             mockUnit.SetupAllProperties();
+
+            mockUnit.Setup(unit => unit.MaxHitpoints)
+                    .Returns(() => parentCity.Population * 100);
 
             return mockUnit.Object;
         }
