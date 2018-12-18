@@ -37,8 +37,6 @@ namespace Assets.Simulation.Units {
 
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-            retval.Add(unitLocation);
-
             foreach(var cell in Grid.GetCellsInRadius(unitLocation, unit.VisionRange)) {
                 if(!HasObstructionsBetween(unitLocation, cell)) {
                     retval.Add(cell);
@@ -46,7 +44,7 @@ namespace Assets.Simulation.Units {
             }
 
             foreach(var cell in Grid.GetCellsInRing(unitLocation, unit.VisionRange + 1)) {
-                if(!HasObstructionsBetween(unitLocation, cell, 1) && cell.Terrain.IsWater()) {
+                if(!HasObstructionsBetween(unitLocation, cell) && cell.Terrain.IsWater()) {
                     retval.Add(cell);
                 }
             }
@@ -56,21 +54,19 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        private bool HasObstructionsBetween(IHexCell fromCell, IHexCell toCell, int blockingOffset = 0) {
+        private bool HasObstructionsBetween(IHexCell fromCell, IHexCell toCell) {
             if(fromCell != toCell && !Grid.GetNeighbors(fromCell).Contains(toCell)) {
 
                 var cellLine = Grid.GetCellsInLine(fromCell, toCell).Where(cell => cell != fromCell);
 
-                foreach(var intermediateCell in cellLine) {
-                    int blockingHeight = intermediateCell.ViewElevation + blockingOffset;
+                if(fromCell.Shape == CellShape.Flatlands) {
+                    return cellLine.Any(cell => cell.Shape != CellShape.Flatlands || cell.Vegetation.HasTrees());
 
-                    if(intermediateCell.Vegetation == CellVegetation.Forest || intermediateCell.Vegetation == CellVegetation.Jungle) {
-                        blockingHeight++;
-                    }
-
-                    if(blockingHeight > fromCell.ViewElevation) {
-                        return true;
-                    }
+                }else if(fromCell.Shape == CellShape.Hills || fromCell.Shape == CellShape.Mountains) {
+                    return cellLine.Any(
+                        cell => cell.Shape == CellShape.Mountains ||
+                        (cell.Shape == CellShape.Hills && cell.Vegetation.HasTrees())
+                    );
                 }
             }
             

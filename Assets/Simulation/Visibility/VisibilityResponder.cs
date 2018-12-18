@@ -86,7 +86,7 @@ namespace Assets.Simulation.Visibility {
             citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
 
             cellSignals.FoundationElevationChangedSignal.Subscribe(OnHexCellVisibilityPropertiesChanged);
-            cellSignals.WaterLevelChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.TerrainChangedSignal            .Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.ShapeChangedSignal              .Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.VegetationChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
 

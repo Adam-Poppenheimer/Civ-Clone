@@ -38,8 +38,6 @@ namespace Assets.Simulation.HexMap {
 
         float WaterSurfaceY { get; }
 
-        int ViewElevation { get; }
-
         IWorkerSlot WorkerSlot { get; }
 
         bool SuppressSlot { get; set; }

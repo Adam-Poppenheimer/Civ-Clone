@@ -36,8 +36,8 @@ namespace Assets.Simulation.HexMap {
                 _terrain = value;
 
                 Refresh();
-
                 ShaderData.RefreshTerrain(this);
+                Signals.TerrainChangedSignal.OnNext(this);
             }
         }
         private CellTerrain _terrain;
@@ -143,10 +143,6 @@ namespace Assets.Simulation.HexMap {
             get {
                 return (RenderConfig.WaterLevel + RenderConfig.OceanElevationOffset) * RenderConfig.ElevationStep;
             }
-        }
-
-        public int ViewElevation {
-            get { return PeakElevation >= RenderConfig.WaterLevel ? PeakElevation : RenderConfig.WaterLevel; }
         }
 
         public IWorkerSlot WorkerSlot { get; set; }
