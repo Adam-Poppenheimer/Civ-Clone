@@ -5,6 +5,7 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
 
 using Zenject;
 using TMPro;
@@ -17,7 +18,7 @@ using Assets.Simulation.Units;
 
 namespace Assets.UI.Cities.Production {
 
-    public class CityProjectRecord : MonoBehaviour {
+    public class CityProjectRecord : MonoBehaviour, IPointerEnterHandler, IPointerExitHandler {
 
         #region instance fields and properties
 
@@ -35,16 +36,39 @@ namespace Assets.UI.Cities.Production {
 
 
 
-        private IYieldFormatter YieldFormatter;
+        private IYieldFormatter    YieldFormatter;
+        private DescriptionTooltip DescriptionTooltip;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IYieldFormatter yieldFormatter) {
-            YieldFormatter = yieldFormatter;
+        public void InjectDependencies(
+            IYieldFormatter yieldFormatter, DescriptionTooltip descriptionTooltip
+        ) {
+            YieldFormatter     = yieldFormatter;
+            DescriptionTooltip = descriptionTooltip;
         }
+
+        #region EventSystem handlers
+
+        public void OnPointerEnter(PointerEventData eventData) {
+            if(UnitTemplate != null) {
+                DescriptionTooltip.SetDescriptionFrom(UnitTemplate);
+
+            }else if(BuildingTemplate != null) {
+                DescriptionTooltip.SetDescriptionFrom(BuildingTemplate);
+            }
+
+            DescriptionTooltip.gameObject.SetActive(true);
+        }
+
+        public void OnPointerExit(PointerEventData eventData) {
+            DescriptionTooltip.gameObject.SetActive(false);
+        }
+
+        #endregion
 
         public void Refresh() {
             if(UnitTemplate != null) {

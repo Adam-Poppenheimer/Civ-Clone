@@ -12,6 +12,7 @@ using TMPro;
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Units.Promotions;
 using Assets.Simulation.SocialPolicies;
+using Assets.Simulation.Units;
 
 namespace Assets.UI {
 
@@ -48,6 +49,10 @@ namespace Assets.UI {
             DescriptionField.text = template.Description;
         }
 
+        public void SetDescriptionFrom(IUnitTemplate template) {
+            DescriptionField.text = template.Description;
+        }
+
         public void SetDescriptionFrom(IPromotion promotion) {
             DescriptionField.text = string.Format("{0}\n\n{1}", promotion.name, promotion.Description);
         }
@@ -56,7 +61,9 @@ namespace Assets.UI {
             DescriptionField.text = string.Format("{0}\n\n{1}", policy.name, policy.Description);
         }
 
-        //Both the canvas and the description tooltip should have their pivot in their center.
+        //This implementation still has a few problems with screen edge border detection.
+        //It seems like the farther the window shape is from teh reference resolution the
+        //worse things get.
         private void UpdatePosition() {
             Vector3 desiredScreenPosition = Input.mousePosition;
 
@@ -68,11 +75,11 @@ namespace Assets.UI {
             float tooltipScreenWidth  = RectTransform.rect.width * screenWidthRatio;
             float tooltipScreenHeight = RectTransform.rect.height * screenHeightRatio;
 
-            float xMin = tooltipScreenWidth / 2f;
-            float xMax = rectOfCanvas.width - tooltipScreenWidth / 2f;
+            float xMin = tooltipScreenWidth * RectTransform.pivot.x;
+            float xMax = rectOfCanvas.width - tooltipScreenWidth * (1 - RectTransform.pivot.x);
 
-            float yMin = tooltipScreenHeight / 2f;
-            float yMax = rectOfCanvas.height - tooltipScreenHeight / 2f;
+            float yMin = tooltipScreenHeight * RectTransform.pivot.y;
+            float yMax = rectOfCanvas.height - tooltipScreenHeight * (1 - RectTransform.pivot.y);
 
             RectTransform.position = new Vector2(
                 Mathf.Clamp(desiredScreenPosition.x, xMin, xMax),

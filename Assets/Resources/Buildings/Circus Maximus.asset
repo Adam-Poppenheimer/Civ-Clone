@@ -11,36 +11,45 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a08b954a18af81f4e8f01c98279ac968, type: 3}
   m_Name: Circus Maximus
   m_EditorClassIdentifier: 
-  _description: 
+  _description: 'Circus Maximus Description
+
+'
   _icon: {fileID: 21300000, guid: dc8638beef025ec4abed84e0a661839e, type: 3}
   _type: 1
   _productionCost: 125
   _maintenance: 0
-  _slotCount: 0
-  _slotYield:
-    Food: 0
-    Production: 0
-    Gold: 0
-    Culture: 0
-    Science: 0
+  _specialistCount: 0
+  _specialist: {fileID: 0}
   _staticYield:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 1
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _civilizationYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _cityYieldModifier:
     Food: 0
     Production: 0
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _localHappiness: 0
   _globalHappiness: 5
   _unhappiness: 0
@@ -56,15 +65,35 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _prerequisiteBuildings: []
   _prerequisiteResourcesNearCity: []
   _prerequisiteImprovementsNearCity: []
   _globalPrerequisiteBuildings:
   - {fileID: 11400000, guid: 06f10ef5ae3afd140b0c5a3c915f57dc, type: 2}
-  _landUnitProductionBonus: 0
-  _mountedUnitProductionBonus: 0
   _requiresAdjacentRiver: 0
   _requiresCoastalCity: 0
   _providesOverseaConnection: 0
   _bonusExperience: 0
   _canBeConstructed: 1
+  _globalPromotions: []
+  _localPromotions: []
+  _providesFreeTech: 0
+  _productionModifier:
+    _value: 0
+    _conditions: []
+    _joinedTogetherBy: 0
+  _freeUnits: []
+  _freeBuildings: []
+  _localBorderExpansionModifier: 0
+  _globalBorderExpansionModifier: 0
+  _freeGreatPeople: 0
+  _localGrowthModifier: 0
+  _globalGrowthModifier: 0
+  _globalImprovementSpeedModifier: 0
+  _greatMilitaryGainSpeedModifier: 0
+  _goldenAgeLengthModifier: 0
+  _startsGoldenAge: 0

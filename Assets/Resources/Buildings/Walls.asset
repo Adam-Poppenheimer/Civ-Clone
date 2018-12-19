@@ -16,8 +16,8 @@ MonoBehaviour:
   _type: 0
   _productionCost: 75
   _maintenance: 0
-  _specialistCount: 2
-  _specialist: {fileID: 11400000, guid: 58fb1b3816346054b87e048f5ab21d10, type: 2}
+  _specialistCount: 0
+  _specialist: {fileID: 0}
   _staticYield:
     Food: 0
     Production: 0
