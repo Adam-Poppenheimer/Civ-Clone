@@ -12,6 +12,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
+using Assets.Simulation.Players;
 
 namespace Assets.UI {
 
@@ -64,7 +65,7 @@ namespace Assets.UI {
         public void ActivateBeginTurnFocusing() {
             TurnBeganSubscription = CoreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
 
-            OnTurnBegan(GameCore.ActiveCivilization);
+            OnTurnBegan(GameCore.ActivePlayer);
         }
 
         public void DeactivateBeginTurnFocusing() {
@@ -73,7 +74,9 @@ namespace Assets.UI {
 
         #endregion
 
-        private void OnTurnBegan(ICivilization activeCiv) {
+        private void OnTurnBegan(IPlayer activePlayer) {
+            var activeCiv = activePlayer.ControlledCiv;
+
             var capital = CapitalCityCanon.GetCapitalOfCiv(activeCiv);
 
             if(capital != null) {

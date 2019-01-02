@@ -41,7 +41,7 @@ namespace Assets.Simulation.Units {
         #region instance methods
 
         private bool ActiveCivUnitFilter(IUnit unit) {
-            return UnitPossessionCanon.GetOwnerOfPossession(unit) == GameCore.ActiveCivilization;
+            return UnitPossessionCanon.GetOwnerOfPossession(unit) == GameCore.ActivePlayer;
         }
 
         #endregion

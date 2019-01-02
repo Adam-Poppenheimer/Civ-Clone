@@ -10,7 +10,7 @@ using Assets.Simulation.Civilizations;
 
 namespace Assets.UI.MapEditor {
 
-    public class CivManagementRecord : MonoBehaviour {
+    public class PlayerManagementRecord : MonoBehaviour {
 
         #region instance fields and properties
 

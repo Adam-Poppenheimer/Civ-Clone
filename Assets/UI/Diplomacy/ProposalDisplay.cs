@@ -80,7 +80,7 @@ namespace Assets.UI.Diplomacy {
                 return;
             }
 
-            var sender = GameCore.ActiveCivilization;
+            var sender = GameCore.ActiveCiv;
 
             var exchangeSummary = ExchangeBuilder.BuildAllValidExchangesBetween(sender, Receiver);
 
@@ -113,7 +113,7 @@ namespace Assets.UI.Diplomacy {
 
             var dropdownOptions = new List<Dropdown.OptionData>();
 
-            foreach(var validPartners in  CivDiscoveryCanon.GetCivsDiscoveredByCiv(GameCore.ActiveCivilization)) {
+            foreach(var validPartners in CivDiscoveryCanon.GetCivsDiscoveredByCiv(GameCore.ActiveCiv)) {
                 CivOfDropdownIndex[dropdownOptions.Count] = validPartners;
 
                 dropdownOptions.Add(new Dropdown.OptionData(validPartners.Template.Name));

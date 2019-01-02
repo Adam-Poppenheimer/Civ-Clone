@@ -115,7 +115,7 @@ namespace Assets.Simulation.HexMap {
 
         public void RefreshVisibility(IHexCell cell) {
             if(VisibilityCanon.RevealMode == RevealMode.Immediate) {
-                if(GameCore.ActiveCivilization != null) {
+                if(GameCore.ActivePlayer != null) {
                     CellTextureData[cell.Index].r = VisibilityCanon .IsCellVisible(cell)  ? (byte)255 : (byte)0;
 
                 }else if(CellTextureData[cell.Index].b != 255) {
@@ -142,7 +142,7 @@ namespace Assets.Simulation.HexMap {
             Color32 data = CellTextureData[index];
             bool stillUpdating = false;
 
-            var activeCiv = GameCore.ActiveCivilization;
+            var activeCiv = GameCore.ActivePlayer;
 
             if(VisibilityCanon.IsCellVisible(cell) && data.r < 255) {
                 stillUpdating = true;

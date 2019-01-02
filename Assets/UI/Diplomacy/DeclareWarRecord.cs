@@ -51,8 +51,8 @@ namespace Assets.UI.Diplomacy {
         #endregion
 
         public void TryDeclareWar() {
-            if(CivilizationToRecord != null && WarCanon.CanDeclareWar(GameCore.ActiveCivilization, CivilizationToRecord)) {
-                WarCanon.DeclareWar(GameCore.ActiveCivilization, CivilizationToRecord);
+            if(CivilizationToRecord != null && WarCanon.CanDeclareWar(GameCore.ActiveCiv, CivilizationToRecord)) {
+                WarCanon.DeclareWar(GameCore.ActiveCiv, CivilizationToRecord);
             }
         }
 

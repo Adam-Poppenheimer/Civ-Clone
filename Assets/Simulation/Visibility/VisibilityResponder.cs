@@ -15,6 +15,7 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Core;
+using Assets.Simulation.Players;
 
 namespace Assets.Simulation.Visibility {
 
@@ -96,7 +97,7 @@ namespace Assets.Simulation.Visibility {
             visibilitySignals.CellVisibilityModeChangedSignal .Subscribe(unit => TryResetCellVisibility());
             visibilitySignals.CellExplorationModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
 
-            coreSignals.ActiveCivChangedSignal.Subscribe(OnActiveCivChanged);
+            coreSignals.ActivePlayerChangedSignal.Subscribe(OnActivePlayerChanged);
         }
 
         #endregion
@@ -187,7 +188,7 @@ namespace Assets.Simulation.Visibility {
             TryResetCellVisibility();
         }
 
-        private void OnActiveCivChanged(ICivilization newActiveCiv) {
+        private void OnActivePlayerChanged(IPlayer newActivePlayer) {
             TryResetCellVisibility();
             TryResetResourceVisibility();
         }

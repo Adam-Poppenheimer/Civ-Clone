@@ -15,6 +15,7 @@ using Assets.Simulation.Core;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Cities.Buildings;
+using Assets.Simulation.Players;
 
 namespace Assets.Simulation.MapManagement {
 
@@ -24,7 +25,6 @@ namespace Assets.Simulation.MapManagement {
 
         private ICivilizationFactory                      CivilizationFactory;
         private ITechCanon                                TechCanon;
-        private IGameCore                                 GameCore;
         private ISocialPolicyComposer                     PolicyComposer;
         private IExplorationCanon                         ExplorationCanon;
         private IHexGrid                                  Grid;
@@ -41,7 +41,7 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public CivilizationComposer(
-            ICivilizationFactory civilizationFactory, ITechCanon techCanon, IGameCore gameCore,
+            ICivilizationFactory civilizationFactory, ITechCanon techCanon,
             ISocialPolicyComposer policyComposer, IExplorationCanon explorationCanon, IHexGrid grid,
             IFreeBuildingsCanon freeBuildingsCanon, List<IBuildingTemplate> availableBuildings,
             [Inject(Id = "Available Techs")] List<ITechDefinition> availableTechs,
@@ -50,7 +50,6 @@ namespace Assets.Simulation.MapManagement {
         ) {
             CivilizationFactory   = civilizationFactory;
             TechCanon             = techCanon;
-            GameCore              = gameCore;
             PolicyComposer        = policyComposer;
             ExplorationCanon      = explorationCanon;
             Grid                  = grid;
@@ -134,8 +133,6 @@ namespace Assets.Simulation.MapManagement {
             mapData.CivDiscoveryPairs = CivDiscoveryCanon.GetDiscoveryPairs().Select(
                 pair => new Tuple<string, string>(pair.Item1.Template.Name, pair.Item2.Template.Name)
             ).ToList();
-
-            mapData.ActiveCivilization = GameCore.ActiveCivilization.Template.Name;
         }
 
         public void DecomposeCivilizations(SerializableMapData mapData) {
@@ -168,10 +165,6 @@ namespace Assets.Simulation.MapManagement {
                     GoldenAgeCanon.StartGoldenAgeForCiv(newCiv, civData.GoldenAgeTurnsLeft);
                 }
             }
-
-            GameCore.ActiveCivilization = CivilizationFactory.AllCivilizations.Where(
-                civ => civ.Template.Name.Equals(mapData.ActiveCivilization)
-            ).FirstOrDefault();
 
             foreach(var discoveryPair in mapData.CivDiscoveryPairs) {
                 var civOne = CivilizationFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(discoveryPair.Item1)).FirstOrDefault();

@@ -11,7 +11,7 @@ using UniRx;
 
 using BetterUI;
 
-using Assets.UI.Core;
+using Assets.Simulation.Players;
 using Assets.Simulation.Core;
 
 namespace Assets.UI.Core {
@@ -24,8 +24,11 @@ namespace Assets.UI.Core {
 
         [SerializeField] private string EndTurnKeyName;
 
-        private IRoundExecuter TurnExecuter;
 
+
+
+
+        private IGameCore     GameCore;
         private PlayerSignals PlayerSignals;
 
         #endregion
@@ -33,7 +36,8 @@ namespace Assets.UI.Core {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(PlayerSignals playerSignals) {
+        public void InjectDependencies(IGameCore gameCore, PlayerSignals playerSignals) {
+            GameCore      = gameCore;
             PlayerSignals = playerSignals;
         }
 
@@ -45,14 +49,14 @@ namespace Assets.UI.Core {
 
         protected override void DoOnUpdate() {
             if(Input.GetButtonDown("Submit")) {
-                PlayerSignals.EndTurnRequestedSignal.OnNext(Unit.Default);
+                PlayerSignals.EndTurnRequested.OnNext(GameCore.ActivePlayer);
             }
         }
 
         #endregion
 
         private void OnEndTurnButtonClicked() {
-            PlayerSignals.EndTurnRequestedSignal.OnNext(Unit.Default);
+            PlayerSignals.EndTurnRequested.OnNext(GameCore.ActivePlayer);
         }
 
         #endregion

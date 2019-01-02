@@ -9,28 +9,31 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
-namespace Assets.UI.Core {
+namespace Assets.Simulation.Players {
 
     public class PlayerSignals {
 
         #region instance fields and properties
 
-        public IObservable<PointerEventData> ClickedAnywhereSignal { get; private set; }
+        public ISubject<IPlayer> PlayerCreated        { get; private set; }
+        public ISubject<IPlayer> PlayerBeingDestroyed { get; private set; }
+        public ISubject<IPlayer> EndTurnRequested     { get; private set; }
 
-        public IObservable<Unit> CancelPressedSignal { get; private set; }
+        public IObservable<PointerEventData> ClickedAnywhere { get; private set; }
 
-        public ISubject<Unit> EndTurnRequestedSignal { get; private set; }
+        public IObservable<Unit> CancelPressed { get; private set; }
 
         #endregion
 
         #region constructors
 
         public PlayerSignals() {
-            ClickedAnywhereSignal = Observable.EveryUpdate().Where(ClickedAnywhereFilter).Select(ClickedAnywhereSelector);
+            PlayerCreated        = new Subject<IPlayer>();
+            PlayerBeingDestroyed = new Subject<IPlayer>();
+            EndTurnRequested     = new Subject<IPlayer>();
 
-            CancelPressedSignal = Observable.EveryUpdate().Where(CancelPressedFilter).AsUnitObservable();
-
-            EndTurnRequestedSignal = new Subject<Unit>();
+            ClickedAnywhere = Observable.EveryUpdate().Where(ClickedAnywhereFilter).Select(ClickedAnywhereSelector);
+            CancelPressed   = Observable.EveryUpdate().Where(CancelPressedFilter).AsUnitObservable();
         }
 
         #endregion

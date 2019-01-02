@@ -514,6 +514,47 @@ MonoBehaviour:
   m_ChildForceExpandHeight: 1
   m_ChildControlWidth: 1
   m_ChildControlHeight: 1
+--- !u!1 &17751257
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 17751258}
+  - component: {fileID: 17751259}
+  m_Layer: 0
+  m_Name: Players Installer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &17751258
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 17751257}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 1904558652}
+  m_RootOrder: 15
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &17751259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 17751257}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 84af01be77940794a9ea68ec483fd63a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PlayerConfig: {fileID: 11400000, guid: 269d204e1e9d78b4a9cecb672553880b, type: 2}
 --- !u!1 &19250390
 GameObject:
   m_ObjectHideFlags: 0
@@ -3254,7 +3295,7 @@ GameObject:
   - component: {fileID: 74234989}
   - component: {fileID: 74234988}
   m_Layer: 5
-  m_Name: Create Civilization Button
+  m_Name: Create Player Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3276,8 +3317,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 211.5, y: -25.846622}
-  m_SizeDelta: {x: 323, y: 51.693245}
+  m_AnchoredPosition: {x: 211.5, y: -25.68828}
+  m_SizeDelta: {x: 323, y: 51.37656}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &74234988
 MonoBehaviour:
@@ -3319,7 +3360,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 935207447}
-        m_MethodName: CreateNewCivilization
+        m_MethodName: CreateNewPlayer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3779,8 +3820,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1115.4105, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 1091.5792, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &91587488
 MonoBehaviour:
@@ -6627,7 +6668,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   VisibilityModeDropdown: {fileID: 1885426141}
   ExplorationModeDropdown: {fileID: 91587486}
-  ActiveCivDropdown: {fileID: 1520066966}
+  ActivePlayerDropdown: {fileID: 1520066966}
 --- !u!114 &165301588
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6847,8 +6888,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 211.5, y: -77.53987}
-  m_SizeDelta: {x: 323, y: 51.693245}
+  m_AnchoredPosition: {x: 211.5, y: -77.06484}
+  m_SizeDelta: {x: 323, y: 51.37656}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &175179892
 MonoBehaviour:
@@ -14790,7 +14831,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1904558652}
-  m_RootOrder: 15
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &373880786
 GameObject:
@@ -16226,7 +16267,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1904558652}
-  m_RootOrder: 17
+  m_RootOrder: 18
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &425762084
 GameObject:
@@ -27309,7 +27350,7 @@ GameObject:
   - component: {fileID: 680996218}
   - component: {fileID: 680996217}
   m_Layer: 5
-  m_Name: Civilization Record
+  m_Name: Player Record
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -29122,8 +29163,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 768.607, y: -208.23192}
-  m_SizeDelta: {x: 1487.214, y: 67.00961}
+  m_AnchoredPosition: {x: 752.7195, y: -236.49414}
+  m_SizeDelta: {x: 1455.439, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &734018431
 MonoBehaviour:
@@ -32612,8 +32653,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 768.607, y: -61.35875}
-  m_SizeDelta: {x: 1487.214, y: 72.7175}
+  m_AnchoredPosition: {x: 752.7195, y: -67.062256}
+  m_SizeDelta: {x: 1455.439, y: 84.12452}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &831681501
 MonoBehaviour:
@@ -36405,8 +36446,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 768.607, y: -136.2223}
-  m_SizeDelta: {x: 1487.214, y: 67.00961}
+  m_AnchoredPosition: {x: 752.7195, y: -153.24773}
+  m_SizeDelta: {x: 1455.439, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &906345132
 MonoBehaviour:
@@ -37692,7 +37733,7 @@ GameObject:
   - component: {fileID: 935207447}
   - component: {fileID: 935207448}
   m_Layer: 5
-  m_Name: Civ Management Panel
+  m_Name: Player Management Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37786,7 +37827,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   CivTemplateDropdown: {fileID: 175179892}
-  CreateCivilizationButton: {fileID: 74234988}
+  CreatePlayerButton: {fileID: 74234988}
   RecordPrefab: {fileID: 680996215}
   RecordContainer: {fileID: 334454008}
 --- !u!114 &935207448
@@ -37810,7 +37851,7 @@ GameObject:
   - component: {fileID: 938136726}
   - component: {fileID: 938136727}
   m_Layer: 5
-  m_Name: Active Civ Section
+  m_Name: Active Player Section
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -37833,8 +37874,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 768.607, y: -280.24152}
-  m_SizeDelta: {x: 1487.214, y: 67.00961}
+  m_AnchoredPosition: {x: 752.7195, y: -319.74057}
+  m_SizeDelta: {x: 1455.439, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &938136727
 MonoBehaviour:
@@ -54265,7 +54306,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1537994739}
   m_HandleRect: {fileID: 1537994738}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -54523,7 +54564,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Create Civilization
+  m_Text: Create Player
 --- !u!222 &1415836841
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -54647,7 +54688,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1904558652}
-  m_RootOrder: 16
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1419003020
 GameObject:
@@ -56552,7 +56593,7 @@ GameObject:
   - component: {fileID: 1462036569}
   - component: {fileID: 1462036568}
   m_Layer: 5
-  m_Name: Create Civilization Container
+  m_Name: Create Player Container
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -56575,8 +56616,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 221.5, y: -110.32695}
-  m_SizeDelta: {x: 423, y: 103.38649}
+  m_AnchoredPosition: {x: 221.5, y: -109.935745}
+  m_SizeDelta: {x: 423, y: 102.75312}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1462036568
 MonoBehaviour:
@@ -57104,8 +57145,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 221.5, y: -29.316895}
-  m_SizeDelta: {x: 423, y: 38.633705}
+  m_AnchoredPosition: {x: 221.5, y: -29.279594}
+  m_SizeDelta: {x: 423, y: 38.55919}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1481994290
 MonoBehaviour:
@@ -58985,7 +59026,7 @@ GameObject:
   - component: {fileID: 1520066969}
   - component: {fileID: 1520066965}
   m_Layer: 5
-  m_Name: Active Civ Dropdown
+  m_Name: Active Player Dropdown
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -59009,8 +59050,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1115.4105, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 1091.5792, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1520066965
 MonoBehaviour:
@@ -59084,7 +59125,7 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 165301587}
-        m_MethodName: UpdateActiveCiv
+        m_MethodName: UpdateActivePlayer
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -60884,8 +60925,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 371.8035, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 363.85974, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1560720503
 MonoBehaviour:
@@ -67832,8 +67873,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 371.8035, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 363.85974, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1715259254
 MonoBehaviour:
@@ -67885,7 +67926,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Active Civ: '
+  m_Text: 'Active Player: '
 --- !u!222 &1715259256
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -73688,7 +73729,7 @@ GameObject:
   - component: {fileID: 1868161405}
   - component: {fileID: 1868161404}
   m_Layer: 5
-  m_Name: Civilizations Scroll View
+  m_Name: Players Scroll View
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -73711,8 +73752,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 221.5, y: -431.03134}
-  m_SizeDelta: {x: 423, y: 518.0223}
+  m_AnchoredPosition: {x: 221.5, y: -428.08804}
+  m_SizeDelta: {x: 423, y: 513.55145}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1868161404
 MonoBehaviour:
@@ -74688,8 +74729,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 1115.4105, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 1091.5792, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1885426141
 MonoBehaviour:
@@ -75556,6 +75597,7 @@ MonoBehaviour:
   - {fileID: 1648950020}
   - {fileID: 440960674}
   - {fileID: 1174901592}
+  - {fileID: 17751259}
   - {fileID: 370624008}
   - {fileID: 1418824506}
   - {fileID: 424065851}
@@ -75596,6 +75638,7 @@ Transform:
   - {fileID: 1648950021}
   - {fileID: 440960675}
   - {fileID: 1174901593}
+  - {fileID: 17751258}
   - {fileID: 370624009}
   - {fileID: 1418824507}
   - {fileID: 424065852}
@@ -76864,7 +76907,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1904558652}
-  m_RootOrder: 18
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1931946572
 GameObject:
@@ -79547,8 +79590,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 371.8035, y: -33.504807}
-  m_SizeDelta: {x: 743.607, y: 67.00961}
+  m_AnchoredPosition: {x: 363.85974, y: -39.123207}
+  m_SizeDelta: {x: 727.7195, y: 78.246414}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &2006954880
 MonoBehaviour:

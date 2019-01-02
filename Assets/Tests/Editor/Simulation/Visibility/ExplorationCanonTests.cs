@@ -97,11 +97,11 @@ namespace Assets.Tests.Simulation.Visibility {
 
         [Test]
         public void IsCellExplored_AndExplorationModeActiveCiv_ReturnsExplorationStatusForActiveCiv() {
-            var cell = BuildCell();
+            var cell      = BuildCell();
             var activeCiv = BuildCiv();
             var otherCiv  = BuildCiv();
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(activeCiv);
+            MockGameCore.Setup(core => core.ActiveCiv).Returns(activeCiv);
 
             var canon = Container.Resolve<ExplorationCanon>();
 

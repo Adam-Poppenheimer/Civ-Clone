@@ -16,6 +16,7 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Technology;
 using Assets.Simulation.Units;
+using Assets.Simulation.Players;
 
 using Assets.UI.Civilizations;
 using Assets.UI.Cities;
@@ -78,7 +79,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             foreach(var display in CivilizationDisplays) {
-                display.ObjectToDisplay = GameCore.ActiveCivilization;
+                display.ObjectToDisplay = GameCore.ActivePlayer.ControlledCiv;
                 display.gameObject.SetActive(true);
                 display.Refresh();
             }
@@ -97,8 +98,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.BuildSummaries();
 
-            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCivilization) > 0);
-            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCivilization) > 0);
+            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActivePlayer.ControlledCiv) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActivePlayer.ControlledCiv) > 0);
 
             SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
@@ -107,8 +108,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             CitySummaryManager.RepositionSummaries();
 
-            FreeTechsDisplay        .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCivilization) > 0);
-            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCivilization) > 0);
+            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActivePlayer.ControlledCiv) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActivePlayer.ControlledCiv) > 0);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
@@ -132,7 +133,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         #endregion
 
-        private void OnTurnBegan(ICivilization civ) {
+        private void OnTurnBegan(IPlayer player) {
             CitySummaryManager.ClearSummaries();
             CitySummaryManager.BuildSummaries();
         }

@@ -10,7 +10,7 @@ using Zenject;
 
 using Assets.Simulation.Core;
 using Assets.Simulation.Visibility;
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
 
 using UnityCustomUtilities.Extensions;
 
@@ -22,15 +22,15 @@ namespace Assets.UI.MapEditor {
 
         [SerializeField] private Dropdown VisibilityModeDropdown;
         [SerializeField] private Dropdown ExplorationModeDropdown;
-        [SerializeField] private Dropdown ActiveCivDropdown;
+        [SerializeField] private Dropdown ActivePlayerDropdown;
 
 
 
 
-        private IVisibilityCanon     VisibilityCanon;
-        private IExplorationCanon    ExplorationCanon;
-        private ICivilizationFactory CivFactory;
-        private IGameCore            GameCore;
+        private IVisibilityCanon  VisibilityCanon;
+        private IExplorationCanon ExplorationCanon;
+        private IPlayerFactory    PlayerFactory;
+        private IGameCore         GameCore;
 
         #endregion
 
@@ -39,11 +39,11 @@ namespace Assets.UI.MapEditor {
         [Inject]
         public void InjectDependencies(
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            ICivilizationFactory civFactory, IGameCore gameCore
+            IPlayerFactory playerFactory, IGameCore gameCore
         ) {
             VisibilityCanon  = visibilityCanon;
             ExplorationCanon = explorationCanon;
-            CivFactory       = civFactory;
+            PlayerFactory    = playerFactory;
             GameCore         = gameCore;
         }
 
@@ -55,7 +55,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnEnable() {
-            SetUpActiveCivDropdown();
+            SetUpActivePlayerDropdown();
         }
 
         #endregion
@@ -80,12 +80,12 @@ namespace Assets.UI.MapEditor {
             ExplorationCanon.ExplorationMode = newMode;
         }
 
-        public void UpdateActiveCiv(int optionIndex) {
-            var civName = ActiveCivDropdown.options[optionIndex].text;
+        public void UpdateActivePlayer(int optionIndex) {
+            var civName = ActivePlayerDropdown.options[optionIndex].text;
 
-            var newActiveCiv = CivFactory.AllCivilizations.Where(civ => civ.Template.Name.Equals(civName)).FirstOrDefault();
+            var newActivePlayer = PlayerFactory.AllPlayers.Where(player => player.Name.Equals(civName)).FirstOrDefault();
 
-            GameCore.ActiveCivilization = newActiveCiv;
+            GameCore.ActivePlayer = newActivePlayer;
         }
 
         private void InitializeVisibilityDropdown() {
@@ -120,21 +120,21 @@ namespace Assets.UI.MapEditor {
             ExplorationModeDropdown.value = ExplorationModeDropdown.options.IndexOf(currentModeOption);
         }
 
-        private void SetUpActiveCivDropdown() {
-            ActiveCivDropdown.ClearOptions();
+        private void SetUpActivePlayerDropdown() {
+            ActivePlayerDropdown.ClearOptions();
 
-            List<Dropdown.OptionData> civOptions = CivFactory.AllCivilizations.Select(
-                civ => new Dropdown.OptionData(civ.Template.Name)
+            List<Dropdown.OptionData> civOptions = PlayerFactory.AllPlayers.Select(
+                player => new Dropdown.OptionData(player.Name)
             ).ToList();
 
-            ActiveCivDropdown.AddOptions(civOptions);
+            ActivePlayerDropdown.AddOptions(civOptions);
 
-            var activeCivOption = ActiveCivDropdown.options.Where(
-                option => GameCore.ActiveCivilization != null ? option.text.Equals(GameCore.ActiveCivilization.Template.Name) : false
+            var activePlayerOption = ActivePlayerDropdown.options.Where(
+                option => GameCore.ActivePlayer != null ? option.text.Equals(GameCore.ActivePlayer.Name) : false
             ).FirstOrDefault();
 
-            if(activeCivOption != null) {
-                ActiveCivDropdown.value = ActiveCivDropdown.options.IndexOf(activeCivOption);
+            if(activePlayerOption != null) {
+                ActivePlayerDropdown.value = ActivePlayerDropdown.options.IndexOf(activePlayerOption);
             }
         }
 

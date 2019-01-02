@@ -22,6 +22,7 @@ namespace Assets.Simulation.MapManagement {
 
         private IHexCellComposer                HexCellComposer;
         private ICivilizationComposer           CivilizationComposer;
+        private IPlayerComposer                 PlayerComposer;
         private ICityComposer                   CityComposer;
         private IBuildingComposer               BuildingComposer;
         private IUnitComposer                   UnitComposer;
@@ -43,6 +44,7 @@ namespace Assets.Simulation.MapManagement {
         public void InjectDependencies(
             IHexCellComposer         hexCellComposer,
             ICivilizationComposer    civilizationComposer,
+            IPlayerComposer          playerComposer,
             ICityComposer            cityComposer,
             IBuildingComposer        buildingComposer,
             IUnitComposer            unitComposer,
@@ -58,6 +60,7 @@ namespace Assets.Simulation.MapManagement {
         ) {
             HexCellComposer           = hexCellComposer;
             CivilizationComposer      = civilizationComposer;
+            PlayerComposer            = playerComposer;
             CityComposer              = cityComposer;
             BuildingComposer          = buildingComposer;
             UnitComposer              = unitComposer;
@@ -77,6 +80,7 @@ namespace Assets.Simulation.MapManagement {
 
             HexCellComposer     .ComposeCells        (mapData);
             CivilizationComposer.ComposeCivilizations(mapData);
+            PlayerComposer      .ComposePlayers      (mapData);
             CityComposer        .ComposeCities       (mapData);
             BuildingComposer    .ComposeBuildings    (mapData);
             UnitComposer        .ComposeUnits        (mapData);
@@ -106,6 +110,7 @@ namespace Assets.Simulation.MapManagement {
             }
 
             CivilizationComposer.DecomposeCivilizations(mapData);
+            PlayerComposer      .DecomposePlayers      (mapData);
             CityComposer        .DecomposeCities       (mapData);
             BuildingComposer    .DecomposeBuildings    (mapData);
             UnitComposer        .DecomposeUnits        (mapData);
@@ -147,6 +152,7 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer    .ClearRuntime();
             DiplomacyComposer   .ClearRuntime();
             CivilizationComposer.ClearRuntime();
+            PlayerComposer      .ClearRuntime();
 
             if(!immediateMode) { yield return new WaitForEndOfFrame(); }
 

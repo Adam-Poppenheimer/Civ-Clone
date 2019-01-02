@@ -26,8 +26,6 @@ namespace Assets.UI.Core {
             Container.Bind<IYieldFormatter>().To<YieldFormatter>().AsSingle();
 
             Container.Bind<DescriptionTooltip>().FromInstance(DescriptionTooltip);
-
-            Container.Bind<PlayerSignals>().AsSingle();
         }
 
         #endregion

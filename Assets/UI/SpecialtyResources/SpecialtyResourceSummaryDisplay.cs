@@ -53,7 +53,7 @@ namespace Assets.UI.SpecialtyResources {
         #region Unity messages
 
         private void OnEnable() {
-            var activeCiv = GameCore.ActiveCivilization;
+            var activeCiv = GameCore.ActivePlayer.ControlledCiv;
 
             foreach(var resource in AvailableResources) {
                 var extractedCopies = ExtractionLogic      .GetExtractedCopiesOfResourceForCiv(resource, activeCiv);
@@ -75,7 +75,7 @@ namespace Assets.UI.SpecialtyResources {
         #endregion
 
         private void BuildSummary(IResourceDefinition resource, int totalCopies) {
-            int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActiveCivilization);
+            int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActivePlayer.ControlledCiv);
 
             var newSummaryPrefab = Instantiate(ResourceSummaryPrefab);
 

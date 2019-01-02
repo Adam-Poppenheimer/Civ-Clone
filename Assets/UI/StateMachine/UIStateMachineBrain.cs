@@ -13,8 +13,8 @@ using Assets.Simulation.Cities;
 using Assets.Simulation.Units;
 using Assets.Simulation.Core;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
 
-using Assets.UI.Core;
 using Assets.UI.HexMap;
 
 namespace Assets.UI.StateMachine {
@@ -120,10 +120,10 @@ namespace Assets.UI.StateMachine {
 
         public void ListenForTransition(TransitionType type) {
             if(type == TransitionType.ReturnViaButton) {
-                CancelPressedSubscription   = PlayerSignals.CancelPressedSignal  .Subscribe(OnCancelPressed);
+                CancelPressedSubscription   = PlayerSignals.CancelPressed  .Subscribe(OnCancelPressed);
 
             }else if(type == TransitionType.ReturnViaClick) {
-                ClickedAnywhereSubscription = PlayerSignals.ClickedAnywhereSignal.Subscribe(OnClickedAnywhere);
+                ClickedAnywhereSubscription = PlayerSignals.ClickedAnywhere.Subscribe(OnClickedAnywhere);
 
             } else if(type == TransitionType.CitySelected) {
                 CityClickedSubscription = CompositeCitySignals.ActiveCivCityClickedSignal.Subscribe(OnCityClicked);
@@ -135,7 +135,7 @@ namespace Assets.UI.StateMachine {
                 UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);
 
             } else if(type == TransitionType.ToEscapeMenu) {
-                EscapeMenuRequestedSubscription = PlayerSignals.CancelPressedSignal.Subscribe(OnEscapeMenuRequested);
+                EscapeMenuRequestedSubscription = PlayerSignals.CancelPressed.Subscribe(OnEscapeMenuRequested);
 
             }else if(type == TransitionType.CivSelected) {
                 CivSelectedSubscription = CivSignals.CivSelected.Subscribe(OnCivSelected);
@@ -179,11 +179,11 @@ namespace Assets.UI.StateMachine {
             Animator.SetTrigger(UnitTriggerName);
         }
 
-        private void OnEscapeMenuRequested(UniRx.Unit unit) {
+        private void OnEscapeMenuRequested(Unit unit) {
             Animator.SetTrigger(EscapeMenuTriggerName);
         }
 
-        private void OnTurnBegan(ICivilization activeCiv) {
+        private void OnTurnBegan(IPlayer activePlayer) {
             foreach(var parameter in Animator.parameters) {
                 if(parameter.type == AnimatorControllerParameterType.Trigger) {
                     Animator.ResetTrigger(parameter.name);

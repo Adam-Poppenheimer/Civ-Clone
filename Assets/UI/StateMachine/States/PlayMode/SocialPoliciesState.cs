@@ -38,7 +38,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            SocialPoliciesDisplay.ObjectToDisplay = GameCore.ActiveCivilization;
+            SocialPoliciesDisplay.ObjectToDisplay = GameCore.ActivePlayer.ControlledCiv;
             SocialPoliciesDisplay.IgnoreCost = false;
 
             SocialPoliciesDisplay.gameObject.SetActive(true);

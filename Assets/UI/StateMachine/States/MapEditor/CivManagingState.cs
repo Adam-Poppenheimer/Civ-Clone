@@ -15,7 +15,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private CivManagementPanel CivPanel;
+        private PlayerManagementPanel CivPanel;
 
         private UIStateMachineBrain Brain;
 
@@ -24,7 +24,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(CivManagementPanel civPanel, UIStateMachineBrain brain) {
+        public void InjectDependencies(PlayerManagementPanel civPanel, UIStateMachineBrain brain) {
             CivPanel = civPanel;
             Brain    = brain;
         }

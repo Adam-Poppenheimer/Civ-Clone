@@ -13,7 +13,7 @@ using Assets.Simulation.Core;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
-using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Players;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Technology;
@@ -28,14 +28,13 @@ namespace Assets.Tests.Simulation.Core {
 
         #region instance fields and properties
 
-        private Mock<ICityFactory>         MockCityFactory;
-        private Mock<ICivilizationFactory> MockCivilizationFactory;
-        private Mock<IUnitFactory>         MockUnitFactory;
-        private Mock<IRoundExecuter>       MockRoundExecuter;
-        private Mock<IHexGrid>             MockGrid;
-        private Mock<IResourceNodeFactory> MockResourceNodeFactory;
-        private Mock<ITechCanon>           MockTechCanon;
-        private Mock<IDiplomacyCore>       MockDiplomacyCore;
+        private Mock<ICityFactory>   MockCityFactory;
+        private Mock<IPlayerFactory> MockPlayerFactory;
+        private Mock<IUnitFactory>   MockUnitFactory;
+        private Mock<IRoundExecuter> MockRoundExecuter;
+        private Mock<IHexGrid>       MockGrid;
+        private Mock<ITechCanon>     MockTechCanon;
+        private Mock<IDiplomacyCore> MockDiplomacyCore;
 
         private List<IResourceNode> AllResourceNodes = new List<IResourceNode>();
 
@@ -49,28 +48,25 @@ namespace Assets.Tests.Simulation.Core {
         public void CommonInstall() {
             AllResourceNodes.Clear();
 
-            MockRoundExecuter       = new Mock<IRoundExecuter>();
-            MockCityFactory         = new Mock<ICityFactory>();
-            MockCivilizationFactory = new Mock<ICivilizationFactory>();
-            MockUnitFactory         = new Mock<IUnitFactory>();
-            MockGrid                = new Mock<IHexGrid>();
-            MockResourceNodeFactory = new Mock<IResourceNodeFactory>();
-            MockTechCanon           = new Mock<ITechCanon>();
-            MockDiplomacyCore       = new Mock<IDiplomacyCore>();
+            MockRoundExecuter = new Mock<IRoundExecuter>();
+            MockCityFactory   = new Mock<ICityFactory>();
+            MockPlayerFactory = new Mock<IPlayerFactory>();
+            MockUnitFactory   = new Mock<IUnitFactory>();
+            MockGrid          = new Mock<IHexGrid>();
+            MockTechCanon     = new Mock<ITechCanon>();
+            MockDiplomacyCore = new Mock<IDiplomacyCore>();
 
-            MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>().AsReadOnly());
-            MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
-            MockUnitFactory        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>());
-            MockResourceNodeFactory.Setup(factory => factory.AllNodes)        .Returns(AllResourceNodes);
+            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>().AsReadOnly());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>().AsReadOnly());
+            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>());
 
-            Container.Bind<ICityFactory>        ().FromInstance(MockCityFactory        .Object);
-            Container.Bind<ICivilizationFactory>().FromInstance(MockCivilizationFactory.Object);
-            Container.Bind<IUnitFactory>        ().FromInstance(MockUnitFactory        .Object);
-            Container.Bind<IRoundExecuter>      ().FromInstance(MockRoundExecuter      .Object);
-            Container.Bind<IHexGrid>            ().FromInstance(MockGrid               .Object);
-            Container.Bind<IResourceNodeFactory>().FromInstance(MockResourceNodeFactory.Object);
-            Container.Bind<ITechCanon>          ().FromInstance(MockTechCanon          .Object);
-            Container.Bind<IDiplomacyCore>      ().FromInstance(MockDiplomacyCore      .Object);
+            Container.Bind<ICityFactory>  ().FromInstance(MockCityFactory  .Object);
+            Container.Bind<IPlayerFactory>().FromInstance(MockPlayerFactory.Object);
+            Container.Bind<IUnitFactory>  ().FromInstance(MockUnitFactory  .Object);
+            Container.Bind<IRoundExecuter>().FromInstance(MockRoundExecuter.Object);
+            Container.Bind<IHexGrid>      ().FromInstance(MockGrid         .Object);
+            Container.Bind<ITechCanon>    ().FromInstance(MockTechCanon    .Object);
+            Container.Bind<IDiplomacyCore>().FromInstance(MockDiplomacyCore.Object);
 
             Container.Bind<CoreSignals>().AsSingle();
 
@@ -108,25 +104,25 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
-        [Test(Description = "When BeginRound is called, all civilizations in CivilizationFactory " +
+        [Test(Description = "When BeginRound is called, the controlled civs of all players in PlayerFactory " +
             "are passed to TurnExecuter properly")]
         public void BeginRound_AllCivilizationsCalled() {
-            var allCivilizations = new List<ICivilization>() {
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object
+            var allPlayers = new List<IPlayer>() {
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
             };
 
-            MockCivilizationFactory.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
+            MockPlayerFactory.SetupGet(factory => factory.AllPlayers).Returns(allPlayers.AsReadOnly());
 
             var gameCore = Container.Resolve<GameCore>();
 
             gameCore.BeginRound();
 
-            foreach(var civilization in allCivilizations) {
-                MockRoundExecuter.Verify(executer => executer.BeginRoundOnCivilization(civilization),
+            foreach(var player in allPlayers) {
+                MockRoundExecuter.Verify(executer => executer.BeginRoundOnCivilization(player.ControlledCiv),
                     "TurnExecuter was not called to begin a civilization's turn");
             }
         }
@@ -155,18 +151,18 @@ namespace Assets.Tests.Simulation.Core {
         [Test(Description = "When BeginRound is called, there is a specific execution order " +
             "between different classes that is always maintained")]
         public void BeginRound_HasCorrectExecutionOrder() {
-            var city          = new Mock<ICity>()       .Object;
-            var civilization = new Mock<ICivilization>().Object;
-            var unit         = new Mock<IUnit>()        .Object;
+            var city   = new Mock<ICity>  ().Object;
+            var player = BuildPlayer(BuildCivilization());
+            var unit   = new Mock<IUnit>  ().Object;
 
-            MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
-            MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization }.AsReadOnly());
-            MockUnitFactory        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
+            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>  () { city   }.AsReadOnly());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>() { player }.AsReadOnly());
+            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>  () { unit   });
 
             var executionSequence = new MockSequence();
 
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity        (city));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCivilization(civilization));
+            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCivilization(player.ControlledCiv));
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnUnit        (unit));
 
             var gameCore = Container.Resolve<GameCore>();
@@ -197,13 +193,12 @@ namespace Assets.Tests.Simulation.Core {
 
             MockGrid.Setup(grid => grid.Cells).Returns(cellMocks.Select(mock => mock.Object).ToList().AsReadOnly());
 
-            MockCivilizationFactory
-                .Setup(factory => factory.AllCivilizations)
-                .Returns(new List<ICivilization>() { BuildCivilization() }.AsReadOnly());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers)
+                             .Returns(new List<IPlayer>() { BuildPlayer(BuildCivilization()) }.AsReadOnly());
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
 
-            gameCore.ActiveCivilization = MockCivilizationFactory.Object.AllCivilizations[0];
+            gameCore.ActivePlayer = MockPlayerFactory.Object.AllPlayers[0];
 
             gameCore.EndTurn();
 
@@ -238,25 +233,25 @@ namespace Assets.Tests.Simulation.Core {
             }
         }
 
-        [Test(Description = "When EndRound is called, all civilizations in CivilizationFactory " +
+        [Test(Description = "When EndRound is called, the controlled civs of all players in PlayerFactory " +
             "are passed to TurnExecuter properly")]
         public void EndRound_AllCivilizationsCalled() {
-            var allCivilizations = new List<ICivilization>() {
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object,
-                new Mock<ICivilization>().Object
+            var allPlayers = new List<IPlayer>() {
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
+                BuildPlayer(BuildCivilization()),
             };
 
-            MockCivilizationFactory.SetupGet(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
+            MockPlayerFactory.SetupGet(factory => factory.AllPlayers).Returns(allPlayers.AsReadOnly());
 
             var gameCore = Container.Resolve<GameCore>();
 
             gameCore.EndRound();
 
-            foreach(var civilization in allCivilizations) {
-                MockRoundExecuter.Verify(executer => executer.EndRoundOnCivilization(civilization),
+            foreach(var player in allPlayers) {
+                MockRoundExecuter.Verify(executer => executer.EndRoundOnCivilization(player.ControlledCiv),
                     "TurnExecuter was not called to end a civilization's turn");
             }
         }
@@ -285,18 +280,18 @@ namespace Assets.Tests.Simulation.Core {
         [Test(Description = "When EndRound is called, there is a specific execution order " +
             "between different classes that is always maintained")]
         public void EndRound_HasCorrectExecutionOrder() {
-            var city = new Mock<ICity>().Object;
-            var civilization = new Mock<ICivilization>().Object;
-            var unit = new Mock<IUnit>().Object;
+            var city   = new Mock<ICity>  ().Object;
+            var player = BuildPlayer(BuildCivilization());
+            var unit   = new Mock<IUnit>  ().Object;
 
-            MockCityFactory        .Setup(factory => factory.AllCities)       .Returns(new List<ICity>()         { city         }.AsReadOnly());
-            MockCivilizationFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>() { civilization }.AsReadOnly());
-            MockUnitFactory        .Setup(factory => factory.AllUnits)        .Returns(new List<IUnit>()         { unit         });
+            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>  () { city   }.AsReadOnly());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>() { player }.AsReadOnly());
+            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>  () { unit   });
 
             var executionSequence = new MockSequence();
 
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity        (city));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCivilization(civilization));
+            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCivilization(player.ControlledCiv));
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnUnit        (unit));
 
             MockDiplomacyCore.InSequence(executionSequence).Setup(core => core.UpdateOngoingDeals());
@@ -324,12 +319,12 @@ namespace Assets.Tests.Simulation.Core {
         public void EndTurnRequestedSignalFired_RoundEndedThenBegan() {
             var city = new Mock<ICity>().Object;
             var civilization = BuildCivilization();
+            var player = BuildPlayer(civilization);
 
             MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>() { city }.AsReadOnly());
 
-            MockCivilizationFactory
-                .Setup(factory => factory.AllCivilizations)
-                .Returns(new List<ICivilization>() { civilization }.AsReadOnly());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers)
+                             .Returns(new List<IPlayer>() { player }.AsReadOnly());
 
             MockGrid.Setup(grid => grid.Cells).Returns(new List<IHexCell>().AsReadOnly());
 
@@ -341,7 +336,7 @@ namespace Assets.Tests.Simulation.Core {
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity(city));
             MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity(city));
 
-            playerSignals.EndTurnRequestedSignal.OnNext(UniRx.Unit.Default);
+            playerSignals.EndTurnRequested.OnNext(player);
 
             MockRoundExecuter.VerifyAll();
         }
@@ -352,6 +347,14 @@ namespace Assets.Tests.Simulation.Core {
 
         private ICivilization BuildCivilization() {
             return new Mock<ICivilization>().Object;
+        }
+
+        private IPlayer BuildPlayer(ICivilization controlledCiv) {
+            var mockPlayer = new Mock<IPlayer>();
+
+            mockPlayer.Setup(player => player.ControlledCiv).Returns(controlledCiv);
+
+            return mockPlayer.Object;
         }
 
         private IResourceNode BuildResourceNode(IResourceDefinition resource) {

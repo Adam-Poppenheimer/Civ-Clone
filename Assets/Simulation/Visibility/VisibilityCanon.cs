@@ -82,7 +82,7 @@ namespace Assets.Simulation.Visibility {
 
         public bool IsCellVisible(IHexCell cell) {
             switch(CellVisibilityMode) {
-                case CellVisibilityMode.ActiveCiv: return GameCore.ActiveCivilization != null && IsCellVisibleToCiv(cell, GameCore.ActiveCivilization);
+                case CellVisibilityMode.ActiveCiv: return GameCore.ActiveCiv != null && IsCellVisibleToCiv(cell, GameCore.ActiveCiv);
                 case CellVisibilityMode.RevealAll: return true;
                 case CellVisibilityMode.HideAll:   return false;
                 default: throw new NotImplementedException();
@@ -138,7 +138,7 @@ namespace Assets.Simulation.Visibility {
 
         public bool IsResourceVisible(IResourceDefinition resource) {
             switch(ResourceVisibilityMode) {
-                case ResourceVisibilityMode.ActiveCiv: return GameCore.ActiveCivilization != null && TechCanon.IsResourceDiscoveredByCiv(resource, GameCore.ActiveCivilization);
+                case ResourceVisibilityMode.ActiveCiv: return GameCore.ActiveCiv != null && TechCanon.IsResourceDiscoveredByCiv(resource, GameCore.ActiveCiv);
                 case ResourceVisibilityMode.RevealAll: return true;
                 case ResourceVisibilityMode.HideAll:   return false;
                 default: throw new NotImplementedException("No behavior defined for ResourceVisibilityMode " + ResourceVisibilityMode);

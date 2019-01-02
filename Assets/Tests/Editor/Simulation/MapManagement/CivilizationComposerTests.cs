@@ -28,7 +28,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
         private Mock<ICivilizationFactory>  MockCivilizationFactory;
         private Mock<ITechCanon>            MockTechCanon;
-        private Mock<IGameCore>             MockGameCore;
         private Mock<ISocialPolicyComposer> MockPolicyComposer;
         private Mock<IExplorationCanon>     MockExplorationCanon;
         private Mock<IHexGrid>              MockGrid;
@@ -58,7 +57,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             MockCivilizationFactory = new Mock<ICivilizationFactory>();
             MockTechCanon           = new Mock<ITechCanon>();
-            MockGameCore            = new Mock<IGameCore>();
             MockPolicyComposer      = new Mock<ISocialPolicyComposer>();
             MockExplorationCanon    = new Mock<IExplorationCanon>();
             MockGrid                = new Mock<IHexGrid>();
@@ -81,7 +79,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             Container.Bind<ICivilizationFactory> ().FromInstance(MockCivilizationFactory.Object);
             Container.Bind<ITechCanon>           ().FromInstance(MockTechCanon          .Object);
-            Container.Bind<IGameCore>            ().FromInstance(MockGameCore           .Object);
             Container.Bind<ISocialPolicyComposer>().FromInstance(MockPolicyComposer     .Object);
             Container.Bind<IExplorationCanon>    ().FromInstance(MockExplorationCanon   .Object);
             Container.Bind<IHexGrid>             ().FromInstance(MockGrid               .Object);
@@ -169,8 +166,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             var civOne = BuildCivilization(templateOne, 1, 10);
             var civTwo = BuildCivilization(templateTwo, 2, 20);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
             var mapData = new SerializableMapData();
 
             var composer = Container.Resolve<CivilizationComposer>();
@@ -207,8 +202,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             civOne.TechQueue.Enqueue(queuedTechOne);
             civOne.TechQueue.Enqueue(queuedTechTwo);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
             var mapData = new SerializableMapData();
 
             var composer = Container.Resolve<CivilizationComposer>();
@@ -235,8 +228,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             BuildTechDefinition("Undiscovered");
 
             MockTechCanon.Setup(canon => canon.GetTechsDiscoveredByCiv(civOne)).Returns(discoveredTechs);
-
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
             var mapData = new SerializableMapData();
 
@@ -270,8 +261,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockTechCanon.Setup(canon => canon.GetTechsAvailableToCiv(civOne))
                          .Returns(availableTechs);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
             var mapData = new SerializableMapData();
 
             var composer = Container.Resolve<CivilizationComposer>();
@@ -300,8 +289,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var civOne = BuildCivilization(templateOne, 1, 10);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
             var policyData = new SerializableSocialPolicyData();
             MockPolicyComposer.Setup(composer => composer.ComposePoliciesFromCiv(civOne)).Returns(policyData);
 
@@ -315,29 +302,10 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeCivilizations_RecordsActiveCivilization() {
-            var templateOne = BuildCivTemplate("Civ One", Color.black);
-
-            var civOne = BuildCivilization(templateOne, 1, 10);
-
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
-            var mapData = new SerializableMapData();
-
-            var composer = Container.Resolve<CivilizationComposer>();
-
-            composer.ComposeCivilizations(mapData);
-
-            Assert.AreEqual("Civ One", mapData.ActiveCivilization);
-        }
-
-        [Test]
         public void ComposeCivilizations_RecordsExploredCells() {
             var templateOne = BuildCivTemplate("Civ One", Color.black);
 
             var civOne = BuildCivilization(templateOne, 1, 10);
-
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
             var exploredCell   = BuildCell(new HexCoordinates(1, 1));
             var unexploredCell = BuildCell(new HexCoordinates(2, 2));
@@ -375,8 +343,6 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var civOne = BuildCivilization(civTemplateOne, 1, 10);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
-
             MockFreeBuildingsCanon.Setup(canon => canon.GetFreeBuildingsForCiv(civOne)).Returns(
                 new List<IEnumerable<IBuildingTemplate>>() { freeBuildingsOne, freeBuildingsTwo }
             );
@@ -406,8 +372,6 @@ namespace Assets.Tests.Simulation.MapManagement {
         public void ComposeCivilizations_RecordsGoldenAgeData() {
             var civOne = BuildCivilization(BuildCivTemplate("", Color.black), 0, 0);
             var civTwo = BuildCivilization(BuildCivTemplate("", Color.black), 0, 0);
-
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
             MockGoldenAgeCanon.Setup(canon => canon.GetPreviousGoldenAgesForCiv(civOne)).Returns(1);
             MockGoldenAgeCanon.Setup(canon => canon.GetPreviousGoldenAgesForCiv(civTwo)).Returns(2);
@@ -450,8 +414,6 @@ namespace Assets.Tests.Simulation.MapManagement {
             };
 
             MockCivDiscoveryCanon.Setup(canon => canon.GetDiscoveryPairs()).Returns(discoveryPairs);
-
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civOne);
 
             var mapData = new SerializableMapData();
 
@@ -727,33 +689,6 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void DecomposeCivilizations_SetsActiveCivilizationProperly() {
-            var mapData = new SerializableMapData() {
-                Civilizations = new List<SerializableCivilizationData>() {
-                    new SerializableCivilizationData() {
-                        TemplateName = "Template One"
-                    },
-                    new SerializableCivilizationData() {
-                        TemplateName = "Template Two"
-                    }
-                },
-                ActiveCivilization = "Template Two",
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
-            };
-
-            BuildCivTemplate("Template One", Color.white);
-            BuildCivTemplate("Template Two", Color.red);
-
-            var composer = Container.Resolve<CivilizationComposer>();
-
-            composer.DecomposeCivilizations(mapData);
-
-            var civTwo = AllCivilizations.Where(civ => civ.Template.Name.Equals("Template Two")).First();
-
-            MockGameCore.VerifySet(core => core.ActiveCivilization = civTwo);
-        }
-
-        [Test]
         public void DecomposeCivilizations_RebuildsExploredCellsProperly() {
             var cellOne   = BuildCell(new HexCoordinates(1, 1));
             var cellTwo   = BuildCell(new HexCoordinates(2, 2));
@@ -768,7 +703,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         }
                     }
                 },
-                ActiveCivilization = "Template One",
+                ActivePlayer = "Template One",
                 CivDiscoveryPairs = new List<Tuple<string, string>>()
             };
 
@@ -801,7 +736,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         }
                     }
                 },
-                ActiveCivilization = "Civ One",
+                ActivePlayer = "Civ One",
                 CivDiscoveryPairs = new List<Tuple<string, string>>()
             };
 
@@ -848,7 +783,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         GoldenAgeTurnsLeft = 333
                     }
                 },
-                ActiveCivilization = "Civ One",
+                ActivePlayer = "Civ One",
                 CivDiscoveryPairs = new List<Tuple<string, string>>()
             };
 
@@ -887,7 +822,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         GoldenAgeTurnsLeft = 0
                     }
                 },
-                ActiveCivilization = "Civ One",
+                ActivePlayer = "Civ One",
                 CivDiscoveryPairs = new List<Tuple<string, string>>()
             };
 

@@ -9,12 +9,11 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Visibility;
-using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
-using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Core;
+using Assets.Simulation.Players;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -26,6 +25,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IHexGrid                                  Grid;
         private IMapComposer                              MapComposer;
         private ICivilizationFactory                      CivFactory;
+        private IPlayerFactory                            PlayerFactory;
+        private IPlayerConfig                             PlayerConfig;
         private IVisibilityResponder                      VisibilityResponder;
         private IVisibilityCanon                          VisibilityCanon;
         private IExplorationCanon                         ExplorationCanon;
@@ -39,9 +40,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory, IVisibilityResponder visibilityResponder,
-            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            ReadOnlyCollection<ICivilizationTemplate> civTemplates,
+            ICivilizationFactory civFactory, IPlayerFactory playerFactory, IPlayerConfig playerConfig,
+            IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
+            IExplorationCanon explorationCanon, ReadOnlyCollection<ICivilizationTemplate> civTemplates,
             List<IPlayModeSensitiveElement> playModeSensitiveElements
 
         ) {
@@ -49,6 +50,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             Grid                      = grid;
             MapComposer               = mapComposer;
             CivFactory                = civFactory;
+            PlayerFactory             = playerFactory;
+            PlayerConfig              = playerConfig;
             VisibilityResponder       = visibilityResponder;
             VisibilityCanon           = visibilityCanon;
             ExplorationCanon          = explorationCanon;
@@ -77,7 +80,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Grid.Build(4, 3);
 
-            CivFactory.Create(CivTemplates[0]);
+            var playerCiv = CivFactory.Create(CivTemplates[0]);
+            PlayerFactory.CreatePlayer(playerCiv, PlayerConfig.HumanBrain);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

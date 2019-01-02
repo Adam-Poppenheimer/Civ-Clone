@@ -220,7 +220,7 @@ namespace Assets.Tests.Simulation.Visibility {
             var activeCiv = BuildCiv();
             var otherCiv  = BuildCiv();
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(activeCiv);
+            MockGameCore.Setup(core => core.ActiveCiv).Returns(activeCiv);
 
             var canon = Container.Resolve<VisibilityCanon>();
 
@@ -229,7 +229,7 @@ namespace Assets.Tests.Simulation.Visibility {
             canon.IncreaseCellVisibilityToCiv(cellOne, activeCiv);
             canon.IncreaseCellVisibilityToCiv(cellTwo, otherCiv);
 
-            Assert.IsTrue(canon.IsCellVisible(cellOne),  "CellOne is incorrectly invisible");
+            Assert.IsTrue (canon.IsCellVisible(cellOne), "CellOne is incorrectly invisible");
             Assert.IsFalse(canon.IsCellVisible(cellTwo), "CellTwo is incorrectly visible");
         }
 
@@ -306,7 +306,7 @@ namespace Assets.Tests.Simulation.Visibility {
             MockTechCanon.Setup(canon => canon.IsResourceDiscoveredByCiv(resourceOne, activeCiv)).Returns(true);
             MockTechCanon.Setup(canon => canon.IsResourceDiscoveredByCiv(resourceTwo, otherCiv)) .Returns(true);
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(activeCiv);
+            MockGameCore.Setup(core => core.ActiveCiv).Returns(activeCiv);
 
             var visibilityCanon = Container.Resolve<VisibilityCanon>();
 
@@ -341,7 +341,7 @@ namespace Assets.Tests.Simulation.Visibility {
             var resource = BuildResource();
             var civ      = BuildCiv();
 
-            MockGameCore.Setup(core => core.ActiveCivilization).Returns(civ);
+            MockGameCore.Setup(core => core.ActiveCiv).Returns(civ);
 
             MockTechCanon.Setup(techCanon => techCanon.IsResourceDiscoveredByCiv(resource, civ)).Returns(true);
 

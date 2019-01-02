@@ -10,6 +10,7 @@ using Assets.UI;
 
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Core;
+using Assets.Simulation.Players;
 
 namespace Assets.UI.Civilizations {
 
@@ -24,7 +25,7 @@ namespace Assets.UI.Civilizations {
         #region instance methods
 
         [Inject]
-        private void InjectSignals(CoreSignals coreSignals) {            
+        private void InjectSignals(CoreSignals coreSignals) {
             SignalSubscriptions.Add(coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan));
         }
 
@@ -36,9 +37,9 @@ namespace Assets.UI.Civilizations {
 
         #endregion
 
-        private void OnTurnBegan(ICivilization civ) {
+        private void OnTurnBegan(IPlayer player) {
             if(isActiveAndEnabled) {
-                ObjectToDisplay = civ;
+                ObjectToDisplay = player.ControlledCiv;
                 Refresh();
             }
         }

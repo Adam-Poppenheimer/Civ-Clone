@@ -271,7 +271,7 @@ namespace Assets.Simulation.HexMap {
                 return _corners;
             }
         } 
-        private Vector3[] _corners;
+        private Vector3[] _corners = null;
 
         #endregion
 

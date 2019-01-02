@@ -185,7 +185,6 @@ namespace Assets.Simulation.HexMap {
 
         #region constructors
 
-        [Inject]
         public HexCell(
             Vector3 gridRelativePosition, IHexGrid grid,
             HexCellSignals signals, IHexMapRenderConfig renderConfig

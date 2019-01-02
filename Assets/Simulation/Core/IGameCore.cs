@@ -1,4 +1,5 @@
-﻿using Assets.Simulation.Civilizations;
+﻿using Assets.Simulation.Players;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Core {
 
@@ -6,7 +7,8 @@ namespace Assets.Simulation.Core {
 
         #region properties
 
-        ICivilization ActiveCivilization { get; set; }
+        IPlayer       ActivePlayer { get; set; }
+        ICivilization ActiveCiv    { get; }
 
         #endregion
 

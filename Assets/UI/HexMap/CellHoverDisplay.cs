@@ -160,7 +160,7 @@ namespace Assets.UI.HexMap {
             if(cellOwner != null) {
                 YieldDisplay.DisplaySummary(GenerationLogic.GetYieldOfCellForCity(cell, cellOwner));
             }else {
-                YieldDisplay.DisplaySummary(CellYieldLogic.GetYieldOfCell(cell, GameCore.ActiveCivilization));
+                YieldDisplay.DisplaySummary(CellYieldLogic.GetYieldOfCell(cell, GameCore.ActiveCiv));
             }
         }
 

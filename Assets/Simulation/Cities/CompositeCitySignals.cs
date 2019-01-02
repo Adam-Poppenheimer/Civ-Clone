@@ -40,7 +40,7 @@ namespace Assets.Simulation.Cities {
         #region instance methods
 
         private bool ActivCivCityFilter(ICity city) {
-            return CityPossessionCanon.GetOwnerOfPossession(city) == GameCore.ActiveCivilization;
+            return CityPossessionCanon.GetOwnerOfPossession(city) == GameCore.ActivePlayer;
         }
 
         #endregion

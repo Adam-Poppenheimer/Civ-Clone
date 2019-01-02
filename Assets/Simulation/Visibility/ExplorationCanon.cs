@@ -63,7 +63,7 @@ namespace Assets.Simulation.Visibility {
 
         public bool IsCellExplored(IHexCell cell) {
             switch(ExplorationMode) {
-                case CellExplorationMode.ActiveCiv:        return GameCore.ActiveCivilization != null && IsCellExploredByCiv(cell, GameCore.ActiveCivilization);
+                case CellExplorationMode.ActiveCiv:        return GameCore.ActivePlayer != null && IsCellExploredByCiv(cell, GameCore.ActiveCiv);
                 case CellExplorationMode.AllCellsExplored: return true;
                 default: throw new NotImplementedException();
             }

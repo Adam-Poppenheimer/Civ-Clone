@@ -11,7 +11,7 @@ using UniRx;
 using Assets.Simulation.Cities;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Units;
-using Assets.Simulation.Units.Abilities;
+using Assets.Simulation.Players;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Diplomacy;
 
@@ -27,29 +27,36 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
-        /// <summary>
-        /// The civilization the player controls.
-        /// </summary>
-        public ICivilization ActiveCivilization {
-            get { return _activeCivilization; }
+        public IPlayer ActivePlayer {
+            get { return _activePlayer; }
             set {
-                if(_activeCivilization != value) {
-                    _activeCivilization = value;
-                    CoreSignals.ActiveCivChangedSignal.OnNext(_activeCivilization);
+                if(_activePlayer != value) {
+                    _activePlayer = value;
+                    CoreSignals.ActivePlayerChangedSignal.OnNext(_activePlayer);
                 }
             }
         }
-        private ICivilization _activeCivilization;
+        private IPlayer _activePlayer;
+
+        public ICivilization ActiveCiv {
+            get {
+                if(ActivePlayer != null) {
+                    return ActivePlayer.ControlledCiv;
+                }else {
+                    return null;
+                }
+            }
+        }
 
         public int CurrentRound { get; private set; }
 
-        private ICityFactory         CityFactory;
-        private ICivilizationFactory CivilizationFactory;
-        private IUnitFactory         UnitFactory;
-        private IRoundExecuter       RoundExecuter;
-        private CoreSignals          CoreSignals;
-        private IHexGrid             Grid;
-        private IDiplomacyCore       DiplomacyCore;
+        private ICityFactory   CityFactory;
+        private IPlayerFactory PlayerFactory;
+        private IUnitFactory   UnitFactory;
+        private IRoundExecuter RoundExecuter;
+        private CoreSignals    CoreSignals;
+        private IHexGrid       Grid;
+        private IDiplomacyCore DiplomacyCore;
 
         #endregion
 
@@ -57,23 +64,21 @@ namespace Assets.Simulation.Core {
 
         [Inject]
         public GameCore(
-            ICityFactory cityFactory, ICivilizationFactory civilizationFactory,
+            ICityFactory cityFactory, IPlayerFactory playerFactory,
             IUnitFactory unitFactory, IRoundExecuter turnExecuter,
             CoreSignals coreSignals, IHexGrid grid, IDiplomacyCore diplomacyCore,
-            PlayerSignals playerSignals, CivilizationSignals civSignals
+            PlayerSignals playerSignals
         ){
-            CityFactory         = cityFactory;
-            CivilizationFactory = civilizationFactory;
-            UnitFactory         = unitFactory;
-            RoundExecuter       = turnExecuter;
-            CoreSignals         = coreSignals;
-            Grid                = grid;
-            DiplomacyCore       = diplomacyCore;
-            
-            playerSignals.EndTurnRequestedSignal.Subscribe(OnEndTurnRequested);
+            CityFactory   = cityFactory;
+            PlayerFactory = playerFactory;
+            UnitFactory   = unitFactory;
+            RoundExecuter = turnExecuter;
+            CoreSignals   = coreSignals;
+            Grid          = grid;
+            DiplomacyCore = diplomacyCore;
 
-            civSignals.CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
-            civSignals.NewCivilizationCreated    .Subscribe(OnNewCivilizationCreated);
+            playerSignals.PlayerBeingDestroyed.Subscribe(OnPlayerBeingDestroyed);
+            playerSignals.PlayerCreated       .Subscribe(OnPlayerCreated);
         }
 
         #endregion
@@ -81,26 +86,6 @@ namespace Assets.Simulation.Core {
         #region instance methods
 
         #region from IGameCore
-
-        public void EndTurn() {
-            if(ActiveCivilization == null) {
-                return;
-            }
-
-            PerformEndOfTurnActions();
-
-            var allCivs = CivilizationFactory.AllCivilizations;
-
-            if(ActiveCivilization == allCivs.Last()) {
-                EndRound();
-                BeginRound();
-                ActiveCivilization = allCivs.First();
-            }else {
-                ActiveCivilization = allCivs[allCivs.IndexOf(ActiveCivilization) + 1];
-            }
-
-            PerformBeginningOfTurnActions();
-        }
         
         public void BeginRound() {
             foreach(var unit in UnitFactory.AllUnits) {
@@ -111,8 +96,8 @@ namespace Assets.Simulation.Core {
                 RoundExecuter.BeginRoundOnCity(city);
             }
 
-            foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                RoundExecuter.BeginRoundOnCivilization(civilization);
+            foreach(var player in PlayerFactory.AllPlayers) {
+                RoundExecuter.BeginRoundOnCivilization(player.ControlledCiv);
             }
 
             CoreSignals.RoundBeganSignal.OnNext(++CurrentRound);
@@ -127,8 +112,8 @@ namespace Assets.Simulation.Core {
                 RoundExecuter.EndRoundOnCity(city);
             }
 
-            foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                RoundExecuter.EndRoundOnCivilization(civilization);
+            foreach(var player in PlayerFactory.AllPlayers) {
+                RoundExecuter.EndRoundOnCivilization(player.ControlledCiv);
             }
 
             DiplomacyCore.UpdateOngoingDeals();
@@ -138,34 +123,59 @@ namespace Assets.Simulation.Core {
 
         #endregion
 
+        private void StartTurn(IPlayer player) {
+            ActivePlayer = player;
+
+            player.PassControl(() => EndTurn());
+        }
+
+        public void EndTurn() {
+            Debug.Log("Ending turn on player " + (ActivePlayer != null ? ActivePlayer.Name : "NULL"));
+
+            if(ActivePlayer == null) {
+                return;
+            }
+
+            PerformEndOfTurnActions();
+
+            var allPlayers = PlayerFactory.AllPlayers;
+
+            if(ActivePlayer == allPlayers.Last()) {
+                EndRound();
+                BeginRound();
+
+                StartTurn(allPlayers.First());
+            }else {
+                StartTurn(allPlayers[allPlayers.IndexOf(ActivePlayer) + 1]);
+            }
+
+            PerformBeginningOfTurnActions();
+        }
+
         private void PerformBeginningOfTurnActions() {
             foreach(var cell in Grid.Cells) {
                 cell.RefreshVisibility();
             }
 
-            CoreSignals.TurnBeganSignal.OnNext(ActiveCivilization);
+            CoreSignals.TurnBeganSignal.OnNext(ActivePlayer);
         }
 
         private void PerformEndOfTurnActions() {
-            CoreSignals.TurnEndedSignal.OnNext(ActiveCivilization);
+            CoreSignals.TurnEndedSignal.OnNext(ActivePlayer);
         }
 
-        private void OnEndTurnRequested(Unit unit) {
-            EndTurn();
-        }
-
-        private void OnNewCivilizationCreated(ICivilization civ) {
-            if(ActiveCivilization == null) {
-                ActiveCivilization = civ;
+        private void OnPlayerCreated(IPlayer player) {
+            if(ActivePlayer == null) {
+                StartTurn(player);
             }
         }
 
-        private void OnCivilizationBeingDestroyed(ICivilization civ) {
-            if(ActiveCivilization == civ) {
-                if(CivilizationFactory.AllCivilizations.Count > 0) {
+        private void OnPlayerBeingDestroyed(IPlayer player) {
+            if(ActivePlayer == player) {
+                if(PlayerFactory.AllPlayers.Count > 0) {
                     EndTurn();
                 }else {
-                    ActiveCivilization = null;
+                    ActivePlayer = null;
                 }
             }
         }

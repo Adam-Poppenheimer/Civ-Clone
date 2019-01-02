@@ -21,7 +21,7 @@ namespace Assets.UI.StateMachine {
 
         [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
 
-        [SerializeField] private CivManagementPanel       CivManagementPanel;
+        [SerializeField] private PlayerManagementPanel       CivManagementPanel;
         [SerializeField] private UnitPaintingPanel        UnitPaintingPanel;
         [SerializeField] private CityPaintingPanel        CityPaintingPanel;
         [SerializeField] private CivSelectionPanel        CivSelectionPanel;
@@ -54,7 +54,7 @@ namespace Assets.UI.StateMachine {
 
             Container.Bind<List<RectTransform>>().WithId("Map Editor Default Panels").FromInstance(MapEditorDefaultPanels);
 
-            Container.Bind<CivManagementPanel>      ().FromInstance(CivManagementPanel);
+            Container.Bind<PlayerManagementPanel>      ().FromInstance(CivManagementPanel);
             Container.Bind<UnitPaintingPanel>       ().FromInstance(UnitPaintingPanel);
             Container.Bind<CityPaintingPanel>       ().FromInstance(CityPaintingPanel);
             Container.Bind<CivSelectionPanel>       ().FromInstance(CivSelectionPanel);

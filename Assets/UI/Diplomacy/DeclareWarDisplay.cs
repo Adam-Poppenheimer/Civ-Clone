@@ -55,7 +55,7 @@ namespace Assets.UI.Diplomacy {
 
         private void BuildRecords() {
             foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                if(!WarCanon.CanDeclareWar(GameCore.ActiveCivilization, civilization)) {
+                if(!WarCanon.CanDeclareWar(GameCore.ActiveCiv, civilization)) {
                     continue;
                 }
 

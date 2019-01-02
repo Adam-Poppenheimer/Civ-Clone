@@ -12,19 +12,20 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
 
 namespace Assets.UI.MapEditor {
 
-    public class CivManagementPanel : MonoBehaviour {
+    public class PlayerManagementPanel : MonoBehaviour {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown            CivTemplateDropdown;
-        [SerializeField] private Button              CreateCivilizationButton;
-        [SerializeField] private CivManagementRecord RecordPrefab;
-        [SerializeField] private RectTransform       RecordContainer;
+        [SerializeField] private Dropdown               CivTemplateDropdown;
+        [SerializeField] private Button                 CreatePlayerButton;
+        [SerializeField] private PlayerManagementRecord RecordPrefab;
+        [SerializeField] private RectTransform          RecordContainer;
 
-        private List<CivManagementRecord> InstantiatedRecords = new List<CivManagementRecord>();
+        private List<PlayerManagementRecord> InstantiatedRecords = new List<PlayerManagementRecord>();
 
         private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 
@@ -33,8 +34,10 @@ namespace Assets.UI.MapEditor {
 
 
 
-
+        
         private ICivilizationFactory                      CivilizationFactory;
+        private IPlayerFactory                            PlayerFactory;
+        private IPlayerConfig                             PlayerConfig;
         private CivilizationSignals                       CivSignals;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         
@@ -44,10 +47,13 @@ namespace Assets.UI.MapEditor {
 
         [Inject]
         public void InjectDependencies(
-            ICivilizationFactory civilizationFactory, CivilizationSignals civSignals,
+            ICivilizationFactory civilizationFactory, IPlayerFactory playerFactory,
+            IPlayerConfig playerConfig, CivilizationSignals civSignals,
             ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ){
             CivilizationFactory = civilizationFactory;
+            PlayerFactory       = playerFactory;
+            PlayerConfig        = playerConfig;
             CivSignals          = civSignals;
             CivTemplates        = civTemplates;
         }
@@ -69,8 +75,10 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
-        public void CreateNewCivilization() {
-            CivilizationFactory.Create(SelectedTemplate);
+        public void CreateNewPlayer() {
+            var newCiv = CivilizationFactory.Create(SelectedTemplate);
+
+            PlayerFactory.CreatePlayer(newCiv, PlayerConfig.HumanBrain);
 
             Refresh();
         }
@@ -82,7 +90,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void Clear() {
-            for(int i = InstantiatedRecords.Count - 1; i >=0; i--) {
+            for(int i = InstantiatedRecords.Count - 1; i >= 0; i--) {
                 Destroy(InstantiatedRecords[i].gameObject);
             }
 
@@ -92,21 +100,21 @@ namespace Assets.UI.MapEditor {
         private void Refresh() {
             Clear();
 
-            foreach(var civilization in CivilizationFactory.AllCivilizations) {
-                CivManagementRecord newRecord = Instantiate(RecordPrefab);
+            foreach(var player in PlayerFactory.AllPlayers) {
+                PlayerManagementRecord newRecord = Instantiate(RecordPrefab);
 
                 newRecord.gameObject.SetActive(true);
                 newRecord.transform.SetParent(RecordContainer, false);
-                newRecord.NameField.text = civilization.Template.Name;
+                newRecord.NameField.text = player.Name;
 
-                var cachedCiv = civilization;
-                newRecord.EditButton   .onClick.AddListener(() => CivSignals.CivSelected.OnNext(cachedCiv));
-                newRecord.DestroyButton.onClick.AddListener(() => DestroyCiv(cachedCiv));
+                var cachedPlayer = player;
+                newRecord.EditButton   .onClick.AddListener(() => CivSignals.CivSelected.OnNext(cachedPlayer.ControlledCiv));
+                newRecord.DestroyButton.onClick.AddListener(() => DestroyPlayer(cachedPlayer));
 
                 InstantiatedRecords.Add(newRecord);
             }
 
-            CreateCivilizationButton.transform.SetAsLastSibling();
+            CreatePlayerButton.transform.SetAsLastSibling();
 
             RefreshCivTemplateDropdown();
         }
@@ -126,14 +134,17 @@ namespace Assets.UI.MapEditor {
 
                 UpdateSelectedCivTemplate(0);
 
-                CreateCivilizationButton.interactable = true;
+                CreatePlayerButton.interactable = true;
             }else {
-                CreateCivilizationButton.interactable = false;
+                CreatePlayerButton.interactable = false;
             }
         }
 
-        private void DestroyCiv(ICivilization civ) {
-            civ.Destroy();
+        private void DestroyPlayer(IPlayer player) {
+            var civToDestroy = player.ControlledCiv;
+
+            PlayerFactory.DestroyPlayer(player);
+            civToDestroy.Destroy();
         }
 
         #endregion

@@ -10,6 +10,7 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
 
 using UnityCustomUtilities.Extensions;
 
@@ -35,12 +36,14 @@ namespace Assets.Simulation.MapGeneration {
         private IHexGrid                    Grid;
         private IOceanGenerator             OceanGenerator;
         private IStartingUnitPlacementLogic StartingUnitPlacementLogic;
+        private IPlayerFactory              PlayerFactory;
         private IGridPartitionLogic         GridPartitionLogic;
         private IWaterRationalizer          WaterRationalizer;
         private IHomelandGenerator          HomelandGenerator;
         private ITemplateSelectionLogic     TemplateSelectionLogic;
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
+        private IPlayerConfig               PlayerConfig;
 
         #endregion
 
@@ -50,22 +53,25 @@ namespace Assets.Simulation.MapGeneration {
         public MapGenerator(
             IMapGenerationConfig config, ICivilizationFactory civFactory, IHexGrid grid,
             IOceanGenerator oceanGenerator, IGridTraversalLogic gridTraversalLogic,
-            IStartingUnitPlacementLogic startingUnitPlacementLogic,
+            IStartingUnitPlacementLogic startingUnitPlacementLogic, IPlayerFactory playerFactory,
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
-            ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic
+            ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic,
+            IPlayerConfig playerConfig
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
             Grid                       = grid;
             OceanGenerator             = oceanGenerator;
             StartingUnitPlacementLogic = startingUnitPlacementLogic;
+            PlayerFactory              = playerFactory;
             GridPartitionLogic         = gridPartitionLogic;
             WaterRationalizer          = waterRationalizer;
             HomelandGenerator          = homelandGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
             CellClimateLogic           = cellClimateLogic;
             SubdivisionLogic           = subdivisionLogic;
+            PlayerConfig               = playerConfig;
         }
 
         #endregion
@@ -82,7 +88,7 @@ namespace Assets.Simulation.MapGeneration {
             Grid.Build(variables.ChunkCountX, variables.ChunkCountZ);
             Profiler.EndSample();
 
-            GenerateCivs(variables);
+            GeneratePlayers(variables);
             
             Profiler.BeginSample("Generate Oceans and Continents");
             var oceansAndContinents = GenerateOceansAndContinents(template, variables);
@@ -124,11 +130,13 @@ namespace Assets.Simulation.MapGeneration {
             return originalState;
         }
 
-        private void GenerateCivs(IMapGenerationVariables variables) {
+        private void GeneratePlayers(IMapGenerationVariables variables) {
             CivFactory.Clear();
 
             foreach(var civTemplate in variables.Civilizations) {
-                CivFactory.Create(civTemplate, variables.StartingTechs);
+                var newCiv = CivFactory.Create(civTemplate, variables.StartingTechs);
+
+                PlayerFactory.CreatePlayer(newCiv, PlayerConfig.HumanBrain);
             }
         }
 

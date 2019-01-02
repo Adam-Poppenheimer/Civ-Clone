@@ -6,7 +6,7 @@ using System.Text;
 using Zenject;
 using UniRx;
 
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
 
 namespace Assets.Simulation.Core {
 
@@ -17,10 +17,10 @@ namespace Assets.Simulation.Core {
         public ISubject<int> RoundBeganSignal { get; private set; }
         public ISubject<int> RoundEndedSignal { get; private set; }
 
-        public ISubject<ICivilization> TurnBeganSignal { get; private set; }
-        public ISubject<ICivilization> TurnEndedSignal { get; private set; }
+        public ISubject<IPlayer> TurnBeganSignal { get; private set; }
+        public ISubject<IPlayer> TurnEndedSignal { get; private set; }
 
-        public ISubject<ICivilization> ActiveCivChangedSignal { get; private set; }
+        public ISubject<IPlayer> ActivePlayerChangedSignal { get; private set; }
 
         #endregion
 
@@ -30,10 +30,10 @@ namespace Assets.Simulation.Core {
             RoundBeganSignal = new Subject<int>();
             RoundEndedSignal = new Subject<int>();
 
-            TurnBeganSignal = new Subject<ICivilization>();
-            TurnEndedSignal = new Subject<ICivilization>();
+            TurnBeganSignal = new Subject<IPlayer>();
+            TurnEndedSignal = new Subject<IPlayer>();
 
-            ActiveCivChangedSignal = new Subject<ICivilization>();
+            ActivePlayerChangedSignal = new Subject<IPlayer>();
         }
 
         #endregion
