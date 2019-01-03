@@ -23,6 +23,8 @@ namespace Assets.Simulation.Players {
 
         void PassControl(Action controlRelinquisher);
 
+        void Clear();
+
         #endregion
 
     }

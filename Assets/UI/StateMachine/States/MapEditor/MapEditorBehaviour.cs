@@ -30,8 +30,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IVisibilityResponder                      VisibilityResponder;
         private IVisibilityCanon                          VisibilityCanon;
         private IExplorationCanon                         ExplorationCanon;
-        private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         private List<IPlayModeSensitiveElement>           PlayModeSensitiveElements;
+        private ICivilizationConfig                       CivConfig;
 
         #endregion
 
@@ -42,8 +42,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
             ICivilizationFactory civFactory, IPlayerFactory playerFactory, IPlayerConfig playerConfig,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon, ReadOnlyCollection<ICivilizationTemplate> civTemplates,
-            List<IPlayModeSensitiveElement> playModeSensitiveElements
+            IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements,
+            ICivilizationConfig civConfig
 
         ) {
             Brain                     = brain;
@@ -55,8 +55,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             VisibilityResponder       = visibilityResponder;
             VisibilityCanon           = visibilityCanon;
             ExplorationCanon          = explorationCanon;
-            CivTemplates              = civTemplates;
             PlayModeSensitiveElements = playModeSensitiveElements;
+            CivConfig                 = civConfig;
         }
 
         #region from StateMachineBehaviour
@@ -80,8 +80,11 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             Grid.Build(4, 3);
 
-            var playerCiv = CivFactory.Create(CivTemplates[0]);
-            PlayerFactory.CreatePlayer(playerCiv, PlayerConfig.HumanBrain);
+            var playerCiv    = CivFactory.Create(CivConfig.DefaultTemplate);
+            var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
+
+            PlayerFactory.CreatePlayer(playerCiv,    PlayerConfig.HumanBrain);
+            PlayerFactory.CreatePlayer(barbarianCiv, PlayerConfig.BarbarianBrain);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

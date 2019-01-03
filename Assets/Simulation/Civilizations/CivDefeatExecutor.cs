@@ -51,7 +51,7 @@ namespace Assets.Simulation.Civilizations {
             CivSignals.CivLostUnit.Subscribe(OnLostUnit);
             CivSignals.CivLostCity.Subscribe(OnLostCity);
 
-            CivSignals.NewCivilizationCreated.Subscribe(civ => CivsToCheck.Add(civ));
+            CivSignals.NewCivilizationCreated.Subscribe(OnNewCivCreated);
         }
 
         #endregion
@@ -89,6 +89,10 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
+        public bool IsCheckingCiv(ICivilization civ) {
+            return CivsToCheck.Contains(civ);
+        }
+
         #endregion
 
         private void OnLostUnit(Tuple<ICivilization, IUnit> data) {
@@ -100,6 +104,12 @@ namespace Assets.Simulation.Civilizations {
         private void OnLostCity(Tuple<ICivilization, ICity> data) {
             if(ShouldCivBeDefeated(data.Item1)) {
                 PerformDefeatOfCiv(data.Item1);
+            }
+        }
+
+        private void OnNewCivCreated(ICivilization civ) {
+            if(!civ.Template.IsBarbaric) {
+                CivsToCheck.Add(civ);
             }
         }
 

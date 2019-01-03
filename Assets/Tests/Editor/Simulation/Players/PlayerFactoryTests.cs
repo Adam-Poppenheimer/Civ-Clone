@@ -31,6 +31,9 @@ namespace Assets.Tests.Simulation.Players {
 
             Container.Bind<PlayerSignals>().FromInstance(PlayerSignals);
 
+            Container.Bind<IPlayerBrain>().WithId("Human Brain")    .FromMock();
+            Container.Bind<IPlayerBrain>().WithId("Barbarian Brain").FromMock();
+
             Container.Bind<PlayerFactory>().AsSingle();
         }
 
@@ -93,6 +96,17 @@ namespace Assets.Tests.Simulation.Players {
         }
 
         [Test]
+        public void DestroyPlayer_PlayerCleared() {
+            var mockPlayer = new Mock<IPlayer>();
+
+            var factory = Container.Resolve<PlayerFactory>();
+
+            factory.DestroyPlayer(mockPlayer.Object);
+
+            mockPlayer.Verify(player => player.Clear(), Times.Once);
+        }
+
+        [Test]
         public void DestroyPlayer_PlayerRemovedFromAllPlayers() {
             var civ   = BuildCiv();
             var brain = BuildBrain();
@@ -126,12 +140,64 @@ namespace Assets.Tests.Simulation.Players {
             Assert.AreEqual(newPlayer, playerPassedToSignal);
         }
 
+        [Test]
+        public void AllPlayers_SortedByPlayerName() {
+            var brain = BuildBrain();
+
+            var factory = Container.Resolve<PlayerFactory>();
+
+            var playerThree = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 3", false)), brain);
+            var playerOne   = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 1", false)), brain);
+            var playerTwo   = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 2", false)), brain);
+            var playerFour  = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 4", false)), brain);
+
+            CollectionAssert.AreEqual(
+                new List<IPlayer>() { playerOne, playerTwo, playerThree, playerFour },
+                factory.AllPlayers
+            );
+        }
+
+        [Test]
+        public void AllPlayers_BarbaricPlayersSortedAfterNonBarbaricOnes() {
+            var brain = BuildBrain();
+
+            var factory = Container.Resolve<PlayerFactory>();
+
+            var playerThree = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 3", true)),  brain);
+            var playerOne   = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 1", true)),  brain);
+            var playerTwo   = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 2", false)), brain);
+            var playerFour  = factory.CreatePlayer(BuildCiv(BuildCivTemplate("Civ 4", false)), brain);
+
+            CollectionAssert.AreEqual(
+                new List<IPlayer>() { playerTwo, playerFour, playerOne, playerThree },
+                factory.AllPlayers
+            );
+        }
+
         #endregion
 
         #region utilities
 
+        private ICivilizationTemplate BuildCivTemplate(string name, bool isBarbaric) {
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Name = name;
+            mockTemplate.Setup(template => template.Name)      .Returns(name);
+            mockTemplate.Setup(template => template.IsBarbaric).Returns(isBarbaric);
+
+            return mockTemplate.Object;
+        }
+
         private ICivilization BuildCiv() {
             return new Mock<ICivilization>().Object;
+        }
+
+        private ICivilization BuildCiv(ICivilizationTemplate template) {
+            var mockCiv = new Mock<ICivilization>();
+
+            mockCiv.Setup(civ => civ.Template).Returns(template);
+
+            return mockCiv.Object;
         }
 
         private IPlayerBrain BuildBrain() {

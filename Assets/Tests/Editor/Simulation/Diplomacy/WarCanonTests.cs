@@ -38,7 +38,7 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         public class CivilizationTestData {
 
-
+            public bool IsBarbaric = false;
 
         }
 
@@ -67,6 +67,18 @@ namespace Assets.Tests.Simulation.Diplomacy {
                     Defender = new CivilizationTestData(),
                     BeginAtWar = true
                 }).SetName("DeclareWar called on civilizations").Returns(true);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = true },
+                    Defender = new CivilizationTestData() { IsBarbaric = false },
+                    BeginAtWar = false
+                }).SetName("Attacker is barbaric").Returns(true);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = false },
+                    Defender = new CivilizationTestData() { IsBarbaric = true },
+                    BeginAtWar = false
+                }).SetName("Defender is barbaric").Returns(true);
             }
         }
 
@@ -83,6 +95,18 @@ namespace Assets.Tests.Simulation.Diplomacy {
                     Defender = new CivilizationTestData(),
                     BeginAtWar = true
                 }).SetName("DeclareWar called on civilizations").Returns(false);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = true },
+                    Defender = new CivilizationTestData() { IsBarbaric = false },
+                    BeginAtWar = false
+                }).SetName("Attacker is barbaric").Returns(false);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = false },
+                    Defender = new CivilizationTestData() { IsBarbaric = true },
+                    BeginAtWar = false
+                }).SetName("Defender is barbaric").Returns(false);
             }
         }
 
@@ -115,6 +139,18 @@ namespace Assets.Tests.Simulation.Diplomacy {
                     Defender = new CivilizationTestData(),
                     BeginAtWar = true
                 }).SetName("DeclareWar called on civilizations").Returns(true);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = true },
+                    Defender = new CivilizationTestData() { IsBarbaric = false },
+                    BeginAtWar = false
+                }).SetName("Attacker is barbaric").Returns(false);
+
+                yield return new TestCaseData(new WarCanonPairTestData() {
+                    Attacker = new CivilizationTestData() { IsBarbaric = false },
+                    Defender = new CivilizationTestData() { IsBarbaric = true },
+                    BeginAtWar = false
+                }).SetName("Defender is barbaric").Returns(false);
             }
         }
 
@@ -424,7 +460,13 @@ namespace Assets.Tests.Simulation.Diplomacy {
 
         private ICivilization BuildCivilization(CivilizationTestData civData) {
             var mockCiv = new Mock<ICivilization>();
+
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.IsBarbaric).Returns(civData.IsBarbaric);
+
             mockCiv.Name = "Mock Civilization " + AllCivilizations.Count.ToString();
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
 
             var newCiv = mockCiv.Object;
 

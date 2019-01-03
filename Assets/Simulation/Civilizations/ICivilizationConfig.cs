@@ -46,6 +46,9 @@ namespace Assets.Simulation.Civilizations {
 
         YieldSummary GoldenAgeProductionModifiers { get; }
         int          GoldenAgeBonusGoldOnCells    { get; }
+        
+        ICivilizationTemplate DefaultTemplate   { get; }
+        ICivilizationTemplate BarbarianTemplate { get; }
 
         #endregion
 

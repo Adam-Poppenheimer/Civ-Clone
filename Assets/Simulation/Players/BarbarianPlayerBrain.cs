@@ -11,14 +11,14 @@ using UniRx;
 
 namespace Assets.Simulation.Players {
 
-    public class HumanPlayerBrain : IPlayerBrain {
+    public class BarbarianPlayerBrain : IPlayerBrain {
 
         #region instance fields and properties
 
         #region from IPlayerBrain
 
         public string Name {
-            get { return "Human Brain"; }
+            get { return "Barbarian Brain"; }
         }
 
         #endregion
@@ -37,7 +37,7 @@ namespace Assets.Simulation.Players {
         #region constructors
 
         [Inject]
-        public HumanPlayerBrain(
+        public BarbarianPlayerBrain(
             PlayerSignals playerSignals,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
@@ -86,7 +86,7 @@ namespace Assets.Simulation.Players {
         }
 
         #endregion
-        
+
     }
 
 }

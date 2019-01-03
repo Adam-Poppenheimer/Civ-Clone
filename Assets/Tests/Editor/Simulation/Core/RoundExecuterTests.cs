@@ -216,19 +216,36 @@ namespace Assets.Tests.Simulation.Core {
 
         [Test]
         public void BeginRoundOnCivilization_PerformanceHappensInOrder() {
-            var mockCivilization = new Mock<ICivilization>(MockBehavior.Strict);
+            Mock<ICivilization> mockCiv;
+
+            var civToTest = BuildCiv(BuildCivTemplate(false), out mockCiv);
 
             var executionSequence = new MockSequence();
 
-            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformIncome());
-            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformResearch());
-            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformGreatPeopleGeneration());
-            mockCivilization.InSequence(executionSequence).Setup(civilization => civilization.PerformGoldenAgeTasks());
+            mockCiv.InSequence(executionSequence).Setup(civ => civ.PerformIncome());
+            mockCiv.InSequence(executionSequence).Setup(civ => civ.PerformResearch());
+            mockCiv.InSequence(executionSequence).Setup(civ => civ.PerformGreatPeopleGeneration());
+            mockCiv.InSequence(executionSequence).Setup(civ => civ.PerformGoldenAgeTasks());
 
             var executer = Container.Resolve<RoundExecuter>();
-            executer.BeginRoundOnCivilization(mockCivilization.Object);
+            executer.BeginRoundOnCivilization(civToTest);
 
-            mockCivilization.VerifyAll();
+            mockCiv.VerifyAll();
+        }
+
+        [Test]
+        public void BeginRoundOnCivilization_NothingCalledIfCivBarbaric() {
+            Mock<ICivilization> mockCiv;
+
+            var civToTest = BuildCiv(BuildCivTemplate(true), out mockCiv);
+
+            var executer = Container.Resolve<RoundExecuter>();
+            executer.BeginRoundOnCivilization(civToTest);
+
+            mockCiv.Verify(civ => civ.PerformIncome               (), Times.Never, "PerformIncome() unexpectedly called");
+            mockCiv.Verify(civ => civ.PerformResearch             (), Times.Never, "PerformResearch() unexpectedly called");
+            mockCiv.Verify(civ => civ.PerformGreatPeopleGeneration(), Times.Never, "PerformGreatPeopleGeneration() unexpectedly called");
+            mockCiv.Verify(civ => civ.PerformGoldenAgeTasks       (), Times.Never, "PerformGoldenAgeTasks() unexpectedly called");
         }
 
         [Test(Description = "When BeginRoundOnUnit is called on a unit, that " +
@@ -375,6 +392,22 @@ namespace Assets.Tests.Simulation.Core {
             newUnit.CurrentMovement = currentMovement;
 
             return newUnit;
+        }
+
+        private ICivilizationTemplate BuildCivTemplate(bool isBarbaric) {
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.IsBarbaric).Returns(isBarbaric);
+
+            return mockTemplate.Object;
+        }
+
+        private ICivilization BuildCiv(ICivilizationTemplate template, out Mock<ICivilization> mock) {
+            mock = new Mock<ICivilization>();
+
+            mock.Setup(civ => civ.Template).Returns(template);
+
+            return mock.Object;
         }
 
         #endregion

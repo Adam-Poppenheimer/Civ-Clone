@@ -22,7 +22,8 @@ namespace Assets.Simulation.Players {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IPlayerBrain>().WithId("Human Brain").To<HumanPlayerBrain>().AsSingle();
+            Container.Bind<IPlayerBrain>().WithId("Human Brain")    .To<HumanPlayerBrain>    ().AsSingle();
+            Container.Bind<IPlayerBrain>().WithId("Barbarian Brain").To<BarbarianPlayerBrain>().AsSingle();
 
             Container.Bind<IPlayerConfig>().To<PlayerConfig>().FromInstance(PlayerConfig);
 

@@ -35,10 +35,14 @@ namespace Assets.Simulation.Diplomacy {
         #region from IWarCanon
 
         public bool AreAtWar(ICivilization civOne, ICivilization civTwo) {
-            return ActiveWars.Where(data => 
-                (data.Attacker == civOne && data.Defender == civTwo) ||
-                (data.Attacker == civTwo && data.Defender == civOne)
-            ).Count() > 0;
+            if(civOne.Template.IsBarbaric || civTwo.Template.IsBarbaric) {
+                return true;
+            }else {
+                return ActiveWars.Where(data => 
+                    (data.Attacker == civOne && data.Defender == civTwo) ||
+                    (data.Attacker == civTwo && data.Defender == civOne)
+                ).Count() > 0;
+            }
         }
 
         public bool AreAtPeace(ICivilization civOne, ICivilization civTwo) {
@@ -78,7 +82,7 @@ namespace Assets.Simulation.Diplomacy {
         }
 
         public bool CanEstablishPeace(ICivilization civOne, ICivilization civTwo) {
-            return AreAtWar(civOne, civTwo);
+            return !civOne.Template.IsBarbaric && !civTwo.Template.IsBarbaric && AreAtWar(civOne, civTwo);
         }
 
         public void EstablishPeace(ICivilization civOne, ICivilization civTwo) {

@@ -9,7 +9,8 @@ namespace Assets.Simulation.Players {
 
         #region properties
 
-        IPlayerBrain HumanBrain { get; }
+        IPlayerBrain HumanBrain     { get; }
+        IPlayerBrain BarbarianBrain { get; }
 
         #endregion
 

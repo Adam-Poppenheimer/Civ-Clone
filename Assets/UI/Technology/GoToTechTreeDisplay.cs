@@ -41,7 +41,7 @@ namespace Assets.UI.Technology {
 
         public void OpenTechUI() {
             TechTreeDisplay.SelectionMode   = SelectionMode;
-            TechTreeDisplay.ObjectToDisplay = GameCore.ActivePlayer.ControlledCiv;
+            TechTreeDisplay.ObjectToDisplay = GameCore.ActiveCiv;
 
             UIAnimator.SetTrigger("Tech Tree Requested");
         }

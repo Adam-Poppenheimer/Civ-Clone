@@ -16,7 +16,10 @@ namespace Assets.Simulation.Players {
         #region methods
 
         void SetUpAnalysis();
+
         void ExecuteTurn(Action controlRelinquisher);
+
+        void Clear();
 
         #endregion
 

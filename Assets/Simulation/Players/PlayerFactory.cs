@@ -37,9 +37,16 @@ namespace Assets.Simulation.Players {
         #region constructors
 
         [Inject]
-        public PlayerFactory(PlayerSignals playerSignals, List<IPlayerBrain> allBrains) {
+        public PlayerFactory(
+            PlayerSignals playerSignals,
+            [Inject(Id = "Human Brain")] IPlayerBrain humanBrain,
+            [Inject(Id = "Barbarian Brain")] IPlayerBrain barbarianBrain
+        ) {
             PlayerSignals = playerSignals;
-            _allBrains    = allBrains;
+
+            _allBrains = new List<IPlayerBrain>() {
+                humanBrain, barbarianBrain
+            };
         }
 
         #endregion
@@ -53,18 +60,41 @@ namespace Assets.Simulation.Players {
 
             allPlayers.Add(newPlayer);
 
+            allPlayers.Sort(PlayerSorter);
+
             PlayerSignals.PlayerCreated.OnNext(newPlayer);
 
             return newPlayer;
         }
 
         public void DestroyPlayer(IPlayer player) {
+            player.Clear();
+
             allPlayers.Remove(player);
+
+            allPlayers.Sort(PlayerSorter);
 
             PlayerSignals.PlayerBeingDestroyed.OnNext(player);
         }
 
         #endregion
+
+        private int PlayerSorter(IPlayer playerOne, IPlayer playerTwo) {
+            bool oneIsBarbaric = playerOne.ControlledCiv.Template.IsBarbaric;
+            bool TwoIsBarbaric = playerTwo.ControlledCiv.Template.IsBarbaric;
+
+            if(oneIsBarbaric) {
+                if(TwoIsBarbaric) {
+                    return playerOne.Name.CompareTo(playerTwo.Name);
+                }else {                    
+                    return 1;
+                }
+            }else if(TwoIsBarbaric) {
+                return -1;
+            }else {
+                return playerOne.Name.CompareTo(playerTwo.Name);
+            }
+        }
 
         #endregion
 

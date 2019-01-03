@@ -113,10 +113,13 @@ namespace Assets.UI.Diplomacy {
 
             var dropdownOptions = new List<Dropdown.OptionData>();
 
-            foreach(var validPartners in CivDiscoveryCanon.GetCivsDiscoveredByCiv(GameCore.ActiveCiv)) {
-                CivOfDropdownIndex[dropdownOptions.Count] = validPartners;
+            var validPartners = CivDiscoveryCanon.GetCivsDiscoveredByCiv(GameCore.ActiveCiv)
+                                                 .Where(civ => !civ.Template.IsBarbaric);
 
-                dropdownOptions.Add(new Dropdown.OptionData(validPartners.Template.Name));
+            foreach(var partner in validPartners) {
+                CivOfDropdownIndex[dropdownOptions.Count] = partner;
+
+                dropdownOptions.Add(new Dropdown.OptionData(partner.Template.Name));
             }
 
             ReceiverDropdown.AddOptions(dropdownOptions);

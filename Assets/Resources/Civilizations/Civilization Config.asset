@@ -40,3 +40,5 @@ MonoBehaviour:
     GreatMerchant: 0
     GreatScientist: 0
   _goldenAgeBonusGoldOnCells: 1
+  _defaultTemplate: {fileID: 11400000, guid: cc2ffe414131c644c93f012b885bd9dc, type: 2}
+  _barbarianTemplate: {fileID: 11400000, guid: b755a259d1eaf7648aa2534f6b3b5e20, type: 2}

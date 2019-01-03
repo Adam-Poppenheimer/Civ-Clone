@@ -41,6 +41,10 @@ namespace Assets.Simulation.Players {
             Brain.ExecuteTurn(controlRelinquisher);
         }
 
+        public void Clear() {
+            Brain.Clear();
+        }
+
         #endregion
 
         #endregion

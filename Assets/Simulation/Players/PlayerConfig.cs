@@ -16,7 +16,8 @@ namespace Assets.Simulation.Players {
 
         #region from IPlayerConfig
 
-        public IPlayerBrain HumanBrain { get; private set; }
+        public IPlayerBrain HumanBrain     { get; private set; }
+        public IPlayerBrain BarbarianBrain { get; private set; }
 
         #endregion
 
@@ -26,9 +27,11 @@ namespace Assets.Simulation.Players {
 
         [Inject]
         public void InjectDependencies(
-            [Inject(Id = "Human Brain")] IPlayerBrain humanBrain
+            [Inject(Id = "Human Brain"    )] IPlayerBrain humanBrain,
+            [Inject(Id = "Barbarian Brain")] IPlayerBrain barbarianBrain
         ) {
-            HumanBrain = humanBrain;
+            HumanBrain     = humanBrain;
+            BarbarianBrain = barbarianBrain;
         }
 
         #endregion

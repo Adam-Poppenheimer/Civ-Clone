@@ -75,7 +75,7 @@ namespace Assets.UI.SpecialtyResources {
         #endregion
 
         private void BuildSummary(IResourceDefinition resource, int totalCopies) {
-            int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActivePlayer.ControlledCiv);
+            int freeCopies = FreeResourcesLogic.GetFreeCopiesOfResourceForCiv(resource, GameCore.ActiveCiv);
 
             var newSummaryPrefab = Instantiate(ResourceSummaryPrefab);
 

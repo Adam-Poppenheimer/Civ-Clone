@@ -38,7 +38,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         #region from StateMachineBehaviour
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            FreeGreatPeopleDisplay.ObjectToDisplay = GameCore.ActivePlayer.ControlledCiv;
+            FreeGreatPeopleDisplay.ObjectToDisplay = GameCore.ActiveCiv;
 
             FreeGreatPeopleDisplay.gameObject.SetActive(true);
             FreeGreatPeopleDisplay.Refresh();

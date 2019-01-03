@@ -39,6 +39,8 @@ namespace Assets.Simulation.MapManagement {
         #region from IPlayerComposer
 
         public void ClearRuntime() {
+            GameCore.ActivePlayer = null;
+
             foreach(var player in PlayerFactory.AllPlayers.ToArray()) {
                 PlayerFactory.DestroyPlayer(player);
             }

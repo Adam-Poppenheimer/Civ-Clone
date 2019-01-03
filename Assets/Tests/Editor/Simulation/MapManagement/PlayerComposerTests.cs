@@ -59,6 +59,15 @@ namespace Assets.Tests.Simulation.MapManagement {
         #region tests
 
         [Test]
+        public void ClearRuntime_ActivePlayerSetToNull() {
+            var playerComposer = Container.Resolve<PlayerComposer>();
+
+            playerComposer.ClearRuntime();
+
+            MockGameCore.VerifySet(core => core.ActivePlayer = null, Times.Once);
+        }
+
+        [Test]
         public void ClearRuntime_AllPlayersDestroyed() {
             var civ   = BuildCiv(BuildCivTemplate("Template"));
             var brain = BuildBrain("Brain");

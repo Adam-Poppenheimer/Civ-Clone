@@ -27,6 +27,8 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
+        #region from IGameCore
+
         public IPlayer ActivePlayer {
             get { return _activePlayer; }
             set {
@@ -49,6 +51,12 @@ namespace Assets.Simulation.Core {
         }
 
         public int CurrentRound { get; private set; }
+
+        #endregion
+
+
+
+
 
         private ICityFactory   CityFactory;
         private IPlayerFactory PlayerFactory;

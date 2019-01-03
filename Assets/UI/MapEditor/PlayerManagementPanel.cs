@@ -100,7 +100,7 @@ namespace Assets.UI.MapEditor {
         private void Refresh() {
             Clear();
 
-            foreach(var player in PlayerFactory.AllPlayers) {
+            foreach(var player in PlayerFactory.AllPlayers.Where(player => !player.ControlledCiv.Template.IsBarbaric)) {
                 PlayerManagementRecord newRecord = Instantiate(RecordPrefab);
 
                 newRecord.gameObject.SetActive(true);

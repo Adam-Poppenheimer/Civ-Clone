@@ -44,6 +44,7 @@ namespace Assets.Simulation.MapGeneration {
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
         private IPlayerConfig               PlayerConfig;
+        private ICivilizationConfig         CivConfig;
 
         #endregion
 
@@ -57,7 +58,7 @@ namespace Assets.Simulation.MapGeneration {
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic,
-            IPlayerConfig playerConfig
+            IPlayerConfig playerConfig, ICivilizationConfig civConfig
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
@@ -72,6 +73,7 @@ namespace Assets.Simulation.MapGeneration {
             CellClimateLogic           = cellClimateLogic;
             SubdivisionLogic           = subdivisionLogic;
             PlayerConfig               = playerConfig;
+            CivConfig                  = civConfig;
         }
 
         #endregion
@@ -138,6 +140,10 @@ namespace Assets.Simulation.MapGeneration {
 
                 PlayerFactory.CreatePlayer(newCiv, PlayerConfig.HumanBrain);
             }
+
+            var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
+
+            PlayerFactory.CreatePlayer(barbarianCiv, PlayerConfig.BarbarianBrain);
         }
 
         private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {

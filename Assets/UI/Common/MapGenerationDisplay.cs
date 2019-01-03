@@ -46,12 +46,12 @@ namespace Assets.UI.Common {
 
 
 
-        private IMapGenerationConfig                      MapGenerationConfig;
-        private IEnumerable<IMapTemplate>                 MapTemplates;
-        private IMapGenerator                             MapGenerator;
-        private Animator                                  UIAnimator;
-        private ReadOnlyCollection<ICivilizationTemplate> AllCivTemplates;
-        private ITechCanon                                TechCanon;
+        private IMapGenerationConfig        MapGenerationConfig;
+        private IEnumerable<IMapTemplate>   MapTemplates;
+        private IMapGenerator               MapGenerator;
+        private Animator                    UIAnimator;
+        private List<ICivilizationTemplate> ValidCivTemplates;
+        private ITechCanon                  TechCanon;
 
         #endregion
 
@@ -67,7 +67,7 @@ namespace Assets.UI.Common {
             MapTemplates        = mapTemplates;
             MapGenerator        = mapGenerator;
             UIAnimator          = uiAnimator;
-            AllCivTemplates     = civTemplates;
+            ValidCivTemplates   = civTemplates.Where(template => !template.IsBarbaric).ToList();
             TechCanon           = techCanon;
         }
 
@@ -136,15 +136,15 @@ namespace Assets.UI.Common {
             ChosenTemplates.Clear();
 
             foreach(var templateRecord in InstantiatedTemplateRecords) {
-                var templateChosen = AllCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
+                var templateChosen = ValidCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
 
                 ChosenTemplates.Add(templateChosen);
             }
 
             foreach(var templateRecord in InstantiatedTemplateRecords) {
-                var templateChosen = AllCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
+                var templateChosen = ValidCivTemplates.First(template => template.Name.Equals(templateRecord.SelectedDropdownText));
 
-                templateRecord.PopulateValidTemplatesDropdown(AllCivTemplates, ChosenTemplates, templateChosen);
+                templateRecord.PopulateValidTemplatesDropdown(ValidCivTemplates, ChosenTemplates, templateChosen);
             }
         }
 
@@ -241,7 +241,7 @@ namespace Assets.UI.Common {
         private void ResetSelectedCivs() {
             ChosenTemplates.Clear();
 
-            var templatesToChoose = AllCivTemplates.Take(CivCount).ToArray();
+            var templatesToChoose = ValidCivTemplates.Take(CivCount).ToArray();
 
             foreach(var template in templatesToChoose) {
                 ChosenTemplates.Add(template);
@@ -251,7 +251,7 @@ namespace Assets.UI.Common {
                 var thisTemplateRecord = InstantiatedTemplateRecords[i];
                 var selectedTemplate = templatesToChoose[i];
 
-                thisTemplateRecord.PopulateValidTemplatesDropdown(AllCivTemplates, ChosenTemplates, selectedTemplate);
+                thisTemplateRecord.PopulateValidTemplatesDropdown(ValidCivTemplates, ChosenTemplates, selectedTemplate);
             }
         }
 

@@ -62,7 +62,7 @@ namespace Assets.UI.MapEditor {
             CivilizationDropdown.ClearOptions();
 
             List<Dropdown.OptionData> civilizationOptions = new List<Dropdown.OptionData>();
-            foreach(var civilization in CivilizationFactory.AllCivilizations) {
+            foreach(var civilization in CivilizationFactory.AllCivilizations.Where(civ => !civ.Template.IsBarbaric)) {
                 civilizationOptions.Add(new Dropdown.OptionData(civilization.Template.Name));
             }
 

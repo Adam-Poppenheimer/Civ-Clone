@@ -25,6 +25,11 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private Color _color;
 
+        public bool IsBarbaric {
+            get { return _isBarbaric; }
+        }
+        [SerializeField] private bool _isBarbaric;
+
         #endregion
 
         [SerializeField] private List<string> NameList;

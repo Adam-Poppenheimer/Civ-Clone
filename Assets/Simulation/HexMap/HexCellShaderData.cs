@@ -142,8 +142,6 @@ namespace Assets.Simulation.HexMap {
             Color32 data = CellTextureData[index];
             bool stillUpdating = false;
 
-            var activeCiv = GameCore.ActivePlayer;
-
             if(VisibilityCanon.IsCellVisible(cell) && data.r < 255) {
                 stillUpdating = true;
                 int newVisibility = data.r + delta;

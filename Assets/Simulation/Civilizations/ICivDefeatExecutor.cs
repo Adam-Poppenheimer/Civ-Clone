@@ -12,6 +12,8 @@ namespace Assets.Simulation.Civilizations {
 
         bool ShouldCivBeDefeated(ICivilization civ);
 
+        bool IsCheckingCiv(ICivilization civ);
+
         #endregion
 
     }

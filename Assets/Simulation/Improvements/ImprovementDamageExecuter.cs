@@ -60,7 +60,7 @@ namespace Assets.Simulation.Improvements {
             foreach(var nearbyCell in Grid.GetCellsInRadius(unitLocation, 1)) {
                 var ownerOfCell = CivTerritoryLogic.GetCivClaimingCell(nearbyCell);
 
-                if(!WarCanon.AreAtWar(unitOwner, ownerOfCell)) {
+                if(ownerOfCell == null || !WarCanon.AreAtWar(unitOwner, ownerOfCell)) {
                     continue;
                 }
 

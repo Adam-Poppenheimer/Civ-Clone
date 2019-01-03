@@ -61,10 +61,12 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public void BeginRoundOnCivilization(ICivilization civilization) {
-            civilization.PerformIncome();
-            civilization.PerformResearch();
-            civilization.PerformGreatPeopleGeneration();
-            civilization.PerformGoldenAgeTasks();
+            if(!civilization.Template.IsBarbaric) {
+                civilization.PerformIncome();
+                civilization.PerformResearch();
+                civilization.PerformGreatPeopleGeneration();
+                civilization.PerformGoldenAgeTasks();
+            }
         }
 
         /// <inheritdoc/>

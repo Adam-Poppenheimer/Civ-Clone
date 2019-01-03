@@ -3,8 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using Zenject;
 
 using Assets.Simulation.Civilizations;
@@ -96,7 +94,12 @@ namespace Assets.Simulation.Units.Combat {
         #endregion
 
         private bool ShouldCombatResultInCityCapture(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
-            return defender.CurrentHitpoints <= 0 && defender.Type == UnitType.City && combatInfo.CombatType == CombatType.Melee;
+            var attackerOwner = UnitPossessionCanon.GetOwnerOfPossession(attacker);
+
+            return !attackerOwner.Template.IsBarbaric 
+                && defender.CurrentHitpoints <= 0
+                && defender.Type == UnitType.City
+                && combatInfo.CombatType == CombatType.Melee;
         }
 
         #endregion

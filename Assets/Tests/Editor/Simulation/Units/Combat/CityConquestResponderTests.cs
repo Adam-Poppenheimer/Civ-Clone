@@ -69,6 +69,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             "\n1. The defender is of type City" +
             "\n2. The defender has zero or negative hitpoints" + 
             "\n3. CombatInfo.CombatType equals CombatType.Melee" + 
+            "\n4. The attacker's owner isn't barbaric" +
             "\nThis should result in the conquest of the city for which defender is the CombatFacade. " +
             "That city should be transferred to the civilization that owns the attacker.")]
         public void RespondToCombat_AndValidCityCapture_AttackerChangesDefendingOwnerOfDefendingCity() {
@@ -280,6 +281,31 @@ namespace Assets.Tests.Simulation.Units.Combat {
         }
 
         [Test]
+        public void RespondToCombat_DoesNothingIfAttackerOwnerWasBarbaric() {
+            var attackerOwner = BuildCivilization(true);
+
+            var attacker = BuildUnit(attackerOwner, 0, UnitType.Melee);
+
+            var cityOwner = BuildCivilization();
+            var cityLocation = BuildHexCell();
+
+            var cityBeingCaptured = BuildCity(
+                cityLocation, cityOwner, BuildUnit(cityOwner, 0, UnitType.City), new List<IUnit>()
+            );
+
+            var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
+
+            var conquestLogic = Container.Resolve<CityConquestResponder>();
+
+            conquestLogic.RespondToCombat(attacker, cityBeingCaptured.CombatFacade, combatInfo);
+
+            MockCityPossessionCanon.Verify(
+                canon => canon.ChangeOwnerOfPossession(cityBeingCaptured, attackerOwner),
+                Times.Never, "City was unexpectedly transferred to the attacker's owner"
+            );
+        }
+
+        [Test]
         public void RespondToCombat_AndCityWasCaptured_CityCaptureSignalFired() {
             var attackerOwner = BuildCivilization();
 
@@ -314,8 +340,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region utilities
 
-        private ICivilization BuildCivilization() {
-            return new Mock<ICivilization>().Object;
+        private ICivilization BuildCivilization(bool isBarbaric = false) {
+            var mockTemplate = new Mock<ICivilizationTemplate>();
+
+            mockTemplate.Setup(template => template.IsBarbaric).Returns(isBarbaric);
+
+            var mockCiv = new Mock<ICivilization>();
+
+            mockCiv.Setup(civ => civ.Template).Returns(mockTemplate.Object);
+
+            return mockCiv.Object;
         }
 
         private IHexCell BuildHexCell() {

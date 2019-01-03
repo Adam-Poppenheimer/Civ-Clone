@@ -138,7 +138,7 @@ namespace Assets.UI.Cities {
         }
 
         private bool IsCityOwnedByActiveCiv() {
-            return CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay) == GameCore.ActivePlayer;
+            return CityPossessionCanon.GetOwnerOfPossession(ObjectToDisplay) == GameCore.ActiveCiv;
         }
 
         private void DisplayData() {

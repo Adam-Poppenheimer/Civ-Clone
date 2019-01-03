@@ -79,7 +79,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             foreach(var display in CivilizationDisplays) {
-                display.ObjectToDisplay = GameCore.ActivePlayer.ControlledCiv;
+                display.ObjectToDisplay = GameCore.ActiveCiv;
                 display.gameObject.SetActive(true);
                 display.Refresh();
             }
@@ -98,8 +98,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             CitySummaryManager.BuildSummaries();
 
-            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActivePlayer.ControlledCiv) > 0);
-            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActivePlayer.ControlledCiv) > 0);
+            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCiv) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCiv) > 0);
 
             SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
@@ -108,8 +108,8 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
             CitySummaryManager.RepositionSummaries();
 
-            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActivePlayer.ControlledCiv) > 0);
-            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActivePlayer.ControlledCiv) > 0);
+            FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCiv) > 0);
+            FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCiv) > 0);
         }
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

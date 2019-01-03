@@ -17,6 +17,8 @@ namespace Assets.Simulation.Civilizations {
 
         Color Color { get; }
 
+        bool IsBarbaric { get; }
+
         #endregion
 
         #region methods

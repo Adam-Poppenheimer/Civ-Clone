@@ -117,6 +117,16 @@ namespace Assets.Simulation.Civilizations {
         }
         [SerializeField] private int _goldenAgeBonusGoldOnCells;
 
+        public ICivilizationTemplate DefaultTemplate {
+            get { return _defaultTemplate; }
+        }
+        [SerializeField] private CivilizationTemplate _defaultTemplate;
+
+        public ICivilizationTemplate BarbarianTemplate {
+            get { return _barbarianTemplate; }
+        }
+        [SerializeField] private CivilizationTemplate _barbarianTemplate;
+
         #endregion
 
         #endregion
