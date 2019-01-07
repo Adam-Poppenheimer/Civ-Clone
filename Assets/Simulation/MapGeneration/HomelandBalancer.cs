@@ -8,8 +8,6 @@ using UnityEngine.Profiling;
 
 using Zenject;
 
-using Assets.Simulation.MapResources;
-using Assets.Simulation.HexMap;
 using Assets.Simulation.Technology;
 
 using UnityCustomUtilities.Extensions;
@@ -20,9 +18,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IYieldEstimator YieldEstimator;        
-        private ICellScorer     CellScorer;
-        private ITechCanon      TechCanon;
+        private IYieldEstimator                          YieldEstimator;        
+        private ICellScorer                              CellScorer;
+        private ITechCanon                               TechCanon;
+        private IWeightedRandomSampler<IBalanceStrategy> BalanceStrategySampler;
 
         #endregion
 
@@ -30,11 +29,13 @@ namespace Assets.Simulation.MapGeneration {
 
         [Inject]
         public HomelandBalancer(
-            IYieldEstimator yieldEstimator, ICellScorer cellScorer, ITechCanon techCanon
+            IYieldEstimator yieldEstimator, ICellScorer cellScorer, ITechCanon techCanon,
+            IWeightedRandomSampler<IBalanceStrategy> balanceStrategySampler
         ) {
-            YieldEstimator = yieldEstimator;
-            CellScorer     = cellScorer;
-            TechCanon      = techCanon;
+            YieldEstimator         = yieldEstimator;
+            CellScorer             = cellScorer;
+            TechCanon              = techCanon;
+            BalanceStrategySampler = balanceStrategySampler;
         }
 
         #endregion
@@ -153,7 +154,7 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private IBalanceStrategy GetStrategy(Dictionary<IBalanceStrategy, int> strategyWeights) {
-            return WeightedRandomSampler<IBalanceStrategy>.SampleElementsFromSet(
+            return BalanceStrategySampler.SampleElementsFromSet(
                 strategyWeights.Keys, 1, strategy => strategyWeights[strategy]
             ).FirstOrDefault();
         }

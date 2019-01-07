@@ -57,10 +57,10 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             VisibilityResponder.TryResetCellVisibility();
 
             VisibilityCanon.ResourceVisibilityMode = ResourceVisibilityMode.ActiveCiv;
-            VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.ActiveCiv;
-            VisibilityCanon.RevealMode             = RevealMode.Fade;
+            VisibilityCanon.CellVisibilityMode     = CellVisibilityMode.RevealAll;
+            VisibilityCanon.RevealMode             = RevealMode.Immediate;
 
-            ExplorationCanon.ExplorationMode = CellExplorationMode.ActiveCiv;
+            ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
             CameraFocuser.ActivateBeginTurnFocusing();
 

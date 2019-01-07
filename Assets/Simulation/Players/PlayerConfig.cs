@@ -16,23 +16,22 @@ namespace Assets.Simulation.Players {
 
         #region from IPlayerConfig
 
-        public IPlayerBrain HumanBrain     { get; private set; }
-        public IPlayerBrain BarbarianBrain { get; private set; }
-
-        #endregion
-
-        #endregion
-
-        #region instance methods
-
-        [Inject]
-        public void InjectDependencies(
-            [Inject(Id = "Human Brain"    )] IPlayerBrain humanBrain,
-            [Inject(Id = "Barbarian Brain")] IPlayerBrain barbarianBrain
-        ) {
-            HumanBrain     = humanBrain;
-            BarbarianBrain = barbarianBrain;
+        public int UnitMaxInfluenceRadius {
+            get { return _unitMaxInfluenceRadius; }
         }
+        [SerializeField] private int _unitMaxInfluenceRadius;
+
+        public float WanderSelectionWeight_Distance {
+            get { return _wanderSelectionWeight_Distance; }
+        }
+        [SerializeField] private float _wanderSelectionWeight_Distance;
+
+        public float WanderSelectionWeight_Allies {
+            get { return _wanderSelectionWeight_Allies; }
+        }
+        [SerializeField] private float _wanderSelectionWeight_Allies;
+
+        #endregion
 
         #endregion
 

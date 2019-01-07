@@ -18,10 +18,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private ICellModificationLogic ModLogic;
-        private IHexGrid               Grid;
-        private IRiverCanon            RiverCanon;
-        private IGridTraversalLogic    GridTraversalLogic;
+        private ICellModificationLogic           ModLogic;
+        private IHexGrid                         Grid;
+        private IRiverCanon                      RiverCanon;
+        private IGridTraversalLogic              GridTraversalLogic;
+        private IWeightedRandomSampler<IHexCell> CellRandomSampler;
 
         #endregion
 
@@ -30,12 +31,13 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public VegetationPainter(
             ICellModificationLogic modLogic, IHexGrid grid, IRiverCanon riverCanon,
-            IGridTraversalLogic gridTraversalLogic
+            IGridTraversalLogic gridTraversalLogic, IWeightedRandomSampler<IHexCell> cellRandomSampler
         ) {
             ModLogic           = modLogic;
             Grid               = grid;
             RiverCanon         = riverCanon;
             GridTraversalLogic = gridTraversalLogic;
+            CellRandomSampler  = cellRandomSampler;
         }
 
         #endregion
@@ -61,7 +63,7 @@ namespace Assets.Simulation.MapGeneration {
 
             int treeCount = Mathf.RoundToInt(template.TreePercentage * openCells.Count * 0.01f);
 
-            var treeSeeds = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+            var treeSeeds = CellRandomSampler.SampleElementsFromSet(
                 openCells, UnityEngine.Random.Range(template.MinTreeClumps, template.MaxTreeClumps),
                 GetTreeSeedWeightFunction(treeType, template)
             );

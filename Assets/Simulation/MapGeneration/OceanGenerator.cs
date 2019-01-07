@@ -15,12 +15,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private ICellModificationLogic  ModLogic;
-        private IRegionGenerator        RegionGenerator;
-        private ITemplateSelectionLogic TemplateSelectionLogic;
-        private IHexGrid                Grid;
-
-        private List<IBalanceStrategy> AvailableBalanceStrategies;
+        private ICellModificationLogic             ModLogic;
+        private IRegionGenerator                   RegionGenerator;
+        private ITemplateSelectionLogic            TemplateSelectionLogic;
+        private IHexGrid                           Grid;
+        private List<IBalanceStrategy>             AvailableBalanceStrategies;
+        private IWeightedRandomSampler<MapSection> MapSectionRandomSampler;
 
         #endregion
 
@@ -30,13 +30,15 @@ namespace Assets.Simulation.MapGeneration {
         public OceanGenerator(
             ICellModificationLogic modLogic, IRegionGenerator regionGenerator,
             ITemplateSelectionLogic templateSelectionLogic, IHexGrid grid,
-            List<IBalanceStrategy> availableBalanceStrategies
+            List<IBalanceStrategy> availableBalanceStrategies,
+            IWeightedRandomSampler<MapSection> mapSectionRandomSampler
         ) {
             ModLogic                   = modLogic;
             RegionGenerator            = regionGenerator;
             TemplateSelectionLogic     = templateSelectionLogic;
             Grid                       = grid;
             AvailableBalanceStrategies = availableBalanceStrategies;
+            MapSectionRandomSampler    = mapSectionRandomSampler;
         }
 
         #endregion
@@ -101,7 +103,7 @@ namespace Assets.Simulation.MapGeneration {
         ) {
             int landSectionCount = Mathf.RoundToInt(oceanTemplate.DeepOceanLandPercentage * 0.01f * deepOceanSections.Count());
 
-            var deepOceanLand = WeightedRandomSampler<MapSection>.SampleElementsFromSet(
+            var deepOceanLand = MapSectionRandomSampler.SampleElementsFromSet(
                 deepOceanSections, landSectionCount, GetArchipelagoWeightFunction(mapTemplate)
             ).ToList();
 

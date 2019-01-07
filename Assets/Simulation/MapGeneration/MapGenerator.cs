@@ -43,7 +43,6 @@ namespace Assets.Simulation.MapGeneration {
         private ITemplateSelectionLogic     TemplateSelectionLogic;
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
-        private IPlayerConfig               PlayerConfig;
         private ICivilizationConfig         CivConfig;
 
         #endregion
@@ -58,7 +57,7 @@ namespace Assets.Simulation.MapGeneration {
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic,
-            IPlayerConfig playerConfig, ICivilizationConfig civConfig
+            ICivilizationConfig civConfig
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
@@ -72,7 +71,6 @@ namespace Assets.Simulation.MapGeneration {
             TemplateSelectionLogic     = templateSelectionLogic;
             CellClimateLogic           = cellClimateLogic;
             SubdivisionLogic           = subdivisionLogic;
-            PlayerConfig               = playerConfig;
             CivConfig                  = civConfig;
         }
 
@@ -138,12 +136,12 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var civTemplate in variables.Civilizations) {
                 var newCiv = CivFactory.Create(civTemplate, variables.StartingTechs);
 
-                PlayerFactory.CreatePlayer(newCiv, PlayerConfig.HumanBrain);
+                PlayerFactory.CreatePlayer(newCiv, PlayerFactory.HumanBrain);
             }
 
             var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
 
-            PlayerFactory.CreatePlayer(barbarianCiv, PlayerConfig.BarbarianBrain);
+            PlayerFactory.CreatePlayer(barbarianCiv, PlayerFactory.BarbarianBrain);
         }
 
         private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {

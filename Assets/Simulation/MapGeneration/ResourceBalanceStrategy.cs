@@ -32,12 +32,14 @@ namespace Assets.Simulation.MapGeneration {
 
 
 
-        private IYieldEstimator           YieldEstimator;
-        private IResourceNodeFactory      ResourceNodeFactory;
-        private IResourceRestrictionLogic ResourceRestrictionCanon;
-        private ICellScorer               CellScorer;
-        private ITechCanon                TechCanon;
-        private IStrategicCopiesLogic     StrategicCopiesLogic;
+        private IYieldEstimator                             YieldEstimator;
+        private IResourceNodeFactory                        ResourceNodeFactory;
+        private IResourceRestrictionLogic                   ResourceRestrictionCanon;
+        private ICellScorer                                 CellScorer;
+        private ITechCanon                                  TechCanon;
+        private IStrategicCopiesLogic                       StrategicCopiesLogic;
+        private IWeightedRandomSampler<IHexCell>            CellRandomSampler;
+        private IWeightedRandomSampler<IResourceDefinition> ResourceRandomSampler;
 
         #endregion
 
@@ -47,8 +49,9 @@ namespace Assets.Simulation.MapGeneration {
         public ResourceBalanceStrategy(
             IYieldEstimator yieldEstimator, IResourceNodeFactory resourceNodeFactory,
             IResourceRestrictionLogic resourceRestrictionCanon, ICellScorer cellScorer, ITechCanon techCanon,
-            IStrategicCopiesLogic strategicCopiesLogic,
-            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
+            IStrategicCopiesLogic strategicCopiesLogic, IWeightedRandomSampler<IHexCell> cellRandomSampler,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
+            IWeightedRandomSampler<IResourceDefinition> resourceRandomSampler
         ) {
             YieldEstimator           = yieldEstimator;
             ResourceNodeFactory      = resourceNodeFactory;
@@ -56,6 +59,8 @@ namespace Assets.Simulation.MapGeneration {
             CellScorer               = cellScorer;
             TechCanon                = techCanon;
             StrategicCopiesLogic     = strategicCopiesLogic;
+            CellRandomSampler        = cellRandomSampler;
+            ResourceRandomSampler    = resourceRandomSampler;
 
             foreach(var yieldType in EnumUtil.GetValues<YieldType>()) {
                 BonusResourcesWithYield[yieldType] = availableResources.Where(
@@ -79,7 +84,7 @@ namespace Assets.Simulation.MapGeneration {
             var availableResources = BonusResourcesWithYield[type].ToList();
 
             while(availableResources.Count > 0) {
-                var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var chosenResource = ResourceRandomSampler.SampleElementsFromSet(
                     availableResources, 1, GetResourceSelectionWeightFunction(region, regionData)
                 ).FirstOrDefault();
 
@@ -87,7 +92,7 @@ namespace Assets.Simulation.MapGeneration {
                     break;
                 }
 
-                var cell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                var cell = CellRandomSampler.SampleElementsFromSet(
                     region.Cells, 1, GetCellPlacementWeightFunction(chosenResource)
                 ).FirstOrDefault();
 
@@ -117,7 +122,7 @@ namespace Assets.Simulation.MapGeneration {
             var candidateResources = new List<IResourceDefinition>(ScoreIncreasingCandidates);
 
             while(candidateResources.Any()) {
-                var chosenResource = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var chosenResource = ResourceRandomSampler.SampleElementsFromSet(
                     candidateResources, 1, GetResourceSelectionWeightFunction(region, regionData)
                 ).FirstOrDefault();
 
@@ -125,7 +130,7 @@ namespace Assets.Simulation.MapGeneration {
                     break;
                 }
 
-                var cell = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                var cell = CellRandomSampler.SampleElementsFromSet(
                     region.Cells, 1, GetCellPlacementWeightFunction(chosenResource)
                 ).FirstOrDefault();
 

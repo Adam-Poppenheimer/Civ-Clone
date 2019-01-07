@@ -55,7 +55,7 @@ namespace Assets.Simulation.Players {
             ExecuteTurnCoroutine = CoroutineInvoker.StartCoroutine(SubscribeToTurnEnding(controlRelinquisher));
         }
 
-        public void SetUpAnalysis() {
+        public void RefreshAnalysis() {
             
         }
 

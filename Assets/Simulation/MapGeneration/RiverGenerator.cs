@@ -18,11 +18,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid               Grid;
-        private IRiverCanon            RiverCanon;
-        private ICellModificationLogic ModLogic;
-        private IMapGenerationConfig   Config;
-        private IHexPathfinder         HexPathfinder;
+        private IHexGrid                         Grid;
+        private IRiverCanon                      RiverCanon;
+        private ICellModificationLogic           ModLogic;
+        private IMapGenerationConfig             Config;
+        private IHexPathfinder                   HexPathfinder;
+        private IWeightedRandomSampler<IHexCell> CellRandomSampler;
 
         #endregion
 
@@ -31,13 +32,16 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RiverGenerator(
             IHexGrid grid, IRiverCanon riverCanon, ICellModificationLogic modLogic,
-            IMapGenerationConfig config, IHexPathfinder hexPathfinder
+            IMapGenerationConfig config, IHexPathfinder hexPathfinder,
+            IWeightedRandomSampler<IHexCell> cellRandomSampler
+
         ) {
-            Grid           = grid;
-            RiverCanon     = riverCanon;
-            ModLogic       = modLogic;
-            Config         = config;
-            HexPathfinder  = hexPathfinder;
+            Grid              = grid;
+            RiverCanon        = riverCanon;
+            ModLogic          = modLogic;
+            Config            = config;
+            HexPathfinder     = hexPathfinder;
+            CellRandomSampler = cellRandomSampler;
         }
 
         #endregion
@@ -57,7 +61,7 @@ namespace Assets.Simulation.MapGeneration {
 
             int iterations = landCells.Count() * 10;
             while(riveredCells.Count < desiredRiveredCells && riverStartCandidates.Count > 0 && iterations-- > 0) {
-                var start =  WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                var start = CellRandomSampler.SampleElementsFromSet(
                     riverStartCandidates, 1, RiverStartWeightFunction
                 ).FirstOrDefault();
 
@@ -177,7 +181,7 @@ namespace Assets.Simulation.MapGeneration {
             bool retval;
 
             if(validEndpoints.Any()) {
-                end = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                end = CellRandomSampler.SampleElementsFromSet(
                     validEndpoints, 1, RiverEndpointWeightFunction
                 ).FirstOrDefault();
                 retval = end != null;

@@ -26,7 +26,7 @@ namespace Assets.Tests.Simulation.Players {
 
             var executionSequence = new MockSequence();
 
-            mockBrain.InSequence(executionSequence).Setup(brain => brain.SetUpAnalysis());
+            mockBrain.InSequence(executionSequence).Setup(brain => brain.RefreshAnalysis());
             mockBrain.InSequence(executionSequence).Setup(brain => brain.ExecuteTurn(It.IsAny<Action>()));
 
             Action controlRelinquisher = () => { };

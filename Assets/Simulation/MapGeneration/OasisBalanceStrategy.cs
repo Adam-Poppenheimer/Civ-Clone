@@ -37,6 +37,7 @@ namespace Assets.Simulation.MapGeneration {
         private IMapScorer                                       MapScorer;
         private ICellModificationLogic                           ModLogic;
         private IPossessionRelationship<IHexCell, IResourceNode> NodePositionCanon;
+        private IWeightedRandomSampler<IHexCell>                 CellRandomSampler;
 
         #endregion
 
@@ -46,7 +47,8 @@ namespace Assets.Simulation.MapGeneration {
         public OasisBalanceStrategy(
             IHexGrid grid, IYieldEstimator yieldEstimator, ITechCanon techCanon,
             IMapScorer mapScorer, ICellModificationLogic modLogic,
-            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon
+            IPossessionRelationship<IHexCell, IResourceNode> nodePositionCanon,
+            IWeightedRandomSampler<IHexCell> cellRandomSampler
         ) {
             Grid              = grid;
             YieldEstimator    = yieldEstimator;
@@ -54,6 +56,7 @@ namespace Assets.Simulation.MapGeneration {
             MapScorer         = mapScorer;
             ModLogic          = modLogic;
             NodePositionCanon = nodePositionCanon;
+            CellRandomSampler = cellRandomSampler;
         }
 
         #endregion
@@ -70,7 +73,7 @@ namespace Assets.Simulation.MapGeneration {
                 return false;
             }
 
-            var newOasis = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+            var newOasis = CellRandomSampler.SampleElementsFromSet(
                 region.LandCells, 1, GetOasisCandidateWeightFunction(region)
             ).FirstOrDefault();
 

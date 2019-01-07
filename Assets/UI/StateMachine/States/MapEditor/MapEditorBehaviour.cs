@@ -26,7 +26,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private IMapComposer                              MapComposer;
         private ICivilizationFactory                      CivFactory;
         private IPlayerFactory                            PlayerFactory;
-        private IPlayerConfig                             PlayerConfig;
         private IVisibilityResponder                      VisibilityResponder;
         private IVisibilityCanon                          VisibilityCanon;
         private IExplorationCanon                         ExplorationCanon;
@@ -40,7 +39,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         [Inject]
         public void InjectDependencies(
             UIStateMachineBrain brain, IHexGrid grid, IMapComposer mapComposer,
-            ICivilizationFactory civFactory, IPlayerFactory playerFactory, IPlayerConfig playerConfig,
+            ICivilizationFactory civFactory, IPlayerFactory playerFactory,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements,
             ICivilizationConfig civConfig
@@ -51,7 +50,6 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             MapComposer               = mapComposer;
             CivFactory                = civFactory;
             PlayerFactory             = playerFactory;
-            PlayerConfig              = playerConfig;
             VisibilityResponder       = visibilityResponder;
             VisibilityCanon           = visibilityCanon;
             ExplorationCanon          = explorationCanon;
@@ -83,8 +81,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             var playerCiv    = CivFactory.Create(CivConfig.DefaultTemplate);
             var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
 
-            PlayerFactory.CreatePlayer(playerCiv,    PlayerConfig.HumanBrain);
-            PlayerFactory.CreatePlayer(barbarianCiv, PlayerConfig.BarbarianBrain);
+            PlayerFactory.CreatePlayer(playerCiv,    PlayerFactory.HumanBrain);
+            PlayerFactory.CreatePlayer(barbarianCiv, PlayerFactory.BarbarianBrain);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

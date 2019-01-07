@@ -9,8 +9,10 @@ namespace Assets.Simulation.Players {
 
         #region properties
 
-        IPlayerBrain HumanBrain     { get; }
-        IPlayerBrain BarbarianBrain { get; }
+        int UnitMaxInfluenceRadius { get; }
+
+        float WanderSelectionWeight_Distance { get; }
+        float WanderSelectionWeight_Allies   { get; }
 
         #endregion
 

@@ -18,9 +18,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IResourceRestrictionLogic ResourceRestrictionCanon;
-        private IMapGenerationConfig      Config;
-        private IResourceNodeFactory      NodeFactory;
+        private IResourceRestrictionLogic                   ResourceRestrictionCanon;
+        private IMapGenerationConfig                        Config;
+        private IResourceNodeFactory                        NodeFactory;
+        private IWeightedRandomSampler<IHexCell>            CellRandomSampler;
+        private IWeightedRandomSampler<IResourceDefinition> ResourceRandomSampler;
 
         #endregion
 
@@ -29,11 +31,14 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public LuxuryDistributor(
             IResourceRestrictionLogic resourceRestrictionCanon, IMapGenerationConfig config,
-            IResourceNodeFactory nodeFactory
+            IResourceNodeFactory nodeFactory, IWeightedRandomSampler<IHexCell> cellRandomSampler,
+            IWeightedRandomSampler<IResourceDefinition> resourceRandomSampler
         ) {
             ResourceRestrictionCanon = resourceRestrictionCanon;
             Config                   = config;
             NodeFactory              = nodeFactory;
+            CellRandomSampler        = cellRandomSampler;
+            ResourceRandomSampler    = resourceRandomSampler;
         }
 
         #endregion
@@ -94,7 +99,7 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var candidate = ResourceRandomSampler.SampleElementsFromSet(
                     validLuxuries, 1, luxury => weightForResources[luxury]
                 ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
@@ -123,7 +128,7 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var candidate = ResourceRandomSampler.SampleElementsFromSet(
                     validLuxuries, 1, luxury => weightForResources[luxury]
                 ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
@@ -153,7 +158,7 @@ namespace Assets.Simulation.MapGeneration {
             HashSet<IResourceDefinition> luxuriesAlreadyChosen
         ) {
             while(validLuxuries.Any()) {
-                var candidate = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var candidate = ResourceRandomSampler.SampleElementsFromSet(
                     validLuxuries, 1, luxury => weightForResources[luxury]
                 ).FirstOrDefault();
                 validLuxuries.Remove(candidate);
@@ -185,7 +190,7 @@ namespace Assets.Simulation.MapGeneration {
             IResourceDefinition resource, IEnumerable<IHexCell> validLocations,
             int count
         ) {
-            var nodeLocations = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+            var nodeLocations = CellRandomSampler.SampleElementsFromSet(
                 validLocations, count, GetResourceWeightFunction(resource)
             );
 

@@ -129,6 +129,13 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public bool IsMoving {
+            get {
+                var currentStateInfo = Animator.GetCurrentAnimatorStateInfo(0);
+                return currentStateInfo.IsName("Moving");
+            }
+        }
+
         public IPromotionTree PromotionTree {
             get { return _promotionTree; }
             set {
@@ -281,15 +288,21 @@ namespace Assets.Simulation.Units {
         #region from IUnit
 
         public void PerformMovement() {
-            PerformMovement(false);
+            PerformMovement(false, () => { });
         }
 
         public void PerformMovement(bool ignoreMoveCosts) {
+            PerformMovement(ignoreMoveCosts, () => { });
+        }
+
+        public void PerformMovement(bool ignoreMoveCosts, Action postMovementCallback) {
             bool shouldExecuteMovement = (ignoreMoveCosts || CurrentMovement > 0) && CurrentPath != null && CurrentPath.Count > 0;
 
             if(shouldExecuteMovement) {
                 StopAllCoroutines();
-                StartCoroutine(PerformMovementCoroutine(ignoreMoveCosts));
+                StartCoroutine(PerformMovementCoroutine(ignoreMoveCosts, postMovementCallback));
+            }else {
+                postMovementCallback();
             }
         }
 
@@ -359,7 +372,7 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        private IEnumerator PerformMovementCoroutine(bool ignoreMoveCosts) {
+        private IEnumerator PerformMovementCoroutine(bool ignoreMoveCosts, Action postMovementCallback) {
             Animator.SetTrigger("Moving Requested");
 
             IHexCell startingCell = PositionCanon.GetOwnerOfPossession(this);
@@ -416,6 +429,8 @@ namespace Assets.Simulation.Units {
                     yield return null;
                 }
             }
+
+            postMovementCallback();
 
             Animator.SetTrigger("Idling Requested");
         }

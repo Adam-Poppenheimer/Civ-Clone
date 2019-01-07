@@ -14,6 +14,9 @@ namespace Assets.Simulation.Players {
 
         ReadOnlyCollection<IPlayer> AllPlayers { get; }
 
+        IPlayerBrain HumanBrain     { get; }
+        IPlayerBrain BarbarianBrain { get; }
+
         IEnumerable<IPlayerBrain> AllBrains { get; }
 
         #endregion

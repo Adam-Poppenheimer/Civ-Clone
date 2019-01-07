@@ -7,6 +7,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.Players.Barbarians;
+
 namespace Assets.Simulation.Players {
 
     public class PlayerInstaller : MonoInstaller {
@@ -27,7 +29,11 @@ namespace Assets.Simulation.Players {
 
             Container.Bind<IPlayerConfig>().To<PlayerConfig>().FromInstance(PlayerConfig);
 
-            Container.Bind<IPlayerFactory>().To<PlayerFactory>().AsSingle();
+            Container.Bind<IPlayerFactory>                 ().To<PlayerFactory>                 ().AsSingle();
+            Container.Bind<IBarbarianUnitBrain>            ().To<BarbarianUnitBrain>            ().AsSingle();
+            Container.Bind<IBarbarianWanderBrain>          ().To<BarbarianWanderBrain>          ().AsSingle();
+            Container.Bind<IBarbarianInfluenceMapGenerator>().To<BarbarianInfluenceMapGenerator>().AsSingle();
+            Container.Bind<IBarbarianBrainTools>           ().To<BarbarianBrainTools>           ().AsSingle();
 
             Container.Bind<PlayerSignals>().AsSingle();
             

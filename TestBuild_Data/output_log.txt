@@ -2,13 +2,10 @@ Mono path[0] = 'C:/Games/Civ-Clone/TestBuild_Data/Managed'
 Mono path[1] = 'C:/Games/Civ-Clone/TestBuild_Data/Mono'
 Mono config path = 'C:/Games/Civ-Clone/TestBuild_Data/Mono/etc'
 PlayerConnection initialized from C:/Games/Civ-Clone/TestBuild_Data (debug = 0)
-PlayerConnection initialized network socket : 0.0.0.0 55410
-Multi-casting "[IP] 192.168.2.103 [Port] 55410 [Flags] 3 [Guid] 2263333224 [EditorId] 3189310591 [Version] 1048832 [Id] WindowsPlayer(TheDanputer) [Debug] 1" to [225.0.0.222:54997]...
-Waiting for connection from host on [0.0.0.0:55410]...
-PlayerConnection accepted from [192.168.2.103] handle:0x27c
-Started listening to [0.0.0.0:55410]
-Using monoOptions --debugger-agent=transport=dt_socket,embedding=1,defer=y,address=0.0.0.0:56224
-PlayerConnection already initialized - listening to [0.0.0.0:55410]
+PlayerConnection initialized network socket : 0.0.0.0 55251
+Multi-casting "[IP] 192.168.2.103 [Port] 55251 [Flags] 2 [Guid] 224151700 [EditorId] 1638659401 [Version] 1048832 [Id] WindowsPlayer(TheDanputer) [Debug] 0" to [225.0.0.222:54997]...
+Started listening to [0.0.0.0:55251]
+PlayerConnection already initialized - listening to [0.0.0.0:55251]
 Player data archive not found at `C:/Games/Civ-Clone/TestBuild_Data/data.unity3d`, using local filesystemInitialize engine version: 5.6.3p2 (b3d7a6428558)
 GfxDevice: creating device client; threaded=1
 Direct3D:
@@ -16,7 +13,7 @@ Direct3D:
     Renderer: NVIDIA Quadro 4000 (ID=0x6dd)
     Vendor:   NVIDIA
     VRAM:     2000 MB
-    Driver:   21.21.13.7761
+    Driver:   21.21.13.7783
 Begin MonoManager ReloadAssembly
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityEngine.dll (this message is harmless)
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityEngine.dll into Unity Child Domain
@@ -38,27 +35,27 @@ Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\TextMeshPro-5.6-1.0.56-Runtime.dll into Unity Child Domain
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll (this message is harmless)
 Loading C:\Games\Civ-Clone\TestBuild_Data\Managed\UnityCustomUtilities.dll into Unity Child Domain
-- Completed reload, in  0.070 seconds
+- Completed reload, in  0.033 seconds
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.Core.dll (this message is harmless)
 Platform assembly: C:\Games\Civ-Clone\TestBuild_Data\Managed\System.dll (this message is harmless)
 desktop: 1920x1080 60Hz; virtual: 3600x1080 at 0,0
 <RI> Initializing input.
 <RI> Input initialized.
 <RI> Initialized touch support.
-UnloadTime: 1.617534 ms
+UnloadTime: 1.480382 ms
 Setting up 4 worker threads for Enlighten.
-  Thread -> id: 1d50 -> priority: 1 
-  Thread -> id: 2c44 -> priority: 1 
-  Thread -> id: 4170 -> priority: 1 
-  Thread -> id: 18fc -> priority: 1 
-Using seed 587139673
+  Thread -> id: 33dc -> priority: 1 
+  Thread -> id: 1a08 -> priority: 1 
+  Thread -> id: 122c -> priority: 1 
+  Thread -> id: 20a4 -> priority: 1 
+Using seed 806168116
 UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
 UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
 UnityEngine.Logger:Log(LogType, Object)
 UnityEngine.Debug:Log(Object)
-Assets.Simulation.MapGeneration.MapGenerator:SetRandomState() (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:112)
-Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:80)
-Assets.UI.TitleScreen.NewGameDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\TitleScreen\NewGameDisplay.cs:98)
+Assets.Simulation.MapGeneration.MapGenerator:SetRandomState() (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:125)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:87)
+Assets.UI.Common.MapGenerationDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\Common\MapGenerationDisplay.cs:162)
 UnityEngine.Events.InvokableCall:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:154)
 UnityEngine.Events.InvokableCallList:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:637)
 UnityEngine.Events.UnityEventBase:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:773)
@@ -73,17 +70,43 @@ UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent() (at C:\builds
 UnityEngine.EventSystems.StandaloneInputModule:Process() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:204)
 UnityEngine.EventSystems.EventSystem:Update() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:285)
  
-(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/MapGenerator.cs Line: 112)
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/MapGenerator.cs Line: 125)
+
+Failed to get a splittable chunk while creating homeland regions
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:LogWarning(Object)
+Assets.Simulation.MapGeneration.HomelandGenerator:DivideSectionsIntoRectangularChunks(IEnumerable`1, IEnumerable`1, Int32, List`1&, List`1&) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\HomelandGenerator.cs:188)
+Assets.Simulation.MapGeneration.HomelandGenerator:GetHomelandData(ICivilization, List`1, List`1, GridPartition, IHomelandTemplate, IMapTemplate) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\HomelandGenerator.cs:96)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateOceansAndContinents(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:171)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:94)
+Assets.UI.Common.MapGenerationDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\Common\MapGenerationDisplay.cs:162)
+UnityEngine.Events.InvokableCall:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:154)
+UnityEngine.Events.InvokableCallList:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:637)
+UnityEngine.Events.UnityEventBase:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:773)
+UnityEngine.Events.UnityEvent:Invoke() (at C:\buildslave\unity\build\Runtime\Export\UnityEvent_0.cs:52)
+UnityEngine.UI.Button:Press() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:35)
+UnityEngine.UI.Button:OnPointerClick(PointerEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\UI\Core\Button.cs:44)
+UnityEngine.EventSystems.ExecuteEvents:Execute(IPointerClickHandler, BaseEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:50)
+UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:261)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMousePress(MouseButtonEventData) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:551)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent(Int32) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:450)
+UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:430)
+UnityEngine.EventSystems.StandaloneInputModule:Process() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:204)
+UnityEngine.EventSystems.EventSystem:Update() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:285)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/HomelandGenerator.cs Line: 188)
 
 Yield and resource distribution for oceans is currently unimplemented
 UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
 UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
 UnityEngine.Logger:Log(LogType, Object)
 UnityEngine.Debug:Log(Object)
-Assets.Simulation.MapGeneration.OceanGenerator:DistributeYieldAndResources(OceanData) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\OceanGenerator.cs:91)
-Assets.Simulation.MapGeneration.MapGenerator:PaintMap(OceanAndContinentData, IMapTemplate) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:186)
-Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:87)
-Assets.UI.TitleScreen.NewGameDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\TitleScreen\NewGameDisplay.cs:98)
+Assets.Simulation.MapGeneration.OceanGenerator:DistributeYieldAndResources(OceanData) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\OceanGenerator.cs:93)
+Assets.Simulation.MapGeneration.MapGenerator:PaintMap(OceanAndContinentData, IMapTemplate) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:205)
+Assets.Simulation.MapGeneration.MapGenerator:GenerateMap(IMapTemplate, IMapGenerationVariables) (at C:\Games\Civ-Clone\Assets\Simulation\MapGeneration\MapGenerator.cs:98)
+Assets.UI.Common.MapGenerationDisplay:GenerateMap() (at C:\Games\Civ-Clone\Assets\UI\Common\MapGenerationDisplay.cs:162)
 UnityEngine.Events.InvokableCall:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:154)
 UnityEngine.Events.InvokableCallList:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:637)
 UnityEngine.Events.UnityEventBase:Invoke(Object[]) (at C:\buildslave\unity\build\Runtime\Export\UnityEvent.cs:773)
@@ -98,32 +121,149 @@ UnityEngine.EventSystems.StandaloneInputModule:ProcessMouseEvent() (at C:\builds
 UnityEngine.EventSystems.StandaloneInputModule:Process() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:204)
 UnityEngine.EventSystems.EventSystem:Update() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:285)
  
-(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/OceanGenerator.cs Line: 91)
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/MapGeneration/OceanGenerator.cs Line: 93)
 
-Skipping profile frame. Receiver can not keep up with the amount of data sent
+Ending turn on player Brazil
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
  
-(Filename: C:\buildslave\unity\build\Runtime/Network/PlayerCommunicator/GeneralConnection.cpp Line: 373)
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
 
-NullReferenceException
-  at (wrapper managed-to-native) UnityEngine.MonoBehaviour:StopCoroutine_Auto (UnityEngine.Coroutine)
-  at UnityEngine.MonoBehaviour.StopCoroutine (UnityEngine.Coroutine routine) [0x00003] in C:\buildslave\unity\build\artifacts\generated\common\runtime\MonoBehaviourBindings.gen.cs:99 
-  at Assets.UI.HexMap.HexCellSignalLogic.OnExitSignal (IHexCell exitedTile) [0x00019] in C:\Games\Civ-Clone\Assets\UI\HexMap\HexCellSignalLogic.cs:75 
-  at UniRx.Observer+Subscribe`1[Assets.Simulation.HexMap.IHexCell].OnNext (IHexCell value) [0x00014] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164 
-  at UniRx.Subject`1[Assets.Simulation.HexMap.IHexCell].OnNext (IHexCell value) [0x00008] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62 
-  at Assets.Simulation.HexMap.HexMeshEventEmitter.EmitExitMessage (IHexCell cell) [0x0000d] in C:\Games\Civ-Clone\Assets\Simulation\HexMap\HexMeshEventEmitter.cs:210 
-  at Assets.Simulation.HexMap.HexMeshEventEmitter.OnPointerExit (UnityEngine.EventSystems.PointerEventData eventData) [0x0003d] in C:\Games\Civ-Clone\Assets\Simulation\HexMap\HexMeshEventEmitter.cs:121 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute (IPointerExitHandler handler, UnityEngine.EventSystems.BaseEventData eventData) [0x00008] in C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:29 
-  at UnityEngine.EventSystems.ExecuteEvents.Execute[IPointerExitHandler] (UnityEngine.GameObject target, UnityEngine.EventSystems.BaseEventData eventData, UnityEngine.EventSystems.EventFunction`1 functor) [0x00073] in C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:261 
-UnityEngine.DebugLogHandler:Internal_LogException(Exception, Object)
-UnityEngine.DebugLogHandler:LogException(Exception, Object)
-UnityEngine.Logger:LogException(Exception, Object)
-UnityEngine.Debug:LogException(Exception)
-UnityEngine.EventSystems.ExecuteEvents:Execute(GameObject, BaseEventData, EventFunction`1) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\ExecuteEvents.cs:265)
-UnityEngine.EventSystems.BaseInputModule:HandlePointerExitAndEnter(PointerEventData, GameObject) (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\BaseInputModule.cs:136)
-UnityEngine.EventSystems.PointerInputModule:ClearSelection() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\PointerInputModule.cs:297)
-UnityEngine.EventSystems.StandaloneInputModule:DeactivateModule() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\InputModules\StandaloneInputModule.cs:180)
-UnityEngine.EventSystems.EventSystem:OnDisable() (at C:\buildslave\unity\build\Extensions\guisystem\UnityEngine.UI\EventSystem\EventSystem.cs:224)
+Ending turn on player China
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
  
-(Filename: C:/buildslave/unity/build/artifacts/generated/common/runtime/MonoBehaviourBindings.gen.cs Line: 99)
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
 
-Waiting for finish
+Ending turn on player Egypt
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+Ending turn on player England
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+Ending turn on player France
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+Ending turn on player Germany
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+Ending turn on player India
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+Ending turn on player Indonesia
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.Simulation.Core.GameCore:EndTurn() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:141)
+Assets.Simulation.Core.GameCore:<StartTurn>m__0() (at C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137)
+Assets.Simulation.Players.<EndTurn>c__AnonStorey1:<>m__0(IPlayer) (at C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84)
+UniRx.Subscribe`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164)
+UniRx.Subject`1:OnNext(IPlayer) (at C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62)
+Assets.UI.Core.EndTurnDisplay:DoOnUpdate() (at C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52)
+BetterUI.UIPanel:Update() (at C:\Libraries\Better UI\UIPanel.cs:28)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Core/GameCore.cs Line: 141)
+
+NullReferenceException: Object reference not set to an instance of an object
+  at Assets.Simulation.Players.Barbarians.BarbarianInfluenceMapGenerator.GenerateMaps () [0x0002c] in C:\Games\Civ-Clone\Assets\Simulation\Players\Barbarians\BarbarianInfluenceMapGenerator.cs:58 
+  at Assets.Simulation.Players.Barbarians.BarbarianPlayerBrain.SetUpAnalysis () [0x00008] in C:\Games\Civ-Clone\Assets\Simulation\Players\Barbarians\BarbarianPlayerBrain.cs:66 
+  at Assets.Simulation.Players.Player.PassControl (System.Action controlRelinquisher) [0x00007] in C:\Games\Civ-Clone\Assets\Simulation\Players\Player.cs:40 
+  at Assets.Simulation.Core.GameCore.StartTurn (IPlayer player) [0x00015] in C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137 
+  at Assets.Simulation.Core.GameCore.EndTurn () [0x00099] in C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:157 
+  at Assets.Simulation.Core.GameCore.<StartTurn>m__0 () [0x00001] in C:\Games\Civ-Clone\Assets\Simulation\Core\GameCore.cs:137 
+  at Assets.Simulation.Players.HumanPlayerBrain+<EndTurn>c__AnonStorey1.<>m__0 (IPlayer player) [0x00017] in C:\Games\Civ-Clone\Assets\Simulation\Players\HumanPlayerBrain.cs:84 
+  at UniRx.Observer+Subscribe`1[Assets.Simulation.Players.IPlayer].OnNext (IPlayer value) [0x00014] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Observer.cs:164 
+  at UniRx.Subject`1[Assets.Simulation.Players.IPlayer].OnNext (IPlayer value) [0x00008] in C:\Games\Civ-Clone\Assets\Plugins\UniRx\Scripts\Subjects\Subject.cs:62 
+  at Assets.UI.Core.EndTurnDisplay.DoOnUpdate () [0x00027] in C:\Games\Civ-Clone\Assets\UI\Core\EndTurnDisplay.cs:52 
+  at BetterUI.UIPanel.Update () [0x00001] in C:\Libraries\Better UI\UIPanel.cs:28 
+ 
+(Filename: C:/Games/Civ-Clone/Assets/Simulation/Players/Barbarians/BarbarianInfluenceMapGenerator.cs Line: 58)
+
+Exiting Game...
+UnityEngine.DebugLogHandler:Internal_Log(LogType, String, Object)
+UnityEngine.DebugLogHandler:LogFormat(LogType, Object, String, Object[])
+UnityEngine.Logger:Log(LogType, Object)
+UnityEngine.Debug:Log(Object)
+Assets.UI.StateMachine.States.ExitGameState:OnStateEnter(Animator, AnimatorStateInfo, Int32) (at C:\Games\Civ-Clone\Assets\UI\StateMachine\States\ExitGameState.cs:17)
+ 
+(Filename: C:/Games/Civ-Clone/Assets/UI/StateMachine/States/ExitGameState.cs Line: 17)
+

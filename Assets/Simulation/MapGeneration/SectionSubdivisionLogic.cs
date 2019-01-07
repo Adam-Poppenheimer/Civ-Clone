@@ -17,15 +17,19 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexGrid Grid;
+        private IHexGrid                           Grid;
+        private IWeightedRandomSampler<MapSection> MapSectionRandomSampler;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public SectionSubdivisionLogic(IHexGrid grid) {
-            Grid = grid;
+        public SectionSubdivisionLogic(
+            IHexGrid grid, IWeightedRandomSampler<MapSection> mapSectionRandomSampler
+        ) {
+            Grid                    = grid;
+            MapSectionRandomSampler = mapSectionRandomSampler;
         }
 
         #endregion
@@ -189,7 +193,7 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             if(expansionCandidates.Any()) {
-                var newSection = WeightedRandomSampler<MapSection>.SampleElementsFromSet(
+                var newSection = MapSectionRandomSampler.SampleElementsFromSet(
                     expansionCandidates, 1, section => weightFunction(section, chunk)
                 ).FirstOrDefault();
 

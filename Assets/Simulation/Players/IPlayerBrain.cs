@@ -15,7 +15,7 @@ namespace Assets.Simulation.Players {
 
         #region methods
 
-        void SetUpAnalysis();
+        void RefreshAnalysis();
 
         void ExecuteTurn(Action controlRelinquisher);
 

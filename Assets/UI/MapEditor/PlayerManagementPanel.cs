@@ -37,7 +37,6 @@ namespace Assets.UI.MapEditor {
         
         private ICivilizationFactory                      CivilizationFactory;
         private IPlayerFactory                            PlayerFactory;
-        private IPlayerConfig                             PlayerConfig;
         private CivilizationSignals                       CivSignals;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
         
@@ -48,12 +47,10 @@ namespace Assets.UI.MapEditor {
         [Inject]
         public void InjectDependencies(
             ICivilizationFactory civilizationFactory, IPlayerFactory playerFactory,
-            IPlayerConfig playerConfig, CivilizationSignals civSignals,
-            ReadOnlyCollection<ICivilizationTemplate> civTemplates
+            CivilizationSignals civSignals, ReadOnlyCollection<ICivilizationTemplate> civTemplates
         ){
             CivilizationFactory = civilizationFactory;
             PlayerFactory       = playerFactory;
-            PlayerConfig        = playerConfig;
             CivSignals          = civSignals;
             CivTemplates        = civTemplates;
         }
@@ -78,7 +75,7 @@ namespace Assets.UI.MapEditor {
         public void CreateNewPlayer() {
             var newCiv = CivilizationFactory.Create(SelectedTemplate);
 
-            PlayerFactory.CreatePlayer(newCiv, PlayerConfig.HumanBrain);
+            PlayerFactory.CreatePlayer(newCiv, PlayerFactory.HumanBrain);
 
             Refresh();
         }

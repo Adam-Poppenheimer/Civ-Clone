@@ -37,7 +37,7 @@ namespace Assets.Simulation.Players {
         #region from IPlayer
 
         public void PassControl(Action controlRelinquisher) {
-            Brain.SetUpAnalysis();
+            Brain.RefreshAnalysis();
             Brain.ExecuteTurn(controlRelinquisher);
         }
 

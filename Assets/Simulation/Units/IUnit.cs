@@ -53,6 +53,7 @@ namespace Assets.Simulation.Units {
         bool LockedIntoConstruction { get; }
         bool IsIdling               { get; }
         bool IsFortified            { get; }
+        bool IsMoving               { get; }
 
         IPromotionTree PromotionTree { get; }
 
@@ -70,6 +71,7 @@ namespace Assets.Simulation.Units {
 
         void PerformMovement();
         void PerformMovement(bool ignoreMoveCosts);
+        void PerformMovement(bool ignoreMoveCosts, Action postMovementCallback);
 
         bool CanRelocate(IHexCell newLocation);
         void Relocate   (IHexCell newLocation);

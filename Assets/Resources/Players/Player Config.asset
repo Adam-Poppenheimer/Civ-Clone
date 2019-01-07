@@ -11,3 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f891c90ddfc9ce64bacdea0f48489585, type: 3}
   m_Name: Player Config
   m_EditorClassIdentifier: 
+  _unitMaxInfluenceRadius: 2
+  _wanderSelectionWeight_Distance: 10
+  _wanderSelectionWeight_Allies: 1

@@ -9,8 +9,9 @@ using UnityEngine.EventSystems;
 using Zenject;
 using UniRx;
 
-using Assets.UI;
-using Assets.Simulation.Civilizations;
+using Assets.Simulation.HexMap;
+using Assets.Simulation.MapResources;
+using Assets.Simulation.MapGeneration;
 
 namespace Assets.Simulation.Core {
 
@@ -26,6 +27,13 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
+            //Can make use of open generic types if updated to the latest version of Zenject,
+            //which requires a more modern version of Unity
+            Container.Bind<IWeightedRandomSampler<IBalanceStrategy>>   ().To<WeightedRandomSampler<IBalanceStrategy>>   ().AsSingle();
+            Container.Bind<IWeightedRandomSampler<IHexCell>>           ().To<WeightedRandomSampler<IHexCell>>           ().AsSingle();
+            Container.Bind<IWeightedRandomSampler<IResourceDefinition>>().To<WeightedRandomSampler<IResourceDefinition>>().AsSingle();
+            Container.Bind<IWeightedRandomSampler<MapSection>>         ().To<WeightedRandomSampler<MapSection>>         ().AsSingle();
+
             Container.Bind<ICoreConfig>().To<CoreConfig>().FromResource("Core");
 
             Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();

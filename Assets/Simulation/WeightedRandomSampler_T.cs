@@ -5,13 +5,13 @@ using System.Text;
 
 using UnityEngine;
 
-namespace Assets.Simulation.MapGeneration {
+namespace Assets.Simulation {
 
-    public static class WeightedRandomSampler<T> {
+    public class WeightedRandomSampler<T> : IWeightedRandomSampler<T> {
 
-        #region static methods
+        #region instance methods
 
-        public static List<T> SampleElementsFromSet(
+        public List<T> SampleElementsFromSet(
             IEnumerable<T> set, int count, Func<T, int> weightFunction
         ) {
             int totalWeight = 0;
@@ -54,7 +54,7 @@ namespace Assets.Simulation.MapGeneration {
             return sample;
         }
 
-        public static List<T> SampleElementsFromSet(
+        public List<T> SampleElementsFromSet(
             IEnumerable<T> set, int count, Func<T, int> startingWeightFunction,
             Func<T, List<T>, int> dynamicWeightFunction, Func<T, IEnumerable<T>> dynamicElementFilter
         ) {

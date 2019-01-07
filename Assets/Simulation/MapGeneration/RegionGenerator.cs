@@ -18,10 +18,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private ICellModificationLogic ModLogic;
-        private IHexGrid               Grid;
-        private IMapGenerationConfig   Config;
-        private ICellClimateLogic      CellClimateLogic;
+        private ICellModificationLogic           ModLogic;
+        private IHexGrid                         Grid;
+        private IMapGenerationConfig             Config;
+        private ICellClimateLogic                CellClimateLogic;
+        private IWeightedRandomSampler<IHexCell> CellRandomSampler;
 
         #endregion
 
@@ -30,12 +31,14 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public RegionGenerator(
             ICellModificationLogic modLogic, IHexGrid grid,
-            IMapGenerationConfig config, ICellClimateLogic cellClimateLogic
+            IMapGenerationConfig config, ICellClimateLogic cellClimateLogic,
+            IWeightedRandomSampler<IHexCell> cellRandomSampler
         ) {
-            ModLogic         = modLogic;
-            Grid             = grid;
-            Config           = config;
-            CellClimateLogic = cellClimateLogic;
+            ModLogic          = modLogic;
+            Grid              = grid;
+            Config            = config;
+            CellClimateLogic  = cellClimateLogic;
+            CellRandomSampler = cellRandomSampler;
         }
 
         #endregion
@@ -51,7 +54,7 @@ namespace Assets.Simulation.MapGeneration {
             int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * landCells.Count() * 0.01f);
             int desiredHillsCount    = Mathf.RoundToInt(template.HillsPercentage     * landCells.Count() * 0.01f);
 
-            var elevatedCells = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+            var elevatedCells = CellRandomSampler.SampleElementsFromSet(
                 landCells, desiredHillsCount + desiredMountainCount,
                 HillsStartingWeightFunction, HillsDynamicWeightFunction, cell => Grid.GetNeighbors(cell)
             );
@@ -60,7 +63,7 @@ namespace Assets.Simulation.MapGeneration {
                 ModLogic.ChangeShapeOfCell(cell, CellShape.Hills);
             }
 
-            var mountainousCells = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+            var mountainousCells = CellRandomSampler.SampleElementsFromSet(
                 elevatedCells, desiredMountainCount, MountainWeightFunction
             );
 

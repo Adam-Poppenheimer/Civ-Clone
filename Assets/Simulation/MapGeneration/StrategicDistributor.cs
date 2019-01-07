@@ -19,9 +19,11 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IResourceNodeFactory      NodeFactory;
-        private IResourceRestrictionLogic ResourceRestrictionCanon;
-        private IStrategicCopiesLogic     StrategicCopiesLogic;
+        private IResourceNodeFactory                        NodeFactory;
+        private IResourceRestrictionLogic                   ResourceRestrictionCanon;
+        private IStrategicCopiesLogic                       StrategicCopiesLogic;
+        private IWeightedRandomSampler<IHexCell>            CellRandomSampler;
+        private IWeightedRandomSampler<IResourceDefinition> ResourceRandomSampler;
 
         private IEnumerable<IResourceDefinition> StrategicResources;
 
@@ -32,12 +34,15 @@ namespace Assets.Simulation.MapGeneration {
         [Inject]
         public StrategicDistributor(
             IResourceNodeFactory nodeFactory, IResourceRestrictionLogic resourceRestrictionCanon,
-            IStrategicCopiesLogic strategicCopiesLogic,
-            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources
+            IStrategicCopiesLogic strategicCopiesLogic, IWeightedRandomSampler<IHexCell> cellRandomSampler,
+            [Inject(Id = "Available Resources")] IEnumerable<IResourceDefinition> availableResources,
+            IWeightedRandomSampler<IResourceDefinition> resourceRandomSampler
         ) {
             NodeFactory              = nodeFactory;
             ResourceRestrictionCanon = resourceRestrictionCanon;
             StrategicCopiesLogic     = strategicCopiesLogic;
+            CellRandomSampler        = cellRandomSampler;
+            ResourceRandomSampler    = resourceRandomSampler;
 
             StrategicResources = availableResources.Where(resource => resource.Type == ResourceType.Strategic);
         }
@@ -74,7 +79,7 @@ namespace Assets.Simulation.MapGeneration {
 
                 var resourceWeights = resourceWeightsByRegion[region];
 
-                var strategic = WeightedRandomSampler<IResourceDefinition>.SampleElementsFromSet(
+                var strategic = ResourceRandomSampler.SampleElementsFromSet(
                     validStrategics, 1,
                     resource => resourceWeights.ContainsKey(resource) ? resourceWeights[resource] : 0
                 ).FirstOrDefault();
@@ -83,7 +88,7 @@ namespace Assets.Simulation.MapGeneration {
                     continue;
                 }
 
-                var location = WeightedRandomSampler<IHexCell>.SampleElementsFromSet(
+                var location = CellRandomSampler.SampleElementsFromSet(
                     region.Cells, 1, cell => ResourceRestrictionCanon.GetPlacementWeightOnCell(strategic, cell)
                 ).FirstOrDefault();
 

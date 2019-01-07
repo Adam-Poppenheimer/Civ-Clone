@@ -21,6 +21,9 @@ namespace Assets.Simulation.Players {
         }
         private List<IPlayer> allPlayers = new List<IPlayer>();
 
+        public IPlayerBrain HumanBrain     { get; private set; }
+        public IPlayerBrain BarbarianBrain { get; private set; }
+
         public IEnumerable<IPlayerBrain> AllBrains {
             get { return _allBrains; }
         }
@@ -43,6 +46,9 @@ namespace Assets.Simulation.Players {
             [Inject(Id = "Barbarian Brain")] IPlayerBrain barbarianBrain
         ) {
             PlayerSignals = playerSignals;
+
+            HumanBrain     = humanBrain;
+            BarbarianBrain = barbarianBrain;
 
             _allBrains = new List<IPlayerBrain>() {
                 humanBrain, barbarianBrain
