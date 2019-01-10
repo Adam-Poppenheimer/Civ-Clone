@@ -41,6 +41,7 @@ namespace Assets.Simulation.HexMap {
         int GetDistance(IHexCell cellOne, IHexCell cellTwo);
 
         List<IHexCell> GetCellsInRadius(IHexCell center, int radius);
+        List<IHexCell> GetCellsInRadius(IHexCell center, int radius, bool includesCenter);
 
         List<IHexCell> GetCellsInLine(IHexCell start, IHexCell end);
 

@@ -77,11 +77,44 @@ namespace Assets.Tests.Simulation.Civilizations {
                 "Create did not throw on a null name as expected");
         }
 
+        [Test]
+        public void BarbarianCiv_ReturnsTheFirstBarbaricCivilization() {
+            var normalTemplate   = BuildCivTemplate(false);
+            var barbaricTemplate = BuildCivTemplate(true);
+
+            var factory = Container.Resolve<CivilizationFactory>();
+
+                         factory.Create(normalTemplate);
+            var civTwo = factory.Create(barbaricTemplate);
+                         factory.Create(barbaricTemplate);
+
+            Assert.AreEqual(civTwo, factory.BarbarianCiv);
+        }
+
+        [Test]
+        public void BarbarianCiv_ReturnsNullIfNoCivilizationIsBarbaric() {
+            var normalTemplate   = BuildCivTemplate(false);
+
+            var factory = Container.Resolve<CivilizationFactory>();
+
+            factory.Create(normalTemplate);
+            factory.Create(normalTemplate);
+            factory.Create(normalTemplate);
+
+            Assert.IsNull(factory.BarbarianCiv);
+        }
+
         #endregion
 
         #region utilities
 
+        private ICivilizationTemplate BuildCivTemplate(bool isBarbaric) {
+            var mockTemplate = new Mock<ICivilizationTemplate>();
 
+            mockTemplate.Setup(template => template.IsBarbaric).Returns(isBarbaric);
+
+            return mockTemplate.Object;
+        }
 
         #endregion
 

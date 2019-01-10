@@ -15,6 +15,40 @@ namespace Assets.Simulation.HexMap {
 
         #region from IFeatureConfig
 
+        public ReadOnlyCollection<Transform> ForestTreePrefabs {
+            get { return _forestTreePrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _forestTreePrefabs;
+
+        public ReadOnlyCollection<Transform> JungleTreePrefabs {
+            get { return _jungleTreePrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _jungleTreePrefabs;
+
+        public ReadOnlyCollection<Transform> BuildingPrefabs {
+            get { return _buildingPrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _buildingPrefabs;
+
+        public ReadOnlyCollection<Transform> RuinsPrefabs {
+            get { return _ruinsPrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _ruinsPrefabs;
+
+        public ReadOnlyCollection<Transform> EncampmentPrefabs {
+            get { return _encampmentPrefabs.AsReadOnly(); }
+        }
+        [SerializeField] private List<Transform> _encampmentPrefabs;
+
+
+
+
+
+        public float TreeAppearanceChance {
+            get { return _treeAppearanceChance; }
+        }
+        [SerializeField] private float _treeAppearanceChance;
+
         public float BuildingAppearanceChance {
             get { return _buildingAppearanceChance; }
         }
@@ -24,11 +58,6 @@ namespace Assets.Simulation.HexMap {
             get { return _resourceAppearanceChance; }
         }
         [SerializeField] private float _resourceAppearanceChance;
-
-        public float TreeAppearanceChance {
-            get { return _treeAppearanceChance; }
-        }
-        [SerializeField] private float _treeAppearanceChance;
 
         public float ImprovementAppearanceChance {
             get { return _improvementAppearanceChance; }
@@ -40,25 +69,14 @@ namespace Assets.Simulation.HexMap {
         }
         [SerializeField] private float _ruinsAppearanceChance;
 
-        public ReadOnlyCollection<Transform> BuildingPrefabs {
-            get { return _buildingPrefabs.AsReadOnly(); }
+        public float EncampmentAppearanceChance {
+            get { return _encampmentAppearanceChance; }
         }
-        [SerializeField] private List<Transform> _buildingPrefabs;
+        [SerializeField] private float _encampmentAppearanceChance;
 
-        public ReadOnlyCollection<Transform> ForestTreePrefabs {
-            get { return _forestTreePrefabs.AsReadOnly(); }
-        }
-        [SerializeField] private List<Transform> _forestTreePrefabs;
 
-        public ReadOnlyCollection<Transform> JungleTreePrefabs {
-            get { return _jungleTreePrefabs.AsReadOnly(); }
-        }
-        [SerializeField] private List<Transform> _jungleTreePrefabs;
 
-        public ReadOnlyCollection<Transform> RuinsPrefabs {
-            get { return _ruinsPrefabs.AsReadOnly(); }
-        }
-        [SerializeField] private List<Transform> _ruinsPrefabs;
+
 
         public int GuaranteedTreeModulo {
             get { return _guaranteedTreeModulo; }
@@ -84,6 +102,11 @@ namespace Assets.Simulation.HexMap {
             get { return _guaranteedRuinsModulo; }
         }
         [SerializeField] private int _guaranteedRuinsModulo;
+
+        public int GuaranteedEncampmentModulo {
+            get { return _guaranteedEncampmentModulo; }
+        }
+        [SerializeField] private int _guaranteedEncampmentModulo;
 
         #endregion
 

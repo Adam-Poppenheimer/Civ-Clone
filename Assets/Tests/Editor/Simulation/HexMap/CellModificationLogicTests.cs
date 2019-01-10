@@ -341,13 +341,6 @@ namespace Assets.Tests.Simulation.HexMap {
                     },
                     Feature = CellFeature.None
                 }).SetName("None always valid").Returns(true);
-
-                yield return new TestCaseData(new CanChangeFeatureOfCellTestData() {
-                    Cell = new HexCellTestData() {
-                        Terrain = CellTerrain.ShallowWater, Shape = CellShape.Mountains,
-                        Vegetation = CellVegetation.Jungle, Feature = CellFeature.Oasis
-                    }
-                }).SetName("Feature always valid").Returns(true);
             }
         }
 

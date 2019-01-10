@@ -41,6 +41,7 @@ namespace Assets.Simulation.MapManagement {
             Container.Bind<IDiplomacyComposer>   ().To<DiplomacyComposer>   ().AsSingle();
             Container.Bind<ICapitalCityComposer> ().To<CapitalCityComposer> ().AsSingle();
             Container.Bind<IPlayerComposer>      ().To<PlayerComposer>      ().AsSingle();
+            Container.Bind<IBarbarianComposer>   ().To<BarbarianComposer>   ().AsSingle();
 
             Container.Bind<IMapComposer>().To<MapComposer>().AsSingle();
 

@@ -9,7 +9,7 @@ using Assets.UI.MapEditor;
 
 namespace Assets.UI.StateMachine.States.MapEditor.CellEditing {
 
-    class RoadPaintingState : CellPaintingStateBase {
+    public class RoadPaintingState : CellPaintingStateBase {
 
         #region instance methods
 

@@ -88,7 +88,9 @@ namespace Assets.UI.MapEditor {
         #endregion
 
         public void SetActiveCivilization(int index) {
-            ActiveCivilization = CivilizationFactory.AllCivilizations[index];
+            var civName = CivilizationDropdown.options[index].text;
+
+            ActiveCivilization = CivilizationFactory.AllCivilizations.FirstOrDefault(civ => civ.Template.Name.Equals(civName));
         }
 
         private void PopulateCivilizationDropdown() {

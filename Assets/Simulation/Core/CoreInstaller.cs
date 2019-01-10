@@ -37,6 +37,7 @@ namespace Assets.Simulation.Core {
             Container.Bind<ICoreConfig>().To<CoreConfig>().FromResource("Core");
 
             Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();
+            Container.Bind<IRandomizer>   ().To<Randomizer>   ().AsSingle();
 
             Container.Bind<CoreSignals>().AsSingle();
 

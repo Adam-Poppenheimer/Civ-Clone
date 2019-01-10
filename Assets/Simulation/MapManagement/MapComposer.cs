@@ -30,6 +30,7 @@ namespace Assets.Simulation.MapManagement {
         private IResourceComposer               ResourceComposer;
         private IDiplomacyComposer              DiplomacyComposer;
         private ICapitalCityComposer            CapitalCityComposer;
+        private IBarbarianComposer              BarbarianComposer;
         private IVisibilityResponder            VisibilityResponder;
         private IVisibilityCanon                VisibilityCanon;
         private ICapitalCitySynchronizer        CapitalCitySynchronizer;
@@ -52,6 +53,7 @@ namespace Assets.Simulation.MapManagement {
             IResourceComposer        resourceComposer,
             IDiplomacyComposer       diplomacyComposer,
             ICapitalCityComposer     capitalCityComposer,
+            IBarbarianComposer       barbarianComposer,
             IVisibilityResponder     visibilityResponder,
             IVisibilityCanon         visibilityCanon,
             ICapitalCitySynchronizer capitalCitySynchronizer,
@@ -68,6 +70,7 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer          = resourceComposer;
             DiplomacyComposer         = diplomacyComposer;
             CapitalCityComposer       = capitalCityComposer;
+            BarbarianComposer         = barbarianComposer;
             VisibilityResponder       = visibilityResponder;
             VisibilityCanon           = visibilityCanon;
             CapitalCitySynchronizer   = capitalCitySynchronizer;
@@ -88,6 +91,7 @@ namespace Assets.Simulation.MapManagement {
             ResourceComposer    .ComposeResources    (mapData);
             DiplomacyComposer   .ComposeDiplomacy    (mapData);
             CapitalCityComposer .ComposeCapitalCities(mapData);
+            BarbarianComposer   .ComposeBarbarians   (mapData);
 
             return mapData;
         }
@@ -116,6 +120,7 @@ namespace Assets.Simulation.MapManagement {
             UnitComposer        .DecomposeUnits        (mapData);
             ResourceComposer    .DecomposeResources    (mapData);
             ImprovementComposer .DecomposeImprovements (mapData);
+            BarbarianComposer   .DecomposeBarbarians   (mapData);
 
             CapitalCitySynchronizer.SetCapitalUpdating(true);
 
@@ -153,6 +158,7 @@ namespace Assets.Simulation.MapManagement {
             DiplomacyComposer   .ClearRuntime();
             CivilizationComposer.ClearRuntime();
             PlayerComposer      .ClearRuntime();
+            BarbarianComposer   .ClearRuntime();
 
             if(!immediateMode) { yield return new WaitForEndOfFrame(); }
 

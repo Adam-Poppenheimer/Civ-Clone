@@ -19,6 +19,7 @@ using Assets.Simulation.MapResources;
 using Assets.Simulation.Improvements;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Core;
+using Assets.Simulation.Barbarians;
 
 using Assets.UI.SpecialtyResources;
 
@@ -67,6 +68,7 @@ namespace Assets.UI.HexMap {
         private IGameCore                                        GameCore;
         private IVisibilityCanon                                 VisibilityCanon;
         private IExplorationCanon                                ExplorationCanon;
+        private IEncampmentLocationCanon                         EncampmentLocationCanon;
 
         #endregion
 
@@ -82,7 +84,8 @@ namespace Assets.UI.HexMap {
             ICellYieldLogic                                  cellResourceLogic,
             IGameCore                                        gameCore,
             IVisibilityCanon                                 visibilityCanon,
-            IExplorationCanon                                explorationCanon
+            IExplorationCanon                                explorationCanon,
+            IEncampmentLocationCanon                         encampmentLocationCanon
         ){
             SignalLogic               = signalLogic;
             GenerationLogic           = generationLogic;
@@ -93,6 +96,7 @@ namespace Assets.UI.HexMap {
             GameCore                  = gameCore;
             VisibilityCanon           = visibilityCanon;
             ExplorationCanon          = explorationCanon;
+            EncampmentLocationCanon   = encampmentLocationCanon;
         }
 
         private void OnBeginHoverFired(IHexCell hoveredCell) {
@@ -126,6 +130,10 @@ namespace Assets.UI.HexMap {
 
             if(cell.Feature != CellFeature.None) {
                 cellDataString += ", " + cell.Feature.ToString();
+            }
+
+            if(EncampmentLocationCanon.GetPossessionsOfOwner(cell).Any()) {
+                cellDataString += ", Encampment";
             }
 
             cellDataString += GetImprovementString(cell);

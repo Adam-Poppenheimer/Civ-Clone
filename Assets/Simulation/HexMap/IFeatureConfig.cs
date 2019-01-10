@@ -14,22 +14,23 @@ namespace Assets.Simulation.HexMap {
 
         ReadOnlyCollection<Transform> ForestTreePrefabs { get; }
         ReadOnlyCollection<Transform> JungleTreePrefabs { get; }
-
-        ReadOnlyCollection<Transform> BuildingPrefabs { get; }
-
-        ReadOnlyCollection<Transform> RuinsPrefabs { get; }
+        ReadOnlyCollection<Transform> BuildingPrefabs   { get; }
+        ReadOnlyCollection<Transform> RuinsPrefabs      { get; }
+        ReadOnlyCollection<Transform> EncampmentPrefabs { get; }
 
         float TreeAppearanceChance        { get; }
         float BuildingAppearanceChance    { get; }
         float ResourceAppearanceChance    { get; }
         float ImprovementAppearanceChance { get; }
         float RuinsAppearanceChance       { get; }
+        float EncampmentAppearanceChance  { get; }
 
         int GuaranteedTreeModulo        { get; }
         int GuaranteedBuildingModulo    { get; }
         int GuaranteedResourceModulo    { get; }
         int GuaranteedImprovementModulo { get; }
         int GuaranteedRuinsModulo       { get; }
+        int GuaranteedEncampmentModulo  { get; }
 
         #endregion
 

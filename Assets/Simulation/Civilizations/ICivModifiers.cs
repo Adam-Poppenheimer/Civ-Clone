@@ -19,6 +19,8 @@ namespace Assets.Simulation.Civilizations {
 
         ICivModifier<float> GoldBountyPerProduction { get; }
 
+        ICivModifier<float> GoldBountyFromEncampments { get; }
+
         #endregion
 
     }

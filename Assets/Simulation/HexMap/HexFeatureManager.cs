@@ -27,11 +27,7 @@ namespace Assets.Simulation.HexMap {
 
         private INoiseGenerator       NoiseGenerator;
         private IFeatureLocationLogic FeatureLocationLogic;
-        private IFeaturePlacer        CityFeaturePlacer;
-        private IFeaturePlacer        ResourceFeaturePlacer;
-        private IFeaturePlacer        ImprovementFeaturePlacer;
-        private IFeaturePlacer        TreeFeaturePlacer;
-        private IFeaturePlacer        RuinsFeaturePlacer;
+        private List<IFeaturePlacer>  FeaturePlacers;
         private Transform             FeatureContainer;
 
         #endregion
@@ -41,21 +37,13 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             INoiseGenerator noiseGenerator, IFeatureLocationLogic featureLocationLogic,
-            [Inject(Id = "City Feature Placer")]        IFeaturePlacer cityFeaturePlacer,
-            [Inject(Id = "Resource Feature Placer")]    IFeaturePlacer resourceFeaturePlacer,
-            [Inject(Id = "Improvement Feature Placer")] IFeaturePlacer improvementFeaturePlacer,
-            [Inject(Id = "Tree Feature Placer")]        IFeaturePlacer treeFeaturePlacer,
-            [Inject(Id = "Ruins Feature Placer")]       IFeaturePlacer ruinsFeaturePlacer,
+            List<IFeaturePlacer> featurePlacers,
             [InjectOptional(Id = "Feature Container")] Transform featureContainer
         ){
-            NoiseGenerator           = noiseGenerator;
-            FeatureLocationLogic     = featureLocationLogic;
-            CityFeaturePlacer        = cityFeaturePlacer;
-            ResourceFeaturePlacer    = resourceFeaturePlacer;
-            ImprovementFeaturePlacer = improvementFeaturePlacer;
-            TreeFeaturePlacer        = treeFeaturePlacer;
-            RuinsFeaturePlacer       = ruinsFeaturePlacer;
-            FeatureContainer         = featureContainer;
+            NoiseGenerator       = noiseGenerator;
+            FeatureLocationLogic = featureLocationLogic;
+            FeaturePlacers       = featurePlacers;
+            FeatureContainer     = featureContainer;
         }
 
         #region from IHexFeatureManager
@@ -108,20 +96,10 @@ namespace Assets.Simulation.HexMap {
 
                 var locationHash = NoiseGenerator.SampleHashGrid(location);
 
-                if(CityFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
-                    continue;
-
-                }else if(ImprovementFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
-                    continue;
-
-                }else if(ResourceFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
-                    continue;
-
-                }else if(RuinsFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
-                    continue;
-
-                }else {
-                    TreeFeaturePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash);
+                foreach(var featurePlacer in FeaturePlacers) {
+                    if(featurePlacer.TryPlaceFeatureAtLocation(cell, location, i, locationHash)) {
+                        break;
+                    }
                 }
             }
         }

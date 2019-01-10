@@ -7,17 +7,11 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.Players.Barbarians;
+using Assets.Simulation.Barbarians;
 
 namespace Assets.Simulation.Players {
 
     public class PlayerInstaller : MonoInstaller {
-
-        #region instance fields and properties
-
-        [SerializeField] private PlayerConfig PlayerConfig;
-
-        #endregion
 
         #region instance methods
 
@@ -27,17 +21,10 @@ namespace Assets.Simulation.Players {
             Container.Bind<IPlayerBrain>().WithId("Human Brain")    .To<HumanPlayerBrain>    ().AsSingle();
             Container.Bind<IPlayerBrain>().WithId("Barbarian Brain").To<BarbarianPlayerBrain>().AsSingle();
 
-            Container.Bind<IPlayerConfig>().To<PlayerConfig>().FromInstance(PlayerConfig);
-
-            Container.Bind<IPlayerFactory>                 ().To<PlayerFactory>                 ().AsSingle();
-            Container.Bind<IBarbarianUnitBrain>            ().To<BarbarianUnitBrain>            ().AsSingle();
-            Container.Bind<IBarbarianWanderBrain>          ().To<BarbarianWanderBrain>          ().AsSingle();
-            Container.Bind<IBarbarianInfluenceMapGenerator>().To<BarbarianInfluenceMapGenerator>().AsSingle();
-            Container.Bind<IBarbarianBrainTools>           ().To<BarbarianBrainTools>           ().AsSingle();
+            Container.Bind<IPlayerFactory>().To<PlayerFactory>().AsSingle();
+            Container.Bind<IBrainPile>    ().To<BrainPile>    ().AsSingle();
 
             Container.Bind<PlayerSignals>().AsSingle();
-            
-            Container.QueueForInject(PlayerConfig);
         }
 
         #endregion

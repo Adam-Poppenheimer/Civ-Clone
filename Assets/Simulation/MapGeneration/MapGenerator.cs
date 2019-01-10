@@ -44,6 +44,7 @@ namespace Assets.Simulation.MapGeneration {
         private ICellClimateLogic           CellClimateLogic;
         private ISectionSubdivisionLogic    SubdivisionLogic;
         private ICivilizationConfig         CivConfig;
+        private IBrainPile                  BrainPile;
 
         #endregion
 
@@ -57,7 +58,7 @@ namespace Assets.Simulation.MapGeneration {
             IGridPartitionLogic gridPartitionLogic, IWaterRationalizer waterRationalizer,
             IHomelandGenerator homelandGenerator, ITemplateSelectionLogic templateSelectionLogic,
             ICellClimateLogic cellClimateLogic, ISectionSubdivisionLogic subdivisionLogic,
-            ICivilizationConfig civConfig
+            ICivilizationConfig civConfig, IBrainPile brainPile
         ) {
             Config                     = config;
             CivFactory                 = civFactory;
@@ -72,6 +73,7 @@ namespace Assets.Simulation.MapGeneration {
             CellClimateLogic           = cellClimateLogic;
             SubdivisionLogic           = subdivisionLogic;
             CivConfig                  = civConfig;
+            BrainPile                  = brainPile;
         }
 
         #endregion
@@ -136,12 +138,12 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var civTemplate in variables.Civilizations) {
                 var newCiv = CivFactory.Create(civTemplate, variables.StartingTechs);
 
-                PlayerFactory.CreatePlayer(newCiv, PlayerFactory.HumanBrain);
+                PlayerFactory.CreatePlayer(newCiv, BrainPile.HumanBrain);
             }
 
             var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
 
-            PlayerFactory.CreatePlayer(barbarianCiv, PlayerFactory.BarbarianBrain);
+            PlayerFactory.CreatePlayer(barbarianCiv, BrainPile.BarbarianBrain);
         }
 
         private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {

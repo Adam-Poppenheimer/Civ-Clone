@@ -68,11 +68,13 @@ namespace Assets.Simulation.HexMap {
             Container.Bind<IOasisTriangulator>       ().To<OasisTriangulator>       ().AsSingle();
             Container.Bind<IFeatureLocationLogic>    ().To<FeatureLocationLogic>    ().AsSingle();
 
-            Container.Bind<IFeaturePlacer>().WithId("City Feature Placer")       .To<CityFeaturePlacer>       ().AsSingle();
-            Container.Bind<IFeaturePlacer>().WithId("Resource Feature Placer")   .To<ResourceFeaturePlacer>   ().AsSingle();
-            Container.Bind<IFeaturePlacer>().WithId("Improvement Feature Placer").To<ImprovementFeaturePlacer>().AsSingle();
-            Container.Bind<IFeaturePlacer>().WithId("Tree Feature Placer")       .To<TreeFeaturePlacer>       ().AsSingle();
-            Container.Bind<IFeaturePlacer>().WithId("Ruins Feature Placer")      .To<RuinsFeaturePlacer>      ().AsSingle();
+            //The order here is important to make sure certain features take precedence over others
+            Container.Bind<IFeaturePlacer>().To<CityFeaturePlacer>       ().AsSingle();
+            Container.Bind<IFeaturePlacer>().To<EncampmentFeaturePlacer> ().AsSingle();
+            Container.Bind<IFeaturePlacer>().To<ImprovementFeaturePlacer>().AsSingle();
+            Container.Bind<IFeaturePlacer>().To<ResourceFeaturePlacer>   ().AsSingle();
+            Container.Bind<IFeaturePlacer>().To<RuinsFeaturePlacer>      ().AsSingle();
+            Container.Bind<IFeaturePlacer>().To<TreeFeaturePlacer>       ().AsSingle();
         }
 
         #endregion

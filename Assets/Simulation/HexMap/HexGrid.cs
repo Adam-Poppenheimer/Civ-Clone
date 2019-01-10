@@ -182,11 +182,19 @@ namespace Assets.Simulation.HexMap {
         }
 
         public List<IHexCell> GetCellsInRadius(IHexCell center, int radius) {
+            return GetCellsInRadius(center, radius, false);
+        }
+
+        public List<IHexCell> GetCellsInRadius(IHexCell center, int radius, bool includeCenter) {
             if(center == null) {
                 throw new ArgumentNullException("center");
             }
 
             var retval = new List<IHexCell>();
+
+            if(includeCenter) {
+                retval.Add(center);
+            }
 
             foreach(var coordinates in HexCoordinates.GetCoordinatesInRadius(center.Coordinates, radius)) {
                 if(HasCellAtCoordinates(coordinates)) {

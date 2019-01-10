@@ -18,6 +18,7 @@ namespace Assets.Simulation.MapManagement {
         private IPlayerFactory       PlayerFactory;
         private ICivilizationFactory CivFactory;
         private IGameCore            GameCore;
+        private IBrainPile           BrainPile;
 
         #endregion
 
@@ -25,11 +26,13 @@ namespace Assets.Simulation.MapManagement {
 
         [Inject]
         public PlayerComposer(
-            IPlayerFactory playerFactory, ICivilizationFactory civFactory, IGameCore gameCore
+            IPlayerFactory playerFactory, ICivilizationFactory civFactory,
+            IGameCore gameCore, IBrainPile brainPile
         ) {
             PlayerFactory = playerFactory;
             CivFactory    = civFactory;
             GameCore      = gameCore;
+            BrainPile     = brainPile;
         }
 
         #endregion
@@ -71,7 +74,7 @@ namespace Assets.Simulation.MapManagement {
                     throw new InvalidOperationException("Could not find a civ of template " + playerData.ControlledCiv);
                 }
 
-                var playerBrain = PlayerFactory.AllBrains.FirstOrDefault(
+                var playerBrain = BrainPile.AllBrains.FirstOrDefault(
                     brain => brain.Name.Equals(playerData.Brain)
                 );
 

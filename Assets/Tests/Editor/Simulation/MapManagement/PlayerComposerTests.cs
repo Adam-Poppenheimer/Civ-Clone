@@ -21,6 +21,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         private Mock<IPlayerFactory>       MockPlayerFactory;
         private Mock<ICivilizationFactory> MockCivFactory;
         private Mock<IGameCore>            MockGameCore;
+        private Mock<IBrainPile>           MockBrainPile;
 
         private List<ICivilization> AllCivs    = new List<ICivilization>();
         private List<IPlayerBrain>  AllBrains  = new List<IPlayerBrain>();
@@ -41,15 +42,18 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockPlayerFactory = new Mock<IPlayerFactory>();
             MockCivFactory    = new Mock<ICivilizationFactory>();
             MockGameCore      = new Mock<IGameCore>();
+            MockBrainPile     = new Mock<IBrainPile>();
 
             MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(AllCivs.AsReadOnly());
 
             MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(AllPlayers.AsReadOnly());
-            MockPlayerFactory.Setup(factory => factory.AllBrains) .Returns(AllBrains .AsReadOnly());
+
+            MockBrainPile.Setup(factory => factory.AllBrains) .Returns(AllBrains.AsReadOnly());
 
             Container.Bind<IPlayerFactory>      ().FromInstance(MockPlayerFactory.Object);
             Container.Bind<ICivilizationFactory>().FromInstance(MockCivFactory   .Object);
             Container.Bind<IGameCore>           ().FromInstance(MockGameCore     .Object);
+            Container.Bind<IBrainPile>          ().FromInstance(MockBrainPile    .Object);
 
             Container.Bind<PlayerComposer>().AsSingle();
         }

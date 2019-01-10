@@ -21,17 +21,7 @@ namespace Assets.Simulation.Players {
         }
         private List<IPlayer> allPlayers = new List<IPlayer>();
 
-        public IPlayerBrain HumanBrain     { get; private set; }
-        public IPlayerBrain BarbarianBrain { get; private set; }
-
-        public IEnumerable<IPlayerBrain> AllBrains {
-            get { return _allBrains; }
-        }
-        private List<IPlayerBrain> _allBrains;
-
         #endregion
-
-
 
         private PlayerSignals PlayerSignals;
 
@@ -40,19 +30,8 @@ namespace Assets.Simulation.Players {
         #region constructors
 
         [Inject]
-        public PlayerFactory(
-            PlayerSignals playerSignals,
-            [Inject(Id = "Human Brain")] IPlayerBrain humanBrain,
-            [Inject(Id = "Barbarian Brain")] IPlayerBrain barbarianBrain
-        ) {
+        public PlayerFactory(PlayerSignals playerSignals) {
             PlayerSignals = playerSignals;
-
-            HumanBrain     = humanBrain;
-            BarbarianBrain = barbarianBrain;
-
-            _allBrains = new List<IPlayerBrain>() {
-                humanBrain, barbarianBrain
-            };
         }
 
         #endregion

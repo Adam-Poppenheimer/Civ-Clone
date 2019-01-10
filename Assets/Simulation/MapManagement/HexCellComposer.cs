@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.Barbarians;
 
 using UnityCustomUtilities.Extensions;
 

@@ -21,16 +21,17 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
         #region instance fields and properties
 
-        private UIStateMachineBrain                       Brain;
-        private IHexGrid                                  Grid;
-        private IMapComposer                              MapComposer;
-        private ICivilizationFactory                      CivFactory;
-        private IPlayerFactory                            PlayerFactory;
-        private IVisibilityResponder                      VisibilityResponder;
-        private IVisibilityCanon                          VisibilityCanon;
-        private IExplorationCanon                         ExplorationCanon;
-        private List<IPlayModeSensitiveElement>           PlayModeSensitiveElements;
-        private ICivilizationConfig                       CivConfig;
+        private UIStateMachineBrain             Brain;
+        private IHexGrid                        Grid;
+        private IMapComposer                    MapComposer;
+        private ICivilizationFactory            CivFactory;
+        private IPlayerFactory                  PlayerFactory;
+        private IVisibilityResponder            VisibilityResponder;
+        private IVisibilityCanon                VisibilityCanon;
+        private IExplorationCanon               ExplorationCanon;
+        private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
+        private ICivilizationConfig             CivConfig;
+        private IBrainPile                      BrainPile;
 
         #endregion
 
@@ -42,7 +43,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             ICivilizationFactory civFactory, IPlayerFactory playerFactory,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements,
-            ICivilizationConfig civConfig
+            ICivilizationConfig civConfig, IBrainPile brainPile
 
         ) {
             Brain                     = brain;
@@ -55,6 +56,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             ExplorationCanon          = explorationCanon;
             PlayModeSensitiveElements = playModeSensitiveElements;
             CivConfig                 = civConfig;
+            BrainPile                 = brainPile;
         }
 
         #region from StateMachineBehaviour
@@ -81,8 +83,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             var playerCiv    = CivFactory.Create(CivConfig.DefaultTemplate);
             var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);
 
-            PlayerFactory.CreatePlayer(playerCiv,    PlayerFactory.HumanBrain);
-            PlayerFactory.CreatePlayer(barbarianCiv, PlayerFactory.BarbarianBrain);
+            PlayerFactory.CreatePlayer(playerCiv,    BrainPile.HumanBrain);
+            PlayerFactory.CreatePlayer(barbarianCiv, BrainPile.BarbarianBrain);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {

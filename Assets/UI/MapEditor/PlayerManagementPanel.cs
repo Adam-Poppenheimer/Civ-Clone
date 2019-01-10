@@ -39,6 +39,7 @@ namespace Assets.UI.MapEditor {
         private IPlayerFactory                            PlayerFactory;
         private CivilizationSignals                       CivSignals;
         private ReadOnlyCollection<ICivilizationTemplate> CivTemplates;
+        private IBrainPile                                BrainPile;
         
         #endregion
 
@@ -47,12 +48,14 @@ namespace Assets.UI.MapEditor {
         [Inject]
         public void InjectDependencies(
             ICivilizationFactory civilizationFactory, IPlayerFactory playerFactory,
-            CivilizationSignals civSignals, ReadOnlyCollection<ICivilizationTemplate> civTemplates
+            CivilizationSignals civSignals, ReadOnlyCollection<ICivilizationTemplate> civTemplates,
+            IBrainPile brainPile
         ){
             CivilizationFactory = civilizationFactory;
             PlayerFactory       = playerFactory;
             CivSignals          = civSignals;
             CivTemplates        = civTemplates;
+            BrainPile           = brainPile;
         }
 
         #region Unity messages
@@ -75,7 +78,7 @@ namespace Assets.UI.MapEditor {
         public void CreateNewPlayer() {
             var newCiv = CivilizationFactory.Create(SelectedTemplate);
 
-            PlayerFactory.CreatePlayer(newCiv, PlayerFactory.HumanBrain);
+            PlayerFactory.CreatePlayer(newCiv, BrainPile.HumanBrain);
 
             Refresh();
         }

@@ -24,6 +24,8 @@ namespace Assets.Simulation.Civilizations {
         /// </summary>
         ReadOnlyCollection<ICivilization> AllCivilizations { get; }
 
+        ICivilization BarbarianCiv { get; }
+
         #endregion
 
         #region methods

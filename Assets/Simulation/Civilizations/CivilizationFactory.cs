@@ -28,6 +28,10 @@ namespace Assets.Simulation.Civilizations {
         }
         private List<ICivilization> allCivilizations = new List<ICivilization>();
 
+        public ICivilization BarbarianCiv {
+            get { return AllCivilizations.FirstOrDefault(civ => civ.Template.IsBarbaric); }
+        }
+
         #endregion
 
         private DiContainer         Container;
