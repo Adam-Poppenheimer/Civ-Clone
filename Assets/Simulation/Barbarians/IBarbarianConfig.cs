@@ -32,6 +32,14 @@ namespace Assets.Simulation.Barbarians {
 
         float EncampmentBounty { get; }
 
+
+
+        int DefendEncampmentRadius { get; }
+
+        float WanderGoalUtility            { get; }
+        float StayInEncampmentUtility      { get; }
+        float HeadTowardsEncampmentUtility { get; }
+
         #endregion
 
     }

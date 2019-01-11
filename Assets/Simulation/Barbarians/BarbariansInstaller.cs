@@ -26,8 +26,10 @@ namespace Assets.Simulation.Barbarians {
         public override void InstallBindings() {   
             Container.Bind<IBarbarianConfig>().To<BarbarianConfig>().FromInstance(BarbarianConfig);
                      
+            Container.Bind<IBarbarianGoalBrain>().To<BarbarianWanderBrain>         ().AsSingle();
+            Container.Bind<IBarbarianGoalBrain>().To<BarbarianGuardEncampmentBrain>().AsSingle();
+
             Container.Bind<IBarbarianUnitBrain>            ().To<BarbarianUnitBrain>            ().AsSingle();
-            Container.Bind<IBarbarianWanderBrain>          ().To<BarbarianWanderBrain>          ().AsSingle();
             Container.Bind<IBarbarianInfluenceMapGenerator>().To<BarbarianInfluenceMapGenerator>().AsSingle();
             Container.Bind<IBarbarianBrainTools>           ().To<BarbarianBrainTools>           ().AsSingle();
             Container.Bind<IEncampmentFactory>             ().To<EncampmentFactory>             ().AsSingle();

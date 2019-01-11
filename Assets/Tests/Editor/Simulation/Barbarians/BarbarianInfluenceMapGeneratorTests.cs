@@ -26,6 +26,10 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
         private Mock<IUnitStrengthEstimator>                        MockUnitStrengthEstimator;
         private Mock<IAIConfig>                                     MockAIConfig;
+        private Mock<IInfluenceMapApplier>                          MockInfluenceMapApplier;
+
+        private List<IHexCell> AllCells = new List<IHexCell>();
+        private List<IUnit>    AllUnits = new List<IUnit>();
 
         int nextIndex;
 
@@ -37,21 +41,29 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         [SetUp]
         public void CommonInstall() {
+            AllCells.Clear();
+            AllUnits.Clear();
+
             nextIndex = 0;
 
-            MockGrid                  = new Mock<IHexGrid>();
-            MockUnitFactory           = new Mock<IUnitFactory>();
-            MockUnitPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockUnitPositionCanon     = new Mock<IUnitPositionCanon>();
-            MockUnitStrengthEstimator = new Mock<IUnitStrengthEstimator>();
-            MockAIConfig              = new Mock<IAIConfig>();
+            MockGrid                    = new Mock<IHexGrid>();
+            MockUnitFactory             = new Mock<IUnitFactory>();
+            MockUnitPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
+            MockUnitPositionCanon       = new Mock<IUnitPositionCanon>();
+            MockUnitStrengthEstimator   = new Mock<IUnitStrengthEstimator>();
+            MockAIConfig                = new Mock<IAIConfig>();
+            MockInfluenceMapApplier     = new Mock<IInfluenceMapApplier>();
 
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                 .Object);
-            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory          .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon  .Object);
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon    .Object);
-            Container.Bind<IUnitStrengthEstimator>                       ().FromInstance(MockUnitStrengthEstimator.Object);
-            Container.Bind<IAIConfig>                                    ().FromInstance(MockAIConfig             .Object);
+            MockGrid             .Setup(factory => factory.Cells)         .Returns(AllCells.AsReadOnly());
+            MockUnitFactory      .Setup(factory => factory.AllUnits)      .Returns(AllUnits);
+
+            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
+            Container.Bind<IUnitFactory>                                 ().FromInstance(MockUnitFactory            .Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon    .Object);
+            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon      .Object);
+            Container.Bind<IUnitStrengthEstimator>                       ().FromInstance(MockUnitStrengthEstimator  .Object);
+            Container.Bind<IAIConfig>                                    ().FromInstance(MockAIConfig               .Object);
+            Container.Bind<IInfluenceMapApplier>                         ().FromInstance(MockInfluenceMapApplier    .Object);
 
             Container.Bind<BarbarianInfluenceMapGenerator>().AsSingle();
         }
@@ -62,13 +74,9 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         [Test]
         public void GenerateMaps_EachValueForEachCellZeroedOut() {
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(),
-            };
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(new List<IUnit>());
+            BuildCell();
+            BuildCell();
+            BuildCell();
 
             var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
 
@@ -84,210 +92,112 @@ namespace Assets.Tests.Simulation.Barbarians {
         }
 
         [Test]
-        public void GenerateMaps_BarbarianUnitsApplyStrengthAsAllyPresence_ToLocation() {
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(),
-            };
+        public void GenerateMaps_AppliesEachBarbaricUnitToAllyPresenceMapCorrectly() {
+            var cellOne   = BuildCell();
+            var cellTwo   = BuildCell();
+            var cellThree = BuildCell();
 
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+            var barbarianCiv    = BuildCiv(BuildCivTemplate(true));
+            var nonBarbarianCiv = BuildCiv(BuildCivTemplate(false));
 
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(true)), 25f)
-            };
+            BuildUnit(cellOne,   nonBarbarianCiv, 10f);
+            BuildUnit(cellTwo,   barbarianCiv,    20f);
+            BuildUnit(cellThree, barbarianCiv,    30f);
 
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(25f, influenceMaps.AllyPresence[0]);
-        }
-
-        [Test]
-        public void GenerateMaps_BarbarianUnitsApplyStrengthAsAllyPresence_ToNearbyCells_ReducedByDistance() {
             MockAIConfig.Setup(config => config.UnitMaxInfluenceRadius).Returns(3);
 
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(), BuildCell(),
-            };
+            InfluenceRolloff rolloffFunction = (a, b) => 0f;
+            InfluenceApplier applierFunction = (a, b) => 0f;
 
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 1)).Returns(new List<IHexCell>() { cells[1] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 2)).Returns(new List<IHexCell>() { cells[2] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 3)).Returns(new List<IHexCell>() { cells[3] });
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(true)), 25f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
+            MockInfluenceMapApplier.Setup(influenceApplier => influenceApplier.PowerOfTwoRolloff).Returns(rolloffFunction);
+            MockInfluenceMapApplier.Setup(influenceApplier => influenceApplier.ApplySum)         .Returns(applierFunction);
 
             var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
 
-            var influenceMaps = mapGenerator.GenerateMaps();
+            var maps = mapGenerator.GenerateMaps();
 
-            Assert.AreEqual(25f / 2f, influenceMaps.AllyPresence[1], "Cell one away from unit's location has an unexpected AllyPresence");
-            Assert.AreEqual(25f / 4f, influenceMaps.AllyPresence[2], "Cell two away from unit's location has an unexpected AllyPresence");
-            Assert.AreEqual(25f / 8f, influenceMaps.AllyPresence[3], "Cell three away from unit's location has an unexpected AllyPresence");
+            //Moq apparently has a problem with arrays that have the same
+            //collection of elements in them, so in order to get Moq to
+            //distinguish between different array instances we have to
+            //manually make them different
+            maps.AllyPresence[0] = 1f;
+            maps.EnemyPresence[0] = 2f;
+
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    10f, maps.AllyPresence, cellOne, 3, rolloffFunction, applierFunction
+                ), Times.Never, "ApplyInfluenceToMap unexpectedly called on cellOne"
+            );
+
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    20f, maps.AllyPresence, cellTwo, 3, rolloffFunction, applierFunction
+                ), Times.Once, "ApplyInfluenceToMap not called on cellTwo as expected"
+            );
+
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    30f, maps.AllyPresence, cellThree, 3, rolloffFunction, applierFunction
+                ), Times.Once, "ApplyInfluenceToMap not called on cellThree as expected"
+            );
         }
 
         [Test]
-        public void GenerateMaps_SpilloverInfluenceFromBarbarianUnits_LimitedToMaxInfluenceRadius() {
-            MockAIConfig.Setup(config => config.UnitMaxInfluenceRadius).Returns(1);
+        public void GenerateMaps_AppliesEachNonBarbaricUnitToEnemyPresenceMapCorrectly() {
+            var cellOne   = BuildCell();
+            var cellTwo   = BuildCell();
+            var cellThree = BuildCell();
 
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(), BuildCell(),
-            };
+            var barbarianCiv    = BuildCiv(BuildCivTemplate(true));
+            var nonBarbarianCiv = BuildCiv(BuildCivTemplate(false));
 
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+            BuildUnit(cellOne,   nonBarbarianCiv, 10f);
+            BuildUnit(cellTwo,   barbarianCiv,    20f);
+            BuildUnit(cellThree, barbarianCiv,    30f);
 
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 1)).Returns(new List<IHexCell>() { cells[1] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 2)).Returns(new List<IHexCell>() { cells[2] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 3)).Returns(new List<IHexCell>() { cells[3] });
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(true)), 25f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(25f / 2f, influenceMaps.AllyPresence[1], "Cell one away from unit's location has an unexpected AllyPresence");
-            Assert.AreEqual(0f,       influenceMaps.AllyPresence[2], "Cell two away from unit's location has an unexpected AllyPresence");
-            Assert.AreEqual(0f,       influenceMaps.AllyPresence[3], "Cell three away from unit's location has an unexpected AllyPresence");
-        }
-
-        [Test]
-        public void GenerateMaps_NonBarbarianUnitsApplyStrengthAsEnemyPresence_ToLocation() {
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(),
-            };
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(false)), 25f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(25f, influenceMaps.EnemyPresence[0]);
-        }
-
-        [Test]
-        public void GenerateMaps_NonBarbarianUnitsApplyStrengthAsEnemyPresence_ToNearbyCells_ReducedByDistance() {
             MockAIConfig.Setup(config => config.UnitMaxInfluenceRadius).Returns(3);
 
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(), BuildCell(),
-            };
+            InfluenceRolloff rolloffFunction = (a, b) => 0f;
+            InfluenceApplier applierFunction = (a, b) => 0f;
 
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 1)).Returns(new List<IHexCell>() { cells[1] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 2)).Returns(new List<IHexCell>() { cells[2] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 3)).Returns(new List<IHexCell>() { cells[3] });
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(false)), 25f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
+            MockInfluenceMapApplier.Setup(influenceApplier => influenceApplier.PowerOfTwoRolloff).Returns(rolloffFunction);
+            MockInfluenceMapApplier.Setup(influenceApplier => influenceApplier.ApplySum)         .Returns(applierFunction);
 
             var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
 
-            var influenceMaps = mapGenerator.GenerateMaps();
+            var maps = mapGenerator.GenerateMaps();
 
-            Assert.AreEqual(25f / 2f, influenceMaps.EnemyPresence[1], "Cell one away from unit's location has an unexpected EnemyPresence");
-            Assert.AreEqual(25f / 4f, influenceMaps.EnemyPresence[2], "Cell two away from unit's location has an unexpected EnemyPresence");
-            Assert.AreEqual(25f / 8f, influenceMaps.EnemyPresence[3], "Cell three away from unit's location has an unexpected EnemyPresence");
-        }
+            //Moq apparently has a problem with arrays that have the same
+            //collection of elements in them, so in order to get Moq to
+            //distinguish between different array instances we have to
+            //manually make them different
+            maps.AllyPresence[0] = 1f;
+            maps.EnemyPresence[0] = 2f;
 
-        [Test]
-        public void GenerateMaps_SpilloverInfluenceFromNonBarbarianUnits_LimitedToMaxInfluenceRadius() {
-            MockAIConfig.Setup(config => config.UnitMaxInfluenceRadius).Returns(1);
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    10f, maps.EnemyPresence, cellOne, 3, rolloffFunction, applierFunction
+                ), Times.Once, "ApplyInfluenceToMap not called on cellOne as expected"
+            );
 
-            var cells = new List<IHexCell>() {
-                BuildCell(), BuildCell(), BuildCell(), BuildCell(),
-            };
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    20f, maps.EnemyPresence, cellTwo, 3, rolloffFunction, applierFunction
+                ), Times.Never, "ApplyInfluenceToMap unexpectedly called on cellTwo"
+            );
 
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 1)).Returns(new List<IHexCell>() { cells[1] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 2)).Returns(new List<IHexCell>() { cells[2] });
-            MockGrid.Setup(grid => grid.GetCellsInRing(cells[0], 3)).Returns(new List<IHexCell>() { cells[3] });
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(false)), 25f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(25f / 2f, influenceMaps.EnemyPresence[1], "Cell one away from unit's location has an unexpected EnemyPresence");
-            Assert.AreEqual(0f,       influenceMaps.EnemyPresence[2], "Cell two away from unit's location has an unexpected EnemyPresence");
-            Assert.AreEqual(0f,       influenceMaps.EnemyPresence[3], "Cell three away from unit's location has an unexpected EnemyPresence");
-        }
-
-        [Test]
-        public void GenerateMaps_MultipleSourcesOfAllyPresenceStack() {
-            var cells = new List<IHexCell>() { BuildCell() };
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(true)), 25f),
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(true)), 43f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(68f, influenceMaps.AllyPresence[0]);
-        }
-
-        [Test]
-        public void GenerateMaps_MultipleSourcesOfEnemyPresenceStack() {
-            var cells = new List<IHexCell>() { BuildCell() };
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            var units = new List<IUnit>() {
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(false)), 25f),
-                BuildUnit(cells[0], BuildCiv(BuildCivTemplate(false)), 43f)
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(units);
-
-            var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
-
-            var influenceMaps = mapGenerator.GenerateMaps();
-
-            Assert.AreEqual(68f, influenceMaps.EnemyPresence[0]);
+            MockInfluenceMapApplier.Verify(
+                influenceApplier => influenceApplier.ApplyInfluenceToMap(
+                    30f, maps.EnemyPresence, cellThree, 3, rolloffFunction, applierFunction
+                ), Times.Never, "ApplyInfluenceToMap unexpectedly called on cellThree"
+            );
         }
 
         [Test]
         public void ClearMaps_AllMapsSetToNull() {
-            var cells = new List<IHexCell>() { BuildCell(), BuildCell(), BuildCell() };
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(new List<IUnit>().AsReadOnly());
+            BuildCell();
+            BuildCell();
+            BuildCell();
 
             var mapGenerator = Container.Resolve<BarbarianInfluenceMapGenerator>();
 
@@ -306,9 +216,14 @@ namespace Assets.Tests.Simulation.Barbarians {
         private IHexCell BuildCell() {
             var mockCell = new Mock<IHexCell>();
 
+            mockCell.Name = "Cell " + nextIndex.ToString();
             mockCell.Setup(cell => cell.Index).Returns(nextIndex++);
 
-            return mockCell.Object;
+            var newCell = mockCell.Object;
+
+            AllCells.Add(newCell);
+
+            return newCell;
         }
 
         private ICivilizationTemplate BuildCivTemplate(bool isBarbaric) {
@@ -334,6 +249,8 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(owner);
 
             MockUnitStrengthEstimator.Setup(estimator => estimator.EstimateUnitStrength(newUnit)).Returns(strength);
+
+            AllUnits.Add(newUnit);
 
             return newUnit;
         }

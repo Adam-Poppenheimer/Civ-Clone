@@ -81,6 +81,29 @@ namespace Assets.Simulation.Barbarians {
         }
         [SerializeField] private float _encampmentBounty;
 
+
+
+
+        public int DefendEncampmentRadius {
+            get { return _defendEncampmentRadius; }
+        }
+        [SerializeField] private int _defendEncampmentRadius;
+
+        public float WanderGoalUtility {
+            get { return _wanderGoalUtility; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _wanderGoalUtility;
+
+        public float StayInEncampmentUtility {
+            get { return _stayInEncampmentUtility; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _stayInEncampmentUtility;
+
+        public float HeadTowardsEncampmentUtility {
+            get { return _headTowardsEncampmentUtility; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _headTowardsEncampmentUtility;
+
         #endregion
 
         #endregion

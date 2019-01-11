@@ -12,3 +12,4 @@ MonoBehaviour:
   m_Name: AI Config
   m_EditorClassIdentifier: 
   _unitMaxInfluenceRadius: 2
+  _encampmentInfluenceRadius: 3

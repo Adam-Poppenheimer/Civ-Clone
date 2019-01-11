@@ -14,25 +14,17 @@ namespace Assets.Simulation.Barbarians {
 
     public class BarbarianUnitBrain : IBarbarianUnitBrain {
 
-        #region internal types
-
-        private enum GoalType {
-            Wander = 0,
-        }
-
-        #endregion
-
         #region instance fields and properties
 
-        private IBarbarianWanderBrain WanderBrain;
+        private List<IBarbarianGoalBrain> GoalBrains;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public BarbarianUnitBrain(IBarbarianWanderBrain wanderBrain) {
-            WanderBrain = wanderBrain;
+        public BarbarianUnitBrain(List<IBarbarianGoalBrain> goalBrains) {
+            GoalBrains = goalBrains;
         }
 
         #endregion
@@ -42,17 +34,32 @@ namespace Assets.Simulation.Barbarians {
         #region from IBarbarianUnitBrain
 
         public List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
-            switch(GetGoalForUnit(unit, maps)) {
-                case GoalType.Wander: return WanderBrain.GetWanderCommandsForUnit(unit, maps);
-                default: throw new NotImplementedException();
+            IBarbarianGoalBrain brainToExecute = null;
+            float lastHighestUtility = 0f;
+
+            foreach(var thisBrain in GoalBrains) {
+                if(brainToExecute == null) {
+                    brainToExecute = thisBrain;
+
+                }else {
+                    float thisUtility = thisBrain.GetUtilityForUnit(unit, maps);
+
+                    if(thisUtility > lastHighestUtility) {
+                        brainToExecute = thisBrain;
+
+                        lastHighestUtility = thisUtility;
+                    }
+                }
+            }
+
+            if(brainToExecute != null) {
+                return brainToExecute.GetCommandsForUnit(unit, maps);
+            }else {
+                return new List<IUnitCommand>();
             }
         }
 
-        #endregion
-
-        private GoalType GetGoalForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
-            return GoalType.Wander;
-        }        
+        #endregion      
 
         #endregion
 

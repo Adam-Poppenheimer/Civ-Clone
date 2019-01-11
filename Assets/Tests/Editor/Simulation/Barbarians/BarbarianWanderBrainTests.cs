@@ -25,6 +25,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IUnitPositionCanon>               MockUnitPositionCanon;
         private Mock<IWeightedRandomSampler<IHexCell>> MockCellRandomSampler;
         private Mock<IBarbarianBrainTools>             MockBrainTools;
+        private Mock<IBarbarianConfig>                 MockBarbarianConfig;
 
         #endregion
 
@@ -38,11 +39,13 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
             MockCellRandomSampler = new Mock<IWeightedRandomSampler<IHexCell>>();
             MockBrainTools        = new Mock<IBarbarianBrainTools>();
+            MockBarbarianConfig   = new Mock<IBarbarianConfig>();
 
             Container.Bind<IHexGrid>                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IUnitPositionCanon>              ().FromInstance(MockUnitPositionCanon.Object);
             Container.Bind<IWeightedRandomSampler<IHexCell>>().FromInstance(MockCellRandomSampler.Object);
             Container.Bind<IBarbarianBrainTools>            ().FromInstance(MockBrainTools       .Object);
+            Container.Bind<IBarbarianConfig>                ().FromInstance(MockBarbarianConfig  .Object);
 
             Container.Bind<IHexPathfinder>().FromMock();
 
@@ -52,6 +55,30 @@ namespace Assets.Tests.Simulation.Barbarians {
         #endregion
 
         #region tests
+
+        [Test]
+        public void GetUtilityForUnit_AndUnitCivilian_ReturnsZero() {
+            var unit = BuildUnit(UnitType.Civilian);
+
+            var maps = new BarbarianInfluenceMaps();
+
+            var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
+
+            Assert.AreEqual(0f, wanderBrain.GetUtilityForUnit(unit, maps));
+        }
+
+        [Test]
+        public void GetUtilityForUnit_AndUnitNotCivilian_ReturnsConfiguredWanderGoalUtility() {
+            var unit = BuildUnit(UnitType.NavalMelee);
+
+            var maps = new BarbarianInfluenceMaps();
+
+            MockBarbarianConfig.Setup(config => config.WanderGoalUtility).Returns(0.5f);
+
+            var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
+
+            Assert.AreEqual(0.5f, wanderBrain.GetUtilityForUnit(unit, maps));
+        }
 
         [Test]
         public void GetWanderCommandsForUnit_AndSomeValidCandidateExists_ReturnsListWithOneMoveUnitCommand() {
@@ -76,7 +103,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
 
-            var commandList = wanderBrain.GetWanderCommandsForUnit(unit, maps);
+            var commandList = wanderBrain.GetCommandsForUnit(unit, maps);
 
             Assert.AreEqual(1, commandList.Count, "Unexpected number of commands returned");
             Assert.IsTrue(commandList[0] is MoveUnitCommand, "Command not of type MoveUnitCommand");
@@ -105,7 +132,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
 
-            var commandList = wanderBrain.GetWanderCommandsForUnit(unit, maps);
+            var commandList = wanderBrain.GetCommandsForUnit(unit, maps);
 
             var moveCommand = commandList[0] as MoveUnitCommand;
 
@@ -135,7 +162,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
 
-            var commandList = wanderBrain.GetWanderCommandsForUnit(unit, maps);
+            var commandList = wanderBrain.GetCommandsForUnit(unit, maps);
 
             var moveCommand = commandList[0] as MoveUnitCommand;
 
@@ -164,7 +191,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
 
-            var commandList = wanderBrain.GetWanderCommandsForUnit(unit, maps);
+            var commandList = wanderBrain.GetCommandsForUnit(unit, maps);
 
             Assert.AreEqual(0, commandList.Count);
         }
@@ -187,6 +214,14 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
 
             return newUnit;
+        }
+
+        private IUnit BuildUnit(UnitType type) {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.Type).Returns(type);
+
+            return mockUnit.Object;
         }
 
         #endregion

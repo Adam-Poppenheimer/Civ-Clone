@@ -28,7 +28,8 @@ namespace Assets.Simulation.Barbarians {
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IUnitPositionCanon                            UnitPositionCanon;
         private IUnitStrengthEstimator                        UnitStrengthEstimator;
-        private IAIConfig                                 AIConfig;
+        private IAIConfig                                     AIConfig;
+        private IInfluenceMapApplier                          InfluenceMapApplier;
 
         #endregion
 
@@ -37,14 +38,16 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianInfluenceMapGenerator(
             IHexGrid grid, IUnitFactory unitFactory, IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IUnitPositionCanon unitPositionCanon, IUnitStrengthEstimator unitStrengthEstimator, IAIConfig aiConfig
+            IUnitPositionCanon unitPositionCanon, IUnitStrengthEstimator unitStrengthEstimator, IAIConfig aiConfig,
+            IInfluenceMapApplier influenceMapApplier
         ) {
             Grid                  = grid;
             UnitFactory           = unitFactory;
             UnitPossessionCanon   = unitPossessionCanon;
             UnitPositionCanon     = unitPositionCanon;
             UnitStrengthEstimator = unitStrengthEstimator;
-            AIConfig              = aiConfig; 
+            AIConfig              = aiConfig;
+            InfluenceMapApplier   = influenceMapApplier;
         }
 
         #endregion
@@ -69,14 +72,14 @@ namespace Assets.Simulation.Barbarians {
                 float unitStrength = UnitStrengthEstimator.EstimateUnitStrength(unit);
 
                 if(unitOwner.Template.IsBarbaric) {
-                    ApplyStrengthToMap(
-                        unitStrength, Maps.AllyPresence, unitLocation,
-                        AIConfig.UnitMaxInfluenceRadius
+                    InfluenceMapApplier.ApplyInfluenceToMap(
+                        unitStrength, Maps.AllyPresence, unitLocation, AIConfig.UnitMaxInfluenceRadius,
+                        InfluenceMapApplier.PowerOfTwoRolloff, InfluenceMapApplier.ApplySum
                     );
                 }else {
-                    ApplyStrengthToMap(
-                        unitStrength, Maps.EnemyPresence, unitLocation,
-                        AIConfig.UnitMaxInfluenceRadius
+                    InfluenceMapApplier.ApplyInfluenceToMap(
+                        unitStrength, Maps.EnemyPresence, unitLocation, AIConfig.UnitMaxInfluenceRadius,
+                        InfluenceMapApplier.PowerOfTwoRolloff, InfluenceMapApplier.ApplySum
                     );
                 }
             }
@@ -90,19 +93,6 @@ namespace Assets.Simulation.Barbarians {
         }
 
         #endregion
-
-        //Exhibits exponential rolloff (1/2 strength, 1/4 strength, 1/8 strength, etc)
-        private void ApplyStrengthToMap(float strength, float[] map, IHexCell center, int maxDistance) {
-            map[center.Index] += strength;
-
-            for(int i = 1; i <= maxDistance; i++) {
-                foreach(var cellInRing in Grid.GetCellsInRing(center, i)) {
-                    float effectiveStrength = strength / Mathf.Pow(2, i);
-
-                    map[cellInRing.Index] += effectiveStrength;
-                }
-            }
-        }
 
         #endregion
 

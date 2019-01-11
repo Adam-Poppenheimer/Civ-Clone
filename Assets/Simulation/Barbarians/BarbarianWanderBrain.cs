@@ -13,7 +13,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Barbarians {
 
-    public class BarbarianWanderBrain : IBarbarianWanderBrain {
+    public class BarbarianWanderBrain : IBarbarianGoalBrain {
 
         #region instance fields and properties
 
@@ -22,6 +22,7 @@ namespace Assets.Simulation.Barbarians {
         private DiContainer                      Container;
         private IWeightedRandomSampler<IHexCell> CellRandomSampler;
         private IBarbarianBrainTools             BrainTools;
+        private IBarbarianConfig                 BarbarianConfig;
 
         #endregion
 
@@ -30,13 +31,15 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianWanderBrain(
             IHexGrid grid, IUnitPositionCanon unitPositionCanon, DiContainer container,
-            IWeightedRandomSampler<IHexCell> cellRandomSampler, IBarbarianBrainTools brainTools
+            IWeightedRandomSampler<IHexCell> cellRandomSampler, IBarbarianBrainTools brainTools,
+            IBarbarianConfig barbarianConfig
         ) {
             Grid              = grid;
             UnitPositionCanon = unitPositionCanon;
             Container         = container;
             CellRandomSampler = cellRandomSampler;
             BrainTools        = brainTools;
+            BarbarianConfig   = barbarianConfig;
         }
 
         #endregion
@@ -45,7 +48,15 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IBarbarianWanderBrain
 
-        public List<IUnitCommand> GetWanderCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
+        public float GetUtilityForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
+            if(unit.Type.IsCivilian()) {
+                return 0f;
+            }else {
+                return BarbarianConfig.WanderGoalUtility;
+            }
+        }
+
+        public List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
             var retval = new List<IUnitCommand>();
 
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);

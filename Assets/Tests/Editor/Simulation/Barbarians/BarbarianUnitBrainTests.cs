@@ -17,7 +17,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private Mock<IBarbarianWanderBrain> MockWanderBrain;
+        private List<IBarbarianGoalBrain> GoalBrains = new List<IBarbarianGoalBrain>();
 
         #endregion
 
@@ -27,9 +27,9 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         [SetUp]
         public void CommonInstall() {
-            MockWanderBrain = new Mock<IBarbarianWanderBrain>();
+            GoalBrains.Clear();
 
-            Container.Bind<IBarbarianWanderBrain>().FromInstance(MockWanderBrain.Object);
+            Container.Bind<List<IBarbarianGoalBrain>>().FromInstance(GoalBrains);
 
             Container.Bind<BarbarianUnitBrain>().AsSingle();
         }
@@ -39,18 +39,25 @@ namespace Assets.Tests.Simulation.Barbarians {
         #region tests
 
         [Test]
-        public void GetCommandsForUnit_ReturnsCommandsOfWanderBrain() {
+        public void GetCommandsForUnit_ReturnsCommandsOfHighestUtilityGoalBrain() {
             var unit = BuildUnit();
             var wanderMaps = new BarbarianInfluenceMaps();
 
-            var commandList = new List<IUnitCommand>();
+            var commandListOne   = new List<IUnitCommand>();
+            var commandListTwo   = new List<IUnitCommand>();
+            var commandListThree = new List<IUnitCommand>();
+            var commandListFour  = new List<IUnitCommand>();
+            var commandListFive  = new List<IUnitCommand>();
 
-            MockWanderBrain.Setup(wanderBrain => wanderBrain.GetWanderCommandsForUnit(unit, wanderMaps))
-                           .Returns(commandList);
+            BuildGoalBrain(0f,    commandListOne);
+            BuildGoalBrain(0.5f,  commandListTwo);
+            BuildGoalBrain(0.3f,  commandListThree);
+            BuildGoalBrain(0.9f,  commandListFour);
+            BuildGoalBrain(0.75f, commandListFive);
 
             var unitBrain = Container.Resolve<BarbarianUnitBrain>();
 
-            Assert.AreEqual(commandList, unitBrain.GetCommandsForUnit(unit, wanderMaps));
+            Assert.AreEqual(commandListFour, unitBrain.GetCommandsForUnit(unit, wanderMaps));
         }
 
         #endregion
@@ -59,6 +66,24 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         private IUnit BuildUnit() {
             return new Mock<IUnit>().Object;
+        }
+
+        private IBarbarianGoalBrain BuildGoalBrain(float utility, List<IUnitCommand> commandsReturned) {
+            var mockBrain = new Mock<IBarbarianGoalBrain>();
+
+            mockBrain.Setup(
+                brain => brain.GetUtilityForUnit(It.IsAny<IUnit>(), It.IsAny<BarbarianInfluenceMaps>())
+            ).Returns(utility);
+
+            mockBrain.Setup(
+                brain => brain.GetCommandsForUnit(It.IsAny<IUnit>(), It.IsAny<BarbarianInfluenceMaps>())
+            ).Returns(commandsReturned);
+
+            var newBrain = mockBrain.Object;
+
+            GoalBrains.Add(newBrain);
+
+            return newBrain;
         }
 
         #endregion

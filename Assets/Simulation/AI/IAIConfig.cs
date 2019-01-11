@@ -9,7 +9,8 @@ namespace Assets.Simulation.AI {
 
         #region properties
 
-        int UnitMaxInfluenceRadius { get; }
+        int UnitMaxInfluenceRadius    { get; }
+        int EncampmentInfluenceRadius { get; }
 
         #endregion
 

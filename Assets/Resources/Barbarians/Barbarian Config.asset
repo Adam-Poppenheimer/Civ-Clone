@@ -28,3 +28,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 20dbf2b2ba42ecd46a948873c021d8f4, type: 2}
   - {fileID: 11400000, guid: 27cde5043c81b7c4e811c3de8183d414, type: 2}
   _encampmentBounty: 50
+  _defendEncampmentRadius: 2
+  _wanderGoalUtility: 0.2
+  _stayInEncampmentUtility: 1
+  _headTowardsEncampmentUtility: 0.8

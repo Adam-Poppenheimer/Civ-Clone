@@ -19,6 +19,11 @@ namespace Assets.Simulation.AI {
         }
         [SerializeField] private int _unitMaxInfluenceRadius;
 
+        public int EncampmentInfluenceRadius {
+            get { return _encampmentInfluenceRadius; }
+        }
+        [SerializeField] private int _encampmentInfluenceRadius;
+
         #endregion
 
         #endregion
