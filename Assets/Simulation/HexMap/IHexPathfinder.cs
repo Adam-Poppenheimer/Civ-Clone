@@ -16,6 +16,11 @@ namespace Assets.Simulation.HexMap {
             IEnumerable<IHexCell> availableCells
         );
 
+        Dictionary<IHexCell, float> GetCostToAllCells(
+            IHexCell start, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        );
+
         #endregion
 
     }

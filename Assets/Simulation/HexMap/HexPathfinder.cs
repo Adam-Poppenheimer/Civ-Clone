@@ -28,6 +28,8 @@ namespace Assets.Simulation.HexMap {
 
         #region instance methods
 
+        #region from IHexPathfinder
+
         public List<IHexCell> GetShortestPathBetween(
             IHexCell start, IHexCell end, Func<IHexCell, IHexCell, float> costFunction
         ) {
@@ -49,6 +51,10 @@ namespace Assets.Simulation.HexMap {
 
             }else if(!availableCells.Contains(end)) {
                 throw new InvalidOperationException("end must be within availableCells");
+            }
+
+            if(start == end) {
+                return null;
             }
 
             PriorityQueue<IHexCell> frontier = new PriorityQueue<IHexCell>();
@@ -100,6 +106,57 @@ namespace Assets.Simulation.HexMap {
                 return null;
             }
         }
+
+        public Dictionary<IHexCell, float> GetCostToAllCells(
+            IHexCell start, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        ) {
+            if(start == null) {
+                throw new ArgumentNullException("start");
+
+            }else if(costFunction == null) {
+                throw new ArgumentNullException("costFunction");
+
+            } else if(!availableCells.Contains(start)) {
+                throw new InvalidOperationException("start must be within availableCells");
+
+            }
+
+            PriorityQueue<IHexCell> frontier = new PriorityQueue<IHexCell>();
+            frontier.Add(start, 0);
+
+            Dictionary<IHexCell, IHexCell> cameFrom  = new Dictionary<IHexCell, IHexCell>();
+            Dictionary<IHexCell, float>    costSoFar = new Dictionary<IHexCell, float>();
+
+            cameFrom[start] = null;
+            costSoFar[start] = 0;
+
+            IHexCell currentCell = null;
+                        
+            while(frontier.Count() > 0) {
+                currentCell = frontier.DeleteMin();
+
+                foreach(var nextCell in GetAdjacentCells(currentCell, availableCells)) {
+                    float cost = costFunction(currentCell, nextCell);
+                    if(cost < 0) {
+                        continue;
+                    }
+
+                    float newCost = costSoFar[currentCell] + cost;
+
+                    if(!costSoFar.ContainsKey(nextCell) || newCost < costSoFar[nextCell]) {
+                        costSoFar[nextCell] = newCost;
+                        cameFrom[nextCell] = currentCell;
+
+                        frontier.Add(nextCell, newCost);
+                    }
+                }
+            }
+
+            return costSoFar;
+        }
+
+        #endregion
 
         private IEnumerable<IHexCell> GetAdjacentCells(IHexCell centeredCell, IEnumerable<IHexCell> availableCells) {
             return Grid.GetNeighbors(centeredCell).Intersect(availableCells);

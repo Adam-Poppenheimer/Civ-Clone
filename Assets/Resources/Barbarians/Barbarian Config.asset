@@ -30,5 +30,5 @@ MonoBehaviour:
   _encampmentBounty: 50
   _defendEncampmentRadius: 2
   _wanderGoalUtility: 0.2
-  _stayInEncampmentUtility: 1
-  _headTowardsEncampmentUtility: 0.8
+  _stayInEncampmentUtility: 0.9
+  _headTowardsEncampmentUtility: 0.7

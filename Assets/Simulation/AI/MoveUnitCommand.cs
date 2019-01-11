@@ -50,11 +50,19 @@ namespace Assets.Simulation.AI {
         #region from IUnitCommand
 
         public void StartExecution() {
+            if(DesiredLocation == null) {
+                throw new InvalidOperationException("Call execute while DesiredLocation is null");
+            }
+
             Status = CommandStatus.Running;
 
             UnitToMove.CurrentPath = null;
 
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(UnitToMove);
+
+            if(unitLocation == null) {
+                throw new InvalidOperationException("Cannot move a unit with a null location");
+            }
 
             var pathTo = HexPathfinder.GetShortestPathBetween(
                 unitLocation, DesiredLocation,
