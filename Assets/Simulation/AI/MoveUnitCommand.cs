@@ -64,17 +64,21 @@ namespace Assets.Simulation.AI {
                 throw new InvalidOperationException("Cannot move a unit with a null location");
             }
 
-            var pathTo = HexPathfinder.GetShortestPathBetween(
-                unitLocation, DesiredLocation,
-                (current, next) => UnitPositionCanon.GetTraversalCostForUnit(UnitToMove, current, next, false)
-            );
-
-            if(pathTo != null) {
-                UnitToMove.CurrentPath = pathTo;
-
-                UnitToMove.PerformMovement(false, OnUnitFinishedMovement);
+            if(unitLocation == DesiredLocation) {
+                Status = CommandStatus.Succeeded;
             }else {
-                Status = CommandStatus.Failed;
+                var pathTo = HexPathfinder.GetShortestPathBetween(
+                    unitLocation, DesiredLocation,
+                    (current, next) => UnitPositionCanon.GetTraversalCostForUnit(UnitToMove, current, next, false)
+                );
+
+                if(pathTo != null) {
+                    UnitToMove.CurrentPath = pathTo;
+
+                    UnitToMove.PerformMovement(false, OnUnitFinishedMovement);
+                }else {
+                    Status = CommandStatus.Failed;
+                }
             }
         }
 

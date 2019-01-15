@@ -13,8 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _wanderSelectionWeight_Allies: 1
   _wanderSelectionWeight_Distance: 10
-  _minEncampmentsPerPlayer: 3
-  _maxEncampmentsPerPlayer: 6
+  _minEncampmentsPerPlayer: 0
+  _maxEncampmentsPerPlayer: 0
   _baseEncampmentSpawnWeight: 100
   _allyEncampmentSpawnWeight: 2
   _enemyEncampmentSpawnWeight: 10
@@ -32,3 +32,4 @@ MonoBehaviour:
   _wanderGoalUtility: 0.2
   _stayInEncampmentUtility: 0.9
   _headTowardsEncampmentUtility: 0.7
+  _pillageUtilityCoefficient: 0.1

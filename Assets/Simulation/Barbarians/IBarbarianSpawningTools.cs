@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -20,7 +21,7 @@ namespace Assets.Simulation.Barbarians {
 
         bool IsCellValidForEncampment(IHexCell cell);
 
-        Func<IHexCell, int> BuildEncampmentWeightFunction(BarbarianInfluenceMaps maps);
+        Func<IHexCell, int> BuildEncampmentWeightFunction(InfluenceMaps maps);
 
         UnitSpawnInfo TryGetValidSpawn(
             IEncampment encampment, Func<IHexCell, IEnumerable<IUnitTemplate>> unitSelector

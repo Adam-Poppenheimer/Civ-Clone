@@ -63,7 +63,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
             
-            Assert.AreEqual(4.3f, brain.GetUtilityForUnit(unit, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(4.3f, brain.GetUtilityForUnit(unit, new InfluenceMaps()));
         }
 
         [Test]
@@ -82,7 +82,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
             
-            Assert.AreEqual(1.5f, brain.GetUtilityForUnit(unit, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(1.5f, brain.GetUtilityForUnit(unit, new InfluenceMaps()));
         }
 
         [Test]
@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
             
-            Assert.AreEqual(0f, brain.GetUtilityForUnit(unitToTest, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(0f, brain.GetUtilityForUnit(unitToTest, new InfluenceMaps()));
         }
 
         [Test]
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
             
-            Assert.AreEqual(0f, brain.GetUtilityForUnit(unitToTest, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(0f, brain.GetUtilityForUnit(unitToTest, new InfluenceMaps()));
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
 
-            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unit, new BarbarianInfluenceMaps()));
+            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unit, new InfluenceMaps()));
         }
 
         [Test]
@@ -152,7 +152,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
 
-            var commands = brain.GetCommandsForUnit(unit, new BarbarianInfluenceMaps());
+            var commands = brain.GetCommandsForUnit(unit, new InfluenceMaps());
 
             Assert.AreEqual(1, commands.Count, "Unexpected number of commands");
 
@@ -179,7 +179,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
 
-            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unitToTest, new BarbarianInfluenceMaps()));
+            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unitToTest, new InfluenceMaps()));
         }
 
         [Test]
@@ -195,7 +195,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianGuardEncampmentBrain>();
 
-            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unitToTest, new BarbarianInfluenceMaps()));
+            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unitToTest, new InfluenceMaps()));
         }
 
         #endregion

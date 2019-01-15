@@ -12,6 +12,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Barbarians;
+using Assets.Simulation.AI;
 
 namespace Assets.Tests.Simulation.Barbarians {
 
@@ -64,7 +65,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 BuildCell(), BuildCell(), BuildCell()
             };
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> weightFunction = cell => 1;
 
@@ -88,7 +89,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 BuildCell(), BuildCell(), BuildCell()
             };
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> weightFunction = cell => 1;
 
@@ -116,7 +117,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 BuildCell(), BuildCell(), BuildCell()
             };
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, bool> validityFilter = cell => cell == cells[2];
             Func<IHexCell, int>  weightFunction = cell => 1;
@@ -146,7 +147,7 @@ namespace Assets.Tests.Simulation.Barbarians {
             BuildCell();
             BuildCell();
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, bool> validityFilter = cell => false;
             Func<IHexCell, int>  weightFunction = cell => 1;

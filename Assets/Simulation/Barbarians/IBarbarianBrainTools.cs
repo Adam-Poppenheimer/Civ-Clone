@@ -2,6 +2,7 @@
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -9,7 +10,10 @@ namespace Assets.Simulation.Barbarians {
 
         #region methods
 
-        Func<IHexCell, int> GetWanderWeightFunction(IUnit unit, BarbarianInfluenceMaps maps);
+        Func<IHexCell, float> GetPillageUtilityFunction(IUnit unit, InfluenceMaps maps);
+
+        Func<IHexCell, int> GetWanderWeightFunction (IUnit unit, InfluenceMaps maps);
+        Func<IHexCell, int> GetPillageWeightFunction(IUnit unit, InfluenceMaps maps);
 
         #endregion
 

@@ -11,6 +11,7 @@ using Assets.Simulation.HexMap;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Units;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -80,7 +81,7 @@ namespace Assets.Simulation.Barbarians {
                 && !CivFactory.AllCivilizations.Any(civ => !civ.Template.IsBarbaric && VisibilityCanon.IsCellVisibleToCiv(cell, civ));
         }
 
-        public Func<IHexCell, int> BuildEncampmentWeightFunction(BarbarianInfluenceMaps maps) {
+        public Func<IHexCell, int> BuildEncampmentWeightFunction(InfluenceMaps maps) {
             return delegate(IHexCell cell) {
                 float allyWeight  = maps.AllyPresence [cell.Index] * BarbarianConfig.AllyEncampmentSpawnWeight;
                 float enemyWeight = maps.EnemyPresence[cell.Index] * BarbarianConfig.EnemyEncampmentSpawnWeight;

@@ -194,6 +194,30 @@ namespace Assets.Tests.Simulation.Units.Abilities {
         }
 
         [Test]
+        public void HandleCommandOnUnit_RemovesRoadsIfImprovementIsPillaged() {
+            var domesticCiv = BuildCiv();
+
+            Mock<IImprovement> mockImprovementOne;
+            var location = BuildCell(
+                true, null, new List<IImprovement>() { BuildImprovement(out mockImprovementOne) }
+            );
+
+            mockImprovementOne.Setup(improvement => improvement.IsPillaged).Returns(true);
+
+            var unit = BuildUnit(location, domesticCiv, 0);
+
+            var command = new AbilityCommandRequest() { Type = AbilityCommandType.Pillage };
+
+            var handler = Container.Resolve<PillageAbilityHandler>();
+
+            handler.HandleCommandOnUnit(command, unit);
+
+            mockImprovementOne.Verify(improvement => improvement.Pillage(), Times.Never, "ImprovementOne unexpectedly pillaged");
+
+            Assert.IsFalse(location.HasRoads, "Location's roads not removed as expected");
+        }
+
+        [Test]
         public void HandleCommandOnUnit_MovementDecreasedByOne() {
             var domesticCiv = BuildCiv();
 

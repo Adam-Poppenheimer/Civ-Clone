@@ -13,3 +13,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _unitMaxInfluenceRadius: 2
   _encampmentInfluenceRadius: 3
+  _roadPillageValue: 10
+  _normalImprovementPillageValue: 20
+  _extractingImprovementPillageValue: 50

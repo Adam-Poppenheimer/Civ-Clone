@@ -24,6 +24,21 @@ namespace Assets.Simulation.AI {
         }
         [SerializeField] private int _encampmentInfluenceRadius;
 
+        public float RoadPillageValue {
+            get { return _roadPillageValue; }
+        }
+        [SerializeField] private float _roadPillageValue;
+
+        public float NormalImprovementPillageValue {
+            get { return _normalImprovementPillageValue; }
+        }
+        [SerializeField] private float _normalImprovementPillageValue;
+
+        public float ExtractingImprovementPillageValue {
+            get { return _extractingImprovementPillageValue; }
+        }
+        [SerializeField] private float _extractingImprovementPillageValue;
+
         #endregion
 
         #endregion

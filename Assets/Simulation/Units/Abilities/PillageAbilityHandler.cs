@@ -69,10 +69,13 @@ namespace Assets.Simulation.Units.Abilities {
             if(CanHandleCommandOnUnit(command, unit)) {
                 var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
-                var firstImprovement = ImprovementLocationCanon.GetPossessionsOfOwner(unitLocation).FirstOrDefault();
+                var firstUnpillagedImprovement = ImprovementLocationCanon
+                    .GetPossessionsOfOwner(unitLocation)
+                    .Where(improvement => !improvement.IsPillaged)
+                    .FirstOrDefault();
 
-                if(firstImprovement != null) {
-                    firstImprovement.Pillage();
+                if(firstUnpillagedImprovement != null) {
+                    firstUnpillagedImprovement.Pillage();
                 }else {
                     unitLocation.HasRoads = false;
                 }

@@ -61,7 +61,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianBePrisonersBrain>();
 
-            Assert.AreEqual(1f, brain.GetUtilityForUnit(unit, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(1f, brain.GetUtilityForUnit(unit, new InfluenceMaps()));
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianBePrisonersBrain>();
 
-            Assert.AreEqual(0f, brain.GetUtilityForUnit(unit, new BarbarianInfluenceMaps()));
+            Assert.AreEqual(0f, brain.GetUtilityForUnit(unit, new InfluenceMaps()));
         }
 
         [Test]
@@ -100,7 +100,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianBePrisonersBrain>();
 
-            var commandList = brain.GetCommandsForUnit(unit, new BarbarianInfluenceMaps());
+            var commandList = brain.GetCommandsForUnit(unit, new InfluenceMaps());
 
             Assert.AreEqual(1, commandList.Count, "CommandList has an unexpected number of elements");
 
@@ -129,7 +129,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var brain = Container.Resolve<BarbarianBePrisonersBrain>();
 
-            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unit, new BarbarianInfluenceMaps()));
+            CollectionAssert.IsEmpty(brain.GetCommandsForUnit(unit, new InfluenceMaps()));
         }
 
         #endregion

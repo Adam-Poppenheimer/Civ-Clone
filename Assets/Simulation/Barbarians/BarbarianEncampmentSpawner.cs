@@ -10,6 +10,7 @@ using Zenject;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -45,7 +46,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IBarbarianSpawner
 
-        public void TrySpawnEncampment(BarbarianInfluenceMaps maps) {
+        public void TrySpawnEncampment(InfluenceMaps maps) {
             var validCells = Grid.Cells.Where(SpawningTools.EncampmentValidityFilter).ToList();
 
             if(validCells.Any()) {

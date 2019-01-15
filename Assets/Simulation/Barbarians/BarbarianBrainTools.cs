@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Units;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -38,7 +39,17 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance methods
 
-        public Func<IHexCell, int> GetWanderWeightFunction(IUnit unit, BarbarianInfluenceMaps maps) {
+        public Func<IHexCell, float> GetPillageUtilityFunction(IUnit unit, InfluenceMaps maps) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            return delegate(IHexCell cell) {
+                float divisor = Grid.GetDistance(unitLocation, cell) + 1;
+
+                return Mathf.Clamp01(maps.PillagingValue[cell.Index] * BarbarianConfig.PillageUtilityCoefficient / divisor);
+            };
+        }
+
+        public Func<IHexCell, int> GetWanderWeightFunction(IUnit unit, InfluenceMaps maps) {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
             return delegate(IHexCell cell) {
@@ -50,6 +61,14 @@ namespace Assets.Simulation.Barbarians {
 
                     return Math.Max(0, Mathf.RoundToInt(fromDistance + fromAllies));
                 }
+            };
+        }
+
+        public Func<IHexCell, int> GetPillageWeightFunction(IUnit unit, InfluenceMaps maps) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            return delegate(IHexCell cell) {
+                return Mathf.RoundToInt(maps.PillagingValue[cell.Index] / (1 + Grid.GetDistance(unitLocation, cell)));
             };
         }
 

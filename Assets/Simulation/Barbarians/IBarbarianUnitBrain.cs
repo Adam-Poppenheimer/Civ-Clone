@@ -9,7 +9,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region methods
 
-        List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps);
+        List<IUnitCommand> GetCommandsForUnit(IUnit unit, InfluenceMaps maps);
 
         #endregion
 

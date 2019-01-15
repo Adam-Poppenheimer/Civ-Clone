@@ -13,47 +13,42 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Barbarians {
 
-    public class BarbarianWanderBrain : IBarbarianGoalBrain {
+    public class BarbarianPillageBrain : IBarbarianGoalBrain {
 
         #region instance fields and properties
 
-        private IHexGrid                         Grid;
         private IUnitPositionCanon               UnitPositionCanon;
-        private DiContainer                      Container;
-        private IWeightedRandomSampler<IHexCell> CellRandomSampler;
+        private IHexGrid                         Grid;
         private IBarbarianBrainTools             BrainTools;
-        private IBarbarianConfig                 BarbarianConfig;
+        private DiContainer                      Container;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public BarbarianWanderBrain(
-            IHexGrid grid, IUnitPositionCanon unitPositionCanon, DiContainer container,
-            IWeightedRandomSampler<IHexCell> cellRandomSampler, IBarbarianBrainTools brainTools,
-            IBarbarianConfig barbarianConfig
+        public BarbarianPillageBrain(
+            IUnitPositionCanon unitPositionCanon, IHexGrid grid,
+            IBarbarianBrainTools brainTools, DiContainer container
         ) {
-            Grid              = grid;
             UnitPositionCanon = unitPositionCanon;
-            Container         = container;
-            CellRandomSampler = cellRandomSampler;
+            Grid              = grid;
             BrainTools        = brainTools;
-            BarbarianConfig   = barbarianConfig;
+            Container         = container;
         }
 
         #endregion
 
         #region instance methods
 
-        #region from IBarbarianWanderBrain
+        #region from IBarbarianGoalBrain
 
         public float GetUtilityForUnit(IUnit unit, InfluenceMaps maps) {
-            if(unit.Type.IsCivilian()) {
-                return 0f;
-            }else {
-                return BarbarianConfig.WanderGoalUtility;
-            }
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            return Grid.GetCellsInRadius(unitLocation, Mathf.RoundToInt(unit.MaxMovement)).Max(
+                BrainTools.GetPillageUtilityFunction(unit, maps)
+            );
         }
 
         public List<IUnitCommand> GetCommandsForUnit(IUnit unit, InfluenceMaps maps) {
@@ -63,9 +58,19 @@ namespace Assets.Simulation.Barbarians {
 
             var nearbyCells = Grid.GetCellsInRadius(unitLocation, Mathf.RoundToInt(unit.MaxMovement));
 
-            var bestCandidate = CellRandomSampler.SampleElementsFromSet(
-                nearbyCells, 1, BrainTools.GetWanderWeightFunction(unit, maps)
-            ).FirstOrDefault();
+            IHexCell bestCandidate = null;
+            int bestWeight = int.MinValue;
+
+            var weightFunction = BrainTools.GetPillageWeightFunction(unit, maps);
+
+            foreach(var candidate in nearbyCells) {
+                int candidateWeight = weightFunction(candidate);
+
+                if(bestCandidate == null || candidateWeight > bestWeight) {
+                    bestCandidate = candidate;
+                    bestWeight = candidateWeight;
+                }
+            }
 
             if(bestCandidate != null) {
                 var moveCommand = Container.Instantiate<MoveUnitCommand>();
@@ -74,6 +79,12 @@ namespace Assets.Simulation.Barbarians {
                 moveCommand.DesiredLocation = bestCandidate;
 
                 retval.Add(moveCommand);
+
+                var pillageCommand = Container.Instantiate<PillageUnitCommand>();
+
+                pillageCommand.Pillager = unit;
+
+                retval.Add(pillageCommand);
             }
 
             return retval;
@@ -82,7 +93,7 @@ namespace Assets.Simulation.Barbarians {
         #endregion
 
         #endregion
-
+        
     }
 
 }

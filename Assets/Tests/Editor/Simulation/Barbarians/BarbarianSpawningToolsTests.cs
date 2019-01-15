@@ -15,6 +15,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.Visibility;
 using Assets.Simulation.Barbarians;
 using Assets.Simulation.Units;
+using Assets.Simulation.AI;
 
 namespace Assets.Tests.Simulation.Barbarians {
 
@@ -143,7 +144,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void BuildEncampmentWeightFunction_ReturnedFunction_ReturnsBaseEncampmentSpawnWeightByDefault() {
             var cell = BuildCell(false);
 
-            var maps = new BarbarianInfluenceMaps() {
+            var maps = new InfluenceMaps() {
                 AllyPresence = new float[] { 0f }, EnemyPresence = new float[] { 0f }
             };
 
@@ -162,7 +163,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void BuildEncampmentWeightFunction_ReturnedFunction_ReturnedWeightDecreasedByAlliedWeight() {
             var cell = BuildCell(false);
 
-            var maps = new BarbarianInfluenceMaps() {
+            var maps = new InfluenceMaps() {
                 AllyPresence = new float[] { 3.5f }, EnemyPresence = new float[] { 0f }
             };
 
@@ -181,7 +182,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void BuildEncampmentWeightFunction_ReturnedFunction_ReturnedWeightDecreasedByEnemyWeight() {
             var cell = BuildCell(false);
 
-            var maps = new BarbarianInfluenceMaps() {
+            var maps = new InfluenceMaps() {
                 AllyPresence = new float[] { 0f }, EnemyPresence = new float[] { 3f }
             };
 
@@ -200,7 +201,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void BuildEncampmentWeightFunction_ReturnedFunction_ReturnedWeightDoesNotDropBelowOne() {
             var cell = BuildCell(false);
 
-            var maps = new BarbarianInfluenceMaps() {
+            var maps = new InfluenceMaps() {
                 AllyPresence = new float[] { 1000f }, EnemyPresence = new float[] { 1000f }
             };
 

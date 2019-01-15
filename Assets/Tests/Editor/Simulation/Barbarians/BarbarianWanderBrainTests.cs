@@ -60,7 +60,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void GetUtilityForUnit_AndUnitCivilian_ReturnsZero() {
             var unit = BuildUnit(UnitType.Civilian);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             var wanderBrain = Container.Resolve<BarbarianWanderBrain>();
 
@@ -71,7 +71,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void GetUtilityForUnit_AndUnitNotCivilian_ReturnsConfiguredWanderGoalUtility() {
             var unit = BuildUnit(UnitType.NavalMelee);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             MockBarbarianConfig.Setup(config => config.WanderGoalUtility).Returns(0.5f);
 
@@ -91,7 +91,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var unit = BuildUnit(unitLocation, 3);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> wanderWeightFunction = cell => 1;
 
@@ -120,7 +120,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var unit = BuildUnit(unitLocation, 3);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> wanderWeightFunction = cell => 1;
 
@@ -150,7 +150,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var unit = BuildUnit(unitLocation, 3);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> wanderWeightFunction = cell => 1;
 
@@ -179,7 +179,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var unit = BuildUnit(unitLocation, 3);
 
-            var maps = new BarbarianInfluenceMaps();
+            var maps = new InfluenceMaps();
 
             Func<IHexCell, int> wanderWeightFunction = cell => 1;
 

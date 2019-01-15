@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IBarbarianUnitBrain>                           MockBarbarianUnitBrain;
         private Mock<IUnitCommandExecuter>                          MockUnitCommandExecuter;
         private Mock<IBarbarianTurnExecuter>                        MockTurnExecuter;
-        private Mock<IBarbarianInfluenceMapGenerator>               MockInfluenceMapGenerator;
+        private Mock<IInfluenceMapLogic>                            MockInfluenceMapLogic;
 
         #endregion
 
@@ -39,14 +39,14 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockBarbarianUnitBrain    = new Mock<IBarbarianUnitBrain>();
             MockUnitCommandExecuter   = new Mock<IUnitCommandExecuter>();
             MockTurnExecuter          = new Mock<IBarbarianTurnExecuter>();
-            MockInfluenceMapGenerator = new Mock<IBarbarianInfluenceMapGenerator>();
+            MockInfluenceMapLogic     = new Mock<IInfluenceMapLogic>();
 
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon  .Object);
-            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivFactory           .Object);
-            Container.Bind<IBarbarianUnitBrain>                          ().FromInstance(MockBarbarianUnitBrain   .Object);
-            Container.Bind<IUnitCommandExecuter>                         ().FromInstance(MockUnitCommandExecuter  .Object);
-            Container.Bind<IBarbarianTurnExecuter>                       ().FromInstance(MockTurnExecuter         .Object);
-            Container.Bind<IBarbarianInfluenceMapGenerator>              ().FromInstance(MockInfluenceMapGenerator.Object);
+            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
+            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivFactory         .Object);
+            Container.Bind<IBarbarianUnitBrain>                          ().FromInstance(MockBarbarianUnitBrain .Object);
+            Container.Bind<IUnitCommandExecuter>                         ().FromInstance(MockUnitCommandExecuter.Object);
+            Container.Bind<IBarbarianTurnExecuter>                       ().FromInstance(MockTurnExecuter       .Object);
+            Container.Bind<IInfluenceMapLogic>                           ().FromInstance(MockInfluenceMapLogic  .Object);
 
             Container.Bind<BarbarianPlayerBrain>().AsSingle();
         }
@@ -65,7 +65,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             barbarianBrain.ExecuteTurn(postExecutionAction);
 
-            MockTurnExecuter.Verify(spawner => spawner.PerformEncampmentSpawning(It.IsAny<BarbarianInfluenceMaps>()), Times.Once);
+            MockTurnExecuter.Verify(spawner => spawner.PerformEncampmentSpawning(It.IsAny<InfluenceMaps>()), Times.Once);
         }
 
         [Test]
@@ -83,11 +83,17 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         [Test]
         public void RefreshAnalysis_InfluenceMapsGenerated() {
+            var barbarianCiv = BuildCiv(BuildCivTemplate(true), new List<IUnit>());
+
+            MockCivFactory.Setup(factory => factory.BarbarianCiv).Returns(barbarianCiv);
+
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
             barbarianBrain.RefreshAnalysis();
 
-            MockInfluenceMapGenerator.Verify(generator => generator.GenerateMaps(), Times.Once);
+            MockInfluenceMapLogic.Verify(
+                generator => generator.AssignMaps(It.IsAny<InfluenceMaps>(), barbarianCiv
+            ), Times.Once);
         }
 
         [Test]
@@ -96,7 +102,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             barbarianBrain.Clear();
 
-            MockInfluenceMapGenerator.Verify(generator => generator.ClearMaps(), Times.Once);
+            MockInfluenceMapLogic.Verify(generator => generator.ClearMaps(It.IsAny<InfluenceMaps>()), Times.Once);
         }
 
         [Test]
@@ -115,7 +121,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var commandsTwo = new List<IUnitCommand>();
 
-            MockBarbarianUnitBrain.Setup(brain => brain.GetCommandsForUnit(unitsTwo[0], It.IsAny<BarbarianInfluenceMaps>()))
+            MockBarbarianUnitBrain.Setup(brain => brain.GetCommandsForUnit(unitsTwo[0], It.IsAny<InfluenceMaps>()))
                                   .Returns(commandsTwo);
 
             var executionSequence = new MockSequence();

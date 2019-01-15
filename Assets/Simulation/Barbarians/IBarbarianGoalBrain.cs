@@ -12,9 +12,9 @@ namespace Assets.Simulation.Barbarians {
 
         #region methods
 
-        float GetUtilityForUnit(IUnit unit, BarbarianInfluenceMaps maps);
+        float GetUtilityForUnit(IUnit unit, InfluenceMaps maps);
 
-        List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps);
+        List<IUnitCommand> GetCommandsForUnit(IUnit unit, InfluenceMaps maps);
 
         #endregion
 

@@ -12,6 +12,10 @@ namespace Assets.Simulation.AI {
         int UnitMaxInfluenceRadius    { get; }
         int EncampmentInfluenceRadius { get; }
 
+        float RoadPillageValue                  { get; }
+        float NormalImprovementPillageValue     { get; }
+        float ExtractingImprovementPillageValue { get; }
+
         #endregion
 
     }

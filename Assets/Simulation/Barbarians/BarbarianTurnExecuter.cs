@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 
 using Assets.Simulation.Civilizations;
+using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -47,7 +48,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IBarbarianTurnExecuter
 
-        public void PerformEncampmentSpawning(BarbarianInfluenceMaps maps) {
+        public void PerformEncampmentSpawning(InfluenceMaps maps) {
             int encampmentCount = EncampmentFactory.AllEncampments.Count;
             int nonBarbarianCivCount = CivFactory.AllCivilizations.Count(civ => !civ.Template.IsBarbaric);
 

@@ -28,7 +28,7 @@ namespace Assets.Simulation.Barbarians {
 
         #endregion
 
-        private BarbarianInfluenceMaps LastMaps;
+        private InfluenceMaps LastMaps = new InfluenceMaps();
 
 
 
@@ -38,7 +38,7 @@ namespace Assets.Simulation.Barbarians {
         private IBarbarianUnitBrain                           BarbarianUnitBrain;
         private IUnitCommandExecuter                          UnitCommandExecuter;
         private IBarbarianTurnExecuter                        TurnExecuter;
-        private IBarbarianInfluenceMapGenerator               InfluenceMapGenerator;
+        private IInfluenceMapLogic                            InfluenceMapLogic;
 
         #endregion
 
@@ -49,14 +49,14 @@ namespace Assets.Simulation.Barbarians {
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
             ICivilizationFactory civFactory, IBarbarianUnitBrain barbarianUnitBrain,
             IUnitCommandExecuter unitCommandExecuter, IBarbarianTurnExecuter turnExecuter,
-            IBarbarianInfluenceMapGenerator influenceMapGenerator
+            IInfluenceMapLogic influenceMapLogic
         ) {
-            UnitPossessionCanon   = unitPossessionCanon;
-            CivFactory            = civFactory;
-            BarbarianUnitBrain    = barbarianUnitBrain;
-            UnitCommandExecuter   = unitCommandExecuter;
-            TurnExecuter          = turnExecuter;
-            InfluenceMapGenerator = influenceMapGenerator;
+            UnitPossessionCanon = unitPossessionCanon;
+            CivFactory          = civFactory;
+            BarbarianUnitBrain  = barbarianUnitBrain;
+            UnitCommandExecuter = unitCommandExecuter;
+            TurnExecuter        = turnExecuter;
+            InfluenceMapLogic   = influenceMapLogic;
         }
 
         #endregion
@@ -66,7 +66,7 @@ namespace Assets.Simulation.Barbarians {
         #region from IPlayerBrain
 
         public void RefreshAnalysis() {
-            LastMaps = InfluenceMapGenerator.GenerateMaps();
+            InfluenceMapLogic.AssignMaps(LastMaps, CivFactory.BarbarianCiv);
         }
 
         public void ExecuteTurn(Action controlRelinquisher) {
@@ -90,7 +90,7 @@ namespace Assets.Simulation.Barbarians {
         }
 
         public void Clear() {
-            InfluenceMapGenerator.ClearMaps();
+            InfluenceMapLogic.ClearMaps(LastMaps);
         }
 
         #endregion

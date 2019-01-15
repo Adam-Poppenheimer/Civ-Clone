@@ -3,13 +3,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.AI;
+
 namespace Assets.Simulation.Barbarians {
 
     public interface IBarbarianEncampmentSpawner {
 
         #region methods
 
-        void TrySpawnEncampment(BarbarianInfluenceMaps maps);
+        void TrySpawnEncampment(InfluenceMaps maps);
 
         #endregion
 

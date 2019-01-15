@@ -33,7 +33,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IBarbarianUnitBrain
 
-        public List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
+        public List<IUnitCommand> GetCommandsForUnit(IUnit unit, InfluenceMaps maps) {
             IBarbarianGoalBrain brainToExecute = null;
             float lastHighestUtility = 0f;
 

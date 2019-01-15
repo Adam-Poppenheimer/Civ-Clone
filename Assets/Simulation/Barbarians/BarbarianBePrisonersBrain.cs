@@ -43,11 +43,11 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IBarbarianGoalBrain
 
-        public float GetUtilityForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
+        public float GetUtilityForUnit(IUnit unit, InfluenceMaps maps) {
             return unit.Type == UnitType.Civilian ? 1f : 0f;
         }
 
-         public List<IUnitCommand> GetCommandsForUnit(IUnit unit, BarbarianInfluenceMaps maps) {
+         public List<IUnitCommand> GetCommandsForUnit(IUnit unit, InfluenceMaps maps) {
             var retval = new List<IUnitCommand>();
 
             var unitPosition = UnitPositionCanon.GetOwnerOfPossession(unit);

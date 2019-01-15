@@ -41,7 +41,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         [Test]
         public void GetCommandsForUnit_ReturnsCommandsOfHighestUtilityGoalBrain() {
             var unit = BuildUnit();
-            var wanderMaps = new BarbarianInfluenceMaps();
+            var wanderMaps = new InfluenceMaps();
 
             var commandListOne   = new List<IUnitCommand>();
             var commandListTwo   = new List<IUnitCommand>();
@@ -72,11 +72,11 @@ namespace Assets.Tests.Simulation.Barbarians {
             var mockBrain = new Mock<IBarbarianGoalBrain>();
 
             mockBrain.Setup(
-                brain => brain.GetUtilityForUnit(It.IsAny<IUnit>(), It.IsAny<BarbarianInfluenceMaps>())
+                brain => brain.GetUtilityForUnit(It.IsAny<IUnit>(), It.IsAny<InfluenceMaps>())
             ).Returns(utility);
 
             mockBrain.Setup(
-                brain => brain.GetCommandsForUnit(It.IsAny<IUnit>(), It.IsAny<BarbarianInfluenceMaps>())
+                brain => brain.GetCommandsForUnit(It.IsAny<IUnit>(), It.IsAny<InfluenceMaps>())
             ).Returns(commandsReturned);
 
             var newBrain = mockBrain.Object;
