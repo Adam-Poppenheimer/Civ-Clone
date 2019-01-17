@@ -64,6 +64,7 @@ namespace Assets.Simulation.Units {
             Container.Bind<IMeleeAttackValidityLogic>   ().To<MeleeAttackValidityLogic>   ().AsSingle();
             Container.Bind<IRangedAttackValidityLogic>  ().To<RangedAttackValidityLogic>  ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
+            Container.Bind<IUnitAttackOrderLogic>       ().To<UnitAttackOrderLogic>       ().AsSingle();
             Container.Bind<ICombatAuraLogic>            ().To<CombatAuraLogic>            ().AsSingle();
             Container.Bind<IUnitHealingLogic>           ().To<UnitHealingLogic>           ().AsSingle();
             Container.Bind<ICanBuildCityLogic>          ().To<CanBuildCityLogic>          ().AsSingle();

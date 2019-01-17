@@ -51,7 +51,7 @@ namespace Assets.Simulation.AI {
 
         public void StartExecution() {
             if(DesiredLocation == null) {
-                throw new InvalidOperationException("Call execute while DesiredLocation is null");
+                throw new InvalidOperationException("Cannot execute while DesiredLocation is null");
             }
 
             Status = CommandStatus.Running;

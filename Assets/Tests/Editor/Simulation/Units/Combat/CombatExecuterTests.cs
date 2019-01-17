@@ -121,7 +121,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var executer = Container.Resolve<CombatExecuter>();
 
-            executer.PerformMeleeAttack(attacker, defender);
+            executer.PerformMeleeAttack(attacker, defender, () => { }, () => { });
 
             attackerMock.VerifySet(
                 unit => unit.CurrentPath = It.Is<List<IHexCell>>(list => list.SequenceEqual(shorterPath)),
@@ -162,7 +162,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var executer = Container.Resolve<CombatExecuter>();
 
-            executer.PerformMeleeAttack(attacker, defender);
+            executer.PerformMeleeAttack(attacker, defender, () => { }, () => { });
 
             MockCommonCombatExecutionLogic.Verify(
                 logic => logic.PerformCommonCombatTasks(attacker, defender, combatInfo), Times.Once
@@ -212,9 +212,81 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var executer = Container.Resolve<CombatExecuter>();
 
-            executer.PerformMeleeAttack(attacker, defender);
+            executer.PerformMeleeAttack(attacker, defender, () => { }, () => { });
 
             Assert.Fail("MeleeCombatWithUnitSignal never fired");
+        }
+
+        [Test]
+        public void PerformMeleeAttack_AfterMovement_AndAttackStillValid_CallsSuccessAction() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var path = new List<IHexCell>() { BuildCell() };
+
+            MockHexPathfinder.Setup(pathfinder => pathfinder.GetShortestPathBetween(
+                attackerLocation, defenderLocation, 3f, It.IsAny<Func<IHexCell, IHexCell, float>>(),
+                AllCells
+            )).Returns(path);
+
+            var combatInfo = new CombatInfo();
+
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+                               .Returns(combatInfo);
+
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
+
+            attackerMock.Setup(unit => unit.PerformMovement(false, It.IsAny<Action>()))
+                        .Callback<bool, Action>((ignoreMovementCosts, postMovementCallback) => postMovementCallback());
+
+            var executer = Container.Resolve<CombatExecuter>();
+
+            executer.PerformMeleeAttack(attacker, defender, () => Assert.Pass(), () => Assert.Fail("Fail action unexpectedly called"));
+
+            Assert.Fail("Success action wasn't called as expected");
+        }
+
+        [Test]
+        public void PerformMeleeAttack_AfterMovement_AndAttackNoLongerValid_CallsFailAction() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var path = new List<IHexCell>() { BuildCell() };
+
+            MockHexPathfinder.Setup(pathfinder => pathfinder.GetShortestPathBetween(
+                attackerLocation, defenderLocation, 3f, It.IsAny<Func<IHexCell, IHexCell, float>>(),
+                AllCells
+            )).Returns(path);
+
+            var combatInfo = new CombatInfo();
+
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+                               .Returns(combatInfo);
+
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
+
+            attackerMock.Setup(
+                unit => unit.PerformMovement(false, It.IsAny<Action>())
+            ).Callback<bool, Action>(
+                (ignoreMovementCosts, postMovementCallback) => {
+                    MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(false);
+                    postMovementCallback();
+                }
+            );
+
+            var executer = Container.Resolve<CombatExecuter>();
+
+            executer.PerformMeleeAttack(attacker, defender, () => Assert.Fail("Success action unexpectedly called"), () => Assert.Pass());
+
+            Assert.Fail("Fail action wasn't called as expected");
         }
 
         [Test]

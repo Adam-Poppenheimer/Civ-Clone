@@ -59,7 +59,7 @@ namespace Assets.Simulation.Units.Combat {
             return RangedAttackValidityLogic.IsRangedAttackValid(attacker, defender);
         }
 
-        public void PerformMeleeAttack(IUnit attacker, IUnit defender) {
+        public void PerformMeleeAttack(IUnit attacker, IUnit defender, Action successAction, Action failAction) {
             if(!CanPerformMeleeAttack(attacker, defender)) {
                 throw new InvalidOperationException("CanPerformMeleeCombat must return true");
             }
@@ -75,26 +75,38 @@ namespace Assets.Simulation.Units.Combat {
 
             attacker.CurrentPath = pathToDefender.GetRange(0, pathToDefender.Count - 1);
 
-            attacker.PerformMovement(false, PerformMeleeAttack_GetPostMovementCallback(attacker, defender, defenderLocation));
+            attacker.PerformMovement(
+                false, PerformMeleeAttack_GetPostMovementCallback(
+                    attacker, defender, defenderLocation, successAction, failAction
+                )
+            );
         }
 
-        private Action PerformMeleeAttack_GetPostMovementCallback(IUnit attacker, IUnit defender, IHexCell defenderLocation) {
+        private Action PerformMeleeAttack_GetPostMovementCallback(
+            IUnit attacker, IUnit defender, IHexCell defenderLocation, Action successAction, Action failAction
+        ) {
             return delegate() {
-                int attackerStartingHealth = attacker.CurrentHitpoints;
-                int defenderStartingHealth = defender.CurrentHitpoints;
+                if(!CanPerformMeleeAttack(attacker, defender)) {
+                    failAction();
+                }else {
+                    int attackerStartingHealth = attacker.CurrentHitpoints;
+                    int defenderStartingHealth = defender.CurrentHitpoints;
 
-                var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee);
+                    var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee);
 
-                CommonCombatExecutionLogic.PerformCommonCombatTasks(attacker, defender, combatInfo);
+                    CommonCombatExecutionLogic.PerformCommonCombatTasks(attacker, defender, combatInfo);
 
-                UnitSignals.MeleeCombatWithUnitSignal.OnNext(
-                    new UnitCombatResults(
-                        attacker, defender,
-                        attackerStartingHealth - attacker.CurrentHitpoints,
-                        defenderStartingHealth - defender.CurrentHitpoints,
-                        combatInfo
-                    )
-                );
+                    UnitSignals.MeleeCombatWithUnitSignal.OnNext(
+                        new UnitCombatResults(
+                            attacker, defender,
+                            attackerStartingHealth - attacker.CurrentHitpoints,
+                            defenderStartingHealth - defender.CurrentHitpoints,
+                            combatInfo
+                        )
+                    );
+
+                    successAction();
+                }
             };
         }
 

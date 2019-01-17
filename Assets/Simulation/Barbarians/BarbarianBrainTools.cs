@@ -8,8 +8,10 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Combat;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.AI;
+using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Barbarians {
 
@@ -21,6 +23,7 @@ namespace Assets.Simulation.Barbarians {
         private IHexGrid           Grid;
         private IUnitPositionCanon UnitPositionCanon;
         private IBarbarianConfig   BarbarianConfig;
+        private ICombatExecuter    CombatExecuter;
 
         #endregion
 
@@ -28,11 +31,13 @@ namespace Assets.Simulation.Barbarians {
 
         [Inject]
         public BarbarianBrainTools(
-            IHexGrid grid, IUnitPositionCanon unitPositionCanon, IBarbarianConfig barbarianConfig
+            IHexGrid grid, IUnitPositionCanon unitPositionCanon, IBarbarianConfig barbarianConfig,
+            ICombatExecuter combatExecuter
         ) {
             Grid              = grid;
             UnitPositionCanon = unitPositionCanon;
             BarbarianConfig   = barbarianConfig;
+            CombatExecuter    = combatExecuter;
         }
 
         #endregion
@@ -47,6 +52,17 @@ namespace Assets.Simulation.Barbarians {
 
                 return Mathf.Clamp01(maps.PillagingValue[cell.Index] * BarbarianConfig.PillageUtilityCoefficient / divisor);
             };
+        }
+
+        public Func<IHexCell, bool> GetCaptureCivilianFilter(IUnit captor) {
+            return delegate(IHexCell cell) {
+                var captiveCandidates = UnitPositionCanon.GetPossessionsOfOwner(cell);
+
+                return captiveCandidates.Any() && captiveCandidates.All(
+                    captiveCandidate => captiveCandidate.Type.IsCivilian() && CombatExecuter.CanPerformMeleeAttack(captor, captiveCandidate)
+                );
+            };
+            
         }
 
         public Func<IHexCell, int> GetWanderWeightFunction(IUnit unit, InfluenceMaps maps) {

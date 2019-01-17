@@ -109,6 +109,11 @@ namespace Assets.Simulation.Barbarians {
         }
         [SerializeField, Range(0f, 1f)] private float _pillageUtilityCoefficient;
 
+        public float CaptureCivilianUtility {
+            get { return _captureCivilianUtility; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _captureCivilianUtility;
+
         #endregion
 
         #endregion

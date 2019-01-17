@@ -48,6 +48,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         private List<UnitDisplayBase>                    DisplaysToManage;
         private UIStateMachineBrain                      Brain;
         private ICombatExecuter                          CombatExecuter;
+        private IUnitAttackOrderLogic                    AttackOrderLogic;
         private IUnitPositionCanon                       UnitPositionCanon;
         private IHexPathfinder                           HexPathfinder;
         private ICellPathDrawer                          PathDrawer;
@@ -68,6 +69,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             List<UnitDisplayBase> displaysToManage,
             UIStateMachineBrain brain,
             ICombatExecuter combatExecuter,
+            IUnitAttackOrderLogic attackOrderLogic,
             IUnitPositionCanon unitPositionCanon,
             IHexPathfinder hexPathfinder,
             ICellPathDrawer pathDrawer,
@@ -81,6 +83,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             DisplaysToManage     = displaysToManage;
             Brain                = brain;
             CombatExecuter       = combatExecuter;
+            AttackOrderLogic     = attackOrderLogic;
             UnitPositionCanon    = unitPositionCanon;
             HexPathfinder        = hexPathfinder;
             PathDrawer           = pathDrawer;
@@ -205,10 +208,10 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
         private void PerformCombat() {
             if(CityToAttack != null) {
-                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade);
+                CombatExecuter.PerformMeleeAttack(SelectedUnit, CityToAttack.CombatFacade, () => { }, () => { });
 
             }else if(UnitToAttack != null) {
-                CombatExecuter.PerformMeleeAttack(SelectedUnit, UnitToAttack);
+                CombatExecuter.PerformMeleeAttack(SelectedUnit, UnitToAttack, () => { }, () => { });
             }
         }
 
@@ -276,14 +279,14 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
                 return;
             }
 
-            IUnit unitOnCell = UnitPositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
+            IUnit attackCandidate = AttackOrderLogic.GetNextAttackTargetOnCell(cell);
 
-            if(unitOnCell == SelectedUnit) {
+            if(attackCandidate == SelectedUnit) {
                 return;
             }
 
-            if(unitOnCell != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, unitOnCell)) {
-                SetUnitToAttack(unitOnCell);
+            if(attackCandidate != null && CombatExecuter.CanPerformMeleeAttack(SelectedUnit, attackCandidate)) {
+                SetUnitToAttack(attackCandidate);
                 return;
             }
 

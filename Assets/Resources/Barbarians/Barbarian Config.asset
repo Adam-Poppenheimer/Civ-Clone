@@ -33,3 +33,4 @@ MonoBehaviour:
   _stayInEncampmentUtility: 0.9
   _headTowardsEncampmentUtility: 0.7
   _pillageUtilityCoefficient: 0.1
+  _captureCivilianUtility: 1

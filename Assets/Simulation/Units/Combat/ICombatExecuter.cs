@@ -12,7 +12,7 @@ namespace Assets.Simulation.Units.Combat {
         #region methods
 
         bool CanPerformMeleeAttack(IUnit attacker, IUnit defender);
-        void PerformMeleeAttack   (IUnit attacker, IUnit defender);
+        void PerformMeleeAttack   (IUnit attacker, IUnit defender, Action successAction, Action failAction);
 
         bool CanPerformRangedAttack(IUnit attacker, IUnit defender);
         void PerformRangedAttack   (IUnit attacker, IUnit defender);

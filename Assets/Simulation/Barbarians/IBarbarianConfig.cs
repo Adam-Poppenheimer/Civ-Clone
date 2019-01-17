@@ -40,6 +40,7 @@ namespace Assets.Simulation.Barbarians {
         float StayInEncampmentUtility      { get; }
         float HeadTowardsEncampmentUtility { get; }
         float PillageUtilityCoefficient    { get; }
+        float CaptureCivilianUtility       { get; }
 
         #endregion
 

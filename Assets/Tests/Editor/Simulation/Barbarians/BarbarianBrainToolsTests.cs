@@ -11,6 +11,7 @@ using Moq;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
+using Assets.Simulation.Units.Combat;
 using Assets.Simulation.Barbarians;
 using Assets.Simulation.AI;
 
@@ -23,6 +24,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IHexGrid>           MockGrid;
         private Mock<IUnitPositionCanon> MockUnitPositionCanon;
         private Mock<IBarbarianConfig>   MockBarbarianConfig;
+        private Mock<ICombatExecuter>    MockCombatExecuter;
 
         #endregion
 
@@ -34,11 +36,13 @@ namespace Assets.Tests.Simulation.Barbarians {
         public void CommonInstall() {
             MockGrid              = new Mock<IHexGrid>();
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
-            MockBarbarianConfig      = new Mock<IBarbarianConfig>();
+            MockBarbarianConfig   = new Mock<IBarbarianConfig>();
+            MockCombatExecuter    = new Mock<ICombatExecuter>();
 
             Container.Bind<IHexGrid>          ().FromInstance(MockGrid             .Object);
             Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
             Container.Bind<IBarbarianConfig>  ().FromInstance(MockBarbarianConfig  .Object);
+            Container.Bind<ICombatExecuter>   ().FromInstance(MockCombatExecuter   .Object);
 
             Container.Bind<BarbarianBrainTools>().AsSingle();
         }
@@ -137,6 +141,79 @@ namespace Assets.Tests.Simulation.Barbarians {
             var returnedDelegate = brainTools.GetPillageUtilityFunction(unit, maps);
 
             Assert.AreEqual(1f, returnedDelegate(cellOne));
+        }
+
+        [Test]
+        public void GetCaptureCivilianFilter_ReturnedDelegate_ReturnsTrueIfCellHasCiviliansTheCaptorCanAttack() {
+            var unit = BuildUnit(UnitType.Melee);
+
+            var cell = BuildCell(
+                BuildUnit(UnitType.Civilian), BuildUnit(UnitType.Civilian), BuildUnit(UnitType.Civilian)
+            );
+
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, It.IsAny<IUnit>()))
+                              .Returns(true);
+
+            var brainTools = Container.Resolve<BarbarianBrainTools>();
+
+            var returnedDelegate = brainTools.GetCaptureCivilianFilter(unit);
+
+            Assert.IsTrue(returnedDelegate(cell));
+        }
+
+        [Test]
+        public void GetCaptureCivilianFilter_ReturnedDelegate_ReturnsFalseIfCivilianCannotBeAttacked() {
+            var unit = BuildUnit(UnitType.Melee);
+
+            var unitOne   = BuildUnit(UnitType.Civilian);
+            var unitTwo   = BuildUnit(UnitType.Civilian);
+            var unitThree = BuildUnit(UnitType.Civilian);
+
+            var cell = BuildCell(unitOne, unitTwo, unitThree);
+
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, unitOne  )).Returns(true);
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, unitTwo  )).Returns(false);
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, unitThree)).Returns(true);
+
+            var brainTools = Container.Resolve<BarbarianBrainTools>();
+
+            var returnedDelegate = brainTools.GetCaptureCivilianFilter(unit);
+
+            Assert.IsFalse(returnedDelegate(cell));
+        }
+
+        [Test]
+        public void GetCaptureCivilianFilter_ReturnedDelegate_ReturnsFalseIfNonCivilianUnitAtLocation() {
+            var unit = BuildUnit(UnitType.Melee);
+
+            var cell = BuildCell(
+                BuildUnit(UnitType.Civilian), BuildUnit(UnitType.Civilian), BuildUnit(UnitType.Melee)
+            );
+
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, It.IsAny<IUnit>()))
+                              .Returns(true);
+
+            var brainTools = Container.Resolve<BarbarianBrainTools>();
+
+            var returnedDelegate = brainTools.GetCaptureCivilianFilter(unit);
+
+            Assert.IsFalse(returnedDelegate(cell));
+        }
+
+        [Test]
+        public void GetCaptureCivilianFilter_ReturnedDelegate_ReturnsFalseIfNoUnitsAtLocation() {
+            var unit = BuildUnit(UnitType.Melee);
+
+            var cell = BuildCell();
+
+            MockCombatExecuter.Setup(executer => executer.CanPerformMeleeAttack(unit, It.IsAny<IUnit>()))
+                              .Returns(true);
+
+            var brainTools = Container.Resolve<BarbarianBrainTools>();
+
+            var returnedDelegate = brainTools.GetCaptureCivilianFilter(unit);
+
+            Assert.IsFalse(returnedDelegate(cell));
         }
 
         [Test]
@@ -270,12 +347,28 @@ namespace Assets.Tests.Simulation.Barbarians {
             return mockCell.Object;
         }
 
+        private IHexCell BuildCell(params IUnit[] units) {
+            var newCell = new Mock<IHexCell>().Object;
+
+            MockUnitPositionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCell)).Returns(units);
+
+            return newCell;
+        }
+
         private IUnit BuildUnit(IHexCell location) {
             var newUnit = new Mock<IUnit>().Object;
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
 
             return newUnit;
+        }
+
+        private IUnit BuildUnit(UnitType type) {
+            var mockUnit = new Mock<IUnit>();
+
+            mockUnit.Setup(unit => unit.Type).Returns(type);
+
+            return mockUnit.Object;
         }
 
         #endregion
