@@ -15,7 +15,7 @@ using Assets.Simulation.HexMap;
 namespace Assets.Tests.Simulation.Units.Combat {
 
     [TestFixture]
-    public class PostCombatMovementLogicTests : ZenjectUnitTestFixture {
+    public class MovementPostCombatResponderTests : ZenjectUnitTestFixture {
 
         #region internal types
 
@@ -103,7 +103,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
 
-            Container.Bind<PostCombatMovementLogic>().AsSingle();
+            Container.Bind<MovementPostCombatResponder>().AsSingle();
         }
 
         #endregion
@@ -123,7 +123,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 .Setup(logic => logic.GetTraversalCostForUnit(attacker, attackerLocation, defenderLocation, true))
                 .Returns(testData.TraversalCostBetweenLocations);
 
-            var movementLogic = Container.Resolve<PostCombatMovementLogic>();
+            var movementLogic = Container.Resolve<MovementPostCombatResponder>();
 
             movementLogic.RespondToCombat(attacker, defender, testData.CombatInfo);
 

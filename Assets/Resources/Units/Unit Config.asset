@@ -37,6 +37,10 @@ MonoBehaviour:
   _greatPeopleCivilianTypes: 00000000010000000300000004000000
   _greatPeopleMilitaryTypes: 0500000002000000
   _auraRange: 2
+  _capturableTemplates:
+  - {fileID: 11400000, guid: 69c732bdc81e68847a36dd87d8b15cfd, type: 2}
+  - {fileID: 11400000, guid: d53a3dd5cb0edd84483ab882cca4cd58, type: 2}
+  - {fileID: 11400000, guid: eac4705a3a7dda84696d0a43e1f43ef5, type: 2}
   TerrainDefensiveness: []
   ShapeDefensiveness:
   - 0

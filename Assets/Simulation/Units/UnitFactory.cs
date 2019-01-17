@@ -116,11 +116,6 @@ namespace Assets.Simulation.Units {
             }else {
                 throw new UnitCreationException("The newly created unit cannot be placed at its location");
             }
-            
-            var meshRenderer = newUnit.GetComponentInChildren<MeshRenderer>();
-            if(meshRenderer != null) {
-                meshRenderer.material.color = owner.Template.Color;
-            }
 
             return newUnit;
         }

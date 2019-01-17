@@ -141,6 +141,11 @@ namespace Assets.Simulation.Units {
         }
         [SerializeField] private int _auraRange;
 
+        public IEnumerable<IUnitTemplate> CapturableTemplates {
+            get { return _capturableTemplates.Cast<IUnitTemplate>(); }
+        }
+        [SerializeField] private List<UnitTemplate> _capturableTemplates;
+
         #endregion
 
         [SerializeField] private List<float> TerrainDefensiveness;        

@@ -460,7 +460,15 @@ namespace Assets.Simulation.Units {
         }
 
         private void OnUnitGainedNewOwner(UniRx.Tuple<IUnit, ICivilization> data) {
-            if((this as IUnit) == data.Item1) {
+            var unit     = data.Item1;
+            var newOwner = data.Item2;
+
+            if((this as IUnit) == unit) {
+                var meshRenderer = GetComponentInChildren<MeshRenderer>();
+                if(meshRenderer != null && newOwner != null) {
+                    meshRenderer.material.color = newOwner.Template.Color;
+                }
+
                 PromotionParser.SetMovementSummary(ConcreteMovementSummary, this);
                 PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   this);
             }

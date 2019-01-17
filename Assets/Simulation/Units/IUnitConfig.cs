@@ -56,6 +56,8 @@ namespace Assets.Simulation.Units {
 
         int AuraRange { get; }
 
+        IEnumerable<IUnitTemplate> CapturableTemplates { get; }
+
         #endregion
 
         #region methods

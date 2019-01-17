@@ -7,7 +7,7 @@ using Zenject;
 
 namespace Assets.Simulation.Units.Combat {
 
-    public class PostCombatMovementLogic : IPostCombatResponder {
+    public class MovementPostCombatResponder : IPostCombatResponder {
 
         #region instance fields and properties
 
@@ -18,7 +18,7 @@ namespace Assets.Simulation.Units.Combat {
         #region constructors
 
         [Inject]
-        public PostCombatMovementLogic(IUnitPositionCanon unitPositionCanon) {
+        public MovementPostCombatResponder(IUnitPositionCanon unitPositionCanon) {
             UnitPositionCanon = unitPositionCanon;
         }
 

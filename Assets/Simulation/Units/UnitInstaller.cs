@@ -77,8 +77,8 @@ namespace Assets.Simulation.Units {
             
             Container.Bind<IPostCombatResponder>().To<CityConquestResponder>  ().AsSingle();
             Container.Bind<IPostCombatResponder>().To<CitySackResponder>      ().AsSingle();
-            Container.Bind<IPostCombatResponder>().To<CombatDestructionLogic> ().AsSingle();
-            Container.Bind<IPostCombatResponder>().To<PostCombatMovementLogic>().AsSingle();
+            Container.Bind<IPostCombatResponder>().To<DestructionPostCombatResponder> ().AsSingle();
+            Container.Bind<IPostCombatResponder>().To<MovementPostCombatResponder>().AsSingle();
 
             Container.Bind<UnitResponder>   ().AsSingle().NonLazy();
             Container.Bind<GoldRaidingLogic>().AsSingle().NonLazy();
