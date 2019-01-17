@@ -36,15 +36,15 @@ namespace Assets.UI.Units {
 
 
 
-        private ICombatExecuter CombatExecuter;
+        private ICombatEstimator CombatEstimator;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(ICombatExecuter combatExecuter) {
-            CombatExecuter = combatExecuter;
+        public void InjectDependencies(ICombatEstimator combatEstimator) {
+            CombatEstimator = combatEstimator;
         }
 
         #region Unity messages
@@ -63,8 +63,8 @@ namespace Assets.UI.Units {
         public void Refresh() {
             if(AttackingUnit != null && DefendingUnit != null) {
                 var estimatedCombat = IsMeleeAttack
-                    ? CombatExecuter.EstimateMeleeAttackResults(AttackingUnit, DefendingUnit)
-                    : CombatExecuter.EstimateRangedAttackResults(AttackingUnit, DefendingUnit);
+                    ? CombatEstimator.EstimateMeleeAttackResults(AttackingUnit, DefendingUnit)
+                    : CombatEstimator.EstimateRangedAttackResults(AttackingUnit, DefendingUnit);
 
                 AttackerNameField          .text = AttackingUnit.Name;
                 AttackerDamageSufferedField.text = estimatedCombat.DamageToAttacker.ToString();

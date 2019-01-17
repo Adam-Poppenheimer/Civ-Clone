@@ -58,6 +58,26 @@ namespace Assets.Tests.Simulation.Units {
         #region tests 
 
         [Test]
+        public void CanBuildGreatPerson_ReturnsTrueIfCivHasCapital() {
+            var capitalLocation = BuildCell(true);
+
+            var civ = BuildCiv(BuildCity(capitalLocation));
+
+            var factory = Container.Resolve<GreatPersonFactory>();
+
+            Assert.IsTrue(factory.CanBuildGreatPerson(GreatPersonType.GreatEngineer, civ));
+        }
+
+        [Test]
+        public void CanBuildGreatPerson_ReturnsTrueIfCivHasNoCapital() {
+            var civ = BuildCiv(null);
+
+            var factory = Container.Resolve<GreatPersonFactory>();
+
+            Assert.IsFalse(factory.CanBuildGreatPerson(GreatPersonType.GreatEngineer, civ));
+        }
+
+        [Test]
         public void BuildGreatPerson_BuildsUnitOfCorrectTemplateAtCapital() {
             var capitalLocation = BuildCell(true);
 
@@ -150,6 +170,15 @@ namespace Assets.Tests.Simulation.Units {
                 greatPerson, birthData.Value.GreatPerson,
                 "GreatPersonBornSignal was given the wrong GreatPerson"
             );
+        }
+
+        [Test]
+        public void BuildGreatPerson_ThrowsInvalidOperationExceptionIfConstructionInvalid() {
+            var civ = BuildCiv(null);
+
+            var factory = Container.Resolve<GreatPersonFactory>();
+
+            Assert.Throws<InvalidOperationException>(() => factory.BuildGreatPerson(GreatPersonType.GreatEngineer, civ));
         }
 
         #endregion

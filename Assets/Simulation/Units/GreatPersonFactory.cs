@@ -45,7 +45,15 @@ namespace Assets.Simulation.Units {
 
         #region from IGreatPersonFactory
 
+        public bool CanBuildGreatPerson(GreatPersonType type, ICivilization owner) {
+            return CapitalCityCanon.GetCapitalOfCiv(owner) != null;
+        }
+
         public IUnit BuildGreatPerson(GreatPersonType type, ICivilization owner) {
+            if(!CanBuildGreatPerson(type, owner)) {
+                throw new InvalidOperationException("CanBuildGreatPerson must return true on the arguments");
+            }
+
             var civCapital      = CapitalCityCanon .GetCapitalOfCiv(owner);
             var capitalLocation = CityLocationCanon.GetOwnerOfPossession(civCapital);
 

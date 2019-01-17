@@ -10,8 +10,8 @@ namespace Assets.Simulation.Units {
     public interface IGreatPersonFactory {
 
         #region methods
-
-        IUnit BuildGreatPerson(GreatPersonType type, ICivilization owner);
+        bool  CanBuildGreatPerson(GreatPersonType type, ICivilization owner);
+        IUnit BuildGreatPerson   (GreatPersonType type, ICivilization owner);
 
         #endregion
 

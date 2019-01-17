@@ -17,9 +17,6 @@ namespace Assets.Simulation.Units.Combat {
         bool CanPerformRangedAttack(IUnit attacker, IUnit defender);
         void PerformRangedAttack   (IUnit attacker, IUnit defender);
 
-        UnitCombatResults EstimateMeleeAttackResults (IUnit attacker, IUnit defender);
-        UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender);
-
         #endregion
 
     }

@@ -124,7 +124,7 @@ namespace Assets.Simulation.Civilizations {
                 float progress = GreatPersonCanon.GetPointsTowardsTypeForCiv  (greatPersonType, this);
                 float needed   = GreatPersonCanon.GetPointsNeededForTypeForCiv(greatPersonType, this);
 
-                if(progress >= needed) {
+                if(progress >= needed && GreatPersonFactory.CanBuildGreatPerson(greatPersonType, this)) {
                     float pointsLeft = progress - needed;
                     
                     GreatPersonCanon.SetPointsTowardsTypeForCiv(greatPersonType, this, pointsLeft);

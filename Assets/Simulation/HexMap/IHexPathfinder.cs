@@ -16,8 +16,18 @@ namespace Assets.Simulation.HexMap {
             IEnumerable<IHexCell> availableCells
         );
 
+        List<IHexCell> GetShortestPathBetween(
+            IHexCell start, IHexCell end, float maxCost, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        );
+
         Dictionary<IHexCell, float> GetCostToAllCells(
             IHexCell start, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        );
+
+        Dictionary<IHexCell, float> GetAllCellsReachableIn(
+            IHexCell start, float maxCost, Func<IHexCell, IHexCell, float> costFunction,
             IEnumerable<IHexCell> availableCells
         );
 

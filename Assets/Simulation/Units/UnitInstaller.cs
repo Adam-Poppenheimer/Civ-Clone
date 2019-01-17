@@ -56,7 +56,13 @@ namespace Assets.Simulation.Units {
             Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
             Container.Bind<IUnitLineOfSightLogic>       ().To<UnitLineOfSightLogic>       ().AsSingle();
-            Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();
+            Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();            
+            Container.Bind<ICombatEstimator>            ().To<CombatEstimator>            ().AsSingle();
+            Container.Bind<ICombatCalculator>           ().To<CombatCalculator>           ().AsSingle();
+            Container.Bind<ICommonAttackValidityLogic>  ().To<CommonAttackValidityLogic>  ().AsSingle();
+            Container.Bind<ICommonCombatExecutionLogic> ().To<CommonCombatExecutionLogic> ().AsSingle();
+            Container.Bind<IMeleeAttackValidityLogic>   ().To<MeleeAttackValidityLogic>   ().AsSingle();
+            Container.Bind<IRangedAttackValidityLogic>  ().To<RangedAttackValidityLogic>  ().AsSingle();
             Container.Bind<ICombatExecuter>             ().To<CombatExecuter>             ().AsSingle();
             Container.Bind<ICombatAuraLogic>            ().To<CombatAuraLogic>            ().AsSingle();
             Container.Bind<IUnitHealingLogic>           ().To<UnitHealingLogic>           ().AsSingle();

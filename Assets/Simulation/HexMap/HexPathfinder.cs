@@ -40,6 +40,18 @@ namespace Assets.Simulation.HexMap {
             IHexCell start, IHexCell end, Func<IHexCell, IHexCell, float> costFunction,
             IEnumerable<IHexCell> availableCells
         ) {
+            return GetShortestPathBetween(start, end, float.MaxValue, costFunction, availableCells);
+        }
+
+        //Note: Since units can technically overspend their movement on the last cell
+        //they move into, this implementation allows for paths longer than maxCost,
+        //but only if that cost is exceeded on the last cell reached. It does this by
+        //adding such cells to the costSoFar dictionary but excluding them from the
+        //frontier
+        public List<IHexCell> GetShortestPathBetween(
+            IHexCell start, IHexCell end, float maxCost, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        ) {
             if(start == null) {
                 throw new ArgumentNullException("start");
 
@@ -84,8 +96,10 @@ namespace Assets.Simulation.HexMap {
                         costSoFar[nextCell] = newCost;
                         cameFrom[nextCell] = currentCell;
 
-                        float heuristic = HexCoordinates.GetDistanceBetween(nextCell.Coordinates, end.Coordinates);
-                        frontier.Add(nextCell, newCost + heuristic);
+                        if(newCost < maxCost) {
+                            float heuristic = HexCoordinates.GetDistanceBetween(nextCell.Coordinates, end.Coordinates);
+                            frontier.Add(nextCell, newCost + heuristic);
+                        }
                     }
                 }
             }
@@ -111,6 +125,18 @@ namespace Assets.Simulation.HexMap {
             IHexCell start, Func<IHexCell, IHexCell, float> costFunction,
             IEnumerable<IHexCell> availableCells
         ) {
+            return GetAllCellsReachableIn(start, float.MaxValue, costFunction, availableCells);
+        }
+
+        //Note: Since units can technically overspend their movement on the last cell
+        //they move into, this implementation allows for paths longer than maxCost,
+        //but only if that cost is exceeded on the last cell reached. It does this by
+        //adding such cells to the costSoFar dictionary but excluding them from the
+        //frontier
+        public Dictionary<IHexCell, float> GetAllCellsReachableIn(
+            IHexCell start, float maxCost, Func<IHexCell, IHexCell, float> costFunction,
+            IEnumerable<IHexCell> availableCells
+        ) {
             if(start == null) {
                 throw new ArgumentNullException("start");
 
@@ -120,6 +146,8 @@ namespace Assets.Simulation.HexMap {
             } else if(!availableCells.Contains(start)) {
                 throw new InvalidOperationException("start must be within availableCells");
 
+            }else if(maxCost <= 0) {
+                throw new ArgumentOutOfRangeException("maxCost", "Must be >= 0");
             }
 
             PriorityQueue<IHexCell> frontier = new PriorityQueue<IHexCell>();
@@ -148,7 +176,9 @@ namespace Assets.Simulation.HexMap {
                         costSoFar[nextCell] = newCost;
                         cameFrom[nextCell] = currentCell;
 
-                        frontier.Add(nextCell, newCost);
+                        if(newCost < maxCost) {
+                            frontier.Add(nextCell, newCost);
+                        }
                     }
                 }
             }

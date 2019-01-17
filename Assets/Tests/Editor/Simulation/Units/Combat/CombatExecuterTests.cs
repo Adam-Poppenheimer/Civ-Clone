@@ -1,693 +1,34 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using NUnit.Framework;
 using Zenject;
 using Moq;
+using UniRx;
 
-using Assets.Simulation;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
-using Assets.Simulation.Civilizations;
-using Assets.Simulation.Diplomacy;
-using Assets.Simulation.Cities;
 
 namespace Assets.Tests.Simulation.Units.Combat {
 
-    [TestFixture]
     public class CombatExecuterTests : ZenjectUnitTestFixture {
-
-        #region internal types
-
-        public class CombatTestData {
-
-            public AttackerTestData Attacker;
-            public DefenderTestData Defender;
-
-            public bool UnitsHaveSameOwner;
-
-            public bool OwnersAreAtWar = true;
-
-            public CombatInfo MeleeCombatInfo  = new CombatInfo() { CombatType = CombatType.Melee  };
-            public CombatInfo RangedCombatInfo = new CombatInfo() { CombatType = CombatType.Ranged };
-
-        }
-
-        public class AttackerTestData {
-
-            public int CombatStrength;
-
-            public int RangedAttackStrength;
-
-            public int CurrentMovement;
-
-            public int Range;
-
-            public int LocationElevation;
-
-            public int DistanceFromDefender;
-
-            public bool CanMoveToDefender = true;
-
-            public bool CanSeeDefender = true;
-
-            public bool CanAttack = true;
-
-            public bool CanMakeRangedAttack = true;
-
-            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
-
-        }
-
-        public class DefenderTestData {
-
-            public int CombatStrength;
-
-            public int LocationElevation;
-
-            public UnitCombatSummary CombatSummary = new UnitCombatSummary();
-
-        }
-
-        public struct CombatTestOutput {
-
-            public bool  CanPerformMeleeAttack;
-            public int   MeleeAttackerHealthLeft;
-            public int   MeleeDefenderHealthLeft;
-
-            public bool  CanPerformRangedAttack;
-            public int   RangedAttackerHealthLeft;
-            public int   RangedDefenderHealthLeft;
-
-            public override string ToString() {
-                return string.Format(
-                    "\nMelee -- CanPerform: {0}, AttackerHealth: {1}, DefenderHealth: {2}\n" + 
-                      "Ranged -- CanPerform: {3}, AttackerHealth: {4}, DefenderHealth: {5}",
-                    CanPerformMeleeAttack, MeleeAttackerHealthLeft, MeleeDefenderHealthLeft,
-                    CanPerformRangedAttack, RangedAttackerHealthLeft, RangedDefenderHealthLeft
-                );
-            }
-
-        }
-
-        #endregion
-
-        #region static fields and properties
-
-        private static IEnumerable TestCases {
-            get {
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 150,
-                        RangedAttackStrength = 150,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() { 
-                        CombatStrength = 100,
-                        LocationElevation = 0      
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/1.5 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 80,
-                    MeleeDefenderHealthLeft = 55,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 55
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 175,
-                        RangedAttackStrength = 175,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/1.75 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 83,
-                    MeleeDefenderHealthLeft = 48,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 48
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 200,
-                        RangedAttackStrength = 200,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/2.0 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 85,
-                    MeleeDefenderHealthLeft = 40,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 40
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 250,
-                        RangedAttackStrength = 250,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/2.5 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 88,
-                    MeleeDefenderHealthLeft = 25,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 25
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 300,
-                        RangedAttackStrength = 300,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/3 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 90,
-                    MeleeDefenderHealthLeft = 10,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 10
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 400,
-                        RangedAttackStrength = 400,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/4 attacker strength advantage")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 92,
-                    MeleeDefenderHealthLeft = 0,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 0
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, AttackerCombatModifier = 0.5f 
-                    },
-                    RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, AttackerCombatModifier = 0.5f
-                    }
-                }).SetName("Basic terrain/no inhibitors/even strength/50% attacker modifier")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 80,
-                    MeleeDefenderHealthLeft = 55,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 55
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    MeleeCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Melee, DefenderCombatModifier = 0.5f
-                    },
-                    RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged, DefenderCombatModifier = 0.5f
-                    }
-                }).SetName("Basic terrain/no inhibitors/even strength/50% defender modifier")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 55,
-                    MeleeDefenderHealthLeft = 80,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 80
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 0,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("No attacker movement")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CanAttack = false,
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Attacker CanAttack field is false")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 0,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no attacker range/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 1
-                    }
-                }).SetName("Basic terrain/attacking up slope/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = false,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/attacker cannot move to defender/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = false
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/attacker cannot see defender/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = false,
-                        CombatSummary = new UnitCombatSummary() {
-                            IgnoresLineOfSight = true
-                        }
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    MeleeCombatInfo = new CombatInfo(),
-                    RangedCombatInfo = new CombatInfo() {
-                        CombatType = CombatType.Ranged,
-                    },
-                }).SetName("Basic terrain/attacker cannot see defender/attacker ignores line of sight/no modifiers/even strength")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 70
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 0,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength defender")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 0,
-                    
-                    CanPerformRangedAttack = true,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 0
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 0,
-                        RangedAttackStrength = 0,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Basic terrain/no inhibitors/no modifiers/zero-strength attacker")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100,
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    UnitsHaveSameOwner = true
-
-                }).SetName("Basic terrain/no inhibitors/no modifiers/even strength/same owner")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100,
-                });
-
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    },
-                    OwnersAreAtWar = false
-                }).SetName("Otherwise valid attack/owners are not at war")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = false,
-                    MeleeAttackerHealthLeft = 100,
-                    MeleeDefenderHealthLeft = 100,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-
-                yield return new TestCaseData(new CombatTestData() {
-                    Attacker = new AttackerTestData() {
-                        CombatStrength = 100,
-                        RangedAttackStrength = 100,
-                        CurrentMovement = 2,
-                        Range = 1,
-                        LocationElevation = 0,
-                        DistanceFromDefender = 1,
-                        CanMoveToDefender = true,
-                        CanSeeDefender = true,
-                        CanMakeRangedAttack = false
-                    },
-                    Defender = new DefenderTestData() {
-                        CombatStrength = 100,
-                        LocationElevation = 0
-                    }
-                }).SetName("Otherwise valid attack/attacker cannot make ranged attacks")
-                .Returns(new CombatTestOutput() {
-                    CanPerformMeleeAttack = true,
-                    MeleeAttackerHealthLeft = 70,
-                    MeleeDefenderHealthLeft = 70,
-                    
-                    CanPerformRangedAttack = false,
-                    RangedAttackerHealthLeft = 100,
-                    RangedDefenderHealthLeft = 100
-                });
-            }
-        }
-
-        #endregion
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon>                            MockUnitPositionCanon;
-        private Mock<IHexGrid>                                      MockGrid;
-        private Mock<IUnitLineOfSightLogic>                         MockUnitLineOfSightLogic;
-        private Mock<ICombatInfoLogic>                              MockCombatInfoLogic;
-        private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
-        private Mock<IWarCanon>                                     MockWarCanon;
+        private Mock<IMeleeAttackValidityLogic>   MockMeleeAttackValidityLogic;
+        private Mock<IRangedAttackValidityLogic>  MockRangedAttackValidityLogic;
+        private Mock<IUnitPositionCanon>          MockUnitPositionCanon;
+        private Mock<IHexGrid>                    MockGrid;
+        private Mock<ICombatInfoLogic>            MockCombatInfoLogic;
+        private Mock<IHexPathfinder>              MockHexPathfinder;
+        private Mock<ICommonCombatExecutionLogic> MockCommonCombatExecutionLogic;
 
-        private IUnitConfig UnitConfig;
-        
+        private UnitSignals UnitSignals;
+
+        private List<IHexCell> AllCells = new List<IHexCell>();
 
         #endregion
 
@@ -697,25 +38,29 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPositionCanon       = new Mock<IUnitPositionCanon>();
-            MockGrid                    = new Mock<IHexGrid>();
-            MockUnitLineOfSightLogic    = new Mock<IUnitLineOfSightLogic>();
-            MockCombatInfoLogic         = new Mock<ICombatInfoLogic>();
-            MockUnitPossessionCanon     = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockWarCanon                = new Mock<IWarCanon>();
+            AllCells.Clear();
 
-            Container.Bind<IUnitPositionCanon>                           ().FromInstance(MockUnitPositionCanon     .Object);
-            Container.Bind<IHexGrid>                                     ().FromInstance(MockGrid                   .Object);
-            Container.Bind<IUnitLineOfSightLogic>                        ().FromInstance(MockUnitLineOfSightLogic   .Object);
-            Container.Bind<ICombatInfoLogic>                             ().FromInstance(MockCombatInfoLogic        .Object);
-            Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon    .Object);
-            Container.Bind<IWarCanon>                                    ().FromInstance(MockWarCanon               .Object);
+            MockMeleeAttackValidityLogic  = new Mock<IMeleeAttackValidityLogic>();
+            MockRangedAttackValidityLogic = new Mock<IRangedAttackValidityLogic>();
+            MockUnitPositionCanon         = new Mock<IUnitPositionCanon>();
+            MockGrid                      = new Mock<IHexGrid>();
+            MockCombatInfoLogic           = new Mock<ICombatInfoLogic>();
+            MockHexPathfinder             = new Mock<IHexPathfinder>();
+            MockCommonCombatExecutionLogic = new Mock<ICommonCombatExecutionLogic>();
 
-            Container.Bind<UnitSignals>().AsSingle();
+            MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
-            Container.Bind<IUnitConfig>().To<UnitConfig>().FromNewScriptableObjectResource("Tests/Combat Executer Unit Config").AsSingle();
+            Container.Bind<IMeleeAttackValidityLogic>  ().FromInstance(MockMeleeAttackValidityLogic  .Object);
+            Container.Bind<IRangedAttackValidityLogic> ().FromInstance(MockRangedAttackValidityLogic .Object);
+            Container.Bind<IUnitPositionCanon>         ().FromInstance(MockUnitPositionCanon         .Object);
+            Container.Bind<IHexGrid>                   ().FromInstance(MockGrid                      .Object);
+            Container.Bind<ICombatInfoLogic>           ().FromInstance(MockCombatInfoLogic           .Object);
+            Container.Bind<IHexPathfinder>             ().FromInstance(MockHexPathfinder             .Object);
+            Container.Bind<ICommonCombatExecutionLogic>().FromInstance(MockCommonCombatExecutionLogic.Object);
 
-            UnitConfig = Container.Resolve<IUnitConfig>();
+            UnitSignals = new UnitSignals();
+
+            Container.Bind<UnitSignals>().FromInstance(UnitSignals);
 
             Container.Bind<CombatExecuter>().AsSingle();
         }
@@ -724,302 +69,254 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region tests
 
-        [Test(Description = "")]
-        [TestCaseSource("TestCases")]
-        public CombatTestOutput PerformCombatTests(CombatTestData testData) {
-            IHexCell attackerLocation = BuildCell(testData.Attacker.LocationElevation);
-            IHexCell defenderLocation = BuildCell(testData.Defender.LocationElevation);
+        [Test]
+        public void CanPerformMeleeAttack_EchoesMeleeAttackValidityLogic() {
+            var attacker = BuildUnit(currentMovement: 1f, currentHitpoints: 100, location: BuildCell());
+            var defender = BuildUnit(currentMovement: 1f, currentHitpoints: 100, location: BuildCell());
 
-            IUnit meleeAttacker = BuildUnit(attackerLocation, testData.Attacker);
-            IUnit meleeDefender = BuildUnit(defenderLocation, testData.Defender);
+            var executer = Container.Resolve<CombatExecuter>();
 
-            IUnit rangedAttacker = BuildUnit(attackerLocation, testData.Attacker);
-            IUnit rangedDefender = BuildUnit(defenderLocation, testData.Defender);
+            Assert.IsFalse(executer.CanPerformMeleeAttack(attacker, defender), "CanPerformMeleeAttack did not return false as expected");
 
-            SetCombatConditions(
-                testData.Attacker.DistanceFromDefender, testData.Attacker.CanMoveToDefender,
-                testData.Attacker.CanSeeDefender, defenderLocation
-            );
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
 
-            if(testData.UnitsHaveSameOwner) {
-                var owner = BuildCivilization();
-
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeAttacker )).Returns(owner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedAttacker)).Returns(owner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(owner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(owner);
-            }else {
-                var attackerOwner = BuildCivilization();
-                var defenderOwner = BuildCivilization();
-
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeAttacker )).Returns(attackerOwner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedAttacker)).Returns(attackerOwner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(meleeDefender )).Returns(defenderOwner);
-                MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(rangedDefender)).Returns(defenderOwner);
-
-                MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(testData.OwnersAreAtWar);
-                MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(testData.OwnersAreAtWar);
-            }
-
-            MockCombatInfoLogic.Setup(
-                logic => logic.GetAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>(), CombatType.Melee)
-            ).Returns(testData.MeleeCombatInfo);
-
-            MockCombatInfoLogic.Setup(
-                logic => logic.GetAttackInfo(It.IsAny<IUnit>(), It.IsAny<IUnit>(), It.IsAny<IHexCell>(), CombatType.Ranged)
-            ).Returns(testData.RangedCombatInfo);
-
-            var combatExecuter = Container.Resolve<CombatExecuter>();
-
-            var results = new CombatTestOutput();
-
-            results.CanPerformMeleeAttack = combatExecuter.CanPerformMeleeAttack(meleeAttacker, meleeDefender);
-
-            if(results.CanPerformMeleeAttack) {
-                combatExecuter.PerformMeleeAttack(meleeAttacker, meleeDefender);
-            }
-
-            results.MeleeAttackerHealthLeft   = meleeAttacker.CurrentHitpoints;
-            results.MeleeDefenderHealthLeft   = meleeDefender.CurrentHitpoints;
-            
-            results.CanPerformRangedAttack = combatExecuter.CanPerformRangedAttack(rangedAttacker, rangedDefender);
-
-            if(results.CanPerformRangedAttack) {
-                combatExecuter.PerformRangedAttack(rangedAttacker, rangedDefender);
-            }
-
-            results.RangedAttackerHealthLeft   = rangedAttacker.CurrentHitpoints;
-            results.RangedDefenderHealthLeft   = rangedDefender.CurrentHitpoints;
-
-            if(results.CanPerformMeleeAttack) {
-                Assert.AreEqual(
-                    meleeAttacker.CanAttack, testData.Attacker.CombatSummary.CanAttackAfterAttacking,
-                    "MeleeAttacker.CanAttack has an unexpected value"
-                );
-            }
-            
-            if(results.CanPerformRangedAttack) {
-                Assert.AreEqual(
-                    rangedAttacker.CanAttack, testData.Attacker.CombatSummary.CanAttackAfterAttacking,
-                    "RangedAttacker.CanAttack has an unexpected value"
-                );
-            }
-
-            return results;
+            Assert.IsTrue(executer.CanPerformMeleeAttack(attacker, defender), "CanPerformMeleeAttack did not return true as expected");
         }
 
         [Test]
-        public void PerformMeleeCombat_CallsIntoPostCombatRespondersCorrectly() {
-            var attackerLocation = BuildCell(0);
-            var defenderLocation = BuildCell(0);
+        public void CanPerformRangedAttack_EchoesRangedAttackValidityLogic() {
+            var attacker = BuildUnit(currentMovement: 1f, currentHitpoints: 100, location: BuildCell());
+            var defender = BuildUnit(currentMovement: 1f, currentHitpoints: 100, location: BuildCell());
 
-            var attacker = BuildUnit(attackerLocation, new AttackerTestData() {
-                CombatStrength = 100, CurrentMovement = 2
-            });
+            var executer = Container.Resolve<CombatExecuter>();
 
-            var defender = BuildUnit(defenderLocation, new DefenderTestData() {
-                CombatStrength = 100,
-            });
+            Assert.IsFalse(executer.CanPerformRangedAttack(attacker, defender), "CanPerformRangedAttack did not return false as expected");
 
-            SetCombatConditions(0, true, true, defenderLocation);
+            MockRangedAttackValidityLogic.Setup(logic => logic.IsRangedAttackValid(attacker, defender)).Returns(true);
 
-            var attackerOwner = BuildCivilization();
-            var defenderOwner = BuildCivilization();
-
-            MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(true);
-            MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(true);
-
-            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
-            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
-
-            var combatInfo = new CombatInfo() { CombatType = CombatType.Melee };
-
-            MockCombatInfoLogic
-                .Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
-                .Returns(combatInfo);
-
-            var combatExecuter = Container.Resolve<CombatExecuter>();
-
-            var executionSequence = new MockSequence();
-
-            var mockResponderOne   = new Mock<IPostCombatResponder>();
-            var mockResponderTwo   = new Mock<IPostCombatResponder>();
-            var mockResponderThree = new Mock<IPostCombatResponder>();
-
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderOne  .Object);
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderTwo  .Object);
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderThree.Object);
-
-            mockResponderOne.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
-            );
-
-            mockResponderTwo.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
-            );
-
-            mockResponderThree.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
-            );
-
-            combatExecuter.PerformMeleeAttack(attacker, defender);
-
-            mockResponderOne  .VerifyAll();
-            mockResponderTwo  .VerifyAll();
-            mockResponderThree.VerifyAll();
+            Assert.IsTrue(executer.CanPerformRangedAttack(attacker, defender), "CanPerformRangedAttack did not return true as expected");
         }
 
         [Test]
-        public void PerformRangedCombat_CallsIntoPostCombatRespondersCorrectly() {
-            var attackerLocation = BuildCell(0);
-            var defenderLocation = BuildCell(0);
+        public void PerformMeleeAttack_OrdersAttackerToWalkUpToDefender() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
 
-            var attacker = BuildUnit(attackerLocation, new AttackerTestData() {
-                RangedAttackStrength = 100, CurrentMovement = 2
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var path = new List<IHexCell>() {
+                BuildCell(), BuildCell(), BuildCell()
+            };
+
+            var shorterPath = path.GetRange(0, path.Count - 1);
+
+            MockHexPathfinder.Setup(pathfinder => pathfinder.GetShortestPathBetween(
+                attackerLocation, defenderLocation, 3f, It.IsAny<Func<IHexCell, IHexCell, float>>(),
+                AllCells
+            )).Returns(path);
+
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
+
+            var executer = Container.Resolve<CombatExecuter>();
+
+            executer.PerformMeleeAttack(attacker, defender);
+
+            attackerMock.VerifySet(
+                unit => unit.CurrentPath = It.Is<List<IHexCell>>(list => list.SequenceEqual(shorterPath)),
+                Times.Once, "Attacker not given the expected path"
+            );
+
+            attackerMock.Verify(
+                unit => unit.PerformMovement(false, It.IsAny<Action>()),
+                Times.Once, "Attacker.PerformMovement not called as expected"
+            );
+        }
+
+        [Test]
+        public void PerformMeleeAttack_AfterMovement_PerformsCommonCombatTasks() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var path = new List<IHexCell>() { BuildCell() };
+
+            MockHexPathfinder.Setup(pathfinder => pathfinder.GetShortestPathBetween(
+                attackerLocation, defenderLocation, 3f, It.IsAny<Func<IHexCell, IHexCell, float>>(),
+                AllCells
+            )).Returns(path);
+
+            var combatInfo = new CombatInfo();
+
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+                               .Returns(combatInfo);
+
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
+
+            attackerMock.Setup(unit => unit.PerformMovement(false, It.IsAny<Action>()))
+                        .Callback<bool, Action>((ignoreMovementCosts, postMovementCallback) => postMovementCallback());
+
+            var executer = Container.Resolve<CombatExecuter>();
+
+            executer.PerformMeleeAttack(attacker, defender);
+
+            MockCommonCombatExecutionLogic.Verify(
+                logic => logic.PerformCommonCombatTasks(attacker, defender, combatInfo), Times.Once
+            );
+        }
+
+        [Test]
+        public void PerformMeleeAttack_AfterMovement_FiresMeleeCombatWithUnitSignal() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var path = new List<IHexCell>() { BuildCell() };
+
+            MockHexPathfinder.Setup(pathfinder => pathfinder.GetShortestPathBetween(
+                attackerLocation, defenderLocation, 3f, It.IsAny<Func<IHexCell, IHexCell, float>>(),
+                AllCells
+            )).Returns(path);
+
+            var combatInfo = new CombatInfo();
+
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+                               .Returns(combatInfo);
+
+            MockMeleeAttackValidityLogic.Setup(logic => logic.IsMeleeAttackValid(attacker, defender)).Returns(true);
+
+            attackerMock.Setup(unit => unit.PerformMovement(false, It.IsAny<Action>()))
+                        .Callback<bool, Action>((ignoreMovementCosts, postMovementCallback) => postMovementCallback());
+
+            MockCommonCombatExecutionLogic.Setup(
+                logic => logic.PerformCommonCombatTasks(attacker, defender, combatInfo)
+            ).Callback<IUnit, IUnit, CombatInfo>(
+                (attkr, dfndr, info) => { attkr.CurrentHitpoints -= 30; dfndr.CurrentHitpoints -= 40; }
+            );
+
+            UnitSignals.MeleeCombatWithUnitSignal.Subscribe(delegate(UnitCombatResults results) {
+                Assert.AreEqual(attacker,   results.Attacker,         "Results had an unexpected Attacker");
+                Assert.AreEqual(defender,   results.Defender,         "Results had an unexpected Defender");
+                Assert.AreEqual(30,         results.DamageToAttacker, "Results had an unexpected DamageToAttacker");
+                Assert.AreEqual(40,         results.DamageToDefender, "Results had an unexpected DamageToDefender");
+                Assert.AreEqual(combatInfo, results.InfoOfAttack,     "Results had an unexpected Attacker");
+                Assert.Pass();
             });
 
-            var defender = BuildUnit(defenderLocation, new DefenderTestData() {
-                CombatStrength = 100,
+            var executer = Container.Resolve<CombatExecuter>();
+
+            executer.PerformMeleeAttack(attacker, defender);
+
+            Assert.Fail("MeleeCombatWithUnitSignal never fired");
+        }
+
+        [Test]
+        public void PerformRangedAttack_PerformsCommonCombatTasks() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
+
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
+
+            var combatInfo = new CombatInfo();
+
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
+                               .Returns(combatInfo);
+
+            MockRangedAttackValidityLogic.Setup(logic => logic.IsRangedAttackValid(attacker, defender)).Returns(true);
+
+            attackerMock.Setup(unit => unit.PerformMovement(false, It.IsAny<Action>()))
+                        .Callback<bool, Action>((ignoreMovementCosts, postMovementCallback) => postMovementCallback());
+
+            MockCommonCombatExecutionLogic.Setup(
+                logic => logic.PerformCommonCombatTasks(attacker, defender, combatInfo)
+            ).Callback<IUnit, IUnit, CombatInfo>(
+                (attkr, dfndr, info) => { attkr.CurrentHitpoints -= 30; dfndr.CurrentHitpoints -= 40; }
+            );
+
+            UnitSignals.RangedCombatWithUnitSignal.Subscribe(delegate(UnitCombatResults results) {
+                Assert.AreEqual(attacker,   results.Attacker,         "Results had an unexpected Attacker");
+                Assert.AreEqual(defender,   results.Defender,         "Results had an unexpected Defender");
+                Assert.AreEqual(30,         results.DamageToAttacker, "Results had an unexpected DamageToAttacker");
+                Assert.AreEqual(40,         results.DamageToDefender, "Results had an unexpected DamageToDefender");
+                Assert.AreEqual(combatInfo, results.InfoOfAttack,     "Results had an unexpected Attacker");
+                Assert.Pass();
             });
 
-            SetCombatConditions(0, true, true, defenderLocation);
+            var executer = Container.Resolve<CombatExecuter>();
 
-            var attackerOwner = BuildCivilization();
-            var defenderOwner = BuildCivilization();
+            executer.PerformRangedAttack(attacker, defender);
 
-            MockWarCanon.Setup(canon => canon.AreAtWar(attackerOwner, defenderOwner)).Returns(true);
-            MockWarCanon.Setup(canon => canon.AreAtWar(defenderOwner, attackerOwner)).Returns(true);
+            Assert.Fail("RangedCombatWithUnitSignal never fired");
+        }
 
-            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(attacker)).Returns(attackerOwner);
-            MockUnitPossessionCanon.Setup(canon => canon.GetOwnerOfPossession(defender)).Returns(defenderOwner);
+        [Test]
+        public void PerformRangedAttack_FiresRangedCombatWithUnitSignal() {
+            var attackerLocation = BuildCell();
+            var defenderLocation = BuildCell();
 
-            var combatInfo = new CombatInfo() { CombatType = CombatType.Ranged };
+            Mock<IUnit> attackerMock;
+            var attacker = BuildUnit(3f, 100, attackerLocation, out attackerMock);
+            var defender = BuildUnit(currentMovement: 0f, currentHitpoints: 100, location: defenderLocation);
 
-            MockCombatInfoLogic
-                .Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
-                .Returns(combatInfo);
+            var combatInfo = new CombatInfo();
 
-            var combatExecuter = Container.Resolve<CombatExecuter>();
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
+                               .Returns(combatInfo);
 
-            var executionSequence = new MockSequence();
+            MockRangedAttackValidityLogic.Setup(logic => logic.IsRangedAttackValid(attacker, defender)).Returns(true);
 
-            var mockResponderOne   = new Mock<IPostCombatResponder>();
-            var mockResponderTwo   = new Mock<IPostCombatResponder>();
-            var mockResponderThree = new Mock<IPostCombatResponder>();
+            attackerMock.Setup(unit => unit.PerformMovement(false, It.IsAny<Action>()))
+                        .Callback<bool, Action>((ignoreMovementCosts, postMovementCallback) => postMovementCallback());
 
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderOne  .Object);
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderTwo  .Object);
-            Container.Bind<IPostCombatResponder>().FromInstance(mockResponderThree.Object);
+            var executer = Container.Resolve<CombatExecuter>();
 
-            mockResponderOne.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
+            executer.PerformRangedAttack(attacker, defender);
+
+            MockCommonCombatExecutionLogic.Verify(
+                logic => logic.PerformCommonCombatTasks(attacker, defender, combatInfo), Times.Once
             );
-
-            mockResponderTwo.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
-            );
-
-            mockResponderThree.InSequence(executionSequence).Setup(
-                responder => responder.RespondToCombat(attacker, defender, combatInfo)
-            );
-
-            combatExecuter.PerformRangedAttack(attacker, defender);
-
-            mockResponderOne  .VerifyAll();
-            mockResponderTwo  .VerifyAll();
-            mockResponderThree.VerifyAll();
         }
 
         #endregion
 
         #region utilities
 
-        private void SetCombatConditions(
-            int distanceBetween, bool attackerCanMoveTo, bool defenderCanBeSeen, IHexCell defenderLocation
-        ){
-            MockGrid.Setup(grid => grid.GetDistance(It.IsAny<IHexCell>(), It.IsAny<IHexCell>()))
-                .Returns(distanceBetween);
+        private IHexCell BuildCell() {
+            var newCell = new Mock<IHexCell>().Object;
 
-            MockUnitPositionCanon.Setup(canon => canon.CanPlaceUnitAtLocation(It.IsAny<IUnit>(), It.IsAny<IHexCell>(), true))
-                .Returns(attackerCanMoveTo);
+            AllCells.Add(newCell);
 
-            MockUnitLineOfSightLogic
-                .Setup(
-                    logic => logic.GetCellsVisibleToUnit(It.IsAny<IUnit>())
-                ).Returns(
-                    defenderCanBeSeen ? new List<IHexCell>() { defenderLocation } : new List<IHexCell>()
-                );
+            return newCell;
         }
 
-        private IUnit BuildUnit(IHexCell location, AttackerTestData attackerData) {
-            return BuildUnit(
-                location:               location,
-                currentMovement:        attackerData.CurrentMovement,
-                combatStrength:         attackerData.CombatStrength,
-                rangedAttackStrength:   attackerData.RangedAttackStrength,
-                attackRange:            attackerData.Range,
-                canAttack:              attackerData.CanAttack,
-                isReadyForRangedAttack: attackerData.CanMakeRangedAttack,
-                combatSummary:          attackerData.CombatSummary
-            );
+        private IUnit BuildUnit(float currentMovement, int currentHitpoints, IHexCell location) {
+            Mock<IUnit> mock;
+
+            return BuildUnit(currentMovement, currentHitpoints, location, out mock);
         }
 
-        private IUnit BuildUnit(IHexCell location, DefenderTestData defenderData) {
-            return BuildUnit(
-                location:               location,
-                currentMovement:        0,
-                combatStrength:         defenderData.CombatStrength,
-                rangedAttackStrength:   0,
-                attackRange:            0,
-                canAttack:              true,
-                isReadyForRangedAttack: true,
-                combatSummary:          defenderData.CombatSummary
-            );
-        }
+        private IUnit BuildUnit(float currentMovement, int currentHitpoints, IHexCell location, out Mock<IUnit> mock) {
+            mock = new Mock<IUnit>();
 
-        private IUnit BuildUnit(
-            IHexCell location, int currentMovement, int combatStrength,
-            int rangedAttackStrength, int attackRange, bool canAttack,
-            bool isReadyForRangedAttack, UnitCombatSummary combatSummary
-        ){
-            var mockUnit = new Mock<IUnit>();
+            mock.SetupAllProperties();
 
-            var mockTemplate = new Mock<IUnitTemplate>();
+            var newUnit = mock.Object;
 
-            mockUnit.SetupAllProperties();
-
-            mockUnit.Setup(unit => unit.Template).Returns(mockTemplate.Object);
-
-            mockUnit.Setup(unit => unit.CombatStrength)        .Returns(combatStrength);
-            mockUnit.Setup(unit => unit.RangedAttackStrength)  .Returns(rangedAttackStrength);
-            mockUnit.Setup(unit => unit.AttackRange)           .Returns(attackRange);
-            mockUnit.Setup(unit => unit.IsReadyForRangedAttack).Returns(isReadyForRangedAttack);
-            mockUnit.Setup(unit => unit.CombatSummary)         .Returns(combatSummary);
-
-            mockUnit.Object.CurrentMovement = currentMovement;
-
-            var newUnit = mockUnit.Object;
-
-            newUnit.CurrentHitpoints = UnitConfig.MaxHealth;
-            newUnit.CanAttack = canAttack;
+            newUnit.CurrentMovement  = currentMovement;
+            newUnit.CurrentHitpoints = currentHitpoints;
 
             MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
 
             return newUnit;
-        }
-
-        private IHexCell BuildCell(int elevation) {
-            var mockCell = new Mock<IHexCell>();
-
-            mockCell.SetupAllProperties();
-
-            mockCell.Setup(cell => cell.EdgeElevation).Returns(elevation);
-
-            return mockCell.Object;
-        }
-
-        private ICivilization BuildCivilization() {
-            return new Mock<ICivilization>().Object;
         }
 
         #endregion
