@@ -177,6 +177,8 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
                                 .Returns(90f);
 
+            MockGreatPersonFactory.Setup(factory => factory.CanBuildGreatPerson(It.IsAny<GreatPersonType>(), civ)).Returns(true);
+
             civ.PerformGreatPeopleGeneration();
 
             MockGreatPersonFactory.Verify(
@@ -187,6 +189,41 @@ namespace Assets.Tests.Simulation.Civilizations {
             MockGreatPersonFactory.Verify(
                 factory => factory.BuildGreatPerson(GreatPersonType.GreatArtist, civ), Times.Once,
                 "GreatArtist not built as expected"
+            );
+        }
+
+        [Test]
+        public void PerformGreatPeopleGeneration_DoesNotCreatePeopleWhenFactoryDoesNotPermitThem() {
+            var civ = Container.InstantiateComponentOnNewGameObject<Civilization>();
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsNeededForTypeForCiv(It.IsAny<GreatPersonType>(), civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ))
+                                .Returns(110f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatArtist, civ))
+                                .Returns(100f);
+
+            MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
+                                .Returns(90f);
+
+            MockGreatPersonFactory.Setup(factory => factory.CanBuildGreatPerson(GreatPersonType.GreatAdmiral, civ))
+                                  .Returns(true);
+
+             MockGreatPersonFactory.Setup(factory => factory.CanBuildGreatPerson(GreatPersonType.GreatArtist, civ))
+                                  .Returns(false);
+
+            civ.PerformGreatPeopleGeneration();
+
+            MockGreatPersonFactory.Verify(
+                factory => factory.BuildGreatPerson(GreatPersonType.GreatAdmiral, civ), Times.Once,
+                "GreatAdmiral not built as expected"
+            );
+
+            MockGreatPersonFactory.Verify(
+                factory => factory.BuildGreatPerson(GreatPersonType.GreatArtist, civ), Times.Never,
+                "GreatArtist unexpectedly built"
             );
         }
 
@@ -229,6 +266,8 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             MockGreatPersonCanon.Setup(canon => canon.GetPointsTowardsTypeForCiv(GreatPersonType.GreatEngineer, civ))
                                 .Returns(90f);
+
+            MockGreatPersonFactory.Setup(factory => factory.CanBuildGreatPerson(It.IsAny<GreatPersonType>(), civ)).Returns(true);
 
             civ.PerformGreatPeopleGeneration();
 
