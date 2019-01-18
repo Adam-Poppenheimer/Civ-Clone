@@ -20,10 +20,11 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private IHexGrid           Grid;
-        private IUnitPositionCanon UnitPositionCanon;
-        private IBarbarianConfig   BarbarianConfig;
-        private ICombatExecuter    CombatExecuter;
+        private IHexGrid               Grid;
+        private IUnitPositionCanon     UnitPositionCanon;
+        private IBarbarianConfig       BarbarianConfig;
+        private ICombatExecuter        CombatExecuter;
+        private IUnitStrengthEstimator UnitStrengthEstimator;
 
         #endregion
 
@@ -32,12 +33,13 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianBrainTools(
             IHexGrid grid, IUnitPositionCanon unitPositionCanon, IBarbarianConfig barbarianConfig,
-            ICombatExecuter combatExecuter
+            ICombatExecuter combatExecuter, IUnitStrengthEstimator unitStrengthEstimator
         ) {
-            Grid              = grid;
-            UnitPositionCanon = unitPositionCanon;
-            BarbarianConfig   = barbarianConfig;
-            CombatExecuter    = combatExecuter;
+            Grid                  = grid;
+            UnitPositionCanon     = unitPositionCanon;
+            BarbarianConfig       = barbarianConfig;
+            CombatExecuter        = combatExecuter;
+            UnitStrengthEstimator = unitStrengthEstimator;
         }
 
         #endregion
@@ -73,9 +75,10 @@ namespace Assets.Simulation.Barbarians {
                     return 0;
                 }else {
                     float fromDistance = Grid.GetDistance(cell, unitLocation) * BarbarianConfig.WanderSelectionWeight_Distance;
-                    float fromAllies   = -maps.AllyPresence[cell.Index]       * BarbarianConfig.WanderSelectionWeight_Allies;
+                    float fromAllies   = -maps.AllyPresence [cell.Index]      * BarbarianConfig.WanderSelectionWeight_Allies;
+                    float fromEnemies  = -maps.EnemyPresence[cell.Index]      * BarbarianConfig.WanderSelectionWeight_Enemies;
 
-                    return Math.Max(0, Mathf.RoundToInt(fromDistance + fromAllies));
+                    return Math.Max(0, Mathf.RoundToInt(fromDistance + fromAllies + fromEnemies));
                 }
             };
         }
@@ -85,6 +88,17 @@ namespace Assets.Simulation.Barbarians {
 
             return delegate(IHexCell cell) {
                 return Mathf.RoundToInt(maps.PillagingValue[cell.Index] / (1 + Grid.GetDistance(unitLocation, cell)));
+            };
+        }
+
+        public Func<IHexCell, float> GetFleeWeightFunction(IUnit unit, InfluenceMaps maps) {
+            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
+
+            return delegate(IHexCell cell) {
+                return UnitStrengthEstimator.EstimateUnitDefensiveStrength(unit, cell)
+                     + maps.AllyPresence [cell.Index]
+                     - maps.EnemyPresence[cell.Index]
+                     + Grid.GetDistance(unitLocation, cell);
             };
         }
 

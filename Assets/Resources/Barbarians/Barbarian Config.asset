@@ -11,8 +11,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6de302bd88c378343bab29b5c7ac5422, type: 3}
   m_Name: Barbarian Config
   m_EditorClassIdentifier: 
-  _wanderSelectionWeight_Allies: 1
   _wanderSelectionWeight_Distance: 10
+  _wanderSelectionWeight_Allies: 1
+  _wanderSelectionWeight_Enemies: 0.5
   _minEncampmentsPerPlayer: 0
   _maxEncampmentsPerPlayer: 0
   _baseEncampmentSpawnWeight: 100
@@ -34,3 +35,4 @@ MonoBehaviour:
   _headTowardsEncampmentUtility: 0.7
   _pillageUtilityCoefficient: 0.1
   _captureCivilianUtility: 1
+  _fleeUtilityLogisticSlope: 0.1

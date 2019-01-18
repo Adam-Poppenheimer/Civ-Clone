@@ -31,6 +31,7 @@ namespace Assets.Simulation.Barbarians {
             Container.Bind<IBarbarianGoalBrain>().To<BarbarianBePrisonersBrain>    ().AsSingle();
             Container.Bind<IBarbarianGoalBrain>().To<BarbarianPillageBrain>        ().AsSingle();
             Container.Bind<IBarbarianGoalBrain>().To<BarbarianCaptureCivilianBrain>().AsSingle();
+            Container.Bind<IBarbarianGoalBrain>().To<BarbarianFleeBrain>           ().AsSingle();
 
             Container.Bind<IBarbarianUnitBrain>          ().To<BarbarianUnitBrain>            ().AsSingle();
             Container.Bind<IBarbarianBrainTools>         ().To<BarbarianBrainTools>           ().AsSingle();

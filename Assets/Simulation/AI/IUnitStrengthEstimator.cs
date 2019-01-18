@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 
 namespace Assets.Simulation.AI {
@@ -11,7 +12,8 @@ namespace Assets.Simulation.AI {
 
         #region methods
 
-        float EstimateUnitStrength(IUnit unit);
+        float EstimateUnitStrength         (IUnit unit);
+        float EstimateUnitDefensiveStrength(IUnit unit, IHexCell location);
 
         #endregion
 

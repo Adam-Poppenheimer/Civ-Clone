@@ -13,6 +13,7 @@ namespace Assets.Simulation.Barbarians {
 
         float WanderSelectionWeight_Distance { get; }
         float WanderSelectionWeight_Allies   { get; }
+        float WanderSelectionWeight_Enemies  { get; }
 
         int MinEncampmentsPerPlayer { get; }
         int MaxEncampmentsPerPlayer { get; }
@@ -41,6 +42,7 @@ namespace Assets.Simulation.Barbarians {
         float HeadTowardsEncampmentUtility { get; }
         float PillageUtilityCoefficient    { get; }
         float CaptureCivilianUtility       { get; }
+        float FleeUtilityLogisticSlope     { get; }
 
         #endregion
 

@@ -14,17 +14,22 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        #region from IBarbarianConfig
+        #region from IBarbarianConfig        
+
+        public float WanderSelectionWeight_Distance {
+            get { return _wanderSelectionWeight_Distance; }
+        }
+        [SerializeField] private float _wanderSelectionWeight_Distance;
 
         public float WanderSelectionWeight_Allies {
             get { return _wanderSelectionWeight_Allies; }
         }
         [SerializeField] private float _wanderSelectionWeight_Allies;
 
-        public float WanderSelectionWeight_Distance {
-            get { return _wanderSelectionWeight_Distance; }
+        public float WanderSelectionWeight_Enemies {
+            get { return _wanderSelectionWeight_Enemies; }
         }
-        [SerializeField] private float _wanderSelectionWeight_Distance;
+        [SerializeField] private float _wanderSelectionWeight_Enemies;
 
         public int MinEncampmentsPerPlayer {
             get { return _minEncampmentsPerPlayer; }
@@ -113,6 +118,11 @@ namespace Assets.Simulation.Barbarians {
             get { return _captureCivilianUtility; }
         }
         [SerializeField, Range(0f, 1f)] private float _captureCivilianUtility;
+
+        public float FleeUtilityLogisticSlope {
+            get { return _fleeUtilityLogisticSlope; }
+        }
+        [SerializeField, Range(0f, 0.25f)] private float _fleeUtilityLogisticSlope;
 
         #endregion
 

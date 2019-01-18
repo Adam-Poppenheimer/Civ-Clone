@@ -5,6 +5,7 @@ using System.Text;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
 using Assets.Simulation.Units;
 
 namespace Assets.Simulation.AI {
@@ -31,6 +32,10 @@ namespace Assets.Simulation.AI {
         #region from IUnitStrengthEstimator
 
         public float EstimateUnitStrength(IUnit unit) {
+            return unit.Template.CombatStrength;
+        }
+
+        public float EstimateUnitDefensiveStrength(IUnit unit, IHexCell location) {
             return unit.Template.CombatStrength;
         }
 

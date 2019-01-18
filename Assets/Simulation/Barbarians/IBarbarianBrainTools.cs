@@ -14,8 +14,9 @@ namespace Assets.Simulation.Barbarians {
 
         Func<IHexCell, bool> GetCaptureCivilianFilter(IUnit unit);
 
-        Func<IHexCell, int> GetWanderWeightFunction (IUnit unit, InfluenceMaps maps);
-        Func<IHexCell, int> GetPillageWeightFunction(IUnit unit, InfluenceMaps maps);
+        Func<IHexCell, int>   GetWanderWeightFunction (IUnit unit, InfluenceMaps maps);
+        Func<IHexCell, int>   GetPillageWeightFunction(IUnit unit, InfluenceMaps maps);
+        Func<IHexCell, float> GetFleeWeightFunction   (IUnit unit, InfluenceMaps maps);
 
         #endregion
 

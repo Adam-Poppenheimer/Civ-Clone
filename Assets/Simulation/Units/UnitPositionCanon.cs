@@ -125,6 +125,10 @@ namespace Assets.Simulation.Units {
             }
         }
 
+        public Func<IHexCell, IHexCell, float> GetPathfindingCostFunction(IUnit unit, bool isMeleeAttacking) {
+            return (current, next) => GetTraversalCostForUnit(unit, current, next, isMeleeAttacking);
+        }
+
         #endregion
 
         private float GetTraversalCost(IUnit unit, IHexCell currentCell, IHexCell nextCell) {
