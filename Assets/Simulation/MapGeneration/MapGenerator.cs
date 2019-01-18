@@ -147,23 +147,25 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {
+            var nonBarbarianCivs = CivFactory.AllCivilizations.Where(civ => !civ.Template.IsBarbaric).ToList();
+
             var partition = GridPartitionLogic.GetPartitionOfGrid(Grid, mapTemplate);
             
             int totalLandCells = Mathf.RoundToInt(Grid.Cells.Count * variables.ContinentalLandPercentage * 0.01f);
-            int landCellsPerCiv = Mathf.RoundToInt((float)totalLandCells / CivFactory.AllCivilizations.Count);
+            int landCellsPerCiv = Mathf.RoundToInt((float)totalLandCells / nonBarbarianCivs.Count);
 
             HashSet<MapSection> unassignedSections = new HashSet<MapSection>(partition.Sections);
 
             List<List<MapSection>> homelandChunks = SubdivisionLogic.DivideSectionsIntoChunks(
-                unassignedSections, partition, CivFactory.AllCivilizations.Count,
+                unassignedSections, partition, nonBarbarianCivs.Count,
                 landCellsPerCiv, mapTemplate.MinStartingLocationDistance,
                 GetExpansionWeightFunction(partition, mapTemplate), mapTemplate
             );
 
             var homelandOfCivs = new Dictionary<ICivilization, HomelandData>();
 
-            for(int i = 0; i < CivFactory.AllCivilizations.Count; i++) {
-                var civ = CivFactory.AllCivilizations[i];
+            for(int i = 0; i < nonBarbarianCivs.Count; i++) {
+                var civ = nonBarbarianCivs[i];
 
                 var landSections  = homelandChunks[i];
                 var waterSections = GetCoastForLandSection(landSections, unassignedSections, partition);
@@ -188,7 +190,9 @@ namespace Assets.Simulation.MapGeneration {
         private void PaintMap(
             OceanAndContinentData oceansAndContinents, IMapTemplate mapTemplate
         ) {
-            foreach(var civ in CivFactory.AllCivilizations) {
+            var nonBarbarianCivs = CivFactory.AllCivilizations.Where(civ => !civ.Template.IsBarbaric).ToList();
+
+            foreach(var civ in nonBarbarianCivs) {
                 var homeland = oceansAndContinents.HomelandDataForCiv[civ];
 
                 HomelandGenerator.GenerateTopologyAndEcology(homeland, mapTemplate);
@@ -198,7 +202,7 @@ namespace Assets.Simulation.MapGeneration {
 
             WaterRationalizer.RationalizeWater(Grid.Cells);
 
-            foreach(var civ in CivFactory.AllCivilizations) {
+            foreach(var civ in nonBarbarianCivs) {
                 var homeland = oceansAndContinents.HomelandDataForCiv[civ];
 
                 HomelandGenerator.DistributeYieldAndResources(homeland, mapTemplate);

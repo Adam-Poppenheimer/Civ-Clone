@@ -49,6 +49,10 @@ namespace Assets.Simulation.MapGeneration {
         public void PlaceStartingUnitsInRegion(
             MapRegion region, ICivilization owner, IMapTemplate mapTemplate
         ) {
+            if(owner.Template.IsBarbaric) {
+                return;
+            }
+
             var centralLocation = GetBestStartingCell(region);
 
             if(centralLocation == null) {
