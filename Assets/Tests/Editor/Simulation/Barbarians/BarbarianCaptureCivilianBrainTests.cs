@@ -19,11 +19,11 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid>             MockGrid;
-        private Mock<IUnitPositionCanon>   MockUnitPositionCanon;
-        private Mock<IHexPathfinder>       MockHexPathfinder;
-        private Mock<IBarbarianConfig>     MockBarbarianConfig;
-        private Mock<IBarbarianBrainTools> MockBrainTools;
+        private Mock<IHexGrid>                   MockGrid;
+        private Mock<IUnitPositionCanon>         MockUnitPositionCanon;
+        private Mock<IHexPathfinder>             MockHexPathfinder;
+        private Mock<IBarbarianConfig>           MockBarbarianConfig;
+        private Mock<IBarbarianBrainFilterLogic> MockFilterLogic;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -41,15 +41,15 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
             MockHexPathfinder     = new Mock<IHexPathfinder>();
             MockBarbarianConfig   = new Mock<IBarbarianConfig>();
-            MockBrainTools        = new Mock<IBarbarianBrainTools>();
+            MockFilterLogic       = new Mock<IBarbarianBrainFilterLogic>();
 
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
-            Container.Bind<IHexGrid>            ().FromInstance(MockGrid             .Object);
-            Container.Bind<IUnitPositionCanon>  ().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<IHexPathfinder>      ().FromInstance(MockHexPathfinder    .Object);
-            Container.Bind<IBarbarianConfig>    ().FromInstance(MockBarbarianConfig  .Object);
-            Container.Bind<IBarbarianBrainTools>().FromInstance(MockBrainTools       .Object);
+            Container.Bind<IHexGrid>                  ().FromInstance(MockGrid             .Object);
+            Container.Bind<IUnitPositionCanon>        ().FromInstance(MockUnitPositionCanon.Object);
+            Container.Bind<IHexPathfinder>            ().FromInstance(MockHexPathfinder    .Object);
+            Container.Bind<IBarbarianConfig>          ().FromInstance(MockBarbarianConfig  .Object);
+            Container.Bind<IBarbarianBrainFilterLogic>().FromInstance(MockFilterLogic      .Object);
 
             Container.Bind<ICombatExecuter>      ().FromMock();
             Container.Bind<IUnitAttackOrderLogic>().FromMock();
@@ -79,7 +79,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 
@@ -106,7 +106,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => false);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => false);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 
@@ -129,7 +129,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => true);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => true);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 
@@ -156,7 +156,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 
@@ -187,7 +187,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => reachableCellDict[cell] > 250f);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 
@@ -216,7 +216,7 @@ namespace Assets.Tests.Simulation.Barbarians {
                 )
             ).Returns(reachableCellDict);
 
-            MockBrainTools.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => true);
+            MockFilterLogic.Setup(tools => tools.GetCaptureCivilianFilter(unit)).Returns(cell => true);
 
             MockBarbarianConfig.Setup(config => config.CaptureCivilianUtility).Returns(0.8f);
 

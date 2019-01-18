@@ -124,6 +124,11 @@ namespace Assets.Simulation.Barbarians {
         }
         [SerializeField, Range(0f, 0.25f)] private float _fleeUtilityLogisticSlope;
 
+        public float AttackUtilityLogisticsSlope {
+            get { return _attackUtilityLogisticsSlope; }
+        }
+        [SerializeField, Range(0f, 0.25f)] private float _attackUtilityLogisticsSlope;
+
         #endregion
 
         #endregion

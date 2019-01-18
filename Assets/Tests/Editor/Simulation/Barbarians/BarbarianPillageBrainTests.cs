@@ -20,9 +20,10 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon>               MockUnitPositionCanon;
-        private Mock<IHexGrid>                         MockGrid;
-        private Mock<IBarbarianBrainTools>             MockBrainTools;
+        private Mock<IUnitPositionCanon>         MockUnitPositionCanon;
+        private Mock<IHexGrid>                   MockGrid;
+        private Mock<IBarbarianBrainWeightLogic> MockWeightLogic;
+        private Mock<IBarbarianUtilityLogic>     MockUtilityLogic;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -38,11 +39,13 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
             MockGrid              = new Mock<IHexGrid>();
-            MockBrainTools        = new Mock<IBarbarianBrainTools>();
+            MockWeightLogic       = new Mock<IBarbarianBrainWeightLogic>();
+            MockUtilityLogic      = new Mock<IBarbarianUtilityLogic>();
 
-            Container.Bind<IUnitPositionCanon>  ().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<IHexGrid>            ().FromInstance(MockGrid             .Object);
-            Container.Bind<IBarbarianBrainTools>().FromInstance(MockBrainTools       .Object);
+            Container.Bind<IUnitPositionCanon>        ().FromInstance(MockUnitPositionCanon.Object);
+            Container.Bind<IHexGrid>                  ().FromInstance(MockGrid             .Object);
+            Container.Bind<IBarbarianBrainWeightLogic>().FromInstance(MockWeightLogic      .Object);
+            Container.Bind<IBarbarianUtilityLogic>    ().FromInstance(MockUtilityLogic     .Object);
 
             Container.Bind<IAbilityExecuter>().FromMock();
             Container.Bind<IHexPathfinder>  ().FromMock();
@@ -68,7 +71,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var maps = new InfluenceMaps();
 
-            MockBrainTools.Setup(tools => tools.GetPillageUtilityFunction(unit, maps)).Returns(cell => cellDict[cell]);
+            MockUtilityLogic.Setup(logic => logic.GetPillageUtilityFunction(unit, maps)).Returns(cell => cellDict[cell]);
 
             var pillageBrain = Container.Resolve<BarbarianPillageBrain>();
 
@@ -89,7 +92,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             MockGrid.Setup(grid => grid.GetCellsInRadius(unitLocation, 3)).Returns(nearbyCells);
 
-            MockBrainTools.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
+            MockWeightLogic.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
 
             var pillageBrain = Container.Resolve<BarbarianPillageBrain>();
 
@@ -115,7 +118,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             MockGrid.Setup(grid => grid.GetCellsInRadius(unitLocation, 3)).Returns(nearbyCells);
 
-            MockBrainTools.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
+            MockWeightLogic.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
 
             var pillageBrain = Container.Resolve<BarbarianPillageBrain>();
 
@@ -141,7 +144,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             MockGrid.Setup(grid => grid.GetCellsInRadius(unitLocation, 3)).Returns(nearbyCells);
 
-            MockBrainTools.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
+            MockWeightLogic.Setup(tools => tools.GetPillageWeightFunction(unit, maps)).Returns(cell => cell.Index);
 
             var pillageBrain = Container.Resolve<BarbarianPillageBrain>();
 

@@ -24,7 +24,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IHexGrid>                         MockGrid;
         private Mock<IUnitPositionCanon>               MockUnitPositionCanon;
         private Mock<IWeightedRandomSampler<IHexCell>> MockCellRandomSampler;
-        private Mock<IBarbarianBrainTools>             MockBrainTools;
+        private Mock<IBarbarianBrainWeightLogic>             MockBrainTools;
         private Mock<IBarbarianConfig>                 MockBarbarianConfig;
 
         #endregion
@@ -38,13 +38,13 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockGrid              = new Mock<IHexGrid>();
             MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
             MockCellRandomSampler = new Mock<IWeightedRandomSampler<IHexCell>>();
-            MockBrainTools        = new Mock<IBarbarianBrainTools>();
+            MockBrainTools        = new Mock<IBarbarianBrainWeightLogic>();
             MockBarbarianConfig   = new Mock<IBarbarianConfig>();
 
             Container.Bind<IHexGrid>                        ().FromInstance(MockGrid             .Object);
             Container.Bind<IUnitPositionCanon>              ().FromInstance(MockUnitPositionCanon.Object);
             Container.Bind<IWeightedRandomSampler<IHexCell>>().FromInstance(MockCellRandomSampler.Object);
-            Container.Bind<IBarbarianBrainTools>            ().FromInstance(MockBrainTools       .Object);
+            Container.Bind<IBarbarianBrainWeightLogic>            ().FromInstance(MockBrainTools       .Object);
             Container.Bind<IBarbarianConfig>                ().FromInstance(MockBarbarianConfig  .Object);
 
             Container.Bind<IHexPathfinder>().FromMock();

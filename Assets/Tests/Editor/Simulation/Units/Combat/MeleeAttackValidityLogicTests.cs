@@ -20,7 +20,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<IUnitPositionCanon>         MockUnitPositionCanon;
         private Mock<IHexGrid>                   MockGrid;
         private Mock<IHexPathfinder>             MockHexPathfinder;
-        private Mock<IUnitLineOfSightLogic>      MockLineOfSightLogic;
+        private Mock<IUnitVisibilityLogic>      MockLineOfSightLogic;
         private Mock<ICommonAttackValidityLogic> MockCommonAttackValidityLogic;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
@@ -38,7 +38,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockUnitPositionCanon         = new Mock<IUnitPositionCanon>();
             MockGrid                      = new Mock<IHexGrid>();
             MockHexPathfinder             = new Mock<IHexPathfinder>();
-            MockLineOfSightLogic          = new Mock<IUnitLineOfSightLogic>();
+            MockLineOfSightLogic          = new Mock<IUnitVisibilityLogic>();
             MockCommonAttackValidityLogic = new Mock<ICommonAttackValidityLogic>();
 
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
@@ -46,7 +46,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             Container.Bind<IUnitPositionCanon>        ().FromInstance(MockUnitPositionCanon        .Object);
             Container.Bind<IHexGrid>                  ().FromInstance(MockGrid                     .Object);
             Container.Bind<IHexPathfinder>            ().FromInstance(MockHexPathfinder            .Object);
-            Container.Bind<IUnitLineOfSightLogic>     ().FromInstance(MockLineOfSightLogic         .Object);
+            Container.Bind<IUnitVisibilityLogic>     ().FromInstance(MockLineOfSightLogic         .Object);
             Container.Bind<ICommonAttackValidityLogic>().FromInstance(MockCommonAttackValidityLogic.Object);
 
             Container.Bind<MeleeAttackValidityLogic>().AsSingle();

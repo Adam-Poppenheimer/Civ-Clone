@@ -16,7 +16,7 @@ namespace Assets.Simulation.Units.Combat {
         private IUnitPositionCanon         UnitPositionCanon;
         private IHexGrid                   Grid;
         private IHexPathfinder             HexPathfinder;
-        private IUnitLineOfSightLogic      LineOfSightLogic;
+        private IUnitVisibilityLogic      LineOfSightLogic;
         private ICommonAttackValidityLogic CommonAttackValidityLogic;
 
         #endregion
@@ -26,7 +26,7 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public MeleeAttackValidityLogic(
             IUnitPositionCanon unitPositionCanon, IHexGrid grid, IHexPathfinder hexPathfinder,
-            IUnitLineOfSightLogic lineOfSightLogic, ICommonAttackValidityLogic commandAttackValidityLogic
+            IUnitVisibilityLogic lineOfSightLogic, ICommonAttackValidityLogic commandAttackValidityLogic
         ) {
             UnitPositionCanon         = unitPositionCanon;
             Grid                      = grid;
@@ -48,6 +48,10 @@ namespace Assets.Simulation.Units.Combat {
 
             var attackerLocation = UnitPositionCanon.GetOwnerOfPossession(attacker);
             var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
+
+            if(defenderLocation == null) {
+                return false;
+            }
 
             var shortestPath = HexPathfinder.GetShortestPathBetween(
                 attackerLocation, defenderLocation, attacker.CurrentMovement,

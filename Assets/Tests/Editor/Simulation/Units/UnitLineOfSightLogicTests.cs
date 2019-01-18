@@ -35,7 +35,7 @@ namespace Assets.Tests.Simulation.Units {
             Container.Bind<IHexGrid>          ().FromInstance(MockGrid             .Object);
             Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
 
-            Container.Bind<UnitLineOfSightLogic>().AsSingle();
+            Container.Bind<UnitVisibilityLogic>().AsSingle();
         }
 
         #endregion
@@ -61,7 +61,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -90,7 +90,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(cellsJustBeyondRange);
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange.Concat(cellsJustBeyondRange), lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(cellsJustBeyondRange);
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 new List<IHexCell>() { cellsJustBeyondRange[1], location },
@@ -149,7 +149,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }
@@ -176,7 +176,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }
@@ -203,7 +203,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }
@@ -230,7 +230,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }
@@ -257,7 +257,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(cellsInRange);
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -286,7 +286,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(cellsInRange);
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -315,7 +315,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(cellsInRange);
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -344,7 +344,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(cellsInRange);
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -373,7 +373,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -402,7 +402,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.AreEquivalent(
                 cellsInRange, lineOfSightLogic.GetCellsVisibleToUnit(unit)
@@ -431,7 +431,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }
@@ -458,7 +458,7 @@ namespace Assets.Tests.Simulation.Units {
             MockGrid.Setup(grid => grid.GetNeighbors    (location))   .Returns(new List<IHexCell>());
             MockGrid.Setup(grid => grid.GetCellsInRing  (location, 3)).Returns(new List<IHexCell>());
 
-            var lineOfSightLogic = Container.Resolve<UnitLineOfSightLogic>();
+            var lineOfSightLogic = Container.Resolve<UnitVisibilityLogic>();
 
             CollectionAssert.IsEmpty(lineOfSightLogic.GetCellsVisibleToUnit(unit));
         }

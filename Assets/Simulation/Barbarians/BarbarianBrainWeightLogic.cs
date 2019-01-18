@@ -11,19 +11,17 @@ using Assets.Simulation.Units;
 using Assets.Simulation.Units.Combat;
 using Assets.Simulation.HexMap;
 using Assets.Simulation.AI;
-using Assets.Simulation.Civilizations;
 
 namespace Assets.Simulation.Barbarians {
 
     //This class exists primarily to make unit testing easier
-    public class BarbarianBrainTools : IBarbarianBrainTools {
+    public class BarbarianBrainWeightLogic : IBarbarianBrainWeightLogic {
 
         #region instance fields and properties
 
         private IHexGrid               Grid;
         private IUnitPositionCanon     UnitPositionCanon;
         private IBarbarianConfig       BarbarianConfig;
-        private ICombatExecuter        CombatExecuter;
         private IUnitStrengthEstimator UnitStrengthEstimator;
 
         #endregion
@@ -31,41 +29,19 @@ namespace Assets.Simulation.Barbarians {
         #region constructors
 
         [Inject]
-        public BarbarianBrainTools(
+        public BarbarianBrainWeightLogic(
             IHexGrid grid, IUnitPositionCanon unitPositionCanon, IBarbarianConfig barbarianConfig,
-            ICombatExecuter combatExecuter, IUnitStrengthEstimator unitStrengthEstimator
+            IUnitStrengthEstimator unitStrengthEstimator
         ) {
             Grid                  = grid;
             UnitPositionCanon     = unitPositionCanon;
             BarbarianConfig       = barbarianConfig;
-            CombatExecuter        = combatExecuter;
             UnitStrengthEstimator = unitStrengthEstimator;
         }
 
         #endregion
 
         #region instance methods
-
-        public Func<IHexCell, float> GetPillageUtilityFunction(IUnit unit, InfluenceMaps maps) {
-            var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
-
-            return delegate(IHexCell cell) {
-                float divisor = Grid.GetDistance(unitLocation, cell) + 1;
-
-                return Mathf.Clamp01(maps.PillagingValue[cell.Index] * BarbarianConfig.PillageUtilityCoefficient / divisor);
-            };
-        }
-
-        public Func<IHexCell, bool> GetCaptureCivilianFilter(IUnit captor) {
-            return delegate(IHexCell cell) {
-                var captiveCandidates = UnitPositionCanon.GetPossessionsOfOwner(cell);
-
-                return captiveCandidates.Any() && captiveCandidates.All(
-                    captiveCandidate => captiveCandidate.Type.IsCivilian() && CombatExecuter.CanPerformMeleeAttack(captor, captiveCandidate)
-                );
-            };
-            
-        }
 
         public Func<IHexCell, int> GetWanderWeightFunction(IUnit unit, InfluenceMaps maps) {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);

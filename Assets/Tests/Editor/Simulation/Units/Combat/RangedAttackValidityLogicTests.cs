@@ -20,7 +20,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
         private Mock<ICommonAttackValidityLogic> MockCommonAttackValidityLogic;
         private Mock<IUnitPositionCanon>         MockUnitPositionCanon;
         private Mock<IHexGrid>                   MockGrid;
-        private Mock<IUnitLineOfSightLogic>      MockUnitLineOfSightLogic;
+        private Mock<IUnitVisibilityLogic>      MockUnitLineOfSightLogic;
 
         #endregion
 
@@ -33,12 +33,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
             MockCommonAttackValidityLogic = new Mock<ICommonAttackValidityLogic>();
             MockUnitPositionCanon         = new Mock<IUnitPositionCanon>();
             MockGrid                      = new Mock<IHexGrid>();
-            MockUnitLineOfSightLogic      = new Mock<IUnitLineOfSightLogic>();
+            MockUnitLineOfSightLogic      = new Mock<IUnitVisibilityLogic>();
 
             Container.Bind<ICommonAttackValidityLogic>().FromInstance(MockCommonAttackValidityLogic.Object);
             Container.Bind<IUnitPositionCanon>        ().FromInstance(MockUnitPositionCanon        .Object);
             Container.Bind<IHexGrid>                  ().FromInstance(MockGrid                     .Object);
-            Container.Bind<IUnitLineOfSightLogic>     ().FromInstance(MockUnitLineOfSightLogic     .Object);
+            Container.Bind<IUnitVisibilityLogic>     ().FromInstance(MockUnitLineOfSightLogic     .Object);
 
             Container.Bind<RangedAttackValidityLogic>().AsSingle();
         }

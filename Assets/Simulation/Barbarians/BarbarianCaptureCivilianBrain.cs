@@ -16,12 +16,12 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private IHexGrid             Grid;
-        private IUnitPositionCanon   UnitPositionCanon;
-        private IHexPathfinder       HexPathfinder;
-        private IBarbarianConfig     BarbarianConfig;
-        private IBarbarianBrainTools BrainTools;
-        private DiContainer          Container;
+        private IHexGrid                   Grid;
+        private IUnitPositionCanon         UnitPositionCanon;
+        private IHexPathfinder             HexPathfinder;
+        private IBarbarianConfig           BarbarianConfig;
+        private IBarbarianBrainFilterLogic FilterLogic;
+        private DiContainer                Container;
 
         #endregion
 
@@ -30,13 +30,14 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianCaptureCivilianBrain(
             IHexGrid grid, IUnitPositionCanon unitPositionCanon, IHexPathfinder hexPathfinder,
-            IBarbarianConfig barbarianConfig, IBarbarianBrainTools brainTools, DiContainer container
+            IBarbarianConfig barbarianConfig, IBarbarianBrainFilterLogic filterLogic,
+            DiContainer container
         ) {
             Grid              = grid;
             UnitPositionCanon = unitPositionCanon;
             HexPathfinder     = hexPathfinder;
             BarbarianConfig   = barbarianConfig;
-            BrainTools        = brainTools;
+            FilterLogic       = filterLogic;
             Container         = container;
         }
 
@@ -55,7 +56,7 @@ namespace Assets.Simulation.Barbarians {
                 Grid.Cells
             );
 
-            if(reachableCells.Keys.Any(BrainTools.GetCaptureCivilianFilter(unit))) {
+            if(reachableCells.Keys.Any(FilterLogic.GetCaptureCivilianFilter(unit))) {
                 return BarbarianConfig.CaptureCivilianUtility;
             }else {
                 return 0f;
@@ -71,7 +72,7 @@ namespace Assets.Simulation.Barbarians {
                 Grid.Cells
             );
 
-            var cellToAttack = reachableCells.Keys.FirstOrDefault(BrainTools.GetCaptureCivilianFilter(unit));
+            var cellToAttack = reachableCells.Keys.FirstOrDefault(FilterLogic.GetCaptureCivilianFilter(unit));
 
             var retval = new List<IUnitCommand>();
 

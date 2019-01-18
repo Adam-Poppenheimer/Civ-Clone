@@ -43,6 +43,7 @@ namespace Assets.Simulation.Barbarians {
         float PillageUtilityCoefficient    { get; }
         float CaptureCivilianUtility       { get; }
         float FleeUtilityLogisticSlope     { get; }
+        float AttackUtilityLogisticsSlope  { get; }
 
         #endregion
 

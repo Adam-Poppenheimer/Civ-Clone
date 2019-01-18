@@ -55,7 +55,7 @@ namespace Assets.Simulation.Units {
 
             Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
-            Container.Bind<IUnitLineOfSightLogic>       ().To<UnitLineOfSightLogic>       ().AsSingle();
+            Container.Bind<IUnitVisibilityLogic>       ().To<UnitVisibilityLogic>       ().AsSingle();
             Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();            
             Container.Bind<ICombatEstimator>            ().To<CombatEstimator>            ().AsSingle();
             Container.Bind<ICombatCalculator>           ().To<CombatCalculator>           ().AsSingle();

@@ -17,10 +17,11 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon               UnitPositionCanon;
-        private IHexGrid                         Grid;
-        private IBarbarianBrainTools             BrainTools;
-        private DiContainer                      Container;
+        private IUnitPositionCanon         UnitPositionCanon;
+        private IHexGrid                   Grid;
+        private IBarbarianBrainWeightLogic WeightLogic;
+        private IBarbarianUtilityLogic     UtilityLogic;
+        private DiContainer                Container;
 
         #endregion
 
@@ -28,12 +29,13 @@ namespace Assets.Simulation.Barbarians {
 
         [Inject]
         public BarbarianPillageBrain(
-            IUnitPositionCanon unitPositionCanon, IHexGrid grid,
-            IBarbarianBrainTools brainTools, DiContainer container
+            IUnitPositionCanon unitPositionCanon, IHexGrid grid, IBarbarianBrainWeightLogic weightLogic,
+            IBarbarianUtilityLogic utilityLogic, DiContainer container
         ) {
             UnitPositionCanon = unitPositionCanon;
             Grid              = grid;
-            BrainTools        = brainTools;
+            WeightLogic       = weightLogic;
+            UtilityLogic      = utilityLogic;
             Container         = container;
         }
 
@@ -47,7 +49,7 @@ namespace Assets.Simulation.Barbarians {
             var unitLocation = UnitPositionCanon.GetOwnerOfPossession(unit);
 
             return Grid.GetCellsInRadius(unitLocation, Mathf.RoundToInt(unit.MaxMovement)).Max(
-                BrainTools.GetPillageUtilityFunction(unit, maps)
+                UtilityLogic.GetPillageUtilityFunction(unit, maps)
             );
         }
 
@@ -61,7 +63,7 @@ namespace Assets.Simulation.Barbarians {
             IHexCell bestCandidate = null;
             int bestWeight = int.MinValue;
 
-            var weightFunction = BrainTools.GetPillageWeightFunction(unit, maps);
+            var weightFunction = WeightLogic.GetPillageWeightFunction(unit, maps);
 
             foreach(var candidate in nearbyCells) {
                 int candidateWeight = weightFunction(candidate);

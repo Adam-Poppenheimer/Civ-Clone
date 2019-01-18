@@ -22,7 +22,7 @@ namespace Assets.Simulation.Barbarians {
         private IBarbarianConfig       BarbarianConfig;
         private IHexPathfinder         HexPathfinder;
         private IHexGrid               Grid;
-        private IBarbarianBrainTools   BrainTools;
+        private IBarbarianBrainWeightLogic   BrainTools;
         private DiContainer            Container;
 
         #endregion
@@ -33,7 +33,7 @@ namespace Assets.Simulation.Barbarians {
         public BarbarianFleeBrain(
             IUnitPositionCanon unitPositionCanon, IUnitStrengthEstimator unitStrengthEstimator,
             IBarbarianConfig barbarianConfig, IHexPathfinder hexPathfiner, IHexGrid grid,
-            IBarbarianBrainTools brainTools, DiContainer container
+            IBarbarianBrainWeightLogic brainTools, DiContainer container
         ) {
             UnitPositionCanon     = unitPositionCanon;
             UnitStrengthEstimator = unitStrengthEstimator;

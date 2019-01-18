@@ -60,7 +60,7 @@ namespace Assets.Simulation.AI {
                         unitStrength, maps.AllyPresence, unitLocation, AIConfig.UnitMaxInfluenceRadius,
                         InfluenceMapApplier.PowerOfTwoRolloff, InfluenceMapApplier.ApplySum
                     );
-                }else if(WarCanon.AreAtWar(unitOwner, targetCiv)){
+                }else if(WarCanon.AreAtWar(unitOwner, targetCiv)) {
                     InfluenceMapApplier.ApplyInfluenceToMap(
                         unitStrength, maps.EnemyPresence, unitLocation, AIConfig.UnitMaxInfluenceRadius,
                         InfluenceMapApplier.PowerOfTwoRolloff, InfluenceMapApplier.ApplySum

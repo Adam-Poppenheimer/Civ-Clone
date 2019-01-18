@@ -6,13 +6,9 @@ using Assets.Simulation.AI;
 
 namespace Assets.Simulation.Barbarians {
 
-    public interface IBarbarianBrainTools {
+    public interface IBarbarianBrainWeightLogic {
 
         #region methods
-
-        Func<IHexCell, float> GetPillageUtilityFunction(IUnit unit, InfluenceMaps maps);
-
-        Func<IHexCell, bool> GetCaptureCivilianFilter(IUnit unit);
 
         Func<IHexCell, int>   GetWanderWeightFunction (IUnit unit, InfluenceMaps maps);
         Func<IHexCell, int>   GetPillageWeightFunction(IUnit unit, InfluenceMaps maps);

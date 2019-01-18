@@ -39,7 +39,7 @@ namespace Assets.Simulation.Visibility {
         private IVisibilityCanon                                 VisibilityCanon;
         private IExplorationCanon                                ExplorationCanon;
         private ICityLineOfSightLogic                            CityLineOfSightLogic;
-        private IUnitLineOfSightLogic                            UnitLineOfSightLogic;
+        private IUnitVisibilityLogic                            UnitLineOfSightLogic;
         private IUnitFactory                                     UnitFactory;
         private ICityFactory                                     CityFactory;
         private IHexGrid                                         Grid;
@@ -56,7 +56,7 @@ namespace Assets.Simulation.Visibility {
             IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICityLineOfSightLogic cityLineOfSightLogic,
-            IUnitLineOfSightLogic unitLineOfSightLogic,
+            IUnitVisibilityLogic unitLineOfSightLogic,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker,
             IUnitFactory unitFactory, 
             ICityFactory cityFactory,

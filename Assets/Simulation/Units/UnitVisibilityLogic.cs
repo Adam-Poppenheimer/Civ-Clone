@@ -9,7 +9,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
-    public class UnitLineOfSightLogic : IUnitLineOfSightLogic {
+    public class UnitVisibilityLogic : IUnitVisibilityLogic {
 
         #region instance fields and properties
 
@@ -21,7 +21,7 @@ namespace Assets.Simulation.Units {
         #region constructors
 
         [Inject]
-        public UnitLineOfSightLogic(IHexGrid grid, IUnitPositionCanon unitPositionCanon) {
+        public UnitVisibilityLogic(IHexGrid grid, IUnitPositionCanon unitPositionCanon) {
             Grid              = grid;
             UnitPositionCanon = unitPositionCanon;
         }

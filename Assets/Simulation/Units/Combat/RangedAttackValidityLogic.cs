@@ -16,7 +16,7 @@ namespace Assets.Simulation.Units.Combat {
         private ICommonAttackValidityLogic CommonAttackValidityLogic;
         private IUnitPositionCanon         UnitPositionCanon;
         private IHexGrid                   Grid;
-        private IUnitLineOfSightLogic      UnitLineOfSightLogic;
+        private IUnitVisibilityLogic      UnitLineOfSightLogic;
 
         #endregion
 
@@ -25,7 +25,7 @@ namespace Assets.Simulation.Units.Combat {
         [Inject]
         public RangedAttackValidityLogic(
             ICommonAttackValidityLogic commonAttackValidityLogic, IUnitPositionCanon unitPositionCanon,
-            IHexGrid grid, IUnitLineOfSightLogic unitLineOfSightLogic
+            IHexGrid grid, IUnitVisibilityLogic unitLineOfSightLogic
         ) {
             CommonAttackValidityLogic = commonAttackValidityLogic;
             UnitPositionCanon         = unitPositionCanon;

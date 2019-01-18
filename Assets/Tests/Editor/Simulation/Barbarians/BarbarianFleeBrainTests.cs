@@ -23,7 +23,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         private Mock<IBarbarianConfig>       MockBarbarianConfig;
         private Mock<IHexPathfinder>         MockHexPathfinder;
         private Mock<IHexGrid>               MockGrid;
-        private Mock<IBarbarianBrainTools>   MockBrainTools;
+        private Mock<IBarbarianBrainWeightLogic>   MockBrainTools;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -42,7 +42,7 @@ namespace Assets.Tests.Simulation.Barbarians {
             MockBarbarianConfig       = new Mock<IBarbarianConfig>();
             MockHexPathfinder         = new Mock<IHexPathfinder>();
             MockGrid                  = new Mock<IHexGrid>();
-            MockBrainTools            = new Mock<IBarbarianBrainTools>();
+            MockBrainTools            = new Mock<IBarbarianBrainWeightLogic>();
 
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
@@ -51,7 +51,7 @@ namespace Assets.Tests.Simulation.Barbarians {
             Container.Bind<IBarbarianConfig>      ().FromInstance(MockBarbarianConfig      .Object);
             Container.Bind<IHexPathfinder>        ().FromInstance(MockHexPathfinder        .Object);
             Container.Bind<IHexGrid>              ().FromInstance(MockGrid                 .Object);
-            Container.Bind<IBarbarianBrainTools>  ().FromInstance(MockBrainTools           .Object);
+            Container.Bind<IBarbarianBrainWeightLogic>  ().FromInstance(MockBrainTools           .Object);
 
             Container.Bind<BarbarianFleeBrain>().AsSingle();
         }
@@ -61,7 +61,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         #region tests
 
         [Test]
-        public void GetUtilityForUnit_FollowsLogisticsCurve_WithSigmoidAtUnitStrength_AndConfiguredSlope() {
+        public void GetUtilityForUnit_FollowsLogisticCurve_WithSigmoidAtUnitStrength_AndConfiguredSlope() {
             var unit = BuildUnit(20.2f, 0f, BuildCell());
 
             var maps = new InfluenceMaps() {

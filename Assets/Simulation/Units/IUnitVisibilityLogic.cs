@@ -7,7 +7,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.Units {
 
-    public interface IUnitLineOfSightLogic {
+    public interface IUnitVisibilityLogic {
 
         #region methods
 

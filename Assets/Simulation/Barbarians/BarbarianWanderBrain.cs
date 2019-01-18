@@ -21,7 +21,7 @@ namespace Assets.Simulation.Barbarians {
         private IUnitPositionCanon               UnitPositionCanon;
         private DiContainer                      Container;
         private IWeightedRandomSampler<IHexCell> CellRandomSampler;
-        private IBarbarianBrainTools             BrainTools;
+        private IBarbarianBrainWeightLogic             BrainTools;
         private IBarbarianConfig                 BarbarianConfig;
 
         #endregion
@@ -31,7 +31,7 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianWanderBrain(
             IHexGrid grid, IUnitPositionCanon unitPositionCanon, DiContainer container,
-            IWeightedRandomSampler<IHexCell> cellRandomSampler, IBarbarianBrainTools brainTools,
+            IWeightedRandomSampler<IHexCell> cellRandomSampler, IBarbarianBrainWeightLogic brainTools,
             IBarbarianConfig barbarianConfig
         ) {
             Grid              = grid;
