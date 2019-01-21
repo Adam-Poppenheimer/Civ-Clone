@@ -38,11 +38,11 @@ namespace Assets.Simulation.Improvements {
         }
 
         protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
-            newOwner.RefreshSelfOnly();
+            newOwner.Refresh();
         }
 
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
-            oldOwner.RefreshSelfOnly();
+            oldOwner.Refresh();
             ImprovementSignals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 

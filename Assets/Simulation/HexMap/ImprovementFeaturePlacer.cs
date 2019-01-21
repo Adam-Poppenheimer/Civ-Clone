@@ -42,9 +42,10 @@ namespace Assets.Simulation.HexMap {
         ) {
             var improvementAtLocation = ImprovementLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
 
-            if(improvementAtLocation == null || (
-                hash.A >= Config.ImprovementAppearanceChance && locationIndex % Config.GuaranteedImprovementModulo != 0
-            )) {
+            if( improvementAtLocation == null ||
+                improvementAtLocation.Template.AppearancePrefab == null ||
+                (hash.A >= Config.ImprovementAppearanceChance && locationIndex % Config.GuaranteedImprovementModulo != 0)
+            ) {
                 return false;
             }
 

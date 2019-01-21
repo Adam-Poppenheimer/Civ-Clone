@@ -18,13 +18,19 @@ MonoBehaviour:
     Gold: 0
     Culture: 0
     Science: 0
+    GreatArtist: 0
+    GreatEngineer: 0
+    GreatMerchant: 0
+    GreatScientist: 0
   _restrictedToVegetations: 
   _restrictedToTerrains: 0000000001000000
   _restrictedToShapes: 00000000
   _clearsVegetationWhenBuilt: 1
   _defensiveBonus: 0
   _requiresResourceToExtract: 0
-  _appearancePrefab: {fileID: 4946165858268716, guid: 528f3190b3ed63b4aa46da8c65aac381,
-    type: 2}
+  _appearancePrefab: {fileID: 0}
   _turnsToConstruct: 5
   _freshWaterAlwaysEnables: 1
+  _adjacentEnemyDamagePercentage: 0
+  _overridesTerrain: 1
+  _overridingTerrainIndex: 7

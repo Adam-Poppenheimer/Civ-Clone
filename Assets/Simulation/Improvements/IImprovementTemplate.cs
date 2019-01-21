@@ -39,6 +39,10 @@ namespace Assets.Simulation.Improvements {
 
         float AdjacentEnemyDamagePercentage { get; }
 
+        bool OverridesTerrain { get; }
+
+        int OverridingTerrainIndex { get; }
+
         #endregion
 
     }

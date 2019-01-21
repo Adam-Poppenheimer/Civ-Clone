@@ -256,6 +256,12 @@ namespace Assets.Simulation.HexMap {
             localPosition.y = FoundationElevation * RenderConfig.ElevationStep;
 
             GridRelativePosition = localPosition;
+
+            if(ShaderData == null) {
+                return;
+            }else {
+                ShaderData.RefreshTerrain(this);
+            }
         }
 
         #endregion

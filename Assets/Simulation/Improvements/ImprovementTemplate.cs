@@ -76,6 +76,16 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private float _adjacentEnemyDamagePercentage;
 
+        public bool OverridesTerrain {
+            get { return _overridesTerrain; }
+        }
+        [SerializeField] private bool _overridesTerrain;
+
+        public int OverridingTerrainIndex {
+            get { return _overridingTerrainIndex; }
+        }
+        [SerializeField] private int _overridingTerrainIndex;
+
         #endregion
 
         #endregion

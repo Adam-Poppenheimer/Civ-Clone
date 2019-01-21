@@ -9,6 +9,7 @@ using Zenject;
 
 using Assets.Simulation.Core;
 using Assets.Simulation.Visibility;
+using Assets.Simulation.Improvements;
 
 using UnityCustomUtilities.Extensions;
 
@@ -31,10 +32,11 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private IGameCore           GameCore;
-        private IVisibilityCanon    VisibilityCanon;
-        private IExplorationCanon   ExplorationCanon;
-        private IHexMapRenderConfig RenderConfig;
+        private IGameCore                 GameCore;
+        private IVisibilityCanon          VisibilityCanon;
+        private IExplorationCanon         ExplorationCanon;
+        private IHexMapRenderConfig       RenderConfig;
+        private IImprovementLocationCanon ImprovementLocationCanon;
 
         #endregion
 
@@ -43,12 +45,14 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             IGameCore gameCore, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon, IHexMapRenderConfig renderConfig
+            IExplorationCanon explorationCanon, IHexMapRenderConfig renderConfig,
+            IImprovementLocationCanon improvementLocationCanon
         ) {
-            GameCore         = gameCore;
-            VisibilityCanon  = visibilityCanon;
-            ExplorationCanon = explorationCanon;
-            RenderConfig     = renderConfig;
+            GameCore                 = gameCore;
+            VisibilityCanon          = visibilityCanon;
+            ExplorationCanon         = explorationCanon;
+            RenderConfig             = renderConfig;
+            ImprovementLocationCanon = improvementLocationCanon;
         }
 
         #region Unity messages
@@ -102,12 +106,21 @@ namespace Assets.Simulation.HexMap {
         public void RefreshTerrain(IHexCell cell) {
             if(cell.Terrain.IsWater()) {
                 CellTextureData[cell.Index].a = (byte)RenderConfig.WaterTerrainIndex;
+
             }else if(cell.Shape == CellShape.Mountains) {
                 CellTextureData[cell.Index].a = (byte)RenderConfig.MountainTerrainIndex;
+
             }else if(cell.Terrain == CellTerrain.FloodPlains) {
                 CellTextureData[cell.Index].a = (byte)CellTerrain.Desert;
+
             }else {
                 CellTextureData[cell.Index].a = (byte)cell.Terrain;
+
+                foreach(var improvement in ImprovementLocationCanon.GetPossessionsOfOwner(cell)) {
+                    if(improvement.Template.OverridesTerrain) {
+                        CellTextureData[cell.Index].a = (byte)improvement.Template.OverridingTerrainIndex;
+                    }
+                }
             }
 
             enabled = true;
