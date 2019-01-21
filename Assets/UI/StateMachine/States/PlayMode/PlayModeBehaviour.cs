@@ -25,6 +25,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
         private IVisibilityResponder            VisibilityResponder;
         private IVisibilityCanon                VisibilityCanon;
         private IExplorationCanon               ExplorationCanon;
+        private IGameCore                       GameCore;
         private ICameraFocuser                  CameraFocuser;
         private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
 
@@ -34,17 +35,18 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
         [Inject]
         public void InjectDependencies(
-            UIStateMachineBrain brain, IMapComposer mapComposer, ICameraFocuser cameraFocuser,
-            IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
-            IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements
+            UIStateMachineBrain brain, IMapComposer mapComposer, IVisibilityResponder visibilityResponder,
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon, IGameCore gameCore,
+            ICameraFocuser cameraFocuser, List<IPlayModeSensitiveElement> playModeSensitiveElements
         ){
-            Brain                       = brain;
-            MapComposer                 = mapComposer;
-            CameraFocuser               = cameraFocuser;
-            VisibilityResponder         = visibilityResponder;
-            VisibilityCanon             = visibilityCanon;
-            ExplorationCanon            = explorationCanon;
-            PlayModeSensitiveElements   = playModeSensitiveElements;
+            Brain                     = brain;
+            MapComposer               = mapComposer;
+            VisibilityResponder       = visibilityResponder;
+            VisibilityCanon           = visibilityCanon;
+            ExplorationCanon          = explorationCanon;
+            GameCore                  = gameCore;
+            CameraFocuser             = cameraFocuser;
+            PlayModeSensitiveElements = playModeSensitiveElements;
         }
 
         #region from StateMachineBehaviour
@@ -62,16 +64,14 @@ namespace Assets.UI.StateMachine.States.PlayMode {
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
-            CameraFocuser.ActivateBeginTurnFocusing();
-
             foreach(var element in PlayModeSensitiveElements) {
                 element.IsActive = true;
             }
+
+            CameraFocuser.ReturnFocusToPlayer(GameCore.ActivePlayer);
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
-            CameraFocuser.DeactivateBeginTurnFocusing();
-
             VisibilityResponder.UpdateVisibility = false;
 
             foreach(var element in PlayModeSensitiveElements) {

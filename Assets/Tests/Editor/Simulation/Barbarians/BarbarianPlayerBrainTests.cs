@@ -8,10 +8,12 @@ using Zenject;
 using Moq;
 
 using Assets.Simulation;
-using Assets.Simulation.Units;
-using Assets.Simulation.Civilizations;
 using Assets.Simulation.AI;
 using Assets.Simulation.Barbarians;
+using Assets.Simulation.Civilizations;
+using Assets.Simulation.Players;
+using Assets.Simulation.Units;
+
 
 namespace Assets.Tests.Simulation.Barbarians {
 
@@ -20,7 +22,6 @@ namespace Assets.Tests.Simulation.Barbarians {
         #region instance fields and properties
 
         private Mock<IPossessionRelationship<ICivilization, IUnit>> MockUnitPossessionCanon;
-        private Mock<ICivilizationFactory>                          MockCivFactory;
         private Mock<IBarbarianUnitBrain>                           MockBarbarianUnitBrain;
         private Mock<IUnitCommandExecuter>                          MockUnitCommandExecuter;
         private Mock<IBarbarianTurnExecuter>                        MockTurnExecuter;
@@ -35,14 +36,12 @@ namespace Assets.Tests.Simulation.Barbarians {
         [SetUp]
         public void CommonInstall() {
             MockUnitPossessionCanon   = new Mock<IPossessionRelationship<ICivilization, IUnit>>();
-            MockCivFactory            = new Mock<ICivilizationFactory>();
             MockBarbarianUnitBrain    = new Mock<IBarbarianUnitBrain>();
             MockUnitCommandExecuter   = new Mock<IUnitCommandExecuter>();
             MockTurnExecuter          = new Mock<IBarbarianTurnExecuter>();
             MockInfluenceMapLogic     = new Mock<IInfluenceMapLogic>();
 
             Container.Bind<IPossessionRelationship<ICivilization, IUnit>>().FromInstance(MockUnitPossessionCanon.Object);
-            Container.Bind<ICivilizationFactory>                         ().FromInstance(MockCivFactory         .Object);
             Container.Bind<IBarbarianUnitBrain>                          ().FromInstance(MockBarbarianUnitBrain .Object);
             Container.Bind<IUnitCommandExecuter>                         ().FromInstance(MockUnitCommandExecuter.Object);
             Container.Bind<IBarbarianTurnExecuter>                       ().FromInstance(MockTurnExecuter       .Object);
@@ -57,43 +56,41 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         [Test]
         public void RefreshAnalysis_PerformsEncampmentSpawning() {
-            Action postExecutionAction = () => { };
+            var player = BuildPlayer(BuildCiv(new List<IUnit>()));
 
-            MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
+            Action postExecutionAction = () => { };
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.ExecuteTurn(postExecutionAction);
+            barbarianBrain.ExecuteTurn(player, postExecutionAction);
 
             MockTurnExecuter.Verify(spawner => spawner.PerformEncampmentSpawning(It.IsAny<InfluenceMaps>()), Times.Once);
         }
 
         [Test]
         public void RefreshAnalysis_PerformsUnitSpawning() {
-            Action postExecutionAction = () => { };
+            var player = BuildPlayer(BuildCiv(new List<IUnit>()));
 
-            MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
+            Action postExecutionAction = () => { };
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.ExecuteTurn(postExecutionAction);
+            barbarianBrain.ExecuteTurn(player, postExecutionAction);
 
             MockTurnExecuter.Verify(spawner => spawner.PerformUnitSpawning(), Times.Once);
         }
 
         [Test]
         public void RefreshAnalysis_InfluenceMapsGenerated() {
-            var barbarianCiv = BuildCiv(BuildCivTemplate(true), new List<IUnit>());
+            var civ = BuildCiv(new List<IUnit>());
 
-            MockCivFactory.Setup(factory => factory.BarbarianCiv).Returns(barbarianCiv);
+            var player = BuildPlayer(civ);
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.RefreshAnalysis();
+            barbarianBrain.RefreshAnalysis(player);
 
-            MockInfluenceMapLogic.Verify(
-                generator => generator.AssignMaps(It.IsAny<InfluenceMaps>(), barbarianCiv
-            ), Times.Once);
+            MockInfluenceMapLogic.Verify(generator => generator.AssignMaps(It.IsAny<InfluenceMaps>(), civ), Times.Once);
         }
 
         [Test]
@@ -106,18 +103,12 @@ namespace Assets.Tests.Simulation.Barbarians {
         }
 
         [Test]
-        public void ExecuteTurn_ClearsAndThenSetsCommandsOfUnits_BelongingToFirstBarbarianCiv() {
-            var unitsOne   = new List<IUnit>() { BuildUnit() };
+        public void ExecuteTurn_ClearsAndThenSetsCommandsOfUnits_BelongingToFirstBarbarianCiv() {            
+            var player = BuildPlayer(BuildCiv(new List<IUnit>()));
+
+                             new List<IUnit>() { BuildUnit() };
             var unitsTwo   = new List<IUnit>() { BuildUnit() };
-            var unitsThree = new List<IUnit>() { BuildUnit() };
-
-            var allCivilizations = new List<ICivilization>() {
-                BuildCiv(BuildCivTemplate(false), unitsOne),
-                BuildCiv(BuildCivTemplate(true),  unitsTwo),
-                BuildCiv(BuildCivTemplate(true),  unitsThree)
-            };
-
-            MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
+                             new List<IUnit>() { BuildUnit() };
 
             var commandsTwo = new List<IUnitCommand>();
 
@@ -131,37 +122,33 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.RefreshAnalysis();
-            barbarianBrain.ExecuteTurn(() => { });
+            barbarianBrain.RefreshAnalysis(player);
+            barbarianBrain.ExecuteTurn(player, () => { });
 
             MockUnitCommandExecuter.VerifyAll();
         }
 
         [Test]
         public void ExecuteTurn_DoesNotThrowIfNoBarbarianCivExists() {
-            MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(new List<ICivilization>().AsReadOnly());
+            var player = BuildPlayer(BuildCiv(new List<IUnit>()));
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.RefreshAnalysis();
+            barbarianBrain.RefreshAnalysis(player);
 
-            Assert.DoesNotThrow(() => barbarianBrain.ExecuteTurn(() => { }));
+            Assert.DoesNotThrow(() => barbarianBrain.ExecuteTurn(player, () => { }));
         }
 
         [Test]
         public void ExecuteTurn_IteratesAllCommands_WithCorrectControlRelinquisher() {
-            var allCivilizations = new List<ICivilization>() {
-                BuildCiv(BuildCivTemplate(true), new List<IUnit>())
-            };
-
-            MockCivFactory.Setup(factory => factory.AllCivilizations).Returns(allCivilizations.AsReadOnly());
+            var player = BuildPlayer(BuildCiv(new List<IUnit>()));
 
             Action controlRelinquisher = () => { };
 
             var barbarianBrain = Container.Resolve<BarbarianPlayerBrain>();
 
-            barbarianBrain.RefreshAnalysis();
-            barbarianBrain.ExecuteTurn(controlRelinquisher);
+            barbarianBrain.RefreshAnalysis(player);
+            barbarianBrain.ExecuteTurn(player, controlRelinquisher);
 
             MockUnitCommandExecuter.Verify(executer => executer.IterateAllCommands(controlRelinquisher));
         }
@@ -170,24 +157,20 @@ namespace Assets.Tests.Simulation.Barbarians {
 
         #region utilities
 
+        private IPlayer BuildPlayer(ICivilization controlledCiv) {
+            var mockPlayer = new Mock<IPlayer>();
+
+            mockPlayer.Setup(player => player.ControlledCiv).Returns(controlledCiv);
+
+            return mockPlayer.Object;
+        }
+
         private IUnit BuildUnit() {
             return new Mock<IUnit>().Object;
         }
 
-        private ICivilizationTemplate BuildCivTemplate(bool isBarbaric) {
-            var mockTemplate = new Mock<ICivilizationTemplate>();
-
-            mockTemplate.Setup(template => template.IsBarbaric).Returns(isBarbaric);
-
-            return mockTemplate.Object;
-        }
-
-        private ICivilization BuildCiv(ICivilizationTemplate template, IEnumerable<IUnit> units) {
-            var mockCiv = new Mock<ICivilization>();
-
-            mockCiv.Setup(civ => civ.Template).Returns(template);
-
-            var newCiv = mockCiv.Object;
+        private ICivilization BuildCiv(IEnumerable<IUnit> units) {
+            var newCiv = new Mock<ICivilization>().Object;
 
             MockUnitPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(newCiv)).Returns(units);
 

@@ -9,6 +9,8 @@ using UnityEngine;
 using Zenject;
 using UniRx;
 
+using Assets.UI;
+
 namespace Assets.Simulation.Players {
 
     public class HumanPlayerBrain : IPlayerBrain {
@@ -29,8 +31,9 @@ namespace Assets.Simulation.Players {
 
 
 
-        private PlayerSignals PlayerSignals;
-        private MonoBehaviour CoroutineInvoker;
+        private PlayerSignals  PlayerSignals;
+        private ICameraFocuser CameraFocuser;
+        private MonoBehaviour  CoroutineInvoker;
 
         #endregion
 
@@ -38,10 +41,11 @@ namespace Assets.Simulation.Players {
 
         [Inject]
         public HumanPlayerBrain(
-            PlayerSignals playerSignals,
+            PlayerSignals playerSignals, ICameraFocuser cameraFocuser,
             [Inject(Id = "Coroutine Invoker")] MonoBehaviour coroutineInvoker
         ) {
             PlayerSignals    = playerSignals;
+            CameraFocuser    = cameraFocuser;
             CoroutineInvoker = coroutineInvoker;
         }
 
@@ -51,12 +55,14 @@ namespace Assets.Simulation.Players {
 
         #region from IPlayerBrain
 
-        public void ExecuteTurn(Action controlRelinquisher) {
-            ExecuteTurnCoroutine = CoroutineInvoker.StartCoroutine(SubscribeToTurnEnding(controlRelinquisher));
+        public void RefreshAnalysis(IPlayer activePlayer) {
+            
         }
 
-        public void RefreshAnalysis() {
-            
+        public void ExecuteTurn(IPlayer activePlayer, Action controlRelinquisher) {
+            CameraFocuser.ReturnFocusToPlayer(activePlayer);
+
+            ExecuteTurnCoroutine = CoroutineInvoker.StartCoroutine(SubscribeToTurnEnding(controlRelinquisher));
         }
 
         public void Clear() {

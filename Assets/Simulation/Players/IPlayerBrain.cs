@@ -15,9 +15,8 @@ namespace Assets.Simulation.Players {
 
         #region methods
 
-        void RefreshAnalysis();
-
-        void ExecuteTurn(Action controlRelinquisher);
+        void RefreshAnalysis(IPlayer activePlayer);
+        void ExecuteTurn    (IPlayer activePlayer, Action controlRelinquisher);
 
         void Clear();
 

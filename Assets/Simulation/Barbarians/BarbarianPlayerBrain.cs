@@ -34,7 +34,6 @@ namespace Assets.Simulation.Barbarians {
 
 
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
-        private ICivilizationFactory                          CivFactory;
         private IBarbarianUnitBrain                           BarbarianUnitBrain;
         private IUnitCommandExecuter                          UnitCommandExecuter;
         private IBarbarianTurnExecuter                        TurnExecuter;
@@ -47,12 +46,10 @@ namespace Assets.Simulation.Barbarians {
         [Inject]
         public BarbarianPlayerBrain(
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            ICivilizationFactory civFactory, IBarbarianUnitBrain barbarianUnitBrain,
-            IUnitCommandExecuter unitCommandExecuter, IBarbarianTurnExecuter turnExecuter,
-            IInfluenceMapLogic influenceMapLogic
+            IBarbarianUnitBrain barbarianUnitBrain, IUnitCommandExecuter unitCommandExecuter,
+            IBarbarianTurnExecuter turnExecuter, IInfluenceMapLogic influenceMapLogic
         ) {
             UnitPossessionCanon = unitPossessionCanon;
-            CivFactory          = civFactory;
             BarbarianUnitBrain  = barbarianUnitBrain;
             UnitCommandExecuter = unitCommandExecuter;
             TurnExecuter        = turnExecuter;
@@ -65,21 +62,15 @@ namespace Assets.Simulation.Barbarians {
 
         #region from IPlayerBrain
 
-        public void RefreshAnalysis() {
-            InfluenceMapLogic.AssignMaps(LastMaps, CivFactory.BarbarianCiv);
+        public void RefreshAnalysis(IPlayer activePlayer) {
+            InfluenceMapLogic.AssignMaps(LastMaps, activePlayer.ControlledCiv);
         }
 
-        public void ExecuteTurn(Action controlRelinquisher) {
+        public void ExecuteTurn(IPlayer activePlayer, Action controlRelinquisher) {
             TurnExecuter.PerformEncampmentSpawning(LastMaps);
             TurnExecuter.PerformUnitSpawning();
 
-            var barbarianCiv = CivFactory.AllCivilizations.FirstOrDefault(civ => civ.Template.IsBarbaric);
-
-            if(barbarianCiv == null) {
-                return;
-            }
-
-            foreach(var unit in UnitPossessionCanon.GetPossessionsOfOwner(barbarianCiv)) {
+            foreach(var unit in UnitPossessionCanon.GetPossessionsOfOwner(activePlayer.ControlledCiv)) {
                 var commands = BarbarianUnitBrain.GetCommandsForUnit(unit, LastMaps);
 
                 UnitCommandExecuter.ClearCommandsForUnit(unit);

@@ -26,19 +26,19 @@ namespace Assets.Tests.Simulation.Players {
 
             var executionSequence = new MockSequence();
 
-            mockBrain.InSequence(executionSequence).Setup(brain => brain.RefreshAnalysis());
-            mockBrain.InSequence(executionSequence).Setup(brain => brain.ExecuteTurn(It.IsAny<Action>()));
+            var player = new Player(civ, mockBrain.Object);
+
+            mockBrain.InSequence(executionSequence).Setup(brain => brain.RefreshAnalysis(player));
+            mockBrain.InSequence(executionSequence).Setup(brain => brain.ExecuteTurn(player, It.IsAny<Action>()));
 
             Action controlRelinquisher = () => { };
-
-            var player = new Player(civ, mockBrain.Object);
 
             player.PassControl(controlRelinquisher);
 
             mockBrain.VerifyAll();
 
             mockBrain.Verify(
-                brain => brain.ExecuteTurn(controlRelinquisher),
+                brain => brain.ExecuteTurn(player, controlRelinquisher),
                 Times.Once, "ControlRelinquisher not passed as expected"
             );
         }

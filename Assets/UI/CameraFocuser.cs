@@ -25,14 +25,13 @@ namespace Assets.UI {
 
 
         
-        private CoreSignals                                   CoreSignals;
+        
         private ICapitalCityCanon                             CapitalCityCanon;
+        private IGameCamera                                   GameCamera;
         private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private IUnitPositionCanon                            UnitPositionCanon;
-        private IGameCamera                                   GameCamera;
         private ICanBuildCityLogic                            CanBuildCityLogic;
-        private IGameCore                                     GameCore;
 
         #endregion
 
@@ -40,20 +39,17 @@ namespace Assets.UI {
 
         [Inject]
         public CameraFocuser(
-            CoreSignals coreSignals, ICapitalCityCanon capitalCityCanon,
+            ICapitalCityCanon capitalCityCanon, IGameCamera gameCamera,
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            IUnitPositionCanon unitPositionCanon, IGameCamera gameCamera,
-            ICanBuildCityLogic canBuildCityLogic, IGameCore gameCore
+            IUnitPositionCanon unitPositionCanon, ICanBuildCityLogic canBuildCityLogic
         ) {
-            CoreSignals         = coreSignals;
             CapitalCityCanon    = capitalCityCanon;
+            GameCamera          = gameCamera;
             CityLocationCanon   = cityLocationCanon;
             UnitPossessionCanon = unitPossessionCanon;
             UnitPositionCanon   = unitPositionCanon;
-            GameCamera          = gameCamera;
             CanBuildCityLogic   = canBuildCityLogic;
-            GameCore            = gameCore;
         }
 
         #endregion
@@ -62,22 +58,10 @@ namespace Assets.UI {
 
         #region from ICameraFocuser
 
-        public void ActivateBeginTurnFocusing() {
-            TurnBeganSubscription = CoreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
+        public void ReturnFocusToPlayer(IPlayer player) {
+            var civOfPlayer = player.ControlledCiv;
 
-            OnTurnBegan(GameCore.ActivePlayer);
-        }
-
-        public void DeactivateBeginTurnFocusing() {
-            TurnBeganSubscription.Dispose();
-        }
-
-        #endregion
-
-        private void OnTurnBegan(IPlayer activePlayer) {
-            var activeCiv = activePlayer.ControlledCiv;
-
-            var capital = CapitalCityCanon.GetCapitalOfCiv(activeCiv);
+            var capital = CapitalCityCanon.GetCapitalOfCiv(civOfPlayer);
 
             if(capital != null) {
                 var capitalLocation = CityLocationCanon.GetOwnerOfPossession(capital);
@@ -85,7 +69,7 @@ namespace Assets.UI {
                 GameCamera.SnapToCell(capitalLocation);
 
             }else {
-                var unitsOf = UnitPossessionCanon.GetPossessionsOfOwner(activeCiv);
+                var unitsOf = UnitPossessionCanon.GetPossessionsOfOwner(civOfPlayer);
 
                 var cityBuilder = unitsOf.Where(unit => CanBuildCityLogic.CanUnitBuildCity(unit)).FirstOrDefault();
 
@@ -96,6 +80,8 @@ namespace Assets.UI {
                 }
             }
         }
+
+        #endregion
 
         #endregion
 
