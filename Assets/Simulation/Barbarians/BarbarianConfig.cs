@@ -129,6 +129,11 @@ namespace Assets.Simulation.Barbarians {
         }
         [SerializeField, Range(0f, 0.25f)] private float _attackUtilityLogisticsSlope;
 
+        public float WaitUntilHealedMaxUtility {
+            get { return _waitUntilHealedMaxUtility; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _waitUntilHealedMaxUtility;
+
         #endregion
 
         #endregion

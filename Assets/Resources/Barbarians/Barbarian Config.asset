@@ -37,3 +37,4 @@ MonoBehaviour:
   _captureCivilianUtility: 1
   _fleeUtilityLogisticSlope: 0.1
   _attackUtilityLogisticsSlope: 0.1
+  _waitUntilHealedMaxUtility: 0.6

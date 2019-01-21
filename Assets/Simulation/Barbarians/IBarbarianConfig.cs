@@ -44,6 +44,7 @@ namespace Assets.Simulation.Barbarians {
         float CaptureCivilianUtility       { get; }
         float FleeUtilityLogisticSlope     { get; }
         float AttackUtilityLogisticsSlope  { get; }
+        float WaitUntilHealedMaxUtility    { get; }
 
         #endregion
 
