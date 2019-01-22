@@ -118,6 +118,10 @@ namespace Assets.Simulation.Units.Combat {
         private float GetUnhappinessPenalty(IUnit unit) {
             var unitOwner = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
+            if(unitOwner == null) {
+                return 0f;
+            }
+
             var ownerHappiness = CivilizationHappinessLogic.GetNetHappinessOfCiv(unitOwner);
 
             if(ownerHappiness < 0) {

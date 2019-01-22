@@ -80,13 +80,15 @@ namespace Assets.Simulation.Units.Combat {
             var unitLocation = UnitPositionCanon  .GetOwnerOfPossession(unit);
             var unitOwner    = UnitPossessionCanon.GetOwnerOfPossession(unit);
 
-            var cellsInRange = Grid.GetCellsInRadius(unitLocation, maxRange);
-
             var retval = new List<IUnit>();
 
-            foreach(var nearbyUnit in cellsInRange.SelectMany(cell => UnitPositionCanon.GetPossessionsOfOwner(cell))) {
-                if(UnitPossessionCanon.GetOwnerOfPossession(nearbyUnit) == unitOwner) {
-                    retval.Add(nearbyUnit);
+            if(unitLocation != null && unitOwner != null) {
+                var cellsInRange = Grid.GetCellsInRadius(unitLocation, maxRange);
+
+                foreach(var nearbyUnit in cellsInRange.SelectMany(cell => UnitPositionCanon.GetPossessionsOfOwner(cell))) {
+                    if(UnitPossessionCanon.GetOwnerOfPossession(nearbyUnit) == unitOwner) {
+                        retval.Add(nearbyUnit);
+                    }
                 }
             }
 

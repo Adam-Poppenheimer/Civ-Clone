@@ -26,7 +26,8 @@ namespace Assets.Simulation.Technology {
 
             Container.Bind<List<ITechDefinition>>().WithId("Available Techs").FromInstance(allTechs);
 
-            Container.Bind<ITechCanon>().To<TechCanon>().AsSingle();
+            Container.Bind<ITechCanon>       ().To<TechCanon>       ().AsSingle();
+            Container.Bind<IUnitUpgradeLogic>().To<UnitUpgradeLogic>().AsSingle();
         }
 
         #endregion

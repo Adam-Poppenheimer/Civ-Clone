@@ -24,10 +24,11 @@ namespace Assets.Simulation.AI {
         public override void InstallBindings() {
             Container.Bind<IAIConfig>().To<AIConfig>().FromInstance(AIConfig);
 
-            Container.Bind<IUnitStrengthEstimator>().To<UnitStrengthEstimator>().AsSingle();
-            Container.Bind<IUnitCommandExecuter>  ().To<UnitCommandExecuter>  ().AsSingle();
-            Container.Bind<IInfluenceMapApplier>  ().To<InfluenceMapApplier>  ().AsSingle();
-            Container.Bind<IInfluenceMapLogic>    ().To<InfluenceMapLogic>    ().AsSingle();
+            Container.Bind<IUnitComparativeStrengthEstimator>().To<UnitComparativeStrengthEstimator>().AsSingle();
+            Container.Bind<IUnitStrengthEstimator>           ().To<UnitStrengthEstimator>           ().AsSingle();
+            Container.Bind<IUnitCommandExecuter>             ().To<UnitCommandExecuter>             ().AsSingle();
+            Container.Bind<IInfluenceMapApplier>             ().To<InfluenceMapApplier>             ().AsSingle();
+            Container.Bind<IInfluenceMapLogic>               ().To<InfluenceMapLogic>               ().AsSingle();
 
             Container.Bind<IInfluenceSource>().To<UnitInfluenceSource>       ().AsSingle();
             Container.Bind<IInfluenceSource>().To<ImprovementInfluenceSource>().AsSingle();

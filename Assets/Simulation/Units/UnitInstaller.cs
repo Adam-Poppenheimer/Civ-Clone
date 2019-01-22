@@ -49,13 +49,17 @@ namespace Assets.Simulation.Units {
                 Container.QueueForInject(promotion);
             }
 
+            var upgradeLines = new List<IUnitUpgradeLine>(Resources.LoadAll<UnitUpgradeLine>("Unit Lines"));
+
+            Container.Bind<IEnumerable<IUnitUpgradeLine>>().WithId("All Upgrade Lines").FromInstance(upgradeLines);
+
             Container.Bind<Transform>().WithId("Unit Container").FromInstance(UnitContainer);
 
             Container.Bind<IUnitFactory>().To<UnitFactory>().AsSingle();
 
             Container.Bind<IUnitPositionCanon>          ().To<UnitPositionCanon>          ().AsSingle();
             Container.Bind<IUnitProductionValidityLogic>().To<UnitProductionValidityLogic>().AsSingle();
-            Container.Bind<IUnitVisibilityLogic>       ().To<UnitVisibilityLogic>       ().AsSingle();
+            Container.Bind<IUnitVisibilityLogic>        ().To<UnitVisibilityLogic>        ().AsSingle();
             Container.Bind<ICombatInfoLogic>            ().To<CombatInfoLogic>            ().AsSingle();            
             Container.Bind<ICombatEstimator>            ().To<CombatEstimator>            ().AsSingle();
             Container.Bind<ICombatCalculator>           ().To<CombatCalculator>           ().AsSingle();

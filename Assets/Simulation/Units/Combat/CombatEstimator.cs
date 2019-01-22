@@ -6,15 +6,16 @@ using System.Text;
 using Zenject;
 using UniRx;
 
+using Assets.Simulation.HexMap;
+
 namespace Assets.Simulation.Units.Combat {
 
     public class CombatEstimator : ICombatEstimator {
 
         #region instance fields and properties
 
-        private IUnitPositionCanon UnitPositionCanon;
-        private ICombatInfoLogic   CombatInfoLogic;
-        private ICombatCalculator  CombatCalculator;
+        private ICombatInfoLogic  CombatInfoLogic;
+        private ICombatCalculator CombatCalculator;
 
         #endregion
 
@@ -22,10 +23,8 @@ namespace Assets.Simulation.Units.Combat {
 
         [Inject]
         public CombatEstimator(
-            IUnitPositionCanon unitPositionCanon, ICombatInfoLogic combatInfoLogic,
-            ICombatCalculator combatCalculator
+            ICombatInfoLogic combatInfoLogic, ICombatCalculator combatCalculator
         ) {
-            UnitPositionCanon = unitPositionCanon;
             CombatInfoLogic   = combatInfoLogic;
             CombatCalculator  = combatCalculator;
         }
@@ -36,34 +35,36 @@ namespace Assets.Simulation.Units.Combat {
 
         #region ICombatEstimator
 
-        public UnitCombatResults EstimateMeleeAttackResults(IUnit attacker, IUnit defender) {
+        public UnitCombatResults EstimateMeleeAttackResults(IUnit attacker, IUnit defender, IHexCell location) {
             if(attacker == null) {
                 throw new ArgumentNullException("attacker");
             }
             if(defender == null) {
                 throw new ArgumentNullException("defender");
             }
+            if(location == null) {
+                throw new ArgumentNullException("location");
+            }
 
-            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
-
-            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, location, CombatType.Melee);
 
             Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
 
             return new UnitCombatResults(attacker, defender, results.Item1, results.Item2, combatInfo);
         }
 
-        public UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender) {
+        public UnitCombatResults EstimateRangedAttackResults(IUnit attacker, IUnit defender, IHexCell location) {
             if(attacker == null) {
                 throw new ArgumentNullException("attacker");
             }
             if(defender == null) {
                 throw new ArgumentNullException("defender");
             }
+            if(location == null) {
+                throw new ArgumentNullException("location");
+            }
 
-            var defenderLocation = UnitPositionCanon.GetOwnerOfPossession(defender);
-
-            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged);
+            var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, location, CombatType.Ranged);
 
             Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
 

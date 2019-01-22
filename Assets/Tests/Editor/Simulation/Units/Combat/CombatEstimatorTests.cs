@@ -18,7 +18,6 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         #region instance fields and properties
 
-        private Mock<IUnitPositionCanon> MockUnitPositionCanon;
         private Mock<ICombatInfoLogic>   MockCombatInfoLogic;
         private Mock<ICombatCalculator>  MockCombatCalculator;
 
@@ -30,13 +29,12 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [SetUp]
         public void CommonInstall() {
-            MockUnitPositionCanon = new Mock<IUnitPositionCanon>();
+
             MockCombatInfoLogic   = new Mock<ICombatInfoLogic>();
             MockCombatCalculator  = new Mock<ICombatCalculator>();
 
-            Container.Bind<IUnitPositionCanon>().FromInstance(MockUnitPositionCanon.Object);
-            Container.Bind<ICombatInfoLogic>  ().FromInstance(MockCombatInfoLogic  .Object);
-            Container.Bind<ICombatCalculator> ().FromInstance(MockCombatCalculator .Object);
+            Container.Bind<ICombatInfoLogic> ().FromInstance(MockCombatInfoLogic  .Object);
+            Container.Bind<ICombatCalculator>().FromInstance(MockCombatCalculator .Object);
 
             Container.Bind<CombatEstimator>().AsSingle();
         }
@@ -47,16 +45,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void EstimateMeleeAttackResults_ReturnedResultsHasCorrectAttackerAndDefender() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -64,7 +62,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender, location);
 
             Assert.AreEqual(attacker, combatResults.Attacker, "CombatResults has an unexpected Attacker");
             Assert.AreEqual(defender, combatResults.Defender, "CombatResults has an unexpected Defender");
@@ -72,16 +70,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void EstimateMeleeAttackResults_ReturnedResultsHasCorrectDamageDone() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -89,7 +87,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender, location);
 
             Assert.AreEqual(1,  combatResults.DamageToAttacker, "CombatResults has an unexpected DamageToAttacker");
             Assert.AreEqual(22, combatResults.DamageToDefender, "CombatResults has an unexpected DamageToDefender");
@@ -97,16 +95,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void EstimateMeleeAttackResults_ReturnedResultsHasCorrectCombatInfo() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Melee))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -114,23 +112,23 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateMeleeAttackResults(attacker, defender, location);
 
             Assert.AreEqual(combatInfo, combatResults.InfoOfAttack);
         }
 
         [Test]
         public void EstimateRangedAttackResults_ReturnedResultsHasCorrectAttackerAndDefender() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -138,7 +136,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender, location);
 
             Assert.AreEqual(attacker, combatResults.Attacker, "CombatResults has an unexpected Attacker");
             Assert.AreEqual(defender, combatResults.Defender, "CombatResults has an unexpected Defender");
@@ -146,16 +144,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void EstimateRangedAttackResults_ReturnedResultsHasCorrectDamageDone() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -163,7 +161,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender, location);
 
             Assert.AreEqual(1,  combatResults.DamageToAttacker, "CombatResults has an unexpected DamageToAttacker");
             Assert.AreEqual(22, combatResults.DamageToDefender, "CombatResults has an unexpected DamageToDefender");
@@ -171,16 +169,16 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         public void EstimateRangedAttackResults_ReturnedResultsHasCorrectCombatInfo() {
-            var defenderLocation = BuildCell();
+            var location = BuildCell();
 
-            var attacker = BuildUnit(BuildCell());
-            var defender = BuildUnit(defenderLocation);
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
 
             var combatInfo = new CombatInfo();
 
             var combatCalculations = new Tuple<int, int>(1, 22);
 
-            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, defenderLocation, CombatType.Ranged))
+            MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
@@ -188,45 +186,69 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender);
+            var combatResults = estimator.EstimateRangedAttackResults(attacker, defender, location);
 
             Assert.AreEqual(combatInfo, combatResults.InfoOfAttack);
         }
 
         [Test]
         public void EstimateMeleeAttackResults_ThrowsOnNullAttacker() {
-            var unit = BuildUnit(BuildCell());
+            var unit = BuildUnit();
+            var location = BuildCell();
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            Assert.Throws<ArgumentNullException>(() => estimator.EstimateMeleeAttackResults(null, unit));
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateMeleeAttackResults(null, unit, location));
         }
 
         [Test]
         public void EstimateMeleeAttackResults_ThrowsOnNullDefender() {
-            var unit = BuildUnit(BuildCell());
+            var unit = BuildUnit();
+            var location = BuildCell();
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            Assert.Throws<ArgumentNullException>(() => estimator.EstimateMeleeAttackResults(unit, null));
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateMeleeAttackResults(unit, null, location));
+        }
+
+        [Test]
+        public void EstimateMeleeAttackResults_ThrowsOnNullLocation() {
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
+
+            var estimator = Container.Resolve<CombatEstimator>();
+
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateMeleeAttackResults(attacker, defender, null));
         }
 
         [Test]
         public void EstimateRangedAttackResults_ThrowsOnNullAttacker() {
-            var unit = BuildUnit(BuildCell());
+            var unit = BuildUnit();
+            var location = BuildCell();
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            Assert.Throws<ArgumentNullException>(() => estimator.EstimateRangedAttackResults(null, unit));
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateRangedAttackResults(null, unit, location));
         }
 
         [Test]
         public void EstimateRangedAttackResults_ThrowsOnNullDefender() {
-            var unit = BuildUnit(BuildCell());
+            var unit = BuildUnit();
+            var location = BuildCell();
 
             var estimator = Container.Resolve<CombatEstimator>();
 
-            Assert.Throws<ArgumentNullException>(() => estimator.EstimateRangedAttackResults(unit, null));
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateRangedAttackResults(unit, null, location));
+        }
+
+        [Test]
+        public void EstimateRangedAttackResults_ThrowsOnNullLocation() {
+            var attacker = BuildUnit();
+            var defender = BuildUnit();
+
+            var estimator = Container.Resolve<CombatEstimator>();
+
+            Assert.Throws<ArgumentNullException>(() => estimator.EstimateRangedAttackResults(attacker, defender, null));
         }
 
         #endregion
@@ -237,12 +259,8 @@ namespace Assets.Tests.Simulation.Units.Combat {
             return new Mock<IHexCell>().Object;
         }
 
-        private IUnit BuildUnit(IHexCell location) {
-            var newUnit = new Mock<IUnit>().Object;
-
-            MockUnitPositionCanon.Setup(canon => canon.GetOwnerOfPossession(newUnit)).Returns(location);
-
-            return newUnit;
+        private IUnit BuildUnit() {
+            return new Mock<IUnit>().Object;
         }
 
         #endregion

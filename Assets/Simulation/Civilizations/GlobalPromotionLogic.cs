@@ -42,6 +42,10 @@ namespace Assets.Simulation.Civilizations {
         #region from IGlobalPromotionLogic
 
         public IEnumerable<IPromotion> GetGlobalPromotionsOfCiv(ICivilization civ) {
+            if(civ == null) {
+                throw new ArgumentNullException("civ");
+            }
+
             var retval = new List<IPromotion>();
 
             foreach(var city in CityPossessionCanon.GetPossessionsOfOwner(civ)) {
