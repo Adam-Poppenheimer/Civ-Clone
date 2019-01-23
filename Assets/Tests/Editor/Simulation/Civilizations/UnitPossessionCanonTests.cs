@@ -90,7 +90,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             var possessionCanon = Container.Resolve<UnitPossessionCanon>();
 
-            UnitSignals.UnitGainedNewOwnerSignal.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
+            UnitSignals.GainedNewOwner.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
                 Assert.AreEqual(unit, data.Item1, "Incorrect unit passed");
                 Assert.AreEqual(civ,  data.Item2, "Incorrect civ passed");
 
@@ -172,7 +172,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             possessionCanon.ChangeOwnerOfPossession(unit, civ);
 
-            UnitSignals.UnitGainedNewOwnerSignal.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
+            UnitSignals.GainedNewOwner.Subscribe(delegate(Tuple<IUnit, ICivilization> data) {
                 Assert.AreEqual(unit, data.Item1, "Incorrect unit passed");
                 Assert.IsNull(data.Item2, "Incorrect civ passed");
 

@@ -290,9 +290,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void AttachEvents() {
-            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal.Subscribe(OnUnitPointerEntered));
-            EventSubscriptions.Add(UnitSignals.PointerExitedSignal .Subscribe(OnUnitPointerExited));
-            EventSubscriptions.Add(UnitSignals.ClickedSignal       .Subscribe(OnUnitClicked));
+            EventSubscriptions.Add(UnitSignals.PointerEntered.Subscribe(OnUnitPointerEntered));
+            EventSubscriptions.Add(UnitSignals.PointerExited .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.Clicked       .Subscribe(OnUnitClicked));
 
             EventSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
             EventSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExit));

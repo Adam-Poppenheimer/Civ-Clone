@@ -33,7 +33,7 @@ namespace Assets.Simulation.Units {
             UnitPositionCanon   = unitPositionCanon;
             UnitPossessionCanon = unitPossessionCanon;
 
-            signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
+            signals.BeingDestroyed.Subscribe(OnUnitBeingDestroyed);
         }
 
         #endregion

@@ -20,6 +20,7 @@ using Assets.Simulation.Players;
 
 using Assets.UI.Civilizations;
 using Assets.UI.Cities;
+using Assets.UI.Units;
 
 namespace Assets.UI.StateMachine.States.PlayMode {
 
@@ -127,7 +128,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             SignalSubscriptions.ForEach(subscription => subscription.Dispose());
             SignalSubscriptions.Clear();
 
-            FreeTechsDisplay        .gameObject.SetActive(false);
+            FreeTechsDisplay           .gameObject.SetActive(false);
             FreeGreatPeopleNotification.gameObject.SetActive(false);
         }
 

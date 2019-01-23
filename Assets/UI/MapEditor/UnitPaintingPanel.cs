@@ -72,7 +72,7 @@ namespace Assets.UI.MapEditor {
             PopulateCivilizationDropdown();
             PopulateUnitList();
 
-            UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
+            UnitClickedSubscription = UnitSignals.Clicked.Subscribe(OnUnitClicked);
             CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
 
             IsAddingToggle  .onValueChanged.AddListener(isOn => IsAdding = isOn);

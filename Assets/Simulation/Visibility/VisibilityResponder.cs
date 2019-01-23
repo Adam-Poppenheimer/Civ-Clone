@@ -80,8 +80,8 @@ namespace Assets.Simulation.Visibility {
             Grid                 = grid;
             CoroutineInvoker     = coroutineInvoker;
 
-            unitSignals.LeftLocationSignal   .Subscribe(OnUnitLeftLocation);
-            unitSignals.EnteredLocationSignal.Subscribe(OnUnitEnteredLocation);
+            unitSignals.LeftLocation   .Subscribe(OnUnitLeftLocation);
+            unitSignals.EnteredLocation.Subscribe(OnUnitEnteredLocation);
 
             citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
             citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);

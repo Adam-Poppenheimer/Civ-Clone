@@ -129,7 +129,7 @@ namespace Assets.UI.StateMachine {
                 CityClickedSubscription = CompositeCitySignals.ActiveCivCityClickedSignal.Subscribe(OnCityClicked);
 
             }else if(type == TransitionType.UnitSelected) {
-                UnitClickedSubscription = UnitSignals.ClickedSignal.Subscribe(OnUnitClicked);
+                UnitClickedSubscription = UnitSignals.Clicked.Subscribe(OnUnitClicked);
 
             }else if(type == TransitionType.ActiveCivUnitSelected) {
                 UnitClickedSubscription = CompositeUnitSignals.ActiveCivUnitClickedSignal.Subscribe(OnUnitClicked);

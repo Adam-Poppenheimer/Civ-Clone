@@ -31,8 +31,8 @@ namespace Assets.Simulation.Units.Combat {
             UnitPossessionLogic = unitPossessionLogic;
             CivModifiers        = civModifiers;
 
-            signals.MeleeCombatWithUnitSignal .Subscribe(OnMeleeCombatWithUnit);
-            signals.RangedCombatWithUnitSignal.Subscribe(HandleBounty);
+            signals.MeleeCombatWithUnit .Subscribe(OnMeleeCombatWithUnit);
+            signals.RangedCombatWithUnit.Subscribe(HandleBounty);
         }
 
         #endregion

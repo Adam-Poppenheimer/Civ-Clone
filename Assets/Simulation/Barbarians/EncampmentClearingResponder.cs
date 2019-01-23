@@ -34,7 +34,7 @@ namespace Assets.Simulation.Barbarians {
             IEncampmentLocationCanon encampmentLocationCanon, IEncampmentFactory encampmentFactory,
             IBarbarianConfig barbarianConfig, ICivModifiers civModifiers
         ) {
-            unitSignals.EnteredLocationSignal.Subscribe(OnUnitEnteredLocation);
+            unitSignals.EnteredLocation.Subscribe(OnUnitEnteredLocation);
 
             UnitPossessionCanon     = unitPossessionCanon;
             EncampmentLocationCanon = encampmentLocationCanon;

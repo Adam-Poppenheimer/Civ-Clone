@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f));
         }
@@ -89,7 +89,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f));
         }
@@ -108,7 +108,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatGeneral, civ, 15 * 3f));
         }
@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatGeneral, civ, 15 * 3f));
         }
@@ -146,7 +146,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(
                 canon => canon.AddPointsTowardsTypeForCiv(
@@ -169,7 +169,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(
                 canon => canon.AddPointsTowardsTypeForCiv(
@@ -192,7 +192,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = false;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(
                 canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f),
@@ -214,7 +214,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             pointGainLogic.IsActive = true;
 
-            UnitSignals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
+            UnitSignals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(unit, 15));
 
             MockGreatPersonCanon.Verify(canon => canon.AddPointsTowardsTypeForCiv(GreatPersonType.GreatAdmiral, civ, 15 * 3f * 3f));
         }

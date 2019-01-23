@@ -246,7 +246,7 @@ namespace Assets.Tests.Simulation.Units.Abilities {
 
             var abilityExecuter = Container.Resolve<AbilityExecuter>();
 
-            UnitSignals.ActivatedAbilitySignal.Subscribe(delegate(Tuple<IUnit, IAbilityDefinition> data) {
+            UnitSignals.ActivatedAbility.Subscribe(delegate(Tuple<IUnit, IAbilityDefinition> data) {
                 Assert.AreEqual(unitToTest, data.Item1, "Incorrect unit passed");
                 Assert.AreEqual(ability,    data.Item2, "Incorrect ability passed");
 

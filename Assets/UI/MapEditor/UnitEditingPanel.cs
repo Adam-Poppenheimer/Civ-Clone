@@ -54,8 +54,8 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             Refresh();
 
-            SetUpForBombardmentSubscription = UnitSignals.SetUpForBombardmentSignal.Subscribe(OnUnitSetUpForBombardment);
-            BecameIdleSubscription          = UnitSignals.BecameIdleSignal         .Subscribe(OnUnitBecameIdle);
+            SetUpForBombardmentSubscription = UnitSignals.SetUpForBombardment.Subscribe(OnUnitSetUpForBombardment);
+            BecameIdleSubscription          = UnitSignals.BecameIdle         .Subscribe(OnUnitBecameIdle);
         }
 
         private void OnDisable() {

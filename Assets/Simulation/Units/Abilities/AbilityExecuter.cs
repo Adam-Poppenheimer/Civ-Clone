@@ -75,7 +75,7 @@ namespace Assets.Simulation.Units.Abilities {
                 unit.Destroy(); 
             }
 
-            Signals.ActivatedAbilitySignal.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
+            Signals.ActivatedAbility.OnNext(new UniRx.Tuple<IUnit, IAbilityDefinition>(unit, ability));
         }
 
         #endregion

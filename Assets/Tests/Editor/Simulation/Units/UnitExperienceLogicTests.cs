@@ -462,7 +462,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var unitSignals = Container.Resolve<UnitSignals>();
 
-            unitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            unitSignals.MeleeCombatWithUnit.OnNext(results);
 
             return attacker.Experience;
         }
@@ -481,7 +481,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var unitSignals = Container.Resolve<UnitSignals>();
 
-            unitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            unitSignals.MeleeCombatWithUnit.OnNext(results);
 
             return defender.Experience;
         }
@@ -500,7 +500,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var unitSignals = Container.Resolve<UnitSignals>();
 
-            unitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            unitSignals.RangedCombatWithUnit.OnNext(results);
 
             return attacker.Experience;
         }
@@ -519,7 +519,7 @@ namespace Assets.Tests.Simulation.Units {
 
             var unitSignals = Container.Resolve<UnitSignals>();
 
-            unitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            unitSignals.RangedCombatWithUnit.OnNext(results);
 
             return defender.Experience;
         }

@@ -32,7 +32,7 @@ namespace Assets.Simulation.Units.StateMachine {
         #region from StateMachineBehaviour
 
         public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {
-            UnitSignals.StoppedMovingSignal.OnNext(UnitToControl);
+            UnitSignals.StoppedMoving.OnNext(UnitToControl);
         }
 
         #endregion

@@ -352,6 +352,11 @@ namespace Assets.Tests.Simulation.Visibility {
             Assert.IsFalse(visibilityCanon.IsResourceVisible(resource));
         }
 
+        [Test]
+        public void MissingSignalTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

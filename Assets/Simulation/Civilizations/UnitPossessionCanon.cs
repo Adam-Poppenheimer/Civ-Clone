@@ -48,7 +48,7 @@ namespace Assets.Simulation.Civilizations {
             }
             
             CivSignals.CivGainedUnit.OnNext(new Tuple<ICivilization, IUnit>(newOwner, unit));
-            UnitSignals.UnitGainedNewOwnerSignal.OnNext(new Tuple<IUnit, ICivilization>(unit, newOwner));
+            UnitSignals.GainedNewOwner.OnNext(new Tuple<IUnit, ICivilization>(unit, newOwner));
         }
 
         protected override void DoOnPossessionBeingBroken(IUnit possession, ICivilization oldOwner) {
@@ -61,7 +61,7 @@ namespace Assets.Simulation.Civilizations {
             }
 
             CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, unit));
-            UnitSignals.UnitGainedNewOwnerSignal.OnNext(new Tuple<IUnit, ICivilization>(unit, null));
+            UnitSignals.GainedNewOwner.OnNext(new Tuple<IUnit, ICivilization>(unit, null));
         }
 
         #endregion

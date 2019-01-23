@@ -96,7 +96,7 @@ namespace Assets.Simulation.Units.Combat {
 
                     CommonCombatExecutionLogic.PerformCommonCombatTasks(attacker, defender, combatInfo);
 
-                    UnitSignals.MeleeCombatWithUnitSignal.OnNext(
+                    UnitSignals.MeleeCombatWithUnit.OnNext(
                         new UnitCombatResults(
                             attacker, defender,
                             attackerStartingHealth - attacker.CurrentHitpoints,
@@ -124,7 +124,7 @@ namespace Assets.Simulation.Units.Combat {
 
             CommonCombatExecutionLogic.PerformCommonCombatTasks(attacker, defender, combatInfo);
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(
+            UnitSignals.RangedCombatWithUnit.OnNext(
                 new UnitCombatResults(
                     attacker, defender,
                     attackerStartingHealth - attacker.CurrentHitpoints,

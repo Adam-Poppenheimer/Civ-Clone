@@ -54,8 +54,8 @@ namespace Assets.UI.Units {
         #region from UnitDisplayBase
 
         protected override void DoOnEnable() {
-            ExperienceChangedSubscription = Signals.ExperienceChangedSignal.Subscribe(OnExperienceChanged);
-            LevelChangedSubscription      = Signals.LevelChangedSignal     .Subscribe(OnLevelChanged);
+            ExperienceChangedSubscription = Signals.ExperienceChanged.Subscribe(OnExperienceChanged);
+            LevelChangedSubscription      = Signals.LevelChanged     .Subscribe(OnLevelChanged);
         }
 
         protected override void DoOnDisable() {

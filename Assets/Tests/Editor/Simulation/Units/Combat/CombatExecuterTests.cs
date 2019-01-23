@@ -201,7 +201,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 (attkr, dfndr, info) => { attkr.CurrentHitpoints -= 30; dfndr.CurrentHitpoints -= 40; }
             );
 
-            UnitSignals.MeleeCombatWithUnitSignal.Subscribe(delegate(UnitCombatResults results) {
+            UnitSignals.MeleeCombatWithUnit.Subscribe(delegate(UnitCombatResults results) {
                 Assert.AreEqual(attacker,   results.Attacker,         "Results had an unexpected Attacker");
                 Assert.AreEqual(defender,   results.Defender,         "Results had an unexpected Defender");
                 Assert.AreEqual(30,         results.DamageToAttacker, "Results had an unexpected DamageToAttacker");
@@ -314,7 +314,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
                 (attkr, dfndr, info) => { attkr.CurrentHitpoints -= 30; dfndr.CurrentHitpoints -= 40; }
             );
 
-            UnitSignals.RangedCombatWithUnitSignal.Subscribe(delegate(UnitCombatResults results) {
+            UnitSignals.RangedCombatWithUnit.Subscribe(delegate(UnitCombatResults results) {
                 Assert.AreEqual(attacker,   results.Attacker,         "Results had an unexpected Attacker");
                 Assert.AreEqual(defender,   results.Defender,         "Results had an unexpected Defender");
                 Assert.AreEqual(30,         results.DamageToAttacker, "Results had an unexpected DamageToAttacker");

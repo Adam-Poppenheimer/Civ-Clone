@@ -63,7 +63,13 @@ namespace Assets.Simulation.Units {
         public int CurrentHitpoints {
             get { return _hitpoints; }
             set {
-                _hitpoints = value.Clamp(0, MaxHitpoints);
+                int newHitpoints = value.Clamp(0, MaxHitpoints);
+
+                if(newHitpoints != _hitpoints) {
+                    _hitpoints = newHitpoints;
+
+                    Signals.HitpointsChanged.OnNext(this);
+                }                
             }
         }
         private int _hitpoints;
@@ -159,9 +165,9 @@ namespace Assets.Simulation.Units {
                     int experienceGained = value - _experience;
 
                     _experience = value;
-                    Signals.ExperienceChangedSignal.OnNext(this);
+                    Signals.ExperienceChanged.OnNext(this);
                     if(experienceGained > 0) {
-                        Signals.UnitGainedExperienceSignal.OnNext(new UniRx.Tuple<IUnit, int>(this, experienceGained));
+                        Signals.GainedExperience.OnNext(new UniRx.Tuple<IUnit, int>(this, experienceGained));
                     }
                 }
             }
@@ -173,7 +179,7 @@ namespace Assets.Simulation.Units {
             set {
                 if(_level != value) {
                     _level = value;
-                    Signals.LevelChangedSignal.OnNext(this);
+                    Signals.LevelChanged.OnNext(this);
                 }
             }
         }
@@ -246,13 +252,13 @@ namespace Assets.Simulation.Units {
             Grid            = grid;
             PromotionParser = promotionParser;
 
-            signals.UnitGainedNewOwnerSignal.Subscribe(OnUnitGainedNewOwner);
+            signals.GainedNewOwner.Subscribe(OnUnitGainedNewOwner);
         }
 
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.UnitBeingDestroyedSignal.OnNext(this);
+            Signals.BeingDestroyed.OnNext(this);
         }
 
         #endregion
@@ -260,27 +266,27 @@ namespace Assets.Simulation.Units {
         #region EventSystem handler implementations
 
         public void OnPointerClick(PointerEventData eventData) {
-            Signals.ClickedSignal.OnNext(this);
+            Signals.Clicked.OnNext(this);
         }
 
         public void OnPointerEnter(PointerEventData eventData) {
-            Signals.PointerEnteredSignal.OnNext(this);
+            Signals.PointerEntered.OnNext(this);
         }
 
         public void OnPointerExit(PointerEventData eventData) {
-            Signals.PointerExitedSignal.OnNext(this);
+            Signals.PointerExited.OnNext(this);
         }
 
         public void OnBeginDrag(PointerEventData eventData) {
-            Signals.BeginDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.BeginDrag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         public void OnDrag(PointerEventData eventData) {
-            Signals.DragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.Drag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         public void OnEndDrag(PointerEventData eventData) {
-            Signals.EndDragSignal.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
+            Signals.EndDrag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(this, eventData));
         }
 
         #endregion
@@ -456,7 +462,7 @@ namespace Assets.Simulation.Units {
             PromotionParser.SetMovementSummary(ConcreteMovementSummary, this);
             PromotionParser.SetCombatSummary  (ConcreteCombatSummary,   this);
 
-            Signals.UnitGainedPromotionSignal.OnNext(this);
+            Signals.GainedPromotion.OnNext(this);
         }
 
         private void OnUnitGainedNewOwner(UniRx.Tuple<IUnit, ICivilization> data) {

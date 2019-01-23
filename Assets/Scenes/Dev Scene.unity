@@ -59844,6 +59844,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   AbilityDisplayPrefab: {fileID: 19347476}
+  UnitMapIconPrefab: {fileID: 1313421057924692, guid: a08247e678c12a54195ba7aed11e3741,
+    type: 2}
+  UnitIconSlotPrefab: {fileID: 1930208966329422, guid: a2563e41843258c4d856cf45eeae0e77,
+    type: 2}
+  UnitMapIconManager: {fileID: 2017801188}
   CombatSummaryDisplay: {fileID: 1709651802}
 --- !u!1 &1516853108
 GameObject:
@@ -81320,11 +81325,12 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 2017801187}
+  - component: {fileID: 2017801188}
   - component: {fileID: 2017801186}
   - component: {fileID: 2017801185}
   - component: {fileID: 2017801184}
   m_Layer: 5
-  m_Name: City Summary Canvas
+  m_Name: Summary and Icon Canvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81405,6 +81411,18 @@ RectTransform:
   m_AnchoredPosition: {x: 0, y: 0}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0, y: 0}
+--- !u!114 &2017801188
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 2017801183}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 58486e4abf6f9ca4aa44bacda54791c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  UnitIconContainer: {fileID: 2017801187}
 --- !u!1 &2018891117
 GameObject:
   m_ObjectHideFlags: 0

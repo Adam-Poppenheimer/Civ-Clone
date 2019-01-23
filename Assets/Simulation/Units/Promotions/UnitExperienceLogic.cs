@@ -30,8 +30,8 @@ namespace Assets.Simulation.Units.Promotions {
             Config        = config;
             UnitModifiers = unitModifiers;
             
-            unitSignals.MeleeCombatWithUnitSignal .Subscribe(OnMeleeCombat);
-            unitSignals.RangedCombatWithUnitSignal.Subscribe(OnRangedCombat);
+            unitSignals.MeleeCombatWithUnit .Subscribe(OnMeleeCombat);
+            unitSignals.RangedCombatWithUnit.Subscribe(OnRangedCombat);
         }
 
         #endregion

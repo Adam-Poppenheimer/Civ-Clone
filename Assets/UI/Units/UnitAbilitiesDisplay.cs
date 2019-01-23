@@ -49,8 +49,8 @@ namespace Assets.UI.Units {
             AbilityExecuter     = abilityExecuter;
 
 
-            unitSignals.StoppedMovingSignal      .Subscribe(CheckForRefreshCondition);
-            unitSignals.SetUpForBombardmentSignal.Subscribe(CheckForRefreshCondition);
+            unitSignals.StoppedMoving      .Subscribe(CheckForRefreshCondition);
+            unitSignals.SetUpForBombardment.Subscribe(CheckForRefreshCondition);
         }
 
         #region Unity messages

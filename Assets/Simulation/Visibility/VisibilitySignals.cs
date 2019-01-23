@@ -19,7 +19,9 @@ namespace Assets.Simulation.Visibility {
 
         public ISubject<Unit> CellExplorationModeChangedSignal    { get; private set; }
 
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCivSignal { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCivSignal   { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameVisibleToCivSignal    { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameInvisibleToCiv  { get; private set; }
 
         #endregion
 
@@ -31,7 +33,9 @@ namespace Assets.Simulation.Visibility {
 
             CellExplorationModeChangedSignal    = new Subject<Unit>();
 
-            CellBecameExploredByCivSignal = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameExploredByCivSignal  = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameVisibleToCivSignal   = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameInvisibleToCiv = new Subject<Tuple<IHexCell, ICivilization>>();
         }
 
         #endregion

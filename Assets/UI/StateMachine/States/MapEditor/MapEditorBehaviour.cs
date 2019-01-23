@@ -8,12 +8,15 @@ using UnityEngine;
 
 using Zenject;
 
-using Assets.Simulation.Visibility;
-using Assets.Simulation.HexMap;
-using Assets.Simulation.MapManagement;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.Core;
+using Assets.Simulation.HexMap;
+using Assets.Simulation.MapManagement;
+using Assets.Simulation.Visibility;
+
 using Assets.Simulation.Players;
+
+using Assets.UI.Units;
 
 namespace Assets.UI.StateMachine.States.MapEditor {
 
@@ -32,6 +35,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private List<IPlayModeSensitiveElement> PlayModeSensitiveElements;
         private ICivilizationConfig             CivConfig;
         private IBrainPile                      BrainPile;
+        private IUnitMapIconManager             UnitMapIconManager;
 
         #endregion
 
@@ -43,7 +47,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             ICivilizationFactory civFactory, IPlayerFactory playerFactory,
             IVisibilityResponder visibilityResponder, IVisibilityCanon visibilityCanon,
             IExplorationCanon explorationCanon, List<IPlayModeSensitiveElement> playModeSensitiveElements,
-            ICivilizationConfig civConfig, IBrainPile brainPile
+            ICivilizationConfig civConfig, IBrainPile brainPile, IUnitMapIconManager unitMapIconManager
 
         ) {
             Brain                     = brain;
@@ -57,6 +61,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             PlayModeSensitiveElements = playModeSensitiveElements;
             CivConfig                 = civConfig;
             BrainPile                 = brainPile;
+            UnitMapIconManager        = unitMapIconManager;
         }
 
         #region from StateMachineBehaviour
@@ -74,6 +79,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
 
             ExplorationCanon.ExplorationMode = CellExplorationMode.AllCellsExplored;
 
+            UnitMapIconManager.BuildIcons();
+            UnitMapIconManager.SetActive(true);
+
             foreach(var element in PlayModeSensitiveElements) {
                 element.IsActive = false;
             }
@@ -88,6 +96,9 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         }
 
         public override void OnStateMachineExit(Animator animator, int stateMachinePathHash) {
+            UnitMapIconManager.ClearIcons();
+            UnitMapIconManager.SetActive(false);
+
             MapComposer.ClearRuntime(false);
         }
 

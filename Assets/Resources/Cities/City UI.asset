@@ -16,5 +16,5 @@ MonoBehaviour:
   _unoccupiedSlotMaterial: {fileID: 2100000, guid: 0cdc45077edc2fa48a18cfb557b3158c,
     type: 2}
   _lockedSlotMaterial: {fileID: 2100000, guid: abe3158928257a340b6c56164a6cc952, type: 2}
-  _summaryVerticalOffsetBase: -120
-  _summaryZoomGapReductionStrength: 2
+  _summaryVerticalOffsetBase: -50
+  _summaryZoomGapReductionStrength: 4

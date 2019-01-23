@@ -67,7 +67,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 20, 20, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(100, attackerOwner.GoldStockpile, "AttackerOwner.GoldStockpile has an unexpected value");
             Assert.AreEqual(200, defenderOwner.GoldStockpile, "DefenderOwner.GoldStockpile has an unexpected value");
@@ -85,7 +85,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(125, attackerOwner.GoldStockpile, "AttackerOwner.GoldStockpile has an unexpected value");
             Assert.AreEqual(175, defenderOwner.GoldStockpile, "DefenderOwner.GoldStockpile has an unexpected value");
@@ -103,7 +103,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 50, 50, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(102, attackerOwner.GoldStockpile, "AttackerOwner.GoldStockpile has an unexpected value");
             Assert.AreEqual(0,   defenderOwner.GoldStockpile, "DefenderOwner.GoldStockpile has an unexpected value");
@@ -124,7 +124,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(Mathf.RoundToInt(200 * 1.5f), attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0,                            defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -145,7 +145,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0,                            attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(Mathf.RoundToInt(100 * 2.5f), defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -166,7 +166,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0, attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0, defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -187,7 +187,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.MeleeCombatWithUnitSignal.OnNext(results);
+            UnitSignals.MeleeCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0, attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0, defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -208,7 +208,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            UnitSignals.RangedCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(Mathf.RoundToInt(200 * 1.5f), attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0,                            defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -229,7 +229,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            UnitSignals.RangedCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0,                            attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(Mathf.RoundToInt(100 * 2.5f), defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -250,7 +250,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            UnitSignals.RangedCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0, attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0, defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");
@@ -271,7 +271,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var results = new UnitCombatResults(attacker, defender, 0, 0, new CombatInfo());
 
-            UnitSignals.RangedCombatWithUnitSignal.OnNext(results);
+            UnitSignals.RangedCombatWithUnit.OnNext(results);
 
             Assert.AreEqual(0, attackerOwner.GoldStockpile, "AttackerOwner has an unexpected gold stockpile");
             Assert.AreEqual(0, defenderOwner.GoldStockpile, "DefenderOwner has an unexpected gold stockpile");

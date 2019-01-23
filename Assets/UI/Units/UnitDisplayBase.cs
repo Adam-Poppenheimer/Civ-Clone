@@ -37,9 +37,9 @@ namespace Assets.UI.Units {
         #region Unity message methods
 
         public void OnEnable() {
-            UnitLocationChangedSubscription  = Signals.EnteredLocationSignal    .Subscribe(OnUnitEnteredLocation);
-            UnitActivatedAbilitySubscription = Signals.ActivatedAbilitySignal   .Subscribe(OnUnitActivatedAbility);
-            CombatEventOccurredSubscription  = Signals.MeleeCombatWithUnitSignal.Subscribe(OnCombatEventOccurred);
+            UnitLocationChangedSubscription  = Signals.EnteredLocation    .Subscribe(OnUnitEnteredLocation);
+            UnitActivatedAbilitySubscription = Signals.ActivatedAbility   .Subscribe(OnUnitActivatedAbility);
+            CombatEventOccurredSubscription  = Signals.MeleeCombatWithUnit.Subscribe(OnCombatEventOccurred);
 
             DoOnEnable();
         }

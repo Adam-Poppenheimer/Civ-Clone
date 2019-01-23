@@ -78,9 +78,10 @@ namespace Assets.UI.Cities {
             foreach(var summary in InstantiatedSummaries) {
                 var cityInScreen = Camera.main.WorldToScreenPoint(summary.ObjectToDisplay.Position);
 
-                summary.RectTransform.position = cityInScreen +
-                    new Vector3(0f, CityUIConfig.SummaryVerticalOffsetBase)
-                    * (GameCamera.Zoom / (1 + CityUIConfig.SummaryZoomGapReductionStrength));
+                summary.RectTransform.position = cityInScreen + (
+                    new Vector3(0f, CityUIConfig.SummaryVerticalOffsetBase) *
+                    (GameCamera.Zoom / (1 + CityUIConfig.SummaryZoomGapReductionStrength))
+                );
             }
         }
 

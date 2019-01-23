@@ -237,12 +237,12 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
         }
 
         private void AttachEvents() {
-            EventSubscriptions.Add(UnitSignals.BeginDragSignal         .Subscribe(OnUnitBeginDrag));
-            EventSubscriptions.Add(UnitSignals.EndDragSignal           .Subscribe(OnUnitEndDrag));
-            EventSubscriptions.Add(UnitSignals.PointerEnteredSignal    .Subscribe(OnUnitPointerEntered));
-            EventSubscriptions.Add(UnitSignals.PointerExitedSignal     .Subscribe(OnUnitPointerExited));
-            EventSubscriptions.Add(UnitSignals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed));
-            EventSubscriptions.Add(UnitSignals.EnteredLocationSignal   .Subscribe(OnUnitEnteredLocation));
+            EventSubscriptions.Add(UnitSignals.BeginDrag         .Subscribe(OnUnitBeginDrag));
+            EventSubscriptions.Add(UnitSignals.EndDrag           .Subscribe(OnUnitEndDrag));
+            EventSubscriptions.Add(UnitSignals.PointerEntered    .Subscribe(OnUnitPointerEntered));
+            EventSubscriptions.Add(UnitSignals.PointerExited     .Subscribe(OnUnitPointerExited));
+            EventSubscriptions.Add(UnitSignals.BeingDestroyed.Subscribe(OnUnitBeingDestroyed));
+            EventSubscriptions.Add(UnitSignals.EnteredLocation   .Subscribe(OnUnitEnteredLocation));
 
             EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));

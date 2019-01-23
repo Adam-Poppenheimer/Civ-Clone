@@ -56,7 +56,7 @@ namespace Assets.Simulation.Units {
         }
 
         protected override void DoOnPossessionBroken(IUnit possession, IHexCell oldOwner) {
-            Signals.LeftLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, oldOwner));
+            Signals.LeftLocation.OnNext(new Tuple<IUnit, IHexCell>(possession, oldOwner));
         }
 
         protected override void DoOnPossessionEstablished(IUnit possession, IHexCell newOwner) {
@@ -64,7 +64,7 @@ namespace Assets.Simulation.Units {
                 return;
             }
 
-            Signals.EnteredLocationSignal.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
+            Signals.EnteredLocation.OnNext(new Tuple<IUnit, IHexCell>(possession, newOwner));
         }
 
         #endregion

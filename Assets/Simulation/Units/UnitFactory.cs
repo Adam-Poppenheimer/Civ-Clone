@@ -33,6 +33,7 @@ namespace Assets.Simulation.Units {
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private Transform                                     UnitContainer;
         private IUnitConfig                                   UnitConfig;
+        private UnitSignals                                   UnitSignals;
 
         #endregion
 
@@ -50,8 +51,9 @@ namespace Assets.Simulation.Units {
             UnitPossessionCanon = unitPossessionCanon;
             UnitContainer       = unitContainer;
             UnitConfig          = unitConfig;
+            UnitSignals         = signals;
 
-            signals.UnitBeingDestroyedSignal.Subscribe(OnUnitBeingDestroyed);
+            signals.BeingDestroyed.Subscribe(OnUnitBeingDestroyed);
         }
 
         #endregion
@@ -116,6 +118,8 @@ namespace Assets.Simulation.Units {
             }else {
                 throw new UnitCreationException("The newly created unit cannot be placed at its location");
             }
+
+            UnitSignals.NewUnitCreated.OnNext(newUnit);
 
             return newUnit;
         }

@@ -24,7 +24,7 @@ namespace Assets.Simulation.Civilizations {
                     _isActive = value;
 
                     if(_isActive) {
-                        UnitGainedExperienceSubscription = UnitSignals.UnitGainedExperienceSignal.Subscribe(OnUnitGainedExperience);
+                        UnitGainedExperienceSubscription = UnitSignals.GainedExperience.Subscribe(OnUnitGainedExperience);
                     }else {
                         UnitGainedExperienceSubscription.Dispose();
                         UnitGainedExperienceSubscription = null;

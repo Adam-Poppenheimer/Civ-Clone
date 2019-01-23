@@ -33,7 +33,7 @@ namespace Assets.Simulation.Units {
             GameCore            = gameCore;
             UnitPossessionCanon = unitPossessionCanon;
 
-            ActiveCivUnitClickedSignal = signals.ClickedSignal.Where(ActiveCivUnitFilter);
+            ActiveCivUnitClickedSignal = signals.Clicked.Where(ActiveCivUnitFilter);
         }
 
         #endregion

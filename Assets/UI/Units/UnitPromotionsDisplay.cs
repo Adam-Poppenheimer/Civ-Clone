@@ -55,7 +55,7 @@ namespace Assets.UI.Units {
         #region from UnitDisplayBase
 
         protected override void DoOnEnable() {
-            UnitGainedPromotionSubscription = UnitSignals.UnitGainedPromotionSignal.Subscribe(OnUnitGainedPromotion);
+            UnitGainedPromotionSubscription = UnitSignals.GainedPromotion.Subscribe(OnUnitGainedPromotion);
         }
 
         protected override void DoOnDisable() {

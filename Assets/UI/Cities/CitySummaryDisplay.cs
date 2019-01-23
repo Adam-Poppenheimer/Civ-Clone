@@ -90,18 +90,18 @@ namespace Assets.UI.Cities {
             IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
             [Inject(Id = "UI Animator")] Animator uiAnimator
         ) {
-            Grid                    = grid;
-            Config                  = config;
-            UnitPositionCanon       = unitPositionCanon;
-            CombatExecuter          = combatExecuter;
-            Brain                   = brain;
-            GrowthLogic             = growthLogic;
-            ProductionLogic         = productionLogic;
+            Grid                 = grid;
+            Config               = config;
+            UnitPositionCanon    = unitPositionCanon;
+            CombatExecuter       = combatExecuter;
+            Brain                = brain;
+            GrowthLogic          = growthLogic;
+            ProductionLogic      = productionLogic;
             YieldGenerationLogic = resourceGenerationLogic;
-            GameCore                = gameCore;
-            CityPossessionCanon     = cityPossessionCanon;
-            CityLocationCanon       = cityLocationCanon;
-            UIAnimator              = uiAnimator;
+            GameCore             = gameCore;
+            CityPossessionCanon  = cityPossessionCanon;
+            CityLocationCanon    = cityLocationCanon;
+            UIAnimator           = uiAnimator;
         }
 
         #region from CityDisplayBase
