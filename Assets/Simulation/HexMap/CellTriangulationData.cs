@@ -545,6 +545,25 @@ namespace Assets.Simulation.HexMap {
                     var perturbedInnerEdge = NoiseGenerator.Perturb(LeftToRightInnerEdge, Left.RequiresYPerturb);
 
                     _leftToRightCultureStartEdgePerturbed = new EdgeVertices(
+                        (perturbedInnerEdge.V1 + LeftToRightEdgePerturbed.V1) / 2f,
+                        (perturbedInnerEdge.V2 + LeftToRightEdgePerturbed.V2) / 2f,
+                        (perturbedInnerEdge.V3 + LeftToRightEdgePerturbed.V3) / 2f,
+                        (perturbedInnerEdge.V4 + LeftToRightEdgePerturbed.V4) / 2f,
+                        (perturbedInnerEdge.V5 + LeftToRightEdgePerturbed.V5) / 2f
+                    );
+                }
+
+                return _leftToRightCultureStartEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToRightCultureStartEdgePerturbed;
+
+        public EdgeVertices LeftToCenterCultureStartEdgePerturbed {
+            get {
+                if(_leftToCenterCultureStartEdgePerturbed == null) {
+                    var perturbedInnerEdge = NoiseGenerator.Perturb(LeftToCenterInnerEdge, Left.RequiresYPerturb);
+
+                    _leftToCenterCultureStartEdgePerturbed = new EdgeVertices(
                         (perturbedInnerEdge.V1 + LeftToCenterEdgePerturbed.V1) / 2f,
                         (perturbedInnerEdge.V2 + LeftToCenterEdgePerturbed.V2) / 2f,
                         (perturbedInnerEdge.V3 + LeftToCenterEdgePerturbed.V3) / 2f,
@@ -553,10 +572,10 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
 
-                return _leftToRightCultureStartEdgePerturbed.GetValueOrDefault();
+                return _leftToCenterCultureStartEdgePerturbed.GetValueOrDefault();
             }
         }
-        private EdgeVertices? _leftToRightCultureStartEdgePerturbed;
+        private EdgeVertices? _leftToCenterCultureStartEdgePerturbed;
 
 
         private INoiseGenerator     NoiseGenerator;

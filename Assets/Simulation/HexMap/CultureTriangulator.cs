@@ -70,7 +70,7 @@ namespace Assets.Simulation.HexMap {
                 return;
             }
 
-            TriangulateRiverEdge(data, owner);
+            TriangulateCultureEdge(data, owner);
 
             if(data.Left == null) {
                 return;
@@ -84,7 +84,116 @@ namespace Assets.Simulation.HexMap {
         //be aware of adjacent edges. We need to concern ourselves
         //with the edge type and ownership of both Left and NextRight,
         //adding appropriate connecting triangles when necessary.
-        private void TriangulateRiverEdge(
+        private void TriangulateCultureEdge(
+            CellTriangulationData data, ICivilization centerOwner
+        ) {
+            if(ShouldPullBackEdge(data.CenterToRightEdgeType, data.Center, data.Right)) {
+                TriangulateCultureEdge_PulledBack(data, centerOwner);
+
+            }else {
+                TriangulateCultureEdge_PushedForward(data, centerOwner);
+            }
+        }
+
+        /* This method is used to triangulate borders along flat terrain.
+         * It pushes culture into the space between Center and Right.
+         * For compatability with pulled-back culture edges, and also with
+         * river endpoints,, it might also have to pull back its V1-V2 and
+         * V4-V5 segments.
+         */
+        private void TriangulateCultureEdge_PushedForward(
+            CellTriangulationData data, ICivilization centerOwner
+        ) {
+            Vector3 indices = new Vector3(
+                data.Center.Index, data.Left.Index, data.Right.Index
+            );
+
+            ICivilization leftOwner      = CivTerritoryLogic.GetCivClaimingCell(data.Left);
+            ICivilization nextRightOwner = CivTerritoryLogic.GetCivClaimingCell(data.NextRight);
+            
+            //We can't simply draw flat edges. Doing so will lead to
+            //awkward, disconnected borders when we're near non-flat edges.  
+            //We thus need to replace the outermost segments of this edge
+            //with other structures if the corners CenterRightEdge is connected
+            //to aren't flatlands
+            bool shouldAlterLeftV  = ShouldPullBackEdge(data.CenterToLeftEdgeType,      data.Center, data.Left);
+            bool shouldAlterRightV = ShouldPullBackEdge(data.CenterToNextRightEdgeType, data.Center, data.NextRight);
+
+            //Likewise, we might need to pull the entire segment connecting to the corner. This
+            //usually happens when interacting with river endpoints or edges. In this case, we
+            //need to made a quad that jumps back to the CultureStart edge and the outer solid
+            //edge of the hex
+            bool shouldPullBackThisCorner = ShouldPullBackCorner(data.LeftToRightEdgeType);
+            bool shouldPullBackNextCorner = ShouldPullBackCorner(data.RightToNextRightEdgeType);
+            
+            if(shouldPullBackThisCorner) {
+                MeshBuilder.AddQuadUnperturbed(
+                    data.CenterToRightCultureStartEdgePerturbed.V1, MeshBuilder.Weights1,  new Vector2(0f, 0f),
+                    data.CenterToRightEdgePerturbed.V2,             MeshBuilder.Weights1,  new Vector2(0f, 0f),
+                    data.CenterToRightEdgePerturbed.V1,             MeshBuilder.Weights13, new Vector2(0f, 0.5f),
+                    data.RightToCenterEdgePerturbed.V2,             MeshBuilder.Weights1,  new Vector2(0f, 1f),
+                    centerOwner.Template.Color, indices, MeshBuilder.Culture
+                );
+            }else if(shouldAlterLeftV) {
+                Vector3 v1Midpoint = (data.CenterToRightEdgePerturbed.V1 + data.RightToCenterEdgePerturbed.V1) / 2f;
+                Vector3 v2Midpoint = (data.CenterToRightEdgePerturbed.V2 + data.RightToCenterEdgePerturbed.V2) / 2f;
+
+                float v1BackAlpha = leftOwner == centerOwner ? 0f : 0.5f;
+
+                MeshBuilder.AddQuadUnperturbed(
+                    data.CenterToRightEdgePerturbed.V1, MeshBuilder.Weights1,  new Vector2(0f, v1BackAlpha),
+                    data.CenterToRightEdgePerturbed.V2, MeshBuilder.Weights1,  new Vector2(0f, 0f),
+                    v1Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
+                    v2Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
+                    centerOwner.Template.Color, indices, MeshBuilder.Culture
+                );
+            }
+
+            MeshBuilder.TriangulateEdgeStripPartial(
+                data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
+                data.RightToCenterEdge, MeshBuilder.Weights2, data.Right.Index,  1f, data.Right .RequiresYPerturb,
+                centerOwner.Template.Color, MeshBuilder.Culture, !shouldAlterLeftV && !shouldPullBackThisCorner,
+                !shouldAlterRightV && !shouldPullBackNextCorner
+            );
+
+            if(shouldPullBackNextCorner) {
+                Vector3 nextRightIndices = new Vector3(
+                    data.Center.Index, data.Right.Index, data.NextRight.Index
+                );
+
+                //The triangulation is pointing in an unusual direction here, though
+                //it otherwise represents a mirror to the shouldPullBackThisCorner case.
+                //This was necessary to optimize the triangulation, since AddQuad
+                //creates its triangles in a very specific orientation that was causing
+                //problems for this pullback operation.
+                MeshBuilder.AddQuadUnperturbed(
+                    data.RightToCenterEdgePerturbed.V4,             MeshBuilder.Weights13, new Vector2(0f, 1f),
+                    data.CenterToRightEdgePerturbed.V4,             MeshBuilder.Weights1,  new Vector2(0f, 0f),                
+                    data.CenterToRightEdgePerturbed.V5,             MeshBuilder.Weights1,  new Vector2(0f, 0.5f),                    
+                    data.CenterToRightCultureStartEdgePerturbed.V5, MeshBuilder.Weights1,  new Vector2(0f, 0f),
+                    centerOwner.Template.Color, nextRightIndices, MeshBuilder.Culture
+                );
+            }else if(shouldAlterRightV) {
+                Vector3 v4Midpoint = (data.CenterToRightEdgePerturbed.V4 + data.RightToCenterEdgePerturbed.V4) / 2f;
+                Vector3 v5Midpoint = (data.CenterToRightEdgePerturbed.V5 + data.RightToCenterEdgePerturbed.V5) / 2f;
+
+                float v5BackAlpha = CivTerritoryLogic.GetCivClaimingCell(data.NextRight) == centerOwner ? 0f : 0.5f;
+
+                MeshBuilder.AddQuadUnperturbed(
+                    data.CenterToRightEdgePerturbed.V4, MeshBuilder.Weights1,  new Vector2(0f, 0f),
+                    data.CenterToRightEdgePerturbed.V5, MeshBuilder.Weights1,  new Vector2(0f, v5BackAlpha),
+                    v4Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
+                    v5Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
+                    centerOwner.Template.Color, indices, MeshBuilder.Culture
+                );
+            }
+        }
+
+        /* This method is used to triangulate borders along rivers and slopes.
+         * It avoids pushing the culture into the space between hexes and instead
+         * has the culture stop at the solid barrier of its hex
+         */
+        private void TriangulateCultureEdge_PulledBack(
             CellTriangulationData data, ICivilization centerOwner
         ) {
             Vector3 indices = new Vector3(
@@ -94,108 +203,63 @@ namespace Assets.Simulation.HexMap {
             ICivilization leftOwner      = CivTerritoryLogic.GetCivClaimingCell(data.Left);
             ICivilization nextRightOwner = CivTerritoryLogic.GetCivClaimingCell(data.NextRight);
 
-            //This exists to serve the difference in triangulation
-            //strategies between flat and non-flat edges. Culture on
-            //flat edges extends to the middle of the edge boundary
-            //between hexes, while culture on non-flat edges only
-            //extends to the edge of the hex.
-            if(data.CenterToRightEdgeType != HexEdgeType.Flat) {
-                //If CenterRightEdge is flat but CenterLeftEdge is non-flat,
-                //we can add a simple triangle to connect up with the triangulation
-                //results produced when we're aiming left.
-                if(data.CenterToLeftEdgeType == HexEdgeType.Flat) {
-                    MeshBuilder.AddTriangleUnperturbed(
-                        data.CenterToRightCultureStartEdgePerturbed.V1, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                        data.CenterToLeftEdgePerturbed.V4,              MeshBuilder.Weights1, new Vector2(0f, 0f),
-                        data.PerturbedCenterCorner,                     MeshBuilder.Weights1, new Vector2(0f, 0.5f),
-                        centerOwner.Template.Color, indices, MeshBuilder.Culture
-                    );
+            MeshBuilder.TriangulateEdgeStripUnperturbed(
+                data.CenterToRightCultureStartEdgePerturbed, MeshBuilder.Weights1, data.Center.Index, 0f,
+                data.CenterToRightEdgePerturbed,             MeshBuilder.Weights1, data.Center.Index, 0.5f,
+                centerOwner.Template.Color, MeshBuilder.Culture
+            );
 
-                    //If Center and Left have the same owner, the connection
-                    //is a fairly simple quad across CenterLeftEdge, which
-                    //we deal with here.
-                    if(leftOwner == centerOwner) {
-                        MeshBuilder.AddQuadUnperturbed(
-                            data.CenterToLeftEdgePerturbed.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                            data.CenterToLeftEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0.5f),
-                            data.LeftToCenterEdgePerturbed.V4, MeshBuilder.Weights2, new Vector2(0f, 0f),
-                            data.LeftToCenterEdgePerturbed.V5, MeshBuilder.Weights2, new Vector2(0f, 0.5f),
-                            centerOwner.Template.Color, indices, MeshBuilder.Culture
-                        );
-                    }
-                }
-
-                //If CenterNextRightEdge is flat and CenterLeftEdge isn't,
-                //we can do the same sort of connection technique, though
-                //with a slightly different orientation. We don't include
-                //the extra quad as in the CenterToLeft case because that
-                //case covers it for us.
-                if(data.CenterToNextRightEdgeType == HexEdgeType.Flat) {
-                    MeshBuilder.AddTriangleUnperturbed(
-                        data.CenterToRightCultureStartEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0f),
-                        data.CenterToNextRightEdgePerturbed.V1,         MeshBuilder.Weights1, new Vector2(0f, 0.5f),
-                        data.CenterToNextRightEdgePerturbed.V2,         MeshBuilder.Weights1, new Vector2(0f, 0f),
+            //If CenterLeftEdge is flat or a river,
+            //we can add a simple triangle to connect up with the triangulation
+            //results produced when we're aiming left.
+            if(data.CenterToLeftEdgeType == HexEdgeType.Flat || data.CenterToLeftEdgeType == HexEdgeType.River) {
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.CenterToRightCultureStartEdgePerturbed.V1, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    data.CenterToLeftEdgePerturbed.V4,              MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    data.PerturbedCenterCorner,                     MeshBuilder.Weights1, new Vector2(0f, 0.5f),
+                    centerOwner.Template.Color, indices, MeshBuilder.Culture
+                );
+                //If Center and Left have the same owner, the connection
+                //is a fairly simple quad across CenterLeftEdge, which
+                //we deal with here. But we want to ignore this quad when
+                //there's a river across CenterLeftEdge.
+                if(leftOwner == centerOwner && data.CenterToLeftEdgeType != HexEdgeType.River) {
+                    MeshBuilder.AddQuadUnperturbed(
+                        data.CenterToLeftEdgePerturbed.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                        data.CenterToLeftEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0.5f),
+                        data.LeftToCenterEdgePerturbed.V4, MeshBuilder.Weights2, new Vector2(0f, 0f),
+                        data.LeftToCenterEdgePerturbed.V5, MeshBuilder.Weights2, new Vector2(0f, 0.5f),
                         centerOwner.Template.Color, indices, MeshBuilder.Culture
                     );
                 }
             }
 
-            //For compatibility with rivers, we decide not to have
-            //culture ascend or descend terraced edges. Instead, the
-            //culture makes its way to the edge of the terraces and stops.
-            if(data.CenterToRightEdgeType == HexEdgeType.Slope || data.CenterToRightEdgeType == HexEdgeType.River) {
-                MeshBuilder.TriangulateEdgeStripUnperturbed(
-                    data.CenterToRightCultureStartEdgePerturbed, MeshBuilder.Weights1, data.Center.Index, 0f,
-                    data.CenterToRightEdgePerturbed,             MeshBuilder.Weights1, data.Center.Index, 0.5f,
-                    centerOwner.Template.Color, MeshBuilder.Culture
+            //If CenterNextRightEdge is flat and CenterLeftEdge isn't,
+            //we can do the same sort of connection technique, though
+            //with a slightly different orientation. We don't include
+            //the extra quad as in the CenterToLeft case because that
+            //case covers it for us. We can also do this to terminate
+            //against river edges.
+            if(data.CenterToNextRightEdgeType == HexEdgeType.Flat || data.CenterToNextRightEdgeType == HexEdgeType.River) {
+                MeshBuilder.AddTriangleUnperturbed(
+                    data.CenterToRightCultureStartEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    data.CenterToNextRightEdgePerturbed.V1,         MeshBuilder.Weights1, new Vector2(0f, 0.5f),
+                    data.CenterToNextRightEdgePerturbed.V2,         MeshBuilder.Weights1, new Vector2(0f, 0f),
+                    centerOwner.Template.Color, indices, MeshBuilder.Culture
                 );
-
-            }else {
-                //We can't simply draw flat edges. Doing so will lead to
-                //awkward, disconnected borders when we're near non-flat edges.  
-                //We thus need to replace the outermost segments of this edge
-                //with triangles if those segments connect to non-flat
-                //culture boundaries
-
-                bool modifyleftEnd  = data.CenterToLeftEdgeType      != HexEdgeType.Flat;
-                bool modifyRightEnd = data.CenterToNextRightEdgeType != HexEdgeType.Flat;
-
-                if(modifyleftEnd) {
-                    Vector3 v1Midpoint = (data.CenterToRightEdgePerturbed.V1 + data.RightToCenterEdgePerturbed.V1) / 2f;
-                    Vector3 v2Midpoint = (data.CenterToRightEdgePerturbed.V2 + data.RightToCenterEdgePerturbed.V2) / 2f;
-
-                    float v1BackAlpha = leftOwner == centerOwner ? 0f : 0.5f;
-
-                    MeshBuilder.AddQuadUnperturbed(
-                        data.CenterToRightEdgePerturbed.V1, MeshBuilder.Weights1,  new Vector2(0f, v1BackAlpha),
-                        data.CenterToRightEdgePerturbed.V2, MeshBuilder.Weights1,  new Vector2(0f, 0f),
-                        v1Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
-                        v2Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
-                        centerOwner.Template.Color, indices, MeshBuilder.Culture
-                    );
-                }
-
-                MeshBuilder.TriangulateEdgeStripPartial(
-                    data.CenterToRightEdge, MeshBuilder.Weights1, data.Center.Index, 0f, data.Center.RequiresYPerturb,
-                    data.RightToCenterEdge, MeshBuilder.Weights2, data.Right.Index,  1f, data.Right .RequiresYPerturb,
-                    centerOwner.Template.Color, MeshBuilder.Culture, !modifyleftEnd, !modifyRightEnd
-                );
-
-                if(modifyRightEnd) {
-                    Vector3 v4Midpoint = (data.CenterToRightEdgePerturbed.V4 + data.RightToCenterEdgePerturbed.V4) / 2f;
-                    Vector3 v5Midpoint = (data.CenterToRightEdgePerturbed.V5 + data.RightToCenterEdgePerturbed.V5) / 2f;
-
-                    float v5BackAlpha = CivTerritoryLogic.GetCivClaimingCell(data.NextRight) == centerOwner ? 0f : 0.5f;
-
-                    MeshBuilder.AddQuadUnperturbed(
-                        data.CenterToRightEdgePerturbed.V4, MeshBuilder.Weights1,  new Vector2(0f, 0f),
-                        data.CenterToRightEdgePerturbed.V5, MeshBuilder.Weights1,  new Vector2(0f, v5BackAlpha),
-                        v4Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
-                        v5Midpoint,                         MeshBuilder.Weights13, new Vector2(0f, 0.5f),
-                        centerOwner.Template.Color, indices, MeshBuilder.Culture
-                    );
-                }
             }
+        }
+
+        private bool ShouldPullBackEdge(
+            HexEdgeType edgeType, IHexCell nearCell, IHexCell farCell
+        ) {
+            return edgeType == HexEdgeType.Slope
+                || edgeType == HexEdgeType.River
+                || farCell.Terrain.IsWater();
+        }
+
+        private bool ShouldPullBackCorner(HexEdgeType leftRightEdge) {
+            return leftRightEdge == HexEdgeType.River;
         }
 
         //Border to be cultured is between Center and Right.
@@ -244,15 +308,28 @@ namespace Assets.Simulation.HexMap {
 
             if(data.CenterToLeftEdgeType == HexEdgeType.Slope) {
 
-                if(data.CenterToRightEdgeType == HexEdgeType.Slope && leftOwner == centerOwner) {
-                    if(data.LeftToRightEdgeType == HexEdgeType.Flat) {
+                if(leftOwner == centerOwner) {
+                    if(data.LeftToRightEdgeType == HexEdgeType.Flat && data.CenterToRightEdgeType != HexEdgeType.River) {
                         TriangulateCultureCornerTerraces_CutThroughCorner(data, centerOwner);
                     }else {
                         TriangulateCultureCornerTerraces_RunAlongCorner(data, centerOwner);
                     }
                 }
+
             }else if(data.CenterToLeftEdgeType == HexEdgeType.Flat && data.CenterToRightEdgeType == HexEdgeType.Flat) {
-                TriangulateCultureCornerSimple(data, centerOwner);
+                if(data.LeftToRightEdgeType == HexEdgeType.River) {
+                    TriangulateCultureCorner_LeftRightRiverEndpoint(data, centerOwner);
+
+                } else if(!data.Left.Terrain.IsWater() && !data.Right.Terrain.IsWater()) {
+                    TriangulateCultureCornerSimple(data, centerOwner);
+                }                
+            }else if(
+                data.CenterToLeftEdgeType  == HexEdgeType.Flat  &&
+                data.CenterToRightEdgeType == HexEdgeType.River &&
+                data.LeftToRightEdgeType   == HexEdgeType.Flat
+            ) {
+                TriangulateCultureCorner_CenterRightRiverEndpoint(data, centerOwner);
+
             }
         }
 
@@ -494,6 +571,65 @@ namespace Assets.Simulation.HexMap {
                 data.PerturbedLeftCorner,   MeshBuilder.Weights2, new Vector2(0f, leftAlphaMax),
                 data.PerturbedRightCorner,  MeshBuilder.Weights3, new Vector2(0f, rightAlphaMax),
                 owner.Template.Color, indices, MeshBuilder.Culture
+            );
+        }
+
+        //Called when there is a river between Left and Right.
+        //Despite being a culture corner case, we don't actually add
+        //any triangles to the corner. Instead, we build triangles around
+        //the corner to the waiting pulled-back border on Left facing
+        //towards Right
+        private void TriangulateCultureCorner_LeftRightRiverEndpoint(
+            CellTriangulationData data, ICivilization centerOwner
+        ) {
+            Vector3 indices = new Vector3(
+                data.Center.Index, data.Left.Index, data.Right.Index
+            );
+
+            //We shouldn't do anything special to the river endpoint if the
+            //culture doesn't need to wrap around it. This case has already
+            //been covered during edge triangulation
+            if(centerOwner != CivTerritoryLogic.GetCivClaimingCell(data.Left)) {
+                return;
+            }
+
+            //brings the culture boundary at CenterRightEdge up to CenterLeftEdge
+            MeshBuilder.AddTriangleUnperturbed(
+                data.CenterToLeftEdgePerturbed.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                data.CenterToLeftEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0.5f),
+                data.CenterToRightCultureStartEdgePerturbed.V1, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                centerOwner.Template.Color, indices, MeshBuilder.Culture
+            );
+
+            //Creates the span across CenterLeftEdge that should connect the two culture boundaries to each-other
+            MeshBuilder.AddQuadUnperturbed(
+                data.LeftToCenterEdgePerturbed.V4, MeshBuilder.Weights2, new Vector2(0f, 0f),
+                data.CenterToLeftEdgePerturbed.V4, MeshBuilder.Weights1, new Vector2(0f, 0f),
+                data.LeftToCenterEdgePerturbed.V5, MeshBuilder.Weights2, new Vector2(0f, 0.5f),
+                data.CenterToLeftEdgePerturbed.V5, MeshBuilder.Weights1, new Vector2(0f, 0.5f),
+                centerOwner.Template.Color, indices, MeshBuilder.Culture
+            );
+        }
+
+        //Called when there is a river between Center and Right.
+        //Other culture triangulation misses a triangle in this case,
+        //so this method adds it back in.
+        private void TriangulateCultureCorner_CenterRightRiverEndpoint(
+            CellTriangulationData data, ICivilization centerOwner
+        ) {
+            if(centerOwner != CivTerritoryLogic.GetCivClaimingCell(data.Left)) {
+                return;
+            }
+
+            Vector3 indices = new Vector3(
+                data.Center.Index, data.Left.Index, data.Right.Index
+            );
+
+            MeshBuilder.AddTriangleUnperturbed(
+                data.LeftToCenterEdgePerturbed.V4,            MeshBuilder.Weights2, new Vector2(0f, 0f),
+                data.LeftToRightCultureStartEdgePerturbed.V5, MeshBuilder.Weights2, new Vector2(0f, 0f),
+                data.LeftToCenterEdgePerturbed.V5,            MeshBuilder.Weights2, new Vector2(0f, 0.5f),
+                centerOwner.Template.Color, indices, MeshBuilder.Culture
             );
         }
 
