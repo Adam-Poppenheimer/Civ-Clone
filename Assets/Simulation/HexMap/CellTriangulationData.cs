@@ -42,6 +42,16 @@ namespace Assets.Simulation.HexMap {
         }
         private EdgeVertices? _centerToRightEdge;
 
+        public EdgeVertices CenterToNextRightEdge {
+            get {
+                if(_centerToNextRightEdge == null) {
+                    _centerToNextRightEdge = GetYAdjustedEdge(Center, Direction.Next());
+                }
+                return _centerToNextRightEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToNextRightEdge;
+
         public EdgeVertices LeftToCenterEdge {
             get {
                 if(_leftToCenterEdge == null) {
@@ -101,6 +111,16 @@ namespace Assets.Simulation.HexMap {
             }
         }
         private EdgeVertices? _centerToLeftEdgePerturbed;
+
+        public EdgeVertices CenterToNextRightEdgePerturbed {
+            get {
+                if(_centerToNextRightEdgePerturbed == null) {
+                    _centerToNextRightEdgePerturbed = NoiseGenerator.Perturb(CenterToNextRightEdge, Center.RequiresYPerturb);
+                }
+                return _centerToNextRightEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToNextRightEdgePerturbed;
 
         public EdgeVertices LeftToCenterEdgePerturbed {
             get {
@@ -359,6 +379,20 @@ namespace Assets.Simulation.HexMap {
         }
         private EdgeVertices? _centerToRightInnerEdge;
 
+        public EdgeVertices LeftToCenterInnerEdge {
+            get {
+                if(_leftToCenterInnerEdge == null) {
+                    _leftToCenterInnerEdge = new EdgeVertices(
+                        LeftPeak + RenderConfig.GetFirstInnerSolidCorner (Direction.Next2()),
+                        LeftPeak + RenderConfig.GetSecondInnerSolidCorner(Direction.Next2())
+                    );
+                }
+
+                return _leftToCenterInnerEdge.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToCenterInnerEdge;
+
         public EdgeVertices LeftToRightInnerEdge {
             get {
                 if(_leftToRightInnerEdge == null) {
@@ -486,6 +520,43 @@ namespace Assets.Simulation.HexMap {
             get { return NextRight != null && NextRight.HasRoads && CenterToNextRightEdgeType != HexEdgeType.Cliff; }
         }
 
+        public EdgeVertices CenterToRightCultureStartEdgePerturbed {
+            get {
+                if(_centerToRightCultureStartEdgePerturbed == null) {
+                    var perturbedInnerEdge = NoiseGenerator.Perturb(CenterToRightInnerEdge, Center.RequiresYPerturb);
+
+                    _centerToRightCultureStartEdgePerturbed = new EdgeVertices(
+                        (perturbedInnerEdge.V1 + CenterToRightEdgePerturbed.V1) / 2f,
+                        (perturbedInnerEdge.V2 + CenterToRightEdgePerturbed.V2) / 2f,
+                        (perturbedInnerEdge.V3 + CenterToRightEdgePerturbed.V3) / 2f,
+                        (perturbedInnerEdge.V4 + CenterToRightEdgePerturbed.V4) / 2f,
+                        (perturbedInnerEdge.V5 + CenterToRightEdgePerturbed.V5) / 2f
+                    );
+                }
+
+                return _centerToRightCultureStartEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _centerToRightCultureStartEdgePerturbed;
+
+        public EdgeVertices LeftToRightCultureStartEdgePerturbed {
+            get {
+                if(_leftToRightCultureStartEdgePerturbed == null) {
+                    var perturbedInnerEdge = NoiseGenerator.Perturb(LeftToRightInnerEdge, Left.RequiresYPerturb);
+
+                    _leftToRightCultureStartEdgePerturbed = new EdgeVertices(
+                        (perturbedInnerEdge.V1 + LeftToCenterEdgePerturbed.V1) / 2f,
+                        (perturbedInnerEdge.V2 + LeftToCenterEdgePerturbed.V2) / 2f,
+                        (perturbedInnerEdge.V3 + LeftToCenterEdgePerturbed.V3) / 2f,
+                        (perturbedInnerEdge.V4 + LeftToCenterEdgePerturbed.V4) / 2f,
+                        (perturbedInnerEdge.V5 + LeftToCenterEdgePerturbed.V5) / 2f
+                    );
+                }
+
+                return _leftToRightCultureStartEdgePerturbed.GetValueOrDefault();
+            }
+        }
+        private EdgeVertices? _leftToRightCultureStartEdgePerturbed;
 
 
         private INoiseGenerator     NoiseGenerator;

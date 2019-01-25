@@ -7,7 +7,7 @@
 	}
 	SubShader {
 		Tags { "RenderType"="Transparent" "Queue"="AlphaTest" }
-		Offset 0, -2000
+		Offset -5, -2000
 		LOD 200
 		
 		CGPROGRAM

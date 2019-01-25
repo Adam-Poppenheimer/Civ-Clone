@@ -340,6 +340,29 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        public void TriangulateEdgeStripPartial(
+            EdgeVertices e1, Color w1, float index1, float v1, bool perturbEdgeOneY,
+            EdgeVertices e2, Color w2, float index2, float v2, bool perturbEdgeTwoY,
+            Color color, HexMesh targetMesh, bool includeV1, bool includeV5
+        ) {
+            TriangulateEdgeStripPartial(
+                e1, w1, index1, v1, perturbEdgeOneY,
+                e2, w2, index2, v2, perturbEdgeTwoY,
+                targetMesh, includeV1, includeV5
+            );
+
+            if(includeV1) {
+                targetMesh.AddQuadColor(color);
+            }
+
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+
+            if(includeV5) {
+                targetMesh.AddQuadColor(color);
+            }
+        }
+
         public void TriangulateEdgeStripUnperturbed(
             EdgeVertices edgeOne, Color weightsOne, float indexOne,
             EdgeVertices edgeTwo, Color weightsTwo, float indexTwo,
@@ -393,6 +416,19 @@ namespace Assets.Simulation.HexMap {
             targetMesh.AddQuadUV(0f, 0f, v1, v2);
             targetMesh.AddQuadUV(0f, 0f, v1, v2);
             targetMesh.AddQuadUV(0f, 0f, v1, v2);
+        }
+
+        public void TriangulateEdgeStripUnperturbed(
+            EdgeVertices e1, Color w1, float index1, float v1,
+            EdgeVertices e2, Color w2, float index2, float v2,
+            Color color, HexMesh targetMesh
+        ) {
+            TriangulateEdgeStripUnperturbed(e1, w1, index1, v1, e2, w2, index2, v2, targetMesh);
+
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
+            targetMesh.AddQuadColor(color);
         }
 
         public void TriangulateRoadSegment(

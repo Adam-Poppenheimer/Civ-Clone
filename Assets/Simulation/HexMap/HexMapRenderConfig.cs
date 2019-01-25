@@ -156,7 +156,7 @@ namespace Assets.Simulation.HexMap {
         public float WaterFactor {
             get { return _waterFactor; }
         }
-        [SerializeField] private float _waterFactor;
+        [SerializeField, Range(0f, 1f)] private float _waterFactor;
 
         public float WaterBlendFactor {
             get { return 1f - WaterFactor; }
@@ -241,6 +241,14 @@ namespace Assets.Simulation.HexMap {
             get { return _mountainTerrainIndex; }
         }
         [SerializeField] private int _mountainTerrainIndex = 6;
+
+        public float CultureStartFactor {
+            get { return OuterSolidFactor - BlendFactor; }
+        }
+
+        public float CultureEndFactor {
+            get { return 1f; }
+        }
 
         #endregion
 
@@ -346,6 +354,13 @@ namespace Assets.Simulation.HexMap {
 
         public Vector3 GetSecondWaterCorner(HexDirection direction) {
             return Corners[(int)direction + 1] * WaterFactor;
+        }
+
+        public Vector3 GetFirstCultureStartCorner(HexDirection direction) {
+            return Corners[(int)direction] * CultureStartFactor;
+        }
+        public Vector3 GetSecondCultureStartCorner(HexDirection direction) {
+            return Corners[(int)direction + 1] * CultureStartFactor;
         }
 
         public float GetRiverEdgeV(int vertex) {

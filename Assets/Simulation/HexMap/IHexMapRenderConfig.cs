@@ -82,6 +82,8 @@ namespace Assets.Simulation.HexMap {
         int WaterTerrainIndex    { get; }
         int MountainTerrainIndex { get; }
 
+        float CultureStartFactor { get; }
+
         #endregion
 
         #region methods
@@ -97,6 +99,9 @@ namespace Assets.Simulation.HexMap {
 
         Vector3 GetFirstWaterCorner (HexDirection direction);
         Vector3 GetSecondWaterCorner(HexDirection direction);
+
+        Vector3 GetFirstCultureStartCorner (HexDirection direction);
+        Vector3 GetSecondCultureStartCorner(HexDirection direction);
 
         Vector3      TerraceLerp(Vector3      a, Vector3      b, int step);
         Color        TerraceLerp(Color        a, Color        b, int step);
