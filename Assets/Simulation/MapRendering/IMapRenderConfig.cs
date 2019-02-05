@@ -15,7 +15,8 @@ namespace Assets.Simulation.MapRendering {
 
         int RandomSeed { get; }
 
-        Texture2D NoiseSource { get; }
+        Texture2D NoiseSource          { get; }
+        Texture2D ElevationNoiseSource { get; }
 
         float NoiseScale { get; }
 

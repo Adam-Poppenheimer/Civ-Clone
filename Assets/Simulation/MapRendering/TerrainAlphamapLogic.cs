@@ -40,7 +40,11 @@ namespace Assets.Simulation.MapRendering {
             if(Grid.HasCellAtLocation(position)) {
                 var cellAt = Grid.GetCellAtLocation(position);
 
-                retval[(int)cellAt.Terrain] = 1f;
+                if(cellAt.Terrain.IsWater()) {
+                    retval[(int)CellTerrain.Desert] = 1f;
+                }else {
+                    retval[(int)cellAt.Terrain] = 1f;
+                }
             }
 
             return retval;

@@ -19,10 +19,12 @@ namespace Assets.Simulation.MapRendering {
         private Terrain Terrain;
 
         private Coroutine RefreshAlphamapCoroutine;
+        private Coroutine RefreshHeightmapCoroutine;
 
 
 
         private ITerrainAlphamapLogic AlphamapLogic;
+        private ITerrainHeightLogic   HeightLogic;
         private IMapRenderConfig      RenderConfig;
 
         #endregion
@@ -31,9 +33,11 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         private void InjectDependencies(
-            ITerrainAlphamapLogic alphamapLogic, IMapRenderConfig renderConfig
+            ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
+            IMapRenderConfig renderConfig
         ) {
             AlphamapLogic = alphamapLogic;
+            HeightLogic   = heightLogic;
             RenderConfig  = renderConfig;
         }
 
@@ -59,8 +63,15 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshHeightmap() {
+            if(RefreshHeightmapCoroutine == null) {
+                RefreshHeightmapCoroutine = StartCoroutine(RefreshHeightmap_Perform());
+            }
+        }
+
         public void RefreshAll() {
             RefreshAlphamap();
+            RefreshHeightmap();
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -87,22 +98,24 @@ namespace Assets.Simulation.MapRendering {
             int mapWidth  = terrainData.alphamapWidth;
             int mapHeight = terrainData.alphamapHeight;
 
-            float widthToWorldX  = terrainData.size.x / mapWidth;
-            float heightToWorldZ = terrainData.size.z / mapHeight;
-
             float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, mapWidth, mapHeight);
 
-            for(int widthIndex = 0; widthIndex < mapWidth; widthIndex++) {
-                for(int heightIndex = 0; heightIndex < mapHeight; heightIndex++) {
+            for(int height = 0; height < mapHeight; height++) {
+                for(int width = 0; width < mapWidth; width++) {
+                    //For some reason, terrainData seems to index its points
+                    //as (y, x) rather than the more traditional (x, y), so
+                    //the worldX needs to be extracted from the width and the
+                    //worldX from the height.
+                    float normalWidth  = width  * 1.0f / (mapWidth  - 1);
+                    float normalHeight = height * 1.0f / (mapHeight - 1);
 
-                    Vector3 worldPosition = transform.position + new Vector3(
-                        widthIndex * widthToWorldX, 0f, heightIndex * heightToWorldZ
-                    );
+                    float worldX = transform.position.x + normalHeight * terrainData.size.x;
+                    float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
 
-                    float[] newAlphas = AlphamapLogic.GetAlphamapForPosition(worldPosition);
+                    float[] newAlphas = AlphamapLogic.GetAlphamapForPosition(new Vector3(worldX, 0f, worldZ));
 
-                    for(int alphaIndex = 0; alphaIndex < terrainData.alphamapTextures.Length; alphaIndex++) {
-                        alphaMaps[widthIndex, heightIndex, alphaIndex] = newAlphas[alphaIndex];
+                    for(int alphaIndex = 0; alphaIndex < terrainData.splatPrototypes.Length; alphaIndex++) {
+                        alphaMaps[width, height, alphaIndex] = newAlphas[alphaIndex];
                     }
                 }
             }
@@ -110,6 +123,37 @@ namespace Assets.Simulation.MapRendering {
             terrainData.SetAlphamaps(0, 0, alphaMaps);
 
             Terrain.Flush();
+
+            RefreshAlphamapCoroutine = null;
+        }
+
+        private IEnumerator RefreshHeightmap_Perform() {
+            yield return new WaitForEndOfFrame();
+
+            var terrainData = Terrain.terrainData;
+
+            int mapWidth  = terrainData.heightmapWidth;
+            int mapHeight = terrainData.heightmapHeight;
+
+            float[,] heights = terrainData.GetHeights(0, 0, mapWidth, mapHeight);
+
+            for(int height = 0; height < mapHeight; height++) {
+                for(int width = 0; width < mapWidth; width++) {
+                    float normalWidth  = width  * 1.0f / (mapWidth  - 1);
+                    float normalHeight = height * 1.0f / (mapHeight - 1);
+
+                    float worldX = transform.position.x + normalHeight * terrainData.size.x;
+                    float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
+
+                    heights[width, height] = HeightLogic.GetHeightForPosition(new Vector3(worldX, 0f, worldZ));
+                }
+            }
+
+            terrainData.SetHeightsDelayLOD(0, 0, heights);
+
+            Terrain.Flush();
+
+            RefreshHeightmapCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

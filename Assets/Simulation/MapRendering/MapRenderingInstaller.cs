@@ -14,7 +14,7 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         [SerializeField] private MapRenderConfig RenderConfig;
-        [SerializeField] private FeatureConfig      FeatureConfig;
+        [SerializeField] private FeatureConfig   FeatureConfig;
 
         #endregion
 
@@ -26,7 +26,9 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMapRenderConfig>().To<MapRenderConfig>().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>  ().To<FeatureConfig>  ().FromInstance(FeatureConfig);
 
+            Container.Bind<INoiseGenerator>      ().To<NoiseGenerator>      ().AsSingle();
             Container.Bind<ITerrainAlphamapLogic>().To<TerrainAlphamapLogic>().AsSingle();
+            Container.Bind<ITerrainHeightLogic>  ().To<TerrainHeightLogic>  ().AsSingle();
         }
 
         #endregion

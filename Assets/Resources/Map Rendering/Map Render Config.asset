@@ -13,6 +13,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _randomSeed: 0
   _noiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
+  _elevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
+    type: 3}
   _noiseScale: 0.003
   _noiseHashGridSize: 256
   _noiseHashGridScale: 0.25
@@ -20,19 +22,16 @@ MonoBehaviour:
   _outerRadius: 10
   _outerSolidFactor: 0.85
   _innerSolidFactor: 0.45
-  _chunkWidth: 50
-  _chunkHeight: 50
-  _maxElevation: 40
-  _terrainAlphamapResolution: 513
-  _terrainHeightmapResolution: 513
+  _chunkWidth: 40
+  _chunkHeight: 40
+  _maxElevation: 10
+  _terrainAlphamapResolution: 257
+  _terrainHeightmapResolution: 65
   _mapTextures:
   - {fileID: 2800000, guid: 2522d1327e582f24e89346841cbd8cc0, type: 3}
   - {fileID: 2800000, guid: 731f3b4d8451d2c49bcbee07aabe9ac1, type: 3}
   - {fileID: 2800000, guid: b6d23a4590258af4bbdbfd1f7d762837, type: 3}
   - {fileID: 2800000, guid: 133f8248c4a9b37418c642f1a1bc43f8, type: 3}
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
-  - {fileID: 2800000, guid: b6d23a4590258af4bbdbfd1f7d762837, type: 3}
-  - {fileID: 2800000, guid: b6d23a4590258af4bbdbfd1f7d762837, type: 3}
-  - {fileID: 2800000, guid: b6d23a4590258af4bbdbfd1f7d762837, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
   - {fileID: 2800000, guid: d6591c2f811c06c41a98a6111f7bd97a, type: 3}

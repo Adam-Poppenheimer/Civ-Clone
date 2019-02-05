@@ -303,8 +303,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunks() {
-            float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2;
-            float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f;
+            float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2    + RenderConfig.InnerRadius;
+            float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f + RenderConfig.OuterRadius / 2f;
 
             if(RenderConfig.ChunkWidth == 0f || RenderConfig.ChunkHeight == 0f) {
                 throw new InvalidOperationException("Attempting to create chunks when at least one chunk dimension is zero");
@@ -316,7 +316,7 @@ namespace Assets.Simulation.HexMap {
                     float chunkWidth  = Mathf.Min(RenderConfig.ChunkWidth,  mapWidth  - chunkX);
                     float chunkHeight = Mathf.Min(RenderConfig.ChunkHeight, mapHeight - chunkZ);
 
-                    CreateChunk(chunkX, chunkZ, chunkWidth, chunkHeight);
+                    CreateChunk(chunkX - RenderConfig.InnerRadius, chunkZ - RenderConfig.OuterRadius, chunkWidth, chunkHeight);
                 }
             }
         }

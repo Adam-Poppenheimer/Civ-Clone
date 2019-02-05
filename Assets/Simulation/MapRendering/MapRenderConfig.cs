@@ -27,6 +27,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Texture2D _noiseSource;
 
+        public Texture2D ElevationNoiseSource {
+            get { return _elevationNoiseSource; }
+        }
+        [SerializeField] private Texture2D _elevationNoiseSource;
+
         public float NoiseScale {
             get { return _noiseScale; }
         }

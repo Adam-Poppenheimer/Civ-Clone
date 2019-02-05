@@ -41,6 +41,13 @@ namespace Assets.Simulation.MapRendering {
             );
         }
 
+        public float SampleElevationNoise(Vector3 position) {
+            return RenderConfig.ElevationNoiseSource.GetPixelBilinear(
+                position.x * RenderConfig.NoiseScale,
+                position.z * RenderConfig.NoiseScale
+            ).r;
+        }
+
         public Vector3 Perturb(Vector3 position) {
             Vector4 sample = SampleNoise(position);
 
