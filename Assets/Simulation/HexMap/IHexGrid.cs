@@ -14,9 +14,6 @@ namespace Assets.Simulation.HexMap {
 
         ReadOnlyCollection<IHexCell> Cells { get; }
 
-        int ChunkCountX { get; }
-        int ChunkCountZ { get; }
-
         int CellCountX { get; }
         int CellCountZ { get; }
 
@@ -24,7 +21,7 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        void Build(int chunkCountX, int chunkCountZ);
+        void Build(int cellCountX, int cellCountZ);
         void Clear();
 
         bool     HasCellAtCoordinates(HexCoordinates coords);

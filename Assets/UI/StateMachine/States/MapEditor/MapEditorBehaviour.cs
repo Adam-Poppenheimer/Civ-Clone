@@ -86,7 +86,7 @@ namespace Assets.UI.StateMachine.States.MapEditor {
                 element.IsActive = false;
             }
 
-            Grid.Build(4, 3);
+            Grid.Build(10, 7);
 
             var playerCiv    = CivFactory.Create(CivConfig.DefaultTemplate);
             var barbarianCiv = CivFactory.Create(CivConfig.BarbarianTemplate);

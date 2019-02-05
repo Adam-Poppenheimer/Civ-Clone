@@ -64,9 +64,9 @@ namespace Assets.Tests.Simulation.MapManagement {
         }
 
         [Test]
-        public void ComposeCells_ChunkCountRecorded() {
-            MockGrid.Setup(grid => grid.ChunkCountX).Returns(10);
-            MockGrid.Setup(grid => grid.ChunkCountZ).Returns(7);
+        public void ComposeCells_CellCountRecorded() {
+            MockGrid.Setup(grid => grid.CellCountX).Returns(10);
+            MockGrid.Setup(grid => grid.CellCountZ).Returns(7);
 
             var mapData = new SerializableMapData();
 
@@ -74,8 +74,8 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             composer.ComposeCells(mapData);
 
-            Assert.AreEqual(10, mapData.ChunkCountX, "Incorrect ChunkCountX");
-            Assert.AreEqual(7,  mapData.ChunkCountZ, "Incorrect ChunkCountZ");
+            Assert.AreEqual(10, mapData.CellCountX, "Incorrect ChunkCountX");
+            Assert.AreEqual(7,  mapData.CellCountZ, "Incorrect ChunkCountZ");
         }
 
         [Test]
@@ -402,7 +402,7 @@ namespace Assets.Tests.Simulation.MapManagement {
         [Test]
         public void DecomposeCells_GridBuiltWithProperChunkCount() {
             var mapData = new SerializableMapData() {
-                ChunkCountX = 10, ChunkCountZ = 7,
+                CellCountX = 10, CellCountZ = 7,
                 HexCells = new List<SerializableHexCellData>()
             };
 

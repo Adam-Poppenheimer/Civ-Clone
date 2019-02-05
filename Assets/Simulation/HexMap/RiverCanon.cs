@@ -185,39 +185,16 @@ namespace Assets.Simulation.HexMap {
                 return true;
             }
 
-            bool cellIsBelow = cell.EdgeElevation < previousNeighbor.EdgeElevation &&
-                               cell.EdgeElevation < neighbor        .EdgeElevation;
-
-            bool previousNeighborIsBelow = previousNeighbor.EdgeElevation < cell.EdgeElevation &&
-                                           previousNeighbor.EdgeElevation < neighbor.EdgeElevation;
-
-            bool neighborIsBelow = neighbor.EdgeElevation < cell            .EdgeElevation &&
-                                   neighbor.EdgeElevation < previousNeighbor.EdgeElevation;
-
             if(HasRiverAlongEdge(cell, edge.Previous())) {
-
-                if(previousNeighborIsBelow && flow == RiverFlow.Clockwise) {
-                    return false;
-                }else if(neighborIsBelow && flow == RiverFlow.Counterclockwise) {
-                    return false;
-                } else {
-                    return HasRiverAlongEdge(previousNeighbor, edge.Next())
-                        || GetFlowOfRiverAtEdge(cell, edge.Previous()) == flow;
-                }
+                return HasRiverAlongEdge(previousNeighbor, edge.Next())
+                    || GetFlowOfRiverAtEdge(cell, edge.Previous()) == flow;
 
             }else if(HasRiverAlongEdge(previousNeighbor, edge.Next())) {
-
-                if(cellIsBelow && flow == RiverFlow.Counterclockwise) {
-                    return false;
-                }else {
-                    return GetFlowOfRiverAtEdge(previousNeighbor, edge.Next()) == flow
-                        && (!previousNeighborIsBelow || flow == RiverFlow.Counterclockwise);
-                }
+                return GetFlowOfRiverAtEdge(previousNeighbor, edge.Next()) == flow
+                    && flow == RiverFlow.Counterclockwise;
 
             }else {
-
                 return true;
-
             }
         }
 
@@ -227,36 +204,15 @@ namespace Assets.Simulation.HexMap {
         ) {
             if(nextNeighbor == null) {
                 return true;
-            }
-
-            bool cellIsBelow = cell.EdgeElevation < neighbor    .EdgeElevation &&
-                               cell.EdgeElevation < nextNeighbor.EdgeElevation;
-
-            bool neighborIsBelow = neighbor.EdgeElevation < cell        .EdgeElevation &&
-                                   neighbor.EdgeElevation < nextNeighbor.EdgeElevation;
-
-            bool nextNeighborIsBelow = nextNeighbor.EdgeElevation < cell    .EdgeElevation &&
-                                       nextNeighbor.EdgeElevation < neighbor.EdgeElevation;            
+            }          
 
             if(HasRiverAlongEdge(cell, edge.Next())) {
-
-                if(nextNeighborIsBelow && flow == RiverFlow.Counterclockwise){
-                    return false;
-                }else if(neighborIsBelow && flow == RiverFlow.Clockwise) {
-                    return false;
-                } else {
-                    return HasRiverAlongEdge(nextNeighbor, edge.Previous())
+                return HasRiverAlongEdge(nextNeighbor, edge.Previous())
                         || GetFlowOfRiverAtEdge(cell, edge.Next()) == flow;
-                }
 
             }else if(HasRiverAlongEdge(nextNeighbor, edge.Previous())) {
-
-                if(cellIsBelow && flow == RiverFlow.Clockwise) {
-                    return false;
-                } else {
-                    return GetFlowOfRiverAtEdge(nextNeighbor, edge.Previous()) == flow
-                        && (!nextNeighborIsBelow || flow == RiverFlow.Clockwise);
-                }
+                return GetFlowOfRiverAtEdge(nextNeighbor, edge.Previous()) == flow
+                    && flow == RiverFlow.Clockwise;
 
             }else {
 

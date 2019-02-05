@@ -9,6 +9,7 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapRendering;
 
 using UnityCustomUtilities.Extensions;
 
@@ -34,7 +35,7 @@ namespace Assets.UI.MapEditor {
         private IRiverCanon         RiverCanon;
         private IHexGrid            Grid;
         private HexCellSignals      CellSignals;
-        private IHexMapRenderConfig RenderConfig;
+        private IMapRenderConfig RenderConfig;
 
         #endregion
 
@@ -43,7 +44,7 @@ namespace Assets.UI.MapEditor {
         [Inject]
         public void InjectDependencies(
             IRiverCanon riverCanon, IHexGrid grid, HexCellSignals cellSignals,
-            IHexMapRenderConfig renderConfig
+            IMapRenderConfig renderConfig
         ) {
             RiverCanon   = riverCanon;
             Grid         = grid;
@@ -152,8 +153,8 @@ namespace Assets.UI.MapEditor {
             var directions = EnumUtil.GetValues<HexDirection>().ToList();
 
             directions.Sort(delegate(HexDirection directionOne, HexDirection directionTwo) {
-                var edgeOneMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMiddle(directionOne);
-                var edgeTwoMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMiddle(directionTwo);
+                var edgeOneMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMidpoint(directionOne);
+                var edgeTwoMiddle = cell.AbsolutePosition + RenderConfig.GetOuterEdgeMidpoint(directionTwo);
 
                 return Vector3.Distance(mouseRayHit, edgeOneMiddle)
                     .CompareTo(Vector3.Distance(mouseRayHit, edgeTwoMiddle));
@@ -190,7 +191,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private RiverFlow? GetFlowFromEdgeMidpoint(IHexCell cell, HexDirection sextant) {
-            Vector2 toSextantMidpointFromCenter = RenderConfig.GetOuterEdgeMiddle(sextant);
+            Vector2 toSextantMidpointFromCenter = RenderConfig.GetOuterEdgeMidpoint(sextant);
 
             Vector2 toMouseFromCenter = GetMouseRaycastPoint() - cell.AbsolutePosition;
 

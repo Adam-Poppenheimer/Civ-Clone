@@ -384,8 +384,8 @@ namespace Assets.Simulation.Units {
             IHexCell startingCell = PositionCanon.GetOwnerOfPossession(this);
             IHexCell currentCell = startingCell;
 
-            Vector3 a, b, c = currentCell.UnitAnchorPoint;
-            yield return LookAt(CurrentPath.First().UnitAnchorPoint);
+            Vector3 a, b, c = currentCell.AbsolutePosition;
+            yield return LookAt(CurrentPath.First().AbsolutePosition);
 
             float t = Time.deltaTime * Config.TravelSpeedPerSecond;
 
@@ -407,8 +407,8 @@ namespace Assets.Simulation.Units {
                 CurrentPath.RemoveAt(0);
 
                 a = c;
-                b = currentCell.UnitAnchorPoint;
-                c = (b + nextCell.UnitAnchorPoint) * 0.5f;
+                b = currentCell.AbsolutePosition;
+                c = (b + nextCell.AbsolutePosition) * 0.5f;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
                     transform.position = Bezier.GetPoint(a, b, c, t);
@@ -424,7 +424,7 @@ namespace Assets.Simulation.Units {
 
             if(currentCell != startingCell) {
                 a = c;
-                b = currentCell.UnitAnchorPoint;
+                b = currentCell.AbsolutePosition;
                 c = b;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {

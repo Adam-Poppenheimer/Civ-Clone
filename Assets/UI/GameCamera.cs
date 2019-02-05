@@ -9,6 +9,7 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapRendering;
 
 namespace Assets.UI {
 
@@ -41,14 +42,14 @@ namespace Assets.UI {
 
 
         private IHexGrid            Grid;
-        private IHexMapRenderConfig RenderConfig;
+        private IMapRenderConfig RenderConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IHexGrid grid, IHexMapRenderConfig renderConfig) {
+        public void InjectDependencies(IHexGrid grid, IMapRenderConfig renderConfig) {
             Grid         = grid;
             RenderConfig = renderConfig;
         }
@@ -109,8 +110,8 @@ namespace Assets.UI {
         }
 
         private Vector3 ClampPosition(Vector3 position) {
-            float xMax = (Grid.ChunkCountX * RenderConfig.ChunkSizeX - 0.5f) * (2f   * RenderConfig.InnerRadius);
-            float zMax = (Grid.ChunkCountZ * RenderConfig.ChunkSizeZ - 1f)   * (1.5f * RenderConfig.OuterRadius);
+            float xMax = (Grid.CellCountX - 0.5f) * 2f   * RenderConfig.InnerRadius;
+            float zMax = (Grid.CellCountZ - 1f)   * 1.5f * RenderConfig.OuterRadius;
 
             position.x = Mathf.Clamp(position.x, 0f, xMax);
             position.z = Mathf.Clamp(position.z, 0f, zMax);

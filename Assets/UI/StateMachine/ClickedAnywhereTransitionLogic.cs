@@ -8,6 +8,7 @@ using UnityEngine.EventSystems;
 
 using Assets.Simulation.Cities;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapRendering;
 using Assets.Simulation.Units;
 
 namespace Assets.UI.StateMachine {
@@ -18,7 +19,7 @@ namespace Assets.UI.StateMachine {
 
         private static List<Type> NonDefaultingTypes = new List<Type>() {
             typeof(ICity),
-            typeof(HexGridChunk),
+            typeof(MapChunk),
             typeof(Canvas),
             typeof(IUnit)
         };

@@ -11,8 +11,9 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.WorkerSlots;
+using Assets.Simulation.MapRendering;
 
-using UnityCustomUtilities.DataStructures;
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.HexMap {
 
@@ -33,9 +34,6 @@ namespace Assets.Simulation.HexMap {
         }
         private List<IHexCell> cells;
 
-        public int ChunkCountX { get; private set; }
-        public int ChunkCountZ { get; private set; }
-
         public int CellCountX { get; private set; }
         public int CellCountZ { get; private set; }
 
@@ -43,11 +41,11 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private HexCell CellPrefab;
 
-        [SerializeField] private HexGridChunk ChunkPrefab;
+        [SerializeField] private MapChunk MapChunkPrefab;
 
         [SerializeField] private LayerMask TerrainCollisionMask;        
 
-        private HexGridChunk[] Chunks;
+        private List<MapChunk> Chunks = new List<MapChunk>();
 
         private HexCellShaderData CellShaderData;
 
@@ -56,7 +54,7 @@ namespace Assets.Simulation.HexMap {
         private DiContainer            Container;
         private IWorkerSlotFactory     WorkerSlotFactory;
         private ICellModificationLogic CellModificationLogic;
-        private IHexMapRenderConfig    RenderConfig;
+        private IMapRenderConfig       RenderConfig;
         private HexCellSignals         CellSignals;
 
         #endregion
@@ -67,7 +65,7 @@ namespace Assets.Simulation.HexMap {
         public void InjectDependencies(
             DiContainer container, IWorkerSlotFactory workerSlotFactory,
             ICellModificationLogic cellModificationLogic,
-            IHexMapRenderConfig renderConfig, HexCellSignals cellSignals
+            IMapRenderConfig renderConfig, HexCellSignals cellSignals
         ) {
             Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
@@ -82,16 +80,13 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexGrid        
 
-        public void Build(int chunkCountX, int chunkCountZ) {
+        public void Build(int cellCountX, int cellCountZ) {
             Profiler.BeginSample("Clear Grid");
             Clear();
             Profiler.EndSample();
 
-            ChunkCountX = chunkCountX;
-            ChunkCountZ = chunkCountZ;
-
-            CellCountX = ChunkCountX * RenderConfig.ChunkSizeX;
-            CellCountZ = ChunkCountZ * RenderConfig.ChunkSizeZ;
+            CellCountX = cellCountX;
+            CellCountZ = cellCountZ;
 
             Profiler.BeginSample("Set up HexCellShaderData");
             CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
@@ -100,8 +95,13 @@ namespace Assets.Simulation.HexMap {
             CellShaderData.enabled = true;
             Profiler.EndSample();
 
-            CreateChunks();
             CreateCells();
+            CreateChunks();
+            AttachChunksToCells();
+
+            foreach(var chunk in Chunks) {
+                chunk.RefreshAlphamap();
+            }
 
             foreach(var cell in Cells) {
                 cell.RefreshSelfOnly();
@@ -117,12 +117,13 @@ namespace Assets.Simulation.HexMap {
 
              cells.Clear();
 
-            for(int i = Chunks.Length - 1; i >= 0; i--) {
+            for(int i = Chunks.Count - 1; i >= 0; i--) {
                 Destroy(Chunks[i].gameObject);
             }
 
             cells  = null;
-            Chunks = null;
+
+            Chunks.Clear();
         }
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
@@ -265,66 +266,77 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        private void CreateChunks() {
-            Profiler.BeginSample("CreateChunks");
-            Chunks = new HexGridChunk[ChunkCountX * ChunkCountZ];
-
-            for(int z = 0, i = 0; z < ChunkCountZ; z++) {
-                for(int x = 0; x < ChunkCountX; x++) {
-                    HexGridChunk chunk = Chunks[i++] = Container.InstantiatePrefabForComponent<HexGridChunk>(ChunkPrefab);
-                    chunk.transform.SetParent(transform);
-                }
-            }
-            Profiler.EndSample();
-        }
-
         private void CreateCells() {
             Profiler.BeginSample("CreateCells");
-            var newCells = new HexCell[CellCountX * CellCountZ];
+
+            cells = new List<IHexCell>();
 
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
-                    CreateCell(x, z, i++, newCells);
+                    CreateCell(x, z, i++);
                 }
             }
-
-            cells = newCells.Cast<IHexCell>().ToList();
             Profiler.EndSample();
         }
 
-        private void CreateCell(int x, int z, int i, HexCell[] newCells) {
+        private void CreateCell(int x, int z, int i) {
             var position = new Vector3(
                 (x + z * 0.5f - z / 2) * RenderConfig.InnerRadius * 2f,
                 0f,
                 z * RenderConfig.OuterRadius * 1.5f
             );
 
-            var newCell = newCells[i] = new HexCell(position, this, CellSignals, RenderConfig);
+            var newCell = new HexCell(position, this, CellSignals);
 
             newCell.WorkerSlot = WorkerSlotFactory.BuildSlot(newCell);
 
-            newCell.ShaderData  = CellShaderData;
             newCell.Index       = i;
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
-            CellModificationLogic.ChangeTerrainOfCell   (newCell, CellTerrain.Grassland);
+            var randomTerrain = (CellTerrain)UnityEngine.Random.Range(0, EnumUtil.GetValues<CellTerrain>().Count() - 1);
+
+            CellModificationLogic.ChangeTerrainOfCell   (newCell, randomTerrain);
             CellModificationLogic.ChangeShapeOfCell     (newCell, CellShape.Flatlands);
             CellModificationLogic.ChangeVegetationOfCell(newCell, CellVegetation.None);
 
-            AddCellToChunk(x, z, newCell);
+            cells.Add(newCell);
         }
 
-        private void AddCellToChunk(int x, int z, HexCell cell) {
-            int chunkX = x / RenderConfig.ChunkSizeX;
-            int chunkZ = z / RenderConfig.ChunkSizeZ;
-            HexGridChunk chunk = Chunks[chunkX + chunkZ * ChunkCountX];
+        private void CreateChunks() {
+            float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2;
+            float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f;
 
-            int localX = x - chunkX * RenderConfig.ChunkSizeX;
-            int localZ = z - chunkZ * RenderConfig.ChunkSizeZ;
+            if(RenderConfig.ChunkWidth == 0f || RenderConfig.ChunkHeight == 0f) {
+                throw new InvalidOperationException("Attempting to create chunks when at least one chunk dimension is zero");
+            }
 
-            chunk.AddCell(localX + localZ * RenderConfig.ChunkSizeX, cell);
+            for(float chunkX = 0f; chunkX < mapWidth; chunkX += RenderConfig.ChunkWidth) {
+                for(float chunkZ = 0f; chunkZ < mapHeight; chunkZ += RenderConfig.ChunkHeight) {
 
-            cell.Chunk = chunk;
+                    float chunkWidth  = Mathf.Min(RenderConfig.ChunkWidth,  mapWidth  - chunkX);
+                    float chunkHeight = Mathf.Min(RenderConfig.ChunkHeight, mapHeight - chunkZ);
+
+                    CreateChunk(chunkX, chunkZ, chunkWidth, chunkHeight);
+                }
+            }
+        }
+
+        private void CreateChunk(float chunkX, float chunkZ, float width, float height) {
+            var newChunk = Container.InstantiatePrefabForComponent<MapChunk>(MapChunkPrefab);
+
+            newChunk.InitializeTerrain(
+                new Vector3(chunkX, 0f, chunkZ), width, height
+            );
+
+            Chunks.Add(newChunk);
+        }
+
+        private void AttachChunksToCells() {
+            foreach(var cell in Cells) {
+                var overlappingChunks = Chunks.Where(chunk => chunk.DoesCellOverlapChunk(cell)).ToArray();
+
+                cell.AttachToChunks(overlappingChunks);
+            }
         }
 
         private HexCoordinates GetCoordinatesFromPosition(Vector3 position) {

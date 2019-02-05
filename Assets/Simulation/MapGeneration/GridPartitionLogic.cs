@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapRendering;
 
 namespace Assets.Simulation.MapGeneration {
 
@@ -15,14 +16,14 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        private IHexMapRenderConfig RenderConfig;
+        private IMapRenderConfig RenderConfig;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public GridPartitionLogic(IHexMapRenderConfig renderConfig) {
+        public GridPartitionLogic(IMapRenderConfig renderConfig) {
             RenderConfig = renderConfig;
         }
 

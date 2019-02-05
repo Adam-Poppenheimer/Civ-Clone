@@ -13,6 +13,7 @@ using UniRx;
 using Assets.Simulation;
 using Assets.Simulation.Civilizations;
 using Assets.Simulation.HexMap;
+using Assets.Simulation.MapRendering;
 using Assets.Simulation.Units;
 using Assets.Simulation.Visibility;
 
@@ -53,7 +54,7 @@ namespace Assets.UI.Units {
         private UnitSignals                                   UnitSignals;
         private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
         private VisibilitySignals                             VisibilitySignals;
-        private IHexMapRenderConfig                           HexMapRenderConfig;
+        private IMapRenderConfig                           HexMapRenderConfig;
 
         #endregion
 
@@ -64,7 +65,7 @@ namespace Assets.UI.Units {
             IUnitFactory unitFactory, IUnitPositionCanon unitPositionCanon, UnitMapIcon.Pool iconPool,
             UnitIconSlot.Pool iconSlotPool, IVisibilityCanon visibilityCanon, UnitSignals unitSignals,
             IPossessionRelationship<ICivilization, IUnit> unitPossessionCanon,
-            VisibilitySignals visibilitySignals, IHexMapRenderConfig hexMapRenderConfig
+            VisibilitySignals visibilitySignals, IMapRenderConfig hexMapRenderConfig
         ) {
             UnitFactory         = unitFactory;
             UnitPositionCanon   = unitPositionCanon;
