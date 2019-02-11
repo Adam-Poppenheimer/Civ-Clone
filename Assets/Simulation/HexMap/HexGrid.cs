@@ -294,9 +294,10 @@ namespace Assets.Simulation.HexMap {
             newCell.Coordinates = HexCoordinates.FromOffsetCoordinates(x, z);
 
             var randomTerrain = (CellTerrain)UnityEngine.Random.Range(0, EnumUtil.GetValues<CellTerrain>().Count() - 1);
+            var randomShape   = (CellShape)  UnityEngine.Random.Range(0, EnumUtil.GetValues<CellShape>  ().Count());
 
             CellModificationLogic.ChangeTerrainOfCell   (newCell, randomTerrain);
-            CellModificationLogic.ChangeShapeOfCell     (newCell, CellShape.Flatlands);
+            CellModificationLogic.ChangeShapeOfCell     (newCell, randomShape);
             CellModificationLogic.ChangeVegetationOfCell(newCell, CellVegetation.None);
 
             cells.Add(newCell);

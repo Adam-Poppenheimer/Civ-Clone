@@ -16,6 +16,7 @@ namespace Assets.Simulation.HexMap {
         #region properties
 
         Vector3 AbsolutePosition     { get; }
+        Vector2 AbsolutePositionXZ   { get; }
         Vector3 GridRelativePosition { get; }
 
         HexCoordinates Coordinates { get; }

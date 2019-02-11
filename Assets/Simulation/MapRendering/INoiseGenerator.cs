@@ -6,9 +6,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        Vector4 SampleNoise(Vector3 position);
-
-        float SampleElevationNoise(Vector3 position);
+        Vector4 SampleNoise(Vector3 position, NoiseType type);
 
         Vector3 Perturb(Vector3 position);
 

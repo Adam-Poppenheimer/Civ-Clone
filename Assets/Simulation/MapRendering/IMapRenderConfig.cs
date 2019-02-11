@@ -15,12 +15,11 @@ namespace Assets.Simulation.MapRendering {
 
         int RandomSeed { get; }
 
-        Texture2D NoiseSource          { get; }
-        Texture2D ElevationNoiseSource { get; }
+        INoiseTexture GenericNoiseSource { get; }
 
         float NoiseScale { get; }
 
-        int   NoiseHashGridSize  { get; }
+        int NoiseHashGridSize { get; }
         float NoiseHashGridScale { get; }
 
         float CellPerturbStrengthXZ { get; }
@@ -44,10 +43,17 @@ namespace Assets.Simulation.MapRendering {
 
         float MaxElevation { get; }
 
-        int TerrainAlphamapResolution  { get; }
+        int TerrainAlphamapResolution { get; }
         int TerrainHeightmapResolution { get; }
 
         IEnumerable<Texture2D> MapTextures { get; }
+
+        float SeaFloorElevation         { get; }
+        float MountainPeakElevation  { get; }
+        float MountainRidgeElevation { get; }
+
+        INoiseTexture FlatlandsElevationHeightmap { get; }
+        INoiseTexture HillsElevationHeightmap     { get; }
 
         #endregion
 
@@ -56,10 +62,23 @@ namespace Assets.Simulation.MapRendering {
         Vector3 GetFirstCorner (HexDirection direction);
         Vector3 GetSecondCorner(HexDirection direction);
 
-        Vector3 GetFirstOuterSolidCorner (HexDirection direction);
-        Vector3 GetSecondOuterSolidCorner(HexDirection direction);
+        Vector3 GetFirstSolidCorner (HexDirection direction);
+        Vector3 GetSecondSolidCorner(HexDirection direction);
 
-        Vector3 GetOuterEdgeMidpoint(HexDirection direction);
+        Vector3 GetEdgeMidpoint(HexDirection direction);
+
+        Vector3 GetSolidEdgeMidpoint(HexDirection direction);
+
+
+        Vector2 GetFirstCornerXZ (HexDirection direction);
+        Vector2 GetSecondCornerXZ(HexDirection direction);
+
+        Vector2 GetFirstSolidCornerXZ (HexDirection direction);
+        Vector2 GetSecondSolidCornerXZ(HexDirection direction);
+
+        Vector2 GetEdgeMidpointXZ(HexDirection direction);
+
+        Vector2 GetSolidEdgeMidpointXZ(HexDirection direction);
 
         #endregion
 

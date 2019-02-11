@@ -13,9 +13,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _randomSeed: 0
   _noiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
-  _elevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
-    type: 3}
-  _noiseScale: 0.003
+  _noiseScale: 0.005
   _noiseHashGridSize: 256
   _noiseHashGridScale: 0.25
   _cellPerturbStrengthXZ: 2
@@ -24,8 +22,8 @@ MonoBehaviour:
   _innerSolidFactor: 0.45
   _chunkWidth: 40
   _chunkHeight: 40
-  _maxElevation: 10
-  _terrainAlphamapResolution: 257
+  _maxElevation: 20
+  _terrainAlphamapResolution: 129
   _terrainHeightmapResolution: 65
   _mapTextures:
   - {fileID: 2800000, guid: 2522d1327e582f24e89346841cbd8cc0, type: 3}
@@ -35,3 +33,12 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
   - {fileID: 2800000, guid: d6591c2f811c06c41a98a6111f7bd97a, type: 3}
+  _waterElevation: 0
+  _mountainPeakElevation: 0.5
+  _mountainRidgeElevation: 0.35
+  _flatlandsElevationHeightmap: {fileID: 2800000, guid: ad46ff8ecbae8434b8242fd5f480112c,
+    type: 3}
+  _hillsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
+    type: 3}
+  _mountainsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
+    type: 3}

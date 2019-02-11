@@ -23,6 +23,13 @@ namespace Assets.Simulation.HexMap {
             get { return Grid.GetAbsolutePositionFromRelative(GridRelativePosition); }
         }
 
+        public Vector2 AbsolutePositionXZ {
+            get {
+                var position = AbsolutePosition;
+                return new Vector2(position.x, position.z);
+            }
+        }
+
         public Vector3 GridRelativePosition { get; private set; }
 
         public HexCoordinates Coordinates { get; set; }

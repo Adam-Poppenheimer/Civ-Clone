@@ -50,8 +50,8 @@ namespace Assets.Simulation.MapRendering {
         //to the edge, with one vertex right in the middle of the cell.
         public IEnumerable<Vector3> GetDirectionalFeaturePoints(IHexCell cell, HexDirection direction) {
             var center = cell.GridRelativePosition;
-            var cornerOne = RenderConfig.GetFirstOuterSolidCorner (direction) + center;
-            var cornerTwo = RenderConfig.GetSecondOuterSolidCorner(direction) + center;
+            var cornerOne = RenderConfig.GetFirstSolidCorner (direction) + center;
+            var cornerTwo = RenderConfig.GetSecondSolidCorner(direction) + center;
 
             var edgeMidpoint = (cornerOne + cornerTwo) / 2f;
 

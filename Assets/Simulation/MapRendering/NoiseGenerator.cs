@@ -34,22 +34,24 @@ namespace Assets.Simulation.MapRendering {
 
         #region from INoiseGenerator
 
-        public Vector4 SampleNoise(Vector3 position) {
-            return RenderConfig.NoiseSource.GetPixelBilinear(
+        public Vector4 SampleNoise(Vector3 position, NoiseType type) {
+            INoiseTexture noiseSource;
+
+            switch(type) {
+                case NoiseType.Generic:         noiseSource = RenderConfig.GenericNoiseSource;          break;
+                case NoiseType.FlatlandsHeight: noiseSource = RenderConfig.FlatlandsElevationHeightmap; break;
+                case NoiseType.HillsHeight:     noiseSource = RenderConfig.HillsElevationHeightmap;     break;
+                default: throw new System.NotImplementedException();
+            }
+
+            return noiseSource.SampleBilinear(
                 position.x * RenderConfig.NoiseScale,
                 position.z * RenderConfig.NoiseScale
             );
         }
 
-        public float SampleElevationNoise(Vector3 position) {
-            return RenderConfig.ElevationNoiseSource.GetPixelBilinear(
-                position.x * RenderConfig.NoiseScale,
-                position.z * RenderConfig.NoiseScale
-            ).r;
-        }
-
         public Vector3 Perturb(Vector3 position) {
-            Vector4 sample = SampleNoise(position);
+            Vector4 sample = SampleNoise(position, NoiseType.Generic);
 
             position.x += (sample.x * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;
             position.z += (sample.z * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;

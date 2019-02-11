@@ -22,15 +22,16 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private int _randomSeed;
 
 
-        public Texture2D NoiseSource {
-            get { return _noiseSource; }
+        public INoiseTexture GenericNoiseSource {
+            get {
+                if(_genericNoiseSource_Wrapped == null) {
+                    _genericNoiseSource_Wrapped = new NoiseTexture(_genericNoiseSource);
+                }
+                return _genericNoiseSource_Wrapped;
+            }
         }
-        [SerializeField] private Texture2D _noiseSource;
-
-        public Texture2D ElevationNoiseSource {
-            get { return _elevationNoiseSource; }
-        }
-        [SerializeField] private Texture2D _elevationNoiseSource;
+        private INoiseTexture _genericNoiseSource_Wrapped;
+        [SerializeField] private Texture2D _genericNoiseSource;
 
         public float NoiseScale {
             get { return _noiseScale; }
@@ -117,12 +118,54 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _terrainHeightmapResolution;
 
+
         public IEnumerable<Texture2D> MapTextures {
             get { return _mapTextures; }
         }
         [SerializeField] private List<Texture2D> _mapTextures;
 
+
+        public float SeaFloorElevation  {
+            get { return _seaFloorElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _seaFloorElevation;
+
+        public float MountainPeakElevation  {
+            get { return _mountainPeakElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _mountainPeakElevation;
+
+        public float MountainRidgeElevation  {
+            get { return _mountainRidgeElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _mountainRidgeElevation;
+
+
+        public INoiseTexture FlatlandsElevationHeightmap {
+            get {
+                if(_flatlandsElevationHeightmap_Wrapped == null) {
+                    _flatlandsElevationHeightmap_Wrapped = new NoiseTexture(_flatlandsElevationHeightmap);
+                }
+                return _flatlandsElevationHeightmap_Wrapped;
+            }
+        }
+        private INoiseTexture _flatlandsElevationHeightmap_Wrapped;
+        [SerializeField] private Texture2D _flatlandsElevationHeightmap;
+
+        public INoiseTexture HillsElevationHeightmap  {
+            get {
+                if(_hillsElevationHeightmap_Wrapped == null) {
+                    _hillsElevationHeightmap_Wrapped = new NoiseTexture(_hillsElevationHeightmap);
+                }
+                return _hillsElevationHeightmap_Wrapped;
+            }
+        }
+        private INoiseTexture _hillsElevationHeightmap_Wrapped;
+        [SerializeField] private Texture2D _hillsElevationHeightmap;   
+
         #endregion
+
+        private Vector2[] CornersXZ;
 
         #endregion
 
@@ -144,13 +187,23 @@ namespace Assets.Simulation.MapRendering {
 
         private void SetCorners() {
             corners = new Vector3[] {
-                new Vector3(0f, 0f,  OuterRadius),
-                new Vector3(InnerRadius, 0f,  0.5f * OuterRadius),
-                new Vector3(InnerRadius, 0f, -0.5f * OuterRadius),
-                new Vector3(0f, 0f, -OuterRadius),
+                new Vector3(0f,           0f,  OuterRadius),
+                new Vector3(InnerRadius,  0f,  0.5f * OuterRadius),
+                new Vector3(InnerRadius,  0f, -0.5f * OuterRadius),
+                new Vector3(0f,           0f, -OuterRadius),
                 new Vector3(-InnerRadius, 0f, -0.5f * OuterRadius),
                 new Vector3(-InnerRadius, 0f,  0.5f * OuterRadius),
-                new Vector3(0f, 0f, OuterRadius)
+                new Vector3(0f,           0f,  OuterRadius)
+            };
+
+            CornersXZ = new Vector2[] {
+                new Vector2(0f,            OuterRadius),
+                new Vector2(InnerRadius,   0.5f * OuterRadius),
+                new Vector2(InnerRadius,  -0.5f * OuterRadius),
+                new Vector2(0f,           -OuterRadius),
+                new Vector2(-InnerRadius, -0.5f * OuterRadius),
+                new Vector2(-InnerRadius,  0.5f * OuterRadius),
+                new Vector2(0f,            OuterRadius),
             };
         }
 
@@ -166,16 +219,46 @@ namespace Assets.Simulation.MapRendering {
             return corners[(int)direction + 1];
         }
 
-        public Vector3 GetFirstOuterSolidCorner(HexDirection direction) {
+        public Vector3 GetFirstSolidCorner(HexDirection direction) {
             return corners[(int)direction] * OuterSolidFactor;
         }
 
-        public Vector3 GetSecondOuterSolidCorner(HexDirection direction) {
+        public Vector3 GetSecondSolidCorner(HexDirection direction) {
             return corners[(int)direction + 1] * OuterSolidFactor;
         }
 
-        public Vector3 GetOuterEdgeMidpoint(HexDirection direction) {
+        public Vector3 GetEdgeMidpoint(HexDirection direction) {
             return (corners[(int)direction] + corners[(int)direction + 1]) * 0.5f;
+        }
+
+        public Vector3 GetSolidEdgeMidpoint(HexDirection direction) {
+            return (corners[(int)direction] * OuterSolidFactor + corners[(int)direction + 1] * OuterSolidFactor) * 0.5f;
+        }
+
+
+
+        public Vector2 GetFirstCornerXZ(HexDirection direction) {
+            return CornersXZ[(int)direction];
+        }
+
+        public Vector2 GetSecondCornerXZ(HexDirection direction) {
+            return CornersXZ[(int)direction + 1];
+        }
+
+        public Vector2 GetFirstSolidCornerXZ (HexDirection direction) {
+            return CornersXZ[(int)direction] * OuterSolidFactor;
+        }
+
+        public Vector2 GetSecondSolidCornerXZ(HexDirection direction) {
+            return CornersXZ[(int)direction + 1] * OuterSolidFactor;
+        }
+
+        public Vector2 GetEdgeMidpointXZ(HexDirection direction) {
+            return (CornersXZ[(int)direction] + CornersXZ[(int)direction + 1]) * 0.5f;
+        }
+
+        public Vector2 GetSolidEdgeMidpointXZ(HexDirection direction) {
+            return (CornersXZ[(int)direction] * OuterSolidFactor + CornersXZ[(int)direction + 1] * OuterSolidFactor) * 0.5f;
         }
 
         #endregion
