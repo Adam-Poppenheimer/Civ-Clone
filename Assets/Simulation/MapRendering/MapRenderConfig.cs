@@ -124,6 +124,16 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private List<Texture2D> _mapTextures;
 
+        public int SeaFloorTextureIndex {
+            get { return _seaFloorTextureIndex; }
+        }
+        [SerializeField] private int _seaFloorTextureIndex;
+
+        public int MountainTextureIndex {
+            get { return _mountainTextureIndex; }
+        }
+        [SerializeField] private int _mountainTextureIndex;
+
 
         public float SeaFloorElevation  {
             get { return _seaFloorElevation; }

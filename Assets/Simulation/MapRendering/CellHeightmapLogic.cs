@@ -21,7 +21,6 @@ namespace Assets.Simulation.MapRendering {
         private INoiseGenerator         NoiseGenerator;
         private IMountainHeightmapLogic MountainHeightmapLogic;
 
-
         #endregion
 
         #region constructors

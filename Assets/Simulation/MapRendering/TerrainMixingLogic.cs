@@ -12,39 +12,40 @@ using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
-    public class HeightMixingLogic : IHeightMixingLogic {
+    public class TerrainMixingLogic : ITerrainMixingLogic {
 
         #region instance fields and properties
 
-        private IMapRenderConfig    RenderConfig;
-        private ICellHeightmapLogic CellHeightmapLogic;
-        private IGeometry2D         Geometry2D;
+        private IMapRenderConfig RenderConfig;
+        private IGeometry2D      Geometry2D;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public HeightMixingLogic(
-            IMapRenderConfig renderConfig, ICellHeightmapLogic cellHeightmapLogic, IGeometry2D geometry2D
+        public TerrainMixingLogic(
+            IMapRenderConfig renderConfig, IGeometry2D geometry2D
         ) {
-            RenderConfig       = renderConfig;
-            CellHeightmapLogic = cellHeightmapLogic;
-            Geometry2D         = geometry2D;
+            RenderConfig = renderConfig;
+            Geometry2D   = geometry2D;
         }
 
         #endregion
 
         #region instance methods
 
-        #region from IHeightMixingLogic
+        #region from ITerrainMixingLogic
 
         //We take CenterSolidMidpoint as the origin and use that to figure out how
         //close to Center's solid edge our Point is. Once we have that, we use that
         //to linearly interpolate between the height for Center and the height for
         //Right.
         //Local here means points defined in terms of CenterSolidMidpoint
-        public float GetMixForEdgeAtPoint(IHexCell center, IHexCell right, HexDirection direction, Vector3 point) {
+        public T GetMixForEdgeAtPoint<T>(
+            IHexCell center, IHexCell right, HexDirection direction, Vector3 point,
+            DataSelectorCallback<T> dataSelector, Func<T, T, T> aggregator
+        ) {
             Vector3 world_CenterSolidMidpoint = center.AbsolutePosition + RenderConfig.GetSolidEdgeMidpoint(direction);
 
             //A line going from CenterSolidMidpoint to the corresponding solid midpoint on Right
@@ -57,11 +58,16 @@ namespace Assets.Simulation.MapRendering {
             float percentRight  = local_PointOntoMidline.magnitude / local_RightSolidMidpoint.magnitude;
             float percentCenter = 1f - percentRight;
 
-            return CellHeightmapLogic.GetHeightForPositionForCell(point, center, direction)            * percentCenter +
-                   CellHeightmapLogic.GetHeightForPositionForCell(point, right,  direction.Opposite()) * percentRight;
+            T centerContribution = dataSelector(point, center, direction,            percentCenter);
+            T rightContribution  = dataSelector(point, right,  direction.Opposite(), percentRight);
+
+            return aggregator(centerContribution, rightContribution);
         }
 
-        public float GetMixForPreviousCornerAtPoint(IHexCell center, IHexCell left, IHexCell right, HexDirection direction, Vector3 point) {
+        public T GetMixForPreviousCornerAtPoint<T>(
+            IHexCell center, IHexCell left, IHexCell right, HexDirection direction, Vector3 point,
+            DataSelectorCallback<T> dataSelector, Func<T, T, T> aggregator
+        ) {
             Vector2 centerCorner = center.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(direction);
             Vector2 leftCorner   = left  .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(direction.Next2());
             Vector2 rightCorner  = right .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(direction.Previous2());
@@ -73,12 +79,17 @@ namespace Assets.Simulation.MapRendering {
                 out percentCenter, out percentLeft, out percentRight
             );
 
-            return CellHeightmapLogic.GetHeightForPositionForCell(point, center, direction)             * percentCenter + 
-                   CellHeightmapLogic.GetHeightForPositionForCell(point, left,   direction.Next2())     * percentLeft   + 
-                   CellHeightmapLogic.GetHeightForPositionForCell(point, right,  direction.Previous2()) * percentRight;
+            T centerContribution = dataSelector(point, center, direction,             percentCenter);
+            T leftContribution   = dataSelector(point, left,   direction.Next2(),     percentLeft);
+            T rightContribution  = dataSelector(point, right,  direction.Previous2(), percentRight);
+
+            return aggregator(aggregator(centerContribution, leftContribution), rightContribution);
         }
 
-        public float GetMixForNextCornerAtPoint(IHexCell center, IHexCell right, IHexCell nextRight, HexDirection direction, Vector3 point) {
+        public T GetMixForNextCornerAtPoint<T>(
+            IHexCell center, IHexCell right, IHexCell nextRight, HexDirection direction, Vector3 point,
+            DataSelectorCallback<T> dataSelector, Func<T, T, T> aggregator
+        ) {
             Vector2 centerCorner     = center   .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(direction);
             Vector2 rightCorner      = right    .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(direction.Next2());
             Vector2 nextRightCorner  = nextRight.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(direction.Previous2());
@@ -90,15 +101,17 @@ namespace Assets.Simulation.MapRendering {
                 out percentCenter, out percentRight, out percentNextRight
             );
 
-            return CellHeightmapLogic.GetHeightForPositionForCell(point, center,    direction)             * percentCenter + 
-                   CellHeightmapLogic.GetHeightForPositionForCell(point, right,     direction.Next2())     * percentRight  + 
-                   CellHeightmapLogic.GetHeightForPositionForCell(point, nextRight, direction.Previous2()) * percentNextRight;
+            T centerContribution    = dataSelector(point, center,    direction,             percentCenter);
+            T rightContribution     = dataSelector(point, right,     direction.Next2(),     percentRight);
+            T nextRightContribution = dataSelector(point, nextRight, direction.Previous2(), percentNextRight);
+
+            return aggregator(aggregator(centerContribution, rightContribution), nextRightContribution);
         }
 
         #endregion
 
         #endregion
-        
+
     }
 
 }

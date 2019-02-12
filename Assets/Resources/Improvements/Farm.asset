@@ -33,4 +33,4 @@ MonoBehaviour:
   _freshWaterAlwaysEnables: 1
   _adjacentEnemyDamagePercentage: 0
   _overridesTerrain: 1
-  _overridingTerrainIndex: 7
+  _overridingTerrainIndex: 6

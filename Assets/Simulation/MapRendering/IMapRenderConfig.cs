@@ -48,7 +48,10 @@ namespace Assets.Simulation.MapRendering {
 
         IEnumerable<Texture2D> MapTextures { get; }
 
-        float SeaFloorElevation         { get; }
+        int SeaFloorTextureIndex { get; }
+        int MountainTextureIndex { get; }
+
+        float SeaFloorElevation      { get; }
         float MountainPeakElevation  { get; }
         float MountainRidgeElevation { get; }
 

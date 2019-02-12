@@ -31,9 +31,10 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ITerrainHeightLogic>          ().To<TerrainHeightLogic>          ().AsSingle();
             Container.Bind<IPointOrientationLogic>       ().To<PointOrientationLogic>       ().AsSingle();
             Container.Bind<ICellHeightmapLogic>          ().To<CellHeightmapLogic>          ().AsSingle();
-            Container.Bind<IHeightMixingLogic>           ().To<HeightMixingLogic>           ().AsSingle();
             Container.Bind<IMountainHeightmapLogic>      ().To<MountainHeightmapLogic>      ().AsSingle();
             Container.Bind<IMountainHeightmapWeightLogic>().To<MountainHeightmapWeightLogic>().AsSingle();
+            Container.Bind<ITerrainMixingLogic>          ().To<TerrainMixingLogic>          ().AsSingle();
+            Container.Bind<ICellAlphamapLogic>           ().To<CellAlphamapLogic>           ().AsSingle();
         }
 
         #endregion

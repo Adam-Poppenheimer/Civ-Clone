@@ -21,7 +21,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         private Mock<IHexGrid>               MockGrid;
         private Mock<IPointOrientationLogic> MockPointOrientationLogic;
         private Mock<ICellHeightmapLogic>    MockCellHeightmapLogic;
-        private Mock<IHeightMixingLogic>     MockHeightMixingLogic;
+        private Mock<ITerrainMixingLogic>    MockTerrainMixingLogic;
 
         #endregion
 
@@ -34,12 +34,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockGrid                  = new Mock<IHexGrid>();
             MockPointOrientationLogic = new Mock<IPointOrientationLogic>();
             MockCellHeightmapLogic    = new Mock<ICellHeightmapLogic>();
-            MockHeightMixingLogic     = new Mock<IHeightMixingLogic>();
+            MockTerrainMixingLogic    = new Mock<ITerrainMixingLogic>();
 
             Container.Bind<IHexGrid>              ().FromInstance(MockGrid                 .Object);
             Container.Bind<IPointOrientationLogic>().FromInstance(MockPointOrientationLogic.Object);
             Container.Bind<ICellHeightmapLogic>   ().FromInstance(MockCellHeightmapLogic   .Object);
-            Container.Bind<IHeightMixingLogic>    ().FromInstance(MockHeightMixingLogic    .Object);
+            Container.Bind<ITerrainMixingLogic>   ().FromInstance(MockTerrainMixingLogic   .Object);
 
             Container.Bind<TerrainHeightLogic>().AsSingle();
         }
@@ -96,7 +96,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationOfPointInCell(position, center, HexDirection.E))
                                      .Returns(PointOrientation.Edge);
 
-            MockHeightMixingLogic.Setup(logic => logic.GetMixForEdgeAtPoint(center, right, HexDirection.E, position)).Returns(15.5f);
+            MockTerrainMixingLogic.Setup(
+                logic => logic.GetMixForEdgeAtPoint(
+                    center, right, HexDirection.E, position, It.IsAny<DataSelectorCallback<float>>(),
+                    It.IsAny<Func<float, float, float>>()
+                )
+            ).Returns(15.5f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -121,8 +126,11 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationOfPointInCell(position, center, HexDirection.E))
                                      .Returns(PointOrientation.PreviousCorner);
 
-            MockHeightMixingLogic.Setup(
-                logic => logic.GetMixForPreviousCornerAtPoint(center, left, right, HexDirection.E, position)
+            MockTerrainMixingLogic.Setup(
+                logic => logic.GetMixForPreviousCornerAtPoint(
+                    center, left, right, HexDirection.E, position, It.IsAny<DataSelectorCallback<float>>(),
+                    It.IsAny<Func<float, float, float>>()
+                )
             ).Returns(15.5f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
@@ -148,8 +156,11 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationOfPointInCell(position, center, HexDirection.E))
                                      .Returns(PointOrientation.NextCorner);
 
-            MockHeightMixingLogic.Setup(
-                logic => logic.GetMixForNextCornerAtPoint(center, right, nextRight, HexDirection.E, position)
+            MockTerrainMixingLogic.Setup(
+                logic => logic.GetMixForNextCornerAtPoint(
+                    center, right, nextRight, HexDirection.E, position, It.IsAny<DataSelectorCallback<float>>(),
+                    It.IsAny<Func<float, float, float>>()
+                )
             ).Returns(15.5f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();

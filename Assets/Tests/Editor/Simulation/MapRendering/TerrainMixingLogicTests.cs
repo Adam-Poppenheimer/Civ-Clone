@@ -15,12 +15,11 @@ using Assets.Util;
 
 namespace Assets.Tests.Simulation.MapRendering {
 
-    public class HeightMixingLogicTests : ZenjectUnitTestFixture {
+    public class TerrainMixingLogicTests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
 
         private Mock<IMapRenderConfig>    MockRenderConfig;
-        private Mock<ICellHeightmapLogic> MockCellHeightmapLogic;
         private Mock<IGeometry2D>         MockGeometry2D;
 
         #endregion
@@ -31,15 +30,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [SetUp]
         public void CommonInstall() {
-            MockRenderConfig       = new Mock<IMapRenderConfig>();
-            MockCellHeightmapLogic = new Mock<ICellHeightmapLogic>();
-            MockGeometry2D         = new Mock<IGeometry2D>();
+            MockRenderConfig = new Mock<IMapRenderConfig>();
+            MockGeometry2D   = new Mock<IGeometry2D>();
 
-            Container.Bind<IMapRenderConfig>   ().FromInstance(MockRenderConfig      .Object);
-            Container.Bind<ICellHeightmapLogic>().FromInstance(MockCellHeightmapLogic.Object);
-            Container.Bind<IGeometry2D>        ().FromInstance(MockGeometry2D        .Object);
+            Container.Bind<IMapRenderConfig>().FromInstance(MockRenderConfig.Object);
+            Container.Bind<IGeometry2D>     ().FromInstance(MockGeometry2D  .Object);
 
-            Container.Bind<HeightMixingLogic>().AsSingle();
+            Container.Bind<TerrainMixingLogic>().AsSingle();
         }
 
         #endregion
@@ -47,7 +44,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void GetMixForEdgeAtPoint_AndPointAtCenterSolidEdge_ReturnsExclusivelyHeightFromCenter() {
+        public void GetMixForEdgeAtPoint_AndPointAtCenterSolidEdge_ReturnsExclusivelyValueFromCenter() {
             var center = BuildCell(new Vector3(10f, 0f, 0f));
             var right  = BuildCell(new Vector3(40f, 0f, 0f));
 
@@ -56,12 +53,25 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var point = new Vector3(20f, 15f, 60.5f);
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center, HexDirection.E)).Returns(20f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,  HexDirection.W)).Returns(100f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 20f * weight;
+                }else if(cell == right && sextant == HexDirection.W) {
+                    return 100f * weight;
+                }else {
+                    return 0f;
+                }
+            };
 
-            Assert.AreEqual(20f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point));
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
+
+            Assert.AreEqual(
+                20f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point, dataSelector, (a, b) => a + b)
+            );
         }
 
         [Test]
@@ -74,12 +84,25 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var point = new Vector3(30f, 15f, 60.5f);
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center, HexDirection.E)).Returns(20f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,  HexDirection.W)).Returns(100f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 20f * weight;
+                }else if(cell == right && sextant == HexDirection.W) {
+                    return 100f * weight;
+                }else {
+                    return 0f;
+                }
+            };
 
-            Assert.AreEqual(100f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point));
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
+
+            Assert.AreEqual(
+                100f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point, dataSelector, (a, b) => a + b)
+            );
         }
 
         [Test]
@@ -92,12 +115,25 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var point = new Vector3(25f, 15f, 60.5f);
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center, HexDirection.E)).Returns(20f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,  HexDirection.W)).Returns(100f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 20f * weight;
+                }else if(cell == right && sextant == HexDirection.W) {
+                    return 100f * weight;
+                }else {
+                    return 0f;
+                }
+            };
 
-            Assert.AreEqual(60f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point));
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
+
+            Assert.AreEqual(
+                60f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point, dataSelector, (a, b) => a + b)
+            );
         }
 
         [Test]
@@ -110,12 +146,25 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var point = new Vector3(27.5f, 15f, 60.5f);
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center, HexDirection.E)).Returns(20f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,  HexDirection.W)).Returns(100f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 20f * weight;
+                }else if(cell == right && sextant == HexDirection.W) {
+                    return 100f * weight;
+                }else {
+                    return 0f;
+                }
+            };
 
-            Assert.AreEqual(20f * 0.25f + 100f * 0.75f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point));
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
+
+            Assert.AreEqual(
+                20f * 0.25f + 100f * 0.75f, mixingLogic.GetMixForEdgeAtPoint(center, right, HexDirection.E, point, dataSelector, (a, b) => a + b)
+            );
         }
 
         [Test]
@@ -136,15 +185,27 @@ namespace Assets.Tests.Simulation.MapRendering {
                 out expectedCenterWeight, out expectedLeftWeight, out expectedRightWeight
             ));
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center, HexDirection.E )).Returns(10f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, left,   HexDirection.SW)).Returns(100f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,  HexDirection.NW)).Returns(1000f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 10f * weight;
+                }else if(cell == left && sextant == HexDirection.SW) {
+                    return 100f * weight;
+                }else if(cell == right && sextant == HexDirection.NW) {
+                    return 1000f * weight;
+                }else {
+                    return 0f;
+                }
+            };
+
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
 
             Assert.AreEqual(
                 10f * 0.5f + 100f * 0.3f + 1000f * 0.2f,
-                mixingLogic.GetMixForPreviousCornerAtPoint(center, left, right, HexDirection.E, point)
+                mixingLogic.GetMixForPreviousCornerAtPoint(center, left, right, HexDirection.E, point, dataSelector, (a, b) => a + b)
             );
         }
 
@@ -166,15 +227,27 @@ namespace Assets.Tests.Simulation.MapRendering {
                 out expectedCenterWeight, out expectedRightWeight, out expectedNextRightWeight
             ));
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, center,    HexDirection.E )).Returns(10f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, right,     HexDirection.SW)).Returns(100f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPositionForCell(point, nextRight, HexDirection.NW)).Returns(1000f);
+            DataSelectorCallback<float> dataSelector = delegate(Vector3 pos, IHexCell cell, HexDirection sextant, float weight) {
+                if(point != pos) {
+                    Assert.Fail("Unexpected point passed into selector");
+                }
 
-            var mixingLogic = Container.Resolve<HeightMixingLogic>();
+                if(cell == center && sextant == HexDirection.E) {
+                    return 10f * weight;
+                }else if(cell == right && sextant == HexDirection.SW) {
+                    return 100f * weight;
+                }else if(cell == nextRight && sextant == HexDirection.NW) {
+                    return 1000f * weight;
+                }else {
+                    return 0f;
+                }
+            };
+
+            var mixingLogic = Container.Resolve<TerrainMixingLogic>();
 
             Assert.AreEqual(
                 10f * 0.5f + 100f * 0.3f + 1000f * 0.2f,
-                mixingLogic.GetMixForNextCornerAtPoint(center, right, nextRight, HexDirection.E, point)
+                mixingLogic.GetMixForNextCornerAtPoint(center, right, nextRight, HexDirection.E, point, dataSelector, (a, b) => a + b)
             );
         }
 
