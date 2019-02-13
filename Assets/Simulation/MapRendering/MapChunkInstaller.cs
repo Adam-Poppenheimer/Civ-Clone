@@ -9,7 +9,7 @@ using Zenject;
 
 namespace Assets.Simulation.MapRendering {
 
-    public class HexGridChunkInstaller : MonoInstaller {
+    public class MapChunkInstaller : MonoInstaller {
 
         #region instance fields and properties
 
@@ -25,8 +25,8 @@ namespace Assets.Simulation.MapRendering {
         public override void InstallBindings() {
             Container.Bind<Transform>().WithId("Feature Container").FromInstance(FeatureContainer);
 
-            Container.Bind<IHexFeatureManager>       ().To<HexFeatureManager>       ().AsSingle();
-            Container.Bind<IFeatureLocationLogic>    ().To<FeatureLocationLogic>    ().AsSingle();
+            Container.Bind<IHexFeatureManager>   ().To<HexFeatureManager>   ().AsSingle();
+            Container.Bind<IFeatureLocationLogic>().To<FeatureLocationLogic>().AsSingle();
 
             //The order here is important to make sure certain features take precedence over others
             Container.Bind<IFeaturePlacer>().To<CityFeaturePlacer>       ().AsSingle();

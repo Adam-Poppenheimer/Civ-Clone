@@ -28,6 +28,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshAlphamapCoroutine;
         private Coroutine RefreshHeightmapCoroutine;
         private Coroutine RefreshWaterCoroutine;
+        private Coroutine RefreshFeatureCoroutine;
 
         [SerializeField] private HexMesh StandingWater;
 
@@ -38,6 +39,7 @@ namespace Assets.Simulation.MapRendering {
         private ITerrainHeightLogic   HeightLogic;
         private IMapRenderConfig      RenderConfig;
         private IWaterTriangulator    WaterTriangulator;
+        private IHexFeatureManager    HexFeatureManager;
 
         #endregion
 
@@ -46,12 +48,14 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
-            IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator
+            IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
+            IHexFeatureManager hexFeatureManager
         ) {
             AlphamapLogic     = alphamapLogic;
             HeightLogic       = heightLogic;
             RenderConfig      = renderConfig;
             WaterTriangulator = waterTriangulator;
+            HexFeatureManager = hexFeatureManager;
         }
 
         #region from IMapChunk
@@ -64,6 +68,8 @@ namespace Assets.Simulation.MapRendering {
             var terrainData = BuildTerrainData(width, height);
 
             var terrainGameObject = Terrain.CreateTerrainGameObject(terrainData);
+
+            terrainGameObject.layer = LayerMask.NameToLayer("Terrain");
 
             terrainGameObject.transform.SetParent(transform, false);
 
@@ -92,10 +98,17 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshFeatures() {
+            if(RefreshFeatureCoroutine == null) {
+                RefreshFeatureCoroutine = StartCoroutine(RefreshFeatures_Perform());
+            }
+        }
+
         public void RefreshAll() {
             RefreshAlphamap();
             RefreshHeightmap();
             RefreshWater();
+            RefreshFeatures();
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -194,6 +207,21 @@ namespace Assets.Simulation.MapRendering {
             StandingWater.Apply();
 
             RefreshWaterCoroutine = null;
+        }
+
+        private IEnumerator RefreshFeatures_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            HexFeatureManager.Clear();
+
+            foreach(var cell in Cells) {
+                HexFeatureManager.AddFeatureLocationsForCell(cell);
+            }
+
+            HexFeatureManager.Apply();
+
+            RefreshFeatureCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {
