@@ -73,7 +73,6 @@ namespace Assets.Tests.Simulation.MapRendering {
         public void GetHeightForPosition_OnlyRidgeWeightNonzero_AndNeighborIsMountains_ReturnsConfiguredRidgeElevation() {
             var cell = BuildCell(CellShape.Flatlands);
 
-            MockGrid.Setup(grid => grid.HasNeighbor(cell, HexDirection.E)).Returns(true);
             MockGrid.Setup(grid => grid.GetNeighbor(cell, HexDirection.E)).Returns(BuildCell(CellShape.Mountains));
 
             var position = new Vector3(1f, 2f, 3f);
@@ -93,10 +92,9 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetHeightForPosition_OnlyRidgeWeightNonzero_AndNeighborIsNotMountains_ReturnsSampledHillNoise() {
+        public void GetHeightForPosition_OnlyRidgeWeightNonzero_AndNeighborIsNotMountains_ReturnsHillElevation() {
             var cell = BuildCell(CellShape.Flatlands);
 
-            MockGrid.Setup(grid => grid.HasNeighbor(cell, HexDirection.E)).Returns(true);
             MockGrid.Setup(grid => grid.GetNeighbor(cell, HexDirection.E)).Returns(BuildCell(CellShape.Hills));
 
             var position = new Vector3(1f, 2f, 3f);
@@ -111,17 +109,18 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockNoiseGenerator.Setup(noise => noise.SampleNoise(position, NoiseType.HillsHeight))
                               .Returns(new Vector4(15.5f, 0f, 0f, 0f));
 
+            MockRenderConfig.Setup(config => config.HillsBaseElevation).Returns(5.5f);
+
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
         }
 
         [Test]
-        public void GetHeightForPosition_OnlyRidgeWeightNonzero_AndNoNeighbor_ReturnsSampledHillNoise() {
+        public void GetHeightForPosition_OnlyRidgeWeightNonzero_AndNoNeighbor_ReturnsHillsElevation() {
             var cell = BuildCell(CellShape.Flatlands);
 
-            MockGrid.Setup(grid => grid.HasNeighbor(cell, HexDirection.E)).Returns(false);
-            MockGrid.Setup(grid => grid.GetNeighbor(cell, HexDirection.E)).Returns(BuildCell(CellShape.Mountains));
+            MockGrid.Setup(grid => grid.GetNeighbor(cell, HexDirection.E)).Returns<IHexCell>(null);
 
             var position = new Vector3(1f, 2f, 3f);
 
@@ -135,9 +134,11 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockNoiseGenerator.Setup(noise => noise.SampleNoise(position, NoiseType.HillsHeight))
                               .Returns(new Vector4(15.5f, 0f, 0f, 0f));
 
+            MockRenderConfig.Setup(config => config.HillsBaseElevation).Returns(5.5f);
+
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -165,7 +166,6 @@ namespace Assets.Tests.Simulation.MapRendering {
         public void GetHeightForPosition_AndMultipleWeights_SumsComponents() {
             var cell = BuildCell(CellShape.Flatlands);
 
-            MockGrid.Setup(grid => grid.HasNeighbor(cell, HexDirection.E)).Returns(true);
             MockGrid.Setup(grid => grid.GetNeighbor(cell, HexDirection.E)).Returns(BuildCell(CellShape.Mountains));
 
             var position = new Vector3(1f, 2f, 3f);
@@ -179,13 +179,14 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             MockRenderConfig.Setup(config => config.MountainPeakElevation) .Returns(10f);
             MockRenderConfig.Setup(config => config.MountainRidgeElevation).Returns(20f);
+            MockRenderConfig.Setup(config => config.HillsBaseElevation)    .Returns(5.5f);
 
             MockNoiseGenerator.Setup(noise => noise.SampleNoise(position, NoiseType.HillsHeight))
                               .Returns(new Vector4(30f, 0f, 0f, 0f));
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(10f * 0.6f + 20f * 0.4f, + 30f * 0.3f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(10f * 0.6f + 20f * 0.4f, + (30f + 5.5f) * 0.3f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
         }
 
         #endregion

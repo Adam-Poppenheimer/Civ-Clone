@@ -41,9 +41,9 @@ namespace Assets.Simulation.MapRendering {
         float ChunkWidth { get; }
         float ChunkHeight { get; }
 
-        float MaxElevation { get; }
+        float TerrainMaxY { get; }
 
-        int TerrainAlphamapResolution { get; }
+        int TerrainAlphamapResolution  { get; }
         int TerrainHeightmapResolution { get; }
 
         IEnumerable<Texture2D> MapTextures { get; }
@@ -51,12 +51,21 @@ namespace Assets.Simulation.MapRendering {
         int SeaFloorTextureIndex { get; }
         int MountainTextureIndex { get; }
 
+        float WaterSurfaceElevation  { get; }
         float SeaFloorElevation      { get; }
+        float FlatlandsBaseElevation { get; }
+        float HillsBaseElevation     { get; }
         float MountainPeakElevation  { get; }
         float MountainRidgeElevation { get; }
 
+        float WaterY { get; }
+
         INoiseTexture FlatlandsElevationHeightmap { get; }
         INoiseTexture HillsElevationHeightmap     { get; }
+
+        Color ShallowWaterColor { get; }
+        Color DeepWaterColor    { get; }
+        Color FreshWaterColor   { get; }
 
         #endregion
 

@@ -11,7 +11,15 @@ namespace Assets.Simulation.MapRendering {
 
     public interface IMapChunk {
 
+        #region properties
+
+        IEnumerable<IHexCell> Cells { get; }
+
+        #endregion
+
         #region methods
+
+        void AttachCell(IHexCell cell);
 
         void InitializeTerrain(Vector3 position, float width, float height);
 

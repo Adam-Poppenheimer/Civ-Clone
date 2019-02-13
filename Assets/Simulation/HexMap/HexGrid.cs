@@ -337,6 +337,10 @@ namespace Assets.Simulation.HexMap {
                 var overlappingChunks = Chunks.Where(chunk => chunk.DoesCellOverlapChunk(cell)).ToArray();
 
                 cell.AttachToChunks(overlappingChunks);
+
+                var chunkOverMiddle = overlappingChunks.First(chunk => chunk.IsOnTerrain2D(cell.AbsolutePosition));
+
+                chunkOverMiddle.AttachCell(cell);
             }
         }
 

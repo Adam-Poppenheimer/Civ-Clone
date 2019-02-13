@@ -103,10 +103,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float _chunkHeight;
 
-        public float MaxElevation {
-            get { return _maxElevation; }
+        public float TerrainMaxY {
+            get { return _terrainMaxY; }
         }
-        [SerializeField] private float _maxElevation;
+        [SerializeField] private float _terrainMaxY;
 
         public int TerrainAlphamapResolution  {
             get { return _terrainAlphamapResolution; }
@@ -135,10 +135,25 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private int _mountainTextureIndex;
 
 
+        public float WaterSurfaceElevation  {
+            get { return _waterSurfaceElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _waterSurfaceElevation;
+
         public float SeaFloorElevation  {
             get { return _seaFloorElevation; }
         }
         [SerializeField, Range(0f, 1f)] private float _seaFloorElevation;
+
+        public float FlatlandsBaseElevation  {
+            get { return _flatlandsBaseElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _flatlandsBaseElevation;
+
+        public float HillsBaseElevation  {
+            get { return _hillsBaseElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _hillsBaseElevation;
 
         public float MountainPeakElevation  {
             get { return _mountainPeakElevation; }
@@ -149,6 +164,11 @@ namespace Assets.Simulation.MapRendering {
             get { return _mountainRidgeElevation; }
         }
         [SerializeField, Range(0f, 1f)] private float _mountainRidgeElevation;
+
+
+        public float WaterY {
+            get { return WaterSurfaceElevation * TerrainMaxY; }
+        }
 
 
         public INoiseTexture FlatlandsElevationHeightmap {
@@ -171,7 +191,23 @@ namespace Assets.Simulation.MapRendering {
             }
         }
         private INoiseTexture _hillsElevationHeightmap_Wrapped;
-        [SerializeField] private Texture2D _hillsElevationHeightmap;   
+        [SerializeField] private Texture2D _hillsElevationHeightmap;
+
+
+        public Color ShallowWaterColor {
+            get { return _shallowWaterColor; }
+        }
+        [SerializeField] private Color _shallowWaterColor;
+
+        public Color DeepWaterColor {
+            get { return _deepWaterColor; }
+        }
+        [SerializeField] private Color _deepWaterColor;
+
+        public Color FreshWaterColor {
+            get { return _freshWaterColor; }
+        }
+        [SerializeField] private Color _freshWaterColor;
 
         #endregion
 

@@ -35,6 +35,8 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMountainHeightmapWeightLogic>().To<MountainHeightmapWeightLogic>().AsSingle();
             Container.Bind<ITerrainMixingLogic>          ().To<TerrainMixingLogic>          ().AsSingle();
             Container.Bind<ICellAlphamapLogic>           ().To<CellAlphamapLogic>           ().AsSingle();
+            Container.Bind<IWaterTriangulator>           ().To<WaterTriangulator>           ().AsSingle();
+            Container.Bind<IAlphamapMixingFunctions>     ().To<AlphamapMixingFunctions>     ().AsSingle();
         }
 
         #endregion

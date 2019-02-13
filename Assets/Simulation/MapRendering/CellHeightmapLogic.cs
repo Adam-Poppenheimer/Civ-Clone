@@ -45,11 +45,13 @@ namespace Assets.Simulation.MapRendering {
             if(cell.Terrain.IsWater()) {
                 return RenderConfig.SeaFloorElevation;
 
-            }else switch(cell.Shape) {
-                case CellShape.Flatlands: return NoiseGenerator.SampleNoise(position, NoiseType.FlatlandsHeight).x;
-                case CellShape.Hills:     return NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight)    .x;
-                case CellShape.Mountains: return MountainHeightmapLogic.GetHeightForPosition(position, cell, sextant);
-                default: throw new NotImplementedException();
+            }else {
+                switch(cell.Shape) {
+                    case CellShape.Flatlands: return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(position, NoiseType.FlatlandsHeight).x;
+                    case CellShape.Hills:     return RenderConfig.HillsBaseElevation     + NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight)    .x;
+                    case CellShape.Mountains: return MountainHeightmapLogic.GetHeightForPosition(position, cell, sextant);
+                    default: throw new NotImplementedException();
+                }
             }
         }
 

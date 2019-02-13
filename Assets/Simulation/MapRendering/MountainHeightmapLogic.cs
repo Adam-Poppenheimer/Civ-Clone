@@ -50,9 +50,9 @@ namespace Assets.Simulation.MapRendering {
                 position, cell, sextant, out peakWeight, out ridgeWeight, out hillsWeight
             );
 
-            var neighbor = Grid.HasNeighbor(cell, sextant) ? Grid.GetNeighbor(cell, sextant) : null;
+            var neighbor = Grid.GetNeighbor(cell, sextant);
 
-            float hillsHeight = NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight).x;
+            float hillsHeight = RenderConfig.HillsBaseElevation + NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight).x;
 
             float ridgeHeight = hillsHeight;
 

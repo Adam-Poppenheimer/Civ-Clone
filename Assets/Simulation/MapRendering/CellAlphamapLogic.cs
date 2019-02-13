@@ -17,7 +17,6 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig          RenderConfig;
-        private IHexGrid                  Grid;
         private IImprovementLocationCanon ImprovementLocationCanon;
 
         #endregion
@@ -25,10 +24,9 @@ namespace Assets.Simulation.MapRendering {
         #region constructors
 
         public CellAlphamapLogic(
-            IMapRenderConfig renderConfig, IHexGrid grid, IImprovementLocationCanon improvementLocationCanon
+            IMapRenderConfig renderConfig, IImprovementLocationCanon improvementLocationCanon
         ) {
             RenderConfig             = renderConfig;
-            Grid                     = grid;
             ImprovementLocationCanon = improvementLocationCanon;
         }
 
@@ -38,15 +36,15 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellAlphamapLogic
 
-        public float[] GetAlphamapForPositionForCell(Vector3 position, IHexCell center, HexDirection sextant) {
+        public float[] GetAlphamapForPositionForCell(Vector3 position, IHexCell cell, HexDirection sextant) {
             var retval = new float[RenderConfig.MapTextures.Count()];
 
-            var improvementsAt = ImprovementLocationCanon.GetPossessionsOfOwner(center);
+            var improvementsAt = ImprovementLocationCanon.GetPossessionsOfOwner(cell);
 
-            if(center.Terrain.IsWater()) {
+            if(cell.Terrain.IsWater()) {
                 retval[RenderConfig.SeaFloorTextureIndex] = 1f;
 
-            }else if(center.Shape == CellShape.Mountains) {
+            }else if(cell.Shape == CellShape.Mountains) {
                 retval[RenderConfig.MountainTextureIndex] = 1f;
 
             }else if(improvementsAt.Any(improvement => improvement.Template.OverridesTerrain)) {
@@ -55,7 +53,7 @@ namespace Assets.Simulation.MapRendering {
                 retval[newIndex] = 1f;
 
             } else {
-                retval[(int)center.Terrain] = 1f;
+                retval[(int)cell.Terrain] = 1f;
             }
 
             return retval;

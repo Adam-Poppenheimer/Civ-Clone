@@ -15,12 +15,13 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig       RenderConfig;
-        private IHexGrid               Grid;
-        private IPointOrientationLogic PointOrientationLogic;
-        private ICellAlphamapLogic     CellAlphamapLogic;
-        private ITerrainMixingLogic    TerrainMixingLogic;
-        private INoiseGenerator        NoiseGenerator;
+        private IMapRenderConfig         RenderConfig;
+        private IHexGrid                 Grid;
+        private IPointOrientationLogic   PointOrientationLogic;
+        private ICellAlphamapLogic       CellAlphamapLogic;
+        private ITerrainMixingLogic      TerrainMixingLogic;
+        private INoiseGenerator          NoiseGenerator;
+        private IAlphamapMixingFunctions AlphamapMixingFunctions;
 
         #endregion
 
@@ -30,14 +31,15 @@ namespace Assets.Simulation.MapRendering {
         public TerrainAlphamapLogic(
             IMapRenderConfig renderConfig, IHexGrid grid, IPointOrientationLogic pointOrientationLogic,
             ICellAlphamapLogic cellAlphamapLogic, ITerrainMixingLogic terrainMixingLogic,
-            INoiseGenerator noiseGenerator
+            INoiseGenerator noiseGenerator, IAlphamapMixingFunctions alphamapMixingFunctions
         ) {
-            RenderConfig          = renderConfig;
-            Grid                  = grid;
-            PointOrientationLogic = pointOrientationLogic;
-            CellAlphamapLogic     = cellAlphamapLogic;
-            TerrainMixingLogic    = terrainMixingLogic;
-            NoiseGenerator        = noiseGenerator;
+            RenderConfig            = renderConfig;
+            Grid                    = grid;
+            PointOrientationLogic   = pointOrientationLogic;
+            CellAlphamapLogic       = cellAlphamapLogic;
+            TerrainMixingLogic      = terrainMixingLogic;
+            NoiseGenerator          = noiseGenerator;
+            AlphamapMixingFunctions = alphamapMixingFunctions;
         }
 
         #endregion
@@ -64,7 +66,7 @@ namespace Assets.Simulation.MapRendering {
 
                 if(orientation == PointOrientation.Edge) {
                     return TerrainMixingLogic.GetMixForEdgeAtPoint(
-                        center, right, sextant, perturbedPosition, AlphamapSelector, AlphamapAggregator
+                        center, right, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
                     );
                 }
 
@@ -72,7 +74,7 @@ namespace Assets.Simulation.MapRendering {
                     var left = Grid.GetNeighbor(center, sextant.Previous());
 
                     return TerrainMixingLogic.GetMixForPreviousCornerAtPoint(
-                        center, left, right, sextant, perturbedPosition, AlphamapSelector, AlphamapAggregator
+                        center, left, right, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
                     );
                 }
 
@@ -80,7 +82,7 @@ namespace Assets.Simulation.MapRendering {
                     var nextRight = Grid.GetNeighbor(center, sextant.Next());
 
                     return TerrainMixingLogic.GetMixForNextCornerAtPoint(
-                        center, right, nextRight, sextant, perturbedPosition, AlphamapSelector, AlphamapAggregator
+                        center, right, nextRight, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
                     );
                 }
             }
@@ -89,26 +91,6 @@ namespace Assets.Simulation.MapRendering {
         }
 
         #endregion
-
-        private float[] AlphamapSelector(Vector3 position, IHexCell cell, HexDirection sextant, float weight) {
-            var retval = CellAlphamapLogic.GetAlphamapForPositionForCell(position, cell, sextant);
-
-            for(int i = 0; i < retval.Length; i++) {
-                retval[i] *= weight;
-            }
-
-            return retval;
-        }
-
-        private float[] AlphamapAggregator(float[] alphamapOne, float[] alphamapTwo) {
-            var newMap = new float[alphamapOne.Length];
-
-            for(int i = 0; i < alphamapOne.Length; i++) {
-                newMap[i] = alphamapOne[i] + alphamapTwo[i];
-            }
-
-            return newMap;
-        }
 
         #endregion
         

@@ -10,22 +10,34 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapRendering {
 
     public class MapChunk : MonoBehaviour, IMapChunk {
 
         #region instance fields and properties
 
+        public IEnumerable<IHexCell> Cells {
+            get { return cells; }
+        }
+        private List<IHexCell> cells = new List<IHexCell>();
+
         private Terrain Terrain;
 
         private Coroutine RefreshAlphamapCoroutine;
         private Coroutine RefreshHeightmapCoroutine;
+        private Coroutine RefreshWaterCoroutine;
+
+        [SerializeField] private HexMesh StandingWater;
+
 
 
 
         private ITerrainAlphamapLogic AlphamapLogic;
         private ITerrainHeightLogic   HeightLogic;
         private IMapRenderConfig      RenderConfig;
+        private IWaterTriangulator    WaterTriangulator;
 
         #endregion
 
@@ -34,14 +46,19 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
-            IMapRenderConfig renderConfig
+            IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator
         ) {
-            AlphamapLogic = alphamapLogic;
-            HeightLogic   = heightLogic;
-            RenderConfig  = renderConfig;
+            AlphamapLogic     = alphamapLogic;
+            HeightLogic       = heightLogic;
+            RenderConfig      = renderConfig;
+            WaterTriangulator = waterTriangulator;
         }
 
         #region from IMapChunk
+
+        public void AttachCell(IHexCell cell) {
+            cells.Add(cell);
+        }
 
         public void InitializeTerrain(Vector3 position, float width, float height) {
             var terrainData = BuildTerrainData(width, height);
@@ -69,9 +86,16 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshWater() {
+            if(RefreshWaterCoroutine == null) {
+                RefreshWaterCoroutine = StartCoroutine(RefreshWater_Perform());
+            }
+        }
+
         public void RefreshAll() {
             RefreshAlphamap();
             RefreshHeightmap();
+            RefreshWater();
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -156,13 +180,29 @@ namespace Assets.Simulation.MapRendering {
             RefreshHeightmapCoroutine = null;
         }
 
+        private IEnumerator RefreshWater_Perform() {
+            yield return new WaitForEndOfFrame();
+
+            StandingWater.Clear();
+
+            foreach(var cell in Cells) {
+                if(cell.Terrain.IsWater()) {
+                    WaterTriangulator.TriangulateWaterForCell(cell, transform, StandingWater);
+                }
+            }
+
+            StandingWater.Apply();
+
+            RefreshWaterCoroutine = null;
+        }
+
         private TerrainData BuildTerrainData(float width, float height) {
             var newData = new TerrainData();
 
             newData.alphamapResolution  = RenderConfig.TerrainAlphamapResolution;
             newData.heightmapResolution = RenderConfig.TerrainHeightmapResolution;
 
-            newData.size = new Vector3(width, RenderConfig.MaxElevation, height);
+            newData.size = new Vector3(width, RenderConfig.TerrainMaxY, height);
 
             newData.splatPrototypes = RenderConfig.MapTextures.Select(
                 mapTexture => new SplatPrototype() {
