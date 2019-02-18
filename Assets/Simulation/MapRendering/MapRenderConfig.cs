@@ -165,6 +165,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _mountainRidgeElevation;
 
+        public float RiverbedElevation  {
+            get { return _riverbedElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _riverbedElevation;
+
 
         public float WaterY {
             get { return WaterSurfaceElevation * TerrainMaxY; }
@@ -208,6 +213,28 @@ namespace Assets.Simulation.MapRendering {
             get { return _freshWaterColor; }
         }
         [SerializeField] private Color _freshWaterColor;
+
+        public Color RiverWaterColor {
+            get { return _riverWaterColor; }
+        }
+        [SerializeField] private Color _riverWaterColor;
+
+        public Color RiverWaterColor_HalfAlpha {
+            get {
+                if(_riverWaterColor_HalfAlpha == null) {
+                    _riverWaterColor_HalfAlpha = new Color(
+                        RiverWaterColor.r, RiverWaterColor.g, RiverWaterColor.b, RiverWaterColor.a / 2f 
+                    );
+                }
+                return _riverWaterColor_HalfAlpha.GetValueOrDefault();
+            }
+        }
+        [SerializeField] private Color? _riverWaterColor_HalfAlpha;
+
+        public float RiverFlowSpeed {
+            get { return _riverFlowSpeed; }
+        }
+        [SerializeField] private float _riverFlowSpeed;
 
         #endregion
 

@@ -158,6 +158,11 @@ namespace Assets.Tests.Util {
             Assert.IsFalse(geometry2D.IsPointWithinTriangle(point, v1, v2, v3));
         }
 
+        [Test]
+        public void MissingLineSegmentProjectionTests() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #endregion

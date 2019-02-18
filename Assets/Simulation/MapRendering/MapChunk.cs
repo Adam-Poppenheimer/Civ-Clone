@@ -40,6 +40,7 @@ namespace Assets.Simulation.MapRendering {
         private IMapRenderConfig      RenderConfig;
         private IWaterTriangulator    WaterTriangulator;
         private IHexFeatureManager    HexFeatureManager;
+        private IRiverTriangulator    RiverTriangulator;
 
         #endregion
 
@@ -49,13 +50,14 @@ namespace Assets.Simulation.MapRendering {
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
-            IHexFeatureManager hexFeatureManager
+            IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator
         ) {
             AlphamapLogic     = alphamapLogic;
             HeightLogic       = heightLogic;
             RenderConfig      = renderConfig;
             WaterTriangulator = waterTriangulator;
             HexFeatureManager = hexFeatureManager;
+            RiverTriangulator = riverTriangulator;
         }
 
         #region from IMapChunk
@@ -202,6 +204,8 @@ namespace Assets.Simulation.MapRendering {
                 if(cell.Terrain.IsWater()) {
                     WaterTriangulator.TriangulateWaterForCell(cell, transform, StandingWater);
                 }
+
+                RiverTriangulator.TriangulateCellRivers(cell, transform, StandingWater);
             }
 
             StandingWater.Apply();

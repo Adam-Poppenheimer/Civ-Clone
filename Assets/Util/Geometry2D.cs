@@ -34,6 +34,20 @@ namespace Assets.Util {
             u = 1.0f - v - w;
         }
 
+        public Vector2 ProjectPointOntoLineSegment(Vector2 segmentA, Vector2 segmentB, Vector2 point) {
+            float px = segmentB.x - segmentA.x;
+            float py = segmentB.y - segmentA.y;
+
+            float dAB = px * px + py * py;
+
+            float u = ((point.x - segmentA.x) * px + (point.y - segmentA.y) * py) / dAB;
+
+            return new Vector2(
+                segmentA.x + u * px,
+                segmentA.y + u * py
+            );
+        }
+
         #endregion
 
         private static float Sign(Vector2 v1, Vector2 v2, Vector2 v3) {

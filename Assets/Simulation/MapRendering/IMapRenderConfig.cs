@@ -57,6 +57,7 @@ namespace Assets.Simulation.MapRendering {
         float HillsBaseElevation     { get; }
         float MountainPeakElevation  { get; }
         float MountainRidgeElevation { get; }
+        float RiverbedElevation      { get; }
 
         float WaterY { get; }
 
@@ -66,6 +67,10 @@ namespace Assets.Simulation.MapRendering {
         Color ShallowWaterColor { get; }
         Color DeepWaterColor    { get; }
         Color FreshWaterColor   { get; }
+        Color RiverWaterColor   { get; }
+        Color RiverWaterColor_HalfAlpha { get; }
+
+        float RiverFlowSpeed { get; }
 
         #endregion
 

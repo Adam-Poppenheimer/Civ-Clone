@@ -37,6 +37,8 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ICellAlphamapLogic>           ().To<CellAlphamapLogic>           ().AsSingle();
             Container.Bind<IWaterTriangulator>           ().To<WaterTriangulator>           ().AsSingle();
             Container.Bind<IAlphamapMixingFunctions>     ().To<AlphamapMixingFunctions>     ().AsSingle();
+            Container.Bind<IRiverbedHeightLogic>         ().To<RiverbedHeightLogic>         ().AsSingle();
+            Container.Bind<IRiverTriangulator>           ().To<RiverTriangulator>           ().AsSingle();
         }
 
         #endregion

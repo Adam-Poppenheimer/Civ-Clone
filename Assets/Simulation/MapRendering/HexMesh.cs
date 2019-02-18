@@ -33,7 +33,7 @@ namespace Assets.Simulation.MapRendering {
         [NonSerialized] private List<Color>   CellWeights;
         [NonSerialized] private List<Vector2> UVs;
         [NonSerialized] private List<Vector2> UV2s;
-        [NonSerialized] private List<Vector2> UV3s;
+        [NonSerialized] private List<Vector4> UV3s;
         [NonSerialized] private List<Vector3> CellIndices;
         [NonSerialized] private List<Color>   Colors;
 
@@ -83,7 +83,7 @@ namespace Assets.Simulation.MapRendering {
             }
 
             if(UseUV3Coordinates) {
-                UV3s = ListPool<Vector2>.Get();
+                UV3s = ListPool<Vector4>.Get();
             }
 
             if(UseColors) {
@@ -118,7 +118,7 @@ namespace Assets.Simulation.MapRendering {
 
             if(UseUV3Coordinates) {
                 ManagedMesh.SetUVs(2, UV3s);
-                ListPool<Vector2>.Add(UV3s);
+                ListPool<Vector4>.Add(UV3s);
             }
 
             if(UseColors) {
@@ -224,6 +224,19 @@ namespace Assets.Simulation.MapRendering {
             UV3s.Add(new Vector2(uMax, vMin));
             UV3s.Add(new Vector2(uMin, vMax));
             UV3s.Add(new Vector2(uMax, vMax));
+        }
+
+        public void AddTriangleUV3_4D(Vector4 uv1, Vector4 uv2, Vector4 uv3) {
+            UV3s.Add(uv1);
+            UV3s.Add(uv2);
+            UV3s.Add(uv3);
+        }
+
+        public void AddQuadUV3_4D(Vector4 uv1, Vector4 uv2, Vector4 uv3, Vector4 uv4) {
+            UV3s.Add(uv1);
+            UV3s.Add(uv2);
+            UV3s.Add(uv3);
+            UV3s.Add(uv4);
         }
 
         public void AddTriangleCellData(Vector3 indices, Color weights1, Color weights2, Color weights3) {

@@ -41,6 +41,7 @@ MonoBehaviour:
   _hillsBaseElevation: 0.1
   _mountainPeakElevation: 0.6
   _mountainRidgeElevation: 0.45
+  _riverbedElevation: 0.05
   _flatlandsElevationHeightmap: {fileID: 2800000, guid: ad46ff8ecbae8434b8242fd5f480112c,
     type: 3}
   _hillsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
@@ -48,3 +49,5 @@ MonoBehaviour:
   _shallowWaterColor: {r: 0.40511462, g: 0.82443535, b: 0.9338235, a: 1}
   _deepWaterColor: {r: 0, g: 0.29847857, b: 0.8014706, a: 1}
   _freshWaterColor: {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
+  _riverWaterColor: {r: 0.40392157, g: 0.8235294, b: 0.93333334, a: 1}
+  _riverFlowSpeed: 20

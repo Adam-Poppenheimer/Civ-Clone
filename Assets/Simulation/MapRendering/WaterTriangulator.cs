@@ -48,9 +48,7 @@ namespace Assets.Simulation.MapRendering {
 
                 GetWaterColors(center, direction, out centerColor, out leftColor, out rightColor);
 
-
                 TriangulateWaterCenter(center, mesh, direction, localCenterPos, centerColor);
-
 
                 var right = Grid.GetNeighbor(center, direction);
 
@@ -111,6 +109,8 @@ namespace Assets.Simulation.MapRendering {
             );
 
             mesh.AddTriangleColor(centerColor);
+
+            mesh.AddTriangleUV3_4D(Vector2.zero, Vector2.zero, Vector2.zero);
         }
 
         private void TriangulateWaterEdge(
@@ -126,6 +126,8 @@ namespace Assets.Simulation.MapRendering {
             );
 
             mesh.AddQuadColor(centerColor, rightColor);
+
+            mesh.AddQuadUV3_4D(Vector2.zero, Vector2.zero, Vector2.zero, Vector2.zero);
         }
 
         private void TriangulateWaterCorner(
@@ -141,6 +143,8 @@ namespace Assets.Simulation.MapRendering {
             );
 
             mesh.AddTriangleColor(centerColor, leftColor, rightColor);
+
+            mesh.AddTriangleUV3_4D(Vector2.zero, Vector2.zero, Vector2.zero);
         }
 
         //Since we're often triangulating water that goes up against land,

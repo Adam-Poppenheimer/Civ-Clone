@@ -55,11 +55,11 @@ namespace Assets.Simulation.MapRendering {
 
             Vector3 local_PointOntoMidline = Vector3.Project(local_Point, local_RightSolidMidpoint);
 
-            float percentRight  = local_PointOntoMidline.magnitude / local_RightSolidMidpoint.magnitude;
-            float percentCenter = 1f - percentRight;
+            float rightWeight  = local_PointOntoMidline.magnitude / local_RightSolidMidpoint.magnitude;
+            float centerWeight = 1f - rightWeight;
 
-            T centerContribution = dataSelector(point, center, direction,            percentCenter);
-            T rightContribution  = dataSelector(point, right,  direction.Opposite(), percentRight);
+            T centerContribution = dataSelector(point, center, direction,            centerWeight);
+            T rightContribution  = dataSelector(point, right,  direction.Opposite(), rightWeight);
 
             return aggregator(centerContribution, rightContribution);
         }
