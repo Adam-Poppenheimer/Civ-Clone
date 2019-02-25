@@ -209,6 +209,27 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Color _freshWaterColor;
 
+        public Color RiverWaterColor {
+            get { return _riverWaterColor; }
+        }
+        [SerializeField] private Color _riverWaterColor;
+
+
+        public float RiverWidth {
+            get { return _riverWidth; }
+        }
+        [SerializeField, Range(0f, 10f)] private float _riverWidth;
+
+        public float RiverCurveStrength {
+            get { return _riverCurveStrength; }
+        }
+        [SerializeField] private float _riverCurveStrength;
+
+        public int RiverQuadsPerCurve {
+            get { return _riverQuadsPerCurve; }
+        }
+        [SerializeField, Range(1f, 100f)] private int _riverQuadsPerCurve;
+
         #endregion
 
         private Vector2[] CornersXZ;

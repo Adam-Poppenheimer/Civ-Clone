@@ -16,6 +16,12 @@ namespace Assets.Simulation.MapRendering {
 
     public class MapChunk : MonoBehaviour, IMapChunk {
 
+        #region static fields and properties
+
+        private static Coroutine RefreshRiversCoroutine;
+
+        #endregion
+
         #region instance fields and properties
 
         public IEnumerable<IHexCell> Cells {
@@ -40,6 +46,7 @@ namespace Assets.Simulation.MapRendering {
         private IMapRenderConfig      RenderConfig;
         private IWaterTriangulator    WaterTriangulator;
         private IHexFeatureManager    HexFeatureManager;
+        private IRiverTriangulator    RiverTriangulator;
 
         #endregion
 
@@ -49,13 +56,14 @@ namespace Assets.Simulation.MapRendering {
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
-            IHexFeatureManager hexFeatureManager
+            IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator
         ) {
-            AlphamapLogic     = alphamapLogic;
-            HeightLogic       = heightLogic;
-            RenderConfig      = renderConfig;
-            WaterTriangulator = waterTriangulator;
-            HexFeatureManager = hexFeatureManager;
+            AlphamapLogic      = alphamapLogic;
+            HeightLogic        = heightLogic;
+            RenderConfig       = renderConfig;
+            WaterTriangulator  = waterTriangulator;
+            HexFeatureManager  = hexFeatureManager;
+            RiverTriangulator  = riverTriangulator;
         }
 
         #region from IMapChunk
@@ -109,6 +117,10 @@ namespace Assets.Simulation.MapRendering {
             RefreshHeightmap();
             RefreshWater();
             RefreshFeatures();
+
+            if(RefreshRiversCoroutine == null) {
+                RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
+            }
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -222,6 +234,14 @@ namespace Assets.Simulation.MapRendering {
             HexFeatureManager.Apply();
 
             RefreshFeatureCoroutine = null;
+        }
+
+        private IEnumerator RefreshRivers_Perform() {
+            yield return new WaitForEndOfFrame();
+
+            RiverTriangulator.TriangulateRivers();
+
+            RefreshRiversCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

@@ -412,7 +412,7 @@ namespace Assets.Simulation.Units {
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
                     transform.position = Bezier.GetPoint(a, b, c, t);
-                    Vector3 d = Bezier.GetDerivative(a, b, c, t);
+                    Vector3 d = Bezier.GetFirstDerivative(a, b, c, t);
                     d.y = 0f;
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;
@@ -429,7 +429,7 @@ namespace Assets.Simulation.Units {
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
                     transform.position = Bezier.GetPoint(a, b, c, t);
-                    Vector3 d = Bezier.GetDerivative(a, b, c, t);
+                    Vector3 d = Bezier.GetFirstDerivative(a, b, c, t);
                     d.y = 0f;
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;

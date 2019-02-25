@@ -66,6 +66,12 @@ namespace Assets.Simulation.MapRendering {
         Color ShallowWaterColor { get; }
         Color DeepWaterColor    { get; }
         Color FreshWaterColor   { get; }
+        Color RiverWaterColor   { get; }
+
+        float RiverWidth { get; }
+        float RiverCurveStrength { get; }
+
+        int RiverQuadsPerCurve { get; }
 
         #endregion
 

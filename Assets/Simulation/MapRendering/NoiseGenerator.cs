@@ -51,10 +51,14 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector3 Perturb(Vector3 position) {
+            return Perturb(position, 1f);
+        }
+
+        public Vector3 Perturb(Vector3 position, float strength) {
             Vector4 sample = SampleNoise(position, NoiseType.Generic);
 
-            position.x += (sample.x * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;
-            position.z += (sample.z * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ;
+            position.x += (sample.x * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ * strength;
+            position.z += (sample.z * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ * strength;
 
             return position;
         }
