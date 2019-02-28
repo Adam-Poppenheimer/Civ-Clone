@@ -43,9 +43,11 @@ namespace Assets.Simulation.MapRendering {
         #region constructors
 
         [Inject]
-        public RiverAssemblyCanon(IRiverSectionCanon sectionCanon, IRiverBuilder riverBuilder) {
-            SectionCanon = sectionCanon;
-            RiverBuilder = riverBuilder;
+        public RiverAssemblyCanon(
+            IRiverSectionCanon sectionCanon, IRiverBuilder riverBuilder
+        ) {
+            SectionCanon           = sectionCanon;
+            RiverBuilder           = riverBuilder;
         }
 
         #endregion

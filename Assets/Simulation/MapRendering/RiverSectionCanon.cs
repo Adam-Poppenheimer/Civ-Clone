@@ -32,19 +32,24 @@ namespace Assets.Simulation.MapRendering {
 
 
         
-        private IHexGrid         Grid;
-        private IMapRenderConfig RenderConfig;
-        private IRiverCanon      RiverCanon;
+        private IHexGrid              Grid;
+        private IMapRenderConfig      RenderConfig;
+        private IRiverCanon           RiverCanon;
+        private ICellEdgeContourCanon CellEdgeContourCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public RiverSectionCanon(IHexGrid grid, IMapRenderConfig renderConfig, IRiverCanon riverCanon) {
-            Grid         = grid;
-            RenderConfig = renderConfig;
-            RiverCanon   = riverCanon;
+        public RiverSectionCanon(
+            IHexGrid grid, IMapRenderConfig renderConfig, IRiverCanon riverCanon,
+            ICellEdgeContourCanon cellEdgeContourCanon
+        ) {
+            Grid                 = grid;
+            RenderConfig         = renderConfig;
+            RiverCanon           = riverCanon;
+            CellEdgeContourCanon = cellEdgeContourCanon;
         }
 
         #endregion
@@ -58,7 +63,9 @@ namespace Assets.Simulation.MapRendering {
         //as it is to deal with this reality. 
         public void RefreshRiverSections() {
             sections.Clear();
-            SectionBetweenCells.Clear();            
+            SectionBetweenCells.Clear();
+
+            CellEdgeContourCanon.Clear();
 
             foreach(var cell in Grid.Cells) {
                 for(HexDirection direction = HexDirection.NE; direction <= HexDirection.SE; direction++) {

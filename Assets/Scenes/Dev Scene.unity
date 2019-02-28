@@ -10455,7 +10455,7 @@ MonoBehaviour:
   UseCollider: 0
   UseUVCoordinates: 0
   UseUV2Coordinates: 0
-  UseUV3Coordinates: 0
+  UseUV3Coordinates: 1
   UseCellData: 0
   UseColors: 1
   WeldMesh: 0

@@ -49,6 +49,10 @@ MonoBehaviour:
   _deepWaterColor: {r: 0, g: 0.29847857, b: 0.8014706, a: 1}
   _freshWaterColor: {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
   _riverWaterColor: {r: 0.40392157, g: 0.8235294, b: 0.93333334, a: 1}
-  _riverWidth: 1
+  _riverMaxWidth: 0.6
   _riverCurveStrength: 5
-  _riverQuadsPerCurve: 20
+  _riverWideningRate: 10
+  _riverWidthNoise: 0.6
+  _riverCurvesForMaxWidth: 3
+  _riverQuadsPerCurve: 50
+  _riverFlowSpeed: 10

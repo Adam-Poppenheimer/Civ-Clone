@@ -140,10 +140,7 @@ namespace Assets.Simulation.MapRendering {
                 return PointOrientation.Void;
             }
         }
-
-        //Outer corners won't do because we need to treat tri-hex confluences differently
-        //Instead, we find the midpoint between the near and far solid corners
-        //of the edge and use that for our quadrilateral
+        
         private bool IsPointInSolidCenter(IHexCell cell) {
             Cache.CenterCellMiddle = cell.AbsolutePosition;
 
@@ -158,6 +155,9 @@ namespace Assets.Simulation.MapRendering {
             return Geometry2D.IsPointWithinTriangle(Cache.Point2D, Cache.CenterCellCenter2D, Cache.CenterFirstSolid2D, Cache.CenterSecondSolid2D);
         }
 
+        //Outer corners won't do because we need to treat tri-hex confluences differently
+        //Instead, we find the midpoint between the near and far solid corners
+        //of the edge and use that for our quadrilateral
         private bool IsPointInEdge(IHexCell cell) {
             Cache.RightCellMiddle = Cache.RightCell.AbsolutePosition;
 

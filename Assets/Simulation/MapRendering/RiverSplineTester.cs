@@ -7,6 +7,10 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Simulation.HexMap;
+
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapRendering {
 
     public class RiverSplineTester : MonoBehaviour {
@@ -19,8 +23,11 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        private IRiverSplineBuilder RiverSplineBuilder;
-        private IRiverAssemblyCanon       RiverBuilder;
+        private IRiverSplineBuilder   RiverSplineBuilder;
+        private IRiverAssemblyCanon   RiverAssemblyCanon;
+        private ICellEdgeContourCanon CellEdgeContourCanon;
+        private IHexGrid              Grid;
+        private IRiverCanon           RiverCanon;
 
         #endregion
 
@@ -28,10 +35,14 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         private void InjectDependencies(
-            IRiverSplineBuilder riverSplineBuilder, IRiverAssemblyCanon riverBuilder
+            IRiverSplineBuilder riverSplineBuilder, IRiverAssemblyCanon riverAssemblyCanon,
+            ICellEdgeContourCanon cellEdgeContourCanon, IHexGrid grid, IRiverCanon riverCanon
         ) {
-            RiverSplineBuilder = riverSplineBuilder;
-            RiverBuilder       = riverBuilder;
+            RiverSplineBuilder   = riverSplineBuilder;
+            RiverAssemblyCanon   = riverAssemblyCanon;
+            CellEdgeContourCanon = cellEdgeContourCanon;
+            Grid                 = grid;
+            RiverCanon           = riverCanon;
         }
 
         #region Unity messages
@@ -41,6 +52,10 @@ namespace Assets.Simulation.MapRendering {
                 return;
             }
 
+            OnDrawGizmos_Contours();
+        }
+
+        private void OnDrawGizmos_River() {
             foreach(var riverSpline in RiverSplineBuilder.LastBuiltRiverSplines) {
                 if(DrawStartPoints) {
                     Gizmos.color = Color.yellow;
@@ -73,8 +88,28 @@ namespace Assets.Simulation.MapRendering {
 
             Gizmos.color = Color.red;
 
-            foreach(RiverSection section in RiverBuilder.UnassignedSections) {
+            foreach(RiverSection section in RiverAssemblyCanon.UnassignedSections) {
                 Gizmos.DrawLine(section.Start, section.End);
+            }
+        }
+
+        private void OnDrawGizmos_Contours() {
+            foreach(var cell in Grid.Cells) {
+                Vector3 center = cell.AbsolutePosition;
+
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    var contour = CellEdgeContourCanon.GetContourForCellEdge(cell, direction);
+
+                    for(int i = 0; i < contour.Count - 1; i++) {
+                        Gizmos.color = Color.white;
+                        Gizmos.DrawLine(contour[i], contour[i + 1]);
+
+                        Gizmos.color = Color.gray;
+                        Gizmos.DrawLine(center, contour[i]);
+                    }
+
+                    Gizmos.DrawLine(center, contour.Last());
+                }
             }
         }
 

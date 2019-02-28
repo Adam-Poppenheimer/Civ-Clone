@@ -441,11 +441,19 @@ Subshader
 	Lod 200
 	ColorMask RGB
 	
+
+
 	Pass {
 			Blend SrcAlpha OneMinusSrcAlpha
 			ZTest LEqual
 			ZWrite Off
 			Cull Off
+
+			Stencil {
+				Ref 0
+				Comp Equal
+				Pass IncrSat
+			}
 		
 			CGPROGRAM
 		

@@ -22,8 +22,7 @@ namespace Assets.Simulation.MapRendering {
         void AddQuadUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4);
         void AddQuadUV2(float uMin, float uMax, float vMin, float vMax);
 
-        void AddQuadUV3(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4);
-        void AddQuadUV3(float uMin, float uMax, float vMin, float vMax);
+        void AddQuadUV3(Vector4 uv1, Vector4 uv2, Vector4 uv3, Vector4 uv4);
 
         void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree);
 
@@ -35,12 +34,14 @@ namespace Assets.Simulation.MapRendering {
 
         void AddTriangleUV(Vector2 uv1, Vector2 uv2, Vector2 uv3);
         void AddTriangleUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3);
-        void AddTriangleUV3(Vector2 uv1, Vector2 uv2, Vector2 uv3);
+
+        void AddTriangleUV3(Vector4 uv1, Vector4 uv2, Vector4 uv3);
 
         void Apply();
         void Clear();
 
         #endregion
+
     }
 
 }

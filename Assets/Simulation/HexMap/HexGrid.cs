@@ -32,7 +32,7 @@ namespace Assets.Simulation.HexMap {
         public ReadOnlyCollection<IHexCell> Cells {
             get { return cells.AsReadOnly(); }
         }
-        private List<IHexCell> cells;
+        private List<IHexCell> cells = new List<IHexCell>();
 
         public int CellCountX { get; private set; }
         public int CellCountZ { get; private set; }
@@ -109,19 +109,17 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void Clear() {
-            if(cells == null) {
+            if(cells == null || cells.Count == 0) {
                 return;
             }
 
             CellSignals.MapBeingClearedSignal.OnNext(new UniRx.Unit());
 
-             cells.Clear();
+            cells.Clear();
 
             for(int i = Chunks.Count - 1; i >= 0; i--) {
                 Destroy(Chunks[i].gameObject);
             }
-
-            cells  = null;
 
             Chunks.Clear();
         }

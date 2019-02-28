@@ -42,8 +42,8 @@ namespace Assets.Simulation.MapRendering {
         public RiverSplineBuilder(
             IMapRenderConfig renderConfig, IRiverAssemblyCanon riverAssemblyCanon
         ) {
-            RenderConfig       = renderConfig;
-            RiverAssemblyCanon = riverAssemblyCanon;
+            RenderConfig           = renderConfig;
+            RiverAssemblyCanon     = riverAssemblyCanon;
         }
 
         #endregion
@@ -126,7 +126,11 @@ namespace Assets.Simulation.MapRendering {
                 }
 
                 var newRiverSpline = new RiverSpline() {
-                    CenterSpline = centerSpline
+                    CenterSpline = centerSpline,
+                    WesternCells = river.Select(riverSection => riverSection.AdjacentCellOne ).ToList(),
+                    EasternCells = river.Select(riverSection => riverSection.AdjacentCellTwo ).ToList(),
+                    Directions   = river.Select(riverSection => riverSection.DirectionFromOne).ToList(),
+                    Flows        = river.Select(riverSection => riverSection.FlowFromOne     ).ToList()
                 };
 
                 RiverSplines.Add(newRiverSpline);

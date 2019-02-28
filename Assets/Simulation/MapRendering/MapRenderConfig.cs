@@ -215,20 +215,40 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private Color _riverWaterColor;
 
 
-        public float RiverWidth {
-            get { return _riverWidth; }
+        public float RiverMaxWidth {
+            get { return _riverMaxWidth; }
         }
-        [SerializeField, Range(0f, 10f)] private float _riverWidth;
+        [SerializeField, Range(0f, 10f)] private float _riverMaxWidth;
 
         public float RiverCurveStrength {
             get { return _riverCurveStrength; }
         }
         [SerializeField] private float _riverCurveStrength;
 
+        public float RiverWideningRate {
+            get { return _riverWideningRate; }
+        }
+        [SerializeField, Range(0f, 100f)] private float _riverWideningRate;
+
+        public float RiverWidthNoise {
+            get { return _riverWidthNoise; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _riverWidthNoise = 0f;
+
+        public int RiverCurvesForMaxWidth {
+            get { return _riverCurvesForMaxWidth; }
+        }
+        [SerializeField, Range(0f, 30f)] private int _riverCurvesForMaxWidth = 10;
+
         public int RiverQuadsPerCurve {
             get { return _riverQuadsPerCurve; }
         }
         [SerializeField, Range(1f, 100f)] private int _riverQuadsPerCurve;
+
+        public float RiverFlowSpeed {
+            get { return _riverFlowSpeed; }
+        }
+        [SerializeField] private float _riverFlowSpeed;
 
         #endregion
 
