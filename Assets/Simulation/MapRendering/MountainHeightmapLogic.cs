@@ -43,16 +43,16 @@ namespace Assets.Simulation.MapRendering {
         #region from IMountainHeightmapLogic
 
         
-        public float GetHeightForPosition(Vector3 position, IHexCell cell, HexDirection sextant) {
+        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
             float peakWeight, ridgeWeight, hillsWeight;
 
-            MountainHeightmapWeightLogic.GetHeightWeightsForPosition(
-                position, cell, sextant, out peakWeight, out ridgeWeight, out hillsWeight
+            MountainHeightmapWeightLogic.GetHeightWeightsForPoint(
+                xzPoint, cell, sextant, out peakWeight, out ridgeWeight, out hillsWeight
             );
 
             var neighbor = Grid.GetNeighbor(cell, sextant);
 
-            float hillsHeight = RenderConfig.HillsBaseElevation + NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight).x;
+            float hillsHeight = RenderConfig.HillsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.HillsHeight).x;
 
             float ridgeHeight = hillsHeight;
 

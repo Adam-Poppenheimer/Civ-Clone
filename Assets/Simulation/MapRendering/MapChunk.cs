@@ -85,6 +85,8 @@ namespace Assets.Simulation.MapRendering {
 
             transform.position = position;
 
+            Terrain.castShadows = false;
+
             Terrain.Flush();
         }
 
@@ -141,6 +143,7 @@ namespace Assets.Simulation.MapRendering {
 
         private IEnumerator RefreshAlphamap_Perform() {
             yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
 
             var terrainData = Terrain.terrainData;
 
@@ -161,7 +164,7 @@ namespace Assets.Simulation.MapRendering {
                     float worldX = transform.position.x + normalHeight * terrainData.size.x;
                     float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
 
-                    float[] newAlphas = AlphamapLogic.GetAlphamapForPosition(new Vector3(worldX, 0f, worldZ));
+                    float[] newAlphas = AlphamapLogic.GetAlphamapForPoint(new Vector2(worldX, worldZ));
 
                     for(int alphaIndex = 0; alphaIndex < terrainData.splatPrototypes.Length; alphaIndex++) {
                         alphaMaps[width, height, alphaIndex] = newAlphas[alphaIndex];
@@ -177,6 +180,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private IEnumerator RefreshHeightmap_Perform() {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
             var terrainData = Terrain.terrainData;
@@ -194,7 +198,7 @@ namespace Assets.Simulation.MapRendering {
                     float worldX = transform.position.x + normalHeight * terrainData.size.x;
                     float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
 
-                    heights[width, height] = HeightLogic.GetHeightForPosition(new Vector3(worldX, 0f, worldZ));
+                    heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ));
                 }
             }
 
@@ -222,6 +226,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private IEnumerator RefreshFeatures_Perform() {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 

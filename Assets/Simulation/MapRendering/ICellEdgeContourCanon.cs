@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
-using Assets.Simulation.HexMap;
+﻿using System;
+using System.Collections.ObjectModel;
+using System.Collections.Generic;
+
 using UnityEngine;
+
+using Assets.Simulation.HexMap;
+
 
 namespace Assets.Simulation.MapRendering {
 
@@ -8,11 +13,17 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void SetContourForCellEdge(IHexCell cell, HexDirection edge, List<Vector3> contour);
+        void SetContourForCellEdge(IHexCell cell, HexDirection edge, List<Vector2> contour);
 
-        List<Vector3> GetContourForCellEdge(IHexCell cell, HexDirection edge);
+        ReadOnlyCollection<Vector2> GetContourForCellEdge(IHexCell cell, HexDirection edge);
 
         void Clear();
+
+        bool IsPointWithinContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour, Vector2 xzMidpoint);
+
+        bool IsPointBetweenContours(
+            Vector2 xzPoint, ReadOnlyCollection<Vector2> contourOne, ReadOnlyCollection<Vector2> contourTwo
+        );
 
         #endregion
 

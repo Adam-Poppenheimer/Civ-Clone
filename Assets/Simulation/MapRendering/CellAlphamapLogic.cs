@@ -36,7 +36,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellAlphamapLogic
 
-        public float[] GetAlphamapForPositionForCell(Vector3 position, IHexCell cell, HexDirection sextant) {
+        public float[] GetAlphamapForPointForCell(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
             var retval = new float[RenderConfig.MapTextures.Count()];
 
             var improvementsAt = ImprovementLocationCanon.GetPossessionsOfOwner(cell);

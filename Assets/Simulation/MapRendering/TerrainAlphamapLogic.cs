@@ -16,12 +16,8 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig         RenderConfig;
-        private IHexGrid                 Grid;
         private IPointOrientationLogic   PointOrientationLogic;
         private ICellAlphamapLogic       CellAlphamapLogic;
-        private ITerrainMixingLogic      TerrainMixingLogic;
-        private INoiseGenerator          NoiseGenerator;
-        private IAlphamapMixingFunctions AlphamapMixingFunctions;
 
         #endregion
 
@@ -29,17 +25,12 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public TerrainAlphamapLogic(
-            IMapRenderConfig renderConfig, IHexGrid grid, IPointOrientationLogic pointOrientationLogic,
-            ICellAlphamapLogic cellAlphamapLogic, ITerrainMixingLogic terrainMixingLogic,
-            INoiseGenerator noiseGenerator, IAlphamapMixingFunctions alphamapMixingFunctions
+            IMapRenderConfig renderConfig,IPointOrientationLogic pointOrientationLogic,
+            ICellAlphamapLogic cellAlphamapLogic
         ) {
             RenderConfig            = renderConfig;
-            Grid                    = grid;
             PointOrientationLogic   = pointOrientationLogic;
             CellAlphamapLogic       = cellAlphamapLogic;
-            TerrainMixingLogic      = terrainMixingLogic;
-            NoiseGenerator          = noiseGenerator;
-            AlphamapMixingFunctions = alphamapMixingFunctions;
         }
 
         #endregion
@@ -48,49 +39,65 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainAlphamapLogic
 
-        public float[] GetAlphamapForPosition(Vector3 position) {
-            var perturbedPosition = NoiseGenerator.Perturb(position);
+        public float[] GetAlphamapForPoint(Vector2 xzPoint) {
+            var retval = new float[RenderConfig.MapTextures.Count()];
 
-            if(Grid.HasCellAtLocation(perturbedPosition)) {
-                var center = Grid.GetCellAtLocation(perturbedPosition);
+            retval[0] = 1f;
 
-                HexDirection sextant = PointOrientationLogic.GetSextantOfPointForCell(perturbedPosition, center);
+            return retval;
 
-                PointOrientation orientation = PointOrientationLogic.GetOrientationOfPointInCell(perturbedPosition, center, sextant);
+            var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
-                if(orientation == PointOrientation.Center || orientation == PointOrientation.Void) {
-                    return CellAlphamapLogic.GetAlphamapForPositionForCell(perturbedPosition, center, sextant);
-                }
-
-                IHexCell right = Grid.GetNeighbor(center, sextant);
-
-                if(orientation == PointOrientation.Edge) {
-                    return TerrainMixingLogic.GetMixForEdgeAtPoint(
-                        center, right, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
-                    );
-                }
-
-                if(orientation == PointOrientation.PreviousCorner) {
-                    var left = Grid.GetNeighbor(center, sextant.Previous());
-
-                    return TerrainMixingLogic.GetMixForPreviousCornerAtPoint(
-                        center, left, right, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
-                    );
-                }
-
-                if(orientation == PointOrientation.NextCorner) {
-                    var nextRight = Grid.GetNeighbor(center, sextant.Next());
-
-                    return TerrainMixingLogic.GetMixForNextCornerAtPoint(
-                        center, right, nextRight, sextant, perturbedPosition, AlphamapMixingFunctions.Selector, AlphamapMixingFunctions.Aggregator
-                    );
-                }
+            if(!orientationData.IsOnGrid) {
+                return retval;
             }
 
-            return new float[RenderConfig.MapTextures.Count()];
+            if(orientationData.RiverWeight > 0f) {
+                return RenderConfig.RiverAlphamap;
+            }
+
+            if(orientationData.CenterWeight > 0f) {
+                AddToMap(
+                    retval,
+                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Center, orientationData.Sextant),
+                    orientationData.CenterWeight
+                );
+            }
+
+            if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
+                AddToMap(
+                    retval,
+                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Left, orientationData.Sextant.Next2()),
+                    orientationData.LeftWeight
+                );
+            }
+
+            if(orientationData.Right != null && orientationData.RightWeight > 0f) {
+                AddToMap(
+                    retval,
+                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Right, orientationData.Sextant.Opposite()),
+                    orientationData.RightWeight
+                );
+            }
+
+            if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
+                AddToMap(
+                    retval,
+                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2()),
+                    orientationData.NextRightWeight
+                );
+            }
+
+            return retval;
         }
 
         #endregion
+
+        private void AddToMap(float[] thisMap, float[] otherMap, float otherWeight) {
+            for(int i = 0; i < thisMap.Length; i++) {
+                thisMap[i] += otherMap[i] * otherWeight;
+            }
+        }
 
         #endregion
         

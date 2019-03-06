@@ -21,7 +21,7 @@ namespace Assets.Simulation.HexMap {
 
         #region static fields and properties
 
-        private static Vector3 MapIntersector = new Vector3(0f, 20f, 0f);
+        private static Vector3 MapIntersector = new Vector3(0f, 100f, 0f);
 
         #endregion
 

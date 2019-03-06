@@ -50,7 +50,7 @@ namespace Assets.Simulation.MapRendering {
                         continue;
                     }
 
-                    var contourPoints = new List<Vector3>();
+                    var contourPoints = new List<Vector2>();
 
                     IHexCell left      = Grid.GetNeighbor(center, direction.Previous());
                     IHexCell right     = Grid.GetNeighbor(center, direction);
@@ -62,11 +62,8 @@ namespace Assets.Simulation.MapRendering {
                     bool hasLeftRightRiver      = left      != null && RiverCanon.HasRiverAlongEdge(left,      direction.Next());
                     bool hasNextRightRightRiver = nextRight != null && RiverCanon.HasRiverAlongEdge(nextRight, direction.Previous());
 
-                    bool isCenterLeftOutflow      = hasCenterLeftRiver      && RiverCanon.GetFlowOfRiverAtEdge(center, direction.Previous()) == RiverFlow.Clockwise;
-                    bool isCenterNextRightOutflow = hasCenterNextRightRiver && RiverCanon.GetFlowOfRiverAtEdge(center, direction.Next    ()) == RiverFlow.Counterclockwise;
-
                     if(hasCenterLeftRiver) {
-                        var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous());
+                        ICollection<Vector2> centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous());
 
                         contourPoints.Add(
                             RiverCanon.GetFlowOfRiverAtEdge(center, direction.Previous()) == RiverFlow.Clockwise
@@ -75,7 +72,7 @@ namespace Assets.Simulation.MapRendering {
                         );
 
                     } else if(hasLeftRightRiver) {
-                        var rightLeftContour = CellEdgeContourCanon.GetContourForCellEdge(right, direction.Previous2());
+                        ICollection<Vector2> rightLeftContour = CellEdgeContourCanon.GetContourForCellEdge(right, direction.Previous2());
 
                         contourPoints.Add(
                             RiverCanon.GetFlowOfRiverAtEdge(right, direction.Previous2()) == RiverFlow.Clockwise
@@ -84,11 +81,11 @@ namespace Assets.Simulation.MapRendering {
                         );
 
                     } else {
-                        contourPoints.Add(center.AbsolutePosition + RenderConfig.GetFirstCorner(direction));
+                        contourPoints.Add(center.AbsolutePositionXZ + RenderConfig.GetFirstCornerXZ(direction));
                     }
 
                     if(hasCenterNextRightRiver) {
-                        var centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Next());
+                        ICollection<Vector2> centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Next());
 
                         contourPoints.Add(
                             RiverCanon.GetFlowOfRiverAtEdge(center, direction.Next()) == RiverFlow.Clockwise
@@ -96,8 +93,8 @@ namespace Assets.Simulation.MapRendering {
                                 : direction.Next() <= HexDirection.SE ? centerNextRightContour.Last () : centerNextRightContour.First()
                         );
                     }else if(hasNextRightRightRiver) {
-                        var rightNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(right,     direction.Next2());
-                        var nextRightRightContour = CellEdgeContourCanon.GetContourForCellEdge(nextRight, direction.Previous());
+                        ICollection<Vector2> rightNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(right,     direction.Next2());
+                        ICollection<Vector2> nextRightRightContour = CellEdgeContourCanon.GetContourForCellEdge(nextRight, direction.Previous());
 
                         contourPoints.Add(
                             RiverCanon.GetFlowOfRiverAtEdge(right, direction.Next2()) == RiverFlow.Clockwise
@@ -112,7 +109,7 @@ namespace Assets.Simulation.MapRendering {
                         );
 
                     } else {
-                        contourPoints.Add(center.AbsolutePosition + RenderConfig.GetSecondCorner(direction));
+                        contourPoints.Add(center.AbsolutePositionXZ + RenderConfig.GetSecondCornerXZ(direction));
                     }
 
                     CellEdgeContourCanon.SetContourForCellEdge(center, direction, contourPoints);

@@ -34,7 +34,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region from INoiseGenerator
 
-        public Vector4 SampleNoise(Vector3 position, NoiseType type) {
+        public Vector4 SampleNoise(Vector2 xzPosition, NoiseType type) {
             INoiseTexture noiseSource;
 
             switch(type) {
@@ -45,8 +45,8 @@ namespace Assets.Simulation.MapRendering {
             }
 
             return noiseSource.SampleBilinear(
-                position.x * RenderConfig.NoiseScale,
-                position.z * RenderConfig.NoiseScale
+                xzPosition.x * RenderConfig.NoiseScale,
+                xzPosition.y * RenderConfig.NoiseScale
             );
         }
 
@@ -63,9 +63,9 @@ namespace Assets.Simulation.MapRendering {
             return position;
         }
 
-        public HexHash SampleHashGrid(Vector3 position) {
-            int x = (int)(position.x * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
-            int z = (int)(position.z * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
+        public HexHash SampleHashGrid(Vector2 xzPosition) {
+            int x = (int)(xzPosition.x * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
+            int z = (int)(xzPosition.y * RenderConfig.NoiseHashGridScale) % RenderConfig.NoiseHashGridSize;
 
             x = x < 0 ? x += RenderConfig.NoiseHashGridSize : x;
             z = z < 0 ? z += RenderConfig.NoiseHashGridSize : z;

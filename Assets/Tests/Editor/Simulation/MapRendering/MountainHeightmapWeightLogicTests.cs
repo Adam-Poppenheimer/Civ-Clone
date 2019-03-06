@@ -74,7 +74,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(aCoord, peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(cCoord, ridgeWeight, "RidgeWeight has an unexpected value");
@@ -109,7 +109,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(aCoord, peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(bCoord, ridgeWeight, "RidgeWeight has an unexpected value");
@@ -152,7 +152,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(0f,              peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(aCoord,          ridgeWeight, "RidgeWeight has an unexpected value");
@@ -195,7 +195,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(0f,                         peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(1f - hillsWeight,           ridgeWeight, "RidgeWeight has an unexpected value");
@@ -238,7 +238,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(0f,              peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(aCoord,          ridgeWeight, "RidgeWeight has an unexpected value");
@@ -281,7 +281,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(0f, peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(0f, ridgeWeight, "RidgeWeight has an unexpected value");
@@ -303,7 +303,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight, ridgeWeight, hillsWeight;
 
-            weightLogic.GetHeightWeightsForPosition(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
+            weightLogic.GetHeightWeightsForPoint(position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight);
 
             Assert.AreEqual(0f, peakWeight,  "PeakWeight has an unexpected value");
             Assert.AreEqual(0f, ridgeWeight, "RidgeWeight has an unexpected value");

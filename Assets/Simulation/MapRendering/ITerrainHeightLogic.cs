@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float GetHeightForPosition(Vector3 position);
+        float GetHeightForPoint(Vector2 xzPoint);
 
         #endregion
 

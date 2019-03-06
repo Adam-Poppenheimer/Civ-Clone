@@ -165,6 +165,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _mountainRidgeElevation;
 
+        public float RiverTroughElevation  {
+            get { return _riverTroughElevation; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _riverTroughElevation;
+
 
         public float WaterY {
             get { return WaterSurfaceElevation * TerrainMaxY; }
@@ -249,6 +254,11 @@ namespace Assets.Simulation.MapRendering {
             get { return _riverFlowSpeed; }
         }
         [SerializeField] private float _riverFlowSpeed;
+
+        public float[] RiverAlphamap {
+            get { return _riverAlphamap; }
+        }
+        [SerializeField] private float[] _riverAlphamap;
 
         #endregion
 

@@ -57,7 +57,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0.75f, ridgeWeight = 0f, hillsWeight = 0f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -66,7 +66,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -79,7 +79,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0f, ridgeWeight = 0.75f, hillsWeight = 0f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -101,7 +101,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0f, ridgeWeight = 0.75f, hillsWeight = 0f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -113,7 +113,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -126,7 +126,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0f, ridgeWeight = 0.75f, hillsWeight = 0f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -138,7 +138,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * (15.5f + 5.5f), heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0f, ridgeWeight = 0f, hillsWeight = 0.75f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -159,7 +159,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(0.75f * 15.5f, heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -172,7 +172,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float peakWeight = 0.6f, ridgeWeight = 0.4f, hillsWeight = 0.3f;
             MockMountainHeightmapWeightLogic.Setup(
-                logic => logic.GetHeightWeightsForPosition(
+                logic => logic.GetHeightWeightsForPoint(
                     position, cell, HexDirection.E, out peakWeight, out ridgeWeight, out hillsWeight
                 )
             );
@@ -186,7 +186,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<MountainHeightmapLogic>();
 
-            Assert.AreEqual(10f * 0.6f + 20f * 0.4f, + (30f + 5.5f) * 0.3f, heightmapLogic.GetHeightForPosition(position, cell, HexDirection.E));
+            Assert.AreEqual(10f * 0.6f + 20f * 0.4f, + (30f + 5.5f) * 0.3f, heightmapLogic.GetHeightForPoint(position, cell, HexDirection.E));
         }
 
         #endregion

@@ -15,10 +15,9 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IHexGrid               Grid;
-        private IPointOrientationLogic PointOrientationLogic;
-        private ICellHeightmapLogic    CellHeightmapLogic;
-        private ITerrainMixingLogic    TerrainMixingLogic;
+        private IPointOrientationLogic     PointOrientationLogic;
+        private ICellHeightmapLogic        CellHeightmapLogic;
+        private IMapRenderConfig           RenderConfig;
 
         #endregion
 
@@ -27,12 +26,11 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public TerrainHeightLogic(
             IHexGrid grid, IPointOrientationLogic pointOrientationLogic,
-            ICellHeightmapLogic cellHeightmapLogic, ITerrainMixingLogic terrainMixingLogic
+            ICellHeightmapLogic cellHeightmapLogic, IMapRenderConfig renderConfig
         ) {
-            Grid                  = grid;
             PointOrientationLogic = pointOrientationLogic;
             CellHeightmapLogic    = cellHeightmapLogic;
-            TerrainMixingLogic    = terrainMixingLogic;
+            RenderConfig          = renderConfig;
         }
 
         #endregion
@@ -41,48 +39,48 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainHeightLogic
 
-        public float GetHeightForPosition(Vector3 position) {
-            if(Grid.HasCellAtLocation(position)) {
-                var center = Grid.GetCellAtLocation(position);
+        public float GetHeightForPoint(Vector2 xzPoint) {
+            float retval = 0f;
 
-                HexDirection sextant = PointOrientationLogic.GetSextantOfPointForCell(position, center);
+            var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
-                PointOrientation orientation = PointOrientationLogic.GetOrientationOfPointInCell(position, center, sextant);
-
-                if(orientation == PointOrientation.Center) {
-                    return CellHeightmapLogic.GetHeightForPositionForCell(position, center, sextant);
-                }
-
-                IHexCell right = Grid.GetNeighbor(center, sextant);
-
-                if(orientation == PointOrientation.Edge) {
-                    return TerrainMixingLogic.GetMixForEdgeAtPoint(
-                        center, right, sextant, position, HeightSelector, (a, b) => a + b
-                    );
-                }
-
-                if(orientation == PointOrientation.PreviousCorner) {
-                    var left = Grid.GetNeighbor(center, sextant.Previous());
-
-                    return TerrainMixingLogic.GetMixForPreviousCornerAtPoint(
-                        center, left, right, sextant, position, HeightSelector, (a, b) => a + b
-                    );
-                }
-
-                if(orientation == PointOrientation.NextCorner) {
-                    var nextRight = Grid.GetNeighbor(center, sextant.Next());
-
-                    return TerrainMixingLogic.GetMixForNextCornerAtPoint(
-                        center, right, nextRight, sextant, position, HeightSelector, (a, b) => a + b
-                    );
-                }
+            if(!orientationData.IsOnGrid) {
+                return retval;
             }
 
-            return 0f;
-        }
+            if(orientationData.CenterWeight > 0f) {
+                retval += orientationData.CenterWeight * CellHeightmapLogic.GetHeightForPointForCell(
+                    xzPoint, orientationData.Center, orientationData.Sextant
+                );
+            }
 
-        private float HeightSelector(Vector3 position, IHexCell cell, HexDirection sextant, float weight) {
-            return CellHeightmapLogic.GetHeightForPositionForCell(position, cell, sextant) * weight;
+            if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
+                retval += orientationData.LeftWeight * CellHeightmapLogic.GetHeightForPointForCell(
+                    xzPoint, orientationData.Left, orientationData.Sextant.Next2()
+                );
+            }
+
+            if(orientationData.Right != null && orientationData.RightWeight > 0f) {
+                retval += orientationData.RightWeight * CellHeightmapLogic.GetHeightForPointForCell(
+                    xzPoint, orientationData.Right, orientationData.Sextant.Opposite()
+                );
+            }
+
+            if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
+                retval += orientationData.NextRightWeight * CellHeightmapLogic.GetHeightForPointForCell(
+                    xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2()
+                );
+            }
+
+            if(orientationData.RiverWeight > 0f) {
+                retval += orientationData.RiverWeight * RenderConfig.RiverTroughElevation;
+            }
+
+            if(orientationData.LevelOffWeight > 0f) {
+                retval += orientationData.LevelOffWeight * RenderConfig.FlatlandsBaseElevation;
+            }
+
+            return retval;
         }
 
         #endregion

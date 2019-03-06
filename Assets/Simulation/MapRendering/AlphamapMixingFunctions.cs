@@ -33,7 +33,7 @@ namespace Assets.Simulation.MapRendering {
         #region from IAlphamapMixingFunctions
 
         public float[] Selector(Vector3 position, IHexCell cell, HexDirection sextant, float weight) {
-            var retval = CellAlphamapLogic.GetAlphamapForPositionForCell(position, cell, sextant);
+            var retval = CellAlphamapLogic.GetAlphamapForPointForCell(position, cell, sextant);
 
             for(int i = 0; i < retval.Length; i++) {
                 retval[i] *= weight;

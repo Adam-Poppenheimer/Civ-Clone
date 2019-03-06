@@ -47,7 +47,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var alphamaps = new float[] { 1f, 35f, -2.2f, 3.37f, 0f };
 
-            MockCellAlphamapLogic.Setup(logic => logic.GetAlphamapForPositionForCell(position, cell, HexDirection.E))
+            MockCellAlphamapLogic.Setup(logic => logic.GetAlphamapForPointForCell(position, cell, HexDirection.E))
                                  .Returns(alphamaps);
 
             var mixingFunctions = Container.Resolve<AlphamapMixingFunctions>();
@@ -63,7 +63,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var alphamaps = new float[] { 1f, 35f, -2.2f, 3.37f, 0f };
 
-            MockCellAlphamapLogic.Setup(logic => logic.GetAlphamapForPositionForCell(position, cell, HexDirection.E))
+            MockCellAlphamapLogic.Setup(logic => logic.GetAlphamapForPointForCell(position, cell, HexDirection.E))
                                  .Returns(alphamaps);
 
             var mixingFunctions = Container.Resolve<AlphamapMixingFunctions>();

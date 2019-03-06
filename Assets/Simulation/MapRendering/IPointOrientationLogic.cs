@@ -13,9 +13,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        HexDirection GetSextantOfPointForCell(Vector3 point, IHexCell cell);
-
-        PointOrientation GetOrientationOfPointInCell(Vector3 point, IHexCell cell, HexDirection sextant);
+        PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint);
 
         #endregion
 

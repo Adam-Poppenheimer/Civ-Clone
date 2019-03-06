@@ -21,6 +21,7 @@ namespace Assets.Simulation.MapRendering {
         private INoiseGenerator         NoiseGenerator;
         private ICellEdgeContourCanon   CellEdgeContourCanon;
         private INonRiverContourBuilder NonRiverContourBuilder;
+        private IRiverContourCuller     RiverContourCuller;
 
         #endregion
 
@@ -30,7 +31,8 @@ namespace Assets.Simulation.MapRendering {
         public RiverTriangulator(
             IMapRenderConfig renderConfig, IRiverSplineBuilder riverSplineBuilder,
             [Inject(Id = "River Mesh")] IHexMesh riverMesh, INoiseGenerator noiseGenerator,
-            ICellEdgeContourCanon cellEdgeContourCanon, INonRiverContourBuilder nonRiverContourBuilder
+            ICellEdgeContourCanon cellEdgeContourCanon, INonRiverContourBuilder nonRiverContourBuilder,
+            IRiverContourCuller riverContourCuller
         ) {
             RenderConfig           = renderConfig;
             RiverSplineBuilder     = riverSplineBuilder;
@@ -38,6 +40,7 @@ namespace Assets.Simulation.MapRendering {
             NoiseGenerator         = noiseGenerator;
             CellEdgeContourCanon   = cellEdgeContourCanon;
             NonRiverContourBuilder = nonRiverContourBuilder;
+            RiverContourCuller     = riverContourCuller;
         }
 
         #endregion
@@ -68,15 +71,20 @@ namespace Assets.Simulation.MapRendering {
 
                 float noise = NoiseGenerator.SampleNoise(point, NoiseType.Generic).x * 2f - 1f;
 
+                Vector3 flow1 = centerSpline.GetDirection(t);
+                Vector3 flow2 = centerSpline.GetDirection(tDelta);
+
                 float width2 = maxWidth * (
                     Mathf.Clamp01(tDelta * RenderConfig.RiverWideningRate) + tDelta * noise * RenderConfig.RiverWidthNoise
                 );
 
-                Vector3 flow1 = centerSpline.GetDirection(t);
-                Vector3 flow2 = centerSpline.GetDirection(tDelta);
-
                 Vector3 portV2      = point + centerSpline.GetNormalXZ(tDelta) * width2;
                 Vector3 starboardV2 = point - centerSpline.GetNormalXZ(tDelta) * width2;
+
+                Vector2 portV1XZ, starboardV1XZ;
+
+                Vector2 portV2XZ      = new Vector2(portV2     .x, portV2     .z);
+                Vector2 starboardV2XZ = new Vector2(starboardV2.x, starboardV2.z);
 
                 RiverMesh.AddTriangle   (centerSpline.Points[0], portV2, starboardV2);
                 RiverMesh.AddTriangleUV3(flow1,                  flow2,  flow2);
@@ -84,12 +92,12 @@ namespace Assets.Simulation.MapRendering {
                 RiverMesh.AddTriangleColor(RenderConfig.RiverWaterColor);
 
                 for(int sectionIndex = 0; sectionIndex < riverSpline.WesternCells.Count; sectionIndex++) {
-                    List<Vector3> thisEdgeContour     = new List<Vector3>();
-                    List<Vector3> neighborEdgeContour = new List<Vector3>();
+                    List<Vector2> thisEdgeContour     = new List<Vector2>();
+                    List<Vector2> neighborEdgeContour = new List<Vector2>();
 
                     if(sectionIndex == 0) {
-                        thisEdgeContour    .Add(centerSpline.Points[0]);
-                        neighborEdgeContour.Add(centerSpline.Points[0]);
+                        thisEdgeContour    .Add(new Vector2(centerSpline.Points[0].x, centerSpline.Points[0].z));
+                        neighborEdgeContour.Add(new Vector2(centerSpline.Points[0].x, centerSpline.Points[0].z));
                     }
 
                     var sectionFlow = riverSpline.Flows[sectionIndex];
@@ -99,6 +107,9 @@ namespace Assets.Simulation.MapRendering {
 
                         portV1      = portV2;
                         starboardV1 = starboardV2;
+
+                        portV1XZ      = portV2XZ;
+                        starboardV1XZ = starboardV2XZ;
 
                         point = centerSpline.GetPoint(t);
 
@@ -114,17 +125,20 @@ namespace Assets.Simulation.MapRendering {
                         portV2      = point + centerSpline.GetNormalXZ(t) * width2;
                         starboardV2 = point - centerSpline.GetNormalXZ(t) * width2;
 
+                        portV2XZ      = new Vector2(portV2     .x, portV2     .z);
+                        starboardV2XZ = new Vector2(starboardV2.x, starboardV2.z);
+
                         RiverMesh.AddQuad   (portV1, starboardV1, portV2, starboardV2);
                         RiverMesh.AddQuadUV3(flow1,  flow1,       flow2,  flow2);
 
                         RiverMesh.AddQuadColor(RenderConfig.RiverWaterColor);
 
-                        thisEdgeContour    .Add(sectionFlow == RiverFlow.Counterclockwise ? portV1      : starboardV1);
-                        neighborEdgeContour.Add(sectionFlow == RiverFlow.Counterclockwise ? starboardV1 : portV1);
+                        thisEdgeContour    .Add(sectionFlow == RiverFlow.Counterclockwise ? portV1XZ      : starboardV1XZ);
+                        neighborEdgeContour.Add(sectionFlow == RiverFlow.Counterclockwise ? starboardV1XZ : portV1XZ);
                     }
 
-                    thisEdgeContour    .Add(sectionFlow == RiverFlow.Counterclockwise ? portV2      : starboardV2);
-                    neighborEdgeContour.Add(sectionFlow == RiverFlow.Counterclockwise ? starboardV2 : portV2);
+                    thisEdgeContour    .Add(sectionFlow == RiverFlow.Counterclockwise ? portV2XZ      : starboardV2XZ);
+                    neighborEdgeContour.Add(sectionFlow == RiverFlow.Counterclockwise ? starboardV2XZ : portV2XZ);
 
                     neighborEdgeContour.Reverse();
 
@@ -139,6 +153,8 @@ namespace Assets.Simulation.MapRendering {
             }
 
             NonRiverContourBuilder.BuildNonRiverContours();
+
+            RiverContourCuller.CullConfluenceContours();
 
             RiverMesh.Apply();
         }

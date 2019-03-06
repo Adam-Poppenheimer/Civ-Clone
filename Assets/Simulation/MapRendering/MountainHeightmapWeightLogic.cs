@@ -56,12 +56,10 @@ namespace Assets.Simulation.MapRendering {
 
         //And we give corner edges fully over to the edge behavior, which for
         //now is equivalent to the height algorithm used for hills
-        public void GetHeightWeightsForPosition(
-            Vector3 position, IHexCell cell, HexDirection sextant,
+        public void GetHeightWeightsForPoint(
+            Vector2 pointXZ, IHexCell cell, HexDirection sextant,
             out float peakWeight, out float ridgeWeight, out float hillsWeight
         ) {
-            Vector2 positionXZ = new Vector2(position.x, position.z);
-
             Vector2 cellFirstSolidCorner  = cell.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ (sextant);
             Vector2 cellSecondSolidCorner = cell.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(sextant);
             Vector2 cellSolidEdgeMidpoint = cell.AbsolutePositionXZ + RenderConfig.GetSolidEdgeMidpointXZ(sextant);
@@ -70,14 +68,14 @@ namespace Assets.Simulation.MapRendering {
 
             //These triangles check the solid sextant. Both the peak and the ridge should drop to zero as they approach
             //the solid corners of the hex.
-            if(Geometry2D.IsPointWithinTriangle(positionXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint)) {                
+            if(Geometry2D.IsPointWithinTriangle(pointXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint)) {                
                 Geometry2D.GetBarycentric2D(
-                    positionXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint,
+                    pointXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint,
                     out peakWeight, out hillsWeight, out ridgeWeight
                 );
-            }else if(Geometry2D.IsPointWithinTriangle(positionXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner)) {
+            }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner)) {
                 Geometry2D.GetBarycentric2D(
-                    positionXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner,
+                    pointXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner,
                     out peakWeight, out ridgeWeight, out hillsWeight
                 );
             }else if(neighbor != null) {
@@ -90,27 +88,27 @@ namespace Assets.Simulation.MapRendering {
 
                 //The first two triangles check the surfaces adjacent to the corners.
                 //The third spans the middle
-                if(Geometry2D.IsPointWithinTriangle(positionXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner)) {
+                if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner)) {
                     Geometry2D.GetBarycentric2D(
-                        positionXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner,
+                        pointXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner,
                         out weightA, out weightB, out weightC
                     );
 
                     ridgeWeight = weightA;
                     hillsWeight = weightB + weightC;
 
-                }else if(Geometry2D.IsPointWithinTriangle(positionXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner)) {
+                }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner)) {
                     Geometry2D.GetBarycentric2D(
-                        positionXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner,
+                        pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner,
                         out weightA, out weightB, out weightC
                     );
 
                     ridgeWeight = weightA;
                     hillsWeight = weightB + weightC;
 
-                }else if(Geometry2D.IsPointWithinTriangle(positionXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner)) {
+                }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner)) {
                     Geometry2D.GetBarycentric2D(
-                        positionXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner,
+                        pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner,
                         out weightA, out weightB, out weightC
                     );
 

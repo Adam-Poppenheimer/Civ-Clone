@@ -41,15 +41,15 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellHeightmapLogic
 
-        public float GetHeightForPositionForCell(Vector3 position, IHexCell cell, HexDirection sextant) {
+        public float GetHeightForPointForCell(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
             if(cell.Terrain.IsWater()) {
                 return RenderConfig.SeaFloorElevation;
 
             }else {
                 switch(cell.Shape) {
-                    case CellShape.Flatlands: return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(position, NoiseType.FlatlandsHeight).x;
-                    case CellShape.Hills:     return RenderConfig.HillsBaseElevation     + NoiseGenerator.SampleNoise(position, NoiseType.HillsHeight)    .x;
-                    case CellShape.Mountains: return MountainHeightmapLogic.GetHeightForPosition(position, cell, sextant);
+                    case CellShape.Flatlands: return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
+                    case CellShape.Hills:     return RenderConfig.HillsBaseElevation     + NoiseGenerator.SampleNoise(xzPoint, NoiseType.HillsHeight)    .x;
+                    case CellShape.Mountains: return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
                     default: throw new NotImplementedException();
                 }
             }

@@ -48,6 +48,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IRiverTriangulator>           ().To<RiverTriangulator>           ().AsSingle();
             Container.Bind<ICellEdgeContourCanon>        ().To<CellEdgeContourCanon>        ().AsSingle();
             Container.Bind<INonRiverContourBuilder>      ().To<NonRiverContourBuilder>      ().AsSingle();
+            Container.Bind<IRiverContourCuller>          ().To<RiverContourCuller>          ().AsSingle();
         }
 
         #endregion

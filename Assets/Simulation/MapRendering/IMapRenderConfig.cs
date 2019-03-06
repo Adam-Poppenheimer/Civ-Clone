@@ -57,6 +57,7 @@ namespace Assets.Simulation.MapRendering {
         float HillsBaseElevation     { get; }
         float MountainPeakElevation  { get; }
         float MountainRidgeElevation { get; }
+        float RiverTroughElevation   { get; }
 
         float WaterY { get; }
 
@@ -77,6 +78,9 @@ namespace Assets.Simulation.MapRendering {
         int RiverQuadsPerCurve     { get; }
 
         float RiverFlowSpeed { get; }
+
+        //May need to be retyped to prevent unintentional modification
+        float[] RiverAlphamap { get; }
 
         #endregion
 

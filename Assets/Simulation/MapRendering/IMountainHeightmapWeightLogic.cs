@@ -13,8 +13,8 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void GetHeightWeightsForPosition(
-            Vector3 position, IHexCell cell, HexDirection sextant,
+        void GetHeightWeightsForPoint(
+            Vector2 pointXZ, IHexCell cell, HexDirection sextant,
             out float peakWeight, out float ridgeWeight, out float hillsWeight
         );
 

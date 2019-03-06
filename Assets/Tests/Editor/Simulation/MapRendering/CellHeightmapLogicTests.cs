@@ -55,7 +55,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPositionForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPositionForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -83,7 +83,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPositionForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
         }
 
         [Test]
@@ -92,12 +92,12 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Mountains);
 
-            MockMountainHeightmapLogic.Setup(logic => logic.GetHeightForPosition(position, cell, HexDirection.E))
+            MockMountainHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E))
                                       .Returns(15.25f);
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPositionForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
         }
 
         #endregion

@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float[] GetAlphamapForPosition(Vector3 position);
+        float[] GetAlphamapForPoint(Vector2 position);
 
         #endregion
 
