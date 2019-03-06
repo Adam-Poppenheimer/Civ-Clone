@@ -96,9 +96,15 @@ namespace Assets.Simulation.MapRendering {
                 return false;
             }
 
-            for(int i = 1; i < contourOne.Count - 1; i++) {
-                if( Geometry2D.IsPointWithinTriangle(xzPoint, contourOne[i - 1], contourTwo[i - 1], contourOne[i]) ||
-                    Geometry2D.IsPointWithinTriangle(xzPoint, contourOne[i],     contourTwo[i - 1], contourTwo[i])
+            for(int i = 1; i < contourOne.Count; i++) {
+                Vector2 contourOneP1 = contourOne[i - 1];
+                Vector2 contourOneP2 = contourOne[i];
+
+                Vector2 contourTwoP1 = contourTwo[contourTwo.Count - i];
+                Vector2 contourTwoP2 = contourTwo[contourTwo.Count - i - 1];
+
+                if( Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP1, contourTwoP1, contourOneP2) ||
+                    Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP2, contourTwoP1, contourTwoP2)
                 ) {
                     return true;
                 }

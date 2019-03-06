@@ -215,17 +215,17 @@ namespace Assets.Simulation.MapRendering {
             Vector2 pointOnContourCR = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerRightContour);
             Vector2 pointOnContourRC = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, rightCenterContour);
 
-            Vector2 centerRightMidline = pointOnContourRC - pointOnContourCR;
-            Vector2 rightCenterMidline = pointOnContourRC - pointOnContourCR;
+            Vector2 centerToRightMidline = pointOnContourRC - pointOnContourCR;
+            Vector2 rightToCenterMidline = pointOnContourCR - pointOnContourRC;
 
             Vector2 contourCRToPoint = xzPoint - pointOnContourCR;
             Vector2 contourRCToPoint = xzPoint - pointOnContourRC;
 
-            Vector2 pointCROntoMidline = contourCRToPoint.Project(centerRightMidline);
-            Vector2 pointRCOntoMidline = contourRCToPoint.Project(rightCenterMidline);
+            Vector2 pointCROntoMidline = contourCRToPoint.Project(centerToRightMidline);
+            Vector2 pointRCOntoMidline = contourRCToPoint.Project(rightToCenterMidline);
 
-            data.CenterWeight = 1f - Mathf.Clamp01(2 * (pointCROntoMidline.magnitude / centerRightMidline.magnitude));
-            data.RightWeight  = 1f - Mathf.Clamp01(2 * (pointRCOntoMidline.magnitude / rightCenterMidline.magnitude));
+            data.CenterWeight = 1f - Mathf.Clamp01(2 * (pointCROntoMidline.magnitude / centerToRightMidline.magnitude));
+            data.RightWeight  = 1f - Mathf.Clamp01(2 * (pointRCOntoMidline.magnitude / rightToCenterMidline.magnitude));
             data.RiverWeight  = 1f - data.CenterWeight - data.RightWeight;
         }
 
