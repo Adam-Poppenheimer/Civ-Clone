@@ -93,7 +93,12 @@ namespace Assets.Simulation.MapRendering {
             var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(gridCenter, gridSextant);
 
             if(CellEdgeContourCanon.IsPointWithinContour(xzPoint, centerRightContour, gridCenter.AbsolutePositionXZ)) {
-                data.CenterWeight = 1f;
+                if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
+                    ApplyLandBesideRiverWeights(xzPoint, data, false);
+
+                }else {
+                    ApplyLandBesideLandWeights(xzPoint, data);
+                }
 
                 return true;
             }
@@ -107,18 +112,121 @@ namespace Assets.Simulation.MapRendering {
             var rightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(gridRight, gridSextant.Opposite());
 
             if(CellEdgeContourCanon.IsPointWithinContour(xzPoint, rightCenterContour, gridRight.AbsolutePositionXZ)) {
-                data.RightWeight = 1f;
+                if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
+                    ApplyLandBesideRiverWeights(xzPoint, data, true);
+
+                }else {
+                    ApplyLandBesideLandWeights(xzPoint, data);
+                }
 
                 return true;
             }
 
             if(CellEdgeContourCanon.IsPointBetweenContours(xzPoint, centerRightContour, rightCenterContour)) {
-                data.RiverWeight = 1f;
+                if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
+                    ApplyRiverWeights(xzPoint, data);
+                }
 
                 return true;
             }
 
             return false;
+        }
+
+        private void ApplyLandBesideRiverWeights(Vector2 xzPoint, PointOrientationData data, bool takeFromRight) {
+            if(takeFromRight) {
+                data.RightWeight = 1f;
+            }else {
+                data.CenterWeight = 1f;
+            }
+        }
+
+        private void ApplyLandBesideLandWeights(Vector2 xzPoint, PointOrientationData data) {
+            if(data.Right == null) {
+                data.CenterWeight = 1f;
+                return;
+            }
+
+            if( data.Left != null &&
+                Geometry2D.IsPointWithinTriangle(
+                    xzPoint,
+                    data.Center.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant),
+                    data.Left  .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant.Next2()),
+                    data.Right .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant.Previous2())
+                )
+            ) {
+                Geometry2D.GetBarycentric2D(
+                    xzPoint,
+                    data.Center.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant),
+                    data.Left  .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant.Next2()),
+                    data.Right .AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ(data.Sextant.Previous2()),
+                    out data.CenterWeight, out data.LeftWeight, out data.RightWeight
+                );
+            }else if(
+                data.NextRight != null &&
+                Geometry2D.IsPointWithinTriangle(
+                    xzPoint,
+                    data.Center   .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant),
+                    data.Right    .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant.Next2()),
+                    data.NextRight.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant.Previous2())
+                )
+            ) {
+                Geometry2D.GetBarycentric2D(
+                    xzPoint,
+                    data.Center   .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant),
+                    data.Right    .AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant.Next2()),
+                    data.NextRight.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(data.Sextant.Previous2()),
+                    out data.CenterWeight, out data.RightWeight, out data.NextRightWeight
+                );
+            } else {
+                ApplyLandBesideLandWeights_Edge(xzPoint, data);
+            }
+        }
+
+        private void ApplyLandBesideLandWeights_Edge(Vector2 xzPoint, PointOrientationData data) {
+            Vector2 centerToRight = data.Right.AbsolutePositionXZ - data.Center.AbsolutePositionXZ;
+
+            Vector2 centerToPoint = xzPoint - data.Center.AbsolutePositionXZ;
+
+            Vector2 pointOntoMidline = centerToPoint.Project(centerToRight);
+
+            float solidCenterDistance = RenderConfig.GetSolidEdgeMidpointXZ(data.Sextant).magnitude;
+
+            Vector2 centerToSolidRight = (
+                data.Right.AbsolutePositionXZ + RenderConfig.GetSolidEdgeMidpointXZ(data.Sextant.Opposite())
+            ) - data.Center.AbsolutePositionXZ;
+
+            float solidRightDistance = centerToSolidRight.magnitude;
+
+            float rightWeight = Mathf.Clamp01(
+                (pointOntoMidline.magnitude - solidCenterDistance) / (solidRightDistance - solidCenterDistance)
+            );
+
+            float centerWeight = 1f - rightWeight;
+
+            data.CenterWeight = centerWeight;
+            data.RightWeight  = rightWeight;
+        }
+
+        private void ApplyRiverWeights(Vector2 xzPoint, PointOrientationData data) {
+            var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant);
+            var rightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(data.Right,  data.Sextant.Opposite());
+
+            Vector2 pointOnContourCR = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerRightContour);
+            Vector2 pointOnContourRC = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, rightCenterContour);
+
+            Vector2 centerRightMidline = pointOnContourRC - pointOnContourCR;
+            Vector2 rightCenterMidline = pointOnContourRC - pointOnContourCR;
+
+            Vector2 contourCRToPoint = xzPoint - pointOnContourCR;
+            Vector2 contourRCToPoint = xzPoint - pointOnContourRC;
+
+            Vector2 pointCROntoMidline = contourCRToPoint.Project(centerRightMidline);
+            Vector2 pointRCOntoMidline = contourRCToPoint.Project(rightCenterMidline);
+
+            data.CenterWeight = 1f - Mathf.Clamp01(2 * (pointCROntoMidline.magnitude / centerRightMidline.magnitude));
+            data.RightWeight  = 1f - Mathf.Clamp01(2 * (pointRCOntoMidline.magnitude / rightCenterMidline.magnitude));
+            data.RiverWeight  = 1f - data.CenterWeight - data.RightWeight;
         }
 
         private HexDirection GetSextantOfPointInCell(Vector2 xzPoint, IHexCell cell) {

@@ -107,6 +107,24 @@ namespace Assets.Simulation.MapRendering {
             return false;
         }
 
+        public Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour) {
+            Vector2 closestPoint = contour[0];
+            float shortestDistanceSquared = (xzPoint - closestPoint).sqrMagnitude;
+
+            for(int i = 1; i < contour.Count; i++) {
+                Vector2 candidatePoint = Geometry2D.GetClosestPointOnLineSegment(contour[i - 1], contour[i], xzPoint);
+
+                float candidateDistanceSquared = (xzPoint - candidatePoint).sqrMagnitude;
+
+                if(candidateDistanceSquared < shortestDistanceSquared) {
+                    closestPoint = candidatePoint;
+                    shortestDistanceSquared = candidateDistanceSquared;
+                }
+            }
+
+            return closestPoint;
+        }
+
         #endregion
 
         #endregion

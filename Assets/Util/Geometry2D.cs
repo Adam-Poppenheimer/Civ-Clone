@@ -95,6 +95,27 @@ namespace Assets.Util {
             }
         }
 
+        public Vector2 GetClosestPointOnLineSegment(Vector2 segmentStart, Vector2 segmentEnd, Vector2 point) {
+            Vector2 startToPoint = point        - segmentStart;
+            Vector2 startToEnd   = segmentStart - segmentEnd;
+
+            float magnitudeSegment = startToEnd.sqrMagnitude;
+
+            float segmentPointDot = Vector2.Dot(startToPoint, startToEnd);
+
+            float distance = segmentPointDot / magnitudeSegment;
+
+            if(distance < 0) {
+                return segmentStart;
+
+            }else if(distance > 1) {
+                return segmentEnd;
+
+            }else {
+                return segmentStart + startToEnd * distance;
+            }
+        }
+
         #endregion
 
         private static float Sign(Vector2 v1, Vector2 v2, Vector2 v3) {
