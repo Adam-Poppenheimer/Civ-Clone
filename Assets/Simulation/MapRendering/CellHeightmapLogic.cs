@@ -18,8 +18,9 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig        RenderConfig;
-        private INoiseGenerator         NoiseGenerator;
         private IMountainHeightmapLogic MountainHeightmapLogic;
+        private INoiseGenerator         NoiseGenerator;
+        private IHillsHeightmapLogic    HillsHeightmapLogic;
 
         #endregion
 
@@ -27,12 +28,13 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public CellHeightmapLogic(
-            IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
-            IMountainHeightmapLogic mountainHeightmapLogic
+            IMapRenderConfig renderConfig, IMountainHeightmapLogic mountainHeightmapLogic,
+            INoiseGenerator noiseGenerator, IHillsHeightmapLogic hillsHeightmapLogic
         ) {
             RenderConfig           = renderConfig;
-            NoiseGenerator         = noiseGenerator;
             MountainHeightmapLogic = mountainHeightmapLogic;
+            NoiseGenerator         = noiseGenerator;
+            HillsHeightmapLogic    = hillsHeightmapLogic;
         }
 
         #endregion
@@ -45,13 +47,17 @@ namespace Assets.Simulation.MapRendering {
             if(cell.Terrain.IsWater()) {
                 return RenderConfig.SeaFloorElevation;
 
+            }if(cell.Shape == CellShape.Flatlands) {
+                return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
+
+            }else if(cell.Shape == CellShape.Hills) {
+                return HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+
+            }else if(cell.Shape == CellShape.Mountains) {
+                return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+
             }else {
-                switch(cell.Shape) {
-                    case CellShape.Flatlands: return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
-                    case CellShape.Hills:     return RenderConfig.HillsBaseElevation     + NoiseGenerator.SampleNoise(xzPoint, NoiseType.HillsHeight)    .x;
-                    case CellShape.Mountains: return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
-                    default: throw new NotImplementedException();
-                }
+                throw new NotImplementedException();
             }
         }
 

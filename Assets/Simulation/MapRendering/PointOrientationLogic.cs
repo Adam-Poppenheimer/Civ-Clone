@@ -130,6 +130,38 @@ namespace Assets.Simulation.MapRendering {
                 return true;
             }
 
+            IHexCell gridLeft = Grid.GetNeighbor(gridCenter, gridSextant.Previous());
+
+            if(gridLeft == null) {
+                return false;
+            }
+
+            var leftCenterContour = CellEdgeContourCanon.GetContourForCellEdge(gridLeft, gridSextant.Next2());
+
+            if( RiverCanon.HasRiverAlongEdge(gridLeft, gridSextant.Next()) &&
+                Geometry2D.IsPointWithinTriangle(xzPoint, centerRightContour.First(), leftCenterContour.First(), rightCenterContour.Last())
+            ) {
+                ApplyRiverWeights(xzPoint, data);
+
+                return true;
+            }
+
+            IHexCell gridNextRight = Grid.GetNeighbor(gridCenter, gridSextant.Next());
+
+            if(gridNextRight == null) {
+                return false;
+            }
+
+            var nextRightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(gridNextRight, gridSextant.Previous2());
+
+            if( RiverCanon.HasRiverAlongEdge(gridNextRight, gridSextant.Previous()) &&
+                Geometry2D.IsPointWithinTriangle(xzPoint, centerRightContour.Last(), rightCenterContour.First(), nextRightCenterContour.Last())
+            ) {
+                ApplyRiverWeights(xzPoint, data);
+
+                return true;
+            }
+
             return false;
         }
 

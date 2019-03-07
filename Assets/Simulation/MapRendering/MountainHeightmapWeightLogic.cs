@@ -16,19 +16,24 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig RenderConfig;
-        private IHexGrid         Grid;
-        private IGeometry2D      Geometry2D;
+        private IMapRenderConfig      RenderConfig;
+        private IHexGrid              Grid;
+        private IGeometry2D           Geometry2D;
+        private ICellEdgeContourCanon CellEdgeContourCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public MountainHeightmapWeightLogic(IMapRenderConfig renderConfig, IHexGrid grid, IGeometry2D geometry2D) {
-            RenderConfig = renderConfig;
-            Grid         = grid;
-            Geometry2D   = geometry2D;
+        public MountainHeightmapWeightLogic(
+            IMapRenderConfig renderConfig, IHexGrid grid, IGeometry2D geometry2D,
+            ICellEdgeContourCanon cellEdgeContourCanon
+        ) {
+            RenderConfig         = renderConfig;
+            Grid                 = grid;
+            Geometry2D           = geometry2D;
+            CellEdgeContourCanon = cellEdgeContourCanon;
         }
 
         #endregion
@@ -42,11 +47,11 @@ namespace Assets.Simulation.MapRendering {
         //mountains should form ridges, shorter than the peak but taller than
         //the edges, that connect mountains to each-other to form ranges.
 
-        //We the solid region of each mountain sextant into a pair of triangles, with one
+        //The solid region of each mountain sextant into a pair of triangles, with one
         //vertex at the center of the cell, one vertex at the midpoint of the
         //outer edge, and one at each of the non-solid corners (each triangle goes
         //to a different corner). We then figure out which triangle the point is
-        //in an figure out its barycentric coordinates in that triangle.
+        //in and figure out its barycentric coordinates in that triangle.
         //We use those coordinates to weight its elevation, with the peak,
         //the edge midpoint, and the corners all having different heights.
 

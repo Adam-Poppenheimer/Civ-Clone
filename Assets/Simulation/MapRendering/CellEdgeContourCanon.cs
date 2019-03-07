@@ -86,27 +86,47 @@ namespace Assets.Simulation.MapRendering {
             return false;
         }
 
-        //This method assumes that the contours have the same number
-        //of points, which is a safe assumption for its current use
-        //cases. It returns false if they don't.
+        //We need to crawl down the contours in opposite directions
+        //because contours are always built from the first corner to
+        //the second, which means that two contours opposite each-other
+        //on an edge are reversed relative to each-other.
         public bool IsPointBetweenContours(
             Vector2 xzPoint, ReadOnlyCollection<Vector2> contourOne, ReadOnlyCollection<Vector2> contourTwo
         ) {
-            if(contourOne.Count != contourTwo.Count) {
-                return false;
-            }
+            int oneIndex = 0;
+            int twoIndex = contourTwo.Count - 1;
 
-            for(int i = 1; i < contourOne.Count; i++) {
-                Vector2 contourOneP1 = contourOne[i - 1];
-                Vector2 contourOneP2 = contourOne[i];
+            for(; oneIndex < contourOne.Count - 1 && twoIndex > 0; oneIndex++, twoIndex--) {
+                Vector2 contourOneP1 = contourOne[oneIndex];
+                Vector2 contourOneP2 = contourOne[oneIndex + 1];
 
-                Vector2 contourTwoP1 = contourTwo[contourTwo.Count - i];
-                Vector2 contourTwoP2 = contourTwo[contourTwo.Count - i - 1];
+                Vector2 contourTwoP1 = contourTwo[twoIndex];
+                Vector2 contourTwoP2 = contourTwo[twoIndex - 1];
 
                 if( Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP1, contourTwoP1, contourOneP2) ||
                     Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP2, contourTwoP1, contourTwoP2)
                 ) {
                     return true;
+                }
+            }
+
+            if(contourOne.Count > contourTwo.Count) {
+                for(; oneIndex < contourOne.Count - 1; oneIndex++) {
+                    Vector2 contourOneP1 = contourOne[oneIndex];
+                    Vector2 contourOneP2 = contourOne[oneIndex + 1];
+
+                    if(Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP1, contourTwo.First(), contourOneP2)) {
+                        return true;
+                    }
+                }
+            }else if(contourTwo.Count > contourOne.Count) {
+                for(; twoIndex > 0; twoIndex--) {
+                    Vector2 contourTwoP1 = contourTwo[twoIndex];
+                    Vector2 contourTwoP2 = contourTwo[twoIndex - 1];
+
+                    if(Geometry2D.IsPointWithinTriangle(xzPoint, contourOne.Last(), contourTwoP1, contourTwoP2)) {
+                        return true;
+                    }
                 }
             }
 

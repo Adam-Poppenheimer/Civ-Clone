@@ -76,10 +76,6 @@ namespace Assets.Simulation.MapRendering {
                 retval += orientationData.RiverWeight * RenderConfig.RiverTroughElevation;
             }
 
-            if(orientationData.LevelOffWeight > 0f) {
-                retval += orientationData.LevelOffWeight * RenderConfig.FlatlandsBaseElevation;
-            }
-
             return retval;
         }
 

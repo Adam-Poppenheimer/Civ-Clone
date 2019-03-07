@@ -49,6 +49,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ICellEdgeContourCanon>        ().To<CellEdgeContourCanon>        ().AsSingle();
             Container.Bind<INonRiverContourBuilder>      ().To<NonRiverContourBuilder>      ().AsSingle();
             Container.Bind<IRiverContourCuller>          ().To<RiverContourCuller>          ().AsSingle();
+            Container.Bind<IHillsHeightmapLogic>         ().To<HillsHeightmapLogic>         ().AsSingle();
         }
 
         #endregion

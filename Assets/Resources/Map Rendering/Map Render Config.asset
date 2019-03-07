@@ -41,7 +41,7 @@ MonoBehaviour:
   _hillsBaseElevation: 0.1
   _mountainPeakElevation: 0.6
   _mountainRidgeElevation: 0.45
-  _riverTroughElevation: 0.08
+  _riverTroughElevation: 0.09
   _flatlandsElevationHeightmap: {fileID: 2800000, guid: ad46ff8ecbae8434b8242fd5f480112c,
     type: 3}
   _hillsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
@@ -57,3 +57,4 @@ MonoBehaviour:
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
+  _riverAlphamap: []

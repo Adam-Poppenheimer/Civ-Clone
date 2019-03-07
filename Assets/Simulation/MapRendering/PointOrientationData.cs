@@ -28,7 +28,6 @@ namespace Assets.Simulation.MapRendering {
         public float NextRightWeight;
 
         public float RiverWeight;
-        public float LevelOffWeight;
 
         #endregion
 

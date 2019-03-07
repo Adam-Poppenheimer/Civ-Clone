@@ -20,6 +20,8 @@ namespace Assets.Simulation.MapRendering {
         private INoiseGenerator               NoiseGenerator;
         private IHexGrid                      Grid;
         private IMountainHeightmapWeightLogic MountainHeightmapWeightLogic;
+        private IHillsHeightmapLogic          HillsHeightmapLogic;
+        private IRiverCanon                   RiverCanon;
 
         #endregion
 
@@ -28,12 +30,15 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public MountainHeightmapLogic(
             IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
-            IHexGrid grid, IMountainHeightmapWeightLogic mountainHeightmapWeightLogic
+            IHexGrid grid, IMountainHeightmapWeightLogic mountainHeightmapWeightLogic,
+            IHillsHeightmapLogic hillsHeightmapLogic, IRiverCanon riverCanon
         ) {
             RenderConfig                 = renderConfig;
             NoiseGenerator               = noiseGenerator;
             Grid                         = grid;
             MountainHeightmapWeightLogic = mountainHeightmapWeightLogic;
+            HillsHeightmapLogic          = hillsHeightmapLogic;
+            RiverCanon                   = riverCanon;
         }
 
         #endregion
@@ -52,11 +57,11 @@ namespace Assets.Simulation.MapRendering {
 
             var neighbor = Grid.GetNeighbor(cell, sextant);
 
-            float hillsHeight = RenderConfig.HillsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.HillsHeight).x;
+            float hillsHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
             float ridgeHeight = hillsHeight;
 
-            if(neighbor != null && neighbor.Shape == CellShape.Mountains) {
+            if(neighbor != null && neighbor.Shape == CellShape.Mountains && !RiverCanon.HasRiverAlongEdge(cell, sextant)) {
                 ridgeHeight = RenderConfig.MountainRidgeElevation;
             }
 
