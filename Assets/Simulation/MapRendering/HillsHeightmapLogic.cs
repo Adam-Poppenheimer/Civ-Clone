@@ -48,7 +48,7 @@ namespace Assets.Simulation.MapRendering {
             Vector2 nearestContourPoint;
 
             if(TryGetNearestContourPoint(xzPoint, cell, sextant, out nearestContourPoint)) {
-                Vector2 contourToPoint  = xzPoint - nearestContourPoint;
+                Vector2 contourToPoint  = xzPoint                 - nearestContourPoint;
                 Vector2 contourToCenter = cell.AbsolutePositionXZ - nearestContourPoint;
 
                 float hillsWeight     = Mathf.Sqrt(contourToPoint.magnitude / contourToCenter.magnitude);

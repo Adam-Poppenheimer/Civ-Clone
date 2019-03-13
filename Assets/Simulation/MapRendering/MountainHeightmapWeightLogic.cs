@@ -62,77 +62,49 @@ namespace Assets.Simulation.MapRendering {
         //And we give corner edges fully over to the edge behavior, which for
         //now is equivalent to the height algorithm used for hills
         public void GetHeightWeightsForPoint(
-            Vector2 pointXZ, IHexCell cell, HexDirection sextant,
+            Vector2 xzPoint, IHexCell cell, HexDirection sextant,
             out float peakWeight, out float ridgeWeight, out float hillsWeight
         ) {
-            Vector2 cellFirstSolidCorner  = cell.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ (sextant);
-            Vector2 cellSecondSolidCorner = cell.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(sextant);
-            Vector2 cellSolidEdgeMidpoint = cell.AbsolutePositionXZ + RenderConfig.GetSolidEdgeMidpointXZ(sextant);
+            Vector2 nearestContourPoint = GetNearestContourPoint(xzPoint, cell, sextant);
 
-            IHexCell neighbor = Grid.HasNeighbor(cell, sextant) ? Grid.GetNeighbor(cell, sextant) : null;
+            Vector2 contourToPoint  = xzPoint                 - nearestContourPoint;
+            Vector2 contourToCenter = cell.AbsolutePositionXZ - nearestContourPoint;
 
-            //These triangles check the solid sextant. Both the peak and the ridge should drop to zero as they approach
-            //the solid corners of the hex.
-            if(Geometry2D.IsPointWithinTriangle(pointXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint)) {                
-                Geometry2D.GetBarycentric2D(
-                    pointXZ, cell.AbsolutePositionXZ, cellFirstSolidCorner, cellSolidEdgeMidpoint,
-                    out peakWeight, out hillsWeight, out ridgeWeight
-                );
-            }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner)) {
-                Geometry2D.GetBarycentric2D(
-                    pointXZ, cell.AbsolutePositionXZ, cellSolidEdgeMidpoint, cellSecondSolidCorner,
-                    out peakWeight, out ridgeWeight, out hillsWeight
-                );
-            }else if(neighbor != null) {
-                peakWeight = 0f;
+            peakWeight = contourToPoint.magnitude / contourToCenter.magnitude;
 
-                Vector2 neighborFirstSolidCorner  = neighbor.AbsolutePositionXZ + RenderConfig.GetFirstSolidCornerXZ (sextant.Opposite());
-                Vector2 neighborSecondSolidCorner = neighbor.AbsolutePositionXZ + RenderConfig.GetSecondSolidCornerXZ(sextant.Opposite());
 
-                float weightA, weightB, weightC;
+            Vector2 crossbeam = RenderConfig.GetSecondCornerXZ(sextant) - RenderConfig.GetEdgeMidpointXZ(sextant);
 
-                //The first two triangles check the surfaces adjacent to the corners.
-                //The third spans the middle
-                if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner)) {
-                    Geometry2D.GetBarycentric2D(
-                        pointXZ, cellSolidEdgeMidpoint, cellFirstSolidCorner, neighborSecondSolidCorner,
-                        out weightA, out weightB, out weightC
-                    );
+            Vector2 edgeMidpointToPoint = xzPoint - (cell.AbsolutePositionXZ + RenderConfig.GetEdgeMidpointXZ(sextant));
 
-                    ridgeWeight = weightA;
-                    hillsWeight = weightB + weightC;
+            Vector2 pointOntoCrossbeam = edgeMidpointToPoint.Project(crossbeam);
 
-                }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner)) {
-                    Geometry2D.GetBarycentric2D(
-                        pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, cellSecondSolidCorner,
-                        out weightA, out weightB, out weightC
-                    );
+            ridgeWeight = Mathf.Clamp01(1f - (pointOntoCrossbeam.magnitude / crossbeam.magnitude) - peakWeight);
 
-                    ridgeWeight = weightA;
-                    hillsWeight = weightB + weightC;
-
-                }else if(Geometry2D.IsPointWithinTriangle(pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner)) {
-                    Geometry2D.GetBarycentric2D(
-                        pointXZ, cellSolidEdgeMidpoint, neighborFirstSolidCorner, neighborSecondSolidCorner,
-                        out weightA, out weightB, out weightC
-                    );
-
-                    hillsWeight = Mathf.Abs(weightB - weightC);
-                    ridgeWeight = 1f - hillsWeight;                    
-
-                }else {
-                    ridgeWeight = 0f;
-                    hillsWeight = 1f;
-                }
-
-            }else {
-                peakWeight  = 0f;
-                ridgeWeight = 0f;
-                hillsWeight = 1f;
-            }
+            hillsWeight = Mathf.Clamp01(1f - peakWeight - ridgeWeight);
         }
 
         #endregion
+
+        private Vector2 GetNearestContourPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+            Vector2 nearestContourPoint = Vector2.zero;
+            float nearestDistance = float.MaxValue;
+
+            for(HexDirection direction = sextant.Previous(); direction != sextant.Next2(); direction = direction.Next()) {
+                var contour = CellEdgeContourCanon.GetContourForCellEdge(cell, direction);
+
+                Vector2 candidate = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, contour);
+
+                float candidateDistance = Vector2.Distance(xzPoint, candidate);
+
+                if(candidateDistance < nearestDistance) {
+                    nearestContourPoint = candidate;
+                    nearestDistance = candidateDistance;
+                }
+            }
+
+            return nearestContourPoint;
+        }
 
         #endregion
 
