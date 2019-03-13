@@ -243,32 +243,42 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void TryFindValidOrientation_LeftNotNull_CenterLeftRiver_AndPointInPreviousCorner_AppliesRiverWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_AndPointInPreviousConfluence_AppliesRiverCornerWeights_AndReturnsTrue() {
             var point = new Vector2(1f, 2f);
 
             var center = BuildCell();
-            var right  = BuildCell();
             var left   = BuildCell();
+            var right  = BuildCell();
 
-            MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.E )).Returns(true);
             MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.NE)).Returns(true);
+            MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.E )).Returns(true);            
 
-            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
             MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.NE)).Returns(left);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
+
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center, HexDirection.NE)).Returns(true);
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center, HexDirection.E )).Returns(true);
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(left,   HexDirection.SE)).Returns(true);
 
             var centerRightContour = new List<Vector2>() { new Vector2(11f, 11f), new Vector2(111f, 111f) }.AsReadOnly();
-            var rightCenterContour = new List<Vector2>() { new Vector2(22f, 22f), new Vector2(222f, 222f) }.AsReadOnly();
             var leftCenterContour  = new List<Vector2>() { new Vector2(33f, 33f), new Vector2(333f, 333f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(22f, 22f), new Vector2(222f, 222f) }.AsReadOnly();
 
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
 
-            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(left, HexDirection.SE)).Returns(true);
-
             MockGeometry2D.Setup(geometry => geometry.IsPointWithinTriangle(
                 point, centerRightContour.First(), leftCenterContour.First(), rightCenterContour.Last()
             )).Returns(true);
+
+            float centerWeight = 1f, leftWeight = 2f, rightWeight = 3f, riverWeight = 4f;
+            MockPointOrientationWeightLogic.Setup(
+                logic => logic.GetRiverCornerWeights(
+                    point, center, left, right, HexDirection.E, out centerWeight,
+                    out leftWeight, out rightWeight, out riverWeight
+                )
+            );
 
             PointOrientationData data;
 
@@ -279,14 +289,14 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyRiverWeights(point, data), Times.Once,
-                "Did not call ApplyRiverWeights as expected"
-            );
+            Assert.AreEqual(centerWeight, data.CenterWeight, "Unexpected CenterWeight");
+            Assert.AreEqual(leftWeight,   data.LeftWeight,   "Unexpected LeftWeight");
+            Assert.AreEqual(rightWeight,  data.RightWeight,  "Unexpected RightWeight");
+            Assert.AreEqual(riverWeight,  data.RiverWeight,  "Unexpected RiverWeight");
         }
 
         [Test]
-        public void TryFindValidOrientation_NextRightNotNull_CenterNextRightRiver_AndPointInNextCorner_AppliesRiverWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_AndPointInNextConfluence_AppliesRiverCornerWeights_AndReturnsTrue() {
             var point = new Vector2(1f, 2f);
 
             var center    = BuildCell();
@@ -294,24 +304,34 @@ namespace Assets.Tests.Simulation.MapRendering {
             var nextRight = BuildCell();
 
             MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.E )).Returns(true);
-            MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.SE)).Returns(true);
+            MockGrid.Setup(grid => grid.HasNeighbor(center, HexDirection.SE)).Returns(true);            
 
             MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
             MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
 
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center,    HexDirection.E )).Returns(true);
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center,    HexDirection.SE)).Returns(true);
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(nextRight, HexDirection.NE)).Returns(true);
+
             var centerRightContour     = new List<Vector2>() { new Vector2(11f, 11f), new Vector2(111f, 111f) }.AsReadOnly();
-            var rightCenterContour     = new List<Vector2>() { new Vector2(22f, 22f), new Vector2(222f, 222f) }.AsReadOnly();
-            var nextRightCenterContour = new List<Vector2>() { new Vector2(33f, 33f), new Vector2(333f, 333f) }.AsReadOnly();
+            var rightCenterContour     = new List<Vector2>() { new Vector2(33f, 33f), new Vector2(333f, 333f) }.AsReadOnly();
+            var nextRightCenterContour = new List<Vector2>() { new Vector2(22f, 22f), new Vector2(222f, 222f) }.AsReadOnly();
 
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center,    HexDirection.E )).Returns(centerRightContour);
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,     HexDirection.W )).Returns(rightCenterContour);
             MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(nextRight, HexDirection.NW)).Returns(nextRightCenterContour);
 
-            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(nextRight, HexDirection.NE)).Returns(true);
-
             MockGeometry2D.Setup(geometry => geometry.IsPointWithinTriangle(
-                point, centerRightContour.Last(), rightCenterContour.First(), nextRightCenterContour.Last() 
+                point, centerRightContour.Last(), rightCenterContour.First(), nextRightCenterContour.Last()
             )).Returns(true);
+
+            float centerWeight = 1f, rightWeight = 2f, nextRightWeight = 3f, riverWeight = 4f;
+            MockPointOrientationWeightLogic.Setup(
+                logic => logic.GetRiverCornerWeights(
+                    point, center, right, nextRight, HexDirection.E, out centerWeight,
+                    out rightWeight, out nextRightWeight, out riverWeight
+                )
+            );
 
             PointOrientationData data;
 
@@ -322,10 +342,10 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyRiverWeights(point, data), Times.Once,
-                "Did not call ApplyRiverWeights as expected"
-            );
+            Assert.AreEqual(centerWeight,    data.CenterWeight,    "Unexpected CenterWeight");
+            Assert.AreEqual(rightWeight,     data.RightWeight,     "Unexpected RightWeight");
+            Assert.AreEqual(nextRightWeight, data.NextRightWeight, "Unexpected NextRightWeight");
+            Assert.AreEqual(riverWeight,     data.RiverWeight,     "Unexpected RiverWeight");
         }
 
         [Test]

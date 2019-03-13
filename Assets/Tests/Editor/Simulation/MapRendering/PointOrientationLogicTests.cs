@@ -144,6 +144,90 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(new PointOrientationData(), orientationLogic.GetOrientationDataForPoint(point));
         }
 
+        [Test]
+        public void GetOrientationDataForPoint_ReturnsGridRightOppositeData_IfDataIsValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+            var gridRight  = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData gridRightOppositeData = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Opposite(), out gridRightOppositeData)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(gridRightOppositeData, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_ReturnsGridRightNext2Data_IfDataIsValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+            var gridRight  = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData gridRightNext2Data = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Next2(), out gridRightNext2Data)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(gridRightNext2Data, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_ReturnsGridRightPrevious2Data_IfDataIsValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+            var gridRight  = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData gridRightPrevious2Data = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Previous2(), out gridRightPrevious2Data)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(gridRightPrevious2Data, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
         #endregion
 
         #region utilities

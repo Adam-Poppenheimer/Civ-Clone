@@ -17,12 +17,6 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private bool DrawStartPoints;
-        [SerializeField] private bool DrawEndPoints;
-        [SerializeField] private bool DrawIntermediatePoints;
-
-
-
         private IRiverSplineBuilder   RiverSplineBuilder;
         private IRiverAssemblyCanon   RiverAssemblyCanon;
         private ICellEdgeContourCanon CellEdgeContourCanon;

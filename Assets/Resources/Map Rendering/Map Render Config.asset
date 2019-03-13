@@ -23,7 +23,7 @@ MonoBehaviour:
   _chunkWidth: 40
   _chunkHeight: 40
   _terrainMaxY: 20
-  _terrainAlphamapResolution: 33
+  _terrainAlphamapResolution: 129
   _terrainHeightmapResolution: 129
   _mapTextures:
   - {fileID: 2800000, guid: 2522d1327e582f24e89346841cbd8cc0, type: 3}
@@ -41,7 +41,7 @@ MonoBehaviour:
   _hillsBaseElevation: 0.1
   _mountainPeakElevation: 0.6
   _mountainRidgeElevation: 0.45
-  _riverTroughElevation: 0.09
+  _riverTroughElevation: 0.05
   _flatlandsElevationHeightmap: {fileID: 2800000, guid: ad46ff8ecbae8434b8242fd5f480112c,
     type: 3}
   _hillsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
@@ -52,9 +52,16 @@ MonoBehaviour:
   _riverWaterColor: {r: 0.40392157, g: 0.8235294, b: 0.93333334, a: 1}
   _riverMaxWidth: 0.6
   _riverCurveStrength: 5
-  _riverWideningRate: 10
+  _riverWideningRate: 100
   _riverWidthNoise: 0.6
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
-  _riverAlphamap: []
+  _riverAlphamap:
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 1

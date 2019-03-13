@@ -42,10 +42,6 @@ namespace Assets.Simulation.MapRendering {
         public float[] GetAlphamapForPoint(Vector2 xzPoint) {
             var retval = new float[RenderConfig.MapTextures.Count()];
 
-            retval[0] = 1f;
-
-            return retval;
-
             var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
             if(!orientationData.IsOnGrid) {

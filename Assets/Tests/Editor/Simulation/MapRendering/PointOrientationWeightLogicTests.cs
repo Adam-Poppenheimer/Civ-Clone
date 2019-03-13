@@ -497,6 +497,331 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
         }
 
+        [Test]
+        public void GetRiverCornerWeights_PointInBottomCenterCenterLeftTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 centerLeftMidpoint = (centerRightContour.First() + leftCenterContour.First()) / 2f;
+            Vector2 riverMidpoint      = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, centerRightContour.First(), centerLeftMidpoint, riverMidpoint
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, centerRightContour.First(), centerLeftMidpoint, riverMidpoint,
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(1f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInCenterLeftLeftTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 centerLeftMidpoint = (centerRightContour.First() + leftCenterContour.First()) / 2f;
+            Vector2 riverMidpoint      = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, centerLeftMidpoint, leftCenterContour.First(), riverMidpoint
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, centerLeftMidpoint, leftCenterContour.First(), riverMidpoint,
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(2f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInCenterCenterRightTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 centerRightMidpoint = (centerRightContour.First() + rightCenterContour.Last()) / 2f;
+            Vector2 riverMidpoint       = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, centerRightContour.First(), riverMidpoint, centerRightMidpoint
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, centerRightContour.First(), riverMidpoint, centerRightMidpoint,
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(1f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInCenterRightRightTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 centerRightMidpoint = (centerRightContour.First() + rightCenterContour.Last()) / 2f;
+            Vector2 riverMidpoint       = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, centerRightMidpoint, riverMidpoint, rightCenterContour.Last()
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, centerRightMidpoint, riverMidpoint, rightCenterContour.Last(),
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(3f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(2f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInLeftLeftRightTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 leftRightMidpoint = (leftCenterContour.First() + rightCenterContour.Last()) / 2f;
+            Vector2 riverMidpoint     = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, riverMidpoint, leftCenterContour.First(), leftRightMidpoint
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, riverMidpoint, leftCenterContour.First(), leftRightMidpoint,
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(2f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInLeftRightRightTriangle_ReturnsCorrectWeightsFromBarycentricCoords() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            Vector2 leftRightMidpoint = (leftCenterContour.First() + rightCenterContour.Last()) / 2f;
+            Vector2 riverMidpoint     = (centerRightContour.First() + leftCenterContour.First() + rightCenterContour.Last()) / 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.IsPointWithinTriangle(
+                    point, rightCenterContour.Last(), riverMidpoint, leftRightMidpoint
+                )
+            ).Returns(true);
+
+            float coordA = 1f, coordB = 2f, coordC = 3f;
+
+            MockGeometry2D.Setup(
+                geometry => geometry.GetBarycentric2D(
+                    point, rightCenterContour.Last(), riverMidpoint, leftRightMidpoint,
+                    out coordA, out coordB, out coordC
+                )
+            );
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(1f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+        }
+
+        [Test]
+        public void GetRiverCornerWeights_PointInNoTriangle_ReturnsZeroForAllWeights() {
+            var point = new Vector2(-1f, -1f);
+
+            var center = BuildCell(Vector2.zero);
+            var left   = BuildCell(Vector2.zero);
+            var right  = BuildCell(Vector2.zero);
+
+            var centerRightContour = new List<Vector2>() { new Vector2(1f, 1f), new Vector2(11f, 11f) }.AsReadOnly();
+            var leftCenterContour  = new List<Vector2>() { new Vector2(2f, 2f), new Vector2(22f, 22f) }.AsReadOnly();
+            var rightCenterContour = new List<Vector2>() { new Vector2(3f, 3f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.E )).Returns(centerRightContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(left,   HexDirection.SW)).Returns(leftCenterContour);
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(right,  HexDirection.W )).Returns(rightCenterContour);
+
+            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
+
+            float centerWeight, leftWeight, rightWeight, riverWeight;
+
+            weightLogic.GetRiverCornerWeights(
+                point, center, left, right, HexDirection.E,
+                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+            );
+
+            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
+            Assert.AreEqual(0f, riverWeight,  "Unexpected riverWeight");
+        }
+
         #endregion
 
         #region utilities

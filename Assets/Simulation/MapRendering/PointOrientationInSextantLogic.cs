@@ -70,8 +70,6 @@ namespace Assets.Simulation.MapRendering {
                 return false;
             }
 
-            
-
             if(CellEdgeContourCanon.IsPointWithinContour(xzPoint, data.Right, gridSextant.Opposite())) {
                 if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
                     PointOrientationWeightLogic.ApplyLandBesideRiverWeights(xzPoint, data, true);
@@ -95,24 +93,38 @@ namespace Assets.Simulation.MapRendering {
             }
 
             if(data.Left != null) {
+                bool previousIsConfluence = RiverCanon.HasRiverAlongEdge(data.Center, gridSextant.Previous())
+                                         && RiverCanon.HasRiverAlongEdge(data.Center, gridSextant)
+                                         && RiverCanon.HasRiverAlongEdge(data.Left,   gridSextant.Next());
+
                 var leftCenterContour = CellEdgeContourCanon.GetContourForCellEdge(data.Left, gridSextant.Next2());
 
-                if( RiverCanon.HasRiverAlongEdge(data.Left, gridSextant.Next()) &&
+                if( previousIsConfluence &&
                     Geometry2D.IsPointWithinTriangle(xzPoint, centerRightContour.First(), leftCenterContour.First(), rightCenterContour.Last())
                 ) {
-                    PointOrientationWeightLogic.ApplyRiverWeights(xzPoint, data);
+                    PointOrientationWeightLogic.GetRiverCornerWeights(
+                        xzPoint, data.Center, data.Left, data.Right, data.Sextant,
+                        out data.CenterWeight, out data.LeftWeight, out data.RightWeight, out data.RiverWeight
+                    );
 
                     return true;
                 }
             }
 
             if(data.NextRight != null) {
+                bool nextIsConfluence = RiverCanon.HasRiverAlongEdge(data.Center,    gridSextant)
+                                     && RiverCanon.HasRiverAlongEdge(data.Center,    gridSextant.Next())
+                                     && RiverCanon.HasRiverAlongEdge(data.NextRight, gridSextant.Previous());
+
                 var nextRightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(data.NextRight, gridSextant.Previous2());
 
-                if( RiverCanon.HasRiverAlongEdge(data.NextRight, gridSextant.Previous()) &&
+                if( nextIsConfluence &&
                     Geometry2D.IsPointWithinTriangle(xzPoint, centerRightContour.Last(), rightCenterContour.First(), nextRightCenterContour.Last())
                 ) {
-                    PointOrientationWeightLogic.ApplyRiverWeights(xzPoint, data);
+                    PointOrientationWeightLogic.GetRiverCornerWeights(
+                        xzPoint, data.Center, data.Right, data.NextRight, data.Sextant,
+                        out data.CenterWeight, out data.RightWeight, out data.NextRightWeight, out data.RiverWeight
+                    );
 
                     return true;
                 }

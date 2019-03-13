@@ -56,9 +56,20 @@ namespace Assets.Simulation.MapRendering {
                 PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Next(),     out retval)
             ) {
                 return retval;
-            }else {
-                return new PointOrientationData();
             }
+            
+            IHexCell gridRight = Grid.GetNeighbor(gridCenter, gridSextant);
+            
+            if(gridRight != null) {
+                if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Opposite (), out retval) ||
+                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Next2    (), out retval) ||
+                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Previous2(), out retval)
+                ) {
+                    return retval;
+                }
+            }
+
+            return new PointOrientationData();
         }
 
         #endregion

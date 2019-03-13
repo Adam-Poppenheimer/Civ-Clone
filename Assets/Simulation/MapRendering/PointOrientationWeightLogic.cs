@@ -135,6 +135,96 @@ namespace Assets.Simulation.MapRendering {
             data.RiverWeight  = 1f - data.CenterWeight - data.RightWeight;
         }
 
+        //We solve this problem by dividing the corner into six triangles,
+        //then using the barycentric coordinates within these triangles to
+        //determine the relative center, left, right, and river weights
+        public void GetRiverCornerWeights(
+            Vector2 xzPoint, IHexCell center, IHexCell left, IHexCell right, HexDirection sextant,
+            out float centerWeight, out float leftWeight, out float rightWeight, out float riverWeight
+        ) {
+            centerWeight = 0f; leftWeight = 0f; rightWeight = 0f; riverWeight = 0f;
+
+            var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, sextant           );
+            var leftCenterContour  = CellEdgeContourCanon.GetContourForCellEdge(left,   sextant.Next2   ());
+            var rightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(right,  sextant.Opposite());
+
+            Vector2 centerCorner = centerRightContour.First();
+            Vector2 leftCorner   = leftCenterContour .First();
+            Vector2 rightCorner  = rightCenterContour.Last();
+            
+            Vector2 centerLeftMidpoint  = (centerCorner + leftCorner ) / 2f;
+            Vector2 centerRightMidpoint = (centerCorner + rightCorner) / 2f;
+            Vector2 leftRightMidpoint   = (leftCorner   + rightCorner) / 2f;
+
+            Vector2 riverMidpoint = (centerCorner + leftCorner + rightCorner) / 3f;
+
+            float coordA, coordB, coordC;
+
+            //Triangles spanning the CenterLeft edge
+            if(Geometry2D.IsPointWithinTriangle(xzPoint, centerCorner, centerLeftMidpoint, riverMidpoint)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, centerCorner, centerLeftMidpoint, riverMidpoint,
+                    out coordA, out coordB, out coordC
+                );
+
+                centerWeight = coordA;
+                riverWeight = Mathf.Max(coordB, coordC);
+
+            }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerLeftMidpoint, leftCorner, riverMidpoint)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, centerLeftMidpoint, leftCorner, riverMidpoint,
+                    out coordA, out coordB, out coordC
+                );
+
+                leftWeight  = coordB;
+                riverWeight = Mathf.Max(coordA, coordC);
+
+            //Triangles spanning the CenterRight edge
+            }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerCorner, riverMidpoint, centerRightMidpoint)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, centerCorner, riverMidpoint, centerRightMidpoint,
+                    out coordA, out coordB, out coordC
+                );
+
+                centerWeight = coordA;
+                riverWeight  = Mathf.Max(coordB, coordC);
+
+            }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerRightMidpoint, riverMidpoint, rightCorner)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, centerRightMidpoint, riverMidpoint, rightCorner,
+                    out coordA, out coordB, out coordC
+                );
+
+                rightWeight = coordC;
+                riverWeight = Mathf.Max(coordA, coordB);
+
+            //Triangles spanning the LeftRight edge
+            }else if(Geometry2D.IsPointWithinTriangle(xzPoint, rightCorner, riverMidpoint, leftRightMidpoint)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, rightCorner, riverMidpoint, leftRightMidpoint,
+                    out coordA, out coordB, out coordC
+                );
+
+                rightWeight = coordA;
+                riverWeight = Mathf.Max(coordB, coordC);
+
+            }else if(Geometry2D.IsPointWithinTriangle(xzPoint, riverMidpoint, leftCorner, leftRightMidpoint)) {
+
+                Geometry2D.GetBarycentric2D(
+                    xzPoint, riverMidpoint, leftCorner, leftRightMidpoint,
+                    out coordA, out coordB, out coordC
+                );
+
+                leftWeight  = coordB;
+                riverWeight = Mathf.Max(coordA, coordC);
+            }
+        }
+
         #endregion
 
         #endregion
