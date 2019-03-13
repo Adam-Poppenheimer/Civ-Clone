@@ -12,6 +12,7 @@ using Zenject;
 
 using Assets.Simulation.WorkerSlots;
 using Assets.Simulation.MapRendering;
+using Assets.Util;
 
 using UnityCustomUtilities.Extensions;
 
@@ -56,6 +57,7 @@ namespace Assets.Simulation.HexMap {
         private ICellModificationLogic CellModificationLogic;
         private IMapRenderConfig       RenderConfig;
         private HexCellSignals         CellSignals;
+        private IGeometry2D            Geometry2D;
 
         #endregion
 
@@ -63,15 +65,15 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            DiContainer container, IWorkerSlotFactory workerSlotFactory,
-            ICellModificationLogic cellModificationLogic,
-            IMapRenderConfig renderConfig, HexCellSignals cellSignals
+            DiContainer container, IWorkerSlotFactory workerSlotFactory, ICellModificationLogic cellModificationLogic,
+            IMapRenderConfig renderConfig, HexCellSignals cellSignals, IGeometry2D geometry2D
         ) {
             Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
             CellModificationLogic = cellModificationLogic;
             RenderConfig          = renderConfig;
             CellSignals           = cellSignals;
+            Geometry2D            = geometry2D;
         }
 
         #region Unity message methods
@@ -260,6 +262,24 @@ namespace Assets.Simulation.HexMap {
 
         public Vector3 GetAbsolutePositionFromRelative(Vector3 relativePosition) {
             return transform.TransformPoint(relativePosition);
+        }
+
+        public bool TryGetSextantOfPointInCell(Vector2 xzPoint, IHexCell cell, out HexDirection sextant) {
+            sextant = HexDirection.NE;
+
+            foreach(var candidate in EnumUtil.GetValues<HexDirection>()) {
+                sextant = candidate;
+
+                if(Geometry2D.IsPointWithinTriangle(
+                    xzPoint, cell.AbsolutePositionXZ,
+                    cell.AbsolutePositionXZ + RenderConfig.GetFirstCornerXZ (candidate),
+                    cell.AbsolutePositionXZ + RenderConfig.GetSecondCornerXZ(candidate)
+                )) {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
         #endregion

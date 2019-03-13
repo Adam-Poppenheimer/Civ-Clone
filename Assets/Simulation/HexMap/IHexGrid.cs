@@ -52,6 +52,8 @@ namespace Assets.Simulation.HexMap {
 
         Vector3 GetAbsolutePositionFromRelative(Vector3 relativePosition);
 
+        bool TryGetSextantOfPointInCell(Vector2 xzPoint, IHexCell cell, out HexDirection sextant);
+
         #endregion
 
     }

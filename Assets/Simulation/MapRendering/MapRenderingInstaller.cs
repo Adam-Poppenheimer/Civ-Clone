@@ -29,27 +29,30 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMapRenderConfig>().To<MapRenderConfig>().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>  ().To<FeatureConfig>  ().FromInstance(FeatureConfig);
 
-            Container.Bind<INoiseGenerator>              ().To<NoiseGenerator>              ().AsSingle();
-            Container.Bind<ITerrainAlphamapLogic>        ().To<TerrainAlphamapLogic>        ().AsSingle();
-            Container.Bind<ITerrainHeightLogic>          ().To<TerrainHeightLogic>          ().AsSingle();
-            Container.Bind<IPointOrientationLogic>       ().To<PointOrientationLogic>       ().AsSingle();
-            Container.Bind<ICellHeightmapLogic>          ().To<CellHeightmapLogic>          ().AsSingle();
-            Container.Bind<IMountainHeightmapLogic>      ().To<MountainHeightmapLogic>      ().AsSingle();
-            Container.Bind<IMountainHeightmapWeightLogic>().To<MountainHeightmapWeightLogic>().AsSingle();
-            Container.Bind<ITerrainMixingLogic>          ().To<TerrainMixingLogic>          ().AsSingle();
-            Container.Bind<ICellAlphamapLogic>           ().To<CellAlphamapLogic>           ().AsSingle();
-            Container.Bind<IWaterTriangulator>           ().To<WaterTriangulator>           ().AsSingle();
-            Container.Bind<IAlphamapMixingFunctions>     ().To<AlphamapMixingFunctions>     ().AsSingle();
-            Container.Bind<IRiverSplineBuilder>          ().To<RiverSplineBuilder>          ().AsSingle();
-            Container.Bind<IRiverAssemblyCanon>          ().To<RiverAssemblyCanon>          ().AsSingle();
-            Container.Bind<IRiverBuilder>                ().To<RiverBuilder>                ().AsSingle();
-            Container.Bind<IRiverSectionCanon>           ().To<RiverSectionCanon>           ().AsSingle();
-            Container.Bind<IRiverBuilderUtilities>       ().To<RiverBuilderUtilities>       ().AsSingle();
-            Container.Bind<IRiverTriangulator>           ().To<RiverTriangulator>           ().AsSingle();
-            Container.Bind<ICellEdgeContourCanon>        ().To<CellEdgeContourCanon>        ().AsSingle();
-            Container.Bind<INonRiverContourBuilder>      ().To<NonRiverContourBuilder>      ().AsSingle();
-            Container.Bind<IRiverContourCuller>          ().To<RiverContourCuller>          ().AsSingle();
-            Container.Bind<IHillsHeightmapLogic>         ().To<HillsHeightmapLogic>         ().AsSingle();
+            Container.Bind<INoiseGenerator>                ().To<NoiseGenerator>                ().AsSingle();
+            Container.Bind<ITerrainAlphamapLogic>          ().To<TerrainAlphamapLogic>          ().AsSingle().NonLazy();
+            Container.Bind<ITerrainHeightLogic>            ().To<TerrainHeightLogic>            ().AsSingle().NonLazy();
+            Container.Bind<IPointOrientationLogic>         ().To<PointOrientationLogic>         ().AsSingle();
+            Container.Bind<ICellHeightmapLogic>            ().To<CellHeightmapLogic>            ().AsSingle();
+            Container.Bind<IMountainHeightmapLogic>        ().To<MountainHeightmapLogic>        ().AsSingle();
+            Container.Bind<IMountainHeightmapWeightLogic>  ().To<MountainHeightmapWeightLogic>  ().AsSingle();
+            Container.Bind<ITerrainMixingLogic>            ().To<TerrainMixingLogic>            ().AsSingle();
+            Container.Bind<ICellAlphamapLogic>             ().To<CellAlphamapLogic>             ().AsSingle();
+            Container.Bind<IWaterTriangulator>             ().To<WaterTriangulator>             ().AsSingle();
+            Container.Bind<IAlphamapMixingFunctions>       ().To<AlphamapMixingFunctions>       ().AsSingle();
+            Container.Bind<IRiverSplineBuilder>            ().To<RiverSplineBuilder>            ().AsSingle();
+            Container.Bind<IRiverAssemblyCanon>            ().To<RiverAssemblyCanon>            ().AsSingle();
+            Container.Bind<IRiverBuilder>                  ().To<RiverBuilder>                  ().AsSingle();
+            Container.Bind<IRiverSectionCanon>             ().To<RiverSectionCanon>             ().AsSingle();
+            Container.Bind<IRiverBuilderUtilities>         ().To<RiverBuilderUtilities>         ().AsSingle();
+            Container.Bind<IRiverTriangulator>             ().To<RiverTriangulator>             ().AsSingle().NonLazy();
+            Container.Bind<ICellEdgeContourCanon>          ().To<CellEdgeContourCanon>          ().AsSingle();
+            Container.Bind<INonRiverContourBuilder>        ().To<NonRiverContourBuilder>        ().AsSingle();
+            Container.Bind<IRiverContourRationalizer>      ().To<RiverContourRationalizer>      ().AsSingle();
+            Container.Bind<IHillsHeightmapLogic>           ().To<HillsHeightmapLogic>           ().AsSingle();
+            Container.Bind<IPointOrientationInSextantLogic>().To<PointOrientationInSextantLogic>().AsSingle();
+            Container.Bind<IPointOrientationWeightLogic>   ().To<PointOrientationWeightLogic>   ().AsSingle();
+            Container.Bind<IContourRationalizer>           ().To<ContourRationalizer>           ().AsSingle();
         }
 
         #endregion

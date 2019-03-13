@@ -4,11 +4,11 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapRendering {
 
-    public interface INonRiverContourBuilder {
+    public interface IRiverContourRationalizer {
 
         #region methods
 
-        void BuildNonRiverContour(IHexCell center, HexDirection direction);
+        void RationalizeRiverContoursInCorner(IHexCell center, HexDirection direction);
 
         #endregion
 

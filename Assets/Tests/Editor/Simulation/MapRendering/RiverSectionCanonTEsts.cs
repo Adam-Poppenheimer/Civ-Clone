@@ -235,9 +235,10 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid>         MockGrid;
-        private Mock<IMapRenderConfig> MockRenderConfig;
-        private Mock<IRiverCanon>      MockRiverCanon;
+        private Mock<IHexGrid>              MockGrid;
+        private Mock<IMapRenderConfig>      MockRenderConfig;
+        private Mock<IRiverCanon>           MockRiverCanon;
+        private Mock<ICellEdgeContourCanon> MockCellEdgeContourCanon;
 
         private List<IHexCell> AllCells = new List<IHexCell>();
 
@@ -251,15 +252,17 @@ namespace Assets.Tests.Simulation.MapRendering {
         public void CommonInstall() {
             AllCells.Clear();
 
-            MockGrid         = new Mock<IHexGrid>();
-            MockRenderConfig = new Mock<IMapRenderConfig>();
-            MockRiverCanon   = new Mock<IRiverCanon>();
+            MockGrid                 = new Mock<IHexGrid>();
+            MockRenderConfig         = new Mock<IMapRenderConfig>();
+            MockRiverCanon           = new Mock<IRiverCanon>();
+            MockCellEdgeContourCanon = new Mock<ICellEdgeContourCanon>();
 
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
-            Container.Bind<IHexGrid>        ().FromInstance(MockGrid        .Object);
-            Container.Bind<IMapRenderConfig>().FromInstance(MockRenderConfig.Object);
-            Container.Bind<IRiverCanon>     ().FromInstance(MockRiverCanon  .Object);
+            Container.Bind<IHexGrid>             ().FromInstance(MockGrid                .Object);
+            Container.Bind<IMapRenderConfig>     ().FromInstance(MockRenderConfig        .Object);
+            Container.Bind<IRiverCanon>          ().FromInstance(MockRiverCanon          .Object);
+            Container.Bind<ICellEdgeContourCanon>().FromInstance(MockCellEdgeContourCanon.Object);
 
             Container.Bind<RiverSectionCanon>().AsSingle();
         }
@@ -452,6 +455,15 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.IsFalse(sectionCanon.Sections[1].HasNextEndpoint, "Sections[1].HasPreviousEndpoint has an unexpected value");
             Assert.IsTrue (sectionCanon.Sections[2].HasNextEndpoint, "Sections[2].HasPreviousEndpoint has an unexpected value");
             Assert.IsTrue (sectionCanon.Sections[3].HasNextEndpoint, "Sections[3].HasPreviousEndpoint has an unexpected value");
+        }
+
+        [Test]
+        public void RefreshRiverSections_ClearsCellEdgeContourCanon() {
+            var sectionCanon = Container.Resolve<RiverSectionCanon>();
+
+            sectionCanon.RefreshRiverSections();
+
+            MockCellEdgeContourCanon.Verify(canon => canon.Clear(), Times.Once);
         }
 
         #endregion

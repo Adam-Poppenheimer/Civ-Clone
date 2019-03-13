@@ -19,8 +19,9 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region instance fields and properties
 
         private Mock<IMapRenderConfig>        MockRenderConfig;
-        private Mock<INoiseGenerator>         MockNoiseGenerator;
         private Mock<IMountainHeightmapLogic> MockMountainHeightmapLogic;
+        private Mock<INoiseGenerator>         MockNoiseGenerator;
+        private Mock<IHillsHeightmapLogic>    MockHillsHeightmapLogic;
 
         #endregion
 
@@ -31,12 +32,14 @@ namespace Assets.Tests.Simulation.MapRendering {
         [SetUp]
         public void CommonInstall() {
             MockRenderConfig           = new Mock<IMapRenderConfig>();
-            MockNoiseGenerator         = new Mock<INoiseGenerator>();
             MockMountainHeightmapLogic = new Mock<IMountainHeightmapLogic>();
+            MockNoiseGenerator         = new Mock<INoiseGenerator>();
+            MockHillsHeightmapLogic    = new Mock<IHillsHeightmapLogic>();
 
             Container.Bind<IMapRenderConfig>       ().FromInstance(MockRenderConfig          .Object);
-            Container.Bind<INoiseGenerator>        ().FromInstance(MockNoiseGenerator        .Object);
             Container.Bind<IMountainHeightmapLogic>().FromInstance(MockMountainHeightmapLogic.Object);
+            Container.Bind<INoiseGenerator>        ().FromInstance(MockNoiseGenerator        .Object);
+            Container.Bind<IHillsHeightmapLogic>   ().FromInstance(MockHillsHeightmapLogic   .Object);
 
             Container.Bind<CellHeightmapLogic>().AsSingle();
         }
@@ -73,13 +76,12 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetHeightForPositionForCell_AndCellHills_ReturnsNoiseSampledFromHillsHeightmap() {
+        public void GetHeightForPositionForCell_AndCellHills_ReturnsHeightFromHillsHeightmapLogic() {
             var position = new Vector3(1f, 2f, 3f);
 
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Hills);
 
-            MockNoiseGenerator.Setup(generator => generator.SampleNoise(position, NoiseType.HillsHeight))
-                              .Returns(new Vector4(15.25f, 0f, 0f, 0f));
+            MockHillsHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E)).Returns(15.25f);
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 

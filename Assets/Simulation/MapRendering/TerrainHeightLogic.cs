@@ -25,7 +25,7 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public TerrainHeightLogic(
-            IHexGrid grid, IPointOrientationLogic pointOrientationLogic,
+            IPointOrientationLogic pointOrientationLogic,
             ICellHeightmapLogic cellHeightmapLogic, IMapRenderConfig renderConfig
         ) {
             PointOrientationLogic = pointOrientationLogic;

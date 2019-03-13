@@ -19,7 +19,7 @@ namespace Assets.Simulation.MapRendering {
 
         void Clear();
 
-        bool IsPointWithinContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour, Vector2 xzMidpoint);
+        bool IsPointWithinContour(Vector2 xzPoint, IHexCell cell, HexDirection direction);
 
         bool IsPointBetweenContours(
             Vector2 xzPoint, ReadOnlyCollection<Vector2> contourOne, ReadOnlyCollection<Vector2> contourTwo

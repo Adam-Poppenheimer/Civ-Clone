@@ -19,9 +19,8 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Mock<IMapRenderConfig> MockRenderConfig;
-        private Mock<IHexGrid>         MockGrid;
-        private Mock<IGeometry2D>      MockGeometry2D;
+        private Mock<IHexGrid>                        MockGrid;
+        private Mock<IPointOrientationInSextantLogic> MockPointOrientationInSextantLogic;
 
         #endregion
 
@@ -31,13 +30,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [SetUp]
         public void CommonInstall() {
-            MockRenderConfig = new Mock<IMapRenderConfig>();
-            MockGrid         = new Mock<IHexGrid>();
-            MockGeometry2D   = new Mock<IGeometry2D>();
+            MockGrid                           = new Mock<IHexGrid>();
+            MockPointOrientationInSextantLogic = new Mock<IPointOrientationInSextantLogic>();
 
-            Container.Bind<IMapRenderConfig>().FromInstance(MockRenderConfig.Object);
-            Container.Bind<IHexGrid>        ().FromInstance(MockGrid        .Object);
-            Container.Bind<IGeometry2D>     ().FromInstance(MockGeometry2D  .Object);
+            Container.Bind<IHexGrid>                       ().FromInstance(MockGrid                          .Object);
+            Container.Bind<IPointOrientationInSextantLogic>().FromInstance(MockPointOrientationInSextantLogic.Object);
 
             Container.Bind<PointOrientationLogic>().AsSingle();
         }
@@ -47,15 +44,113 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void MissingTests() {
-            throw new NotImplementedException();
+        public void GetOrientationDataForPoint_AndGridHasNoCellAtLocation_ReturnsEmptyData() {
+            var point = new Vector2(1f, 2f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(new PointOrientationData(), orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsGridSextantData_IfGridSextantValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData centerData = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant, out centerData)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(centerData, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsPreviousSextantData_IfPreviousSextantValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData leftData = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant.Previous(), out leftData)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(leftData, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsNextSextantData_IfNextSextantValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            PointOrientationData nextRightData = new PointOrientationData() {
+                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            };
+
+            MockPointOrientationInSextantLogic.Setup(
+                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant.Next(), out nextRightData)
+            ).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(nextRightData, orientationLogic.GetOrientationDataForPoint(point));
+        }
+
+        [Test]
+        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsEmptyData_IfNoSextantValid() {
+            var point = new Vector2(1f, 2f);
+
+            var gridCenter = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+
+            HexDirection gridSextant = HexDirection.E;
+            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(new PointOrientationData(), orientationLogic.GetOrientationDataForPoint(point));
         }
 
         #endregion
 
         #region utilities
 
-        
+        private IHexCell BuildCell() {
+            return new Mock<IHexCell>().Object;
+        }
 
         #endregion
 

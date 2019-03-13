@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [Test]
         public void SampleNoise_AndTypeIsGeneric_SamplesFromGenericNoiseSource() {
-            var position = new Vector3(1f, 2f, 3f);
+            var position = new Vector2(1f, 3f);
 
             var mockNoiseSource = new Mock<INoiseTexture>();
 
@@ -58,7 +58,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [Test]
         public void SampleNoise_AndTypeIsFlatlandsHeight_SamplesFlatlandsElevationHeightmap() {
-            var position = new Vector3(1f, 2f, 3f);
+            var position = new Vector2(1f, 3f);
 
             var mockNoiseSource = new Mock<INoiseTexture>();
 
@@ -76,7 +76,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [Test]
         public void SampleNoise_AndTypeIsHillsHeight_SamplesFromHillsElevationHeightmap() {
-            var position = new Vector3(1f, 2f, 3f);
+            var position = new Vector2(1f, 3f);
 
             var mockNoiseSource = new Mock<INoiseTexture>();
 
@@ -94,7 +94,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [Test]
         public void SampleNoise_SampleModifiedByConfiguredNoiseScale() {
-            var position = new Vector3(1f, 2f, 3f);
+            var position = new Vector2(1f, 3f);
 
             var mockNoiseSource = new Mock<INoiseTexture>();
 

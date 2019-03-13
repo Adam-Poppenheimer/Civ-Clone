@@ -9,19 +9,22 @@ using Zenject;
 
 using Assets.Simulation.HexMap;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.MapRendering {
 
     public class RiverTriangulator : IRiverTriangulator {
 
         #region instance fields and properties
 
-        private IMapRenderConfig        RenderConfig;
-        private IRiverSplineBuilder     RiverSplineBuilder;
-        private IHexMesh                RiverMesh;
-        private INoiseGenerator         NoiseGenerator;
-        private ICellEdgeContourCanon   CellEdgeContourCanon;
-        private INonRiverContourBuilder NonRiverContourBuilder;
-        private IRiverContourCuller     RiverContourCuller;
+        private IMapRenderConfig          RenderConfig;
+        private IRiverSplineBuilder       RiverSplineBuilder;
+        private IHexMesh                  RiverMesh;
+        private INoiseGenerator           NoiseGenerator;
+        private ICellEdgeContourCanon     CellEdgeContourCanon;
+        private INonRiverContourBuilder   NonRiverContourBuilder;
+        private IRiverContourRationalizer RiverContourRationalizer;
+        private IHexGrid                  Grid;
 
         #endregion
 
@@ -32,15 +35,16 @@ namespace Assets.Simulation.MapRendering {
             IMapRenderConfig renderConfig, IRiverSplineBuilder riverSplineBuilder,
             [Inject(Id = "River Mesh")] IHexMesh riverMesh, INoiseGenerator noiseGenerator,
             ICellEdgeContourCanon cellEdgeContourCanon, INonRiverContourBuilder nonRiverContourBuilder,
-            IRiverContourCuller riverContourCuller
+            IRiverContourRationalizer riverContourCuller, IHexGrid grid
         ) {
-            RenderConfig           = renderConfig;
-            RiverSplineBuilder     = riverSplineBuilder;
-            RiverMesh              = riverMesh;
-            NoiseGenerator         = noiseGenerator;
-            CellEdgeContourCanon   = cellEdgeContourCanon;
-            NonRiverContourBuilder = nonRiverContourBuilder;
-            RiverContourCuller     = riverContourCuller;
+            RenderConfig             = renderConfig;
+            RiverSplineBuilder       = riverSplineBuilder;
+            RiverMesh                = riverMesh;
+            NoiseGenerator           = noiseGenerator;
+            CellEdgeContourCanon     = cellEdgeContourCanon;
+            NonRiverContourBuilder   = nonRiverContourBuilder;
+            RiverContourRationalizer = riverContourCuller;
+            Grid                     = grid;
         }
 
         #endregion
@@ -140,8 +144,6 @@ namespace Assets.Simulation.MapRendering {
                     thisEdgeContour    .Add(sectionFlow == RiverFlow.Counterclockwise ? portV2XZ      : starboardV2XZ);
                     neighborEdgeContour.Add(sectionFlow == RiverFlow.Counterclockwise ? starboardV2XZ : portV2XZ);
 
-                    neighborEdgeContour.Reverse();
-
                     CellEdgeContourCanon.SetContourForCellEdge(
                         riverSpline.WesternCells[sectionIndex], riverSpline.Directions[sectionIndex], thisEdgeContour
                     );
@@ -152,9 +154,17 @@ namespace Assets.Simulation.MapRendering {
                 }
             }
 
-            NonRiverContourBuilder.BuildNonRiverContours();
+            foreach(var cell in Grid.Cells) {
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    NonRiverContourBuilder.BuildNonRiverContour(cell, direction);
+                }
+            }
 
-            RiverContourCuller.CullConfluenceContours();
+            foreach(var cell in Grid.Cells) {
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    RiverContourRationalizer.RationalizeRiverContoursInCorner(cell, direction);
+                }
+            }
 
             RiverMesh.Apply();
         }

@@ -42,6 +42,16 @@ namespace Assets.Simulation.MapRendering {
         #region from ICellEdgeContourCanon
 
         public void SetContourForCellEdge(IHexCell cell, HexDirection edge, List<Vector2> contour) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+
+            }else if(contour == null) {
+                throw new ArgumentNullException("contour");
+
+            }else if(contour.Count < 2) {
+                throw new ArgumentException("Contour invalid. A valid contour must have at least 2 elements in it");
+            }
+
             List<Vector2>[] contourArray;
 
             if(!ContourOfEdgeOfCell.TryGetValue(cell, out contourArray)) {
@@ -50,10 +60,31 @@ namespace Assets.Simulation.MapRendering {
                 ContourOfEdgeOfCell[cell] = contourArray;
             }
 
-            contourArray[(int)edge] = contour;
+            var newContour = contour.ToList();
+
+            //We want to make sure that the contours of every cell are
+            //defined in a clockwise order. But our input isn't
+            //guaranteed to be in that order. So we need to reverse
+            //the contours if their starting point is counterclockwise
+            //of their endpoint
+            Vector2 cellToContourStart = newContour.First() - cell.AbsolutePositionXZ;
+            Vector2 cellToContourEnd   = newContour.Last () - cell.AbsolutePositionXZ;
+
+            if(Vector3.Cross(
+                new Vector3(cellToContourStart.x, 0f, cellToContourStart.y),
+                new Vector3(cellToContourEnd  .x, 0f, cellToContourEnd  .y)
+            ).y < 0) {
+                newContour.Reverse();
+            }
+
+            contourArray[(int)edge] = newContour;
         }
 
         public ReadOnlyCollection<Vector2> GetContourForCellEdge(IHexCell cell, HexDirection edge) {
+            if(cell == null) {
+                throw new ArgumentNullException("cell");
+            }
+
             List<Vector2>[] contourArray;
 
             if(!ContourOfEdgeOfCell.TryGetValue(cell, out contourArray)) {
@@ -76,7 +107,10 @@ namespace Assets.Simulation.MapRendering {
             ContourOfEdgeOfCell.Clear();
         }
 
-        public bool IsPointWithinContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour, Vector2 midpoint) {
+        public bool IsPointWithinContour(Vector2 xzPoint, IHexCell cell, HexDirection direction) {
+            var contour = GetContourForCellEdge(cell, direction);
+            Vector2 midpoint = cell.AbsolutePositionXZ;
+
             for(int i = 1; i < contour.Count; i++) {
                 if(Geometry2D.IsPointWithinTriangle(xzPoint, midpoint, contour[i - 1], contour[i])) {
                     return true;
@@ -93,6 +127,19 @@ namespace Assets.Simulation.MapRendering {
         public bool IsPointBetweenContours(
             Vector2 xzPoint, ReadOnlyCollection<Vector2> contourOne, ReadOnlyCollection<Vector2> contourTwo
         ) {
+            if(contourOne == null) {
+                throw new ArgumentNullException("contourOne");
+
+            }else if(contourTwo == null) {
+                throw new ArgumentNullException("contourTwo");
+
+            }else if(contourOne.Count < 2) {
+                throw new ArgumentException("contourOne has less than two points, and is therefore invalid");
+
+            }else if(contourTwo.Count < 2) {
+                throw new ArgumentException("contourTwo has less than two points, and is therefore invalid");
+            }
+
             int oneIndex = 0;
             int twoIndex = contourTwo.Count - 1;
 
@@ -134,6 +181,10 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour) {
+            if(contour == null) {
+                throw new ArgumentNullException("contour");
+            }
+
             Vector2 closestPoint = contour[0];
             float shortestDistanceSquared = (xzPoint - closestPoint).sqrMagnitude;
 
