@@ -40,17 +40,17 @@ namespace Assets.Simulation.MapRendering {
         #region from ITerrainAlphamapLogic
 
         public float[] GetAlphamapForPoint(Vector2 xzPoint) {
-            var retval = new float[RenderConfig.MapTextures.Count()];
-
             var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
             if(!orientationData.IsOnGrid) {
-                return retval;
+                return new float[RenderConfig.MapTextures.Count()];
             }
 
             if(orientationData.RiverWeight > 0f) {
                 return RenderConfig.RiverAlphamap;
             }
+
+            var retval = new float[RenderConfig.MapTextures.Count()];
 
             if(orientationData.CenterWeight > 0f) {
                 AddToMap(

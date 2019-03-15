@@ -24,14 +24,16 @@ namespace Assets.Util {
             return ((b1 == b2) && (b2 == b3));
         }
 
-        public void GetBarycentric2D(Vector2 point, Vector2 a, Vector2 b, Vector2 c, out float u, out float v, out float w) {
+        public void GetBarycentric2D(
+            Vector2 point, Vector2 a, Vector2 b, Vector2 c, out float aCoord, out float bCoord, out float cCoord
+        ) {
             Vector2 v0 = b - a, v1 = c - a, v2 = point - a;
 
             float denom = v0.x * v1.y - v1.x * v0.y;
 
-            v = (v2.x * v1.y - v1.x * v2.y) / denom;
-            w = (v0.x * v2.y - v2.x * v0.y) / denom;
-            u = 1.0f - v - w;
+            bCoord = (v2.x * v1.y - v1.x * v2.y) / denom;
+            cCoord = (v0.x * v2.y - v2.x * v0.y) / denom;
+            aCoord = 1.0f - bCoord - cCoord;
         }
 
         //Copied from http://wiki.unity3d.com/index.php/3d_Math_functions
@@ -119,13 +121,13 @@ namespace Assets.Util {
 	    //Returns 0 if point is on the line segment.
 	    //Returns 1 if point is outside of the line segment and located on the side of linePoint1.
 	    //Returns 2 if point is outside of the line segment and located on the side of linePoint2.
-        public static int PointOnWhichSideOfLineSegment(Vector2 linePoint1, Vector2 linePoint2, Vector2 point) {
+        private static int PointOnWhichSideOfLineSegment(Vector2 linePoint1, Vector2 linePoint2, Vector2 point) {
             Vector2 lineVec = linePoint2 - linePoint1;
             Vector2 pointVec = point - linePoint1;
 
             float dot = Vector2.Dot(pointVec, lineVec);
             //point is on side of linePoint2, compared to linePoint1
-            if(dot > 0) {
+            if(dot >= 0) {
 
                 //point is on the line segment
                 if(pointVec.magnitude <= lineVec.magnitude) {
