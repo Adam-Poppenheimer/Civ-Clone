@@ -57,25 +57,25 @@ namespace Assets.Simulation.MapRendering {
             var centerRightContour     = CellEdgeContourCanon.GetContourForCellEdge(center, sextant);
             var centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, sextant.Next());
 
-            Vector2 pointOnContour = CellEdgeContourCanon.GetClosestPointOnContour(
+            Vector2 pointOntoContourCR = CellEdgeContourCanon.GetClosestPointOnContour(
                 xzPoint, centerRightContour
             );
 
             float distanceFromCenter = Mathf.Min(
                 Vector2.Distance(centerLeftContour.Last(),       center.AbsolutePositionXZ),
-                Vector2.Distance(pointOnContour,                 center.AbsolutePositionXZ),
+                Vector2.Distance(pointOntoContourCR,             center.AbsolutePositionXZ),
                 Vector2.Distance(centerNextRightContour.First(), center.AbsolutePositionXZ)
             );
 
             float distanceFromPoint = Mathf.Min(
                 Vector2.Distance(centerLeftContour.Last(),       xzPoint),
-                Vector2.Distance(pointOnContour,                 xzPoint),
+                Vector2.Distance(pointOntoContourCR,             xzPoint),
                 Vector2.Distance(centerNextRightContour.First(), xzPoint)
             );
 
             float edgeToPeakLerp = distanceFromPoint / distanceFromCenter;
 
-            float firstCornerEdgeHeight = 0f, secondCornerEdgeHeight = 0f, rightEdgeHeight;
+            float leftEdgeHeight, nextRightEdgeHeight, rightEdgeHeight;
 
             IHexCell left      = Grid.GetNeighbor(center, sextant.Previous());
             IHexCell right     = Grid.GetNeighbor(center, sextant);
@@ -84,59 +84,55 @@ namespace Assets.Simulation.MapRendering {
             float flatlandsHeight = RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
 
             if(left == null) {
-                firstCornerEdgeHeight += RenderConfig.FlatlandsBaseElevation;
+                leftEdgeHeight = RenderConfig.FlatlandsBaseElevation;
 
             }else if(left.Shape == CellShape.Flatlands || RiverCanon.HasRiverAlongEdge(center, sextant.Previous())) {
-                firstCornerEdgeHeight += flatlandsHeight;
+                leftEdgeHeight = flatlandsHeight;
 
             }else {
-                firstCornerEdgeHeight += HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant.Previous());
+                leftEdgeHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant.Previous());
             }
 
             if(right == null) {
-                firstCornerEdgeHeight  += RenderConfig.FlatlandsBaseElevation;
-                secondCornerEdgeHeight += RenderConfig.FlatlandsBaseElevation;
-
                 rightEdgeHeight = RenderConfig.FlatlandsBaseElevation;
 
             }else if(right.Shape == CellShape.Flatlands || RiverCanon.HasRiverAlongEdge(center, sextant)) {
-                firstCornerEdgeHeight  += flatlandsHeight;
-                secondCornerEdgeHeight += flatlandsHeight;
-
                 rightEdgeHeight = flatlandsHeight;
 
             }else {
-                float hillsHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant);
-
-                firstCornerEdgeHeight  += hillsHeight;
-                secondCornerEdgeHeight += hillsHeight;
-
-                rightEdgeHeight = hillsHeight;
+                rightEdgeHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant);;
             }
 
             if(nextRight == null) {
-                secondCornerEdgeHeight += RenderConfig.FlatlandsBaseElevation;
+                nextRightEdgeHeight = RenderConfig.FlatlandsBaseElevation;
 
             }else if(nextRight.Shape == CellShape.Flatlands || RiverCanon.HasRiverAlongEdge(center, sextant.Next())) {
-                secondCornerEdgeHeight += flatlandsHeight;
+                nextRightEdgeHeight = flatlandsHeight;
 
             }else {
-                secondCornerEdgeHeight += HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant.Next());
+                nextRightEdgeHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant.Next());
             }
 
-            firstCornerEdgeHeight  /= 2f;
-            secondCornerEdgeHeight /= 2f;
+            Vector2 pointOntoContourCL  = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerLeftContour);
+            Vector2 pointOntoContourCNR = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerNextRightContour);
 
-            Vector2 firstToLastSpan = centerRightContour.Last() - centerRightContour.First();
-            Vector2 firstToPoint     = xzPoint                  - centerRightContour.First();
+            float sqDistFromCL  = (xzPoint - pointOntoContourCL ).sqrMagnitude;
+            float sqDistFromCR  = (xzPoint - pointOntoContourCR ).sqrMagnitude;
+            float sqDistFromCNR = (xzPoint - pointOntoContourCNR).sqrMagnitude;
 
-            Vector2 pointOntoSpawn = firstToPoint.Project(firstToLastSpan);
+            float leftWeight      = 1f / (1 + sqDistFromCL);
+            float rightWeight     = 1f / (1 + sqDistFromCR);
+            float nextRightWeight = 1f / (1 + sqDistFromCNR);
 
-            float firstToLastLerp = pointOntoSpawn.magnitude / firstToLastSpan.magnitude;
+            float totalWeight = leftWeight + rightWeight + nextRightWeight;
 
-            float edgeHeight = firstCornerEdgeHeight  * Mathf.Clamp01(1f - firstToLastLerp * 2f)
-                             + rightEdgeHeight        * (1f - 2 * Mathf.Abs(firstToLastLerp - 0.5f))
-                             + secondCornerEdgeHeight * Mathf.Clamp01(firstToLastLerp * 2f - 1f);
+            leftWeight      /= totalWeight;
+            rightWeight     /= totalWeight;
+            nextRightWeight /= totalWeight;
+
+            float edgeHeight = leftWeight      * leftEdgeHeight
+                             + rightWeight     * rightEdgeHeight
+                             + nextRightWeight * nextRightEdgeHeight;
 
             return Mathf.Lerp(edgeHeight, RenderConfig.MountainPeakElevation, edgeToPeakLerp);
         }
