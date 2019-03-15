@@ -35,7 +35,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IPointOrientationLogic>         ().To<PointOrientationLogic>         ().AsSingle();
             Container.Bind<ICellHeightmapLogic>            ().To<CellHeightmapLogic>            ().AsSingle();
             Container.Bind<IMountainHeightmapLogic>        ().To<MountainHeightmapLogic>        ().AsSingle();
-            Container.Bind<IMountainHeightmapWeightLogic>  ().To<MountainHeightmapWeightLogic>  ().AsSingle();
             Container.Bind<ITerrainMixingLogic>            ().To<TerrainMixingLogic>            ().AsSingle();
             Container.Bind<ICellAlphamapLogic>             ().To<CellAlphamapLogic>             ().AsSingle();
             Container.Bind<IWaterTriangulator>             ().To<WaterTriangulator>             ().AsSingle();

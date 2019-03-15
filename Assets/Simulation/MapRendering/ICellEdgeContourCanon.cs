@@ -27,6 +27,8 @@ namespace Assets.Simulation.MapRendering {
 
         Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour);
 
+        Vector2 GetClosestPointOnContours(Vector2 xzPoint, params ReadOnlyCollection<Vector2>[] contours);
+
         #endregion
 
     }

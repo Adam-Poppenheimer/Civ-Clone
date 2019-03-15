@@ -181,21 +181,31 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour) {
-            if(contour == null) {
-                throw new ArgumentNullException("contour");
+            return GetClosestPointOnContours(xzPoint, contour);
+        }
+
+        public Vector2 GetClosestPointOnContours(Vector2 xzPoint, params ReadOnlyCollection<Vector2>[] contours) {
+            if(contours == null) {
+                throw new ArgumentNullException("contours");
             }
 
-            Vector2 closestPoint = contour[0];
-            float shortestDistanceSquared = (xzPoint - closestPoint).sqrMagnitude;
+            if(contours.Any(contour => contour == null)) {
+                throw new ArgumentException("contours contains a null contour");
+            }
 
-            for(int i = 1; i < contour.Count; i++) {
-                Vector2 candidatePoint = Geometry2D.GetClosestPointOnLineSegment(contour[i - 1], contour[i], xzPoint);
+            Vector2 closestPoint = Vector2.zero;
+            float shortestDistanceSquared = float.MaxValue;
 
-                float candidateDistanceSquared = (xzPoint - candidatePoint).sqrMagnitude;
+            foreach(var contour in contours) {
+                for(int i = 0; i < contour.Count - 1; i++) {
+                    Vector2 candidatePoint = Geometry2D.GetClosestPointOnLineSegment(contour[i], contour[i + 1], xzPoint);
 
-                if(candidateDistanceSquared < shortestDistanceSquared) {
-                    closestPoint = candidatePoint;
-                    shortestDistanceSquared = candidateDistanceSquared;
+                    float candidateDistanceSquared = (xzPoint - candidatePoint).sqrMagnitude;
+
+                    if(candidateDistanceSquared < shortestDistanceSquared) {
+                        closestPoint = candidatePoint;
+                        shortestDistanceSquared = candidateDistanceSquared;
+                    }
                 }
             }
 

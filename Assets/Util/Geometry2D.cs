@@ -95,25 +95,15 @@ namespace Assets.Util {
             }
         }
 
-        public Vector2 GetClosestPointOnLineSegment(Vector2 segmentStart, Vector2 segmentEnd, Vector2 point) {
-            Vector2 startToPoint = point        - segmentStart;
-            Vector2 startToEnd   = segmentStart - segmentEnd;
+        public Vector2 GetClosestPointOnLineSegment(Vector2 start, Vector2 end, Vector2 point) {
+            Vector2 heading = (end - start);
+            float magnitudeMax = heading.magnitude;
+            heading.Normalize();
 
-            float magnitudeSegment = startToEnd.sqrMagnitude;
-
-            float segmentPointDot = Vector2.Dot(startToPoint, startToEnd);
-
-            float distance = segmentPointDot / magnitudeSegment;
-
-            if(distance < 0) {
-                return segmentStart;
-
-            }else if(distance > 1) {
-                return segmentEnd;
-
-            }else {
-                return segmentStart + startToEnd * distance;
-            }
+            Vector2 lhs = point - start;
+            float dotP = Vector2.Dot(lhs, heading);
+            dotP = Mathf.Clamp(dotP, 0f, magnitudeMax);
+            return start + heading * dotP;
         }
 
         #endregion
