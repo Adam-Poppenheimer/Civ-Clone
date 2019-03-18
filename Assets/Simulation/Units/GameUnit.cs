@@ -411,8 +411,8 @@ namespace Assets.Simulation.Units {
                 c = (b + nextCell.AbsolutePosition) * 0.5f;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
-                    transform.position = Bezier.GetPoint(a, b, c, t);
-                    Vector3 d = Bezier.GetFirstDerivative(a, b, c, t);
+                    transform.position = BezierQuadratic.GetPoint(a, b, c, t);
+                    Vector3 d = BezierQuadratic.GetFirstDerivative(a, b, c, t);
                     d.y = 0f;
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;
@@ -428,8 +428,8 @@ namespace Assets.Simulation.Units {
                 c = b;
 
                 for(; t < 1f; t += Time.deltaTime * Config.TravelSpeedPerSecond) {
-                    transform.position = Bezier.GetPoint(a, b, c, t);
-                    Vector3 d = Bezier.GetFirstDerivative(a, b, c, t);
+                    transform.position = BezierQuadratic.GetPoint(a, b, c, t);
+                    Vector3 d = BezierQuadratic.GetFirstDerivative(a, b, c, t);
                     d.y = 0f;
                     transform.localRotation = Quaternion.LookRotation(d);
                     yield return null;

@@ -32,11 +32,11 @@ namespace Assets.Util {
         #region instance methods
 
         public Vector3 GetPoint(float t) {
-            return Bezier.GetPoint(V1, V2, V3, V4, t);
+            return BezierCubic.GetPoint(V1, V2, V3, V4, t);
         }
 
         public Vector3 GetVelocity(float t) {
-            return Bezier.GetFirstDerivative(V1, V2, V3, V4, t);
+            return BezierCubic.GetFirstDerivative(V1, V2, V3, V4, t);
         }
 
         public Vector3 GetDirection(float t) {

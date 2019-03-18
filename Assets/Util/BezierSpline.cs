@@ -44,13 +44,13 @@ namespace Assets.Util {
         public Vector3 GetPoint(float t) {
             int i = GetStartingIndex(ref t);
 
-            return Bezier.GetPoint(points[i], points[i + 1], points[i + 2], points[i + 3], t);
+            return BezierCubic.GetPoint(points[i], points[i + 1], points[i + 2], points[i + 3], t);
         }
 
         public Vector3 GetVelocity(float t) {
             int i = GetStartingIndex(ref t);
 
-            return Bezier.GetFirstDerivative(points[i], points[i + 1], points[i + 2], points[i + 3], t);
+            return BezierCubic.GetFirstDerivative(points[i], points[i + 1], points[i + 2], points[i + 3], t);
         }
 
         public Vector3 GetDirection(float t) {

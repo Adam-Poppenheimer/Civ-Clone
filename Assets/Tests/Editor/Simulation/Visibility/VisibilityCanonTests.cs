@@ -110,6 +110,25 @@ namespace Assets.Tests.Simulation.Visibility {
         }
 
         [Test]
+        public void IncreaseCellVisibilityToCiv_AndVisibilityWasZero_CellBecameVisibleSignalFired() {
+            var cellToTest = BuildCell();
+            var civToTest  = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            VisibilitySignals.CellBecameVisibleToCivSignal.Subscribe(data => {
+                Assert.AreEqual(cellToTest, data.Item1, "Signal passed an unexpected cell");
+                Assert.AreEqual(civToTest,  data.Item2, "Signal passed an unexpected civ");
+
+                Assert.Pass();
+            });
+
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
+
+            Assert.Fail("CellBecameVisibleToCivSignal never fired");
+        }
+
+        [Test]
         public void IncreaseCellVisibilityToCiv_AndVisibilityWasGreaterThanZero_CellVisibilityNotRefreshed() {
             Mock<IHexCell> mockCell;
 
@@ -125,6 +144,22 @@ namespace Assets.Tests.Simulation.Visibility {
             canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
 
             mockCell.Verify(cell => cell.RefreshVisibility(), Times.Never);
+        }
+
+        [Test]
+        public void IncreaseCellVisibilityToCiv_AndVisibilityWasGreaterThanZero_CellBecameVisibleSignalNotFired() {
+            var cellToTest = BuildCell();
+            var civToTest  = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
+
+            VisibilitySignals.CellBecameVisibleToCivSignal.Subscribe(
+                data => { Assert.Fail("CellBecameVisibleToCivSignal was unexpectedly fired"); }
+            );
+
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
         }
 
         [Test]
@@ -154,6 +189,20 @@ namespace Assets.Tests.Simulation.Visibility {
         }
 
         [Test]
+        public void DecreaseCellVisibilityToCiv_AndVisibilityWasZero_CellBecameInvisibleToCivSignalNotFired() {
+            var cellToTest = BuildCell();
+            var civToTest  = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            VisibilitySignals.CellBecameInvisibleToCiv.Subscribe(
+                data => { Assert.Fail("CellBecameInvisibleToCiv was unexpectedly fired"); }
+            );
+
+            canon.DecreaseCellVisibilityToCiv(cellToTest, civToTest);
+        }
+
+        [Test]
         public void DecreaseCellVisibilityToCiv_AndVisibilityWasOne_CellVisibilityRefreshed() {
             Mock<IHexCell> mockCell;
 
@@ -169,6 +218,26 @@ namespace Assets.Tests.Simulation.Visibility {
             canon.DecreaseCellVisibilityToCiv(cellToTest, civToTest);
 
             mockCell.Verify(cell => cell.RefreshVisibility(), Times.Once);
+        }
+
+        [Test]
+        public void DecreaseCellVisibilityToCiv_AndVisibilityWasOne_CellBecameInvisibleToCivSignalFired() {
+            var cellToTest = BuildCell();
+            var civToTest  = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
+
+            VisibilitySignals.CellBecameInvisibleToCiv.Subscribe(data => {
+                Assert.AreEqual(cellToTest, data.Item1, "Unexpected cell passed to signal");
+                Assert.AreEqual(civToTest,  data.Item2, "Unexpected civ passed to signal");
+                Assert.Pass();
+            });
+
+            canon.DecreaseCellVisibilityToCiv(cellToTest, civToTest);
+
+            Assert.Fail("CellBecameInvisibleToCiv was never fired");
         }
 
         [Test]
@@ -188,6 +257,23 @@ namespace Assets.Tests.Simulation.Visibility {
             canon.DecreaseCellVisibilityToCiv(cellToTest, civToTest);
 
             mockCell.Verify(cell => cell.RefreshVisibility(), Times.Never);
+        }
+
+        [Test]
+        public void DecreaseCellVisibilityToCiv_AndVisibilityWasGreaterThanOne_CellBecameInvisibleToCivSignalNotFired() {
+            var cellToTest = BuildCell();
+            var civToTest  = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
+            canon.IncreaseCellVisibilityToCiv(cellToTest, civToTest);
+
+            VisibilitySignals.CellBecameVisibleToCivSignal.Subscribe(
+                tuple => { Assert.Fail("CellBecameVisibleToCivSignal unexpectedly fired"); }
+            );
+
+            canon.DecreaseCellVisibilityToCiv(cellToTest, civToTest);
         }
 
         [Test]
@@ -353,8 +439,26 @@ namespace Assets.Tests.Simulation.Visibility {
         }
 
         [Test]
-        public void MissingSignalTests() {
-            throw new NotImplementedException();
+        public void MapBeingClearedSignalFired_VisibilityCleared() {
+            var cellOne = BuildCell();
+            var cellTwo = BuildCell();
+
+            var civOne = BuildCiv();
+            var civTwo = BuildCiv();
+
+            var canon = Container.Resolve<VisibilityCanon>();
+
+            canon.IncreaseCellVisibilityToCiv(cellOne, civOne);
+            canon.IncreaseCellVisibilityToCiv(cellOne, civTwo);
+            canon.IncreaseCellVisibilityToCiv(cellTwo, civOne);
+            canon.IncreaseCellVisibilityToCiv(cellTwo, civTwo);
+
+            CellSignals.MapBeingClearedSignal.OnNext(new Unit());
+
+            Assert.AreEqual(0, canon.GetVisibilityOfCellToCiv(cellOne, civOne), "CellOne's visibility to CivOne not cleared");
+            Assert.AreEqual(0, canon.GetVisibilityOfCellToCiv(cellOne, civTwo), "CellOne's visibility to CivTwo not cleared");
+            Assert.AreEqual(0, canon.GetVisibilityOfCellToCiv(cellTwo, civOne), "CellTwo's visibility to CivOne not cleared");
+            Assert.AreEqual(0, canon.GetVisibilityOfCellToCiv(cellTwo, civTwo), "CellTwo's visibility to CivTwo not cleared");
         }
 
         #endregion
