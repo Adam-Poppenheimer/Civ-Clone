@@ -12,11 +12,17 @@ MonoBehaviour:
   m_Name: Map Render Config
   m_EditorClassIdentifier: 
   _randomSeed: 0
-  _genericNoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
   _noiseScale: 0.005
+  _genericNoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
+  _flatlandsElevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
+    type: 3}
+  _hillsElevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
+    type: 3}
   _noiseHashGridSize: 256
   _noiseHashGridScale: 0.25
   _cellPerturbStrengthXZ: 3
+  _flatlandsElevationNoiseStrength: 0.02
+  _hillsElevationNoiseStrength: 0.25
   _outerRadius: 10
   _outerSolidFactor: 0.75
   _innerSolidFactor: 0.45
@@ -32,28 +38,24 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 133f8248c4a9b37418c642f1a1bc43f8, type: 3}
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
-  - {fileID: 2800000, guid: d6591c2f811c06c41a98a6111f7bd97a, type: 3}
+  - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
   _seaFloorTextureIndex: 2
   _mountainTextureIndex: 5
-  _waterSurfaceElevation: 0.1
+  _waterSurfaceElevation: 0.09
   _seaFloorElevation: 0
   _flatlandsBaseElevation: 0.1
   _hillsBaseElevation: 0.1
   _mountainPeakElevation: 0.6
   _mountainRidgeElevation: 0.45
-  _riverTroughElevation: 0.09
-  _flatlandsElevationHeightmap: {fileID: 2800000, guid: ad46ff8ecbae8434b8242fd5f480112c,
-    type: 3}
-  _hillsElevationHeightmap: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
-    type: 3}
+  _riverTroughElevation: 0.065
   _shallowWaterColor: {r: 0.40511462, g: 0.82443535, b: 0.9338235, a: 1}
   _deepWaterColor: {r: 0, g: 0.29847857, b: 0.8014706, a: 1}
   _freshWaterColor: {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
   _riverWaterColor: {r: 0.40392157, g: 0.8235294, b: 0.93333334, a: 1}
-  _riverMaxWidth: 1
+  _riverMaxWidth: 1.1
   _riverCurveStrength: 5
-  _riverWideningRate: 20
-  _riverWidthNoise: 0.6
+  _riverWideningRate: 5
+  _riverWidthNoise: 1
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10

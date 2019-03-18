@@ -6,10 +6,9 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        Vector4 SampleNoise(Vector2 xzPosition, NoiseType type);
+        Vector4 SampleNoise(Vector2 xzPosition, INoiseTexture source, float strength, NoiseType type);
 
         Vector3 Perturb(Vector3 position);
-        Vector3 Perturb(Vector3 position, float strength);
 
         HexHash SampleHashGrid(Vector2 xzPosition);
 

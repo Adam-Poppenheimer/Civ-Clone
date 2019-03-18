@@ -17,13 +17,14 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig      RenderConfig;
-        private INoiseGenerator       NoiseGenerator;
-        private IHexGrid              Grid;
-        private IHillsHeightmapLogic  HillsHeightmapLogic;
-        private IRiverCanon           RiverCanon;
-        private ICellEdgeContourCanon CellEdgeContourCanon;
-        private IGeometry2D           Geometry2D;
+        private IMapRenderConfig         RenderConfig;
+        private INoiseGenerator          NoiseGenerator;
+        private IHexGrid                 Grid;
+        private IHillsHeightmapLogic     HillsHeightmapLogic;
+        private IRiverCanon              RiverCanon;
+        private ICellEdgeContourCanon    CellEdgeContourCanon;
+        private IGeometry2D              Geometry2D;
+        private IFlatlandsHeightmapLogic FlatlandsHeightmapLogic;
 
         #endregion
 
@@ -34,15 +35,16 @@ namespace Assets.Simulation.MapRendering {
             IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
             IHexGrid grid, IHillsHeightmapLogic hillsHeightmapLogic,
             IRiverCanon riverCanon, ICellEdgeContourCanon cellEdgeContourCanon,
-            IGeometry2D geometry2D
+            IGeometry2D geometry2D, IFlatlandsHeightmapLogic flatlandsHeightmapLogic
         ) {
-            RenderConfig         = renderConfig;
-            NoiseGenerator       = noiseGenerator;
-            Grid                 = grid;
-            HillsHeightmapLogic  = hillsHeightmapLogic;
-            RiverCanon           = riverCanon;
-            CellEdgeContourCanon = cellEdgeContourCanon;
-            Geometry2D           = geometry2D;
+            RenderConfig            = renderConfig;
+            NoiseGenerator          = noiseGenerator;
+            Grid                    = grid;
+            HillsHeightmapLogic     = hillsHeightmapLogic;
+            RiverCanon              = riverCanon;
+            CellEdgeContourCanon    = cellEdgeContourCanon;
+            Geometry2D              = geometry2D;
+            FlatlandsHeightmapLogic = flatlandsHeightmapLogic;
         }
 
         #endregion
@@ -81,7 +83,7 @@ namespace Assets.Simulation.MapRendering {
             IHexCell right     = Grid.GetNeighbor(center, sextant);
             IHexCell nextRight = Grid.GetNeighbor(center, sextant.Next());
 
-            float flatlandsHeight = RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
+            float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, center, sextant);
 
             if(left == null) {
                 leftEdgeHeight = RenderConfig.FlatlandsBaseElevation;

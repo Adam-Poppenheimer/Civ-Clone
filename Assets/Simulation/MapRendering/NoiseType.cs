@@ -6,9 +6,8 @@ using System.Text;
 namespace Assets.Simulation.MapRendering {
 
     public enum NoiseType {
-        Generic         = 0,
-        FlatlandsHeight = 1,
-        HillsHeight     = 2
+        ZeroToOne        = 0,
+        NegativeOneToOne = 1
     }
 
 }

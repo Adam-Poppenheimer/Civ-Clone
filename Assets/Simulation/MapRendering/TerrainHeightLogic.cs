@@ -15,9 +15,9 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IPointOrientationLogic     PointOrientationLogic;
-        private ICellHeightmapLogic        CellHeightmapLogic;
-        private IMapRenderConfig           RenderConfig;
+        private IPointOrientationLogic PointOrientationLogic;
+        private ICellHeightmapLogic    CellHeightmapLogic;
+        private IMapRenderConfig       RenderConfig;
 
         #endregion
 

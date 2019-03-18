@@ -18,10 +18,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Mock<IMapRenderConfig>        MockRenderConfig;
-        private Mock<IMountainHeightmapLogic> MockMountainHeightmapLogic;
-        private Mock<INoiseGenerator>         MockNoiseGenerator;
-        private Mock<IHillsHeightmapLogic>    MockHillsHeightmapLogic;
+        private Mock<IMapRenderConfig>         MockRenderConfig;
+        private Mock<IMountainHeightmapLogic>  MockMountainHeightmapLogic;
+        private Mock<INoiseGenerator>          MockNoiseGenerator;
+        private Mock<IHillsHeightmapLogic>     MockHillsHeightmapLogic;
+        private Mock<IFlatlandsHeightmapLogic> MockFlatlandsHeightmapLogic;
 
         #endregion
 
@@ -31,15 +32,17 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [SetUp]
         public void CommonInstall() {
-            MockRenderConfig           = new Mock<IMapRenderConfig>();
-            MockMountainHeightmapLogic = new Mock<IMountainHeightmapLogic>();
-            MockNoiseGenerator         = new Mock<INoiseGenerator>();
-            MockHillsHeightmapLogic    = new Mock<IHillsHeightmapLogic>();
+            MockRenderConfig            = new Mock<IMapRenderConfig>();
+            MockMountainHeightmapLogic  = new Mock<IMountainHeightmapLogic>();
+            MockNoiseGenerator          = new Mock<INoiseGenerator>();
+            MockHillsHeightmapLogic     = new Mock<IHillsHeightmapLogic>();
+            MockFlatlandsHeightmapLogic = new Mock<IFlatlandsHeightmapLogic>();
 
-            Container.Bind<IMapRenderConfig>       ().FromInstance(MockRenderConfig          .Object);
-            Container.Bind<IMountainHeightmapLogic>().FromInstance(MockMountainHeightmapLogic.Object);
-            Container.Bind<INoiseGenerator>        ().FromInstance(MockNoiseGenerator        .Object);
-            Container.Bind<IHillsHeightmapLogic>   ().FromInstance(MockHillsHeightmapLogic   .Object);
+            Container.Bind<IMapRenderConfig>        ().FromInstance(MockRenderConfig           .Object);
+            Container.Bind<IMountainHeightmapLogic> ().FromInstance(MockMountainHeightmapLogic .Object);
+            Container.Bind<INoiseGenerator>         ().FromInstance(MockNoiseGenerator         .Object);
+            Container.Bind<IHillsHeightmapLogic>    ().FromInstance(MockHillsHeightmapLogic    .Object);
+            Container.Bind<IFlatlandsHeightmapLogic>().FromInstance(MockFlatlandsHeightmapLogic.Object);
 
             Container.Bind<CellHeightmapLogic>().AsSingle();
         }
@@ -62,13 +65,12 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetHeightForPositionForCell_AndCellFlatlands_ReturnsNoiseSampledFromFlatlandsHeightmap() {
+        public void GetHeightForPositionForCell_AndCellIsFlatlands_ReturnsHeightFromFlatlandsHeightmapLogic() {
             var position = new Vector3(1f, 2f, 3f);
 
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Flatlands);
 
-            MockNoiseGenerator.Setup(generator => generator.SampleNoise(position, NoiseType.FlatlandsHeight))
-                              .Returns(new Vector4(15.25f, 0f, 0f, 0f));
+            MockFlatlandsHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E)).Returns(15.25f);
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 

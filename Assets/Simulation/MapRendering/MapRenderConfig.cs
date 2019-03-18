@@ -21,6 +21,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _randomSeed;
 
+        public float NoiseScale {
+            get { return _noiseScale; }
+        }
+        [SerializeField] private float _noiseScale;
 
         public INoiseTexture GenericNoiseSource {
             get {
@@ -33,10 +37,27 @@ namespace Assets.Simulation.MapRendering {
         private INoiseTexture _genericNoiseSource_Wrapped;
         [SerializeField] private Texture2D _genericNoiseSource;
 
-        public float NoiseScale {
-            get { return _noiseScale; }
+        public INoiseTexture FlatlandsElevationNoiseSource {
+            get {
+                if(_flatlandsElevationNoiseSource_Wrapped == null) {
+                    _flatlandsElevationNoiseSource_Wrapped = new NoiseTexture(_flatlandsElevationNoiseSource);
+                }
+                return _flatlandsElevationNoiseSource_Wrapped;
+            }
         }
-        [SerializeField] private float _noiseScale;
+        private INoiseTexture _flatlandsElevationNoiseSource_Wrapped;
+        [SerializeField] private Texture2D _flatlandsElevationNoiseSource;
+
+        public INoiseTexture HillsElevationNoiseSource  {
+            get {
+                if(_hillsElevationNoiseSource_Wrapped == null) {
+                    _hillsElevationNoiseSource_Wrapped = new NoiseTexture(_hillsElevationNoiseSource);
+                }
+                return _hillsElevationNoiseSource_Wrapped;
+            }
+        }
+        private INoiseTexture _hillsElevationNoiseSource_Wrapped;
+        [SerializeField] private Texture2D _hillsElevationNoiseSource;        
 
         public int NoiseHashGridSize {
             get { return _noiseHashGridSize; }
@@ -52,6 +73,16 @@ namespace Assets.Simulation.MapRendering {
             get { return _cellPerturbStrengthXZ; }
         }
         [SerializeField] private float _cellPerturbStrengthXZ;
+
+        public float FlatlandsElevationNoiseStrength {
+            get { return _flatlandsElevationNoiseStrength; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _flatlandsElevationNoiseStrength;
+
+        public float HillsElevationNoiseStrength {
+            get { return _hillsElevationNoiseStrength; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _hillsElevationNoiseStrength;
 
 
 
@@ -174,30 +205,6 @@ namespace Assets.Simulation.MapRendering {
         public float WaterY {
             get { return WaterSurfaceElevation * TerrainMaxY; }
         }
-
-
-        public INoiseTexture FlatlandsElevationHeightmap {
-            get {
-                if(_flatlandsElevationHeightmap_Wrapped == null) {
-                    _flatlandsElevationHeightmap_Wrapped = new NoiseTexture(_flatlandsElevationHeightmap);
-                }
-                return _flatlandsElevationHeightmap_Wrapped;
-            }
-        }
-        private INoiseTexture _flatlandsElevationHeightmap_Wrapped;
-        [SerializeField] private Texture2D _flatlandsElevationHeightmap;
-
-        public INoiseTexture HillsElevationHeightmap  {
-            get {
-                if(_hillsElevationHeightmap_Wrapped == null) {
-                    _hillsElevationHeightmap_Wrapped = new NoiseTexture(_hillsElevationHeightmap);
-                }
-                return _hillsElevationHeightmap_Wrapped;
-            }
-        }
-        private INoiseTexture _hillsElevationHeightmap_Wrapped;
-        [SerializeField] private Texture2D _hillsElevationHeightmap;
-
 
         public Color ShallowWaterColor {
             get { return _shallowWaterColor; }

@@ -52,6 +52,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IPointOrientationInSextantLogic>().To<PointOrientationInSextantLogic>().AsSingle();
             Container.Bind<IPointOrientationWeightLogic>   ().To<PointOrientationWeightLogic>   ().AsSingle();
             Container.Bind<IContourRationalizer>           ().To<ContourRationalizer>           ().AsSingle();
+            Container.Bind<IFlatlandsHeightmapLogic>       ().To<FlatlandsHeightmapLogic>       ().AsSingle();
         }
 
         #endregion

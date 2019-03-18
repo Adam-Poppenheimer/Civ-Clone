@@ -16,10 +16,11 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig      RenderConfig;
-        private INoiseGenerator       NoiseGenerator;
-        private IRiverCanon           RiverCanon;
-        private ICellEdgeContourCanon CellEdgeContourCanon;
+        private IMapRenderConfig         RenderConfig;
+        private INoiseGenerator          NoiseGenerator;
+        private IRiverCanon              RiverCanon;
+        private ICellEdgeContourCanon    CellEdgeContourCanon;
+        private IFlatlandsHeightmapLogic FlatlandsHeightmapLogic;
 
         #endregion
 
@@ -28,12 +29,14 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public HillsHeightmapLogic(
             IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
-            IRiverCanon riverCanon, ICellEdgeContourCanon cellEdgeContourCanon
+            IRiverCanon riverCanon, ICellEdgeContourCanon cellEdgeContourCanon,
+            IFlatlandsHeightmapLogic flatlandsHeightmapLogic
         ) {
-            RenderConfig         = renderConfig;
-            NoiseGenerator       = noiseGenerator;
-            RiverCanon           = riverCanon;
-            CellEdgeContourCanon = cellEdgeContourCanon;
+            RenderConfig            = renderConfig;
+            NoiseGenerator          = noiseGenerator;
+            RiverCanon              = riverCanon;
+            CellEdgeContourCanon    = cellEdgeContourCanon;
+            FlatlandsHeightmapLogic = flatlandsHeightmapLogic;
         }
 
         #endregion
@@ -43,7 +46,12 @@ namespace Assets.Simulation.MapRendering {
         #region from IHillsHeightmapLogic
 
         public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
-            float hillsHeight = RenderConfig.HillsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.HillsHeight).x;
+            float hillNoise = NoiseGenerator.SampleNoise(
+                xzPoint, RenderConfig.HillsElevationNoiseSource, RenderConfig.HillsElevationNoiseStrength,
+                NoiseType.ZeroToOne
+            ).x;
+
+            float hillsHeight = RenderConfig.HillsBaseElevation + hillNoise;
 
             Vector2 nearestContourPoint;
 
@@ -54,7 +62,7 @@ namespace Assets.Simulation.MapRendering {
                 float hillsWeight     = Mathf.Sqrt(contourToPoint.magnitude / contourToCenter.magnitude);
                 float flatlandsWeight = 1f - hillsWeight;
                         
-                float flatlandsHeight = RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
+                float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
                 return hillsHeight * hillsWeight + flatlandsHeight * flatlandsWeight;
             }else {

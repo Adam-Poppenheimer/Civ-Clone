@@ -34,31 +34,32 @@ namespace Assets.Simulation.MapRendering {
 
         #region from INoiseGenerator
 
-        public Vector4 SampleNoise(Vector2 xzPosition, NoiseType type) {
-            INoiseTexture noiseSource;
-
-            switch(type) {
-                case NoiseType.Generic:         noiseSource = RenderConfig.GenericNoiseSource;          break;
-                case NoiseType.FlatlandsHeight: noiseSource = RenderConfig.FlatlandsElevationHeightmap; break;
-                case NoiseType.HillsHeight:     noiseSource = RenderConfig.HillsElevationHeightmap;     break;
-                default: throw new System.NotImplementedException();
-            }
-
-            return noiseSource.SampleBilinear(
+        public Vector4 SampleNoise(Vector2 xzPosition, INoiseTexture source, float strength, NoiseType type) {
+            Vector4 normalizedNoise = source.SampleBilinear(
                 xzPosition.x * RenderConfig.NoiseScale,
                 xzPosition.y * RenderConfig.NoiseScale
             );
+
+            if(type == NoiseType.NegativeOneToOne) {
+                normalizedNoise.Set(
+                    normalizedNoise.x * 2f - 1f,
+                    normalizedNoise.y * 2f - 1f,
+                    normalizedNoise.z * 2f - 1f,
+                    normalizedNoise.w * 2f - 1f
+                );
+            }
+            
+            return normalizedNoise * strength;
         }
 
         public Vector3 Perturb(Vector3 position) {
-            return Perturb(position, 1f);
-        }
+            Vector4 sample = SampleNoise(
+                new Vector2(position.x, position.z), RenderConfig.GenericNoiseSource,
+                RenderConfig.CellPerturbStrengthXZ, NoiseType.NegativeOneToOne
+            );
 
-        public Vector3 Perturb(Vector3 position, float strength) {
-            Vector4 sample = SampleNoise(new Vector2(position.x, position.z), NoiseType.Generic);
-
-            position.x += (sample.x * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ * strength;
-            position.z += (sample.z * 2f - 1f) * RenderConfig.CellPerturbStrengthXZ * strength;
+            position.x += sample.x;
+            position.z += sample.z;
 
             return position;
         }

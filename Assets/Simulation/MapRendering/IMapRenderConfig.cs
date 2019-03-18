@@ -15,14 +15,19 @@ namespace Assets.Simulation.MapRendering {
 
         int RandomSeed { get; }
 
-        INoiseTexture GenericNoiseSource { get; }
-
         float NoiseScale { get; }
 
-        int NoiseHashGridSize { get; }
+        INoiseTexture GenericNoiseSource            { get; }
+        INoiseTexture FlatlandsElevationNoiseSource { get; }
+        INoiseTexture HillsElevationNoiseSource     { get; }
+
+        int   NoiseHashGridSize  { get; }
         float NoiseHashGridScale { get; }
 
         float CellPerturbStrengthXZ { get; }
+
+        float FlatlandsElevationNoiseStrength { get; }
+        float HillsElevationNoiseStrength     { get; }
 
 
         float OuterToInner { get; }
@@ -59,10 +64,7 @@ namespace Assets.Simulation.MapRendering {
         float MountainRidgeElevation { get; }
         float RiverTroughElevation   { get; }
 
-        float WaterY { get; }
-
-        INoiseTexture FlatlandsElevationHeightmap { get; }
-        INoiseTexture HillsElevationHeightmap     { get; }
+        float WaterY { get; }        
 
         Color ShallowWaterColor { get; }
         Color DeepWaterColor    { get; }

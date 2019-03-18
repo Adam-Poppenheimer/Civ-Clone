@@ -59,6 +59,8 @@ namespace Assets.Simulation.MapRendering {
             RiverMesh.Clear();
 
             foreach(var riverSpline in RiverSplineBuilder.LastBuiltRiverSplines) {
+                Vector3 riverYVector = Vector3.up * RenderConfig.WaterY;
+
                 var centerSpline = riverSpline.CenterSpline;
 
                 float maxWidth = RenderConfig.RiverMaxWidth * Mathf.Clamp01((float)centerSpline.CurveCount / RenderConfig.RiverCurvesForMaxWidth);
@@ -71,15 +73,17 @@ namespace Assets.Simulation.MapRendering {
 
                 Vector3 portV1, starboardV1;
 
-                Vector3 point = centerSpline.GetPoint(tDelta);
+                Vector3 point = centerSpline.GetPoint(tDelta) + riverYVector;
 
-                float noise = NoiseGenerator.SampleNoise(point, NoiseType.Generic).x * 2f - 1f;
+                float noise = NoiseGenerator.SampleNoise(
+                    new Vector2(point.x, point.z), RenderConfig.GenericNoiseSource, RenderConfig.RiverWidthNoise, NoiseType.NegativeOneToOne
+                ).x;
 
                 Vector3 flow1 = centerSpline.GetDirection(t);
                 Vector3 flow2 = centerSpline.GetDirection(tDelta);
 
                 float width2 = maxWidth * (
-                    Mathf.Clamp01(tDelta * RenderConfig.RiverWideningRate) + tDelta * noise * RenderConfig.RiverWidthNoise
+                    Mathf.Clamp01(tDelta * RenderConfig.RiverWideningRate) + tDelta * noise
                 );
 
                 Vector3 portV2      = point + centerSpline.GetNormalXZ(tDelta) * width2;
@@ -90,8 +94,8 @@ namespace Assets.Simulation.MapRendering {
                 Vector2 portV2XZ      = new Vector2(portV2     .x, portV2     .z);
                 Vector2 starboardV2XZ = new Vector2(starboardV2.x, starboardV2.z);
 
-                RiverMesh.AddTriangle   (centerSpline.Points[0], portV2, starboardV2);
-                RiverMesh.AddTriangleUV3(flow1,                  flow2,  flow2);
+                RiverMesh.AddTriangle   (centerSpline.Points[0] + riverYVector, portV2, starboardV2);
+                RiverMesh.AddTriangleUV3(flow1,                                 flow2,  flow2);
 
                 RiverMesh.AddTriangleColor(RenderConfig.RiverWaterColor);
 
@@ -115,12 +119,14 @@ namespace Assets.Simulation.MapRendering {
                         portV1XZ      = portV2XZ;
                         starboardV1XZ = starboardV2XZ;
 
-                        point = centerSpline.GetPoint(t);
+                        point = centerSpline.GetPoint(t) + riverYVector;
 
-                        noise = NoiseGenerator.SampleNoise(point, NoiseType.Generic).x * 2f - 1f;
+                        noise = NoiseGenerator.SampleNoise(
+                            new Vector2(point.x, point.z), RenderConfig.GenericNoiseSource, RenderConfig.RiverWidthNoise, NoiseType.NegativeOneToOne
+                        ).x;
 
                         width2 = maxWidth * (
-                            Mathf.Clamp01(t * RenderConfig.RiverWideningRate) + t * noise * RenderConfig.RiverWidthNoise
+                            Mathf.Clamp01(t * RenderConfig.RiverWideningRate) + t * noise
                         );
 
                         flow1 = flow2;

@@ -17,10 +17,10 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig        RenderConfig;
-        private IMountainHeightmapLogic MountainHeightmapLogic;
-        private INoiseGenerator         NoiseGenerator;
-        private IHillsHeightmapLogic    HillsHeightmapLogic;
+        private IMapRenderConfig         RenderConfig;
+        private IFlatlandsHeightmapLogic FlatlandsHeightmapLogic;
+        private IHillsHeightmapLogic     HillsHeightmapLogic;
+        private IMountainHeightmapLogic  MountainHeightmapLogic;
 
         #endregion
 
@@ -28,13 +28,13 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public CellHeightmapLogic(
-            IMapRenderConfig renderConfig, IMountainHeightmapLogic mountainHeightmapLogic,
-            INoiseGenerator noiseGenerator, IHillsHeightmapLogic hillsHeightmapLogic
+            IMapRenderConfig renderConfig, IFlatlandsHeightmapLogic flatlandsHeightmapLogic,
+            IHillsHeightmapLogic hillsHeightmapLogic, IMountainHeightmapLogic mountainHeightmapLogic
         ) {
-            RenderConfig           = renderConfig;
-            MountainHeightmapLogic = mountainHeightmapLogic;
-            NoiseGenerator         = noiseGenerator;
-            HillsHeightmapLogic    = hillsHeightmapLogic;
+            RenderConfig            = renderConfig;
+            FlatlandsHeightmapLogic = flatlandsHeightmapLogic;
+            HillsHeightmapLogic     = hillsHeightmapLogic;
+            MountainHeightmapLogic  = mountainHeightmapLogic;
         }
 
         #endregion
@@ -48,7 +48,7 @@ namespace Assets.Simulation.MapRendering {
                 return RenderConfig.SeaFloorElevation;
 
             }if(cell.Shape == CellShape.Flatlands) {
-                return RenderConfig.FlatlandsBaseElevation + NoiseGenerator.SampleNoise(xzPoint, NoiseType.FlatlandsHeight).x;
+                return FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
             }else if(cell.Shape == CellShape.Hills) {
                 return HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);

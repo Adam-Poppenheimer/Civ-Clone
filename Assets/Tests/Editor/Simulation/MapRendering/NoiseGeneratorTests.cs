@@ -7,6 +7,7 @@ using UnityEngine;
 
 using NUnit.Framework;
 using Zenject;
+using UniRx;
 using Moq;
 
 using Assets.Simulation.MapRendering;
@@ -39,75 +40,36 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void SampleNoise_AndTypeIsGeneric_SamplesFromGenericNoiseSource() {
-            var position = new Vector2(1f, 3f);
+        public void SampleNoise_AndTypeIsZeroToOne_SamplesPixelsWithNoiseScale_FromArguedSource_MultipliedByStrength() {
+            var xzPosition = new Vector3(-5f, -6f);
 
-            var mockNoiseSource = new Mock<INoiseTexture>();
+            var sampledNoise = new Vector4(0.6f, 1000f, 0.4f, 1000f);
 
-            var noiseSample = new Vector4(1f, -20f, 300f, -4000f);
+            var noiseSource = BuildNoiseTexture(new Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
 
-            mockNoiseSource.Setup(source => source.SampleBilinear(1f, 3f)).Returns(noiseSample);
-
-            MockRenderConfig.Setup(config => config.GenericNoiseSource).Returns(mockNoiseSource.Object);
-            MockRenderConfig.Setup(config => config.NoiseScale).Returns(1f);
+            MockRenderConfig.Setup(config => config.NoiseScale).Returns(2f);
 
             var noiseGenerator = Container.Resolve<NoiseGenerator>();
 
-            Assert.AreEqual(noiseSample, noiseGenerator.SampleNoise(position, NoiseType.Generic));
+            Assert.AreEqual(sampledNoise * 3f, noiseGenerator.SampleNoise(xzPosition, noiseSource, 3f, NoiseType.ZeroToOne));
         }
 
         [Test]
-        public void SampleNoise_AndTypeIsFlatlandsHeight_SamplesFlatlandsElevationHeightmap() {
-            var position = new Vector2(1f, 3f);
+        public void SampleNoise_AndTypeIsNegativeOneToOne_SampleSpreadIntoNegativeNumbersCorrectly() {
+            var xzPosition = new Vector3(-5f, -6f);
 
-            var mockNoiseSource = new Mock<INoiseTexture>();
+            var sampledNoise = new Vector4(0.25f, 0.5f, 0.75f, 1f);
 
-            var noiseSample = new Vector4(1f, -20f, 300f, -4000f);
+            var noiseSource = BuildNoiseTexture(new Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
 
-            mockNoiseSource.Setup(source => source.SampleBilinear(1f, 3f)).Returns(noiseSample);
-
-            MockRenderConfig.Setup(config => config.FlatlandsElevationHeightmap).Returns(mockNoiseSource.Object);
-            MockRenderConfig.Setup(config => config.NoiseScale).Returns(1f);
+            MockRenderConfig.Setup(config => config.NoiseScale).Returns(2f);
 
             var noiseGenerator = Container.Resolve<NoiseGenerator>();
 
-            Assert.AreEqual(noiseSample, noiseGenerator.SampleNoise(position, NoiseType.FlatlandsHeight));
-        }
-
-        [Test]
-        public void SampleNoise_AndTypeIsHillsHeight_SamplesFromHillsElevationHeightmap() {
-            var position = new Vector2(1f, 3f);
-
-            var mockNoiseSource = new Mock<INoiseTexture>();
-
-            var noiseSample = new Vector4(1f, -20f, 300f, -4000f);
-
-            mockNoiseSource.Setup(source => source.SampleBilinear(1f, 3f)).Returns(noiseSample);
-
-            MockRenderConfig.Setup(config => config.HillsElevationHeightmap).Returns(mockNoiseSource.Object);
-            MockRenderConfig.Setup(config => config.NoiseScale).Returns(1f);
-
-            var noiseGenerator = Container.Resolve<NoiseGenerator>();
-
-            Assert.AreEqual(noiseSample, noiseGenerator.SampleNoise(position, NoiseType.HillsHeight));
-        }
-
-        [Test]
-        public void SampleNoise_SampleModifiedByConfiguredNoiseScale() {
-            var position = new Vector2(1f, 3f);
-
-            var mockNoiseSource = new Mock<INoiseTexture>();
-
-            var noiseSample = new Vector4(1f, -20f, 300f, -4000f);
-
-            mockNoiseSource.Setup(source => source.SampleBilinear(2.5f, 3f * 2.5f)).Returns(noiseSample);
-
-            MockRenderConfig.Setup(config => config.GenericNoiseSource).Returns(mockNoiseSource.Object);
-            MockRenderConfig.Setup(config => config.NoiseScale).Returns(2.5f);
-
-            var noiseGenerator = Container.Resolve<NoiseGenerator>();
-
-            Assert.AreEqual(noiseSample, noiseGenerator.SampleNoise(position, NoiseType.Generic));
+            Assert.AreEqual(
+                new Vector4(-0.5f * 3f, 0f, 0.5f * 3f, 3f),
+                noiseGenerator.SampleNoise(xzPosition, noiseSource, 3f, NoiseType.NegativeOneToOne)
+            );
         }
 
         [Test]
@@ -157,7 +119,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region utilities
 
+        private INoiseTexture BuildNoiseTexture(params Tuple<Vector2, Vector4>[] samples) {
+            var mockTexture = new Mock<INoiseTexture>();
 
+            foreach(var sample in samples) {
+                mockTexture.Setup(texture => texture.SampleBilinear(sample.Item1.x, sample.Item1.y)).Returns(sample.Item2);
+            }
+
+            return mockTexture.Object;
+        }
 
         #endregion
 
