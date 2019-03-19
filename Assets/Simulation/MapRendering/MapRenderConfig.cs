@@ -267,6 +267,12 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float[] _riverAlphamap;
 
+
+        public float CultureWidthPercent {
+            get { return _cultureWidthPercent; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _cultureWidthPercent;
+
         #endregion
 
         private Vector2[] CornersXZ;

@@ -38,10 +38,10 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 133f8248c4a9b37418c642f1a1bc43f8, type: 3}
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
-  - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
+  - {fileID: 2800000, guid: 4d8c5c61656734a4da424313375d5137, type: 3}
   _seaFloorTextureIndex: 2
   _mountainTextureIndex: 5
-  _waterSurfaceElevation: 0.09
+  _waterSurfaceElevation: 0.093
   _seaFloorElevation: 0
   _flatlandsBaseElevation: 0.1
   _hillsBaseElevation: 0.1
@@ -55,7 +55,7 @@ MonoBehaviour:
   _riverMaxWidth: 1.1
   _riverCurveStrength: 5
   _riverWideningRate: 5
-  _riverWidthNoise: 1
+  _riverWidthNoise: 0.25
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
@@ -67,3 +67,4 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  _cultureWidthPercent: 0.25

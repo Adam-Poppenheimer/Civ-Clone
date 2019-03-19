@@ -57,13 +57,7 @@
 			o.Occlusion = explored;
 			o.Smoothness = _Glossiness;
 
-			float uvAlpha = IN.uv_MainTex.y;
-			if (uvAlpha <= 0.5) {
-				o.Alpha = min(IN.uv_MainTex.y * 2, explored);
-			}
-			else {
-				o.Alpha = 0;
-			}
+			o.Alpha = IN.uv_MainTex.y;
 		}
 		ENDCG
 	}

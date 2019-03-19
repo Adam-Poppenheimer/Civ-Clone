@@ -19,6 +19,7 @@ namespace Assets.Simulation.MapRendering {
         #region static fields and properties
 
         private static Coroutine RefreshRiversCoroutine;
+        private static Coroutine RefreshCultureCoroutine;
 
         #endregion
 
@@ -34,7 +35,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshAlphamapCoroutine;
         private Coroutine RefreshHeightmapCoroutine;
         private Coroutine RefreshWaterCoroutine;
-        private Coroutine RefreshFeatureCoroutine;
+        private Coroutine RefreshFeaturesCoroutine;
 
         [SerializeField] private HexMesh StandingWater;
 
@@ -47,6 +48,7 @@ namespace Assets.Simulation.MapRendering {
         private IWaterTriangulator    WaterTriangulator;
         private IHexFeatureManager    HexFeatureManager;
         private IRiverTriangulator    RiverTriangulator;
+        private ICultureTriangulator  CultureTriangulator;
 
         #endregion
 
@@ -56,14 +58,16 @@ namespace Assets.Simulation.MapRendering {
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
-            IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator
+            IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
+            ICultureTriangulator cultureTriangulator
         ) {
-            AlphamapLogic      = alphamapLogic;
-            HeightLogic        = heightLogic;
-            RenderConfig       = renderConfig;
-            WaterTriangulator  = waterTriangulator;
-            HexFeatureManager  = hexFeatureManager;
-            RiverTriangulator  = riverTriangulator;
+            AlphamapLogic       = alphamapLogic;
+            HeightLogic         = heightLogic;
+            RenderConfig        = renderConfig;
+            WaterTriangulator   = waterTriangulator;
+            HexFeatureManager   = hexFeatureManager;
+            RiverTriangulator   = riverTriangulator;
+            CultureTriangulator = cultureTriangulator;
         }
 
         #region from IMapChunk
@@ -108,9 +112,15 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshCulture() {
+            if(RefreshCultureCoroutine == null) {
+                RefreshCultureCoroutine = StartCoroutine(RefreshCulture_Perform());
+            }
+        }
+
         public void RefreshFeatures() {
-            if(RefreshFeatureCoroutine == null) {
-                RefreshFeatureCoroutine = StartCoroutine(RefreshFeatures_Perform());
+            if(RefreshFeaturesCoroutine == null) {
+                RefreshFeaturesCoroutine = StartCoroutine(RefreshFeatures_Perform());
             }
         }
 
@@ -118,6 +128,7 @@ namespace Assets.Simulation.MapRendering {
             RefreshAlphamap();
             RefreshHeightmap();
             RefreshWater();
+            RefreshCulture();
             RefreshFeatures();
 
             if(RefreshRiversCoroutine == null) {
@@ -238,7 +249,7 @@ namespace Assets.Simulation.MapRendering {
 
             HexFeatureManager.Apply();
 
-            RefreshFeatureCoroutine = null;
+            RefreshFeaturesCoroutine = null;
         }
 
         private IEnumerator RefreshRivers_Perform() {
@@ -247,6 +258,15 @@ namespace Assets.Simulation.MapRendering {
             RiverTriangulator.TriangulateRivers();
 
             RefreshRiversCoroutine = null;
+        }
+
+        private IEnumerator RefreshCulture_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            CultureTriangulator.TriangulateCulture();
+
+            RefreshCultureCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

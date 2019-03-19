@@ -84,6 +84,8 @@ namespace Assets.Simulation.MapRendering {
         //May need to be retyped to prevent unintentional modification
         float[] RiverAlphamap { get; }
 
+        float CultureWidthPercent { get; }
+
         #endregion
 
         #region methods

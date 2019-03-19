@@ -16,6 +16,7 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private MapRenderConfig RenderConfig;
         [SerializeField] private FeatureConfig   FeatureConfig;
         [SerializeField] private HexMesh         RiverMesh;
+        [SerializeField] private HexMesh         CultureMesh;
 
         #endregion
 
@@ -24,7 +25,8 @@ namespace Assets.Simulation.MapRendering {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IHexMesh>().WithId("River Mesh").FromInstance(RiverMesh);
+            Container.Bind<IHexMesh>().WithId("River Mesh")  .FromInstance(RiverMesh);
+            Container.Bind<IHexMesh>().WithId("Culture Mesh").FromInstance(CultureMesh);
 
             Container.Bind<IMapRenderConfig>().To<MapRenderConfig>().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>  ().To<FeatureConfig>  ().FromInstance(FeatureConfig);
@@ -53,6 +55,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IPointOrientationWeightLogic>   ().To<PointOrientationWeightLogic>   ().AsSingle();
             Container.Bind<IContourRationalizer>           ().To<ContourRationalizer>           ().AsSingle();
             Container.Bind<IFlatlandsHeightmapLogic>       ().To<FlatlandsHeightmapLogic>       ().AsSingle();
+            Container.Bind<ICultureTriangulator>           ().To<CultureTriangulator>           ().AsSingle();
         }
 
         #endregion
