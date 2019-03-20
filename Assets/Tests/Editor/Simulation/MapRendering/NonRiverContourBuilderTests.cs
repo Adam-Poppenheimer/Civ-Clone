@@ -244,6 +244,11 @@ namespace Assets.Tests.Simulation.MapRendering {
             );
         }
 
+        [Test]
+        public void MissingHasNextRightRightRiverSpecialCase() {
+            throw new NotImplementedException();
+        }
+
         #endregion
 
         #region utilities

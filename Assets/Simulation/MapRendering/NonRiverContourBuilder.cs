@@ -74,7 +74,9 @@ namespace Assets.Simulation.MapRendering {
                 contourPoints.Add(center.AbsolutePositionXZ + RenderConfig.GetFirstCornerXZ(direction));
             }
 
-            if(hasCenterNextRightRiver) {
+            if( hasCenterNextRightRiver ||
+                (hasNextRightRightRiver && RiverCanon.GetFlowOfRiverAtEdge(nextRight, direction.Previous()) == RiverFlow.Clockwise)
+            ) {
                 ICollection<Vector2> centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Next());
 
                 contourPoints.Add(centerNextRightContour.First());

@@ -85,13 +85,12 @@ namespace Assets.Simulation.MapRendering {
 
             }else {
                 var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction);
+                var rightCenterContour = CellEdgeContourCanon.GetContourForCellEdge(right,  direction.Opposite());
 
-                if(centerRightContour.Count == 2) {
-                    TriangulateCultureCorners_FlatEdge(center, left, nextRight, direction, centerOwner, centerRightContour);
-
-                }else if(centerRightContour.Count == 3) {
-                    TriangulateCultureCorners_FlatRiverEndpoint(center, left, nextRight, direction, centerOwner, centerRightContour);
-
+                if(rightCenterContour.Count <= 3) {
+                    TriangulateCultureCorners_FlatEdge(
+                        center, left, right, nextRight, direction, centerOwner, centerRightContour, rightCenterContour
+                    );
                 }else {
                     TriangulateCultureCorners_River(center, left, right, nextRight, direction, centerOwner, centerRightContour);
                 }
@@ -99,64 +98,65 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void TriangulateCultureCorners_FlatEdge(
-            IHexCell center, IHexCell left, IHexCell nextRight, HexDirection direction,
-            ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour
+            IHexCell center, IHexCell left, IHexCell right, IHexCell nextRight, HexDirection direction,
+            ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour,
+            ReadOnlyCollection<Vector2> rightCenterContour
         ) {
             if(left != null && CivTerritoryLogic.GetCivClaimingCell(left) != centerOwner) {
-                var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous());
+                var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous ());
+                var rightLeftContour  = CellEdgeContourCanon.GetContourForCellEdge(right,  direction.Previous2());
 
-                Vector2 arcInnerStart = Vector2.Lerp(centerLeftContour .Last (), center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
-                Vector2 arcInnerEnd   = Vector2.Lerp(centerRightContour.First(), centerRightContour.Last(), RenderConfig.CultureWidthPercent);
+                Vector2 centerLeftFirstInner = Vector2.Lerp(centerLeftContour.First(), center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
+                Vector2 centerLeftLastInner  = Vector2.Lerp(centerLeftContour.Last (), center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                Vector2 arcPivot = centerRightContour.First();
+                Vector2 rightLeftFirstInner = Vector2.Lerp(rightLeftContour.First(), right.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
+                Vector2 rightleftLastInner  = Vector2.Lerp(rightLeftContour.Last (), right.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                TriangulateContourSweep(arcInnerStart, arcInnerEnd, arcPivot, centerOwner.Template.Color);
-            }
+                Vector2 rayAlongCenterLeft = (centerLeftLastInner - centerLeftFirstInner).normalized;
+                Vector2 rayAlongRightLeft  = (rightLeftFirstInner - rightleftLastInner).normalized;
 
-            if(nextRight != null && CivTerritoryLogic.GetCivClaimingCell(nextRight) != centerOwner) {
-                var centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Next());
+                Vector2 bezierControl;
 
-                Vector2 arcInnerStart = Vector2.Lerp(centerRightContour    .Last (), centerRightContour.First(), RenderConfig.CultureWidthPercent);
-                Vector2 arcInnerEnd   = Vector2.Lerp(centerNextRightContour.First(), center.AbsolutePositionXZ,  RenderConfig.CultureWidthPercent);
+                if(!Geometry2D.ClosestPointsOnTwoLines(
+                    centerLeftLastInner, rayAlongCenterLeft, rightLeftFirstInner, rayAlongRightLeft,
+                    out bezierControl, out bezierControl
+                )) {
+                    Debug.LogError("TriangulateCultureCorners_FlatEdge failed to find a valid control point");
+                    return;
+                }
+                
 
-                Vector2 arcPivot = centerRightContour.Last();
+                Vector3 pivotXYZ = new Vector3(centerLeftContour.Last().x, 0f, centerLeftContour.Last().y);
 
-                TriangulateContourSweep(arcInnerStart, arcInnerEnd, arcPivot, centerOwner.Template.Color);
-            }
-        }
+                float paramDelta = 5f / RenderConfig.RiverQuadsPerCurve;
 
-        private void TriangulateCultureCorners_FlatRiverEndpoint(
-            IHexCell center, IHexCell left, IHexCell nextRight, HexDirection direction,
-            ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour
-        ) {
-            if(left != null && CivTerritoryLogic.GetCivClaimingCell(left) != centerOwner) {
-                var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous());
+                for(float t = 0; t < 1f; t = Mathf.Clamp01(t + paramDelta)) {
+                    float nextT = Mathf.Clamp01(t + paramDelta);
 
-                Vector2 arcInnerStart = Vector2.Lerp(centerLeftContour .Last (), center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
-                Vector2 arcInnerEnd   = Vector2.Lerp(centerRightContour.First(), centerRightContour.Last(), RenderConfig.CultureWidthPercent);
+                    Vector2 bezierOne = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, nextT);
+                    Vector2 bezierTwo = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, t);
 
-                Vector2 arcPivot = centerRightContour.First();
+                    CultureMesh.AddTriangle(
+                        pivotXYZ, new Vector3(bezierOne.x, 0f, bezierOne.y), new Vector3(bezierTwo.x, 0f, bezierTwo.y)
+                    );
 
-                TriangulateContourSweep(arcInnerStart, arcInnerEnd, arcPivot, centerOwner.Template.Color);
-            }
+                    CultureMesh.AddTriangleUV(new Vector2(0f, 1f), Vector2.zero, Vector2.zero);
+                    CultureMesh.AddTriangleColor(centerOwner.Template.Color);
+                }
 
-            if(nextRight != null && CivTerritoryLogic.GetCivClaimingCell(nextRight) != centerOwner) {
-                Vector2 arcInnerStart = Vector2.Lerp(centerRightContour[1], centerRightContour[0],     RenderConfig.CultureWidthPercent);
-                Vector2 arcInnerEnd   = Vector2.Lerp(centerRightContour[1], center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
+                if(rightCenterContour.Count == 3) {
+                    Vector2 innerPoint          = Vector2.Lerp(rightCenterContour.Last(), right.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
+                    Vector2 secondToLastContour = rightCenterContour[rightCenterContour.Count - 2];
+                    Vector2 lastContour         = rightCenterContour.Last();
 
-                Vector2 arcPivot = centerRightContour[1];
+                    CultureMesh.AddTriangle(
+                        new Vector3(innerPoint .x, 0f, innerPoint .y), new Vector3(secondToLastContour.x, 0f, secondToLastContour.y),
+                        new Vector3(lastContour.x, 0f, lastContour.y)
+                    );
 
-                TriangulateContourSweep(arcInnerStart, arcInnerEnd, arcPivot, centerOwner.Template.Color);
-
-                Vector2 bottomRight = Vector2.Lerp(centerRightContour[2], center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
-
-                CultureMesh.AddQuad(
-                    new Vector3(arcInnerEnd.x, 0f, arcInnerEnd.y), new Vector3(bottomRight          .x, 0f, bottomRight          .y),
-                    new Vector3(arcPivot   .x, 0f, arcPivot   .y), new Vector3(centerRightContour[2].x, 0f, centerRightContour[2].y)
-                );
-
-                CultureMesh.AddQuadUV(0f, 0f, 0f, 1f);
-                CultureMesh.AddQuadColor(centerOwner.Template.Color);
+                    CultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 1f));
+                    CultureMesh.AddTriangleColor(centerOwner.Template.Color);
+                }
             }
         }
 
