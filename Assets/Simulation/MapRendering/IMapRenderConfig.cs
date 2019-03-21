@@ -41,7 +41,8 @@ namespace Assets.Simulation.MapRendering {
 
         float BlendFactor { get; }
 
-        IEnumerable<Vector3> Corners { get; }
+        IEnumerable<Vector3> Corners   { get; }
+        IEnumerable<Vector2> CornersXZ { get; }
 
         float ChunkWidth { get; }
         float ChunkHeight { get; }
@@ -50,6 +51,8 @@ namespace Assets.Simulation.MapRendering {
 
         int TerrainAlphamapResolution  { get; }
         int TerrainHeightmapResolution { get; }
+
+        LayerMask MapCollisionMask { get; }
 
         IEnumerable<Texture2D> MapTextures { get; }
 
@@ -85,6 +88,8 @@ namespace Assets.Simulation.MapRendering {
         float[] RiverAlphamap { get; }
 
         float CultureWidthPercent { get; }
+
+        float CultureTriangleSideWidth { get; }
 
         #endregion
 

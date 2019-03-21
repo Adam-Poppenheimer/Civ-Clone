@@ -24,8 +24,8 @@ namespace Assets.Simulation.MapRendering {
         private ICivilizationTerritoryLogic CivTerritoryLogic;
         private ICellEdgeContourCanon       CellEdgeContourCanon;
         private IMapRenderConfig            RenderConfig;
-        private IHexMesh                    CultureMesh;
         private IGeometry2D                 Geometry2D;
+        private ITerrainConformTriangulator TerrainConformTriangulator;
 
         #endregion
 
@@ -35,14 +35,14 @@ namespace Assets.Simulation.MapRendering {
         public CultureTriangulator(
             IHexGrid grid, ICivilizationTerritoryLogic civTerritoryLogic,
             ICellEdgeContourCanon cellEdgeContourCanon, IMapRenderConfig renderConfig,
-            [Inject(Id = "Culture Mesh")] IHexMesh cultureMesh, IGeometry2D geometry2D
+            IGeometry2D geometry2D, ITerrainConformTriangulator terrainConformTriangulator
         ) {
-            Grid                 = grid;
-            CivTerritoryLogic    = civTerritoryLogic;
-            CellEdgeContourCanon = cellEdgeContourCanon;
-            RenderConfig         = renderConfig;
-            CultureMesh          = cultureMesh;
-            Geometry2D           = geometry2D;
+            Grid                       = grid;
+            CivTerritoryLogic          = civTerritoryLogic;
+            CellEdgeContourCanon       = cellEdgeContourCanon;
+            RenderConfig               = renderConfig;
+            Geometry2D                 = geometry2D;
+            TerrainConformTriangulator = terrainConformTriangulator;
         }
 
         #endregion
@@ -51,27 +51,15 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICultureTriangulator
 
-        public void TriangulateCulture() {
-            CultureMesh.Clear();
+        public void TriangulateCultureInDirection(
+            IHexCell center, HexDirection direction, IHexMesh cultureMesh
+        ) {
+            var centerOwner = CivTerritoryLogic.GetCivClaimingCell(center);
 
-            foreach(var cell in Grid.Cells) {
-                var civOwningCell = CivTerritoryLogic.GetCivClaimingCell(cell);
-
-                if(civOwningCell == null) {
-                    continue;
-                }
-
-                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                    TriangulateCultureInDirection(cell, direction, civOwningCell);
-                }
+            if(centerOwner == null) {
+                return;
             }
 
-            CultureMesh.Apply();
-        }
-
-        #endregion
-
-        private void TriangulateCultureInDirection(IHexCell center, HexDirection direction, ICivilization centerOwner) {
             IHexCell left      = Grid.GetNeighbor(center, direction.Previous());
             IHexCell right     = Grid.GetNeighbor(center, direction);
             IHexCell nextRight = Grid.GetNeighbor(center, direction.Next());
@@ -81,7 +69,7 @@ namespace Assets.Simulation.MapRendering {
             }
 
             if(CivTerritoryLogic.GetCivClaimingCell(right) != centerOwner) {
-                TriangulateCultureAlongContour(center, direction, centerOwner.Template.Color);
+                TriangulateCultureAlongContour(center, direction, centerOwner.Template.Color, cultureMesh);
 
             }else {
                 var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction);
@@ -89,20 +77,26 @@ namespace Assets.Simulation.MapRendering {
 
                 if(rightCenterContour.Count <= 3) {
                     TriangulateCultureCorners_FlatEdge(
-                        center, left, right, nextRight, direction, centerOwner, centerRightContour, rightCenterContour
+                        center, left, right, nextRight, direction, centerOwner, centerRightContour, rightCenterContour, cultureMesh
                     );
                 }else {
-                    TriangulateCultureCorners_River(center, left, right, nextRight, direction, centerOwner, centerRightContour);
+                    TriangulateCultureCorners_River(
+                        center, left, right, nextRight, direction, centerOwner, centerRightContour, cultureMesh
+                    );
                 }
             }
         }
 
+        #endregion
+
         private void TriangulateCultureCorners_FlatEdge(
             IHexCell center, IHexCell left, IHexCell right, IHexCell nextRight, HexDirection direction,
             ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour,
-            ReadOnlyCollection<Vector2> rightCenterContour
+            ReadOnlyCollection<Vector2> rightCenterContour, IHexMesh cultureMesh
         ) {
             if(left != null && CivTerritoryLogic.GetCivClaimingCell(left) != centerOwner) {
+                Color cultureColor = centerOwner.Template.Color;
+
                 var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(center, direction.Previous ());
                 var rightLeftContour  = CellEdgeContourCanon.GetContourForCellEdge(right,  direction.Previous2());
 
@@ -136,12 +130,12 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 bezierOne = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, nextT);
                     Vector2 bezierTwo = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, t);
 
-                    CultureMesh.AddTriangle(
-                        pivotXYZ, new Vector3(bezierOne.x, 0f, bezierOne.y), new Vector3(bezierTwo.x, 0f, bezierTwo.y)
+                    TerrainConformTriangulator.AddConformingTriangle(
+                        pivotXYZ,                                  new Vector2(0f, 1f), cultureColor,
+                        new Vector3(bezierOne.x, 0f, bezierOne.y), Vector2.zero,        cultureColor,
+                        new Vector3(bezierTwo.x, 0f, bezierTwo.y), Vector2.zero,        cultureColor,
+                        cultureMesh
                     );
-
-                    CultureMesh.AddTriangleUV(new Vector2(0f, 1f), Vector2.zero, Vector2.zero);
-                    CultureMesh.AddTriangleColor(centerOwner.Template.Color);
                 }
 
                 if(rightCenterContour.Count == 3) {
@@ -149,21 +143,22 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 secondToLastContour = rightCenterContour[rightCenterContour.Count - 2];
                     Vector2 lastContour         = rightCenterContour.Last();
 
-                    CultureMesh.AddTriangle(
-                        new Vector3(innerPoint .x, 0f, innerPoint .y), new Vector3(secondToLastContour.x, 0f, secondToLastContour.y),
-                        new Vector3(lastContour.x, 0f, lastContour.y)
+                    TerrainConformTriangulator.AddConformingTriangle(
+                        new Vector3(innerPoint         .x, 0f, innerPoint         .y), new Vector2(0f, 0f), cultureColor,
+                        new Vector3(secondToLastContour.x, 0f, secondToLastContour.y), new Vector2(0f, 1f), cultureColor,
+                        new Vector3(lastContour        .x, 0f, lastContour        .y), new Vector2(0f, 1f), cultureColor,
+                        cultureMesh
                     );
-
-                    CultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 1f));
-                    CultureMesh.AddTriangleColor(centerOwner.Template.Color);
                 }
             }
         }
 
         private void TriangulateCultureCorners_River(
             IHexCell center, IHexCell left, IHexCell right, IHexCell nextRight, HexDirection direction,
-            ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour
+            ICivilization centerOwner, ReadOnlyCollection<Vector2> centerRightContour, IHexMesh cultureMesh
         ) {
+            Color cultureColor = centerOwner.Template.Color;
+
             if(left != null && CivTerritoryLogic.GetCivClaimingCell(left) != centerOwner) {
                 float ccwTransparency = 1f, cwTransparency;
 
@@ -183,17 +178,13 @@ namespace Assets.Simulation.MapRendering {
                     innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                     innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                    CultureMesh.AddQuad(
-                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW.x, 0f, innerCW.y),
-                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW.x, 0f, outerCW.y)
+                    TerrainConformTriangulator.AddConformingQuad(
+                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f),              cultureColor,
+                        new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
+                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
+                        new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
+                        cultureMesh
                     );
-
-                    CultureMesh.AddQuadUV(
-                        new Vector2(0f, 0f),              new Vector2(0f, 0f),
-                        new Vector2(0f, ccwTransparency), new Vector2(0f, cwTransparency)
-                    );
-
-                    CultureMesh.AddQuadColor(centerOwner.Template.Color);
 
                     ccwTransparency = cwTransparency;
                     i++;
@@ -219,17 +210,13 @@ namespace Assets.Simulation.MapRendering {
                     innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                     innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                    CultureMesh.AddQuad(
-                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW.x, 0f, innerCW.y),
-                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW.x, 0f, outerCW.y)
+                    TerrainConformTriangulator.AddConformingQuad(
+                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f),              cultureColor,
+                        new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
+                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
+                        new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
+                        cultureMesh
                     );
-
-                    CultureMesh.AddQuadUV(
-                        new Vector2(0f, 0f),              new Vector2(0f, 0f),
-                        new Vector2(0f, ccwTransparency), new Vector2(0f, cwTransparency)
-                    );
-
-                    CultureMesh.AddQuadColor(centerOwner.Template.Color);
 
                     cwTransparency = ccwTransparency;
                     i--;
@@ -237,7 +224,9 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
-        private void TriangulateCultureAlongContour(IHexCell center, HexDirection direction, Color color) {
+        private void TriangulateCultureAlongContour(
+            IHexCell center, HexDirection direction, Color color, IHexMesh cultureMesh
+        ) {
             var contour = CellEdgeContourCanon.GetContourForCellEdge(center, direction);
 
             Vector2 innerCCW, innerCW, outerCCW, outerCW;
@@ -249,44 +238,14 @@ namespace Assets.Simulation.MapRendering {
                 innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                 innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                CultureMesh.AddQuad(
-                    new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW.x, 0f, innerCW.y),
-                    new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW.x, 0f, outerCW.y)
+                TerrainConformTriangulator.AddConformingQuad(
+                    new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f), color,
+                    new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f), color,
+                    new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, 1f), color,
+                    new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, 1f), color,
+                    cultureMesh
                 );
-
-                CultureMesh.AddQuadUV(0f, 0f, 0f, 1f);
-                CultureMesh.AddQuadColor(color);
             }
-        }
-
-        private void TriangulateContourSweep(
-            Vector2 arcInnerStart, Vector2 arcInnerEnd, Vector2 arcPivot, Color color
-        ) {
-            Vector3 arcPivotXYZ     = new Vector3(arcPivot.x, 0f, arcPivot.y);
-            Vector3 pivotToStartXYZ = new Vector3(arcInnerStart.x - arcPivot.x, 0f, arcInnerStart.y - arcPivot.y);
-            Vector3 pivotToEndXYZ   = new Vector3(arcInnerEnd  .x - arcPivot.x, 0f, arcInnerEnd  .y - arcPivot.y);
-
-            float pivotDelta = 5f / RenderConfig.RiverQuadsPerCurve;
-
-            Vector3 arcTwo = arcPivotXYZ + Vector3.Slerp(pivotToStartXYZ, pivotToEndXYZ, pivotDelta);
-
-            CultureMesh.AddTriangle(arcPivotXYZ + pivotToStartXYZ, arcPivotXYZ, arcTwo);
-            CultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0f));
-            CultureMesh.AddTriangleColor(color);
-                    
-            for(float t = pivotDelta; t < 1f; t += pivotDelta) {
-                Vector3 arcOne = arcTwo;
-
-                arcTwo = arcPivotXYZ + Vector3.Slerp(pivotToStartXYZ, pivotToEndXYZ, t);
-
-                CultureMesh.AddTriangle(arcOne, arcPivotXYZ, arcTwo);
-                CultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0f));
-                CultureMesh.AddTriangleColor(color);
-            }
-
-            CultureMesh.AddTriangle(arcTwo, arcPivotXYZ, arcPivotXYZ + pivotToEndXYZ);
-            CultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 0f));
-            CultureMesh.AddTriangleColor(color);
         }
 
         #endregion

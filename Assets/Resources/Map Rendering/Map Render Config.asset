@@ -31,6 +31,9 @@ MonoBehaviour:
   _terrainMaxY: 20
   _terrainAlphamapResolution: 65
   _terrainHeightmapResolution: 129
+  _mapCollisionMask:
+    serializedVersion: 2
+    m_Bits: 272
   _mapTextures:
   - {fileID: 2800000, guid: 2522d1327e582f24e89346841cbd8cc0, type: 3}
   - {fileID: 2800000, guid: 731f3b4d8451d2c49bcbee07aabe9ac1, type: 3}
@@ -47,7 +50,7 @@ MonoBehaviour:
   _hillsBaseElevation: 0.1
   _mountainPeakElevation: 0.6
   _mountainRidgeElevation: 0.45
-  _riverTroughElevation: 0.065
+  _riverTroughElevation: 0.075
   _shallowWaterColor: {r: 0.40511462, g: 0.82443535, b: 0.9338235, a: 1}
   _deepWaterColor: {r: 0, g: 0.29847857, b: 0.8014706, a: 1}
   _freshWaterColor: {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
@@ -68,3 +71,4 @@ MonoBehaviour:
   - 0
   - 1
   _cultureWidthPercent: 0.25
+  _cultureTriangleSideWidth: 0.25

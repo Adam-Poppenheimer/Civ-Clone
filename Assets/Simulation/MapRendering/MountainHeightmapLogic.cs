@@ -18,13 +18,11 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig         RenderConfig;
-        private INoiseGenerator          NoiseGenerator;
-        private IHexGrid                 Grid;
         private IHillsHeightmapLogic     HillsHeightmapLogic;
         private IRiverCanon              RiverCanon;
         private ICellEdgeContourCanon    CellEdgeContourCanon;
-        private IGeometry2D              Geometry2D;
         private IFlatlandsHeightmapLogic FlatlandsHeightmapLogic;
+        private IHexGrid                 Grid;
 
         #endregion
 
@@ -32,19 +30,16 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public MountainHeightmapLogic(
-            IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
-            IHexGrid grid, IHillsHeightmapLogic hillsHeightmapLogic,
+            IMapRenderConfig renderConfig, IHillsHeightmapLogic hillsHeightmapLogic,
             IRiverCanon riverCanon, ICellEdgeContourCanon cellEdgeContourCanon,
-            IGeometry2D geometry2D, IFlatlandsHeightmapLogic flatlandsHeightmapLogic
+            IFlatlandsHeightmapLogic flatlandsHeightmapLogic, IHexGrid grid
         ) {
             RenderConfig            = renderConfig;
-            NoiseGenerator          = noiseGenerator;
-            Grid                    = grid;
             HillsHeightmapLogic     = hillsHeightmapLogic;
             RiverCanon              = riverCanon;
             CellEdgeContourCanon    = cellEdgeContourCanon;
-            Geometry2D              = geometry2D;
             FlatlandsHeightmapLogic = flatlandsHeightmapLogic;
+            Grid                    = grid;
         }
 
         #endregion

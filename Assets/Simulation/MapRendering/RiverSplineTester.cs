@@ -18,7 +18,6 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IRiverSplineBuilder   RiverSplineBuilder;
-        private IRiverAssemblyCanon   RiverAssemblyCanon;
         private ICellEdgeContourCanon CellEdgeContourCanon;
         private IHexGrid              Grid;
         private IMapRenderConfig      RenderConfig;
@@ -29,12 +28,10 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         private void InjectDependencies(
-            IRiverSplineBuilder riverSplineBuilder, IRiverAssemblyCanon riverAssemblyCanon,
-            ICellEdgeContourCanon cellEdgeContourCanon, IHexGrid grid,
-            IMapRenderConfig renderConfig
+            IRiverSplineBuilder riverSplineBuilder, ICellEdgeContourCanon cellEdgeContourCanon,
+            IHexGrid grid, IMapRenderConfig renderConfig
         ) {
             RiverSplineBuilder   = riverSplineBuilder;
-            RiverAssemblyCanon   = riverAssemblyCanon;
             CellEdgeContourCanon = cellEdgeContourCanon;
             Grid                 = grid;
             RenderConfig         = renderConfig;

@@ -15,6 +15,7 @@ namespace Assets.Util {
 
         public override void InstallBindings() {
             Container.Bind<IGeometry2D>().To<Geometry2D>().AsSingle();
+            Container.Bind<IMeshWelder>().To<MeshWelder>().AsSingle();
         }
 
         #endregion

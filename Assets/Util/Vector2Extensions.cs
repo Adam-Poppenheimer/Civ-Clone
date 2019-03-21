@@ -17,6 +17,10 @@ namespace Assets.Util {
             return Vector2.Dot(source, ontoNormalized) * ontoNormalized;
         }
 
+        public static Vector3 ToXYZ(this Vector2 self) {
+            return new Vector3(self.x, 0f, self.y);
+        }
+
         #endregion
 
     }

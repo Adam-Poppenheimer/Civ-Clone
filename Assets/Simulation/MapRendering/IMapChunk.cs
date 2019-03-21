@@ -29,6 +29,10 @@ namespace Assets.Simulation.MapRendering {
 
         bool DoesCellOverlapChunk(IHexCell cell);
 
+        bool IsInTerrainBounds2D(Vector2 positionXZ);
+
+        Vector3 GetNearestPointOnTerrain(Vector3 fromLocation);
+
         #endregion
 
     }

@@ -27,6 +27,10 @@ namespace Assets.Util {
             return Vector3.Lerp(a, b, lerpParam);
         }
 
+        public static Vector2 ToXZ(this Vector3 self) {
+            return new Vector2(self.x, self.z);
+        }
+
         #endregion
 
     }

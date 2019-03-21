@@ -19,7 +19,7 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public TerrainCollider Collider { get; private set; }
+        private Collider[] Colliders;
 
         private IHexCell LastCellEntered;
 
@@ -53,7 +53,7 @@ namespace Assets.Simulation.HexMap {
         #region Unity messages
 
         private void Start() {
-            Collider = GetComponentInChildren<TerrainCollider>();
+            Colliders = GetComponentsInChildren<Collider>();
         }
 
         private void Update() {
@@ -69,7 +69,7 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
-                if(hit.collider == Collider) {
+                if(DidRaycastHitChunk(hit)) {
                     if(Grid.HasCellAtLocation(hit.point)) {
                         var clickedCell = Grid.GetCellAtLocation(hit.point);
 
@@ -84,7 +84,7 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
-                if(hit.collider == Collider) {
+                if(DidRaycastHitChunk(hit)) {
                     if(Grid.HasCellAtLocation(hit.point)) {
                         var unclickedCell = Grid.GetCellAtLocation(hit.point);
 
@@ -99,7 +99,7 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
-                if(hit.collider == Collider) {
+                if(DidRaycastHitChunk(hit)) {
                     if(!Grid.HasCellAtLocation(hit.point)) {
                         return;
                     }
@@ -170,12 +170,16 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
+        private bool DidRaycastHitChunk(RaycastHit hit) {
+            return Colliders.Any(collider => collider == hit.collider);
+        }
+
         private IHexCell GetCellUnderPosition(Vector3 position) {
             var pointerRay = Camera.main.ScreenPointToRay(position);
 
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
-                if(hit.collider == Collider) {
+                if(DidRaycastHitChunk(hit)) {
                     return Grid.HasCellAtLocation(hit.point) ? Grid.GetCellAtLocation(hit.point) : null;
                 }
             }

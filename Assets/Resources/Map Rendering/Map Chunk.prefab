@@ -26,7 +26,7 @@ GameObject:
   - component: {fileID: 114433078087191666}
   - component: {fileID: 23701036829649142}
   - component: {fileID: 33719518881381512}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Water
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -56,7 +56,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 4454703779863292}
-  m_Layer: 0
+  m_Layer: 4
   m_Name: Specular
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -187,7 +187,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0f93c65a1995a034ca4713b495d8f0ac, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  UseCollider: 0
+  UseCollider: 1
   UseUVCoordinates: 0
   UseUV2Coordinates: 0
   UseUV3Coordinates: 0
@@ -217,6 +217,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   StandingWater: {fileID: 114038655654024650}
+  CultureMeshPrefab: {fileID: 114390260314645896, guid: 7b65aaf93078dd6488446b104bb7532a,
+    type: 2}
 --- !u!114 &114118042193127682
 MonoBehaviour:
   m_ObjectHideFlags: 1

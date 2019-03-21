@@ -6,10 +6,16 @@
 		_Specular ("Specular", Color) = (0.2, 0.2, 0.2)
 	}
 	SubShader {
-		Tags { "RenderType"="Transparent" "Queue"="AlphaTest" }
-		Offset -5, -2000
+		Tags { "RenderType"="Transparent" "Queue"="Transparent+1" }
+		Offset -5, -5
 		LOD 200
 		
+		Stencil {
+			Ref 0
+			Comp Always
+			Pass Keep
+		}
+
 		CGPROGRAM
 		#pragma surface surf StandardSpecular alpha:fade vertex:vert
 
@@ -36,7 +42,7 @@
 			float4 cell1 = GetCellData(v, 1);
 			float4 cell2 = GetCellData(v, 2);
 
-			data.visibility.x = cell0.x;
+			/*data.visibility.x = cell0.x;
 			data.visibility.x = max(data.visibility.x, cell1.x);
 			data.visibility.x = max(data.visibility.x, cell2.x);
 
@@ -44,7 +50,9 @@
 
 			data.visibility.y = cell0.y;
 			data.visibility.y = max(data.visibility.y, cell1.y);
-			data.visibility.y = max(data.visibility.y, cell2.y);
+			data.visibility.y = max(data.visibility.y, cell2.y);*/
+
+			data.visibility = float2(1, 1);
 		}
 
 		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {

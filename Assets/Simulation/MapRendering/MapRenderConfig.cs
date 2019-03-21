@@ -122,6 +122,11 @@ namespace Assets.Simulation.MapRendering {
         }
         private Vector3[] corners;
 
+        public IEnumerable<Vector2> CornersXZ {
+            get { return cornersXZ; }
+        }
+        private Vector2[] cornersXZ;
+
         
 
         public float ChunkWidth {
@@ -148,6 +153,11 @@ namespace Assets.Simulation.MapRendering {
             get { return _terrainHeightmapResolution; }
         }
         [SerializeField] private int _terrainHeightmapResolution;
+
+        public LayerMask MapCollisionMask {
+            get { return _mapCollisionMask; }
+        }
+        [SerializeField] private LayerMask _mapCollisionMask;
 
 
         public IEnumerable<Texture2D> MapTextures {
@@ -273,9 +283,12 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _cultureWidthPercent;
 
-        #endregion
+        public float CultureTriangleSideWidth {
+            get { return _cultureTriangleSideWidth; }
+        }
+        [SerializeField, Range(0.05f, 5f)] private float _cultureTriangleSideWidth;
 
-        private Vector2[] CornersXZ;
+        #endregion
 
         #endregion
 
@@ -306,7 +319,7 @@ namespace Assets.Simulation.MapRendering {
                 new Vector3(0f,           0f,  OuterRadius)
             };
 
-            CornersXZ = new Vector2[] {
+            cornersXZ = new Vector2[] {
                 new Vector2(0f,            OuterRadius),
                 new Vector2(InnerRadius,   0.5f * OuterRadius),
                 new Vector2(InnerRadius,  -0.5f * OuterRadius),
@@ -348,27 +361,27 @@ namespace Assets.Simulation.MapRendering {
 
 
         public Vector2 GetFirstCornerXZ(HexDirection direction) {
-            return CornersXZ[(int)direction];
+            return cornersXZ[(int)direction];
         }
 
         public Vector2 GetSecondCornerXZ(HexDirection direction) {
-            return CornersXZ[(int)direction + 1];
+            return cornersXZ[(int)direction + 1];
         }
 
         public Vector2 GetFirstSolidCornerXZ (HexDirection direction) {
-            return CornersXZ[(int)direction] * OuterSolidFactor;
+            return cornersXZ[(int)direction] * OuterSolidFactor;
         }
 
         public Vector2 GetSecondSolidCornerXZ(HexDirection direction) {
-            return CornersXZ[(int)direction + 1] * OuterSolidFactor;
+            return cornersXZ[(int)direction + 1] * OuterSolidFactor;
         }
 
         public Vector2 GetEdgeMidpointXZ(HexDirection direction) {
-            return (CornersXZ[(int)direction] + CornersXZ[(int)direction + 1]) * 0.5f;
+            return (cornersXZ[(int)direction] + cornersXZ[(int)direction + 1]) * 0.5f;
         }
 
         public Vector2 GetSolidEdgeMidpointXZ(HexDirection direction) {
-            return (CornersXZ[(int)direction] * OuterSolidFactor + CornersXZ[(int)direction + 1] * OuterSolidFactor) * 0.5f;
+            return (cornersXZ[(int)direction] * OuterSolidFactor + cornersXZ[(int)direction + 1] * OuterSolidFactor) * 0.5f;
         }
 
         #endregion

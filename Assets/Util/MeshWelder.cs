@@ -85,11 +85,9 @@ namespace Assets.Util {
 
     }
 
-    public class MeshWelder {
+    public class MeshWelder : IMeshWelder {
 
         #region  instance fields and properties
-
-        public Mesh Mesh;
 
         private int[] OriginalTriangles;
 
@@ -103,20 +101,20 @@ namespace Assets.Util {
 
         #region instance methods
 
-        public void Weld() {
-            OriginalTriangles = Mesh.triangles;
+        public void Weld(Mesh mesh) {
+            OriginalTriangles = mesh.triangles;
 
-            CreateVertexList();
+            CreateVertexList     (mesh);
             RemoveDuplicates();
-            AssignNewVertexArrays();
-            RemapTriangles();
+            AssignNewVertexArrays(mesh);
+            RemapTriangles       (mesh);
         }
 
         private bool HasAttribute(EVertexAttribute attribute) {
             return (Attributes & attribute) != 0;
         }
 
-        private void CreateVertexList() {
+        private void CreateVertexList(Mesh mesh) {
             List<Vector3> positions = new List<Vector3>();
             List<Vector3> normals   = new List<Vector3>();
             List<Vector4> uvs       = new List<Vector4>();
@@ -125,13 +123,13 @@ namespace Assets.Util {
             List<Vector4> uv4s      = new List<Vector4>();
             List<Color> colors      = new List<Color>();
 
-            Mesh.GetVertices(positions);
-            Mesh.GetNormals (normals);
-            Mesh.GetUVs     (0, uvs);
-            Mesh.GetUVs     (1, uv2s);
-            Mesh.GetUVs     (2, uv3s);
-            Mesh.GetUVs     (3, uv4s);
-            Mesh.GetColors  (colors);
+            mesh.GetVertices(positions);
+            mesh.GetNormals (normals);
+            mesh.GetUVs     (0, uvs);
+            mesh.GetUVs     (1, uv2s);
+            mesh.GetUVs     (2, uv3s);
+            mesh.GetUVs     (3, uv4s);
+            mesh.GetColors  (colors);
 
             Attributes = EVertexAttribute.Position;
 
@@ -172,7 +170,7 @@ namespace Assets.Util {
             }
         }
 
-        private void AssignNewVertexArrays() {
+        private void AssignNewVertexArrays(Mesh mesh) {
             Map = new int[Vertices.Length];
 
             Vector3[] newVertices = new Vector3[NewVertices.Count];
@@ -201,26 +199,26 @@ namespace Assets.Util {
                 i++;
             }
 
-            Mesh.Clear();
+            mesh.Clear();
 
-            Mesh.vertices = newVertices;
+            mesh.vertices = newVertices;
             
-            if(HasAttribute(EVertexAttribute.Normal)) { Mesh.SetNormals(newNormals.ToList()); }
-            if(HasAttribute(EVertexAttribute.UV   ))  { Mesh.SetUVs    (0, newUVs .ToList()); }
-            if(HasAttribute(EVertexAttribute.UV2   )) { Mesh.SetUVs    (1, newUV2s.ToList()); }
-            if(HasAttribute(EVertexAttribute.UV3   )) { Mesh.SetUVs    (2, newUV3s.ToList()); }
-            if(HasAttribute(EVertexAttribute.UV4   )) { Mesh.SetUVs    (3, newUV4s.ToList()); }
-            if(HasAttribute(EVertexAttribute.Color )) { Mesh.SetColors (newColors .ToList()); }
+            if(HasAttribute(EVertexAttribute.Normal)) { mesh.SetNormals(newNormals.ToList()); }
+            if(HasAttribute(EVertexAttribute.UV   ))  { mesh.SetUVs    (0, newUVs .ToList()); }
+            if(HasAttribute(EVertexAttribute.UV2   )) { mesh.SetUVs    (1, newUV2s.ToList()); }
+            if(HasAttribute(EVertexAttribute.UV3   )) { mesh.SetUVs    (2, newUV3s.ToList()); }
+            if(HasAttribute(EVertexAttribute.UV4   )) { mesh.SetUVs    (3, newUV4s.ToList()); }
+            if(HasAttribute(EVertexAttribute.Color )) { mesh.SetColors (newColors .ToList()); }
         }
 
-        private void RemapTriangles() {
+        private void RemapTriangles(Mesh mesh) {
             int[] triangles = OriginalTriangles;
 
             for(int i = 0; i < triangles.Length; i++) {
                 triangles[i] = Map[triangles[i]];
             }
 
-            Mesh.triangles = triangles;
+            mesh.triangles = triangles;
         }
 
         #endregion

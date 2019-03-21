@@ -38,6 +38,11 @@ namespace Assets.Simulation.HexMap {
         public int CellCountX { get; private set; }
         public int CellCountZ { get; private set; }
 
+        public IEnumerable<IMapChunk> Chunks {
+            get { return chunks.Cast<IMapChunk>(); }
+        }
+        private List<MapChunk> chunks = new List<MapChunk>();
+
         #endregion
 
         [SerializeField] private HexCell CellPrefab;
@@ -46,7 +51,7 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private LayerMask TerrainCollisionMask;        
 
-        private List<MapChunk> Chunks = new List<MapChunk>();
+        
 
         private HexCellShaderData CellShaderData;
 
@@ -119,11 +124,11 @@ namespace Assets.Simulation.HexMap {
 
             cells.Clear();
 
-            for(int i = Chunks.Count - 1; i >= 0; i--) {
-                Destroy(Chunks[i].gameObject);
+            for(int i = chunks.Count - 1; i >= 0; i--) {
+                Destroy(chunks[i].gameObject);
             }
 
-            Chunks.Clear();
+            chunks.Clear();
         }
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
@@ -340,11 +345,13 @@ namespace Assets.Simulation.HexMap {
         private void CreateChunk(float chunkX, float chunkZ, float width, float height) {
             var newChunk = Container.InstantiatePrefabForComponent<MapChunk>(MapChunkPrefab);
 
+            newChunk.transform.SetParent(transform, false);
+
             newChunk.InitializeTerrain(
                 new Vector3(chunkX, 0f, chunkZ), width, height
             );
 
-            Chunks.Add(newChunk);
+            chunks.Add(newChunk);
         }
 
         private void AttachChunksToCells() {
@@ -353,7 +360,7 @@ namespace Assets.Simulation.HexMap {
 
                 cell.AttachToChunks(overlappingChunks);
 
-                var chunkOverMiddle = overlappingChunks.First(chunk => chunk.IsOnTerrain2D(cell.AbsolutePosition));
+                var chunkOverMiddle = overlappingChunks.First(chunk => chunk.IsInTerrainBounds2D(cell.AbsolutePositionXZ));
 
                 chunkOverMiddle.AttachCell(cell);
             }

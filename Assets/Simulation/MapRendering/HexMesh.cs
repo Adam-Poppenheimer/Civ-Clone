@@ -40,14 +40,14 @@ namespace Assets.Simulation.MapRendering {
 
 
         
-        private MeshWelder MeshWelder;
+        private IMeshWelder MeshWelder;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(MeshWelder meshWelder) {
+        public void InjectDependencies(IMeshWelder meshWelder) {
             MeshWelder = meshWelder;
         }
 
@@ -127,8 +127,7 @@ namespace Assets.Simulation.MapRendering {
             }
 
             if(WeldMesh) {
-                MeshWelder.Mesh = ManagedMesh;
-                MeshWelder.Weld();
+                MeshWelder.Weld(ManagedMesh);
             }
 
             ManagedMesh.RecalculateNormals();

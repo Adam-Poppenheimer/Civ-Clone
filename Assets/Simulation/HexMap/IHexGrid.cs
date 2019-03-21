@@ -6,6 +6,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Simulation.MapRendering;
+
 namespace Assets.Simulation.HexMap {
 
     public interface IHexGrid {
@@ -16,6 +18,8 @@ namespace Assets.Simulation.HexMap {
 
         int CellCountX { get; }
         int CellCountZ { get; }
+
+        IEnumerable<IMapChunk> Chunks { get; }
 
         #endregion
 
