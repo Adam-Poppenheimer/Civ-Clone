@@ -45,7 +45,6 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig   RenderConfig;
         private IMapCollisionLogic MapCollisionLogic;
 
         #endregion
@@ -53,8 +52,7 @@ namespace Assets.Simulation.MapRendering {
         #region constructors
 
         [Inject]
-        public TerrainConformTriangulator(IMapRenderConfig renderConfig, IMapCollisionLogic mapCollisionLogic) {
-            RenderConfig      = renderConfig;
+        public TerrainConformTriangulator(IMapCollisionLogic mapCollisionLogic) {
             MapCollisionLogic = mapCollisionLogic;
         }
 
@@ -69,20 +67,20 @@ namespace Assets.Simulation.MapRendering {
             Vector3 bottomRightVertex, Vector2 bottomRightUV, Color bottomRightColor,
             Vector3 topLeftVertex,     Vector2 topLeftUV,     Color topLeftColor,
             Vector3 topRightVertex,    Vector2 topRightUV,    Color topRightColor,
-            IHexMesh mesh
+            float maxSideLength, IHexMesh mesh
         ) {
             AddConformingTriangle(
                 bottomLeftVertex,  bottomLeftUV,  bottomLeftColor,
                 topLeftVertex,     topLeftUV,     topLeftColor,
                 bottomRightVertex, bottomRightUV, bottomRightColor,
-                mesh
+                maxSideLength, mesh
             );
 
             AddConformingTriangle(
                 bottomRightVertex, bottomRightUV, bottomRightColor,
                 topLeftVertex,     topLeftUV,     topLeftColor,
                 topRightVertex,    topRightUV,    topRightColor,
-                mesh
+                maxSideLength, mesh
             );
         }
 
@@ -90,27 +88,28 @@ namespace Assets.Simulation.MapRendering {
             Vector3 vertex1, Vector2 uv1, Color color1,
             Vector3 vertex2, Vector2 uv2, Color color2,
             Vector3 vertex3, Vector2 uv3, Color color3,
-            IHexMesh mesh
+            float maxSideLength, IHexMesh mesh
         ) {
+            if(maxSideLength <= 0.01f) {
+                throw new ArgumentOutOfRangeException("maxSideLength", "MaxSideLength too small. Value should be greater than 0.01f");
+
+            }else if(mesh == null) {
+                throw new ArgumentNullException("mesh");
+            }
+
             Queue<TriangleData> triangles = new Queue<TriangleData>();
 
             var startingTriangle = new TriangleData(
                 new VertexData(vertex1, uv1, color1), new VertexData(vertex2, uv2, color2), new VertexData(vertex3, uv3, color3)
             );
 
-            startingTriangle.A.Point = MapCollisionLogic.GetNearestMapPointToPoint(startingTriangle.A.Point);
-            startingTriangle.B.Point = MapCollisionLogic.GetNearestMapPointToPoint(startingTriangle.B.Point);
-            startingTriangle.C.Point = MapCollisionLogic.GetNearestMapPointToPoint(startingTriangle.C.Point);
-
             triangles.Enqueue(startingTriangle);
 
-            float maxSideLengthSqr = RenderConfig.CultureTriangleSideWidth * RenderConfig.CultureTriangleSideWidth;
-
-            int iterations = 10000;
+            float maxSideLengthSqr = maxSideLength * maxSideLength;
 
             float abLengthSqr, acLengthSqr, bcLengthSqr, maxLength;
 
-            while(triangles.Count > 0 && --iterations > 0) {
+            while(triangles.Count > 0) {
                 var nextTriangle = triangles.Dequeue();
 
                 //If the triangles are too big, we subdivide our current triangle into smaller ones,

@@ -184,7 +184,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void BuildNonRiverContour_HasNoCenterNextRightRiver_ButHasNextRightRightRiver_EndsWithPointsFromBothContours() {
+        public void BuildNonRiverContour_HasOnlyNextRightRightRiver_WithCCWFlow_EndsWithPointsFromBothContours() {
             var center    = BuildCell(new Vector2(1f, 1f));
             var right     = BuildCell(new Vector2(3f, 3f));
             var nextRight = BuildCell(new Vector2(4f, 4f));
@@ -192,7 +192,8 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
             MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
 
-            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(nextRight, HexDirection.NE)).Returns(true);
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge   (nextRight, HexDirection.NE)).Returns(true);
+            MockRiverCanon.Setup(canon => canon.GetFlowOfRiverAtEdge(nextRight, HexDirection.NE)).Returns(RiverFlow.Counterclockwise);
 
             var rightNextRightContour = new List<Vector2>() { new Vector2(11f, 11f), new Vector2(22f, 22f), new Vector2(33f, 33f) }.AsReadOnly();
             var nextRightRightContour = new List<Vector2>() { new Vector2(44f, 44f), new Vector2(55f, 55f), new Vector2(66f, 66f) }.AsReadOnly();
@@ -217,7 +218,40 @@ namespace Assets.Tests.Simulation.MapRendering {
                 canon => canon.SetContourForCellEdge(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<List<Vector2>>()),
                 Times.Once, "SetContourForCellEdge called an unexpected number of times"
             );
+        }
 
+        [Test]
+        public void BuildNonRiverContour_HasOnlyNextRightRightRiver_WithCWFlow_EndsWithPointFromCenterNextRightContour() {
+            var center    = BuildCell(new Vector2(1f, 1f));
+            var right     = BuildCell(new Vector2(3f, 3f));
+            var nextRight = BuildCell(new Vector2(4f, 4f));
+
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
+
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge   (nextRight, HexDirection.NE)).Returns(true);
+            MockRiverCanon.Setup(canon => canon.GetFlowOfRiverAtEdge(nextRight, HexDirection.NE)).Returns(RiverFlow.Clockwise);
+
+            var centerNextRightContour = new List<Vector2>() { new Vector2(11f, 11f), new Vector2(22f, 22f), new Vector2(33f, 33f) }.AsReadOnly();
+
+            MockCellEdgeContourCanon.Setup(canon => canon.GetContourForCellEdge(center, HexDirection.SE)).Returns(centerNextRightContour);
+
+            MockCellEdgeContourCanon.Setup(
+                canon => canon.SetContourForCellEdge(center, HexDirection.E, It.IsAny<List<Vector2>>())
+            ).Callback<IHexCell, HexDirection, List<Vector2>>(
+                (cell, direction, contour) => {
+                    Assert.AreEqual(centerNextRightContour.First(), contour.Last(), "Unexpected last contour point");
+                }
+            );
+
+            var contourBuilder = Container.Resolve<NonRiverContourBuilder>();
+
+            contourBuilder.BuildNonRiverContour(center, HexDirection.E);
+
+            MockCellEdgeContourCanon.Verify(
+                canon => canon.SetContourForCellEdge(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<List<Vector2>>()),
+                Times.Once, "SetContourForCellEdge called an unexpected number of times"
+            );
         }
 
         [Test]
@@ -242,11 +276,6 @@ namespace Assets.Tests.Simulation.MapRendering {
                 canon => canon.SetContourForCellEdge(It.IsAny<IHexCell>(), It.IsAny<HexDirection>(), It.IsAny<List<Vector2>>()),
                 Times.Once, "SetContourForCellEdge called an unexpected number of times"
             );
-        }
-
-        [Test]
-        public void MissingHasNextRightRightRiverSpecialCase() {
-            throw new NotImplementedException();
         }
 
         #endregion
