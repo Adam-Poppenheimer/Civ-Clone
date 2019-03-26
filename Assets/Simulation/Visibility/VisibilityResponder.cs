@@ -97,7 +97,7 @@ namespace Assets.Simulation.Visibility {
             visibilitySignals.CellVisibilityModeChangedSignal .Subscribe(unit => TryResetCellVisibility());
             visibilitySignals.CellExplorationModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
 
-            coreSignals.ActivePlayerChangedSignal.Subscribe(OnActivePlayerChanged);
+            coreSignals.ActivePlayerChanged.Subscribe(OnActivePlayerChanged);
         }
 
         #endregion

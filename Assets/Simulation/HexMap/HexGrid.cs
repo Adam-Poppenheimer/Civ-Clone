@@ -49,11 +49,7 @@ namespace Assets.Simulation.HexMap {
 
         [SerializeField] private MapChunk MapChunkPrefab;
 
-        [SerializeField] private LayerMask TerrainCollisionMask;        
-
-        
-
-        private HexCellShaderData CellShaderData;
+        [SerializeField] private LayerMask TerrainCollisionMask;
 
 
 
@@ -63,6 +59,7 @@ namespace Assets.Simulation.HexMap {
         private IMapRenderConfig       RenderConfig;
         private HexCellSignals         CellSignals;
         private IGeometry2D            Geometry2D;
+        private IHexCellShaderData     ShaderData;
 
         #endregion
 
@@ -71,7 +68,7 @@ namespace Assets.Simulation.HexMap {
         [Inject]
         public void InjectDependencies(
             DiContainer container, IWorkerSlotFactory workerSlotFactory, ICellModificationLogic cellModificationLogic,
-            IMapRenderConfig renderConfig, HexCellSignals cellSignals, IGeometry2D geometry2D
+            IMapRenderConfig renderConfig, HexCellSignals cellSignals, IGeometry2D geometry2D, IHexCellShaderData shaderData
         ) {
             Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
@@ -79,6 +76,7 @@ namespace Assets.Simulation.HexMap {
             RenderConfig          = renderConfig;
             CellSignals           = cellSignals;
             Geometry2D            = geometry2D;
+            ShaderData            = shaderData;
         }
 
         #region Unity message methods
@@ -88,19 +86,12 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
-            Profiler.BeginSample("Clear Grid");
             Clear();
-            Profiler.EndSample();
 
             CellCountX = cellCountX;
             CellCountZ = cellCountZ;
 
-            Profiler.BeginSample("Set up HexCellShaderData");
-            CellShaderData = Container.InstantiateComponent<HexCellShaderData>(gameObject);
-            CellShaderData.Initialize(CellCountX, CellCountZ);
-
-            CellShaderData.enabled = true;
-            Profiler.EndSample();
+            ShaderData.Initialize(CellCountX, CellCountZ);
 
             CreateCells();
             CreateChunks();

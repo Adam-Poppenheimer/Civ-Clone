@@ -14,26 +14,32 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
-        public ISubject<int> RoundBeganSignal { get; private set; }
-        public ISubject<int> RoundEndedSignal { get; private set; }
+        public ISubject<int> StartingRound { get; private set; }
+        public ISubject<int> EndingRound   { get; private set; }
 
-        public ISubject<IPlayer> TurnBeganSignal { get; private set; }
-        public ISubject<IPlayer> TurnEndedSignal { get; private set; }
+        public ISubject<int> RoundBegan { get; private set; }
+        public ISubject<int> RoundEnded { get; private set; }
 
-        public ISubject<IPlayer> ActivePlayerChangedSignal { get; private set; }
+        public ISubject<IPlayer> TurnBegan { get; private set; }
+        public ISubject<IPlayer> TurnEnded { get; private set; }
+
+        public ISubject<IPlayer> ActivePlayerChanged { get; private set; }
 
         #endregion
 
         #region constructors
 
         public CoreSignals() {
-            RoundBeganSignal = new Subject<int>();
-            RoundEndedSignal = new Subject<int>();
+            StartingRound = new Subject<int>();
+            EndingRound   = new Subject<int>();
 
-            TurnBeganSignal = new Subject<IPlayer>();
-            TurnEndedSignal = new Subject<IPlayer>();
+            RoundBegan = new Subject<int>();
+            RoundEnded = new Subject<int>();
 
-            ActivePlayerChangedSignal = new Subject<IPlayer>();
+            TurnBegan = new Subject<IPlayer>();
+            TurnEnded = new Subject<IPlayer>();
+
+            ActivePlayerChanged = new Subject<IPlayer>();
         }
 
         #endregion

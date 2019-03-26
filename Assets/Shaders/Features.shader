@@ -1,4 +1,4 @@
-﻿Shader "Custom/Features" {
+﻿Shader "Civ Clone/Features" {
 	Properties {
 		_Color ("Color", Color) = (1,1,1,1)
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}

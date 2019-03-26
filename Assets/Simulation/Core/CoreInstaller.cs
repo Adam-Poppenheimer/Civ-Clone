@@ -34,14 +34,21 @@ namespace Assets.Simulation.Core {
             Container.Bind<IWeightedRandomSampler<IResourceDefinition>>().To<WeightedRandomSampler<IResourceDefinition>>().AsSingle();
             Container.Bind<IWeightedRandomSampler<MapSection>>         ().To<WeightedRandomSampler<MapSection>>         ().AsSingle();
 
+            //This represents the execution order of the various round executers, which is considered important
+            Container.Bind<IRoundExecuter>().To<UnitRoundExecuter>        ().AsSingle();
+            Container.Bind<IRoundExecuter>().To<CityRoundExecuter>        ().AsSingle();
+            Container.Bind<IRoundExecuter>().To<CivilizationRoundExecuter>().AsSingle();
+
             Container.Bind<ICoreConfig>().To<CoreConfig>().FromResource("Core");
 
-            Container.Bind<IRoundExecuter>().To<RoundExecuter>().AsSingle();
-            Container.Bind<IRandomizer>   ().To<Randomizer>   ().AsSingle();
+            Container.Bind<CoreSignals>            ().AsSingle();
+            Container.Bind<RoundExecutionSequencer>().AsSingle().NonLazy();
 
-            Container.Bind<CoreSignals>().AsSingle();
+            Container.Bind<IRandomizer>().To<Randomizer>().AsSingle();
+            Container.Bind<IGameCore>  ().To<GameCore>  ().AsSingle().NonLazy();
+            
 
-            Container.Bind<IGameCore>().To<GameCore>().AsSingle().NonLazy();
+            
         }
 
         #endregion

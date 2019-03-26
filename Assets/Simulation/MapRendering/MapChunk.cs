@@ -41,6 +41,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshWaterCoroutine;
         private Coroutine RefreshFeaturesCoroutine;
         private Coroutine RefreshCultureCoroutine;
+        private Coroutine RefreshVisibilityCoroutine;
 
         private Dictionary<IHexCell, HexMesh[]> CultureMeshesForCell = new Dictionary<IHexCell, HexMesh[]>();
 
@@ -57,6 +58,7 @@ namespace Assets.Simulation.MapRendering {
         private IHexFeatureManager    HexFeatureManager;
         private IRiverTriangulator    RiverTriangulator;
         private ICultureTriangulator  CultureTriangulator;
+        private IHexCellShaderData    ShaderData;
         private DiContainer           Container;
 
         #endregion
@@ -68,7 +70,8 @@ namespace Assets.Simulation.MapRendering {
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
-            ICultureTriangulator cultureTriangulator, DiContainer container
+            ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
+            DiContainer container
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -77,6 +80,7 @@ namespace Assets.Simulation.MapRendering {
             HexFeatureManager   = hexFeatureManager;
             RiverTriangulator   = riverTriangulator;
             CultureTriangulator = cultureTriangulator;
+            ShaderData          = shaderData;
             Container           = container;
         }
 
@@ -101,7 +105,9 @@ namespace Assets.Simulation.MapRendering {
 
             transform.position = position;
 
-            Terrain.castShadows = false;
+            Terrain.castShadows      = false;
+            Terrain.materialType     = Terrain.MaterialType.Custom;
+            Terrain.materialTemplate = RenderConfig.TerrainMaterial;
 
             Terrain.Flush();
         }
@@ -133,6 +139,12 @@ namespace Assets.Simulation.MapRendering {
         public void RefreshFeatures() {
             if(RefreshFeaturesCoroutine == null) {
                 RefreshFeaturesCoroutine = StartCoroutine(RefreshFeatures_Perform());
+            }
+        }
+
+        public void RefreshVisibility() {
+            if(RefreshVisibilityCoroutine == null) {
+                RefreshVisibilityCoroutine = StartCoroutine(RefreshVisibility_Perform());
             }
         }
 
@@ -311,6 +323,16 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshCultureCoroutine = null;
+        }
+
+        private IEnumerator RefreshVisibility_Perform() {
+            yield return new WaitForEndOfFrame();
+
+            foreach(var cell in cells) {
+                ShaderData.RefreshVisibility(cell);
+            }
+
+            RefreshVisibilityCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

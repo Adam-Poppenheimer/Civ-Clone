@@ -16,7 +16,7 @@ using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapRendering {
 
-    public class HexCellShaderData : MonoBehaviour {
+    public class HexCellShaderData : MonoBehaviour, IHexCellShaderData {
 
         #region static fields and properties
 
@@ -33,10 +33,11 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        private IGameCore                 GameCore;
+        
         private IVisibilityCanon          VisibilityCanon;
         private IExplorationCanon         ExplorationCanon;
         private IImprovementLocationCanon ImprovementLocationCanon;
+        private IMapRenderConfig          RenderConfig;
 
         #endregion
 
@@ -44,13 +45,13 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public void InjectDependencies(
-            IGameCore gameCore, IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            IImprovementLocationCanon improvementLocationCanon
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
+            IImprovementLocationCanon improvementLocationCanon, IMapRenderConfig renderConfig
         ) {
-            GameCore                 = gameCore;
             VisibilityCanon          = visibilityCanon;
             ExplorationCanon         = explorationCanon;
             ImprovementLocationCanon = improvementLocationCanon;
+            RenderConfig             = renderConfig;
         }
 
         #region Unity messages
@@ -90,6 +91,9 @@ namespace Assets.Simulation.MapRendering {
             
             Shader.SetGlobalVector("_HexCellData_TexelSize", new Vector4(1f / x, 1f / z, x, z));
 
+            Shader.SetGlobalFloat("_Hex_InnerRadiusTimesTwo",   RenderConfig.InnerRadius * 2f);
+            Shader.SetGlobalFloat("_Hex_OuterRadiusTimesThree", RenderConfig.OuterRadius * 3f);
+
             if(CellTextureData == null || CellTextureData.Length != x * z) {
                 CellTextureData = new Color32[x * z];
             }else {
@@ -99,6 +103,8 @@ namespace Assets.Simulation.MapRendering {
             }
 
             TransitioningCells.Clear();
+
+            enabled = true;
         }
 
         public void RefreshTerrain(IHexCell cell) {
@@ -126,10 +132,9 @@ namespace Assets.Simulation.MapRendering {
 
         public void RefreshVisibility(IHexCell cell) {
             if(VisibilityCanon.RevealMode == RevealMode.Immediate) {
-                if(GameCore.ActivePlayer != null) {
-                    CellTextureData[cell.Index].r = VisibilityCanon .IsCellVisible(cell)  ? (byte)255 : (byte)0;
+                CellTextureData[cell.Index].r = VisibilityCanon.IsCellVisible(cell) ? (byte)255 : (byte)0;
 
-                }else if(CellTextureData[cell.Index].b != 255) {
+                if(CellTextureData[cell.Index].b != 255) {
                     CellTextureData[cell.Index].b = 255;
                     CellTextureData[cell.Index].r = 0;
                 }

@@ -112,7 +112,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             fortLogic.SetFortificationStatusForUnit(unit, true);
 
-            CoreSignals.RoundBeganSignal.OnNext(-5);
+            CoreSignals.RoundBegan.OnNext(-5);
 
             Assert.AreEqual(0.25f + 0.25f, fortLogic.GetFortificationModifierForUnit(unit));
         }
@@ -127,7 +127,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             fortLogic.SetFortificationStatusForUnit(unit, true);
 
-            CoreSignals.RoundBeganSignal.OnNext(-5);
+            CoreSignals.RoundBegan.OnNext(-5);
 
             Assert.AreEqual(1f, fortLogic.GetFortificationModifierForUnit(unit));
         }
@@ -142,7 +142,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             fortLogic.SetFortificationStatusForUnit(unit, true);
 
-            CoreSignals.RoundBeganSignal.OnNext(-5);
+            CoreSignals.RoundBegan.OnNext(-5);
 
             Assert.AreEqual(0f, fortLogic.GetFortificationModifierForUnit(unit));
         }

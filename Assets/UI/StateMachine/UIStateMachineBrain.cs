@@ -85,7 +85,7 @@ namespace Assets.UI.StateMachine {
             CivSignals           = civSignals;
             UnitSignals          = unitSignals;
             
-            coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan);
+            coreSignals.TurnBegan.Subscribe(OnTurnBegan);
         }
 
         #endregion

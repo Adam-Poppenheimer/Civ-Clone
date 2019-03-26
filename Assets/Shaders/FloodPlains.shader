@@ -1,4 +1,4 @@
-﻿Shader "Custom/Flood Plains" {
+﻿Shader "Civ Clone/Flood Plains" {
 	Properties{
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
@@ -12,7 +12,7 @@
 		Offset -0.1, -0.1
 
 		CGPROGRAM
-		#pragma surface surf StandardSpecular alpha:fade vertex:vert
+		#pragma surface surf StandardSpecular alpha:fade
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.5
@@ -25,21 +25,7 @@
 		struct Input {
 			float2 uv_MainTex;
 			float3 worldPos;
-			float2 visibility;
 		};
-
-		void vert(inout appdata_full v, out Input data) {
-			UNITY_INITIALIZE_OUTPUT(Input, data);
-
-			float4 cell0 = GetCellData(v, 0);
-			float4 cell1 = GetCellData(v, 1);
-			float4 cell2 = GetCellData(v, 2);
-
-			data.visibility.x = cell0.x * v.color.x + cell1.x * v.color.y + cell2.x * v.color.z;
-			data.visibility.x = lerp(0.25, 1, data.visibility.x);
-
-			data.visibility.y = cell0.y * v.color.x + cell1.y * v.color.y + cell2.y * v.color.z;
-		}
 
 		half _Glossiness;
 		fixed3 _Specular;
@@ -57,16 +43,17 @@
 		}
 
 		void surf(Input IN, inout SurfaceOutputStandardSpecular o) {
+			int cellIndex = GetCellIndexFromWorld(IN.worldPos);
+
+			float4 cellData = GetCellData(cellIndex);
+
 			fixed4 color = tex2D(_MainTex, IN.worldPos.xz * 0.02);
 			float alpha = GetAlpha(IN.worldPos.xz, _SplatMap, color.a, IN.uv_MainTex.y);
 
-			float explored = IN.visibility.y;
-
-			o.Albedo = color.rgb * _Color * IN.visibility.x;
-			o.Specular = _Specular * explored;
+			o.Albedo = color.rgb * _Color * lerp(0.25, 1, cellData.x);
+			o.Specular = _Specular;
 			o.Smoothness = _Glossiness;
-			o.Occlusion = explored;
-			o.Alpha = alpha * explored;
+			o.Alpha = alpha;
 		}
 		ENDCG
 	}

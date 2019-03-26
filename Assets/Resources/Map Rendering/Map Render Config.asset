@@ -34,6 +34,7 @@ MonoBehaviour:
   _mapCollisionMask:
     serializedVersion: 2
     m_Bits: 272
+  _terrainMaterial: {fileID: 2100000, guid: 8b1ca49dd2b07bc47b7e2402310e8406, type: 2}
   _mapTextures:
   - {fileID: 2800000, guid: 2522d1327e582f24e89346841cbd8cc0, type: 3}
   - {fileID: 2800000, guid: 731f3b4d8451d2c49bcbee07aabe9ac1, type: 3}

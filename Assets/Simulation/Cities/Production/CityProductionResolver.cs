@@ -56,7 +56,7 @@ namespace Assets.Simulation.Cities.Production {
             BuildingValidityLogic = buildingValidityLogic;
 
             CitySignals.CityGainedBuildingSignal.Subscribe(OnCityGainedBuilding);
-            coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan);
+            coreSignals.RoundBegan.Subscribe(OnRoundBegan);
         }
 
         #endregion

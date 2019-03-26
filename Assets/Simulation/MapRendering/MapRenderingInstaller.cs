@@ -13,9 +13,10 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private MapRenderConfig RenderConfig;
-        [SerializeField] private FeatureConfig   FeatureConfig;
-        [SerializeField] private HexMesh         RiverMesh;
+        [SerializeField] private MapRenderConfig   RenderConfig;
+        [SerializeField] private FeatureConfig     FeatureConfig;
+        [SerializeField] private HexMesh           RiverMesh;
+        [SerializeField] private HexCellShaderData ShaderData;
 
         #endregion
 
@@ -26,8 +27,9 @@ namespace Assets.Simulation.MapRendering {
         public override void InstallBindings() {
             Container.Bind<IHexMesh>().WithId("River Mesh").FromInstance(RiverMesh);
 
-            Container.Bind<IMapRenderConfig>().To<MapRenderConfig>().FromInstance(RenderConfig);
-            Container.Bind<IFeatureConfig>  ().To<FeatureConfig>  ().FromInstance(FeatureConfig);
+            Container.Bind<IMapRenderConfig>  ().To<MapRenderConfig>  ().FromInstance(RenderConfig);
+            Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);            
+            Container.Bind<IHexCellShaderData>().To<HexCellShaderData>().FromInstance(ShaderData);
 
             Container.Bind<INoiseGenerator>                ().To<NoiseGenerator>                ().AsSingle();
             Container.Bind<ITerrainAlphamapLogic>          ().To<TerrainAlphamapLogic>          ().AsSingle().NonLazy();

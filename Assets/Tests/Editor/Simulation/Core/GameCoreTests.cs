@@ -28,14 +28,12 @@ namespace Assets.Tests.Simulation.Core {
 
         #region instance fields and properties
 
-        private Mock<ICityFactory>   MockCityFactory;
         private Mock<IPlayerFactory> MockPlayerFactory;
-        private Mock<IUnitFactory>   MockUnitFactory;
-        private Mock<IRoundExecuter> MockRoundExecuter;
-        private Mock<IHexGrid>       MockGrid;
-        private Mock<ITechCanon>     MockTechCanon;
-        private Mock<IDiplomacyCore> MockDiplomacyCore;
 
+        private CoreSignals   CoreSignals;
+        private PlayerSignals PlayerSignals;
+
+        private List<IPlayer>       AllPlayers       = new List<IPlayer>();
         private List<IResourceNode> AllResourceNodes = new List<IResourceNode>();
 
         #endregion
@@ -47,32 +45,17 @@ namespace Assets.Tests.Simulation.Core {
         [SetUp]
         public void CommonInstall() {
             AllResourceNodes.Clear();
+            AllPlayers      .Clear();
 
-            MockRoundExecuter = new Mock<IRoundExecuter>();
-            MockCityFactory   = new Mock<ICityFactory>();
             MockPlayerFactory = new Mock<IPlayerFactory>();
-            MockUnitFactory   = new Mock<IUnitFactory>();
-            MockGrid          = new Mock<IHexGrid>();
-            MockTechCanon     = new Mock<ITechCanon>();
-            MockDiplomacyCore = new Mock<IDiplomacyCore>();
+            CoreSignals       = new CoreSignals();
+            PlayerSignals     = new PlayerSignals();
 
-            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>().AsReadOnly());
-            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>().AsReadOnly());
-            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>());
+            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(AllPlayers.AsReadOnly());
 
-            Container.Bind<ICityFactory>  ().FromInstance(MockCityFactory  .Object);
             Container.Bind<IPlayerFactory>().FromInstance(MockPlayerFactory.Object);
-            Container.Bind<IUnitFactory>  ().FromInstance(MockUnitFactory  .Object);
-            Container.Bind<IRoundExecuter>().FromInstance(MockRoundExecuter.Object);
-            Container.Bind<IHexGrid>      ().FromInstance(MockGrid         .Object);
-            Container.Bind<ITechCanon>    ().FromInstance(MockTechCanon    .Object);
-            Container.Bind<IDiplomacyCore>().FromInstance(MockDiplomacyCore.Object);
-
-            Container.Bind<CoreSignals>().AsSingle();
-
-            Container.Bind<PlayerSignals>().AsSingle();
-
-            Container.Bind<CivilizationSignals>().AsSingle();
+            Container.Bind<CoreSignals>   ().FromInstance(CoreSignals);
+            Container.Bind<PlayerSignals> ().FromInstance(PlayerSignals);
 
             Container.Bind<GameCore>().AsSingle();
         }
@@ -81,264 +64,189 @@ namespace Assets.Tests.Simulation.Core {
 
         #region tests
 
-        [Test(Description = "When BeginRound is called, all cities in CityFactory " +
-            "are passed to TurnExecuter properly")]
-        public void BeginRound_AllCitiesCalledToBeginTurn() {
-            var allCities = new List<ICity>() {
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object
-            };
+        [Test]
+        public void BeginRound_FiresStartingRoundSignal_BeforeRoundBeganSignal() {
+            CoreSignals.StartingRound.Subscribe(turnNumber => {
+                Assert.Pass();
+            });
 
-            MockCityFactory.SetupGet(factory => factory.AllCities).Returns(allCities.AsReadOnly());
+            CoreSignals.RoundBegan.Subscribe(turnNumber => {
+                Assert.Fail("RoundBegan fired before StartingRound");
+            });
 
             var gameCore = Container.Resolve<GameCore>();
 
             gameCore.BeginRound();
-
-            foreach(var city in allCities) {
-                MockRoundExecuter.Verify(executer => executer.BeginRoundOnCity(city),
-                    "TurnExecuter was not called to begin a city's turn");
-            }
         }
 
-        [Test(Description = "When BeginRound is called, the controlled civs of all players in PlayerFactory " +
-            "are passed to TurnExecuter properly")]
-        public void BeginRound_AllCivilizationsCalled() {
-            var allPlayers = new List<IPlayer>() {
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-            };
-
-            MockPlayerFactory.SetupGet(factory => factory.AllPlayers).Returns(allPlayers.AsReadOnly());
-
-            var gameCore = Container.Resolve<GameCore>();
-
-            gameCore.BeginRound();
-
-            foreach(var player in allPlayers) {
-                MockRoundExecuter.Verify(executer => executer.BeginRoundOnCivilization(player.ControlledCiv),
-                    "TurnExecuter was not called to begin a civilization's turn");
-            }
-        }
-
-        [Test(Description = "When BeginRound is called, all units in UnitFactory are passed to " +
-            "TurnExecuter properly")]
-        public void BeginRound_AllUnitsCalled() {
-            var allUnits = new List<IUnit>() {
-                new Mock<IUnit>().Object,
-                new Mock<IUnit>().Object,
-                new Mock<IUnit>().Object
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(allUnits);
-
-            var gameCore = Container.Resolve<GameCore>();
-
-            gameCore.BeginRound();
-
-            foreach(var unit in allUnits) {
-                MockRoundExecuter.Verify(executer => executer.BeginRoundOnUnit(unit),
-                    "TurnExecuter was not called to begin a unit's turn");
-            }
-        }
-
-        [Test(Description = "When BeginRound is called, there is a specific execution order " +
-            "between different classes that is always maintained")]
-        public void BeginRound_HasCorrectExecutionOrder() {
-            var city   = new Mock<ICity>  ().Object;
-            var player = BuildPlayer(BuildCivilization());
-            var unit   = new Mock<IUnit>  ().Object;
-
-            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>  () { city   }.AsReadOnly());
-            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>() { player }.AsReadOnly());
-            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>  () { unit   });
-
-            var executionSequence = new MockSequence();
-
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity        (city));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCivilization(player.ControlledCiv));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnUnit        (unit));
-
-            var gameCore = Container.Resolve<GameCore>();
-            gameCore.BeginRound();
-
-            MockRoundExecuter.VerifyAll();
-        }
-
-        [Test(Description = "When BeginRound is called, after all objects have been passed " +
-            "to TurnExecuter, GameCore should fire RoundBeganSignal")]
+        [Test]
         public void BeginRound_FiresRoundBeganSignal() {
             var gameCore = Container.Resolve<GameCore>();
 
             var coreSignals = Container.Resolve<CoreSignals>();
-            coreSignals.RoundBeganSignal.Subscribe(turn => Assert.Pass());
+            coreSignals.RoundBegan.Subscribe(turn => Assert.Pass());
 
             gameCore.BeginRound();
-            Assert.Fail("TurnBeganSignal was never fired");
+            Assert.Fail("RoundBegan was never fired");
         }
 
-        [Test(Description = "")]
-        public void EndTurn_CellVisibilityRefreshed() {
-            var cellMocks = new List<Mock<IHexCell>>() {
-                new Mock<IHexCell>(), new Mock<IHexCell>(), new Mock<IHexCell>()
-            };
+        [Test]
+        public void EndRound_FiresEndingRoundSignal_BeforeRoundEndedSignal() {
+            CoreSignals.EndingRound.Subscribe(turnNumber => {
+                Assert.Pass();
+            });
 
-            var gameCore = Container.Resolve<GameCore>();
-
-            MockGrid.Setup(grid => grid.Cells).Returns(cellMocks.Select(mock => mock.Object).ToList().AsReadOnly());
-
-            MockPlayerFactory.Setup(factory => factory.AllPlayers)
-                             .Returns(new List<IPlayer>() { BuildPlayer(BuildCivilization()) }.AsReadOnly());
-
-            MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>().AsReadOnly());
-
-            gameCore.ActivePlayer = MockPlayerFactory.Object.AllPlayers[0];
-
-            gameCore.EndTurn();
-
-            foreach(var cellMock in cellMocks) {
-                cellMock.Verify(cell => cell.RefreshVisibility(), Times.Once,
-                    "A cell's visibility was not refreshed when BeginRound was called");
-            }
-        }
-
-        
-
-        [Test(Description = "When EndRound is called, all cities in CityFactory " +
-            "are passed to TurnExecuter properly")]
-        public void EndRound_AllCitiesCalledToEndTurn() {
-            var allCities = new List<ICity>() {
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object,
-                new Mock<ICity>().Object
-            };
-
-            MockCityFactory.SetupGet(factory => factory.AllCities).Returns(allCities.AsReadOnly());
+            CoreSignals.RoundEnded.Subscribe(turnNumber => {
+                Assert.Fail("RoundEnded fired before EndingRound");
+            });
 
             var gameCore = Container.Resolve<GameCore>();
 
             gameCore.EndRound();
 
-            foreach(var city in allCities) {
-                MockRoundExecuter.Verify(executer => executer.EndRoundOnCity(city),
-                    "TurnExecuter was not called to end a city's turn");
-            }
+            Assert.Fail("EndingRound not fired as expected");
         }
 
-        [Test(Description = "When EndRound is called, the controlled civs of all players in PlayerFactory " +
-            "are passed to TurnExecuter properly")]
-        public void EndRound_AllCivilizationsCalled() {
-            var allPlayers = new List<IPlayer>() {
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-                BuildPlayer(BuildCivilization()),
-            };
-
-            MockPlayerFactory.SetupGet(factory => factory.AllPlayers).Returns(allPlayers.AsReadOnly());
-
-            var gameCore = Container.Resolve<GameCore>();
-
-            gameCore.EndRound();
-
-            foreach(var player in allPlayers) {
-                MockRoundExecuter.Verify(executer => executer.EndRoundOnCivilization(player.ControlledCiv),
-                    "TurnExecuter was not called to end a civilization's turn");
-            }
-        }
-
-        [Test(Description = "When EndRound is called, all units in UnitFactory are passed to " +
-            "TurnExecuter properly")]
-        public void EndRound_AllUnitsCalled() {
-            var allUnits = new List<IUnit>() {
-                new Mock<IUnit>().Object,
-                new Mock<IUnit>().Object,
-                new Mock<IUnit>().Object
-            };
-
-            MockUnitFactory.Setup(factory => factory.AllUnits).Returns(allUnits);
-
-            var gameCore = Container.Resolve<GameCore>();
-
-            gameCore.EndRound();
-
-            foreach(var unit in allUnits) {
-                MockRoundExecuter.Verify(executer => executer.EndRoundOnUnit(unit),
-                    "TurnExecuter was not called to begin a unit's turn");
-            }
-        }
-
-        [Test(Description = "When EndRound is called, there is a specific execution order " +
-            "between different classes that is always maintained")]
-        public void EndRound_HasCorrectExecutionOrder() {
-            var city   = new Mock<ICity>  ().Object;
-            var player = BuildPlayer(BuildCivilization());
-            var unit   = new Mock<IUnit>  ().Object;
-
-            MockCityFactory  .Setup(factory => factory.AllCities) .Returns(new List<ICity>  () { city   }.AsReadOnly());
-            MockPlayerFactory.Setup(factory => factory.AllPlayers).Returns(new List<IPlayer>() { player }.AsReadOnly());
-            MockUnitFactory  .Setup(factory => factory.AllUnits)  .Returns(new List<IUnit>  () { unit   });
-
-            var executionSequence = new MockSequence();
-
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity        (city));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCivilization(player.ControlledCiv));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnUnit        (unit));
-
-            MockDiplomacyCore.InSequence(executionSequence).Setup(core => core.UpdateOngoingDeals());
-
-            var gameCore = Container.Resolve<GameCore>();
-            gameCore.EndRound();
-
-            MockRoundExecuter.VerifyAll();
-        }
-
-        [Test(Description = "When EndRound is called, after all objects have been passed " +
-            "to TurnExecuter, GameCore should fire TurnEndedSignal")]
+        [Test]
         public void EndRound_FiresRoundEndedSignal() {
             var gameCore = Container.Resolve<GameCore>();
 
-            var coreSignals = Container.Resolve<CoreSignals>();
-            coreSignals.RoundEndedSignal.Subscribe(turn => Assert.Pass());
+            CoreSignals.RoundEnded.Subscribe(turn => Assert.Pass());
 
             gameCore.EndRound();
-            Assert.Fail("TurnEndedSignal was never fired");
+            Assert.Fail("RoundEnded was never fired");
         }
 
-        [Test(Description = "When EndTurnRequestedSignal fires, GameCore should call EndRound " +
-            "and then call BeginRound")]
-        public void EndTurnRequestedSignalFired_RoundEndedThenBegan() {
-            var city = new Mock<ICity>().Object;
-            var civilization = BuildCivilization();
-            var player = BuildPlayer(civilization);
+        [Test]
+        public void EndTurn_FiresTurnEndedOnActivePlayer() {
+            var activePlayer = BuildPlayer(BuildCivilization());
 
-            MockCityFactory.Setup(factory => factory.AllCities).Returns(new List<ICity>() { city }.AsReadOnly());
+            BuildPlayer(BuildCivilization());
 
-            MockPlayerFactory.Setup(factory => factory.AllPlayers)
-                             .Returns(new List<IPlayer>() { player }.AsReadOnly());
+            CoreSignals.TurnEnded.Subscribe(player => {
+                Assert.AreEqual(activePlayer, player, "TurnEnded fired on an unexpected player");
+                Assert.Pass();
+            });
 
-            MockGrid.Setup(grid => grid.Cells).Returns(new List<IHexCell>().AsReadOnly());
+            var gameCore = Container.Resolve<GameCore>();
 
-            var playerSignals = Container.Resolve<PlayerSignals>();
+            gameCore.ActivePlayer = activePlayer;
 
-            Container.Resolve<GameCore>();
+            gameCore.EndTurn();
 
-            var executionSequence = new MockSequence();
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.EndRoundOnCity(city));
-            MockRoundExecuter.InSequence(executionSequence).Setup(executer => executer.BeginRoundOnCity(city));
+            Assert.Fail("TurnEnded not fired as expected");
+        }
 
-            playerSignals.EndTurnRequested.OnNext(player);
+        [Test]
+        public void EndTurn_AndSomePlayerIsAfterActivePlayer_SetsNextPlayerToActivePlayer() {
+            var previousPlayer = BuildPlayer(BuildCivilization());
+            var activePlayer   = BuildPlayer(BuildCivilization());
+            var nextPlayer     = BuildPlayer(BuildCivilization());
 
-            MockRoundExecuter.VerifyAll();
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            gameCore.EndTurn();
+
+            Assert.AreEqual(nextPlayer, gameCore.ActivePlayer);
+        }
+
+        [Test]
+        public void EndTurn_AndSomePlayerIsAfterActivePlayer_FiresTurnBeganOnNextPlayer() {
+            var previousPlayer = BuildPlayer(BuildCivilization());
+            var activePlayer   = BuildPlayer(BuildCivilization());
+            var nextPlayer     = BuildPlayer(BuildCivilization());
+
+            CoreSignals.TurnBegan.Subscribe(player => {
+                Assert.AreEqual(nextPlayer, player, "TurnBegan fired on an unexpected player");
+                Assert.Pass();
+            });
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            gameCore.EndTurn();
+
+            Assert.Fail("TurnBegan not fired as expected");
+        }
+
+        [Test]
+        public void EndTurn_AndPlayerIsLastPlayer_EndsAndBeginsRound() {
+            var previousPlayer = BuildPlayer(BuildCivilization());
+            var activePlayer   = BuildPlayer(BuildCivilization());
+
+            bool hasEndedRound = false;
+            CoreSignals.RoundEnded.Subscribe(turn => {
+                hasEndedRound = true;
+            });
+
+            CoreSignals.RoundBegan.Subscribe(turn => {
+                if(!hasEndedRound) {
+                    Assert.Fail("RoundBegan fired before RoundEnded");
+                }
+
+                Assert.Pass();
+            });
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            gameCore.EndTurn();
+
+            Assert.Fail("RoundEnded or RoundBegan not fired as expected");
+        }
+
+        [Test]
+        public void EndTurn_AndPlayerIsLastPlayer_SetsFirstPlayerToActivePlayer() {
+            var firstPlayer    = BuildPlayer(BuildCivilization());
+            var previousPlayer = BuildPlayer(BuildCivilization());
+            var activePlayer   = BuildPlayer(BuildCivilization());
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            gameCore.EndTurn();
+
+            Assert.AreEqual(firstPlayer, gameCore.ActivePlayer);
+        }
+
+        [Test]
+        public void EndTurn_AndPlayerIsLastPlayer_firesTurnBeganOnFirstPlayer() {
+            var firstPlayer    = BuildPlayer(BuildCivilization());
+            var previousPlayer = BuildPlayer(BuildCivilization());
+            var activePlayer   = BuildPlayer(BuildCivilization());
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            gameCore.EndTurn();
+
+            Assert.AreEqual(firstPlayer, gameCore.ActivePlayer);
+        }
+
+        [Test]
+        public void EndTurn_DoesNotThrowIfOnlyOnePlayer() {
+            var activePlayer = BuildPlayer(BuildCivilization());
+
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = activePlayer;
+
+            Assert.DoesNotThrow(() => gameCore.EndTurn());
+        }
+
+        [Test]
+        public void EndTurn_DoesNotThrowIfActivePlayerNull() {
+            var gameCore = Container.Resolve<GameCore>();
+
+            gameCore.ActivePlayer = null;
+
+            Assert.DoesNotThrow(() => gameCore.EndTurn());
         }
 
         #endregion
@@ -354,7 +262,11 @@ namespace Assets.Tests.Simulation.Core {
 
             mockPlayer.Setup(player => player.ControlledCiv).Returns(controlledCiv);
 
-            return mockPlayer.Object;
+            var newPlayer = mockPlayer.Object;
+
+            AllPlayers.Add(newPlayer);
+
+            return newPlayer;
         }
 
         private IResourceNode BuildResourceNode(IResourceDefinition resource) {

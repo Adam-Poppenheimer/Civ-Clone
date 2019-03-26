@@ -183,7 +183,11 @@ namespace Assets.Simulation.HexMap {
         }
 
         public void RefreshVisibility() {
-            
+            if(OverlappingChunks != null) {
+                foreach(var chunk in OverlappingChunks) {
+                    chunk.RefreshVisibility();
+                }
+            }
         }
 
         #endregion

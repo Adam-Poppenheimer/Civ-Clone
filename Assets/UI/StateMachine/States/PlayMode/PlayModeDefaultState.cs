@@ -102,7 +102,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             FreeTechsDisplay           .gameObject.SetActive(TechCanon           .GetFreeTechsForCiv      (GameCore.ActiveCiv) > 0);
             FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCiv) > 0);
 
-            SignalSubscriptions.Add(CoreSignals      .TurnBeganSignal              .Subscribe(OnTurnBegan));
+            SignalSubscriptions.Add(CoreSignals      .TurnBegan              .Subscribe(OnTurnBegan));
             SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
         }
 

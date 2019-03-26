@@ -24,6 +24,7 @@ namespace Assets.Simulation.MapRendering {
         void InitializeTerrain(Vector3 position, float width, float height);
 
         void RefreshAlphamap();
+        void RefreshVisibility();
 
         void RefreshAll();
 

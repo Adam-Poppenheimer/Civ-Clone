@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units.Combat {
         public UnitFortificationLogic(IUnitConfig unitConfig, CoreSignals coreSignals) {
             UnitConfig  = unitConfig;
             
-            coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan);
+            coreSignals.RoundBegan.Subscribe(OnRoundBegan);
         }
 
         #endregion

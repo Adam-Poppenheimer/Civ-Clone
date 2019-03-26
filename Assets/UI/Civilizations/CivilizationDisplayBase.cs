@@ -26,7 +26,7 @@ namespace Assets.UI.Civilizations {
 
         [Inject]
         private void InjectSignals(CoreSignals coreSignals) {
-            SignalSubscriptions.Add(coreSignals.TurnBeganSignal.Subscribe(OnTurnBegan));
+            SignalSubscriptions.Add(coreSignals.TurnBegan.Subscribe(OnTurnBegan));
         }
 
         #region Unity messages

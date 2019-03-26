@@ -1,4 +1,4 @@
-﻿Shader "Custom/Marsh" {
+﻿Shader "Civ Clone/Marsh" {
 	Properties{
 		_Color("Color", Color) = (1,1,1,1)
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
@@ -11,12 +11,12 @@
 		LOD 200
 
 		CGPROGRAM
-		#pragma surface surf StandardSpecular alpha:fade vertex:vert
+		#pragma surface surf StandardSpecular alpha:fade
 
 		// Use shader model 3.0 target, to get nicer looking lighting
 		#pragma target 3.0
 
-		#include "WaterEffects.cginc"
+		//#include "WaterEffects.cginc"
 		#include "HexCellData.cginc"
 
 		sampler2D _MainTex;
@@ -27,19 +27,6 @@
 			float3 worldPos;
 			float2 visibility;
 		};
-
-		void vert(inout appdata_full v, out Input data) {
-			UNITY_INITIALIZE_OUTPUT(Input, data);
-
-			float4 cell0 = GetCellData(v, 0);
-			float4 cell1 = GetCellData(v, 1);
-			float4 cell2 = GetCellData(v, 2);
-
-			data.visibility.x = cell0.x * v.color.x + cell1.x * v.color.y + cell2.x * v.color.z;
-			data.visibility.x = lerp(0.25, 1, data.visibility.x);
-
-			data.visibility.y = cell0.y * v.color.x + cell1.y * v.color.y + cell2.y * v.color.z;
-		}
 
 		half _Glossiness;
 		fixed3 _Specular;
@@ -57,7 +44,7 @@
 		}
 
 		void surf(Input IN, inout SurfaceOutputStandardSpecular o) {
-			float waves = Waves(IN.worldPos.xz, _MainTex, 0.1) * 0.35;
+			/*float waves = Waves(IN.worldPos.xz, _MainTex, 0.1) * 0.35;
 
 			fixed4 c = saturate(_Color + waves);
 			float alpha = GetAlpha(IN.worldPos.xz, _SplatMap, c.a, IN.uv_MainTex.y);
@@ -68,7 +55,7 @@
 			o.Specular = _Specular * explored;
 			o.Smoothness = _Glossiness;
 			o.Occlusion = explored;
-			o.Alpha = alpha * explored;
+			o.Alpha = alpha * explored;*/
 		}
 		ENDCG
 	}

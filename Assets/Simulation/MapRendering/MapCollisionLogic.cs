@@ -20,7 +20,7 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        private IHexGrid         Grid;
+        
         private IMapRenderConfig RenderConfig;
 
         #endregion
@@ -28,8 +28,7 @@ namespace Assets.Simulation.MapRendering {
         #region constructors
 
         [Inject]
-        public MapCollisionLogic(IHexGrid grid, IMapRenderConfig renderConfig) {
-            Grid         = grid;
+        public MapCollisionLogic(IMapRenderConfig renderConfig) {
             RenderConfig = renderConfig;
 
             RaycastOffset = Vector3.up * RenderConfig.TerrainMaxY * 1.5f;

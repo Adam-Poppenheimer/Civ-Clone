@@ -28,7 +28,7 @@ namespace Assets.UI {
 
         [Inject]
         private void InjectSignals(CoreSignals coreSignals) {
-            SignalSubscriptions.Add(coreSignals.RoundBeganSignal.Subscribe(OnRoundBegan));
+            SignalSubscriptions.Add(coreSignals.RoundBegan.Subscribe(OnRoundBegan));
         }
 
         #region Unity messages

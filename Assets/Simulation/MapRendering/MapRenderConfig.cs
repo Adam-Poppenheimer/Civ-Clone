@@ -160,6 +160,11 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private LayerMask _mapCollisionMask;
 
 
+        public Material TerrainMaterial {
+            get { return _terrainMaterial; }
+        }
+        [SerializeField] private Material _terrainMaterial;
+
         public IEnumerable<Texture2D> MapTextures {
             get { return _mapTextures; }
         }

@@ -240,7 +240,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             resolver.MakeProductionRequest(projectOne, cityOne);
 
-            CoreSignals.RoundBeganSignal.OnNext(10);
+            CoreSignals.RoundBegan.OnNext(10);
 
             projectOneMock.Verify(project => project.Execute(cityOne), Times.Once);
         }

@@ -54,6 +54,8 @@ namespace Assets.Simulation.MapRendering {
 
         LayerMask MapCollisionMask { get; }
 
+        Material TerrainMaterial { get; }
+
         IEnumerable<Texture2D> MapTextures { get; }
 
         int SeaFloorTextureIndex { get; }
