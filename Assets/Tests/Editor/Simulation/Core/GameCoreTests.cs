@@ -139,7 +139,7 @@ namespace Assets.Tests.Simulation.Core {
 
         [Test]
         public void EndTurn_AndSomePlayerIsAfterActivePlayer_SetsNextPlayerToActivePlayer() {
-            var previousPlayer = BuildPlayer(BuildCivilization());
+                                 BuildPlayer(BuildCivilization());
             var activePlayer   = BuildPlayer(BuildCivilization());
             var nextPlayer     = BuildPlayer(BuildCivilization());
 
@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Core {
 
         [Test]
         public void EndTurn_AndSomePlayerIsAfterActivePlayer_FiresTurnBeganOnNextPlayer() {
-            var previousPlayer = BuildPlayer(BuildCivilization());
+                                 BuildPlayer(BuildCivilization());
             var activePlayer   = BuildPlayer(BuildCivilization());
             var nextPlayer     = BuildPlayer(BuildCivilization());
 
@@ -174,7 +174,7 @@ namespace Assets.Tests.Simulation.Core {
 
         [Test]
         public void EndTurn_AndPlayerIsLastPlayer_EndsAndBeginsRound() {
-            var previousPlayer = BuildPlayer(BuildCivilization());
+                                 BuildPlayer(BuildCivilization());
             var activePlayer   = BuildPlayer(BuildCivilization());
 
             bool hasEndedRound = false;
@@ -202,7 +202,7 @@ namespace Assets.Tests.Simulation.Core {
         [Test]
         public void EndTurn_AndPlayerIsLastPlayer_SetsFirstPlayerToActivePlayer() {
             var firstPlayer    = BuildPlayer(BuildCivilization());
-            var previousPlayer = BuildPlayer(BuildCivilization());
+                                 BuildPlayer(BuildCivilization());
             var activePlayer   = BuildPlayer(BuildCivilization());
 
             var gameCore = Container.Resolve<GameCore>();
@@ -217,7 +217,7 @@ namespace Assets.Tests.Simulation.Core {
         [Test]
         public void EndTurn_AndPlayerIsLastPlayer_firesTurnBeganOnFirstPlayer() {
             var firstPlayer    = BuildPlayer(BuildCivilization());
-            var previousPlayer = BuildPlayer(BuildCivilization());
+                                 BuildPlayer(BuildCivilization());
             var activePlayer   = BuildPlayer(BuildCivilization());
 
             var gameCore = Container.Resolve<GameCore>();

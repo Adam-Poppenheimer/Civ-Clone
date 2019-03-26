@@ -64,7 +64,7 @@ namespace Assets.Simulation.Cities.Territory {
                 oldOwner.PerformDistribution();
             }
 
-            possession.Refresh();
+            possession.RefreshCulture();
             possession.RefreshVisibility();
         }
 
@@ -74,7 +74,7 @@ namespace Assets.Simulation.Cities.Territory {
                 newOwner.PerformDistribution();
             }
 
-            possession.Refresh();
+            possession.RefreshCulture();
             possession.RefreshVisibility();
         }
 

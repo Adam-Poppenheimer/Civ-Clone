@@ -43,23 +43,26 @@ namespace Assets.Simulation.HexMap {
         }
         private List<MapChunk> chunks = new List<MapChunk>();
 
+        public IHexMesh RiverMesh {
+            get { return riverMesh; }
+        }
+        private HexMesh riverMesh;
+
         #endregion
-
-        [SerializeField] private HexCell CellPrefab;
-
-        [SerializeField] private MapChunk MapChunkPrefab;
 
         [SerializeField] private LayerMask TerrainCollisionMask;
 
 
 
-        private DiContainer            Container;
-        private IWorkerSlotFactory     WorkerSlotFactory;
-        private ICellModificationLogic CellModificationLogic;
-        private IMapRenderConfig       RenderConfig;
-        private HexCellSignals         CellSignals;
-        private IGeometry2D            Geometry2D;
-        private IHexCellShaderData     ShaderData;
+
+        private IWorkerSlotFactory                        WorkerSlotFactory;
+        private ICellModificationLogic                    CellModificationLogic;
+        private IMapRenderConfig                          RenderConfig;
+        private HexCellSignals                            CellSignals;
+        private IGeometry2D                               Geometry2D;
+        private IHexCellShaderData                        ShaderData;
+        private IMemoryPool<MapChunk>                     MapChunkPool;
+        private IMemoryPool<string, HexMeshData, HexMesh> HexMeshPool;
 
         #endregion
 
@@ -67,16 +70,19 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            DiContainer container, IWorkerSlotFactory workerSlotFactory, ICellModificationLogic cellModificationLogic,
-            IMapRenderConfig renderConfig, HexCellSignals cellSignals, IGeometry2D geometry2D, IHexCellShaderData shaderData
+            IWorkerSlotFactory workerSlotFactory, ICellModificationLogic cellModificationLogic,
+            IMapRenderConfig renderConfig, HexCellSignals cellSignals, IGeometry2D geometry2D,
+            IHexCellShaderData shaderData, IMemoryPool<MapChunk> mapChunkPool,
+            IMemoryPool<string, HexMeshData, HexMesh> hexMeshPool
         ) {
-            Container             = container;
             WorkerSlotFactory     = workerSlotFactory;
             CellModificationLogic = cellModificationLogic;
             RenderConfig          = renderConfig;
             CellSignals           = cellSignals;
             Geometry2D            = geometry2D;
             ShaderData            = shaderData;
+            MapChunkPool          = mapChunkPool;
+            HexMeshPool           = hexMeshPool;
         }
 
         #region Unity message methods
@@ -104,6 +110,10 @@ namespace Assets.Simulation.HexMap {
             foreach(var cell in Cells) {
                 cell.RefreshSelfOnly();
             }
+
+            riverMesh = HexMeshPool.Spawn("Rivers", RenderConfig.RiversData);
+
+            riverMesh.transform.SetParent(transform, false);
         }
 
         public void Clear() {
@@ -115,11 +125,15 @@ namespace Assets.Simulation.HexMap {
 
             cells.Clear();
 
-            for(int i = chunks.Count - 1; i >= 0; i--) {
-                Destroy(chunks[i].gameObject);
+            foreach(var chunk in chunks) {
+                MapChunkPool.Despawn(chunk);
             }
 
             chunks.Clear();
+
+            HexMeshPool.Despawn(riverMesh);
+
+            riverMesh = null;
         }
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {
@@ -334,7 +348,7 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunk(float chunkX, float chunkZ, float width, float height) {
-            var newChunk = Container.InstantiatePrefabForComponent<MapChunk>(MapChunkPrefab);
+            var newChunk = MapChunkPool.Spawn();
 
             newChunk.transform.SetParent(transform, false);
 

@@ -16,6 +16,20 @@ namespace Assets.Simulation.MapRendering {
 
     public class MapChunk : MonoBehaviour, IMapChunk {
 
+        #region internal types
+
+        public class Pool : MonoMemoryPool<MapChunk> {
+
+            protected override void OnDespawned(MapChunk item) {
+                item.Clear();
+
+                base.OnDespawned(item);
+            }
+
+        }
+
+        #endregion
+
         #region static fields and properties
 
         private static Coroutine RefreshRiversCoroutine;
@@ -43,23 +57,46 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshCultureCoroutine;
         private Coroutine RefreshVisibilityCoroutine;
 
-        private Dictionary<IHexCell, HexMesh[]> CultureMeshesForCell = new Dictionary<IHexCell, HexMesh[]>();
+        private HexMesh StandingWater {
+            get {
+                if(_standingWater == null) {
+                    _standingWater = HexMeshPool.Spawn("Standing Water", RenderConfig.StandingWaterData);
 
-        [SerializeField] private HexMesh StandingWater;
-        [SerializeField] private HexMesh CultureMeshPrefab;
+                    _standingWater.transform.SetParent(transform, false);
+                }
+
+                return _standingWater;
+            }
+            set { _standingWater = value; }
+        }
+        private HexMesh _standingWater;
+
+        private HexMesh Culture {
+            get {
+                if(_culture == null) {
+                    _culture = HexMeshPool.Spawn("Culture", RenderConfig.CultureData);
+
+                    _culture.transform.SetParent(transform, false);
+                }
+
+                return _culture;
+            }
+            set { _culture = value; }
+        }
+        private HexMesh _culture;
 
 
 
 
-        private ITerrainAlphamapLogic AlphamapLogic;
-        private ITerrainHeightLogic   HeightLogic;
-        private IMapRenderConfig      RenderConfig;
-        private IWaterTriangulator    WaterTriangulator;
-        private IHexFeatureManager    HexFeatureManager;
-        private IRiverTriangulator    RiverTriangulator;
-        private ICultureTriangulator  CultureTriangulator;
-        private IHexCellShaderData    ShaderData;
-        private DiContainer           Container;
+        private ITerrainAlphamapLogic                     AlphamapLogic;
+        private ITerrainHeightLogic                       HeightLogic;
+        private IMapRenderConfig                          RenderConfig;
+        private IWaterTriangulator                        WaterTriangulator;
+        private IHexFeatureManager                        HexFeatureManager;
+        private IRiverTriangulator                        RiverTriangulator;
+        private ICultureTriangulator                      CultureTriangulator;
+        private IHexCellShaderData                        ShaderData;
+        private IMemoryPool<string, HexMeshData, HexMesh> HexMeshPool;
 
         #endregion
 
@@ -71,7 +108,7 @@ namespace Assets.Simulation.MapRendering {
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
-            DiContainer container
+            DiContainer container, IMemoryPool<string, HexMeshData, HexMesh> hexMeshPool
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -81,7 +118,7 @@ namespace Assets.Simulation.MapRendering {
             RiverTriangulator   = riverTriangulator;
             CultureTriangulator = cultureTriangulator;
             ShaderData          = shaderData;
-            Container           = container;
+            HexMeshPool         = hexMeshPool;
         }
 
         #region from IMapChunk
@@ -93,15 +130,20 @@ namespace Assets.Simulation.MapRendering {
         public void InitializeTerrain(Vector3 position, float width, float height) {
             var terrainData = BuildTerrainData(width, height);
 
-            var terrainGameObject = Terrain.CreateTerrainGameObject(terrainData);
+            if(Terrain == null) {
+                var terrainGameObject = Terrain.CreateTerrainGameObject(terrainData);
 
-            terrainGameObject.layer = LayerMask.NameToLayer("Terrain");
+                terrainGameObject.layer = LayerMask.NameToLayer("Terrain");
 
-            terrainGameObject.transform.SetParent(transform, false);
+                terrainGameObject.transform.SetParent(transform, false);
 
-            Terrain = terrainGameObject.GetComponent<Terrain>();
+                Terrain = terrainGameObject.GetComponent<Terrain>();
 
-            TerrainCollider = terrainGameObject.GetComponent<TerrainCollider>();
+                TerrainCollider = terrainGameObject.GetComponent<TerrainCollider>();
+            }else {
+                Terrain        .terrainData = terrainData;
+                TerrainCollider.terrainData = terrainData;
+            }
 
             transform.position = position;
 
@@ -176,6 +218,27 @@ namespace Assets.Simulation.MapRendering {
 
         public Vector3 GetNearestPointOnTerrain(Vector3 fromLocation) {
             return TerrainCollider.ClosestPoint(fromLocation);
+        }
+
+        public void Clear() {
+            StandingWater.Clear();
+            Culture      .Clear();
+            StopAllCoroutines();
+
+            RefreshAlphamapCoroutine   = null;
+            RefreshHeightmapCoroutine  = null;
+            RefreshWaterCoroutine      = null;
+            RefreshFeaturesCoroutine   = null;
+            RefreshCultureCoroutine    = null;
+            RefreshVisibilityCoroutine = null;
+
+            cells.Clear();
+
+            HexMeshPool.Despawn(StandingWater);
+            HexMeshPool.Despawn(Culture);
+
+            StandingWater = null;
+            Culture       = null;
         }
 
         #endregion
@@ -293,34 +356,15 @@ namespace Assets.Simulation.MapRendering {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
+            Culture.Clear();
+
             foreach(var cell in Cells) {
-                HexMesh[] cultureMeshes;
-
-                if(!CultureMeshesForCell.TryGetValue(cell, out cultureMeshes)) {
-                    cultureMeshes = new HexMesh[6];
-
-                    CultureMeshesForCell[cell] = cultureMeshes;
-                }
-
                 foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                    HexMesh cultureMesh = cultureMeshes[(int)direction];
-
-                    if(cultureMesh == null) {
-                        cultureMesh = Container.InstantiatePrefabForComponent<HexMesh>(CultureMeshPrefab);
-
-                        cultureMesh.transform.SetParent(transform, false);
-                        cultureMesh.transform.position = Vector3.zero;
-
-                        cultureMeshes[(int)direction] = cultureMesh;
-                    }
-
-                    cultureMesh.Clear();
-
-                    CultureTriangulator.TriangulateCultureInDirection(cell, direction, cultureMesh);
-
-                    cultureMesh.Apply();
+                    CultureTriangulator.TriangulateCultureInDirection(cell, direction, Culture);
                 }
             }
+
+            Culture.Apply();
 
             RefreshCultureCoroutine = null;
         }

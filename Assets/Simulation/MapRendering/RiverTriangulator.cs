@@ -17,14 +17,19 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
+        public IHexMesh RiverMesh {
+            get { return Grid.RiverMesh; }
+        }
+
+
+
         private IMapRenderConfig          RenderConfig;
         private IRiverSplineBuilder       RiverSplineBuilder;
-        private IHexMesh                  RiverMesh;
         private INoiseGenerator           NoiseGenerator;
         private ICellEdgeContourCanon     CellEdgeContourCanon;
         private INonRiverContourBuilder   NonRiverContourBuilder;
-        private IRiverContourRationalizer RiverContourRationalizer;
         private IHexGrid                  Grid;
+        private IRiverContourRationalizer RiverContourRationalizer;
 
         #endregion
 
@@ -33,18 +38,17 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public RiverTriangulator(
             IMapRenderConfig renderConfig, IRiverSplineBuilder riverSplineBuilder,
-            [Inject(Id = "River Mesh")] IHexMesh riverMesh, INoiseGenerator noiseGenerator,
-            ICellEdgeContourCanon cellEdgeContourCanon, INonRiverContourBuilder nonRiverContourBuilder,
-            IRiverContourRationalizer riverContourCuller, IHexGrid grid
+            INoiseGenerator noiseGenerator, ICellEdgeContourCanon cellEdgeContourCanon,
+            INonRiverContourBuilder nonRiverContourBuilder, IHexGrid grid,
+            IRiverContourRationalizer riverContourCuller
         ) {
             RenderConfig             = renderConfig;
             RiverSplineBuilder       = riverSplineBuilder;
-            RiverMesh                = riverMesh;
             NoiseGenerator           = noiseGenerator;
             CellEdgeContourCanon     = cellEdgeContourCanon;
             NonRiverContourBuilder   = nonRiverContourBuilder;
-            RiverContourRationalizer = riverContourCuller;
             Grid                     = grid;
+            RiverContourRationalizer = riverContourCuller;
         }
 
         #endregion

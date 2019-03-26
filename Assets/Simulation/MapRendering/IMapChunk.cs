@@ -23,7 +23,11 @@ namespace Assets.Simulation.MapRendering {
 
         void InitializeTerrain(Vector3 position, float width, float height);
 
-        void RefreshAlphamap();
+        void RefreshAlphamap  ();
+        void RefreshHeightmap ();
+        void RefreshWater     ();
+        void RefreshCulture   ();
+        void RefreshFeatures  ();
         void RefreshVisibility();
 
         void RefreshAll();

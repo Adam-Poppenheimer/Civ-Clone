@@ -293,6 +293,22 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0.05f, 5f)] private float _cultureTriangleSideWidth;
 
+
+        public HexMeshData StandingWaterData {
+            get { return _standingWaterData; }
+        }
+        [SerializeField] private HexMeshData _standingWaterData;
+
+        public HexMeshData RiversData {
+            get { return _riversData; }
+        }
+        [SerializeField] private HexMeshData _riversData;
+
+        public HexMeshData CultureData {
+            get { return _cultureData; }
+        }
+        [SerializeField] private HexMeshData _cultureData;
+
         #endregion
 
         #endregion

@@ -15,8 +15,9 @@ namespace Assets.Simulation.MapRendering {
 
         [SerializeField] private MapRenderConfig   RenderConfig;
         [SerializeField] private FeatureConfig     FeatureConfig;
-        [SerializeField] private HexMesh           RiverMesh;
         [SerializeField] private HexCellShaderData ShaderData;
+        [SerializeField] private MapChunk          MapChunkPrefab;
+        [SerializeField] private HexSubMesh        HexSubMeshPrefab;
 
         #endregion
 
@@ -25,11 +26,27 @@ namespace Assets.Simulation.MapRendering {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<IHexMesh>().WithId("River Mesh").FromInstance(RiverMesh);
-
             Container.Bind<IMapRenderConfig>  ().To<MapRenderConfig>  ().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);            
             Container.Bind<IHexCellShaderData>().To<HexCellShaderData>().FromInstance(ShaderData);
+
+            Container.BindMemoryPool<Mesh, MeshMemoryPool, IMemoryPool<Mesh>>()
+                     .WithInitialSize(50);
+
+            Container.BindMemoryPool<HexSubMesh, HexSubMesh.Pool, IMemoryPool<HexRenderingData, HexSubMesh>>()
+                     .WithInitialSize(50)
+                     .FromComponentInNewPrefab(HexSubMeshPrefab)
+                     .UnderTransformGroup("Hex Sub-Meshes");
+
+            Container.BindMemoryPool<HexMesh, HexMesh.Pool, IMemoryPool<string, HexMeshData, HexMesh>>()
+                     .WithInitialSize(10)
+                     .FromNewComponentOnNewGameObject()
+                     .UnderTransformGroup("Hex Meshes");
+
+            Container.BindMemoryPool<MapChunk, MapChunk.Pool, IMemoryPool<MapChunk>>()
+                     .WithInitialSize(10)
+                     .FromComponentInNewPrefab(MapChunkPrefab)
+                     .UnderTransformGroup("Map Chunks");
 
             Container.Bind<INoiseGenerator>                ().To<NoiseGenerator>                ().AsSingle();
             Container.Bind<ITerrainAlphamapLogic>          ().To<TerrainAlphamapLogic>          ().AsSingle().NonLazy();

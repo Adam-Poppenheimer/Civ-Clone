@@ -47,6 +47,7 @@ namespace Assets.Simulation.HexMap {
         void Refresh();
         void RefreshSelfOnly();
 
+        void RefreshCulture   ();
         void RefreshVisibility();
 
         void SetMapData(float data);

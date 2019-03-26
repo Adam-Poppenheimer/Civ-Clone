@@ -73,3 +73,42 @@ MonoBehaviour:
   - 1
   _cultureWidthPercent: 0.25
   _cultureTriangleSideWidth: 0.25
+  _standingWaterData:
+    _useCollider: 1
+    _useUVCoordinates: 0
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 1
+    _weldMesh: 0
+    _convertVerticesToWorld: 0
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 1
+      Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
+  _riversData:
+    _useCollider: 0
+    _useUVCoordinates: 0
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 1
+    _useCellData: 0
+    _useColors: 1
+    _weldMesh: 0
+    _convertVerticesToWorld: 0
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 1
+      Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
+  _cultureData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 1
+    _weldMesh: 1
+    _convertVerticesToWorld: 1
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 1
+      Material: {fileID: 2100000, guid: 068f5922517bafb4497259423643776e, type: 2}

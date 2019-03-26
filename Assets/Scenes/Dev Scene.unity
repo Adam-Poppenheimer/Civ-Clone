@@ -315,8 +315,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef3e14ad4149ced4db3bc876c9487ad0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MapChunkPrefab: {fileID: 114101670272957126, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
   TerrainCollisionMask:
     serializedVersion: 2
     m_Bits: 256
@@ -330,7 +328,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
-  - {fileID: 264209262}
+  - {fileID: 1712891085}
   - {fileID: 1207283526}
   m_Father: {fileID: 0}
   m_RootOrder: 4
@@ -10308,158 +10306,6 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 264045002}
---- !u!1 &264209261
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1707304255927242, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 264209262}
-  - component: {fileID: 264209269}
-  - component: {fileID: 264209268}
-  - component: {fileID: 264209267}
-  - component: {fileID: 264209266}
-  - component: {fileID: 264209265}
-  - component: {fileID: 264209264}
-  - component: {fileID: 264209263}
-  m_Layer: 0
-  m_Name: Rivers
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &264209262
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4580976126136706, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children:
-  - {fileID: 1219768433}
-  m_Father: {fileID: 3764551}
-  m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!33 &264209263
-MeshFilter:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 33719518881381512, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Mesh: {fileID: 0}
---- !u!23 &264209264
-MeshRenderer:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 23701036829649142, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_CastShadows: 1
-  m_ReceiveShadows: 1
-  m_MotionVectors: 1
-  m_LightProbeUsage: 1
-  m_ReflectionProbeUsage: 1
-  m_Materials:
-  - {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
-  m_StaticBatchInfo:
-    firstSubMesh: 0
-    subMeshCount: 0
-  m_StaticBatchRoot: {fileID: 0}
-  m_ProbeAnchor: {fileID: 0}
-  m_LightProbeVolumeOverride: {fileID: 0}
-  m_ScaleInLightmap: 1
-  m_PreserveUVs: 0
-  m_IgnoreNormalsForChartDetection: 0
-  m_ImportantGI: 0
-  m_SelectedEditorRenderState: 3
-  m_MinimumChartSize: 4
-  m_AutoUVMaxDistance: 0.5
-  m_AutoUVMaxAngle: 89
-  m_LightmapParameters: {fileID: 0}
-  m_SortingLayerID: 0
-  m_SortingLayer: 0
-  m_SortingOrder: 0
---- !u!114 &264209265
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114433078087191666, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2a91e8dd37cdd41efb4859b65aced7a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  reflection: {fileID: 0}
-  waterBase: {fileID: 264209268}
---- !u!114 &264209266
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114086380136778574, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 42e7f46d0e5a84171a3909479c1646ba, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &264209267
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114118042193127682, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: de2ab2b9ac93bb544b9552e49030371b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  specularLight: {fileID: 1219768433}
---- !u!114 &264209268
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114964329641554184, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a1da353243062479a9b31c85074a796b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  sharedMaterial: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
-  waterQuality: 0
-  edgeBlend: 0
---- !u!114 &264209269
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 114038655654024650, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 264209261}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 0f93c65a1995a034ca4713b495d8f0ac, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  UseCollider: 0
-  UseUVCoordinates: 0
-  UseUV2Coordinates: 0
-  UseUV3Coordinates: 1
-  UseCellData: 0
-  UseColors: 1
-  WeldMesh: 0
 --- !u!1 &265202608
 GameObject:
   m_ObjectHideFlags: 0
@@ -41853,8 +41699,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenderConfig: {fileID: 11400000, guid: 0e3347699f5f53644a3bff7ad0700ec7, type: 2}
   FeatureConfig: {fileID: 11400000, guid: 144f34a3a3405144c8204846226574d0, type: 2}
-  RiverMesh: {fileID: 264209269}
+  RiverMesh: {fileID: 0}
   ShaderData: {fileID: 1207283527}
+  MapChunkPrefab: {fileID: 114101670272957126, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
+    type: 2}
+  HexSubMeshPrefab: {fileID: 114734035405766960, guid: 40fcc8fc8c4c10d4a9ab6d21a3db0a7d,
+    type: 2}
 --- !u!1 &1026637652
 GameObject:
   m_ObjectHideFlags: 0
@@ -48361,8 +48211,7 @@ CanvasRenderer:
 --- !u!1 &1219768432
 GameObject:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 1830097121484706, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   serializedVersion: 5
   m_Component:
@@ -48377,15 +48226,14 @@ GameObject:
 --- !u!4 &1219768433
 Transform:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 4454703779863292, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
-    type: 2}
+  m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1219768432}
   m_LocalRotation: {x: -0.0015695563, y: 0.99474496, z: -0.10120303, w: -0.015427485}
   m_LocalPosition: {x: 0, y: 10, z: 10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
-  m_Father: {fileID: 264209262}
+  m_Father: {fileID: 1712891085}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1220459976
@@ -69439,6 +69287,89 @@ CanvasRenderer:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1710815934}
+--- !u!1 &1712891084
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 1712891085}
+  - component: {fileID: 1712891089}
+  - component: {fileID: 1712891088}
+  - component: {fileID: 1712891087}
+  - component: {fileID: 1712891086}
+  m_Layer: 0
+  m_Name: Water Data
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1712891085
+Transform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712891084}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children:
+  - {fileID: 1219768433}
+  m_Father: {fileID: 3764551}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1712891086
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712891084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2a91e8dd37cdd41efb4859b65aced7a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  reflection: {fileID: 0}
+  waterBase: {fileID: 1712891089}
+--- !u!114 &1712891087
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712891084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 42e7f46d0e5a84171a3909479c1646ba, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1712891088
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712891084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: de2ab2b9ac93bb544b9552e49030371b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  specularLight: {fileID: 1219768433}
+--- !u!114 &1712891089
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1712891084}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1da353243062479a9b31c85074a796b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sharedMaterial: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
+  waterQuality: 0
+  edgeBlend: 0
 --- !u!1 &1715259252
 GameObject:
   m_ObjectHideFlags: 0

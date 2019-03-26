@@ -12,220 +12,301 @@ using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
-    [RequireComponent(typeof(MeshFilter), typeof(MeshRenderer))]
     public class HexMesh : MonoBehaviour, IHexMesh {
+
+        #region internal types
+
+        public class Pool : MonoMemoryPool<string, HexMeshData, HexMesh> {
+
+            protected override void OnDespawned(HexMesh item) {
+                item.Data = null;
+
+                item.Clear();
+
+                base.OnDespawned(item);
+            }
+
+            protected override void Reinitialize(string name, HexMeshData data, HexMesh item) {
+                item.name = name;
+                item.Data = data;
+
+                item.Clear();
+            }
+
+        }
+
+        #endregion
 
         #region instance fields and properties
 
-        [SerializeField] private bool UseCollider;
-        [SerializeField] private bool UseUVCoordinates;
-        [SerializeField] private bool UseUV2Coordinates;
-        [SerializeField] private bool UseUV3Coordinates;
-        [SerializeField] private bool UseCellData;
-        [SerializeField] private bool UseColors;
-        [SerializeField] private bool WeldMesh;
+        private HexMeshData Data { get; set; }
 
-        private Mesh ManagedMesh;
-        public MeshCollider Collider { get; private set; }
+        [NonSerialized] private List<List<Vector3>> VertexLists     = new List<List<Vector3>>();
+        [NonSerialized] private List<List<int>>     TriangleLists   = new List<List<int>>();
+        [NonSerialized] private List<List<Color>>   CellWeightLists = new List<List<Color>>();
+        [NonSerialized] private List<List<Vector2>> UVLists         = new List<List<Vector2>>();
+        [NonSerialized] private List<List<Vector2>> UV2Lists        = new List<List<Vector2>>();
+        [NonSerialized] private List<List<Vector4>> UV3Lists        = new List<List<Vector4>>();
+        [NonSerialized] private List<List<Vector3>> CellIndexLists  = new List<List<Vector3>>();
+        [NonSerialized] private List<List<Color>>   ColorLists      = new List<List<Color>>();
 
-        [NonSerialized] private List<Vector3> Vertices;
-        [NonSerialized] private List<int>     Triangles;
-        [NonSerialized] private List<Color>   CellWeights;
-        [NonSerialized] private List<Vector2> UVs;
-        [NonSerialized] private List<Vector2> UV2s;
-        [NonSerialized] private List<Vector4> UV3s;
-        [NonSerialized] private List<Vector3> CellIndices;
-        [NonSerialized] private List<Color>   Colors;
+        private List<HexSubMesh> SubMeshes = new List<HexSubMesh>();
 
 
 
         
-        private IMeshWelder MeshWelder;
+        private IMeshWelder                               MeshWelder;
+        private IMemoryPool<HexRenderingData, HexSubMesh> SubMeshPool;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IMeshWelder meshWelder) {
-            MeshWelder = meshWelder;
+        public void InjectDependencies(
+            IMeshWelder meshWelder, IMemoryPool<HexRenderingData, HexSubMesh> subMeshPool
+        ) {
+            MeshWelder  = meshWelder;
+            SubMeshPool = subMeshPool;
         }
 
-        #region Unity message methods
+        #region Unity messages
 
-        private void Awake() {
-            GetComponent<MeshFilter>().mesh = ManagedMesh = new Mesh();
-            ManagedMesh.name = "Hex Mesh";
-            
-            if(UseCollider) {
-                Collider = gameObject.AddComponent<MeshCollider>();
-            }
-        }        
+        private void OnDestroy() {
+            Clear();
+        }
 
-        #endregion        
+        #endregion
 
         public void Clear() {
-            ManagedMesh.Clear();
-            Vertices  = ListPool<Vector3>.Get();
-            Triangles = ListPool<int>    .Get();
-
-            if(UseCellData) {
-                CellWeights = ListPool<Color>  .Get();
-                CellIndices = ListPool<Vector3>.Get();
+            foreach(var subMesh in SubMeshes) {
+                SubMeshPool.Despawn(subMesh);
             }
 
-            if(UseUVCoordinates) {
-                UVs = ListPool<Vector2>.Get();
-            }
+            SubMeshes.Clear();
 
-            if(UseUV2Coordinates) {
-                UV2s = ListPool<Vector2>.Get();
-            }
+            if(Data != null) {
+                AddNewVertexCollection();
+            }else {
+                VertexLists    .ForEach(list => ListPool<Vector3>.Add(list));
+                TriangleLists  .ForEach(list => ListPool<int>    .Add(list));
+                CellWeightLists.ForEach(list => ListPool<Color>  .Add(list));
+                CellIndexLists .ForEach(list => ListPool<Vector3>.Add(list));
+                UVLists        .ForEach(list => ListPool<Vector2>.Add(list));
+                UV2Lists       .ForEach(list => ListPool<Vector2>.Add(list));
+                UV3Lists       .ForEach(list => ListPool<Vector4>.Add(list));
+                ColorLists     .ForEach(list => ListPool<Color>  .Add(list));
 
-            if(UseUV3Coordinates) {
-                UV3s = ListPool<Vector4>.Get();
-            }
-
-            if(UseColors) {
-                Colors = ListPool<Color>.Get();
+                VertexLists    .Clear();
+                TriangleLists  .Clear();
+                CellWeightLists.Clear();
+                CellIndexLists .Clear();
+                UVLists        .Clear();
+                UV2Lists       .Clear();
+                UV3Lists       .Clear();
+                ColorLists     .Clear();
             }
         }
 
         public void Apply() {
-            ManagedMesh.SetVertices(Vertices);
-            ListPool<Vector3>.Add(Vertices);
+            for(int i = 0; i < VertexLists.Count; i++) {
+                List<Vector3> vertexList = VertexLists[i];
 
-            ManagedMesh.SetTriangles(Triangles, 0);
-            ListPool<int>.Add(Triangles);
+                var newSubMesh = SubMeshPool.Spawn(Data.RenderingData);
 
-            if(UseCellData) {
-                ManagedMesh.SetColors(CellWeights);
-                ListPool<Color>.Add(CellWeights);
+                newSubMesh.transform.SetParent(transform, false);
 
-                ManagedMesh.SetUVs(3, CellIndices);
-                ListPool<Vector3>.Add(CellIndices);
+                newSubMesh.UseCollider = Data.UseCollider;
+
+                newSubMesh.Mesh.SetVertices(vertexList);
+                ListPool<Vector3>.Add(vertexList);
+
+                newSubMesh.Mesh.SetTriangles(TriangleLists[i], 0);
+                ListPool<int>.Add(TriangleLists[i]);
+
+                if(Data.UseCellData) {
+                    newSubMesh.Mesh.SetColors(CellWeightLists[i]);
+                    ListPool<Color>.Add(CellWeightLists[i]);
+
+                    newSubMesh.Mesh.SetUVs(3, CellIndexLists[i]);
+                    ListPool<Vector3>.Add(CellIndexLists[i]);
+                }
+
+                if(Data.UseUVCoordinates) {
+                    newSubMesh.Mesh.SetUVs(0, UVLists[i]);
+                    ListPool<Vector2>.Add(UVLists[i]);
+                }
+
+                if(Data.UseUV2Coordinates) {
+                    newSubMesh.Mesh.SetUVs(1, UV2Lists[i]);
+                    ListPool<Vector2>.Add(UV2Lists[i]);
+                }
+
+                if(Data.UseUV3Coordinates) {
+                    newSubMesh.Mesh.SetUVs(2, UV3Lists[i]);
+                    ListPool<Vector4>.Add(UV3Lists[i]);
+                }
+
+                if(Data.UseColors) {
+                    newSubMesh.Mesh.SetColors(ColorLists[i]);
+                    ListPool<Color>.Add(ColorLists[i]);
+                }
+
+                if(Data.WeldMesh) {
+                    MeshWelder.Weld(newSubMesh.Mesh);
+                }
+
+                SubMeshes.Add(newSubMesh);
             }
 
-            if(UseUVCoordinates) {
-                ManagedMesh.SetUVs(0, UVs);
-                ListPool<Vector2>.Add(UVs);
-            }
-
-            if(UseUV2Coordinates) {
-                ManagedMesh.SetUVs(1, UV2s);
-                ListPool<Vector2>.Add(UV2s);
-            }
-
-            if(UseUV3Coordinates) {
-                ManagedMesh.SetUVs(2, UV3s);
-                ListPool<Vector4>.Add(UV3s);
-            }
-
-            if(UseColors) {
-                ManagedMesh.SetColors(Colors);
-                ListPool<Color>.Add(Colors);
-            }
-
-            if(WeldMesh) {
-                MeshWelder.Weld(ManagedMesh);
-            }
-
-            ManagedMesh.RecalculateNormals();
-
-            if(UseCollider) {
-                Collider.sharedMesh = ManagedMesh;
-            }
+            VertexLists    .Clear();
+            TriangleLists  .Clear();
+            CellWeightLists.Clear();
+            CellIndexLists .Clear();
+            UVLists        .Clear();
+            UV2Lists       .Clear();
+            UV3Lists       .Clear();
+            ColorLists     .Clear();
         }
 
         public void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
-            int vertexIndex = Vertices.Count;
+            var activeVertices = VertexLists.Last();
 
-		    Vertices.Add(vertexOne);
-		    Vertices.Add(vertexTwo);
-		    Vertices.Add(vertexThree);
+            if(activeVertices.Count >= 65531) {
+                activeVertices = AddNewVertexCollection();
+            }
 
-		    Triangles.Add(vertexIndex);
-		    Triangles.Add(vertexIndex + 1);
-		    Triangles.Add(vertexIndex + 2);
+            int vertexIndex = activeVertices.Count;
+
+            if(Data.ConvertVerticesToWorld) {
+                activeVertices.Add(transform.InverseTransformPoint(vertexOne  ));
+		        activeVertices.Add(transform.InverseTransformPoint(vertexTwo  ));
+		        activeVertices.Add(transform.InverseTransformPoint(vertexThree));
+            }else {
+                activeVertices.Add(vertexOne);
+		        activeVertices.Add(vertexTwo);
+		        activeVertices.Add(vertexThree);
+            }		    
+
+            var activeTriangles = TriangleLists.Last();
+
+		    activeTriangles.Add(vertexIndex);
+		    activeTriangles.Add(vertexIndex + 1);
+		    activeTriangles.Add(vertexIndex + 2);
         }
 
         public void AddQuad(Vector3 bottomLeft, Vector3 bottomRight, Vector3 topLeft, Vector3 topRight) {
-            int vertexIndex = Vertices.Count;
+            var activeVertices = VertexLists.Last();
 
-            Vertices.Add(bottomLeft);
-		    Vertices.Add(bottomRight);
-		    Vertices.Add(topLeft);
-		    Vertices.Add(topRight);
+            if(activeVertices.Count >= 65530) {
+                activeVertices = AddNewVertexCollection();
+            }
 
-		    Triangles.Add(vertexIndex);
-		    Triangles.Add(vertexIndex + 2);
-		    Triangles.Add(vertexIndex + 1);
-		    Triangles.Add(vertexIndex + 1);
-		    Triangles.Add(vertexIndex + 2);
-		    Triangles.Add(vertexIndex + 3);
+            int vertexIndex = activeVertices.Count;
+
+            if(Data.ConvertVerticesToWorld) {
+                activeVertices.Add(transform.InverseTransformPoint(bottomLeft ));
+                activeVertices.Add(transform.InverseTransformPoint(bottomRight));
+                activeVertices.Add(transform.InverseTransformPoint(topLeft    ));
+                activeVertices.Add(transform.InverseTransformPoint(topRight   ));
+            }else {
+                activeVertices.Add(bottomLeft);
+		        activeVertices.Add(bottomRight);
+		        activeVertices.Add(topLeft);
+		        activeVertices.Add(topRight);
+            }
+
+            var activeTriangles = TriangleLists.Last();
+
+		    activeTriangles.Add(vertexIndex);
+		    activeTriangles.Add(vertexIndex + 2);
+		    activeTriangles.Add(vertexIndex + 1);
+		    activeTriangles.Add(vertexIndex + 1);
+		    activeTriangles.Add(vertexIndex + 2);
+		    activeTriangles.Add(vertexIndex + 3);
         }
 
         public void AddTriangleUV(Vector2 uv1, Vector2 uv2, Vector2 uv3) {
-            UVs.Add(uv1);
-            UVs.Add(uv2);
-            UVs.Add(uv3);
+            var activeUV = UVLists.Last();
+
+            activeUV.Add(uv1);
+            activeUV.Add(uv2);
+            activeUV.Add(uv3);
         }
 
         public void AddQuadUV(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4) {
-            UVs.Add(uv1);
-            UVs.Add(uv2);
-            UVs.Add(uv3);
-            UVs.Add(uv4);
+            var activeUV = UVLists.Last();
+
+            activeUV.Add(uv1);
+            activeUV.Add(uv2);
+            activeUV.Add(uv3);
+            activeUV.Add(uv4);
         }
 
         public void AddQuadUV(float uMin, float uMax, float vMin, float vMax) {
-            UVs.Add(new Vector2(uMin, vMin));
-            UVs.Add(new Vector2(uMax, vMin));
-            UVs.Add(new Vector2(uMin, vMax));
-            UVs.Add(new Vector2(uMax, vMax));
+            var activeUV = UVLists.Last();
+
+            activeUV.Add(new Vector2(uMin, vMin));
+            activeUV.Add(new Vector2(uMax, vMin));
+            activeUV.Add(new Vector2(uMin, vMax));
+            activeUV.Add(new Vector2(uMax, vMax));
         }
 
         public void AddTriangleUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3) {
-            UV2s.Add(uv1);
-            UV2s.Add(uv2);
-            UV2s.Add(uv3);
+            var activeUV2 = UV2Lists.Last();
+
+            activeUV2.Add(uv1);
+            activeUV2.Add(uv2);
+            activeUV2.Add(uv3);
         }
 
         public void AddQuadUV2(Vector2 uv1, Vector2 uv2, Vector2 uv3, Vector2 uv4) {
-            UV2s.Add(uv1);
-            UV2s.Add(uv2);
-            UV2s.Add(uv3);
-            UV2s.Add(uv4);
+            var activeUV2 = UV2Lists.Last();
+
+            activeUV2.Add(uv1);
+            activeUV2.Add(uv2);
+            activeUV2.Add(uv3);
+            activeUV2.Add(uv4);
         }
 
         public void AddQuadUV2(float uMin, float uMax, float vMin, float vMax) {
-            UV2s.Add(new Vector2(uMin, vMin));
-            UV2s.Add(new Vector2(uMax, vMin));
-            UV2s.Add(new Vector2(uMin, vMax));
-            UV2s.Add(new Vector2(uMax, vMax));
+            var activeUV2 = UV2Lists.Last();
+
+            activeUV2.Add(new Vector2(uMin, vMin));
+            activeUV2.Add(new Vector2(uMax, vMin));
+            activeUV2.Add(new Vector2(uMin, vMax));
+            activeUV2.Add(new Vector2(uMax, vMax));
         }
 
         public void AddTriangleUV3(Vector4 uv1, Vector4 uv2, Vector4 uv3) {
-            UV3s.Add(uv1);
-            UV3s.Add(uv2);
-            UV3s.Add(uv3);
+            var activeUV3 = UV3Lists.Last();
+
+            activeUV3.Add(uv1);
+            activeUV3.Add(uv2);
+            activeUV3.Add(uv3);
         }
 
         public void AddQuadUV3(Vector4 uv1, Vector4 uv2, Vector4 uv3, Vector4 uv4) {
-            UV3s.Add(uv1);
-            UV3s.Add(uv2);
-            UV3s.Add(uv3);
-            UV3s.Add(uv4);
+            var activeUV3 = UV3Lists.Last();
+
+            activeUV3.Add(uv1);
+            activeUV3.Add(uv2);
+            activeUV3.Add(uv3);
+            activeUV3.Add(uv4);
         }
 
         public void AddTriangleCellData(Vector3 indices, Color weights1, Color weights2, Color weights3) {
-            CellIndices.Add(indices);
-            CellIndices.Add(indices);
-            CellIndices.Add(indices);
+            var activeIndices = CellIndexLists.Last();
 
-            CellWeights.Add(weights1);
-            CellWeights.Add(weights2);
-            CellWeights.Add(weights3);
+            activeIndices.Add(indices);
+            activeIndices.Add(indices);
+            activeIndices.Add(indices);
+
+            var activeWeights = CellWeightLists.Last();
+
+            activeWeights.Add(weights1);
+            activeWeights.Add(weights2);
+            activeWeights.Add(weights3);
         }
 
         public void AddTriangleCellData(Vector3 indices, Color weights) {
@@ -233,15 +314,19 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2, Color weights3, Color weights4) {
-            CellIndices.Add(indices);
-            CellIndices.Add(indices);
-            CellIndices.Add(indices);
-            CellIndices.Add(indices);
+            var activeIndices = CellIndexLists.Last();
 
-            CellWeights.Add(weights1);
-            CellWeights.Add(weights2);
-            CellWeights.Add(weights3);
-            CellWeights.Add(weights4);
+            activeIndices.Add(indices);
+            activeIndices.Add(indices);
+            activeIndices.Add(indices);
+            activeIndices.Add(indices);
+
+            var activeWeights = CellWeightLists.Last();
+
+            activeWeights.Add(weights1);
+            activeWeights.Add(weights2);
+            activeWeights.Add(weights3);
+            activeWeights.Add(weights4);
         }
 
         public void AddQuadCellData(Vector3 indices, Color weights1, Color weights2) {
@@ -253,37 +338,77 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void AddTriangleColor(Color color) {
-            Colors.Add(color);
-            Colors.Add(color);
-            Colors.Add(color);
+            var activeColors = ColorLists.Last();
+
+            activeColors.Add(color);
+            activeColors.Add(color);
+            activeColors.Add(color);
         }
 
         public void AddTriangleColor(Color colorOne, Color colorTwo, Color colorThree) {
-            Colors.Add(colorOne);
-            Colors.Add(colorTwo);
-            Colors.Add(colorThree);
+            var activeColors = ColorLists.Last();
+
+            activeColors.Add(colorOne);
+            activeColors.Add(colorTwo);
+            activeColors.Add(colorThree);
         }
 
         public void AddQuadColor(Color colorOne, Color colorTwo, Color colorThree, Color colorFour) {
-            Colors.Add(colorOne);
-            Colors.Add(colorTwo);
-            Colors.Add(colorThree);
-            Colors.Add(colorFour);
+            var activeColors = ColorLists.Last();
+
+            activeColors.Add(colorOne);
+            activeColors.Add(colorTwo);
+            activeColors.Add(colorThree);
+            activeColors.Add(colorFour);
         }
 
         public void AddQuadColor(Color colorOne, Color colorTwo) {
-            Colors.Add(colorOne);
-            Colors.Add(colorOne);
+            var activeColors = ColorLists.Last();
 
-            Colors.Add(colorTwo);
-            Colors.Add(colorTwo);
+            activeColors.Add(colorOne);
+            activeColors.Add(colorOne);
+
+            activeColors.Add(colorTwo);
+            activeColors.Add(colorTwo);
         }
 
         public void AddQuadColor(Color color) {
-            Colors.Add(color);
-            Colors.Add(color);
-            Colors.Add(color);
-            Colors.Add(color);
+            var activeColors = ColorLists.Last();
+
+            activeColors.Add(color);
+            activeColors.Add(color);
+            activeColors.Add(color);
+            activeColors.Add(color);
+        }
+
+        private List<Vector3> AddNewVertexCollection() {
+            var newVertices = ListPool<Vector3>.Get();
+
+            VertexLists  .Add(newVertices);
+            TriangleLists.Add(ListPool<int>.Get());
+
+            if(Data.UseCellData) {
+                CellWeightLists.Add(ListPool<Color>  .Get());
+                CellIndexLists .Add(ListPool<Vector3>.Get());
+            }
+
+            if(Data.UseUVCoordinates) {
+                UVLists.Add(ListPool<Vector2>.Get());
+            }
+
+            if(Data.UseUV2Coordinates) {
+                UV2Lists.Add(ListPool<Vector2>.Get());
+            }
+
+            if(Data.UseUV3Coordinates) {
+                UV3Lists.Add(ListPool<Vector4>.Get());
+            }
+
+            if(Data.UseColors) {
+                ColorLists.Add(ListPool<Color>.Get());
+            }
+
+            return newVertices;
         }
 
         #endregion

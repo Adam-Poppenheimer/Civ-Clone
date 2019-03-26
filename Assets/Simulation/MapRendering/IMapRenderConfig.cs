@@ -93,6 +93,11 @@ namespace Assets.Simulation.MapRendering {
 
         float CultureTriangleSideWidth { get; }
 
+
+        HexMeshData StandingWaterData { get; }
+        HexMeshData RiversData         { get; }
+        HexMeshData CultureData       { get; }
+
         #endregion
 
         #region methods

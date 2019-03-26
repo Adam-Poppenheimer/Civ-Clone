@@ -182,6 +182,14 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        public void RefreshCulture() {
+            if(OverlappingChunks != null) {
+                foreach(var chunk in OverlappingChunks) {
+                    chunk.RefreshCulture();
+                }
+            }
+        }
+
         public void RefreshVisibility() {
             if(OverlappingChunks != null) {
                 foreach(var chunk in OverlappingChunks) {
