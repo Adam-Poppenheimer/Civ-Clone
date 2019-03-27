@@ -17,8 +17,10 @@ namespace Assets.Simulation.HexMap {
 
         RiverFlow GetFlowOfRiverAtEdge(IHexCell cell, HexDirection edge);
 
-        bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow direction);
-        void AddRiverToCell   (IHexCell cell, HexDirection edge, RiverFlow direction);
+        bool CanAddRiverToCell(IHexCell cell, HexDirection edge, RiverFlow flow);
+        void AddRiverToCell   (IHexCell cell, HexDirection edge, RiverFlow flow);
+
+        void OverrideRiverOnCell(IHexCell cell, HexDirection edge, RiverFlow flow);
 
         void RemoveRiverFromCellInDirection(IHexCell cell, HexDirection edge);
 

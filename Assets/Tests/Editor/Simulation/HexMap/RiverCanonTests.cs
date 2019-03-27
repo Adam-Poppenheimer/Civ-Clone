@@ -19,13 +19,12 @@ namespace Assets.Tests.Simulation.HexMap {
 
         public class CanAddRiverToCellTestData {
 
-            public HexCellTestData CellToTest = new HexCellTestData();
+            public HexCellTestData Center    = new HexCellTestData();
+            public HexCellTestData Left      = new HexCellTestData();
+            public HexCellTestData Right     = new HexCellTestData();
+            public HexCellTestData NextRight = new HexCellTestData();
 
-            public HexCellTestData Neighbor;
-            public HexCellTestData PreviousNeighbor;
-            public HexCellTestData NextNeighbor;
-
-            public RiverFlow FlowToTest = RiverFlow.Clockwise;
+            public RiverFlow FlowToTest;
 
         }
 
@@ -33,10 +32,11 @@ namespace Assets.Tests.Simulation.HexMap {
 
             public bool IsUnderwater;
 
-            public CellShape Shape;
+        }
 
-            public bool[]      HasRiverAtEdge    = new bool[6];
-            public RiverFlow[] FlowOfRiverAtEdge = new RiverFlow[6];
+        public class RiverData {
+
+            public RiverFlow Flow;
 
         }
 
@@ -44,350 +44,36 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region static fields and properties
 
-        public static IEnumerable CanAddRiverToCellTestCases {
+        public static IEnumerable CanAddRiverToCell_NoRiverCases {
             get {
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    Neighbor = new HexCellTestData()
-                }).SetName("No existing rivers, only neighbor exists").Returns(true);
+
+                }).SetName("All cells exist and are land").Returns(true);
 
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
+                    Right     = new HexCellTestData() { IsUnderwater = true },
 
-                }).SetName("No existing rivers, neighbor does not exist").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    CellToTest = new HexCellTestData() { IsUnderwater = true },
-                    Neighbor = new HexCellTestData()
-                }).SetName("Cell is underwater").Returns(false);
+                }).SetName("Right exists and is underwater").Returns(false);
 
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    Neighbor = new HexCellTestData() { IsUnderwater = true }
-                }).SetName("Neighbor is underwater").Returns(false);
+                    Right     = null,
+
+                }).SetName("Right does not exist").Returns(false);
 
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[6] { false, true, false, false, false, false }
-                    },
-                    Neighbor = new HexCellTestData()
-                }).SetName("River already exists").Returns(false);
+                    Center    = new HexCellTestData() { IsUnderwater = true },
+
+                }).SetName("Right is land, Center is water").Returns(false);
 
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[1] { RiverFlow.Counterclockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData(),
-                }).SetName("Checking Clockwise flow, River with Counterclockwise flow in previous direction").Returns(false);
+                    Left      = null,
+
+                }).SetName("Left does not exist").Returns(true);
 
                 yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[1] { RiverFlow.Clockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData(),
-                }).SetName("Checking Clockwise flow, River with Clockwise flow in previous direction").Returns(true);
+                    NextRight = null
 
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[1] { RiverFlow.Clockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData(),
-                }).SetName("Checking Counterclockwise flow, River with Clockwise flow in previous direction").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[1] { RiverFlow.Counterclockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData(),
-                }).SetName("Checking Counterclockwise flow, River with Counterclockwise flow in previous direction").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[3] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Clockwise flow, River with Counterclockwise flow in next direction").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[3] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Clockwise flow, River with Clockwise flow in next direction").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[3] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Counterclockwise flow, River with Clockwise flow in next direction").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge    = new bool[6] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[3] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Counterclockwise flow, River with Counterclockwise flow in next direction").Returns(true);
-
-
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData(),
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, false, false, true },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                        }
-                    },
-                }).SetName("Checking Clockwise flow, river between previous neighbor and neighbor has Clockwise flow").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData(),
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, false, false, true },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise,
-                        }
-                    },
-                }).SetName("Checking Clockwise flow, river between previous neighbor and neighbor has Counterclockwise flow").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData(),
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, false, false, true },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                        }
-                    },
-                }).SetName("Checking Counterclockwise flow, river between previous neighbor and neighbor has Clockwise flow").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData(),
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, false, false, true },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise,
-                        }
-                    },
-                }).SetName("Checking Counterclockwise flow, river between previous neighbor and neighbor has Counterclockwise flow").Returns(false);
-
-
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, true, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise
-                        }
-                    },
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Clockwise flow, river between next neighbor and neighbor has Clockwise flow").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, true, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Counterclockwise
-                        }
-                    },
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Clockwise flow, river between next neighbor and neighbor has Counterclockwise flow").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, true, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Clockwise
-                        }
-                    },
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Counterclockwise flow, river between next neighbor and neighbor has Clockwise flow").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData(),
-                    Neighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, false, true, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] {
-                            RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise,
-                            RiverFlow.Counterclockwise
-                        }
-                    },
-                    NextNeighbor = new HexCellTestData()
-                }).SetName("Checking Counterclockwise flow, river between next neighbor and neighbor has Counterclockwise flow").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData()
-                }).SetName("This/Previous has CCW river, Previous/Neighbor has CW river, checking CW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData()
-                }).SetName("This/Previous has CCW river, Previous/Neighbor has CW river, checking CCW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData()
-                }).SetName("This/Previous has CW river, Previous/Neighbor has CCW river, checking CW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData()
-                }).SetName("This/Previous has CW river, Previous/Neighbor has CCW river, checking CWW").Returns(true);
-
-
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
-                    }
-                }).SetName("This/Next has CW river, Next/Neighbor has CCW river, checking CW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise }
-                    }
-                }).SetName("This/Next has CW river, Next/Neighbor has CCW river, checking CWW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise }
-                    }
-                }).SetName("This/Next has CWW river, Next/Neighbor has CW river, checking CW").Returns(true);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Counterclockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { false, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    Neighbor = new HexCellTestData(),
-                    NextNeighbor = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, false, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise }
-                    }
-                }).SetName("This/Next has CWW river, Next/Neighbor has CW river, checking CWW").Returns(true);
-
-
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Clockwise, RiverFlow.Clockwise, RiverFlow.Counterclockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor         = new HexCellTestData(),
-                    NextNeighbor     = new HexCellTestData()
-                }).SetName("Previous corner is valid, next corner is invalid").Returns(false);
-
-                yield return new TestCaseData(new CanAddRiverToCellTestData() {
-                    FlowToTest = RiverFlow.Clockwise,
-                    CellToTest = new HexCellTestData() {
-                        HasRiverAtEdge = new bool[] { true, false, true, false, false, false },
-                        FlowOfRiverAtEdge = new RiverFlow[] { RiverFlow.Counterclockwise, RiverFlow.Clockwise, RiverFlow.Clockwise }
-                    },
-                    PreviousNeighbor = new HexCellTestData(),
-                    Neighbor         = new HexCellTestData(),
-                    NextNeighbor     = new HexCellTestData()
-                }).SetName("Previous corner is invalid, next corner is valid").Returns(false);
+                }).SetName("NextRight does not exist").Returns(true);
             }
         }
 
@@ -395,7 +81,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid> MockGrid;
+        private Mock<IHexGrid>                  MockGrid;
+        private Mock<IRiverCornerValidityLogic> MockRiverCornerValidityLogic;
 
         private HexCellSignals CellSignals;
 
@@ -407,12 +94,14 @@ namespace Assets.Tests.Simulation.HexMap {
 
         [SetUp]
         public void CommonInstall() {
-            MockGrid = new Mock<IHexGrid>();
+            MockGrid                     = new Mock<IHexGrid>();
+            MockRiverCornerValidityLogic = new Mock<IRiverCornerValidityLogic>();
 
             CellSignals = new HexCellSignals();
 
-            Container.Bind<IHexGrid>      ().FromInstance(MockGrid.Object);
-            Container.Bind<HexCellSignals>().FromInstance(CellSignals);
+            Container.Bind<IHexGrid>                 ().FromInstance(MockGrid                    .Object);
+            Container.Bind<IRiverCornerValidityLogic>().FromInstance(MockRiverCornerValidityLogic.Object);
+            Container.Bind<HexCellSignals>           ().FromInstance(CellSignals);
 
             Container.Bind<RiverCanon>().AsSingle();
         }
@@ -422,60 +111,67 @@ namespace Assets.Tests.Simulation.HexMap {
         #region tests
 
         [Test]
-        [TestCaseSource("CanAddRiverToCellTestCases")]
+        [TestCaseSource("CanAddRiverToCell_NoRiverCases")]
         public bool CanAddRiverToCellTests(CanAddRiverToCellTestData testData) {
-            var cellToTest = BuildHexCell(testData.CellToTest);
+            var center = BuildHexCell(testData.Center);
 
-            var previousNeighbor = testData.PreviousNeighbor != null ? BuildHexCell(testData.PreviousNeighbor) : null;
-            var neighbor         = testData.Neighbor         != null ? BuildHexCell(testData.Neighbor)         : null;
-            var nextNeighbor     = testData.NextNeighbor     != null ? BuildHexCell(testData.NextNeighbor)     : null;
+            var left      = testData.Left      != null ? BuildHexCell(testData.Left)      : null;
+            var right     = testData.Right     != null ? BuildHexCell(testData.Right)     : null;
+            var nextRight = testData.NextRight != null ? BuildHexCell(testData.NextRight) : null;
 
-            MockGrid.Setup(grid => grid.GetNeighbor(cellToTest, HexDirection.NE)).Returns(previousNeighbor);
-            MockGrid.Setup(grid => grid.GetNeighbor(cellToTest, HexDirection.E)) .Returns(neighbor);
-            MockGrid.Setup(grid => grid.GetNeighbor(cellToTest, HexDirection.SE)).Returns(nextNeighbor);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.NE)).Returns(left);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E)) .Returns(right);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
 
             MockGrid.Setup(grid => grid.GetNeighbors(It.IsAny<IHexCell>())).Returns(new List<IHexCell>());
 
-            if(previousNeighbor != null) {
-                MockGrid.Setup(grid => grid.GetNeighbor(previousNeighbor, HexDirection.SE)).Returns(neighbor);
-            }
-
-            if(neighbor != null) {
-                MockGrid.Setup(grid => grid.GetNeighbor(neighbor, HexDirection.NW)).Returns(previousNeighbor);
-                MockGrid.Setup(grid => grid.GetNeighbor(neighbor, HexDirection.SW)).Returns(nextNeighbor);
-            }
-
-            if(nextNeighbor != null) {
-                MockGrid.Setup(grid => grid.GetNeighbor(nextNeighbor, HexDirection.NE)).Returns(neighbor);
-            }
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow?>(), It.IsAny<RiverFlow?>())
+            ).Returns(true);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            for(int i = 0; i < 6; i++) {
-                if(testData.CellToTest.HasRiverAtEdge[i]) {
-                    riverCanon.AddRiverToCell(cellToTest, (HexDirection)i, testData.CellToTest.FlowOfRiverAtEdge[i]);
-                }
-
-                if(testData.PreviousNeighbor != null && testData.PreviousNeighbor.HasRiverAtEdge[i]) {
-                    riverCanon.AddRiverToCell(previousNeighbor, (HexDirection)i, testData.PreviousNeighbor.FlowOfRiverAtEdge[i]);
-                }
-
-                if(testData.Neighbor != null && testData.Neighbor.HasRiverAtEdge[i]) {
-                    riverCanon.AddRiverToCell(neighbor, (HexDirection)i, testData.Neighbor.FlowOfRiverAtEdge[i]);
-                }
-
-                if(testData.NextNeighbor != null && testData.NextNeighbor.HasRiverAtEdge[i]) {
-                    riverCanon.AddRiverToCell(nextNeighbor, (HexDirection)i, testData.NextNeighbor.FlowOfRiverAtEdge[i]);
-                }
-            }
-
-            return riverCanon.CanAddRiverToCell(cellToTest, HexDirection.E, testData.FlowToTest);
+            return riverCanon.CanAddRiverToCell(center, HexDirection.E, testData.FlowToTest);
         }
 
+        public void CanAddRiverToCell_FalseIfPreviousCornerInvalid() {
+            var center    = BuildHexCell(new HexCellTestData());
+            var left      = BuildHexCell(new HexCellTestData());
+            var right     = BuildHexCell(new HexCellTestData());
+            var nextRight = BuildHexCell(new HexCellTestData());
+
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.NE)).Returns(left);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(RiverFlow.Clockwise, null, RiverFlow.Clockwise)
+            ).Returns(false);
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(RiverFlow.Clockwise, RiverFlow.Counterclockwise, null)
+            ).Returns(true);
+
+            var riverCanon = Container.Resolve<RiverCanon>();
+
+            riverCanon.OverrideRiverOnCell(center, HexDirection.E,  RiverFlow.Clockwise);
+            riverCanon.OverrideRiverOnCell(left,   HexDirection.SE, RiverFlow.Clockwise);
+            riverCanon.OverrideRiverOnCell(center, HexDirection.SE, RiverFlow.Counterclockwise);
+
+            Assert.IsFalse(riverCanon.CanAddRiverToCell(center, HexDirection.E, RiverFlow.Clockwise));
+        }
+
+        public void CanAddRiverToCell_FalseIfNextCornerInvalid() {
+            throw new NotImplementedException();
+        }
 
         [Test]
         public void AddRiverToCell_ReflectedInHasRiverAlongEdgeOfThisCell() {
             var cellToTest = BuildHexCell(false, new List<IHexCell>() { BuildHexCell(false) });
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>())
+            ).Returns(true);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
@@ -490,6 +186,10 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var cellToTest = BuildHexCell(false, neighbors);
 
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>())
+            ).Returns(true);
+
             var riverCanon = Container.Resolve<RiverCanon>();
 
             riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
@@ -500,6 +200,10 @@ namespace Assets.Tests.Simulation.HexMap {
         [Test]
         public void AddRiverToCell_ReflectedInGetEdgesWithRiversOfThisCell() {
             var cellToTest = BuildHexCell(false, new List<IHexCell>() { BuildHexCell(false) });
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>())
+            ).Returns(true);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
@@ -516,6 +220,10 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var cellToTest = BuildHexCell(false, neighbors);
 
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>())
+            ).Returns(true);
+
             var riverCanon = Container.Resolve<RiverCanon>();
 
             riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
@@ -528,6 +236,10 @@ namespace Assets.Tests.Simulation.HexMap {
         [Test]
         public void AddRiverToCell_ReflectedInGetFlowDirectionOfRiverAtEdgeOfThisCell() {
             var cellToTest = BuildHexCell(false, new List<IHexCell>() { BuildHexCell(false) });
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>(), It.IsAny<RiverFlow>())
+            ).Returns(true);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
@@ -546,7 +258,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             Assert.AreEqual(
                 RiverFlow.Clockwise, riverCanon.GetFlowOfRiverAtEdge(neighbors[0], ((HexDirection)0).Opposite())
@@ -564,6 +276,10 @@ namespace Assets.Tests.Simulation.HexMap {
             };
 
             var cellToTest = BuildHexCell(false, neighbors, out mockCellToTest);
+
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow?>(), It.IsAny<RiverFlow?>())
+            ).Returns(true);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
@@ -598,7 +314,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
 
             Assert.IsTrue(riverCanon.HasRiver(cellToTest));
         }
@@ -619,7 +335,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Clockwise);
 
             Assert.Throws<InvalidOperationException>(() => riverCanon.GetFlowOfRiverAtEdge(cellToTest, (HexDirection)1));
         }
@@ -631,7 +347,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(cellToTest, (HexDirection)0));
@@ -645,7 +362,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(neighbors[0], ((HexDirection)0).Opposite()));
@@ -657,7 +375,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(cellToTest), (HexDirection)0);
@@ -671,7 +390,8 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+
             riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(neighbors[0]), ((HexDirection)0).Opposite());
@@ -691,7 +411,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
             mockCellToTest   .ResetCalls();
             mockNeighborOne  .ResetCalls();
@@ -731,9 +451,9 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
 
             riverCanon.RemoveAllRiversFromCell(cellToTest);
 
@@ -756,11 +476,15 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var cellToTest = BuildHexCell(false, neighbors);
 
+            MockRiverCornerValidityLogic.Setup(
+                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow?>(), It.IsAny<RiverFlow?>())
+            ).Returns(true);
+
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)1, RiverFlow.Counterclockwise);
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)2, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, HexDirection.NE, RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, HexDirection.E,  RiverFlow.Counterclockwise);
+            riverCanon.OverrideRiverOnCell(cellToTest, HexDirection.SE, RiverFlow.Counterclockwise);
 
             mockNeighborOne  .Setup(cell => cell.Terrain).Returns(CellTerrain.FreshWater);
             mockNeighborThree.Setup(cell => cell.Terrain).Returns(CellTerrain.FreshWater);
@@ -768,7 +492,7 @@ namespace Assets.Tests.Simulation.HexMap {
             riverCanon.ValidateRivers(cellToTest);
 
             CollectionAssert.AreEquivalent(
-                new List<HexDirection>() { (HexDirection)1 },
+                new List<HexDirection>() { HexDirection.E },
                 riverCanon.GetEdgesWithRivers(cellToTest),
                 "GetEdgesWithRivers returned an unexpected value"
             );
@@ -817,7 +541,6 @@ namespace Assets.Tests.Simulation.HexMap {
             var mockCell = new Mock<IHexCell>();
 
             mockCell.Setup(cell => cell.Terrain).Returns(testData.IsUnderwater ? CellTerrain.FreshWater : CellTerrain.Grassland);
-            mockCell.Setup(cell => cell.Shape).Returns(testData.Shape);
 
             var newCell = mockCell.Object;
 

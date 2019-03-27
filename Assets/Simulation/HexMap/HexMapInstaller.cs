@@ -29,12 +29,13 @@ namespace Assets.Simulation.HexMap {
             var simulationConfig = Resources.Load<HexMapSimulationConfig>("Hex Map/Hex Map Simulation Config");
             Container.Bind<IHexMapSimulationConfig>().To<HexMapSimulationConfig>().FromInstance(simulationConfig);
 
-            Container.Bind<ICellYieldLogic>        ().To<CellYieldLogic>        ().AsSingle();
-            Container.Bind<IRiverCanon>            ().To<RiverCanon>            ().AsSingle();
-            Container.Bind<IFreshWaterLogic>       ().To<FreshWaterLogic>       ().AsSingle();
-            Container.Bind<ICellModificationLogic> ().To<CellModificationLogic> ().AsSingle();
-            Container.Bind<IInherentCellYieldLogic>().To<InherentCellYieldLogic>().AsSingle();
-            Container.Bind<IHexPathfinder>         ().To<HexPathfinder>         ().AsSingle();
+            Container.Bind<ICellYieldLogic>          ().To<CellYieldLogic>          ().AsSingle();
+            Container.Bind<IRiverCanon>              ().To<RiverCanon>              ().AsSingle();
+            Container.Bind<IFreshWaterLogic>         ().To<FreshWaterLogic>         ().AsSingle();
+            Container.Bind<ICellModificationLogic>   ().To<CellModificationLogic>   ().AsSingle();
+            Container.Bind<IInherentCellYieldLogic>  ().To<InherentCellYieldLogic>  ().AsSingle();
+            Container.Bind<IHexPathfinder>           ().To<HexPathfinder>           ().AsSingle();
+            Container.Bind<IRiverCornerValidityLogic>().To<RiverCornerValidityLogic>().AsSingle();
 
             Container.Bind<MeshWelder>().AsSingle();
 

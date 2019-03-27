@@ -23,15 +23,19 @@ namespace Assets.Simulation.HexMap {
 
 
 
-        private IHexGrid Grid;
+        private IHexGrid                  Grid;
+        private IRiverCornerValidityLogic RiverCornerValidityLogic;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public RiverCanon(IHexGrid grid, HexCellSignals cellSignals) {
-            Grid = grid;
+        public RiverCanon(
+            IHexGrid grid, IRiverCornerValidityLogic riverCornerValidityLogic, HexCellSignals cellSignals
+        ) {
+            Grid                     = grid;
+            RiverCornerValidityLogic = riverCornerValidityLogic;
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear());
         }
@@ -89,6 +93,18 @@ namespace Assets.Simulation.HexMap {
 
             foreach(var neighbor in Grid.GetNeighbors(cell)) {
                 neighbor.RefreshSelfOnly();
+            }
+        }
+
+        public void OverrideRiverOnCell(IHexCell cell, HexDirection edge, RiverFlow flow) {
+            GetPresenceArray (cell)[(int)edge] = true;
+            GetDirectionArray(cell)[(int)edge] = flow;
+
+            var neighborAtEdge = Grid.GetNeighbor(cell, edge);
+
+            if(neighborAtEdge != null) {
+                GetPresenceArray (neighborAtEdge)[(int)(edge.Opposite())] = true;
+                GetDirectionArray(neighborAtEdge)[(int)(edge.Opposite())] = flow.Opposite();
             }
         }
 
@@ -160,65 +176,63 @@ namespace Assets.Simulation.HexMap {
         }
 
         private bool RiverMeetsPlacementConditions(IHexCell cell, HexDirection edge, RiverFlow flow) {
-            var neighbor = Grid.GetNeighbor(cell, edge);     
+            var right = Grid.GetNeighbor(cell, edge);     
 
-            if(neighbor == null) {
+            if(right == null) {
                 return false;
             }
 
-            if(cell.Terrain.IsWater() || neighbor.Terrain.IsWater()) {
+            if(cell.Terrain.IsWater() || right.Terrain.IsWater()) {
                 return false;
             }
 
-            IHexCell previousNeighbor = Grid.GetNeighbor(cell, edge.Previous());
-            IHexCell nextNeighbor     = Grid.GetNeighbor(cell, edge.Next());
+            IHexCell left      = Grid.GetNeighbor(cell, edge.Previous());
+            IHexCell nextRight = Grid.GetNeighbor(cell, edge.Next());
 
-            return PreviousCornerIsValid(cell, edge, flow, previousNeighbor, neighbor)
-                && NextCornerIsValid    (cell, edge, flow, neighbor,         nextNeighbor);
+            return PreviousCornerIsValid(cell, left,  right,     edge, flow)
+                && NextCornerIsValid    (cell, right, nextRight, edge, flow);
         }
 
         private bool PreviousCornerIsValid(
-            IHexCell cell, HexDirection edge, RiverFlow flow,
-            IHexCell previousNeighbor, IHexCell neighbor
+            IHexCell cell, IHexCell left, IHexCell right, HexDirection edge, RiverFlow flow
         ) {
-            if(previousNeighbor == null) {
+            if(left == null) {
                 return true;
             }
+
+            RiverFlow? centerLeftFlow = null;
+            RiverFlow? leftRightFlow  = null;
 
             if(HasRiverAlongEdge(cell, edge.Previous())) {
-                return HasRiverAlongEdge(previousNeighbor, edge.Next())
-                    || GetFlowOfRiverAtEdge(cell, edge.Previous()) == flow;
-
-            }else if(HasRiverAlongEdge(previousNeighbor, edge.Next())) {
-                return GetFlowOfRiverAtEdge(previousNeighbor, edge.Next()) == flow
-                    && flow == RiverFlow.Counterclockwise;
-
-            }else {
-                return true;
+                centerLeftFlow = GetFlowOfRiverAtEdge(cell, edge.Previous());
             }
+
+            if(HasRiverAlongEdge(left, edge.Next())) {
+                leftRightFlow = GetFlowOfRiverAtEdge(left, edge.Next());
+            }
+
+            return RiverCornerValidityLogic.AreCornerFlowsValid(flow, centerLeftFlow, leftRightFlow);
         }
 
         private bool NextCornerIsValid(
-            IHexCell cell, HexDirection edge, RiverFlow flow,
-            IHexCell neighbor, IHexCell nextNeighbor
+            IHexCell cell, IHexCell right, IHexCell nextRight, HexDirection edge, RiverFlow flow
         ) {
-            if(nextNeighbor == null) {
+            if(nextRight == null) {
                 return true;
             }          
 
+            RiverFlow? centerNextRightFlow = null;
+            RiverFlow? nextRightRightFlow  = null;
+
             if(HasRiverAlongEdge(cell, edge.Next())) {
-                return HasRiverAlongEdge(nextNeighbor, edge.Previous())
-                        || GetFlowOfRiverAtEdge(cell, edge.Next()) == flow;
-
-            }else if(HasRiverAlongEdge(nextNeighbor, edge.Previous())) {
-                return GetFlowOfRiverAtEdge(nextNeighbor, edge.Previous()) == flow
-                    && flow == RiverFlow.Clockwise;
-
-            }else {
-
-                return true;
-
+                centerNextRightFlow = GetFlowOfRiverAtEdge(cell, edge.Next());
             }
+
+            if(HasRiverAlongEdge(nextRight, edge.Previous())) {
+                nextRightRightFlow = GetFlowOfRiverAtEdge(nextRight, edge.Previous());
+            }
+
+            return RiverCornerValidityLogic.AreCornerFlowsValid(flow, centerNextRightFlow, nextRightRightFlow);
         }
 
         #endregion
