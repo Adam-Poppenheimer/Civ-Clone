@@ -43,7 +43,7 @@ namespace Assets.Simulation.MapRendering {
             var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
             if(!orientationData.IsOnGrid) {
-                return new float[RenderConfig.MapTextures.Count()];
+                return RenderConfig.OffGridAlphamap;
             }
 
             if(orientationData.RiverWeight > 0f) {

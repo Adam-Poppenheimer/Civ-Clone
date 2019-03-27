@@ -4,6 +4,7 @@
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Specular ("Specular", Color) = (0.2, 0.2, 0.2)
+		_BackgroundColor("Background Color", Color) = (0, 0, 0)
 	}
 	SubShader {
 		Tags { "RenderType"="Transparent" "Queue"="Transparent+1" }
@@ -34,17 +35,20 @@
 		half _Glossiness;
 		fixed3 _Specular;
 		fixed4 _Color;
+		half3 _BackgroundColor;
 
 		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 			fixed4 c = _Color;
 
-			int cellIndex = GetCellIndexFromWorld(IN.worldPos);
+			float4 cellData = GetCellDataFromWorld(IN.worldPos);
 
-			float4 cellData = GetCellData(cellIndex);
+			float explored = cellData.y;
 
-			o.Albedo = c.rgb * IN.color * lerp(0.25, 1, cellData.x);
-			o.Specular = _Specular;
+			o.Albedo = c.rgb * IN.color * lerp(0.25, 1, cellData.x) * explored;
+			o.Specular = _Specular * explored;
+			o.Occlusion = explored;
 			o.Smoothness = _Glossiness;
+			o.Emission = _BackgroundColor * (1 - explored);
 
 			o.Alpha = IN.uv_MainTex.y;
 		}

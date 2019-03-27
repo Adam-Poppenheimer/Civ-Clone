@@ -180,6 +180,17 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _mountainTextureIndex;
 
+        public float[] OffGridAlphamap {
+            get { return _offGridAlphamap; }
+        }
+        [SerializeField] private float[] _offGridAlphamap;
+
+        public float[] RiverAlphamap {
+            get { return _riverAlphamap; }
+        }
+        [SerializeField] private float[] _riverAlphamap;
+
+
 
         public float WaterSurfaceElevation  {
             get { return _waterSurfaceElevation; }
@@ -277,10 +288,7 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float _riverFlowSpeed;
 
-        public float[] RiverAlphamap {
-            get { return _riverAlphamap; }
-        }
-        [SerializeField] private float[] _riverAlphamap;
+
 
 
         public float CultureWidthPercent {

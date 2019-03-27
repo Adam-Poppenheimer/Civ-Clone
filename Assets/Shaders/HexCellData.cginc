@@ -4,7 +4,7 @@ float4 _HexCellData_TexelSize;
 float _Hex_InnerRadiusTimesTwo;
 float _Hex_OuterRadiusTimesThree;
 
-int GetCellIndexFromWorld(float3 worldPosition) {
+float4 GetCellDataFromWorld(float3 worldPosition) {
 	float x = worldPosition.x / _Hex_InnerRadiusTimesTwo;
 	float y = -x;
 
@@ -25,21 +25,16 @@ int GetCellIndexFromWorld(float3 worldPosition) {
 		if (deltaX > deltaY && deltaX > deltaZ) {
 			roundedX = -roundedY - roundedZ;
 
-		}else if(deltaZ > deltaY) {
+		}else if (deltaZ > deltaY) {
 			roundedZ = -roundedX - roundedY;
 		}
 	}
 
-	return roundedX + roundedZ * _HexCellData_TexelSize.z + roundedZ / 2;
-}
+	int xoffset = roundedX + (roundedZ - (roundedZ & 1)) / 2;
+	int zOffset = roundedZ;
 
-float4 GetCellData(int cellIndex) {
-	float2 uv;
-	uv.x = (cellIndex + 0.5) * _HexCellData_TexelSize.x;
-	float row = floor(uv.x);
-	uv.x -= row;
-	uv.y = (row + 0.5) * _HexCellData_TexelSize.y;
-	
+	float2 uv = float2((xoffset + 0.5) * _HexCellData_TexelSize.x, (zOffset + 0.5) * _HexCellData_TexelSize.y);
+
 	float4 data = tex2Dlod(_HexCellData, float4(uv, 0, 0));
 	data.w *= 255;
 	return data;

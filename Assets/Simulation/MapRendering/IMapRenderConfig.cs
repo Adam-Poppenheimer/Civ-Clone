@@ -61,6 +61,10 @@ namespace Assets.Simulation.MapRendering {
         int SeaFloorTextureIndex { get; }
         int MountainTextureIndex { get; }
 
+        //May need to be retyped to prevent unintentional modification
+        float[] OffGridAlphamap { get; }
+        float[] RiverAlphamap   { get; }
+
         float WaterSurfaceElevation  { get; }
         float SeaFloorElevation      { get; }
         float FlatlandsBaseElevation { get; }
@@ -85,9 +89,6 @@ namespace Assets.Simulation.MapRendering {
         int RiverQuadsPerCurve     { get; }
 
         float RiverFlowSpeed { get; }
-
-        //May need to be retyped to prevent unintentional modification
-        float[] RiverAlphamap { get; }
 
         float CultureWidthPercent { get; }
 

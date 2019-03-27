@@ -335,9 +335,7 @@ CGINCLUDE
 
 		float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
 
-		int cellIndex = GetCellIndexFromWorld(worldPos);
-
-		o.visibility = GetCellData(cellIndex).xy;
+		o.visibility = GetCellDataFromWorld(worldPos).xy;
 		
 		half3 worldSpaceVertex = worldPos;
 		half2 tileableUv = worldSpaceVertex.xz;
@@ -374,7 +372,7 @@ CGINCLUDE
 		half4 baseColor = i.color;
 
 		baseColor = lerp(baseColor, _ReflectionColor, saturate(refl2Refr * 2.0));
-		baseColor.a = saturate(2.0 * refl2Refr + 0.5);
+		baseColor.a = saturate(2.0 * refl2Refr + 0.5) * i.visibility.y;
 
 		baseColor.rgb += spec * _SpecularColor.rgb;
 		UNITY_APPLY_FOG(i.fogCoord, baseColor);

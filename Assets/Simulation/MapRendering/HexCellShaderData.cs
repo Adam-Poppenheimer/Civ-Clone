@@ -107,29 +107,6 @@ namespace Assets.Simulation.MapRendering {
             enabled = true;
         }
 
-        public void RefreshTerrain(IHexCell cell) {
-            if(cell.Terrain.IsWater()) {
-                CellTextureData[cell.Index].a = (byte)CellTerrain.Desert;
-
-            }else if(cell.Shape == CellShape.Mountains) {
-                CellTextureData[cell.Index].a = (byte)CellTerrain.Desert;
-
-            }else if(cell.Terrain == CellTerrain.FloodPlains) {
-                CellTextureData[cell.Index].a = (byte)CellTerrain.Desert;
-
-            }else {
-                CellTextureData[cell.Index].a = (byte)cell.Terrain;
-
-                foreach(var improvement in ImprovementLocationCanon.GetPossessionsOfOwner(cell)) {
-                    if(improvement.Template.OverridesTerrain) {
-                        CellTextureData[cell.Index].a = (byte)improvement.Template.OverridingTerrainIndex;
-                    }
-                }
-            }
-
-            enabled = true;
-        }
-
         public void RefreshVisibility(IHexCell cell) {
             if(VisibilityCanon.RevealMode == RevealMode.Immediate) {
                 CellTextureData[cell.Index].r = VisibilityCanon.IsCellVisible(cell) ? (byte)255 : (byte)0;

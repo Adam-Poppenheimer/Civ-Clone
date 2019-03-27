@@ -46,7 +46,8 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void GetAlphamapForPoint_PointNotOnGrid_ReturnsEmptyArrayOfCorrectSize() {
+        public void GetAlphamapForPoint_PointNotOnGrid_ReturnsConfigueredOffGridAlphamap() {
+
             var point = new Vector2(1f, -2f);
 
             var orientationData = new PointOrientationData() {
@@ -55,12 +56,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationDataForPoint(point)).Returns(orientationData);
 
-            MockRenderConfig.Setup(config => config.MapTextures).Returns(new List<Texture2D>() { null, null, null, null });
+            var offGridAlphamap = new float[5] { 1, 2, 3, 4, 5 };
+            MockRenderConfig.Setup(config => config.OffGridAlphamap).Returns(offGridAlphamap);
 
             var alphamapLogic = Container.Resolve<TerrainAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[4], alphamapLogic.GetAlphamapForPoint(point)
+                offGridAlphamap, alphamapLogic.GetAlphamapForPoint(point)
             );
         }
 

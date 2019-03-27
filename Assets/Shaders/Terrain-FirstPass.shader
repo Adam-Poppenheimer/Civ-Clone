@@ -12,10 +12,10 @@ Shader "Civ Clone/Terrain" {
 		[HideInInspector] _Normal2 ("Normal 2 (B)", 2D) = "bump" {}
 		[HideInInspector] _Normal1 ("Normal 1 (G)", 2D) = "bump" {}
 		[HideInInspector] _Normal0 ("Normal 0 (R)", 2D) = "bump" {}
-		[HideInInspector] [Gamma] _Metallic0 ("Metallic 0", Range(0.0, 1.0)) = 0.0	
-		[HideInInspector] [Gamma] _Metallic1 ("Metallic 1", Range(0.0, 1.0)) = 0.0	
-		[HideInInspector] [Gamma] _Metallic2 ("Metallic 2", Range(0.0, 1.0)) = 0.0	
-		[HideInInspector] [Gamma] _Metallic3 ("Metallic 3", Range(0.0, 1.0)) = 0.0
+		[HideInInspector] [Gamma] _Specular0 ("Specular 0", Color) = (0.2, 0.2, 0.2)	
+		[HideInInspector] [Gamma] _Specular1 ("Specular 1", Color) = (0.2, 0.2, 0.2)
+		[HideInInspector] [Gamma] _Specular2 ("Specular 2", Color) = (0.2, 0.2, 0.2)
+		[HideInInspector] [Gamma] _Specular3 ("Specular 3", Color) = (0.2, 0.2, 0.2)
 		[HideInInspector] _Smoothness0 ("Smoothness 0", Range(0.0, 1.0)) = 1.0	
 		[HideInInspector] _Smoothness1 ("Smoothness 1", Range(0.0, 1.0)) = 1.0	
 		[HideInInspector] _Smoothness2 ("Smoothness 2", Range(0.0, 1.0)) = 1.0	
@@ -24,6 +24,8 @@ Shader "Civ Clone/Terrain" {
 		// used in fallback on old cards & base map
 		[HideInInspector] _MainTex ("BaseMap (RGB)", 2D) = "white" {}
 		[HideInInspector] _Color ("Main Color", Color) = (1,1,1,1)
+
+		_BackgroundColor ("Background Color", Color) = (0, 0, 0)
 	}
 
 	SubShader {
@@ -33,7 +35,7 @@ Shader "Civ Clone/Terrain" {
 		}
 
 		CGPROGRAM
-		#pragma surface surf Standard vertex:SplatmapVert finalcolor:SplatmapFinalColor finalgbuffer:SplatmapFinalGBuffer fullforwardshadows noinstancing
+		#pragma surface surf StandardSpecular vertex:SplatmapVert finalcolor:SplatmapFinalColor finalgbuffer:SplatmapFinalGBuffer fullforwardshadows noinstancing
 		#pragma multi_compile_fog
 		#pragma target 3.0
 		// needs more than 8 texcoords
@@ -50,20 +52,22 @@ Shader "Civ Clone/Terrain" {
 		#endif
 
 		#define TERRAIN_STANDARD_SHADER
-		#define TERRAIN_SURFACE_OUTPUT SurfaceOutputStandard
+		#define TERRAIN_SURFACE_OUTPUT SurfaceOutputStandardSpecular
 		#include "TerrainSplatmapCommon.cginc"
 
-		half _Metallic0;
-		half _Metallic1;
-		half _Metallic2;
-		half _Metallic3;
+		half3 _Specular0;
+		half3 _Specular1;
+		half3 _Specular2;
+		half3 _Specular3;
 		
 		half _Smoothness0;
 		half _Smoothness1;
 		half _Smoothness2;
 		half _Smoothness3;
 
-		void surf (Input IN, inout SurfaceOutputStandard o) {
+		half3 _BackgroundColor;
+
+		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 			half4 splat_control;
 			half weight;
 			fixed4 mixedDiffuse;
@@ -77,15 +81,19 @@ Shader "Civ Clone/Terrain" {
 
 			SplatmapMix(IN, defaultSmoothness, splat_control, weight, mixedDiffuse, normal);
 
-			int cellIndex = GetCellIndexFromWorld(IN.worldPos);
+			float4 cellData = GetCellDataFromWorld(IN.worldPos);
 
-			float4 cellData = GetCellData(cellIndex);
+			float visibility = cellData.x;
+			float explored = cellData.y;
 
 			o.Normal = normal;
-			o.Albedo = mixedDiffuse.rgb * lerp(0.25, 1, cellData.x);
+			o.Albedo = mixedDiffuse.rgb * lerp(0.25, 1, visibility) * explored;
 			o.Alpha = weight;
 			o.Smoothness = mixedDiffuse.a;
-			o.Metallic = dot(splat_control, half4(_Metallic0, _Metallic1, _Metallic2, _Metallic3));
+			o.Specular = splat_control.x * _Specular0 + splat_control.y * _Specular1 + splat_control.z * _Specular2 + splat_control.a * _Specular3;
+			o.Specular *= explored;
+			o.Occlusion = explored;
+			o.Emission = _BackgroundColor * (1 - explored);
 		}
 		ENDCG
 	}
