@@ -34,10 +34,9 @@ namespace Assets.Simulation.MapRendering {
 
 
         
-        private IVisibilityCanon          VisibilityCanon;
-        private IExplorationCanon         ExplorationCanon;
-        private IImprovementLocationCanon ImprovementLocationCanon;
-        private IMapRenderConfig          RenderConfig;
+        private IVisibilityCanon  VisibilityCanon;
+        private IExplorationCanon ExplorationCanon;
+        private IMapRenderConfig  RenderConfig;
 
         #endregion
 
@@ -45,12 +44,10 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public void InjectDependencies(
-            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
-            IImprovementLocationCanon improvementLocationCanon, IMapRenderConfig renderConfig
+            IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon, IMapRenderConfig renderConfig
         ) {
             VisibilityCanon          = visibilityCanon;
             ExplorationCanon         = explorationCanon;
-            ImprovementLocationCanon = improvementLocationCanon;
             RenderConfig             = renderConfig;
         }
 

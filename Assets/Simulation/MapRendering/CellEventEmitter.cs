@@ -10,10 +10,12 @@ using Zenject;
 using UniRx;
 
 using Assets.Simulation.Cities;
+using Assets.Simulation.HexMap;
+using Assets.Util;
 
-namespace Assets.Simulation.HexMap {
+namespace Assets.Simulation.MapRendering {
 
-    public class HexEventEmitter : MonoBehaviour, IPointerDownHandler,
+    public class CellEventEmitter : MonoBehaviour, IPointerDownHandler,
         IPointerUpHandler, IPointerClickHandler, IPointerEnterHandler,
         IPointerExitHandler, IBeginDragHandler, IDragHandler, IEndDragHandler {
 
@@ -31,9 +33,9 @@ namespace Assets.Simulation.HexMap {
 
 
         private HexCellSignals                           CellSignals;
-        private IHexGrid                                 Grid;
         private CitySignals                              CitySignals;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
+        private IPointOrientationLogic                   PointOrientationLogic;
 
         #endregion
 
@@ -41,13 +43,14 @@ namespace Assets.Simulation.HexMap {
 
         [Inject]
         public void InjectDependencies(
-            HexCellSignals cellSignals, IHexGrid grid, CitySignals citySignals,
-            IPossessionRelationship<IHexCell, ICity> cityLocationCanon
+            HexCellSignals cellSignals, CitySignals citySignals,
+            IPossessionRelationship<IHexCell, ICity> cityLocationCanon,
+            IPointOrientationLogic pointOrientationLogic
         ){
-            CellSignals       = cellSignals;
-            Grid              = grid;
-            CitySignals       = citySignals;
-            CityLocationCanon = cityLocationCanon;
+            CellSignals           = cellSignals;
+            CitySignals           = citySignals;
+            CityLocationCanon     = cityLocationCanon;
+            PointOrientationLogic = pointOrientationLogic;
         }
 
         #region Unity messages
@@ -70,10 +73,12 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    if(Grid.HasCellAtLocation(hit.point)) {
-                        var clickedCell = Grid.GetCellAtLocation(hit.point);
+                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
 
-                        CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(clickedCell, eventData));
+                    IHexCell mainCell = orientationData.GetMainCell();
+
+                    if(mainCell != null) {
+                        CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
                     }
                 }
             }
@@ -85,10 +90,12 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    if(Grid.HasCellAtLocation(hit.point)) {
-                        var unclickedCell = Grid.GetCellAtLocation(hit.point);
+                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
 
-                        CellSignals.PointerUpSignal.OnNext(new Tuple<IHexCell, PointerEventData>(unclickedCell, eventData));
+                    IHexCell mainCell = orientationData.GetMainCell();
+
+                    if(mainCell != null) {
+                        CellSignals.PointerUpSignal.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
                     }
                 }
             }
@@ -100,18 +107,20 @@ namespace Assets.Simulation.HexMap {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    if(!Grid.HasCellAtLocation(hit.point)) {
+                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
+
+                    IHexCell mainCell = orientationData.GetMainCell();
+
+                    if(mainCell == null) {
                         return;
                     }
 
-                    var clickedCell = Grid.GetCellAtLocation(hit.point);
-
-                    var cityAtLocation = GetCityAtLocation(clickedCell);
+                    var cityAtLocation = GetCityAtLocation(mainCell);
                     if(cityAtLocation != null) {
                         CitySignals.PointerClickedSignal.OnNext(cityAtLocation);
                     }else {
                         CellSignals.ClickedSignal.OnNext(
-                            new Tuple<IHexCell, PointerEventData>(clickedCell, eventData)
+                            new Tuple<IHexCell, PointerEventData>(mainCell, eventData)
                         );
                     }
                 }
@@ -180,7 +189,9 @@ namespace Assets.Simulation.HexMap {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
                 if(DidRaycastHitChunk(hit)) {
-                    return Grid.HasCellAtLocation(hit.point) ? Grid.GetCellAtLocation(hit.point) : null;
+                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
+
+                    return orientationData.GetMainCell();
                 }
             }
 

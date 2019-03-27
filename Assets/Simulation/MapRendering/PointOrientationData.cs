@@ -79,6 +79,30 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
+        public IHexCell GetMainCell() {
+            if(!IsOnGrid) {
+                return null;
+            }
+
+            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverWeight);
+
+            if(CenterWeight == maxWeight) {
+                return Center;
+
+            }else if(LeftWeight == maxWeight) {
+                return Left;
+
+            }else if(RightWeight == maxWeight) {
+                return Right;
+
+            }else if(NextRightWeight == maxWeight) {
+                return NextRight;
+
+            }else {
+                return null;
+            }
+        }
+
         #endregion
 
     }
