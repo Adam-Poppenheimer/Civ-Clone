@@ -296,10 +296,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _cultureWidthPercent;
 
-        public float CultureTriangleSideWidth {
-            get { return _cultureTriangleSideWidth; }
+        public float CultureTriangleSideLength {
+            get { return _cultureTriangleSideLength; }
         }
-        [SerializeField, Range(0.05f, 5f)] private float _cultureTriangleSideWidth;
+        [SerializeField, Range(0.05f, 5f)] private float _cultureTriangleSideLength;
 
 
         public HexMeshData StandingWaterData {
@@ -316,6 +316,32 @@ namespace Assets.Simulation.MapRendering {
             get { return _cultureData; }
         }
         [SerializeField] private HexMeshData _cultureData;
+
+        public HexMeshData FarmlandData {
+            get { return _farmlandData; }
+        }
+        [SerializeField] private HexMeshData _farmlandData;
+
+
+        public int FarmTexturePatchCountSqrt {
+            get { return _farmTexturePatchCountSqr; }
+        }
+        [SerializeField, Range(1, 64)] private int _farmTexturePatchCountSqr;
+
+        public IEnumerable<Color> FarmColors {
+            get { return _farmColors; }
+        }
+        [SerializeField] private List<Color> _farmColors;
+
+        public float FarmPatchMaxWidth {
+            get { return _farmPatchMaxWidth; }
+        }
+        [SerializeField, Range(1f, 100f)] private float _farmPatchMaxWidth;
+
+        public float FarmTriangleSideLength {
+            get { return _farmTriangleSideLength; }
+        }
+        [SerializeField, Range(0.05f, 5f)] private float _farmTriangleSideLength;
 
         #endregion
 

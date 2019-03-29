@@ -86,6 +86,11 @@ namespace Assets.Simulation.Improvements {
         }
         [SerializeField] private int _overridingTerrainIndex;
 
+        public bool ProducesFarmland {
+            get { return _producesFarmland; }
+        }
+        [SerializeField] private bool _producesFarmland;
+
         #endregion
 
         #endregion

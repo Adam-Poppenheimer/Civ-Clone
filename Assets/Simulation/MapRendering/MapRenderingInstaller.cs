@@ -75,6 +75,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ICultureTriangulator>           ().To<CultureTriangulator>           ().AsSingle();
             Container.Bind<ITerrainConformTriangulator>    ().To<TerrainConformTriangulator>    ().AsSingle();
             Container.Bind<IMapCollisionLogic>             ().To<MapCollisionLogic>             ().AsSingle();
+            Container.Bind<IFarmTriangulator>              ().To<FarmTriangulator>              ().AsSingle();
         }
 
         #endregion

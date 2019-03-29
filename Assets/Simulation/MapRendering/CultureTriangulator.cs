@@ -134,7 +134,7 @@ namespace Assets.Simulation.MapRendering {
                         pivotXYZ,                                  new Vector2(0f, 1f), cultureColor,
                         new Vector3(bezierOne.x, 0f, bezierOne.y), Vector2.zero,        cultureColor,
                         new Vector3(bezierTwo.x, 0f, bezierTwo.y), Vector2.zero,        cultureColor,
-                        RenderConfig.CultureTriangleSideWidth, cultureMesh
+                        RenderConfig.CultureTriangleSideLength, cultureMesh
                     );
                 }
 
@@ -147,7 +147,7 @@ namespace Assets.Simulation.MapRendering {
                         new Vector3(innerPoint         .x, 0f, innerPoint         .y), new Vector2(0f, 0f), cultureColor,
                         new Vector3(secondToLastContour.x, 0f, secondToLastContour.y), new Vector2(0f, 1f), cultureColor,
                         new Vector3(lastContour        .x, 0f, lastContour        .y), new Vector2(0f, 1f), cultureColor,
-                        RenderConfig.CultureTriangleSideWidth, cultureMesh
+                        RenderConfig.CultureTriangleSideLength, cultureMesh
                     );
                 }
             }
@@ -183,7 +183,7 @@ namespace Assets.Simulation.MapRendering {
                         new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
                         new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
                         new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
-                        RenderConfig.CultureTriangleSideWidth, cultureMesh
+                        RenderConfig.CultureTriangleSideLength, cultureMesh
                     );
 
                     ccwTransparency = cwTransparency;
@@ -215,7 +215,7 @@ namespace Assets.Simulation.MapRendering {
                         new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
                         new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
                         new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
-                        RenderConfig.CultureTriangleSideWidth, cultureMesh
+                        RenderConfig.CultureTriangleSideLength, cultureMesh
                     );
 
                     cwTransparency = ccwTransparency;
@@ -243,7 +243,7 @@ namespace Assets.Simulation.MapRendering {
                     new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f), color,
                     new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, 1f), color,
                     new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, 1f), color,
-                    RenderConfig.CultureTriangleSideWidth, cultureMesh
+                    RenderConfig.CultureTriangleSideLength, cultureMesh
                 );
             }
         }

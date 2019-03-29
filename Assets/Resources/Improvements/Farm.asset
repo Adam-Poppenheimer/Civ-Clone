@@ -32,5 +32,6 @@ MonoBehaviour:
   _turnsToConstruct: 5
   _freshWaterAlwaysEnables: 1
   _adjacentEnemyDamagePercentage: 0
-  _overridesTerrain: 1
-  _overridingTerrainIndex: 6
+  _overridesTerrain: 0
+  _overridingTerrainIndex: -1
+  _producesFarmland: 1

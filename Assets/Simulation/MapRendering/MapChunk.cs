@@ -56,6 +56,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshFeaturesCoroutine;
         private Coroutine RefreshCultureCoroutine;
         private Coroutine RefreshVisibilityCoroutine;
+        private Coroutine RefreshFarmlandCoroutine;
 
         private HexMesh StandingWater {
             get {
@@ -85,6 +86,20 @@ namespace Assets.Simulation.MapRendering {
         }
         private HexMesh _culture;
 
+        private HexMesh Farmland {
+            get {
+                if(_farmland == null) {
+                    _farmland = HexMeshPool.Spawn("Farmland", RenderConfig.FarmlandData);
+
+                    _farmland.transform.SetParent(transform, false);
+                }
+
+                return _farmland;
+            }
+            set { _farmland = value; }
+        }
+        private HexMesh _farmland;
+
 
 
 
@@ -97,6 +112,7 @@ namespace Assets.Simulation.MapRendering {
         private ICultureTriangulator                      CultureTriangulator;
         private IHexCellShaderData                        ShaderData;
         private IMemoryPool<string, HexMeshData, HexMesh> HexMeshPool;
+        private IFarmTriangulator                         FarmTriangulator;
 
         #endregion
 
@@ -108,7 +124,8 @@ namespace Assets.Simulation.MapRendering {
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
-            DiContainer container, IMemoryPool<string, HexMeshData, HexMesh> hexMeshPool
+            DiContainer container, IMemoryPool<string, HexMeshData, HexMesh> hexMeshPool,
+            IFarmTriangulator farmTriangulator
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -119,6 +136,7 @@ namespace Assets.Simulation.MapRendering {
             CultureTriangulator = cultureTriangulator;
             ShaderData          = shaderData;
             HexMeshPool         = hexMeshPool;
+            FarmTriangulator    = farmTriangulator;
         }
 
         #region from IMapChunk
@@ -190,12 +208,19 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshFarmland() {
+            if(RefreshFarmlandCoroutine == null) {
+                RefreshFarmlandCoroutine = StartCoroutine(RefreshFarmland_Perform());
+            }
+        }
+
         public void RefreshAll() {
             RefreshAlphamap();
             RefreshHeightmap();
             RefreshWater();
             RefreshCulture();
             RefreshFeatures();
+            RefreshFarmland();
 
             if(RefreshRiversCoroutine == null) {
                 RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
@@ -223,6 +248,7 @@ namespace Assets.Simulation.MapRendering {
         public void Clear() {
             StandingWater.Clear();
             Culture      .Clear();
+            Farmland     .Clear();
             StopAllCoroutines();
 
             RefreshAlphamapCoroutine   = null;
@@ -231,14 +257,17 @@ namespace Assets.Simulation.MapRendering {
             RefreshFeaturesCoroutine   = null;
             RefreshCultureCoroutine    = null;
             RefreshVisibilityCoroutine = null;
+            RefreshFarmlandCoroutine   = null;
 
             cells.Clear();
 
             HexMeshPool.Despawn(StandingWater);
             HexMeshPool.Despawn(Culture);
+            HexMeshPool.Despawn(Farmland);
 
             StandingWater = null;
             Culture       = null;
+            Farmland      = null;
         }
 
         #endregion
@@ -377,6 +406,22 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshVisibilityCoroutine = null;
+        }
+
+        private IEnumerator RefreshFarmland_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            Farmland.Clear();
+
+            foreach(var cell in cells) {
+                FarmTriangulator.TriangulateFarmland(cell, Farmland);
+            }
+
+            Farmland.Apply();
+
+            RefreshFarmlandCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

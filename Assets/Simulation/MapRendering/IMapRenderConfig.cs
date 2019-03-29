@@ -92,12 +92,22 @@ namespace Assets.Simulation.MapRendering {
 
         float CultureWidthPercent { get; }
 
-        float CultureTriangleSideWidth { get; }
+        float CultureTriangleSideLength { get; }
 
 
         HexMeshData StandingWaterData { get; }
-        HexMeshData RiversData         { get; }
+        HexMeshData RiversData        { get; }
         HexMeshData CultureData       { get; }
+        HexMeshData FarmlandData      { get; }
+
+
+        int FarmTexturePatchCountSqrt { get; }
+
+        IEnumerable<Color> FarmColors { get; }
+
+        float FarmPatchMaxWidth { get; }
+
+        float FarmTriangleSideLength { get; }
 
         #endregion
 

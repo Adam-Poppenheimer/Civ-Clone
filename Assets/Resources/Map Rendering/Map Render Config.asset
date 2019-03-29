@@ -43,10 +43,12 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 232b224d5638d3c4995a08f0d004cab5, type: 3}
   - {fileID: 2800000, guid: 58f75ba49aa6ee94aa1e280f3b75bef6, type: 3}
   - {fileID: 2800000, guid: 4d8c5c61656734a4da424313375d5137, type: 3}
+  - {fileID: 2800000, guid: d6591c2f811c06c41a98a6111f7bd97a, type: 3}
   - {fileID: 2800000, guid: f9ec3f37a376f974fb384ba71d671eda, type: 3}
   _seaFloorTextureIndex: 2
   _mountainTextureIndex: 5
   _offGridAlphamap:
+  - 0
   - 0
   - 0
   - 0
@@ -63,6 +65,7 @@ MonoBehaviour:
   - 0
   - 0
   - 1
+  - 0
   - 0
   _waterSurfaceElevation: 0.093
   _seaFloorElevation: 0
@@ -83,7 +86,7 @@ MonoBehaviour:
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
   _cultureWidthPercent: 0.25
-  _cultureTriangleSideWidth: 0.25
+  _cultureTriangleSideLength: 0
   _standingWaterData:
     _useCollider: 1
     _useUVCoordinates: 0
@@ -121,5 +124,27 @@ MonoBehaviour:
     _convertVerticesToWorld: 1
     _renderingData:
       ShadowCastingMode: 0
-      ReceiveShadows: 1
+      ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 068f5922517bafb4497259423643776e, type: 2}
+  _farmlandData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 1
+    _weldMesh: 1
+    _convertVerticesToWorld: 1
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: 10b67cf5705184040ad557eca16eaa21, type: 2}
+  _farmTexturePatchCountSqr: 1
+  _farmColors:
+  - {r: 0, g: 1, b: 0.2965517, a: 1}
+  - {r: 0, g: 0.53676474, b: 0.1591785, a: 1}
+  - {r: 1, g: 0.93103445, b: 0, a: 1}
+  - {r: 0.9338235, g: 0.5216531, b: 0, a: 1}
+  - {r: 0.09537198, g: 0.3602941, b: 0.20682195, a: 1}
+  _farmPatchMaxWidth: 3
+  _farmTriangleSideLength: 0.25

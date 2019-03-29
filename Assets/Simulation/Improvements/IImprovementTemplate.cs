@@ -43,6 +43,8 @@ namespace Assets.Simulation.Improvements {
 
         int OverridingTerrainIndex { get; }
 
+        bool ProducesFarmland { get; }
+
         #endregion
 
     }
