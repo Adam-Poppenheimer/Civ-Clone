@@ -15,6 +15,8 @@ namespace Assets.Simulation.MapRendering {
 
         IEnumerable<IHexCell> Cells { get; }
 
+        Terrain Terrain { get; }
+
         #endregion
 
         #region methods

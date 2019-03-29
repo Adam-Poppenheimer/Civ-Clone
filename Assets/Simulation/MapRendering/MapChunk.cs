@@ -45,9 +45,10 @@ namespace Assets.Simulation.MapRendering {
         }
         private List<IHexCell> cells = new List<IHexCell>();
 
+        public Terrain Terrain { get; private set; }
+
         #endregion
 
-        private Terrain         Terrain;
         private TerrainCollider TerrainCollider;
 
         private Coroutine RefreshAlphamapCoroutine;
@@ -333,7 +334,7 @@ namespace Assets.Simulation.MapRendering {
                 }
             }
 
-            terrainData.SetHeightsDelayLOD(0, 0, heights);
+            terrainData.SetHeights(0, 0, heights);
 
             Terrain.Flush();
 

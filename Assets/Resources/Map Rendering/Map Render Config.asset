@@ -87,7 +87,7 @@ MonoBehaviour:
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
   _cultureWidthPercent: 0.25
-  _cultureTriangleSideLength: 0
+  _cultureTriangleSideLength: 0.25
   _standingWaterData:
     _useCollider: 1
     _useUVCoordinates: 0

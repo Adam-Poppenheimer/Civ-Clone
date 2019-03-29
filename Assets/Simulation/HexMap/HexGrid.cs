@@ -41,7 +41,7 @@ namespace Assets.Simulation.HexMap {
         public IEnumerable<IMapChunk> Chunks {
             get { return chunks.Cast<IMapChunk>(); }
         }
-        private List<MapChunk> chunks = new List<MapChunk>();
+        private MapChunk[,] chunks;
 
         public IHexMesh RiverMesh {
             get { return riverMesh; }
@@ -129,7 +129,7 @@ namespace Assets.Simulation.HexMap {
                 MapChunkPool.Despawn(chunk);
             }
 
-            chunks.Clear();
+            chunks = null;
 
             HexMeshPool.Despawn(riverMesh);
 
@@ -336,18 +336,44 @@ namespace Assets.Simulation.HexMap {
                 throw new InvalidOperationException("Attempting to create chunks when at least one chunk dimension is zero");
             }
 
-            for(float chunkX = 0f; chunkX < mapWidth; chunkX += RenderConfig.ChunkWidth) {
-                for(float chunkZ = 0f; chunkZ < mapHeight; chunkZ += RenderConfig.ChunkHeight) {
+            int chunkCountX = Mathf.CeilToInt(mapWidth  / RenderConfig.ChunkWidth);
+            int chunkCountZ = Mathf.CeilToInt(mapHeight / RenderConfig.ChunkHeight);
 
+            chunks = new MapChunk[chunkCountX, chunkCountZ];
+
+            int chunkIndexX = 0, chunkIndexZ = 0;
+
+            for(float chunkX = 0f; chunkX < mapWidth; chunkX += RenderConfig.ChunkWidth, chunkIndexX++) {
+                chunkIndexZ = 0;
+
+                for(float chunkZ = 0f; chunkZ < mapHeight; chunkZ += RenderConfig.ChunkHeight, chunkIndexZ++) {
                     float chunkWidth  = Mathf.Min(RenderConfig.ChunkWidth,  mapWidth  - chunkX);
                     float chunkHeight = Mathf.Min(RenderConfig.ChunkHeight, mapHeight - chunkZ);
 
-                    CreateChunk(chunkX - RenderConfig.InnerRadius, chunkZ - RenderConfig.OuterRadius, chunkWidth, chunkHeight);
+                    var newChunk = CreateChunk(chunkX - RenderConfig.InnerRadius, chunkZ - RenderConfig.OuterRadius, chunkWidth, chunkHeight);
+
+                    chunks[chunkIndexX, chunkIndexZ] = newChunk;
+                }
+            }
+
+            for(chunkIndexZ = 0; chunkIndexZ < chunkCountZ; chunkIndexZ++) {
+                for(chunkIndexX = 0; chunkIndexX < chunkCountX; chunkIndexX++) {
+
+                    var centerChunk = chunks[chunkIndexX, chunkIndexZ];
+
+                    Terrain northNeighbor = chunkIndexZ < chunkCountZ - 1 ? chunks[chunkIndexX,     chunkIndexZ + 1].Terrain : null;
+                    Terrain eastNeighbor  = chunkIndexX < chunkCountX - 1 ? chunks[chunkIndexX + 1, chunkIndexZ    ].Terrain : null;
+                    Terrain southNeighbor = chunkIndexZ > 0               ? chunks[chunkIndexX,     chunkIndexZ - 1].Terrain : null;
+                    Terrain westNeighbor  = chunkIndexX > 0               ? chunks[chunkIndexX - 1, chunkIndexZ    ].Terrain : null;
+
+                    centerChunk.Terrain.SetNeighbors(
+                        westNeighbor, northNeighbor, eastNeighbor, southNeighbor
+                    );
                 }
             }
         }
 
-        private void CreateChunk(float chunkX, float chunkZ, float width, float height) {
+        private MapChunk CreateChunk(float chunkX, float chunkZ, float width, float height) {
             var newChunk = MapChunkPool.Spawn();
 
             newChunk.transform.SetParent(transform, false);
@@ -356,7 +382,7 @@ namespace Assets.Simulation.HexMap {
                 new Vector3(chunkX, 0f, chunkZ), width, height
             );
 
-            chunks.Add(newChunk);
+            return newChunk;
         }
 
         private void AttachChunksToCells() {
