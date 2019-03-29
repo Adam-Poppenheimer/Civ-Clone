@@ -71,7 +71,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var point = new Vector2(1f, -2f);
 
             var orientationData = new PointOrientationData() {
-                IsOnGrid = true, RiverWeight = 0.001f
+                IsOnGrid = true, RiverHeightWeight = 0.001f
             };
 
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationDataForPoint(point)).Returns(orientationData);
@@ -93,7 +93,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var point = new Vector2(1f, -2f);
 
             var orientationData = new PointOrientationData() {
-                IsOnGrid = true, Sextant = HexDirection.E, RiverWeight = 0.001f,
+                IsOnGrid = true, Sextant = HexDirection.E, RiverHeightWeight = 0.001f,
                 Center = BuildCell(), Left = BuildCell(), Right = BuildCell(), NextRight = BuildCell(),
                 CenterWeight = 1f, LeftWeight = 1f, RightWeight = 1f, NextRightWeight = 1f
             };

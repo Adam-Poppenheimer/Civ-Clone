@@ -46,11 +46,11 @@ namespace Assets.Simulation.MapRendering {
                 return RenderConfig.OffGridAlphamap;
             }
 
-            if(orientationData.RiverWeight > 0f) {
+            var retval = new float[RenderConfig.MapTextures.Count()];
+
+            if(orientationData.RiverAlphaWeight > 0f) {
                 return RenderConfig.RiverAlphamap;
             }
-
-            var retval = new float[RenderConfig.MapTextures.Count()];
 
             if(orientationData.CenterWeight > 0f) {
                 AddToMap(

@@ -273,6 +273,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _riverWidthNoise = 0f;
 
+        public float RiverBankWidth {
+            get { return _riverBankWidth; }
+        }
+        [SerializeField, Range(0f, 1f)] private float _riverBankWidth = 0f;
+
         public int RiverCurvesForMaxWidth {
             get { return _riverCurvesForMaxWidth; }
         }

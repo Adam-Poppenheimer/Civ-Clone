@@ -82,6 +82,7 @@ MonoBehaviour:
   _riverCurveStrength: 5
   _riverWideningRate: 5
   _riverWidthNoise: 0.25
+  _riverBankWidth: 1
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10

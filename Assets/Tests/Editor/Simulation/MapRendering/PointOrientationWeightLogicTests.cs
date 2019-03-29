@@ -47,37 +47,22 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void ApplyLandBesideRiverWeights_AndTakeFromRightTrue_OnlyRightWeightSetToOne() {
+        public void ApplyLandBesideRiverWeights_OnlyCenterWeightSetToOne() {
             var point = new Vector2(1f, 2f);
 
             var orientationData = new PointOrientationData();
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideRiverWeights(point, orientationData, true);
+            weightLogic.ApplyLandBesideRiverWeights(point, orientationData);
 
-            Assert.AreEqual(0f, orientationData.CenterWeight,    "Unexpected CenterWeight");
-            Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
-            Assert.AreEqual(1f, orientationData.RightWeight,     "Unexpected RightWeight");
-            Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
-        }
+            throw new NotImplementedException();
 
-        [Test]
-        public void ApplyLandBesideRiverWeights_AndTakeFromRightFalse_OnlyCenterWeightSetToOne() {
-            var point = new Vector2(1f, 2f);
-
-            var orientationData = new PointOrientationData();
-
-            var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
-
-            weightLogic.ApplyLandBesideRiverWeights(point, orientationData, false);
-
-            Assert.AreEqual(1f, orientationData.CenterWeight,    "Unexpected CenterWeight");
-            Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
-            Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
-            Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(1f, orientationData.CenterWeight,      "Unexpected CenterWeight");
+            Assert.AreEqual(0f, orientationData.LeftWeight,        "Unexpected LeftWeight");
+            Assert.AreEqual(0f, orientationData.RightWeight,       "Unexpected RightWeight");
+            Assert.AreEqual(0f, orientationData.NextRightWeight,   "Unexpected NextRightWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight, "Unexpected RiverWeight");
         }
 
         [Test]
@@ -88,13 +73,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
 
-            Assert.AreEqual(1f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
-            Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
-            Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
-            Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");            
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+
+            Assert.AreEqual(1f, orientationData.CenterWeight,      "Unexpected CenterWeight");            
+            Assert.AreEqual(0f, orientationData.LeftWeight,        "Unexpected LeftWeight");
+            Assert.AreEqual(0f, orientationData.RightWeight,       "Unexpected RightWeight");
+            Assert.AreEqual(0f, orientationData.NextRightWeight,   "Unexpected NextRightWeight");            
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight, "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -123,13 +110,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
 
-            Assert.AreEqual(1.1f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
-            Assert.AreEqual(2.2f, orientationData.LeftWeight,      "Unexpected LeftWeight");
-            Assert.AreEqual(3.3f, orientationData.RightWeight,     "Unexpected RightWeight");
-            Assert.AreEqual(0f,   orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f,   orientationData.RiverWeight,     "Unexpected RiverWeight");
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+
+            Assert.AreEqual(1.1f, orientationData.CenterWeight,      "Unexpected CenterWeight");            
+            Assert.AreEqual(2.2f, orientationData.LeftWeight,        "Unexpected LeftWeight");
+            Assert.AreEqual(3.3f, orientationData.RightWeight,       "Unexpected RightWeight");
+            Assert.AreEqual(0f,   orientationData.NextRightWeight,   "Unexpected NextRightWeight");
+            Assert.AreEqual(0f,   orientationData.RiverHeightWeight, "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -158,13 +147,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(1.1f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f,   orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(2.2f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(3.3f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f,   orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f,   orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -183,13 +174,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(1f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -208,13 +201,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(1f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -233,13 +228,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(0.75f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f,    orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0.25f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f,    orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f,    orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f,    orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -258,13 +255,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(0.5f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f,   orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0.5f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f,   orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f,   orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f,   orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -283,13 +282,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(0.25f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f,    orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0.75f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f,    orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f,    orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f,    orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -308,13 +309,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(0f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(1f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -333,13 +336,15 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            weightLogic.ApplyLandBesideLandWeights(point, orientationData);
+            throw new NotImplementedException();
+
+            /*weightLogic.ApplyLandBesideLandWeights(point, orientationData);
 
             Assert.AreEqual(0f, orientationData.CenterWeight,    "Unexpected CenterWeight");            
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(1f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");*/
         }
 
         [Test]
@@ -370,7 +375,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");
         }
 
         [Test]
@@ -401,7 +406,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f,   orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0f,   orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f,   orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0.5f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0.5f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");
         }
 
         [Test]
@@ -432,7 +437,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(1f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(1f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");
         }
 
         [Test]
@@ -463,7 +468,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f,   orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(0.5f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f,   orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0.5f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0.5f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");
         }
 
         [Test]
@@ -494,7 +499,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(0f, orientationData.LeftWeight,      "Unexpected LeftWeight");
             Assert.AreEqual(1f, orientationData.RightWeight,     "Unexpected RightWeight");
             Assert.AreEqual(0f, orientationData.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(0f, orientationData.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(0f, orientationData.RiverHeightWeight,     "Unexpected RiverWeight");
         }
 
         [Test]
@@ -533,17 +538,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(1f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(1f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -582,17 +588,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(2f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(0f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(2f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -631,17 +638,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(1f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(1f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -680,17 +688,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(3f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(2f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(0f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(3f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(2f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -729,17 +738,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(2f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(0f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(2f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -778,17 +788,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(1f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(3f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(0f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(1f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(3f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         [Test]
@@ -809,17 +820,18 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var weightLogic = Container.Resolve<PointOrientationWeightLogic>();
 
-            float centerWeight, leftWeight, rightWeight, riverWeight;
+            float centerWeight, leftWeight, rightWeight, riverHeightWeight, riverAlphaWeight;
 
             weightLogic.GetRiverCornerWeights(
                 point, center, left, right, HexDirection.E,
-                out centerWeight, out leftWeight, out rightWeight, out riverWeight
+                out centerWeight, out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
             );
 
-            Assert.AreEqual(0f, centerWeight, "Unexpected centerWeight");
-            Assert.AreEqual(0f, leftWeight,   "Unexpected leftWeight");
-            Assert.AreEqual(0f, rightWeight,  "Unexpected rightWeight");
-            Assert.AreEqual(0f, riverWeight,  "Unexpected riverWeight");
+            Assert.AreEqual(0f, centerWeight,      "Unexpected centerWeight");
+            Assert.AreEqual(0f, leftWeight,        "Unexpected leftWeight");
+            Assert.AreEqual(0f, rightWeight,       "Unexpected rightWeight");
+            Assert.AreEqual(0f, riverHeightWeight, "Unexpected riverHeightWeight");
+            Assert.AreEqual(1f, riverAlphaWeight,  "Unexpected riverAlphaWeight");
         }
 
         #endregion

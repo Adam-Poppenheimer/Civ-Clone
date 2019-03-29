@@ -27,7 +27,8 @@ namespace Assets.Simulation.MapRendering {
         public float RightWeight;
         public float NextRightWeight;
 
-        public float RiverWeight;
+        public float RiverHeightWeight;
+        public float RiverAlphaWeight;
 
         #endregion
 
@@ -39,17 +40,18 @@ namespace Assets.Simulation.MapRendering {
             var otherData = obj as PointOrientationData;
 
             return (otherData != null)
-                && IsOnGrid        == otherData.IsOnGrid
-                && Sextant         == otherData.Sextant
-                && Center          == otherData.Center
-                && Left            == otherData.Left
-                && Right           == otherData.Right
-                && NextRight       == otherData.NextRight
-                && CenterWeight    == otherData.CenterWeight
-                && LeftWeight      == otherData.LeftWeight
-                && RightWeight     == otherData.RightWeight
-                && NextRightWeight == otherData.NextRightWeight
-                && RiverWeight     == otherData.RiverWeight;
+                && IsOnGrid          == otherData.IsOnGrid
+                && Sextant           == otherData.Sextant
+                && Center            == otherData.Center
+                && Left              == otherData.Left
+                && Right             == otherData.Right
+                && NextRight         == otherData.NextRight
+                && CenterWeight      == otherData.CenterWeight
+                && LeftWeight        == otherData.LeftWeight
+                && RightWeight       == otherData.RightWeight
+                && NextRightWeight   == otherData.NextRightWeight
+                && RiverHeightWeight == otherData.RiverHeightWeight
+                && RiverAlphaWeight  == otherData.RiverAlphaWeight;
         }
 
         public override int GetHashCode() {
@@ -67,11 +69,12 @@ namespace Assets.Simulation.MapRendering {
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, Right)     ? Right    .GetHashCode() : 0);
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, NextRight) ? NextRight.GetHashCode() : 0);
 
-                hash = (hash * HashingMultipler) ^ CenterWeight   .GetHashCode();
-                hash = (hash * HashingMultipler) ^ LeftWeight     .GetHashCode();
-                hash = (hash * HashingMultipler) ^ RightWeight    .GetHashCode();
-                hash = (hash * HashingMultipler) ^ NextRightWeight.GetHashCode();
-                hash = (hash * HashingMultipler) ^ RiverWeight    .GetHashCode();
+                hash = (hash * HashingMultipler) ^ CenterWeight     .GetHashCode();
+                hash = (hash * HashingMultipler) ^ LeftWeight       .GetHashCode();
+                hash = (hash * HashingMultipler) ^ RightWeight      .GetHashCode();
+                hash = (hash * HashingMultipler) ^ NextRightWeight  .GetHashCode();
+                hash = (hash * HashingMultipler) ^ RiverHeightWeight.GetHashCode();                
+                hash = (hash * HashingMultipler) ^ RiverAlphaWeight .GetHashCode();
 
                 return hash;
             }
@@ -79,12 +82,23 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
+        public void Invert() {
+            IHexCell oldCenter = Center, oldLeft = Left, oldRight = Right, oldNextRight = NextRight;
+
+            Center    = oldRight;
+            Left      = oldNextRight;
+            Right     = oldCenter;
+            NextRight = oldLeft;
+
+            Sextant = Sextant.Opposite();
+        }
+
         public IHexCell GetMainCell() {
             if(!IsOnGrid) {
                 return null;
             }
 
-            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverWeight);
+            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverHeightWeight);
 
             if(CenterWeight == maxWeight) {
                 return Center;

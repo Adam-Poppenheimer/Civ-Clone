@@ -102,10 +102,12 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
+            throw new NotImplementedException();
+
+            /*MockPointOrientationWeightLogic.Verify(
                 logic => logic.ApplyLandBesideRiverWeights(point, data, false), Times.Once,
                 "Failed to call ApplyLandBesideRiverWeights"
-            );
+            );*/
         }
 
         [Test]
@@ -127,10 +129,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
+            throw new NotImplementedException();
+            /*MockPointOrientationWeightLogic.Verify(
                 logic => logic.ApplyLandBesideLandWeights(point, data), Times.Once,
                 "Failed to call ApplyLandBesideLandWeights"
-            );
+            );*/
         }
 
         [Test]
@@ -172,10 +175,12 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
+            throw new NotImplementedException();
+
+            /*MockPointOrientationWeightLogic.Verify(
                 logic => logic.ApplyLandBesideRiverWeights(point, data, true), Times.Once,
                 "Did not call ApplyLandBesideRiverWeights as expected"
-            );
+            );*/
         }
 
         [Test]
@@ -201,10 +206,12 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            MockPointOrientationWeightLogic.Verify(
+            throw new NotImplementedException();
+
+            /*MockPointOrientationWeightLogic.Verify(
                 logic => logic.ApplyLandBesideLandWeights(point, data), Times.Once,
                 "Did not call ApplyLandBesideRiverWeights as expected"
-            );
+            );*/
         }
 
         [Test]
@@ -272,11 +279,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 point, centerRightContour.First(), leftCenterContour.First(), rightCenterContour.Last()
             )).Returns(true);
 
-            float centerWeight = 1f, leftWeight = 2f, rightWeight = 3f, riverWeight = 4f;
+            float centerWeight = 1f, leftWeight = 2f, rightWeight = 3f, riverHeightWeight = 4f, riverAlphaWeight = 5f;
             MockPointOrientationWeightLogic.Setup(
                 logic => logic.GetRiverCornerWeights(
                     point, center, left, right, HexDirection.E, out centerWeight,
-                    out leftWeight, out rightWeight, out riverWeight
+                    out leftWeight, out rightWeight, out riverHeightWeight, out riverAlphaWeight
                 )
             );
 
@@ -289,10 +296,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            Assert.AreEqual(centerWeight, data.CenterWeight, "Unexpected CenterWeight");
-            Assert.AreEqual(leftWeight,   data.LeftWeight,   "Unexpected LeftWeight");
-            Assert.AreEqual(rightWeight,  data.RightWeight,  "Unexpected RightWeight");
-            Assert.AreEqual(riverWeight,  data.RiverWeight,  "Unexpected RiverWeight");
+            Assert.AreEqual(centerWeight,      data.CenterWeight,      "Unexpected CenterWeight");
+            Assert.AreEqual(leftWeight,        data.LeftWeight,        "Unexpected LeftWeight");
+            Assert.AreEqual(rightWeight,       data.RightWeight,       "Unexpected RightWeight");
+            Assert.AreEqual(riverHeightWeight, data.RiverHeightWeight, "Unexpected RiverHeightWeight");
+            Assert.AreEqual(riverAlphaWeight,  data.RiverAlphaWeight,  "Unexpected RiverAlphaWeight");
         }
 
         [Test]
@@ -325,11 +333,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 point, centerRightContour.Last(), rightCenterContour.First(), nextRightCenterContour.Last()
             )).Returns(true);
 
-            float centerWeight = 1f, rightWeight = 2f, nextRightWeight = 3f, riverWeight = 4f;
+            float centerWeight = 1f, rightWeight = 2f, nextRightWeight = 3f, riverHeightWeight = 4f, riverAlphaWeight = 5f;
             MockPointOrientationWeightLogic.Setup(
                 logic => logic.GetRiverCornerWeights(
                     point, center, right, nextRight, HexDirection.E, out centerWeight,
-                    out rightWeight, out nextRightWeight, out riverWeight
+                    out rightWeight, out nextRightWeight, out riverHeightWeight, out riverAlphaWeight
                 )
             );
 
@@ -342,10 +350,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            Assert.AreEqual(centerWeight,    data.CenterWeight,    "Unexpected CenterWeight");
-            Assert.AreEqual(rightWeight,     data.RightWeight,     "Unexpected RightWeight");
-            Assert.AreEqual(nextRightWeight, data.NextRightWeight, "Unexpected NextRightWeight");
-            Assert.AreEqual(riverWeight,     data.RiverWeight,     "Unexpected RiverWeight");
+            Assert.AreEqual(centerWeight,      data.CenterWeight,      "Unexpected CenterWeight");
+            Assert.AreEqual(rightWeight,       data.RightWeight,       "Unexpected RightWeight");
+            Assert.AreEqual(nextRightWeight,   data.NextRightWeight,   "Unexpected NextRightWeight");
+            Assert.AreEqual(riverHeightWeight, data.RiverHeightWeight, "Unexpected RiverHeightWeight");
+            Assert.AreEqual(riverAlphaWeight,  data.RiverAlphaWeight,  "Unexpected RiverAlphaWeight");
         }
 
         [Test]

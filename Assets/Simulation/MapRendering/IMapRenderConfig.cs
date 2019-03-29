@@ -85,6 +85,8 @@ namespace Assets.Simulation.MapRendering {
         float RiverWideningRate  { get; }
         float RiverWidthNoise    { get; }
 
+        float RiverBankWidth { get; }
+
         int RiverCurvesForMaxWidth { get; }
         int RiverQuadsPerCurve     { get; }
 

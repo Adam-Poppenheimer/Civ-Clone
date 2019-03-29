@@ -39,15 +39,21 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IPointOrientationWeightLogic
 
-        public void ApplyLandBesideRiverWeights(Vector2 xzPoint, PointOrientationData data, bool takeFromRight) {
-            if(takeFromRight) {
-                data.RightWeight = 1f;
-            }else {
-                data.CenterWeight = 1f;
+        public void ApplyLandBesideRiverWeights(Vector2 xzPoint, PointOrientationData data) {
+            var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant);
+
+            Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
+
+            if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
+                data.RiverAlphaWeight = 1f;
             }
+
+            data.CenterWeight = 1f;
         }
 
-        public void ApplyLandBesideLandWeights(Vector2 xzPoint, PointOrientationData data) {
+        public void ApplyLandBesideLandWeights(
+            Vector2 xzPoint, PointOrientationData data, bool hasPreviousRiver, bool hasNextRiver
+        ) {
             if(data.Right == null) {
                 data.CenterWeight = 1f;
                 return;
@@ -87,9 +93,29 @@ namespace Assets.Simulation.MapRendering {
             } else {
                 ApplyLandBesideLandWeights_Edge(xzPoint, data);
             }
+
+            if(hasPreviousRiver) {
+                var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant.Previous());
+
+                Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
+
+                if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
+                    data.RiverAlphaWeight = 1f;
+                }
+            }
+
+            if(hasNextRiver) {
+                var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant.Next());
+
+                Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
+
+                if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
+                    data.RiverAlphaWeight = 1f;
+                }
+            }
         }
 
-        public void ApplyLandBesideLandWeights_Edge(Vector2 xzPoint, PointOrientationData data) {
+        private void ApplyLandBesideLandWeights_Edge(Vector2 xzPoint, PointOrientationData data) {
             Vector2 centerToRight = data.Right.AbsolutePositionXZ - data.Center.AbsolutePositionXZ;
 
             Vector2 centerToPoint = xzPoint - data.Center.AbsolutePositionXZ;
@@ -132,7 +158,9 @@ namespace Assets.Simulation.MapRendering {
 
             data.CenterWeight = 1f - Mathf.Clamp01(2 * (pointCROntoMidline.magnitude / centerToRightMidline.magnitude));
             data.RightWeight  = 1f - Mathf.Clamp01(2 * (pointRCOntoMidline.magnitude / rightToCenterMidline.magnitude));
-            data.RiverWeight  = 1f - data.CenterWeight - data.RightWeight;
+            data.RiverHeightWeight  = 1f - data.CenterWeight - data.RightWeight;
+
+            data.RiverAlphaWeight = 1f;
         }
 
         //We solve this problem by dividing the corner into six triangles,
@@ -140,9 +168,10 @@ namespace Assets.Simulation.MapRendering {
         //determine the relative center, left, right, and river weights
         public void GetRiverCornerWeights(
             Vector2 xzPoint, IHexCell center, IHexCell left, IHexCell right, HexDirection sextant,
-            out float centerWeight, out float leftWeight, out float rightWeight, out float riverWeight
+            out float centerWeight, out float leftWeight, out float rightWeight, out float riverHeightWeight,
+            out float riverAlphaWeight
         ) {
-            centerWeight = 0f; leftWeight = 0f; rightWeight = 0f; riverWeight = 0f;
+            centerWeight = 0f; leftWeight = 0f; rightWeight = 0f; riverHeightWeight = 0f; riverAlphaWeight = 1f;
 
             var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, sextant           );
             var leftCenterContour  = CellEdgeContourCanon.GetContourForCellEdge(left,   sextant.Next2   ());
@@ -169,7 +198,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 centerWeight = coordA;
-                riverWeight = Mathf.Max(coordB, coordC);
+                riverHeightWeight = Mathf.Max(coordB, coordC);
 
             }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerLeftMidpoint, leftCorner, riverMidpoint)) {
 
@@ -179,7 +208,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 leftWeight  = coordB;
-                riverWeight = Mathf.Max(coordA, coordC);
+                riverHeightWeight = Mathf.Max(coordA, coordC);
 
             //Triangles spanning the CenterRight edge
             }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerCorner, riverMidpoint, centerRightMidpoint)) {
@@ -190,7 +219,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 centerWeight = coordA;
-                riverWeight  = Mathf.Max(coordB, coordC);
+                riverHeightWeight  = Mathf.Max(coordB, coordC);
 
             }else if(Geometry2D.IsPointWithinTriangle(xzPoint, centerRightMidpoint, riverMidpoint, rightCorner)) {
 
@@ -200,7 +229,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 rightWeight = coordC;
-                riverWeight = Mathf.Max(coordA, coordB);
+                riverHeightWeight = Mathf.Max(coordA, coordB);
 
             //Triangles spanning the LeftRight edge
             }else if(Geometry2D.IsPointWithinTriangle(xzPoint, rightCorner, riverMidpoint, leftRightMidpoint)) {
@@ -211,7 +240,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 rightWeight = coordA;
-                riverWeight = Mathf.Max(coordB, coordC);
+                riverHeightWeight = Mathf.Max(coordB, coordC);
 
             }else if(Geometry2D.IsPointWithinTriangle(xzPoint, riverMidpoint, leftCorner, leftRightMidpoint)) {
 
@@ -221,7 +250,7 @@ namespace Assets.Simulation.MapRendering {
                 );
 
                 leftWeight  = coordB;
-                riverWeight = Mathf.Max(coordA, coordC);
+                riverHeightWeight = Mathf.Max(coordA, coordC);
             }
         }
 

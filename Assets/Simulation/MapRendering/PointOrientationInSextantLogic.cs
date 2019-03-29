@@ -50,17 +50,21 @@ namespace Assets.Simulation.MapRendering {
                 Sextant  = gridSextant,
 
                 Center    = gridCenter,
-                Left      = Grid.HasNeighbor(gridCenter, gridSextant.Previous()) ? Grid.GetNeighbor(gridCenter, gridSextant.Previous()) : null,
-                Right     = Grid.HasNeighbor(gridCenter, gridSextant)            ? Grid.GetNeighbor(gridCenter, gridSextant)            : null,
-                NextRight = Grid.HasNeighbor(gridCenter, gridSextant.Next())     ? Grid.GetNeighbor(gridCenter, gridSextant.Next())     : null,
+                Left      = Grid.GetNeighbor(gridCenter, gridSextant.Previous()),
+                Right     = Grid.GetNeighbor(gridCenter, gridSextant),
+                NextRight = Grid.GetNeighbor(gridCenter, gridSextant.Next()),
             };
 
             if(CellEdgeContourCanon.IsPointWithinContour(xzPoint, gridCenter, gridSextant)) {
                 if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
-                    PointOrientationWeightLogic.ApplyLandBesideRiverWeights(xzPoint, data, false);
+                    PointOrientationWeightLogic.ApplyLandBesideRiverWeights(xzPoint, data);
 
                 }else {
-                    PointOrientationWeightLogic.ApplyLandBesideLandWeights(xzPoint, data);
+                    PointOrientationWeightLogic.ApplyLandBesideLandWeights(
+                        xzPoint, data,
+                        RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant.Previous()),
+                        RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant.Next())
+                    );
                 }
 
                 return true;
@@ -71,11 +75,17 @@ namespace Assets.Simulation.MapRendering {
             }
 
             if(CellEdgeContourCanon.IsPointWithinContour(xzPoint, data.Right, gridSextant.Opposite())) {
+                data.Invert();
+
                 if(RiverCanon.HasRiverAlongEdge(gridCenter, gridSextant)) {
-                    PointOrientationWeightLogic.ApplyLandBesideRiverWeights(xzPoint, data, true);
+                    PointOrientationWeightLogic.ApplyLandBesideRiverWeights(xzPoint, data);
 
                 }else {
-                    PointOrientationWeightLogic.ApplyLandBesideLandWeights(xzPoint, data);
+                    PointOrientationWeightLogic.ApplyLandBesideLandWeights(
+                        xzPoint, data,
+                        RiverCanon.HasRiverAlongEdge(data.Center, gridSextant.Previous()),
+                        RiverCanon.HasRiverAlongEdge(data.Center, gridSextant.Next())
+                    );
                 }
 
                 return true;
@@ -104,7 +114,8 @@ namespace Assets.Simulation.MapRendering {
                 ) {
                     PointOrientationWeightLogic.GetRiverCornerWeights(
                         xzPoint, data.Center, data.Left, data.Right, data.Sextant,
-                        out data.CenterWeight, out data.LeftWeight, out data.RightWeight, out data.RiverWeight
+                        out data.CenterWeight, out data.LeftWeight, out data.RightWeight, out data.RiverHeightWeight,
+                        out data.RiverAlphaWeight
                     );
 
                     return true;
@@ -123,7 +134,8 @@ namespace Assets.Simulation.MapRendering {
                 ) {
                     PointOrientationWeightLogic.GetRiverCornerWeights(
                         xzPoint, data.Center, data.Right, data.NextRight, data.Sextant,
-                        out data.CenterWeight, out data.RightWeight, out data.NextRightWeight, out data.RiverWeight
+                        out data.CenterWeight, out data.RightWeight, out data.NextRightWeight, out data.RiverHeightWeight,
+                        out data.RiverAlphaWeight
                     );
 
                     return true;
