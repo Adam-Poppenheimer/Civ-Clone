@@ -83,8 +83,8 @@ namespace Assets.Simulation.MapRendering {
                 }else {
                     PointOrientationWeightLogic.ApplyLandBesideLandWeights(
                         xzPoint, data,
-                        RiverCanon.HasRiverAlongEdge(data.Center, gridSextant.Previous()),
-                        RiverCanon.HasRiverAlongEdge(data.Center, gridSextant.Next())
+                        RiverCanon.HasRiverAlongEdge(data.Center, data.Sextant.Previous()),
+                        RiverCanon.HasRiverAlongEdge(data.Center, data.Sextant.Next())
                     );
                 }
 

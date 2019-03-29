@@ -67,11 +67,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetAlphamapForPoint_AndRiverWeightAboveZero_ReturnsRiverAlphamap() {
+        public void GetAlphamapForPoint_AndRiverAlphaWeightAboveZero_ReturnsRiverAlphamap() {
             var point = new Vector2(1f, -2f);
 
             var orientationData = new PointOrientationData() {
-                IsOnGrid = true, RiverHeightWeight = 0.001f
+                IsOnGrid = true, RiverAlphaWeight = 0.001f
             };
 
             MockPointOrientationLogic.Setup(logic => logic.GetOrientationDataForPoint(point)).Returns(orientationData);
@@ -89,11 +89,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetAlphamapForPoint_RiverWeightDrownsAllOtherWeights() {
+        public void GetAlphamapForPoint_RiverAlphaWeightDrownsAllOtherWeights() {
             var point = new Vector2(1f, -2f);
 
             var orientationData = new PointOrientationData() {
-                IsOnGrid = true, Sextant = HexDirection.E, RiverHeightWeight = 0.001f,
+                IsOnGrid = true, Sextant = HexDirection.E, RiverAlphaWeight = 0.001f,
                 Center = BuildCell(), Left = BuildCell(), Right = BuildCell(), NextRight = BuildCell(),
                 CenterWeight = 1f, LeftWeight = 1f, RightWeight = 1f, NextRightWeight = 1f
             };

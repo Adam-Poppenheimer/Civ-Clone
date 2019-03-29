@@ -84,7 +84,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void TryFindValidOrientation_PointInCenterRightContour_AndEdgeHasRiver_AppliesLandBesideRiverWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_PointInCenterRightContour_AndEdgeHasRiver_DoesLandBesideRiver() {
             var point = new Vector2(1f, 2f);
 
             var center = BuildCell();
@@ -102,16 +102,14 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            throw new NotImplementedException();
-
-            /*MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyLandBesideRiverWeights(point, data, false), Times.Once,
+            MockPointOrientationWeightLogic.Verify(
+                logic => logic.ApplyLandBesideRiverWeights(point, data), Times.Once,
                 "Failed to call ApplyLandBesideRiverWeights"
-            );*/
+            );
         }
 
         [Test]
-        public void TryFindValidOrientation_PointInCenterRightContour_AndEdgeHasNoRiver_AppliesLandBesideLandWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_PointInCenterRightContour_AndNoRiver_DoesLandBesideLand() {
             var point = new Vector2(1f, 2f);
 
             var center = BuildCell();
@@ -119,6 +117,8 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockCellEdgeContourCanon.Setup(canon => canon.IsPointWithinContour(point, center, HexDirection.E)).Returns(true);
 
             MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center, HexDirection.E)).Returns(false);
+
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center, HexDirection.NE)).Returns(true);
 
             PointOrientationData data;
 
@@ -129,11 +129,10 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            throw new NotImplementedException();
-            /*MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyLandBesideLandWeights(point, data), Times.Once,
+            MockPointOrientationWeightLogic.Verify(
+                logic => logic.ApplyLandBesideLandWeights(point, data, true, false), Times.Once,
                 "Failed to call ApplyLandBesideLandWeights"
-            );*/
+            );
         }
 
         [Test]
@@ -153,7 +152,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void TryFindValidOrientation_PointInRightCenterContour_AndEdgeHasRiver_AppliesLandBesideRiverWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_PointInRightCenterContour_AndEdgeHasRiver_AppliesLandBesideRiver() {
             var point = new Vector2(1f, 2f);
 
             var center = BuildCell();
@@ -175,16 +174,43 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            throw new NotImplementedException();
-
-            /*MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyLandBesideRiverWeights(point, data, true), Times.Once,
+            MockPointOrientationWeightLogic.Verify(
+                logic => logic.ApplyLandBesideRiverWeights(point, data), Times.Once,
                 "Did not call ApplyLandBesideRiverWeights as expected"
-            );*/
+            );
         }
 
         [Test]
-        public void TryFindValidOrientation_PointInRightCenterContour_AndEdgeHasNoRiver_AppliesLandBesideLandWeights_AndReturnsTrue() {
+        public void TryFindValidOrientation_PointInRightCenterContour_InvertsData() {
+            var point = new Vector2(1f, 2f);
+
+            var center    = BuildCell();
+            var left      = BuildCell();
+            var right     = BuildCell();
+            var nextRight = BuildCell();
+
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.NE)).Returns(left);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
+
+            MockCellEdgeContourCanon.Setup(canon => canon.IsPointWithinContour(point, right, HexDirection.W)).Returns(true);
+
+            PointOrientationData data;
+
+            var sextantLogic = Container.Resolve<PointOrientationInSextantLogic>();
+
+            sextantLogic.TryFindValidOrientation(point, center, HexDirection.E, out data);
+
+            Assert.AreEqual(right,     data.Center,    "data.Center has an unexpected value");
+            Assert.AreEqual(nextRight, data.Left,      "data.Left has an unexpected value");
+            Assert.AreEqual(center,    data.Right,     "data.Right has an unexpected value");
+            Assert.AreEqual(left,      data.NextRight, "data.NextRight has an unexpected value");
+
+            Assert.AreEqual(HexDirection.W, data.Sextant, "data.Sextant has an unexpected value");
+        }
+
+        [Test]
+        public void TryFindValidOrientation_PointInRightCenterContour_AndNoRiver_DoesLandBesideLand() {
             var point = new Vector2(1f, 2f);
 
             var center = BuildCell();
@@ -197,6 +223,8 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(center, HexDirection.E)).Returns(false);
 
+            MockRiverCanon.Setup(canon => canon.HasRiverAlongEdge(right, HexDirection.SW)).Returns(true);
+
             PointOrientationData data;
 
             var sextantLogic = Container.Resolve<PointOrientationInSextantLogic>();
@@ -206,12 +234,10 @@ namespace Assets.Tests.Simulation.MapRendering {
                 "Did not return true as expected"
             );
 
-            throw new NotImplementedException();
-
-            /*MockPointOrientationWeightLogic.Verify(
-                logic => logic.ApplyLandBesideLandWeights(point, data), Times.Once,
+            MockPointOrientationWeightLogic.Verify(
+                logic => logic.ApplyLandBesideLandWeights(point, data, true, false), Times.Once,
                 "Did not call ApplyLandBesideRiverWeights as expected"
-            );*/
+            );
         }
 
         [Test]
