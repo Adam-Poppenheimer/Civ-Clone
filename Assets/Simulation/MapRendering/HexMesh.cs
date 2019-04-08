@@ -39,7 +39,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private HexMeshData Data { get; set; }
+        [SerializeField] private HexMeshData Data;
 
         [NonSerialized] private List<List<Vector3>> VertexLists     = new List<List<Vector3>>();
         [NonSerialized] private List<List<int>>     TriangleLists   = new List<List<int>>();
@@ -155,6 +155,8 @@ namespace Assets.Simulation.MapRendering {
                 if(Data.WeldMesh) {
                     MeshWelder.Weld(newSubMesh.Mesh);
                 }
+                
+                newSubMesh.Mesh.RecalculateNormals();
 
                 SubMeshes.Add(newSubMesh);
             }

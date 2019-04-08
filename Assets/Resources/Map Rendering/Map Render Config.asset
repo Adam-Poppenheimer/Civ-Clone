@@ -121,7 +121,7 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 1
+    _weldMesh: 0
     _convertVerticesToWorld: 1
     _renderingData:
       ShadowCastingMode: 0

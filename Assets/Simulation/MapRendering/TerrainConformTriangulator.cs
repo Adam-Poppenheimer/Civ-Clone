@@ -131,7 +131,7 @@ namespace Assets.Simulation.MapRendering {
                         VertexData AB = new VertexData(
                             (nextTriangle.A.Point + nextTriangle.B.Point) / 2f,
                             (nextTriangle.A.UV    + nextTriangle.B.UV   ) / 2f,
-                            (nextTriangle.A.Color + nextTriangle.B.Color) / 2f
+                            Color.Lerp(nextTriangle.A.Color, nextTriangle.B.Color, 0.5f)
                         );
 
                         triangles.Enqueue(new TriangleData(nextTriangle.A, AB,             nextTriangle.C));
@@ -141,7 +141,7 @@ namespace Assets.Simulation.MapRendering {
                         VertexData AC = new VertexData(
                             (nextTriangle.A.Point + nextTriangle.C.Point) / 2f,
                             (nextTriangle.A.UV    + nextTriangle.C.UV   ) / 2f,
-                            (nextTriangle.A.Color + nextTriangle.C.Color) / 2f
+                            Color.Lerp(nextTriangle.A.Color, nextTriangle.C.Color, 0.5f)
                         );
 
                         triangles.Enqueue(new TriangleData(nextTriangle.A, nextTriangle.B, AC            ));
@@ -151,7 +151,7 @@ namespace Assets.Simulation.MapRendering {
                         VertexData BC = new VertexData(
                             (nextTriangle.B.Point + nextTriangle.C.Point) / 2f,
                             (nextTriangle.B.UV    + nextTriangle.C.UV   ) / 2f,
-                            (nextTriangle.B.Color + nextTriangle.C.Color) / 2f
+                            Color.Lerp(nextTriangle.B.Color, nextTriangle.C.Color, 0.5f)
                         );
 
                         triangles.Enqueue(new TriangleData(nextTriangle.A, nextTriangle.B, BC            ));

@@ -1,5 +1,6 @@
 ﻿Shader "Civ Clone/Culture" {
 	Properties {
+		_MainTex("Albedo (RGB)", 2D) = "white" {}
 		_Glossiness ("Smoothness", Range(0,1)) = 0.5
 		_Specular ("Specular", Color) = (0.2, 0.2, 0.2)
 		_BackgroundColor("Background Color", Color) = (0, 0, 0)
@@ -43,7 +44,7 @@
 			o.Smoothness = _Glossiness;
 			o.Emission = _BackgroundColor * (1 - explored);
 
-			o.Alpha = IN.uv_MainTex.y;
+			o.Alpha = IN.uv_MainTex.y * explored;
 		}
 		ENDCG
 	}

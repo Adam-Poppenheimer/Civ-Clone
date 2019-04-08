@@ -43,9 +43,7 @@
 		}
 
 		void surf(Input IN, inout SurfaceOutputStandardSpecular o) {
-			int cellIndex = GetCellIndexFromWorld(IN.worldPos);
-
-			float4 cellData = GetCellData(cellIndex);
+			float4 cellData = GetCellDataFromWorld(IN.worldPos);
 
 			fixed4 color = tex2D(_MainTex, IN.worldPos.xz * 0.02);
 			float alpha = GetAlpha(IN.worldPos.xz, _SplatMap, color.a, IN.uv_MainTex.y);

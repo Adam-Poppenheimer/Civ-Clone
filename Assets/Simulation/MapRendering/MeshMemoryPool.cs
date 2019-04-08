@@ -17,7 +17,6 @@ namespace Assets.Simulation.MapRendering {
 
         protected override void Reinitialize(Mesh item) {
             item.Clear();
-            item.ClearBlendShapes();
         }
 
         #endregion
