@@ -166,9 +166,10 @@ namespace Assets.Simulation.MapRendering {
 
             transform.position = position;
 
-            Terrain.castShadows      = false;
-            Terrain.materialType     = Terrain.MaterialType.Custom;
-            Terrain.materialTemplate = RenderConfig.TerrainMaterial;
+            Terrain.castShadows         = RenderConfig.TerrainCastsShadows;
+            Terrain.materialType        = Terrain.MaterialType.Custom;
+            Terrain.materialTemplate    = RenderConfig.TerrainMaterial;
+            Terrain.heightmapPixelError = RenderConfig.TerrainHeightmapPixelError;
 
             Terrain.Flush();
         }

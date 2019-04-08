@@ -31,6 +31,8 @@ MonoBehaviour:
   _terrainMaxY: 20
   _terrainAlphamapResolution: 65
   _terrainHeightmapResolution: 129
+  _terrainCastsShadows: 0
+  _terrainHeightmapPixelError: 1
   _mapCollisionMask:
     serializedVersion: 2
     m_Bits: 272
@@ -82,7 +84,7 @@ MonoBehaviour:
   _riverCurveStrength: 5
   _riverWideningRate: 5
   _riverWidthNoise: 0.25
-  _riverBankWidth: 1
+  _riverBankWidth: 0.75
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10

@@ -52,6 +52,10 @@ namespace Assets.Simulation.MapRendering {
         int TerrainAlphamapResolution  { get; }
         int TerrainHeightmapResolution { get; }
 
+        bool TerrainCastsShadows { get; }
+
+        int TerrainHeightmapPixelError { get; }
+
         LayerMask MapCollisionMask { get; }
 
         Material TerrainMaterial { get; }

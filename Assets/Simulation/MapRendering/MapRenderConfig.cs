@@ -142,7 +142,7 @@ namespace Assets.Simulation.MapRendering {
         public float TerrainMaxY {
             get { return _terrainMaxY; }
         }
-        [SerializeField] private float _terrainMaxY;
+        [SerializeField, Range(10, 100)] private float _terrainMaxY;
 
         public int TerrainAlphamapResolution  {
             get { return _terrainAlphamapResolution; }
@@ -154,11 +154,20 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _terrainHeightmapResolution;
 
+        public bool TerrainCastsShadows {
+            get { return _terrainCastsShadows; }
+        }
+        [SerializeField] private bool _terrainCastsShadows;
+
+        public int TerrainHeightmapPixelError {
+            get { return _terrainHeightmapPixelError; }
+        }
+        [SerializeField, Range(1, 1000)] private int _terrainHeightmapPixelError;
+
         public LayerMask MapCollisionMask {
             get { return _mapCollisionMask; }
         }
         [SerializeField] private LayerMask _mapCollisionMask;
-
 
         public Material TerrainMaterial {
             get { return _terrainMaterial; }
