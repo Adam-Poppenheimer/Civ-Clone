@@ -11,6 +11,23 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1983918571130250}
   m_IsPrefabParent: 1
+--- !u!1 &1062775136957188
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4553131449361846}
+  - component: {fileID: 114306210666534096}
+  - component: {fileID: 20338302251950178}
+  m_Layer: 0
+  m_Name: Baking Camera
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1798316892017366
 GameObject:
   m_ObjectHideFlags: 0
@@ -56,9 +73,23 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4783845265814234}
+  - {fileID: 4553131449361846}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &4553131449361846
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1062775136957188}
+  m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: 0, y: 40, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_Children: []
+  m_Father: {fileID: 4311158182652248}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
 --- !u!4 &4783845265814234
 Transform:
   m_ObjectHideFlags: 1
@@ -72,6 +103,42 @@ Transform:
   m_Father: {fileID: 4311158182652248}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!20 &20338302251950178
+Camera:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1062775136957188}
+  m_Enabled: 0
+  serializedVersion: 2
+  m_ClearFlags: 2
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 40
+    height: 40
+  near clip plane: 0.3
+  far clip plane: 50
+  field of view: 60
+  orthographic: 1
+  orthographic size: 5
+  m_Depth: 24
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_AllowMSAA: 1
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 1
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+  m_StereoMirrorMode: 0
 --- !u!114 &114101670272957126
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -83,6 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f602bc60dad5f42b0e183d792e54c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  TerrainBaker: {fileID: 114306210666534096}
 --- !u!114 &114275055398550290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -95,6 +163,24 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   FeatureContainer: {fileID: 4783845265814234}
+--- !u!114 &114306210666534096
+MonoBehaviour:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1062775136957188}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9824d0fc680ea9c42bfd5042f6f6f13a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  BakingCamera: {fileID: 20338302251950178}
+  OcclusionMask:
+    serializedVersion: 2
+    m_Bits: 272
+  DrawingMask:
+    serializedVersion: 2
+    m_Bits: 1024
 --- !u!114 &114314930325867420
 MonoBehaviour:
   m_ObjectHideFlags: 1

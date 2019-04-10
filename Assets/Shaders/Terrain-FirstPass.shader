@@ -21,6 +21,10 @@ Shader "Civ Clone/Terrain" {
 		[HideInInspector] _Smoothness2 ("Smoothness 2", Range(0.0, 1.0)) = 1.0	
 		[HideInInspector] _Smoothness3 ("Smoothness 3", Range(0.0, 1.0)) = 1.0
 
+		//Used for baking things like culture directly onto the terrain
+		[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "white" {}
+		[HideInInspector] _BakeTextureDimensions ("Bake Texture Dimensions", Vector) = (1.0, 1.0, 0, 0)
+
 		// used in fallback on old cards & base map
 		[HideInInspector] _MainTex ("BaseMap (RGB)", 2D) = "white" {}
 		[HideInInspector] _Color ("Main Color", Color) = (1,1,1,1)
@@ -67,6 +71,9 @@ Shader "Civ Clone/Terrain" {
 
 		half3 _BackgroundColor;
 
+		sampler2D _BakeTexture;
+		float4 _BakeTextureDimensions;
+
 		void surf (Input IN, inout SurfaceOutputStandardSpecular o) {
 			half4 splat_control;
 			half weight;
@@ -81,13 +88,24 @@ Shader "Civ Clone/Terrain" {
 
 			SplatmapMix(IN, defaultSmoothness, splat_control, weight, mixedDiffuse, normal);
 
+			float4 objectPos = mul(unity_WorldToObject, float4(IN.worldPos, 1.0));
+			float2 bakeUV = float2(objectPos.x / _BakeTextureDimensions.x, objectPos.z / _BakeTextureDimensions.y);
+
+			fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba;
+
 			float4 cellData = GetCellDataFromWorld(IN.worldPos);
 
 			float visibility = cellData.x;
 			float explored = cellData.y;
 
 			o.Normal = normal;
-			o.Albedo = mixedDiffuse.rgb * lerp(0.25, 1, visibility) * explored;
+
+			float cellDataFactor = lerp(0.25, 1, visibility) * explored;
+
+			fixed3 splatAlbedo = mixedDiffuse.rgb * cellDataFactor;
+			fixed3 bakedAlbedo = bakedDiffuse.rgb * cellDataFactor;
+
+			o.Albedo = lerp(splatAlbedo, bakedAlbedo, bakedDiffuse.a);
 			o.Alpha = weight;
 			o.Smoothness = mixedDiffuse.a;
 			o.Specular = splat_control.x * _Specular0 + splat_control.y * _Specular1 + splat_control.z * _Specular2 + splat_control.a * _Specular3;

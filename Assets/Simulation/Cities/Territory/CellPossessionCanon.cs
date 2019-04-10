@@ -21,8 +21,7 @@ namespace Assets.Simulation.Cities.Territory {
 
         #region instance fields and properties
 
-        private CitySignals CitySignals;
-
+        private CitySignals                              CitySignals;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
 
         #endregion

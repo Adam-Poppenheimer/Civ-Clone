@@ -34,6 +34,10 @@ Properties {
 	_GSpeed ("Wave Speed", Vector) = (1.2, 1.375, 1.1, 1.5)
 	_GDirectionAB ("Wave Direction", Vector) = (0.3 ,0.85, 0.85, 0.25)
 	_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
+
+	//Used for baking things like culture directly onto the terrain
+	[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "black" {}
+	[HideInInspector] _BakeTextureDimensions("Bake Texture Dimensions", Vector) = (1.0, 1.0, 0, 0)
 }
 
 
@@ -77,11 +81,11 @@ CGINCLUDE
 	
 	struct v2f_simple
 	{
-		float4 pos : SV_POSITION;
+		float4 pos              : SV_POSITION;
 		float4 viewInterpolator : TEXCOORD0;
-		float4 bumpCoords : TEXCOORD1;
-		float2 visibility : TEXCOORD2;
-		float4 color : COLOR;
+		float4 bumpCoords       : TEXCOORD1;
+		float3 worldPos         : TEXCOORD2;
+		float4 color            : COLOR;
 		UNITY_FOG_COORDS(2)
 	};
 
@@ -91,6 +95,9 @@ CGINCLUDE
 	sampler2D _RefractionTex;
 	sampler2D _ShoreTex;
 	sampler2D_float _CameraDepthTexture;
+	sampler2D _BakeTexture;
+
+	float4 _BakeTextureDimensions;
 
 	// colors in use
 	uniform float4 _RefrColorDepth;
@@ -333,18 +340,14 @@ CGINCLUDE
 	{
 		v2f_simple o;
 
-		float3 worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+		o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+		o.pos = UnityObjectToClipPos(v.vertex);
 
-		o.visibility = GetCellDataFromWorld(worldPos).xy;
-		
-		half3 worldSpaceVertex = worldPos;
-		half2 tileableUv = worldSpaceVertex.xz;
+		half2 tileableUv = o.worldPos.xz;
 
 		o.bumpCoords.xyzw = (tileableUv.xyxy + _Time.xxxx * _BumpDirection.xyzw) * _BumpTiling.xyzw;
 
-		o.viewInterpolator.xyz = worldSpaceVertex-_WorldSpaceCameraPos;
-		
-		o.pos = UnityObjectToClipPos(v.vertex);
+		o.viewInterpolator.xyz = o.worldPos - _WorldSpaceCameraPos;
 
 		o.viewInterpolator.w = 1;//GetDistanceFadeout(ComputeNonStereoScreenPos(o.pos).w, DISTANCE_SCALE);
 		
@@ -372,14 +375,28 @@ CGINCLUDE
 		half4 baseColor = i.color;
 
 		baseColor = lerp(baseColor, _ReflectionColor, saturate(refl2Refr * 2.0));
-		baseColor.a = saturate(2.0 * refl2Refr + 0.5) * i.visibility.y;
 
-		baseColor.rgb += spec * _SpecularColor.rgb;
-		UNITY_APPLY_FOG(i.fogCoord, baseColor);
+		float4 cellData = GetCellDataFromWorld(i.worldPos);
 
-		baseColor.rgb *= lerp(0.25, 1, i.visibility.x);
+		float visibility = cellData.x;
+		float explored   = cellData.y;
 
-		return baseColor;
+		baseColor.a = saturate(2.0 * refl2Refr + 0.5) * explored;
+
+		baseColor.rgb += spec * _SpecularColor.rgb;	
+
+		baseColor.rgb *= lerp(0.25, 1, visibility);
+
+		float4 objectPos = mul(unity_WorldToObject, float4(i.worldPos, 1.0));
+		float2 bakeUV = float2(objectPos.x / _BakeTextureDimensions.x, objectPos.z / _BakeTextureDimensions.y);
+
+		fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba * lerp(0.25, 1, visibility) * explored;
+
+		half4 preFogColor = lerp(baseColor, bakedDiffuse, bakedDiffuse.a);
+
+		UNITY_APPLY_FOG(i.fogCoord, preFogColor);
+
+		return preFogColor;
 	}
 	
 ENDCG

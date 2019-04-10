@@ -169,10 +169,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private LayerMask _mapCollisionMask;
 
-        public Material TerrainMaterial {
-            get { return _terrainMaterial; }
+        public Material TerrainMaterialTemplate {
+            get { return _terrainMaterialTemplate; }
         }
-        [SerializeField] private Material _terrainMaterial;
+        [SerializeField] private Material _terrainMaterialTemplate;
 
         public IEnumerable<Texture2D> MapTextures {
             get { return _mapTextures; }
@@ -356,6 +356,17 @@ namespace Assets.Simulation.MapRendering {
             get { return _farmTriangleSideLength; }
         }
         [SerializeField, Range(0.05f, 5f)] private float _farmTriangleSideLength;
+
+
+        public RenderTextureData TerrainBakeTextureData {
+            get { return _terrainBakeTextureData; }
+        }
+        [SerializeField] private RenderTextureData _terrainBakeTextureData;
+
+        public Shader TerrainBakeOcclusionShader {
+            get { return _terrainBakeOcclusionShader; }
+        }
+        [SerializeField] private Shader _terrainBakeOcclusionShader;
 
         #endregion
 

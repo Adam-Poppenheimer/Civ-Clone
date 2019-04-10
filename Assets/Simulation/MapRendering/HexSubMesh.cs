@@ -23,6 +23,7 @@ namespace Assets.Simulation.MapRendering {
 
             protected override void Reinitialize(HexRenderingData rendererData, HexSubMesh item) {
                 item.Initialize(rendererData);
+
                 item.transform.localPosition = Vector3.zero;
             }
 
@@ -73,6 +74,10 @@ namespace Assets.Simulation.MapRendering {
             MeshFilter.sharedMesh = MeshCollider.sharedMesh = null;
 
             MeshCollider.enabled = false;
+        }
+
+        public void OverrideMaterial(Material newMaterial) {
+            MeshRenderer.sharedMaterial = newMaterial;
         }
 
         #endregion

@@ -4,6 +4,14 @@ namespace Assets.Simulation.MapRendering {
 
     public interface IHexMesh {
 
+        #region properties
+
+        Transform transform { get; }
+
+        bool ShouldBeBaked { get; }
+
+        #endregion
+
         #region methods
 
         void AddQuad(Vector3 bottomLeft, Vector3 bottomRight, Vector3 topLeft, Vector3 topRight);
@@ -39,6 +47,10 @@ namespace Assets.Simulation.MapRendering {
 
         void Apply();
         void Clear();
+
+        void SetActive(bool isActive);
+
+        void OverrideMaterial(Material newMaterial);
 
         #endregion
 

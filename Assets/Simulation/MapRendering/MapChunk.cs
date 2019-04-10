@@ -59,10 +59,10 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshVisibilityCoroutine;
         private Coroutine RefreshFarmlandCoroutine;
 
-        private HexMesh StandingWater {
+        private IHexMesh StandingWater {
             get {
                 if(_standingWater == null) {
-                    _standingWater = HexMeshPool.Spawn("Standing Water", RenderConfig.StandingWaterData);
+                    _standingWater = HexMeshFactory.Create("Standing Water", RenderConfig.StandingWaterData);
 
                     _standingWater.transform.SetParent(transform, false);
                 }
@@ -71,12 +71,12 @@ namespace Assets.Simulation.MapRendering {
             }
             set { _standingWater = value; }
         }
-        private HexMesh _standingWater;
+        private IHexMesh _standingWater;
 
-        private HexMesh Culture {
+        private IHexMesh Culture {
             get {
                 if(_culture == null) {
-                    _culture = HexMeshPool.Spawn("Culture", RenderConfig.CultureData);
+                    _culture = HexMeshFactory.Create("Culture", RenderConfig.CultureData);
 
                     _culture.transform.SetParent(transform, false);
                 }
@@ -85,12 +85,12 @@ namespace Assets.Simulation.MapRendering {
             }
             set { _culture = value; }
         }
-        private HexMesh _culture;
+        private IHexMesh _culture;
 
-        private HexMesh Farmland {
+        private IHexMesh Farmland {
             get {
                 if(_farmland == null) {
-                    _farmland = HexMeshPool.Spawn("Farmland", RenderConfig.FarmlandData);
+                    _farmland = HexMeshFactory.Create("Farmland", RenderConfig.FarmlandData);
 
                     _farmland.transform.SetParent(transform, false);
                 }
@@ -99,21 +99,23 @@ namespace Assets.Simulation.MapRendering {
             }
             set { _farmland = value; }
         }
-        private HexMesh _farmland;
+        private IHexMesh _farmland;
+
+        [SerializeField] private TerrainBaker TerrainBaker;
 
 
 
 
-        private ITerrainAlphamapLogic                     AlphamapLogic;
-        private ITerrainHeightLogic                       HeightLogic;
-        private IMapRenderConfig                          RenderConfig;
-        private IWaterTriangulator                        WaterTriangulator;
-        private IHexFeatureManager                        HexFeatureManager;
-        private IRiverTriangulator                        RiverTriangulator;
-        private ICultureTriangulator                      CultureTriangulator;
-        private IHexCellShaderData                        ShaderData;
-        private IMemoryPool<string, HexMeshData, HexMesh> HexMeshPool;
-        private IFarmTriangulator                         FarmTriangulator;
+        private ITerrainAlphamapLogic AlphamapLogic;
+        private ITerrainHeightLogic   HeightLogic;
+        private IMapRenderConfig      RenderConfig;
+        private IWaterTriangulator    WaterTriangulator;
+        private IHexFeatureManager    HexFeatureManager;
+        private IRiverTriangulator    RiverTriangulator;
+        private ICultureTriangulator  CultureTriangulator;
+        private IHexCellShaderData    ShaderData;
+        private IHexMeshFactory       HexMeshFactory;
+        private IFarmTriangulator     FarmTriangulator;
 
         #endregion
 
@@ -125,7 +127,7 @@ namespace Assets.Simulation.MapRendering {
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
-            DiContainer container, IMemoryPool<string, HexMeshData, HexMesh> hexMeshPool,
+            DiContainer container, IHexMeshFactory hexMeshFactory,
             IFarmTriangulator farmTriangulator
         ) {
             AlphamapLogic       = alphamapLogic;
@@ -136,7 +138,7 @@ namespace Assets.Simulation.MapRendering {
             RiverTriangulator   = riverTriangulator;
             CultureTriangulator = cultureTriangulator;
             ShaderData          = shaderData;
-            HexMeshPool         = hexMeshPool;
+            HexMeshFactory      = hexMeshFactory;
             FarmTriangulator    = farmTriangulator;
         }
 
@@ -166,10 +168,23 @@ namespace Assets.Simulation.MapRendering {
 
             transform.position = position;
 
+            TerrainBaker.Initialize();
+
+            var instancedTerrainMaterial = new Material(RenderConfig.TerrainMaterialTemplate);
+            var instancedWaterMaterial   = new Material(RenderConfig.StandingWaterData.RenderingData.Material);
+
+            instancedTerrainMaterial.SetTexture("_BakeTexture", TerrainBaker.TerrainTexture);
+            instancedWaterMaterial  .SetTexture("_BakeTexture", TerrainBaker.WaterTexture);
+
+            instancedTerrainMaterial.SetVector("_BakeTextureDimensions", new Vector4(RenderConfig.ChunkWidth, RenderConfig.ChunkHeight, 0f, 0f));
+            instancedWaterMaterial  .SetVector("_BakeTextureDimensions", new Vector4(RenderConfig.ChunkWidth, RenderConfig.ChunkHeight, 0f, 0f));
+
             Terrain.castShadows         = RenderConfig.TerrainCastsShadows;
             Terrain.materialType        = Terrain.MaterialType.Custom;
-            Terrain.materialTemplate    = RenderConfig.TerrainMaterial;
+            Terrain.materialTemplate    = instancedTerrainMaterial;
             Terrain.heightmapPixelError = RenderConfig.TerrainHeightmapPixelError;
+
+            StandingWater.OverrideMaterial(instancedWaterMaterial);
 
             Terrain.Flush();
         }
@@ -263,9 +278,9 @@ namespace Assets.Simulation.MapRendering {
 
             cells.Clear();
 
-            HexMeshPool.Despawn(StandingWater);
-            HexMeshPool.Despawn(Culture);
-            HexMeshPool.Despawn(Farmland);
+            HexMeshFactory.Destroy(StandingWater);
+            HexMeshFactory.Destroy(Culture);
+            HexMeshFactory.Destroy(Farmland);
 
             StandingWater = null;
             Culture       = null;
@@ -396,6 +411,10 @@ namespace Assets.Simulation.MapRendering {
             }
 
             Culture.Apply();
+
+            yield return new WaitForEndOfFrame();
+
+            TerrainBaker.Bake();
 
             RefreshCultureCoroutine = null;
         }

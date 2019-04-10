@@ -9,15 +9,17 @@
 		Tags { "RenderType"="Transparent" }
 		Offset -5, -5
 		LOD 200
-		
+		ColorMask RGBA
+		ZTest Always
+
 		Stencil {
 			Ref 0
-			Comp Always
+			Comp Equal
 			Pass Keep
 		}
 
 		CGPROGRAM
-		#pragma surface surf StandardSpecular alpha:fade
+		#pragma surface surf StandardSpecular keepalpha
 
 		#pragma target 3.0
 

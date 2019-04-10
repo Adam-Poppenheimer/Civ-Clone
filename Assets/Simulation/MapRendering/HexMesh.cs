@@ -39,7 +39,25 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private HexMeshData Data;
+        #region from IHexMesh
+
+        public bool ShouldBeBaked {
+            get { return Data.ShouldBeBaked; }
+        }
+
+        #endregion
+
+        private HexMeshData Data {
+            get { return _data; }
+            set {
+                _data = value;
+
+                if(_data != null) {
+                    gameObject.layer = LayerMask.NameToLayer(_data.LayerName);
+                }
+            }
+        }
+        [SerializeField] private HexMeshData _data;
 
         [NonSerialized] private List<List<Vector3>> VertexLists     = new List<List<Vector3>>();
         [NonSerialized] private List<List<int>>     TriangleLists   = new List<List<int>>();
@@ -51,6 +69,8 @@ namespace Assets.Simulation.MapRendering {
         [NonSerialized] private List<List<Color>>   ColorLists      = new List<List<Color>>();
 
         private List<HexSubMesh> SubMeshes = new List<HexSubMesh>();
+
+        private Material OverriddenMaterial = null;
 
 
 
@@ -77,6 +97,8 @@ namespace Assets.Simulation.MapRendering {
         }
 
         #endregion
+
+        #region from IHexMesh
 
         public void Clear() {
             foreach(var subMesh in SubMeshes) {
@@ -106,6 +128,8 @@ namespace Assets.Simulation.MapRendering {
                 UV3Lists       .Clear();
                 ColorLists     .Clear();
             }
+
+            OverriddenMaterial = null;
         }
 
         public void Apply() {
@@ -113,6 +137,8 @@ namespace Assets.Simulation.MapRendering {
                 List<Vector3> vertexList = VertexLists[i];
 
                 var newSubMesh = SubMeshPool.Spawn(Data.RenderingData);
+
+                newSubMesh.gameObject.layer = gameObject.layer;
 
                 newSubMesh.transform.SetParent(transform, false);
 
@@ -158,6 +184,10 @@ namespace Assets.Simulation.MapRendering {
                 
                 newSubMesh.Mesh.RecalculateNormals();
 
+                if(OverriddenMaterial != null) {
+                    newSubMesh.OverrideMaterial(OverriddenMaterial);
+                }
+
                 SubMeshes.Add(newSubMesh);
             }
 
@@ -169,6 +199,8 @@ namespace Assets.Simulation.MapRendering {
             UV2Lists       .Clear();
             UV3Lists       .Clear();
             ColorLists     .Clear();
+
+            gameObject.SetActive(!Data.ShouldBeBaked);
         }
 
         public void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
@@ -382,6 +414,16 @@ namespace Assets.Simulation.MapRendering {
             activeColors.Add(color);
             activeColors.Add(color);
         }
+
+        public void SetActive(bool isActive) {
+            gameObject.SetActive(isActive);
+        }
+
+        public void OverrideMaterial(Material newMaterial) {
+            OverriddenMaterial = newMaterial;
+        }
+
+        #endregion
 
         private List<Vector3> AddNewVertexCollection() {
             var newVertices = ListPool<Vector3>.Get();

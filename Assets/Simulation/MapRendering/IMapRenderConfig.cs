@@ -58,7 +58,7 @@ namespace Assets.Simulation.MapRendering {
 
         LayerMask MapCollisionMask { get; }
 
-        Material TerrainMaterial { get; }
+        Material TerrainMaterialTemplate { get; }
 
         IEnumerable<Texture2D> MapTextures { get; }
 
@@ -114,6 +114,11 @@ namespace Assets.Simulation.MapRendering {
         float FarmPatchMaxWidth { get; }
 
         float FarmTriangleSideLength { get; }
+
+
+        RenderTextureData TerrainBakeTextureData { get; }
+
+        Shader TerrainBakeOcclusionShader { get; }
 
         #endregion
 

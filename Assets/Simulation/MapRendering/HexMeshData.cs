@@ -50,11 +50,21 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private bool _convertVerticesToWorld;
 
+        public string LayerName {
+            get { return _layerName; }
+        }
+        [SerializeField] private string _layerName = "Default";
+
 
         public HexRenderingData RenderingData {
             get { return _renderingData; }
         }
         [SerializeField] private HexRenderingData _renderingData;
+
+        public bool ShouldBeBaked {
+            get { return _shouldBeBaked; }
+        }
+        [SerializeField] private bool _shouldBeBaked;
 
     }
 
