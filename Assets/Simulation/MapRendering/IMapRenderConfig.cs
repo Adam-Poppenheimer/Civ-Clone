@@ -105,6 +105,7 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData RiversData        { get; }
         HexMeshData CultureData       { get; }
         HexMeshData FarmlandData      { get; }
+        HexMeshData RoadData          { get; }
 
 
         int FarmTexturePatchCountSqrt { get; }
@@ -114,6 +115,10 @@ namespace Assets.Simulation.MapRendering {
         float FarmPatchMaxWidth { get; }
 
         float FarmTriangleSideLength { get; }
+
+
+        int RoadQuadsPerCurve { get; }
+        float RoadWidth { get; }
 
 
         RenderTextureData TerrainBakeTextureData { get; }

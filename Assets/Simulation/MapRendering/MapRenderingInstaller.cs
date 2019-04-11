@@ -77,6 +77,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMapCollisionLogic>             ().To<MapCollisionLogic>             ().AsSingle();
             Container.Bind<IFarmTriangulator>              ().To<FarmTriangulator>              ().AsSingle();
             Container.Bind<IHexMeshFactory>                ().To<HexMeshFactory>                ().AsSingle();
+            Container.Bind<IRoadTriangulator>              ().To<RoadTriangulator>              ().AsSingle();
         }
 
         #endregion

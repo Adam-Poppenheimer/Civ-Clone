@@ -151,6 +151,21 @@ MonoBehaviour:
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 10b67cf5705184040ad557eca16eaa21, type: 2}
     _shouldBeBaked: 0
+  _roadData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 0
+    _weldMesh: 0
+    _convertVerticesToWorld: 1
+    _layerName: Baked Onto Terrain
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: c3ee6312adf8207499cfabf704eed04c, type: 2}
+    _shouldBeBaked: 1
   _farmTexturePatchCountSqr: 1
   _farmColors:
   - {r: 0, g: 1, b: 0.2965517, a: 1}
@@ -166,3 +181,5 @@ MonoBehaviour:
     _format: 0
   _terrainBakeOcclusionShader: {fileID: 4800000, guid: 1fe8d727658277644a6fe41d413af796,
     type: 3}
+  _roadQuadsPerCurve: 30
+  _roadWidth: 1

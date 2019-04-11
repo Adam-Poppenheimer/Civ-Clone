@@ -58,6 +58,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshCultureCoroutine;
         private Coroutine RefreshVisibilityCoroutine;
         private Coroutine RefreshFarmlandCoroutine;
+        private Coroutine RefreshRoadsCoroutine;
 
         private IHexMesh StandingWater {
             get {
@@ -101,6 +102,19 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _farmland;
 
+        private IHexMesh Roads {
+            get {
+                if(_roads == null) {
+                    _roads = HexMeshFactory.Create("Roads", RenderConfig.RoadData);
+
+                    _roads.transform.SetParent(transform, false);
+                }
+
+                return _roads;
+            }
+        }
+        private IHexMesh _roads;
+
         [SerializeField] private TerrainBaker TerrainBaker;
 
 
@@ -116,6 +130,7 @@ namespace Assets.Simulation.MapRendering {
         private IHexCellShaderData    ShaderData;
         private IHexMeshFactory       HexMeshFactory;
         private IFarmTriangulator     FarmTriangulator;
+        private IRoadTriangulator     RoadTriangulator;
 
         #endregion
 
@@ -128,7 +143,7 @@ namespace Assets.Simulation.MapRendering {
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory,
-            IFarmTriangulator farmTriangulator
+            IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -140,6 +155,7 @@ namespace Assets.Simulation.MapRendering {
             ShaderData          = shaderData;
             HexMeshFactory      = hexMeshFactory;
             FarmTriangulator    = farmTriangulator;
+            RoadTriangulator    = roadTriangulator;
         }
 
         #region from IMapChunk
@@ -238,6 +254,12 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
+        public void RefreshRoads() {
+            if(RefreshRoadsCoroutine == null) {
+                RefreshRoadsCoroutine = StartCoroutine(RefreshRoads_Perform());
+            }
+        }
+
         public void RefreshAll() {
             RefreshAlphamap();
             RefreshHeightmap();
@@ -245,6 +267,7 @@ namespace Assets.Simulation.MapRendering {
             RefreshCulture();
             RefreshFeatures();
             RefreshFarmland();
+            RefreshRoads();
 
             if(RefreshRiversCoroutine == null) {
                 RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
@@ -450,6 +473,26 @@ namespace Assets.Simulation.MapRendering {
             Farmland.Apply();
 
             RefreshFarmlandCoroutine = null;
+        }
+
+        private IEnumerator RefreshRoads_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            Roads.Clear();
+
+            foreach(var cell in Cells) {
+                RoadTriangulator.TriangulateRoads(cell, Roads);
+            }
+
+            Roads.Apply();
+
+            yield return new WaitForEndOfFrame();
+
+            TerrainBaker.Bake();
+
+            RefreshRoadsCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

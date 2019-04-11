@@ -336,6 +336,12 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _farmlandData;
 
+        public HexMeshData RoadData {
+            get { return _roadData; }
+        }
+        [SerializeField] private HexMeshData _roadData;
+
+
 
         public int FarmTexturePatchCountSqrt {
             get { return _farmTexturePatchCountSqr; }
@@ -356,6 +362,17 @@ namespace Assets.Simulation.MapRendering {
             get { return _farmTriangleSideLength; }
         }
         [SerializeField, Range(0.05f, 5f)] private float _farmTriangleSideLength;
+
+
+        public int RoadQuadsPerCurve {
+            get { return _roadQuadsPerCurve; }
+        }
+        [SerializeField] private int _roadQuadsPerCurve;
+
+        public float RoadWidth {
+            get { return _roadWidth; }
+        }
+        [SerializeField] private float _roadWidth;
 
 
         public RenderTextureData TerrainBakeTextureData {
