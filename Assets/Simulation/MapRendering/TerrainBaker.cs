@@ -74,7 +74,7 @@ namespace Assets.Simulation.MapRendering {
                 readWrite: RenderTextureReadWrite.Default
             );
 
-            TerrainTexture.filterMode = FilterMode.Trilinear;
+            TerrainTexture.filterMode = FilterMode.Bilinear;
             TerrainTexture.wrapMode   = TextureWrapMode.Clamp;
 
             WaterTexture = new RenderTexture(
@@ -85,12 +85,15 @@ namespace Assets.Simulation.MapRendering {
                 readWrite: RenderTextureReadWrite.Default
             );
 
-            WaterTexture.filterMode = FilterMode.Trilinear;
+            WaterTexture.filterMode = FilterMode.Bilinear;
             WaterTexture.wrapMode   = TextureWrapMode.Clamp;
 
+            float cameraWidth  = RenderConfig.ChunkWidth  + RenderConfig.OuterRadius * 3f;
+            float cameraHeight = RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f;
+
             BakingCamera.orthographic     = true;
-            BakingCamera.orthographicSize = RenderConfig.ChunkHeight / 2f;
-            BakingCamera.aspect           = RenderConfig.ChunkWidth / RenderConfig.ChunkHeight;
+            BakingCamera.orthographicSize = cameraHeight / 2f;
+            BakingCamera.aspect           = cameraWidth / cameraHeight;
 
             BakingCamera.enabled = false;
 
@@ -121,6 +124,7 @@ namespace Assets.Simulation.MapRendering {
 
             BakingCamera.targetTexture = WaterTexture;
 
+            BakingCamera.cullingMask = DrawingMask;
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
             BakingCamera.Render();
 

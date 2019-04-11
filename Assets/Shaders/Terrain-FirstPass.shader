@@ -23,7 +23,9 @@ Shader "Civ Clone/Terrain" {
 
 		//Used for baking things like culture directly onto the terrain
 		[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "white" {}
-		[HideInInspector] _BakeTextureDimensions ("Bake Texture Dimensions", Vector) = (1.0, 1.0, 0, 0)
+
+		//Elements of the vector are (WorldX, WorldZ, ChunkWidth, ChunkHeight)
+		[HideInInspector] _BakeTextureDimensions("Bake Texture Dimensions", Vector) = (0, 0, 1.0, 1.0)
 
 		// used in fallback on old cards & base map
 		[HideInInspector] _MainTex ("BaseMap (RGB)", 2D) = "white" {}
@@ -88,8 +90,8 @@ Shader "Civ Clone/Terrain" {
 
 			SplatmapMix(IN, defaultSmoothness, splat_control, weight, mixedDiffuse, normal);
 
-			float4 objectPos = mul(unity_WorldToObject, float4(IN.worldPos, 1.0));
-			float2 bakeUV = float2(objectPos.x / _BakeTextureDimensions.x, objectPos.z / _BakeTextureDimensions.y);
+			float2 posInCameraXZ = IN.worldPos.xz - _BakeTextureDimensions.xy;
+			float2 bakeUV = float2(posInCameraXZ.x / _BakeTextureDimensions.z, posInCameraXZ.y / _BakeTextureDimensions.w);
 
 			fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba;
 

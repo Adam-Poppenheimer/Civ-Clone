@@ -176,8 +176,15 @@ namespace Assets.Simulation.MapRendering {
             instancedTerrainMaterial.SetTexture("_BakeTexture", TerrainBaker.TerrainTexture);
             instancedWaterMaterial  .SetTexture("_BakeTexture", TerrainBaker.WaterTexture);
 
-            instancedTerrainMaterial.SetVector("_BakeTextureDimensions", new Vector4(RenderConfig.ChunkWidth, RenderConfig.ChunkHeight, 0f, 0f));
-            instancedWaterMaterial  .SetVector("_BakeTextureDimensions", new Vector4(RenderConfig.ChunkWidth, RenderConfig.ChunkHeight, 0f, 0f));
+            Vector4 bakeTextureDimensions = new Vector4(
+                transform.position.x - RenderConfig.OuterRadius * 1.5f,
+                transform.position.z - RenderConfig.OuterRadius * 1.5f,
+                RenderConfig.ChunkWidth  + RenderConfig.OuterRadius * 3f,
+                RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f
+            );
+
+            instancedTerrainMaterial.SetVector("_BakeTextureDimensions", bakeTextureDimensions);
+            instancedWaterMaterial  .SetVector("_BakeTextureDimensions", bakeTextureDimensions);
 
             Terrain.castShadows         = RenderConfig.TerrainCastsShadows;
             Terrain.materialType        = Terrain.MaterialType.Custom;

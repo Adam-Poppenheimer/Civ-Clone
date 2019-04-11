@@ -1,47 +1,49 @@
 // Upgrade NOTE: replaced '_Object2World' with 'unity_ObjectToWorld'
 
 Shader "Civ Clone/Water" {
-Properties {
-	_ReflectionTex ("Internal reflection", 2D) = "white" {}
+	Properties {
+		_ReflectionTex ("Internal reflection", 2D) = "white" {}
 	
-	_MainTex ("Fallback texture", 2D) = "black" {}
-	_ShoreTex ("Shore & Foam texture ", 2D) = "black" {}
-	_BumpMap ("Normals ", 2D) = "bump" {}
+		_MainTex ("Fallback texture", 2D) = "black" {}
+		_ShoreTex ("Shore & Foam texture ", 2D) = "black" {}
+		_BumpMap ("Normals ", 2D) = "bump" {}
 	
-	_DistortParams ("Distortions (Bump waves, Reflection, Fresnel power, Fresnel bias)", Vector) = (1.0 ,1.0, 2.0, 1.15)
-	_InvFadeParemeter ("Auto blend parameter (Edge, Shore, Distance scale)", Vector) = (0.15 ,0.15, 0.5, 1.0)
+		_DistortParams ("Distortions (Bump waves, Reflection, Fresnel power, Fresnel bias)", Vector) = (1.0 ,1.0, 2.0, 1.15)
+		_InvFadeParemeter ("Auto blend parameter (Edge, Shore, Distance scale)", Vector) = (0.15 ,0.15, 0.5, 1.0)
 	
-	_AnimationTiling ("Animation Tiling (Displacement)", Vector) = (2.2 ,2.2, -1.1, -1.1)
-	_AnimationDirection ("Animation Direction (displacement)", Vector) = (1.0 ,1.0, 1.0, 1.0)
+		_AnimationTiling ("Animation Tiling (Displacement)", Vector) = (2.2 ,2.2, -1.1, -1.1)
+		_AnimationDirection ("Animation Direction (displacement)", Vector) = (1.0 ,1.0, 1.0, 1.0)
 
-	_BumpTiling ("Bump Tiling", Vector) = (1.0 ,1.0, -2.0, 3.0)
-	_BumpDirection ("Bump Direction & Speed", Vector) = (1.0 ,1.0, -1.0, 1.0)
+		_BumpTiling ("Bump Tiling", Vector) = (1.0 ,1.0, -2.0, 3.0)
+		_BumpDirection ("Bump Direction & Speed", Vector) = (1.0 ,1.0, -1.0, 1.0)
 	
-	_FresnelScale ("FresnelScale", Range (0.15, 4.0)) = 0.75
+		_FresnelScale ("FresnelScale", Range (0.15, 4.0)) = 0.75
 
-	_ReflectionColor ("Reflection color", COLOR)  = ( .54, .95, .99, 0.5)
-	_SpecularColor ("Specular color", COLOR)  = ( .72, .72, .72, 1)
+		_ReflectionColor ("Reflection color", COLOR)  = ( .54, .95, .99, 0.5)
+		_SpecularColor ("Specular color", COLOR)  = ( .72, .72, .72, 1)
 	
-	_WorldLightDir ("Specular light direction", Vector) = (0.0, 0.1, -0.5, 0.0)
-	_Shininess ("Shininess", Range (2.0, 500.0)) = 200.0
+		_WorldLightDir ("Specular light direction", Vector) = (0.0, 0.1, -0.5, 0.0)
+		_Shininess ("Shininess", Range (2.0, 500.0)) = 200.0
 	
-	_Foam ("Foam (intensity, cutoff)", Vector) = (0.1, 0.375, 0.0, 0.0)
+		_Foam ("Foam (intensity, cutoff)", Vector) = (0.1, 0.375, 0.0, 0.0)
 	
-	_GerstnerIntensity("Per vertex displacement", Float) = 1.0
-	_GAmplitude ("Wave Amplitude", Vector) = (0.3 ,0.35, 0.25, 0.25)
-	_GFrequency ("Wave Frequency", Vector) = (1.3, 1.35, 1.25, 1.25)
-	_GSteepness ("Wave Steepness", Vector) = (1.0, 1.0, 1.0, 1.0)
-	_GSpeed ("Wave Speed", Vector) = (1.2, 1.375, 1.1, 1.5)
-	_GDirectionAB ("Wave Direction", Vector) = (0.3 ,0.85, 0.85, 0.25)
-	_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
+		_GerstnerIntensity("Per vertex displacement", Float) = 1.0
+		_GAmplitude ("Wave Amplitude", Vector) = (0.3 ,0.35, 0.25, 0.25)
+		_GFrequency ("Wave Frequency", Vector) = (1.3, 1.35, 1.25, 1.25)
+		_GSteepness ("Wave Steepness", Vector) = (1.0, 1.0, 1.0, 1.0)
+		_GSpeed ("Wave Speed", Vector) = (1.2, 1.375, 1.1, 1.5)
+		_GDirectionAB ("Wave Direction", Vector) = (0.3 ,0.85, 0.85, 0.25)
+		_GDirectionCD ("Wave Direction", Vector) = (0.1 ,0.9, 0.5, 0.5)
 
-	//Used for baking things like culture directly onto the terrain
-	[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "black" {}
-	[HideInInspector] _BakeTextureDimensions("Bake Texture Dimensions", Vector) = (1.0, 1.0, 0, 0)
-}
+		//Used for baking things like culture directly onto the terrain
+		[HideInInspector] _BakeTexture("Bake Texture (RGBA)", 2D) = "white" {}
+
+		//Elements of the vector are (WorldX, WorldZ, ChunkWidth, ChunkHeight)
+		[HideInInspector] _BakeTextureDimensions("Bake Texture Dimensions", Vector) = (0, 0, 1.0, 1.0)
+	}
 
 
-CGINCLUDE
+	CGINCLUDE
 
 	#include "UnityCG.cginc"
 	#include "WaterInclude.cginc"
@@ -387,16 +389,20 @@ CGINCLUDE
 
 		baseColor.rgb *= lerp(0.25, 1, visibility);
 
-		float4 objectPos = mul(unity_WorldToObject, float4(i.worldPos, 1.0));
-		float2 bakeUV = float2(objectPos.x / _BakeTextureDimensions.x, objectPos.z / _BakeTextureDimensions.y);
+		float2 posInCameraXZ = i.worldPos.xz - _BakeTextureDimensions.xy;
+		float2 bakeUV = float2(posInCameraXZ.x / _BakeTextureDimensions.z, posInCameraXZ.y / _BakeTextureDimensions.w);
 
-		fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba * lerp(0.25, 1, visibility) * explored;
+		fixed4 bakedDiffuse = tex2D(_BakeTexture, bakeUV).rgba;
 
-		half4 preFogColor = lerp(baseColor, bakedDiffuse, bakedDiffuse.a);
+		fixed3 bakedAlbedo = bakedDiffuse.rgb * lerp(0.25, 1, visibility) * explored;
+		
+		half4 bakedColor = half4(bakedAlbedo, bakedDiffuse.a);
 
-		UNITY_APPLY_FOG(i.fogCoord, preFogColor);
+		half4 finalColor = lerp(baseColor, bakedColor, bakedColor.a);
 
-		return preFogColor;
+		UNITY_APPLY_FOG(i.fogCoord, finalColor);
+
+		return finalColor;
 	}
 	
 ENDCG

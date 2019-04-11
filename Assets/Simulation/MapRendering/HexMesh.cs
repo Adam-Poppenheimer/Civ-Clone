@@ -31,6 +31,8 @@ namespace Assets.Simulation.MapRendering {
                 item.Data = data;
 
                 item.Clear();
+
+                item.OverriddenMaterial = null;
             }
 
         }
@@ -128,8 +130,6 @@ namespace Assets.Simulation.MapRendering {
                 UV3Lists       .Clear();
                 ColorLists     .Clear();
             }
-
-            OverriddenMaterial = null;
         }
 
         public void Apply() {
@@ -139,6 +139,7 @@ namespace Assets.Simulation.MapRendering {
                 var newSubMesh = SubMeshPool.Spawn(Data.RenderingData);
 
                 newSubMesh.gameObject.layer = gameObject.layer;
+                newSubMesh.gameObject.name = string.Format("{0} Submesh", gameObject.name);
 
                 newSubMesh.transform.SetParent(transform, false);
 
@@ -421,6 +422,10 @@ namespace Assets.Simulation.MapRendering {
 
         public void OverrideMaterial(Material newMaterial) {
             OverriddenMaterial = newMaterial;
+
+            foreach(var mesh in SubMeshes) {
+                mesh.OverrideMaterial(OverriddenMaterial);
+            }
         }
 
         #endregion
