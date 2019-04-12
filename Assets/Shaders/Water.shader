@@ -389,6 +389,7 @@ Shader "Civ Clone/Water" {
 
 		baseColor.rgb *= lerp(0.25, 1, visibility);
 
+		#ifdef USE_BAKE_TEXTURE
 		float2 posInCameraXZ = i.worldPos.xz - _BakeTextureDimensions.xy;
 		float2 bakeUV = float2(posInCameraXZ.x / _BakeTextureDimensions.z, posInCameraXZ.y / _BakeTextureDimensions.w);
 
@@ -398,11 +399,12 @@ Shader "Civ Clone/Water" {
 		
 		half4 bakedColor = half4(bakedAlbedo, bakedDiffuse.a);
 
-		half4 finalColor = lerp(baseColor, bakedColor, bakedColor.a);
+		baseColor = lerp(baseColor, bakedColor, bakedColor.a);
+		#endif
 
-		UNITY_APPLY_FOG(i.fogCoord, finalColor);
+		UNITY_APPLY_FOG(i.fogCoord, baseColor);
 
-		return finalColor;
+		return baseColor;
 	}
 	
 ENDCG
@@ -493,6 +495,7 @@ Subshader
 			#pragma vertex vert200
 			#pragma fragment frag200
 			#pragma multi_compile_fog
+			#pragma multi_compile __ USE_BAKE_TEXTURE
 		
 			ENDCG
 	}

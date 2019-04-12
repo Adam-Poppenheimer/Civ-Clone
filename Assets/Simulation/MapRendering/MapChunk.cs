@@ -202,6 +202,8 @@ namespace Assets.Simulation.MapRendering {
             instancedTerrainMaterial.SetVector("_BakeTextureDimensions", bakeTextureDimensions);
             instancedWaterMaterial  .SetVector("_BakeTextureDimensions", bakeTextureDimensions);
 
+            instancedWaterMaterial.EnableKeyword("USE_BAKE_TEXTURE");
+
             Terrain.castShadows         = RenderConfig.TerrainCastsShadows;
             Terrain.materialType        = Terrain.MaterialType.Custom;
             Terrain.materialTemplate    = instancedTerrainMaterial;
