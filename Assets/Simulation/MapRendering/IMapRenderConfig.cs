@@ -117,8 +117,9 @@ namespace Assets.Simulation.MapRendering {
         float FarmTriangleSideLength { get; }
 
 
-        int RoadQuadsPerCurve { get; }
-        float RoadWidth { get; }
+        int   RoadQuadsPerCurve { get; }
+        float RoadWidth         { get; }
+        float RoadVRepeatLength { get; }
 
 
         RenderTextureData TerrainBakeTextureData { get; }

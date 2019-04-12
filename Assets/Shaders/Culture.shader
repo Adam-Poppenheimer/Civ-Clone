@@ -8,8 +8,6 @@
 		LOD 200
 		ZTest Always
 
-		Blend SrcAlpha OneMinusSrcAlpha
-
 		Stencil {
 			Ref 0
 			Comp Equal

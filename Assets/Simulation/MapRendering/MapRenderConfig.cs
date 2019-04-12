@@ -374,6 +374,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float _roadWidth;
 
+        public float RoadVRepeatLength {
+            get { return _roadVRepeatLength; }
+        }
+        [SerializeField] private float _roadVRepeatLength;
+
 
         public RenderTextureData TerrainBakeTextureData {
             get { return _terrainBakeTextureData; }

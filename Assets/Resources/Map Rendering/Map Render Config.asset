@@ -175,11 +175,12 @@ MonoBehaviour:
   - {r: 0.09537198, g: 0.3602941, b: 0.20682195, a: 1}
   _farmPatchMaxWidth: 3
   _farmTriangleSideLength: 0.25
+  _roadQuadsPerCurve: 30
+  _roadWidth: 1
+  _roadVRepeatLength: 2
   _terrainBakeTextureData:
     _texelsPerUnit: 50
     _depth: 24
     _format: 0
   _terrainBakeOcclusionShader: {fileID: 4800000, guid: 1fe8d727658277644a6fe41d413af796,
     type: 3}
-  _roadQuadsPerCurve: 30
-  _roadWidth: 1

@@ -89,11 +89,11 @@ namespace Assets.Simulation.MapRendering {
 
         private BezierSpline BuildSplineBetween(IHexCell cell, HexDirection directionOne, HexDirection directionTwo) {
             Vector3 controlOne = cell.AbsolutePosition + (
-                RenderConfig.GetEdgeMidpoint(directionOne) + RenderConfig.GetEdgeMidpoint(directionOne.Previous())
+                RenderConfig.GetEdgeMidpoint(directionOne) + RenderConfig.GetFirstCorner(directionOne.Previous())
             ) / 3f;
 
             Vector3 controlTwo = cell.AbsolutePosition + (
-                RenderConfig.GetEdgeMidpoint(directionTwo) + RenderConfig.GetEdgeMidpoint(directionTwo.Previous())
+                RenderConfig.GetEdgeMidpoint(directionTwo) + RenderConfig.GetFirstCorner(directionTwo.Previous())
             ) / 3f;
 
             var spline = new BezierSpline(cell.AbsolutePosition + RenderConfig.GetEdgeMidpoint(directionOne));
@@ -124,6 +124,8 @@ namespace Assets.Simulation.MapRendering {
 
             float delta = 1f / RenderConfig.RoadQuadsPerCurve;
 
+            float v1, v2 = 0;
+
             Vector3 lowerLeft, lowerRight, upperLeft, upperRight;
 
             for(float t = 0f; t < 1f; t += delta) {
@@ -133,8 +135,12 @@ namespace Assets.Simulation.MapRendering {
                 upperLeft  = spline.GetPoint(t + delta) + spline.GetNormalXZ(t + delta).normalized * RenderConfig.RoadWidth / 2f;
                 upperRight = spline.GetPoint(t + delta) - spline.GetNormalXZ(t + delta).normalized * RenderConfig.RoadWidth / 2f;
 
+                v1 = v2;
+
+                v2 += (lowerLeft - lowerRight).magnitude / RenderConfig.RoadVRepeatLength;
+
                 mesh.AddQuad(lowerLeft, lowerRight, upperLeft, upperRight);
-                mesh.AddQuadUV(0f, 1f, t, t + delta);
+                mesh.AddQuadUV(0f, 1f, v1, v2);
             }
         }
 
