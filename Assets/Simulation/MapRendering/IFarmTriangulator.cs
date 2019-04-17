@@ -6,7 +6,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void TriangulateFarmland(IHexCell cell, IHexMesh mesh);
+        void TriangulateFarmland();
 
         #endregion
 

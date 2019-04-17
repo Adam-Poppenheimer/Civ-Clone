@@ -32,7 +32,8 @@ namespace Assets.Simulation.MapRendering {
 
         #region static fields and properties
 
-        private static Coroutine RefreshRiversCoroutine;
+        private static Coroutine RefreshRiversCoroutine;        
+        private static Coroutine RefreshFarmlandCoroutine;
 
         #endregion
 
@@ -57,7 +58,6 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshFeaturesCoroutine;
         private Coroutine RefreshCultureCoroutine;
         private Coroutine RefreshVisibilityCoroutine;
-        private Coroutine RefreshFarmlandCoroutine;
         private Coroutine RefreshRoadsCoroutine;
 
         private IHexMesh StandingWater {
@@ -87,20 +87,6 @@ namespace Assets.Simulation.MapRendering {
             set { _culture = value; }
         }
         private IHexMesh _culture;
-
-        private IHexMesh Farmland {
-            get {
-                if(_farmland == null) {
-                    _farmland = HexMeshFactory.Create("Farmland", RenderConfig.FarmlandData);
-
-                    _farmland.transform.SetParent(transform, false);
-                }
-
-                return _farmland;
-            }
-            set { _farmland = value; }
-        }
-        private IHexMesh _farmland;
 
         private IHexMesh Roads {
             get {
@@ -297,7 +283,6 @@ namespace Assets.Simulation.MapRendering {
         public void Clear() {
             StandingWater.Clear();
             Culture      .Clear();
-            Farmland     .Clear();
             StopAllCoroutines();
 
             RefreshAlphamapCoroutine   = null;
@@ -312,11 +297,9 @@ namespace Assets.Simulation.MapRendering {
 
             HexMeshFactory.Destroy(StandingWater);
             HexMeshFactory.Destroy(Culture);
-            HexMeshFactory.Destroy(Farmland);
 
             StandingWater = null;
             Culture       = null;
-            Farmland      = null;
         }
 
         #endregion
@@ -463,16 +446,8 @@ namespace Assets.Simulation.MapRendering {
 
         private IEnumerator RefreshFarmland_Perform() {
             yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
 
-            Farmland.Clear();
-
-            foreach(var cell in cells) {
-                FarmTriangulator.TriangulateFarmland(cell, Farmland);
-            }
-
-            Farmland.Apply();
+            FarmTriangulator.TriangulateFarmland();
 
             RefreshFarmlandCoroutine = null;
         }

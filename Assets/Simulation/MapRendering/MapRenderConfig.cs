@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -310,10 +311,6 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField, Range(0f, 1f)] private float _cultureWidthPercent;
 
-        public float CultureTriangleSideLength {
-            get { return _cultureTriangleSideLength; }
-        }
-        [SerializeField, Range(0.05f, 5f)] private float _cultureTriangleSideLength;
 
 
         public HexMeshData StandingWaterData {
@@ -343,25 +340,21 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        public int FarmTexturePatchCountSqrt {
-            get { return _farmTexturePatchCountSqr; }
-        }
-        [SerializeField, Range(1, 64)] private int _farmTexturePatchCountSqr;
-
-        public IEnumerable<Color> FarmColors {
-            get { return _farmColors; }
+        public ReadOnlyCollection<Color> FarmColors {
+            get { return _farmColors.AsReadOnly(); }
         }
         [SerializeField] private List<Color> _farmColors;
+
+        public float FarmPatchMinWidth {
+            get { return _farmPatchMinWidth; }
+        }
+        [SerializeField, Range(1f, 20f)] private float _farmPatchMinWidth;
 
         public float FarmPatchMaxWidth {
             get { return _farmPatchMaxWidth; }
         }
-        [SerializeField, Range(1f, 100f)] private float _farmPatchMaxWidth;
+        [SerializeField, Range(1f, 20f)] private float _farmPatchMaxWidth;
 
-        public float FarmTriangleSideLength {
-            get { return _farmTriangleSideLength; }
-        }
-        [SerializeField, Range(0.05f, 5f)] private float _farmTriangleSideLength;
 
 
         public int RoadQuadsPerCurve {

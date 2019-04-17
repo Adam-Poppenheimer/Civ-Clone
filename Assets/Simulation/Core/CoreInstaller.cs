@@ -27,6 +27,8 @@ namespace Assets.Simulation.Core {
 
         /// <inheritdoc/>
         public override void InstallBindings() {
+            Container.Bind<MonoBehaviour>().WithId("Coroutine Invoker").FromInstance(this);
+
             //Can make use of open generic types if updated to the latest version of Zenject,
             //which requires a more modern version of Unity
             Container.Bind<IWeightedRandomSampler<IBalanceStrategy>>   ().To<WeightedRandomSampler<IBalanceStrategy>>   ().AsSingle();

@@ -49,6 +49,7 @@ namespace Assets.Simulation.HexMap {
 
         void RefreshCulture   ();
         void RefreshVisibility();
+        void RefreshFarmland  ();
 
         void SetMapData(float data);
 

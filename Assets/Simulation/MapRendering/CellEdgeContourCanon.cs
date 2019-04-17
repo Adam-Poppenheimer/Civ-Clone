@@ -180,6 +180,25 @@ namespace Assets.Simulation.MapRendering {
             return false;
         }
 
+        public bool DoesSegmentCrossContour(Vector2 segmentStart, Vector2 segmentEnd, ReadOnlyCollection<Vector2> contour) {
+            if(contour == null) {
+                throw new ArgumentNullException("contour");
+
+            }else if(contour.Count < 2) {
+                throw new ArgumentException("contour has less than two points, and is therefore invalid");
+            }
+
+            for(int i = 0; i < contour.Count - 1; i++) {
+                Vector2 dummy;
+
+                if(Geometry2D.AreLineSegmentsCrossing(segmentStart, segmentEnd, out dummy, contour[i], contour[i + 1], out dummy)) {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
         public Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour) {
             if(contour == null) {
                 throw new ArgumentNullException("contour");

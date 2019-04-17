@@ -25,7 +25,6 @@ namespace Assets.Simulation.MapRendering {
         private ICellEdgeContourCanon       CellEdgeContourCanon;
         private IMapRenderConfig            RenderConfig;
         private IGeometry2D                 Geometry2D;
-        private ITerrainConformTriangulator TerrainConformTriangulator;
 
         #endregion
 
@@ -35,14 +34,13 @@ namespace Assets.Simulation.MapRendering {
         public CultureTriangulator(
             IHexGrid grid, ICivilizationTerritoryLogic civTerritoryLogic,
             ICellEdgeContourCanon cellEdgeContourCanon, IMapRenderConfig renderConfig,
-            IGeometry2D geometry2D, ITerrainConformTriangulator terrainConformTriangulator
+            IGeometry2D geometry2D
         ) {
-            Grid                       = grid;
-            CivTerritoryLogic          = civTerritoryLogic;
-            CellEdgeContourCanon       = cellEdgeContourCanon;
-            RenderConfig               = renderConfig;
-            Geometry2D                 = geometry2D;
-            TerrainConformTriangulator = terrainConformTriangulator;
+            Grid                 = grid;
+            CivTerritoryLogic    = civTerritoryLogic;
+            CellEdgeContourCanon = cellEdgeContourCanon;
+            RenderConfig         = renderConfig;
+            Geometry2D           = geometry2D;
         }
 
         #endregion
@@ -130,12 +128,11 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 bezierOne = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, nextT);
                     Vector2 bezierTwo = BezierQuadratic.GetPoint(centerLeftLastInner, bezierControl, rightLeftFirstInner, t);
 
-                    TerrainConformTriangulator.AddConformingTriangle(
-                        pivotXYZ,                                  new Vector2(0f, 1f), cultureColor,
-                        new Vector3(bezierOne.x, 0f, bezierOne.y), Vector2.zero,        cultureColor,
-                        new Vector3(bezierTwo.x, 0f, bezierTwo.y), Vector2.zero,        cultureColor,
-                        RenderConfig.CultureTriangleSideLength, cultureMesh
-                    );
+                    cultureMesh.AddTriangle(pivotXYZ, new Vector3(bezierOne.x, 0f, bezierOne.y), new Vector3(bezierTwo.x, 0f, bezierTwo.y));
+
+                    cultureMesh.AddTriangleUV(new Vector2(0f, 1f), Vector2.zero, Vector2.zero);
+
+                    cultureMesh.AddTriangleColor(cultureColor);
                 }
 
                 if(rightCenterContour.Count == 3) {
@@ -143,12 +140,14 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 secondToLastContour = rightCenterContour[rightCenterContour.Count - 2];
                     Vector2 lastContour         = rightCenterContour.Last();
 
-                    TerrainConformTriangulator.AddConformingTriangle(
-                        new Vector3(innerPoint         .x, 0f, innerPoint         .y), new Vector2(0f, 0f), cultureColor,
-                        new Vector3(secondToLastContour.x, 0f, secondToLastContour.y), new Vector2(0f, 1f), cultureColor,
-                        new Vector3(lastContour        .x, 0f, lastContour        .y), new Vector2(0f, 1f), cultureColor,
-                        RenderConfig.CultureTriangleSideLength, cultureMesh
+                    cultureMesh.AddTriangle(
+                        new Vector3(innerPoint .x, 0f, innerPoint .y), new Vector3(secondToLastContour.x, 0f, secondToLastContour.y),
+                        new Vector3(lastContour.x, 0f, lastContour.y)
                     );
+
+                    cultureMesh.AddTriangleUV(new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 1f));
+
+                    cultureMesh.AddTriangleColor(cultureColor);
                 }
             }
         }
@@ -178,13 +177,16 @@ namespace Assets.Simulation.MapRendering {
                     innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                     innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                    TerrainConformTriangulator.AddConformingQuad(
-                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f),              cultureColor,
-                        new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
-                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
-                        new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
-                        RenderConfig.CultureTriangleSideLength, cultureMesh
+                    cultureMesh.AddQuad(
+                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW .x, 0f, innerCW .y),
+                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW .x, 0f, outerCW .y)
                     );
+
+                    cultureMesh.AddQuadUV(
+                        new Vector2(0f, 0f),  new Vector2(0f, 0f), new Vector2(0f, ccwTransparency), new Vector2(0f, cwTransparency)
+                    );
+
+                    cultureMesh.AddQuadColor(cultureColor);
 
                     ccwTransparency = cwTransparency;
                     i++;
@@ -210,13 +212,16 @@ namespace Assets.Simulation.MapRendering {
                     innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                     innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                    TerrainConformTriangulator.AddConformingQuad(
-                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f),              cultureColor,
-                        new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f),              cultureColor,
-                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, ccwTransparency), cultureColor,
-                        new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, cwTransparency),  cultureColor,
-                        RenderConfig.CultureTriangleSideLength, cultureMesh
+                    cultureMesh.AddQuad(
+                        new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW .x, 0f, innerCW .y),
+                        new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW .x, 0f, outerCW .y)
                     );
+
+                    cultureMesh.AddQuadUV(
+                        new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, ccwTransparency), new Vector2(0f, cwTransparency)
+                    );
+
+                    cultureMesh.AddQuadColor(cultureColor);
 
                     cwTransparency = ccwTransparency;
                     i--;
@@ -238,13 +243,14 @@ namespace Assets.Simulation.MapRendering {
                 innerCCW = Vector2.Lerp(outerCCW, center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
                 innerCW  = Vector2.Lerp(outerCW,  center.AbsolutePositionXZ, RenderConfig.CultureWidthPercent);
 
-                TerrainConformTriangulator.AddConformingQuad(
-                    new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector2(0f, 0f), color,
-                    new Vector3(innerCW .x, 0f, innerCW .y), new Vector2(0f, 0f), color,
-                    new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector2(0f, 1f), color,
-                    new Vector3(outerCW .x, 0f, outerCW .y), new Vector2(0f, 1f), color,
-                    RenderConfig.CultureTriangleSideLength, cultureMesh
+                cultureMesh.AddQuad(
+                    new Vector3(innerCCW.x, 0f, innerCCW.y), new Vector3(innerCW .x, 0f, innerCW .y),
+                    new Vector3(outerCCW.x, 0f, outerCCW.y), new Vector3(outerCW .x, 0f, outerCW .y)
                 );
+
+                cultureMesh.AddQuadUV(new Vector2(0f, 0f), new Vector2(0f, 0f), new Vector2(0f, 1f), new Vector2(0f, 1f));
+
+                cultureMesh.AddQuadColor(color);
             }
         }
 

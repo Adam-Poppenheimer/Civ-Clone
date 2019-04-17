@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,6 +7,7 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
+using UniRx;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -21,11 +23,13 @@ namespace Assets.Simulation.MapRendering {
         public RenderTexture TerrainTexture { get; private set; }
         public RenderTexture WaterTexture   { get; private set; }
 
+        private Coroutine BakeCoroutine;
 
 
 
-        private IMapRenderConfig RenderConfig;
-        private IHexMeshFactory  HexMeshFactory;
+
+        private IMapRenderConfig    RenderConfig;
+        private IHexMeshFactory     HexMeshFactory;
 
         #endregion
 
@@ -33,10 +37,12 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         private void InjectDependencies(
-            IMapRenderConfig renderConfig, IHexMeshFactory hexMeshFactory
+            IMapRenderConfig renderConfig, IHexMeshFactory hexMeshFactory, MapRenderingSignals mapRenderingSignals
         ) {
             RenderConfig   = renderConfig;
             HexMeshFactory = hexMeshFactory;
+
+            mapRenderingSignals.FarmlandsRefreshed.Subscribe(unit => Bake());
         }
 
         #region Unity messages
@@ -74,8 +80,9 @@ namespace Assets.Simulation.MapRendering {
                 readWrite: RenderTextureReadWrite.Default
             );
 
-            TerrainTexture.filterMode = FilterMode.Bilinear;
+            TerrainTexture.filterMode = FilterMode.Trilinear;
             TerrainTexture.wrapMode   = TextureWrapMode.Clamp;
+            TerrainTexture.useMipMap  = true;
 
             WaterTexture = new RenderTexture(
                 width:  Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
@@ -85,8 +92,9 @@ namespace Assets.Simulation.MapRendering {
                 readWrite: RenderTextureReadWrite.Default
             );
 
-            WaterTexture.filterMode = FilterMode.Bilinear;
+            WaterTexture.filterMode = FilterMode.Trilinear;
             WaterTexture.wrapMode   = TextureWrapMode.Clamp;
+            WaterTexture.useMipMap  = true;
 
             float cameraWidth  = RenderConfig.ChunkWidth  + RenderConfig.OuterRadius * 3f;
             float cameraHeight = RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f;
@@ -106,6 +114,14 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Bake() {
+            if(BakeCoroutine == null) {
+                BakeCoroutine = StartCoroutine(Bake_Perform());
+            }
+        }
+
+        private IEnumerator Bake_Perform() {
+            yield return new WaitForEndOfFrame();
+
             var meshesToBake = HexMeshFactory.AllMeshes.Where(mesh => mesh.ShouldBeBaked);
             
             foreach(var mesh in meshesToBake) {
@@ -131,6 +147,8 @@ namespace Assets.Simulation.MapRendering {
             foreach(var mesh in meshesToBake) {
                 mesh.SetActive(false);
             }
+
+            BakeCoroutine = null;
         }
 
         #endregion

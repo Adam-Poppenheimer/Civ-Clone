@@ -48,6 +48,8 @@ namespace Assets.Simulation.MapRendering {
                      .FromComponentInNewPrefab(MapChunkPrefab)
                      .UnderTransformGroup("Map Chunks");
 
+            Container.Bind<MapRenderingSignals>().AsSingle();
+
             Container.Bind<INoiseGenerator>                ().To<NoiseGenerator>                ().AsSingle();
             Container.Bind<ITerrainAlphamapLogic>          ().To<TerrainAlphamapLogic>          ().AsSingle().NonLazy();
             Container.Bind<ITerrainHeightLogic>            ().To<TerrainHeightLogic>            ().AsSingle().NonLazy();
@@ -73,7 +75,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IContourRationalizer>           ().To<ContourRationalizer>           ().AsSingle();
             Container.Bind<IFlatlandsHeightmapLogic>       ().To<FlatlandsHeightmapLogic>       ().AsSingle();
             Container.Bind<ICultureTriangulator>           ().To<CultureTriangulator>           ().AsSingle();
-            Container.Bind<ITerrainConformTriangulator>    ().To<TerrainConformTriangulator>    ().AsSingle();
             Container.Bind<IMapCollisionLogic>             ().To<MapCollisionLogic>             ().AsSingle();
             Container.Bind<IFarmTriangulator>              ().To<FarmTriangulator>              ().AsSingle();
             Container.Bind<IHexMeshFactory>                ().To<HexMeshFactory>                ().AsSingle();

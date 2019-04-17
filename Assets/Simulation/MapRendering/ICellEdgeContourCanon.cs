@@ -25,6 +25,8 @@ namespace Assets.Simulation.MapRendering {
             Vector2 xzPoint, ReadOnlyCollection<Vector2> contourOne, ReadOnlyCollection<Vector2> contourTwo
         );
 
+        bool DoesSegmentCrossContour(Vector2 segmentStart, Vector2 segmentEnd, ReadOnlyCollection<Vector2> contour);
+
         Vector2 GetClosestPointOnContour(Vector2 xzPoint, ReadOnlyCollection<Vector2> contour);
 
         #endregion

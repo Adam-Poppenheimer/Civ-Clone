@@ -198,6 +198,14 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
+        public void RefreshFarmland() {
+            if(OverlappingChunks != null) {
+                foreach(var chunk in OverlappingChunks) {
+                    chunk.RefreshFarmland();
+                }
+            }
+        }
+
         #endregion
 
         #endregion

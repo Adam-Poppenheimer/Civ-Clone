@@ -31,6 +31,7 @@ namespace Assets.Simulation.MapRendering {
         void RefreshCulture   ();
         void RefreshFeatures  ();
         void RefreshVisibility();
+        void RefreshFarmland  ();
 
         void RefreshAll();
 

@@ -44,6 +44,7 @@ namespace Assets.Simulation.HexMap {
         private MapChunk[,] chunks;
 
         public IHexMesh RiverMesh { get; private set; }
+        public IHexMesh FarmMesh  { get; private set; }
 
         #endregion
 
@@ -108,9 +109,11 @@ namespace Assets.Simulation.HexMap {
                 cell.RefreshSelfOnly();
             }
 
-            RiverMesh = HexMeshFactory.Create("Rivers", RenderConfig.RiversData);
+            RiverMesh = HexMeshFactory.Create("Rivers",   RenderConfig.RiversData);
+            FarmMesh  = HexMeshFactory.Create("Farmland", RenderConfig.FarmlandData);
 
             RiverMesh.transform.SetParent(transform, false);
+            FarmMesh .transform.SetParent(transform, false);
         }
 
         public void Clear() {
@@ -129,8 +132,10 @@ namespace Assets.Simulation.HexMap {
             chunks = null;
 
             HexMeshFactory.Destroy(RiverMesh);
+            HexMeshFactory.Destroy(FarmMesh);
 
             RiverMesh = null;
+            FarmMesh  = null;
         }
 
         public bool HasCellAtCoordinates(HexCoordinates coordinates) {

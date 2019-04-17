@@ -143,14 +143,14 @@ MonoBehaviour:
     _useUV3Coordinates: 0
     _useCellData: 0
     _useColors: 1
-    _weldMesh: 1
-    _convertVerticesToWorld: 1
-    _layerName: Default
+    _weldMesh: 0
+    _convertVerticesToWorld: 0
+    _layerName: Baked Onto Terrain
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 10b67cf5705184040ad557eca16eaa21, type: 2}
-    _shouldBeBaked: 0
+    _shouldBeBaked: 1
   _roadData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -168,13 +168,16 @@ MonoBehaviour:
     _shouldBeBaked: 1
   _farmTexturePatchCountSqr: 1
   _farmColors:
-  - {r: 0, g: 1, b: 0.2965517, a: 1}
-  - {r: 0, g: 0.53676474, b: 0.1591785, a: 1}
-  - {r: 1, g: 0.93103445, b: 0, a: 1}
-  - {r: 0.9338235, g: 0.5216531, b: 0, a: 1}
-  - {r: 0.09537198, g: 0.3602941, b: 0.20682195, a: 1}
-  _farmPatchMaxWidth: 3
-  _farmTriangleSideLength: 0.25
+  - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}
+  - {r: 0.11176473, g: 0.5588235, b: 0, a: 1}
+  - {r: 0.8235294, g: 0.7667342, b: 0, a: 1}
+  - {r: 0.097718075, g: 0.3455882, b: 0, a: 1}
+  - {r: 0.18828599, g: 0.5808823, b: 0, a: 1}
+  - {r: 0.63235295, g: 0.6041343, b: 0.22318338, a: 1}
+  - {r: 0.2131488, g: 0.5661765, b: 0.124891855, a: 1}
+  - {r: 0.19534513, g: 0.45588237, b: 0.070393614, a: 1}
+  _farmPatchMinWidth: 3.5
+  _farmPatchMaxWidth: 6
   _roadQuadsPerCurve: 30
   _roadWidth: 1
   _roadVRepeatLength: 2

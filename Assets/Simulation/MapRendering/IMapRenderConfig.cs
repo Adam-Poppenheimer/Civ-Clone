@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -98,8 +99,6 @@ namespace Assets.Simulation.MapRendering {
 
         float CultureWidthPercent { get; }
 
-        float CultureTriangleSideLength { get; }
-
 
         HexMeshData StandingWaterData { get; }
         HexMeshData RiversData        { get; }
@@ -108,13 +107,11 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData RoadData          { get; }
 
 
-        int FarmTexturePatchCountSqrt { get; }
 
-        IEnumerable<Color> FarmColors { get; }
+        ReadOnlyCollection<Color> FarmColors { get; }
 
+        float FarmPatchMinWidth { get; }
         float FarmPatchMaxWidth { get; }
-
-        float FarmTriangleSideLength { get; }
 
 
         int   RoadQuadsPerCurve { get; }

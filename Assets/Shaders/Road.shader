@@ -8,7 +8,6 @@
 //effective draw order the reverse of the queue order.
 //So Transparent+1 would appear on top of Transparent+2.
 //It's not clear how this would work with overlapping transparent types.
-
 Shader "Civ Clone/Road" {
 	Properties {
 		_MainTex ("Albedo (RGB)", 2D) = "white" {}

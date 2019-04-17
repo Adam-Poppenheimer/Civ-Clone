@@ -508,6 +508,70 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #endregion
 
+        #region DoesSegmentCrossContour
+
+        [Test]
+        public void DoesSegmentCrossContour_TrueIfSegmentCrossesBetweenAdjacentPointsInContour() {
+            var segmentStart = new Vector2(1f, 11f);
+            var segmentEnd   = new Vector2(2f, 22f);
+
+            var contour = new List<Vector2>() {
+                new Vector2(1f, 1f), new Vector2(2f, 2f), new Vector2(3f, 3f), new Vector2(4f, 4f)
+            }.AsReadOnly();
+
+            Vector2 dummyOut;
+            MockGeometry2D.Setup(
+                geometry => geometry.AreLineSegmentsCrossing(
+                    segmentStart, segmentEnd, out dummyOut, contour[1], contour[2], out dummyOut
+                )
+            ).Returns(true);
+
+            var contourCanon = Container.Resolve<CellEdgeContourCanon>();
+
+            Assert.IsTrue(contourCanon.DoesSegmentCrossContour(segmentStart, segmentEnd, contour));
+        }
+
+        [Test]
+        public void DoesSegmentCrossContour_FalseIfSegmentDoesNotCrossBetweenAnyAdjacentPointsInContour() {
+            var segmentStart = new Vector2(1f, 11f);
+            var segmentEnd   = new Vector2(2f, 22f);
+
+            var contour = new List<Vector2>() {
+                new Vector2(1f, 1f), new Vector2(2f, 2f), new Vector2(3f, 3f), new Vector2(4f, 4f)
+            }.AsReadOnly();
+
+            Vector2 dummyOut;
+            MockGeometry2D.Setup(
+                geometry => geometry.AreLineSegmentsCrossing(
+                    segmentStart, segmentEnd, out dummyOut, contour[1], contour[3], out dummyOut
+                )
+            ).Returns(true);
+
+            var contourCanon = Container.Resolve<CellEdgeContourCanon>();
+
+            Assert.IsFalse(contourCanon.DoesSegmentCrossContour(segmentStart, segmentEnd, contour));
+        }
+
+        [Test]
+        public void DoesSegmentCrossContour_ThrowsIfContourNull() {
+            var contourCanon = Container.Resolve<CellEdgeContourCanon>();
+
+            Assert.Throws<ArgumentNullException>(() => contourCanon.DoesSegmentCrossContour(Vector2.zero, Vector2.zero, null));
+        }
+
+        [Test]
+        public void DoesSegmentCrossContour_ThrowsIfContourHasLessThanTwoElements() {
+            var contour = new List<Vector2>() { Vector2.zero }.AsReadOnly();
+
+            var contourCanon = Container.Resolve<CellEdgeContourCanon>();
+
+            Assert.Throws<ArgumentException>(
+                () => contourCanon.DoesSegmentCrossContour(Vector2.zero, Vector2.zero, contour)
+            );
+        }
+
+        #endregion
+
         #region GetClosestPointOnContour
 
         [Test]

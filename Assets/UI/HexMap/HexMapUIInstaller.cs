@@ -27,7 +27,6 @@ namespace Assets.UI.HexMap {
         #region from MonoInstaller
 
         public override void InstallBindings() {
-            Container.Bind<MonoBehaviour>().WithId("Coroutine Invoker").FromInstance(this);
             Container.Bind<float>().WithId("Map Tile Hover Delay").FromInstance(MapTileHoverDelay);            
 
             Container.BindInterfacesAndSelfTo<HexCellSignalLogic>().AsSingle();
