@@ -50,7 +50,7 @@ namespace Assets.Simulation.Civilizations {
             improvementSignals.ImprovementRemovedFromLocationSignal .Subscribe(OnImprovementRemovedFromLocation);
             improvementSignals.ImprovementPillagedSignal            .Subscribe(OnImprovementPillaged);
             resourceSignals   .ResourceNodeRemovedFromLocationSignal.Subscribe(OnResourceNodeRemovedFromLocation);
-            citySignals       .LostCellFromBoundariesSignal         .Subscribe(OnCityLostCellFromBoundaries);
+            citySignals       .LostCellFromBoundaries         .Subscribe(OnCityLostCellFromBoundaries);
             civSignals        .CivLosingCity                  .Subscribe(OnCivLosingCity);
         }
 

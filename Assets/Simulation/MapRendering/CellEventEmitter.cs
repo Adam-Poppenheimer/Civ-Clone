@@ -117,7 +117,7 @@ namespace Assets.Simulation.MapRendering {
 
                     var cityAtLocation = GetCityAtLocation(mainCell);
                     if(cityAtLocation != null) {
-                        CitySignals.PointerClickedSignal.OnNext(cityAtLocation);
+                        CitySignals.PointerClicked.OnNext(cityAtLocation);
                     }else {
                         CellSignals.ClickedSignal.OnNext(
                             new Tuple<IHexCell, PointerEventData>(mainCell, eventData)
@@ -238,11 +238,11 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void EmitEnterMessage(ICity city) {
-            CitySignals.PointerEnteredSignal.OnNext(city);
+            CitySignals.PointerEntered.OnNext(city);
         }
 
         private void EmitExitMessage(ICity city) {
-            CitySignals.PointerExitedSignal.OnNext(city);
+            CitySignals.PointerExited.OnNext(city);
         }
 
         private ICity GetCityAtLocation(IHexCell location) {

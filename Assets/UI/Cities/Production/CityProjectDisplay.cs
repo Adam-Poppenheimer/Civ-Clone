@@ -57,8 +57,8 @@ namespace Assets.UI.Cities.Production {
         #region from CityDisplayBase
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals.ProjectChangedSignal       .Subscribe(OnProjectChanged));
-            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
+            SignalSubscriptions.Add(CitySignals.ProjectChanged       .Subscribe(OnProjectChanged));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformed.Subscribe(OnDistributionPerformed));
         }
 
         protected override void DoOnDisable() {

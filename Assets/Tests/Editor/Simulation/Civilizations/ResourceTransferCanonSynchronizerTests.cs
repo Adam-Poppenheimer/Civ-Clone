@@ -153,7 +153,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            CitySignals.LostCellFromBoundariesSignal.OnNext(
+            CitySignals.LostCellFromBoundaries.OnNext(
                 new Tuple<ICity, IHexCell>(city, location)
             );
 

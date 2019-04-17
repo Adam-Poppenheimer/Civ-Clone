@@ -24,34 +24,34 @@ namespace Assets.Simulation.Cities {
         /// <summary>
         /// Signal that fires whenever a city is clicked.
         /// </summary>
-        public ISubject<ICity> PointerClickedSignal { get; private set; }
+        public ISubject<ICity> PointerClicked { get; private set; }
 
-        public ISubject<ICity> PointerEnteredSignal { get; private set; }
-        public ISubject<ICity> PointerExitedSignal  { get; private set; }
+        public ISubject<ICity> PointerEntered { get; private set; }
+        public ISubject<ICity> PointerExited  { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city's ActiveProject is changed.
         /// </summary>
-        public ISubject<Tuple<ICity, IProductionProject>> ProjectChangedSignal { get; private set; }
+        public ISubject<Tuple<ICity, IProductionProject>> ProjectChanged { get; private set; }
 
         /// <summary>
         /// Signal that fires whenever a city has its PerformDistribution method called.
         /// </summary>
-        public ISubject<ICity> DistributionPerformedSignal { get; private set; }
+        public ISubject<ICity> DistributionPerformed { get; private set; }
 
-        public ISubject<ICity> CityBeingDestroyedSignal { get; private set; }
+        public ISubject<ICity> BeingDestroyed { get; private set; }
 
-        public ISubject<Tuple<ICity, IHexCell>> LostCellFromBoundariesSignal { get; private set; }
-        public ISubject<Tuple<ICity, IHexCell>> GainedCellToBoundariesSignal { get; private set; }
+        public ISubject<Tuple<ICity, IHexCell>> LostCellFromBoundaries { get; private set; }
+        public ISubject<Tuple<ICity, IHexCell>> GainedCellToBoundaries { get; private set; }
 
-        public ISubject<CityCaptureData> CityCapturedSignal { get; private set; }
+        public ISubject<CityCaptureData> CityCaptured { get; private set; }
 
-        public ISubject<Tuple<ICity, IBuilding>> CityGainedBuildingSignal { get; private set; }
-        public ISubject<Tuple<ICity, IBuilding>> CityLostBuildingSignal   { get; private set; }
+        public ISubject<Tuple<ICity, IBuilding>> GainedBuilding { get; private set; }
+        public ISubject<Tuple<ICity, IBuilding>> LostBuilding   { get; private set; }
 
-        public ISubject<ICity> PopulationChangedSignal { get; private set; }
+        public ISubject<ICity> PopulationChanged { get; private set; }
 
-        public ISubject<ICity> FoodStockpileChangedSignal { get; private set; }
+        public ISubject<ICity> FoodStockpileChanged { get; private set; }
 
         #endregion
 
@@ -59,26 +59,26 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CitySignals(){
-            ProjectChangedSignal        = new Subject<Tuple<ICity, IProductionProject>>();
-            DistributionPerformedSignal = new Subject<ICity>();
+            ProjectChanged        = new Subject<Tuple<ICity, IProductionProject>>();
+            DistributionPerformed = new Subject<ICity>();
 
-            PointerClickedSignal = new Subject<ICity>();
-            PointerEnteredSignal = new Subject<ICity>();
-            PointerExitedSignal  = new Subject<ICity>();
+            PointerClicked = new Subject<ICity>();
+            PointerEntered = new Subject<ICity>();
+            PointerExited  = new Subject<ICity>();
 
-            CityBeingDestroyedSignal = new Subject<ICity>();
+            BeingDestroyed = new Subject<ICity>();
 
-            LostCellFromBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
-            GainedCellToBoundariesSignal = new Subject<Tuple<ICity, IHexCell>>();
+            LostCellFromBoundaries = new Subject<Tuple<ICity, IHexCell>>();
+            GainedCellToBoundaries = new Subject<Tuple<ICity, IHexCell>>();
 
-            CityCapturedSignal = new Subject<CityCaptureData>();
+            CityCaptured = new Subject<CityCaptureData>();
 
-            CityGainedBuildingSignal = new Subject<Tuple<ICity, IBuilding>>();
-            CityLostBuildingSignal   = new Subject<Tuple<ICity, IBuilding>>();
+            GainedBuilding = new Subject<Tuple<ICity, IBuilding>>();
+            LostBuilding   = new Subject<Tuple<ICity, IBuilding>>();
 
-            PopulationChangedSignal = new Subject<ICity>();
+            PopulationChanged = new Subject<ICity>();
 
-            FoodStockpileChangedSignal = new Subject<ICity>();
+            FoodStockpileChanged = new Subject<ICity>();
         }
 
         #endregion

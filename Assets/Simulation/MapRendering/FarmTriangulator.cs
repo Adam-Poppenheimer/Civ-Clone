@@ -62,11 +62,6 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Coroutine RebuildFarmsCoroutine;
-
-
-
-
         private IHexGrid                  Grid;
         private IImprovementLocationCanon ImprovementLocationCanon;
         private INoiseGenerator           NoiseGenerator;
@@ -124,9 +119,7 @@ namespace Assets.Simulation.MapRendering {
 
             Grid.FarmMesh.Apply();
 
-            MapRenderingSignals.FarmlandsRefreshed.OnNext(new UniRx.Unit());
-
-            RebuildFarmsCoroutine = null;
+            MapRenderingSignals.FarmlandsTriangulated.OnNext(new UniRx.Unit());
         }
 
         #endregion

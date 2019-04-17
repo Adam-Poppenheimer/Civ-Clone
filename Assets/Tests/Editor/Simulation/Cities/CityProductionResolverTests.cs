@@ -218,7 +218,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             Container.Resolve<CityProductionResolver>();
 
-            CitySignals.CityGainedBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>());
+            CitySignals.GainedBuilding.OnNext(new UniRx.Tuple<ICity, IBuilding>());
 
             Assert.AreEqual(validProject, validCity  .ActiveProject, "ValidCity has an unexpected ActiveProject");
             Assert.AreEqual(null,         invalidCity.ActiveProject, "InvalidCity has an unexpected ActiveProject");

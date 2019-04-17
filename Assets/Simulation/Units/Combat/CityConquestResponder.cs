@@ -83,7 +83,7 @@ namespace Assets.Simulation.Units.Combat {
 
             CityPossessionCanon.ChangeOwnerOfPossession(cityCaptured, attackerOwner);
 
-            CitySignals.CityCapturedSignal.OnNext(new CityCaptureData() {
+            CitySignals.CityCaptured.OnNext(new CityCaptureData() {
                 City = cityCaptured, OldOwner = cityOwner, NewOwner = attackerOwner
             });
 

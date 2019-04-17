@@ -58,7 +58,7 @@ namespace Assets.Simulation.Cities.Buildings {
                 TechCanon.AddFreeTechToCiv(cityOwner);
             }
 
-            CitySignals.CityGainedBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(newOwner, building));
+            CitySignals.GainedBuilding.OnNext(new UniRx.Tuple<ICity, IBuilding>(newOwner, building));
         }
 
         protected override void DoOnPossessionBroken(IBuilding building, ICity oldOwner) {
@@ -72,7 +72,7 @@ namespace Assets.Simulation.Cities.Buildings {
                 ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, cityOwner);
             }
 
-            CitySignals.CityLostBuildingSignal.OnNext(new UniRx.Tuple<ICity, IBuilding>(oldOwner, building));
+            CitySignals.LostBuilding.OnNext(new UniRx.Tuple<ICity, IBuilding>(oldOwner, building));
         }
 
         #endregion

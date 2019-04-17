@@ -42,9 +42,9 @@ namespace Assets.UI.Cities.ResourceGeneration {
         #region from CityDisplayBase
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
-            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal   .Subscribe(data => Refresh()));            
-            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal     .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformed.Subscribe(OnDistributionPerformed));
+            SignalSubscriptions.Add(CitySignals.GainedBuilding   .Subscribe(data => Refresh()));            
+            SignalSubscriptions.Add(CitySignals.LostBuilding     .Subscribe(data => Refresh()));
         }
 
         protected override void DoOnDisable() {

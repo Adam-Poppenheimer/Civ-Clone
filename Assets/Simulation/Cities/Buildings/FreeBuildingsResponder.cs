@@ -23,7 +23,7 @@ namespace Assets.Simulation.Cities.Buildings {
                     _isActive = value;
 
                     if(_isActive) {
-                        CityGainedBuildingSubscription = CitySignals.CityGainedBuildingSignal.Subscribe(OnCityGainedBuilding);
+                        CityGainedBuildingSubscription = CitySignals.GainedBuilding.Subscribe(OnCityGainedBuilding);
                     }else {
                         CityGainedBuildingSubscription.Dispose();
                     }

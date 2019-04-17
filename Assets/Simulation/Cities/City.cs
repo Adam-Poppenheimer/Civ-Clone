@@ -47,7 +47,7 @@ namespace Assets.Simulation.Cities {
 
                     PerformDistribution();
 
-                    Signals.PopulationChangedSignal.OnNext(this);
+                    Signals.PopulationChanged.OnNext(this);
                 }
             }
         }
@@ -60,7 +60,7 @@ namespace Assets.Simulation.Cities {
                 if(_foodStockpile != value) {
                     _foodStockpile = value;
 
-                    Signals.FoodStockpileChangedSignal.OnNext(this);
+                    Signals.FoodStockpileChanged.OnNext(this);
                 }
             }
         }
@@ -82,7 +82,7 @@ namespace Assets.Simulation.Cities {
             set {
                 if(_activeProject != value) {
                     _activeProject = value;
-                    Signals.ProjectChangedSignal.OnNext(new UniRx.Tuple<ICity, IProductionProject>(this, _activeProject));
+                    Signals.ProjectChanged.OnNext(new UniRx.Tuple<ICity, IProductionProject>(this, _activeProject));
                 }
             }
         }
@@ -135,7 +135,7 @@ namespace Assets.Simulation.Cities {
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.CityBeingDestroyedSignal.OnNext(this);
+            Signals.BeingDestroyed.OnNext(this);
         }
 
         #endregion
@@ -202,7 +202,7 @@ namespace Assets.Simulation.Cities {
 
             DistributionLogic.DistributeWorkersIntoSlots(populationToAssign, slotsToAssign, this, YieldFocus);
 
-            Signals.DistributionPerformedSignal.OnNext(this);
+            Signals.DistributionPerformed.OnNext(this);
         }
 
         /// <inheritdoc/>

@@ -319,7 +319,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = true;
             
-            CitySignals.CityGainedBuildingSignal.OnNext(
+            CitySignals.GainedBuilding.OnNext(
                 new UniRx.Tuple<ICity, IBuilding>(city, building)
             );
 
@@ -338,7 +338,7 @@ namespace Assets.Tests.Simulation.Units {
 
             peopleCanon.IsActive = false;
             
-            CitySignals.CityGainedBuildingSignal.OnNext(
+            CitySignals.GainedBuilding.OnNext(
                 new UniRx.Tuple<ICity, IBuilding>(city, building)
             );
 

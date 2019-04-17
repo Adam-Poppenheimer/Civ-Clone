@@ -544,7 +544,7 @@ namespace Assets.Tests.Simulation.Cities {
             var city = Container.Resolve<City>();
 
             
-            CitySignals.DistributionPerformedSignal.Subscribe(delegate(ICity sourceCity) {
+            CitySignals.DistributionPerformed.Subscribe(delegate(ICity sourceCity) {
                 Assert.AreEqual(city, sourceCity, "Signal was not fired on the correct city");
                 Assert.Pass();
             });
@@ -638,7 +638,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            CitySignals.ProjectChangedSignal.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+            CitySignals.ProjectChanged.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
                 Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
                 Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");
@@ -659,7 +659,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            CitySignals.ProjectChangedSignal.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+            CitySignals.ProjectChanged.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
                 Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
                 Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");
@@ -677,7 +677,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             cityToTest.Population = 5;
 
-            CitySignals.PopulationChangedSignal.Subscribe(delegate(ICity city) {
+            CitySignals.PopulationChanged.Subscribe(delegate(ICity city) {
                 Assert.AreEqual(cityToTest, city, "Incorrect city passed into signals");
                 Assert.Pass();
             });
@@ -695,7 +695,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             cityToTest.Population = 5;
 
-            CitySignals.PopulationChangedSignal.Subscribe(delegate(ICity city) {
+            CitySignals.PopulationChanged.Subscribe(delegate(ICity city) {
                 Assert.Fail("Signal unexpectedly fired");
             });
 

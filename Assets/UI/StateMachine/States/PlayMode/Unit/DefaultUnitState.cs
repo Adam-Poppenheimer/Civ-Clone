@@ -244,8 +244,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             EventSubscriptions.Add(UnitSignals.BeingDestroyed.Subscribe(OnUnitBeingDestroyed));
             EventSubscriptions.Add(UnitSignals.EnteredLocation   .Subscribe(OnUnitEnteredLocation));
 
-            EventSubscriptions.Add(CitySignals.PointerEnteredSignal.Subscribe(OnCityPointerEntered));
-            EventSubscriptions.Add(CitySignals.PointerExitedSignal .Subscribe(OnCityPointerExited));
+            EventSubscriptions.Add(CitySignals.PointerEntered.Subscribe(OnCityPointerEntered));
+            EventSubscriptions.Add(CitySignals.PointerExited .Subscribe(OnCityPointerExited));
             EventSubscriptions.Add(CellSignals.PointerEnterSignal  .Subscribe(OnCellPointerEntered));
             EventSubscriptions.Add(CellSignals.PointerExitSignal   .Subscribe(OnCellPointerExited));
         }

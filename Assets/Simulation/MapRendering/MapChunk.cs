@@ -414,8 +414,6 @@ namespace Assets.Simulation.MapRendering {
 
         private IEnumerator RefreshCulture_Perform() {
             yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
-            yield return new WaitForEndOfFrame();
 
             Culture.Clear();
 
@@ -426,8 +424,6 @@ namespace Assets.Simulation.MapRendering {
             }
 
             Culture.Apply();
-
-            yield return new WaitForEndOfFrame();
 
             TerrainBaker.Bake();
 

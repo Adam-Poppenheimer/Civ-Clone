@@ -32,7 +32,7 @@ namespace Assets.Simulation.Cities {
             CityCaptureDisplay = cityCaptureDisplay;
             UIAnimator         = uiAnimator;
 
-            citySignals.CityCapturedSignal.Subscribe(OnCityCaptured);
+            citySignals.CityCaptured.Subscribe(OnCityCaptured);
         }
 
         #endregion

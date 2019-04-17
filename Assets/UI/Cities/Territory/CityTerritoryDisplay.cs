@@ -59,7 +59,7 @@ namespace Assets.UI.Cities.Territory {
         #region from CityDisplayBase
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals   .DistributionPerformedSignal.Subscribe(OnDistributionPerformed));
+            SignalSubscriptions.Add(CitySignals   .DistributionPerformed.Subscribe(OnDistributionPerformed));
             SignalSubscriptions.Add(HexCellSignals.ClickedSignal              .Subscribe(OnCellClicked));
         }
 

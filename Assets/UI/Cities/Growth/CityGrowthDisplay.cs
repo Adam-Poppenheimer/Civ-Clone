@@ -80,11 +80,11 @@ namespace Assets.UI.Cities.Growth {
         }
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals.PopulationChangedSignal    .Subscribe(city => Refresh()));
-            SignalSubscriptions.Add(CitySignals.FoodStockpileChangedSignal .Subscribe(city => Refresh()));
-            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal   .Subscribe(data => Refresh()));
-            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal     .Subscribe(data => Refresh()));
-            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(city => Refresh()));
+            SignalSubscriptions.Add(CitySignals.PopulationChanged    .Subscribe(city => Refresh()));
+            SignalSubscriptions.Add(CitySignals.FoodStockpileChanged .Subscribe(city => Refresh()));
+            SignalSubscriptions.Add(CitySignals.GainedBuilding   .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.LostBuilding     .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformed.Subscribe(city => Refresh()));
         }
 
         protected override void DoOnDisable() {

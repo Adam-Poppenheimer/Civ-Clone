@@ -66,7 +66,7 @@ namespace Assets.Simulation.Cities {
             CityContainer         = cityContainer;
 
             if(citySignals != null) {
-                citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+                citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
             }
         }
 

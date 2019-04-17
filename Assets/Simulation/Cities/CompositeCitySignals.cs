@@ -32,7 +32,7 @@ namespace Assets.Simulation.Cities {
             GameCore            = gameCore;
             CityPossessionCanon = cityPossessionCanon;
 
-            ActiveCivCityClickedSignal = signals.PointerClickedSignal.Where(ActivCivCityFilter);
+            ActiveCivCityClickedSignal = signals.PointerClicked.Where(ActivCivCityFilter);
         }
 
         #endregion

@@ -170,7 +170,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(cityTwo))
                                .Returns(new IBuilding[] { buildingThree });
 
-            CitySignals.CityBeingDestroyedSignal.OnNext(cityOne);
+            CitySignals.BeingDestroyed.OnNext(cityOne);
 
             CollectionAssert.DoesNotContain(factory.AllBuildings, buildingOne,   "BuildingOne not destroyed as expected");
             CollectionAssert.DoesNotContain(factory.AllBuildings, buildingTwo,   "BuildingTwo not destroyed as expected");

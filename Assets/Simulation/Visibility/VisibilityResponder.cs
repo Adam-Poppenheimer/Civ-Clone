@@ -83,8 +83,8 @@ namespace Assets.Simulation.Visibility {
             unitSignals.LeftLocation   .Subscribe(OnUnitLeftLocation);
             unitSignals.EnteredLocation.Subscribe(OnUnitEnteredLocation);
 
-            citySignals.LostCellFromBoundariesSignal.Subscribe(OnCityLostCell);
-            citySignals.GainedCellToBoundariesSignal.Subscribe(OnCityGainedCell);
+            citySignals.LostCellFromBoundaries.Subscribe(OnCityLostCell);
+            citySignals.GainedCellToBoundaries.Subscribe(OnCityGainedCell);
 
             cellSignals.FoundationElevationChangedSignal.Subscribe(OnHexCellVisibilityPropertiesChanged);
             cellSignals.TerrainChangedSignal            .Subscribe(OnHexCellVisibilityPropertiesChanged);

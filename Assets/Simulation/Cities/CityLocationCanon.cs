@@ -16,7 +16,7 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CityLocationCanon(CitySignals citySignals, HexCellSignals cellSignals) {
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }

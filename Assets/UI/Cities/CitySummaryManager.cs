@@ -55,7 +55,7 @@ namespace Assets.UI.Cities {
             ExplorationCanon     = explorationCanon;
             CityLocationCanon    = cityLocationCanon;
 
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion

@@ -33,7 +33,7 @@ namespace Assets.Simulation.Civilizations {
             CivSignals          = civSignals;
             CellPossessionCanon = cellPossessionCanon;
 
-            citySignals.CityBeingDestroyedSignal        .Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed        .Subscribe(OnCityBeingDestroyed);
             civSignals .CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));

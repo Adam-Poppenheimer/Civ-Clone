@@ -48,7 +48,8 @@ namespace Assets.Simulation.MapRendering {
                      .FromComponentInNewPrefab(MapChunkPrefab)
                      .UnderTransformGroup("Map Chunks");
 
-            Container.Bind<MapRenderingSignals>().AsSingle();
+            Container.Bind<MapRenderingSignals>    ().AsSingle();
+            Container.Bind<TerrainRefreshResponder>().AsSingle().NonLazy();
 
             Container.Bind<INoiseGenerator>                ().To<NoiseGenerator>                ().AsSingle();
             Container.Bind<ITerrainAlphamapLogic>          ().To<TerrainAlphamapLogic>          ().AsSingle().NonLazy();

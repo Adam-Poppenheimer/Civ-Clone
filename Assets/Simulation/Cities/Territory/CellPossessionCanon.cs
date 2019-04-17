@@ -36,7 +36,7 @@ namespace Assets.Simulation.Cities.Territory {
             CitySignals       = citySignals;
             CityLocationCanon = cityLocationCanon;
 
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
@@ -59,21 +59,19 @@ namespace Assets.Simulation.Cities.Territory {
 
         protected override void DoOnPossessionBroken(IHexCell possession, ICity oldOwner) {
             if(oldOwner != null) {
-                CitySignals.LostCellFromBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(oldOwner, possession));
+                CitySignals.LostCellFromBoundaries.OnNext(new UniRx.Tuple<ICity, IHexCell>(oldOwner, possession));
                 oldOwner.PerformDistribution();
             }
 
-            possession.RefreshCulture();
             possession.RefreshVisibility();
         }
 
         protected override void DoOnPossessionEstablished(IHexCell possession, ICity newOwner) {
             if(newOwner != null) {
-                CitySignals.GainedCellToBoundariesSignal.OnNext(new UniRx.Tuple<ICity, IHexCell>(newOwner, possession));
+                CitySignals.GainedCellToBoundaries.OnNext(new UniRx.Tuple<ICity, IHexCell>(newOwner, possession));
                 newOwner.PerformDistribution();
             }
 
-            possession.RefreshCulture();
             possession.RefreshVisibility();
         }
 

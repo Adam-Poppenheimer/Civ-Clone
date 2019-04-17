@@ -42,7 +42,7 @@ namespace Assets.Simulation.MapRendering {
             RenderConfig   = renderConfig;
             HexMeshFactory = hexMeshFactory;
 
-            mapRenderingSignals.FarmlandsRefreshed.Subscribe(unit => Bake());
+            mapRenderingSignals.FarmlandsTriangulated.Subscribe(unit => Bake());
         }
 
         #region Unity messages

@@ -55,7 +55,7 @@ namespace Assets.Simulation.Cities.Production {
             CityFactory           = cityFactory;
             BuildingValidityLogic = buildingValidityLogic;
 
-            CitySignals.CityGainedBuildingSignal.Subscribe(OnCityGainedBuilding);
+            CitySignals.GainedBuilding.Subscribe(OnCityGainedBuilding);
             coreSignals.RoundBegan.Subscribe(OnRoundBegan);
         }
 

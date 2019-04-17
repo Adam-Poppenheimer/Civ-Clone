@@ -43,7 +43,7 @@ namespace Assets.UI.Cities.Distribution {
         #region from CityDisplayBase
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals.DistributionPerformedSignal.Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.DistributionPerformed.Subscribe(data => Refresh()));
         }
 
         protected override void DoOnDisable() {

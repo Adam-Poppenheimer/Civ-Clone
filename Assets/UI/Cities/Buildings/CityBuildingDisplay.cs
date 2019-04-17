@@ -57,8 +57,8 @@ namespace Assets.UI.Cities.Buildings {
         }
 
         protected override void DoOnEnable() {
-            SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal.Subscribe(data => Refresh()));
-            SignalSubscriptions.Add(CitySignals.CityLostBuildingSignal  .Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.GainedBuilding.Subscribe(data => Refresh()));
+            SignalSubscriptions.Add(CitySignals.LostBuilding  .Subscribe(data => Refresh()));
         }
 
         protected override void DoOnDisable() {

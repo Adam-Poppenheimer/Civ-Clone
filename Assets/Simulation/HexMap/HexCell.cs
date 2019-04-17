@@ -121,9 +121,12 @@ namespace Assets.Simulation.HexMap {
             }
         }
 
-        #endregion
+        public IEnumerable<IMapChunk> OverlappingChunks {
+            get { return overlappingChunks; }
+        }
+        private IMapChunk[] overlappingChunks;
 
-        private IMapChunk[] OverlappingChunks;
+        #endregion
 
 
 
@@ -159,7 +162,7 @@ namespace Assets.Simulation.HexMap {
         #region from IHexCell
 
         public void AttachToChunks(IMapChunk[] chunks) {
-            OverlappingChunks = chunks;
+            overlappingChunks = chunks;
         }
 
         public void SetMapData(float data) {
@@ -178,14 +181,6 @@ namespace Assets.Simulation.HexMap {
             if(OverlappingChunks != null) {
                 foreach(var chunk in OverlappingChunks) {
                     chunk.RefreshAll();
-                }
-            }
-        }
-
-        public void RefreshCulture() {
-            if(OverlappingChunks != null) {
-                foreach(var chunk in OverlappingChunks) {
-                    chunk.RefreshCulture();
                 }
             }
         }

@@ -323,7 +323,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var conquestLogic = Container.Resolve<CityConquestResponder>();
 
-            CitySignals.CityCapturedSignal.Subscribe(delegate(CityCaptureData captureData) {
+            CitySignals.CityCaptured.Subscribe(delegate(CityCaptureData captureData) {
                 Assert.AreEqual(cityBeingCaptured, captureData.City,     "Incorrect City passed");
                 Assert.AreEqual(cityOwner,         captureData.OldOwner, "Incorrect OldOwner passed");
                 Assert.AreEqual(attackerOwner,     captureData.NewOwner, "Incorrect NewOwner passed");

@@ -38,7 +38,7 @@ namespace Assets.Simulation.Cities.Buildings {
             PossessionCanon   = possessionCanon;
             WorkerSlotFactory = workerSlotFactory;
 
-            citySignals.CityBeingDestroyedSignal.Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
         }
 
         #endregion

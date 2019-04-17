@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using UnityEngine;
 using UnityEngine.UI;
@@ -38,6 +39,8 @@ namespace Assets.Simulation.HexMap {
 
         Vector3 OverlayAnchorPoint { get; }
 
+        IEnumerable<IMapChunk> OverlappingChunks { get; }
+
         #endregion
 
         #region methods
@@ -47,7 +50,6 @@ namespace Assets.Simulation.HexMap {
         void Refresh();
         void RefreshSelfOnly();
 
-        void RefreshCulture   ();
         void RefreshVisibility();
         void RefreshFarmland  ();
 

@@ -30,7 +30,7 @@ namespace Assets.Simulation.Civilizations {
                         SignalSubscriptions.Add(CivSignals.CivUnlockedPolicyTree.Subscribe(OnCivUnlockedPolicyTree));
                         SignalSubscriptions.Add(CivSignals.CivFinishedPolicyTree.Subscribe(OnCivFinishedPolicyTree));
 
-                        SignalSubscriptions.Add(CitySignals.CityGainedBuildingSignal.Subscribe(OnCityGainedBuilding));
+                        SignalSubscriptions.Add(CitySignals.GainedBuilding.Subscribe(OnCityGainedBuilding));
                     }else {
                         SignalSubscriptions.ForEach(subscription => subscription.Dispose());
 
