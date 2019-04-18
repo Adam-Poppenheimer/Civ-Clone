@@ -16,6 +16,7 @@ using Assets.Simulation.Civilizations;
 using Assets.Simulation.MapResources;
 using Assets.Simulation.Core;
 using Assets.Simulation.Players;
+using Assets.Simulation.Technology;
 
 namespace Assets.Simulation.Visibility {
 
@@ -86,16 +87,18 @@ namespace Assets.Simulation.Visibility {
             citySignals.LostCellFromBoundaries.Subscribe(OnCityLostCell);
             citySignals.GainedCellToBoundaries.Subscribe(OnCityGainedCell);
 
-            cellSignals.FoundationElevationChangedSignal.Subscribe(OnHexCellVisibilityPropertiesChanged);
-            cellSignals.TerrainChangedSignal            .Subscribe(OnHexCellVisibilityPropertiesChanged);
-            cellSignals.ShapeChangedSignal              .Subscribe(OnHexCellVisibilityPropertiesChanged);
-            cellSignals.VegetationChangedSignal         .Subscribe(OnHexCellVisibilityPropertiesChanged);
+            cellSignals.TerrainChanged   .Subscribe(data => TryResetCellVisibility());
+            cellSignals.ShapeChanged     .Subscribe(data => TryResetCellVisibility());
+            cellSignals.VegetationChanged.Subscribe(data => TryResetCellVisibility());
 
-            civSignals.CivLosingCity.Subscribe(OnCivLosingCity);
-            civSignals.CivGainedCity.Subscribe(OnCivGainedCity);
+            civSignals.CivLosingCity      .Subscribe(OnCivLosingCity);
+            civSignals.CivGainedCity      .Subscribe(OnCivGainedCity);
+            civSignals.CivDiscoveredTech  .Subscribe(data => TryResetResourceVisibility());
+            civSignals.CivUndiscoveredTech.Subscribe(data => TryResetResourceVisibility());
 
-            visibilitySignals.CellVisibilityModeChangedSignal .Subscribe(unit => TryResetCellVisibility());
-            visibilitySignals.CellExplorationModeChangedSignal.Subscribe(unit => TryResetCellVisibility());
+            visibilitySignals.CellVisibilityModeChanged    .Subscribe(unit => TryResetCellVisibility    ());
+            visibilitySignals.CellExplorationModeChanged   .Subscribe(unit => TryResetCellVisibility    ());
+            visibilitySignals.ResourceVisibilityModeChanged.Subscribe(unit => TryResetResourceVisibility());
 
             coreSignals.ActivePlayerChanged.Subscribe(OnActivePlayerChanged);
         }
@@ -143,8 +146,8 @@ namespace Assets.Simulation.Visibility {
                 }
             }
 
-            foreach(var cell in Grid.Cells) {
-                cell.RefreshVisibility();
+            foreach(var chunk in Grid.Chunks) {
+                chunk.Refresh(MapRendering.TerrainRefreshType.Visibility);
             }
 
             ResetVisionCoroutine = null;
@@ -153,8 +156,8 @@ namespace Assets.Simulation.Visibility {
         private IEnumerator ResetResourceVisibility() {
             yield return new WaitForEndOfFrame();
 
-            foreach(var cellWithNode in Grid.Cells.Where(cell => NodeLocationCanon.GetPossessionsOfOwner(cell).Any())) {
-                cellWithNode.RefreshSelfOnly();
+            foreach(var chunk in Grid.Chunks) {
+                chunk.Refresh(MapRendering.TerrainRefreshType.Features);
             }
 
             ResetResourceVisibilityCoroutine = null;
@@ -173,10 +176,6 @@ namespace Assets.Simulation.Visibility {
         }
 
         private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
-            TryResetCellVisibility();
-        }
-
-        private void OnHexCellVisibilityPropertiesChanged(IHexCell cell) {
             TryResetCellVisibility();
         }
 

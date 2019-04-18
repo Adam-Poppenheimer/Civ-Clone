@@ -7,6 +7,7 @@ using System.Text;
 using NUnit.Framework;
 using Zenject;
 using Moq;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 using Assets.Simulation.Improvements;
@@ -97,6 +98,7 @@ namespace Assets.Tests.Simulation.Barbarians {
         #region instance fields and properties
 
         private Mock<IImprovementLocationCanon> MockImprovementLocationCanon;
+        private HexCellSignals                  CellSignals;
 
         #endregion
 
@@ -107,8 +109,10 @@ namespace Assets.Tests.Simulation.Barbarians {
         [SetUp]
         public void CommonInstall() {
             MockImprovementLocationCanon = new Mock<IImprovementLocationCanon>();
+            CellSignals                  = new HexCellSignals();
 
             Container.Bind<IImprovementLocationCanon>().FromInstance(MockImprovementLocationCanon.Object);
+            Container.Bind<HexCellSignals>           ().FromInstance(CellSignals);
 
             Container.Bind<EncampmentLocationCanon>().AsSingle();
         }
@@ -125,6 +129,48 @@ namespace Assets.Tests.Simulation.Barbarians {
             var cell = BuildCell(testData.Cell, locationCanon);
 
             return locationCanon.CanCellAcceptAnEncampment(cell);
+        }
+
+        [Test]
+        public void OnPossessionEstablished_FiresGainedEncampmentSignal() {
+            var locationCanon = Container.Resolve<EncampmentLocationCanon>();
+
+            var cell = BuildCell(new HexCellTestData() { Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands }, locationCanon);
+
+            var encampment = BuildEncampment();
+
+            CellSignals.GainedEncampment.Subscribe(data => {
+                Assert.AreEqual(cell,       data.Item1, "Unexpected cell passed into GainedEncampment signal");
+                Assert.AreEqual(encampment, data.Item2, "Unexpected encampment passed into GainedEncampment signal");
+
+                Assert.Pass();
+            });
+
+            locationCanon.ChangeOwnerOfPossession(encampment, cell);
+
+            Assert.Fail("GainedEncampment never fired");
+        }
+
+        [Test]
+        public void OnPossessionBroken_FiresLostEncampmentSignal() {
+            var locationCanon = Container.Resolve<EncampmentLocationCanon>();
+
+            var cell = BuildCell(new HexCellTestData() { Terrain = CellTerrain.Grassland, Shape = CellShape.Flatlands }, locationCanon);
+
+            var encampment = BuildEncampment();
+
+            locationCanon.ChangeOwnerOfPossession(encampment, cell);
+
+            CellSignals.LostEncampment.Subscribe(data => {
+                Assert.AreEqual(cell,       data.Item1, "Unexpected cell passed into GainedEncampment signal");
+                Assert.AreEqual(encampment, data.Item2, "Unexpected encampment passed into GainedEncampment signal");
+
+                Assert.Pass();
+            });
+
+            locationCanon.ChangeOwnerOfPossession(encampment, null);
+
+            Assert.Fail("LostEncampment never fired");
         }
 
         #endregion

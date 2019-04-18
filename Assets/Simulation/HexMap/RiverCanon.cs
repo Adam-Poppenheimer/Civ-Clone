@@ -25,6 +25,7 @@ namespace Assets.Simulation.HexMap {
 
         private IHexGrid                  Grid;
         private IRiverCornerValidityLogic RiverCornerValidityLogic;
+        private HexCellSignals            CellSignals;
 
         #endregion
 
@@ -36,6 +37,7 @@ namespace Assets.Simulation.HexMap {
         ) {
             Grid                     = grid;
             RiverCornerValidityLogic = riverCornerValidityLogic;
+            CellSignals              = cellSignals;
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear());
         }
@@ -87,13 +89,11 @@ namespace Assets.Simulation.HexMap {
             if(neighborAtEdge != null) {
                 GetPresenceArray (neighborAtEdge)[(int)(edge.Opposite())] = true;
                 GetDirectionArray(neighborAtEdge)[(int)(edge.Opposite())] = flow.Opposite();
+
+                CellSignals.GainedRiveredEdge.OnNext(neighborAtEdge);
             }
 
-            cell.RefreshSelfOnly();
-
-            foreach(var neighbor in Grid.GetNeighbors(cell)) {
-                neighbor.RefreshSelfOnly();
-            }
+            CellSignals.GainedRiveredEdge.OnNext(cell);
         }
 
         public void OverrideRiverOnCell(IHexCell cell, HexDirection edge, RiverFlow flow) {
@@ -113,31 +113,29 @@ namespace Assets.Simulation.HexMap {
                 var neighborInDirection = Grid.GetNeighbor(cell, direction);
 
                 if(neighborInDirection != null) {
-                    RemoveRiverFromCellInDirection(neighborInDirection, direction.Opposite());
+                    RemoveRiverFromCell(neighborInDirection, direction.Opposite());
                 }
             }
         }
 
-        public void RemoveRiverFromCellInDirection(IHexCell cell, HexDirection edge) {
+        public void RemoveRiverFromCell(IHexCell cell, HexDirection edge) {
             GetPresenceArray(cell)[(int)edge] = false;
 
             var neighborInDirection = Grid.GetNeighbor(cell, edge);
 
             if(neighborInDirection != null) {
                 GetPresenceArray(neighborInDirection)[(int)edge.Opposite()] = false;
+
+                CellSignals.LostRiveredEdge.OnNext(neighborInDirection);
             }
 
-            cell.RefreshSelfOnly();
-
-            foreach(var neighbor in Grid.GetNeighbors(cell)) {
-                neighbor.RefreshSelfOnly();
-            }
+            CellSignals.LostRiveredEdge.OnNext(cell);
         }
 
         public void ValidateRivers(IHexCell cell) {
             foreach(var riveredEdge in GetEdgesWithRivers(cell)) {
                 if(!RiverMeetsPlacementConditions(cell, riveredEdge, GetFlowOfRiverAtEdge(cell, riveredEdge))) {
-                    RemoveRiverFromCellInDirection(cell, riveredEdge);
+                    RemoveRiverFromCell(cell, riveredEdge);
                 }
             }
         }

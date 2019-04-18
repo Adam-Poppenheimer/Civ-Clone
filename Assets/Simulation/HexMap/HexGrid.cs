@@ -101,19 +101,15 @@ namespace Assets.Simulation.HexMap {
             CreateChunks();
             AttachChunksToCells();
 
-            foreach(var chunk in Chunks) {
-                chunk.RefreshAlphamap();
-            }
-
-            foreach(var cell in Cells) {
-                cell.RefreshSelfOnly();
-            }
-
             RiverMesh = HexMeshFactory.Create("Rivers",   RenderConfig.RiversData);
             FarmMesh  = HexMeshFactory.Create("Farmland", RenderConfig.FarmlandData);
 
             RiverMesh.transform.SetParent(transform, false);
             FarmMesh .transform.SetParent(transform, false);
+
+            foreach(var chunk in Chunks) {
+                chunk.Refresh(TerrainRefreshType.All);
+            }
         }
 
         public void Clear() {

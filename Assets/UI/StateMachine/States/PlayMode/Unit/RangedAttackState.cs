@@ -294,9 +294,9 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             EventSubscriptions.Add(UnitSignals.PointerExited .Subscribe(OnUnitPointerExited));
             EventSubscriptions.Add(UnitSignals.Clicked       .Subscribe(OnUnitClicked));
 
-            EventSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
-            EventSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExit));
-            EventSubscriptions.Add(CellSignals.ClickedSignal     .Subscribe(OnCellClicked));
+            EventSubscriptions.Add(CellSignals.PointerEnter.Subscribe(OnCellPointerEnter));
+            EventSubscriptions.Add(CellSignals.PointerExit .Subscribe(OnCellPointerExit));
+            EventSubscriptions.Add(CellSignals.Clicked     .Subscribe(OnCellClicked));
 
             EventSubscriptions.Add(CitySignals.PointerEntered.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExited .Subscribe(OnCityPointerExited));

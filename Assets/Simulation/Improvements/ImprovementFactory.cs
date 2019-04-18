@@ -46,7 +46,7 @@ namespace Assets.Simulation.Improvements {
             CellModificationLogic    = cellModificationLogic;
             ImprovementPrefab        = improvementPrefab;
 
-            signals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
+            signals.BeingDestroyed.Subscribe(OnImprovementBeingDestroyed);
         }
 
         #endregion

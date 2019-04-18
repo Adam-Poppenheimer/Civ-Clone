@@ -103,7 +103,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             FreeGreatPeopleNotification.gameObject.SetActive(FreeGreatPeopleCanon.GetFreeGreatPeopleForCiv(GameCore.ActiveCiv) > 0);
 
             SignalSubscriptions.Add(CoreSignals      .TurnBegan              .Subscribe(OnTurnBegan));
-            SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv));
+            SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCiv.Subscribe(OnCellBecameExploredByCiv));
         }
 
         public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex) {

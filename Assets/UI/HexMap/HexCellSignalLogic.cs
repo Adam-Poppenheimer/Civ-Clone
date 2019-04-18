@@ -49,8 +49,8 @@ namespace Assets.UI.HexMap {
             BeginHoverSubject = new Subject<IHexCell>();
             EndHoverSubject = new Subject<IHexCell>();
 
-            cellSignals.PointerEnterSignal.Subscribe(OnEnterSignal);
-            cellSignals.PointerExitSignal .Subscribe(OnExitSignal);
+            cellSignals.PointerEnter.Subscribe(OnEnterSignal);
+            cellSignals.PointerExit .Subscribe(OnExitSignal);
 
             CoroutineInvoker = coroutineInvoker;
             HoverDelay = hoverDelay;            

@@ -35,7 +35,7 @@ namespace Assets.Simulation.Civilizations {
             CivDiscoveryCanon   = civDiscoveryCanon;
             UnitPossessionCanon = unitPossessionCanon;
 
-            visibilitySignals.CellBecameExploredByCivSignal.Subscribe(OnCellBecameExploredByCiv);
+            visibilitySignals.CellBecameExploredByCiv.Subscribe(OnCellBecameExploredByCiv);
         }
 
         #endregion

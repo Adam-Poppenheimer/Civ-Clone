@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapResources {
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.ResourceNodeBeingDestroyedSignal.OnNext(this);
+            Signals.NodeBeingDestroyed.OnNext(this);
         }
 
         #endregion

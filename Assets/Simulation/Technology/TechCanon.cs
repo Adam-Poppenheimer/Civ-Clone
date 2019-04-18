@@ -317,7 +317,10 @@ namespace Assets.Simulation.Technology {
                 throw new ArgumentNullException("civilization");
             }
 
-            TechsResearchedByCiv[civilization].Remove(tech);
+            if(IsTechDiscoveredByCiv(tech, civilization)) {
+                TechsResearchedByCiv[civilization].Remove(tech);
+                CivSignals.CivUndiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civilization, tech));
+            }
         }
 
         public IEnumerable<ITechDefinition> GetTechsOfEra(TechnologyEra era) {

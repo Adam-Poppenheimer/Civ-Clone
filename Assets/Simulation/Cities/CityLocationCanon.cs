@@ -12,10 +12,18 @@ namespace Assets.Simulation.Cities {
 
     public class CityLocationCanon : PossessionRelationship<IHexCell, ICity> {
 
+        #region instance fields and properties
+
+        private CitySignals CitySignals;
+
+        #endregion
+
         #region constructors
 
         [Inject]
         public CityLocationCanon(CitySignals citySignals, HexCellSignals cellSignals) {
+            CitySignals = citySignals;
+
             citySignals.BeingDestroyed.Subscribe(OnCityBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
@@ -28,11 +36,11 @@ namespace Assets.Simulation.Cities {
         #region from PossesionRelationship<IHexCell, ICity>
 
         protected override void DoOnPossessionEstablished(ICity possession, IHexCell newOwner) {
-            newOwner.RefreshSelfOnly();
+            CitySignals.CityAddedToLocation.OnNext(new Tuple<ICity, IHexCell>(possession, newOwner));
         }
 
         protected override void DoOnPossessionBroken(ICity possession, IHexCell oldOwner) {
-            oldOwner.RefreshSelfOnly();
+            CitySignals.CityRemovedFromLocation.OnNext(new Tuple<ICity, IHexCell>(possession, oldOwner));
         }
 
         #endregion

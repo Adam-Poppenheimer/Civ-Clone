@@ -45,7 +45,7 @@ namespace Assets.Simulation.Improvements {
         #region Unity messages
 
         private void OnDestroy() {
-            Signals.ImprovementBeingDestroyedSignal.OnNext(this);
+            Signals.BeingDestroyed.OnNext(this);
         }
 
         #endregion
@@ -58,7 +58,7 @@ namespace Assets.Simulation.Improvements {
                 IsConstructed = true;
                 WorkInvested  = 0f;
 
-                Signals.ImprovementConstructedSignal.OnNext(this);
+                Signals.Constructed.OnNext(this);
             }
         }
 
@@ -68,7 +68,7 @@ namespace Assets.Simulation.Improvements {
                 IsPillaged    = true;         
                 WorkInvested  = 0f;
                        
-                Signals.ImprovementPillagedSignal.OnNext(this);
+                Signals.Pillaged.OnNext(this);
 
             }else if(!IsPillaged) {
                 Destroy(gameObject);

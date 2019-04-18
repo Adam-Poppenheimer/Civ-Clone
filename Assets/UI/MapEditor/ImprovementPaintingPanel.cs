@@ -68,7 +68,7 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             PopulateImprovementList();
 
-            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
+            CellClickedSubscription = CellSignals.Clicked.Subscribe(OnCellClicked);
 
             RefreshMode();
         }

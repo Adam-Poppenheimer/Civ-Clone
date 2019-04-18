@@ -47,12 +47,6 @@ namespace Assets.Simulation.HexMap {
 
         void AttachToChunks(IMapChunk[] chunks);
 
-        void Refresh();
-        void RefreshSelfOnly();
-
-        void RefreshVisibility();
-        void RefreshFarmland  ();
-
         void SetMapData(float data);
 
         #endregion

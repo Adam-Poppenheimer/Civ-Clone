@@ -89,8 +89,8 @@ namespace Assets.UI.StateMachine.States.MapEditor {
         private void AttachEvents() {
             EventSubscriptions.Add(UnitSignals.BeginDrag   .Subscribe(OnUnitBeginDrag));
             EventSubscriptions.Add(UnitSignals.EndDrag     .Subscribe(OnUnitEndDrag));
-            EventSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEntered));
-            EventSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExited));
+            EventSubscriptions.Add(CellSignals.PointerEnter.Subscribe(OnCellPointerEntered));
+            EventSubscriptions.Add(CellSignals.PointerExit .Subscribe(OnCellPointerExited));
         }
 
         private void DetachEvents() {

@@ -43,8 +43,8 @@ namespace Assets.UI.MapEditor {
         #region Unity messages
 
         private void OnEnable() {
-            SignalSubscriptions.Add(CellSignals.PointerDownSignal .Subscribe(OnCellPointerDown));
-            SignalSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
+            SignalSubscriptions.Add(CellSignals.PointerDown .Subscribe(OnCellPointerDown));
+            SignalSubscriptions.Add(CellSignals.PointerEnter.Subscribe(OnCellPointerEnter));
         }
 
         private void OnDisable() {

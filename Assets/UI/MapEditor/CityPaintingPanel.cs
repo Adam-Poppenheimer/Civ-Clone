@@ -70,7 +70,7 @@ namespace Assets.UI.MapEditor {
         private void OnEnable() {
             PopulateCivilizationDropdown();
 
-            CellClickedSubscription = CellSignals.ClickedSignal       .Subscribe(OnCellClicked);
+            CellClickedSubscription = CellSignals.Clicked       .Subscribe(OnCellClicked);
             CityClickedSubscription = CitySignals.PointerClicked.Subscribe(OnCityClicked);
 
             IsAddingToggle  .onValueChanged.AddListener(isOn => UpdatePaintingState( isOn));

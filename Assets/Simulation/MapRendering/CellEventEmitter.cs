@@ -78,7 +78,7 @@ namespace Assets.Simulation.MapRendering {
                     IHexCell mainCell = orientationData.GetMainCell();
 
                     if(mainCell != null) {
-                        CellSignals.PointerDownSignal.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
+                        CellSignals.PointerDown.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
                     }
                 }
             }
@@ -95,7 +95,7 @@ namespace Assets.Simulation.MapRendering {
                     IHexCell mainCell = orientationData.GetMainCell();
 
                     if(mainCell != null) {
-                        CellSignals.PointerUpSignal.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
+                        CellSignals.PointerUp.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
                     }
                 }
             }
@@ -119,7 +119,7 @@ namespace Assets.Simulation.MapRendering {
                     if(cityAtLocation != null) {
                         CitySignals.PointerClicked.OnNext(cityAtLocation);
                     }else {
-                        CellSignals.ClickedSignal.OnNext(
+                        CellSignals.Clicked.OnNext(
                             new Tuple<IHexCell, PointerEventData>(mainCell, eventData)
                         );
                     }
@@ -150,7 +150,7 @@ namespace Assets.Simulation.MapRendering {
             CellBeingDragged = GetCellUnderPosition(Input.mousePosition);
 
             if(CellBeingDragged != null) {
-                CellSignals.BeginDragSignal.OnNext(new HexCellDragData() {
+                CellSignals.BeginDrag.OnNext(new HexCellDragData() {
                     CellBeingDragged = CellBeingDragged,
                     EventData        = eventData
                 });
@@ -159,7 +159,7 @@ namespace Assets.Simulation.MapRendering {
 
         public void OnDrag(PointerEventData eventData) {
             if(CellBeingDragged != null) {
-                CellSignals.DragSignal.OnNext(new HexCellDragData() {
+                CellSignals.Drag.OnNext(new HexCellDragData() {
                     CellBeingDragged = CellBeingDragged,
                     EventData        = eventData
                 });
@@ -168,7 +168,7 @@ namespace Assets.Simulation.MapRendering {
 
         public void OnEndDrag(PointerEventData eventData) {
             if(CellBeingDragged != null) {
-                CellSignals.EndDragSignal.OnNext(new HexCellDragData() {
+                CellSignals.EndDrag.OnNext(new HexCellDragData() {
                     CellBeingDragged = CellBeingDragged,
                     EventData        = eventData
                 });
@@ -230,11 +230,11 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void EmitEnterMessage(IHexCell cell) {
-            CellSignals.PointerEnterSignal.OnNext(LastCellEntered);
+            CellSignals.PointerEnter.OnNext(LastCellEntered);
         }
 
         private void EmitExitMessage(IHexCell cell) {
-            CellSignals.PointerExitSignal.OnNext(cell);
+            CellSignals.PointerExit.OnNext(cell);
         }
 
         private void EmitEnterMessage(ICity city) {

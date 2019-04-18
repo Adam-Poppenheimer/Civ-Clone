@@ -41,10 +41,11 @@ namespace Assets.Simulation.HexMap {
                     return;
                 }
 
+                var signalData = new HexPropertyChangedData<CellTerrain>(this, _terrain, value);
+
                 _terrain = value;
 
-                Refresh();
-                Signals.TerrainChangedSignal.OnNext(this);
+                Signals.TerrainChanged.OnNext(signalData);
             }
         }
         private CellTerrain _terrain;
@@ -56,9 +57,11 @@ namespace Assets.Simulation.HexMap {
                     return;
                 }
 
+                var signalData = new HexPropertyChangedData<CellShape>(this, _shape, value);
+
                 _shape = value;
-                Refresh();
-                Signals.ShapeChangedSignal.OnNext(this);
+
+                Signals.ShapeChanged.OnNext(signalData);
             }
         }
         private CellShape _shape;
@@ -70,9 +73,11 @@ namespace Assets.Simulation.HexMap {
                     return;
                 }
 
+                var signalData = new HexPropertyChangedData<CellVegetation>(this, _vegetation, value);
+
                 _vegetation = value;
-                RefreshSelfOnly();
-                Signals.VegetationChangedSignal.OnNext(this);
+
+                Signals.VegetationChanged.OnNext(signalData);
             }
         }
         private CellVegetation _vegetation;
@@ -84,8 +89,11 @@ namespace Assets.Simulation.HexMap {
                     return;
                 }
 
+                var signalData = new HexPropertyChangedData<CellFeature>(this, _feature, value);
+
                 _feature = value;
-                Refresh();
+
+                Signals.FeatureChanged.OnNext(signalData);
             }
         }
         private CellFeature _feature;
@@ -98,8 +106,12 @@ namespace Assets.Simulation.HexMap {
             get { return _hasRoads; }
             set {
                 if(_hasRoads != value) {
+
+                    var signalData = new HexPropertyChangedData<bool>(this, _hasRoads, value);
+
                     _hasRoads = value;
-                    Refresh();
+
+                    Signals.RoadStatusChanged.OnNext(signalData);
                 }
             }
         }
@@ -167,38 +179,6 @@ namespace Assets.Simulation.HexMap {
 
         public void SetMapData(float data) {
             
-        }
-
-        public void Refresh() {
-            RefreshSelfOnly();
-
-            foreach(var neighbor in Grid.GetNeighbors(this)) {
-                neighbor.RefreshSelfOnly();
-            }
-        }
-
-        public void RefreshSelfOnly() {
-            if(OverlappingChunks != null) {
-                foreach(var chunk in OverlappingChunks) {
-                    chunk.RefreshAll();
-                }
-            }
-        }
-
-        public void RefreshVisibility() {
-            if(OverlappingChunks != null) {
-                foreach(var chunk in OverlappingChunks) {
-                    chunk.RefreshVisibility();
-                }
-            }
-        }
-
-        public void RefreshFarmland() {
-            if(OverlappingChunks != null) {
-                foreach(var chunk in OverlappingChunks) {
-                    chunk.RefreshFarmland();
-                }
-            }
         }
 
         #endregion

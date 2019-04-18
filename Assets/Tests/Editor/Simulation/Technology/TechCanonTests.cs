@@ -6,6 +6,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation.Cities.Buildings;
 using Assets.Simulation.Civilizations;
@@ -22,6 +23,8 @@ namespace Assets.Tests.Simulation.Technology {
     public class TechCanonTests : ZenjectUnitTestFixture {
 
         #region instance fields and properties
+
+        private CivilizationSignals CivSignals;
 
         private List<ITechDefinition>      AvailableTechs        = new List<ITechDefinition>();
         private List<IResourceDefinition>  AvailableResources    = new List<IResourceDefinition>();
@@ -41,12 +44,14 @@ namespace Assets.Tests.Simulation.Technology {
             AvailableAbilities   .Clear();
             AvailableImprovements.Clear();
 
+            CivSignals = new CivilizationSignals();
+
             Container.Bind<List<ITechDefinition>>            ().WithId("Available Techs")                .FromInstance(AvailableTechs);
             Container.Bind<IEnumerable<IResourceDefinition>> ().WithId("Available Resources")            .FromInstance(AvailableResources);
             Container.Bind<IEnumerable<IAbilityDefinition>>  ().WithId("Available Abilities")            .FromInstance(AvailableAbilities);
             Container.Bind<IEnumerable<IImprovementTemplate>>().WithId("Available Improvement Templates").FromInstance(AvailableImprovements);
 
-            Container.Bind<CivilizationSignals>().AsSingle();
+            Container.Bind<CivilizationSignals>().FromInstance(CivSignals);
 
             Container.Bind<TechCanon>().AsSingle();
         }
@@ -227,9 +232,8 @@ namespace Assets.Tests.Simulation.Technology {
             Assert.IsTrue (techCanon.IsTechAvailableToCiv(techFour,  civ), "TechFour is not considered available to civ");
         }
 
-        [Test(Description = "SetTechAsResearchedForCiv should modify what improvements are " + 
-            "considered researched by GetResearchedBuildings and IsBuildingResearchedForCity")]
-        public void SetTechAsResearchedForCiv_ReflectedInBuildingQueries() {
+        [Test]
+        public void SetTechAsDiscoveredForCiv_ReflectedInBuildingQueries() {
             var techOne = BuildTech("Tech One", buildings: new List<IBuildingTemplate>() {
                 BuildBuildingTemplate(),
                 BuildBuildingTemplate(),
@@ -254,9 +258,8 @@ namespace Assets.Tests.Simulation.Technology {
             );
         }
 
-        [Test(Description = "SetTechAsResearchedForCiv should modify what units are " + 
-            "considered researched by GetResearchedUnits and IsUnitResearchedForCity")]
-        public void SetTechAsResearchedForCiv_ReflectedInUnitQueries() {
+        [Test]
+        public void SetTechAsDiscoveredForCiv_ReflectedInUnitQueries() {
             var techOne = BuildTech("Tech One", units: new List<IUnitTemplate>() {
                 BuildUnitTemplate(),
                 BuildUnitTemplate(),
@@ -281,9 +284,8 @@ namespace Assets.Tests.Simulation.Technology {
             );
         }
 
-        [Test(Description = "SetTechAsResearchedForCiv should modify what abilities are " + 
-            "considered researched by GetResearchedAbilities and IsAbilityResearchedForCity")]
-        public void SetTechAsResearchedForCiv_ReflectedInAbilityQueries() {
+        [Test]
+        public void SetTechAsDiscoveredForCiv_ReflectedInAbilityQueries() {
             var techOne = BuildTech("Tech One", abilities: new List<IAbilityDefinition>() {
                 BuildAbilityDefinition(),
                 BuildAbilityDefinition(),
@@ -306,6 +308,138 @@ namespace Assets.Tests.Simulation.Technology {
                 techCanon.GetResearchedAbilities(civ),
                 "GetResearchedAbilities returned an unexpected set of definitions"
             );
+        }
+
+        [Test]
+        public void SetTechAsDiscoveredForCiv_FiresTechDiscoveredSignal() {
+            var tech = BuildTech("Tech One");
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            CivSignals.CivDiscoveredTech.Subscribe(data => {
+                Assert.AreEqual(civ,  data.Item1, "Signal passed unexpected civ");
+                Assert.AreEqual(tech, data.Item2, "Signal passed unexpected tech");
+
+                Assert.Pass();
+            });
+
+            techCanon.SetTechAsDiscoveredForCiv(tech, civ);
+
+            Assert.Fail("TechDiscovered never fired");
+        }
+
+        [Test]
+        public void SetTechAsUndiscoveredForCiv_ReflectedInDiscoveryQueries() {
+            var techOne = BuildTech("Tech One");
+            var techTwo = BuildTech("Tech Two");
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            techCanon.SetTechAsUndiscoveredForCiv(techOne, civ);
+
+            CollectionAssert.AreEquivalent(new ITechDefinition[]{ techTwo }, techCanon.GetTechsDiscoveredByCiv(civ));
+        }
+
+        [Test]
+        public void SetTechAsUndiscoveredForCiv_ReflectedInAbiltiyQueries() {
+            var techOne = BuildTech("Tech One", abilities: new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
+            });
+
+            var techTwo = BuildTech("Tech Two", abilities: new List<IAbilityDefinition>() {
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
+                BuildAbilityDefinition(),
+            });
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            techCanon.SetTechAsUndiscoveredForCiv(techOne, civ);
+
+            CollectionAssert.AreEquivalent(techTwo.AbilitiesEnabled, techCanon.GetResearchedAbilities(civ));
+        }
+
+        [Test]
+        public void SetTechAsUndiscoveredForCiv_ReflectedInBuildingQueries() {
+            var techOne = BuildTech("Tech One", buildings: new List<IBuildingTemplate>() {
+                BuildBuildingTemplate(),
+                BuildBuildingTemplate(),
+            });
+
+            var techTwo = BuildTech("Tech Two", buildings: new List<IBuildingTemplate>() {
+                BuildBuildingTemplate(),
+                BuildBuildingTemplate(),
+                BuildBuildingTemplate(),
+            });
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            techCanon.SetTechAsUndiscoveredForCiv(techOne, civ);
+
+            CollectionAssert.AreEquivalent(techTwo.BuildingsEnabled, techCanon.GetResearchedBuildings(civ));
+        }
+
+        [Test]
+        public void SetTechAsUndiscoveredForCiv_ReflectedInUnitQueries() {
+            var techOne = BuildTech("Tech One", units: new List<IUnitTemplate>() {
+                BuildUnitTemplate(),
+                BuildUnitTemplate(),
+            });
+
+            var techTwo = BuildTech("Tech Two", units: new List<IUnitTemplate>() {
+                BuildUnitTemplate(),
+                BuildUnitTemplate(),
+                BuildUnitTemplate(),
+            });
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            techCanon.SetTechAsUndiscoveredForCiv(techOne, civ);
+
+            CollectionAssert.AreEquivalent(techTwo.UnitsEnabled, techCanon.GetResearchedUnits(civ));
+        }
+
+        [Test]
+        public void SetTechAsUndiscoveredForCiv_FiresTechUndiscoveredSignal() {
+            var techOne = BuildTech("Tech One");
+            var techTwo = BuildTech("Tech Two");
+
+            var civ = BuildCivilization();
+
+            var techCanon = Container.Resolve<TechCanon>();
+
+            techCanon.SetTechAsDiscoveredForCiv(techOne, civ);
+            techCanon.SetTechAsDiscoveredForCiv(techTwo, civ);
+
+            CivSignals.CivUndiscoveredTech.Subscribe(data => {
+                Assert.AreEqual(civ,     data.Item1, "Signal passed unexpected civ");
+                Assert.AreEqual(techOne, data.Item2, "Signal passed unexpected tech");
+
+                Assert.Pass();
+            });
+
+            techCanon.SetTechAsUndiscoveredForCiv(techOne, civ);
+
+            Assert.Fail("TechDiscovered never fired");
         }
 
         [Test(Description = "GetResearchedBuildings should return only building templates " +

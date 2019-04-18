@@ -10,26 +10,35 @@ using Zenject;
 
 using UniRx;
 
+using Assets.Simulation.Barbarians;
+
 namespace Assets.Simulation.HexMap {
 
     public class HexCellSignals {
 
         #region instance fields and properties
 
-        public ISubject<Tuple<IHexCell, PointerEventData>> ClickedSignal      { get; private set; }
-        public ISubject<Tuple<IHexCell, PointerEventData>> PointerDownSignal  { get; private set; }
-        public ISubject<Tuple<IHexCell, PointerEventData>> PointerUpSignal    { get; private set; }
-        public ISubject<IHexCell>                          PointerEnterSignal { get; private set; }
-        public ISubject<IHexCell>                          PointerExitSignal  { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> Clicked      { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> PointerDown  { get; private set; }
+        public ISubject<Tuple<IHexCell, PointerEventData>> PointerUp    { get; private set; }
+        public ISubject<IHexCell>                          PointerEnter { get; private set; }
+        public ISubject<IHexCell>                          PointerExit  { get; private set; }
 
-        public ISubject<HexCellDragData> BeginDragSignal { get; private set; }
-        public ISubject<HexCellDragData> DragSignal      { get; private set; }
-        public ISubject<HexCellDragData> EndDragSignal   { get; private set; }
+        public ISubject<HexCellDragData> BeginDrag { get; private set; }
+        public ISubject<HexCellDragData> Drag      { get; private set; }
+        public ISubject<HexCellDragData> EndDrag   { get; private set; }
 
-        public ISubject<IHexCell> FoundationElevationChangedSignal { get; private set; }
-        public ISubject<IHexCell> TerrainChangedSignal             { get; private set; }
-        public ISubject<IHexCell> ShapeChangedSignal               { get; private set; }
-        public ISubject<IHexCell> VegetationChangedSignal          { get; private set; }
+        public ISubject<HexPropertyChangedData<CellTerrain>>    TerrainChanged    { get; private set; }
+        public ISubject<HexPropertyChangedData<CellShape>>      ShapeChanged      { get; private set; }
+        public ISubject<HexPropertyChangedData<CellVegetation>> VegetationChanged { get; private set; }        
+        public ISubject<HexPropertyChangedData<CellFeature>>    FeatureChanged    { get; private set; }
+        public ISubject<HexPropertyChangedData<bool>>           RoadStatusChanged { get; private set; }
+
+        public ISubject<IHexCell> GainedRiveredEdge { get; private set; }
+        public ISubject<IHexCell> LostRiveredEdge   { get; private set; }
+
+        public ISubject<Tuple<IHexCell, IEncampment>> GainedEncampment { get; private set; }
+        public ISubject<Tuple<IHexCell, IEncampment>> LostEncampment   { get; private set; }
 
         public ISubject<Unit> MapBeingClearedSignal { get; set; }
 
@@ -38,20 +47,27 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         public HexCellSignals() {
-            ClickedSignal      = new Subject<Tuple<IHexCell, PointerEventData>>();
-            PointerDownSignal  = new Subject<Tuple<IHexCell, PointerEventData>>();
-            PointerUpSignal    = new Subject<Tuple<IHexCell, PointerEventData>>();
-            PointerEnterSignal = new Subject<IHexCell>();
-            PointerExitSignal  = new Subject<IHexCell>();
+            Clicked      = new Subject<Tuple<IHexCell, PointerEventData>>();
+            PointerDown  = new Subject<Tuple<IHexCell, PointerEventData>>();
+            PointerUp    = new Subject<Tuple<IHexCell, PointerEventData>>();
+            PointerEnter = new Subject<IHexCell>();
+            PointerExit  = new Subject<IHexCell>();
 
-            BeginDragSignal = new Subject<HexCellDragData>();
-            DragSignal      = new Subject<HexCellDragData>();
-            EndDragSignal   = new Subject<HexCellDragData>();
+            BeginDrag = new Subject<HexCellDragData>();
+            Drag      = new Subject<HexCellDragData>();
+            EndDrag   = new Subject<HexCellDragData>();
 
-            FoundationElevationChangedSignal = new Subject<IHexCell>();
-            TerrainChangedSignal             = new Subject<IHexCell>();
-            ShapeChangedSignal               = new Subject<IHexCell>();
-            VegetationChangedSignal          = new Subject<IHexCell>();
+            TerrainChanged    = new Subject<HexPropertyChangedData<CellTerrain>>();
+            ShapeChanged      = new Subject<HexPropertyChangedData<CellShape>>();
+            VegetationChanged = new Subject<HexPropertyChangedData<CellVegetation>>();
+            FeatureChanged    = new Subject<HexPropertyChangedData<CellFeature>>();
+            RoadStatusChanged = new Subject<HexPropertyChangedData<bool>>();
+
+            GainedRiveredEdge = new Subject<IHexCell>();
+            LostRiveredEdge   = new Subject<IHexCell>();
+
+            GainedEncampment = new Subject<Tuple<IHexCell, IEncampment>>();
+            LostEncampment   = new Subject<Tuple<IHexCell, IEncampment>>();
 
             MapBeingClearedSignal = new Subject<Unit>();
         }

@@ -45,7 +45,7 @@ namespace Assets.Simulation.MapResources{
             RestrictionCanon          = restrictionCanon;
             NodeContainer             = nodeContainer;
 
-            signals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
+            signals.NodeBeingDestroyed.Subscribe(OnNodeBeingDestroyed);
         }
 
         #endregion

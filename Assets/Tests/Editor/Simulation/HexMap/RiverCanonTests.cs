@@ -7,6 +7,7 @@ using System.Text;
 using Zenject;
 using NUnit.Framework;
 using Moq;
+using UniRx;
 
 using Assets.Simulation.HexMap;
 
@@ -258,7 +259,7 @@ namespace Assets.Tests.Simulation.HexMap {
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            riverCanon.AddRiverToCell(cellToTest, HexDirection.NE, RiverFlow.Counterclockwise);
 
             Assert.AreEqual(
                 RiverFlow.Clockwise, riverCanon.GetFlowOfRiverAtEdge(neighbors[0], ((HexDirection)0).Opposite())
@@ -266,30 +267,43 @@ namespace Assets.Tests.Simulation.HexMap {
         }
 
         [Test]
-        public void AddRiverToCell_RefreshesCellAndAllNeighbors() {
-            Mock<IHexCell> mockNeighborOne, mockNeighborTwo, mockNeighborThree, mockCellToTest;
+        public void AddRiverToCell_FiresGainedRiveredEdgeOnCell() {
+            var neighbors = new List<IHexCell>() { BuildHexCell(false) };
 
-            var neighbors = new List<IHexCell>() {
-                BuildHexCell(false, out mockNeighborOne),
-                BuildHexCell(false, out mockNeighborTwo),
-                BuildHexCell(false, out mockNeighborThree),
-            };
-
-            var cellToTest = BuildHexCell(false, neighbors, out mockCellToTest);
-
-            MockRiverCornerValidityLogic.Setup(
-                logic => logic.AreCornerFlowsValid(It.IsAny<RiverFlow>(), It.IsAny<RiverFlow?>(), It.IsAny<RiverFlow?>())
-            ).Returns(true);
+            var cellToTest = BuildHexCell(false, neighbors);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            riverCanon.AddRiverToCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
+            CellSignals.GainedRiveredEdge.Subscribe(cell => {
+                if(cell != neighbors[0]) {
+                    Assert.AreEqual(cellToTest, cell, "Signal passed unexpected cell");
+                    Assert.Pass();
+                }
+            });
 
-            mockCellToTest   .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "CellToTest.RefreshSelfOnly was not called");
+            riverCanon.AddRiverToCell(cellToTest, HexDirection.NE, RiverFlow.Clockwise);
+            
+            Assert.Fail("GainedRiveredEdge never fired on CellToTest");
+        }
 
-            mockNeighborOne  .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborOne.RefreshSelfOnly was not called");
-            mockNeighborTwo  .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborTwo.RefreshSelfOnly was not called");
-            mockNeighborThree.Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborThree.RefreshSelfOnly was not called");
+        [Test]
+        public void AddRiverToCell_FiresGainedRiveredEdgeOnNeighbor() {
+            var neighbors = new List<IHexCell>() { BuildHexCell(false) };
+
+            var cellToTest = BuildHexCell(false, neighbors);
+
+            var riverCanon = Container.Resolve<RiverCanon>();
+
+            CellSignals.GainedRiveredEdge.Subscribe(cell => {
+                if(cell != cellToTest) {
+                    Assert.AreEqual(neighbors[0], cell, "Signal passed unexpected cell");
+                    Assert.Pass();
+                }
+            });
+
+            riverCanon.AddRiverToCell(cellToTest, HexDirection.NE, RiverFlow.Clockwise);
+            
+            Assert.Fail("GainedRiveredEdge never fired on neighbors[0]");
         }
 
         [Test]
@@ -342,20 +356,20 @@ namespace Assets.Tests.Simulation.HexMap {
 
 
         [Test]
-        public void RemoveRiverFromCellInDirection_ReflectedInHasRiverAlongEdgeOfThisCell() {
+        public void RemoveRiverFromCell_ReflectedInHasRiverAlongEdgeOfThisCell() {
             var cellToTest = BuildHexCell(false, new List<IHexCell>() { BuildHexCell(false) });
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
             riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
-            riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
+            riverCanon.RemoveRiverFromCell(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(cellToTest, (HexDirection)0));
         }
 
         [Test]
-        public void RemoveRiverFromCellInDirection_ReflectedInHasRiverAlongEdgeOfNeighbor() {
+        public void RemoveRiverFromCell_ReflectedInHasRiverAlongEdgeOfNeighbor() {
             var neighbors = new List<IHexCell>() { BuildHexCell(false) };
 
             var cellToTest = BuildHexCell(false, neighbors);
@@ -364,26 +378,26 @@ namespace Assets.Tests.Simulation.HexMap {
 
             riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
-            riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
+            riverCanon.RemoveRiverFromCell(cellToTest, (HexDirection)0);
 
             Assert.IsFalse(riverCanon.HasRiverAlongEdge(neighbors[0], ((HexDirection)0).Opposite()));
         }
 
         [Test]
-        public void RemoveRiverFromCellInDirection_ReflectedInGetEdgesWithRiversOfThisCell() {
+        public void RemoveRiverFromCell_ReflectedInGetEdgesWithRiversOfThisCell() {
             var cellToTest = BuildHexCell(false, new List<IHexCell>() { BuildHexCell(false) });
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
             riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
-            riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
+            riverCanon.RemoveRiverFromCell(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(cellToTest), (HexDirection)0);
         }
 
         [Test]
-        public void RemoveRiverFromCellInDirection_ReflectedInGetEdgesWithRiversOfNeighbor() {
+        public void RemoveRiverFromCell_ReflectedInGetEdgesWithRiversOfNeighbor() {
             var neighbors = new List<IHexCell>() { BuildHexCell(false) };
 
             var cellToTest = BuildHexCell(false, neighbors);
@@ -392,50 +406,64 @@ namespace Assets.Tests.Simulation.HexMap {
 
             riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
 
-            riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
+            riverCanon.RemoveRiverFromCell(cellToTest, (HexDirection)0);
 
             CollectionAssert.DoesNotContain(riverCanon.GetEdgesWithRivers(neighbors[0]), ((HexDirection)0).Opposite());
         }
 
         [Test]
-        public void RemoveRiverFromCellInDirection_CellAndAllNeighborsRefreshed() {
-            Mock<IHexCell> mockNeighborOne, mockNeighborTwo, mockNeighborThree, mockCellToTest;
-
-            var neighbors = new List<IHexCell>() {
-                BuildHexCell(false, out mockNeighborOne),
-                BuildHexCell(false, out mockNeighborTwo),
-                BuildHexCell(false, out mockNeighborThree),
-            };
-
-            var cellToTest = BuildHexCell(false, neighbors, out mockCellToTest);
-
-            var riverCanon = Container.Resolve<RiverCanon>();
-
-            riverCanon.OverrideRiverOnCell(cellToTest, (HexDirection)0, RiverFlow.Counterclockwise);
-
-            mockCellToTest   .ResetCalls();
-            mockNeighborOne  .ResetCalls();
-            mockNeighborTwo  .ResetCalls();
-            mockNeighborThree.ResetCalls();
-
-            riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0);
-
-            mockCellToTest   .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "CellToTest.RefreshSelfOnly was not called");
-
-            mockNeighborOne  .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborOne.RefreshSelfOnly was not called");
-            mockNeighborTwo  .Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborTwo.RefreshSelfOnly was not called");
-            mockNeighborThree.Verify(cell => cell.RefreshSelfOnly(), Times.Once, "NeighborThree.RefreshSelfOnly was not called");
-        }
-
-        [Test]
-        public void RemoveRiverFromCellInDirection_DoesNotThrowIfNoRiver() {
+        public void RemoveRiverFromCell_DoesNotThrowIfNoRiver() {
             var neighbors = new List<IHexCell>() { BuildHexCell(false) };
 
             var cellToTest = BuildHexCell(false, neighbors);
 
             var riverCanon = Container.Resolve<RiverCanon>();
 
-            Assert.DoesNotThrow(() =>  riverCanon.RemoveRiverFromCellInDirection(cellToTest, (HexDirection)0));
+            Assert.DoesNotThrow(() =>  riverCanon.RemoveRiverFromCell(cellToTest, (HexDirection)0));
+        }
+
+        [Test]
+        public void RemoveRiverFromCell_FiresLostRiveredEdgeOnCell() {
+            var neighbors = new List<IHexCell>() { BuildHexCell(false) };
+
+            var cellToTest = BuildHexCell(false, neighbors);
+
+            var riverCanon = Container.Resolve<RiverCanon>();
+
+            riverCanon.AddRiverToCell(cellToTest, HexDirection.NE, RiverFlow.Clockwise);
+
+            CellSignals.LostRiveredEdge.Subscribe(cell => {
+                if(cell != neighbors[0]) {
+                    Assert.AreEqual(cellToTest, cell, "Signal passed unexpected cell");
+                    Assert.Pass();
+                }
+            });
+
+            riverCanon.RemoveRiverFromCell(cellToTest, HexDirection.NE);
+
+            Assert.Fail("LostRiveredEdge never fired on CellToTest");
+        }
+
+        [Test]
+        public void RemoveRiverFromCell_FiresLostRiveredEdgeOnNeighbor() {
+            var neighbors = new List<IHexCell>() { BuildHexCell(false) };
+
+            var cellToTest = BuildHexCell(false, neighbors);
+
+            var riverCanon = Container.Resolve<RiverCanon>();
+
+            riverCanon.AddRiverToCell(cellToTest, HexDirection.NE, RiverFlow.Clockwise);
+
+            CellSignals.LostRiveredEdge.Subscribe(cell => {
+                if(cell != cellToTest) {
+                    Assert.AreEqual(neighbors[0], cell, "Signal passed unexpected cell");
+                    Assert.Pass();
+                }
+            });
+
+            riverCanon.RemoveRiverFromCell(cellToTest, HexDirection.NE);
+
+            Assert.Fail("LostRiveredEdge never fired on neighbors[0]");
         }
 
 

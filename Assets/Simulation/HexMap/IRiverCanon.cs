@@ -22,7 +22,7 @@ namespace Assets.Simulation.HexMap {
 
         void OverrideRiverOnCell(IHexCell cell, HexDirection edge, RiverFlow flow);
 
-        void RemoveRiverFromCellInDirection(IHexCell cell, HexDirection edge);
+        void RemoveRiverFromCell(IHexCell cell, HexDirection edge);
 
         void RemoveAllRiversFromCell(IHexCell cell);
 

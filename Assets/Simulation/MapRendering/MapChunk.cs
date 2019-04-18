@@ -200,64 +200,40 @@ namespace Assets.Simulation.MapRendering {
             Terrain.Flush();
         }
 
-        public void RefreshAlphamap() {
-            if(RefreshAlphamapCoroutine == null) {
+        public void Refresh(TerrainRefreshType refreshTypes) {
+            if(((refreshTypes & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap) && RefreshAlphamapCoroutine == null) {
                 RefreshAlphamapCoroutine = StartCoroutine(RefreshAlphamap_Perform());
             }
-        }
 
-        public void RefreshHeightmap() {
-            if(RefreshHeightmapCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Heightmap) == TerrainRefreshType.Heightmap) && RefreshHeightmapCoroutine == null) {
                 RefreshHeightmapCoroutine = StartCoroutine(RefreshHeightmap_Perform());
             }
-        }
 
-        public void RefreshWater() {
-            if(RefreshWaterCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Water) == TerrainRefreshType.Water) && RefreshWaterCoroutine == null) {
                 RefreshWaterCoroutine = StartCoroutine(RefreshWater_Perform());
             }
-        }
 
-        public void RefreshCulture() {
-            if(RefreshCultureCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Culture) == TerrainRefreshType.Culture) && RefreshCultureCoroutine == null) {
                 RefreshCultureCoroutine = StartCoroutine(RefreshCulture_Perform());
             }
-        }
 
-        public void RefreshFeatures() {
-            if(RefreshFeaturesCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Features) == TerrainRefreshType.Features) && RefreshFeaturesCoroutine == null) {
                 RefreshFeaturesCoroutine = StartCoroutine(RefreshFeatures_Perform());
             }
-        }
 
-        public void RefreshVisibility() {
-            if(RefreshVisibilityCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Visibility) == TerrainRefreshType.Visibility) && RefreshVisibilityCoroutine == null) {
                 RefreshVisibilityCoroutine = StartCoroutine(RefreshVisibility_Perform());
             }
-        }
 
-        public void RefreshFarmland() {
-            if(RefreshFarmlandCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Farmland) == TerrainRefreshType.Farmland) && RefreshFarmlandCoroutine == null) {
                 RefreshFarmlandCoroutine = StartCoroutine(RefreshFarmland_Perform());
             }
-        }
 
-        public void RefreshRoads() {
-            if(RefreshRoadsCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Roads) == TerrainRefreshType.Roads) && RefreshRoadsCoroutine == null) {
                 RefreshRoadsCoroutine = StartCoroutine(RefreshRoads_Perform());
             }
-        }
 
-        public void RefreshAll() {
-            RefreshAlphamap();
-            RefreshHeightmap();
-            RefreshWater();
-            RefreshCulture();
-            RefreshFeatures();
-            RefreshFarmland();
-            RefreshRoads();
-
-            if(RefreshRiversCoroutine == null) {
+            if(((refreshTypes & TerrainRefreshType.Rivers) == TerrainRefreshType.Rivers) && RefreshRiversCoroutine == null) {
                 RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
             }
         }
@@ -285,6 +261,8 @@ namespace Assets.Simulation.MapRendering {
             Culture      .Clear();
             StopAllCoroutines();
 
+            StopAllCoroutines();
+
             RefreshAlphamapCoroutine   = null;
             RefreshHeightmapCoroutine  = null;
             RefreshWaterCoroutine      = null;
@@ -292,6 +270,7 @@ namespace Assets.Simulation.MapRendering {
             RefreshCultureCoroutine    = null;
             RefreshVisibilityCoroutine = null;
             RefreshFarmlandCoroutine   = null;
+            RefreshRoadsCoroutine      = null;
 
             cells.Clear();
 
@@ -414,6 +393,7 @@ namespace Assets.Simulation.MapRendering {
 
         private IEnumerator RefreshCulture_Perform() {
             yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
 
             Culture.Clear();
 
@@ -433,6 +413,10 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshVisibility_Perform() {
             yield return new WaitForEndOfFrame();
 
+            while(RefreshRiversCoroutine != null) {
+                yield return new WaitForEndOfFrame();
+            }
+
             foreach(var cell in cells) {
                 ShaderData.RefreshVisibility(cell);
             }
@@ -443,13 +427,16 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshFarmland_Perform() {
             yield return new WaitForEndOfFrame();
 
+            while(RefreshRiversCoroutine != null) {
+                yield return new WaitForEndOfFrame();
+            }
+
             FarmTriangulator.TriangulateFarmland();
 
             RefreshFarmlandCoroutine = null;
         }
 
         private IEnumerator RefreshRoads_Perform() {
-            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 

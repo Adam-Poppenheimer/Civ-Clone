@@ -20,7 +20,8 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown VisibilityModeDropdown;
+        [SerializeField] private Dropdown CellVisibilityModeDropdown;
+        [SerializeField] private Dropdown ResourceVisibilityModeDropdown;
         [SerializeField] private Dropdown ExplorationModeDropdown;
         [SerializeField] private Dropdown ActivePlayerDropdown;
 
@@ -50,8 +51,9 @@ namespace Assets.UI.MapEditor {
         #region Unity messages
 
         private void Start() {
-            InitializeVisibilityDropdown();
-            InitializeExplorationDropdown();
+            InitializeEnumDropdown(CellVisibilityModeDropdown,     VisibilityCanon .CellVisibilityMode);
+            InitializeEnumDropdown(ResourceVisibilityModeDropdown, VisibilityCanon .ResourceVisibilityMode);
+            InitializeEnumDropdown(ExplorationModeDropdown,        ExplorationCanon.ExplorationMode);
         }
 
         private void OnEnable() {
@@ -60,14 +62,24 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
-        public void UpdateSelectedVisibilityMode(int optionIndex) {
-            var modeName = VisibilityModeDropdown.options[optionIndex].text;
+        public void UpdateSelectedCellVisibilityMode(int optionIndex) {
+            var modeName = CellVisibilityModeDropdown.options[optionIndex].text;
 
             var newMode = EnumUtil.GetValues<CellVisibilityMode>().Where(
                 mode => mode.ToString().Equals(modeName)
             ).FirstOrDefault();
 
             VisibilityCanon.CellVisibilityMode = newMode;
+        }
+
+        public void UpdateSelectedResourceVisibilityMode(int optionIndex) {
+            var modeName = ResourceVisibilityModeDropdown.options[optionIndex].text;
+
+            var newMode = EnumUtil.GetValues<ResourceVisibilityMode>().Where(
+                mode => mode.ToString().Equals(modeName)
+            ).FirstOrDefault();
+
+            VisibilityCanon.ResourceVisibilityMode = newMode;
         }
 
         public void UpdateSelectedExplorationMode(int optionIndex) {
@@ -88,36 +100,20 @@ namespace Assets.UI.MapEditor {
             GameCore.ActivePlayer = newActivePlayer;
         }
 
-        private void InitializeVisibilityDropdown() {
-            VisibilityModeDropdown.ClearOptions();
+        private void InitializeEnumDropdown<TEnum>(Dropdown dropdown, TEnum selectedOption) {
+            dropdown.ClearOptions();
 
-            List<Dropdown.OptionData> modeOptions = EnumUtil.GetValues<CellVisibilityMode>().Select(
+            List<Dropdown.OptionData> options = EnumUtil.GetValues<TEnum>().Select(
                 mode => new Dropdown.OptionData(mode.ToString())
             ).ToList();
 
-            VisibilityModeDropdown.AddOptions(modeOptions);
+            dropdown.AddOptions(options);
 
-            Dropdown.OptionData currentModeOption = VisibilityModeDropdown.options.Where(
-                option => option.text.Equals(VisibilityCanon.CellVisibilityMode.ToString()
+            Dropdown.OptionData currentOption = dropdown.options.Where(
+                option => option.text.Equals(selectedOption.ToString()
             )).FirstOrDefault();
 
-            VisibilityModeDropdown.value = VisibilityModeDropdown.options.IndexOf(currentModeOption);
-        }
-
-        private void InitializeExplorationDropdown() {
-            ExplorationModeDropdown.ClearOptions();
-
-            List<Dropdown.OptionData> modeOptions = EnumUtil.GetValues<CellExplorationMode>().Select(
-                mode => new Dropdown.OptionData(mode.ToString())
-            ).ToList();
-
-            ExplorationModeDropdown.AddOptions(modeOptions);
-
-            Dropdown.OptionData currentModeOption = ExplorationModeDropdown.options.Where(
-                option => option.text.Equals(ExplorationCanon.ExplorationMode.ToString()
-            )).FirstOrDefault();
-
-            ExplorationModeDropdown.value = ExplorationModeDropdown.options.IndexOf(currentModeOption);
+            dropdown.value = dropdown.options.IndexOf(currentOption);
         }
 
         private void SetUpActivePlayerDropdown() {

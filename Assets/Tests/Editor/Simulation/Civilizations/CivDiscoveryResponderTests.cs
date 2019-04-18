@@ -64,7 +64,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CivDiscoveryResponder>();
 
-            VisibilitySignals.CellBecameExploredByCivSignal.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, domesticCiv));
+            VisibilitySignals.CellBecameExploredByCiv.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, domesticCiv));
 
             MockCivDiscoveryCanon.Verify(
                 canon => canon.EstablishDiscoveryBetweenCivs(domesticCiv, foreignCivOne),
@@ -89,7 +89,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<CivDiscoveryResponder>();
 
-            VisibilitySignals.CellBecameExploredByCivSignal.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, domesticCiv));
+            VisibilitySignals.CellBecameExploredByCiv.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, domesticCiv));
 
             MockCivDiscoveryCanon.Verify(
                 canon => canon.EstablishDiscoveryBetweenCivs(domesticCiv, foreignCivOne),

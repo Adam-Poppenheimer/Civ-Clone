@@ -13,16 +13,18 @@ namespace Assets.Simulation.MapResources {
 
         #region instance fields and properties
 
-        public ISubject<IResourceNode>                  ResourceNodeBeingDestroyedSignal      { get; private set; }
-        public ISubject<Tuple<IResourceNode, IHexCell>> ResourceNodeRemovedFromLocationSignal { get; private set; }
+        public ISubject<IResourceNode>                  NodeBeingDestroyed      { get; private set; }
+        public ISubject<Tuple<IResourceNode, IHexCell>> NodeAddedToLocation     { get; private set; }
+        public ISubject<Tuple<IResourceNode, IHexCell>> NodeRemovedFromLocation { get; private set; }
 
         #endregion
 
         #region constructors
 
         public ResourceSignals() {
-            ResourceNodeBeingDestroyedSignal           = new Subject<IResourceNode>();
-            ResourceNodeRemovedFromLocationSignal = new Subject<Tuple<IResourceNode, IHexCell>>();
+            NodeBeingDestroyed      = new Subject<IResourceNode>();
+            NodeAddedToLocation     = new Subject<Tuple<IResourceNode, IHexCell>>();
+            NodeRemovedFromLocation = new Subject<Tuple<IResourceNode, IHexCell>>();
         }
 
         #endregion

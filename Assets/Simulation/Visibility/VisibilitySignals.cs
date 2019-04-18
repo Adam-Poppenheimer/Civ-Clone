@@ -14,27 +14,27 @@ namespace Assets.Simulation.Visibility {
 
         #region instance fields and properties
 
-        public ISubject<Unit> CellVisibilityModeChangedSignal     { get; private set; }
-        public ISubject<Unit> ResourceVisibilityModeChangedSignal { get; private set; }
+        public ISubject<Unit> CellVisibilityModeChanged     { get; private set; }
+        public ISubject<Unit> ResourceVisibilityModeChanged { get; private set; }
 
-        public ISubject<Unit> CellExplorationModeChangedSignal    { get; private set; }
+        public ISubject<Unit> CellExplorationModeChanged    { get; private set; }
 
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCivSignal   { get; private set; }
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameVisibleToCivSignal    { get; private set; }
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameInvisibleToCiv  { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCiv  { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameVisibleToCiv   { get; private set; }
+        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameInvisibleToCiv { get; private set; }
 
         #endregion
 
         #region constructors
 
         public VisibilitySignals() {
-            CellVisibilityModeChangedSignal     = new Subject<Unit>();
-            ResourceVisibilityModeChangedSignal = new Subject<Unit>();
+            CellVisibilityModeChanged     = new Subject<Unit>();
+            ResourceVisibilityModeChanged = new Subject<Unit>();
 
-            CellExplorationModeChangedSignal    = new Subject<Unit>();
+            CellExplorationModeChanged    = new Subject<Unit>();
 
-            CellBecameExploredByCivSignal  = new Subject<Tuple<IHexCell, ICivilization>>();
-            CellBecameVisibleToCivSignal   = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameExploredByCiv  = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameVisibleToCiv   = new Subject<Tuple<IHexCell, ICivilization>>();
             CellBecameInvisibleToCiv = new Subject<Tuple<IHexCell, ICivilization>>();
         }
 

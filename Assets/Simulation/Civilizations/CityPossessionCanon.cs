@@ -50,20 +50,12 @@ namespace Assets.Simulation.Civilizations {
         }
 
         protected override void DoOnPossessionEstablished(ICity city, ICivilization newOwner) {
-            foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
-                cell.RefreshSelfOnly();
-            }
-
             if(newOwner != null) {
                 CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
             }
         }
 
         protected override void DoOnPossessionBroken(ICity city, ICivilization oldOwner) {
-            foreach(var cell in CellPossessionCanon.GetPossessionsOfOwner(city)) {
-                cell.RefreshSelfOnly();
-            }
-
             CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));
         }
 

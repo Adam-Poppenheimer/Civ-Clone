@@ -24,7 +24,7 @@ namespace Assets.Simulation.MapResources {
         public ResourceNodeLocationCanon(ResourceSignals resourceSignals, HexCellSignals cellSignals) {
             ResourceSignals = resourceSignals;
 
-            resourceSignals.ResourceNodeBeingDestroyedSignal.Subscribe(OnNodeBeingDestroyed);
+            resourceSignals.NodeBeingDestroyed.Subscribe(OnNodeBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
@@ -39,8 +39,12 @@ namespace Assets.Simulation.MapResources {
             return owner == null || GetPossessionsOfOwner(owner).Count() == 0;
         }
 
+        protected override void DoOnPossessionEstablished(IResourceNode possession, IHexCell newOwner) {
+            ResourceSignals.NodeAddedToLocation.OnNext(new Tuple<IResourceNode, IHexCell>(possession, newOwner));
+        }
+
         protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
-            ResourceSignals.ResourceNodeRemovedFromLocationSignal.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
+            ResourceSignals.NodeRemovedFromLocation.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
         }
 
         #endregion

@@ -45,7 +45,8 @@ namespace Assets.Simulation.Civilizations {
 
         public ISubject<ICivilization> CivDefeated { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTech { get; private set; }
+        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTech   { get; private set; }
+        public ISubject<Tuple<ICivilization, ITechDefinition>> CivUndiscoveredTech { get; private set; }
 
         public ISubject<GreatPersonBirthData> GreatPersonBorn { get; private set; }
 
@@ -83,7 +84,8 @@ namespace Assets.Simulation.Civilizations {
 
             CivDefeated = new Subject<ICivilization>();
 
-            CivDiscoveredTech = new Subject<Tuple<ICivilization, ITechDefinition>>();
+            CivDiscoveredTech   = new Subject<Tuple<ICivilization, ITechDefinition>>();
+            CivUndiscoveredTech = new Subject<Tuple<ICivilization, ITechDefinition>>();
 
             GreatPersonBorn = new Subject<GreatPersonBirthData>();
 

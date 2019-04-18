@@ -150,7 +150,7 @@ namespace Assets.Tests.Simulation.Visibility {
         public void ExplorationModeChanged_CellExplorationModeChangedSignalFired() {
             var canon = Container.Resolve<ExplorationCanon>();
 
-            VisibilitySignals.CellExplorationModeChangedSignal.Subscribe(
+            VisibilitySignals.CellExplorationModeChanged.Subscribe(
                 unit => Assert.Pass()
             );
 

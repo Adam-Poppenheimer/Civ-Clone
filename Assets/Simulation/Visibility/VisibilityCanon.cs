@@ -28,7 +28,7 @@ namespace Assets.Simulation.Visibility {
             set {
                 if(_cellVisibilityMode != value) {
                     _cellVisibilityMode = value;
-                    VisibilitySignals.CellVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
+                    VisibilitySignals.CellVisibilityModeChanged.OnNext(new UniRx.Unit());
                 }
             }
         }
@@ -41,7 +41,7 @@ namespace Assets.Simulation.Visibility {
             set {
                 if(_resourceVisibilityMode != value) {
                     _resourceVisibilityMode = value;
-                    VisibilitySignals.ResourceVisibilityModeChangedSignal.OnNext(new UniRx.Unit());
+                    VisibilitySignals.ResourceVisibilityModeChanged.OnNext(new UniRx.Unit());
                 }
             }
         }
@@ -116,8 +116,6 @@ namespace Assets.Simulation.Visibility {
             SetVisibility(cell, civ, newVisibility);
 
             if(oldVisibility == 1) {
-                cell.RefreshVisibility();
-
                 VisibilitySignals.CellBecameInvisibleToCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
@@ -130,9 +128,7 @@ namespace Assets.Simulation.Visibility {
             SetVisibility(cell, civ, newVisibility);
 
             if(oldVisibility <= 0 && newVisibility > 0) {
-                cell.RefreshVisibility();
-
-                VisibilitySignals.CellBecameVisibleToCivSignal.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+                VisibilitySignals.CellBecameVisibleToCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
 

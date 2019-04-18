@@ -15,14 +15,18 @@ namespace Assets.Simulation.Barbarians {
         #region instance fields and properties
 
         private IImprovementLocationCanon ImprovementLocationCanon;
+        private HexCellSignals            CellSignals;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public EncampmentLocationCanon(IImprovementLocationCanon improvementLocationCanon) {
+        public EncampmentLocationCanon(
+            IImprovementLocationCanon improvementLocationCanon, HexCellSignals cellSignals
+        ) {
             ImprovementLocationCanon = improvementLocationCanon;
+            CellSignals              = cellSignals;
         }
 
         #endregion
@@ -36,11 +40,11 @@ namespace Assets.Simulation.Barbarians {
         }
 
         protected override void DoOnPossessionEstablished(IEncampment possession, IHexCell newOwner) {
-            newOwner.RefreshSelfOnly();
+            CellSignals.GainedEncampment.OnNext(new UniRx.Tuple<IHexCell, IEncampment>(newOwner, possession));
         }
 
         protected override void DoOnPossessionBroken(IEncampment possession, IHexCell oldOwner) {
-            oldOwner.RefreshSelfOnly();
+            CellSignals.LostEncampment.OnNext(new UniRx.Tuple<IHexCell, IEncampment>(oldOwner, possession));
         }
 
         #endregion

@@ -65,16 +65,16 @@ namespace Assets.UI.MapEditor {
                         CurrentSextant  = nextSextant;
                     }
                 }else {
-                    RiverCanon.RemoveRiverFromCellInDirection(CurrentCell, CurrentSextant);
+                    RiverCanon.RemoveRiverFromCell(CurrentCell, CurrentSextant);
                 }
             }
         }
 
         private void OnEnable() {
-            SignalSubscriptions.Add(CellSignals.BeginDragSignal   .Subscribe(OnCellBeginDrag));
-            SignalSubscriptions.Add(CellSignals.EndDragSignal     .Subscribe(OnCellEndDrag));
-            SignalSubscriptions.Add(CellSignals.PointerEnterSignal.Subscribe(OnCellPointerEnter));
-            SignalSubscriptions.Add(CellSignals.PointerExitSignal .Subscribe(OnCellPointerExit));
+            SignalSubscriptions.Add(CellSignals.BeginDrag   .Subscribe(OnCellBeginDrag));
+            SignalSubscriptions.Add(CellSignals.EndDrag     .Subscribe(OnCellEndDrag));
+            SignalSubscriptions.Add(CellSignals.PointerEnter.Subscribe(OnCellPointerEnter));
+            SignalSubscriptions.Add(CellSignals.PointerExit .Subscribe(OnCellPointerExit));
         }
 
         private void OnDisable() {
@@ -113,7 +113,7 @@ namespace Assets.UI.MapEditor {
                 if(AddingOrRemoving) {
                     TryDrawRiverBetweenCells(CurrentCell, cell, CurrentSextant);
                 }else {
-                    RiverCanon.RemoveRiverFromCellInDirection(CurrentCell, CurrentSextant);
+                    RiverCanon.RemoveRiverFromCell(CurrentCell, CurrentSextant);
                 }                
             }
 

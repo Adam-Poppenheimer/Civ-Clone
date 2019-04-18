@@ -21,22 +21,16 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        /// <summary>
-        /// Signal that fires whenever a city is clicked.
-        /// </summary>
+        public ISubject<Tuple<ICity, IHexCell>> CityAddedToLocation     { get; private set; }
+        public ISubject<Tuple<ICity, IHexCell>> CityRemovedFromLocation { get; private set; }
+
         public ISubject<ICity> PointerClicked { get; private set; }
 
         public ISubject<ICity> PointerEntered { get; private set; }
         public ISubject<ICity> PointerExited  { get; private set; }
 
-        /// <summary>
-        /// Signal that fires whenever a city's ActiveProject is changed.
-        /// </summary>
         public ISubject<Tuple<ICity, IProductionProject>> ProjectChanged { get; private set; }
 
-        /// <summary>
-        /// Signal that fires whenever a city has its PerformDistribution method called.
-        /// </summary>
         public ISubject<ICity> DistributionPerformed { get; private set; }
 
         public ISubject<ICity> BeingDestroyed { get; private set; }
@@ -59,6 +53,9 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CitySignals(){
+            CityAddedToLocation     = new Subject<Tuple<ICity, IHexCell>>();
+            CityRemovedFromLocation = new Subject<Tuple<ICity, IHexCell>>();
+
             ProjectChanged        = new Subject<Tuple<ICity, IProductionProject>>();
             DistributionPerformed = new Subject<ICity>();
 

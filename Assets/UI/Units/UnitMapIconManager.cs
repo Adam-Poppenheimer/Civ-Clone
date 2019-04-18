@@ -88,10 +88,10 @@ namespace Assets.UI.Units {
             SignalSubscriptions.Add(UnitSignals.LeftLocation    .Subscribe(OnUnitLeftLocation));
             SignalSubscriptions.Add(UnitSignals.EnteredLocation .Subscribe(OnUnitEnteredLocation));
 
-            SignalSubscriptions.Add(VisibilitySignals.CellVisibilityModeChangedSignal .Subscribe(empty => Reset()));
-            SignalSubscriptions.Add(VisibilitySignals.CellExplorationModeChangedSignal.Subscribe(empty => Reset()));
-            SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCivSignal   .Subscribe(data => ResetCell(data.Item1)));
-            SignalSubscriptions.Add(VisibilitySignals.CellBecameVisibleToCivSignal    .Subscribe(data => ResetCell(data.Item1)));
+            SignalSubscriptions.Add(VisibilitySignals.CellVisibilityModeChanged .Subscribe(empty => Reset()));
+            SignalSubscriptions.Add(VisibilitySignals.CellExplorationModeChanged.Subscribe(empty => Reset()));
+            SignalSubscriptions.Add(VisibilitySignals.CellBecameExploredByCiv   .Subscribe(data => ResetCell(data.Item1)));
+            SignalSubscriptions.Add(VisibilitySignals.CellBecameVisibleToCiv    .Subscribe(data => ResetCell(data.Item1)));
         }
 
         private void OnDisable() {

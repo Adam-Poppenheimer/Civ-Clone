@@ -74,7 +74,7 @@ namespace Assets.UI.MapEditor {
         }
 
         private void OnEnable() {
-            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
+            CellClickedSubscription = CellSignals.Clicked.Subscribe(OnCellClicked);
         }
         
         private void OnDisable() {
@@ -142,8 +142,6 @@ namespace Assets.UI.MapEditor {
             }else if(ActiveResource != null && ResourceNodeFactory.CanBuildNode(cell, ActiveResource)){
                 ResourceNodeFactory.BuildNode(cell, ActiveResource, ActiveCopies);
             }
-
-            cell.RefreshSelfOnly();
         }
 
         private int ResourceSorter(IResourceDefinition a, IResourceDefinition b) {

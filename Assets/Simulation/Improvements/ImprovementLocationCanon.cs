@@ -22,7 +22,7 @@ namespace Assets.Simulation.Improvements {
         public ImprovementLocationCanon(ImprovementSignals improvementSignals, HexCellSignals cellSignals) {
             ImprovementSignals = improvementSignals;
 
-            improvementSignals.ImprovementBeingDestroyedSignal.Subscribe(OnImprovementBeingDestroyed);
+            improvementSignals.BeingDestroyed.Subscribe(OnImprovementBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));
         }
@@ -38,12 +38,11 @@ namespace Assets.Simulation.Improvements {
         }
 
         protected override void DoOnPossessionEstablished(IImprovement possession, IHexCell newOwner) {
-            newOwner.Refresh();
+            ImprovementSignals.AddedToLocation.OnNext(new Tuple<IImprovement, IHexCell>(possession, newOwner));
         }
 
         protected override void DoOnPossessionBroken(IImprovement possession, IHexCell oldOwner) {
-            oldOwner.Refresh();
-            ImprovementSignals.ImprovementRemovedFromLocationSignal.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
+            ImprovementSignals.RemovedFromLocation.OnNext(new Tuple<IImprovement, IHexCell>(possession, oldOwner));
         }
 
         #endregion

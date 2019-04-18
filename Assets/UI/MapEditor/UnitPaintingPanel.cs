@@ -73,7 +73,7 @@ namespace Assets.UI.MapEditor {
             PopulateUnitList();
 
             UnitClickedSubscription = UnitSignals.Clicked.Subscribe(OnUnitClicked);
-            CellClickedSubscription = CellSignals.ClickedSignal.Subscribe(OnCellClicked);
+            CellClickedSubscription = CellSignals.Clicked.Subscribe(OnCellClicked);
 
             IsAddingToggle  .onValueChanged.AddListener(isOn => IsAdding = isOn);
             IsRemovingToggle.onValueChanged.AddListener(isOn => IsAdding = !isOn);

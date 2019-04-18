@@ -246,8 +246,8 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
 
             EventSubscriptions.Add(CitySignals.PointerEntered.Subscribe(OnCityPointerEntered));
             EventSubscriptions.Add(CitySignals.PointerExited .Subscribe(OnCityPointerExited));
-            EventSubscriptions.Add(CellSignals.PointerEnterSignal  .Subscribe(OnCellPointerEntered));
-            EventSubscriptions.Add(CellSignals.PointerExitSignal   .Subscribe(OnCellPointerExited));
+            EventSubscriptions.Add(CellSignals.PointerEnter  .Subscribe(OnCellPointerEntered));
+            EventSubscriptions.Add(CellSignals.PointerExit   .Subscribe(OnCellPointerExited));
         }
 
         private void DetachEvents() {

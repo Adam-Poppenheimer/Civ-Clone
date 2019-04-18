@@ -23,7 +23,7 @@ namespace Assets.Simulation.Visibility {
             set {
                 if(_explorationMode != value) {
                     _explorationMode = value;
-                    VisibilitySignals.CellExplorationModeChangedSignal.OnNext(new UniRx.Unit());
+                    VisibilitySignals.CellExplorationModeChanged.OnNext(new UniRx.Unit());
                 }
             }
         }
@@ -84,7 +84,7 @@ namespace Assets.Simulation.Visibility {
             }
 
             if(explorationData.Add(civ)) {
-                VisibilitySignals.CellBecameExploredByCivSignal.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+                VisibilitySignals.CellBecameExploredByCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
 

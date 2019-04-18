@@ -47,9 +47,9 @@ namespace Assets.Simulation.Civilizations {
             CityTerritoryCanon        = cityTerritoryCanon;
             CityPossessionCanon       = cityPossessionCanon;
 
-            improvementSignals.ImprovementRemovedFromLocationSignal .Subscribe(OnImprovementRemovedFromLocation);
-            improvementSignals.ImprovementPillagedSignal            .Subscribe(OnImprovementPillaged);
-            resourceSignals   .ResourceNodeRemovedFromLocationSignal.Subscribe(OnResourceNodeRemovedFromLocation);
+            improvementSignals.RemovedFromLocation .Subscribe(OnImprovementRemovedFromLocation);
+            improvementSignals.Pillaged            .Subscribe(OnImprovementPillaged);
+            resourceSignals   .NodeRemovedFromLocation.Subscribe(OnResourceNodeRemovedFromLocation);
             citySignals       .LostCellFromBoundaries         .Subscribe(OnCityLostCellFromBoundaries);
             civSignals        .CivLosingCity                  .Subscribe(OnCivLosingCity);
         }
