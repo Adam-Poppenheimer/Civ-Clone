@@ -200,6 +200,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float[] _riverAlphamap;
 
+        public float[] FloodPlainsAlphamap {
+            get { return _floodPlainsAlphamap; }
+        }
+        [SerializeField] private float[] _floodPlainsAlphamap;
+
 
 
         public float WaterSurfaceElevation  {

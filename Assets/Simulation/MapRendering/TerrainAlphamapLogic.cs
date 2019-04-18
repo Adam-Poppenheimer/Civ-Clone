@@ -49,7 +49,9 @@ namespace Assets.Simulation.MapRendering {
             var retval = new float[RenderConfig.MapTextures.Count()];
 
             if(orientationData.RiverAlphaWeight > 0f) {
-                return RenderConfig.RiverAlphamap;
+                return orientationData.Center.Terrain == CellTerrain.FloodPlains
+                                                       ? RenderConfig.FloodPlainsAlphamap
+                                                       : RenderConfig.RiverAlphamap;
             }
 
             if(orientationData.CenterWeight > 0f) {
