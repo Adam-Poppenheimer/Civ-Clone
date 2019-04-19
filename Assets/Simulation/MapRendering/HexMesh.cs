@@ -55,7 +55,7 @@ namespace Assets.Simulation.MapRendering {
                 _data = value;
 
                 if(_data != null) {
-                    gameObject.layer = LayerMask.NameToLayer(_data.LayerName);
+                    gameObject.layer = _data.Layer;
                 }
             }
         }

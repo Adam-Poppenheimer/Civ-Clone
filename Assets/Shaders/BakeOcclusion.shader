@@ -24,8 +24,7 @@
 
 	Subshader {
 		Tags { "RenderType"="Opaque" }
-			
-		//
+
 		Offset -1, -1
 		ColorMask 0
 

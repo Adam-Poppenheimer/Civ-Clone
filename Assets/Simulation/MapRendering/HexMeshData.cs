@@ -5,6 +5,8 @@ using System.Text;
 
 using UnityEngine;
 
+using Assets.Util;
+
 namespace Assets.Simulation.MapRendering {
 
     [Serializable]
@@ -50,10 +52,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private bool _convertVerticesToWorld;
 
-        public string LayerName {
-            get { return _layerName; }
+        public int Layer {
+            get { return _layer; }
         }
-        [SerializeField] private string _layerName = "Default";
+        [SerializeField, Layer] private int _layer = 0;
 
 
         public HexRenderingData RenderingData {

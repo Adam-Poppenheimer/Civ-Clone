@@ -178,7 +178,10 @@ MonoBehaviour:
   OcclusionMask:
     serializedVersion: 2
     m_Bits: 272
-  DrawingMask:
+  LandDrawingMask:
+    serializedVersion: 2
+    m_Bits: 15360
+  WaterDrawingMask:
     serializedVersion: 2
     m_Bits: 1024
 --- !u!114 &114314930325867420

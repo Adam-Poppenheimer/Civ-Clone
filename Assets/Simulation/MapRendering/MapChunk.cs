@@ -59,6 +59,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshCultureCoroutine;
         private Coroutine RefreshVisibilityCoroutine;
         private Coroutine RefreshRoadsCoroutine;
+        private Coroutine RefreshMarshesCoroutine;
 
         private IHexMesh StandingWater {
             get {
@@ -67,7 +68,6 @@ namespace Assets.Simulation.MapRendering {
 
                     _standingWater.transform.SetParent(transform, false);
                 }
-
                 return _standingWater;
             }
             set { _standingWater = value; }
@@ -81,7 +81,6 @@ namespace Assets.Simulation.MapRendering {
 
                     _culture.transform.SetParent(transform, false);
                 }
-
                 return _culture;
             }
             set { _culture = value; }
@@ -95,11 +94,24 @@ namespace Assets.Simulation.MapRendering {
 
                     _roads.transform.SetParent(transform, false);
                 }
-
                 return _roads;
             }
         }
         private IHexMesh _roads;
+
+        private IHexMesh Marshes {
+            get {
+                if(_marshes == null) {
+                    _marshes = HexMeshFactory.Create("Marshes", RenderConfig.MarshData);
+
+                    _marshes.transform.SetParent(transform, false);
+                }
+                return _marshes;
+            }
+        }
+        private IHexMesh _marshes;
+
+
 
         [SerializeField] private TerrainBaker TerrainBaker;
 
@@ -117,6 +129,7 @@ namespace Assets.Simulation.MapRendering {
         private IHexMeshFactory       HexMeshFactory;
         private IFarmTriangulator     FarmTriangulator;
         private IRoadTriangulator     RoadTriangulator;
+        private IMarshTriangulator    MarshTriangulator;
 
         #endregion
 
@@ -129,7 +142,8 @@ namespace Assets.Simulation.MapRendering {
             IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory,
-            IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator
+            IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
+            IMarshTriangulator marshTriangulator
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -142,6 +156,7 @@ namespace Assets.Simulation.MapRendering {
             HexMeshFactory      = hexMeshFactory;
             FarmTriangulator    = farmTriangulator;
             RoadTriangulator    = roadTriangulator;
+            MarshTriangulator   = marshTriangulator;
         }
 
         #region from IMapChunk
@@ -235,6 +250,10 @@ namespace Assets.Simulation.MapRendering {
 
             if(((refreshTypes & TerrainRefreshType.Rivers) == TerrainRefreshType.Rivers) && RefreshRiversCoroutine == null) {
                 RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
+            }
+
+            if(((refreshTypes & TerrainRefreshType.Marshes) == TerrainRefreshType.Marshes) && RefreshMarshesCoroutine == null) {
+                RefreshMarshesCoroutine = StartCoroutine(RefreshMarshes_Perform());
             }
         }
 
@@ -448,11 +467,26 @@ namespace Assets.Simulation.MapRendering {
 
             Roads.Apply();
 
-            yield return new WaitForEndOfFrame();
-
             TerrainBaker.Bake();
 
             RefreshRoadsCoroutine = null;
+        }
+
+        private IEnumerator RefreshMarshes_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            Marshes.Clear();
+
+            foreach(var cell in Cells) {
+                MarshTriangulator.TriangulateMarshes(cell, Marshes);
+            }
+
+            Marshes.Apply();
+
+            TerrainBaker.Bake();
+
+            RefreshMarshesCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

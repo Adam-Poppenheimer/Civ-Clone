@@ -29,7 +29,7 @@ MonoBehaviour:
   _chunkWidth: 40
   _chunkHeight: 40
   _terrainMaxY: 20
-  _terrainAlphamapResolution: 129
+  _terrainAlphamapResolution: 65
   _terrainHeightmapResolution: 129
   _terrainCastsShadows: 0
   _terrainHeightmapPixelError: 1
@@ -87,7 +87,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - 1
+  - 0
   _waterSurfaceElevation: 0.093
   _seaFloorElevation: 0
   _flatlandsBaseElevation: 0.1
@@ -117,7 +117,7 @@ MonoBehaviour:
     _useColors: 1
     _weldMesh: 0
     _convertVerticesToWorld: 0
-    _layerName: Water
+    _layer: 4
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 1
@@ -132,7 +132,7 @@ MonoBehaviour:
     _useColors: 1
     _weldMesh: 0
     _convertVerticesToWorld: 0
-    _layerName: Water
+    _layer: 4
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 1
@@ -147,7 +147,7 @@ MonoBehaviour:
     _useColors: 1
     _weldMesh: 0
     _convertVerticesToWorld: 1
-    _layerName: Baked Onto Terrain
+    _layer: 10
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 0
@@ -162,7 +162,7 @@ MonoBehaviour:
     _useColors: 1
     _weldMesh: 0
     _convertVerticesToWorld: 0
-    _layerName: Baked Onto Terrain
+    _layer: 11
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 0
@@ -177,11 +177,26 @@ MonoBehaviour:
     _useColors: 0
     _weldMesh: 0
     _convertVerticesToWorld: 1
-    _layerName: Baked Onto Terrain
+    _layer: 12
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c3ee6312adf8207499cfabf704eed04c, type: 2}
+    _shouldBeBaked: 1
+  _marshData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 0
+    _weldMesh: 0
+    _convertVerticesToWorld: 1
+    _layer: 13
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: 7eab57a6380cedc48a0d9c1825c2be28, type: 2}
     _shouldBeBaked: 1
   _farmColors:
   - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}

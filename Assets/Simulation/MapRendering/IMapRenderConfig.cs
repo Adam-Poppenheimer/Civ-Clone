@@ -106,6 +106,7 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData CultureData       { get; }
         HexMeshData FarmlandData      { get; }
         HexMeshData RoadData          { get; }
+        HexMeshData MarshData         { get; }
 
 
 

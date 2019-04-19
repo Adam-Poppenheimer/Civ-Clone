@@ -18,7 +18,8 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private Camera BakingCamera;
 
         [SerializeField] private LayerMask OcclusionMask;
-        [SerializeField] private LayerMask DrawingMask;
+        [SerializeField] private LayerMask LandDrawingMask;
+        [SerializeField] private LayerMask WaterDrawingMask;
 
         public RenderTexture TerrainTexture { get; private set; }
         public RenderTexture WaterTexture   { get; private set; }
@@ -134,13 +135,13 @@ namespace Assets.Simulation.MapRendering {
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
             BakingCamera.RenderWithShader(RenderConfig.TerrainBakeOcclusionShader, "RenderType");
 
-            BakingCamera.cullingMask = DrawingMask;
+            BakingCamera.cullingMask = LandDrawingMask;
             BakingCamera.clearFlags = CameraClearFlags.Nothing;
             BakingCamera.Render();
 
             BakingCamera.targetTexture = WaterTexture;
 
-            BakingCamera.cullingMask = DrawingMask;
+            BakingCamera.cullingMask = WaterDrawingMask;
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
             BakingCamera.Render();
 

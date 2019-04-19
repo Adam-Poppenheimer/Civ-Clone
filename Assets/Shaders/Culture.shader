@@ -14,6 +14,8 @@
 			Pass Keep
 		}
 
+		Blend One Zero
+
 		CGPROGRAM
 		#pragma surface surf Standard keepalpha
 

@@ -343,6 +343,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _roadData;
 
+        public HexMeshData MarshData {
+            get { return _marshData; }
+        }
+        [SerializeField] private HexMeshData _marshData;
+
 
 
         public ReadOnlyCollection<Color> FarmColors {

@@ -133,7 +133,7 @@ namespace Assets.Simulation.MapRendering {
 
         private void OnCellVegetationChanged(HexPropertyChangedData<CellVegetation> data) {
             foreach(var chunk in GetAffectedChunks(data.Cell)) {
-                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility);
+                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility | TerrainRefreshType.Marshes);
             }
         }
 
@@ -148,7 +148,8 @@ namespace Assets.Simulation.MapRendering {
                 chunk.Refresh(
                     TerrainRefreshType.Heightmap | TerrainRefreshType.Alphamap |
                     TerrainRefreshType.Culture   | TerrainRefreshType.Farmland |
-                    TerrainRefreshType.Rivers    | TerrainRefreshType.Roads
+                    TerrainRefreshType.Rivers    | TerrainRefreshType.Roads    |
+                    TerrainRefreshType.Marshes
                 );
             }
         }
