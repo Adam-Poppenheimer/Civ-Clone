@@ -343,10 +343,20 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _roadData;
 
-        public HexMeshData MarshData {
-            get { return _marshData; }
+        public HexMeshData MarshWaterData {
+            get { return _marshWaterData; }
         }
-        [SerializeField] private HexMeshData _marshData;
+        [SerializeField] private HexMeshData _marshWaterData;
+
+        public HexMeshData OasisWaterData {
+            get { return _oasisWaterData; }
+        }
+        [SerializeField] private HexMeshData _oasisWaterData;
+
+        public HexMeshData OasisLandData {
+            get { return _oasisLandData; }
+        }
+        [SerializeField] private HexMeshData _oasisLandData;
 
 
 
@@ -381,6 +391,24 @@ namespace Assets.Simulation.MapRendering {
             get { return _roadVRepeatLength; }
         }
         [SerializeField] private float _roadVRepeatLength;
+
+
+
+        public int OasisBoundarySegments {
+            get { return _oasisBoundarySegments; }
+        }
+        [SerializeField] private int _oasisBoundarySegments;
+
+        public float OasisWaterRadius {
+            get { return _oasisWaterRadius; }
+        }
+        [SerializeField] private float _oasisWaterRadius;
+
+        public float OasisLandWidth {
+            get { return _oasisLandWidth; }
+        }
+        [SerializeField] private float _oasisLandWidth;
+
 
 
         public RenderTextureData TerrainBakeTextureData {

@@ -18,7 +18,9 @@ namespace Assets.Simulation.MapRendering {
         Roads      = 128,
         Rivers     = 256,
         Marshes    = 512,
-        All = Alphamap | Heightmap | Water | Culture | Features | Visibility | Farmland | Roads | Rivers | Marshes
+        Oases      = 1024,
+
+        All = Alphamap | Heightmap | Water | Culture | Features | Visibility | Farmland | Roads | Rivers | Marshes | Oases
     }
 
 }

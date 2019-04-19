@@ -180,7 +180,7 @@ MonoBehaviour:
     m_Bits: 272
   LandDrawingMask:
     serializedVersion: 2
-    m_Bits: 15360
+    m_Bits: 31744
   WaterDrawingMask:
     serializedVersion: 2
     m_Bits: 1024

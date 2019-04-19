@@ -81,6 +81,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IHexMeshFactory>                ().To<HexMeshFactory>                ().AsSingle();
             Container.Bind<IRoadTriangulator>              ().To<RoadTriangulator>              ().AsSingle();
             Container.Bind<IMarshTriangulator>             ().To<MarshTriangulator>             ().AsSingle();
+            Container.Bind<IOasisTriangulator>             ().To<OasisTriangulator>             ().AsSingle();
         }
 
         #endregion

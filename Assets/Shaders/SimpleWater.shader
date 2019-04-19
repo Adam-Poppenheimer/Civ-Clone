@@ -1,11 +1,10 @@
-﻿Shader "Civ Clone/Marsh" {
+﻿Shader "Civ Clone/Simple Water" {
 	Properties{
-		_MainTex ("Land (RGB)",  2D) = "white" {}
-		_WaterTex("Water (RGB)", 2D) = "white" {}
+		_MainTex ("Albedo (RGB)",  2D) = "white" {}
 		_SplatMap("Splat Map", 2D) = "white" {}
 	}
 	SubShader{
-		Tags{ "RenderType"="Transparent" "Queue"="Transparent+2" }
+		Tags{ "RenderType"="Transparent" "Queue"="Transparent+3" }
 		LOD 200
 		ZTest Always
 
@@ -15,7 +14,7 @@
 			Pass Keep
 		}
 
-		Blend OneMinusDstAlpha DstAlpha, One One
+		Blend OneMinusDstAlpha DstAlpha
 		BlendOp Add, Max
 
 		CGPROGRAM
@@ -24,7 +23,6 @@
 		#pragma target 3.0
 
 		sampler2D _MainTex;
-		sampler2D _WaterTex;
 		sampler2D _SplatMap;
 
 		struct Input {
@@ -37,14 +35,11 @@
 		UNITY_INSTANCING_CBUFFER_END
 
 		void surf(Input IN, inout SurfaceOutputStandard o) {
-			fixed4 waterColor = tex2D(_WaterTex, IN.worldPos.xz * 0.065);
-			fixed4 landColor  = tex2D(_MainTex,  IN.worldPos.xz * 0.065);
+			fixed4 waterColor = tex2D(_MainTex, IN.worldPos.xz * 0.065);
 
 			float waterAlpha = tex2D(_SplatMap, IN.worldPos.xz * 0.075).r;
 
-			fixed4 c = saturate(waterColor * waterAlpha + landColor * (1 - waterAlpha));
-
-			o.Albedo = c.rgb;
+			o.Albedo = waterColor.rgb;
 			o.Alpha = IN.uv_MainTex.y * waterAlpha;
 		}
 		ENDCG

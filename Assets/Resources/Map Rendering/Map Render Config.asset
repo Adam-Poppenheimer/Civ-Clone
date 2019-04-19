@@ -183,7 +183,7 @@ MonoBehaviour:
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c3ee6312adf8207499cfabf704eed04c, type: 2}
     _shouldBeBaked: 1
-  _marshData:
+  _marshWaterData:
     _useCollider: 0
     _useUVCoordinates: 1
     _useUV2Coordinates: 0
@@ -197,6 +197,36 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 7eab57a6380cedc48a0d9c1825c2be28, type: 2}
+    _shouldBeBaked: 1
+  _oasisWaterData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 0
+    _weldMesh: 0
+    _convertVerticesToWorld: 1
+    _layer: 13
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: c4d24d6b79004704bbaf3877a7b99140, type: 2}
+    _shouldBeBaked: 1
+  _oasisLandData:
+    _useCollider: 0
+    _useUVCoordinates: 0
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 0
+    _weldMesh: 0
+    _convertVerticesToWorld: 1
+    _layer: 14
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: 52c39f82be01f9b4c9dbeaefe9dffba5, type: 2}
     _shouldBeBaked: 1
   _farmColors:
   - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}
@@ -212,6 +242,9 @@ MonoBehaviour:
   _roadQuadsPerCurve: 30
   _roadWidth: 1
   _roadVRepeatLength: 2
+  _oasisBoundarySegments: 50
+  _oasisWaterRadius: 3.5
+  _oasisLandWidth: 2
   _terrainBakeTextureData:
     _texelsPerUnit: 50
     _depth: 24

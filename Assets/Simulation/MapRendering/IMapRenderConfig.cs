@@ -106,7 +106,9 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData CultureData       { get; }
         HexMeshData FarmlandData      { get; }
         HexMeshData RoadData          { get; }
-        HexMeshData MarshData         { get; }
+        HexMeshData MarshWaterData    { get; }
+        HexMeshData OasisWaterData    { get; }
+        HexMeshData OasisLandData     { get; }
 
 
 
@@ -119,6 +121,11 @@ namespace Assets.Simulation.MapRendering {
         int   RoadQuadsPerCurve { get; }
         float RoadWidth         { get; }
         float RoadVRepeatLength { get; }
+
+
+        int   OasisBoundarySegments { get; }
+        float OasisWaterRadius      { get; }
+        float OasisLandWidth        { get; }
 
 
         RenderTextureData TerrainBakeTextureData { get; }

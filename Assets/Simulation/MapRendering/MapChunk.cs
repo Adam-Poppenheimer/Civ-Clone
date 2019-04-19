@@ -60,6 +60,7 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshVisibilityCoroutine;
         private Coroutine RefreshRoadsCoroutine;
         private Coroutine RefreshMarshesCoroutine;
+        private Coroutine RefreshOasesCoroutine;
 
         private IHexMesh StandingWater {
             get {
@@ -99,18 +100,41 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _roads;
 
-        private IHexMesh Marshes {
+        private IHexMesh MarshWater {
             get {
-                if(_marshes == null) {
-                    _marshes = HexMeshFactory.Create("Marshes", RenderConfig.MarshData);
+                if(_marshWater == null) {
+                    _marshWater = HexMeshFactory.Create("Marsh Water", RenderConfig.MarshWaterData);
 
-                    _marshes.transform.SetParent(transform, false);
+                    _marshWater.transform.SetParent(transform, false);
                 }
-                return _marshes;
+                return _marshWater;
             }
         }
-        private IHexMesh _marshes;
+        private IHexMesh _marshWater;
 
+        private IHexMesh OasisWater {
+            get {
+                if(_oasisWater == null) {
+                    _oasisWater = HexMeshFactory.Create("Oasis Water", RenderConfig.OasisWaterData);
+
+                    _oasisWater.transform.SetParent(transform, false);
+                }
+                return _oasisWater;
+            }
+        }
+        private IHexMesh _oasisWater;
+
+        private IHexMesh OasisLand {
+            get {
+                if(_oasisLand == null) {
+                    _oasisLand = HexMeshFactory.Create("Oasis Land", RenderConfig.OasisLandData);
+
+                    _oasisLand.transform.SetParent(transform, false);
+                }
+                return _oasisLand;
+            }
+        }
+        private IHexMesh _oasisLand;
 
 
         [SerializeField] private TerrainBaker TerrainBaker;
@@ -130,6 +154,7 @@ namespace Assets.Simulation.MapRendering {
         private IFarmTriangulator     FarmTriangulator;
         private IRoadTriangulator     RoadTriangulator;
         private IMarshTriangulator    MarshTriangulator;
+        private IOasisTriangulator    OasisTriangulator;
 
         #endregion
 
@@ -143,7 +168,7 @@ namespace Assets.Simulation.MapRendering {
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory,
             IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
-            IMarshTriangulator marshTriangulator
+            IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator
         ) {
             AlphamapLogic       = alphamapLogic;
             HeightLogic         = heightLogic;
@@ -157,6 +182,7 @@ namespace Assets.Simulation.MapRendering {
             FarmTriangulator    = farmTriangulator;
             RoadTriangulator    = roadTriangulator;
             MarshTriangulator   = marshTriangulator;
+            OasisTriangulator   = oasisTriangulator;
         }
 
         #region from IMapChunk
@@ -254,6 +280,10 @@ namespace Assets.Simulation.MapRendering {
 
             if(((refreshTypes & TerrainRefreshType.Marshes) == TerrainRefreshType.Marshes) && RefreshMarshesCoroutine == null) {
                 RefreshMarshesCoroutine = StartCoroutine(RefreshMarshes_Perform());
+            }
+
+            if(((refreshTypes & TerrainRefreshType.Oases) == TerrainRefreshType.Oases) && RefreshOasesCoroutine == null) {
+                RefreshOasesCoroutine = StartCoroutine(RefreshOases_Perform());
             }
         }
 
@@ -476,17 +506,37 @@ namespace Assets.Simulation.MapRendering {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
-            Marshes.Clear();
+            MarshWater.Clear();
+            
 
             foreach(var cell in Cells) {
-                MarshTriangulator.TriangulateMarshes(cell, Marshes);
+                MarshTriangulator.TriangulateMarshes(cell, MarshWater);
+                OasisTriangulator.TrianglateOasis   (cell, OasisWater, null);
             }
 
-            Marshes.Apply();
+            MarshWater.Apply();
 
             TerrainBaker.Bake();
 
             RefreshMarshesCoroutine = null;
+        }
+
+        private IEnumerator RefreshOases_Perform() {
+            yield return new WaitForEndOfFrame();
+
+            OasisWater.Clear();
+            OasisLand .Clear();
+
+            foreach(var cell in Cells) {
+                OasisTriangulator.TrianglateOasis(cell, OasisWater, OasisLand);
+            }
+
+            OasisWater.Apply();
+            OasisLand .Apply();
+
+            TerrainBaker.Bake();
+
+            RefreshOasesCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

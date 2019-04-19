@@ -139,7 +139,7 @@ namespace Assets.Simulation.MapRendering {
 
         private void OnCellFeatureChanged(HexPropertyChangedData<CellFeature> data) {
             foreach(var chunk in GetAffectedChunks(data.Cell)) {
-                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility);
+                chunk.Refresh(TerrainRefreshType.Features | TerrainRefreshType.Visibility | TerrainRefreshType.Oases);
             }
         }
 
