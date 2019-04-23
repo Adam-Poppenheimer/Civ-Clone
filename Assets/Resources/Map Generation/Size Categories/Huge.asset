@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb4e85dfb2769548837998aa35d2067, type: 3}
   m_Name: Huge
   m_EditorClassIdentifier: 
-  _dimensionsInChunks: {x: 25, y: 16}
+  _dimensionsInCells: {x: 128, y: 80}
   _validCivCounts: 08000000090000000a0000000b0000000c000000
   _idealCivCount: 12

@@ -42,6 +42,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 9db7b4ff2e3c77a438200ca31706d8f6, type: 2}
   - {fileID: 11400000, guid: 7d060292f3b3aa745a697931226a5391, type: 2}
   - {fileID: 11400000, guid: 2f4d7ed1daa147e459c6c9945a28a14c, type: 2}
+  - {fileID: 11400000, guid: fdb8c43a0e984d04fbb3c8c706a5277b, type: 2}
   _defaultMapSize: {fileID: 11400000, guid: 9db7b4ff2e3c77a438200ca31706d8f6, type: 2}
   IdealGrasslandTemperature: 0.5
   IdealPlainsTemperature: 0.5

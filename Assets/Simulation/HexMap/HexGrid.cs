@@ -273,6 +273,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool TryGetSextantOfPointInCell(Vector2 xzPoint, IHexCell cell, out HexDirection sextant) {
+            Profiler.BeginSample("HexGrid.TryGetSextantOfPointInCell()");
+
             sextant = HexDirection.NE;
 
             foreach(var candidate in EnumUtil.GetValues<HexDirection>()) {
@@ -283,10 +285,12 @@ namespace Assets.Simulation.HexMap {
                     cell.AbsolutePositionXZ + RenderConfig.GetFirstCornerXZ (candidate),
                     cell.AbsolutePositionXZ + RenderConfig.GetSecondCornerXZ(candidate)
                 )) {
+                    Profiler.EndSample();
                     return true;
                 }
             }
 
+            Profiler.EndSample();
             return false;
         }
 

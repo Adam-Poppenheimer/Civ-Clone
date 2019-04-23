@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 using UniRx;
@@ -63,6 +64,8 @@ namespace Assets.Simulation.MapRendering {
         #endregion
 
         public void Initialize() {
+            Profiler.BeginSample("TerrainBaker.Initialize()");
+
             if(TerrainTexture != null) {
                 TerrainTexture.Release();
             }
@@ -112,6 +115,8 @@ namespace Assets.Simulation.MapRendering {
             localPos.z = RenderConfig.ChunkHeight / 2f;
 
             transform.localPosition = localPos;
+
+            Profiler.EndSample();
         }
 
         public void Bake() {
@@ -122,6 +127,8 @@ namespace Assets.Simulation.MapRendering {
 
         private IEnumerator Bake_Perform() {
             yield return new WaitForEndOfFrame();
+
+            Profiler.BeginSample("TerrainBaker.Bake_Perform()");
 
             var meshesToBake = HexMeshFactory.AllMeshes.Where(mesh => mesh.ShouldBeBaked);
             
@@ -148,6 +155,8 @@ namespace Assets.Simulation.MapRendering {
             foreach(var mesh in meshesToBake) {
                 mesh.SetActive(false);
             }
+
+            Profiler.EndSample();
 
             BakeCoroutine = null;
         }

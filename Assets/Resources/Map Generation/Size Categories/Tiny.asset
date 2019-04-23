@@ -11,6 +11,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ccb4e85dfb2769548837998aa35d2067, type: 3}
   m_Name: Tiny
   m_EditorClassIdentifier: 
-  _dimensionsInChunks: {x: 11, y: 7}
+  _dimensionsInCells: {x: 56, y: 36}
   _validCivCounts: 0200000003000000040000000500000006000000
   _idealCivCount: 4

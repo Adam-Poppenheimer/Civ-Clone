@@ -13,10 +13,10 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        public Vector2 DimensionsInChunks {
-            get { return _dimensionsInChunks; }
+        public Vector2 DimensionsInCells {
+            get { return _dimensionsInCells; }
         }
-        [SerializeField] private Vector2 _dimensionsInChunks;
+        [SerializeField] private Vector2 _dimensionsInCells;
 
         public ReadOnlyCollection<int> ValidCivCounts {
             get { return _validCivCounts.AsReadOnly(); }

@@ -20,7 +20,7 @@ MonoBehaviour:
     type: 3}
   _noiseHashGridSize: 256
   _noiseHashGridScale: 0.25
-  _cellPerturbStrengthXZ: 3
+  _cellPerturbStrengthXZ: 2
   _flatlandsElevationNoiseStrength: 0.02
   _hillsElevationNoiseStrength: 0.25
   _outerRadius: 10
@@ -243,10 +243,10 @@ MonoBehaviour:
   _roadWidth: 1
   _roadVRepeatLength: 2
   _oasisBoundarySegments: 50
-  _oasisWaterRadius: 3.5
+  _oasisWaterRadius: 3
   _oasisLandWidth: 2
   _terrainBakeTextureData:
-    _texelsPerUnit: 50
+    _texelsPerUnit: 5
     _depth: 24
     _format: 0
   _terrainBakeOcclusionShader: {fileID: 4800000, guid: 1fe8d727658277644a6fe41d413af796,

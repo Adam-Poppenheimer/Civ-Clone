@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -34,11 +35,14 @@ namespace Assets.Simulation.MapRendering {
         #region from IFlatlandsHeightmapLogic
 
         public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+            Profiler.BeginSample("FlatlandsHeightmapLogic.GetHeightForPoint()");
+
             Vector4 noise = NoiseGenerator.SampleNoise(
                 xzPoint, RenderConfig.FlatlandsElevationNoiseSource, RenderConfig.FlatlandsElevationNoiseStrength,
                 NoiseType.ZeroToOne
             );
 
+            Profiler.EndSample();
             return RenderConfig.FlatlandsBaseElevation + noise.x;
         }
 

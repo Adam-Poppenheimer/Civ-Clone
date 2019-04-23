@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -38,9 +39,12 @@ namespace Assets.Simulation.MapRendering {
         #region from IPointOrientationLogic
 
         public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint) {
+            Profiler.BeginSample("PointOrientationLogic.GetOrientationDataForPoint()");
+
             Vector3 xyzPoint = new Vector3(xzPoint.x, 0f, xzPoint.y);
 
             if(!Grid.HasCellAtLocation(xyzPoint)) {
+                Profiler.EndSample();
                 return new PointOrientationData();
             }
 
@@ -55,6 +59,7 @@ namespace Assets.Simulation.MapRendering {
                 PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Previous(), out retval) ||
                 PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Next(),     out retval)
             ) {
+                Profiler.EndSample();
                 return retval;
             }
             
@@ -65,9 +70,12 @@ namespace Assets.Simulation.MapRendering {
                     PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Next2    (), out retval) ||
                     PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Previous2(), out retval)
                 ) {
+                    Profiler.EndSample();
                     return retval;
                 }
             }
+
+            Profiler.EndSample();
 
             return new PointOrientationData();
         }

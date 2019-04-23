@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -46,6 +47,8 @@ namespace Assets.Simulation.MapRendering {
         #region from IHillsHeightmapLogic
 
         public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+            Profiler.BeginSample("HillsHeightmapLogic.GetHeightForPoint()");
+
             float hillNoise = NoiseGenerator.SampleNoise(
                 xzPoint, RenderConfig.HillsElevationNoiseSource, RenderConfig.HillsElevationNoiseStrength,
                 NoiseType.ZeroToOne
@@ -64,8 +67,11 @@ namespace Assets.Simulation.MapRendering {
                         
                 float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
+                Profiler.EndSample();
                 return hillsHeight * hillsWeight + flatlandsHeight * flatlandsWeight;
             }else {
+
+                Profiler.EndSample();
                 return hillsHeight;
             }
         }
@@ -73,6 +79,8 @@ namespace Assets.Simulation.MapRendering {
         #endregion
 
         private bool TryGetNearestContourPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, out Vector2 nearestContourPoint) {
+            Profiler.BeginSample("HillsHeightmapLogic.TryGetNearestContourPoint");
+
             bool retval = false;
 
             nearestContourPoint = Vector2.zero;
@@ -122,6 +130,8 @@ namespace Assets.Simulation.MapRendering {
                     nearestDistance = candidateDistance;
                 }
             }
+
+            Profiler.EndSample();
 
             return retval;
         }

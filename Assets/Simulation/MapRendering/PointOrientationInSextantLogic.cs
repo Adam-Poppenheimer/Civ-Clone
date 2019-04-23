@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -45,6 +46,8 @@ namespace Assets.Simulation.MapRendering {
         #region from IPointOrientationInSextantLogic
 
         public bool TryFindValidOrientation(Vector2 xzPoint, IHexCell gridCenter, HexDirection gridSextant, out PointOrientationData data) {
+            Profiler.BeginSample("PointOrientationInSextantLogic.TryFindValidOrientation()");
+
             data = new PointOrientationData() {
                 IsOnGrid = true,
                 Sextant  = gridSextant,
@@ -67,10 +70,12 @@ namespace Assets.Simulation.MapRendering {
                     );
                 }
 
+                Profiler.EndSample();
                 return true;
             }
 
             if(data.Right == null) {
+                Profiler.EndSample();
                 return false;
             }
 
@@ -88,6 +93,7 @@ namespace Assets.Simulation.MapRendering {
                     );
                 }
 
+                Profiler.EndSample();
                 return true;
             }
 
@@ -99,6 +105,7 @@ namespace Assets.Simulation.MapRendering {
             ) {
                 PointOrientationWeightLogic.ApplyRiverWeights(xzPoint, data);
 
+                Profiler.EndSample();
                 return true;
             }
 
@@ -118,6 +125,7 @@ namespace Assets.Simulation.MapRendering {
                         out data.RiverAlphaWeight
                     );
 
+                    Profiler.EndSample();
                     return true;
                 }
             }
@@ -138,10 +146,12 @@ namespace Assets.Simulation.MapRendering {
                         out data.RiverAlphaWeight
                     );
 
+                    Profiler.EndSample();
                     return true;
                 }
             }
 
+            Profiler.EndSample();
             return false;
         }
 

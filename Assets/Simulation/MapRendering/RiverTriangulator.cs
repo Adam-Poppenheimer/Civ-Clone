@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -58,6 +59,8 @@ namespace Assets.Simulation.MapRendering {
         #region from IRiverTriangulator
 
         public void TriangulateRivers() {
+            Profiler.BeginSample("TriangulateRivers()");
+
             RiverSplineBuilder.RefreshRiverSplines();
 
             RiverMesh.Clear();
@@ -177,6 +180,8 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RiverMesh.Apply();
+
+            Profiler.EndSample();
         }
 
         #endregion

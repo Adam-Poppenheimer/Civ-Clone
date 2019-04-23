@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -192,6 +193,8 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void InitializeTerrain(Vector3 position, float width, float height) {
+            Profiler.BeginSample("MapChunk.InitializeTerrain()");
+
             var terrainData = BuildTerrainData(width, height);
 
             if(Terrain == null) {
@@ -239,6 +242,8 @@ namespace Assets.Simulation.MapRendering {
             StandingWater.OverrideMaterial(instancedWaterMaterial);
 
             Terrain.Flush();
+
+            Profiler.EndSample();
         }
 
         public void Refresh(TerrainRefreshType refreshTypes) {
@@ -497,7 +502,7 @@ namespace Assets.Simulation.MapRendering {
 
             Roads.Apply();
 
-            TerrainBaker.Bake();
+            TerrainBaker.Bake();            
 
             RefreshRoadsCoroutine = null;
         }
@@ -506,8 +511,7 @@ namespace Assets.Simulation.MapRendering {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
-            MarshWater.Clear();
-            
+            MarshWater.Clear();            
 
             foreach(var cell in Cells) {
                 MarshTriangulator.TriangulateMarshes(cell, MarshWater);

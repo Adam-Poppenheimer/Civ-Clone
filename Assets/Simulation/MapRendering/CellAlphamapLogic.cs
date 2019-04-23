@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -37,6 +38,8 @@ namespace Assets.Simulation.MapRendering {
         #region from ICellAlphamapLogic
 
         public float[] GetAlphamapForPointForCell(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+            Profiler.BeginSample("CellAlphamapLogic.GetAlphamapForPointForCell()");
+
             var retval = new float[RenderConfig.MapTextures.Count()];
 
             var improvementsAt = ImprovementLocationCanon.GetPossessionsOfOwner(cell);
@@ -56,6 +59,7 @@ namespace Assets.Simulation.MapRendering {
                 retval[(int)cell.Terrain] = 1f;
             }
 
+            Profiler.EndSample();
             return retval;
         }
 

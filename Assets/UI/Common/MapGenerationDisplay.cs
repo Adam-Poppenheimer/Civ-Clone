@@ -36,7 +36,7 @@ namespace Assets.UI.Common {
             new List<CivTemplateRecord>();
 
         private IMapTemplate  SelectedMapTemplate;
-        private Vector2       DimensionsInChunks;
+        private Vector2       DimensionsInCells;
         private int           ContinentalLandPercentage;
         private int           CivCount;
         private TechnologyEra StartingEra;
@@ -91,7 +91,7 @@ namespace Assets.UI.Common {
         public void UpdateMapSize(int optionIndex) {
             var mapSize = MapGenerationConfig.MapSizes[optionIndex];
 
-            DimensionsInChunks = mapSize.DimensionsInChunks;
+            DimensionsInCells = mapSize.DimensionsInCells;
 
             InitializeCivCountDropdown(mapSize.ValidCivCounts);
 
@@ -152,8 +152,8 @@ namespace Assets.UI.Common {
             var startingTechs = TechCanon.GetTechsOfPreviousEras(StartingEra).Concat(TechCanon.GetEntryTechsOfEra(StartingEra));
 
             var variables = new MapGenerationVariables() {
-                ChunkCountX = Mathf.RoundToInt(DimensionsInChunks.x),
-                ChunkCountZ = Mathf.RoundToInt(DimensionsInChunks.y),
+                CellCountX = Mathf.RoundToInt(DimensionsInCells.x),
+                CellCountZ = Mathf.RoundToInt(DimensionsInCells.y),
                 ContinentalLandPercentage = ContinentalLandPercentage,
                 Civilizations = ChosenTemplates.ToList(),
                 StartingTechs = startingTechs

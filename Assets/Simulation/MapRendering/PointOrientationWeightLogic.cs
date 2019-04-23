@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -54,8 +55,11 @@ namespace Assets.Simulation.MapRendering {
         public void ApplyLandBesideLandWeights(
             Vector2 xzPoint, PointOrientationData data, bool hasPreviousRiver, bool hasNextRiver
         ) {
+            Profiler.BeginSample("PointOrientationWeightLogic.ApplyLandBesideLandWeights()");
+
             if(data.Right == null) {
                 data.CenterWeight = 1f;
+                Profiler.EndSample();
                 return;
             }
 
@@ -113,6 +117,8 @@ namespace Assets.Simulation.MapRendering {
                     data.RiverAlphaWeight = 1f;
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private void ApplyLandBesideLandWeights_Edge(Vector2 xzPoint, PointOrientationData data) {

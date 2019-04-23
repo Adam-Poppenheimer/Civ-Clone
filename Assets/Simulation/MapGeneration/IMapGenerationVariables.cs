@@ -10,8 +10,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region properties
 
-        int ChunkCountX { get; }
-        int ChunkCountZ { get; }
+        int CellCountX { get; }
+        int CellCountZ { get; }
 
         int ContinentalLandPercentage { get; }
 

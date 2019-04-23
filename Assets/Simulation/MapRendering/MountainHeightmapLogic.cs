@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -50,6 +51,8 @@ namespace Assets.Simulation.MapRendering {
 
         
         public float GetHeightForPoint(Vector2 xzPoint, IHexCell center, HexDirection sextant) {
+            Profiler.BeginSample("MountainHeightmapLogic.GetHeightForPoint()");
+
             var centerLeftContour      = CellEdgeContourCanon.GetContourForCellEdge(center, sextant.Previous());
             var centerRightContour     = CellEdgeContourCanon.GetContourForCellEdge(center, sextant);
             var centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(center, sextant.Next());
@@ -131,6 +134,7 @@ namespace Assets.Simulation.MapRendering {
                              + rightWeight     * rightEdgeHeight
                              + nextRightWeight * nextRightEdgeHeight;
 
+            Profiler.EndSample();
             return Mathf.Lerp(edgeHeight, RenderConfig.MountainPeakElevation, edgeToPeakLerp);
         }
 

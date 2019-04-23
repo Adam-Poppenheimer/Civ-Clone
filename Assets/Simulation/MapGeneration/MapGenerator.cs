@@ -87,7 +87,7 @@ namespace Assets.Simulation.MapGeneration {
 
             Profiler.BeginSample("Build Grid");
             var oldRandomState = SetRandomState();
-            Grid.Build(variables.ChunkCountX, variables.ChunkCountZ);
+            Grid.Build(variables.CellCountX, variables.CellCountZ);
             Profiler.EndSample();
 
             GeneratePlayers(variables);

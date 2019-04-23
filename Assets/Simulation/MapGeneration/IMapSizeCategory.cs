@@ -10,7 +10,7 @@ namespace Assets.Simulation.MapGeneration {
 
         string name { get; }
 
-        Vector2 DimensionsInChunks { get; }
+        Vector2 DimensionsInCells { get; }
 
         int IdealCivCount { get; }
 

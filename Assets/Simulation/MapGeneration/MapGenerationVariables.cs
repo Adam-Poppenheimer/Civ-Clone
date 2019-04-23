@@ -14,8 +14,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region from IMapGenerationVariables
 
-        public int ChunkCountX { get; set; }
-        public int ChunkCountZ { get; set; }
+        public int CellCountX { get; set; }
+        public int CellCountZ { get; set; }
 
         public int ContinentalLandPercentage { get; set; }
 

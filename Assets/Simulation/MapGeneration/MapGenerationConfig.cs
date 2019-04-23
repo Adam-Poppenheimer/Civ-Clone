@@ -137,12 +137,6 @@ namespace Assets.Simulation.MapGeneration {
         [SerializeField, Range(0f, 1f)] private float IdealPlainsPrecipitation;
         [SerializeField, Range(0f, 1f)] private float IdealDesertPrecipitation;
 
-        [SerializeField] private Vector2 TinyChunkDimensions;
-        [SerializeField] private Vector2 SmallChunkDimensions;
-        [SerializeField] private Vector2 StandardChunkDimensions;
-        [SerializeField] private Vector2 LargeChunkDimensions;
-        [SerializeField] private Vector2 HugeChunkDimensions;
-
         [SerializeField, Range(10, 100)] private int LowSeaLevelLandPercentage;
         [SerializeField, Range(10, 100)] private int NormalSeaLevelLandPercentage;
         [SerializeField, Range(10, 100)] private int HighSeaLevelLandPercentage;
