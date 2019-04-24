@@ -24,8 +24,7 @@ MonoBehaviour:
   _flatlandsElevationNoiseStrength: 0.02
   _hillsElevationNoiseStrength: 0.25
   _outerRadius: 10
-  _outerSolidFactor: 0.75
-  _innerSolidFactor: 0.45
+  _solidFactor: 0
   _chunkWidth: 40
   _chunkHeight: 40
   _terrainMaxY: 20
@@ -228,6 +227,24 @@ MonoBehaviour:
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 52c39f82be01f9b4c9dbeaefe9dffba5, type: 2}
     _shouldBeBaked: 1
+  _orientationMeshData:
+    _useCollider: 0
+    _useUVCoordinates: 0
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 1
+    _weldMesh: 0
+    _convertVerticesToWorld: 1
+    _layer: 15
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: 8b75f09941e6ca942947340a835a1ad0, type: 2}
+    _shouldBeBaked: 0
+  _orientationCullingMask:
+    serializedVersion: 2
+    m_Bits: 32768
   _farmColors:
   - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}
   - {r: 0.11176473, g: 0.5588235, b: 0, a: 1}
@@ -246,7 +263,7 @@ MonoBehaviour:
   _oasisWaterRadius: 3
   _oasisLandWidth: 2
   _terrainBakeTextureData:
-    _texelsPerUnit: 5
+    _texelsPerUnit: 10
     _depth: 24
     _format: 0
   _terrainBakeOcclusionShader: {fileID: 4800000, guid: 1fe8d727658277644a6fe41d413af796,

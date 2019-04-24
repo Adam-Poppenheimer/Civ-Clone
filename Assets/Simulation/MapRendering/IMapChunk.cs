@@ -17,13 +17,16 @@ namespace Assets.Simulation.MapRendering {
 
         Terrain Terrain { get; }
 
+        float Width  { get; }
+        float Height { get; }
+
         #endregion
 
         #region methods
 
         void AttachCell(IHexCell cell);
 
-        void InitializeTerrain(Vector3 position, float width, float height);
+        void Initialize(Vector3 position, float width, float height);
 
         void Refresh(TerrainRefreshType refreshTypes);
 

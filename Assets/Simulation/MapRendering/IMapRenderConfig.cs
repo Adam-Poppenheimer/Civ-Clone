@@ -37,8 +37,7 @@ namespace Assets.Simulation.MapRendering {
         float OuterRadius { get; }
         float InnerRadius { get; }
 
-        float OuterSolidFactor { get; }
-        float InnerSolidFactor { get; }
+        float SolidFactor { get; }
 
         float BlendFactor { get; }
 
@@ -101,14 +100,17 @@ namespace Assets.Simulation.MapRendering {
         float CultureWidthPercent { get; }
 
 
-        HexMeshData StandingWaterData { get; }
-        HexMeshData RiversData        { get; }
-        HexMeshData CultureData       { get; }
-        HexMeshData FarmlandData      { get; }
-        HexMeshData RoadData          { get; }
-        HexMeshData MarshWaterData    { get; }
-        HexMeshData OasisWaterData    { get; }
-        HexMeshData OasisLandData     { get; }
+        HexMeshData StandingWaterData   { get; }
+        HexMeshData RiversData          { get; }
+        HexMeshData CultureData         { get; }
+        HexMeshData FarmlandData        { get; }
+        HexMeshData RoadData            { get; }
+        HexMeshData MarshWaterData      { get; }
+        HexMeshData OasisWaterData      { get; }
+        HexMeshData OasisLandData       { get; }
+        HexMeshData OrientationMeshData { get; }
+
+        LayerMask OrientationCullingMask { get; }
 
 
 

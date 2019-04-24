@@ -13,7 +13,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float[] GetAlphamapForPointForCell(Vector2 xzPoint, IHexCell center, HexDirection sextant);
+        float[] GetAlphamapForPointForCell(IHexCell center, HexDirection sextant);
 
         #endregion
 

@@ -104,18 +104,13 @@ namespace Assets.Simulation.MapRendering {
             get { return OuterRadius * OuterToInner; }
         }
 
-        public float OuterSolidFactor {
-            get { return _outerSolidFactor; }
+        public float SolidFactor {
+            get { return _solidFactor; }
         }
-        [SerializeField] private float _outerSolidFactor;
-
-        public float InnerSolidFactor {
-            get { return _innerSolidFactor; }
-        }
-        [SerializeField] private float _innerSolidFactor;
+        [SerializeField] private float _solidFactor;
 
         public float BlendFactor {
-            get { return 1f - OuterSolidFactor; }
+            get { return 1f - SolidFactor; }
         }
 
         public IEnumerable<Vector3> Corners {
@@ -358,6 +353,17 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _oasisLandData;
 
+        public HexMeshData OrientationMeshData {
+            get { return _orientationMeshData; }
+        }
+        [SerializeField] private HexMeshData _orientationMeshData;
+
+
+        public LayerMask OrientationCullingMask {
+            get { return _orientationCullingMask; }
+        }
+        [SerializeField] private LayerMask _orientationCullingMask;
+
 
 
         public ReadOnlyCollection<Color> FarmColors {
@@ -476,11 +482,11 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector3 GetFirstSolidCorner(HexDirection direction) {
-            return corners[(int)direction] * OuterSolidFactor;
+            return corners[(int)direction] * SolidFactor;
         }
 
         public Vector3 GetSecondSolidCorner(HexDirection direction) {
-            return corners[(int)direction + 1] * OuterSolidFactor;
+            return corners[(int)direction + 1] * SolidFactor;
         }
 
         public Vector3 GetEdgeMidpoint(HexDirection direction) {
@@ -488,7 +494,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector3 GetSolidEdgeMidpoint(HexDirection direction) {
-            return (corners[(int)direction] * OuterSolidFactor + corners[(int)direction + 1] * OuterSolidFactor) * 0.5f;
+            return (corners[(int)direction] * SolidFactor + corners[(int)direction + 1] * SolidFactor) * 0.5f;
         }
 
 
@@ -502,11 +508,11 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector2 GetFirstSolidCornerXZ (HexDirection direction) {
-            return cornersXZ[(int)direction] * OuterSolidFactor;
+            return cornersXZ[(int)direction] * SolidFactor;
         }
 
         public Vector2 GetSecondSolidCornerXZ(HexDirection direction) {
-            return cornersXZ[(int)direction + 1] * OuterSolidFactor;
+            return cornersXZ[(int)direction + 1] * SolidFactor;
         }
 
         public Vector2 GetEdgeMidpointXZ(HexDirection direction) {
@@ -514,7 +520,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public Vector2 GetSolidEdgeMidpointXZ(HexDirection direction) {
-            return (cornersXZ[(int)direction] * OuterSolidFactor + cornersXZ[(int)direction + 1] * OuterSolidFactor) * 0.5f;
+            return (cornersXZ[(int)direction] * SolidFactor + cornersXZ[(int)direction + 1] * SolidFactor) * 0.5f;
         }
 
         #endregion

@@ -48,25 +48,39 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IPointOrientationLogic
 
-        public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint, IEnumerable<IHexCell> candidateCells) {
-            Profiler.BeginSample("PointOrientationLogic.GetOrientationDataForPoint()");
+        public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint) {
+            Vector3 xyzPoint = new Vector3(xzPoint.x, 0f, xzPoint.y);
 
-            var retval = new PointOrientationData();
-            
-            IHexCell bestCandidate = candidateCells.Where(BestCandidateFilter
-                cell => (cell.AbsolutePositionXZ - xzPoint).sqrMagnitude <= SolidRadiusSq
-            ).FirstOrDefault();
-
-            if(bestCandidate != null) {
-                retval.IsOnGrid = true;
-                retval.Center   = bestCandidate;
-
-                retval.CenterWeight = 1f;
+            if(!Grid.HasCellAtLocation(xyzPoint)) {
+                return new PointOrientationData();
             }
 
-            Profiler.EndSample();
+            IHexCell gridCenter = Grid.GetCellAtLocation(xyzPoint);
 
-            return retval;
+            HexDirection gridSextant;
+            Grid.TryGetSextantOfPointInCell(xzPoint, gridCenter, out gridSextant);
+
+            PointOrientationData retval;
+
+            if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant,            out retval) ||
+                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Previous(), out retval) ||
+                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Next(),     out retval)
+            ) {
+                return retval;
+            }
+            
+            IHexCell gridRight = Grid.GetNeighbor(gridCenter, gridSextant);
+            
+            if(gridRight != null) {
+                if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Opposite (), out retval) ||
+                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Next2    (), out retval) ||
+                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Previous2(), out retval)
+                ) {
+                    return retval;
+                }
+            }
+
+            return new PointOrientationData();
         }
 
         #endregion

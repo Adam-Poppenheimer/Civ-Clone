@@ -380,7 +380,7 @@ namespace Assets.Simulation.HexMap {
 
             newChunk.transform.SetParent(transform, false);
 
-            newChunk.InitializeTerrain(
+            newChunk.Initialize(
                 new Vector3(chunkX, 0f, chunkZ), width, height
             );
 

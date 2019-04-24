@@ -39,10 +39,8 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainHeightLogic
 
-        public float GetHeightForPoint(Vector2 xzPoint) {
+        public float GetHeightForPoint(Vector2 xzPoint, PointOrientationData orientationData) {
             float retval = 0f;
-
-            var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
 
             if(!orientationData.IsOnGrid) {
                 return retval;

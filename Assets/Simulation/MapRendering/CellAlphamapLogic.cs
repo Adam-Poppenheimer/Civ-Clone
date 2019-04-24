@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellAlphamapLogic
 
-        public float[] GetAlphamapForPointForCell(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+        public float[] GetAlphamapForPointForCell(IHexCell cell, HexDirection sextant) {
             Profiler.BeginSample("CellAlphamapLogic.GetAlphamapForPointForCell()");
 
             var retval = new float[RenderConfig.MapTextures.Count()];

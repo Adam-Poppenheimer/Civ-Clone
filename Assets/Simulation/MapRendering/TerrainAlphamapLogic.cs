@@ -39,9 +39,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainAlphamapLogic
 
-        public float[] GetAlphamapForPoint(Vector2 xzPoint) {
-            var orientationData = PointOrientationLogic.GetOrientationDataForPoint(xzPoint);
-
+        public float[] GetAlphamapFromOrientation(PointOrientationData orientationData) {
             if(!orientationData.IsOnGrid) {
                 return RenderConfig.OffGridAlphamap;
             }
@@ -57,7 +55,7 @@ namespace Assets.Simulation.MapRendering {
             if(orientationData.CenterWeight > 0f) {
                 AddToMap(
                     retval,
-                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Center, orientationData.Sextant),
+                    CellAlphamapLogic.GetAlphamapForPointForCell(orientationData.Center, orientationData.Sextant),
                     orientationData.CenterWeight
                 );
             }
@@ -65,7 +63,7 @@ namespace Assets.Simulation.MapRendering {
             if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
                 AddToMap(
                     retval,
-                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Left, orientationData.Sextant.Next2()),
+                    CellAlphamapLogic.GetAlphamapForPointForCell(orientationData.Left, orientationData.Sextant.Next2()),
                     orientationData.LeftWeight
                 );
             }
@@ -73,7 +71,7 @@ namespace Assets.Simulation.MapRendering {
             if(orientationData.Right != null && orientationData.RightWeight > 0f) {
                 AddToMap(
                     retval,
-                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.Right, orientationData.Sextant.Opposite()),
+                    CellAlphamapLogic.GetAlphamapForPointForCell(orientationData.Right, orientationData.Sextant.Opposite()),
                     orientationData.RightWeight
                 );
             }
@@ -81,7 +79,7 @@ namespace Assets.Simulation.MapRendering {
             if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
                 AddToMap(
                     retval,
-                    CellAlphamapLogic.GetAlphamapForPointForCell(xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2()),
+                    CellAlphamapLogic.GetAlphamapForPointForCell(orientationData.NextRight, orientationData.Sextant.Previous2()),
                     orientationData.NextRightWeight
                 );
             }

@@ -49,6 +49,9 @@ namespace Assets.Simulation.MapRendering {
 
         public Terrain Terrain { get; private set; }
 
+        public float Width  { get; private set; }
+        public float Height { get; private set; }
+
         #endregion
 
         private TerrainCollider TerrainCollider;
@@ -62,6 +65,20 @@ namespace Assets.Simulation.MapRendering {
         private Coroutine RefreshRoadsCoroutine;
         private Coroutine RefreshMarshesCoroutine;
         private Coroutine RefreshOasesCoroutine;
+        private Coroutine RefreshOrientationCoroutine;
+
+        private IHexMesh OrientationMesh {
+            get {
+                if(_orientationMesh == null) {
+                    _orientationMesh = HexMeshFactory.Create("Orientation Mesh", RenderConfig.OrientationMeshData);
+
+                    _orientationMesh.transform.SetParent(transform, false);
+                }
+
+                return _orientationMesh;
+            }
+        }
+        private IHexMesh _orientationMesh;
 
         private IHexMesh StandingWater {
             get {
@@ -140,22 +157,27 @@ namespace Assets.Simulation.MapRendering {
 
         [SerializeField] private TerrainBaker TerrainBaker;
 
+        [SerializeField] private Texture2D OrientationTexture;
 
 
 
-        private ITerrainAlphamapLogic AlphamapLogic;
-        private ITerrainHeightLogic   HeightLogic;
-        private IMapRenderConfig      RenderConfig;
-        private IWaterTriangulator    WaterTriangulator;
-        private IHexFeatureManager    HexFeatureManager;
-        private IRiverTriangulator    RiverTriangulator;
-        private ICultureTriangulator  CultureTriangulator;
-        private IHexCellShaderData    ShaderData;
-        private IHexMeshFactory       HexMeshFactory;
-        private IFarmTriangulator     FarmTriangulator;
-        private IRoadTriangulator     RoadTriangulator;
-        private IMarshTriangulator    MarshTriangulator;
-        private IOasisTriangulator    OasisTriangulator;
+
+        
+        private ITerrainAlphamapLogic    AlphamapLogic;
+        private ITerrainHeightLogic      HeightLogic;
+        private IMapRenderConfig         RenderConfig;
+        private IWaterTriangulator       WaterTriangulator;
+        private IHexFeatureManager       HexFeatureManager;
+        private IRiverTriangulator       RiverTriangulator;
+        private ICultureTriangulator     CultureTriangulator;
+        private IHexCellShaderData       ShaderData;
+        private IHexMeshFactory          HexMeshFactory;
+        private IFarmTriangulator        FarmTriangulator;
+        private IRoadTriangulator        RoadTriangulator;
+        private IMarshTriangulator       MarshTriangulator;
+        private IOasisTriangulator       OasisTriangulator;
+        private IOrientationTriangulator OrientationTriangulator;
+        private IOrientationBaker        OrientationBaker;
 
         #endregion
 
@@ -169,31 +191,39 @@ namespace Assets.Simulation.MapRendering {
             ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory,
             IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
-            IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator
+            IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
+            IOrientationTriangulator orientationTriangulator, IOrientationBaker orientationBaker
         ) {
-            AlphamapLogic       = alphamapLogic;
-            HeightLogic         = heightLogic;
-            RenderConfig        = renderConfig;
-            WaterTriangulator   = waterTriangulator;
-            HexFeatureManager   = hexFeatureManager;
-            RiverTriangulator   = riverTriangulator;
-            CultureTriangulator = cultureTriangulator;
-            ShaderData          = shaderData;
-            HexMeshFactory      = hexMeshFactory;
-            FarmTriangulator    = farmTriangulator;
-            RoadTriangulator    = roadTriangulator;
-            MarshTriangulator   = marshTriangulator;
-            OasisTriangulator   = oasisTriangulator;
+            AlphamapLogic           = alphamapLogic;
+            HeightLogic             = heightLogic;
+            RenderConfig            = renderConfig;
+            WaterTriangulator       = waterTriangulator;
+            HexFeatureManager       = hexFeatureManager;
+            RiverTriangulator       = riverTriangulator;
+            CultureTriangulator     = cultureTriangulator;
+            ShaderData              = shaderData;
+            HexMeshFactory          = hexMeshFactory;
+            FarmTriangulator        = farmTriangulator;
+            RoadTriangulator        = roadTriangulator;
+            MarshTriangulator       = marshTriangulator;
+            OasisTriangulator       = oasisTriangulator;
+            OrientationTriangulator = orientationTriangulator;
+            OrientationBaker        = orientationBaker;
         }
 
         #region from IMapChunk
 
         public void AttachCell(IHexCell cell) {
             cells.Add(cell);
+
+            Refresh(TerrainRefreshType.Orientation);
         }
 
-        public void InitializeTerrain(Vector3 position, float width, float height) {
-            Profiler.BeginSample("MapChunk.InitializeTerrain()");
+        public void Initialize(Vector3 position, float width, float height) {
+            Profiler.BeginSample("MapChunk.Initialize()");
+
+            Width  = width;
+            Height = height;
 
             var terrainData = BuildTerrainData(width, height);
 
@@ -243,6 +273,16 @@ namespace Assets.Simulation.MapRendering {
 
             Terrain.Flush();
 
+            OrientationTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.TerrainBakeTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.TerrainBakeTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            OrientationTexture.filterMode = FilterMode.Point;
+            OrientationTexture.wrapMode   = TextureWrapMode.Clamp;
+            OrientationTexture.anisoLevel = 0;
+
             Profiler.EndSample();
         }
 
@@ -289,6 +329,10 @@ namespace Assets.Simulation.MapRendering {
 
             if(((refreshTypes & TerrainRefreshType.Oases) == TerrainRefreshType.Oases) && RefreshOasesCoroutine == null) {
                 RefreshOasesCoroutine = StartCoroutine(RefreshOases_Perform());
+            }
+
+            if(((refreshTypes & TerrainRefreshType.Orientation) == TerrainRefreshType.Orientation) && RefreshOrientationCoroutine == null) {
+                RefreshOrientationCoroutine = StartCoroutine(RefreshOrientation_Perform());
             }
         }
 
@@ -340,6 +384,8 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshAlphamap_Perform() {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
 
             var terrainData = Terrain.terrainData;
 
@@ -348,19 +394,30 @@ namespace Assets.Simulation.MapRendering {
 
             float[,,] alphaMaps = terrainData.GetAlphamaps(0, 0, mapWidth, mapHeight);
 
+            float maxNormalX = Width  / RenderConfig.ChunkWidth;
+            float maxNormalZ = Height / RenderConfig.ChunkHeight;
+
+            float normalX, normalZ;
+            Color orientationAsColor;
+            PointOrientationData orientation;
+            float[] newAlphas;
+
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
                     //For some reason, terrainData seems to index its points
                     //as (y, x) rather than the more traditional (x, y), so
-                    //the worldX needs to be extracted from the width and the
-                    //worldX from the height.
-                    float normalWidth  = width  * 1.0f / (mapWidth  - 1);
-                    float normalHeight = height * 1.0f / (mapHeight - 1);
+                    //we need to sample our texture accordingly
+                    normalX = Mathf.Lerp(0f, maxNormalX, height / (mapHeight - 1f));
+                    normalZ = Mathf.Lerp(0f, maxNormalZ, width  / (mapWidth  - 1f));
 
-                    float worldX = transform.position.x + normalHeight * terrainData.size.x;
-                    float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
+                    orientationAsColor = OrientationTexture.GetPixel(
+                        Mathf.RoundToInt(OrientationTexture.width  * normalX),
+                        Mathf.RoundToInt(OrientationTexture.height * normalZ)
+                    );
 
-                    float[] newAlphas = AlphamapLogic.GetAlphamapForPoint(new Vector2(worldX, worldZ));
+                    orientation = OrientationTriangulator.GetDataFromColor(orientationAsColor);
+
+                    newAlphas = AlphamapLogic.GetAlphamapFromOrientation(orientation);
 
                     for(int alphaIndex = 0; alphaIndex < terrainData.splatPrototypes.Length; alphaIndex++) {
                         alphaMaps[width, height, alphaIndex] = newAlphas[alphaIndex];
@@ -378,6 +435,8 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshHeightmap_Perform() {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
 
             var terrainData = Terrain.terrainData;
 
@@ -386,15 +445,36 @@ namespace Assets.Simulation.MapRendering {
 
             float[,] heights = terrainData.GetHeights(0, 0, mapWidth, mapHeight);
 
+            float maxTextureNormalX = Width  / RenderConfig.ChunkWidth;
+            float maxTextureNormalZ = Height / RenderConfig.ChunkHeight;
+
+            float terrainNormalX, terrainNormalZ, textureNormalX, textureNormalZ, worldX, worldZ;
+
+            Color orientationAsColor;
+            PointOrientationData orientation;
+
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
-                    float normalWidth  = width  * 1.0f / (mapWidth  - 1);
-                    float normalHeight = height * 1.0f / (mapHeight - 1);
+                    //For some reason, terrainData seems to index its points
+                    //as (y, x) rather than the more traditional (x, y), so
+                    //we need to sample our texture accordingly
+                    terrainNormalX = height * 1.0f / (mapHeight - 1);
+                    terrainNormalZ = width  * 1.0f / (mapWidth  - 1);
 
-                    float worldX = transform.position.x + normalHeight * terrainData.size.x;
-                    float worldZ = transform.position.z + normalWidth  * terrainData.size.z;
+                    worldX = transform.position.x + terrainNormalX * terrainData.size.x;
+                    worldZ = transform.position.z + terrainNormalZ  * terrainData.size.z;
 
-                    heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ));
+                    textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
+                    textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
+
+                    orientationAsColor = OrientationTexture.GetPixel(
+                        Mathf.RoundToInt(OrientationTexture.width  * textureNormalX),
+                        Mathf.RoundToInt(OrientationTexture.height * textureNormalZ)
+                    );
+
+                    orientation = OrientationTriangulator.GetDataFromColor(orientationAsColor);
+
+                    heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ), orientation);
                 }
             }
 
@@ -422,6 +502,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private IEnumerator RefreshFeatures_Perform() {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
@@ -541,6 +622,23 @@ namespace Assets.Simulation.MapRendering {
             TerrainBaker.Bake();
 
             RefreshOasesCoroutine = null;
+        }
+
+        private IEnumerator RefreshOrientation_Perform() {
+            yield return new WaitForEndOfFrame();
+            yield return new WaitForEndOfFrame();
+
+            OrientationMesh.Clear();
+
+            foreach(var cell in Cells) {
+                OrientationTriangulator.TriangulateOrientation(cell, OrientationMesh);
+            }
+
+            OrientationMesh.Apply();
+
+            OrientationBaker.RenderOrientationFromMesh(OrientationTexture, transform);
+
+            RefreshOrientationCoroutine = null;
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

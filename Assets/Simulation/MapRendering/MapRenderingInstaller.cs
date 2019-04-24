@@ -18,6 +18,7 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private HexCellShaderData ShaderData;
         [SerializeField] private MapChunk          MapChunkPrefab;
         [SerializeField] private HexSubMesh        HexSubMeshPrefab;
+        [SerializeField] private Camera            OrientationCamera;
 
         #endregion
 
@@ -48,6 +49,8 @@ namespace Assets.Simulation.MapRendering {
                      .FromComponentInNewPrefab(MapChunkPrefab)
                      .UnderTransformGroup("Map Chunks");
 
+            Container.Bind<Camera>().WithId("Orientation Camera").FromInstance(OrientationCamera);
+
             Container.Bind<MapRenderingSignals>    ().AsSingle();
             Container.Bind<TerrainRefreshResponder>().AsSingle().NonLazy();
 
@@ -60,7 +63,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ITerrainMixingLogic>            ().To<TerrainMixingLogic>            ().AsSingle();
             Container.Bind<ICellAlphamapLogic>             ().To<CellAlphamapLogic>             ().AsSingle();
             Container.Bind<IWaterTriangulator>             ().To<WaterTriangulator>             ().AsSingle();
-            Container.Bind<IAlphamapMixingFunctions>       ().To<AlphamapMixingFunctions>       ().AsSingle();
             Container.Bind<IRiverSplineBuilder>            ().To<RiverSplineBuilder>            ().AsSingle();
             Container.Bind<IRiverAssemblyCanon>            ().To<RiverAssemblyCanon>            ().AsSingle();
             Container.Bind<IRiverBuilder>                  ().To<RiverBuilder>                  ().AsSingle();
@@ -82,6 +84,8 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IRoadTriangulator>              ().To<RoadTriangulator>              ().AsSingle();
             Container.Bind<IMarshTriangulator>             ().To<MarshTriangulator>             ().AsSingle();
             Container.Bind<IOasisTriangulator>             ().To<OasisTriangulator>             ().AsSingle();
+            Container.Bind<IOrientationTriangulator>       ().To<OrientationTriangulator>       ().AsSingle();
+            Container.Bind<IOrientationBaker>              ().To<OrientationBaker>              ().AsSingle();
         }
 
         #endregion

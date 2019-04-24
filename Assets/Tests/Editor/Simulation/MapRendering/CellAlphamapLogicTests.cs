@@ -44,22 +44,18 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void GetAlphamapForPositionForCell_ReturnedArrayHasEntriesForEveryMapTexture() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_ReturnedArrayHasEntriesForEveryMapTexture() {
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Flatlands);
 
             MockRenderConfig.Setup(config => config.MapTextures).Returns(new List<Texture2D>() { null, null, null, null, null });
 
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
-            Assert.AreEqual(5, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E).Length);
+            Assert.AreEqual(5, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E).Length);
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_SetsOnlyIndexOfTerrainToOneByDefault() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_SetsOnlyIndexOfTerrainToOneByDefault() {
             var cell = BuildCell(CellTerrain.Desert, CellShape.Flatlands);
 
             MockRenderConfig.Setup(config => config.MapTextures).Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -67,14 +63,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 1f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 0f, 1f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_AndCellIsWater_SetsOnlySeaFloorIndexToOne() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_AndCellIsWater_SetsOnlySeaFloorIndexToOne() {
             var cell = BuildCell(CellTerrain.DeepWater, CellShape.Flatlands);
 
             MockRenderConfig.Setup(config => config.MapTextures)         .Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -83,14 +77,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_WaterOverridesMountains() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_WaterOverridesMountains() {
             var cell = BuildCell(CellTerrain.DeepWater, CellShape.Mountains);
 
             MockRenderConfig.Setup(config => config.MapTextures)         .Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -99,14 +91,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_WaterOverridesImprovements() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_WaterOverridesImprovements() {
             var cell = BuildCell(CellTerrain.DeepWater, CellShape.Flatlands, BuildImprovement(true, 4));
 
             MockRenderConfig.Setup(config => config.MapTextures)         .Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -115,14 +105,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_AndCellIsMountains_SetsOnlyMountainsIndexToOne() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_AndCellIsMountains_SetsOnlyMountainsIndexToOne() {
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Mountains);
 
             MockRenderConfig.Setup(config => config.MapTextures)         .Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -131,14 +119,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_MountainsOverrideImprovements() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_MountainsOverrideImprovements() {
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Mountains, BuildImprovement(true, 1));
 
             MockRenderConfig.Setup(config => config.MapTextures)         .Returns(new List<Texture2D>() { null, null, null, null, null });
@@ -147,14 +133,12 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
         [Test]
-        public void GetAlphamapForPositionForCell_AndCellHasOverridingImprovement_SetsOnlyFirstOverrideToOne() {
-            var position = new Vector3(1f, 2f, 3f);
-
+        public void GetAlphamapForCell_AndCellHasOverridingImprovement_SetsOnlyFirstOverrideToOne() {
             var cell = BuildCell(
                 CellTerrain.Grassland, CellShape.Flatlands, BuildImprovement(false, 2),
                 BuildImprovement(true, 1), BuildImprovement(true, 3)
@@ -165,7 +149,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(position, cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
             );
         }
 
