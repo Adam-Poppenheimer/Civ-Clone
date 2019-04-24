@@ -17,8 +17,13 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
+        private float SolidRadiusSq;
+
+
+
         private IHexGrid                        Grid;
         private IPointOrientationInSextantLogic PointOrientationInSextantLogic;
+        private IMapRenderConfig                RenderConfig;
 
         #endregion
 
@@ -26,10 +31,15 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public PointOrientationLogic(
-            IHexGrid grid, IPointOrientationInSextantLogic pointOrientationInSextantLogic
+            IHexGrid grid, IPointOrientationInSextantLogic pointOrientationInSextantLogic,
+            IMapRenderConfig renderConfig
         ) {
             Grid                           = grid;
             PointOrientationInSextantLogic = pointOrientationInSextantLogic;
+            RenderConfig                   = renderConfig;
+
+            SolidRadiusSq = RenderConfig.SolidFactor * RenderConfig.InnerRadius;
+            SolidRadiusSq *= SolidRadiusSq;
         }
 
         #endregion
@@ -38,46 +48,25 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IPointOrientationLogic
 
-        public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint) {
+        public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint, IEnumerable<IHexCell> candidateCells) {
             Profiler.BeginSample("PointOrientationLogic.GetOrientationDataForPoint()");
 
-            Vector3 xyzPoint = new Vector3(xzPoint.x, 0f, xzPoint.y);
-
-            if(!Grid.HasCellAtLocation(xyzPoint)) {
-                Profiler.EndSample();
-                return new PointOrientationData();
-            }
-
-            IHexCell gridCenter = Grid.GetCellAtLocation(xyzPoint);
-
-            HexDirection gridSextant;
-            Grid.TryGetSextantOfPointInCell(xzPoint, gridCenter, out gridSextant);
-
-            PointOrientationData retval;
-
-            if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant,            out retval) ||
-                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Previous(), out retval) ||
-                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Next(),     out retval)
-            ) {
-                Profiler.EndSample();
-                return retval;
-            }
+            var retval = new PointOrientationData();
             
-            IHexCell gridRight = Grid.GetNeighbor(gridCenter, gridSextant);
-            
-            if(gridRight != null) {
-                if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Opposite (), out retval) ||
-                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Next2    (), out retval) ||
-                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Previous2(), out retval)
-                ) {
-                    Profiler.EndSample();
-                    return retval;
-                }
+            IHexCell bestCandidate = candidateCells.Where(BestCandidateFilter
+                cell => (cell.AbsolutePositionXZ - xzPoint).sqrMagnitude <= SolidRadiusSq
+            ).FirstOrDefault();
+
+            if(bestCandidate != null) {
+                retval.IsOnGrid = true;
+                retval.Center   = bestCandidate;
+
+                retval.CenterWeight = 1f;
             }
 
             Profiler.EndSample();
 
-            return new PointOrientationData();
+            return retval;
         }
 
         #endregion
