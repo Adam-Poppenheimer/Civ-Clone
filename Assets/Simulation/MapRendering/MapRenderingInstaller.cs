@@ -18,7 +18,7 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private HexCellShaderData ShaderData;
         [SerializeField] private MapChunk          MapChunkPrefab;
         [SerializeField] private HexSubMesh        HexSubMeshPrefab;
-        [SerializeField] private Camera            OrientationCamera;
+        [SerializeField] private OrientationBaker  OrientationBaker;
 
         #endregion
 
@@ -30,6 +30,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMapRenderConfig>  ().To<MapRenderConfig>  ().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);            
             Container.Bind<IHexCellShaderData>().To<HexCellShaderData>().FromInstance(ShaderData);
+            Container.Bind<IOrientationBaker> ().To<OrientationBaker> ().FromInstance(OrientationBaker);
 
             Container.BindMemoryPool<Mesh, MeshMemoryPool, IMemoryPool<Mesh>>()
                      .WithInitialSize(50);
@@ -48,8 +49,6 @@ namespace Assets.Simulation.MapRendering {
                      .WithInitialSize(10)
                      .FromComponentInNewPrefab(MapChunkPrefab)
                      .UnderTransformGroup("Map Chunks");
-
-            Container.Bind<Camera>().WithId("Orientation Camera").FromInstance(OrientationCamera);
 
             Container.Bind<MapRenderingSignals>    ().AsSingle();
             Container.Bind<TerrainRefreshResponder>().AsSingle().NonLazy();
@@ -85,7 +84,8 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMarshTriangulator>             ().To<MarshTriangulator>             ().AsSingle();
             Container.Bind<IOasisTriangulator>             ().To<OasisTriangulator>             ().AsSingle();
             Container.Bind<IOrientationTriangulator>       ().To<OrientationTriangulator>       ().AsSingle();
-            Container.Bind<IOrientationBaker>              ().To<OrientationBaker>              ().AsSingle();
+            Container.Bind<IWeightsTriangulator>           ().To<WeightsTriangulator>           ().AsSingle();
+            Container.Bind<IBetterPointOrientationLogic>   ().To<BetterPointOrientationLogic>   ().AsSingle();
         }
 
         #endregion

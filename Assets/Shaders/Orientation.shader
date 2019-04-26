@@ -2,25 +2,49 @@
 	Properties {
 		
 	}
+
+	CGINCLUDE
+
+	struct appdata {
+		float4 Vertex : POSITION;
+		float4 Color : COLOR;
+	};
+
+	struct v2f {
+		float4 Pos   : SV_POSITION;
+		float4 Color : COLOR;
+	};
+
+	v2f vert(appdata v) {
+		v2f o;
+
+		o.Pos = UnityObjectToClipPos(v.Vertex);
+		o.Color = v.Color;
+
+		return o;
+	}
+
+	half4 frag(v2f i) : SV_Target{
+		return i.Color;
+	}
+
+	ENDCG
+
 	SubShader {
 		Tags { "RenderType"="Opaque" "Queue"="Geometry" }
 		LOD 200
 
-		CGPROGRAM
-		#pragma surface surf NoLighting keepalpha
+		Pass{
+			CGPROGRAM
 
-		#pragma target 3.0
+			#pragma vertex vert
+			#pragma fragment frag
 
-		struct Input {
-			float4 Color : COLOR;
-		};
+			#pragma target 3.0
 
-		void surf (Input IN, inout SurfaceOutput o) {
-			o.Albedo   = IN.Color.rgb;
-			o.Emission = IN.Color.rgb;
-			o.Alpha    = IN.Color.a;
+			ENDCG
+
 		}
-		ENDCG
 	}
 	FallBack "Diffuse"
 }

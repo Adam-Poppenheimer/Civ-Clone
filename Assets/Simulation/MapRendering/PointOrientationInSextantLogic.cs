@@ -121,8 +121,8 @@ namespace Assets.Simulation.MapRendering {
                 ) {
                     PointOrientationWeightLogic.GetRiverCornerWeights(
                         xzPoint, data.Center, data.Left, data.Right, data.Sextant,
-                        out data.CenterWeight, out data.LeftWeight, out data.RightWeight, out data.RiverHeightWeight,
-                        out data.RiverAlphaWeight
+                        out data.CenterWeight, out data.LeftWeight, out data.RightWeight, out data.RiverWeight,
+                        out data.RiverWeight
                     );
 
                     Profiler.EndSample();
@@ -142,8 +142,8 @@ namespace Assets.Simulation.MapRendering {
                 ) {
                     PointOrientationWeightLogic.GetRiverCornerWeights(
                         xzPoint, data.Center, data.Right, data.NextRight, data.Sextant,
-                        out data.CenterWeight, out data.RightWeight, out data.NextRightWeight, out data.RiverHeightWeight,
-                        out data.RiverAlphaWeight
+                        out data.CenterWeight, out data.RightWeight, out data.NextRightWeight, out data.RiverWeight,
+                        out data.RiverWeight
                     );
 
                     Profiler.EndSample();

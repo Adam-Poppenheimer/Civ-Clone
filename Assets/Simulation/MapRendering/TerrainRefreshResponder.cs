@@ -149,7 +149,7 @@ namespace Assets.Simulation.MapRendering {
                     TerrainRefreshType.Heightmap | TerrainRefreshType.Alphamap |
                     TerrainRefreshType.Culture   | TerrainRefreshType.Farmland |
                     TerrainRefreshType.Rivers    | TerrainRefreshType.Roads    |
-                    TerrainRefreshType.Marshes
+                    TerrainRefreshType.Marshes   | TerrainRefreshType.Orientation
                 );
             }
         }

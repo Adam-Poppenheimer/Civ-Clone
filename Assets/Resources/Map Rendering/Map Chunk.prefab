@@ -152,6 +152,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TerrainBaker: {fileID: 114306210666534096}
   OrientationTexture: {fileID: 0}
+  WeightsTexture: {fileID: 0}
 --- !u!114 &114275055398550290
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -181,7 +182,7 @@ MonoBehaviour:
     m_Bits: 272
   LandDrawingMask:
     serializedVersion: 2
-    m_Bits: 31744
+    m_Bits: 162816
   WaterDrawingMask:
     serializedVersion: 2
     m_Bits: 1024

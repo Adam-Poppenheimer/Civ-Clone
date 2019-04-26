@@ -1,4 +1,4 @@
-﻿Shader "Civ Clone/Simple Land" {
+﻿Shader "Civ Clone/Riverbed" {
 	Properties {
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
@@ -9,7 +9,7 @@
 
 		Stencil {
 			Ref 0
-			Comp Equal
+			Comp Always
 			Pass IncrSat
 		}
 

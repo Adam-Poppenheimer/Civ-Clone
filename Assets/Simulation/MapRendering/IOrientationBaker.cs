@@ -6,7 +6,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void RenderOrientationFromMesh(Texture2D orientationTexture, Transform chunkTransform);
+        void RenderOrientationFromMesh(Texture2D orientationTexture, Texture2D weightsTexture, Transform chunkTransform);
 
         #endregion
 

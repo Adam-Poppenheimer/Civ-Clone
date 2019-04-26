@@ -51,7 +51,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
-            Assert.AreEqual(5, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E).Length);
+            Assert.AreEqual(5, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E).Length);
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 1f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 0f, 1f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -77,7 +77,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -91,7 +91,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -105,7 +105,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -133,7 +133,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 0f, 0f, 1f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 
@@ -149,7 +149,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var alphamapLogic = Container.Resolve<CellAlphamapLogic>();
 
             CollectionAssert.AreEqual(
-                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForPointForCell(cell, HexDirection.E)
+                new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
         }
 

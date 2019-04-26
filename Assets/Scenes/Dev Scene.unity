@@ -18220,6 +18220,7 @@ GameObject:
   serializedVersion: 5
   m_Component:
   - component: {fileID: 453832945}
+  - component: {fileID: 453832946}
   - component: {fileID: 453832944}
   m_Layer: 0
   m_Name: Orientation Camera
@@ -18252,7 +18253,7 @@ Camera:
   m_Depth: 24
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 32768
+    m_Bits: 0
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0
@@ -18277,6 +18278,27 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
+--- !u!114 &453832946
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 453832943}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e3bf2a5895617ac47ab4211be9d309b7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  OrientationCamera: {fileID: 453832944}
+  OrientationCullingMask:
+    serializedVersion: 2
+    m_Bits: 32768
+  NormalWeightsCullingMask:
+    serializedVersion: 2
+    m_Bits: 65536
+  RiverWeightsCullingMask:
+    serializedVersion: 2
+    m_Bits: 131072
 --- !u!1 &454875401
 GameObject:
   m_ObjectHideFlags: 0
@@ -42263,7 +42285,7 @@ MonoBehaviour:
     type: 2}
   HexSubMeshPrefab: {fileID: 114734035405766960, guid: 40fcc8fc8c4c10d4a9ab6d21a3db0a7d,
     type: 2}
-  OrientationCamera: {fileID: 453832944}
+  OrientationBaker: {fileID: 453832946}
 --- !u!1 &1026637652
 GameObject:
   m_ObjectHideFlags: 0

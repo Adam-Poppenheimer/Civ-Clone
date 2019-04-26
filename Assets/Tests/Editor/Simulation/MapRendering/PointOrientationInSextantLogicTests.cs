@@ -276,6 +276,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void TryFindValidOrientation_AndPointInPreviousConfluence_AppliesRiverCornerWeights_AndReturnsTrue() {
             var point = new Vector2(1f, 2f);
 
@@ -325,7 +330,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(centerWeight,      data.CenterWeight,      "Unexpected CenterWeight");
             Assert.AreEqual(leftWeight,        data.LeftWeight,        "Unexpected LeftWeight");
             Assert.AreEqual(rightWeight,       data.RightWeight,       "Unexpected RightWeight");
-            Assert.AreEqual(riverHeightWeight, data.RiverHeightWeight, "Unexpected RiverHeightWeight");
+            Assert.AreEqual(riverHeightWeight, data.RiverWeight, "Unexpected RiverHeightWeight");
             Assert.AreEqual(riverAlphaWeight,  data.RiverAlphaWeight,  "Unexpected RiverAlphaWeight");
         }
 
@@ -379,7 +384,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Assert.AreEqual(centerWeight,      data.CenterWeight,      "Unexpected CenterWeight");
             Assert.AreEqual(rightWeight,       data.RightWeight,       "Unexpected RightWeight");
             Assert.AreEqual(nextRightWeight,   data.NextRightWeight,   "Unexpected NextRightWeight");
-            Assert.AreEqual(riverHeightWeight, data.RiverHeightWeight, "Unexpected RiverHeightWeight");
+            Assert.AreEqual(riverHeightWeight, data.RiverWeight, "Unexpected RiverHeightWeight");
             Assert.AreEqual(riverAlphaWeight,  data.RiverAlphaWeight,  "Unexpected RiverAlphaWeight");
         }
 
@@ -403,7 +408,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var sextantLogic = Container.Resolve<PointOrientationInSextantLogic>();
 
             Assert.IsFalse(sextantLogic.TryFindValidOrientation(Vector2.zero, center, HexDirection.E, out data));
-        }
+        }*/
 
         #endregion
 

@@ -8,6 +8,8 @@ namespace Assets.Simulation.MapRendering {
 
         Transform transform { get; }
 
+        int Layer { get; }
+
         bool ShouldBeBaked { get; }
 
         #endregion

@@ -18,18 +18,14 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig RenderConfig;
-        private IHexGrid         Grid;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public OrientationTriangulator(
-            IMapRenderConfig renderConfig, IHexGrid grid
-        ) {
+        public OrientationTriangulator(IMapRenderConfig renderConfig) {
             RenderConfig = renderConfig;
-            Grid         = grid;
         }
 
         #endregion
@@ -48,31 +44,12 @@ namespace Assets.Simulation.MapRendering {
                 var cellColor = new Color32(rg[0], rg[1], b, 0);
 
                 orientationMesh.AddTriangle(
-                    cell.AbsolutePosition,
-                    cell.AbsolutePosition + RenderConfig.GetFirstCorner (direction),
-                    cell.AbsolutePosition + RenderConfig.GetSecondCorner(direction)
+                    Vector3.down + cell.AbsolutePosition,
+                    Vector3.down + cell.AbsolutePosition + RenderConfig.GetFirstCorner (direction),
+                    Vector3.down + cell.AbsolutePosition + RenderConfig.GetSecondCorner(direction)
                 );
-
                 orientationMesh.AddTriangleColor(cellColor);
             }
-        }
-
-        public PointOrientationData GetDataFromColor(Color32 color) {
-            int index = BitConverter.ToInt16(new byte[] { color.r, color.g }, 0) - 1;
-
-            var center = index >= 0 && index < Grid.Cells.Count ? Grid.Cells[index] : null;
-
-            HexDirection sextant = (HexDirection)color.b;
-
-            var retval = new PointOrientationData() {
-                IsOnGrid = center != null,
-                Sextant  = sextant,
-
-                Center = center,
-                CenterWeight = 1f
-            };
-
-            return retval;
         }
 
         #endregion

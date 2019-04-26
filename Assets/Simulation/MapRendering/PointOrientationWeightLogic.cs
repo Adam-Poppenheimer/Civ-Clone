@@ -41,14 +41,6 @@ namespace Assets.Simulation.MapRendering {
         #region from IPointOrientationWeightLogic
 
         public void ApplyLandBesideRiverWeights(Vector2 xzPoint, PointOrientationData data) {
-            var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant);
-
-            Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
-
-            if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
-                data.RiverAlphaWeight = 1f;
-            }
-
             data.CenterWeight = 1f;
         }
 
@@ -98,26 +90,6 @@ namespace Assets.Simulation.MapRendering {
                 ApplyLandBesideLandWeights_Edge(xzPoint, data);
             }
 
-            if(hasPreviousRiver) {
-                var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant.Previous());
-
-                Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
-
-                if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
-                    data.RiverAlphaWeight = 1f;
-                }
-            }
-
-            if(hasNextRiver) {
-                var riverContour = CellEdgeContourCanon.GetContourForCellEdge(data.Center, data.Sextant.Next());
-
-                Vector2 nearestPoint = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, riverContour);
-
-                if((nearestPoint - xzPoint).magnitude <= RenderConfig.RiverBankWidth) {
-                    data.RiverAlphaWeight = 1f;
-                }
-            }
-
             Profiler.EndSample();
         }
 
@@ -164,9 +136,7 @@ namespace Assets.Simulation.MapRendering {
 
             data.CenterWeight = 1f - Mathf.Clamp01(2 * (pointCROntoMidline.magnitude / centerToRightMidline.magnitude));
             data.RightWeight  = 1f - Mathf.Clamp01(2 * (pointRCOntoMidline.magnitude / rightToCenterMidline.magnitude));
-            data.RiverHeightWeight  = 1f - data.CenterWeight - data.RightWeight;
-
-            data.RiverAlphaWeight = 1f;
+            data.RiverWeight  = 1f - data.CenterWeight - data.RightWeight;
         }
 
         //We solve this problem by dividing the corner into six triangles,

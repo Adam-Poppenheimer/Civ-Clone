@@ -85,7 +85,7 @@ namespace Assets.Simulation.MapRendering {
         Color FreshWaterColor   { get; }
         Color RiverWaterColor   { get; }
 
-        float RiverMaxWidth      { get; }
+        float RiverMaxInnerWidth      { get; }
         float RiverCurveStrength { get; }
         float RiverWideningRate  { get; }
         float RiverWidthNoise    { get; }
@@ -101,7 +101,8 @@ namespace Assets.Simulation.MapRendering {
 
 
         HexMeshData StandingWaterData   { get; }
-        HexMeshData RiversData          { get; }
+        HexMeshData RiverSurfaceData    { get; }
+        HexMeshData RiverBankData       { get; }
         HexMeshData CultureData         { get; }
         HexMeshData FarmlandData        { get; }
         HexMeshData RoadData            { get; }
@@ -109,8 +110,7 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData OasisWaterData      { get; }
         HexMeshData OasisLandData       { get; }
         HexMeshData OrientationMeshData { get; }
-
-        LayerMask OrientationCullingMask { get; }
+        HexMeshData WeightsMeshData     { get; }
 
 
 
@@ -131,8 +131,10 @@ namespace Assets.Simulation.MapRendering {
 
 
         RenderTextureData TerrainBakeTextureData { get; }
+        RenderTextureData OrientationTextureData { get; }
 
         Shader TerrainBakeOcclusionShader { get; }
+        Shader RiverWeightShader          { get; }
 
         #endregion
 

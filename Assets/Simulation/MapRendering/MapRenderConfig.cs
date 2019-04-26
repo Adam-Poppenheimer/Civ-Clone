@@ -263,10 +263,10 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private Color _riverWaterColor;
 
 
-        public float RiverMaxWidth {
-            get { return _riverMaxWidth; }
+        public float RiverMaxInnerWidth {
+            get { return _riverMaxInnerWidth; }
         }
-        [SerializeField, Range(0f, 10f)] private float _riverMaxWidth;
+        [SerializeField, Range(0f, 10f)] private float _riverMaxInnerWidth;
 
         public float RiverCurveStrength {
             get { return _riverCurveStrength; }
@@ -286,7 +286,7 @@ namespace Assets.Simulation.MapRendering {
         public float RiverBankWidth {
             get { return _riverBankWidth; }
         }
-        [SerializeField, Range(0f, 1f)] private float _riverBankWidth = 0f;
+        [SerializeField, Range(0f, 5f)] private float _riverBankWidth = 0f;
 
         public int RiverCurvesForMaxWidth {
             get { return _riverCurvesForMaxWidth; }
@@ -318,10 +318,15 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _standingWaterData;
 
-        public HexMeshData RiversData {
-            get { return _riversData; }
+        public HexMeshData RiverSurfaceData {
+            get { return _riverSurfaceData; }
         }
-        [SerializeField] private HexMeshData _riversData;
+        [SerializeField] private HexMeshData _riverSurfaceData;
+
+        public HexMeshData RiverBankData {
+            get { return _riverBankData; }
+        }
+        [SerializeField] private HexMeshData _riverBankData;
 
         public HexMeshData CultureData {
             get { return _cultureData; }
@@ -358,11 +363,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexMeshData _orientationMeshData;
 
-
-        public LayerMask OrientationCullingMask {
-            get { return _orientationCullingMask; }
+        public HexMeshData WeightsMeshData {
+            get { return _weightsMeshData; }
         }
-        [SerializeField] private LayerMask _orientationCullingMask;
+        [SerializeField] private HexMeshData _weightsMeshData;
 
 
 
@@ -422,10 +426,21 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private RenderTextureData _terrainBakeTextureData;
 
+        public RenderTextureData OrientationTextureData {
+            get { return _orientationTextureData; }
+        }
+        [SerializeField] private RenderTextureData _orientationTextureData;
+
+
         public Shader TerrainBakeOcclusionShader {
             get { return _terrainBakeOcclusionShader; }
         }
         [SerializeField] private Shader _terrainBakeOcclusionShader;
+
+        public Shader RiverWeightShader {
+            get { return _riverWeightShader; }
+        }
+        [SerializeField] private Shader _riverWeightShader;
 
         #endregion
 

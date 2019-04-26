@@ -27,8 +27,7 @@ namespace Assets.Simulation.MapRendering {
         public float RightWeight;
         public float NextRightWeight;
 
-        public float RiverHeightWeight;
-        public float RiverAlphaWeight;
+        public float RiverWeight;
 
         #endregion
 
@@ -50,8 +49,7 @@ namespace Assets.Simulation.MapRendering {
                 && LeftWeight        == otherData.LeftWeight
                 && RightWeight       == otherData.RightWeight
                 && NextRightWeight   == otherData.NextRightWeight
-                && RiverHeightWeight == otherData.RiverHeightWeight
-                && RiverAlphaWeight  == otherData.RiverAlphaWeight;
+                && RiverWeight == otherData.RiverWeight;
         }
 
         public override int GetHashCode() {
@@ -69,12 +67,11 @@ namespace Assets.Simulation.MapRendering {
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, Right)     ? Right    .GetHashCode() : 0);
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, NextRight) ? NextRight.GetHashCode() : 0);
 
-                hash = (hash * HashingMultipler) ^ CenterWeight     .GetHashCode();
-                hash = (hash * HashingMultipler) ^ LeftWeight       .GetHashCode();
-                hash = (hash * HashingMultipler) ^ RightWeight      .GetHashCode();
-                hash = (hash * HashingMultipler) ^ NextRightWeight  .GetHashCode();
-                hash = (hash * HashingMultipler) ^ RiverHeightWeight.GetHashCode();                
-                hash = (hash * HashingMultipler) ^ RiverAlphaWeight .GetHashCode();
+                hash = (hash * HashingMultipler) ^ CenterWeight   .GetHashCode();
+                hash = (hash * HashingMultipler) ^ LeftWeight     .GetHashCode();
+                hash = (hash * HashingMultipler) ^ RightWeight    .GetHashCode();
+                hash = (hash * HashingMultipler) ^ NextRightWeight.GetHashCode();
+                hash = (hash * HashingMultipler) ^ RiverWeight    .GetHashCode();
 
                 return hash;
             }
@@ -98,7 +95,7 @@ namespace Assets.Simulation.MapRendering {
                 return null;
             }
 
-            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverHeightWeight);
+            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverWeight);
 
             if(CenterWeight == maxWeight) {
                 return Center;
@@ -115,6 +112,21 @@ namespace Assets.Simulation.MapRendering {
             }else {
                 return null;
             }
+        }
+
+        public void Clear() {
+            IsOnGrid = false;
+            
+            Center    = null;
+            Left      = null;
+            Right     = null;
+            NextRight = null;
+
+            CenterWeight    = 0f;
+            LeftWeight      = 0f;
+            RightWeight     = 0f;
+            NextRightWeight = 0f;
+            RiverWeight     = 0f;
         }
 
         #endregion

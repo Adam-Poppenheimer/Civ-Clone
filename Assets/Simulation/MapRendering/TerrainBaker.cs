@@ -86,7 +86,7 @@ namespace Assets.Simulation.MapRendering {
 
             TerrainTexture.filterMode = FilterMode.Trilinear;
             TerrainTexture.wrapMode   = TextureWrapMode.Clamp;
-            TerrainTexture.useMipMap  = true;
+            TerrainTexture.useMipMap  = false;
 
             WaterTexture = new RenderTexture(
                 width:  Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
@@ -98,7 +98,7 @@ namespace Assets.Simulation.MapRendering {
 
             WaterTexture.filterMode = FilterMode.Trilinear;
             WaterTexture.wrapMode   = TextureWrapMode.Clamp;
-            WaterTexture.useMipMap  = true;
+            WaterTexture.useMipMap  = false;
 
             float cameraWidth  = RenderConfig.ChunkWidth  + RenderConfig.OuterRadius * 3f;
             float cameraHeight = RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f;

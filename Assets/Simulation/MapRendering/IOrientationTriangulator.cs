@@ -10,8 +10,6 @@ namespace Assets.Simulation.MapRendering {
 
         void TriangulateOrientation(IHexCell cell, IHexMesh orientationMesh);
 
-        PointOrientationData GetDataFromColor(Color32 color);
-
         #endregion
 
     }

@@ -21,8 +21,9 @@ namespace Assets.Simulation.HexMap {
 
         IEnumerable<IMapChunk> Chunks { get; }
 
-        IHexMesh RiverMesh { get; }
-        IHexMesh FarmMesh  { get; }
+        IHexMesh RiverSurfaceMesh { get; }
+        IHexMesh RiverBankMesh    { get; }
+        IHexMesh FarmMesh         { get; }
 
         #endregion
 

@@ -43,6 +43,10 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IHexMesh
 
+        public int Layer {
+            get { return gameObject.layer; }
+        }
+
         public bool ShouldBeBaked {
             get { return Data.ShouldBeBaked; }
         }

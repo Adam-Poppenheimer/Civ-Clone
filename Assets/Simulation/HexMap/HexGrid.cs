@@ -43,8 +43,9 @@ namespace Assets.Simulation.HexMap {
         }
         private MapChunk[,] chunks;
 
-        public IHexMesh RiverMesh { get; private set; }
-        public IHexMesh FarmMesh  { get; private set; }
+        public IHexMesh RiverSurfaceMesh { get; private set; }
+        public IHexMesh RiverBankMesh    { get; private set; }
+        public IHexMesh FarmMesh         { get; private set; }
 
         #endregion
 
@@ -83,10 +84,6 @@ namespace Assets.Simulation.HexMap {
             HexMeshFactory        = hexMeshFactory;
         }
 
-        #region Unity message methods
-
-        #endregion
-
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
@@ -101,11 +98,13 @@ namespace Assets.Simulation.HexMap {
             CreateChunks();
             AttachChunksToCells();
 
-            RiverMesh = HexMeshFactory.Create("Rivers",   RenderConfig.RiversData);
-            FarmMesh  = HexMeshFactory.Create("Farmland", RenderConfig.FarmlandData);
+            RiverSurfaceMesh = HexMeshFactory.Create("River Surfaces", RenderConfig.RiverSurfaceData);
+            RiverBankMesh    = HexMeshFactory.Create("River Banks",    RenderConfig.RiverBankData);
+            FarmMesh         = HexMeshFactory.Create("Farmland",       RenderConfig.FarmlandData);
 
-            RiverMesh.transform.SetParent(transform, false);
-            FarmMesh .transform.SetParent(transform, false);
+            RiverSurfaceMesh.transform.SetParent(transform, false);
+            RiverBankMesh   .transform.SetParent(transform, false);
+            FarmMesh        .transform.SetParent(transform, false);
 
             foreach(var chunk in Chunks) {
                 chunk.Refresh(TerrainRefreshType.All);
@@ -127,10 +126,10 @@ namespace Assets.Simulation.HexMap {
 
             chunks = null;
 
-            HexMeshFactory.Destroy(RiverMesh);
+            HexMeshFactory.Destroy(RiverSurfaceMesh);
             HexMeshFactory.Destroy(FarmMesh);
 
-            RiverMesh = null;
+            RiverSurfaceMesh = null;
             FarmMesh  = null;
         }
 
