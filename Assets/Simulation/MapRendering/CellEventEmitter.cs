@@ -35,7 +35,7 @@ namespace Assets.Simulation.MapRendering {
         private HexCellSignals                           CellSignals;
         private CitySignals                              CitySignals;
         private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
-        private IPointOrientationLogic                   PointOrientationLogic;
+        private IPointOrientationLogic             PointOrientationLogic;
 
         #endregion
 
@@ -73,12 +73,10 @@ namespace Assets.Simulation.MapRendering {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
+                    IHexCell cell = PointOrientationLogic.GetCellAtPoint(hit.point);
 
-                    IHexCell mainCell = orientationData.GetMainCell();
-
-                    if(mainCell != null) {
-                        CellSignals.PointerDown.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
+                    if(cell != null) {
+                        CellSignals.PointerDown.OnNext(new Tuple<IHexCell, PointerEventData>(cell, eventData));
                     }
                 }
             }
@@ -90,12 +88,10 @@ namespace Assets.Simulation.MapRendering {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
+                    IHexCell cell = PointOrientationLogic.GetCellAtPoint(hit.point);
 
-                    IHexCell mainCell = orientationData.GetMainCell();
-
-                    if(mainCell != null) {
-                        CellSignals.PointerUp.OnNext(new Tuple<IHexCell, PointerEventData>(mainCell, eventData));
+                    if(cell != null) {
+                        CellSignals.PointerUp.OnNext(new Tuple<IHexCell, PointerEventData>(cell, eventData));
                     }
                 }
             }
@@ -107,20 +103,18 @@ namespace Assets.Simulation.MapRendering {
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
 
                 if(DidRaycastHitChunk(hit)) {
-                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
+                    IHexCell cell = PointOrientationLogic.GetCellAtPoint(hit.point);
 
-                    IHexCell mainCell = orientationData.GetMainCell();
-
-                    if(mainCell == null) {
+                    if(cell == null) {
                         return;
                     }
 
-                    var cityAtLocation = GetCityAtLocation(mainCell);
+                    var cityAtLocation = GetCityAtLocation(cell);
                     if(cityAtLocation != null) {
                         CitySignals.PointerClicked.OnNext(cityAtLocation);
                     }else {
                         CellSignals.Clicked.OnNext(
-                            new Tuple<IHexCell, PointerEventData>(mainCell, eventData)
+                            new Tuple<IHexCell, PointerEventData>(cell, eventData)
                         );
                     }
                 }
@@ -189,9 +183,7 @@ namespace Assets.Simulation.MapRendering {
             RaycastHit hit;
             if(Physics.Raycast(pointerRay, out hit, float.MaxValue)) {
                 if(DidRaycastHitChunk(hit)) {
-                    var orientationData = PointOrientationLogic.GetOrientationDataForPoint(hit.point.ToXZ());
-
-                    return orientationData.GetMainCell();
+                    return PointOrientationLogic.GetCellAtPoint(hit.point);
                 }
             }
 

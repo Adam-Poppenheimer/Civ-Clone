@@ -13,7 +13,9 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint);
+        IHexCell GetCellAtPoint(Vector3 point);
+
+        PointOrientationData GetOrientationDataFromColors(Color32 orientationColor, Color weightsColor);
 
         #endregion
 

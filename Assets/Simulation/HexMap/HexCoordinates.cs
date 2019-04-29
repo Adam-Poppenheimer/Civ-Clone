@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.HexMap {
 
     [Serializable]
-    public class HexCoordinates {
+    public struct HexCoordinates : IEquatable<HexCoordinates> {
 
         #region static fields and properties
 
@@ -119,6 +119,18 @@ namespace Assets.Simulation.HexMap {
 			return results;
         }
 
+        #region operators
+
+        public static bool operator ==(HexCoordinates a, HexCoordinates b) {
+            return a.X == b.X && a.Z == b.Z;
+        }
+
+        public static bool operator !=(HexCoordinates a, HexCoordinates b) {
+            return a.X != b.X || a.Z != b.Z;
+        }
+
+        #endregion
+
         #endregion
 
         #region instance methods
@@ -144,6 +156,14 @@ namespace Assets.Simulation.HexMap {
 
         public override int GetHashCode() {
             return X ^ Z;
+        }
+
+        #endregion
+
+        #region from IEquatable<HexCoordinates>
+
+        public bool Equals(HexCoordinates coordinates) {
+            return X == coordinates.X && Z == coordinates.Z;
         }
 
         #endregion

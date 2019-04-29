@@ -15,9 +15,8 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IPointOrientationLogic PointOrientationLogic;
-        private ICellHeightmapLogic    CellHeightmapLogic;
-        private IMapRenderConfig       RenderConfig;
+        private ICellHeightmapLogic CellHeightmapLogic;
+        private IMapRenderConfig    RenderConfig;
 
         #endregion
 
@@ -25,12 +24,10 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public TerrainHeightLogic(
-            IPointOrientationLogic pointOrientationLogic,
             ICellHeightmapLogic cellHeightmapLogic, IMapRenderConfig renderConfig
         ) {
-            PointOrientationLogic = pointOrientationLogic;
-            CellHeightmapLogic    = cellHeightmapLogic;
-            RenderConfig          = renderConfig;
+            CellHeightmapLogic = cellHeightmapLogic;
+            RenderConfig       = renderConfig;
         }
 
         #endregion

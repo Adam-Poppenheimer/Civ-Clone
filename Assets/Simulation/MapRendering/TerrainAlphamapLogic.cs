@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -16,7 +17,6 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IMapRenderConfig         RenderConfig;
-        private IPointOrientationLogic   PointOrientationLogic;
         private ICellAlphamapLogic       CellAlphamapLogic;
 
         #endregion
@@ -25,12 +25,12 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public TerrainAlphamapLogic(
-            IMapRenderConfig renderConfig,IPointOrientationLogic pointOrientationLogic,
-            ICellAlphamapLogic cellAlphamapLogic
+            IMapRenderConfig renderConfig, ICellAlphamapLogic cellAlphamapLogic
         ) {
-            RenderConfig            = renderConfig;
-            PointOrientationLogic   = pointOrientationLogic;
-            CellAlphamapLogic       = cellAlphamapLogic;
+            RenderConfig      = renderConfig;
+            CellAlphamapLogic = cellAlphamapLogic;
+
+            ReusedAlphamap = new float[RenderConfig.MapTextures.Count()];
         }
 
         #endregion
@@ -39,54 +39,65 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainAlphamapLogic
 
+        /* As elsewhere in the code, we reuse the same array here
+         * to save on memory requirements. Make sure that multiple
+         * uses of GetAlphamapFromOrientation are not being used
+         * at the same time.
+         */ 
+        private float[] ReusedAlphamap;
+
         public float[] GetAlphamapFromOrientation(PointOrientationData orientationData) {
-            if(!orientationData.IsOnGrid) {
-                return RenderConfig.OffGridAlphamap;
+            Profiler.BeginSample("GetAlphamapFromOrientation()");
+
+            for(int i = 0; i < ReusedAlphamap.Length; i++) {
+                ReusedAlphamap[i] = 0f;
             }
 
-            var retval = new float[RenderConfig.MapTextures.Count()];
+            if(orientationData.IsOnGrid) {
+                if(orientationData.RiverWeight > 0f) {
+                    AddToMap(
+                        ReusedAlphamap,
+                        orientationData.Center.Terrain == CellTerrain.FloodPlains ? RenderConfig.FloodPlainsAlphamap : RenderConfig.RiverAlphamap,
+                        orientationData.RiverWeight
+                    );
+                }
 
-            if(orientationData.RiverWeight > 0f) {
-                AddToMap(
-                    retval,
-                    orientationData.Center.Terrain == CellTerrain.FloodPlains ? RenderConfig.FloodPlainsAlphamap : RenderConfig.RiverAlphamap,
-                    orientationData.RiverWeight
-                );
+                if(orientationData.CenterWeight > 0f) {
+                    AddToMap(
+                        ReusedAlphamap,
+                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Center, orientationData.Sextant),
+                        orientationData.CenterWeight
+                    );
+                }
+
+                if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
+                    AddToMap(
+                        ReusedAlphamap,
+                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Left, orientationData.Sextant.Next2()),
+                        orientationData.LeftWeight
+                    );
+                }
+
+                if(orientationData.Right != null && orientationData.RightWeight > 0f) {
+                    AddToMap(
+                        ReusedAlphamap,
+                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Right, orientationData.Sextant.Opposite()),
+                        orientationData.RightWeight
+                    );
+                }
+
+                if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
+                    AddToMap(
+                        ReusedAlphamap,
+                        CellAlphamapLogic.GetAlphamapForCell(orientationData.NextRight, orientationData.Sextant.Previous2()),
+                        orientationData.NextRightWeight
+                    );
+                }
             }
 
-            if(orientationData.CenterWeight > 0f) {
-                AddToMap(
-                    retval,
-                    CellAlphamapLogic.GetAlphamapForCell(orientationData.Center, orientationData.Sextant),
-                    orientationData.CenterWeight
-                );
-            }
+            Profiler.EndSample();
 
-            if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
-                AddToMap(
-                    retval,
-                    CellAlphamapLogic.GetAlphamapForCell(orientationData.Left, orientationData.Sextant.Next2()),
-                    orientationData.LeftWeight
-                );
-            }
-
-            if(orientationData.Right != null && orientationData.RightWeight > 0f) {
-                AddToMap(
-                    retval,
-                    CellAlphamapLogic.GetAlphamapForCell(orientationData.Right, orientationData.Sextant.Opposite()),
-                    orientationData.RightWeight
-                );
-            }
-
-            if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
-                AddToMap(
-                    retval,
-                    CellAlphamapLogic.GetAlphamapForCell(orientationData.NextRight, orientationData.Sextant.Previous2()),
-                    orientationData.NextRightWeight
-                );
-            }
-
-            return retval;
+            return ReusedAlphamap;
         }
 
         #endregion

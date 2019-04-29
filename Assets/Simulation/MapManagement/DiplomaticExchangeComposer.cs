@@ -68,7 +68,7 @@ namespace Assets.Simulation.MapManagement {
             retval.IntegerInput = exchangeData.IntegerInput;
 
             if(exchangeData.CityInputLocation != null) {
-                var cellAtCoords = Grid.GetCellAtCoordinates(exchangeData.CityInputLocation);
+                var cellAtCoords = Grid.GetCellAtCoordinates(exchangeData.CityInputLocation.Value);
 
                 if(cellAtCoords == null) {
                     throw new InvalidOperationException("Could not find a cell at the specified coordinates");

@@ -12,11 +12,11 @@ namespace Assets.Simulation.MapManagement {
     [Serializable, DataContract]
     public class SerializableDiplomaticExchangeData {
 
-        [DataMember()] public ExchangeType   Type;
-        [DataMember()] public int            IntegerInput;
-        [DataMember()] public HexCoordinates CityInputLocation;
-        [DataMember()] public string         ResourceInput;
-
+        [DataMember()] public ExchangeType    Type;
+        [DataMember()] public int             IntegerInput;
+        [DataMember()] public HexCoordinates? CityInputLocation;
+        [DataMember()] public string          ResourceInput;
+    
     }
 
 }

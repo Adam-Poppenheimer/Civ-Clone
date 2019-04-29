@@ -64,7 +64,7 @@ namespace Assets.Simulation.MapManagement {
                 var civData = mapData.Civilizations[i];
 
                 if(civData.CapitalLocation != null) {
-                    var capitalLocation = Grid.GetCellAtCoordinates(civData.CapitalLocation);
+                    var capitalLocation = Grid.GetCellAtCoordinates(civData.CapitalLocation.Value);
 
                     var capitalCity = CityLocationCanon.GetPossessionsOfOwner(capitalLocation).FirstOrDefault();
 

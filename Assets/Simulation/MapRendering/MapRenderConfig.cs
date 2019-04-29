@@ -185,11 +185,6 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _mountainTextureIndex;
 
-        public float[] OffGridAlphamap {
-            get { return _offGridAlphamap; }
-        }
-        [SerializeField] private float[] _offGridAlphamap;
-
         public float[] RiverAlphamap {
             get { return _riverAlphamap; }
         }

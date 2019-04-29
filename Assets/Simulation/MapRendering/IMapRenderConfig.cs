@@ -66,7 +66,6 @@ namespace Assets.Simulation.MapRendering {
         int MountainTextureIndex { get; }
 
         //May need to be retyped to prevent unintentional modification
-        float[] OffGridAlphamap     { get; }
         float[] RiverAlphamap       { get; }
         float[] FloodPlainsAlphamap { get; }
 

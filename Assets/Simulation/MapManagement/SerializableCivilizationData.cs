@@ -27,7 +27,7 @@ namespace Assets.Simulation.MapManagement {
 
         [DataMember()] public List<HexCoordinates> ExploredCells;
 
-        [DataMember()] public HexCoordinates CapitalLocation;
+        [DataMember()] public HexCoordinates? CapitalLocation;
 
         [DataMember()] public List<List<string>> FreeBuildings;
 

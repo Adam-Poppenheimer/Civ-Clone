@@ -116,6 +116,7 @@ namespace Assets.Simulation.MapRendering {
 
         public void Clear() {
             IsOnGrid = false;
+            Sextant = HexDirection.NE;
             
             Center    = null;
             Left      = null;

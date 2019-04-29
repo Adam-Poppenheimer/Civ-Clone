@@ -193,7 +193,7 @@ namespace Assets.Simulation.MapRendering {
         private IOrientationTriangulator OrientationTriangulator;
         private IWeightsTriangulator     WeightsTriangulator;
         private IOrientationBaker        OrientationBaker;
-        private IBetterPointOrientationLogic PointOrientationLogic;
+        private IPointOrientationLogic PointOrientationLogic;
 
         #endregion
 
@@ -209,7 +209,7 @@ namespace Assets.Simulation.MapRendering {
             IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
             IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator,
-            IOrientationBaker orientationBaker, IBetterPointOrientationLogic pointOrientationLogic
+            IOrientationBaker orientationBaker, IPointOrientationLogic pointOrientationLogic
         ) {
             AlphamapLogic           = alphamapLogic;
             HeightLogic             = heightLogic;
@@ -432,6 +432,12 @@ namespace Assets.Simulation.MapRendering {
 
             float[] newAlphas;
 
+            int alphamapLength = terrainData.splatPrototypes.Length;
+
+            int texelX, texelY;
+            Color32 orientationColor;
+            Color weightsColor;
+
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
                     //For some reason, terrainData seems to index its points
@@ -443,13 +449,17 @@ namespace Assets.Simulation.MapRendering {
                     textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
                     textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
 
-                    orientation = PointOrientationLogic.GetOrientationDataFromTextures(
-                        new Vector2(textureNormalX, textureNormalZ), OrientationTexture, WeightsTexture
-                    );
+                    texelX = Mathf.RoundToInt(OrientationTexture.width  * textureNormalX);
+                    texelY = Mathf.RoundToInt(OrientationTexture.height * textureNormalZ);
+
+                    orientationColor = OrientationTexture.GetPixel(texelX, texelY);
+                    weightsColor     = WeightsTexture    .GetPixel(texelX, texelY);
+
+                    orientation = PointOrientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
 
                     newAlphas = AlphamapLogic.GetAlphamapFromOrientation(orientation);
 
-                    for(int alphaIndex = 0; alphaIndex < terrainData.splatPrototypes.Length; alphaIndex++) {
+                    for(int alphaIndex = 0; alphaIndex < alphamapLength; alphaIndex++) {
                         alphaMaps[width, height, alphaIndex] = newAlphas[alphaIndex];
                     }
                 }
@@ -480,6 +490,10 @@ namespace Assets.Simulation.MapRendering {
 
             float terrainNormalX, terrainNormalZ, textureNormalX, textureNormalZ, worldX, worldZ;
 
+            int texelX, texelY;
+            Color32 orientationColor;
+            Color weightsColor;
+
             PointOrientationData orientation;
 
             for(int height = 0; height < mapHeight; height++) {
@@ -496,9 +510,13 @@ namespace Assets.Simulation.MapRendering {
                     textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
                     textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
 
-                    orientation =  PointOrientationLogic.GetOrientationDataFromTextures(
-                        new Vector2(textureNormalX, textureNormalZ), OrientationTexture, WeightsTexture
-                    );
+                    texelX = Mathf.RoundToInt(OrientationTexture.width  * textureNormalX);
+                    texelY = Mathf.RoundToInt(OrientationTexture.height * textureNormalZ);
+
+                    orientationColor = OrientationTexture.GetPixel(texelX, texelY);
+                    weightsColor     = WeightsTexture    .GetPixel(texelX, texelY);
+
+                    orientation = PointOrientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
 
                     heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ), orientation);
                 }
@@ -622,7 +640,6 @@ namespace Assets.Simulation.MapRendering {
 
             foreach(var cell in Cells) {
                 MarshTriangulator.TriangulateMarshes(cell, MarshWater);
-                OasisTriangulator.TrianglateOasis   (cell, OasisWater, null);
             }
 
             MarshWater.Apply();
@@ -633,6 +650,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private IEnumerator RefreshOases_Perform() {
+            yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
 
             OasisWater.Clear();

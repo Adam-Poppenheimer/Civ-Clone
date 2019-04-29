@@ -51,18 +51,6 @@ MonoBehaviour:
   - {fileID: 2800000, guid: 78aa86b12715c094c83cf0459113f709, type: 3}
   _seaFloorTextureIndex: 2
   _mountainTextureIndex: 5
-  _offGridAlphamap:
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 0
-  - 1
-  - 0
   _riverAlphamap:
   - 0
   - 0
@@ -290,7 +278,7 @@ MonoBehaviour:
   _oasisWaterRadius: 3
   _oasisLandWidth: 2
   _terrainBakeTextureData:
-    _texelsPerUnit: 17
+    _texelsPerUnit: 20
     _depth: 24
     _format: 0
   _orientationTextureData:

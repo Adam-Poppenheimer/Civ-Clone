@@ -18,9 +18,8 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Mock<IPointOrientationLogic> MockPointOrientationLogic;
-        private Mock<ICellHeightmapLogic>    MockCellHeightmapLogic;
-        private Mock<IMapRenderConfig>       MockMapRenderConfig;
+        private Mock<ICellHeightmapLogic> MockCellHeightmapLogic;
+        private Mock<IMapRenderConfig>    MockMapRenderConfig;
 
         #endregion
 
@@ -30,13 +29,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [SetUp]
         public void CommonInstall() {
-            MockPointOrientationLogic = new Mock<IPointOrientationLogic>();
-            MockCellHeightmapLogic    = new Mock<ICellHeightmapLogic>();
-            MockMapRenderConfig       = new Mock<IMapRenderConfig>();
+            MockCellHeightmapLogic = new Mock<ICellHeightmapLogic>();
+            MockMapRenderConfig    = new Mock<IMapRenderConfig>();
 
-            Container.Bind<IPointOrientationLogic>().FromInstance(MockPointOrientationLogic.Object);
-            Container.Bind<ICellHeightmapLogic>   ().FromInstance(MockCellHeightmapLogic   .Object);
-            Container.Bind<IMapRenderConfig>      ().FromInstance(MockMapRenderConfig      .Object);
+            Container.Bind<ICellHeightmapLogic>().FromInstance(MockCellHeightmapLogic.Object);
+            Container.Bind<IMapRenderConfig>   ().FromInstance(MockMapRenderConfig   .Object);
 
             Container.Bind<TerrainHeightLogic>().AsSingle();
         }
@@ -46,11 +43,6 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
-        public void BrokenTests() {
-            throw new NotImplementedException();
-        }
-
-        /*[Test]
         public void GetTerrainHeightForPoint_AndPointNotOnGrid_ReturnsZero() {
             var point = new Vector2(1f, 2f);
 
@@ -58,11 +50,9 @@ namespace Assets.Tests.Simulation.MapRendering {
                 IsOnGrid = false
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(0f, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(0f, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -76,13 +66,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Center = center, CenterWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center, HexDirection.E)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -96,13 +84,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Left = left, LeftWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left, HexDirection.SW)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -114,13 +100,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Left = null, LeftWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.SW)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -134,13 +118,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Right = right, RightWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, right, HexDirection.W)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -152,13 +134,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Right = null, RightWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.W)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -172,13 +152,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 NextRight = nextRight, NextRightWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, nextRight, HexDirection.NW)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -190,13 +168,11 @@ namespace Assets.Tests.Simulation.MapRendering {
                 NextRight = null, NextRightWeight = 12f
             };
 
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
-
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.NW)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(0, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -205,16 +181,14 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                RiverHeightWeight = 12f
+                RiverWeight = 12f
             };
-
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
 
             MockMapRenderConfig.Setup(config => config.RiverTroughElevation).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
-            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point));
+            Assert.AreEqual(96, heightLogic.GetHeightForPoint(point, orientationData));
         }
 
         [Test]
@@ -232,10 +206,8 @@ namespace Assets.Tests.Simulation.MapRendering {
                 Left      = left,      LeftWeight      = 5f,
                 Right     = right,     RightWeight     = 1.5f,
                 NextRight = nextRight, NextRightWeight = 0.6f,
-                RiverHeightWeight = 2f
+                RiverWeight = 2f
             };
-
-            MockPointOrientationLogic.Setup(logic => logic .GetOrientationDataForPoint(point)).Returns(orientationData);
 
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center,    HexDirection.E )).Returns(10f);
             MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left,      HexDirection.SW)).Returns(11f);
@@ -248,7 +220,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             float expectedValue = 10f + 55f + 1.5f * 12f + 0.6f * 13f + 2f * 6.2f;
 
-            float pointHeight = heightLogic.GetHeightForPoint(point);
+            float pointHeight = heightLogic.GetHeightForPoint(point, orientationData);
 
             Assert.IsTrue(
                 Mathf.Approximately(expectedValue, pointHeight), string.Format(
@@ -256,7 +228,7 @@ namespace Assets.Tests.Simulation.MapRendering {
                     expectedValue, pointHeight
                 )
             );
-        }*/
+        }
 
         #endregion
 

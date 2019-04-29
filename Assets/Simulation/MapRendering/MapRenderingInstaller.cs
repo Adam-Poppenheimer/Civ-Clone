@@ -72,8 +72,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<INonRiverContourBuilder>        ().To<NonRiverContourBuilder>        ().AsSingle();
             Container.Bind<IRiverContourRationalizer>      ().To<RiverContourRationalizer>      ().AsSingle();
             Container.Bind<IHillsHeightmapLogic>           ().To<HillsHeightmapLogic>           ().AsSingle();
-            Container.Bind<IPointOrientationInSextantLogic>().To<PointOrientationInSextantLogic>().AsSingle();
-            Container.Bind<IPointOrientationWeightLogic>   ().To<PointOrientationWeightLogic>   ().AsSingle();
             Container.Bind<IContourRationalizer>           ().To<ContourRationalizer>           ().AsSingle();
             Container.Bind<IFlatlandsHeightmapLogic>       ().To<FlatlandsHeightmapLogic>       ().AsSingle();
             Container.Bind<ICultureTriangulator>           ().To<CultureTriangulator>           ().AsSingle();
@@ -85,7 +83,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IOasisTriangulator>             ().To<OasisTriangulator>             ().AsSingle();
             Container.Bind<IOrientationTriangulator>       ().To<OrientationTriangulator>       ().AsSingle();
             Container.Bind<IWeightsTriangulator>           ().To<WeightsTriangulator>           ().AsSingle();
-            Container.Bind<IBetterPointOrientationLogic>   ().To<BetterPointOrientationLogic>   ().AsSingle();
         }
 
         #endregion

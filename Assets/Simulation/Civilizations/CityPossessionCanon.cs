@@ -17,8 +17,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        private CivilizationSignals                      CivSignals;
-        private IPossessionRelationship<ICity, IHexCell> CellPossessionCanon;
+        private CivilizationSignals CivSignals;
 
         #endregion
 
@@ -30,10 +29,9 @@ namespace Assets.Simulation.Civilizations {
             IPossessionRelationship<ICity, IHexCell> cellPossessionCanon,
             HexCellSignals cellSignals
         ) {
-            CivSignals          = civSignals;
-            CellPossessionCanon = cellPossessionCanon;
+            CivSignals = civSignals;
 
-            citySignals.BeingDestroyed        .Subscribe(OnCityBeingDestroyed);
+            citySignals.BeingDestroyed   .Subscribe(OnCityBeingDestroyed);
             civSignals .CivBeingDestroyed.Subscribe(OnCivilizationBeingDestroyed);
 
             cellSignals.MapBeingClearedSignal.Subscribe(unit => Clear(false));

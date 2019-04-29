@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +9,9 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
+
+using UnityCustomUtilities.Extensions;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -17,76 +19,100 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private float SolidRadiusSq;
-
-
-
-        private IHexGrid                        Grid;
-        private IPointOrientationInSextantLogic PointOrientationInSextantLogic;
-        private IMapRenderConfig                RenderConfig;
+        private IHexGrid              Grid;
+        private ICellEdgeContourCanon CellContourCanon;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public PointOrientationLogic(
-            IHexGrid grid, IPointOrientationInSextantLogic pointOrientationInSextantLogic,
-            IMapRenderConfig renderConfig
-        ) {
-            Grid                           = grid;
-            PointOrientationInSextantLogic = pointOrientationInSextantLogic;
-            RenderConfig                   = renderConfig;
-
-            SolidRadiusSq = RenderConfig.SolidFactor * RenderConfig.InnerRadius;
-            SolidRadiusSq *= SolidRadiusSq;
+        public PointOrientationLogic(IHexGrid grid, ICellEdgeContourCanon cellContourCanon) {
+            Grid             = grid;
+            CellContourCanon = cellContourCanon;
         }
 
         #endregion
 
         #region instance methods
 
-        #region from IPointOrientationLogic
+        #region from IBetterPointOrientationLogic
 
-        public PointOrientationData GetOrientationDataForPoint(Vector2 xzPoint) {
-            Vector3 xyzPoint = new Vector3(xzPoint.x, 0f, xzPoint.y);
-
-            if(!Grid.HasCellAtLocation(xyzPoint)) {
-                return new PointOrientationData();
+        public IHexCell GetCellAtPoint(Vector3 point) {
+            if(!Grid.HasCellAtLocation(point)) {
+                return null;
             }
 
-            IHexCell gridCenter = Grid.GetCellAtLocation(xyzPoint);
+            var gridCell = Grid.GetCellAtLocation(point);
 
-            HexDirection gridSextant;
-            Grid.TryGetSextantOfPointInCell(xzPoint, gridCenter, out gridSextant);
-
-            PointOrientationData retval;
-
-            if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant,            out retval) ||
-                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Previous(), out retval) ||
-                PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridCenter, gridSextant.Next(),     out retval)
-            ) {
-                return retval;
-            }
-            
-            IHexCell gridRight = Grid.GetNeighbor(gridCenter, gridSextant);
-            
-            if(gridRight != null) {
-                if( PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Opposite (), out retval) ||
-                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Next2    (), out retval) ||
-                    PointOrientationInSextantLogic.TryFindValidOrientation(xzPoint, gridRight, gridSextant.Previous2(), out retval)
-                ) {
-                    return retval;
+            foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                if(CellContourCanon.IsPointWithinContour(point.ToXZ(), gridCell, direction)) {
+                    return gridCell;
                 }
             }
 
-            return new PointOrientationData();
+            foreach(var neighbor in Grid.GetNeighbors(gridCell)) {
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    if(CellContourCanon.IsPointWithinContour(point.ToXZ(), neighbor, direction.Opposite())) {
+                        return neighbor;
+                    }
+                }
+            }
+
+            return null;
+        }
+
+        /* The current construction tries to reduce GC allocation
+         * by reusing certain information. ReusedOrientationData
+         * in particular can save a lot of allocations.
+         * However, this will only function if we're only ever using
+         * a single PointOrientationData at a time. It will fail if
+         * we attempt to acquire multiple orientation data and use them
+         * in tandem.
+         */ 
+        private byte[] indexBytes = new byte[2];
+        private PointOrientationData ReusedOrientationData = new PointOrientationData();
+
+        public PointOrientationData GetOrientationDataFromColors(Color32 orientationColor, Color weightsColor) {
+            Profiler.BeginSample("GetOrientationDataFromTextures");
+
+            indexBytes[0] = orientationColor.r;
+            indexBytes[1] = orientationColor.g;
+
+            int index = BitConverter.ToInt16(indexBytes, 0) - 1;
+
+            var center = index >= 0 && index < Grid.Cells.Count ? Grid.Cells[index] : null;
+
+            HexDirection sextant = (HexDirection)orientationColor.b;
+
+            if(center != null) {
+                ReusedOrientationData.IsOnGrid = true;
+                ReusedOrientationData.Sextant = sextant;
+
+                ReusedOrientationData.Center    = center;
+                ReusedOrientationData.Left      = Grid.GetNeighbor(center, sextant.Previous());
+                ReusedOrientationData.Right     = Grid.GetNeighbor(center, sextant);
+                ReusedOrientationData.NextRight = Grid.GetNeighbor(center, sextant.Next());
+
+                ReusedOrientationData.CenterWeight    = weightsColor.r;
+                ReusedOrientationData.LeftWeight      = weightsColor.g;
+                ReusedOrientationData.RightWeight     = weightsColor.b;
+                ReusedOrientationData.NextRightWeight = weightsColor.a;
+
+                ReusedOrientationData.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
+            }else {
+                ReusedOrientationData.Clear();
+            }
+            
+            Profiler.EndSample();
+            
+            return ReusedOrientationData;         
         }
 
         #endregion
 
         #endregion
-
+        
     }
 
 }

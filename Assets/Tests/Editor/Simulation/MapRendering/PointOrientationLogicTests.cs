@@ -3,15 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-using UnityEngine;
-
 using NUnit.Framework;
 using Zenject;
 using Moq;
 
+using UnityEngine;
+
 using Assets.Simulation.HexMap;
 using Assets.Simulation.MapRendering;
-using Assets.Util;
 
 namespace Assets.Tests.Simulation.MapRendering {
 
@@ -19,8 +18,8 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private Mock<IHexGrid>                        MockGrid;
-        private Mock<IPointOrientationInSextantLogic> MockPointOrientationInSextantLogic;
+        private Mock<IHexGrid>              MockGrid;
+        private Mock<ICellEdgeContourCanon> MockCellContourCanon;
 
         #endregion
 
@@ -30,11 +29,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [SetUp]
         public void CommonInstall() {
-            MockGrid                           = new Mock<IHexGrid>();
-            MockPointOrientationInSextantLogic = new Mock<IPointOrientationInSextantLogic>();
+            MockGrid             = new Mock<IHexGrid>();
+            MockCellContourCanon = new Mock<ICellEdgeContourCanon>();
 
-            Container.Bind<IHexGrid>                       ().FromInstance(MockGrid                          .Object);
-            Container.Bind<IPointOrientationInSextantLogic>().FromInstance(MockPointOrientationInSextantLogic.Object);
+            Container.Bind<IHexGrid>             ().FromInstance(MockGrid            .Object);
+            Container.Bind<ICellEdgeContourCanon>().FromInstance(MockCellContourCanon.Object);
 
             Container.Bind<PointOrientationLogic>().AsSingle();
         }
@@ -43,190 +42,348 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region tests
 
+        #region GetCellAtPoint
+
         [Test]
-        public void GetOrientationDataForPoint_AndGridHasNoCellAtLocation_ReturnsEmptyData() {
-            var point = new Vector2(1f, 2f);
+        public void GetCellAtPoint_AndHasNoCellAtPoint_ReturnsNull() {
+            var point = new Vector3(1f, 2f, 3f);
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(point)).Returns(false);
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(new PointOrientationData(), orientationLogic.GetOrientationDataForPoint(point));
+            Assert.IsNull(orientationLogic.GetCellAtPoint(point));
+        }
+
+        [Test(Description = "The grid cell here is where the point would fall if all the cells were regular hexagons")]
+        public void GetCellAtPoint_CellHasPoint_AndIsWithinContourOfGridCell_ReturnsCell() {
+            var point = new Vector3(1f, 2f, 3f);
+
+            var cell = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(point)).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(point)).Returns(cell);
+
+            MockCellContourCanon.Setup(canon => canon.IsPointWithinContour(new Vector2(1f, 3f), cell, HexDirection.SW)).Returns(true);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(cell, orientationLogic.GetCellAtPoint(point));
         }
 
         [Test]
-        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsGridSextantData_IfGridSextantValid() {
-            var point = new Vector2(1f, 2f);
+        public void GetCellAtPoint_CellHasPoint_AndIsWithinContourOfNeighbor_ReturnsNeighbor() {
+            var pointXYZ = new Vector3(1f, 2f, 3f);
+            var pointXZ = new Vector2(1f, 3f); 
 
-            var gridCenter = BuildCell();
+            var cell = BuildCell();
 
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+            MockGrid.Setup(grid => grid.HasCellAtLocation(pointXYZ)).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(pointXYZ)).Returns(cell);
 
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+            var neighborOne   = BuildCell();
+            var neighborTwo   = BuildCell();
+            var neighborThree = BuildCell();
 
-            PointOrientationData centerData = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+            MockCellContourCanon.Setup(canon => canon.IsPointWithinContour(pointXZ, neighborTwo, HexDirection.SE)).Returns(true);
+            MockCellContourCanon.Setup(canon => canon.IsPointWithinContour(pointXZ, neighborTwo, HexDirection.NW)).Returns(true);
+
+            MockCellContourCanon.Setup(canon => canon.IsPointWithinContour(pointXZ, neighborThree, HexDirection.E)).Returns(true);
+
+            var neighbors = new List<IHexCell>() { neighborOne, neighborTwo, neighborThree };
+
+            MockGrid.Setup(grid => grid.GetNeighbors(cell)).Returns(neighbors);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.AreEqual(neighborTwo, orientationLogic.GetCellAtPoint(pointXYZ));
+        }
+
+        [Test]
+        public void GetCellAtPoint_CellhasPoint_ButNotWithinAnyNearbyContour_ReturnsNull() {
+            var pointXYZ = new Vector3(1f, 2f, 3f);
+            var pointXZ = new Vector2(1f, 3f); 
+
+            var cell = BuildCell();
+
+            MockGrid.Setup(grid => grid.HasCellAtLocation(pointXYZ)).Returns(true);
+            MockGrid.Setup(grid => grid.GetCellAtLocation(pointXYZ)).Returns(cell);
+
+            var neighborOne   = BuildCell();
+            var neighborTwo   = BuildCell();
+            var neighborThree = BuildCell();
+
+            var neighbors = new List<IHexCell>() { neighborOne, neighborTwo, neighborThree };
+
+            MockGrid.Setup(grid => grid.GetNeighbors(cell)).Returns(neighbors);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            Assert.IsNull(orientationLogic.GetCellAtPoint(pointXYZ));
+        }
+
+        #endregion
+
+        #region GetOrientationDataFromTextures
+
+        [Test]
+        public void GetOrientationDataFromTextures_PullsCenterFromOrientationRG_MinusOne_AndCastAsAnIndex() {
+            var cells = new List<IHexCell>() {
+                BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
 
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant, out centerData)
-            ).Returns(true);
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(3, 0, 0, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(centerData, orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(cells[2], orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsPreviousSextantData_IfPreviousSextantValid() {
-            var point = new Vector2(1f, 2f);
-
-            var gridCenter = BuildCell();
-
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
-
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
-
-            PointOrientationData leftData = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+        public void GetOrientationDataFromTextures_AndRGIndexNegative_CenterSetToNull() {
+            var cells = new List<IHexCell>() {
+                BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
 
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant.Previous(), out leftData)
-            ).Returns(true);
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(0, 0, 0, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(leftData, orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.IsNull(orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsNextSextantData_IfNextSextantValid() {
-            var point = new Vector2(1f, 2f);
-
-            var gridCenter = BuildCell();
-
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
-
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
-
-            PointOrientationData nextRightData = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
+        public void GetOrientationDataFromTextures_AndRGIndexGreaterThanCellCount_CenterSetToNull() {
+            var cells = new List<IHexCell>() {
+                BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
 
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridCenter, gridSextant.Next(), out nextRightData)
-            ).Returns(true);
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(10, 0, 0, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(nextRightData, orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.IsNull(orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataForPoint_AndCellAtLocation_ReturnsEmptyData_IfNoSextantValid() {
-            var point = new Vector2(1f, 2f);
+        public void GetOrientationDataFromTextures_PullsSextantFromOrientationB_CastAsHexDirection() {
+            var cells = new List<IHexCell>() { BuildCell() };
 
-            var gridCenter = BuildCell();
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
 
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
-
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(new PointOrientationData(), orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(HexDirection.SW, orientationData.Sextant);
         }
 
         [Test]
-        public void GetOrientationDataForPoint_ReturnsGridRightOppositeData_IfDataIsValid() {
-            var point = new Vector2(1f, 2f);
+        public void GetOrientationDataFromTextures_AndCenterNull_ReturnedDataIsClear() {
+            var cells = new List<IHexCell>() { BuildCell() };
 
-            var gridCenter = BuildCell();
-            var gridRight  = BuildCell();
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
 
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
-
-            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
-
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
-
-            PointOrientationData gridRightOppositeData = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
-            };
-
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Opposite(), out gridRightOppositeData)
-            ).Returns(true);
+            var orientationColor = new Color32(0, 0, 3, 0);
+            var weightsColor     = new Color(1f, 1f, 1f, 1f);
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(gridRightOppositeData, orientationLogic.GetOrientationDataForPoint(point));
+            orientationLogic.GetOrientationDataFromColors(new Color32(1, 0, 3, 0), weightsColor);
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.IsFalse(orientationData.IsOnGrid, "IsOnGrid has an unexpected value");
+
+            Assert.AreEqual(HexDirection.NE, orientationData.Sextant, "Sextant has an unexpected value");
+
+            Assert.IsNull(orientationData.Center,    "Center has an unexpected value");
+            Assert.IsNull(orientationData.Left,      "Left has an unexpected value");
+            Assert.IsNull(orientationData.Right,     "Right has an unexpected value");
+            Assert.IsNull(orientationData.NextRight, "NextRight has an unexpected value");
+
+            Assert.AreEqual(0f, orientationData.CenterWeight,    "CenterWeight has an unexpected value");
+            Assert.AreEqual(0f, orientationData.LeftWeight,      "LeftWeight has an unexpected value");
+            Assert.AreEqual(0f, orientationData.RightWeight,     "RightWeight has an unexpected value");
+            Assert.AreEqual(0f, orientationData.NextRightWeight, "NextRightWeight has an unexpected value");
+
+            Assert.AreEqual(0f, orientationData.RiverWeight, "RiverWeight has an unexpected value");
         }
 
         [Test]
-        public void GetOrientationDataForPoint_ReturnsGridRightNext2Data_IfDataIsValid() {
-            var point = new Vector2(1f, 2f);
+        public void GetOrientationDataFromTextures_AndCenterNotNull_IsOnGridIsTrue() {
+            var cells = new List<IHexCell>() { BuildCell() };
 
-            var gridCenter = BuildCell();
-            var gridRight  = BuildCell();
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
 
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
-
-            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
-
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
-
-            PointOrientationData gridRightNext2Data = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
-            };
-
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Next2(), out gridRightNext2Data)
-            ).Returns(true);
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(gridRightNext2Data, orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.IsTrue(orientationData.IsOnGrid);
         }
 
         [Test]
-        public void GetOrientationDataForPoint_ReturnsGridRightPrevious2Data_IfDataIsValid() {
-            var point = new Vector2(1f, 2f);
+        public void GetOrientationDataFromTextures_AndCenterNotNull_NeighborsAssignedFromSextant() {
+            var center    = BuildCell();
+            var left      = BuildCell();
+            var right     = BuildCell();
+            var nextRight = BuildCell();
 
-            var gridCenter = BuildCell();
-            var gridRight  = BuildCell();
+            var cells = new List<IHexCell>() { center, left, right, nextRight };
 
-            MockGrid.Setup(grid => grid.HasCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(true);
-            MockGrid.Setup(grid => grid.GetCellAtLocation(new Vector3(1f, 0f, 2f))).Returns(gridCenter);
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
 
-            MockGrid.Setup(grid => grid.GetNeighbor(gridCenter, HexDirection.E)).Returns(gridRight);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.NE)).Returns(left);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.E )).Returns(right);
+            MockGrid.Setup(grid => grid.GetNeighbor(center, HexDirection.SE)).Returns(nextRight);
 
-            HexDirection gridSextant = HexDirection.E;
-            MockGrid.Setup(grid => grid.TryGetSextantOfPointInCell(point, gridCenter, out gridSextant)).Returns(true);
-
-            PointOrientationData gridRightPrevious2Data = new PointOrientationData() {
-                CenterWeight = 1f, LeftWeight = 2f, RightWeight = 3f, NextRightWeight = 4f
-            };
-
-            MockPointOrientationInSextantLogic.Setup(
-                logic => logic.TryFindValidOrientation(point, gridRight, gridSextant.Previous2(), out gridRightPrevious2Data)
-            ).Returns(true);
+            var orientationColor = new Color32(1, 0, 1, 0);
+            var weightsColor     = new Color();
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            Assert.AreEqual(gridRightPrevious2Data, orientationLogic.GetOrientationDataForPoint(point));
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(left,      orientationData.Left,      "Left has an unexpected value");
+            Assert.AreEqual(right,     orientationData.Right,     "Right has an unexpected value");
+            Assert.AreEqual(nextRight, orientationData.NextRight, "NextRight has an unexpected value");
         }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_CenterWeightPulledFromSampledR_OfWeightsTexture() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(0.45f, 0.55f, 0.65f, 0.75f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(weightsColor.r, orientationData.CenterWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_LeftWeightPulledFromSampledG_OfWeightsTexture() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(0.45f, 0.55f, 0.65f, 0.75f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(weightsColor.g, orientationData.LeftWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_RightWeightPulledFromSampledB_OfWeightsTexture() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(0.45f, 0.55f, 0.65f, 0.75f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(weightsColor.b, orientationData.RightWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_NextRightWeightPulledFromSampledA_OfWeightsTexture() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(0.45f, 0.55f, 0.65f, 0.75f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(weightsColor.a, orientationData.NextRightWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightOneMinusOtherWeights() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(0.1f, 0.15f, 0.2f, 0.25f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(1f - 0.1f - 0.15f - 0.2f - 0.25f, orientationData.RiverWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightFloorsAtZero() {
+            var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(1f, 1f, 1f, 1f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(0f, orientationData.RiverWeight);
+        }
+
+        [Test]
+        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightCeilingsAtOne() {
+           var cells = new List<IHexCell>() { BuildCell() };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(1, 0, 3, 0);
+            var weightsColor     = new Color(-1f, -1f, -1f, -1f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+
+            Assert.AreEqual(1f, orientationData.RiverWeight);
+        }
+
+        #endregion
 
         #endregion
 

@@ -34,17 +34,16 @@ namespace Assets.Simulation.Visibility {
         private Coroutine ResetResourceVisibilityCoroutine;
 
 
-        private IPossessionRelationship<ICivilization, IUnit>    UnitPossessionCanon;
-        private IPossessionRelationship<ICivilization, ICity>    CityPossessionCanon;
-        private IPossessionRelationship<IHexCell, IResourceNode> NodeLocationCanon;
-        private IVisibilityCanon                                 VisibilityCanon;
-        private IExplorationCanon                                ExplorationCanon;
-        private ICityLineOfSightLogic                            CityLineOfSightLogic;
-        private IUnitVisibilityLogic                            UnitLineOfSightLogic;
-        private IUnitFactory                                     UnitFactory;
-        private ICityFactory                                     CityFactory;
-        private IHexGrid                                         Grid;
-        private MonoBehaviour                                    CoroutineInvoker;
+        private IPossessionRelationship<ICivilization, IUnit> UnitPossessionCanon;
+        private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
+        private IVisibilityCanon                              VisibilityCanon;
+        private IExplorationCanon                             ExplorationCanon;
+        private ICityLineOfSightLogic                         CityLineOfSightLogic;
+        private IUnitVisibilityLogic                          UnitLineOfSightLogic;
+        private IUnitFactory                                  UnitFactory;
+        private ICityFactory                                  CityFactory;
+        private IHexGrid                                      Grid;
+        private MonoBehaviour                                 CoroutineInvoker;
 
         #endregion
 
@@ -54,7 +53,6 @@ namespace Assets.Simulation.Visibility {
         public VisibilityResponder(
             IPossessionRelationship<ICivilization, IUnit>    unitPossessionCanon,
             IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
-            IPossessionRelationship<IHexCell, IResourceNode> nodeLocationCanon,
             IVisibilityCanon visibilityCanon, IExplorationCanon explorationCanon,
             ICityLineOfSightLogic cityLineOfSightLogic,
             IUnitVisibilityLogic unitLineOfSightLogic,
@@ -71,7 +69,6 @@ namespace Assets.Simulation.Visibility {
         ){
             UnitPossessionCanon  = unitPossessionCanon;
             CityPossessionCanon  = cityPossessionCanon;
-            NodeLocationCanon    = nodeLocationCanon;
             VisibilityCanon      = visibilityCanon;
             ExplorationCanon     = explorationCanon;
             CityLineOfSightLogic = cityLineOfSightLogic;

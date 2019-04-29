@@ -20,8 +20,6 @@ namespace Assets.Simulation.MapRendering {
         #region instance fields and properties
 
         private IHexGrid              Grid;
-        private ICellEdgeContourCanon CellContourCanon;
-        private IRiverCanon           RiverCanon;
         private IMapRenderConfig      RenderConfig;
 
         #endregion
@@ -30,13 +28,10 @@ namespace Assets.Simulation.MapRendering {
 
         [Inject]
         public MarshTriangulator(
-            IHexGrid grid, ICellEdgeContourCanon cellContourCanon,
-            IRiverCanon riverCanon, IMapRenderConfig renderConfig
+            IHexGrid grid, IMapRenderConfig renderConfig
         ) {
-            Grid             = grid;
-            CellContourCanon = cellContourCanon;
-            RiverCanon       = riverCanon;
-            RenderConfig     = renderConfig;
+            Grid         = grid;
+            RenderConfig = renderConfig;
         }
 
         #endregion

@@ -31,8 +31,15 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid
 
         public ReadOnlyCollection<IHexCell> Cells {
-            get { return cells.AsReadOnly(); }
+            get {
+                if(_cellsReadOnlyWrapper == null) {
+                    _cellsReadOnlyWrapper = cells.AsReadOnly();
+                }
+
+                return _cellsReadOnlyWrapper;
+            }
         }
+        private ReadOnlyCollection<IHexCell> _cellsReadOnlyWrapper;
         private List<IHexCell> cells = new List<IHexCell>();
 
         public int CellCountX { get; private set; }
@@ -137,8 +144,8 @@ namespace Assets.Simulation.HexMap {
             int expectedIndex = coordinates.X + coordinates.Z * CellCountX + coordinates.Z / 2;
 
             return expectedIndex >= 0
-                && expectedIndex < Cells.Count
-                && Cells[expectedIndex].Coordinates.Equals(coordinates);
+                && expectedIndex < cells.Count
+                && cells[expectedIndex].Coordinates.Equals(coordinates);
         }
 
         public IHexCell GetCellAtCoordinates(HexCoordinates coordinates) {
@@ -176,7 +183,7 @@ namespace Assets.Simulation.HexMap {
                 return GetCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
             }else {
                 return null;
-            }            
+            }       
         }
 
         public int GetDistance(IHexCell cellOne, IHexCell cellTwo) {
@@ -297,8 +304,6 @@ namespace Assets.Simulation.HexMap {
 
         private void CreateCells() {
             Profiler.BeginSample("CreateCells");
-
-            cells = new List<IHexCell>();
 
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
