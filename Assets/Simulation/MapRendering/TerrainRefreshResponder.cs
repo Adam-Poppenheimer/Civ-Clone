@@ -104,7 +104,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void OnCellTerrainChanged(HexPropertyChangedData<CellTerrain> data) {
-            TerrainRefreshType refreshFlags = TerrainRefreshType.Alphamap;
+            TerrainRefreshType refreshFlags = TerrainRefreshType.Alphamap | TerrainRefreshType.Features;
 
             if(data.OldValue.IsWater() != data.NewValue.IsWater()) {
                 refreshFlags |= TerrainRefreshType.Water | TerrainRefreshType.Heightmap;
@@ -120,7 +120,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void OnCellShapeChanged(HexPropertyChangedData<CellShape> data) {
-            TerrainRefreshType refreshFlags = TerrainRefreshType.Heightmap;
+            TerrainRefreshType refreshFlags = TerrainRefreshType.Heightmap | TerrainRefreshType.Features;
 
             if((data.OldValue == CellShape.Mountains) != (data.NewValue == CellShape.Mountains)) {
                 refreshFlags |= TerrainRefreshType.Alphamap;

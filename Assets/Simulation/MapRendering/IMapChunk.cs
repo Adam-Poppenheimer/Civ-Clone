@@ -13,12 +13,17 @@ namespace Assets.Simulation.MapRendering {
 
         #region properties
 
+        Transform transform { get; }
+
         IEnumerable<IHexCell> Cells { get; }
 
         Terrain Terrain { get; }
 
         float Width  { get; }
         float Height { get; }
+
+        Texture2D LandBakeTexture  { get; }
+        Texture2D WaterBakeTexture { get; }
 
         #endregion
 

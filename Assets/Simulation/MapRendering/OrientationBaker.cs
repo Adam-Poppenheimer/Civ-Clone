@@ -49,12 +49,19 @@ namespace Assets.Simulation.MapRendering {
         #region Unity messages
 
         private void OnDestroy() {
-            RenderTexture.Release();
+            if(RenderTexture != null) {
+                RenderTexture.Release();
+                RenderTexture = null;
+            }            
         }
 
         #endregion
 
         private void Initialize() {
+            if(RenderTexture != null) {
+                RenderTexture.Release();
+            }
+
             var textureData = RenderConfig.OrientationTextureData;
 
             RenderTexture = new RenderTexture(
@@ -92,12 +99,12 @@ namespace Assets.Simulation.MapRendering {
         #region from IOrientationBaker
 
         public void RenderOrientationFromMesh(Texture2D orientationTexture, Texture2D weightsTexture, Transform chunkTransform) {
-            StartCoroutine(RenderOrientationFromMesh_Execute(orientationTexture, weightsTexture, chunkTransform));
+            StartCoroutine(RenderOrientationFromMesh_Perform(orientationTexture, weightsTexture, chunkTransform));
         }
 
         #endregion
 
-        private IEnumerator RenderOrientationFromMesh_Execute(
+        private IEnumerator RenderOrientationFromMesh_Perform(
             Texture2D orientationTexture, Texture2D weightsTexture, Transform chunkTransform
         ) {
             yield return new WaitForEndOfFrame();

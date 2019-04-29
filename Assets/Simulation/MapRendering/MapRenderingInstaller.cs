@@ -18,6 +18,7 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private HexCellShaderData ShaderData;
         [SerializeField] private MapChunk          MapChunkPrefab;
         [SerializeField] private HexSubMesh        HexSubMeshPrefab;
+        [SerializeField] private TerrainBaker      TerrainBaker;
         [SerializeField] private OrientationBaker  OrientationBaker;
 
         #endregion
@@ -30,6 +31,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IMapRenderConfig>  ().To<MapRenderConfig>  ().FromInstance(RenderConfig);
             Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);            
             Container.Bind<IHexCellShaderData>().To<HexCellShaderData>().FromInstance(ShaderData);
+            Container.Bind<ITerrainBaker>     ().To<TerrainBaker>     ().FromInstance(TerrainBaker);
             Container.Bind<IOrientationBaker> ().To<OrientationBaker> ().FromInstance(OrientationBaker);
 
             Container.BindMemoryPool<Mesh, MeshMemoryPool, IMemoryPool<Mesh>>()
@@ -83,6 +85,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IOasisTriangulator>             ().To<OasisTriangulator>             ().AsSingle();
             Container.Bind<IOrientationTriangulator>       ().To<OrientationTriangulator>       ().AsSingle();
             Container.Bind<IWeightsTriangulator>           ().To<WeightsTriangulator>           ().AsSingle();
+            Container.Bind<IFullMapRefresher>              ().To<FullMapRefresher>              ().AsSingle();
         }
 
         #endregion

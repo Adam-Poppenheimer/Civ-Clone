@@ -31,13 +31,6 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
-        #region static fields and properties
-
-        private static Coroutine RefreshRiversCoroutine;        
-        private static Coroutine RefreshFarmlandCoroutine;
-
-        #endregion
-
         #region instance fields and properties
 
         #region from IMapChunk
@@ -167,8 +160,15 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _oasisLand;
 
+        public Texture2D LandBakeTexture {
+            get { return landBakeTexture; }
+        }
+        [SerializeField] private Texture2D landBakeTexture;
 
-        [SerializeField] private TerrainBaker TerrainBaker;
+        public Texture2D WaterBakeTexture {
+            get { return waterBakeTexture; }
+        }
+        [SerializeField] private Texture2D waterBakeTexture;
 
         [SerializeField] private Texture2D OrientationTexture;
         [SerializeField] private Texture2D WeightsTexture;
@@ -192,8 +192,10 @@ namespace Assets.Simulation.MapRendering {
         private IOasisTriangulator       OasisTriangulator;
         private IOrientationTriangulator OrientationTriangulator;
         private IWeightsTriangulator     WeightsTriangulator;
+        private ITerrainBaker            TerrainBaker;
         private IOrientationBaker        OrientationBaker;
-        private IPointOrientationLogic PointOrientationLogic;
+        private IPointOrientationLogic   PointOrientationLogic;
+        private IFullMapRefresher        FullMapRefresher;
 
         #endregion
 
@@ -209,7 +211,8 @@ namespace Assets.Simulation.MapRendering {
             IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
             IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator,
-            IOrientationBaker orientationBaker, IPointOrientationLogic pointOrientationLogic
+            ITerrainBaker terrainBaker, IOrientationBaker orientationBaker,
+            IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher
         ) {
             AlphamapLogic           = alphamapLogic;
             HeightLogic             = heightLogic;
@@ -226,8 +229,10 @@ namespace Assets.Simulation.MapRendering {
             OasisTriangulator       = oasisTriangulator;
             OrientationTriangulator = orientationTriangulator;
             WeightsTriangulator     = weightsTriangulator;
+            TerrainBaker            = terrainBaker;
             OrientationBaker        = orientationBaker;
             PointOrientationLogic   = pointOrientationLogic;
+            FullMapRefresher        = fullMapRefresher;
         }
 
         #region from IMapChunk
@@ -261,15 +266,55 @@ namespace Assets.Simulation.MapRendering {
                 TerrainCollider.terrainData = terrainData;
             }
 
-            transform.position = position;
+            var bakeData = RenderConfig.TerrainBakeTextureData;
 
-            TerrainBaker.Initialize();
+            landBakeTexture = new Texture2D(
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            LandBakeTexture.filterMode = FilterMode.Point;
+            LandBakeTexture.wrapMode   = TextureWrapMode.Clamp;
+            LandBakeTexture.anisoLevel = 0;
+
+            waterBakeTexture = new Texture2D(
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            waterBakeTexture.filterMode = FilterMode.Point;
+            waterBakeTexture.wrapMode   = TextureWrapMode.Clamp;
+            waterBakeTexture.anisoLevel = 0;
+
+            OrientationTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            OrientationTexture.filterMode = FilterMode.Point;
+            OrientationTexture.wrapMode   = TextureWrapMode.Clamp;
+            OrientationTexture.anisoLevel = 0;
+
+            WeightsTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            WeightsTexture.filterMode = FilterMode.Point;
+            WeightsTexture.wrapMode   = TextureWrapMode.Clamp;
+            WeightsTexture.anisoLevel = 0;
+
+            transform.position = position;
 
             var instancedTerrainMaterial = new Material(RenderConfig.TerrainMaterialTemplate);
             var instancedWaterMaterial   = new Material(RenderConfig.StandingWaterData.RenderingData.Material);
 
-            instancedTerrainMaterial.SetTexture("_BakeTexture", TerrainBaker.TerrainTexture);
-            instancedWaterMaterial  .SetTexture("_BakeTexture", TerrainBaker.WaterTexture);
+            instancedTerrainMaterial.SetTexture("_BakeTexture", LandBakeTexture);
+            instancedWaterMaterial  .SetTexture("_BakeTexture", waterBakeTexture);
 
             Vector4 bakeTextureDimensions = new Vector4(
                 transform.position.x - RenderConfig.OuterRadius * 1.5f,
@@ -291,26 +336,6 @@ namespace Assets.Simulation.MapRendering {
             StandingWater.OverrideMaterial(instancedWaterMaterial);
 
             Terrain.Flush();
-
-            OrientationTexture = new Texture2D(
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            OrientationTexture.filterMode = FilterMode.Point;
-            OrientationTexture.wrapMode   = TextureWrapMode.Clamp;
-            OrientationTexture.anisoLevel = 0;
-
-            WeightsTexture = new Texture2D(
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            WeightsTexture.filterMode = FilterMode.Point;
-            WeightsTexture.wrapMode   = TextureWrapMode.Clamp;
-            WeightsTexture.anisoLevel = 0;
 
             Profiler.EndSample();
         }
@@ -340,16 +365,16 @@ namespace Assets.Simulation.MapRendering {
                 RefreshVisibilityCoroutine = StartCoroutine(RefreshVisibility_Perform());
             }
 
-            if(((refreshTypes & TerrainRefreshType.Farmland) == TerrainRefreshType.Farmland) && RefreshFarmlandCoroutine == null) {
-                RefreshFarmlandCoroutine = StartCoroutine(RefreshFarmland_Perform());
+            if(((refreshTypes & TerrainRefreshType.Farmland) == TerrainRefreshType.Farmland)) {
+                FullMapRefresher.RefreshFarmland();
             }
 
             if(((refreshTypes & TerrainRefreshType.Roads) == TerrainRefreshType.Roads) && RefreshRoadsCoroutine == null) {
                 RefreshRoadsCoroutine = StartCoroutine(RefreshRoads_Perform());
             }
 
-            if(((refreshTypes & TerrainRefreshType.Rivers) == TerrainRefreshType.Rivers) && RefreshRiversCoroutine == null) {
-                RefreshRiversCoroutine = StartCoroutine(RefreshRivers_Perform());
+            if(((refreshTypes & TerrainRefreshType.Rivers) == TerrainRefreshType.Rivers)) {
+                FullMapRefresher.RefreshRivers();
             }
 
             if(((refreshTypes & TerrainRefreshType.Marshes) == TerrainRefreshType.Marshes) && RefreshMarshesCoroutine == null) {
@@ -396,7 +421,6 @@ namespace Assets.Simulation.MapRendering {
             RefreshFeaturesCoroutine   = null;
             RefreshCultureCoroutine    = null;
             RefreshVisibilityCoroutine = null;
-            RefreshFarmlandCoroutine   = null;
             RefreshRoadsCoroutine      = null;
 
             cells.Clear();
@@ -562,14 +586,6 @@ namespace Assets.Simulation.MapRendering {
             RefreshFeaturesCoroutine = null;
         }
 
-        private IEnumerator RefreshRivers_Perform() {
-            yield return new WaitForEndOfFrame();
-
-            RiverTriangulator.TriangulateRivers();
-
-            RefreshRiversCoroutine = null;
-        }
-
         private IEnumerator RefreshCulture_Perform() {
             yield return new WaitForEndOfFrame();
             yield return new WaitForEndOfFrame();
@@ -584,7 +600,7 @@ namespace Assets.Simulation.MapRendering {
 
             Culture.Apply();
 
-            TerrainBaker.Bake();
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
 
             RefreshCultureCoroutine = null;
         }
@@ -592,7 +608,7 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshVisibility_Perform() {
             yield return new WaitForEndOfFrame();
 
-            while(RefreshRiversCoroutine != null) {
+            while(FullMapRefresher.IsRefreshingRivers) {
                 yield return new WaitForEndOfFrame();
             }
 
@@ -601,18 +617,6 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshVisibilityCoroutine = null;
-        }
-
-        private IEnumerator RefreshFarmland_Perform() {
-            yield return new WaitForEndOfFrame();
-
-            while(RefreshRiversCoroutine != null) {
-                yield return new WaitForEndOfFrame();
-            }
-
-            FarmTriangulator.TriangulateFarmland();
-
-            RefreshFarmlandCoroutine = null;
         }
 
         private IEnumerator RefreshRoads_Perform() {
@@ -627,7 +631,7 @@ namespace Assets.Simulation.MapRendering {
 
             Roads.Apply();
 
-            TerrainBaker.Bake();            
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
 
             RefreshRoadsCoroutine = null;
         }
@@ -644,7 +648,7 @@ namespace Assets.Simulation.MapRendering {
 
             MarshWater.Apply();
 
-            TerrainBaker.Bake();
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
 
             RefreshMarshesCoroutine = null;
         }
@@ -663,7 +667,7 @@ namespace Assets.Simulation.MapRendering {
             OasisWater.Apply();
             OasisLand .Apply();
 
-            TerrainBaker.Bake();
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
 
             RefreshOasesCoroutine = null;
         }
