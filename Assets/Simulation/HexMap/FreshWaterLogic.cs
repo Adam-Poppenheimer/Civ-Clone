@@ -5,6 +5,8 @@ using System.Text;
 
 using Zenject;
 
+using UnityCustomUtilities.Extensions;
+
 namespace Assets.Simulation.HexMap {
 
     public class FreshWaterLogic : IFreshWaterLogic {
@@ -35,10 +37,18 @@ namespace Assets.Simulation.HexMap {
             bool isSaltWater           = cell.Terrain.IsWater() && !isFreshWater;
             bool hasOasis              = cell.Feature == CellFeature.Oasis;
             bool hasRiver              = RiverCanon.HasRiver(cell);
-            bool hasFreshWaterNeighbor = Grid.GetNeighbors(cell).Exists(neighbor => neighbor.Terrain == CellTerrain.FreshWater);
             
+            if(!isSaltWater && (isFreshWater || hasOasis || hasRiver)) {
+                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
+                    var neighbor = Grid.GetNeighbor(cell, direction);
 
-            return !isSaltWater && (isFreshWater || hasOasis || hasRiver || hasFreshWaterNeighbor);
+                    if(neighbor != null && neighbor.Terrain == CellTerrain.FreshWater || neighbor.Feature == CellFeature.Oasis) {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
         }
 
         #endregion

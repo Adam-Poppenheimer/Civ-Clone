@@ -63,11 +63,6 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private HexRenderingData _renderingData;
 
-        public bool ShouldBeBaked {
-            get { return _shouldBeBaked; }
-        }
-        [SerializeField] private bool _shouldBeBaked;
-
     }
 
 }

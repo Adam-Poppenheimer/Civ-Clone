@@ -24,22 +24,20 @@ namespace Assets.Simulation.MapRendering {
 
         private RenderTexture RenderTexture;
 
+        private Dictionary<IMapChunk, Coroutine> CoroutineForChunk = new Dictionary<IMapChunk, Coroutine>();
+
 
 
 
         private IMapRenderConfig RenderConfig;
-        private IHexMeshFactory  HexMeshFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        private void InjectDependencies(
-            IMapRenderConfig renderConfig, IHexMeshFactory hexMeshFactory
-        ) {
-            RenderConfig   = renderConfig;
-            HexMeshFactory = hexMeshFactory;
+        private void InjectDependencies(IMapRenderConfig renderConfig) {
+            RenderConfig = renderConfig;
 
             Initialize();
         }
@@ -92,12 +90,18 @@ namespace Assets.Simulation.MapRendering {
             transform.localPosition = localPos;
         }
 
-        public void BakeIntoTextures(Texture2D landTexture, Texture2D waterTexture, Transform chunkTransform) {
-            StartCoroutine(BakeIntoTexture_Perform(landTexture, waterTexture, chunkTransform));
+        public void BakeIntoTextures(Texture2D landTexture, Texture2D waterTexture, IMapChunk chunk) {
+            if(!CoroutineForChunk.ContainsKey(chunk)) {
+                CoroutineForChunk[chunk] = StartCoroutine(BakeIntoTexture_Perform(landTexture, waterTexture, chunk));
+            }
         }
 
-        private IEnumerator BakeIntoTexture_Perform(Texture2D landTexture, Texture2D waterTexture, Transform chunkTransform) {
+        private IEnumerator BakeIntoTexture_Perform(Texture2D landTexture, Texture2D waterTexture, IMapChunk chunk) {
             yield return new WaitForEndOfFrame();
+
+            while(chunk.IsRefreshing) {
+                yield return new WaitForEndOfFrame();
+            }
 
             var activeRenderTexture = RenderTexture.active;
 
@@ -105,13 +109,7 @@ namespace Assets.Simulation.MapRendering {
 
             Profiler.BeginSample("TerrainBaker.BakeIntoTexture_Perform()");
 
-            var meshesToBake = HexMeshFactory.AllMeshes.Where(mesh => mesh.ShouldBeBaked);
-            
-            foreach(var mesh in meshesToBake) {
-                mesh.SetActive(true);
-            }
-
-            BakingCamera.transform.SetParent(chunkTransform, false);
+            BakingCamera.transform.SetParent(chunk.transform, false);
 
             BakingCamera.cullingMask = OcclusionMask;
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
@@ -133,13 +131,11 @@ namespace Assets.Simulation.MapRendering {
 
             waterTexture.Apply();
 
-            foreach(var mesh in meshesToBake) {
-                mesh.SetActive(false);
-            }
-
             RenderTexture.active = activeRenderTexture;
 
             BakingCamera.transform.SetParent(null, false);
+
+            CoroutineForChunk.Remove(chunk);
 
             Profiler.EndSample();
         }

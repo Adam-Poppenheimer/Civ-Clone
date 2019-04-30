@@ -10,8 +10,6 @@ namespace Assets.Simulation.MapRendering {
 
         int Layer { get; }
 
-        bool ShouldBeBaked { get; }
-
         #endregion
 
         #region methods
@@ -49,8 +47,6 @@ namespace Assets.Simulation.MapRendering {
 
         void Apply();
         void Clear();
-
-        void SetActive(bool isActive);
 
         void OverrideMaterial(Material newMaterial);
 

@@ -179,11 +179,15 @@ namespace Assets.Simulation.HexMap {
         }
 
         public IHexCell GetNeighbor(IHexCell center, HexDirection direction) {
-            if(HasNeighbor(center, direction)) {
-                return GetCellAtCoordinates(HexCoordinates.GetNeighborInDirection(center.Coordinates, direction));
+            var neighborCoord = HexCoordinates.GetNeighborInDirection(center.Coordinates, direction);
+
+            int expectedIndex = neighborCoord.X + neighborCoord.Z * CellCountX + neighborCoord.Z / 2;
+
+            if(expectedIndex >= 0 && expectedIndex < cells.Count && cells[expectedIndex].Coordinates.Equals(neighborCoord)) {
+                return cells[expectedIndex];
             }else {
                 return null;
-            }       
+            }      
         }
 
         public int GetDistance(IHexCell cellOne, IHexCell cellTwo) {
@@ -335,6 +339,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunks() {
+            Profiler.BeginSample("HexGrid.CreateChunks()");
+
             float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2    + RenderConfig.InnerRadius;
             float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f + RenderConfig.OuterRadius / 2f;
 
@@ -377,6 +383,8 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private MapChunk CreateChunk(float chunkX, float chunkZ, float width, float height) {

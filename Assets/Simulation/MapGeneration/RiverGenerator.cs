@@ -59,6 +59,8 @@ namespace Assets.Simulation.MapGeneration {
 
             var riverStartCandidates = landCells.Where(GetRiverStartFilter(waterCells)).ToList();
 
+            HashSet<IHexCell> cellsAdjacentToNewRiver = new HashSet<IHexCell>();
+
             int iterations = landCells.Count() * 10;
             while(riveredCells.Count < desiredRiveredCells && riverStartCandidates.Count > 0 && iterations-- > 0) {
                 var start = CellRandomSampler.SampleElementsFromSet(
@@ -67,17 +69,16 @@ namespace Assets.Simulation.MapGeneration {
 
                 riverStartCandidates.Remove(start);
 
-                HashSet<IHexCell> cellsAdjacentToNewRiver;
-
                 Profiler.BeginSample("TryBuildNewRiver");
                 if(TryBuildNewRiver(
                     landCells, waterCells, start, desiredRiveredCells - riveredCells.Count,
-                    out cellsAdjacentToNewRiver
+                    ref cellsAdjacentToNewRiver
                 )) {
                     foreach(var cell in cellsAdjacentToNewRiver) {
                         if(ModLogic.CanChangeTerrainOfCell(cell, CellTerrain.FloodPlains)) {
                             ModLogic.ChangeTerrainOfCell(cell, CellTerrain.FloodPlains);
                         }
+
                         riveredCells.Add(cell);
                         riverStartCandidates.Remove(cell);
 
@@ -93,11 +94,12 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
+        private List<IHexCell> riverPath = new List<IHexCell>();
         private bool TryBuildNewRiver(
             IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
-            IHexCell start, int maxRiveredCellCount, out HashSet<IHexCell> riveredCells
+            IHexCell start, int maxRiveredCellCount, ref HashSet<IHexCell> riveredCells
         ) {
-            riveredCells = new HashSet<IHexCell>();
+            riveredCells.Clear();
 
             IHexCell end;
 
@@ -105,7 +107,9 @@ namespace Assets.Simulation.MapGeneration {
 
             if(TryGetRiverEnd(landCells, start, waterCells, maxRiverLength, out end)) {
 
-                var riverPath = new List<IHexCell>() { start };
+                riverPath.Clear();
+
+                riverPath.Add(start);
 
                 Profiler.BeginSample("Pathfinding from start to end");
                 var weightFunction = BuildRiverWeightFunction(waterCells);
@@ -638,7 +642,7 @@ namespace Assets.Simulation.MapGeneration {
 
         private Func<IHexCell, IHexCell, float> BuildRiverWeightFunction(IEnumerable<IHexCell> oceanCells) {
             return delegate(IHexCell currentCell, IHexCell nextCell) {
-                if(nextCell.Shape != CellShape.Flatlands || IsWater(nextCell, oceanCells)) {
+                if(IsWater(nextCell, oceanCells)) {
                     return -1f;
                 }else if(Grid.GetNeighbors(nextCell).Any(neighbor => IsWater(neighbor, oceanCells))) {
                     return 2f;

@@ -11,6 +11,10 @@ namespace Assets.Simulation.Cities.Buildings {
             IHexCell cell, IEnumerable<IBuildingTemplate> buildings
         );
 
+        YieldSummary GetBonusCellYieldFromYieldModifications(
+            IHexCell cell, IEnumerable<ICellYieldModificationData> cellMods
+        );
+
         #endregion
 
     }

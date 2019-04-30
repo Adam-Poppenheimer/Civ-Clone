@@ -72,8 +72,8 @@ namespace Assets.Simulation.Improvements {
                 retval += template.BonusYieldNormal;
             }
 
-            foreach(var mod in improvementModifications.Where(modification => modification.Template == template)) {
-                if(!mod.RequiresFreshWater || hasFreshWater) {
+            foreach(var mod in improvementModifications) {
+                if(mod.Template == template && (!mod.RequiresFreshWater || hasFreshWater)) {
                     retval += mod.BonusYield;
                 }
             }

@@ -30,6 +30,8 @@ MonoBehaviour:
   _terrainMaxY: 20
   _terrainAlphamapResolution: 33
   _terrainHeightmapResolution: 129
+  _terrainBasemapResolution: 512
+  _terrainBasemapDistance: 1000
   _terrainCastsShadows: 0
   _terrainHeightmapPixelError: 1
   _mapCollisionMask:
@@ -109,7 +111,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 1
       Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
-    _shouldBeBaked: 0
   _riverSurfaceData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -124,7 +125,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 1
       Material: {fileID: 2100000, guid: 2ce73f4ee28d9944f8ce32670b9adcfb, type: 2}
-    _shouldBeBaked: 0
   _riverBankData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -139,7 +139,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 430db189169ee084b82042aabb708469, type: 2}
-    _shouldBeBaked: 1
   _cultureData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -154,7 +153,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 068f5922517bafb4497259423643776e, type: 2}
-    _shouldBeBaked: 1
   _farmlandData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -169,7 +167,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 10b67cf5705184040ad557eca16eaa21, type: 2}
-    _shouldBeBaked: 1
   _roadData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -184,7 +181,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c3ee6312adf8207499cfabf704eed04c, type: 2}
-    _shouldBeBaked: 1
   _marshWaterData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -199,7 +195,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 7eab57a6380cedc48a0d9c1825c2be28, type: 2}
-    _shouldBeBaked: 1
   _oasisWaterData:
     _useCollider: 0
     _useUVCoordinates: 1
@@ -214,7 +209,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: c4d24d6b79004704bbaf3877a7b99140, type: 2}
-    _shouldBeBaked: 1
   _oasisLandData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -229,7 +223,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 52c39f82be01f9b4c9dbeaefe9dffba5, type: 2}
-    _shouldBeBaked: 1
   _orientationMeshData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -244,7 +237,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 8b75f09941e6ca942947340a835a1ad0, type: 2}
-    _shouldBeBaked: 0
   _weightsMeshData:
     _useCollider: 0
     _useUVCoordinates: 0
@@ -259,7 +251,6 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 8b75f09941e6ca942947340a835a1ad0, type: 2}
-    _shouldBeBaked: 0
   _farmColors:
   - {r: 0.09439879, g: 0.71323526, b: 0.12427371, a: 1}
   - {r: 0.11176473, g: 0.5588235, b: 0, a: 1}

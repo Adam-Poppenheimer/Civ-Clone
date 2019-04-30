@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -158,32 +159,53 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
 
+        private HashSet<MapSection> expansionCandidates    = new HashSet<MapSection>();
+        private HashSet<MapSection> nearbySections         = new HashSet<MapSection>();
+        private HashSet<MapSection> sectionsWithinDistance = new HashSet<MapSection>();
+
         private bool TryExpandChunk(
             List<MapSection> chunk, HashSet<MapSection> unassignedSections,
             GridPartition partition, IMapTemplate mapTemplate,
             ExpansionWeightFunction weightFunction, bool mustBeContiguous
         ) {
-            var expansionCandidates = new HashSet<MapSection>();
+            Profiler.BeginSample("TryExpandChunk()");
 
-            foreach(var section in chunk) {
-                IEnumerable<MapSection> nearbySections;
+            expansionCandidates.Clear();
+
+            Profiler.BeginSample("Find expansion candidates");
+
+            foreach(MapSection section in chunk) {
+                nearbySections.Clear();
+
+                sectionsWithinDistance.Clear();
 
                 if(mustBeContiguous) {
-                    nearbySections = partition.GetNeighbors(section).Intersect(unassignedSections);                    
+                    foreach(var adjacentSection in partition.GetNeighbors(section)) {
+                        if(unassignedSections.Contains(adjacentSection)) {
+                            nearbySections.Add(adjacentSection);
+                        }
+                    }                  
                 }else {
-                    var sectionsWithinDistance = Grid.GetCellsInRadius(section.CentroidCell, mapTemplate.HomelandExpansionMaxCentroidSeparation)
-                                                     .Select(nearbyCell => partition.GetSectionOfCell(nearbyCell))
-                                                     .Intersect(unassignedSections)
-                                                     .Distinct();
+                    foreach(IHexCell nearbyCell in Grid.GetCellsInRadius(section.CentroidCell, mapTemplate.HomelandExpansionMaxCentroidSeparation)) {
+                        MapSection sectionOfCell = partition.GetSectionOfCell(nearbyCell);
+
+                        if(unassignedSections.Contains(sectionOfCell)) {
+                            sectionsWithinDistance.Add(sectionOfCell);
+                        }
+                    }
 
                     var sectionsSurroundedByUnassigned = sectionsWithinDistance.Where(
                         nearby => partition.GetNeighbors(nearby).Count(neighbor => !unassignedSections.Contains(neighbor)) <= 0
                     );
 
                     if(sectionsSurroundedByUnassigned.Any()) {
-                        nearbySections = sectionsSurroundedByUnassigned;
+                        foreach(var surroundedSection in sectionsSurroundedByUnassigned) {
+                            nearbySections.Add(surroundedSection);
+                        }
                     }else {
-                        nearbySections = sectionsWithinDistance;
+                        foreach(var sectionWithin in sectionsWithinDistance) {
+                            nearbySections.Add(sectionWithin);
+                        }
                     }
                 }
 
@@ -192,7 +214,10 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            if(expansionCandidates.Any()) {
+            Profiler.EndSample();
+
+            Profiler.BeginSample("Random selection");
+            if(expansionCandidates.Count > 0) {
                 var newSection = MapSectionRandomSampler.SampleElementsFromSet(
                     expansionCandidates, 1, section => weightFunction(section, chunk)
                 ).FirstOrDefault();
@@ -200,10 +225,15 @@ namespace Assets.Simulation.MapGeneration {
                 if(newSection != null) {
                     unassignedSections.Remove(newSection);
                     chunk.Add(newSection);
+
+                    Profiler.EndSample();
+                    Profiler.EndSample();
                     return true;
                 }
             }
+            Profiler.EndSample();
 
+            Profiler.EndSample();
             return false;
         }
 

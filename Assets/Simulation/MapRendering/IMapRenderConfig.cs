@@ -51,6 +51,9 @@ namespace Assets.Simulation.MapRendering {
 
         int TerrainAlphamapResolution  { get; }
         int TerrainHeightmapResolution { get; }
+        int TerrainBasemapResolution   { get; }
+
+        float TerrainBasemapDistance { get; }        
 
         bool TerrainCastsShadows { get; }
 

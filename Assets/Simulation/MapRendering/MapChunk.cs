@@ -45,6 +45,21 @@ namespace Assets.Simulation.MapRendering {
         public float Width  { get; private set; }
         public float Height { get; private set; }
 
+        public bool IsRefreshing {
+            get {
+                return RefreshAlphamapCoroutine    != null ||
+                       RefreshHeightmapCoroutine   != null || 
+                       RefreshWaterCoroutine       != null || 
+                       RefreshFeaturesCoroutine    != null || 
+                       RefreshCultureCoroutine     != null || 
+                       RefreshVisibilityCoroutine  != null || 
+                       RefreshRoadsCoroutine       != null || 
+                       RefreshMarshesCoroutine     != null || 
+                       RefreshOasesCoroutine       != null || 
+                       RefreshOrientationCoroutine != null;
+                }
+        }
+
         #endregion
 
         private TerrainCollider TerrainCollider;
@@ -182,11 +197,9 @@ namespace Assets.Simulation.MapRendering {
         private IMapRenderConfig         RenderConfig;
         private IWaterTriangulator       WaterTriangulator;
         private IHexFeatureManager       HexFeatureManager;
-        private IRiverTriangulator       RiverTriangulator;
         private ICultureTriangulator     CultureTriangulator;
         private IHexCellShaderData       ShaderData;
         private IHexMeshFactory          HexMeshFactory;
-        private IFarmTriangulator        FarmTriangulator;
         private IRoadTriangulator        RoadTriangulator;
         private IMarshTriangulator       MarshTriangulator;
         private IOasisTriangulator       OasisTriangulator;
@@ -205,10 +218,8 @@ namespace Assets.Simulation.MapRendering {
         private void InjectDependencies(
             ITerrainAlphamapLogic alphamapLogic, ITerrainHeightLogic heightLogic,
             IMapRenderConfig renderConfig, IWaterTriangulator waterTriangulator,
-            IHexFeatureManager hexFeatureManager, IRiverTriangulator riverTriangulator,
-            ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
-            DiContainer container, IHexMeshFactory hexMeshFactory,
-            IFarmTriangulator farmTriangulator, IRoadTriangulator roadTriangulator,
+            IHexFeatureManager hexFeatureManager, ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
+            DiContainer container, IHexMeshFactory hexMeshFactory, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
             IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator,
             ITerrainBaker terrainBaker, IOrientationBaker orientationBaker,
@@ -219,11 +230,9 @@ namespace Assets.Simulation.MapRendering {
             RenderConfig            = renderConfig;
             WaterTriangulator       = waterTriangulator;
             HexFeatureManager       = hexFeatureManager;
-            RiverTriangulator       = riverTriangulator;
             CultureTriangulator     = cultureTriangulator;
             ShaderData              = shaderData;
             HexMeshFactory          = hexMeshFactory;
-            FarmTriangulator        = farmTriangulator;
             RoadTriangulator        = roadTriangulator;
             MarshTriangulator       = marshTriangulator;
             OasisTriangulator       = oasisTriangulator;
@@ -328,10 +337,14 @@ namespace Assets.Simulation.MapRendering {
 
             instancedWaterMaterial.EnableKeyword("USE_BAKE_TEXTURE");
 
-            Terrain.castShadows         = RenderConfig.TerrainCastsShadows;
-            Terrain.materialType        = Terrain.MaterialType.Custom;
-            Terrain.materialTemplate    = instancedTerrainMaterial;
-            Terrain.heightmapPixelError = RenderConfig.TerrainHeightmapPixelError;
+            Terrain.castShadows          = RenderConfig.TerrainCastsShadows;
+            Terrain.basemapDistance      = RenderConfig.TerrainBasemapDistance;
+            Terrain.materialType         = Terrain.MaterialType.Custom;
+            Terrain.materialTemplate     = instancedTerrainMaterial;
+            Terrain.heightmapPixelError  = RenderConfig.TerrainHeightmapPixelError;
+            Terrain.drawTreesAndFoliage  = false;
+            Terrain.editorRenderFlags    = TerrainRenderFlags.heightmap;
+            Terrain.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
             StandingWater.OverrideMaterial(instancedWaterMaterial);
 
@@ -504,6 +517,8 @@ namespace Assets.Simulation.MapRendering {
 
             var terrainData = Terrain.terrainData;
 
+            Vector3 terrainSize = terrainData.size;
+
             int mapWidth  = terrainData.heightmapWidth;
             int mapHeight = terrainData.heightmapHeight;
 
@@ -520,22 +535,31 @@ namespace Assets.Simulation.MapRendering {
 
             PointOrientationData orientation;
 
+            float indexToNormalX = 1f / (mapHeight - 1f);
+            float indexToNormalZ = 1f / (mapWidth  - 1f);
+
+            
+
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
+                    Profiler.BeginSample("Generic Math");
+
                     //For some reason, terrainData seems to index its points
                     //as (y, x) rather than the more traditional (x, y), so
                     //we need to sample our texture accordingly
-                    terrainNormalX = height * 1.0f / (mapHeight - 1);
-                    terrainNormalZ = width  * 1.0f / (mapWidth  - 1);
+                    terrainNormalX = height * indexToNormalX;
+                    terrainNormalZ = width  * indexToNormalZ;
 
-                    worldX = transform.position.x + terrainNormalX * terrainData.size.x;
-                    worldZ = transform.position.z + terrainNormalZ * terrainData.size.z;
+                    worldX = transform.position.x + terrainNormalX * terrainSize.x;
+                    worldZ = transform.position.z + terrainNormalZ * terrainSize.z;
 
                     textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
                     textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
 
                     texelX = Mathf.RoundToInt(OrientationTexture.width  * textureNormalX);
                     texelY = Mathf.RoundToInt(OrientationTexture.height * textureNormalZ);
+
+                    Profiler.EndSample();
 
                     orientationColor = OrientationTexture.GetPixel(texelX, texelY);
                     weightsColor     = WeightsTexture    .GetPixel(texelX, texelY);
@@ -600,7 +624,7 @@ namespace Assets.Simulation.MapRendering {
 
             Culture.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
 
             RefreshCultureCoroutine = null;
         }
@@ -631,7 +655,7 @@ namespace Assets.Simulation.MapRendering {
 
             Roads.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
 
             RefreshRoadsCoroutine = null;
         }
@@ -648,7 +672,7 @@ namespace Assets.Simulation.MapRendering {
 
             MarshWater.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
 
             RefreshMarshesCoroutine = null;
         }
@@ -667,7 +691,7 @@ namespace Assets.Simulation.MapRendering {
             OasisWater.Apply();
             OasisLand .Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, transform);
+            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
 
             RefreshOasesCoroutine = null;
         }
@@ -697,6 +721,8 @@ namespace Assets.Simulation.MapRendering {
 
             newData.alphamapResolution  = RenderConfig.TerrainAlphamapResolution;
             newData.heightmapResolution = RenderConfig.TerrainHeightmapResolution;
+            newData.baseMapResolution   = RenderConfig.TerrainBasemapResolution;
+            newData.SetDetailResolution(0, 8);
 
             newData.size = new Vector3(width, RenderConfig.TerrainMaxY, height);
 

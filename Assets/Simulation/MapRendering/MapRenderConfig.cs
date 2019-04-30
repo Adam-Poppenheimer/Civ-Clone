@@ -150,6 +150,16 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private int _terrainHeightmapResolution;
 
+        public int TerrainBasemapResolution {
+            get { return _terrainBasemapResolution; }
+        }
+        [SerializeField] private int _terrainBasemapResolution;
+
+        public float TerrainBasemapDistance {
+            get { return _terrainBasemapDistance; }
+        }
+        [SerializeField] private float _terrainBasemapDistance;
+
         public bool TerrainCastsShadows {
             get { return _terrainCastsShadows; }
         }

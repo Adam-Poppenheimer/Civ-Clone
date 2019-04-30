@@ -25,6 +25,8 @@ namespace Assets.Simulation.MapRendering {
         Texture2D LandBakeTexture  { get; }
         Texture2D WaterBakeTexture { get; }
 
+        bool IsRefreshing { get; }
+
         #endregion
 
         #region methods

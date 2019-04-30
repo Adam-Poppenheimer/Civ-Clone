@@ -17,6 +17,19 @@ namespace Assets.Simulation.MapGeneration {
         public HashSet<IBuildingTemplate>            AvailableBuildings;
         public HashSet<IImprovementModificationData> ImprovementModifications;
 
+        public HashSet<ICellYieldModificationData> AvailableBuildingMods {
+            get {
+                if(_availableBuildingMods == null) {
+                    _availableBuildingMods = new HashSet<ICellYieldModificationData>(
+                        AvailableBuildings.SelectMany(building => building.CellYieldModifications)
+                    );
+                }
+
+                return _availableBuildingMods;
+            }
+        }
+        private HashSet<ICellYieldModificationData> _availableBuildingMods;
+
     }
 
 }

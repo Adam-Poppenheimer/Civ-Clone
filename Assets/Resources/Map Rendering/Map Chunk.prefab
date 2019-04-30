@@ -83,8 +83,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c5f602bc60dad5f42b0e183d792e54c4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LandBakeTexture: {fileID: 0}
-  WaterBakeTexture: {fileID: 0}
+  landBakeTexture: {fileID: 0}
+  waterBakeTexture: {fileID: 0}
   OrientationTexture: {fileID: 0}
   WeightsTexture: {fileID: 0}
 --- !u!114 &114275055398550290

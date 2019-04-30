@@ -66,6 +66,40 @@ namespace Assets.Simulation.Cities.Buildings {
             return retval;
         }
 
+        public YieldSummary GetBonusCellYieldFromYieldModifications(
+            IHexCell cell, IEnumerable<ICellYieldModificationData> cellMods
+        ) {
+            var retval = YieldSummary.Empty;
+
+            foreach(var cellMod in cellMods) {
+                if( cellMod.PropertyConsidered == CellPropertyType.Terrain &&
+                    cell.Terrain == cellMod.TerrainRequired
+                ) {
+                    retval += cellMod.BonusYield;
+
+                }else if( 
+                    cellMod.PropertyConsidered == CellPropertyType.Shape &&
+                    cell.Shape == cellMod.ShapeRequired
+                ){
+                    retval += cellMod.BonusYield;
+
+                }else if(
+                    cellMod.PropertyConsidered == CellPropertyType.Vegetation &&
+                    cell.Vegetation == cellMod.VegetationRequired
+                ) {
+                    retval += cellMod.BonusYield;
+
+                }else if(
+                    cellMod.PropertyConsidered == CellPropertyType.CellIsUnderwater &&
+                    cell.Terrain.IsWater() == cellMod.MustBeUnderwater
+                ) {
+                    retval += cellMod.BonusYield;
+                }
+            }
+
+            return retval;
+        }
+
         #endregion
 
         #endregion

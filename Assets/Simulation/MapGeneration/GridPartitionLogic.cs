@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -37,6 +38,8 @@ namespace Assets.Simulation.MapGeneration {
         //using a process similiar to Lloyd's algorithm to make the
         //shapes more regular
         public GridPartition GetPartitionOfGrid(IHexGrid grid, IMapTemplate template) {
+            Profiler.BeginSample("GetPartitionOfGrid()");
+
             float xMin = 0f, zMin = 0f;
             float xMax = (grid.CellCountX + grid.CellCountZ * 0.5f - grid.CellCountZ / 2) * RenderConfig.InnerRadius * 2f;
             float zMax = grid.CellCountZ * RenderConfig.OuterRadius * 1.5f;
@@ -92,6 +95,8 @@ namespace Assets.Simulation.MapGeneration {
                     regionOfPoint = newRegionOfPoints;
                 }
             }
+
+            Profiler.EndSample();
 
             return new GridPartition(regionOfPoint.Values, grid);
         }

@@ -17,8 +17,15 @@ namespace Assets.Simulation.MapGeneration {
         public IHexCell Seed { get; private set; }
 
         public ReadOnlyCollection<IHexCell> Cells {
-            get { return cells.AsReadOnly(); }
+            get {
+                if(_readOnlyCells == null) {
+                    _readOnlyCells = cells.AsReadOnly();
+                }
+
+                return _readOnlyCells;
+            }
         }
+        private ReadOnlyCollection<IHexCell> _readOnlyCells;
         private List<IHexCell> cells = new List<IHexCell>();
 
         public int XMin { get; private set; }

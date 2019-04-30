@@ -73,6 +73,8 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
+        private Dictionary<IImprovementTemplate, HypotheticalImprovement> HypotheticalForTemplate =
+            new Dictionary<IImprovementTemplate, HypotheticalImprovement>();
 
 
 
@@ -153,7 +155,7 @@ namespace Assets.Simulation.MapGeneration {
             var yieldOfImprovements = validImprovements.Select(
                 improvement => GetYieldEstimateForCellWithImprovement(
                     cell, nodeAtLocation, techData.VisibleResources, techData.ImprovementModifications,
-                    techData.AvailableBuildings, improvement
+                    techData.AvailableBuildingMods, improvement
                 )
             );
 
@@ -172,7 +174,7 @@ namespace Assets.Simulation.MapGeneration {
             }else {
                 bestYield = GetYieldEstimateForCellWithImprovement(
                     cell, nodeAtLocation, techData.VisibleResources,
-                    techData.ImprovementModifications, techData.AvailableBuildings, null
+                    techData.ImprovementModifications, techData.AvailableBuildingMods, null
                 );
             }
 
@@ -189,13 +191,22 @@ namespace Assets.Simulation.MapGeneration {
         private YieldSummary GetYieldEstimateForCellWithImprovement(
             IHexCell cell, IResourceNode nodeAtLocation, IEnumerable<IResourceDefinition> visibleResources,
             IEnumerable<IImprovementModificationData> improvementModifications,
-            IEnumerable<IBuildingTemplate> availableBuildings, IImprovementTemplate improvement
+            IEnumerable<ICellYieldModificationData> buildingYieldMods,
+            IImprovementTemplate improvement
         ) {
-            var retval = YieldSummary.Empty;
+            var retval = YieldSummary.Empty;            
 
             if(nodeAtLocation != null) {
+                HypotheticalImprovement hypothetical;
+
+                if(!HypotheticalForTemplate.TryGetValue(improvement, out hypothetical)) {
+                    hypothetical = new HypotheticalImprovement(improvement);
+
+                    HypotheticalForTemplate[improvement] = hypothetical;
+                }
+
                 retval += NodeYieldLogic.GetYieldFromNode(
-                    nodeAtLocation, visibleResources, new HypotheticalImprovement(improvement)
+                    nodeAtLocation, visibleResources, hypothetical
                 );
             }
 
@@ -211,7 +222,7 @@ namespace Assets.Simulation.MapGeneration {
 
             retval += InherentYieldLogic.GetInherentCellYield(cell, clearVegetation);
 
-            retval += YieldFromBuildingsLogic.GetBonusCellYieldFromBuildings(cell, availableBuildings);
+            retval += YieldFromBuildingsLogic.GetBonusCellYieldFromYieldModifications(cell, buildingYieldMods);
 
             return retval + OneScience;
         }

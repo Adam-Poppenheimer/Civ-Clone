@@ -53796,7 +53796,7 @@ MonoBehaviour:
     m_Bits: 272
   LandDrawingMask:
     serializedVersion: 2
-    m_Bits: 162816
+    m_Bits: 31744
   WaterDrawingMask:
     serializedVersion: 2
     m_Bits: 1024
@@ -68977,7 +68977,7 @@ Camera:
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
-    m_Bits: 4294967295
+    m_Bits: 4294706175
   m_RenderingPath: -1
   m_TargetTexture: {fileID: 0}
   m_TargetDisplay: 0

@@ -47,10 +47,6 @@ namespace Assets.Simulation.MapRendering {
             get { return gameObject.layer; }
         }
 
-        public bool ShouldBeBaked {
-            get { return Data.ShouldBeBaked; }
-        }
-
         #endregion
 
         private HexMeshData Data {
@@ -204,8 +200,6 @@ namespace Assets.Simulation.MapRendering {
             UV2Lists       .Clear();
             UV3Lists       .Clear();
             ColorLists     .Clear();
-
-            gameObject.SetActive(!Data.ShouldBeBaked);
         }
 
         public void AddTriangle(Vector3 vertexOne, Vector3 vertexTwo, Vector3 vertexThree) {
@@ -418,10 +412,6 @@ namespace Assets.Simulation.MapRendering {
             activeColors.Add(color);
             activeColors.Add(color);
             activeColors.Add(color);
-        }
-
-        public void SetActive(bool isActive) {
-            gameObject.SetActive(isActive);
         }
 
         public void OverrideMaterial(Material newMaterial) {

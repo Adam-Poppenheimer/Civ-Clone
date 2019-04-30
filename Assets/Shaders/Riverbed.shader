@@ -16,7 +16,7 @@
 		Blend OneMinusDstAlpha DstAlpha
 
 		CGPROGRAM
-		#pragma surface surf Standard
+		#pragma surface surf Standard keepalpha
 
 		#pragma target 3.0
 

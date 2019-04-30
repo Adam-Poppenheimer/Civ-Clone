@@ -105,8 +105,15 @@ namespace Assets.Simulation.Cities.Buildings {
         [SerializeField] private List<ResourceYieldModificationData> _resourceYieldModifications;
 
         public IEnumerable<ICellYieldModificationData> CellYieldModifications {
-            get { return _cellYieldModifications.Cast<ICellYieldModificationData>(); }
+            get {
+                if(_castCellYieldModifications == null) {
+                    _castCellYieldModifications = _cellYieldModifications.Cast<ICellYieldModificationData>();
+                }
+
+                return _castCellYieldModifications;
+            }
         }
+        private IEnumerable<ICellYieldModificationData> _castCellYieldModifications;
         [SerializeField] private List<CellYieldModificationData> _cellYieldModifications;
 
         public float FoodStockpilePreservationBonus { 

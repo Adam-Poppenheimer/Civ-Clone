@@ -59,6 +59,7 @@ namespace Assets.Simulation.MapGeneration {
                         AvailableBuildings       = new HashSet<IBuildingTemplate>           (TechCanon.GetAvailableBuildingsFromTechs   (AncientTechs))
                     };
                 }
+
                 return _ancientTechData;
             }
         }
@@ -74,6 +75,7 @@ namespace Assets.Simulation.MapGeneration {
                         AvailableBuildings       = new HashSet<IBuildingTemplate>           (TechCanon.GetAvailableBuildingsFromTechs   (ClassicalTechs))
                     };
                 }
+
                 return _classicalTechData;
             }
         }
@@ -89,6 +91,7 @@ namespace Assets.Simulation.MapGeneration {
                         AvailableBuildings       = new HashSet<IBuildingTemplate>           (TechCanon.GetAvailableBuildingsFromTechs   (MedievalTechs))
                     };
                 }
+
                 return _medievalTechData;
             }
         }
@@ -123,7 +126,6 @@ namespace Assets.Simulation.MapGeneration {
         #region from ICellScorer
 
         public float GetScoreOfCell(IHexCell cell) {
-
             var ancientYield   = YieldEstimator.GetYieldEstimateForCell(cell, AncientTechData);
             var classicalYield = YieldEstimator.GetYieldEstimateForCell(cell, ClassicalTechData);
             var medievalYield  = YieldEstimator.GetYieldEstimateForCell(cell, MedievalTechData);

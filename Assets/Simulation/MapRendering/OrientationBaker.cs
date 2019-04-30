@@ -23,25 +23,19 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private LayerMask NormalWeightsCullingMask;
         [SerializeField] private LayerMask RiverWeightsCullingMask;
 
-        private LayerMask CompositeMask;
-
         private RenderTexture RenderTexture;
 
 
 
         private IMapRenderConfig RenderConfig;
-        private IHexGrid         Grid;
-        private IHexMeshFactory  HexMeshFactory;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IMapRenderConfig renderConfig, IHexGrid grid, IHexMeshFactory hexMeshFactory) {
+        public void InjectDependencies(IMapRenderConfig renderConfig) {
             RenderConfig   = renderConfig;
-            Grid           = grid;
-            HexMeshFactory = hexMeshFactory;
 
             Initialize();
         }
@@ -92,8 +86,6 @@ namespace Assets.Simulation.MapRendering {
             localPos.z = RenderConfig.ChunkHeight / 2f;
 
             OrientationCamera.transform.localPosition = localPos;
-
-            CompositeMask = (OrientationCullingMask | NormalWeightsCullingMask | RiverWeightsCullingMask);
         }
 
         #region from IOrientationBaker
@@ -111,12 +103,6 @@ namespace Assets.Simulation.MapRendering {
 
             Profiler.BeginSample("Orientation and Weight Mesh Rendering");
 
-            var orientationMeshes = HexMeshFactory.AllMeshes.Where(mesh => CompositeMask == (CompositeMask | (1 << mesh.Layer))).ToList();
-
-            foreach(var mesh in orientationMeshes) {
-                mesh.SetActive(true);
-            }
-
             OrientationCamera.transform.SetParent(chunkTransform, false);
 
             var activeRenderTexture = RenderTexture.active;
@@ -125,10 +111,6 @@ namespace Assets.Simulation.MapRendering {
             RenderWeights(weightsTexture);
 
             RenderTexture.active = activeRenderTexture;
-
-            foreach(var mesh in orientationMeshes) {
-                mesh.SetActive(false);
-            }
 
             OrientationCamera.transform.SetParent(null, false);
 
@@ -157,8 +139,6 @@ namespace Assets.Simulation.MapRendering {
             OrientationCamera.clearFlags  = CameraClearFlags.Nothing;
             OrientationCamera.cullingMask = RiverWeightsCullingMask;
 
-            Grid.RiverBankMesh.SetActive(true);
-
             OrientationCamera.RenderWithShader(RenderConfig.RiverWeightShader, "RenderType");
 
             RenderTexture.active = RenderTexture;
@@ -166,8 +146,6 @@ namespace Assets.Simulation.MapRendering {
             weightsTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
 
             weightsTexture.Apply();
-
-            Grid.RiverBankMesh.SetActive(false);
         }
 
         #endregion

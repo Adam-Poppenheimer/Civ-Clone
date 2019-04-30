@@ -83,7 +83,9 @@ namespace Assets.Simulation.HexMap {
         }
 
         public static HexCoordinates GetNeighborInDirection(HexCoordinates coordinates, HexDirection direction) {
-            return Add(coordinates, GetCoordinateInDirection(direction));
+            var clockwiseDirection = ClockwiseNeighborDirections[(int)direction];
+
+            return new HexCoordinates(coordinates.X + clockwiseDirection.X, coordinates.Z + clockwiseDirection.Z);
         }
 
         public static int GetDistanceBetween(HexCoordinates a, HexCoordinates b) {
