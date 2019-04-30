@@ -15,7 +15,8 @@ namespace Assets.Simulation.MapRendering {
 
         Transform transform { get; }
 
-        IEnumerable<IHexCell> Cells { get; }
+        IEnumerable<IHexCell> CenteredCells    { get; }
+        IEnumerable<IHexCell> OverlappingCells { get; }
 
         Terrain Terrain { get; }
 
@@ -31,7 +32,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void AttachCell(IHexCell cell);
+        void AttachCell(IHexCell cell, bool isCentered);
 
         void Initialize(Vector3 position, float width, float height);
 

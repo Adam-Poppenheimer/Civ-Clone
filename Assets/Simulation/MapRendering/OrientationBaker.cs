@@ -17,6 +17,46 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
+        #region from IOrientationBaker
+
+        public Texture2D OrientationTexture {
+            get { return orientationTexture; }
+        }
+        [SerializeField] private Texture2D orientationTexture;
+
+        public Texture2D WeightsTexture {
+            get { return weightsTexture; }
+        }
+        [SerializeField] private Texture2D weightsTexture;
+
+        public IHexMesh OrientationMesh {
+            get {
+                if(_orientationMesh == null) {
+                    _orientationMesh = HexMeshFactory.Create("Orientation Mesh", RenderConfig.OrientationMeshData);
+
+                    _orientationMesh.transform.SetParent(transform, false);
+                }
+
+                return _orientationMesh;
+            }
+        }
+        private IHexMesh _orientationMesh;
+
+        public IHexMesh WeightsMesh {
+            get {
+                if(_weightsMesh == null) {
+                    _weightsMesh = HexMeshFactory.Create("Weights Mesh", RenderConfig.WeightsMeshData);
+
+                    _weightsMesh.transform.SetParent(transform, false);
+                }
+
+                return _weightsMesh;
+            }
+        }
+        private IHexMesh _weightsMesh;
+
+        #endregion
+
         [SerializeField] private Camera OrientationCamera;
 
         [SerializeField] private LayerMask OrientationCullingMask;
@@ -27,15 +67,24 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        private IMapRenderConfig RenderConfig;
+        private IMapRenderConfig         RenderConfig;
+        private IHexMeshFactory          HexMeshFactory;
+        private IOrientationTriangulator OrientationTriangulator;
+        private IWeightsTriangulator     WeightsTriangulator;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        public void InjectDependencies(IMapRenderConfig renderConfig) {
-            RenderConfig   = renderConfig;
+        public void InjectDependencies(
+            IMapRenderConfig renderConfig, IHexMeshFactory hexMeshFactory,
+            IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator
+        ) {
+            RenderConfig            = renderConfig;
+            HexMeshFactory          = hexMeshFactory;
+            OrientationTriangulator = orientationTriangulator;
+            WeightsTriangulator     = weightsTriangulator;
 
             Initialize();
         }
@@ -70,6 +119,26 @@ namespace Assets.Simulation.MapRendering {
             RenderTexture.wrapMode   = TextureWrapMode.Clamp;
             RenderTexture.useMipMap  = false;
 
+            orientationTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            orientationTexture.filterMode = FilterMode.Point;
+            orientationTexture.wrapMode   = TextureWrapMode.Clamp;
+            orientationTexture.anisoLevel = 0;
+
+            weightsTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            weightsTexture.filterMode = FilterMode.Point;
+            weightsTexture.wrapMode   = TextureWrapMode.Clamp;
+            weightsTexture.anisoLevel = 0;
+
             float cameraWidth  = RenderConfig.ChunkWidth;
             float cameraHeight = RenderConfig.ChunkHeight;
 
@@ -90,25 +159,15 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IOrientationBaker
 
-        public void RenderOrientationFromMesh(Texture2D orientationTexture, Texture2D weightsTexture, Transform chunkTransform) {
-            StartCoroutine(RenderOrientationFromMesh_Perform(orientationTexture, weightsTexture, chunkTransform));
-        }
-
-        #endregion
-
-        private IEnumerator RenderOrientationFromMesh_Perform(
-            Texture2D orientationTexture, Texture2D weightsTexture, Transform chunkTransform
-        ) {
-            yield return new WaitForEndOfFrame();
-
+        public void RenderOrientationFromChunk(IMapChunk chunk) {
             Profiler.BeginSample("Orientation and Weight Mesh Rendering");
 
-            OrientationCamera.transform.SetParent(chunkTransform, false);
+            OrientationCamera.transform.SetParent(chunk.transform, false);
 
             var activeRenderTexture = RenderTexture.active;
 
-            RenderOrientation(orientationTexture);
-            RenderWeights(weightsTexture);
+            RenderOrientation(chunk, orientationTexture);
+            RenderWeights    (chunk, weightsTexture);
 
             RenderTexture.active = activeRenderTexture;
 
@@ -117,7 +176,23 @@ namespace Assets.Simulation.MapRendering {
             Profiler.EndSample();
         }
 
-        private void RenderOrientation(Texture2D orientationTexture) {
+        #endregion
+
+        private void RenderOrientation(IMapChunk chunk, Texture2D orientationTexture) {
+            OrientationMesh.Clear();
+
+            OrientationMesh.transform.SetParent(chunk.transform, false);
+
+            foreach(var cell in chunk.CenteredCells) {
+                OrientationTriangulator.TriangulateOrientation(cell, OrientationMesh);
+            }
+
+            foreach(var cell in chunk.OverlappingCells) {
+                OrientationTriangulator.TriangulateOrientation(cell, OrientationMesh);
+            }
+
+            OrientationMesh.Apply();
+
             OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
             OrientationCamera.cullingMask = OrientationCullingMask;
 
@@ -130,7 +205,21 @@ namespace Assets.Simulation.MapRendering {
             orientationTexture.Apply();
         }
 
-        private void RenderWeights(Texture2D weightsTexture) {
+        private void RenderWeights(IMapChunk chunk, Texture2D weightsTexture) {
+            WeightsMesh.Clear();
+
+            WeightsMesh.transform.SetParent(chunk.transform, false);
+
+            foreach(var cell in chunk.CenteredCells) {
+                WeightsTriangulator.TriangulateCellWeights(cell, WeightsMesh);
+            }
+
+            foreach(var cell in chunk.OverlappingCells) {
+                WeightsTriangulator.TriangulateCellWeights(cell, WeightsMesh);
+            }
+
+            WeightsMesh.Apply();
+
             OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
             OrientationCamera.cullingMask = NormalWeightsCullingMask;
 

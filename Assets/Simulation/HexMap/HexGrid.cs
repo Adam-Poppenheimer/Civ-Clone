@@ -405,9 +405,9 @@ namespace Assets.Simulation.HexMap {
 
                 cell.AttachToChunks(overlappingChunks);
 
-                var chunkOverMiddle = overlappingChunks.First(chunk => chunk.IsInTerrainBounds2D(cell.AbsolutePositionXZ));
-
-                chunkOverMiddle.AttachCell(cell);
+                foreach(var chunk in overlappingChunks) {
+                    chunk.AttachCell(cell, chunk.IsInTerrainBounds2D(cell.AbsolutePositionXZ));
+                }
             }
         }
 

@@ -79,7 +79,7 @@ namespace Assets.Simulation.MapRendering {
         private IEnumerator RefreshFarmland_Perform() {
             yield return new WaitForEndOfFrame();
 
-            while(RefreshRiversCoroutine != null) {
+            while(IsRefreshingRivers) {
                 yield return new WaitForEndOfFrame();
             }
 

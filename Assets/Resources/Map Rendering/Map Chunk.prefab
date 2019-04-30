@@ -85,8 +85,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   landBakeTexture: {fileID: 0}
   waterBakeTexture: {fileID: 0}
-  OrientationTexture: {fileID: 0}
-  WeightsTexture: {fileID: 0}
 --- !u!114 &114275055398550290
 MonoBehaviour:
   m_ObjectHideFlags: 1
