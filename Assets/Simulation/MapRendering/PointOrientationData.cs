@@ -29,6 +29,8 @@ namespace Assets.Simulation.MapRendering {
 
         public float RiverWeight;
 
+        public float ElevationDuck;
+
         #endregion
 
         #region instance methods
@@ -49,7 +51,8 @@ namespace Assets.Simulation.MapRendering {
                 && LeftWeight        == otherData.LeftWeight
                 && RightWeight       == otherData.RightWeight
                 && NextRightWeight   == otherData.NextRightWeight
-                && RiverWeight == otherData.RiverWeight;
+                && RiverWeight       == otherData.RiverWeight
+                && ElevationDuck         == otherData.ElevationDuck;
         }
 
         public override int GetHashCode() {
@@ -72,6 +75,7 @@ namespace Assets.Simulation.MapRendering {
                 hash = (hash * HashingMultipler) ^ RightWeight    .GetHashCode();
                 hash = (hash * HashingMultipler) ^ NextRightWeight.GetHashCode();
                 hash = (hash * HashingMultipler) ^ RiverWeight    .GetHashCode();
+                hash = (hash * HashingMultipler) ^ ElevationDuck     .GetHashCode();
 
                 return hash;
             }
@@ -128,6 +132,8 @@ namespace Assets.Simulation.MapRendering {
             RightWeight     = 0f;
             NextRightWeight = 0f;
             RiverWeight     = 0f;
+
+            ElevationDuck = 0f;
         }
 
         #endregion

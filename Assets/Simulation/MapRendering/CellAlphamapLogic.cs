@@ -48,8 +48,6 @@ namespace Assets.Simulation.MapRendering {
         public float[] ReusedAlphamap;
 
         public float[] GetAlphamapForCell(IHexCell cell, HexDirection sextant) {
-            Profiler.BeginSample("CellAlphamapLogic.GetAlphamapForPointForCell()");
-
             for(int i = 0; i < ReusedAlphamap.Length; i++) {
                 ReusedAlphamap[i] = 0f;
             }
@@ -71,7 +69,6 @@ namespace Assets.Simulation.MapRendering {
                 ReusedAlphamap[(int)cell.Terrain] = 1f;
             }
 
-            Profiler.EndSample();
             return ReusedAlphamap;
         }
 

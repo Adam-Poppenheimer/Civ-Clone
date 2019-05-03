@@ -19,8 +19,6 @@ namespace Assets.Simulation.MapRendering {
 
         private IMapRenderConfig         RenderConfig;
         private INoiseGenerator          NoiseGenerator;
-        private IRiverCanon              RiverCanon;
-        private ICellEdgeContourCanon    CellEdgeContourCanon;
         private IFlatlandsHeightmapLogic FlatlandsHeightmapLogic;
 
         #endregion
@@ -30,13 +28,10 @@ namespace Assets.Simulation.MapRendering {
         [Inject]
         public HillsHeightmapLogic(
             IMapRenderConfig renderConfig, INoiseGenerator noiseGenerator,
-            IRiverCanon riverCanon, ICellEdgeContourCanon cellEdgeContourCanon,
             IFlatlandsHeightmapLogic flatlandsHeightmapLogic
         ) {
             RenderConfig            = renderConfig;
             NoiseGenerator          = noiseGenerator;
-            RiverCanon              = riverCanon;
-            CellEdgeContourCanon    = cellEdgeContourCanon;
             FlatlandsHeightmapLogic = flatlandsHeightmapLogic;
         }
 
@@ -46,8 +41,8 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IHillsHeightmapLogic
 
-        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
-            Profiler.BeginSample("HillsHeightmapLogic.GetHeightForPoint()");
+        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck) {
+            Profiler.BeginSample("HillHeightmapLogic.GetHeightForPoint()");
 
             float hillNoise = NoiseGenerator.SampleNoise(
                 xzPoint, RenderConfig.HillsElevationNoiseSource, RenderConfig.HillsElevationNoiseStrength,
@@ -56,85 +51,16 @@ namespace Assets.Simulation.MapRendering {
 
             float hillsHeight = RenderConfig.HillsBaseElevation + hillNoise;
 
-            Vector2 nearestContourPoint;
+            float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
-            if(TryGetNearestContourPoint(xzPoint, cell, sextant, out nearestContourPoint)) {
-                Vector2 contourToPoint  = xzPoint                 - nearestContourPoint;
-                Vector2 contourToCenter = cell.AbsolutePositionXZ - nearestContourPoint;
-
-                float hillsWeight     = Mathf.Sqrt(contourToPoint.magnitude / contourToCenter.magnitude);
-                float flatlandsWeight = 1f - hillsWeight;
-                        
-                float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
-
-                Profiler.EndSample();
-                return hillsHeight * hillsWeight + flatlandsHeight * flatlandsWeight;
-            }else {
-
-                Profiler.EndSample();
-                return hillsHeight;
-            }
-        }
-
-        #endregion
-
-        private bool TryGetNearestContourPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, out Vector2 nearestContourPoint) {
-            Profiler.BeginSample("HillsHeightmapLogic.TryGetNearestContourPoint");
-
-            bool retval = false;
-
-            nearestContourPoint = Vector2.zero;
-            float nearestDistance = float.MaxValue;
-
-            if(RiverCanon.HasRiverAlongEdge(cell, sextant)) {
-                retval = true;
-
-                var centerRightContour = CellEdgeContourCanon.GetContourForCellEdge(cell, sextant);
-
-                Vector2 candidate = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerRightContour);
-
-                float candidateDistance = Vector2.Distance(xzPoint, candidate);
-
-                if(candidateDistance < nearestDistance) {
-                    nearestContourPoint = candidate;
-                    nearestDistance = candidateDistance;
-                }
-            }
-
-            if(RiverCanon.HasRiverAlongEdge(cell, sextant.Previous())) {
-                retval = true;
-
-                var centerLeftContour = CellEdgeContourCanon.GetContourForCellEdge(cell, sextant.Previous());
-
-                Vector2 candidate = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerLeftContour);
-
-                float candidateDistance = Vector2.Distance(xzPoint, candidate);
-
-                if(candidateDistance < nearestDistance) {
-                    nearestContourPoint = candidate;
-                    nearestDistance = candidateDistance;
-                }
-            }
-
-            if(RiverCanon.HasRiverAlongEdge(cell, sextant.Next())) {
-                retval = true;
-
-                var centerNextRightContour = CellEdgeContourCanon.GetContourForCellEdge(cell, sextant.Next());
-
-                Vector2 candidate = CellEdgeContourCanon.GetClosestPointOnContour(xzPoint, centerNextRightContour);
-
-                float candidateDistance = Vector2.Distance(xzPoint, candidate);
-
-                if(candidateDistance < nearestDistance) {
-                    nearestContourPoint = candidate;
-                    nearestDistance = candidateDistance;
-                }
-            }
+            var retval = Mathf.Lerp(hillsHeight, flatlandsHeight, elevationDuck);
 
             Profiler.EndSample();
 
             return retval;
         }
+
+        #endregion
 
         #endregion
         

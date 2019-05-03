@@ -48,7 +48,6 @@ namespace Assets.Simulation.MapGeneration {
         #region from IRegionGenerator
 
         public void GenerateTopology(MapRegion region, IRegionTopologyTemplate template) {
-            Profiler.BeginSample("RegionGenerator.GenerateTopology");
             var landCells = region.LandCells;
 
             int desiredMountainCount = Mathf.RoundToInt(template.MountainsPercentage * landCells.Count() * 0.01f);
@@ -70,11 +69,9 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var cell in mountainousCells) {
                 ModLogic.ChangeShapeOfCell(cell, CellShape.Mountains);
             }
-            Profiler.EndSample();
         }
 
         public void PaintTerrain(MapRegion region, IRegionBiomeTemplate template) {
-            Profiler.BeginSample("RegionGenerator.PaintTerrain");
             var unassignedLandCells = new HashSet<IHexCell>(region.LandCells);
 
             PaintArcticTerrain(region, template, unassignedLandCells);
@@ -84,17 +81,14 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var cell in region.WaterCells) {
                 ModLogic.ChangeTerrainOfCell(cell, CellTerrain.ShallowWater);
             }
-            Profiler.EndSample();
         }
 
         public void AssignFloodPlains(IEnumerable<IHexCell> landCells) {
-            Profiler.BeginSample("RegionGenerator.AssignFloodPlains");
             foreach(var desertCell in landCells.Where(cell => cell.Terrain == CellTerrain.Desert)) {
                 if(ModLogic.CanChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains)) {
                     ModLogic.ChangeTerrainOfCell(desertCell, CellTerrain.FloodPlains);
                 }
             }
-            Profiler.EndSample();
         }
 
         #endregion

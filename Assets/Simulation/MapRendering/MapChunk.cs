@@ -31,6 +31,12 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
+        #region static fields and properties
+
+        private static WaitForEndOfFrame SkipFrame = new WaitForEndOfFrame();
+
+        #endregion
+
         #region instance fields and properties
 
         #region from IMapChunk
@@ -161,8 +167,6 @@ namespace Assets.Simulation.MapRendering {
         private IRoadTriangulator        RoadTriangulator;
         private IMarshTriangulator       MarshTriangulator;
         private IOasisTriangulator       OasisTriangulator;
-        private IOrientationTriangulator OrientationTriangulator;
-        private IWeightsTriangulator     WeightsTriangulator;
         private ITerrainBaker            TerrainBaker;
         private IOrientationBaker        OrientationBaker;
         private IPointOrientationLogic   PointOrientationLogic;
@@ -179,7 +183,6 @@ namespace Assets.Simulation.MapRendering {
             IHexFeatureManager hexFeatureManager, ICultureTriangulator cultureTriangulator, IHexCellShaderData shaderData,
             DiContainer container, IHexMeshFactory hexMeshFactory, IRoadTriangulator roadTriangulator,
             IMarshTriangulator marshTriangulator, IOasisTriangulator oasisTriangulator,
-            IOrientationTriangulator orientationTriangulator, IWeightsTriangulator weightsTriangulator,
             ITerrainBaker terrainBaker, IOrientationBaker orientationBaker,
             IPointOrientationLogic pointOrientationLogic, IFullMapRefresher fullMapRefresher
         ) {
@@ -194,8 +197,6 @@ namespace Assets.Simulation.MapRendering {
             RoadTriangulator        = roadTriangulator;
             MarshTriangulator       = marshTriangulator;
             OasisTriangulator       = oasisTriangulator;
-            OrientationTriangulator = orientationTriangulator;
-            WeightsTriangulator     = weightsTriangulator;
             TerrainBaker            = terrainBaker;
             OrientationBaker        = orientationBaker;
             PointOrientationLogic   = pointOrientationLogic;
@@ -215,8 +216,6 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Initialize(Vector3 position, float width, float height) {
-            Profiler.BeginSample("MapChunk.Initialize()");
-
             Width  = width;
             Height = height;
 
@@ -291,8 +290,6 @@ namespace Assets.Simulation.MapRendering {
             StandingWater.OverrideMaterial(instancedWaterMaterial);
 
             Terrain.Flush();
-
-            Profiler.EndSample();
         }
 
         public void Refresh(TerrainRefreshType refreshTypes) {
@@ -351,11 +348,13 @@ namespace Assets.Simulation.MapRendering {
         #endregion
 
         private IEnumerator Refresh_Perform() {
-            yield return new WaitForEndOfFrame();
+            yield return SkipFrame;
 
             while(FullMapRefresher.IsRefreshingRivers) {
-                yield return new WaitForEndOfFrame();
+                yield return SkipFrame;
             }
+
+            yield return SkipFrame;
 
             bool flushTerrain = false;
 
@@ -379,7 +378,7 @@ namespace Assets.Simulation.MapRendering {
 
             if(flushTerrain) {
                 Terrain.Flush();
-                yield return new WaitForEndOfFrame();
+                yield return SkipFrame;
             }
 
             if(((RefreshFlags & TerrainRefreshType.Culture) == TerrainRefreshType.Culture)) {
@@ -412,10 +411,13 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void RefreshAlphamap() {
+            Profiler.BeginSample("RefreshAlphamap()");
+
             var terrainData = Terrain.terrainData;
 
             var orientationTexture = OrientationBaker.OrientationTexture;
             var weightsTexture     = OrientationBaker.WeightsTexture;
+            var duckTexture        = OrientationBaker.RiverDuckTexture;
 
             int mapWidth  = terrainData.alphamapWidth;
             int mapHeight = terrainData.alphamapHeight;
@@ -435,7 +437,7 @@ namespace Assets.Simulation.MapRendering {
 
             int texelX, texelY;
             Color32 orientationColor;
-            Color weightsColor;
+            Color weightsColor, duckColor;
 
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
@@ -453,8 +455,11 @@ namespace Assets.Simulation.MapRendering {
 
                     orientationColor = orientationTexture.GetPixel(texelX, texelY);
                     weightsColor     = weightsTexture    .GetPixel(texelX, texelY);
+                    duckColor        = duckTexture       .GetPixel(texelX, texelY);
 
-                    orientation = PointOrientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+                    orientation = PointOrientationLogic.GetOrientationDataFromColors(
+                        orientationColor, weightsColor, duckColor
+                    );
 
                     newAlphas = AlphamapLogic.GetAlphamapFromOrientation(orientation);
 
@@ -465,13 +470,18 @@ namespace Assets.Simulation.MapRendering {
             }
 
             terrainData.SetAlphamaps(0, 0, alphaMaps);
+
+            Profiler.EndSample();
         }
 
         private void RefreshHeightmap() {
+            Profiler.BeginSample("RefreshHeightmap()");
+
             var terrainData = Terrain.terrainData;
 
             var orientationTexture = OrientationBaker.OrientationTexture;
             var weightsTexture     = OrientationBaker.WeightsTexture;
+            var duckTexture        = OrientationBaker.RiverDuckTexture;
 
             Vector3 terrainSize = terrainData.size;
 
@@ -487,7 +497,7 @@ namespace Assets.Simulation.MapRendering {
 
             int texelX, texelY;
             Color32 orientationColor;
-            Color weightsColor;
+            Color weightsColor, duckColor;
 
             PointOrientationData orientation;
 
@@ -496,8 +506,6 @@ namespace Assets.Simulation.MapRendering {
 
             for(int height = 0; height < mapHeight; height++) {
                 for(int width = 0; width < mapWidth; width++) {
-                    Profiler.BeginSample("Generic Math");
-
                     //For some reason, terrainData seems to index its points
                     //as (y, x) rather than the more traditional (x, y), so
                     //we need to sample our texture accordingly
@@ -507,24 +515,27 @@ namespace Assets.Simulation.MapRendering {
                     worldX = transform.position.x + terrainNormalX * terrainSize.x;
                     worldZ = transform.position.z + terrainNormalZ * terrainSize.z;
 
-                    textureNormalX = Mathf.Lerp(0f, maxTextureNormalX, terrainNormalX);
-                    textureNormalZ = Mathf.Lerp(0f, maxTextureNormalZ, terrainNormalZ);
+                    textureNormalX = maxTextureNormalX * terrainNormalX;
+                    textureNormalZ = maxTextureNormalZ * terrainNormalZ;
 
                     texelX = Mathf.RoundToInt(orientationTexture.width  * textureNormalX);
                     texelY = Mathf.RoundToInt(orientationTexture.height * textureNormalZ);
 
-                    Profiler.EndSample();
-
                     orientationColor = orientationTexture.GetPixel(texelX, texelY);
                     weightsColor     = weightsTexture    .GetPixel(texelX, texelY);
+                    duckColor        = duckTexture       .GetPixel(texelX, texelY);
 
-                    orientation = PointOrientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+                    orientation = PointOrientationLogic.GetOrientationDataFromColors(
+                        orientationColor, weightsColor, duckColor
+                    );
 
                     heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ), orientation);
                 }
             }
 
             terrainData.SetHeights(0, 0, heights);
+
+            Profiler.EndSample();
         }
 
         private void RefreshWater() {

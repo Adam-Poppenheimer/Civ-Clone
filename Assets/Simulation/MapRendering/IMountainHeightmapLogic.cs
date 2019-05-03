@@ -13,7 +13,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant);
+        float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck);
 
         #endregion
 

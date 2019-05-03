@@ -29,6 +29,11 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Texture2D weightsTexture;
 
+        public Texture2D RiverDuckTexture {
+            get { return riverDuckTexture; }
+        }
+        [SerializeField] private Texture2D riverDuckTexture;
+
         public IHexMesh OrientationMesh {
             get {
                 if(_orientationMesh == null) {
@@ -62,6 +67,7 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private LayerMask OrientationCullingMask;
         [SerializeField] private LayerMask NormalWeightsCullingMask;
         [SerializeField] private LayerMask RiverWeightsCullingMask;
+        [SerializeField] private LayerMask RiverDuckCullingMask;
 
         private RenderTexture RenderTexture;
 
@@ -139,6 +145,16 @@ namespace Assets.Simulation.MapRendering {
             weightsTexture.wrapMode   = TextureWrapMode.Clamp;
             weightsTexture.anisoLevel = 0;
 
+            riverDuckTexture = new Texture2D(
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            riverDuckTexture.filterMode = FilterMode.Point;
+            riverDuckTexture.wrapMode   = TextureWrapMode.Clamp;
+            riverDuckTexture.anisoLevel = 0;
+
             float cameraWidth  = RenderConfig.ChunkWidth;
             float cameraHeight = RenderConfig.ChunkHeight;
 
@@ -160,20 +176,17 @@ namespace Assets.Simulation.MapRendering {
         #region from IOrientationBaker
 
         public void RenderOrientationFromChunk(IMapChunk chunk) {
-            Profiler.BeginSample("Orientation and Weight Mesh Rendering");
-
             OrientationCamera.transform.SetParent(chunk.transform, false);
 
             var activeRenderTexture = RenderTexture.active;
 
-            RenderOrientation(chunk, orientationTexture);
-            RenderWeights    (chunk, weightsTexture);
+            RenderOrientation(chunk, OrientationTexture);
+            RenderWeights    (chunk, WeightsTexture);
+            RenderRiverDuck  (chunk, RiverDuckTexture);
 
             RenderTexture.active = activeRenderTexture;
 
             OrientationCamera.transform.SetParent(null, false);
-
-            Profiler.EndSample();
         }
 
         #endregion
@@ -235,6 +248,19 @@ namespace Assets.Simulation.MapRendering {
             weightsTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
 
             weightsTexture.Apply();
+        }
+
+        private void RenderRiverDuck(IMapChunk chunk, Texture2D duckTexture) {
+            OrientationCamera.clearFlags  = CameraClearFlags.SolidColor;
+            OrientationCamera.cullingMask = RiverDuckCullingMask;
+
+            OrientationCamera.Render();
+
+            RenderTexture.active = RenderTexture;
+
+            duckTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
+
+            duckTexture.Apply();
         }
 
         #endregion

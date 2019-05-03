@@ -52,6 +52,7 @@ namespace Assets.Simulation.HexMap {
 
         public IHexMesh RiverSurfaceMesh { get; private set; }
         public IHexMesh RiverBankMesh    { get; private set; }
+        public IHexMesh RiverDuckMesh    { get; private set; }
         public IHexMesh FarmMesh         { get; private set; }
 
         #endregion
@@ -107,10 +108,12 @@ namespace Assets.Simulation.HexMap {
 
             RiverSurfaceMesh = HexMeshFactory.Create("River Surfaces", RenderConfig.RiverSurfaceData);
             RiverBankMesh    = HexMeshFactory.Create("River Banks",    RenderConfig.RiverBankData);
+            RiverDuckMesh    = HexMeshFactory.Create("River Ducking",  RenderConfig.RiverDuckData);
             FarmMesh         = HexMeshFactory.Create("Farmland",       RenderConfig.FarmlandData);
 
             RiverSurfaceMesh.transform.SetParent(transform, false);
             RiverBankMesh   .transform.SetParent(transform, false);
+            RiverDuckMesh   .transform.SetParent(transform, false);
             FarmMesh        .transform.SetParent(transform, false);
 
             foreach(var chunk in Chunks) {
@@ -283,8 +286,6 @@ namespace Assets.Simulation.HexMap {
         }
 
         public bool TryGetSextantOfPointInCell(Vector2 xzPoint, IHexCell cell, out HexDirection sextant) {
-            Profiler.BeginSample("HexGrid.TryGetSextantOfPointInCell()");
-
             sextant = HexDirection.NE;
 
             foreach(var candidate in EnumUtil.GetValues<HexDirection>()) {
@@ -295,26 +296,21 @@ namespace Assets.Simulation.HexMap {
                     cell.AbsolutePositionXZ + RenderConfig.GetFirstCornerXZ (candidate),
                     cell.AbsolutePositionXZ + RenderConfig.GetSecondCornerXZ(candidate)
                 )) {
-                    Profiler.EndSample();
                     return true;
                 }
             }
 
-            Profiler.EndSample();
             return false;
         }
 
         #endregion
 
         private void CreateCells() {
-            Profiler.BeginSample("CreateCells");
-
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
                     CreateCell(x, z, i++);
                 }
             }
-            Profiler.EndSample();
         }
 
         private void CreateCell(int x, int z, int i) {
@@ -339,8 +335,6 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunks() {
-            Profiler.BeginSample("HexGrid.CreateChunks()");
-
             float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2    + RenderConfig.InnerRadius;
             float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f + RenderConfig.OuterRadius / 2f;
 
@@ -383,8 +377,6 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
             }
-
-            Profiler.EndSample();
         }
 
         private MapChunk CreateChunk(float chunkX, float chunkZ, float width, float height) {

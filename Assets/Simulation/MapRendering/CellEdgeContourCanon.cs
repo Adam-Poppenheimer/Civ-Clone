@@ -109,19 +109,15 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public bool IsPointWithinContour(Vector2 xzPoint, IHexCell cell, HexDirection direction) {
-            Profiler.BeginSample("CellEdgeContourCanon.IsPointWithinContour()");
-
             var contour = GetContourForCellEdge(cell, direction);
             Vector2 midpoint = cell.AbsolutePositionXZ;
 
             for(int i = 1; i < contour.Count; i++) {
                 if(Geometry2D.IsPointWithinTriangle(xzPoint, midpoint, contour[i - 1], contour[i])) {
-                    Profiler.EndSample();
                     return true;
                 }
             }
 
-            Profiler.EndSample();
             return false;
         }
 
@@ -158,7 +154,6 @@ namespace Assets.Simulation.MapRendering {
                 if( Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP1, contourTwoP1, contourOneP2) ||
                     Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP2, contourTwoP1, contourTwoP2)
                 ) {
-                    Profiler.EndSample();
                     return true;
                 }
             }
@@ -169,7 +164,6 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 contourOneP2 = contourOne[oneIndex + 1];
 
                     if(Geometry2D.IsPointWithinTriangle(xzPoint, contourOneP1, contourTwo.First(), contourOneP2)) {
-                        Profiler.EndSample();
                         return true;
                     }
                 }
@@ -179,7 +173,6 @@ namespace Assets.Simulation.MapRendering {
                     Vector2 contourTwoP2 = contourTwo[twoIndex - 1];
 
                     if(Geometry2D.IsPointWithinTriangle(xzPoint, contourOne.Last(), contourTwoP1, contourTwoP2)) {
-                        Profiler.EndSample();
                         return true;
                     }
                 }
@@ -212,8 +205,6 @@ namespace Assets.Simulation.MapRendering {
                 throw new ArgumentNullException("contour");
             }
 
-            Profiler.BeginSample("CellEdgeContourCanon.GetClosestPointOnContour()");
-
             Vector2 closestPoint = Vector2.zero;
             float shortestDistanceSquared = float.MaxValue;
 
@@ -228,7 +219,6 @@ namespace Assets.Simulation.MapRendering {
                 }
             }
 
-            Profiler.EndSample();
             return closestPoint;
         }
 

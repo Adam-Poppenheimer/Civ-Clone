@@ -59,7 +59,7 @@ namespace Assets.Tests.Simulation.HexMap {
                 }).SetName("Cell with no rivers, non-FreshWater neighbors").Returns(false);
 
                 yield return new TestCaseData(new HasAccessToFreshWaterTestData() {
-                    Cell = new HexCellTestData(),
+                    Cell = new HexCellTestData() { Terrain = CellTerrain.Grassland },
                     Neighbors = new List<HexCellTestData>() {
                         new HexCellTestData() { Terrain = CellTerrain.FreshWater },
                         new HexCellTestData() { Terrain = CellTerrain.FreshWater },

@@ -223,7 +223,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             Vector2 intersection = new Vector2(-1f, -1f);
             MockGeometry2D.Setup(
                 geometry => geometry.AreLineSegmentsCrossing(
-                    centerLeftContour [2], centerLeftContour [2] + (centerLeftContour[2] - centerLeftContour[1]), out intersection,
+                    centerLeftContour [2], centerLeftContour [2] + (centerLeftContour[2] - centerLeftContour[1]) * 10, out intersection,
                     centerRightContour[1], centerRightContour[2], out intersection
                 )
             ).Returns(true);
@@ -270,7 +270,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             MockGeometry2D.Setup(
                 geometry => geometry.AreLineSegmentsCrossing(
                     centerLeftContour [1], centerLeftContour [0], out intersection,
-                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]), out intersection
+                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]) * 10, out intersection
                 )
             ).Returns(true);
 
@@ -315,8 +315,8 @@ namespace Assets.Tests.Simulation.MapRendering {
             Vector2 intersection = new Vector2(-1f, -1f);
             MockGeometry2D.Setup(
                 geometry => geometry.AreLineSegmentsCrossing(
-                    centerLeftContour [2], centerLeftContour [2] + (centerLeftContour [2] - centerLeftContour [1]), out intersection,
-                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]), out intersection
+                    centerLeftContour [2], centerLeftContour [2] + (centerLeftContour [2] - centerLeftContour [1]) * 10, out intersection,
+                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]) * 10, out intersection
                 )
             ).Returns(true);
 

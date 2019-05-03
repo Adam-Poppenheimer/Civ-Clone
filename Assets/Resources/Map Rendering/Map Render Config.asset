@@ -76,7 +76,7 @@ MonoBehaviour:
   - 0
   - 0
   - 0
-  - 0
+  - 1
   _waterSurfaceElevation: 0.093
   _seaFloorElevation: 0
   _flatlandsBaseElevation: 0.1
@@ -89,10 +89,11 @@ MonoBehaviour:
   _freshWaterColor: {r: 0.41176468, g: 0.6105477, b: 1, a: 1}
   _riverWaterColor: {r: 0.40392157, g: 0.8235294, b: 0.93333334, a: 1}
   _riverMaxInnerWidth: 0.75
+  _riverMaxBankWidth: 0.5
+  _riverDuckWidth: 4
   _riverCurveStrength: 5
   _riverWideningRate: 5
   _riverWidthNoise: 0.25
-  _riverBankWidth: 0.5
   _riverCurvesForMaxWidth: 3
   _riverQuadsPerCurve: 50
   _riverFlowSpeed: 10
@@ -120,7 +121,7 @@ MonoBehaviour:
     _useColors: 1
     _weldMesh: 0
     _convertVerticesToWorld: 0
-    _layer: 4
+    _layer: 19
     _renderingData:
       ShadowCastingMode: 0
       ReceiveShadows: 1
@@ -139,6 +140,20 @@ MonoBehaviour:
       ShadowCastingMode: 0
       ReceiveShadows: 0
       Material: {fileID: 2100000, guid: 430db189169ee084b82042aabb708469, type: 2}
+  _riverDuckData:
+    _useCollider: 0
+    _useUVCoordinates: 1
+    _useUV2Coordinates: 0
+    _useUV3Coordinates: 0
+    _useCellData: 0
+    _useColors: 0
+    _weldMesh: 0
+    _convertVerticesToWorld: 0
+    _layer: 18
+    _renderingData:
+      ShadowCastingMode: 0
+      ReceiveShadows: 0
+      Material: {fileID: 2100000, guid: f04c236406dd08b4b8148cc6bf4659c4, type: 2}
   _cultureData:
     _useCollider: 0
     _useUVCoordinates: 1

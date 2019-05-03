@@ -63,10 +63,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                Center = center, CenterWeight = 12f
+                Center = center, CenterWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center, HexDirection.E)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center, HexDirection.E, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -81,10 +82,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                Left = left, LeftWeight = 12f
+                Left = left, LeftWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left, HexDirection.SW)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left, HexDirection.SW, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -97,10 +99,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                Left = null, LeftWeight = 12f
+                Left = null, LeftWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.SW)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.SW, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -115,10 +118,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                Right = right, RightWeight = 12f
+                Right = right, RightWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, right, HexDirection.W)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, right, HexDirection.W, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -131,10 +135,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                Right = null, RightWeight = 12f
+                Right = null, RightWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.W)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.W, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -149,10 +154,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                NextRight = nextRight, NextRightWeight = 12f
+                NextRight = nextRight, NextRightWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, nextRight, HexDirection.NW)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, nextRight, HexDirection.NW, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -165,10 +171,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationData = new PointOrientationData() {
                 IsOnGrid = true, Sextant = HexDirection.E,
-                NextRight = null, NextRightWeight = 12f
+                NextRight = null, NextRightWeight = 12f,
+                ElevationDuck = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.NW)).Returns(8f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, It.IsAny<IHexCell>(), HexDirection.NW, 5.5f)).Returns(8f);
 
             var heightLogic = Container.Resolve<TerrainHeightLogic>();
 
@@ -201,18 +208,18 @@ namespace Assets.Tests.Simulation.MapRendering {
             var nextRight = BuildCell();
 
             var orientationData = new PointOrientationData() {
-                IsOnGrid = true, Sextant = HexDirection.E,
+                IsOnGrid  = true,      Sextant         = HexDirection.E,
                 Center    = center,    CenterWeight    = 1f,
                 Left      = left,      LeftWeight      = 5f,
                 Right     = right,     RightWeight     = 1.5f,
                 NextRight = nextRight, NextRightWeight = 0.6f,
-                RiverWeight = 2f
+                RiverWeight = 2f,      ElevationDuck   = 5.5f
             };
 
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center,    HexDirection.E )).Returns(10f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left,      HexDirection.SW)).Returns(11f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, right,     HexDirection.W )).Returns(12f);
-            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, nextRight, HexDirection.NW)).Returns(13f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, center,    HexDirection.E,  5.5f)).Returns(10f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, left,      HexDirection.SW, 5.5f)).Returns(11f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, right,     HexDirection.W,  5.5f)).Returns(12f);
+            MockCellHeightmapLogic.Setup(logic => logic.GetHeightForPointForCell(point, nextRight, HexDirection.NW, 5.5f)).Returns(13f);
 
             MockMapRenderConfig.Setup(config => config.RiverTroughElevation).Returns(6.2f);
 

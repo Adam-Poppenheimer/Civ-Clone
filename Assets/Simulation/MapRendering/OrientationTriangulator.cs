@@ -8,6 +8,7 @@ using UnityEngine;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
 
 using UnityCustomUtilities.Extensions;
 
@@ -17,15 +18,24 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        private IMapRenderConfig RenderConfig;
+        private ICellEdgeContourCanon CellContourCanon;
+        private IRiverCanon           RiverCanon;
+        private IHexGrid              Grid;
+        private IContourTriangulator  ContourTriangulator;
 
         #endregion
 
         #region constructors
 
         [Inject]
-        public OrientationTriangulator(IMapRenderConfig renderConfig) {
-            RenderConfig = renderConfig;
+        public OrientationTriangulator(
+            ICellEdgeContourCanon cellContourCanon, IRiverCanon riverCanon, IHexGrid grid,
+            IContourTriangulator contourTriangulator
+        ) {
+            CellContourCanon    = cellContourCanon;
+            RiverCanon          = riverCanon;
+            Grid                = grid;
+            ContourTriangulator = contourTriangulator;
         }
 
         #endregion
@@ -34,21 +44,36 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IOrientationTriangulator
 
-        public void TriangulateOrientation(IHexCell cell, IHexMesh orientationMesh) {
-            short indexOffset = (short)(cell.Index + 1);
+        public void TriangulateOrientation(IHexCell center, IHexMesh orientationMesh) {
+            short indexOffset = (short)(center.Index + 1);
 
             foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
                 byte[] rg = BitConverter.GetBytes(indexOffset);
                 byte b  = (byte)direction;
 
                 var cellColor = new Color32(rg[0], rg[1], b, 0);
+                
+                var centerContour = CellContourCanon.GetContourForCellEdge(center, direction);
 
-                orientationMesh.AddTriangle(
-                    Vector3.down + cell.AbsolutePosition,
-                    Vector3.down + cell.AbsolutePosition + RenderConfig.GetFirstCorner (direction),
-                    Vector3.down + cell.AbsolutePosition + RenderConfig.GetSecondCorner(direction)
-                );
-                orientationMesh.AddTriangleColor(cellColor);
+                for(int i = 1; i < centerContour.Count; i++) {
+                    orientationMesh.AddTriangle(
+                        center.AbsolutePosition, centerContour[i - 1].ToXYZ(), centerContour[i].ToXYZ()
+                    );
+
+                    orientationMesh.AddTriangleColor(cellColor);
+                }
+
+                if(direction <= HexDirection.SE && RiverCanon.HasRiverAlongEdge(center, direction)) {
+                    var right = Grid.GetNeighbor(center, direction);
+
+                    ContourTriangulator.TriangulateContoursBetween(
+                        center, right, direction, cellColor, cellColor, orientationMesh
+                    );
+
+                    if(direction <= HexDirection.E && RiverCanon.HasRiverAlongEdge(right, direction.Previous2())) {
+
+                    }
+                }
             }
         }
 

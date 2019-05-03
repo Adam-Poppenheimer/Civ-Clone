@@ -7,7 +7,8 @@ namespace Assets.Simulation.MapRendering {
         #region properties
 
         Texture2D OrientationTexture { get; }
-        Texture2D WeightsTexture     { get; }
+        Texture2D WeightsTexture     { get; }        
+        Texture2D RiverDuckTexture   { get; }
 
         IHexMesh OrientationMesh { get; }
         IHexMesh WeightsMesh     { get; }

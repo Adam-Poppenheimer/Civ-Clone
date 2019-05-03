@@ -54,7 +54,6 @@ namespace Assets.Simulation.MapGeneration {
             IEnumerable<IHexCell> landCells, IEnumerable<IHexCell> waterCells,
             int desiredRiveredCells
         ) {
-            Profiler.BeginSample("RiverGenerator.CreateRivers");
             var riveredCells = new HashSet<IHexCell>();
 
             var riverStartCandidates = landCells.Where(GetRiverStartFilter(waterCells)).ToList();
@@ -69,7 +68,6 @@ namespace Assets.Simulation.MapGeneration {
 
                 riverStartCandidates.Remove(start);
 
-                Profiler.BeginSample("TryBuildNewRiver");
                 if(TryBuildNewRiver(
                     landCells, waterCells, start, desiredRiveredCells - riveredCells.Count,
                     ref cellsAdjacentToNewRiver
@@ -87,9 +85,7 @@ namespace Assets.Simulation.MapGeneration {
                         }
                     }
                 }
-                Profiler.EndSample();
             }
-            Profiler.EndSample();
         }
 
         #endregion
@@ -111,11 +107,9 @@ namespace Assets.Simulation.MapGeneration {
 
                 riverPath.Add(start);
 
-                Profiler.BeginSample("Pathfinding from start to end");
                 var weightFunction = BuildRiverWeightFunction(waterCells);
 
                 var pathFrom = HexPathfinder.GetShortestPathBetween(start, end, weightFunction, landCells);
-                Profiler.EndSample();
 
                 if(pathFrom == null) {
                     return false;
@@ -175,7 +169,6 @@ namespace Assets.Simulation.MapGeneration {
             IEnumerable<IHexCell> landCells, IHexCell start, IEnumerable<IHexCell> waterCells,
             int maxRiverLength, out IHexCell end
         ) {
-            Profiler.BeginSample("TryGetRiverEnd");
             var cellsAdjacentToOcean = landCells.Where(
                 cell => Grid.GetNeighbors(cell).Any(neighbor => waterCells.Contains(neighbor) || neighbor.Terrain.IsWater())
             );
@@ -193,7 +186,6 @@ namespace Assets.Simulation.MapGeneration {
                 end = null;
                 retval = false;
             }
-            Profiler.EndSample();
 
             return retval;
         }

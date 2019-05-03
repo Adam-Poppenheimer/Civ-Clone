@@ -76,6 +76,8 @@ namespace Assets.Simulation.MapGeneration {
         private Dictionary<IImprovementTemplate, HypotheticalImprovement> HypotheticalForTemplate =
             new Dictionary<IImprovementTemplate, HypotheticalImprovement>();
 
+        private HypotheticalImprovement NullHypotheticalImprovement = new HypotheticalImprovement(null);
+
 
 
 
@@ -143,7 +145,6 @@ namespace Assets.Simulation.MapGeneration {
 
 
         public YieldSummary GetYieldEstimateForCell(IHexCell cell, CachedTechData techData) {
-            Profiler.BeginSample("GetYieldEstimateForCell");
             var retval = YieldSummary.Empty;
 
             var nodeAtLocation = NodeLocationCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
@@ -178,7 +179,6 @@ namespace Assets.Simulation.MapGeneration {
                 );
             }
 
-            Profiler.EndSample();
             return bestYield;
         }
 
@@ -199,7 +199,10 @@ namespace Assets.Simulation.MapGeneration {
             if(nodeAtLocation != null) {
                 HypotheticalImprovement hypothetical;
 
-                if(!HypotheticalForTemplate.TryGetValue(improvement, out hypothetical)) {
+                if(improvement == null) {
+                    hypothetical = NullHypotheticalImprovement;
+
+                }else if(!HypotheticalForTemplate.TryGetValue(improvement, out hypothetical)) {
                     hypothetical = new HypotheticalImprovement(improvement);
 
                     HypotheticalForTemplate[improvement] = hypothetical;

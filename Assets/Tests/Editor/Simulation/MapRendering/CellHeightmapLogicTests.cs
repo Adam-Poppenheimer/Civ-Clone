@@ -61,7 +61,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E, 7.27f));
         }
 
         [Test]
@@ -74,7 +74,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E, 7.27f));
         }
 
         [Test]
@@ -83,11 +83,11 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Hills);
 
-            MockHillsHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E)).Returns(15.25f);
+            MockHillsHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E, 7.27f)).Returns(15.25f);
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E, 7.27f));
         }
 
         [Test]
@@ -96,12 +96,12 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Mountains);
 
-            MockMountainHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E))
+            MockMountainHeightmapLogic.Setup(logic => logic.GetHeightForPoint(position, cell, HexDirection.E, 7.27f))
                                       .Returns(15.25f);
 
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
-            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E));
+            Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E, 7.27f));
         }
 
         #endregion

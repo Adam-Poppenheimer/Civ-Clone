@@ -168,11 +168,7 @@ namespace Assets.Simulation.MapGeneration {
             GridPartition partition, IMapTemplate mapTemplate,
             ExpansionWeightFunction weightFunction, bool mustBeContiguous
         ) {
-            Profiler.BeginSample("TryExpandChunk()");
-
             expansionCandidates.Clear();
-
-            Profiler.BeginSample("Find expansion candidates");
 
             foreach(MapSection section in chunk) {
                 nearbySections.Clear();
@@ -214,9 +210,6 @@ namespace Assets.Simulation.MapGeneration {
                 }
             }
 
-            Profiler.EndSample();
-
-            Profiler.BeginSample("Random selection");
             if(expansionCandidates.Count > 0) {
                 var newSection = MapSectionRandomSampler.SampleElementsFromSet(
                     expansionCandidates, 1, section => weightFunction(section, chunk)
@@ -225,15 +218,10 @@ namespace Assets.Simulation.MapGeneration {
                 if(newSection != null) {
                     unassignedSections.Remove(newSection);
                     chunk.Add(newSection);
-
-                    Profiler.EndSample();
-                    Profiler.EndSample();
                     return true;
                 }
             }
-            Profiler.EndSample();
 
-            Profiler.EndSample();
             return false;
         }
 

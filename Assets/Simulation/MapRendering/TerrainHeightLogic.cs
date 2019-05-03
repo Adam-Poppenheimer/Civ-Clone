@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Profiling;
 
 using Zenject;
 
@@ -43,27 +44,27 @@ namespace Assets.Simulation.MapRendering {
                 return retval;
             }
 
-            if(orientationData.CenterWeight > 0f) {
+            if(orientationData.Center != null && orientationData.CenterWeight > 0f) {
                 retval += orientationData.CenterWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Center, orientationData.Sextant
+                    xzPoint, orientationData.Center, orientationData.Sextant, orientationData.ElevationDuck
                 );
             }
 
             if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
                 retval += orientationData.LeftWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Left, orientationData.Sextant.Next2()
+                    xzPoint, orientationData.Left, orientationData.Sextant.Next2(), orientationData.ElevationDuck
                 );
             }
 
             if(orientationData.Right != null && orientationData.RightWeight > 0f) {
                 retval += orientationData.RightWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Right, orientationData.Sextant.Opposite()
+                    xzPoint, orientationData.Right, orientationData.Sextant.Opposite(), orientationData.ElevationDuck
                 );
             }
 
             if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
                 retval += orientationData.NextRightWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2()
+                    xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2(), orientationData.ElevationDuck
                 );
             }
 

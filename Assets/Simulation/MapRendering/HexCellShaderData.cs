@@ -75,8 +75,6 @@ namespace Assets.Simulation.MapRendering {
         #endregion
 
         public void Initialize(int x, int z) {
-            Profiler.BeginSample("HexCellShaderData.Initialize()");
-
             if(CellTexture != null) {
                 CellTexture.Resize(x, z);
             }else {
@@ -105,8 +103,6 @@ namespace Assets.Simulation.MapRendering {
             TransitioningCells.Clear();
 
             enabled = true;
-
-            Profiler.EndSample();
         }
 
         public void RefreshVisibility(IHexCell cell) {

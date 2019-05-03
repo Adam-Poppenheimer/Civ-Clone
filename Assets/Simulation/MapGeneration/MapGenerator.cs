@@ -85,21 +85,14 @@ namespace Assets.Simulation.MapGeneration {
         public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
             CellClimateLogic.Reset(template);
 
-            Profiler.BeginSample("Build Grid");
             var oldRandomState = SetRandomState();
             Grid.Build(variables.CellCountX, variables.CellCountZ);
-            Profiler.EndSample();
 
             GeneratePlayers(variables);
-            
-            Profiler.BeginSample("Generate Oceans and Continents");
+
             var oceansAndContinents = GenerateOceansAndContinents(template, variables);
-            Profiler.EndSample();
 
-            Profiler.BeginSample("Paint Map");
             PaintMap(oceansAndContinents, template);
-            Profiler.EndSample();
-
             
             foreach(var civ in oceansAndContinents.HomelandDataForCiv.Keys) {
                 var civHomeland = oceansAndContinents.HomelandDataForCiv[civ];

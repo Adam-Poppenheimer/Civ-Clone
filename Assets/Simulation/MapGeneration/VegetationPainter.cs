@@ -47,7 +47,6 @@ namespace Assets.Simulation.MapGeneration {
         #region from IVegetationPainter
 
         public void PaintVegetation(MapRegion region, IRegionBiomeTemplate template) {
-            Profiler.BeginSample("VegetationPainter.PaintVegetation");
             var treeType = template.AreTreesJungle ? CellVegetation.Jungle : CellVegetation.Forest;
 
             var openCells = new List<IHexCell>();
@@ -96,7 +95,6 @@ namespace Assets.Simulation.MapGeneration {
             foreach(var treeCell in treeCells) {
                 ModLogic.ChangeVegetationOfCell(treeCell, treeType);
             }
-            Profiler.EndSample();
         }
 
         #endregion

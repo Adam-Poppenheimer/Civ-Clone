@@ -75,10 +75,12 @@ namespace Assets.Simulation.MapRendering {
 
             bool hasFoundIntersect = false;
 
+            //We multiply our extrapolating vector by some relatively large number to make it more likely
+            //that they intersect properly.
             for(; lastOutsideLeftIndex > 0; lastOutsideLeftIndex--) {
                 if(Geometry2D.AreLineSegmentsCrossing(
-                    centerLeftContour[lastOutsideLeftIndex ], centerLeftContour [lastOutsideLeftIndex  - 1],                           out contourIntersect,
-                    centerRightContour[0],                    centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]), out contourIntersect
+                    centerLeftContour[lastOutsideLeftIndex ], centerLeftContour [lastOutsideLeftIndex  - 1],                                out contourIntersect,
+                    centerRightContour[0],                    centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]) * 10, out contourIntersect
                 )) {
                     hasFoundIntersect = true;
                     break;
@@ -104,15 +106,15 @@ namespace Assets.Simulation.MapRendering {
                 Vector2 secondLastLeft = centerLeftContour[centerLeftContour.Count - 2];
 
                 if(Geometry2D.AreLineSegmentsCrossing(
-                    lastLeft,              lastLeft + (lastLeft - secondLastLeft),                                  out contourIntersect,
-                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]), out contourIntersect
+                    lastLeft,              lastLeft + (lastLeft - secondLastLeft) * 10,                                  out contourIntersect,
+                    centerRightContour[0], centerRightContour[0] + (centerRightContour[0] - centerRightContour[1]) * 10, out contourIntersect
                 )) {
                     hasFoundIntersect = true;
                 }
 
                 for(lastOutsideRightIndex = 0; lastOutsideRightIndex < centerRightContour.Count - 1; lastOutsideRightIndex++) {
                     if(Geometry2D.AreLineSegmentsCrossing(
-                        lastLeft,                                  lastLeft + (lastLeft - secondLastLeft),        out contourIntersect,
+                        lastLeft,                                  lastLeft + (lastLeft - secondLastLeft) * 10,   out contourIntersect,
                         centerRightContour[lastOutsideRightIndex], centerRightContour[lastOutsideRightIndex + 1], out contourIntersect
                     )) {
                         hasFoundIntersect = true;

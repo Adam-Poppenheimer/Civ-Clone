@@ -107,8 +107,6 @@ namespace Assets.Simulation.MapRendering {
 
             RenderTexture.active = RenderTexture;
 
-            Profiler.BeginSample("TerrainBaker.BakeIntoTexture_Perform()");
-
             BakingCamera.transform.SetParent(chunk.transform, false);
 
             BakingCamera.cullingMask = OcclusionMask;
@@ -136,8 +134,6 @@ namespace Assets.Simulation.MapRendering {
             BakingCamera.transform.SetParent(null, false);
 
             CoroutineForChunk.Remove(chunk);
-
-            Profiler.EndSample();
         }
 
         #endregion

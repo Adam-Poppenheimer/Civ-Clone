@@ -268,10 +268,20 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private Color _riverWaterColor;
 
 
-        public float RiverMaxInnerWidth {
+        public float RiverMaxSurfaceWidth {
             get { return _riverMaxInnerWidth; }
         }
         [SerializeField, Range(0f, 10f)] private float _riverMaxInnerWidth;
+
+        public float RiverMaxBankWidth {
+            get { return _riverMaxBankWidth; }
+        }
+        [SerializeField, Range(0f, 5f)] private float _riverMaxBankWidth = 0f;
+
+        public float RiverDuckWidth {
+            get { return _riverDuckWidth; }
+        }
+        [SerializeField, Range(0f, 5f)] private float _riverDuckWidth = 0f;
 
         public float RiverCurveStrength {
             get { return _riverCurveStrength; }
@@ -287,11 +297,6 @@ namespace Assets.Simulation.MapRendering {
             get { return _riverWidthNoise; }
         }
         [SerializeField, Range(0f, 1f)] private float _riverWidthNoise = 0f;
-
-        public float RiverBankWidth {
-            get { return _riverBankWidth; }
-        }
-        [SerializeField, Range(0f, 5f)] private float _riverBankWidth = 0f;
 
         public int RiverCurvesForMaxWidth {
             get { return _riverCurvesForMaxWidth; }
@@ -332,6 +337,11 @@ namespace Assets.Simulation.MapRendering {
             get { return _riverBankData; }
         }
         [SerializeField] private HexMeshData _riverBankData;
+
+        public HexMeshData RiverDuckData {
+            get { return _riverDuckData; }
+        }
+        [SerializeField] private HexMeshData _riverDuckData;
 
         public HexMeshData CultureData {
             get { return _cultureData; }

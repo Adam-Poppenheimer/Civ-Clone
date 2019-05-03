@@ -23,6 +23,7 @@ namespace Assets.Simulation.HexMap {
 
         IHexMesh RiverSurfaceMesh { get; }
         IHexMesh RiverBankMesh    { get; }
+        IHexMesh RiverDuckMesh    { get; }
         IHexMesh FarmMesh         { get; }
 
         #endregion

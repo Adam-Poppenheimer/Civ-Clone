@@ -44,7 +44,9 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellHeightmapLogic
 
-        public float GetHeightForPointForCell(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
+        public float GetHeightForPointForCell(
+            Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck
+        ) {
             if(cell.Terrain.IsWater()) {
                 return RenderConfig.SeaFloorElevation;
 
@@ -52,10 +54,10 @@ namespace Assets.Simulation.MapRendering {
                 return FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
 
             }else if(cell.Shape == CellShape.Hills) {
-                return HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+                return HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant, elevationDuck);
 
             }else if(cell.Shape == CellShape.Mountains) {
-                return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+                return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant, elevationDuck);
 
             }else {
                 throw new NotImplementedException();

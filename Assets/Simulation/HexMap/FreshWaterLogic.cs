@@ -33,16 +33,18 @@ namespace Assets.Simulation.HexMap {
         #region from IFreshWaterCanon
 
         public bool HasAccessToFreshWater(IHexCell cell) {
-            bool isFreshWater          = cell.Terrain == CellTerrain.FreshWater;
-            bool isSaltWater           = cell.Terrain.IsWater() && !isFreshWater;
-            bool hasOasis              = cell.Feature == CellFeature.Oasis;
-            bool hasRiver              = RiverCanon.HasRiver(cell);
+            bool isFreshWater = cell.Terrain == CellTerrain.FreshWater;
+            bool isSaltWater  = cell.Terrain.IsWater() && !isFreshWater;
+            bool hasOasis     = cell.Feature == CellFeature.Oasis;
+            bool hasRiver     = RiverCanon.HasRiver(cell);
             
-            if(!isSaltWater && (isFreshWater || hasOasis || hasRiver)) {
-                foreach(var direction in EnumUtil.GetValues<HexDirection>()) {
-                    var neighbor = Grid.GetNeighbor(cell, direction);
+            if(!isSaltWater) {
+                if(isFreshWater || hasOasis || hasRiver) {
+                    return true;
+                }
 
-                    if(neighbor != null && neighbor.Terrain == CellTerrain.FreshWater || neighbor.Feature == CellFeature.Oasis) {
+                foreach(var neighbor in Grid.GetNeighbors(cell)) {
+                    if(neighbor.Terrain == CellTerrain.FreshWater || neighbor.Feature == CellFeature.Oasis) {
                         return true;
                     }
                 }

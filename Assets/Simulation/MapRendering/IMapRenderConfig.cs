@@ -87,15 +87,15 @@ namespace Assets.Simulation.MapRendering {
         Color FreshWaterColor   { get; }
         Color RiverWaterColor   { get; }
 
-        float RiverMaxInnerWidth      { get; }
-        float RiverCurveStrength { get; }
-        float RiverWideningRate  { get; }
-        float RiverWidthNoise    { get; }
+        float RiverMaxSurfaceWidth { get; }
+        float RiverMaxBankWidth    { get; }
+        float RiverDuckWidth    { get; }
 
-        float RiverBankWidth { get; }
-
-        int RiverCurvesForMaxWidth { get; }
-        int RiverQuadsPerCurve     { get; }
+        float RiverCurveStrength     { get; }
+        float RiverWideningRate      { get; }
+        float RiverWidthNoise        { get; }
+        int   RiverCurvesForMaxWidth { get; }
+        int   RiverQuadsPerCurve     { get; }
 
         float RiverFlowSpeed { get; }
 
@@ -105,6 +105,7 @@ namespace Assets.Simulation.MapRendering {
         HexMeshData StandingWaterData   { get; }
         HexMeshData RiverSurfaceData    { get; }
         HexMeshData RiverBankData       { get; }
+        HexMeshData RiverDuckData       { get; }
         HexMeshData CultureData         { get; }
         HexMeshData FarmlandData        { get; }
         HexMeshData RoadData            { get; }

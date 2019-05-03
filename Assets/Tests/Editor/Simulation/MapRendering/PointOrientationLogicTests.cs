@@ -127,7 +127,26 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region GetOrientationDataFromTextures
 
         [Test]
-        public void GetOrientationDataFromTextures_PullsCenterFromOrientationRG_MinusOne_AndCastAsAnIndex() {
+        public void GetOrientationDataFromColors_TakesDuckFromDuckColorR() {
+            var cells = new List<IHexCell>() {
+                BuildCell(), BuildCell(), BuildCell(), BuildCell()
+            };
+
+            MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
+
+            var orientationColor = new Color32(3, 0, 0, 0);
+            var weightsColor     = new Color();
+            var duckColor        = new Color(0.5f, 0.6f, 0.7f, 0.8f);
+
+            var orientationLogic = Container.Resolve<PointOrientationLogic>();
+
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, duckColor);
+
+            Assert.AreEqual(0.5f, orientationData.ElevationDuck);
+        }
+
+        [Test]
+        public void GetOrientationDataFromColors_PullsCenterFromOrientationRG_MinusOne_AndCastAsAnIndex() {
             var cells = new List<IHexCell>() {
                 BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
@@ -139,13 +158,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(cells[2], orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndRGIndexNegative_CenterSetToNull() {
+        public void GetOrientationDataFromColors_AndRGIndexNegative_CenterSetToNull() {
             var cells = new List<IHexCell>() {
                 BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
@@ -157,13 +176,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.IsNull(orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndRGIndexGreaterThanCellCount_CenterSetToNull() {
+        public void GetOrientationDataFromColors_AndRGIndexGreaterThanCellCount_CenterSetToNull() {
             var cells = new List<IHexCell>() {
                 BuildCell(), BuildCell(), BuildCell(), BuildCell()
             };
@@ -175,13 +194,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.IsNull(orientationData.Center);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_PullsSextantFromOrientationB_CastAsHexDirection() {
+        public void GetOrientationDataFromColors_PullsSextantFromOrientationB_CastAsHexDirection() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -191,13 +210,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(HexDirection.SW, orientationData.Sextant);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNull_ReturnedDataIsClear() {
+        public void GetOrientationDataFromColors_AndCenterNull_ReturnedDataIsClear() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -207,9 +226,9 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            orientationLogic.GetOrientationDataFromColors(new Color32(1, 0, 3, 0), weightsColor);
+            orientationLogic.GetOrientationDataFromColors(new Color32(1, 0, 3, 0), weightsColor, Color.clear);
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.IsFalse(orientationData.IsOnGrid, "IsOnGrid has an unexpected value");
 
@@ -229,7 +248,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_IsOnGridIsTrue() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_IsOnGridIsTrue() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -239,13 +258,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.IsTrue(orientationData.IsOnGrid);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_NeighborsAssignedFromSextant() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_NeighborsAssignedFromSextant() {
             var center    = BuildCell();
             var left      = BuildCell();
             var right     = BuildCell();
@@ -264,7 +283,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(left,      orientationData.Left,      "Left has an unexpected value");
             Assert.AreEqual(right,     orientationData.Right,     "Right has an unexpected value");
@@ -272,7 +291,7 @@ namespace Assets.Tests.Simulation.MapRendering {
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_CenterWeightPulledFromSampledR_OfWeightsTexture() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_CenterWeightPulledFromSampledR_OfWeightsTexture() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -282,13 +301,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(weightsColor.r, orientationData.CenterWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_LeftWeightPulledFromSampledG_OfWeightsTexture() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_LeftWeightPulledFromSampledG_OfWeightsTexture() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -298,13 +317,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(weightsColor.g, orientationData.LeftWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_RightWeightPulledFromSampledB_OfWeightsTexture() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_RightWeightPulledFromSampledB_OfWeightsTexture() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -314,13 +333,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(weightsColor.b, orientationData.RightWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_NextRightWeightPulledFromSampledA_OfWeightsTexture() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_NextRightWeightPulledFromSampledA_OfWeightsTexture() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -330,13 +349,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(weightsColor.a, orientationData.NextRightWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightOneMinusOtherWeights() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_RiverWeightOneMinusOtherWeights() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -346,13 +365,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(1f - 0.1f - 0.15f - 0.2f - 0.25f, orientationData.RiverWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightFloorsAtZero() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_RiverWeightFloorsAtZero() {
             var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -362,13 +381,13 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(0f, orientationData.RiverWeight);
         }
 
         [Test]
-        public void GetOrientationDataFromTextures_AndCenterNotNull_RiverWeightCeilingsAtOne() {
+        public void GetOrientationDataFromColors_AndCenterNotNull_RiverWeightCeilingsAtOne() {
            var cells = new List<IHexCell>() { BuildCell() };
 
             MockGrid.Setup(grid => grid.Cells).Returns(cells.AsReadOnly());
@@ -378,7 +397,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var orientationLogic = Container.Resolve<PointOrientationLogic>();
 
-            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor);
+            var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(1f, orientationData.RiverWeight);
         }

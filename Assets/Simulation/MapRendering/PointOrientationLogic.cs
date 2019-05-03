@@ -74,9 +74,9 @@ namespace Assets.Simulation.MapRendering {
         private PointOrientationData ReusedOrientationData = new PointOrientationData();
         private PointOrientationData EmptyData = new PointOrientationData();
 
-        public PointOrientationData GetOrientationDataFromColors(Color32 orientationColor, Color weightsColor) {
-            Profiler.BeginSample("GetOrientationDataFromColors()");
-
+        public PointOrientationData GetOrientationDataFromColors(
+            Color32 orientationColor, Color weightsColor, Color duckColor
+        ) {
             indexBytes[0] = orientationColor.r;
             indexBytes[1] = orientationColor.g;
 
@@ -102,12 +102,11 @@ namespace Assets.Simulation.MapRendering {
 
                 ReusedOrientationData.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
 
-                Profiler.EndSample();
+                ReusedOrientationData.ElevationDuck = duckColor.r;
 
                 return ReusedOrientationData;
-            }else {
-                Profiler.EndSample();
 
+            } else {
                 return EmptyData;
             }      
         }

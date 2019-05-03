@@ -223,7 +223,7 @@ namespace Assets.Tests.Simulation.MapGeneration {
             var cell = BuildCell();
 
             MockYieldFromBuildingsLogic.Setup(
-                logic => logic.GetBonusCellYieldFromBuildings(cell, AvailableBuildings)
+                logic => logic.GetBonusCellYieldFromYieldModifications(cell, It.IsAny<IEnumerable<ICellYieldModificationData>>())
             ).Returns(new YieldSummary(food: 1, production: 20));
 
             var yieldEstimator = Container.Resolve<YieldEstimator>();

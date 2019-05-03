@@ -86,6 +86,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IOrientationTriangulator>       ().To<OrientationTriangulator>       ().AsSingle();
             Container.Bind<IWeightsTriangulator>           ().To<WeightsTriangulator>           ().AsSingle();
             Container.Bind<IFullMapRefresher>              ().To<FullMapRefresher>              ().AsSingle();
+            Container.Bind<IContourTriangulator>           ().To<ContourTriangulator>           ().AsSingle();
         }
 
         #endregion

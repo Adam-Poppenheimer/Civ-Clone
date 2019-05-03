@@ -45,7 +45,6 @@ namespace Assets.Simulation.Improvements {
         public bool IsTemplateValidForCell(
             IImprovementTemplate template, IHexCell cell, bool ignoreOwnership
         ) {
-            Profiler.BeginSample("IsTemplateValidForCell");
             if(template == null) {
                 throw new ArgumentNullException("template");
             }else if(cell == null) {
@@ -58,15 +57,12 @@ namespace Assets.Simulation.Improvements {
 
             var nodeAtCell = NodePositionCanon.GetPossessionsOfOwner(cell).FirstOrDefault();
             if(nodeAtCell != null && nodeAtCell.Resource.Extractor == template) {
-                Profiler.EndSample();
                 return true;
 
             }else if(template.RequiresResourceToExtract) {
-                Profiler.EndSample();
                 return false;
 
             }else if(template.FreshWaterAlwaysEnables && FreshWaterCanon.HasAccessToFreshWater(cell)) {
-                Profiler.EndSample();
                 return true;
             }
 
@@ -74,8 +70,6 @@ namespace Assets.Simulation.Improvements {
                    (template.RestrictedToTerrains   .Count() == 0 || template.RestrictedToTerrains   .Contains(cell.Terrain)) &&
                    (template.RestrictedToVegetations.Count() == 0 || template.RestrictedToVegetations.Contains(cell.Vegetation)) && 
                    (template.RestrictedToShapes     .Count() == 0 || template.RestrictedToShapes     .Contains(cell.Shape  ));
-
-            Profiler.EndSample();
 
             return retval;
         }

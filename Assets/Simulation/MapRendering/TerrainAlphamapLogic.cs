@@ -47,8 +47,6 @@ namespace Assets.Simulation.MapRendering {
         private float[] ReusedAlphamap;
 
         public float[] GetAlphamapFromOrientation(PointOrientationData orientationData) {
-            Profiler.BeginSample("GetAlphamapFromOrientation()");
-
             for(int i = 0; i < ReusedAlphamap.Length; i++) {
                 ReusedAlphamap[i] = 0f;
             }
@@ -94,8 +92,6 @@ namespace Assets.Simulation.MapRendering {
                     );
                 }
             }
-
-            Profiler.EndSample();
 
             return ReusedAlphamap;
         }
