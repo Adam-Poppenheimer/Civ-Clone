@@ -6,7 +6,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        void BakeIntoTextures(Texture2D landTexture, Texture2D waterTexture, IMapChunk chunk);
+        void BakeIntoChunk(IMapChunk chunk);
 
         #endregion
 

@@ -86,7 +86,7 @@ namespace Assets.Simulation.MapRendering {
             FarmTriangulator.TriangulateFarmland();
 
             foreach(var chunk in Grid.Chunks) {
-                TerrainBaker.BakeIntoTextures(chunk.LandBakeTexture, chunk.WaterBakeTexture, chunk);
+                TerrainBaker.BakeIntoChunk(chunk);
             }
 
             RefreshFarmlandCoroutine = null;
@@ -98,7 +98,7 @@ namespace Assets.Simulation.MapRendering {
             RiverTriangulator.TriangulateRivers();
 
             foreach(var chunk in Grid.Chunks) {
-                TerrainBaker.BakeIntoTextures(chunk.LandBakeTexture, chunk.WaterBakeTexture, chunk);
+                TerrainBaker.BakeIntoChunk(chunk);
             }
 
             RefreshRiversCoroutine = null;

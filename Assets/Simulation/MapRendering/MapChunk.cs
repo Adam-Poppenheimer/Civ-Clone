@@ -60,6 +60,28 @@ namespace Assets.Simulation.MapRendering {
             get { return RefreshCoroutine != null; }
         }
 
+        public Texture2D LandBakeTexture {
+            get { return _landBakeTexture;  }
+            set {
+                _landBakeTexture = value;
+
+                InstancedTerrainMaterial.SetTexture("_BakeTexture", _landBakeTexture);
+            }
+        }
+        [SerializeField] private Texture2D _landBakeTexture;
+
+        public Texture2D WaterBakeTexture {
+            get { return _waterBakeTexture;  }
+            set {
+                _waterBakeTexture = value;
+
+                InstancedWaterMaterial.SetTexture("_BakeTexture", _waterBakeTexture);
+            }
+        }
+        [SerializeField] private Texture2D _waterBakeTexture;
+
+
+
         #endregion
 
         private TerrainCollider TerrainCollider;
@@ -142,15 +164,8 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _oasisLand;
 
-        public Texture2D LandBakeTexture {
-            get { return landBakeTexture; }
-        }
-        [SerializeField] private Texture2D landBakeTexture;
-
-        public Texture2D WaterBakeTexture {
-            get { return waterBakeTexture; }
-        }
-        [SerializeField] private Texture2D waterBakeTexture;
+        private Material InstancedTerrainMaterial;
+        private Material InstancedWaterMaterial;
 
 
 
@@ -238,33 +253,10 @@ namespace Assets.Simulation.MapRendering {
 
             var bakeData = RenderConfig.TerrainBakeTextureData;
 
-            landBakeTexture = new Texture2D(
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            LandBakeTexture.filterMode = FilterMode.Point;
-            LandBakeTexture.wrapMode   = TextureWrapMode.Clamp;
-            LandBakeTexture.anisoLevel = 0;
-
-            waterBakeTexture = new Texture2D(
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            waterBakeTexture.filterMode = FilterMode.Point;
-            waterBakeTexture.wrapMode   = TextureWrapMode.Clamp;
-            waterBakeTexture.anisoLevel = 0;
-
             transform.position = position;
 
-            var instancedTerrainMaterial = new Material(RenderConfig.TerrainMaterialTemplate);
-            var instancedWaterMaterial   = new Material(RenderConfig.StandingWaterData.RenderingData.Material);
-
-            instancedTerrainMaterial.SetTexture("_BakeTexture", LandBakeTexture);
-            instancedWaterMaterial  .SetTexture("_BakeTexture", waterBakeTexture);
+            InstancedTerrainMaterial = new Material(RenderConfig.TerrainMaterialTemplate);
+            InstancedWaterMaterial   = new Material(RenderConfig.StandingWaterData.RenderingData.Material);
 
             Vector4 bakeTextureDimensions = new Vector4(
                 transform.position.x - RenderConfig.OuterRadius * 1.5f,
@@ -273,21 +265,21 @@ namespace Assets.Simulation.MapRendering {
                 RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f
             );
 
-            instancedTerrainMaterial.SetVector("_BakeTextureDimensions", bakeTextureDimensions);
-            instancedWaterMaterial  .SetVector("_BakeTextureDimensions", bakeTextureDimensions);
+            InstancedTerrainMaterial.SetVector("_BakeTextureDimensions", bakeTextureDimensions);
+            InstancedWaterMaterial  .SetVector("_BakeTextureDimensions", bakeTextureDimensions);
 
-            instancedWaterMaterial.EnableKeyword("USE_BAKE_TEXTURE");
+            InstancedWaterMaterial.EnableKeyword("USE_BAKE_TEXTURE");
 
             Terrain.castShadows          = RenderConfig.TerrainCastsShadows;
             Terrain.basemapDistance      = RenderConfig.TerrainBasemapDistance;
             Terrain.materialType         = Terrain.MaterialType.Custom;
-            Terrain.materialTemplate     = instancedTerrainMaterial;
+            Terrain.materialTemplate     = InstancedTerrainMaterial;
             Terrain.heightmapPixelError  = RenderConfig.TerrainHeightmapPixelError;
             Terrain.drawTreesAndFoliage  = false;
             Terrain.editorRenderFlags    = TerrainRenderFlags.heightmap;
             Terrain.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
-            StandingWater.OverrideMaterial(instancedWaterMaterial);
+            StandingWater.OverrideMaterial(InstancedWaterMaterial);
 
             Terrain.Flush();
         }
@@ -571,7 +563,7 @@ namespace Assets.Simulation.MapRendering {
 
             Culture.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
+            TerrainBaker.BakeIntoChunk(this);
         }
 
         private void RefreshVisibility() {
@@ -589,7 +581,7 @@ namespace Assets.Simulation.MapRendering {
 
             Roads.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
+            TerrainBaker.BakeIntoChunk(this);
         }
 
         private void RefreshMarshes() {
@@ -601,7 +593,7 @@ namespace Assets.Simulation.MapRendering {
 
             MarshWater.Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
+            TerrainBaker.BakeIntoChunk(this);
         }
 
         private void RefreshOases() {
@@ -615,7 +607,7 @@ namespace Assets.Simulation.MapRendering {
             OasisWater.Apply();
             OasisLand .Apply();
 
-            TerrainBaker.BakeIntoTextures(LandBakeTexture, waterBakeTexture, this);
+            TerrainBaker.BakeIntoChunk(this);
         }
 
         private void RefreshOrientation() {

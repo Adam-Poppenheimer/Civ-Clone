@@ -90,18 +90,20 @@ namespace Assets.Simulation.MapRendering {
             transform.localPosition = localPos;
         }
 
-        public void BakeIntoTextures(Texture2D landTexture, Texture2D waterTexture, IMapChunk chunk) {
+        public void BakeIntoChunk(IMapChunk chunk) {
             if(!CoroutineForChunk.ContainsKey(chunk)) {
-                CoroutineForChunk[chunk] = StartCoroutine(BakeIntoTexture_Perform(landTexture, waterTexture, chunk));
+                CoroutineForChunk[chunk] = StartCoroutine(BakeIntoChunk_Perform(chunk));
             }
         }
 
-        private IEnumerator BakeIntoTexture_Perform(Texture2D landTexture, Texture2D waterTexture, IMapChunk chunk) {
+        private IEnumerator BakeIntoChunk_Perform(IMapChunk chunk) {
             yield return new WaitForEndOfFrame();
 
             while(chunk.IsRefreshing) {
                 yield return new WaitForEndOfFrame();
             }
+
+            ResetTextures(chunk);
 
             var activeRenderTexture = RenderTexture.active;
 
@@ -117,23 +119,63 @@ namespace Assets.Simulation.MapRendering {
             BakingCamera.clearFlags = CameraClearFlags.Nothing;
             BakingCamera.Render();
 
-            landTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
+            chunk.LandBakeTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
 
-            landTexture.Apply();
+            chunk.LandBakeTexture.Apply();
+            chunk.LandBakeTexture.Compress(false);
 
             BakingCamera.cullingMask = WaterDrawingMask;
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
             BakingCamera.Render();
 
-            waterTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
+            chunk.WaterBakeTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
 
-            waterTexture.Apply();
+            chunk.WaterBakeTexture.Apply();
+            chunk.WaterBakeTexture.Compress(false);
 
             RenderTexture.active = activeRenderTexture;
 
             BakingCamera.transform.SetParent(null, false);
 
             CoroutineForChunk.Remove(chunk);
+        }
+
+        private void ResetTextures(IMapChunk chunk) {
+            var oldLand  = chunk.LandBakeTexture;
+            var oldWater = chunk.WaterBakeTexture;
+
+            if(oldLand != null) {
+                Destroy(oldLand);
+            }
+
+            if(oldWater != null) {
+                Destroy(oldWater);
+            }
+
+            var bakeData = RenderConfig.TerrainBakeTextureData;
+
+            var newLand = new Texture2D(
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            newLand.filterMode = FilterMode.Point;
+            newLand.wrapMode   = TextureWrapMode.Clamp;
+            newLand.anisoLevel = 0;;
+
+            var newWater = new Texture2D(
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
+                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                TextureFormat.ARGB32, false
+            );
+
+            newWater.filterMode = FilterMode.Point;
+            newWater.wrapMode   = TextureWrapMode.Clamp;
+            newWater.anisoLevel = 0;
+
+            chunk.LandBakeTexture  = newLand;
+            chunk.WaterBakeTexture = newWater;
         }
 
         #endregion
