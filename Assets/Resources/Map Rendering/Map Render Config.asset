@@ -30,7 +30,7 @@ MonoBehaviour:
   _terrainMaxY: 20
   _terrainAlphamapResolution: 33
   _terrainHeightmapResolution: 129
-  _terrainBasemapResolution: 512
+  _terrainBasemapResolution: 16
   _terrainBasemapDistance: 1000
   _terrainCastsShadows: 0
   _terrainHeightmapPixelError: 1
@@ -283,14 +283,8 @@ MonoBehaviour:
   _oasisBoundarySegments: 50
   _oasisWaterRadius: 3
   _oasisLandWidth: 2
-  _terrainBakeTextureData:
-    _texelsPerUnit: 20
-    _depth: 24
-    _format: 0
   _orientationTextureData:
     _texelsPerUnit: 12
     _depth: 8
     _format: 0
-  _terrainBakeOcclusionShader: {fileID: 4800000, guid: 1fe8d727658277644a6fe41d413af796,
-    type: 3}
   _riverWeightShader: {fileID: 4800000, guid: 548ae0abc870086438b22b154e25d8f1, type: 3}
