@@ -10,7 +10,7 @@ using Assets.Simulation.HexMap;
 
 namespace Assets.Simulation.MapRendering {
 
-    [CreateAssetMenu(menuName = "Civ Clone/Map Rendering/Config")]
+    [CreateAssetMenu(menuName = "Civ Clone/Map Rendering/Render Config")]
     public class MapRenderConfig : ScriptableObject, IMapRenderConfig {
 
         #region instance fields and properties
@@ -436,26 +436,16 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        public RenderTextureData TerrainBakeTextureData {
-            get { return _terrainBakeTextureData; }
-        }
-        [SerializeField] private RenderTextureData _terrainBakeTextureData;
 
         public RenderTextureData OrientationTextureData {
             get { return _orientationTextureData; }
         }
         [SerializeField] private RenderTextureData _orientationTextureData;
 
-
-        public Shader TerrainBakeOcclusionShader {
-            get { return _terrainBakeOcclusionShader; }
-        }
-        [SerializeField] private Shader _terrainBakeOcclusionShader;
-
         public Shader RiverWeightShader {
             get { return _riverWeightShader; }
         }
-        [SerializeField] private Shader _riverWeightShader;
+        [SerializeField] private Shader _riverWeightShader;        
 
         #endregion
 

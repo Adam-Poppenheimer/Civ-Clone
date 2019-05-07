@@ -251,8 +251,6 @@ namespace Assets.Simulation.MapRendering {
                 TerrainCollider.terrainData = terrainData;
             }
 
-            var bakeData = RenderConfig.TerrainBakeTextureData;
-
             transform.position = position;
 
             InstancedTerrainMaterial = new Material(RenderConfig.TerrainMaterialTemplate);

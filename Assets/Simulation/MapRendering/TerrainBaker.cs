@@ -22,22 +22,31 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private LayerMask LandDrawingMask;
         [SerializeField] private LayerMask WaterDrawingMask;
 
-        private RenderTexture RenderTexture;
+        private RenderTexture RenderTexture_HighRes;
+        private RenderTexture RenderTexture_MediumRes;
+        private RenderTexture RenderTexture_LowRes;
 
         private Dictionary<IMapChunk, Coroutine> CoroutineForChunk = new Dictionary<IMapChunk, Coroutine>();
 
 
 
 
-        private IMapRenderConfig RenderConfig;
+        private IMapRenderConfig    RenderConfig;
+        private IBakedElementsLogic BakedElementsLogic;
+        private ITerrainBakeConfig  TerrainBakeConfig;
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        private void InjectDependencies(IMapRenderConfig renderConfig) {
-            RenderConfig = renderConfig;
+        private void InjectDependencies(
+            IMapRenderConfig renderConfig, IBakedElementsLogic bakedElementsLogic,
+            ITerrainBakeConfig terrainBakeConfig
+        ) {
+            RenderConfig       = renderConfig;
+            BakedElementsLogic = bakedElementsLogic;
+            TerrainBakeConfig  = terrainBakeConfig;
 
             Initialize();
         }
@@ -45,32 +54,22 @@ namespace Assets.Simulation.MapRendering {
         #region Unity messages
 
         private void OnDestroy() {
-            if(RenderTexture != null) {
-                RenderTexture.Release();
-                RenderTexture = null;
+            if(RenderTexture_HighRes != null) {
+                RenderTexture_HighRes.Release();
+                RenderTexture_HighRes = null;
             }
         }
 
         #endregion
 
         private void Initialize() {
-            if(RenderTexture != null) {
-                RenderTexture.Release();
-            }
+            if(RenderTexture_HighRes   != null) { RenderTexture_HighRes  .Release(); }
+            if(RenderTexture_MediumRes != null) { RenderTexture_MediumRes.Release(); }
+            if(RenderTexture_LowRes    != null) { RenderTexture_LowRes   .Release(); }
 
-            var bakeData = RenderConfig.TerrainBakeTextureData;
-
-            RenderTexture = new RenderTexture(
-                width:  Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                height: Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                depth:  bakeData.Depth,
-                format: bakeData.Format,
-                readWrite: RenderTextureReadWrite.Default
-            );
-
-            RenderTexture.filterMode = FilterMode.Trilinear;
-            RenderTexture.wrapMode   = TextureWrapMode.Clamp;
-            RenderTexture.useMipMap  = false;
+            RenderTexture_HighRes   = BuildRenderTexture(TerrainBakeConfig.BakeTextureDimensionsHighRes);
+            RenderTexture_MediumRes = BuildRenderTexture(TerrainBakeConfig.BakeTextureDimensionsMediumRes);
+            RenderTexture_LowRes    = BuildRenderTexture(TerrainBakeConfig.BakeTextureDimensionsLowRes);
 
             float cameraWidth  = RenderConfig.ChunkWidth  + RenderConfig.OuterRadius * 3f;
             float cameraHeight = RenderConfig.ChunkHeight + RenderConfig.OuterRadius * 3f;
@@ -78,7 +77,6 @@ namespace Assets.Simulation.MapRendering {
             BakingCamera.orthographic     = true;
             BakingCamera.orthographicSize = cameraHeight / 2f;
             BakingCamera.aspect           = cameraWidth / cameraHeight;
-            BakingCamera.targetTexture    = RenderTexture;
 
             BakingCamera.enabled = false;
 
@@ -88,6 +86,22 @@ namespace Assets.Simulation.MapRendering {
             localPos.z = RenderConfig.ChunkHeight / 2f;
 
             transform.localPosition = localPos;
+        }
+
+        private RenderTexture BuildRenderTexture(Vector2 dimensions) {
+            var retval = new RenderTexture(
+                width:  Mathf.RoundToInt(dimensions.x),
+                height: Mathf.RoundToInt(dimensions.y),
+                depth:  TerrainBakeConfig.RenderTextureDepth,
+                format: TerrainBakeConfig.RenderTextureFormat,
+                readWrite: RenderTextureReadWrite.Default
+            );
+
+            retval.filterMode = FilterMode.Trilinear;
+            retval.wrapMode   = TextureWrapMode.Clamp;
+            retval.useMipMap  = false;
+
+            return retval;
         }
 
         public void BakeIntoChunk(IMapChunk chunk) {
@@ -103,23 +117,46 @@ namespace Assets.Simulation.MapRendering {
                 yield return new WaitForEndOfFrame();
             }
 
-            ResetTextures(chunk);
+            ResetChunkTextures(chunk);
+
+            if(chunk.LandBakeTexture.width == 0 || chunk.LandBakeTexture.height == 0) {
+                CoroutineForChunk.Remove(chunk);
+                yield break;
+            }
 
             var activeRenderTexture = RenderTexture.active;
 
-            RenderTexture.active = RenderTexture;
+            RenderTexture renderTarget;
+
+            if( chunk.LandBakeTexture.width  == TerrainBakeConfig.BakeTextureDimensionsHighRes.x &&
+                chunk.LandBakeTexture.height == TerrainBakeConfig.BakeTextureDimensionsHighRes.y
+            ) {
+                renderTarget = RenderTexture_HighRes;
+
+            }else if(
+                chunk.LandBakeTexture.width  == TerrainBakeConfig.BakeTextureDimensionsMediumRes.x &&
+                chunk.LandBakeTexture.height == TerrainBakeConfig.BakeTextureDimensionsMediumRes.y
+            ) {
+                renderTarget = RenderTexture_MediumRes;
+
+            }else {
+                renderTarget = RenderTexture_LowRes;
+            }
+
+            RenderTexture.active        = renderTarget;
+            BakingCamera .targetTexture = renderTarget;
 
             BakingCamera.transform.SetParent(chunk.transform, false);
 
             BakingCamera.cullingMask = OcclusionMask;
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
-            BakingCamera.RenderWithShader(RenderConfig.TerrainBakeOcclusionShader, "RenderType");
+            BakingCamera.RenderWithShader(TerrainBakeConfig.TerrainBakeOcclusionShader, "RenderType");
 
             BakingCamera.cullingMask = LandDrawingMask;
             BakingCamera.clearFlags = CameraClearFlags.Nothing;
             BakingCamera.Render();
 
-            chunk.LandBakeTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
+            chunk.LandBakeTexture.ReadPixels(new Rect(0, 0, renderTarget.width, renderTarget.height), 0, 0);
 
             chunk.LandBakeTexture.Apply();
             chunk.LandBakeTexture.Compress(false);
@@ -128,7 +165,7 @@ namespace Assets.Simulation.MapRendering {
             BakingCamera.clearFlags = CameraClearFlags.SolidColor;
             BakingCamera.Render();
 
-            chunk.WaterBakeTexture.ReadPixels(new Rect(0, 0, RenderTexture.width, RenderTexture.height), 0, 0);
+            chunk.WaterBakeTexture.ReadPixels(new Rect(0, 0, renderTarget.width, renderTarget.height), 0, 0);
 
             chunk.WaterBakeTexture.Apply();
             chunk.WaterBakeTexture.Compress(false);
@@ -140,7 +177,7 @@ namespace Assets.Simulation.MapRendering {
             CoroutineForChunk.Remove(chunk);
         }
 
-        private void ResetTextures(IMapChunk chunk) {
+        private void ResetChunkTextures(IMapChunk chunk) {
             var oldLand  = chunk.LandBakeTexture;
             var oldWater = chunk.WaterBakeTexture;
 
@@ -152,11 +189,13 @@ namespace Assets.Simulation.MapRendering {
                 Destroy(oldWater);
             }
 
-            var bakeData = RenderConfig.TerrainBakeTextureData;
+            BakedElementFlags bakedElements = BakedElementsLogic.GetBakedElementsInCells(chunk.CenteredCells);
+            bakedElements |= BakedElementsLogic.GetBakedElementsInCells(chunk.OverlappingCells);
+
+            Vector2 textureSize = GetBakeTextureDimensionsForElements(bakedElements);
 
             var newLand = new Texture2D(
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                Mathf.RoundToInt(textureSize.x), Mathf.RoundToInt(textureSize.y),
                 TextureFormat.ARGB32, false
             );
 
@@ -165,8 +204,7 @@ namespace Assets.Simulation.MapRendering {
             newLand.anisoLevel = 0;;
 
             var newWater = new Texture2D(
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(bakeData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                Mathf.RoundToInt(textureSize.x), Mathf.RoundToInt(textureSize.y),
                 TextureFormat.ARGB32, false
             );
 
@@ -176,6 +214,21 @@ namespace Assets.Simulation.MapRendering {
 
             chunk.LandBakeTexture  = newLand;
             chunk.WaterBakeTexture = newWater;
+        }
+
+        private Vector2 GetBakeTextureDimensionsForElements(BakedElementFlags elements) {
+            if((elements & TerrainBakeConfig.BakeElementsHighRes) != 0) {
+                return TerrainBakeConfig.BakeTextureDimensionsHighRes;
+
+            }else if((elements & TerrainBakeConfig.BakeElementsMediumRes) != 0) {
+                return TerrainBakeConfig.BakeTextureDimensionsMediumRes;
+
+            }else if((elements & TerrainBakeConfig.BakeElementsLowRes) != 0) {
+                return TerrainBakeConfig.BakeTextureDimensionsLowRes;
+
+            }else {
+                return Vector2.zero;
+            }
         }
 
         #endregion

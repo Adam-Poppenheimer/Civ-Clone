@@ -15,6 +15,7 @@ namespace Assets.Simulation.MapRendering {
 
         [SerializeField] private MapRenderConfig   RenderConfig;
         [SerializeField] private FeatureConfig     FeatureConfig;
+        [SerializeField] private TerrainBakeConfig TerrainBakeConfig;
         [SerializeField] private HexCellShaderData ShaderData;
         [SerializeField] private MapChunk          MapChunkPrefab;
         [SerializeField] private HexSubMesh        HexSubMeshPrefab;
@@ -29,7 +30,8 @@ namespace Assets.Simulation.MapRendering {
 
         public override void InstallBindings() {
             Container.Bind<IMapRenderConfig>  ().To<MapRenderConfig>  ().FromInstance(RenderConfig);
-            Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);            
+            Container.Bind<IFeatureConfig>    ().To<FeatureConfig>    ().FromInstance(FeatureConfig);
+            Container.Bind<ITerrainBakeConfig>().To<TerrainBakeConfig>().FromInstance(TerrainBakeConfig);
             Container.Bind<IHexCellShaderData>().To<HexCellShaderData>().FromInstance(ShaderData);
             Container.Bind<ITerrainBaker>     ().To<TerrainBaker>     ().FromInstance(TerrainBaker);
             Container.Bind<IOrientationBaker> ().To<OrientationBaker> ().FromInstance(OrientationBaker);
@@ -87,6 +89,7 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<IWeightsTriangulator>           ().To<WeightsTriangulator>           ().AsSingle();
             Container.Bind<IFullMapRefresher>              ().To<FullMapRefresher>              ().AsSingle();
             Container.Bind<IContourTriangulator>           ().To<ContourTriangulator>           ().AsSingle();
+            Container.Bind<IBakedElementsLogic>            ().To<BakedElementsLogic>            ().AsSingle();
         }
 
         #endregion

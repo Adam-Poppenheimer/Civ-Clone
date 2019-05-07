@@ -42286,6 +42286,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   RenderConfig: {fileID: 11400000, guid: 0e3347699f5f53644a3bff7ad0700ec7, type: 2}
   FeatureConfig: {fileID: 11400000, guid: 144f34a3a3405144c8204846226574d0, type: 2}
+  TerrainBakeConfig: {fileID: 11400000, guid: c717380f43c39a241a9deffb495ec6ea, type: 2}
   ShaderData: {fileID: 1207283527}
   MapChunkPrefab: {fileID: 114101670272957126, guid: 0e3d51ff61ab9564cb9dd7007da567fe,
     type: 2}

@@ -132,12 +132,10 @@ namespace Assets.Simulation.MapRendering {
         float OasisWaterRadius      { get; }
         float OasisLandWidth        { get; }
 
-
-        RenderTextureData TerrainBakeTextureData { get; }
+        
         RenderTextureData OrientationTextureData { get; }
 
-        Shader TerrainBakeOcclusionShader { get; }
-        Shader RiverWeightShader          { get; }
+        Shader RiverWeightShader { get; }
 
         #endregion
 
