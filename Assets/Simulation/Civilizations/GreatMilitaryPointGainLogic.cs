@@ -67,7 +67,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
-        private void OnUnitGainedExperience(Tuple<IUnit, int> data) {
+        private void OnUnitGainedExperience(UniRx.Tuple<IUnit, int> data) {
             var unit = data.Item1;
             int experienceGained = data.Item2;
 

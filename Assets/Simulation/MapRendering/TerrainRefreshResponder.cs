@@ -66,13 +66,13 @@ namespace Assets.Simulation.MapRendering {
 
         #region for CitySignals
 
-        private void OnCellPossessionChanged(Tuple<ICity, IHexCell> data) {
+        private void OnCellPossessionChanged(UniRx.Tuple<ICity, IHexCell> data) {
             foreach(var affectedChunk in GetAffectedChunks(data.Item2)) {
                 affectedChunk.Refresh(TerrainRefreshType.Culture | TerrainRefreshType.Visibility);
             }
         }
 
-        private void OnCityChangedLocation(Tuple<ICity, IHexCell> data) {
+        private void OnCityChangedLocation(UniRx.Tuple<ICity, IHexCell> data) {
             foreach(var chunk in GetAffectedChunks(data.Item2)) {
                 chunk.Refresh(TerrainRefreshType.Features);
             }
@@ -82,7 +82,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region for CivSignals
 
-        private void OnCityPossessionChanged(Tuple<ICivilization, ICity> data) {
+        private void OnCityPossessionChanged(UniRx.Tuple<ICivilization, ICity> data) {
             var affectedChunks = CellPossessionCanon.GetPossessionsOfOwner(data.Item2)
                                                     .SelectMany(cell => Grid.GetCellsInRadius(cell, 1))
                                                     .SelectMany(cell => cell.OverlappingChunks)
@@ -154,7 +154,7 @@ namespace Assets.Simulation.MapRendering {
             }
         }
 
-        private void OnCellEncampmentChanged(Tuple<IHexCell, IEncampment> data) {
+        private void OnCellEncampmentChanged(UniRx.Tuple<IHexCell, IEncampment> data) {
             foreach(var chunk in GetAffectedChunks(data.Item1)) {
                 chunk.Refresh(TerrainRefreshType.Features);
             }
@@ -164,7 +164,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region for ImprovementSignals
 
-        private void OnCellImprovementsChanged(Tuple<IImprovement, IHexCell> data) {
+        private void OnCellImprovementsChanged(UniRx.Tuple<IImprovement, IHexCell> data) {
             TerrainRefreshType refreshFlags = TerrainRefreshType.Features;
             
             if(data.Item1.Template.ProducesFarmland) {
@@ -184,7 +184,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region for ResourceSignals
 
-        private void OnCellNodesChanged(Tuple<IResourceNode, IHexCell> data) {
+        private void OnCellNodesChanged(UniRx.Tuple<IResourceNode, IHexCell> data) {
             foreach(var chunk in data.Item2.OverlappingChunks) {
                 chunk.Refresh(TerrainRefreshType.Features);
             }

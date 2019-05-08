@@ -277,7 +277,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             MockFreeBuildingApplier.Verify(
                 applier => applier.CanApplyFreeBuildingToCity(validTemplates, city),
@@ -308,7 +308,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             MockFreeBuildingApplier.Verify(
                 applier => applier.ApplyFreeBuildingToCity(validTemplates, city),
@@ -338,7 +338,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             CollectionAssert.IsEmpty(freeBuildingsCanon.GetFreeBuildingsForCiv(civ));
         }
@@ -363,7 +363,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             MockFreeBuildingApplier.Verify(
                 applier => applier.ApplyFreeBuildingToCity(validTemplates, city),
@@ -396,7 +396,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
+            CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
 
             MockFreeBuildingApplier.Verify(
                 applier => applier.CanApplyFreeBuildingToCity(validTemplates, cityOne), Times.Once,
@@ -438,7 +438,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
+            CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
 
             CollectionAssert.IsEmpty(freeBuildingsCanon.GetFreeBuildingsForCiv(civ));
         }
@@ -467,7 +467,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.IsActive = true;
 
-            CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
+            CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
 
             CollectionAssert.IsNotEmpty(freeBuildingsCanon.GetFreeBuildingsForCiv(civ));
         }
@@ -494,7 +494,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             freeBuildingsCanon.SubscribeFreeBuildingToCiv(validTemplates, civ);
 
-            CivSignals.CivDiscoveredTech.OnNext(new Tuple<ICivilization, ITechDefinition>(civ, tech));
+            CivSignals.CivDiscoveredTech.OnNext(new UniRx.Tuple<ICivilization, ITechDefinition>(civ, tech));
 
             CollectionAssert.IsNotEmpty(freeBuildingsCanon.GetFreeBuildingsForCiv(civ));
         }

@@ -55,7 +55,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
             var combatInfo = new CombatInfo();
 
             MockCombatCalculator.Setup(calculator => calculator.CalculateCombat(attacker, defender, combatInfo))
-                                .Returns(new Tuple<int, int>(40, 55));
+                                .Returns(new UniRx.Tuple<int, int>(40, 55));
 
             var executionLogic = Container.Resolve<CommonCombatExecutionLogic>();
 

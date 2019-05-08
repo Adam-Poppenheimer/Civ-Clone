@@ -56,7 +56,7 @@ namespace Assets.Simulation.MapManagement {
 
             foreach(var war in WarCanon.GetAllActiveWars()) {
                 diplomacyData.ActiveWars.Add(
-                    new Tuple<string, string>(war.Attacker.Template.Name, war.Defender.Template.Name)
+                    new UniRx.Tuple<string, string>(war.Attacker.Template.Name, war.Defender.Template.Name)
                 );
             }
 

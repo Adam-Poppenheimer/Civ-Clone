@@ -7,7 +7,6 @@ using System.Text;
 using UnityEngine;
 
 using Zenject;
-using UniRx;
 
 using Assets.Simulation.HexMap;
 

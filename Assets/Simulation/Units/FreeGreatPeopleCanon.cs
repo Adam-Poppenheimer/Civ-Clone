@@ -121,35 +121,35 @@ namespace Assets.Simulation.Units {
             ClearCiv(civ);
         }
 
-        private void OnCivDiscoveredTech(Tuple<ICivilization, ITechDefinition> data) {
+        private void OnCivDiscoveredTech(UniRx.Tuple<ICivilization, ITechDefinition> data) {
             var civ  = data.Item1;
             var tech = data.Item2;
 
             SetFreeGreatPeopleForCiv(civ, GetFreeGreatPeopleForCiv(civ) + tech.FreeGreatPeopleProvided);
         }
 
-        private void OnCivUnlockedPolicy(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+        private void OnCivUnlockedPolicy(UniRx.Tuple<ICivilization, ISocialPolicyDefinition> data) {
             var civ    = data.Item1;
             var policy = data.Item2;
 
             SetFreeGreatPeopleForCiv(civ, GetFreeGreatPeopleForCiv(civ) + policy.Bonuses.FreeGreatPeople);
         }
 
-        private void OnCivUnlockedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivUnlockedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ  = data.Item1;
             var tree = data.Item2;
 
             SetFreeGreatPeopleForCiv(civ, GetFreeGreatPeopleForCiv(civ) + tree.UnlockingBonuses.FreeGreatPeople);
         }
 
-        private void OnCivFinishedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivFinishedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ  = data.Item1;
             var tree = data.Item2;
 
             SetFreeGreatPeopleForCiv(civ, GetFreeGreatPeopleForCiv(civ) + tree.CompletionBonuses.FreeGreatPeople);
         }
 
-        private void OnCityGainedBuilding(Tuple<ICity, IBuilding> data) {
+        private void OnCityGainedBuilding(UniRx.Tuple<ICity, IBuilding> data) {
             var city     = data.Item1;
             var building = data.Item2;
 

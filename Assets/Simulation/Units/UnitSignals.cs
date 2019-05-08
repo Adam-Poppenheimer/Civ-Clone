@@ -25,14 +25,14 @@ namespace Assets.Simulation.Units {
         public ISubject<IUnit> PointerEntered { get; private set; }
         public ISubject<IUnit> PointerExited  { get; private set; }
 
-        public ISubject<Tuple<IUnit, PointerEventData>> BeginDrag { get; private set; }
-        public ISubject<Tuple<IUnit, PointerEventData>> Drag      { get; private set; }
-        public ISubject<Tuple<IUnit, PointerEventData>> EndDrag   { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, PointerEventData>> BeginDrag { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, PointerEventData>> Drag      { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, PointerEventData>> EndDrag   { get; private set; }
 
-        public ISubject<Tuple<IUnit, IAbilityDefinition>> ActivatedAbility { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, IAbilityDefinition>> ActivatedAbility { get; private set; }
 
-        public ISubject<Tuple<IUnit, IHexCell>> LeftLocation    { get; private set; }
-        public ISubject<Tuple<IUnit, IHexCell>> EnteredLocation { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, IHexCell>> LeftLocation    { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, IHexCell>> EnteredLocation { get; private set; }
 
         public ISubject<IUnit> StoppedMoving       { get; private set; }
         public ISubject<IUnit> SetUpForBombardment { get; private set; }
@@ -46,11 +46,11 @@ namespace Assets.Simulation.Units {
         public ISubject<IUnit> ExperienceChanged { get; private set; }
         public ISubject<IUnit> LevelChanged      { get; private set; }
 
-        public ISubject<Tuple<IUnit, int>> GainedExperience { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, int>> GainedExperience { get; private set; }
 
         public ISubject<IUnit> GainedPromotion { get; private set; }
 
-        public ISubject<Tuple<IUnit, ICivilization>> GainedNewOwner { get; private set; }
+        public ISubject<UniRx.Tuple<IUnit, ICivilization>> GainedNewOwner { get; private set; }
 
         public ISubject<IUnit> HitpointsChanged { get; private set; }
 
@@ -66,14 +66,14 @@ namespace Assets.Simulation.Units {
             PointerEntered = new Subject<IUnit>();
             PointerExited  = new Subject<IUnit>();
 
-            BeginDrag        = new Subject<Tuple<IUnit, PointerEventData>>();
-            Drag             = new Subject<Tuple<IUnit, PointerEventData>>();
-            EndDrag          = new Subject<Tuple<IUnit, PointerEventData>>();
+            BeginDrag        = new Subject<UniRx.Tuple<IUnit, PointerEventData>>();
+            Drag             = new Subject<UniRx.Tuple<IUnit, PointerEventData>>();
+            EndDrag          = new Subject<UniRx.Tuple<IUnit, PointerEventData>>();
 
-            ActivatedAbility = new Subject<Tuple<IUnit, IAbilityDefinition>>();
+            ActivatedAbility = new Subject<UniRx.Tuple<IUnit, IAbilityDefinition>>();
 
-            LeftLocation    = new Subject<Tuple<IUnit, IHexCell>>();
-            EnteredLocation = new Subject<Tuple<IUnit, IHexCell>>();
+            LeftLocation    = new Subject<UniRx.Tuple<IUnit, IHexCell>>();
+            EnteredLocation = new Subject<UniRx.Tuple<IUnit, IHexCell>>();
 
             StoppedMoving       = new Subject<IUnit>();
             SetUpForBombardment = new Subject<IUnit>();
@@ -87,11 +87,11 @@ namespace Assets.Simulation.Units {
             ExperienceChanged = new Subject<IUnit>();
             LevelChanged      = new Subject<IUnit>();
 
-            GainedExperience = new Subject<Tuple<IUnit, int>>();
+            GainedExperience = new Subject<UniRx.Tuple<IUnit, int>>();
 
             GainedPromotion = new Subject<IUnit>();
 
-            GainedNewOwner = new Subject<Tuple<IUnit, ICivilization>>();
+            GainedNewOwner = new Subject<UniRx.Tuple<IUnit, ICivilization>>();
 
             HitpointsChanged = new Subject<IUnit>();
 

@@ -206,7 +206,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CivSignals.CivDefeated.Subscribe(civ => Assert.Pass());
 
-            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
+            CivSignals.CivLostUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
 
             Assert.Fail("Civ not defeated as expected");
         }
@@ -229,7 +229,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CivSignals.CivDefeated.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
 
-            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
+            CivSignals.CivLostUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(civToCheck, unitBeingLost));
         }
 
         [Test]
@@ -249,7 +249,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CivSignals.CivDefeated.Subscribe(civ => Assert.Pass());
 
-            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
 
             Assert.Fail("Civ not defeated as expected");
         }
@@ -272,7 +272,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             CivSignals.CivDefeated.Subscribe(civ => Assert.Fail("Civ unexpectedly defeated"));
 
-            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civToCheck, cityBeingLost));
         }
 
         [Test]

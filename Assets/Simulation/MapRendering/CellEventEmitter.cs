@@ -76,7 +76,7 @@ namespace Assets.Simulation.MapRendering {
                     IHexCell cell = PointOrientationLogic.GetCellAtPoint(hit.point);
 
                     if(cell != null) {
-                        CellSignals.PointerDown.OnNext(new Tuple<IHexCell, PointerEventData>(cell, eventData));
+                        CellSignals.PointerDown.OnNext(new UniRx.Tuple<IHexCell, PointerEventData>(cell, eventData));
                     }
                 }
             }
@@ -91,7 +91,7 @@ namespace Assets.Simulation.MapRendering {
                     IHexCell cell = PointOrientationLogic.GetCellAtPoint(hit.point);
 
                     if(cell != null) {
-                        CellSignals.PointerUp.OnNext(new Tuple<IHexCell, PointerEventData>(cell, eventData));
+                        CellSignals.PointerUp.OnNext(new UniRx.Tuple<IHexCell, PointerEventData>(cell, eventData));
                     }
                 }
             }
@@ -114,7 +114,7 @@ namespace Assets.Simulation.MapRendering {
                         CitySignals.PointerClicked.OnNext(cityAtLocation);
                     }else {
                         CellSignals.Clicked.OnNext(
-                            new Tuple<IHexCell, PointerEventData>(cell, eventData)
+                            new UniRx.Tuple<IHexCell, PointerEventData>(cell, eventData)
                         );
                     }
                 }

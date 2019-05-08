@@ -34,7 +34,7 @@ namespace Assets.Simulation.Units.Combat {
         #region from ICommonCombatExecutionLogic
 
         public void PerformCommonCombatTasks(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
-            Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
+            UniRx.Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
 
             attacker.CurrentHitpoints -= results.Item1;
             defender.CurrentHitpoints -= results.Item2;

@@ -101,13 +101,13 @@ namespace Assets.UI.StateMachine.States.MapEditor {
             EventSubscriptions.Clear();
         }
 
-        private void OnUnitBeginDrag(Tuple<IUnit, PointerEventData> data) {
+        private void OnUnitBeginDrag(UniRx.Tuple<IUnit, PointerEventData> data) {
             if(data.Item1 == SelectedUnit) {
                 IsDragging = true;
             }
         }
 
-        private void OnUnitEndDrag(Tuple<IUnit, PointerEventData> data) {
+        private void OnUnitEndDrag(UniRx.Tuple<IUnit, PointerEventData> data) {
             if(IsDragging && IsLocationValid()) {
                 SelectedUnit.Relocate(ProspectiveNewLocation);
             }

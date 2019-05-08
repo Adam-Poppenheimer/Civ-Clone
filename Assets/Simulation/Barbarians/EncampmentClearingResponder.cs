@@ -47,7 +47,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance methods
 
-        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> data) {
+        private void OnUnitEnteredLocation(UniRx.Tuple<IUnit, IHexCell> data) {
             var unit        = data.Item1;
             var newLocation = data.Item2;
 

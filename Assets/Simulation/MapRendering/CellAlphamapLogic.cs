@@ -29,8 +29,6 @@ namespace Assets.Simulation.MapRendering {
         ) {
             RenderConfig             = renderConfig;
             ImprovementLocationCanon = improvementLocationCanon;
-
-            ReusedAlphamap = new float[RenderConfig.MapTextures.Count()];
         }
 
         #endregion
@@ -39,37 +37,27 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellAlphamapLogic
 
-        /* As elsewhere in the code, we reuse the same array here
-         * to save on memory requirements. Make sure that multiple
-         * uses of GetAlphamapForCell are not being used
-         * at the same time.
-         */ 
-
-        public float[] ReusedAlphamap;
-
-        public float[] GetAlphamapForCell(IHexCell cell, HexDirection sextant) {
-            for(int i = 0; i < ReusedAlphamap.Length; i++) {
-                ReusedAlphamap[i] = 0f;
+        public void GetAlphamapForCell(float[] returnedAlphamap, IHexCell cell, HexDirection sextant) {
+            for(int i = 0; i < returnedAlphamap.Length; i++) {
+                returnedAlphamap[i] = 0f;
             }
 
             var improvementsAt = ImprovementLocationCanon.GetPossessionsOfOwner(cell);
 
             if(cell.Terrain.IsWater()) {
-                ReusedAlphamap[RenderConfig.SeaFloorTextureIndex] = 1f;
+                returnedAlphamap[RenderConfig.SeaFloorTextureIndex] = 1f;
 
             }else if(cell.Shape == CellShape.Mountains) {
-                ReusedAlphamap[RenderConfig.MountainTextureIndex] = 1f;
+                returnedAlphamap[RenderConfig.MountainTextureIndex] = 1f;
 
             }else if(improvementsAt.Any(improvement => improvement.Template.OverridesTerrain)) {
                 int newIndex = improvementsAt.First(improvement => improvement.Template.OverridesTerrain).Template.OverridingTerrainIndex;
 
-                ReusedAlphamap[newIndex] = 1f;
+                returnedAlphamap[newIndex] = 1f;
 
             } else {
-                ReusedAlphamap[(int)cell.Terrain] = 1f;
+                returnedAlphamap[(int)cell.Terrain] = 1f;
             }
-
-            return ReusedAlphamap;
         }
 
         #endregion

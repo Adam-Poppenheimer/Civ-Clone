@@ -40,42 +40,42 @@ namespace Assets.Simulation.SocialPolicies {
 
         #region instance methods
 
-        private void OnCivUnlockedPolicy(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+        private void OnCivUnlockedPolicy(UniRx.Tuple<ICivilization, ISocialPolicyDefinition> data) {
             var civ    = data.Item1;
             var policy = data.Item2;
 
             ApplyFreeBuildingsFromBonuses(policy.Bonuses, civ);
         }
 
-        private void OnCivLockedPolicy(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+        private void OnCivLockedPolicy(UniRx.Tuple<ICivilization, ISocialPolicyDefinition> data) {
             var civ    = data.Item1;
             var policy = data.Item2;
 
             RevokeFreeBuildingsFromBonuses(policy.Bonuses, civ);
         }
 
-        private void OnCivUnlockedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivUnlockedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ        = data.Item1;
             var policyTree = data.Item2;
 
             ApplyFreeBuildingsFromBonuses(policyTree.UnlockingBonuses, civ);
         }
 
-        private void OnCivLockedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivLockedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ        = data.Item1;
             var policyTree = data.Item2;
 
             RevokeFreeBuildingsFromBonuses(policyTree.UnlockingBonuses, civ);
         }
 
-        private void OnCivFinishedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivFinishedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ        = data.Item1;
             var policyTree = data.Item2;
 
             ApplyFreeBuildingsFromBonuses(policyTree.CompletionBonuses, civ);
         }
 
-        private void OnCivUnfinishedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivUnfinishedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ        = data.Item1;
             var policyTree = data.Item2;
 

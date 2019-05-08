@@ -52,7 +52,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
@@ -77,7 +77,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Melee))
                                .Returns(combatInfo);
@@ -126,7 +126,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);
@@ -151,7 +151,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);
@@ -176,7 +176,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
             var combatInfo = new CombatInfo();
 
-            var combatCalculations = new Tuple<int, int>(1, 22);
+            var combatCalculations = new UniRx.Tuple<int, int>(1, 22);
 
             MockCombatInfoLogic.Setup(logic => logic.GetAttackInfo(attacker, defender, location, CombatType.Ranged))
                                .Returns(combatInfo);

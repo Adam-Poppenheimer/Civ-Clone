@@ -44,17 +44,17 @@ namespace Assets.Simulation.Civilizations {
         #region from PossessionRelationship<ICivilization, ICity>
 
         protected override void DoOnPossessionBeingBroken(ICity possession, ICivilization oldOwner) {
-            CivSignals.CivLosingCity.OnNext(new Tuple<ICivilization, ICity>(oldOwner, possession));
+            CivSignals.CivLosingCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(oldOwner, possession));
         }
 
         protected override void DoOnPossessionEstablished(ICity city, ICivilization newOwner) {
             if(newOwner != null) {
-                CivSignals.CivGainedCity.OnNext(new Tuple<ICivilization, ICity>(newOwner, city));
+                CivSignals.CivGainedCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(newOwner, city));
             }
         }
 
         protected override void DoOnPossessionBroken(ICity city, ICivilization oldOwner) {
-            CivSignals.CivLostCity.OnNext(new Tuple<ICivilization, ICity>(oldOwner, city));
+            CivSignals.CivLostCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(oldOwner, city));
         }
 
         #endregion

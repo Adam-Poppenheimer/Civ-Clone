@@ -112,7 +112,7 @@ namespace Assets.UI.Cities.Production {
             ProductionProgressSlider.value = 0;
         }
 
-        private void OnProjectChanged(Tuple<ICity, IProductionProject> cityProjectTuple) {
+        private void OnProjectChanged(UniRx.Tuple<ICity, IProductionProject> cityProjectTuple) {
             if(cityProjectTuple.Item1.Equals(ObjectToDisplay)) {
                 Refresh();
             }

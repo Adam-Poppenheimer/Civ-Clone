@@ -13,8 +13,8 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
         
-        [DataMember()] public List<Tuple<string, string>>    ActiveWars         = new List<Tuple<string, string>>();
-        [DataMember()] public List<SerializableProposalData> ActiveProposals    = new List<SerializableProposalData>();
+        [DataMember()] public List<UniRx.Tuple<string, string>>  ActiveWars         = new List<UniRx.Tuple<string, string>>();
+        [DataMember()] public List<SerializableProposalData>     ActiveProposals    = new List<SerializableProposalData>();
         [DataMember()] public List<SerializableOngoingDealData>  ActiveOngoingDeals = new List<SerializableOngoingDealData>();
 
         #endregion

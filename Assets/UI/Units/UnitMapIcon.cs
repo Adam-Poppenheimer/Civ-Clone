@@ -73,19 +73,19 @@ namespace Assets.UI.Units {
 
         public void OnBeginDrag(PointerEventData eventData) {
             if(UnitToDisplay != null) {
-                UnitSignals.BeginDrag.OnNext(new Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
+                UnitSignals.BeginDrag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
             }
         }
 
         public void OnDrag(PointerEventData eventData) {
             if(UnitToDisplay != null) {
-                UnitSignals.Drag.OnNext(new Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
+                UnitSignals.Drag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
             }
         }
 
         public void OnEndDrag(PointerEventData eventData) {
             if(UnitToDisplay != null) {
-                UnitSignals.EndDrag.OnNext(new Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
+                UnitSignals.EndDrag.OnNext(new UniRx.Tuple<IUnit, PointerEventData>(UnitToDisplay, eventData));
             }
         }
 

@@ -36,11 +36,11 @@ namespace Assets.Simulation.Cities {
         #region from PossesionRelationship<IHexCell, ICity>
 
         protected override void DoOnPossessionEstablished(ICity possession, IHexCell newOwner) {
-            CitySignals.CityAddedToLocation.OnNext(new Tuple<ICity, IHexCell>(possession, newOwner));
+            CitySignals.CityAddedToLocation.OnNext(new UniRx.Tuple<ICity, IHexCell>(possession, newOwner));
         }
 
         protected override void DoOnPossessionBroken(ICity possession, IHexCell oldOwner) {
-            CitySignals.CityRemovedFromLocation.OnNext(new Tuple<ICity, IHexCell>(possession, oldOwner));
+            CitySignals.CityRemovedFromLocation.OnNext(new UniRx.Tuple<ICity, IHexCell>(possession, oldOwner));
         }
 
         #endregion

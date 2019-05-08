@@ -47,12 +47,12 @@ namespace Assets.Simulation.Civilizations {
                 ResourceLockingCanon.LockCopyOfResourceForCiv(resource, newOwner);
             }
             
-            CivSignals.CivGainedUnit.OnNext(new Tuple<ICivilization, IUnit>(newOwner, unit));
-            UnitSignals.GainedNewOwner.OnNext(new Tuple<IUnit, ICivilization>(unit, newOwner));
+            CivSignals.CivGainedUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(newOwner, unit));
+            UnitSignals.GainedNewOwner.OnNext(new UniRx.Tuple<IUnit, ICivilization>(unit, newOwner));
         }
 
         protected override void DoOnPossessionBeingBroken(IUnit possession, ICivilization oldOwner) {
-            CivSignals.CivLosingUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, possession));
+            CivSignals.CivLosingUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(oldOwner, possession));
         }
 
         protected override void DoOnPossessionBroken(IUnit unit, ICivilization oldOwner) {
@@ -60,8 +60,8 @@ namespace Assets.Simulation.Civilizations {
                 ResourceLockingCanon.UnlockCopyOfResourceForCiv(resource, oldOwner);
             }
 
-            CivSignals.CivLostUnit.OnNext(new Tuple<ICivilization, IUnit>(oldOwner, unit));
-            UnitSignals.GainedNewOwner.OnNext(new Tuple<IUnit, ICivilization>(unit, null));
+            CivSignals.CivLostUnit.OnNext(new UniRx.Tuple<ICivilization, IUnit>(oldOwner, unit));
+            UnitSignals.GainedNewOwner.OnNext(new UniRx.Tuple<IUnit, ICivilization>(unit, null));
         }
 
         #endregion

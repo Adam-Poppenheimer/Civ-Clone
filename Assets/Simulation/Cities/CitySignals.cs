@@ -21,27 +21,27 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        public ISubject<Tuple<ICity, IHexCell>> CityAddedToLocation     { get; private set; }
-        public ISubject<Tuple<ICity, IHexCell>> CityRemovedFromLocation { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IHexCell>> CityAddedToLocation     { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IHexCell>> CityRemovedFromLocation { get; private set; }
 
         public ISubject<ICity> PointerClicked { get; private set; }
 
         public ISubject<ICity> PointerEntered { get; private set; }
         public ISubject<ICity> PointerExited  { get; private set; }
 
-        public ISubject<Tuple<ICity, IProductionProject>> ProjectChanged { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IProductionProject>> ProjectChanged { get; private set; }
 
         public ISubject<ICity> DistributionPerformed { get; private set; }
 
         public ISubject<ICity> BeingDestroyed { get; private set; }
 
-        public ISubject<Tuple<ICity, IHexCell>> LostCellFromBoundaries { get; private set; }
-        public ISubject<Tuple<ICity, IHexCell>> GainedCellToBoundaries { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IHexCell>> LostCellFromBoundaries { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IHexCell>> GainedCellToBoundaries { get; private set; }
 
         public ISubject<CityCaptureData> CityCaptured { get; private set; }
 
-        public ISubject<Tuple<ICity, IBuilding>> GainedBuilding { get; private set; }
-        public ISubject<Tuple<ICity, IBuilding>> LostBuilding   { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IBuilding>> GainedBuilding { get; private set; }
+        public ISubject<UniRx.Tuple<ICity, IBuilding>> LostBuilding   { get; private set; }
 
         public ISubject<ICity> PopulationChanged { get; private set; }
 
@@ -53,10 +53,10 @@ namespace Assets.Simulation.Cities {
 
         [Inject]
         public CitySignals(){
-            CityAddedToLocation     = new Subject<Tuple<ICity, IHexCell>>();
-            CityRemovedFromLocation = new Subject<Tuple<ICity, IHexCell>>();
+            CityAddedToLocation     = new Subject<UniRx.Tuple<ICity, IHexCell>>();
+            CityRemovedFromLocation = new Subject<UniRx.Tuple<ICity, IHexCell>>();
 
-            ProjectChanged        = new Subject<Tuple<ICity, IProductionProject>>();
+            ProjectChanged        = new Subject<UniRx.Tuple<ICity, IProductionProject>>();
             DistributionPerformed = new Subject<ICity>();
 
             PointerClicked = new Subject<ICity>();
@@ -65,13 +65,13 @@ namespace Assets.Simulation.Cities {
 
             BeingDestroyed = new Subject<ICity>();
 
-            LostCellFromBoundaries = new Subject<Tuple<ICity, IHexCell>>();
-            GainedCellToBoundaries = new Subject<Tuple<ICity, IHexCell>>();
+            LostCellFromBoundaries = new Subject<UniRx.Tuple<ICity, IHexCell>>();
+            GainedCellToBoundaries = new Subject<UniRx.Tuple<ICity, IHexCell>>();
 
             CityCaptured = new Subject<CityCaptureData>();
 
-            GainedBuilding = new Subject<Tuple<ICity, IBuilding>>();
-            LostBuilding   = new Subject<Tuple<ICity, IBuilding>>();
+            GainedBuilding = new Subject<UniRx.Tuple<ICity, IBuilding>>();
+            LostBuilding   = new Subject<UniRx.Tuple<ICity, IBuilding>>();
 
             PopulationChanged = new Subject<ICity>();
 

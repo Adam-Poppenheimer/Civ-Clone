@@ -19,9 +19,9 @@ namespace Assets.Simulation.Visibility {
 
         public ISubject<Unit> CellExplorationModeChanged    { get; private set; }
 
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameExploredByCiv  { get; private set; }
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameVisibleToCiv   { get; private set; }
-        public ISubject<Tuple<IHexCell, ICivilization>> CellBecameInvisibleToCiv { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, ICivilization>> CellBecameExploredByCiv  { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, ICivilization>> CellBecameVisibleToCiv   { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, ICivilization>> CellBecameInvisibleToCiv { get; private set; }
 
         #endregion
 
@@ -33,9 +33,9 @@ namespace Assets.Simulation.Visibility {
 
             CellExplorationModeChanged    = new Subject<Unit>();
 
-            CellBecameExploredByCiv  = new Subject<Tuple<IHexCell, ICivilization>>();
-            CellBecameVisibleToCiv   = new Subject<Tuple<IHexCell, ICivilization>>();
-            CellBecameInvisibleToCiv = new Subject<Tuple<IHexCell, ICivilization>>();
+            CellBecameExploredByCiv  = new Subject<UniRx.Tuple<IHexCell, ICivilization>>();
+            CellBecameVisibleToCiv   = new Subject<UniRx.Tuple<IHexCell, ICivilization>>();
+            CellBecameInvisibleToCiv = new Subject<UniRx.Tuple<IHexCell, ICivilization>>();
         }
 
         #endregion

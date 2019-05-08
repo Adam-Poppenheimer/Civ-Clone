@@ -16,7 +16,7 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        public IObservable<ICity> ActiveCivCityClickedSignal { get; private set; }
+        public UniRx.IObservable<ICity> ActiveCivCityClickedSignal { get; private set; }
 
         private IGameCore GameCore;
 

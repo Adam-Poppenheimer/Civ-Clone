@@ -127,6 +127,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region GetOrientationDataFromTextures
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void GetOrientationDataFromColors_TakesDuckFromDuckColorR() {
             var cells = new List<IHexCell>() {
                 BuildCell(), BuildCell(), BuildCell(), BuildCell()
@@ -400,7 +405,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var orientationData = orientationLogic.GetOrientationDataFromColors(orientationColor, weightsColor, Color.clear);
 
             Assert.AreEqual(1f, orientationData.RiverWeight);
-        }
+        }*/
 
         #endregion
 

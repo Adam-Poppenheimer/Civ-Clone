@@ -15,7 +15,7 @@ namespace Assets.UI {
 
         #region static methods
 
-        public static IObservable<Unit> BuildMouseDeselectedSignal(GameObject targetObject, IObservable<Unit> clickedAnywhereSignal) {
+        public static UniRx.IObservable<Unit> BuildMouseDeselectedSignal(GameObject targetObject, UniRx.IObservable<Unit> clickedAnywhereSignal) {
             return clickedAnywhereSignal.Where(BuildMouseDeselectionPredicate(targetObject));
         }
 

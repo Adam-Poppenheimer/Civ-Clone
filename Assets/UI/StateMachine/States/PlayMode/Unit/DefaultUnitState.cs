@@ -255,13 +255,13 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             EventSubscriptions.Clear();
         }
 
-        private void OnUnitBeginDrag(Tuple<IUnit, PointerEventData> dataTuple) {
+        private void OnUnitBeginDrag(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
             if(dataTuple.Item1 == SelectedUnit) {
                 IsDragging = true;
             }
         }
 
-        private void OnUnitEndDrag(Tuple<IUnit, PointerEventData> dataTuple) {
+        private void OnUnitEndDrag(UniRx.Tuple<IUnit, PointerEventData> dataTuple) {
             if(IsDragging) {
                 if(IsCombatValid()) {
                     PerformCombat();
@@ -363,7 +363,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             }
         }
 
-        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> data) {
+        private void OnUnitEnteredLocation(UniRx.Tuple<IUnit, IHexCell> data) {
             Clear();
         }
 

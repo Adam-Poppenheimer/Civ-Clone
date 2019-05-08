@@ -54,7 +54,7 @@ namespace Assets.UI.MapEditor {
 
         #endregion
 
-        private void OnCellPointerDown(Tuple<IHexCell, PointerEventData> data) {
+        private void OnCellPointerDown(UniRx.Tuple<IHexCell, PointerEventData> data) {
             EditCells(data.Item1);
         }
 

@@ -1,4 +1,6 @@
-﻿//We need to be very careful about how we perform blending, since
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+//We need to be very careful about how we perform blending, since
 //our camera is clearing to RGBA(0, 0, 0, 0). We need to make sure
 //we can handle completely blank pixels, keep the blackness of our
 //underlying texture from seeping through, and properly mix our
@@ -38,9 +40,9 @@ Shader "Civ Clone/Road" {
 			float3 worldPos;
 		};
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_START(Props)
 
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf (Input IN, inout SurfaceOutputStandard o) {
 			fixed4 textureSample = tex2D(_MainTex, IN.uv_MainTex);

@@ -70,7 +70,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             Container.Resolve<EncampmentClearingResponder>();
 
-            UnitSignals.EnteredLocation.OnNext(new Tuple<IUnit, IHexCell>(unit, cell));
+            UnitSignals.EnteredLocation.OnNext(new UniRx.Tuple<IUnit, IHexCell>(unit, cell));
 
             MockEncampmentFactory.Verify(factory => factory.DestroyEncampment(encampment), Times.Once);
         }
@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             Container.Resolve<EncampmentClearingResponder>();
 
-            UnitSignals.EnteredLocation.OnNext(new Tuple<IUnit, IHexCell>(unit, cell));
+            UnitSignals.EnteredLocation.OnNext(new UniRx.Tuple<IUnit, IHexCell>(unit, cell));
 
             Assert.AreEqual(67, owner.GoldStockpile);
         }
@@ -102,7 +102,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             Container.Resolve<EncampmentClearingResponder>();
 
-            UnitSignals.EnteredLocation.OnNext(new Tuple<IUnit, IHexCell>(unit, cell));
+            UnitSignals.EnteredLocation.OnNext(new UniRx.Tuple<IUnit, IHexCell>(unit, cell));
 
             MockEncampmentFactory.Verify(
                 factory => factory.DestroyEncampment(encampment),
@@ -120,7 +120,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             Container.Resolve<EncampmentClearingResponder>();
 
-            UnitSignals.EnteredLocation.OnNext(new Tuple<IUnit, IHexCell>(unit, cell));
+            UnitSignals.EnteredLocation.OnNext(new UniRx.Tuple<IUnit, IHexCell>(unit, cell));
 
             MockEncampmentFactory.Verify(
                 factory => factory.DestroyEncampment(It.IsAny<IEncampment>()),

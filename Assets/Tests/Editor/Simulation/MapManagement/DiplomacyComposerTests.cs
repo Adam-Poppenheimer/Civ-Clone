@@ -105,10 +105,10 @@ namespace Assets.Tests.Simulation.MapManagement {
             composer.ComposeDiplomacy(mapData);
 
             CollectionAssert.AreEquivalent(
-                new List<Tuple<string, string>>() {
-                    new Tuple<string, string>("Civ One",   "Civ Two"),
-                    new Tuple<string, string>("Civ Two",   "Civ Three"),
-                    new Tuple<string, string>("Civ Three", "Civ One"),
+                new List<UniRx.Tuple<string, string>>() {
+                    new UniRx.Tuple<string, string>("Civ One",   "Civ Two"),
+                    new UniRx.Tuple<string, string>("Civ Two",   "Civ Three"),
+                    new UniRx.Tuple<string, string>("Civ Three", "Civ One"),
                 },
                 mapData.DiplomacyData.ActiveWars
             );
@@ -198,10 +198,10 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             var mapData = new SerializableMapData() {
                 DiplomacyData = new SerializableDiplomacyData() {
-                    ActiveWars = new List<Tuple<string, string>>() {
-                        new Tuple<string, string>("Civ One",   "Civ Two"),
-                        new Tuple<string, string>("Civ Two",   "Civ Three"),
-                        new Tuple<string, string>("Civ Three", "Civ One")
+                    ActiveWars = new List<UniRx.Tuple<string, string>>() {
+                        new UniRx.Tuple<string, string>("Civ One",   "Civ Two"),
+                        new UniRx.Tuple<string, string>("Civ Two",   "Civ Three"),
+                        new UniRx.Tuple<string, string>("Civ Three", "Civ One")
                     }
                 }
             };

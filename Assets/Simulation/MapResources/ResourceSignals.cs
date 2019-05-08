@@ -13,9 +13,9 @@ namespace Assets.Simulation.MapResources {
 
         #region instance fields and properties
 
-        public ISubject<IResourceNode>                  NodeBeingDestroyed      { get; private set; }
-        public ISubject<Tuple<IResourceNode, IHexCell>> NodeAddedToLocation     { get; private set; }
-        public ISubject<Tuple<IResourceNode, IHexCell>> NodeRemovedFromLocation { get; private set; }
+        public ISubject<IResourceNode>                        NodeBeingDestroyed      { get; private set; }
+        public ISubject<UniRx.Tuple<IResourceNode, IHexCell>> NodeAddedToLocation     { get; private set; }
+        public ISubject<UniRx.Tuple<IResourceNode, IHexCell>> NodeRemovedFromLocation { get; private set; }
 
         #endregion
 
@@ -23,8 +23,8 @@ namespace Assets.Simulation.MapResources {
 
         public ResourceSignals() {
             NodeBeingDestroyed      = new Subject<IResourceNode>();
-            NodeAddedToLocation     = new Subject<Tuple<IResourceNode, IHexCell>>();
-            NodeRemovedFromLocation = new Subject<Tuple<IResourceNode, IHexCell>>();
+            NodeAddedToLocation     = new Subject<UniRx.Tuple<IResourceNode, IHexCell>>();
+            NodeRemovedFromLocation = new Subject<UniRx.Tuple<IResourceNode, IHexCell>>();
         }
 
         #endregion

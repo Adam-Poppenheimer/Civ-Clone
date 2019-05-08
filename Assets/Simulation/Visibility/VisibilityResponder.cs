@@ -160,27 +160,27 @@ namespace Assets.Simulation.Visibility {
             ResetResourceVisibilityCoroutine = null;
         }
 
-        private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> args) {
+        private void OnUnitLeftLocation(UniRx.Tuple<IUnit, IHexCell> args) {
             TryResetCellVisibility();
         }
 
-        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> args) {
+        private void OnUnitEnteredLocation(UniRx.Tuple<IUnit, IHexCell> args) {
             TryResetCellVisibility();
         }
 
-        private void OnCityLostCell(Tuple<ICity, IHexCell> args) {
+        private void OnCityLostCell(UniRx.Tuple<ICity, IHexCell> args) {
             TryResetCellVisibility();
         }
 
-        private void OnCityGainedCell(Tuple<ICity, IHexCell> args) {
+        private void OnCityGainedCell(UniRx.Tuple<ICity, IHexCell> args) {
             TryResetCellVisibility();
         }
 
-        private void OnCivLosingCity(Tuple<ICivilization, ICity> data) {
+        private void OnCivLosingCity(UniRx.Tuple<ICivilization, ICity> data) {
             TryResetCellVisibility();
         }
 
-        private void OnCivGainedCity(Tuple<ICivilization, ICity> data) {
+        private void OnCivGainedCity(UniRx.Tuple<ICivilization, ICity> data) {
             TryResetCellVisibility();
         }
 

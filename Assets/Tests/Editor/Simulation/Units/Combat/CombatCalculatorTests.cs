@@ -40,7 +40,7 @@ namespace Assets.Tests.Simulation.Units.Combat {
 
         [Test]
         [TestCaseSource(typeof(CombatCalculatorTestData), "Cases")]
-        public Tuple<int, int> CalculateCombatTests(CombatCalculatorTestData.CalculateCombatTestData testData) {
+        public UniRx.Tuple<int, int> CalculateCombatTests(CombatCalculatorTestData.CalculateCombatTestData testData) {
             var attacker = BuildUnit(testData.Attacker);
             var defender = BuildUnit(testData.Defender);
 

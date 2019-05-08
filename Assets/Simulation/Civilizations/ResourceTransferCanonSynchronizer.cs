@@ -36,7 +36,7 @@ namespace Assets.Simulation.Civilizations {
             IPossessionRelationship<ICity, IHexCell>         cityTerritoryCanon,
             IPossessionRelationship<ICivilization, ICity>    cityPossessionCanon,
             ImprovementSignals                               improvementSignals,
-            ResourceSignals                         resourceSignals,
+            ResourceSignals                                  resourceSignals,
             CitySignals                                      citySignals,
             CivilizationSignals                              civSignals
         ) {
@@ -47,18 +47,18 @@ namespace Assets.Simulation.Civilizations {
             CityTerritoryCanon        = cityTerritoryCanon;
             CityPossessionCanon       = cityPossessionCanon;
 
-            improvementSignals.RemovedFromLocation .Subscribe(OnImprovementRemovedFromLocation);
-            improvementSignals.Pillaged            .Subscribe(OnImprovementPillaged);
+            improvementSignals.RemovedFromLocation    .Subscribe(OnImprovementRemovedFromLocation);
+            improvementSignals.Pillaged               .Subscribe(OnImprovementPillaged);
             resourceSignals   .NodeRemovedFromLocation.Subscribe(OnResourceNodeRemovedFromLocation);
-            citySignals       .LostCellFromBoundaries         .Subscribe(OnCityLostCellFromBoundaries);
-            civSignals        .CivLosingCity                  .Subscribe(OnCivLosingCity);
+            citySignals       .LostCellFromBoundaries .Subscribe(OnCityLostCellFromBoundaries);
+            civSignals        .CivLosingCity          .Subscribe(OnCivLosingCity);
         }
 
         #endregion
 
         #region instance methods
 
-        private void OnImprovementRemovedFromLocation(Tuple<IImprovement, IHexCell> dataTuple) {
+        private void OnImprovementRemovedFromLocation(UniRx.Tuple<IImprovement, IHexCell> dataTuple) {
             var location = dataTuple.Item2;
 
             var nodeAtLocation = ResourceNodeLocationCanon.GetPossessionsOfOwner(location).FirstOrDefault();
@@ -90,7 +90,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnResourceNodeRemovedFromLocation(Tuple<IResourceNode, IHexCell> dataTuple) {
+        private void OnResourceNodeRemovedFromLocation(UniRx.Tuple<IResourceNode, IHexCell> dataTuple) {
             var node     = dataTuple.Item1;
             var location = dataTuple.Item2;
 
@@ -101,7 +101,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnCityLostCellFromBoundaries(Tuple<ICity, IHexCell> dataTuple) {
+        private void OnCityLostCellFromBoundaries(UniRx.Tuple<ICity, IHexCell> dataTuple) {
             var city = dataTuple.Item1;
             var cell = dataTuple.Item2;
 
@@ -116,7 +116,7 @@ namespace Assets.Simulation.Civilizations {
             ResourceTransferCanon.SynchronizeResourceForCiv(nodeAtLocation.Resource, cityOwner);
         }
 
-        private void OnCivLosingCity(Tuple<ICivilization, ICity> dataTuple) {
+        private void OnCivLosingCity(UniRx.Tuple<ICivilization, ICity> dataTuple) {
             var oldOwner = dataTuple.Item1;
             var city     = dataTuple.Item2;
 

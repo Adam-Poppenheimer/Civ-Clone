@@ -26,7 +26,7 @@ namespace Assets.Simulation.MapManagement {
         [DataMember()] public List<SerializableResourceNodeData> ResourceNodes;
         [DataMember()] public SerializableDiplomacyData          DiplomacyData;
         [DataMember()] public string                             ActivePlayer;
-        [DataMember()] public List<Tuple<string, string>>        CivDiscoveryPairs;
+        [DataMember()] public List<UniRx.Tuple<string, string>>  CivDiscoveryPairs;
         [DataMember()] public List<SerializableEncampmentData>   Encampments;
 
         #endregion

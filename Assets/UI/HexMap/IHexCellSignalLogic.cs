@@ -11,8 +11,8 @@ namespace Assets.UI.HexMap {
 
         #region properties
 
-        IObservable<IHexCell> BeginHoverSignal { get; }
-        IObservable<IHexCell> EndHoverSignal { get; }
+        UniRx.IObservable<IHexCell> BeginHoverSignal { get; }
+        UniRx.IObservable<IHexCell> EndHoverSignal { get; }
 
         #endregion
 

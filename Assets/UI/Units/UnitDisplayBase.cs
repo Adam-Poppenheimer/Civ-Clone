@@ -57,13 +57,13 @@ namespace Assets.UI.Units {
 
         #endregion
 
-        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> dataTuple) {
+        private void OnUnitEnteredLocation(UniRx.Tuple<IUnit, IHexCell> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }
         }
 
-        private void OnUnitActivatedAbility(Tuple<IUnit, IAbilityDefinition> dataTuple) {
+        private void OnUnitActivatedAbility(UniRx.Tuple<IUnit, IAbilityDefinition> dataTuple) {
             if(dataTuple.Item1 == ObjectToDisplay) {
                 Refresh();
             }

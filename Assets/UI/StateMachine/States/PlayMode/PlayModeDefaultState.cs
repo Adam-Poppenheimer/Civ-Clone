@@ -139,7 +139,7 @@ namespace Assets.UI.StateMachine.States.PlayMode {
             CitySummaryManager.BuildSummaries();
         }
 
-        private void OnCellBecameExploredByCiv(Tuple<IHexCell, ICivilization> data) {
+        private void OnCellBecameExploredByCiv(UniRx.Tuple<IHexCell, ICivilization> data) {
             var cityAtCell = CityLocationCanon.GetPossessionsOfOwner(data.Item1).FirstOrDefault();
 
             if(cityAtCell != null && ExplorationCanon.IsCellExplored(data.Item1)) {

@@ -72,7 +72,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
-        private void OnCivUnlockedPolicy(Tuple<ICivilization, ISocialPolicyDefinition> data) {
+        private void OnCivUnlockedPolicy(UniRx.Tuple<ICivilization, ISocialPolicyDefinition> data) {
             var civ    = data.Item1;
             var policy = data.Item2;
 
@@ -81,7 +81,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnCivUnlockedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivUnlockedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ  = data.Item1;
             var tree = data.Item2;
 
@@ -90,7 +90,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnCivFinishedPolicyTree(Tuple<ICivilization, IPolicyTreeDefinition> data) {
+        private void OnCivFinishedPolicyTree(UniRx.Tuple<ICivilization, IPolicyTreeDefinition> data) {
             var civ  = data.Item1;
             var tree = data.Item2;
 
@@ -99,7 +99,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnCityGainedBuilding(Tuple<ICity, IBuilding> data) {
+        private void OnCityGainedBuilding(UniRx.Tuple<ICity, IBuilding> data) {
             var city     = data.Item1;
             var building = data.Item2;
 

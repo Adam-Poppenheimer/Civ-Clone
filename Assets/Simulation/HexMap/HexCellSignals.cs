@@ -18,11 +18,11 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        public ISubject<Tuple<IHexCell, PointerEventData>> Clicked      { get; private set; }
-        public ISubject<Tuple<IHexCell, PointerEventData>> PointerDown  { get; private set; }
-        public ISubject<Tuple<IHexCell, PointerEventData>> PointerUp    { get; private set; }
-        public ISubject<IHexCell>                          PointerEnter { get; private set; }
-        public ISubject<IHexCell>                          PointerExit  { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, PointerEventData>> Clicked      { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, PointerEventData>> PointerDown  { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, PointerEventData>> PointerUp    { get; private set; }
+        public ISubject<IHexCell>                                PointerEnter { get; private set; }
+        public ISubject<IHexCell>                                PointerExit  { get; private set; }
 
         public ISubject<HexCellDragData> BeginDrag { get; private set; }
         public ISubject<HexCellDragData> Drag      { get; private set; }
@@ -37,8 +37,8 @@ namespace Assets.Simulation.HexMap {
         public ISubject<IHexCell> GainedRiveredEdge { get; private set; }
         public ISubject<IHexCell> LostRiveredEdge   { get; private set; }
 
-        public ISubject<Tuple<IHexCell, IEncampment>> GainedEncampment { get; private set; }
-        public ISubject<Tuple<IHexCell, IEncampment>> LostEncampment   { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, IEncampment>> GainedEncampment { get; private set; }
+        public ISubject<UniRx.Tuple<IHexCell, IEncampment>> LostEncampment   { get; private set; }
 
         public ISubject<Unit> MapBeingClearedSignal { get; set; }
 
@@ -47,9 +47,9 @@ namespace Assets.Simulation.HexMap {
         #region constructors
 
         public HexCellSignals() {
-            Clicked      = new Subject<Tuple<IHexCell, PointerEventData>>();
-            PointerDown  = new Subject<Tuple<IHexCell, PointerEventData>>();
-            PointerUp    = new Subject<Tuple<IHexCell, PointerEventData>>();
+            Clicked      = new Subject<UniRx.Tuple<IHexCell, PointerEventData>>();
+            PointerDown  = new Subject<UniRx.Tuple<IHexCell, PointerEventData>>();
+            PointerUp    = new Subject<UniRx.Tuple<IHexCell, PointerEventData>>();
             PointerEnter = new Subject<IHexCell>();
             PointerExit  = new Subject<IHexCell>();
 
@@ -66,8 +66,8 @@ namespace Assets.Simulation.HexMap {
             GainedRiveredEdge = new Subject<IHexCell>();
             LostRiveredEdge   = new Subject<IHexCell>();
 
-            GainedEncampment = new Subject<Tuple<IHexCell, IEncampment>>();
-            LostEncampment   = new Subject<Tuple<IHexCell, IEncampment>>();
+            GainedEncampment = new Subject<UniRx.Tuple<IHexCell, IEncampment>>();
+            LostEncampment   = new Subject<UniRx.Tuple<IHexCell, IEncampment>>();
 
             MapBeingClearedSignal = new Subject<Unit>();
         }

@@ -108,7 +108,7 @@ namespace Assets.Simulation.MapManagement {
                 //this, we delay the creation of any invalid rivers (since those represent
                 //an inflow being attached to another inflow) until after all other rivers
                 //have been placed.  
-                var delayedRivers = new List<Tuple<IHexCell, HexDirection, RiverFlow>>();
+                var delayedRivers = new List<UniRx.Tuple<IHexCell, HexDirection, RiverFlow>>();
 
                 for(int i = 0; i < 6; i++) {
                     var edge = (HexDirection)i;
@@ -119,7 +119,7 @@ namespace Assets.Simulation.MapManagement {
                             RiverCanon.AddRiverToCell(cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]);
 
                         }else {
-                            delayedRivers.Add(new Tuple<IHexCell, HexDirection, RiverFlow>(
+                            delayedRivers.Add(new UniRx.Tuple<IHexCell, HexDirection, RiverFlow>(
                                 cellToModify, edge, cellData.DirectionOfRiverAtEdge[i]
                             ));
                         }

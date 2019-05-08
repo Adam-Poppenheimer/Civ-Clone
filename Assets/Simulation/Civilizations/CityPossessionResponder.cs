@@ -34,7 +34,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
-        private void OnCityOwnershipChanged(Tuple<ICivilization, ICity> data) {
+        private void OnCityOwnershipChanged(UniRx.Tuple<ICivilization, ICity> data) {
             var newOwner = data.Item1;
             var city     = data.Item2;
 

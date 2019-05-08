@@ -227,7 +227,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnUnitChangedOwner(Tuple<IUnit, ICivilization> data) {
+        private void OnUnitChangedOwner(UniRx.Tuple<IUnit, ICivilization> data) {
             var unit     = data.Item1;
             var newOwner = data.Item2;
 
@@ -253,7 +253,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnUnitLeftLocation(Tuple<IUnit, IHexCell> data) {
+        private void OnUnitLeftLocation(UniRx.Tuple<IUnit, IHexCell> data) {
             var unit        = data.Item1;
             var oldLocation = data.Item2;
 
@@ -269,7 +269,7 @@ namespace Assets.UI.Units {
             }
         }
 
-        private void OnUnitEnteredLocation(Tuple<IUnit, IHexCell> data) {
+        private void OnUnitEnteredLocation(UniRx.Tuple<IUnit, IHexCell> data) {
             var unit        = data.Item1;
             var newLocation = data.Item2;
 

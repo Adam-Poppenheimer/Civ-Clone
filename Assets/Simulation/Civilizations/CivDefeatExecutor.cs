@@ -95,13 +95,13 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private void OnLostUnit(Tuple<ICivilization, IUnit> data) {
+        private void OnLostUnit(UniRx.Tuple<ICivilization, IUnit> data) {
             if(ShouldCivBeDefeated(data.Item1)) {
                 PerformDefeatOfCiv(data.Item1);
             }
         }
 
-        private void OnLostCity(Tuple<ICivilization, ICity> data) {
+        private void OnLostCity(UniRx.Tuple<ICivilization, ICity> data) {
             if(ShouldCivBeDefeated(data.Item1)) {
                 PerformDefeatOfCiv(data.Item1);
             }

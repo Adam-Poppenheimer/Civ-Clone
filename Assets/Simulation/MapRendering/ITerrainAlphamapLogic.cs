@@ -11,7 +11,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float[] GetAlphamapFromOrientation(PointOrientationData orientationData);
+        void GetAlphamapFromOrientation(float[] returnMap, float[] intermediateMap, PointOrientationData orientationData);
 
         #endregion
 

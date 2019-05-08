@@ -61,7 +61,7 @@ namespace Assets.Simulation.Cities.Buildings {
 
         #region instance methods
 
-        private void OnCityGainedBuilding(Tuple<ICity, IBuilding> data) {
+        private void OnCityGainedBuilding(UniRx.Tuple<ICity, IBuilding> data) {
             var city             = data.Item1;
             var buildingTemplate = data.Item2.Template;
 

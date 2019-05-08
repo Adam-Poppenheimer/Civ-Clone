@@ -45,7 +45,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var sampledNoise = new Vector4(0.6f, 1000f, 0.4f, 1000f);
 
-            var noiseSource = BuildNoiseTexture(new Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
+            var noiseSource = BuildNoiseTexture(new UniRx.Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
 
             MockRenderConfig.Setup(config => config.NoiseScale).Returns(2f);
 
@@ -60,7 +60,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var sampledNoise = new Vector4(0.25f, 0.5f, 0.75f, 1f);
 
-            var noiseSource = BuildNoiseTexture(new Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
+            var noiseSource = BuildNoiseTexture(new UniRx.Tuple<Vector2, Vector4>(new Vector2(-10f, -12f), sampledNoise));
 
             MockRenderConfig.Setup(config => config.NoiseScale).Returns(2f);
 
@@ -119,7 +119,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         #region utilities
 
-        private INoiseTexture BuildNoiseTexture(params Tuple<Vector2, Vector4>[] samples) {
+        private INoiseTexture BuildNoiseTexture(params UniRx.Tuple<Vector2, Vector4>[] samples) {
             var mockTexture = new Mock<INoiseTexture>();
 
             foreach(var sample in samples) {

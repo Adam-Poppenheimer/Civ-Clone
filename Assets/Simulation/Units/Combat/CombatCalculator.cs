@@ -31,7 +31,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region from ICombatCalculator
 
-        public Tuple<int, int> CalculateCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
+        public UniRx.Tuple<int, int> CalculateCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo) {
             float attackerBaseStrength = combatInfo.CombatType == CombatType.Melee ? attacker.CombatStrength : attacker.RangedAttackStrength;
 
             float attackerStrength = attackerBaseStrength    * (1f + combatInfo.AttackerCombatModifier);
@@ -58,7 +58,7 @@ namespace Assets.Simulation.Units.Combat {
                 );
             }
 
-            return new Tuple<int, int>(
+            return new UniRx.Tuple<int, int>(
                 combatInfo.CombatType == CombatType.Melee ? Math.Min(defenderDamage, attacker.CurrentHitpoints) : 0,
                 Math.Min(attackerDamage, defender.CurrentHitpoints)
             );

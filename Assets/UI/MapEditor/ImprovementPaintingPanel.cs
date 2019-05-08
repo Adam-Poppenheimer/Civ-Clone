@@ -123,7 +123,7 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+        private void OnCellClicked(UniRx.Tuple<IHexCell, PointerEventData> data) {
             var cell = data.Item1;
 
             if(IsAdding && SelectedTemplate != null) {

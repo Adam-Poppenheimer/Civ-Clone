@@ -40,11 +40,11 @@ namespace Assets.Simulation.MapResources {
         }
 
         protected override void DoOnPossessionEstablished(IResourceNode possession, IHexCell newOwner) {
-            ResourceSignals.NodeAddedToLocation.OnNext(new Tuple<IResourceNode, IHexCell>(possession, newOwner));
+            ResourceSignals.NodeAddedToLocation.OnNext(new UniRx.Tuple<IResourceNode, IHexCell>(possession, newOwner));
         }
 
         protected override void DoOnPossessionBroken(IResourceNode possession, IHexCell oldOwner) {
-            ResourceSignals.NodeRemovedFromLocation.OnNext(new Tuple<IResourceNode, IHexCell>(possession, oldOwner));
+            ResourceSignals.NodeRemovedFromLocation.OnNext(new UniRx.Tuple<IResourceNode, IHexCell>(possession, oldOwner));
         }
 
         #endregion

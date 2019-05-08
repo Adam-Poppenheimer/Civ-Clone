@@ -43,6 +43,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void GetAlphamapFromOrientation_NotOnGrid_ReturnsEmptyAlphamap() {
             var orientationData = new PointOrientationData() {
                 IsOnGrid = false
@@ -292,7 +297,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             CollectionAssert.AreEqual(
                 new float[4] { 40f, 40f, 40f, 40f }, alphamapLogic.GetAlphamapFromOrientation(orientationData)
             );
-        }
+        }*/
 
         #endregion
 

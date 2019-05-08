@@ -62,21 +62,12 @@ namespace Assets.Simulation.MapRendering {
             return null;
         }
 
-        /* The current construction tries to reduce GC allocation
-         * by reusing certain information. ReusedOrientationData
-         * in particular can save a lot of allocations.
-         * However, this will only function if we're only ever using
-         * a single PointOrientationData at a time. It will fail if
-         * we attempt to acquire multiple orientation data and use them
-         * in tandem.
-         */ 
         private byte[] indexBytes = new byte[2];
-        private PointOrientationData ReusedOrientationData = new PointOrientationData();
-        private PointOrientationData EmptyData = new PointOrientationData();
-
-        public PointOrientationData GetOrientationDataFromColors(
-            Color32 orientationColor, Color weightsColor, Color duckColor
+        public void GetOrientationDataFromColors(
+            PointOrientationData dataToUse, Color32 orientationColor, Color weightsColor, Color duckColor
         ) {
+            Profiler.BeginSample("GetOrientationDataFromColors()");
+
             indexBytes[0] = orientationColor.r;
             indexBytes[1] = orientationColor.g;
 
@@ -87,27 +78,27 @@ namespace Assets.Simulation.MapRendering {
             HexDirection sextant = (HexDirection)orientationColor.b;
 
             if(center != null) {
-                ReusedOrientationData.IsOnGrid = true;
-                ReusedOrientationData.Sextant = sextant;
+                dataToUse.IsOnGrid = true;
+                dataToUse.Sextant = sextant;
 
-                ReusedOrientationData.Center    = center;
-                ReusedOrientationData.Left      = Grid.GetNeighbor(center, sextant.Previous());
-                ReusedOrientationData.Right     = Grid.GetNeighbor(center, sextant);
-                ReusedOrientationData.NextRight = Grid.GetNeighbor(center, sextant.Next());
+                dataToUse.Center    = center;
+                dataToUse.Left      = Grid.GetNeighbor(center, sextant.Previous());
+                dataToUse.Right     = Grid.GetNeighbor(center, sextant);
+                dataToUse.NextRight = Grid.GetNeighbor(center, sextant.Next());
 
-                ReusedOrientationData.CenterWeight    = weightsColor.r;
-                ReusedOrientationData.LeftWeight      = weightsColor.g;
-                ReusedOrientationData.RightWeight     = weightsColor.b;
-                ReusedOrientationData.NextRightWeight = weightsColor.a;
+                dataToUse.CenterWeight    = weightsColor.r;
+                dataToUse.LeftWeight      = weightsColor.g;
+                dataToUse.RightWeight     = weightsColor.b;
+                dataToUse.NextRightWeight = weightsColor.a;
 
-                ReusedOrientationData.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
+                dataToUse.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
 
-                ReusedOrientationData.ElevationDuck = duckColor.r;
+                dataToUse.ElevationDuck = duckColor.r;
 
-                return ReusedOrientationData;
+                Profiler.EndSample();
 
             } else {
-                return EmptyData;
+                dataToUse.Clear();
             }      
         }
 

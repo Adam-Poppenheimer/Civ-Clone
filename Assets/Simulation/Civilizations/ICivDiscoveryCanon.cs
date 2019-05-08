@@ -21,7 +21,7 @@ namespace Assets.Simulation.Civilizations {
         bool CanRevokeDiscoveryBetweenCivs(ICivilization civOne, ICivilization civTwo);
         void RevokeDiscoveryBetweenCivs   (ICivilization civOne, ICivilization civTwo);
 
-        List<Tuple<ICivilization, ICivilization>> GetDiscoveryPairs();
+        List<UniRx.Tuple<ICivilization, ICivilization>> GetDiscoveryPairs();
 
         void Clear();
 

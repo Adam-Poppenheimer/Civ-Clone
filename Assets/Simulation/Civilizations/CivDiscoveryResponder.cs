@@ -42,7 +42,7 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance methods
 
-        private void OnCellBecameExploredByCiv(Tuple<IHexCell, ICivilization> data) {
+        private void OnCellBecameExploredByCiv(UniRx.Tuple<IHexCell, ICivilization> data) {
             var cell = data.Item1;
             var civ  = data.Item2;
 

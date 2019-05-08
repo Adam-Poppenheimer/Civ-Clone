@@ -84,7 +84,7 @@ namespace Assets.Simulation.Visibility {
             }
 
             if(explorationData.Add(civ)) {
-                VisibilitySignals.CellBecameExploredByCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+                VisibilitySignals.CellBecameExploredByCiv.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
 

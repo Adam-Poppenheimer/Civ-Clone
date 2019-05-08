@@ -274,7 +274,7 @@ namespace Assets.Simulation.MapRendering {
             Terrain.materialTemplate     = InstancedTerrainMaterial;
             Terrain.heightmapPixelError  = RenderConfig.TerrainHeightmapPixelError;
             Terrain.drawTreesAndFoliage  = false;
-            Terrain.editorRenderFlags    = TerrainRenderFlags.heightmap;
+            Terrain.editorRenderFlags    = TerrainRenderFlags.Heightmap;
             Terrain.reflectionProbeUsage = UnityEngine.Rendering.ReflectionProbeUsage.Off;
 
             StandingWater.OverrideMaterial(InstancedWaterMaterial);
@@ -349,7 +349,7 @@ namespace Assets.Simulation.MapRendering {
             bool flushTerrain = false;
 
             if(((RefreshFlags & TerrainRefreshType.Orientation) == TerrainRefreshType.Orientation)) {
-                RefreshOrientation();
+                OrientationBaker.RenderOrientationFromChunk(this);
             }
 
             if(((RefreshFlags & TerrainRefreshType.Alphamap) == TerrainRefreshType.Alphamap)) {
@@ -419,9 +419,10 @@ namespace Assets.Simulation.MapRendering {
 
             float terrainNormalX, terrainNormalZ, textureNormalX, textureNormalZ;
 
-            PointOrientationData orientation;
+            PointOrientationData orientation = new PointOrientationData();
 
-            float[] newAlphas;
+            float[] returnMap       = new float[RenderConfig.MapTextures.Count()];
+            float[] intermediateMap = new float[RenderConfig.MapTextures.Count()];
 
             int alphamapLength = terrainData.splatPrototypes.Length;
 
@@ -447,14 +448,14 @@ namespace Assets.Simulation.MapRendering {
                     weightsColor     = weightsTexture    .GetPixel(texelX, texelY);
                     duckColor        = duckTexture       .GetPixel(texelX, texelY);
 
-                    orientation = PointOrientationLogic.GetOrientationDataFromColors(
-                        orientationColor, weightsColor, duckColor
+                    PointOrientationLogic.GetOrientationDataFromColors(
+                        orientation, orientationColor, weightsColor, duckColor
                     );
 
-                    newAlphas = AlphamapLogic.GetAlphamapFromOrientation(orientation);
+                    AlphamapLogic.GetAlphamapFromOrientation(returnMap, intermediateMap, orientation);
 
                     for(int alphaIndex = 0; alphaIndex < alphamapLength; alphaIndex++) {
-                        alphaMaps[width, height, alphaIndex] = newAlphas[alphaIndex];
+                        alphaMaps[width, height, alphaIndex] = returnMap[alphaIndex];
                     }
                 }
             }
@@ -489,7 +490,7 @@ namespace Assets.Simulation.MapRendering {
             Color32 orientationColor;
             Color weightsColor, duckColor;
 
-            PointOrientationData orientation;
+            PointOrientationData orientation = new PointOrientationData();
 
             float indexToNormalX = 1f / (mapHeight - 1f);
             float indexToNormalZ = 1f / (mapWidth  - 1f);
@@ -511,15 +512,19 @@ namespace Assets.Simulation.MapRendering {
                     texelX = Mathf.RoundToInt(orientationTexture.width  * textureNormalX);
                     texelY = Mathf.RoundToInt(orientationTexture.height * textureNormalZ);
 
+                    Profiler.BeginSample("Texture sampling and heightmap calculations");
+
                     orientationColor = orientationTexture.GetPixel(texelX, texelY);
                     weightsColor     = weightsTexture    .GetPixel(texelX, texelY);
                     duckColor        = duckTexture       .GetPixel(texelX, texelY);
 
-                    orientation = PointOrientationLogic.GetOrientationDataFromColors(
-                        orientationColor, weightsColor, duckColor
+                    PointOrientationLogic.GetOrientationDataFromColors(
+                        orientation, orientationColor, weightsColor, duckColor
                     );
 
                     heights[width, height] = HeightLogic.GetHeightForPoint(new Vector2(worldX, worldZ), orientation);
+
+                    Profiler.EndSample();
                 }
             }
 
@@ -606,10 +611,6 @@ namespace Assets.Simulation.MapRendering {
             OasisLand .Apply();
 
             TerrainBaker.BakeIntoChunk(this);
-        }
-
-        private void RefreshOrientation() {
-            OrientationBaker.RenderOrientationFromChunk(this);
         }
 
         private TerrainData BuildTerrainData(float width, float height) {

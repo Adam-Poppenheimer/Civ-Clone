@@ -141,7 +141,7 @@ namespace Assets.UI.MapEditor {
             }
         }
 
-        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+        private void OnCellClicked(UniRx.Tuple<IHexCell, PointerEventData> data) {
             if(IsAdding) {
                 TryAddUnit(data.Item1);
             }else {

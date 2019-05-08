@@ -29,8 +29,6 @@ namespace Assets.Simulation.MapRendering {
         ) {
             RenderConfig      = renderConfig;
             CellAlphamapLogic = cellAlphamapLogic;
-
-            ReusedAlphamap = new float[RenderConfig.MapTextures.Count()];
         }
 
         #endregion
@@ -39,61 +37,44 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainAlphamapLogic
 
-        /* As elsewhere in the code, we reuse the same array here
-         * to save on memory requirements. Make sure that multiple
-         * uses of GetAlphamapFromOrientation are not being used
-         * at the same time.
-         */ 
-        private float[] ReusedAlphamap;
-
-        public float[] GetAlphamapFromOrientation(PointOrientationData orientationData) {
-            for(int i = 0; i < ReusedAlphamap.Length; i++) {
-                ReusedAlphamap[i] = 0f;
+        public void GetAlphamapFromOrientation(float[] returnMap, float[] intermediateMap, PointOrientationData orientationData) {
+            for(int i = 0; i < returnMap.Length; i++) {
+                returnMap[i] = 0f;
             }
 
             if(orientationData.IsOnGrid) {
                 if(orientationData.RiverWeight > 0f) {
                     AddToMap(
-                        ReusedAlphamap,
+                        returnMap,
                         orientationData.Center.Terrain == CellTerrain.FloodPlains ? RenderConfig.FloodPlainsAlphamap : RenderConfig.RiverAlphamap,
                         orientationData.RiverWeight
                     );
                 }
 
                 if(orientationData.CenterWeight > 0f) {
-                    AddToMap(
-                        ReusedAlphamap,
-                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Center, orientationData.Sextant),
-                        orientationData.CenterWeight
-                    );
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Center, orientationData.Sextant);
+
+                    AddToMap(returnMap,intermediateMap, orientationData.CenterWeight);
                 }
 
                 if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
-                    AddToMap(
-                        ReusedAlphamap,
-                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Left, orientationData.Sextant.Next2()),
-                        orientationData.LeftWeight
-                    );
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Left, orientationData.Sextant.Next2());
+
+                    AddToMap(returnMap, intermediateMap, orientationData.LeftWeight);
                 }
 
                 if(orientationData.Right != null && orientationData.RightWeight > 0f) {
-                    AddToMap(
-                        ReusedAlphamap,
-                        CellAlphamapLogic.GetAlphamapForCell(orientationData.Right, orientationData.Sextant.Opposite()),
-                        orientationData.RightWeight
-                    );
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Right, orientationData.Sextant.Opposite());
+
+                    AddToMap(returnMap, intermediateMap, orientationData.RightWeight);
                 }
 
                 if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
-                    AddToMap(
-                        ReusedAlphamap,
-                        CellAlphamapLogic.GetAlphamapForCell(orientationData.NextRight, orientationData.Sextant.Previous2()),
-                        orientationData.NextRightWeight
-                    );
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.NextRight, orientationData.Sextant.Previous2());
+
+                    AddToMap(returnMap, intermediateMap, orientationData.NextRightWeight);
                 }
             }
-
-            return ReusedAlphamap;
         }
 
         #endregion

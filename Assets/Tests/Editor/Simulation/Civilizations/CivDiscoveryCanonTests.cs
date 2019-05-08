@@ -278,7 +278,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             return new Mock<ICivilization>().Object;
         }
 
-        private bool IsPairOfCivs(Tuple<ICivilization, ICivilization> pair, ICivilization firstCiv, ICivilization secondCiv) {
+        private bool IsPairOfCivs(UniRx.Tuple<ICivilization, ICivilization> pair, ICivilization firstCiv, ICivilization secondCiv) {
             return (pair.Item1 == firstCiv  && pair.Item2 == secondCiv)
                 || (pair.Item1 == secondCiv && pair.Item2 == firstCiv);
         }

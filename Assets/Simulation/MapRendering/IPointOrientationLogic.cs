@@ -15,8 +15,8 @@ namespace Assets.Simulation.MapRendering {
 
         IHexCell GetCellAtPoint(Vector3 point);
 
-        PointOrientationData GetOrientationDataFromColors(
-            Color32 orientationColor, Color weightsColor, Color duckColor
+        void GetOrientationDataFromColors(
+            PointOrientationData dataToUse, Color32 orientationColor, Color weightsColor, Color duckColor
         );
 
         #endregion

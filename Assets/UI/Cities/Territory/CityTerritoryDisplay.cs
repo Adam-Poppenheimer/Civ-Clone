@@ -104,7 +104,7 @@ namespace Assets.UI.Cities.Territory {
             }
         }
 
-        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+        private void OnCellClicked(UniRx.Tuple<IHexCell, PointerEventData> data) {
             if(DisplayType != CityDisplayType.MapEditor) {
                 return;
             }

@@ -116,7 +116,7 @@ namespace Assets.Simulation.Visibility {
             SetVisibility(cell, civ, newVisibility);
 
             if(oldVisibility == 1) {
-                VisibilitySignals.CellBecameInvisibleToCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+                VisibilitySignals.CellBecameInvisibleToCiv.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
 
@@ -128,7 +128,7 @@ namespace Assets.Simulation.Visibility {
             SetVisibility(cell, civ, newVisibility);
 
             if(oldVisibility <= 0 && newVisibility > 0) {
-                VisibilitySignals.CellBecameVisibleToCiv.OnNext(new Tuple<IHexCell, ICivilization>(cell, civ));
+                VisibilitySignals.CellBecameVisibleToCiv.OnNext(new UniRx.Tuple<IHexCell, ICivilization>(cell, civ));
             }
         }
 

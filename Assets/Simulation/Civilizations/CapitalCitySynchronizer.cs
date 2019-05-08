@@ -67,7 +67,7 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private void OnCivGainedCity(Tuple<ICivilization, ICity> data) {
+        private void OnCivGainedCity(UniRx.Tuple<ICivilization, ICity> data) {
             var civ  = data.Item1;
             var city = data.Item2;
 
@@ -76,7 +76,7 @@ namespace Assets.Simulation.Civilizations {
             }
         }
 
-        private void OnCivLostCity(Tuple<ICivilization, ICity> data) {
+        private void OnCivLostCity(UniRx.Tuple<ICivilization, ICity> data) {
             var civ  = data.Item1;
             var city = data.Item2;
 

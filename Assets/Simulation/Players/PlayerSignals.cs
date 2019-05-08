@@ -19,9 +19,9 @@ namespace Assets.Simulation.Players {
         public ISubject<IPlayer> PlayerBeingDestroyed { get; private set; }
         public ISubject<IPlayer> EndTurnRequested     { get; private set; }
 
-        public IObservable<PointerEventData> ClickedAnywhere { get; private set; }
+        public UniRx.IObservable<PointerEventData> ClickedAnywhere { get; private set; }
 
-        public IObservable<Unit> CancelPressed { get; private set; }
+        public UniRx.IObservable<Unit> CancelPressed { get; private set; }
 
         #endregion
 

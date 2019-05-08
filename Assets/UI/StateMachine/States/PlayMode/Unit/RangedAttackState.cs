@@ -156,7 +156,7 @@ namespace Assets.UI.StateMachine.States.PlayMode.Unit {
             Clear();
         }
 
-        private void OnCellClicked(Tuple<IHexCell, PointerEventData> data) {
+        private void OnCellClicked(UniRx.Tuple<IHexCell, PointerEventData> data) {
             if(IsAttackValid()) {
                 PerformAttack();
             }

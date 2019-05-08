@@ -11,7 +11,7 @@ namespace Assets.Simulation.Units.Combat {
 
         #region methods
 
-        Tuple<int, int> CalculateCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo);
+        UniRx.Tuple<int, int> CalculateCombat(IUnit attacker, IUnit defender, CombatInfo combatInfo);
 
         #endregion
 

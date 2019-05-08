@@ -48,7 +48,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, location, CombatType.Melee);
 
-            Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
+            UniRx.Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
 
             return new UnitCombatResults(attacker, defender, results.Item1, results.Item2, combatInfo);
         }
@@ -66,7 +66,7 @@ namespace Assets.Simulation.Units.Combat {
 
             var combatInfo = CombatInfoLogic.GetAttackInfo(attacker, defender, location, CombatType.Ranged);
 
-            Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
+            UniRx.Tuple<int, int> results = CombatCalculator.CalculateCombat(attacker, defender, combatInfo);
 
             return new UnitCombatResults(attacker, defender, results.Item1, results.Item2, combatInfo);
         }

@@ -19,12 +19,12 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        public IObservable<IHexCell> BeginHoverSignal {
+        public UniRx.IObservable<IHexCell> BeginHoverSignal {
             get { return BeginHoverSubject; }
         }
         private ISubject<IHexCell> BeginHoverSubject;
 
-        public IObservable<IHexCell> EndHoverSignal {
+        public UniRx.IObservable<IHexCell> EndHoverSignal {
             get { return EndHoverSubject; }
         }
         private ISubject<IHexCell> EndHoverSubject;

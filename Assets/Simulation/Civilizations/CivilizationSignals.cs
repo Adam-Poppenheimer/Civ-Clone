@@ -22,31 +22,31 @@ namespace Assets.Simulation.Civilizations {
         public ISubject<ICivilization> NewCivilizationCreated { get; private set; }
         public ISubject<ICivilization> CivBeingDestroyed      { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ICity>> CivGainedCity { get; private set; }
-        public ISubject<Tuple<ICivilization, ICity>> CivLosingCity { get; private set; }
-        public ISubject<Tuple<ICivilization, ICity>> CivLostCity   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ICity>> CivGainedCity { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ICity>> CivLosingCity { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ICity>> CivLostCity   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IUnit>> CivGainedUnit { get; private set; }
-        public ISubject<Tuple<ICivilization, IUnit>> CivLosingUnit { get; private set; }
-        public ISubject<Tuple<ICivilization, IUnit>> CivLostUnit   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IUnit>> CivGainedUnit { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IUnit>> CivLosingUnit { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IUnit>> CivLostUnit   { get; private set; }
 
         public ISubject<ResourceTransfer> ResourceTransferCancelled { get; private set; }
 
         public ISubject<ICivilization> CivSelected { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivUnlockedPolicy { get; private set; }
-        public ISubject<Tuple<ICivilization, ISocialPolicyDefinition>> CivLockedPolicy   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ISocialPolicyDefinition>> CivUnlockedPolicy { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ISocialPolicyDefinition>> CivLockedPolicy   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTree { get; private set; }
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTree   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>> CivUnlockedPolicyTree { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>> CivLockedPolicyTree   { get; private set; }
 
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivFinishedPolicyTree   { get; private set; }
-        public ISubject<Tuple<ICivilization, IPolicyTreeDefinition>> CivUnfinishedPolicyTree { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>> CivFinishedPolicyTree   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>> CivUnfinishedPolicyTree { get; private set; }
 
         public ISubject<ICivilization> CivDefeated { get; private set; }
 
-        public ISubject<Tuple<ICivilization, ITechDefinition>> CivDiscoveredTech   { get; private set; }
-        public ISubject<Tuple<ICivilization, ITechDefinition>> CivUndiscoveredTech { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ITechDefinition>> CivDiscoveredTech   { get; private set; }
+        public ISubject<UniRx.Tuple<ICivilization, ITechDefinition>> CivUndiscoveredTech { get; private set; }
 
         public ISubject<GreatPersonBirthData> GreatPersonBorn { get; private set; }
 
@@ -61,31 +61,31 @@ namespace Assets.Simulation.Civilizations {
             NewCivilizationCreated = new Subject<ICivilization>();
             CivBeingDestroyed      = new Subject<ICivilization>();
 
-            CivGainedCity = new Subject<Tuple<ICivilization, ICity>>();
-            CivLosingCity = new Subject<Tuple<ICivilization, ICity>>();
-            CivLostCity   = new Subject<Tuple<ICivilization, ICity>>();
+            CivGainedCity = new Subject<UniRx.Tuple<ICivilization, ICity>>();
+            CivLosingCity = new Subject<UniRx.Tuple<ICivilization, ICity>>();
+            CivLostCity   = new Subject<UniRx.Tuple<ICivilization, ICity>>();
 
-            CivGainedUnit = new Subject<Tuple<ICivilization, IUnit>>();
-            CivLosingUnit = new Subject<Tuple<ICivilization, IUnit>>();
-            CivLostUnit   = new Subject<Tuple<ICivilization, IUnit>>();
+            CivGainedUnit = new Subject<UniRx.Tuple<ICivilization, IUnit>>();
+            CivLosingUnit = new Subject<UniRx.Tuple<ICivilization, IUnit>>();
+            CivLostUnit   = new Subject<UniRx.Tuple<ICivilization, IUnit>>();
 
             ResourceTransferCancelled = new Subject<ResourceTransfer>();
 
             CivSelected = new Subject<ICivilization>();
 
-            CivUnlockedPolicy = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
-            CivLockedPolicy   = new Subject<Tuple<ICivilization, ISocialPolicyDefinition>>();
+            CivUnlockedPolicy = new Subject<UniRx.Tuple<ICivilization, ISocialPolicyDefinition>>();
+            CivLockedPolicy   = new Subject<UniRx.Tuple<ICivilization, ISocialPolicyDefinition>>();
 
-            CivUnlockedPolicyTree = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
-            CivLockedPolicyTree   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivUnlockedPolicyTree = new Subject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivLockedPolicyTree   = new Subject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>>();
 
-            CivFinishedPolicyTree   = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
-            CivUnfinishedPolicyTree = new Subject<Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivFinishedPolicyTree   = new Subject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>>();
+            CivUnfinishedPolicyTree = new Subject<UniRx.Tuple<ICivilization, IPolicyTreeDefinition>>();
 
             CivDefeated = new Subject<ICivilization>();
 
-            CivDiscoveredTech   = new Subject<Tuple<ICivilization, ITechDefinition>>();
-            CivUndiscoveredTech = new Subject<Tuple<ICivilization, ITechDefinition>>();
+            CivDiscoveredTech   = new Subject<UniRx.Tuple<ICivilization, ITechDefinition>>();
+            CivUndiscoveredTech = new Subject<UniRx.Tuple<ICivilization, ITechDefinition>>();
 
             GreatPersonBorn = new Subject<GreatPersonBirthData>();
 

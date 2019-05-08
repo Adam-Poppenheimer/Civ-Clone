@@ -73,13 +73,13 @@ namespace Assets.Simulation.Civilizations {
             RemoveValueFromHashSet(civTwo, civOne);
         }
 
-        public List<Tuple<ICivilization, ICivilization>> GetDiscoveryPairs() {
-            var retval = new List<Tuple<ICivilization, ICivilization>>();
+        public List<UniRx.Tuple<ICivilization, ICivilization>> GetDiscoveryPairs() {
+            var retval = new List<UniRx.Tuple<ICivilization, ICivilization>>();
 
             foreach(var firstCiv in CivsDiscoveredByCiv.Keys) {
                 foreach(var secondCiv in CivsDiscoveredByCiv[firstCiv]) {
                     if(!retval.Any(pair => IsPairOfCivs(pair, firstCiv, secondCiv))) {
-                        retval.Add(new Tuple<ICivilization, ICivilization>(firstCiv, secondCiv));
+                        retval.Add(new UniRx.Tuple<ICivilization, ICivilization>(firstCiv, secondCiv));
                     }
                 }
             }
@@ -93,7 +93,7 @@ namespace Assets.Simulation.Civilizations {
 
         #endregion
 
-        private bool IsPairOfCivs(Tuple<ICivilization, ICivilization> pair, ICivilization firstCiv, ICivilization secondCiv) {
+        private bool IsPairOfCivs(UniRx.Tuple<ICivilization, ICivilization> pair, ICivilization firstCiv, ICivilization secondCiv) {
             return (pair.Item1 == firstCiv  && pair.Item2 == secondCiv)
                 || (pair.Item1 == secondCiv && pair.Item2 == firstCiv);
         }

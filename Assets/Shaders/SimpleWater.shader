@@ -1,4 +1,6 @@
-﻿Shader "Civ Clone/Simple Water" {
+﻿// Upgrade NOTE: upgraded instancing buffer 'Props' to new syntax.
+
+Shader "Civ Clone/Simple Water" {
 	Properties{
 		_MainTex ("Albedo (RGB)",  2D) = "white" {}
 		_SplatMap("Splat Map", 2D) = "white" {}
@@ -30,9 +32,9 @@
 			float3 worldPos;
 		};
 
-		UNITY_INSTANCING_CBUFFER_START(Props)
+		UNITY_INSTANCING_BUFFER_START(Props)
 
-		UNITY_INSTANCING_CBUFFER_END
+		UNITY_INSTANCING_BUFFER_END(Props)
 
 		void surf(Input IN, inout SurfaceOutputStandard o) {
 			fixed4 waterColor = tex2D(_MainTex, IN.worldPos.xz * 0.065);

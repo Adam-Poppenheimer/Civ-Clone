@@ -96,7 +96,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             var possessionCanon = Container.Resolve<BuildingPossessionCanon>();
 
-            CitySignals.GainedBuilding.Subscribe(delegate(Tuple<ICity, IBuilding> data) {
+            CitySignals.GainedBuilding.Subscribe(delegate(UniRx.Tuple<ICity, IBuilding> data) {
                 Assert.AreEqual(city,     data.Item1, "Incorrect city passed");
                 Assert.AreEqual(building, data.Item2, "Incorrect building passed");
 
@@ -171,7 +171,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             possessionCanon.ChangeOwnerOfPossession(building, city);
 
-            CitySignals.LostBuilding.Subscribe(delegate(Tuple<ICity, IBuilding> data) {
+            CitySignals.LostBuilding.Subscribe(delegate(UniRx.Tuple<ICity, IBuilding> data) {
                 Assert.AreEqual(city,     data.Item1, "Incorrect city passed");
                 Assert.AreEqual(building, data.Item2, "Incorrect building passed");
 

@@ -638,7 +638,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            CitySignals.ProjectChanged.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+            CitySignals.ProjectChanged.Subscribe(delegate(UniRx.Tuple<ICity, IProductionProject> data) {
                 Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
                 Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");
@@ -659,7 +659,7 @@ namespace Assets.Tests.Simulation.Cities {
             var mockProject = new Mock<IProductionProject>();
             mockProject.Setup(project => project.Name).Returns(newTemplateMock.Name);
 
-            CitySignals.ProjectChanged.Subscribe(delegate(Tuple<ICity, IProductionProject> data) {
+            CitySignals.ProjectChanged.Subscribe(delegate(UniRx.Tuple<ICity, IProductionProject> data) {
                 Assert.AreEqual(data.Item1, cityToTest, "ClickedSignal was passed the wrong city");
 
                 Assert.AreEqual(mockProject.Object, data.Item2, "ClickedSignal was passed an unexpected project");

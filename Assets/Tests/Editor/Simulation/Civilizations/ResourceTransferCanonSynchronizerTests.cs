@@ -88,7 +88,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
             ImprovementSignals.RemovedFromLocation.OnNext(
-                new Tuple<IImprovement, IHexCell>(improvement, location)
+                new UniRx.Tuple<IImprovement, IHexCell>(improvement, location)
             );
 
             MockResourceTransferCanon.Verify(
@@ -130,7 +130,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
             ResourceSignals.NodeRemovedFromLocation.OnNext(
-                new Tuple<IResourceNode, IHexCell>(node, location)
+                new UniRx.Tuple<IResourceNode, IHexCell>(node, location)
             );
 
             MockResourceTransferCanon.Verify(
@@ -154,7 +154,7 @@ namespace Assets.Tests.Simulation.Civilizations {
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
             CitySignals.LostCellFromBoundaries.OnNext(
-                new Tuple<ICity, IHexCell>(city, location)
+                new UniRx.Tuple<ICity, IHexCell>(city, location)
             );
 
             MockResourceTransferCanon.Verify(
@@ -185,7 +185,7 @@ namespace Assets.Tests.Simulation.Civilizations {
 
             Container.Resolve<ResourceTransferCanonSynchronizer>();
 
-            CivSignals.CivLosingCity.OnNext(new Tuple<ICivilization, ICity>(civ, city));
+            CivSignals.CivLosingCity.OnNext(new UniRx.Tuple<ICivilization, ICity>(civ, city));
 
             foreach(var resource in resources) {
                 MockResourceTransferCanon.Verify(

@@ -131,7 +131,7 @@ namespace Assets.Simulation.MapManagement {
             }
 
             mapData.CivDiscoveryPairs = CivDiscoveryCanon.GetDiscoveryPairs().Select(
-                pair => new Tuple<string, string>(pair.Item1.Template.Name, pair.Item2.Template.Name)
+                pair => new UniRx.Tuple<string, string>(pair.Item1.Template.Name, pair.Item2.Template.Name)
             ).ToList();
         }
 

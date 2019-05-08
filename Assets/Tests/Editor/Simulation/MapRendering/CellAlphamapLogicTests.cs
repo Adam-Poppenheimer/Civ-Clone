@@ -44,6 +44,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void GetAlphamapForCell_ReturnedArrayHasEntriesForEveryMapTexture() {
             var cell = BuildCell(CellTerrain.Grassland, CellShape.Flatlands);
 
@@ -151,7 +156,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             CollectionAssert.AreEqual(
                 new float[] { 0f, 1f, 0f, 0f, 0f }, alphamapLogic.GetAlphamapForCell(cell, HexDirection.E)
             );
-        }
+        }*/
 
         #endregion
 

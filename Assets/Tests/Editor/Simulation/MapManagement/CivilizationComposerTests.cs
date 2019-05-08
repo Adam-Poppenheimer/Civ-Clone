@@ -75,7 +75,7 @@ namespace Assets.Tests.Simulation.MapManagement {
             MockGrid.Setup(grid => grid.Cells).Returns(AllCells.AsReadOnly());
 
             MockCivDiscoveryCanon.Setup(canon => canon.GetDiscoveryPairs())
-                                 .Returns(new List<Tuple<ICivilization, ICivilization>>());
+                                 .Returns(new List<UniRx.Tuple<ICivilization, ICivilization>>());
 
             Container.Bind<ICivilizationFactory> ().FromInstance(MockCivilizationFactory.Object);
             Container.Bind<ITechCanon>           ().FromInstance(MockTechCanon          .Object);
@@ -407,10 +407,10 @@ namespace Assets.Tests.Simulation.MapManagement {
             var civTwo   = BuildCivilization(BuildCivTemplate("Civ Two",   Color.black), 0, 0);
             var civThree = BuildCivilization(BuildCivTemplate("Civ Three", Color.black), 0, 0);
 
-            var discoveryPairs = new List<Tuple<ICivilization, ICivilization>>() {
-                new Tuple<ICivilization, ICivilization>(civOne, civTwo),
-                new Tuple<ICivilization, ICivilization>(civOne, civThree),
-                new Tuple<ICivilization, ICivilization>(civTwo, civThree),
+            var discoveryPairs = new List<UniRx.Tuple<ICivilization, ICivilization>>() {
+                new UniRx.Tuple<ICivilization, ICivilization>(civOne, civTwo),
+                new UniRx.Tuple<ICivilization, ICivilization>(civOne, civThree),
+                new UniRx.Tuple<ICivilization, ICivilization>(civTwo, civThree),
             };
 
             MockCivDiscoveryCanon.Setup(canon => canon.GetDiscoveryPairs()).Returns(discoveryPairs);
@@ -421,10 +421,10 @@ namespace Assets.Tests.Simulation.MapManagement {
 
             composer.ComposeCivilizations(mapData);
 
-            var expectedNamePairs = new List<Tuple<string, string>>() {
-                new Tuple<string, string>("Civ One", "Civ Two"),
-                new Tuple<string, string>("Civ One", "Civ Three"),
-                new Tuple<string, string>("Civ Two", "Civ Three"),
+            var expectedNamePairs = new List<UniRx.Tuple<string, string>>() {
+                new UniRx.Tuple<string, string>("Civ One", "Civ Two"),
+                new UniRx.Tuple<string, string>("Civ One", "Civ Three"),
+                new UniRx.Tuple<string, string>("Civ Two", "Civ Three"),
             };
 
             CollectionAssert.AreEquivalent(expectedNamePairs, mapData.CivDiscoveryPairs);
@@ -445,7 +445,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         TemplateName = "Template Two"
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             var templateOne = BuildCivTemplate("Template One", Color.white);
@@ -477,7 +477,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         TemplateName = "Template Two", GoldStockpile = 2, CultureStockpile = 20
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Template One", Color.white);
@@ -511,7 +511,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         TemplateName = "Template Two", TechQueue = civTwoQueue
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             var techOne   = BuildTechDefinition("Tech One");
@@ -556,7 +556,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         }
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             var techOne   = BuildTechDefinition("Tech One");
@@ -609,7 +609,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         }
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             var techOne   = BuildTechDefinition("Tech One");
@@ -661,7 +661,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                         TemplateName = "Template Two", SocialPolicies = policyDataTwo
                     }
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Template One", Color.white);
@@ -704,7 +704,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                     }
                 },
                 ActivePlayer = "Template One",
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Template One", Color.white);
@@ -737,7 +737,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                     }
                 },
                 ActivePlayer = "Civ One",
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Civ One", Color.white);
@@ -784,7 +784,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                     }
                 },
                 ActivePlayer = "Civ One",
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Civ One", Color.white);
@@ -823,7 +823,7 @@ namespace Assets.Tests.Simulation.MapManagement {
                     }
                 },
                 ActivePlayer = "Civ One",
-                CivDiscoveryPairs = new List<Tuple<string, string>>()
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>()
             };
 
             BuildCivTemplate("Civ One", Color.white);
@@ -847,10 +847,10 @@ namespace Assets.Tests.Simulation.MapManagement {
                     new SerializableCivilizationData() { TemplateName = "Civ Two" },
                     new SerializableCivilizationData() { TemplateName = "Civ Three" },
                 },
-                CivDiscoveryPairs = new List<Tuple<string, string>>() {
-                    new Tuple<string, string>("Civ One", "Civ Two"),
-                    new Tuple<string, string>("Civ One", "Civ Three"),
-                    new Tuple<string, string>("Civ Two", "Civ Three"),
+                CivDiscoveryPairs = new List<UniRx.Tuple<string, string>>() {
+                    new UniRx.Tuple<string, string>("Civ One", "Civ Two"),
+                    new UniRx.Tuple<string, string>("Civ One", "Civ Three"),
+                    new UniRx.Tuple<string, string>("Civ Two", "Civ Three"),
                 }
             };
 
