@@ -10,6 +10,7 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -41,17 +42,19 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IHillsHeightmapLogic
 
-        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck) {
+        public float GetHeightForPoint(
+            Vector2 xzPoint, float elevationDuck, AsyncTextureUnsafe<Color32> flatlandsNoiseTexture,
+            AsyncTextureUnsafe<Color32> hillsNoiseTexture
+        ) {
             Profiler.BeginSample("HillHeightmapLogic.GetHeightForPoint()");
 
             float hillNoise = NoiseGenerator.SampleNoise(
-                xzPoint, RenderConfig.HillsElevationNoiseSource, RenderConfig.HillsElevationNoiseStrength,
-                NoiseType.ZeroToOne
+                xzPoint, hillsNoiseTexture, RenderConfig.HillsElevationNoiseStrength, NoiseType.ZeroToOne
             ).x;
 
             float hillsHeight = RenderConfig.HillsBaseElevation + hillNoise;
 
-            float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+            float flatlandsHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, flatlandsNoiseTexture);
 
             var retval = Mathf.Lerp(hillsHeight, flatlandsHeight, elevationDuck);
 

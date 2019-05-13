@@ -43,6 +43,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void GetTerrainHeightForPoint_AndPointNotOnGrid_ReturnsZero() {
             var point = new Vector2(1f, 2f);
 
@@ -235,7 +240,7 @@ namespace Assets.Tests.Simulation.MapRendering {
                     expectedValue, pointHeight
                 )
             );
-        }
+        }*/
 
         #endregion
 

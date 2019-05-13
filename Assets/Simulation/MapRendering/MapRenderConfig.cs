@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Rendering;
 
 using Assets.Simulation.HexMap;
 
@@ -28,36 +29,19 @@ namespace Assets.Simulation.MapRendering {
         [SerializeField] private float _noiseScale;
 
         public INoiseTexture GenericNoiseSource {
-            get {
-                if(_genericNoiseSource_Wrapped == null) {
-                    _genericNoiseSource_Wrapped = new NoiseTexture(_genericNoiseSource);
-                }
-                return _genericNoiseSource_Wrapped;
-            }
+            get { return genericNoiseSource_Wrapped; }
         }
-        private INoiseTexture _genericNoiseSource_Wrapped;
-        [SerializeField] private Texture2D _genericNoiseSource;
+        private INoiseTexture genericNoiseSource_Wrapped;
+        [SerializeField] private Texture2D genericNoiseSource;
 
-        public INoiseTexture FlatlandsElevationNoiseSource {
-            get {
-                if(_flatlandsElevationNoiseSource_Wrapped == null) {
-                    _flatlandsElevationNoiseSource_Wrapped = new NoiseTexture(_flatlandsElevationNoiseSource);
-                }
-                return _flatlandsElevationNoiseSource_Wrapped;
-            }
+        public Texture2D FlatlandsElevationNoiseSource {
+            get { return _flatlandsElevationNoiseSource; }
         }
-        private INoiseTexture _flatlandsElevationNoiseSource_Wrapped;
         [SerializeField] private Texture2D _flatlandsElevationNoiseSource;
 
-        public INoiseTexture HillsElevationNoiseSource  {
-            get {
-                if(_hillsElevationNoiseSource_Wrapped == null) {
-                    _hillsElevationNoiseSource_Wrapped = new NoiseTexture(_hillsElevationNoiseSource);
-                }
-                return _hillsElevationNoiseSource_Wrapped;
-            }
+        public Texture2D HillsElevationNoiseSource  {
+            get { return _hillsElevationNoiseSource; }
         }
-        private INoiseTexture _hillsElevationNoiseSource_Wrapped;
         [SerializeField] private Texture2D _hillsElevationNoiseSource;        
 
         public int NoiseHashGridSize {
@@ -160,10 +144,10 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private float _terrainBasemapDistance;
 
-        public bool TerrainCastsShadows {
-            get { return _terrainCastsShadows; }
+        public ShadowCastingMode TerrainShadowCastingMode {
+            get { return _terrainShadowCastingMode; }
         }
-        [SerializeField] private bool _terrainCastsShadows;
+        [SerializeField] private ShadowCastingMode _terrainShadowCastingMode;
 
         public int TerrainHeightmapPixelError {
             get { return _terrainHeightmapPixelError; }
@@ -437,10 +421,15 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        public RenderTextureData OrientationTextureData {
+        public OrientationBakingDataData OrientationTextureData {
             get { return _orientationTextureData; }
         }
-        [SerializeField] private RenderTextureData _orientationTextureData;
+        [SerializeField] private OrientationBakingDataData _orientationTextureData;
+
+        public int MaxOrientationTextures {
+            get { return _maxOrientationTextures; }
+        }
+        [SerializeField] private int _maxOrientationTextures = 0;
 
         public Shader RiverWeightShader {
             get { return _riverWeightShader; }
@@ -457,14 +446,17 @@ namespace Assets.Simulation.MapRendering {
 
         private void OnEnable() {
             SetCorners();
+            WrapTextures();
         }
 
         private void Awake() {
             SetCorners();
+            WrapTextures();
         }
 
         private void OnValidate() {
             SetCorners();
+            WrapTextures();
         }
 
         private void SetCorners() {
@@ -487,6 +479,12 @@ namespace Assets.Simulation.MapRendering {
                 new Vector2(-InnerRadius,  0.5f * OuterRadius),
                 new Vector2(0f,            OuterRadius),
             };
+        }
+
+        private void WrapTextures() {
+            if(genericNoiseSource != null) {
+                genericNoiseSource_Wrapped = new NoiseTexture(genericNoiseSource);
+            }
         }
 
         #endregion

@@ -104,7 +104,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void OnCellTerrainChanged(HexPropertyChangedData<CellTerrain> data) {
-            TerrainRefreshType refreshFlags = TerrainRefreshType.Alphamap | TerrainRefreshType.Features | TerrainRefreshType.Orientation;
+            TerrainRefreshType refreshFlags = TerrainRefreshType.Alphamap | TerrainRefreshType.Features;
 
             if(data.OldValue.IsWater() != data.NewValue.IsWater()) {
                 refreshFlags |= TerrainRefreshType.Water | TerrainRefreshType.Heightmap;
@@ -120,7 +120,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         private void OnCellShapeChanged(HexPropertyChangedData<CellShape> data) {
-            TerrainRefreshType refreshFlags = TerrainRefreshType.Heightmap | TerrainRefreshType.Features | TerrainRefreshType.Orientation;
+            TerrainRefreshType refreshFlags = TerrainRefreshType.Heightmap | TerrainRefreshType.Features;
 
             if((data.OldValue == CellShape.Mountains) != (data.NewValue == CellShape.Mountains)) {
                 refreshFlags |= TerrainRefreshType.Alphamap;
@@ -149,7 +149,7 @@ namespace Assets.Simulation.MapRendering {
                     TerrainRefreshType.Heightmap | TerrainRefreshType.Alphamap |
                     TerrainRefreshType.Culture   | TerrainRefreshType.Farmland |
                     TerrainRefreshType.Rivers    | TerrainRefreshType.Roads    |
-                    TerrainRefreshType.Marshes   | TerrainRefreshType.Orientation
+                    TerrainRefreshType.Marshes
                 );
             }
         }

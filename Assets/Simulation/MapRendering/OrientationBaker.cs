@@ -29,12 +29,21 @@ namespace Assets.Simulation.MapRendering {
         }
         [SerializeField] private Texture2D weightsTexture;
 
-        public Texture2D RiverDuckTexture {
-            get { return riverDuckTexture; }
+        public Texture2D DuckTexture {
+            get { return duckTexture; }
         }
-        [SerializeField] private Texture2D riverDuckTexture;
+        [SerializeField] private Texture2D duckTexture;
 
-        public IHexMesh OrientationMesh {
+        #endregion
+
+        [SerializeField] private Camera OrientationCamera;
+
+        [SerializeField] private LayerMask OrientationCullingMask;
+        [SerializeField] private LayerMask NormalWeightsCullingMask;
+        [SerializeField] private LayerMask RiverWeightsCullingMask;
+        [SerializeField] private LayerMask RiverDuckCullingMask;
+
+        private IHexMesh OrientationMesh {
             get {
                 if(_orientationMesh == null) {
                     _orientationMesh = HexMeshFactory.Create("Orientation Mesh", RenderConfig.OrientationMeshData);
@@ -47,7 +56,7 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _orientationMesh;
 
-        public IHexMesh WeightsMesh {
+        private IHexMesh WeightsMesh {
             get {
                 if(_weightsMesh == null) {
                     _weightsMesh = HexMeshFactory.Create("Weights Mesh", RenderConfig.WeightsMeshData);
@@ -60,16 +69,8 @@ namespace Assets.Simulation.MapRendering {
         }
         private IHexMesh _weightsMesh;
 
-        #endregion
-
-        [SerializeField] private Camera OrientationCamera;
-
-        [SerializeField] private LayerMask OrientationCullingMask;
-        [SerializeField] private LayerMask NormalWeightsCullingMask;
-        [SerializeField] private LayerMask RiverWeightsCullingMask;
-        [SerializeField] private LayerMask RiverDuckCullingMask;
-
         private RenderTexture RenderTexture;
+        
 
 
 
@@ -101,7 +102,11 @@ namespace Assets.Simulation.MapRendering {
             if(RenderTexture != null) {
                 RenderTexture.Release();
                 RenderTexture = null;
-            }            
+            }
+
+            Destroy(OrientationTexture);
+            Destroy(WeightsTexture);
+            Destroy(DuckTexture);
         }
 
         #endregion
@@ -114,46 +119,16 @@ namespace Assets.Simulation.MapRendering {
             var textureData = RenderConfig.OrientationTextureData;
 
             RenderTexture = new RenderTexture(
-                width:  Mathf.RoundToInt(textureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                height: Mathf.RoundToInt(textureData.TexelsPerUnit * RenderConfig.ChunkHeight),
+                width:  textureData.Resolution,
+                height: textureData.Resolution,
                 depth:  textureData.Depth,
-                format: textureData.Format,
+                format: textureData.RenderTextureFormat,
                 readWrite: RenderTextureReadWrite.Default
             );
 
             RenderTexture.filterMode = FilterMode.Point;
             RenderTexture.wrapMode   = TextureWrapMode.Clamp;
             RenderTexture.useMipMap  = false;
-
-            orientationTexture = new Texture2D(
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            orientationTexture.filterMode = FilterMode.Point;
-            orientationTexture.wrapMode   = TextureWrapMode.Clamp;
-            orientationTexture.anisoLevel = 0;
-
-            weightsTexture = new Texture2D(
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            weightsTexture.filterMode = FilterMode.Point;
-            weightsTexture.wrapMode   = TextureWrapMode.Clamp;
-            weightsTexture.anisoLevel = 0;
-
-            riverDuckTexture = new Texture2D(
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkWidth),
-                Mathf.RoundToInt(RenderConfig.OrientationTextureData.TexelsPerUnit * RenderConfig.ChunkHeight),
-                TextureFormat.ARGB32, false
-            );
-
-            riverDuckTexture.filterMode = FilterMode.Point;
-            riverDuckTexture.wrapMode   = TextureWrapMode.Clamp;
-            riverDuckTexture.anisoLevel = 0;
 
             float cameraWidth  = RenderConfig.ChunkWidth;
             float cameraHeight = RenderConfig.ChunkHeight;
@@ -164,6 +139,10 @@ namespace Assets.Simulation.MapRendering {
             OrientationCamera.targetTexture    = RenderTexture;
 
             OrientationCamera.enabled = false;
+
+            orientationTexture = BuildTexture();
+            weightsTexture     = BuildTexture();
+            duckTexture        = BuildTexture();
 
             Vector3 localPos = OrientationCamera.transform.localPosition;
 
@@ -176,13 +155,14 @@ namespace Assets.Simulation.MapRendering {
         #region from IOrientationBaker
 
         public void RenderOrientationFromChunk(IMapChunk chunk) {
+
             OrientationCamera.transform.SetParent(chunk.transform, false);
 
             var activeRenderTexture = RenderTexture.active;
 
             RenderOrientation(chunk, OrientationTexture);
             RenderWeights    (chunk, WeightsTexture);
-            RenderRiverDuck  (chunk, RiverDuckTexture);
+            RenderRiverDuck  (chunk, DuckTexture);
 
             RenderTexture.active = activeRenderTexture;
 
@@ -190,6 +170,20 @@ namespace Assets.Simulation.MapRendering {
         }
 
         #endregion
+
+        private Texture2D BuildTexture() {
+            var retval = new Texture2D(
+                RenderConfig.OrientationTextureData.Resolution,
+                RenderConfig.OrientationTextureData.Resolution,
+                TextureFormat.ARGB32, false
+            );
+
+            retval.filterMode = FilterMode.Point;
+            retval.wrapMode   = TextureWrapMode.Clamp;
+            retval.anisoLevel = 0;
+
+            return retval;
+        }
 
         private void RenderOrientation(IMapChunk chunk, Texture2D orientationTexture) {
             OrientationMesh.Clear();

@@ -5,11 +5,11 @@ using System.Text;
 
 using UnityEngine;
 using UnityEngine.Profiling;
+using Unity.Collections;
 
 using Zenject;
 
 using Assets.Simulation.HexMap;
-
 using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
@@ -45,19 +45,20 @@ namespace Assets.Simulation.MapRendering {
         #region from ICellHeightmapLogic
 
         public float GetHeightForPointForCell(
-            Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck
+            Vector2 xzPoint, IHexCell cell, float elevationDuck,
+            AsyncTextureUnsafe<Color32> flatlandNoise, AsyncTextureUnsafe<Color32> hillsNoise
         ) {
             if(cell.Terrain.IsWater()) {
                 return RenderConfig.SeaFloorElevation;
 
             }if(cell.Shape == CellShape.Flatlands) {
-                return FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+                return FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, flatlandNoise);
 
             }else if(cell.Shape == CellShape.Hills) {
-                return HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant, elevationDuck);
+                return HillsHeightmapLogic.GetHeightForPoint(xzPoint, elevationDuck, flatlandNoise, hillsNoise);
 
             }else if(cell.Shape == CellShape.Mountains) {
-                return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant, elevationDuck);
+                return MountainHeightmapLogic.GetHeightForPoint(xzPoint, cell, elevationDuck, flatlandNoise, hillsNoise);
 
             }else {
                 throw new NotImplementedException();

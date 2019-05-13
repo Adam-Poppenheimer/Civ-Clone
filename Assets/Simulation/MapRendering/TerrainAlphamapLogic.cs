@@ -52,25 +52,25 @@ namespace Assets.Simulation.MapRendering {
                 }
 
                 if(orientationData.CenterWeight > 0f) {
-                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Center, orientationData.Sextant);
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Center);
 
                     AddToMap(returnMap,intermediateMap, orientationData.CenterWeight);
                 }
 
                 if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
-                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Left, orientationData.Sextant.Next2());
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Left);
 
                     AddToMap(returnMap, intermediateMap, orientationData.LeftWeight);
                 }
 
                 if(orientationData.Right != null && orientationData.RightWeight > 0f) {
-                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Right, orientationData.Sextant.Opposite());
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.Right);
 
                     AddToMap(returnMap, intermediateMap, orientationData.RightWeight);
                 }
 
                 if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
-                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.NextRight, orientationData.Sextant.Previous2());
+                    CellAlphamapLogic.GetAlphamapForCell(intermediateMap, orientationData.NextRight);
 
                     AddToMap(returnMap, intermediateMap, orientationData.NextRightWeight);
                 }

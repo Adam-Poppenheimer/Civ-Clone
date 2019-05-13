@@ -43,17 +43,20 @@ namespace Assets.Simulation.MapRendering {
         #region from IMountainHeightmapLogic
 
         
-        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant, float elevationDuck) {
+        public float GetHeightForPoint(
+            Vector2 xzPoint, IHexCell cell, float elevationDuck,
+            AsyncTextureUnsafe<Color32> flatlandsNoise, AsyncTextureUnsafe<Color32> hillsNoise
+        ) {
             Profiler.BeginSample("MountainHeightmapLogic.GetHeightForPoint()");
 
             float edgeWeight = Mathf.Clamp01((xzPoint - cell.AbsolutePositionXZ).magnitude / RenderConfig.InnerRadius);
             float peakWeight = 1f - edgeWeight;
 
-            float edgeHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant, elevationDuck);
+            float edgeHeight = HillsHeightmapLogic.GetHeightForPoint(xzPoint, elevationDuck, flatlandsNoise, hillsNoise);
 
             float mountainHeight = edgeWeight * edgeHeight + peakWeight * RenderConfig.MountainPeakElevation;
 
-            float flatlandHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, cell, sextant);
+            float flatlandHeight = FlatlandsHeightmapLogic.GetHeightForPoint(xzPoint, flatlandsNoise);
 
             var retval = Mathf.Lerp(mountainHeight, flatlandHeight, elevationDuck);
 

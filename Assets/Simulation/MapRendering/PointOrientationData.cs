@@ -15,8 +15,6 @@ namespace Assets.Simulation.MapRendering {
 
         public bool IsOnGrid;
 
-        public HexDirection Sextant;
-
         public IHexCell Center;
         public IHexCell Left;
         public IHexCell Right;
@@ -42,7 +40,6 @@ namespace Assets.Simulation.MapRendering {
 
             return (otherData != null)
                 && IsOnGrid          == otherData.IsOnGrid
-                && Sextant           == otherData.Sextant
                 && Center            == otherData.Center
                 && Left              == otherData.Left
                 && Right             == otherData.Right
@@ -63,7 +60,6 @@ namespace Assets.Simulation.MapRendering {
                 int hash = HashingBase;
 
                 hash = (hash * HashingMultipler) ^ IsOnGrid.GetHashCode();
-                hash = (hash * HashingMultipler) ^ Sextant .GetHashCode();
 
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, Center)    ? Center   .GetHashCode() : 0);
                 hash = (hash * HashingMultipler) ^ (!object.ReferenceEquals(null, Left)      ? Left     .GetHashCode() : 0);
@@ -83,44 +79,8 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
-        public void Invert() {
-            IHexCell oldCenter = Center, oldLeft = Left, oldRight = Right, oldNextRight = NextRight;
-
-            Center    = oldRight;
-            Left      = oldNextRight;
-            Right     = oldCenter;
-            NextRight = oldLeft;
-
-            Sextant = Sextant.Opposite();
-        }
-
-        public IHexCell GetMainCell() {
-            if(!IsOnGrid) {
-                return null;
-            }
-
-            float maxWeight = Mathf.Max(CenterWeight, LeftWeight, RightWeight, NextRightWeight, RiverWeight);
-
-            if(CenterWeight == maxWeight) {
-                return Center;
-
-            }else if(LeftWeight == maxWeight) {
-                return Left;
-
-            }else if(RightWeight == maxWeight) {
-                return Right;
-
-            }else if(NextRightWeight == maxWeight) {
-                return NextRight;
-
-            }else {
-                return null;
-            }
-        }
-
         public void Clear() {
             IsOnGrid = false;
-            Sextant = HexDirection.NE;
             
             Center    = null;
             Left      = null;

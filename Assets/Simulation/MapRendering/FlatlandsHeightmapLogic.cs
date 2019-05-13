@@ -9,6 +9,7 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -34,13 +35,14 @@ namespace Assets.Simulation.MapRendering {
 
         #region from IFlatlandsHeightmapLogic
 
-        public float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant) {
-            Vector4 noise = NoiseGenerator.SampleNoise(
-                xzPoint, RenderConfig.FlatlandsElevationNoiseSource, RenderConfig.FlatlandsElevationNoiseStrength,
-                NoiseType.ZeroToOne
-            );
+        public float GetHeightForPoint(
+            Vector2 xzPoint, AsyncTextureUnsafe<Color32> noiseTexture
+        ) {
+            float noise = NoiseGenerator.SampleNoise(
+                xzPoint, noiseTexture, RenderConfig.FlatlandsElevationNoiseStrength, NoiseType.ZeroToOne
+            ).x;
 
-            return RenderConfig.FlatlandsBaseElevation + noise.x;
+            return RenderConfig.FlatlandsBaseElevation + noise;
         }
 
         #endregion

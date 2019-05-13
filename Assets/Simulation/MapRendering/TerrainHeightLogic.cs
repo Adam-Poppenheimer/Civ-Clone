@@ -9,6 +9,7 @@ using UnityEngine.Profiling;
 using Zenject;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -37,7 +38,10 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ITerrainHeightLogic
 
-        public float GetHeightForPoint(Vector2 xzPoint, PointOrientationData orientationData) {
+        public float GetHeightForPoint(
+            Vector2 xzPoint, PointOrientationData orientationData, AsyncTextureUnsafe<Color32> flatlandsNoise,
+            AsyncTextureUnsafe<Color32> hillsNoise
+        ) {
             float retval = 0f;
 
             if(!orientationData.IsOnGrid) {
@@ -46,25 +50,25 @@ namespace Assets.Simulation.MapRendering {
 
             if(orientationData.Center != null && orientationData.CenterWeight > 0f) {
                 retval += orientationData.CenterWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Center, orientationData.Sextant, orientationData.ElevationDuck
+                    xzPoint, orientationData.Center, orientationData.ElevationDuck, flatlandsNoise, hillsNoise
                 );
             }
 
             if(orientationData.Left != null && orientationData.LeftWeight > 0f) {
                 retval += orientationData.LeftWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Left, orientationData.Sextant.Next2(), orientationData.ElevationDuck
+                    xzPoint, orientationData.Left, orientationData.ElevationDuck, flatlandsNoise, hillsNoise
                 );
             }
 
             if(orientationData.Right != null && orientationData.RightWeight > 0f) {
                 retval += orientationData.RightWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.Right, orientationData.Sextant.Opposite(), orientationData.ElevationDuck
+                    xzPoint, orientationData.Right, orientationData.ElevationDuck, flatlandsNoise, hillsNoise
                 );
             }
 
             if(orientationData.NextRight != null && orientationData.NextRightWeight > 0f) {
                 retval += orientationData.NextRightWeight * CellHeightmapLogic.GetHeightForPointForCell(
-                    xzPoint, orientationData.NextRight, orientationData.Sextant.Previous2(), orientationData.ElevationDuck
+                    xzPoint, orientationData.NextRight, orientationData.ElevationDuck, flatlandsNoise, hillsNoise
                 );
             }
 

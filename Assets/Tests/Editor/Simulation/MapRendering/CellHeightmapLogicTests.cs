@@ -52,6 +52,11 @@ namespace Assets.Tests.Simulation.MapRendering {
         #region tests
 
         [Test]
+        public void BrokenTests() {
+            throw new NotImplementedException();
+        }
+
+        /*[Test]
         public void GetHeightForPositionForCell_AndCellIsWater_ReturnsSeaFloorElevation() {
             var position = new Vector3(1f, 2f, 3f);
 
@@ -102,7 +107,7 @@ namespace Assets.Tests.Simulation.MapRendering {
             var heightmapLogic = Container.Resolve<CellHeightmapLogic>();
 
             Assert.AreEqual(15.25f, heightmapLogic.GetHeightForPointForCell(position, cell, HexDirection.E, 7.27f));
-        }
+        }*/
 
         #endregion
 

@@ -44,7 +44,9 @@ namespace Assets.Tests.Simulation.MapRendering {
 
         [Test]
         public void GetHeightForPoint_SamplesFlatlandNoise_AndFlatlandBaseElevation() {
-            var xzPoint = new Vector2(1f, 2f);
+            throw new NotImplementedException();
+
+            /*var xzPoint = new Vector2(1f, 2f);
 
             var noiseSource = new Mock<INoiseTexture>().Object;
 
@@ -61,7 +63,7 @@ namespace Assets.Tests.Simulation.MapRendering {
 
             var heightmapLogic = Container.Resolve<FlatlandsHeightmapLogic>();
 
-            Assert.AreEqual(110f, heightmapLogic.GetHeightForPoint(xzPoint, cell, HexDirection.E));
+            Assert.AreEqual(110f, heightmapLogic.GetHeightForPoint(xzPoint, cell, HexDirection.E));*/
         }
 
         #endregion

@@ -3,8 +3,9 @@
 --- !u!114 &11400000
 MonoBehaviour:
   m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
@@ -13,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _randomSeed: 0
   _noiseScale: 0.005
-  _genericNoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
+  genericNoiseSource: {fileID: 2800000, guid: 7fac55376019a7149b14354c8fc89eea, type: 3}
   _flatlandsElevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
     type: 3}
   _hillsElevationNoiseSource: {fileID: 2800000, guid: efdde40c9f2ad58459738f5121f85517,
@@ -32,7 +33,7 @@ MonoBehaviour:
   _terrainHeightmapResolution: 129
   _terrainBasemapResolution: 16
   _terrainBasemapDistance: 1000
-  _terrainCastsShadows: 0
+  _terrainShadowCastingMode: 0
   _terrainHeightmapPixelError: 1
   _mapCollisionMask:
     serializedVersion: 2
@@ -284,7 +285,9 @@ MonoBehaviour:
   _oasisWaterRadius: 3
   _oasisLandWidth: 2
   _orientationTextureData:
-    _texelsPerUnit: 12
+    _resolution: 800
     _depth: 8
-    _format: 0
+    _renderTextureFormat: 0
+    _textureFormat: 5
+  _maxOrientationTextures: 30
   _riverWeightShader: {fileID: 4800000, guid: 548ae0abc870086438b22b154e25d8f1, type: 3}

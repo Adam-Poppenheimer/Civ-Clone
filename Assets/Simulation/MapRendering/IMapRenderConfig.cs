@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 
 using UnityEngine;
+using UnityEngine.Rendering;
 
 using Assets.Simulation.HexMap;
 
@@ -19,8 +20,8 @@ namespace Assets.Simulation.MapRendering {
         float NoiseScale { get; }
 
         INoiseTexture GenericNoiseSource            { get; }
-        INoiseTexture FlatlandsElevationNoiseSource { get; }
-        INoiseTexture HillsElevationNoiseSource     { get; }
+        Texture2D     FlatlandsElevationNoiseSource { get; }
+        Texture2D     HillsElevationNoiseSource     { get; }
 
         int   NoiseHashGridSize  { get; }
         float NoiseHashGridScale { get; }
@@ -55,7 +56,7 @@ namespace Assets.Simulation.MapRendering {
 
         float TerrainBasemapDistance { get; }        
 
-        bool TerrainCastsShadows { get; }
+        ShadowCastingMode TerrainShadowCastingMode { get; }
 
         int TerrainHeightmapPixelError { get; }
 
@@ -89,7 +90,7 @@ namespace Assets.Simulation.MapRendering {
 
         float RiverMaxSurfaceWidth { get; }
         float RiverMaxBankWidth    { get; }
-        float RiverDuckWidth    { get; }
+        float RiverDuckWidth       { get; }
 
         float RiverCurveStrength     { get; }
         float RiverWideningRate      { get; }
@@ -133,7 +134,9 @@ namespace Assets.Simulation.MapRendering {
         float OasisLandWidth        { get; }
 
         
-        RenderTextureData OrientationTextureData { get; }
+        OrientationBakingDataData OrientationTextureData { get; }
+
+        int MaxOrientationTextures { get; }
 
         Shader RiverWeightShader { get; }
 

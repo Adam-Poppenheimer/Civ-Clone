@@ -37,7 +37,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region from ICellAlphamapLogic
 
-        public void GetAlphamapForCell(float[] returnedAlphamap, IHexCell cell, HexDirection sextant) {
+        public void GetAlphamapForCell(float[] returnedAlphamap, IHexCell cell) {
             for(int i = 0; i < returnedAlphamap.Length; i++) {
                 returnedAlphamap[i] = 0f;
             }

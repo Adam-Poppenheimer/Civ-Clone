@@ -64,36 +64,39 @@ namespace Assets.Simulation.MapRendering {
 
         private byte[] indexBytes = new byte[2];
         public void GetOrientationDataFromColors(
-            PointOrientationData dataToUse, Color32 orientationColor, Color weightsColor, Color duckColor
+            PointOrientationData dataToUse, Color32 orientationColor, Color weightsColor, Color duckColor, bool shiftChannels
         ) {
             Profiler.BeginSample("GetOrientationDataFromColors()");
 
-            indexBytes[0] = orientationColor.r;
-            indexBytes[1] = orientationColor.g;
+            var realOrientation = shiftChannels ? new Color32(orientationColor.g, orientationColor.b, orientationColor.a, orientationColor.r) : orientationColor;
+            var realWeights     = shiftChannels ? new Color  (weightsColor    .g, weightsColor    .b, weightsColor    .a, weightsColor    .r) : weightsColor;
+            var realDuck        = shiftChannels ? new Color  (duckColor       .g, duckColor       .b, duckColor       .a, duckColor       .r) : duckColor;
+
+            indexBytes[0] = realOrientation.r;
+            indexBytes[1] = realOrientation.g;
 
             int index = BitConverter.ToInt16(indexBytes, 0) - 1;
 
             var center = index >= 0 && index < Grid.Cells.Count ? Grid.Cells[index] : null;
 
-            HexDirection sextant = (HexDirection)orientationColor.b;
+            HexDirection sextant = (HexDirection)realOrientation.b;
 
             if(center != null) {
                 dataToUse.IsOnGrid = true;
-                dataToUse.Sextant = sextant;
 
                 dataToUse.Center    = center;
                 dataToUse.Left      = Grid.GetNeighbor(center, sextant.Previous());
                 dataToUse.Right     = Grid.GetNeighbor(center, sextant);
                 dataToUse.NextRight = Grid.GetNeighbor(center, sextant.Next());
 
-                dataToUse.CenterWeight    = weightsColor.r;
-                dataToUse.LeftWeight      = weightsColor.g;
-                dataToUse.RightWeight     = weightsColor.b;
-                dataToUse.NextRightWeight = weightsColor.a;
+                dataToUse.CenterWeight    = realWeights.r;
+                dataToUse.LeftWeight      = realWeights.g;
+                dataToUse.RightWeight     = realWeights.b;
+                dataToUse.NextRightWeight = realWeights.a;
 
-                dataToUse.RiverWeight = Mathf.Clamp01(1f - weightsColor.r - weightsColor.g - weightsColor.b - weightsColor.a);
+                dataToUse.RiverWeight = Mathf.Clamp01(1f - realWeights.r - realWeights.g - realWeights.b - realWeights.a);
 
-                dataToUse.ElevationDuck = duckColor.r;
+                dataToUse.ElevationDuck = realDuck.r;
 
                 Profiler.EndSample();
 

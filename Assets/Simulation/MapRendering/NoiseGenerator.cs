@@ -6,6 +6,8 @@ using UnityEngine;
 
 using Zenject;
 
+using Assets.Util;
+
 namespace Assets.Simulation.MapRendering {
 
     public class NoiseGenerator : INoiseGenerator {
@@ -38,6 +40,25 @@ namespace Assets.Simulation.MapRendering {
             Vector4 normalizedNoise = source.SampleBilinear(
                 xzPosition.x * RenderConfig.NoiseScale,
                 xzPosition.y * RenderConfig.NoiseScale
+            );
+
+            if(type == NoiseType.NegativeOneToOne) {
+                normalizedNoise.Set(
+                    normalizedNoise.x * 2f - 1f,
+                    normalizedNoise.y * 2f - 1f,
+                    normalizedNoise.z * 2f - 1f,
+                    normalizedNoise.w * 2f - 1f
+                );
+            }
+            
+            return normalizedNoise * strength;
+        }
+
+        public Vector4 SampleNoise(Vector2 xzPosition, AsyncTextureUnsafe<Color32> source, float strength, NoiseType type) {
+            Vector4 normalizedNoise = RawTextureSampler.SampleBilinear(
+                xzPosition.x * RenderConfig.NoiseScale,
+                xzPosition.y * RenderConfig.NoiseScale,
+                source
             );
 
             if(type == NoiseType.NegativeOneToOne) {

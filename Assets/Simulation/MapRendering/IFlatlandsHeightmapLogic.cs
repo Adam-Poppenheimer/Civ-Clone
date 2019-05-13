@@ -3,6 +3,7 @@
 using UnityEngine;
 
 using Assets.Simulation.HexMap;
+using Assets.Util;
 
 namespace Assets.Simulation.MapRendering {
 
@@ -10,7 +11,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region methods
 
-        float GetHeightForPoint(Vector2 xzPoint, IHexCell cell, HexDirection sextant);
+        float GetHeightForPoint(Vector2 xzPoint, AsyncTextureUnsafe<Color32> noiseTexture);
 
         #endregion
 
