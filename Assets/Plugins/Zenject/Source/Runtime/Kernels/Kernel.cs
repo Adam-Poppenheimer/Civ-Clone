@@ -1,36 +1,32 @@
 using System;
-using ModestTree;
+using System.Diagnostics;
 
 namespace Zenject
 {
-    [System.Diagnostics.DebuggerStepThrough]
+    [DebuggerStepThrough]
     public class Kernel : IInitializable, IDisposable, ITickable, ILateTickable, IFixedTickable, ILateDisposable
     {
         [InjectLocal]
-        TickableManager _tickableManager = null;
+        TickableManager _tickableManager;
 
         [InjectLocal]
-        InitializableManager _initializableManager = null;
+        InitializableManager _initializableManager;
 
         [InjectLocal]
-        DisposableManager _disposablesManager = null;
+        DisposableManager _disposablesManager;
 
         public virtual void Initialize()
         {
-            Log.Debug("Zenject: Initializing IInitializable's");
-
             _initializableManager.Initialize();
         }
 
         public virtual void Dispose()
         {
-            Log.Debug("Zenject: Disposing IDisposable's");
             _disposablesManager.Dispose();
         }
 
         public virtual void LateDispose()
         {
-            Log.Debug("Zenject: Disposing ILateDisposable's");
             _disposablesManager.LateDispose();
         }
 
