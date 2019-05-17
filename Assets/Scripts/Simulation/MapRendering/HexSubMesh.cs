@@ -49,19 +49,19 @@ namespace Assets.Simulation.MapRendering {
 
 
 
-        private IMemoryPool<Mesh> MeshPool;
+        
 
         #endregion
 
         #region instance methods
 
         [Inject]
-        private void InjectDependencies(IMemoryPool<Mesh> meshPool) {
-            MeshPool = meshPool;
+        private void InjectDependencies() {
+            
         }
 
         public void Initialize(HexRenderingData rendererData) {
-            MeshFilter.sharedMesh = MeshCollider.sharedMesh = MeshPool.Spawn();
+            MeshFilter.sharedMesh = MeshCollider.sharedMesh = new Mesh();
 
             MeshRenderer.sharedMaterial    = rendererData.Material;
             MeshRenderer.shadowCastingMode = rendererData.ShadowCastingMode;
@@ -69,7 +69,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Clear() {
-            MeshPool.Despawn(MeshFilter.sharedMesh);
+            Destroy(MeshFilter.sharedMesh);
 
             MeshFilter.sharedMesh = MeshCollider.sharedMesh = null;
 

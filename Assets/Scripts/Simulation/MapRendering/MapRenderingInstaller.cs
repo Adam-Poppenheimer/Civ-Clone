@@ -36,9 +36,6 @@ namespace Assets.Simulation.MapRendering {
             Container.Bind<ITerrainBaker>     ().To<TerrainBaker>     ().FromInstance(TerrainBaker);
             Container.Bind<IOrientationBaker> ().To<OrientationBaker> ().FromInstance(OrientationBaker);
 
-            Container.BindMemoryPoolCustomInterface<Mesh, MeshMemoryPool, IMemoryPool<Mesh>>()
-                     .WithInitialSize(50);
-
             Container.BindMemoryPoolCustomInterface<HexSubMesh, HexSubMesh.Pool, IMemoryPool<HexRenderingData, HexSubMesh>>()
                      .WithInitialSize(50)
                      .FromComponentInNewPrefab(HexSubMeshPrefab)
