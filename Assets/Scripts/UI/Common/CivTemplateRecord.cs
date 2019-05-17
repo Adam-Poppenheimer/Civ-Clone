@@ -14,7 +14,7 @@ namespace Assets.UI.Common {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown ValidTemplatesDropdown;
+        [SerializeField] private Dropdown ValidTemplatesDropdown = null;
 
         public string SelectedDropdownText {
             get { return ValidTemplatesDropdown.options[ValidTemplatesDropdown.value].text; }

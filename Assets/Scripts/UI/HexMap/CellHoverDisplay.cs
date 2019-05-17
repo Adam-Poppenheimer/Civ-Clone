@@ -29,11 +29,11 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private Text CellDataField;
+        [SerializeField] private Text CellDataField = null;
 
-        [SerializeField] private YieldSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay YieldDisplay = null;
 
-        [SerializeField] private ResourceNodeDisplay ResourceNodeDisplay;
+        [SerializeField] private ResourceNodeDisplay ResourceNodeDisplay = null;
 
         public bool IsPermittedToActivate {
             get { return _isPermittedToActivate; }

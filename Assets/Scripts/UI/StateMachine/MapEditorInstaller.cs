@@ -17,31 +17,31 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform MapEditorContainer;
+        [SerializeField] private RectTransform MapEditorContainer = null;
 
-        [SerializeField] private List<RectTransform> MapEditorDefaultPanels;
+        [SerializeField] private List<RectTransform> MapEditorDefaultPanels = null;
 
-        [SerializeField] private PlayerManagementPanel       CivManagementPanel;
-        [SerializeField] private UnitPaintingPanel        UnitPaintingPanel;
-        [SerializeField] private CityPaintingPanel        CityPaintingPanel;
-        [SerializeField] private CivSelectionPanel        CivSelectionPanel;
-        [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel;
-        [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel;
-        [SerializeField] private UnitEditingPanel         UnitEditingPanel;
-        [SerializeField] private CivEditingPanel          CivEditingPanel;
-        [SerializeField] private BrushPanel               BrushPanel;
-        [SerializeField] private RiverPaintingPanel       RiverPaintingPanel;
-        [SerializeField] private OptionsPanel             OptionsPanel;
+        [SerializeField] private PlayerManagementPanel    CivManagementPanel       = null;
+        [SerializeField] private UnitPaintingPanel        UnitPaintingPanel        = null;
+        [SerializeField] private CityPaintingPanel        CityPaintingPanel        = null;
+        [SerializeField] private CivSelectionPanel        CivSelectionPanel        = null;
+        [SerializeField] private ResourcePaintingPanel    ResourcePaintingPanel    = null;
+        [SerializeField] private ImprovementPaintingPanel ImprovementPaintingPanel = null;
+        [SerializeField] private UnitEditingPanel         UnitEditingPanel         = null;
+        [SerializeField] private CivEditingPanel          CivEditingPanel          = null;
+        [SerializeField] private BrushPanel               BrushPanel               = null;
+        [SerializeField] private RiverPaintingPanel       RiverPaintingPanel       = null;
+        [SerializeField] private OptionsPanel             OptionsPanel             = null;
 
-        [SerializeField] private CellPaintingPanelBase TerrainPaintingPanel;
-        [SerializeField] private CellPaintingPanelBase ShapePaintingPanel;
-        [SerializeField] private CellPaintingPanelBase VegetationPaintingPanel;
-        [SerializeField] private CellPaintingPanelBase FeaturePaintingPanel;
-        [SerializeField] private CellPaintingPanelBase RoadPaintingPanel;
-        [SerializeField] private CellPaintingPanelBase EncampmentPaintingPanel;
+        [SerializeField] private CellPaintingPanelBase TerrainPaintingPanel    = null;
+        [SerializeField] private CellPaintingPanelBase ShapePaintingPanel      = null;
+        [SerializeField] private CellPaintingPanelBase VegetationPaintingPanel = null;
+        [SerializeField] private CellPaintingPanelBase FeaturePaintingPanel    = null;
+        [SerializeField] private CellPaintingPanelBase RoadPaintingPanel       = null;
+        [SerializeField] private CellPaintingPanelBase EncampmentPaintingPanel = null;
 
-        [SerializeField] private GameObject SaveMapDisplay;
-        [SerializeField] private GameObject EditTypeSelectionPanel;
+        [SerializeField] private GameObject SaveMapDisplay         = null;
+        [SerializeField] private GameObject EditTypeSelectionPanel = null;
 
         #endregion
 

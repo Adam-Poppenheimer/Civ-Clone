@@ -45,9 +45,9 @@ namespace Assets.UI.Units {
         }
         private RectTransform _rectTransform;
 
-        [SerializeField] private Image  IconImage;
-        [SerializeField] private Image  BackgroundImage;
-        [SerializeField] private Slider HealthSlider;
+        [SerializeField] private Image  IconImage       = null;
+        [SerializeField] private Image  BackgroundImage = null;
+        [SerializeField] private Slider HealthSlider    = null;
 
         
 

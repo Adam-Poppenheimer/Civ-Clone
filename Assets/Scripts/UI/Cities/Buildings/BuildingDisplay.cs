@@ -23,13 +23,12 @@ namespace Assets.UI.Cities.Buildings {
 
         public ICity Owner { get; set; }
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private Image IconField;
+        [SerializeField] private Text NameField = null;
 
-        [SerializeField] private Transform SlotDisplayContainer;
-        [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
+        [SerializeField] private Transform         SlotDisplayContainer = null;
+        [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab    = null;
 
-        [SerializeField] private Button DestroyButton;
+        [SerializeField] private Button DestroyButton = null;
 
         private List<WorkerSlotDisplay> InstantiatedSlotDisplays = new List<WorkerSlotDisplay>();
 

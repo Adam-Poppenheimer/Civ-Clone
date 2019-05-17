@@ -20,12 +20,12 @@ namespace Assets.Simulation.MapGeneration {
         public bool UseFixedSeed {
             get { return _useFixedSeed; }
         }
-        [SerializeField] private bool _useFixedSeed;
+        [SerializeField] private bool _useFixedSeed = false;
 
         public int FixedSeed {
             get { return _fixedSeed; }
         }
-        [SerializeField] private int _fixedSeed;
+        [SerializeField] private int _fixedSeed = 0;
 
         public int LandPercentage {
             get { return _landPercentage; }
@@ -55,7 +55,7 @@ namespace Assets.Simulation.MapGeneration {
         public IMapTemplate TestTemplate {
             get { return _testTemplate; }
         }
-        [SerializeField] private MapTemplate _testTemplate;
+        [SerializeField] private MapTemplate _testTemplate = null;
 
         public int MinStrategicCopies {
             get { return _minStrategicCopies; }
@@ -71,31 +71,31 @@ namespace Assets.Simulation.MapGeneration {
         public YieldSummary YieldScoringWeights {
             get { return _yieldScoringWeights; }
         }
-        [SerializeField] private YieldSummary _yieldScoringWeights;
+        [SerializeField] private YieldSummary _yieldScoringWeights = YieldSummary.Empty;
 
 
 
         public int MaxLakeSize {
             get { return _maxLakeSize; }
         }
-        [SerializeField] private int _maxLakeSize;
+        [SerializeField] private int _maxLakeSize = 0;
 
 
 
         public int BaseTerrainWeight {
             get { return _baseTerrainWeight; }
         }
-        [SerializeField] private int _baseTerrainWeight;
+        [SerializeField] private int _baseTerrainWeight = 0;
 
         public int TerrainTemperatureWeight {
             get { return _terrainTemperatureWeight; }
         }
-        [SerializeField] private int _terrainTemperatureWeight;
+        [SerializeField] private int _terrainTemperatureWeight = 0;
 
         public int TerrainPrecipitationWeight {
             get { return _terrainPrecipitationWeight; }
         }
-        [SerializeField] private int _terrainPrecipitationWeight;
+        [SerializeField] private int _terrainPrecipitationWeight = 0;
 
 
 
@@ -120,26 +120,26 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
         private ReadOnlyCollection<IMapSizeCategory> _castMapSizes;
-        [SerializeField] private List<MapSizeCategory> _mapSizes;
+        [SerializeField] private List<MapSizeCategory> _mapSizes = null;
 
         public IMapSizeCategory DefaultMapSize {
             get { return _defaultMapSize; }
         }
-        [SerializeField] private MapSizeCategory _defaultMapSize;
+        [SerializeField] private MapSizeCategory _defaultMapSize = null;
 
         #endregion
 
-        [SerializeField, Range(0f, 1f)] private float IdealGrasslandTemperature;
-        [SerializeField, Range(0f, 1f)] private float IdealPlainsTemperature;
-        [SerializeField, Range(0f, 1f)] private float IdealDesertTemperature;
+        [SerializeField, Range(0f, 1f)] private float IdealGrasslandTemperature = 0f;
+        [SerializeField, Range(0f, 1f)] private float IdealPlainsTemperature    = 0f;
+        [SerializeField, Range(0f, 1f)] private float IdealDesertTemperature    = 0f;
 
-        [SerializeField, Range(0f, 1f)] private float IdealGrasslandPrecipitation;
-        [SerializeField, Range(0f, 1f)] private float IdealPlainsPrecipitation;
-        [SerializeField, Range(0f, 1f)] private float IdealDesertPrecipitation;
+        [SerializeField, Range(0f, 1f)] private float IdealGrasslandPrecipitation = 0f;
+        [SerializeField, Range(0f, 1f)] private float IdealPlainsPrecipitation    = 0f;
+        [SerializeField, Range(0f, 1f)] private float IdealDesertPrecipitation    = 0f;
 
-        [SerializeField, Range(10, 100)] private int LowSeaLevelLandPercentage;
-        [SerializeField, Range(10, 100)] private int NormalSeaLevelLandPercentage;
-        [SerializeField, Range(10, 100)] private int HighSeaLevelLandPercentage;
+        [SerializeField, Range(10, 100)] private int LowSeaLevelLandPercentage    = 0;
+        [SerializeField, Range(10, 100)] private int NormalSeaLevelLandPercentage = 0;
+        [SerializeField, Range(10, 100)] private int HighSeaLevelLandPercentage   = 0;
 
         #endregion
 

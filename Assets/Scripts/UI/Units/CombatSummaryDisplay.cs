@@ -24,15 +24,15 @@ namespace Assets.UI.Units {
 
         public bool IsMeleeAttack { get; set; }
 
-        [SerializeField] private Text   AttackerNameField;
-        [SerializeField] private Text   AttackerDamageSufferedField;
-        [SerializeField] private Text   AttackerHealthLeftField;
-        [SerializeField] private Slider AttackerExpectedHealthSlider;
+        [SerializeField] private Text   AttackerNameField            = null;
+        [SerializeField] private Text   AttackerDamageSufferedField  = null;
+        [SerializeField] private Text   AttackerHealthLeftField      = null;
+        [SerializeField] private Slider AttackerExpectedHealthSlider = null;
 
-        [SerializeField] private Text   DefenderNameField;
-        [SerializeField] private Text   DefenderDamageSufferedField;
-        [SerializeField] private Text   DefenderHealthLeftField;
-        [SerializeField] private Slider DefenderExpectedHealthSlider;
+        [SerializeField] private Text   DefenderNameField            = null;
+        [SerializeField] private Text   DefenderDamageSufferedField  = null;
+        [SerializeField] private Text   DefenderHealthLeftField      = null;
+        [SerializeField] private Slider DefenderExpectedHealthSlider = null;
 
 
 

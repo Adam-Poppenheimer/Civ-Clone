@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.Units.Promotions {
 
     [Serializable]
-    public struct PromotionPrerequisiteData : IPromotionPrerequisiteData {
+    public class PromotionPrerequisiteData : IPromotionPrerequisiteData {
 
         #region instance fields and properties
 
@@ -17,12 +17,12 @@ namespace Assets.Simulation.Units.Promotions {
         public IPromotion Promotion {
             get { return _promotion; }
         }
-        [SerializeField] private Promotion _promotion;
+        [SerializeField] private Promotion _promotion = null;
 
         public IEnumerable<IPromotion> Prerequisites {
             get { return _prerequisites.Cast<IPromotion>(); }
         }
-        [SerializeField] private List<Promotion> _prerequisites;
+        [SerializeField] private List<Promotion> _prerequisites = null;
 
         #endregion
 

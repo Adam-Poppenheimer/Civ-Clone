@@ -14,10 +14,10 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance fields and properties
 
-        [SerializeField] private Text  NameField;
-        [SerializeField] private Text  FreeCopiesField;
-        [SerializeField] private Text  TotalCopiesField;
-        [SerializeField] private Image IconField;
+        [SerializeField] private Text  NameField        = null;
+        [SerializeField] private Text  FreeCopiesField  = null;
+        [SerializeField] private Text  TotalCopiesField = null;
+        [SerializeField] private Image IconField        = null;
 
         #endregion
 

@@ -15,7 +15,7 @@ namespace Assets.Simulation.Barbarians {
 
         #region instance fields and properties
 
-        [SerializeField] private BarbarianConfig BarbarianConfig;
+        [SerializeField] private BarbarianConfig BarbarianConfig = null;
 
         #endregion
 

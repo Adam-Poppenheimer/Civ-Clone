@@ -19,7 +19,7 @@ namespace Assets.Simulation.Units.Combat {
         public float Modifier {
             get { return _modifier; }
         }
-        [SerializeField] private float _modifier;
+        [SerializeField] private float _modifier = 0f;
 
         #endregion
 

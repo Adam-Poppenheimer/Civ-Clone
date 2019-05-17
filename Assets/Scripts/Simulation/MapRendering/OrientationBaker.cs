@@ -36,12 +36,12 @@ namespace Assets.Simulation.MapRendering {
 
         #endregion
 
-        [SerializeField] private Camera OrientationCamera;
+        [SerializeField] private Camera OrientationCamera = null;
 
-        [SerializeField] private LayerMask OrientationCullingMask;
-        [SerializeField] private LayerMask NormalWeightsCullingMask;
-        [SerializeField] private LayerMask RiverWeightsCullingMask;
-        [SerializeField] private LayerMask RiverDuckCullingMask;
+        [SerializeField] private LayerMask OrientationCullingMask   = 0;
+        [SerializeField] private LayerMask NormalWeightsCullingMask = 0;
+        [SerializeField] private LayerMask RiverWeightsCullingMask  = 0;
+        [SerializeField] private LayerMask RiverDuckCullingMask     = 0;
 
         private IHexMesh OrientationMesh {
             get {

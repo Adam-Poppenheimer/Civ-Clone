@@ -17,8 +17,8 @@ namespace Assets.UI.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private DeclareWarRecord DeclareWarRecordPrefab;
-        [SerializeField] private RectTransform    DeclareWarRecordContainer;
+        [SerializeField] private DeclareWarRecord DeclareWarRecordPrefab    = null;
+        [SerializeField] private RectTransform    DeclareWarRecordContainer = null;
 
         private List<DeclareWarRecord> InstantiatedRecords = new List<DeclareWarRecord>();
 

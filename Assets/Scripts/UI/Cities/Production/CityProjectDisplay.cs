@@ -22,12 +22,12 @@ namespace Assets.UI.Cities.Production {
 
         #region instance fields and properties
 
-        [SerializeField] private Text ProjectNameField;
-        [SerializeField] private TextMeshProUGUI ProjectCostField;
-        [SerializeField] private Text TurnsLeftField;
+        [SerializeField] private Text ProjectNameField            = null;
+        [SerializeField] private TextMeshProUGUI ProjectCostField = null;
+        [SerializeField] private Text TurnsLeftField              = null;
 
-        [SerializeField] private Slider ProductionProgressSlider;
-        [SerializeField] private Image ProgressSliderFill;
+        [SerializeField] private Slider ProductionProgressSlider = null;
+        [SerializeField] private Image ProgressSliderFill        = null;
 
         private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 

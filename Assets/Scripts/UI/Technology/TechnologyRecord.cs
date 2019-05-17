@@ -61,20 +61,20 @@ namespace Assets.UI.Technology {
         }
         private RectTransform _rectTransform;
 
-        [SerializeField] private Text   NameField;
-        [SerializeField] private Text   CostField;
-        [SerializeField] private Text   TurnsToResearchField;
-        [SerializeField] private Slider ProgressSlider;
-        [SerializeField] private Image  IconField;
+        [SerializeField] private Text   NameField            = null;
+        [SerializeField] private Text   CostField            = null;
+        [SerializeField] private Text   TurnsToResearchField = null;
+        [SerializeField] private Slider ProgressSlider       = null;
+        [SerializeField] private Image  IconField            = null;
 
-        [SerializeField] private RectTransform        BoonRecordContainer;
-        [SerializeField] private TechnologyBoonRecord BoonRecordPrefab;
+        [SerializeField] private RectTransform        BoonRecordContainer = null;
+        [SerializeField] private TechnologyBoonRecord BoonRecordPrefab    = null;
 
-        [SerializeField] private Color DiscoveredColor;
-        [SerializeField] private Color AvailableColor;
-        [SerializeField] private Color BeingResearchedColor;
-        [SerializeField] private Color InQueueColor;
-        [SerializeField] private Color UnavailableColor;
+        [SerializeField] private Color DiscoveredColor      = Color.clear;
+        [SerializeField] private Color AvailableColor       = Color.clear;
+        [SerializeField] private Color BeingResearchedColor = Color.clear;
+        [SerializeField] private Color InQueueColor         = Color.clear;
+        [SerializeField] private Color UnavailableColor     = Color.clear;
 
         private List<TechnologyBoonRecord> InstantiatedBoonRecords = 
             new List<TechnologyBoonRecord>();

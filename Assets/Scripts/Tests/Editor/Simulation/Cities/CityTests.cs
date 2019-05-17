@@ -39,7 +39,6 @@ namespace Assets.Tests.Simulation.Cities {
             public bool SuppressSlot;
             public bool SlotIsLocked;
             public bool SlotIsOccupied;
-            public YieldSummary BaseYield;
 
         }
 
@@ -408,7 +407,7 @@ namespace Assets.Tests.Simulation.Cities {
             MockCellPossessionCanon.Setup(canon => canon.GetPossessionsOfOwner(city))
                 .Returns(new List<IHexCell>() { BuildMockCell(new CellMockData()) }.AsReadOnly());
 
-            MockDistributionLogic.ResetCalls();
+            MockDistributionLogic.Invocations.Clear();
 
             city.PerformDistribution();
 
@@ -618,7 +617,7 @@ namespace Assets.Tests.Simulation.Cities {
                 "GetFoodStockpileAdditionFromIncome wasn't called on the expected arguments");
 
             
-            MockGrowthLogic.ResetCalls();
+            MockGrowthLogic.Invocations.Clear();
 
             MockGrowthLogic.Setup(logic => logic.GetFoodConsumptionPerTurn(city)).Returns(12);
 

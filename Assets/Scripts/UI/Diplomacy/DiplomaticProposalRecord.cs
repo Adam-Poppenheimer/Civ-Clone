@@ -14,8 +14,8 @@ namespace Assets.UI.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private Text   SummaryField;
-        [SerializeField] private Button SelectionButton;
+        [SerializeField] private Text   SummaryField    = null;
+        [SerializeField] private Button SelectionButton = null;
 
         public IDiplomaticProposal         ProposalToSummarize { get; set; }
         public Action<IDiplomaticProposal> ClickCallback       { get; set; }

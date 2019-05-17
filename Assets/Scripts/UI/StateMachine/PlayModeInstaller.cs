@@ -24,30 +24,30 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform PlayModeContainer;
-        [SerializeField] private RectTransform EscapeMenuContainer;
+        [SerializeField] private RectTransform PlayModeContainer   = null;
+        [SerializeField] private RectTransform EscapeMenuContainer = null;
 
-        [SerializeField] private List<CityDisplayBase>         AllCityDisplays;
-        [SerializeField] private List<CivilizationDisplayBase> AllCivilizationDisplays;
-        [SerializeField] private List<UnitDisplayBase>         AllUnitDisplays;
+        [SerializeField] private List<CityDisplayBase>         AllCityDisplays         = null;
+        [SerializeField] private List<CivilizationDisplayBase> AllCivilizationDisplays = null;
+        [SerializeField] private List<UnitDisplayBase>         AllUnitDisplays         = null;
 
-        [SerializeField] private List<RectTransform> PlayModeDefaultPanels;
+        [SerializeField] private List<RectTransform> PlayModeDefaultPanels = null;
 
-        [SerializeField] private SpecialtyResourceSummaryDisplay SpecialtyResourceSummaryDisplay;
+        [SerializeField] private SpecialtyResourceSummaryDisplay SpecialtyResourceSummaryDisplay = null;
 
-        [SerializeField] private List<UnitDisplayBase> RangedAttackStateDisplays;
+        [SerializeField] private List<UnitDisplayBase> RangedAttackStateDisplays = null;
 
-        [SerializeField] private GameObject EscapeMenuOptionsDisplay;
+        [SerializeField] private GameObject EscapeMenuOptionsDisplay = null;
 
-        [SerializeField] private GameObject SaveGameDisplay;
+        [SerializeField] private GameObject SaveGameDisplay = null;
 
-        [SerializeField] private RectTransform ProposalDisplay;
-        [SerializeField] private RectTransform DealsReceivedDisplay;
-        [SerializeField] private RectTransform DeclareWarDisplay;
-        [SerializeField] private RectTransform FreeTechsDisplay;
-        [SerializeField] private RectTransform FreeGreatPeopleNotification;
+        [SerializeField] private RectTransform ProposalDisplay             = null;
+        [SerializeField] private RectTransform DealsReceivedDisplay        = null;
+        [SerializeField] private RectTransform DeclareWarDisplay           = null;
+        [SerializeField] private RectTransform FreeTechsDisplay            = null;
+        [SerializeField] private RectTransform FreeGreatPeopleNotification = null;
 
-        [SerializeField] private FreeGreatPeopleDisplay FreeGreatPeopleDisplay;
+        [SerializeField] private FreeGreatPeopleDisplay FreeGreatPeopleDisplay = null;
 
         #endregion
 

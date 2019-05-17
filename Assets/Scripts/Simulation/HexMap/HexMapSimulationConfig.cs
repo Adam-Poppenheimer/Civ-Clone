@@ -18,50 +18,50 @@ namespace Assets.Simulation.HexMap {
         public int SlopeMoveCost {
             get { return _slopeMoveCost; }
         }
-        [SerializeField] private int _slopeMoveCost;
+        [SerializeField] private int _slopeMoveCost = 0;
 
         public int CityMoveCost {
             get { return _cityMoveCost; }
         }
-        [SerializeField] private int _cityMoveCost;
+        [SerializeField] private int _cityMoveCost = 0;
 
         public float RoadMoveCostMultiplier {
             get { return _roadMoveCostMultiplier; }
         }
-        [SerializeField] private float _roadMoveCostMultiplier;
+        [SerializeField] private float _roadMoveCostMultiplier = 0f;
 
         #endregion
 
-        [SerializeField] private int BaseMoveCost;
+        [SerializeField] private int BaseMoveCost = 0;
 
-        [SerializeField] private YieldSummary GrasslandYield;
-        [SerializeField] private YieldSummary PlainsYield;
-        [SerializeField] private YieldSummary DesertYield;
-        [SerializeField] private YieldSummary TundraYield;
-        [SerializeField] private YieldSummary SnowYield;
-        [SerializeField] private YieldSummary ShallowWaterYield;
-        [SerializeField] private YieldSummary DeepWaterYield;
-        [SerializeField] private YieldSummary FreshWaterYield;
-        [SerializeField] private YieldSummary FloodPlainsYield;
+        [SerializeField] private YieldSummary GrasslandYield    = YieldSummary.Empty;
+        [SerializeField] private YieldSummary PlainsYield       = YieldSummary.Empty;
+        [SerializeField] private YieldSummary DesertYield       = YieldSummary.Empty;
+        [SerializeField] private YieldSummary TundraYield       = YieldSummary.Empty;
+        [SerializeField] private YieldSummary SnowYield         = YieldSummary.Empty;
+        [SerializeField] private YieldSummary ShallowWaterYield = YieldSummary.Empty;
+        [SerializeField] private YieldSummary DeepWaterYield    = YieldSummary.Empty;
+        [SerializeField] private YieldSummary FreshWaterYield   = YieldSummary.Empty;
+        [SerializeField] private YieldSummary FloodPlainsYield  = YieldSummary.Empty;
 
-        [SerializeField] private YieldSummary HillsYield;
-        [SerializeField] private YieldSummary MountainsYield;
+        [SerializeField] private YieldSummary HillsYield     = YieldSummary.Empty;
+        [SerializeField] private YieldSummary MountainsYield = YieldSummary.Empty;
 
-        [SerializeField] private YieldSummary ForestYield;
-        [SerializeField] private YieldSummary JungleYield;
-        [SerializeField] private YieldSummary MarshYield;
+        [SerializeField] private YieldSummary ForestYield  = YieldSummary.Empty;
+        [SerializeField] private YieldSummary JungleYield = YieldSummary.Empty;
+        [SerializeField] private YieldSummary MarshYield  = YieldSummary.Empty;
 
-        [SerializeField] private YieldSummary OasisYield;
+        [SerializeField] private YieldSummary OasisYield = YieldSummary.Empty;
 
-        [SerializeField] private int HillsMoveCost;
-        [SerializeField] private int MountainsMoveCost;
+        [SerializeField] private int HillsMoveCost     = 0;
+        [SerializeField] private int MountainsMoveCost = 0;
 
-        [SerializeField] private int ForestMoveCost;
-        [SerializeField] private int JungleMoveCost;
-        [SerializeField] private int MarshMoveCost;
+        [SerializeField] private int ForestMoveCost = 0;
+        [SerializeField] private int JungleMoveCost = 0;
+        [SerializeField] private int MarshMoveCost  = 0;
 
-        [SerializeField] private int OasisMoveCost;
-        [SerializeField] private int CityRuinsMoveCost;
+        [SerializeField] private int OasisMoveCost     = 0;
+        [SerializeField] private int CityRuinsMoveCost = 0;
         #endregion
 
         #region instance methods

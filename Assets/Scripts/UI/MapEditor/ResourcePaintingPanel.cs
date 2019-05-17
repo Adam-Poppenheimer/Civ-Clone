@@ -34,13 +34,13 @@ namespace Assets.UI.MapEditor {
 
         private bool IsDeleting = false;
 
-        [SerializeField] private RectTransform CopiesSection;
-        [SerializeField] private Text          CopiesField;
-        [SerializeField] private Slider        CopiesSlider;
+        [SerializeField] private RectTransform CopiesSection  = null;
+        [SerializeField] private Text          CopiesField    = null;
+        [SerializeField] private Slider        CopiesSlider   = null;
 
-        [SerializeField] private RectTransform ResourceRecordPrefab;
-        [SerializeField] private RectTransform ResourceRecordContainer;
-        [SerializeField] private RectTransform ResourceSection;
+        [SerializeField] private RectTransform ResourceRecordPrefab    = null;
+        [SerializeField] private RectTransform ResourceRecordContainer = null;
+        [SerializeField] private RectTransform ResourceSection         = null;
 
         private IDisposable CellClickedSubscription;
 

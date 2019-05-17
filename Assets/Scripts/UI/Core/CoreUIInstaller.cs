@@ -14,7 +14,7 @@ namespace Assets.UI.Core {
 
         #region instance fields and properties
 
-        [SerializeField] private DescriptionTooltip DescriptionTooltip;
+        [SerializeField] private DescriptionTooltip DescriptionTooltip = null;
 
         #endregion
 

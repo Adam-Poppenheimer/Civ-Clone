@@ -17,22 +17,22 @@ namespace Assets.Simulation.MapGeneration {
         public int DeepOceanLandPercentage {
             get { return _deepOceanLandPercentage; }
         }
-        [SerializeField] private int _deepOceanLandPercentage;
+        [SerializeField] private int _deepOceanLandPercentage = 0;
 
         public int RegionSubdivisionXStep {
             get { return _regionSubdivisionXStep; }
         }
-        [SerializeField] private int _regionSubdivisionXStep;
+        [SerializeField] private int _regionSubdivisionXStep = 0;
 
         public int RegionSubdivisionZStep {
             get { return _regionSubdivisionZStep; }
         }
-        [SerializeField] private int _regionSubdivisionZStep;
+        [SerializeField] private int _regionSubdivisionZStep = 0;
 
         public IYieldAndResourcesTemplate ArchipelagoResources {
             get { return _archipelagoResources; }
         }
-        [SerializeField] private YieldAndResourcesTemplate _archipelagoResources;
+        [SerializeField] private YieldAndResourcesTemplate _archipelagoResources = null;
 
         #endregion
 

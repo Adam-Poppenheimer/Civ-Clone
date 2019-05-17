@@ -16,12 +16,12 @@ namespace Assets.UI.Common {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform     FileRecordContainer;
-        [SerializeField] private Text              FileNameField;
-        [SerializeField] private ToggleGroup       SelectionGroup;
-        [SerializeField] private GameMapFileRecord FileRecordPrefab;
-        [SerializeField] private Text              TitleText;
-        [SerializeField] private Text              LoadButtonText;
+        [SerializeField] private RectTransform     FileRecordContainer = null;
+        [SerializeField] private Text              FileNameField       = null;
+        [SerializeField] private ToggleGroup       SelectionGroup      = null;
+        [SerializeField] private GameMapFileRecord FileRecordPrefab    = null;
+        [SerializeField] private Text              TitleText           = null;
+        [SerializeField] private Text              LoadButtonText      = null;
 
         public string TitleLabel {
             get { return TitleText.text; }

@@ -18,13 +18,13 @@ namespace Assets.UI.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject BuildingDisplayPrefab;
+        [SerializeField] private GameObject BuildingDisplayPrefab = null;
 
-        [SerializeField] private CitySummaryDisplay CitySummaryPrefab;
-        [SerializeField] private RectTransform      CitySummaryContainer;
+        [SerializeField] private CitySummaryDisplay CitySummaryPrefab    = null;
+        [SerializeField] private RectTransform      CitySummaryContainer = null;
 
-        [SerializeField] private CityCaptureDisplay CityCaptureDisplay;
-        [SerializeField] private CityUIConfig       CityUIConfig;
+        [SerializeField] private CityCaptureDisplay CityCaptureDisplay = null;
+        [SerializeField] private CityUIConfig       CityUIConfig       = null;
 
         #endregion
 

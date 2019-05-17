@@ -19,13 +19,13 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform ImprovementRecordPrefab;
-        [SerializeField] private RectTransform ImprovementRecordContainer;
-        [SerializeField] private RectTransform ImprovementRecordSection;
+        [SerializeField] private RectTransform ImprovementRecordPrefab    = null;
+        [SerializeField] private RectTransform ImprovementRecordContainer = null;
+        [SerializeField] private RectTransform ImprovementRecordSection   = null;
 
-        [SerializeField] private Toggle IsAddingToggle;
-        [SerializeField] private Toggle IsRemovingToggle;
-        [SerializeField] private Toggle IsPillagingToggle;
+        [SerializeField] private Toggle IsAddingToggle    = null;
+        [SerializeField] private Toggle IsRemovingToggle  = null;
+        [SerializeField] private Toggle IsPillagingToggle = null;
 
         private bool IsAdding;
         private bool IsRemoving;

@@ -21,7 +21,7 @@ namespace Assets.UI.MapEditor {
 
         public Action<ICivilization> SelectedCivChangedAction { get; set; }
 
-        [SerializeField] private Dropdown CivilizationDropdown;
+        [SerializeField] private Dropdown CivilizationDropdown = null;
 
         private ICivilization ActiveCivilization;
 

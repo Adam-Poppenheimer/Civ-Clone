@@ -33,13 +33,13 @@ namespace Assets.UI.SocialPolicies {
         public Button SelectionButton {
             get { return _selectionButton; }
         }
-        [SerializeField] private Button _selectionButton;
+        [SerializeField] private Button _selectionButton = null;
 
-        [SerializeField] private Image IconField;
+        [SerializeField] private Image IconField = null;
 
-        [SerializeField] private Color UnlockedColor;
-        [SerializeField] private Color AvailableColor;
-        [SerializeField] private Color UnavailableColor;
+        [SerializeField] private Color UnlockedColor    = Color.clear;
+        [SerializeField] private Color AvailableColor   = Color.clear;
+        [SerializeField] private Color UnavailableColor = Color.clear;
 
 
 

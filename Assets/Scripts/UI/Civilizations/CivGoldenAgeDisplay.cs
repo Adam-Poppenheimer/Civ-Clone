@@ -16,10 +16,10 @@ namespace Assets.UI.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI TextField;
+        [SerializeField] private TextMeshProUGUI TextField = null;
 
-        [SerializeField] private string TwoArgNonGoldenAgeFormat;
-        [SerializeField] private string OneArgGoldenAgeFormat;
+        [SerializeField] private string TwoArgNonGoldenAgeFormat = null;
+        [SerializeField] private string OneArgGoldenAgeFormat    = null;
 
 
 

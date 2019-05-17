@@ -23,15 +23,15 @@ namespace Assets.UI.SocialPolicies {
 
         public bool IgnoreCost { get; set; }
 
-        [SerializeField] private SocialPolicyTreeRecord PolicyTreeRecordPrefab;
-        [SerializeField] private RectTransform          PolicyTreeTopRow;
-        [SerializeField] private RectTransform          PolicyTreeBottomRow;
+        [SerializeField] private SocialPolicyTreeRecord PolicyTreeRecordPrefab = null;
+        [SerializeField] private RectTransform          PolicyTreeTopRow       = null;
+        [SerializeField] private RectTransform          PolicyTreeBottomRow    = null;
 
-        [SerializeField] private RectTransform CostSection;
+        [SerializeField] private RectTransform CostSection = null;
 
-        [SerializeField] private Text CultureStockpileField;
-        [SerializeField] private Text CultureForNextPolicyField;
-        [SerializeField] private Text TurnsUntilNextPolicyField;
+        [SerializeField] private Text CultureStockpileField     = null;
+        [SerializeField] private Text CultureForNextPolicyField = null;
+        [SerializeField] private Text TurnsUntilNextPolicyField = null;
 
         private List<SocialPolicyTreeRecord> PolicyTreeRecords;
 

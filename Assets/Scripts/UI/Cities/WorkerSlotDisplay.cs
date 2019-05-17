@@ -27,9 +27,9 @@ namespace Assets.UI.Cities {
 
         public YieldSummary SlotYield { get; set; }
 
-        [SerializeField] private Image SlotImage;
+        [SerializeField] private Image SlotImage = null;
 
-        [SerializeField] private YieldSummaryDisplay YieldDisplay;
+        [SerializeField] private YieldSummaryDisplay YieldDisplay = null;
 
         private IDisposable OccupiedSubscription;
         private IDisposable UnoccupiedSubcription;

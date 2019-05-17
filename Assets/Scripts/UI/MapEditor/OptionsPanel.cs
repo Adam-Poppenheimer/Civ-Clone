@@ -20,10 +20,10 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown CellVisibilityModeDropdown;
-        [SerializeField] private Dropdown ResourceVisibilityModeDropdown;
-        [SerializeField] private Dropdown ExplorationModeDropdown;
-        [SerializeField] private Dropdown ActivePlayerDropdown;
+        [SerializeField] private Dropdown CellVisibilityModeDropdown     = null;
+        [SerializeField] private Dropdown ResourceVisibilityModeDropdown = null;
+        [SerializeField] private Dropdown ExplorationModeDropdown        = null;
+        [SerializeField] private Dropdown ActivePlayerDropdown           = null;
 
 
 

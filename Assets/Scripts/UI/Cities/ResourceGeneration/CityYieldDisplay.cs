@@ -17,8 +17,8 @@ namespace Assets.UI.Cities.ResourceGeneration {
 
         #region instance fields and properties
 
-        [SerializeField] private YieldSummaryDisplay NormalYieldDisplay;
-        [SerializeField] private YieldSummaryDisplay GreatPersonYieldDisplay;
+        [SerializeField] private YieldSummaryDisplay NormalYieldDisplay      = null;
+        [SerializeField] private YieldSummaryDisplay GreatPersonYieldDisplay = null;
 
         private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 

@@ -23,7 +23,7 @@ namespace Assets.Simulation.Core {
 
         #region instance fields and properties
 
-        [SerializeField] private CoreConfig CoreConfig;
+        [SerializeField] private CoreConfig CoreConfig = null;
 
         #endregion
 

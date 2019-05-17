@@ -15,32 +15,32 @@ namespace Assets.Simulation.MapGeneration {
         public float StrategicNodesPerCell {
             get { return _strategicNodesPerCell; }
         }
-        [SerializeField] private float _strategicNodesPerCell;
+        [SerializeField] private float _strategicNodesPerCell = 0f;
 
         public float StrategicCopiesPerCell {
             get { return _strategicCopiesPerCell; }
         }
-        [SerializeField] private float _strategicCopiesPerCell;
+        [SerializeField] private float _strategicCopiesPerCell = 0f;
 
         public float MinFoodPerCell {
             get { return _minFoodPerCell; }
         }
-        [SerializeField] private float _minFoodPerCell;
+        [SerializeField] private float _minFoodPerCell = 0f;
 
         public float MinProductionPerCell {
             get { return _minProductionPerCell; }
         }
-        [SerializeField] private float _minProductionPerCell;
+        [SerializeField] private float _minProductionPerCell = 0f;
 
         public float MinScorePerCell {
             get { return _minScorePerCell; }
         }
-        [SerializeField] private float _minScorePerCell;
+        [SerializeField] private float _minScorePerCell = 0f;
 
         public float MaxScorePerCell {
             get { return _maxScorePerCell; }
         }
-        [SerializeField] private float _maxScorePerCell;
+        [SerializeField] private float _maxScorePerCell = 0f;
 
         public float LandWeight {
             get { return _landWeight; }

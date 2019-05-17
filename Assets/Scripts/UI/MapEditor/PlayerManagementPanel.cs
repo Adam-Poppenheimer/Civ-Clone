@@ -20,10 +20,10 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown               CivTemplateDropdown;
-        [SerializeField] private Button                 CreatePlayerButton;
-        [SerializeField] private PlayerManagementRecord RecordPrefab;
-        [SerializeField] private RectTransform          RecordContainer;
+        [SerializeField] private Dropdown               CivTemplateDropdown = null;
+        [SerializeField] private Button                 CreatePlayerButton  = null;
+        [SerializeField] private PlayerManagementRecord RecordPrefab        = null;
+        [SerializeField] private RectTransform          RecordContainer     = null;
 
         private List<PlayerManagementRecord> InstantiatedRecords = new List<PlayerManagementRecord>();
 

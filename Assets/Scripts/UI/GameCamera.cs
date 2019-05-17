@@ -17,16 +17,16 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        [SerializeField] private float StickMinZoom;
-        [SerializeField] private float StickMaxZoom;
+        [SerializeField] private float StickMinZoom = 0f;
+        [SerializeField] private float StickMaxZoom = 0f;
 
-        [SerializeField] private float SwivelMinZoom;
-        [SerializeField] private float SwivelMaxZoom;
+        [SerializeField] private float SwivelMinZoom = 0f;
+        [SerializeField] private float SwivelMaxZoom = 0f;
 
-        [SerializeField] private float MoveSpeedMinZoom;
-        [SerializeField] private float MoveSpeedMaxZoom;
+        [SerializeField] private float MoveSpeedMinZoom = 0f;
+        [SerializeField] private float MoveSpeedMaxZoom = 0f;
 
-        [SerializeField] private float RotationSpeed;
+        [SerializeField] private float RotationSpeed = 0f;
 
         private Transform Swivel, Stick;
 

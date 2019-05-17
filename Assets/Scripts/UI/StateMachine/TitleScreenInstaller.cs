@@ -13,8 +13,8 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject    TitleScreenStateSelectionDisplay;
-        [SerializeField] private RectTransform TitleScreenContainer;
+        [SerializeField] private GameObject    TitleScreenStateSelectionDisplay = null;
+        [SerializeField] private RectTransform TitleScreenContainer             = null;
 
         #endregion
 

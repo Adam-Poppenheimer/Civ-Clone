@@ -18,7 +18,7 @@ namespace Assets.UI.Cities.Distribution {
 
         #region instance fields and properties
 
-        [SerializeField] private Text UnemployedPeopleField;
+        [SerializeField] private Text UnemployedPeopleField = null;
 
         private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 

@@ -19,9 +19,9 @@ namespace Assets.Simulation.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private UnitConfig UnitConfig;
-        [SerializeField] private GameObject UnitPrefab;
-        [SerializeField] private Transform  UnitContainer;
+        [SerializeField] private UnitConfig UnitConfig    = null;
+        [SerializeField] private GameObject UnitPrefab    = null;
+        [SerializeField] private Transform  UnitContainer = null;
 
         #endregion
 

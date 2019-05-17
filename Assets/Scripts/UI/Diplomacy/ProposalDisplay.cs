@@ -18,15 +18,15 @@ namespace Assets.UI.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown ReceiverDropdown;
+        [SerializeField] private Dropdown ReceiverDropdown = null;
 
-        [SerializeField] private RectTransform AvailableOffersContainer;
-        [SerializeField] private RectTransform OffersInProposalContainer;
+        [SerializeField] private RectTransform AvailableOffersContainer  = null;
+        [SerializeField] private RectTransform OffersInProposalContainer = null;
 
-        [SerializeField] private RectTransform AvailableDemandsContainer;
-        [SerializeField] private RectTransform DemandsInProposalContainer;
+        [SerializeField] private RectTransform AvailableDemandsContainer  = null;
+        [SerializeField] private RectTransform DemandsInProposalContainer = null;
 
-        [SerializeField] private DiplomaticExchangeRecord ExchangeRecordPrefab;
+        [SerializeField] private DiplomaticExchangeRecord ExchangeRecordPrefab = null;
 
         private ICivilization Receiver;
 

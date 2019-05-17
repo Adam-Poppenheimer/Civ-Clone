@@ -28,17 +28,17 @@ namespace Assets.UI.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private Button RangedAttackButton;
+        [SerializeField] private Button RangedAttackButton = null;
 
-        [SerializeField] private Text PopulationField;
-        [SerializeField] private Text NameField;
-        [SerializeField] private Text TurnsUntilGrowthField;
-        [SerializeField] private Text TurnsUntilProductionFinishedField;
+        [SerializeField] private Text PopulationField                   = null;
+        [SerializeField] private Text NameField                         = null;
+        [SerializeField] private Text TurnsUntilGrowthField             = null;
+        [SerializeField] private Text TurnsUntilProductionFinishedField = null;
 
-        [SerializeField] private Slider GrowthSlider;
-        [SerializeField] private Slider ProductionSlider;
+        [SerializeField] private Slider GrowthSlider     = null;
+        [SerializeField] private Slider ProductionSlider = null;
 
-        [SerializeField] private Slider HealthSlider;
+        [SerializeField] private Slider HealthSlider = null;
 
         public RectTransform RectTransform {
             get {
@@ -52,29 +52,18 @@ namespace Assets.UI.Cities {
 
 
 
-        private IHexGrid Grid;
-        
-        private ICityConfig Config;
-
-        private IUnitPositionCanon UnitPositionCanon;
-
-        private ICombatExecuter CombatExecuter;
-
-        private UIStateMachineBrain Brain;
-
-        private IPopulationGrowthLogic GrowthLogic;
-
-        private IProductionLogic ProductionLogic;
-
-        private IYieldGenerationLogic YieldGenerationLogic;
-
-        private IGameCore GameCore;
-
+        private IHexGrid                                      Grid;        
+        private ICityConfig                                   Config;
+        private IUnitPositionCanon                            UnitPositionCanon;
+        private ICombatExecuter                               CombatExecuter;
+        private UIStateMachineBrain                           Brain;
+        private IPopulationGrowthLogic                        GrowthLogic;
+        private IProductionLogic                              ProductionLogic;
+        private IYieldGenerationLogic                         YieldGenerationLogic;
+        private IGameCore                                     GameCore;
         private IPossessionRelationship<ICivilization, ICity> CityPossessionCanon;
-
-        private IPossessionRelationship<IHexCell, ICity> CityLocationCanon;
-
-        private Animator UIAnimator;
+        private IPossessionRelationship<IHexCell, ICity>      CityLocationCanon;
+        private Animator                                      UIAnimator;
 
         #endregion
 

@@ -26,12 +26,12 @@ namespace Assets.UI.Units {
         public Button ExecuteButton {
             get { return _executeButton; }
         }
-        [SerializeField] private Button _executeButton;
+        [SerializeField] private Button _executeButton = null;
 
         #endregion
 
-        [SerializeField] private Text   NameField;
-        [SerializeField] private Image  IconField;
+        [SerializeField] private Text   NameField = null;
+        [SerializeField] private Image  IconField = null;
         
         private IAbilityExecuter AbilityExecuter;
 

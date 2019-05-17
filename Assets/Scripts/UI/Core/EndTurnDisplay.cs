@@ -20,9 +20,7 @@ namespace Assets.UI.Core {
 
         #region instance fields and properties
 
-        [SerializeField] private Button EndTurnButton;
-
-        [SerializeField] private string EndTurnKeyName;
+        [SerializeField] private Button EndTurnButton = null;
 
 
 

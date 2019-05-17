@@ -21,8 +21,8 @@ namespace Assets.UI.Cities.Territory {
 
         #region instance fields and properties
 
-        [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab;
-        [SerializeField] private RectTransform SlotDisplayContainer;
+        [SerializeField] private WorkerSlotDisplay SlotDisplayPrefab    = null;
+        [SerializeField] private RectTransform     SlotDisplayContainer = null;
 
         private List<WorkerSlotDisplay> InstantiatedDisplays = new List<WorkerSlotDisplay>();
 

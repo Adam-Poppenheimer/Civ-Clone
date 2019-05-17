@@ -23,59 +23,59 @@ namespace Assets.Simulation.MapGeneration {
         public float MinTemperature {
             get { return _minTemperature; }
         }
-        [SerializeField, Range(0, 1)] private float _minTemperature;
+        [SerializeField, Range(0, 1)] private float _minTemperature = 0f;
 
         public float MaxTemperature {
             get { return _maxTemperature; }
         }
-        [SerializeField, Range(0, 1)] private float _maxTemperature;
+        [SerializeField, Range(0, 1)] private float _maxTemperature = 0f;
 
         public float MinPrecipitation {
             get { return _minPrecipitation; }
         }
-        [SerializeField, Range(0, 1)] private float _minPrecipitation;
+        [SerializeField, Range(0, 1)] private float _minPrecipitation = 0f;
 
         public float MaxPrecipitation {
             get { return _maxPrecipitation; }
         }
-        [SerializeField, Range(0, 1)] private float _maxPrecipitation;
+        [SerializeField, Range(0, 1)] private float _maxPrecipitation = 0f;
 
 
 
         public int GrasslandPercentage {
             get { return _grasslandPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _grasslandPercentage;
+        [SerializeField, Range(0, 100)] private int _grasslandPercentage = 0;
 
         public int PlainsPercentage {
             get { return _plainsPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _plainsPercentage;
+        [SerializeField, Range(0, 100)] private int _plainsPercentage = 0;
 
         public int DesertPercentage {
             get { return _desertPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _desertPercentage;
+        [SerializeField, Range(0, 100)] private int _desertPercentage = 0;
 
         public int TundraPercentage {
             get { return _tundraPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _tundraPercentage;
+        [SerializeField, Range(0, 100)] private int _tundraPercentage = 0;
 
         public int SnowPercentage {
             get { return _snowPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _snowPercentage;
+        [SerializeField, Range(0, 100)] private int _snowPercentage = 0;
 
         public int TreePercentage {
             get { return _treePercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _treePercentage;
+        [SerializeField, Range(0, 100)] private int _treePercentage = 0;
 
         public int RiverPercentage {
             get { return _riverPercentage; }
         }
-        [SerializeField, Range(0, 100)] private int _riverPercentage;
+        [SerializeField, Range(0, 100)] private int _riverPercentage = 0;
 
         
 
@@ -92,7 +92,7 @@ namespace Assets.Simulation.MapGeneration {
         public bool AreTreesJungle {
             get { return _areTreesJungle; }
         }
-        [SerializeField] private bool _areTreesJungle;
+        [SerializeField] private bool _areTreesJungle = false;
 
 
 
@@ -116,22 +116,22 @@ namespace Assets.Simulation.MapGeneration {
         public IEnumerable<RegionBalanceStrategyData> BalanceStrategyWeights {
             get { return _balanceStrategyWeights; }
         }
-        [SerializeField] private List<RegionBalanceStrategyData> _balanceStrategyWeights;
+        [SerializeField] private List<RegionBalanceStrategyData> _balanceStrategyWeights = null;
 
         public IEnumerable<RegionResourceData> ResourceWeights {
             get { return _resourceWeights; }
         }
-        [SerializeField] private List<RegionResourceData> _resourceWeights;
+        [SerializeField] private List<RegionResourceData> _resourceWeights = null;
 
         #endregion
 
 
-        [SerializeField] private int TreesOnGrasslandCrawlCost;
-        [SerializeField] private int TreesOnPlainsCrawlCost;
-        [SerializeField] private int TreesOnTundraCrawlCost;
+        [SerializeField] private int TreesOnGrasslandCrawlCost = 0;
+        [SerializeField] private int TreesOnPlainsCrawlCost    = 0;
+        [SerializeField] private int TreesOnTundraCrawlCost    = 0;
 
-        [SerializeField] private int TreesOnFlatlandsCrawlCost;
-        [SerializeField] private int TreesOnHillsCrawlCost;
+        [SerializeField] private int TreesOnFlatlandsCrawlCost = 0;
+        [SerializeField] private int TreesOnHillsCrawlCost     = 0;
 
         #endregion
 

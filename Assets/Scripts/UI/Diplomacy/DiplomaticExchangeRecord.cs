@@ -25,9 +25,9 @@ namespace Assets.UI.Diplomacy {
             set { SelectionButton.interactable = value; }
         }
 
-        [SerializeField] private TextMeshProUGUI SummaryField;
-        [SerializeField] private Button          SelectionButton;
-        [SerializeField] private InputField      DataInputField;
+        [SerializeField] private TextMeshProUGUI SummaryField    = null;
+        [SerializeField] private Button          SelectionButton = null;
+        [SerializeField] private InputField      DataInputField  = null;
 
         #endregion
 

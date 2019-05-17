@@ -23,7 +23,7 @@ namespace Assets.UI.Technology {
 
         public string Description { get; set; }
 
-        [SerializeField] private Image IconImage;
+        [SerializeField] private Image IconImage = null;
 
 
 

@@ -18,7 +18,7 @@ namespace Assets.UI.Cities.Buildings {
 
         #region instance fields and properties
 
-        [SerializeField] private Transform BuildingDisplayContainer;
+        [SerializeField] private Transform BuildingDisplayContainer = null;
 
         private List<IBuildingDisplay> InstantiatedBuildingDisplays = new List<IBuildingDisplay>();
 

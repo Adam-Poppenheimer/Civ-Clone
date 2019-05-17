@@ -22,7 +22,7 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private Button RangedAttackButton;
+        [SerializeField] private Button RangedAttackButton = null;
 
         private List<IAbilityDisplay> ActiveAbilityDisplays = new List<IAbilityDisplay>();
 

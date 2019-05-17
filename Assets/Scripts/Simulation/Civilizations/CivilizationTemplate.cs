@@ -23,16 +23,16 @@ namespace Assets.Simulation.Civilizations {
         public Color Color {
             get { return _color; }
         }
-        [SerializeField] private Color _color;
+        [SerializeField] private Color _color = Color.clear;
 
         public bool IsBarbaric {
             get { return _isBarbaric; }
         }
-        [SerializeField] private bool _isBarbaric;
+        [SerializeField] private bool _isBarbaric = false;
 
         #endregion
 
-        [SerializeField] private List<string> NameList;
+        [SerializeField] private List<string> NameList = null;
 
         #endregion
 

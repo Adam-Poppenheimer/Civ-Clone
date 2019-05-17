@@ -22,13 +22,14 @@ namespace Assets.UI.Technology {
 
         public TechSelectionMode SelectionMode { get; set; }
 
-        [SerializeField] private TechnologyRecord TechRecordPrefab;
+        [SerializeField] private TechnologyRecord TechRecordPrefab = null;
 
-        [SerializeField] private UILineRenderer PrerequisiteLines;
+        [SerializeField] private UILineRenderer PrerequisiteLines = null;
 
-        [SerializeField] private TableLayoutGroup TechTable;
-        [SerializeField] private int TechTableRowCount;
-        [SerializeField] private RectTransform TechTableCellPrefab;
+        [SerializeField] private TableLayoutGroup TechTable           = null;        
+        [SerializeField] private RectTransform    TechTableCellPrefab = null;
+
+        [SerializeField] private int TechTableRowCount = 0;
 
         private List<TechnologyRecord> TechRecords;
 

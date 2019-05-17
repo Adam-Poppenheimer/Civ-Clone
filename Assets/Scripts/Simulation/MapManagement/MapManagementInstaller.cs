@@ -13,7 +13,7 @@ namespace Assets.Simulation.MapManagement {
 
         #region instance fields and properties
 
-        [SerializeField] private string MapPath;
+        [SerializeField] private string MapPath = null;
 
         #endregion
 

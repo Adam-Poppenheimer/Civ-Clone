@@ -32,6 +32,15 @@ namespace Assets.Simulation.MapGeneration {
 
         #endregion
 
+        #region constructors
+
+        public LuxuryResourceData(int startingCount, int otherCount) {
+            _startingCount = startingCount;
+            _otherCount    = otherCount;
+        }
+
+        #endregion
+
     }
 
 }

@@ -17,12 +17,12 @@ namespace Assets.Simulation.Cities.Buildings {
         public Sprite Icon {
             get { return _icon; }
         }
-        [SerializeField] private Sprite _icon;
+        [SerializeField] private Sprite _icon = null;
 
         public YieldSummary Yield {
             get { return _yield; }
         }
-        [SerializeField] private YieldSummary _yield;
+        [SerializeField] private YieldSummary _yield = YieldSummary.Empty;
 
         #endregion
 

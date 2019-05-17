@@ -23,9 +23,9 @@ namespace Assets.UI.Cities.Production {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform ProjectRecordContainer;
+        [SerializeField] private RectTransform ProjectRecordContainer  = null;
 
-        [SerializeField] private CityProjectRecord ProjectRecordPrefab;
+        [SerializeField] private CityProjectRecord ProjectRecordPrefab = null;
 
         private List<CityProjectRecord> InstantiatedProjectRecords = new List<CityProjectRecord>();
 

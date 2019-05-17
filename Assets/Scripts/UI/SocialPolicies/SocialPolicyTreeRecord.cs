@@ -27,19 +27,19 @@ namespace Assets.UI.SocialPolicies {
         public ICivilization SelectedCiv { get; set; }
 
 
-        [SerializeField] private SocialPolicyRecord PolicyRecordPrefab;
-        [SerializeField] private RectTransform      PolicyRecordContainer;
+        [SerializeField] private SocialPolicyRecord PolicyRecordPrefab    = null;
+        [SerializeField] private RectTransform      PolicyRecordContainer = null;
 
-        [SerializeField] private Text   NameField;
-        [SerializeField] private Image  Background;
-        [SerializeField] private Button UnlockPolicyButton;
+        [SerializeField] private Text   NameField          = null;
+        [SerializeField] private Image  Background         = null;
+        [SerializeField] private Button UnlockPolicyButton = null;
 
-        [SerializeField] private Color CompletedColor;
-        [SerializeField] private Color UnlockedColor;
-        [SerializeField] private Color AvailableColor;
-        [SerializeField] private Color UnavailableColor;
+        [SerializeField] private Color CompletedColor   = Color.clear;
+        [SerializeField] private Color UnlockedColor    = Color.clear;
+        [SerializeField] private Color AvailableColor   = Color.clear;
+        [SerializeField] private Color UnavailableColor = Color.clear;
 
-        [SerializeField] private UILineRenderer PrerequisiteLines;
+        [SerializeField] private UILineRenderer PrerequisiteLines = null;
 
 
         private List<SocialPolicyRecord> PolicyRecords;

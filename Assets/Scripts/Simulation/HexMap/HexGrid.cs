@@ -57,7 +57,7 @@ namespace Assets.Simulation.HexMap {
 
         #endregion
 
-        [SerializeField] private LayerMask TerrainCollisionMask;
+        [SerializeField] private LayerMask TerrainCollisionMask = 0;
 
 
 

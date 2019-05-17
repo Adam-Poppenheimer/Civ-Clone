@@ -16,17 +16,17 @@ namespace Assets.Simulation.MapGeneration {
         public Vector2 DimensionsInCells {
             get { return _dimensionsInCells; }
         }
-        [SerializeField] private Vector2 _dimensionsInCells;
+        [SerializeField] private Vector2 _dimensionsInCells = Vector2.zero;
 
         public ReadOnlyCollection<int> ValidCivCounts {
             get { return _validCivCounts.AsReadOnly(); }
         }
-        [SerializeField] private List<int> _validCivCounts;
+        [SerializeField] private List<int> _validCivCounts = null;
 
         public int IdealCivCount {
             get { return _idealCivCount; }
         }
-        [SerializeField] private int _idealCivCount;
+        [SerializeField] private int _idealCivCount = 0;
 
         #endregion
 

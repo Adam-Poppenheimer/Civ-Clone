@@ -29,10 +29,10 @@ namespace Assets.UI.Cities.Production {
         public Button SelectionButton {
             get { return _selectionButton; }
         }
-        [SerializeField] private Button _selectionButton;
+        [SerializeField] private Button _selectionButton = null;
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private TextMeshProUGUI CostField;
+        [SerializeField] private Text            NameField = null;
+        [SerializeField] private TextMeshProUGUI CostField = null;
 
 
 

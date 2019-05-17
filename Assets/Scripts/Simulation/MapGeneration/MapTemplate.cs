@@ -27,12 +27,12 @@ namespace Assets.Simulation.MapGeneration {
         public IEnumerable<IHomelandTemplate> HomelandTemplates {
             get { return _homelandTemplates.Cast<IHomelandTemplate>(); }
         }
-        [SerializeField] private List<HomelandTemplate> _homelandTemplates;
+        [SerializeField] private List<HomelandTemplate> _homelandTemplates = null;
 
         public IEnumerable<IOceanTemplate> OceanTemplates {
             get { return _oceanTemplates.Cast<IOceanTemplate>(); }
         }
-        [SerializeField] private List<OceanTemplate> _oceanTemplates;
+        [SerializeField] private List<OceanTemplate> _oceanTemplates = null;
 
 
 
@@ -40,34 +40,34 @@ namespace Assets.Simulation.MapGeneration {
         public IEnumerable<IRegionBiomeTemplate> RegionBiomes {
             get { return _regionBiomes.Cast<IRegionBiomeTemplate>(); }
         }
-        [SerializeField] private List<RegionBiomeTemplate> _regionBiomes;
+        [SerializeField] private List<RegionBiomeTemplate> _regionBiomes = null;
 
         public IEnumerable<IRegionTopologyTemplate> RegionTopologies {
             get { return _regionTopologies.Cast<IRegionTopologyTemplate>(); }
         }
-        [SerializeField] private List<RegionTopologyTemplate> _regionTopologies;
+        [SerializeField] private List<RegionTopologyTemplate> _regionTopologies = null;
 
 
 
         public int ContinentalLandPercentage {
             get { return _continentalLandPercentage; }
         }
-        [SerializeField, Range(1, 100)] private int _continentalLandPercentage;
+        [SerializeField, Range(1, 100)] private int _continentalLandPercentage = 1;
 
         public int VoronoiPointCount {
             get { return _voronoiPointCount; }
         }
-        [SerializeField, Range(50, 1000)] private int _voronoiPointCount;
+        [SerializeField, Range(50, 1000)] private int _voronoiPointCount = 50;
 
         public int VoronoiPartitionIterations {
             get { return _voronoiPartitionIterations; }
         }
-        [SerializeField, Range(1, 20)] private int _voronoiPartitionIterations;
+        [SerializeField, Range(1, 20)] private int _voronoiPartitionIterations = 1;
 
         public int MinStartingLocationDistance {
             get { return _minStartingLocationDistance; }
         }
-        [SerializeField, Range(1, 15)] private int _minStartingLocationDistance;
+        [SerializeField, Range(1, 15)] private int _minStartingLocationDistance = 1;
 
         public int HomelandContiguousPercentage {
             get { return _homelandContiguousPercentage; }
@@ -84,7 +84,7 @@ namespace Assets.Simulation.MapGeneration {
         public bool SeparateContinents {
             get { return _separateContinents; }
         }
-        [SerializeField] private bool _separateContinents;
+        [SerializeField] private bool _separateContinents = false;
 
         public float ContinentSeparationLineXMin {
             get { return _continentSeparationLineXMin; }
@@ -101,17 +101,17 @@ namespace Assets.Simulation.MapGeneration {
         public int NeighborsInContinentWeight {
             get { return _neighborsInContinentWeight; }
         }
-        [SerializeField] private int _neighborsInContinentWeight;
+        [SerializeField] private int _neighborsInContinentWeight = 0;
 
         public int DistanceFromSeedCentroidWeight {
             get { return _distanceFromSeedCentroidWeight; }
         }
-        [SerializeField] private int _distanceFromSeedCentroidWeight;
+        [SerializeField] private int _distanceFromSeedCentroidWeight = 0;
 
         public int DistanceFromMapCenterWeight {
             get { return _distanceFromMapCenterWeight; }
         }
-        [SerializeField] private int _distanceFromMapCenterWeight;
+        [SerializeField] private int _distanceFromMapCenterWeight = 0;
 
 
 
@@ -152,12 +152,12 @@ namespace Assets.Simulation.MapGeneration {
             }
         }
         [NonSerialized]  private List<IUnitTemplate> _startingUnitsCast;
-        [SerializeField] private List<UnitTemplate> _startingUnits;
+        [SerializeField] private List<UnitTemplate> _startingUnits = null;
 
         public Texture2D PrecipitationTexture {
             get { return _precipitationTexture; }
         }
-        [SerializeField] private Texture2D _precipitationTexture;
+        [SerializeField] private Texture2D _precipitationTexture = null;
 
         #endregion
 

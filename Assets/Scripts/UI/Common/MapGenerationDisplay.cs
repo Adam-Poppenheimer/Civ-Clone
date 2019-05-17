@@ -21,14 +21,14 @@ namespace Assets.UI.Common {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown MapTypeDropdown;
-        [SerializeField] private Dropdown MapSizeDropdown;
-        [SerializeField] private Dropdown SeaLevelDropdown;
-        [SerializeField] private Dropdown CivCountDropdown;
-        [SerializeField] private Dropdown StartingEraDropdown;
+        [SerializeField] private Dropdown MapTypeDropdown     = null;
+        [SerializeField] private Dropdown MapSizeDropdown     = null;
+        [SerializeField] private Dropdown SeaLevelDropdown    = null;
+        [SerializeField] private Dropdown CivCountDropdown    = null;
+        [SerializeField] private Dropdown StartingEraDropdown = null;
 
-        [SerializeField] private CivTemplateRecord TemplateRecordPrefab;
-        [SerializeField] private RectTransform     TemplateRecordContainer;
+        [SerializeField] private CivTemplateRecord TemplateRecordPrefab    = null;
+        [SerializeField] private RectTransform     TemplateRecordContainer = null;
 
         public string UIAnimatorTrigger { get; set; }
 

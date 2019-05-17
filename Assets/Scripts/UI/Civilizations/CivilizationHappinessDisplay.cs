@@ -16,7 +16,7 @@ namespace Assets.UI.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI HappinessField;
+        [SerializeField] private TextMeshProUGUI HappinessField = null;
 
 
 

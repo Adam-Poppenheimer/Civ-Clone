@@ -30,7 +30,7 @@ namespace Assets.Simulation.Units.Combat {
         public float Modifier {
             get { return _modifier; }
         }
-        [SerializeField] private float _modifier;
+        [SerializeField] private float _modifier = 0f;
 
         #endregion
 
@@ -38,13 +38,13 @@ namespace Assets.Simulation.Units.Combat {
             get { return _conditions; }
             set { _conditions = value; }
         }
-        [SerializeField] private List<CombatCondition> _conditions;
+        [SerializeField] private List<CombatCondition> _conditions = null;
 
         public JoinType JoinedTogetherBy {
             get { return _joinedTogetherBy; }
             set { _joinedTogetherBy = value; }
         }
-        [SerializeField] private JoinType _joinedTogetherBy;
+        [SerializeField] private JoinType _joinedTogetherBy = JoinType.And;
 
         #endregion
 

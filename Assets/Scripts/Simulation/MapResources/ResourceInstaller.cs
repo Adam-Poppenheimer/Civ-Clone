@@ -15,7 +15,7 @@ namespace Assets.Simulation.MapResources {
 
         #region instance fields and properties
 
-        [SerializeField] private Transform ResourceNodeContainer;
+        [SerializeField] private Transform ResourceNodeContainer = null;
 
         #endregion
 

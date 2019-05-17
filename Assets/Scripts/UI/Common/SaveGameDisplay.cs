@@ -18,11 +18,11 @@ namespace Assets.UI.Common {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform     FileRecordContainer;
-        [SerializeField] private InputField        NewFileNameInput;
-        [SerializeField] private GameMapFileRecord FileRecordPrefab;
-        [SerializeField] private ToggleGroup       SelectionGroup;
-        [SerializeField] private RectTransform     OverwriteConfirmDisplay;
+        [SerializeField] private RectTransform     FileRecordContainer     = null;
+        [SerializeField] private InputField        NewFileNameInput        = null;
+        [SerializeField] private GameMapFileRecord FileRecordPrefab        = null;
+        [SerializeField] private ToggleGroup       SelectionGroup          = null;
+        [SerializeField] private RectTransform     OverwriteConfirmDisplay = null;
 
         private List<GameMapFileRecord> InstantiatedFileRecords =
             new List<GameMapFileRecord>();

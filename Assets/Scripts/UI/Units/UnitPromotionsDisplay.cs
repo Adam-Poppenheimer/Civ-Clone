@@ -18,11 +18,11 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private PromotionDisplay ExistingPromotionDisplayPrefab;
-        [SerializeField] private PromotionDisplay AvailablePromotionDisplayPrefab;
+        [SerializeField] private PromotionDisplay ExistingPromotionDisplayPrefab  = null;
+        [SerializeField] private PromotionDisplay AvailablePromotionDisplayPrefab = null;
 
-        [SerializeField] private RectTransform ChosenPromotionsContainer;
-        [SerializeField] private RectTransform AvailablePromotionsContainer;
+        [SerializeField] private RectTransform ChosenPromotionsContainer    = null;
+        [SerializeField] private RectTransform AvailablePromotionsContainer = null;
 
         private List<PromotionDisplay> InstantiatedPromotionDisplays = 
             new List<PromotionDisplay>();

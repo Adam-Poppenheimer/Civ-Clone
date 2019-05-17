@@ -17,7 +17,7 @@ namespace Assets.Simulation.Units.Promotions {
                 return _prerequisiteData.Cast<IPromotionPrerequisiteData>();
             }
         }
-        [SerializeField] private List<PromotionPrerequisiteData> _prerequisiteData;
+        [SerializeField] private List<PromotionPrerequisiteData> _prerequisiteData = null;
 
         #endregion
 

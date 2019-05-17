@@ -25,7 +25,7 @@ namespace Assets.Simulation.Units {
             }
         }
         private List<IUnitTemplate> _castUnits;
-        [SerializeField] private List<UnitTemplate> _units;
+        [SerializeField] private List<UnitTemplate> _units = null;
 
         #endregion
 

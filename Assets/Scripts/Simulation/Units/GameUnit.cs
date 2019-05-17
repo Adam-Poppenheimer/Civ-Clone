@@ -225,7 +225,7 @@ namespace Assets.Simulation.Units {
 
         #endregion
 
-        [SerializeField] private Animator Animator;
+        [SerializeField] private Animator Animator = null;
 
         private Coroutine RelocationCoroutine;
 

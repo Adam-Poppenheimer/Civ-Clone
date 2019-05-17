@@ -42,9 +42,9 @@ namespace Assets.Simulation.MapRendering {
             get { return MeshFilter.sharedMesh; }
         }
 
-        [SerializeField] private MeshFilter   MeshFilter;
-        [SerializeField] private MeshRenderer MeshRenderer;
-        [SerializeField] private MeshCollider MeshCollider;
+        [SerializeField] private MeshFilter   MeshFilter   = null;
+        [SerializeField] private MeshRenderer MeshRenderer = null;
+        [SerializeField] private MeshCollider MeshCollider = null;
 
 
 

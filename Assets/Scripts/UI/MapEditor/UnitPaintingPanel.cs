@@ -20,13 +20,13 @@ namespace Assets.UI.MapEditor {
 
         #region instance fields and properties
 
-        [SerializeField] private Dropdown CivilizationDropdown;
+        [SerializeField] private Dropdown CivilizationDropdown = null;
 
-        [SerializeField] private RectTransform UnitRecordPrefab;
-        [SerializeField] private RectTransform UnitRecordContainer;
+        [SerializeField] private RectTransform UnitRecordPrefab    = null;
+        [SerializeField] private RectTransform UnitRecordContainer = null;
 
-        [SerializeField] private Toggle IsAddingToggle;
-        [SerializeField] private Toggle IsRemovingToggle;
+        [SerializeField] private Toggle IsAddingToggle   = null;
+        [SerializeField] private Toggle IsRemovingToggle = null;
 
         private bool IsAdding = true;
 

@@ -13,8 +13,7 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private HexFeatureManager FeatureManager;
-        [SerializeField] private Transform         FeatureContainer;
+        [SerializeField] private Transform FeatureContainer = null;
 
         #endregion
 

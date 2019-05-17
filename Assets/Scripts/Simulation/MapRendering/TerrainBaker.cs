@@ -16,11 +16,11 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private Camera BakingCamera;
+        [SerializeField] private Camera BakingCamera  = null;
 
-        [SerializeField] private LayerMask OcclusionMask;
-        [SerializeField] private LayerMask LandDrawingMask;
-        [SerializeField] private LayerMask WaterDrawingMask;
+        [SerializeField] private LayerMask OcclusionMask    = 0;
+        [SerializeField] private LayerMask LandDrawingMask  = 0;
+        [SerializeField] private LayerMask WaterDrawingMask = 0;
 
         private RenderTexture RenderTexture_HighRes;
         private RenderTexture RenderTexture_MediumRes;

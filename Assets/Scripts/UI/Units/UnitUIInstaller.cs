@@ -13,13 +13,13 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject AbilityDisplayPrefab;
-        [SerializeField] private GameObject UnitMapIconPrefab;
-        [SerializeField] private GameObject UnitIconSlotPrefab;
+        [SerializeField] private GameObject AbilityDisplayPrefab = null;
+        [SerializeField] private GameObject UnitMapIconPrefab    = null;
+        [SerializeField] private GameObject UnitIconSlotPrefab   = null;
 
-        [SerializeField] private UnitMapIconManager UnitMapIconManager;
+        [SerializeField] private UnitMapIconManager UnitMapIconManager = null;
 
-        [SerializeField] private CombatSummaryDisplay CombatSummaryDisplay;
+        [SerializeField] private CombatSummaryDisplay CombatSummaryDisplay = null;
 
         #endregion
 

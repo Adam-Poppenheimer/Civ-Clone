@@ -14,11 +14,11 @@ namespace Assets.UI.Common {
 
         #region instance fields and properties
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private Text DateModifiedField;
-        [SerializeField] private Text TimeModifiedField;
+        [SerializeField] private Text NameField         = null;
+        [SerializeField] private Text DateModifiedField = null;
+        [SerializeField] private Text TimeModifiedField = null;
 
-        [SerializeField] private Toggle SelectionToggle;
+        [SerializeField] private Toggle SelectionToggle = null;
 
         private MapFileData DataToDisplay;
 

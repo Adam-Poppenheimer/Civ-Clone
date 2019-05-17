@@ -18,10 +18,10 @@ namespace Assets.UI.MapEditor {
 
         public ICivilization CivToEdit { get; set; }
 
-        [SerializeField] private Text NameField;
+        [SerializeField] private Text NameField = null;
 
-        [SerializeField] private InputField GoldStockpileField;
-        [SerializeField] private InputField CultureStockpileField;
+        [SerializeField] private InputField GoldStockpileField    = null;
+        [SerializeField] private InputField CultureStockpileField = null;
 
         #endregion
 

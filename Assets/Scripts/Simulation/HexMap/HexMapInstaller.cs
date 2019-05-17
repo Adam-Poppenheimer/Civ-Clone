@@ -15,7 +15,7 @@ namespace Assets.Simulation.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private HexGrid Grid;
+        [SerializeField] private HexGrid Grid = null;
 
         #endregion
 

@@ -30,7 +30,7 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform UnitIconContainer;
+        [SerializeField] private RectTransform UnitIconContainer = null;
 
         private Dictionary<IUnit, UnitMapIcon> IconOfUnit =
             new Dictionary<IUnit, UnitMapIcon>();

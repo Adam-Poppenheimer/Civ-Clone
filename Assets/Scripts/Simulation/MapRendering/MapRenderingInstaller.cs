@@ -13,14 +13,14 @@ namespace Assets.Simulation.MapRendering {
 
         #region instance fields and properties
 
-        [SerializeField] private MapRenderConfig   RenderConfig;
-        [SerializeField] private FeatureConfig     FeatureConfig;
-        [SerializeField] private TerrainBakeConfig TerrainBakeConfig;
-        [SerializeField] private HexCellShaderData ShaderData;
-        [SerializeField] private MapChunk          MapChunkPrefab;
-        [SerializeField] private HexSubMesh        HexSubMeshPrefab;
-        [SerializeField] private TerrainBaker      TerrainBaker;
-        [SerializeField] private OrientationBaker  OrientationBaker;
+        [SerializeField] private MapRenderConfig   RenderConfig      = null;
+        [SerializeField] private FeatureConfig     FeatureConfig     = null;
+        [SerializeField] private TerrainBakeConfig TerrainBakeConfig = null;
+        [SerializeField] private HexCellShaderData ShaderData        = null;
+        [SerializeField] private MapChunk          MapChunkPrefab    = null;
+        [SerializeField] private HexSubMesh        HexSubMeshPrefab  = null;
+        [SerializeField] private TerrainBaker      TerrainBaker      = null;
+        [SerializeField] private OrientationBaker  OrientationBaker  = null;
 
         #endregion
 

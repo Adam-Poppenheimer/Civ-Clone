@@ -17,27 +17,27 @@ namespace Assets.UI.Cities {
         public Material OccupiedSlotMaterial {
             get { return _occupiedSlotMaterial; }
         }
-        [SerializeField] private Material _occupiedSlotMaterial;
+        [SerializeField] private Material _occupiedSlotMaterial = null;
 
         public Material UnoccupiedSlotMaterial {
             get { return _unoccupiedSlotMaterial; }
         }
-        [SerializeField] private Material _unoccupiedSlotMaterial;
+        [SerializeField] private Material _unoccupiedSlotMaterial = null;
 
         public Material LockedSlotMaterial {
             get { return _lockedSlotMaterial; }
         }
-        [SerializeField] private Material _lockedSlotMaterial;
+        [SerializeField] private Material _lockedSlotMaterial = null;
 
         public float SummaryVerticalOffsetBase {
             get { return _summaryVerticalOffsetBase; }
         }
-        [SerializeField] private float _summaryVerticalOffsetBase;
+        [SerializeField] private float _summaryVerticalOffsetBase = 0f;
 
         public float SummaryZoomGapReductionStrength {
             get { return _summaryZoomGapReductionStrength; }
         }
-        [SerializeField] private float _summaryZoomGapReductionStrength;
+        [SerializeField] private float _summaryZoomGapReductionStrength = 0f;
 
         #endregion
 

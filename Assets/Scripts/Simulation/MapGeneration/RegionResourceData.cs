@@ -10,19 +10,19 @@ using Assets.Simulation.MapResources;
 namespace Assets.Simulation.MapGeneration {
 
     [Serializable]
-    public struct RegionResourceData {
+    public class RegionResourceData {
 
         #region instance fields and properties
 
         public IResourceDefinition Resource {
             get { return _resource; }
         }
-        [SerializeField] private ResourceDefinition _resource;
+        [SerializeField] private ResourceDefinition _resource = null;
 
         public int Weight {
             get { return _weight; }
         }
-        [SerializeField] private int _weight;
+        [SerializeField] private int _weight = 0;
 
         #endregion
 

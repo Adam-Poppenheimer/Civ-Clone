@@ -18,7 +18,7 @@ namespace Assets.UI.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private Text CivNameField;
+        [SerializeField] private Text CivNameField = null;
         
         public ICivilization CivilizationToRecord { get; set; }
 

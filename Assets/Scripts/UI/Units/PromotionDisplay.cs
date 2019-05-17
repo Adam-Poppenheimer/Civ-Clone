@@ -21,8 +21,8 @@ namespace Assets.UI.Units {
         public bool               AcceptsInput       { get; set; }
         public Action<IPromotion> InputAction        { get; set; }
 
-        [SerializeField] private Image  IconField;
-        [SerializeField] private Button SelectionButton;
+        [SerializeField] private Image  IconField       = null;
+        [SerializeField] private Button SelectionButton = null;
 
 
 

@@ -30,9 +30,9 @@ namespace Assets.Simulation.Cities {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject CityPrefab;
-        [SerializeField] private Transform  CityContainer;
-        [SerializeField] private CityConfig CityConfig;
+        [SerializeField] private GameObject CityPrefab    = null;
+        [SerializeField] private Transform  CityContainer = null;
+        [SerializeField] private CityConfig CityConfig    = null;
 
         #endregion
 

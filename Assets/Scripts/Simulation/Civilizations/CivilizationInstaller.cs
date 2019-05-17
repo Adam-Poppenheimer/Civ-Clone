@@ -21,8 +21,8 @@ namespace Assets.Simulation.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private Transform          CivContainer;
-        [SerializeField] private CivilizationConfig CivConfig;
+        [SerializeField] private Transform          CivContainer = null;
+        [SerializeField] private CivilizationConfig CivConfig    = null;
 
         #endregion
 

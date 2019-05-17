@@ -17,17 +17,17 @@ namespace Assets.Simulation.MapGeneration {
         public IEnumerable<LuxuryResourceData> LuxuryResourceData {
             get { return _luxuryResourceData; }
         }
-        [SerializeField] private List<LuxuryResourceData> _luxuryResourceData;
+        [SerializeField] private List<LuxuryResourceData> _luxuryResourceData = null;
 
         public int RegionCount {
             get { return _regionCount; }
         }
-        [SerializeField, Range(2, 20)] private int _regionCount;
+        [SerializeField, Range(2, 20)] private int _regionCount = 0;
 
         public IYieldAndResourcesTemplate YieldAndResources {
             get { return _yieldAndResources; }
         }
-        [SerializeField] private YieldAndResourcesTemplate _yieldAndResources;
+        [SerializeField] private YieldAndResourcesTemplate _yieldAndResources = null;
 
         public int StartingRegionRadius {
             get { return _startingRegionRadius; }

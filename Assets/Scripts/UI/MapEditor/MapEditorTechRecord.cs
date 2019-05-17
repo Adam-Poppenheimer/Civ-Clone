@@ -26,13 +26,13 @@ namespace Assets.UI.MapEditor {
 
         public StatusType TechStatus { get; set; }
 
-        [SerializeField] private Color DiscoveredColor;
-        [SerializeField] private Color AvailableColor;
-        [SerializeField] private Color UnavailableColor;
+        [SerializeField] private Color DiscoveredColor  = Color.clear;
+        [SerializeField] private Color AvailableColor   = Color.clear;
+        [SerializeField] private Color UnavailableColor = Color.clear;
 
-        [SerializeField] private Button StatusButton;
+        [SerializeField] private Button StatusButton = null;
 
-        [SerializeField] private Text NameField;
+        [SerializeField] private Text NameField = null;
 
         #endregion
 

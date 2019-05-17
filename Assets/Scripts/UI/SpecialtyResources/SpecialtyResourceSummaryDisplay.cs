@@ -20,8 +20,8 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform ResourceSummaryPrefab;
-        [SerializeField] private RectTransform ResourceSummaryContainer;
+        [SerializeField] private RectTransform ResourceSummaryPrefab    = null;
+        [SerializeField] private RectTransform ResourceSummaryContainer = null;
 
         private List<RectTransform> InstantiatedSummaries = new List<RectTransform>();
 

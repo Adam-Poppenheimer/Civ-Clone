@@ -20,8 +20,8 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private RectTransform GreatPeopleSelectorContainer;
-        [SerializeField] private GameObject GreatPeopleSelectorPrefab;
+        [SerializeField] private RectTransform GreatPeopleSelectorContainer = null;
+        [SerializeField] private GameObject    GreatPeopleSelectorPrefab    = null;
 
         private List<Button> SelectorButtons = new List<Button>();
 

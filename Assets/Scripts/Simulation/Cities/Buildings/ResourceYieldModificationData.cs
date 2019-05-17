@@ -8,7 +8,7 @@ using UnityEngine;
 namespace Assets.Simulation.Cities.Buildings {
 
     [Serializable]
-    public struct ResourceYieldModificationData : IResourceYieldModificationData {
+    public class ResourceYieldModificationData : IResourceYieldModificationData {
 
         #region instance fields and properties
 
@@ -17,12 +17,12 @@ namespace Assets.Simulation.Cities.Buildings {
         public YieldSummary BonusYield {
             get { return _bonusYield; }
         }
-        [SerializeField] private YieldSummary _bonusYield;
+        [SerializeField] private YieldSummary _bonusYield = YieldSummary.Empty;
 
         public IResourceDefinition Resource {
             get { return _resource; }
         }
-        [SerializeField] private ResourceDefinition _resource;
+        [SerializeField] private ResourceDefinition _resource = null;
 
         #endregion
 

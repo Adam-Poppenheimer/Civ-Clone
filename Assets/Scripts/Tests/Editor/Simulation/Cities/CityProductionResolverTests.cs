@@ -191,7 +191,7 @@ namespace Assets.Tests.Simulation.Cities {
 
             resolver.ResolveBuildingConstructionRequests();
 
-            projectOneMock.ResetCalls();
+            projectOneMock.Invocations.Clear();
 
             resolver.ResolveBuildingConstructionRequests();
             resolver.ResolveBuildingConstructionRequests();

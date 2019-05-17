@@ -16,7 +16,7 @@ namespace Assets.UI.SpecialtyResources {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI SummaryField;
+        [SerializeField] private TextMeshProUGUI SummaryField = null;
 
         #endregion
 

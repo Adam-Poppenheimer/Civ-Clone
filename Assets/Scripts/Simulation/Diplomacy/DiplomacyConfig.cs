@@ -17,7 +17,7 @@ namespace Assets.Simulation.Diplomacy {
         public int TradeDuration {
             get { return _tradeDuration; }
         }
-        [SerializeField] private int _tradeDuration;
+        [SerializeField] private int _tradeDuration = 0;
 
         #endregion
 

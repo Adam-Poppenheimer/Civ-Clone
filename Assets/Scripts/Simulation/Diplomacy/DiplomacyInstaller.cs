@@ -13,7 +13,7 @@ namespace Assets.Simulation.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private DiplomacyConfig Config;
+        [SerializeField] private DiplomacyConfig Config = null;
 
         #endregion
 

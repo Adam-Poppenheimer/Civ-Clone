@@ -20,57 +20,57 @@ namespace Assets.Simulation.MapResources {
         public YieldSummary BonusYieldBase {
             get { return _bonusYieldBase; }
         }
-        [SerializeField] private YieldSummary _bonusYieldBase;
+        [SerializeField] private YieldSummary _bonusYieldBase = YieldSummary.Empty;
 
         public YieldSummary BonusYieldWhenImproved {
             get { return _bonusYieldWhenImproved; }
         }
-        [SerializeField] private YieldSummary _bonusYieldWhenImproved;
+        [SerializeField] private YieldSummary _bonusYieldWhenImproved = YieldSummary.Empty;
 
         public ResourceType Type {
             get { return _type; }
         }
-        [SerializeField] private ResourceType _type;
+        [SerializeField] private ResourceType _type = ResourceType.Bonus;
 
         public IImprovementTemplate Extractor {
             get { return _extractor; }
         }
-        [SerializeField] private ImprovementTemplate _extractor;
+        [SerializeField] private ImprovementTemplate _extractor = null;
 
         public float Score {
             get { return _score; }
         }
-        [SerializeField, Range(0f, 20f)] private float _score;
+        [SerializeField, Range(0f, 20f)] private float _score = 0f;
 
 
-        [SerializeField] private int GrasslandWeight;
-        [SerializeField] private int PlainsWeight;
-        [SerializeField] private int DesertWeight;
-        [SerializeField] private int FloodPlainsWeight;
-        [SerializeField] private int TundraWeight;
-        [SerializeField] private int SnowWeight;
-        [SerializeField] private int ShallowWaterWeight;
+        [SerializeField] private int GrasslandWeight    = 0;
+        [SerializeField] private int PlainsWeight       = 0;
+        [SerializeField] private int DesertWeight       = 0;
+        [SerializeField] private int FloodPlainsWeight  = 0;
+        [SerializeField] private int TundraWeight       = 0;
+        [SerializeField] private int SnowWeight         = 0;
+        [SerializeField] private int ShallowWaterWeight = 0;
 
 
-        [SerializeField] private int FlatlandWeight;
-        [SerializeField] private int HillsWeight;
+        [SerializeField] private int FlatlandWeight = 0;
+        [SerializeField] private int HillsWeight    = 0;
 
-        [SerializeField] private int NoVegetationWeight;
-        [SerializeField] private int ForestWeight;
-        [SerializeField] private int JungleWeight;
-        [SerializeField] private int MarshWeight;
+        [SerializeField] private int NoVegetationWeight = 0;
+        [SerializeField] private int ForestWeight       = 0;
+        [SerializeField] private int JungleWeight       = 0;
+        [SerializeField] private int MarshWeight        = 0;
 
 
 
         public Transform AppearancePrefab {
             get { return _appearancePrefab; }
         }
-        [SerializeField] private Transform _appearancePrefab;
+        [SerializeField] private Transform _appearancePrefab = null;
 
         public Sprite Icon {
             get { return _icon; }
         }
-        [SerializeField] private Sprite _icon;
+        [SerializeField] private Sprite _icon = null;
 
         #endregion
 

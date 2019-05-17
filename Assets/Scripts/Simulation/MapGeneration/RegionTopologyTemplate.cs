@@ -18,22 +18,22 @@ namespace Assets.Simulation.MapGeneration {
         public int HillsPercentage {
             get { return _hillsPercentage; }
         }
-        [SerializeField] private int _hillsPercentage;
+        [SerializeField] private int _hillsPercentage = 0;
 
         public int MountainsPercentage {
             get { return _mountainsPercentage; }
         }
-        [SerializeField] private int _mountainsPercentage;
+        [SerializeField] private int _mountainsPercentage = 0;
 
         public IEnumerable<RegionBalanceStrategyData> BalanceStrategyWeights {
             get { return _balanceStrategyWeights; }
         }
-        [SerializeField] private List<RegionBalanceStrategyData> _balanceStrategyWeights;
+        [SerializeField] private List<RegionBalanceStrategyData> _balanceStrategyWeights = null;
 
         public IEnumerable<RegionResourceData> ResourceWeights {
             get { return _resourceWeights; }
         }
-        [SerializeField] private List<RegionResourceData> _resourceWeights;
+        [SerializeField] private List<RegionResourceData> _resourceWeights = null;
 
         #endregion
 

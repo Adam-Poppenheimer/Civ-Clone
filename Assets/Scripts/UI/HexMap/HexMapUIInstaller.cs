@@ -15,10 +15,9 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private float               MapTileHoverDelay;
-        [SerializeField] private YieldSummaryDisplay MapTileHoverYieldDisplay;
-        [SerializeField] private GameObject          PathIndicatorPrefab;
-        [SerializeField] private HexCellOverlay      HexCellOverlayPrefab;
+        [SerializeField] private float               MapTileHoverDelay        = 0f;
+        [SerializeField] private YieldSummaryDisplay MapTileHoverYieldDisplay = null;
+        [SerializeField] private HexCellOverlay      HexCellOverlayPrefab     = null;
 
         #endregion
 

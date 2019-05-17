@@ -26,7 +26,7 @@ namespace Assets.Simulation.Cities.Production {
         public float Value {
             get { return _value; }
         }
-        [SerializeField] private float _value;
+        [SerializeField] private float _value = 0f;
 
         #endregion
 
@@ -34,13 +34,13 @@ namespace Assets.Simulation.Cities.Production {
             get { return _conditions; }
             set { _conditions = value; }
         }
-        [SerializeField] private List<ProductionCondition> _conditions;
+        [SerializeField] private List<ProductionCondition> _conditions = null;
 
         public JoinType JoinedTogetherBy {
             get { return _joinedTogetherBy; }
             set { _joinedTogetherBy = value; }
         }
-        [SerializeField] private JoinType _joinedTogetherBy;
+        [SerializeField] private JoinType _joinedTogetherBy = JoinType.And;
 
         #endregion
 

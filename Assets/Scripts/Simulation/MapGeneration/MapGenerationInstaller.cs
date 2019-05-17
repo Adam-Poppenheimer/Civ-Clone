@@ -13,9 +13,9 @@ namespace Assets.Simulation.MapGeneration {
 
         #region instance fields and properties
 
-        [SerializeField] private MapGenerationConfig Config;
+        [SerializeField] private MapGenerationConfig Config = null;
 
-        [SerializeField] private List<MapTemplate> MapTemplates;
+        [SerializeField] private List<MapTemplate> MapTemplates = null;
 
         #endregion
 

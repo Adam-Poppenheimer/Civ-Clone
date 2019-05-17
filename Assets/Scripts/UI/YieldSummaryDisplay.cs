@@ -20,11 +20,12 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI SummaryField;
-        [SerializeField] private bool            DisplayEmptyResources;
-        [SerializeField] private bool            PlusSignOnPositiveNumbers = true;
-        [SerializeField] private bool            IncludeNormalYield        = true;
-        [SerializeField] private bool            IncludeGreatPersonYield   = true;
+        [SerializeField] private TextMeshProUGUI SummaryField = null;
+
+        [SerializeField] private bool DisplayEmptyResources     = false;
+        [SerializeField] private bool PlusSignOnPositiveNumbers = true;
+        [SerializeField] private bool IncludeNormalYield        = true;
+        [SerializeField] private bool IncludeGreatPersonYield   = true;
 
 
 

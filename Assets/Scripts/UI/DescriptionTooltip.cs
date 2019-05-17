@@ -20,10 +20,10 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI DescriptionField;
-        [SerializeField] private RectTransform   RectTransform;
-        [SerializeField] private Canvas          ParentCanvas;
-        [SerializeField] private CanvasScaler    CanvasScaler;
+        [SerializeField] private TextMeshProUGUI DescriptionField = null;
+        [SerializeField] private RectTransform   RectTransform    = null;
+        [SerializeField] private Canvas          ParentCanvas     = null;
+        [SerializeField] private CanvasScaler    CanvasScaler     = null;
 
         #endregion
 

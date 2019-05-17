@@ -20,18 +20,18 @@ namespace Assets.UI.Cities.Growth {
 
         #region instance fields and properties
 
-        [SerializeField] private Text       CurrentPopulationTextField;
-        [SerializeField] private InputField CurrentPopulationInputField;
+        [SerializeField] private Text       CurrentPopulationTextField  = null;
+        [SerializeField] private InputField CurrentPopulationInputField = null;
 
-        [SerializeField] private Text       CurrentFoodStockpileTextField;
-        [SerializeField] private InputField CurrentFoodStockpileInputField;
+        [SerializeField] private Text       CurrentFoodStockpileTextField  = null;
+        [SerializeField] private InputField CurrentFoodStockpileInputField = null;
 
-        [SerializeField] private Text NetGainField;
+        [SerializeField] private Text NetGainField  = null;
 
-        [SerializeField] private Text FoodUntilNextGrowthField;
-        [SerializeField] private Text ChangeStatusField;
+        [SerializeField] private Text FoodUntilNextGrowthField = null;
+        [SerializeField] private Text ChangeStatusField = null;
 
-        [SerializeField] private Slider GrowthSlider;
+        [SerializeField] private Slider GrowthSlider = null;
 
         private List<IDisposable> SignalSubscriptions = new List<IDisposable>();
 

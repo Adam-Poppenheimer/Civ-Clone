@@ -13,9 +13,8 @@ namespace Assets.Simulation.Units.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private GameUnit UnitToControl;
-
-        [SerializeField] private Animator UnitStateMachine;
+        [SerializeField] private GameUnit UnitToControl    = null;
+        [SerializeField] private Animator UnitStateMachine = null;
 
         #endregion
 

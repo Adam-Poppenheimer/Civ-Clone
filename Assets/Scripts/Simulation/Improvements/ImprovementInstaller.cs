@@ -15,8 +15,8 @@ namespace Assets.Simulation.Improvements {
 
         #region instance fields and properties
 
-        [SerializeField] private GameObject ImprovementPrefab;
-        [SerializeField] private GameObject ImprovementSitePrefab;
+        [SerializeField] private GameObject ImprovementPrefab     = null;
+        [SerializeField] private GameObject ImprovementSitePrefab = null;
 
         #endregion
 

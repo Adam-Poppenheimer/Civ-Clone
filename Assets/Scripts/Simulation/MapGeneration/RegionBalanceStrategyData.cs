@@ -8,19 +8,19 @@ using UnityEngine;
 namespace Assets.Simulation.MapGeneration {
 
     [Serializable]
-    public struct RegionBalanceStrategyData {
+    public class RegionBalanceStrategyData {
 
         #region instance fields and properties
 
         public string BalanceStrategy {
             get { return _balanceStrategy; }
         }
-        [SerializeField] private string _balanceStrategy;
+        [SerializeField] private string _balanceStrategy = null;
 
         public int Weight {
             get { return _weight; }
         }
-        [SerializeField] private int _weight;
+        [SerializeField] private int _weight = 0;
 
         #endregion
 

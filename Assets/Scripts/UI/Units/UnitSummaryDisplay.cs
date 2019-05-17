@@ -18,14 +18,14 @@ namespace Assets.UI.Units {
 
         #region instance fields and properties
 
-        [SerializeField] private Text NameField;
-        [SerializeField] private Text TypeField;
-        [SerializeField] private Text CurrentMovementField;
-        [SerializeField] private Text MaxMovementField;
-        [SerializeField] private Text ExperienceField;
-        [SerializeField] private Text ExperienceForNextLevelField;
+        [SerializeField] private Text NameField                   = null;
+        [SerializeField] private Text TypeField                   = null;
+        [SerializeField] private Text CurrentMovementField        = null;
+        [SerializeField] private Text MaxMovementField            = null;
+        [SerializeField] private Text ExperienceField             = null;
+        [SerializeField] private Text ExperienceForNextLevelField = null;
 
-        [SerializeField] private Slider HealthSlider;
+        [SerializeField] private Slider HealthSlider = null;
 
         private IDisposable ExperienceChangedSubscription;
         private IDisposable LevelChangedSubscription;

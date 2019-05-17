@@ -18,13 +18,13 @@ namespace Assets.UI.StateMachine {
 
         #region instance fields and properties
 
-        [SerializeField] private Animator              StateMachineAnimator;
-        [SerializeField] private LoadGameDisplay       LoadGameDisplay;
-        [SerializeField] private GameObject            OptionsDisplay;
-        [SerializeField] private GameCamera            GameCamera;
-        [SerializeField] private CellHoverDisplay      CellHoverDisplay;
-        [SerializeField] private SocialPoliciesDisplay SocialPoliciesDisplay;
-        [SerializeField] private TechTreeDisplay       TechTreeDisplay;
+        [SerializeField] private Animator              StateMachineAnimator  = null;
+        [SerializeField] private LoadGameDisplay       LoadGameDisplay       = null;
+        [SerializeField] private GameObject            OptionsDisplay        = null;
+        [SerializeField] private GameCamera            GameCamera            = null;
+        [SerializeField] private CellHoverDisplay      CellHoverDisplay      = null;
+        [SerializeField] private SocialPoliciesDisplay SocialPoliciesDisplay = null;
+        [SerializeField] private TechTreeDisplay       TechTreeDisplay       = null;
 
         #endregion
 

@@ -15,7 +15,7 @@ namespace Assets.UI.Technology {
 
         #region instance fields and properties
 
-        [SerializeField] private TechSelectionMode SelectionMode;
+        [SerializeField] private TechSelectionMode SelectionMode = TechSelectionMode.ResearchFreeTech;
 
 
 

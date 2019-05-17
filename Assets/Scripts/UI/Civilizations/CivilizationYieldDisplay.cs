@@ -17,9 +17,9 @@ namespace Assets.UI.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private TextMeshProUGUI GoldField;
-        [SerializeField] private TextMeshProUGUI CultureField;
-        [SerializeField] private TextMeshProUGUI ScienceField;
+        [SerializeField] private TextMeshProUGUI GoldField    = null;
+        [SerializeField] private TextMeshProUGUI CultureField = null;
+        [SerializeField] private TextMeshProUGUI ScienceField = null;
 
 
 

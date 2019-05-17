@@ -18,15 +18,15 @@ namespace Assets.UI.Diplomacy {
 
         #region instance fields and properties
 
-        [SerializeField] private DiplomaticProposalRecord ProposalRecordPrefab;
-        [SerializeField] private RectTransform            ProposalsReceivedContainer;
+        [SerializeField] private DiplomaticProposalRecord ProposalRecordPrefab       = null;
+        [SerializeField] private RectTransform            ProposalsReceivedContainer = null;
 
-        [SerializeField] private DiplomaticExchangeRecord ExchangeRecordPrefab;
-        [SerializeField] private RectTransform            OfferedExchangesContainer;
-        [SerializeField] private RectTransform            DemandedExchangesContainer;
+        [SerializeField] private DiplomaticExchangeRecord ExchangeRecordPrefab       = null;
+        [SerializeField] private RectTransform            OfferedExchangesContainer  = null;
+        [SerializeField] private RectTransform            DemandedExchangesContainer = null;
 
-        [SerializeField] private Button AcceptDealButton;
-        [SerializeField] private Button RejectDealButton;
+        [SerializeField] private Button AcceptDealButton = null;
+        [SerializeField] private Button RejectDealButton = null;
 
         private IDiplomaticProposal SelectedProposal { get; set; }
 

@@ -28,12 +28,12 @@ namespace Assets.UI.HexMap {
 
         #region instance fields and properties
 
-        [SerializeField] private Text CoordinateLabel;
+        [SerializeField] private Text CoordinateLabel = null;
 
-        [SerializeField] private RectTransform PathIndicator;
-        [SerializeField] private RectTransform AttackIndicator;
-        [SerializeField] private RectTransform UnreachableIndicator;
-        [SerializeField] private RectTransform SelectedIndicator;
+        [SerializeField] private RectTransform PathIndicator        = null;
+        [SerializeField] private RectTransform AttackIndicator      = null;
+        [SerializeField] private RectTransform UnreachableIndicator = null;
+        [SerializeField] private RectTransform SelectedIndicator    = null;
 
         public IHexCell CellToDisplay {
             get { return _cellToDisplay; }

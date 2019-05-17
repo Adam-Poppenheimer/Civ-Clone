@@ -15,7 +15,7 @@ namespace Assets.UI {
 
         #region instance fields and properties
 
-        [SerializeField] private MapGenerationDisplay MapGenerationDisplay;
+        [SerializeField] private MapGenerationDisplay MapGenerationDisplay = null;
 
         #endregion
 

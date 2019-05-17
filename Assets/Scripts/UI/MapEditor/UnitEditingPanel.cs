@@ -19,18 +19,18 @@ namespace Assets.UI.MapEditor {
 
         public IUnit UnitToEdit { get; set; }
 
-        [SerializeField] private Text NameField;
+        [SerializeField] private Text NameField = null;
 
-        [SerializeField] private Text   HitpointsField;
-        [SerializeField] private Slider HitpointsSlider;
+        [SerializeField] private Text   HitpointsField  = null;
+        [SerializeField] private Slider HitpointsSlider = null;
 
-        [SerializeField] private Text   CurrentMovementField;
-        [SerializeField] private Slider CurrentMovementSlider;
+        [SerializeField] private Text   CurrentMovementField  = null;
+        [SerializeField] private Slider CurrentMovementSlider = null;
 
-        [SerializeField] private Text   ExperienceField;
-        [SerializeField] private Slider ExperienceSlider;
+        [SerializeField] private Text   ExperienceField  = null;
+        [SerializeField] private Slider ExperienceSlider = null;
 
-        [SerializeField] private Toggle SetUpToBombardToggle;
+        [SerializeField] private Toggle SetUpToBombardToggle = null;
 
         private IDisposable SetUpForBombardmentSubscription;
         private IDisposable BecameIdleSubscription;

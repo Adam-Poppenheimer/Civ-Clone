@@ -13,7 +13,7 @@ namespace Assets.Simulation.AI {
 
         #region instance fields and properties
 
-        [SerializeField] private AIConfig AIConfig;
+        [SerializeField] private AIConfig AIConfig = null;
 
         #endregion
 

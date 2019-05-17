@@ -130,7 +130,7 @@ namespace Assets.Tests.Simulation.Barbarians {
 
             var newEncampment = factory.CreateEncampment(cell);
 
-            MockEncampmentLocationCanon.ResetCalls();
+            MockEncampmentLocationCanon.Invocations.Clear();
 
             factory.DestroyEncampment(newEncampment);
 

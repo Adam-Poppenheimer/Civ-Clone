@@ -18,7 +18,7 @@ namespace Assets.UI.Civilizations {
 
         #region instance fields and properties
 
-        [SerializeField] private TechnologyRecord CurrentTechRecord;
+        [SerializeField] private TechnologyRecord CurrentTechRecord = null;
 
 
         private ICivilizationYieldLogic YieldLogic;

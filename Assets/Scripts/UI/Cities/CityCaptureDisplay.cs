@@ -18,7 +18,7 @@ namespace Assets.UI.Cities {
 
         public ICity TargetedCity { get; set; }
 
-        [SerializeField] private Text DescriptionField;
+        [SerializeField] private Text DescriptionField = null;
 
         private string DescriptionFormat;
 
