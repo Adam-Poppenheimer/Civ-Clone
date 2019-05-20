@@ -155,6 +155,7 @@ namespace Assets.Simulation.MapRendering {
         #region from IOrientationBaker
 
         public void RenderOrientationFromChunk(IMapChunk chunk) {
+            Profiler.BeginSample("RenderOrientationFromChunk()");
 
             OrientationCamera.transform.SetParent(chunk.transform, false);
 
@@ -167,6 +168,8 @@ namespace Assets.Simulation.MapRendering {
             RenderTexture.active = activeRenderTexture;
 
             OrientationCamera.transform.SetParent(null, false);
+
+            Profiler.EndSample();
         }
 
         #endregion

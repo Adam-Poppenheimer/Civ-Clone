@@ -137,7 +137,7 @@ namespace Assets.Simulation.HexMap {
         public IEnumerable<IMapChunk> OverlappingChunks {
             get { return overlappingChunks; }
         }
-        private IMapChunk[] overlappingChunks;
+        private IEnumerable<IMapChunk> overlappingChunks;
 
         #endregion
 
@@ -176,7 +176,7 @@ namespace Assets.Simulation.HexMap {
 
         #region from IHexCell
 
-        public void AttachToChunks(IMapChunk[] chunks) {
+        public void AttachToChunks(IEnumerable<IMapChunk> chunks) {
             overlappingChunks = chunks;
         }
 

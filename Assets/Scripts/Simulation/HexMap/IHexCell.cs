@@ -45,7 +45,7 @@ namespace Assets.Simulation.HexMap {
 
         #region methods
 
-        void AttachToChunks(IMapChunk[] chunks);
+        void AttachToChunks(IEnumerable<IMapChunk> chunks);
 
         void SetMapData(float data);
 

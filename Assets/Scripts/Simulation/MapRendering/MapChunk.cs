@@ -95,77 +95,75 @@ namespace Assets.Simulation.MapRendering {
 
         private IHexMesh StandingWater {
             get {
-                if(_standingWater == null) {
-                    _standingWater = HexMeshFactory.Create("Standing Water", RenderConfig.StandingWaterData);
+                if(standingWater == null) {
+                    standingWater = HexMeshFactory.Create("Standing Water", RenderConfig.StandingWaterData);
 
-                    _standingWater.transform.SetParent(transform, false);
+                    standingWater.transform.SetParent(transform, false);
                 }
-                return _standingWater;
+                return standingWater;
             }
-            set { _standingWater = value; }
         }
-        private IHexMesh _standingWater;
+        private IHexMesh standingWater;
 
         private IHexMesh Culture {
             get {
-                if(_culture == null) {
-                    _culture = HexMeshFactory.Create("Culture", RenderConfig.CultureData);
+                if(culture == null) {
+                    culture = HexMeshFactory.Create("Culture", RenderConfig.CultureData);
 
-                    _culture.transform.SetParent(transform, false);
+                    culture.transform.SetParent(transform, false);
                 }
-                return _culture;
+                return culture;
             }
-            set { _culture = value; }
         }
-        private IHexMesh _culture;
+        private IHexMesh culture;
 
         private IHexMesh Roads {
             get {
-                if(_roads == null) {
-                    _roads = HexMeshFactory.Create("Roads", RenderConfig.RoadData);
+                if(roads == null) {
+                    roads = HexMeshFactory.Create("Roads", RenderConfig.RoadData);
 
-                    _roads.transform.SetParent(transform, false);
+                    roads.transform.SetParent(transform, false);
                 }
-                return _roads;
+                return roads;
             }
         }
-        private IHexMesh _roads;
+        private IHexMesh roads;
 
         private IHexMesh MarshWater {
             get {
-                if(_marshWater == null) {
-                    _marshWater = HexMeshFactory.Create("Marsh Water", RenderConfig.MarshWaterData);
+                if(marshWater == null) {
+                    marshWater = HexMeshFactory.Create("Marsh Water", RenderConfig.MarshWaterData);
 
-                    _marshWater.transform.SetParent(transform, false);
+                    marshWater.transform.SetParent(transform, false);
                 }
-                return _marshWater;
+                return marshWater;
             }
         }
-        private IHexMesh _marshWater;
+        private IHexMesh marshWater;
 
         private IHexMesh OasisWater {
             get {
-                if(_oasisWater == null) {
-                    _oasisWater = HexMeshFactory.Create("Oasis Water", RenderConfig.OasisWaterData);
+                if(oasisWater == null) {
+                    oasisWater = HexMeshFactory.Create("Oasis Water", RenderConfig.OasisWaterData);
 
-                    _oasisWater.transform.SetParent(transform, false);
+                    oasisWater.transform.SetParent(transform, false);
                 }
-                return _oasisWater;
+                return oasisWater;
             }
         }
-        private IHexMesh _oasisWater;
+        private IHexMesh oasisWater;
 
         private IHexMesh OasisLand {
             get {
-                if(_oasisLand == null) {
-                    _oasisLand = HexMeshFactory.Create("Oasis Land", RenderConfig.OasisLandData);
+                if(oasisLand == null) {
+                    oasisLand = HexMeshFactory.Create("Oasis Land", RenderConfig.OasisLandData);
 
-                    _oasisLand.transform.SetParent(transform, false);
+                    oasisLand.transform.SetParent(transform, false);
                 }
-                return _oasisLand;
+                return oasisLand;
             }
         }
-        private IHexMesh _oasisLand;
+        private IHexMesh oasisLand;
 
         private Material InstancedTerrainMaterial;
         private Material InstancedWaterMaterial;
@@ -289,6 +287,8 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Refresh(TerrainRefreshType refreshTypes) {
+            Profiler.BeginSample("MapChunk.Refresh()");
+
             if(RefreshCoroutine == null) {
                 RefreshCoroutine = StartCoroutine(Refresh_Perform());
             }
@@ -302,6 +302,8 @@ namespace Assets.Simulation.MapRendering {
             }
 
             RefreshFlags |= refreshTypes;
+
+            Profiler.EndSample();
         }
 
         public bool DoesCellOverlapChunk(IHexCell cell) {
@@ -323,9 +325,7 @@ namespace Assets.Simulation.MapRendering {
         }
 
         public void Clear() {
-            StandingWater.Clear();
-            Culture      .Clear();
-            StopAllCoroutines();
+            ClearHexMeshes();
 
             StopAllCoroutines();
 
@@ -333,19 +333,8 @@ namespace Assets.Simulation.MapRendering {
 
             centeredCells   .Clear();
             overlappingCells.Clear();
+            
 
-            HexMeshFactory.Destroy(StandingWater);
-            HexMeshFactory.Destroy(Culture);
-
-            StandingWater = null;
-            Culture       = null;
-        }
-
-        #endregion
-
-        #region Unity messages
-
-        private void OnDestroy() {
             if(LandBakeTexture != null) {
                 Destroy(LandBakeTexture);
             }
@@ -353,6 +342,66 @@ namespace Assets.Simulation.MapRendering {
             if(WaterBakeTexture != null) {
                 Destroy(WaterBakeTexture);
             }
+
+            if(InstancedTerrainMaterial != null) {
+                Destroy(InstancedTerrainMaterial);
+            }
+            
+            if(InstancedWaterMaterial != null) {
+                Destroy(InstancedWaterMaterial);
+            }
+        }
+
+        private void ClearHexMeshes() {
+            if(standingWater != null) {
+                standingWater.Clear();
+                HexMeshFactory.Destroy(standingWater);
+
+                standingWater = null;
+            }
+
+            if(culture != null) {
+                culture.Clear();
+                HexMeshFactory.Destroy(culture);
+
+                culture = null;
+            }
+
+            if(roads != null) {
+                roads.Clear();
+                HexMeshFactory.Destroy(roads);
+
+                roads = null;
+            }
+
+            if(marshWater != null) {
+                marshWater.Clear();
+                HexMeshFactory.Destroy(marshWater);
+
+                marshWater = null;
+            }
+
+            if(oasisWater != null) {
+                oasisWater.Clear();
+                HexMeshFactory.Destroy(oasisWater);
+
+                oasisWater = null;
+            }
+
+            if(oasisLand != null) {
+                oasisLand.Clear();
+                HexMeshFactory.Destroy(oasisLand);
+
+                oasisLand = null;
+            }
+        }
+
+        #endregion
+
+        #region Unity messages
+
+        private void OnDestroy() {
+            Clear();
         }
 
         #endregion

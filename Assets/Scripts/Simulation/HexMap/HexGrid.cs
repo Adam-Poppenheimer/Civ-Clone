@@ -46,8 +46,15 @@ namespace Assets.Simulation.HexMap {
         public int CellCountZ { get; private set; }
 
         public IEnumerable<IMapChunk> Chunks {
-            get { return chunks.Cast<IMapChunk>(); }
+            get {
+                if(castChunks == null && chunks != null) {
+                    castChunks = chunks.Cast<IMapChunk>();
+                }
+
+                return castChunks;
+            }
         }
+        private IEnumerable<IMapChunk> castChunks;
         private MapChunk[,] chunks;
 
         public IHexMesh RiverSurfaceMesh { get; private set; }
@@ -56,6 +63,9 @@ namespace Assets.Simulation.HexMap {
         public IHexMesh FarmMesh         { get; private set; }
 
         #endregion
+
+        private int ChunkCountX;
+        private int ChunkCountZ;
 
         [SerializeField] private LayerMask TerrainCollisionMask = 0;
 
@@ -95,6 +105,8 @@ namespace Assets.Simulation.HexMap {
         #region from IHexGrid        
 
         public void Build(int cellCountX, int cellCountZ) {
+            Profiler.BeginSample("HexGrid.Build()");
+
             Clear();
 
             CellCountX = cellCountX;
@@ -119,6 +131,8 @@ namespace Assets.Simulation.HexMap {
             foreach(var chunk in Chunks) {
                 chunk.Refresh(TerrainRefreshType.All);
             }
+
+            Profiler.EndSample();
         }
 
         public void Clear() {
@@ -134,7 +148,8 @@ namespace Assets.Simulation.HexMap {
                 MapChunkPool.Despawn(chunk);
             }
 
-            chunks = null;
+            chunks     = null;
+            castChunks = null;
 
             HexMeshFactory.Destroy(RiverSurfaceMesh);
             HexMeshFactory.Destroy(FarmMesh);
@@ -306,11 +321,15 @@ namespace Assets.Simulation.HexMap {
         #endregion
 
         private void CreateCells() {
+            Profiler.BeginSample("CreateCells()");
+
             for(int z = 0, i = 0; z < CellCountZ; ++ z) {
                 for(int x = 0; x < CellCountX; ++x) {
                     CreateCell(x, z, i++);
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private void CreateCell(int x, int z, int i) {
@@ -335,6 +354,8 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void CreateChunks() {
+            Profiler.BeginSample("CreateChunks()");
+
             float mapWidth  = CellCountX * RenderConfig.InnerRadius * 2    + RenderConfig.InnerRadius;
             float mapHeight = CellCountZ * RenderConfig.OuterRadius * 1.5f + RenderConfig.OuterRadius / 2f;
 
@@ -342,10 +363,11 @@ namespace Assets.Simulation.HexMap {
                 throw new InvalidOperationException("Attempting to create chunks when at least one chunk dimension is zero");
             }
 
-            int chunkCountX = Mathf.CeilToInt(mapWidth  / RenderConfig.ChunkWidth);
-            int chunkCountZ = Mathf.CeilToInt(mapHeight / RenderConfig.ChunkHeight);
+            ChunkCountX = Mathf.CeilToInt(mapWidth  / RenderConfig.ChunkWidth);
+            ChunkCountZ = Mathf.CeilToInt(mapHeight / RenderConfig.ChunkHeight);
 
-            chunks = new MapChunk[chunkCountX, chunkCountZ];
+            chunks = new MapChunk[ChunkCountX, ChunkCountZ];
+            castChunks = null;
 
             int chunkIndexX = 0, chunkIndexZ = 0;
 
@@ -362,13 +384,13 @@ namespace Assets.Simulation.HexMap {
                 }
             }
 
-            for(chunkIndexZ = 0; chunkIndexZ < chunkCountZ; chunkIndexZ++) {
-                for(chunkIndexX = 0; chunkIndexX < chunkCountX; chunkIndexX++) {
+            for(chunkIndexZ = 0; chunkIndexZ < ChunkCountZ; chunkIndexZ++) {
+                for(chunkIndexX = 0; chunkIndexX < ChunkCountX; chunkIndexX++) {
 
                     var centerChunk = chunks[chunkIndexX, chunkIndexZ];
 
-                    Terrain northNeighbor = chunkIndexZ < chunkCountZ - 1 ? chunks[chunkIndexX,     chunkIndexZ + 1].Terrain : null;
-                    Terrain eastNeighbor  = chunkIndexX < chunkCountX - 1 ? chunks[chunkIndexX + 1, chunkIndexZ    ].Terrain : null;
+                    Terrain northNeighbor = chunkIndexZ < ChunkCountZ - 1 ? chunks[chunkIndexX,     chunkIndexZ + 1].Terrain : null;
+                    Terrain eastNeighbor  = chunkIndexX < ChunkCountX - 1 ? chunks[chunkIndexX + 1, chunkIndexZ    ].Terrain : null;
                     Terrain southNeighbor = chunkIndexZ > 0               ? chunks[chunkIndexX,     chunkIndexZ - 1].Terrain : null;
                     Terrain westNeighbor  = chunkIndexX > 0               ? chunks[chunkIndexX - 1, chunkIndexZ    ].Terrain : null;
 
@@ -377,6 +399,8 @@ namespace Assets.Simulation.HexMap {
                     );
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private MapChunk CreateChunk(float chunkX, float chunkZ, float width, float height) {
@@ -392,8 +416,26 @@ namespace Assets.Simulation.HexMap {
         }
 
         private void AttachChunksToCells() {
+            Profiler.BeginSample("AttachChunksToCells()");
+
             foreach(var cell in Cells) {
-                var overlappingChunks = Chunks.Where(chunk => chunk.DoesCellOverlapChunk(cell)).ToArray();
+                int chunkIndexX = Mathf.FloorToInt(cell.AbsolutePosition.x / RenderConfig.ChunkWidth);
+                int chunkIndexZ = Mathf.FloorToInt(cell.AbsolutePosition.z / RenderConfig.ChunkHeight);
+
+                var overlappingChunks = new List<IMapChunk>();
+
+                for(int i = -1; i <= 1; i++) {
+                    for(int j = -1; j <= 1; j++) {
+                        int candidateX = Math.Max(0, Math.Min(chunkIndexX + i, ChunkCountX - 1));
+                        int candidateZ = Math.Max(0, Math.Min(chunkIndexZ + j, ChunkCountZ - 1));
+
+                        IMapChunk candidate = chunks[candidateX, candidateZ];
+
+                        if(candidate.DoesCellOverlapChunk(cell)) {
+                            overlappingChunks.Add(candidate);
+                        }
+                    }
+                }
 
                 cell.AttachToChunks(overlappingChunks);
 
@@ -401,6 +443,8 @@ namespace Assets.Simulation.HexMap {
                     chunk.AttachCell(cell, chunk.IsInTerrainBounds2D(cell.AbsolutePositionXZ));
                 }
             }
+
+            Profiler.EndSample();
         }
 
         private HexCoordinates GetCoordinatesFromPosition(Vector3 position) {

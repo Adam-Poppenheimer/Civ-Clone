@@ -83,6 +83,8 @@ namespace Assets.Simulation.MapGeneration {
         #region from IHexMapGenerator
 
         public void GenerateMap(IMapTemplate template, IMapGenerationVariables variables) {
+            Profiler.BeginSample("GenerateMap()");
+
             CellClimateLogic.Reset(template);
 
             var oldRandomState = SetRandomState();
@@ -94,6 +96,7 @@ namespace Assets.Simulation.MapGeneration {
 
             PaintMap(oceansAndContinents, template);
             
+            Profiler.BeginSample("Place starting units");
             foreach(var civ in oceansAndContinents.HomelandDataForCiv.Keys) {
                 var civHomeland = oceansAndContinents.HomelandDataForCiv[civ];
 
@@ -101,8 +104,11 @@ namespace Assets.Simulation.MapGeneration {
                     civHomeland.StartingRegion, civ, template
                 );
             }
+            Profiler.EndSample();
 
             UnityEngine.Random.state = oldRandomState;
+
+            Profiler.EndSample();
         }
 
         #endregion
@@ -140,6 +146,8 @@ namespace Assets.Simulation.MapGeneration {
         }
 
         private OceanAndContinentData GenerateOceansAndContinents(IMapTemplate mapTemplate, IMapGenerationVariables variables) {
+            Profiler.BeginSample("GenerateOceansAndContinents()");
+
             var nonBarbarianCivs = CivFactory.AllCivilizations.Where(civ => !civ.Template.IsBarbaric).ToList();
 
             var partition = GridPartitionLogic.GetPartitionOfGrid(Grid, mapTemplate);
@@ -174,6 +182,8 @@ namespace Assets.Simulation.MapGeneration {
 
             var oceanData = OceanGenerator.GetOceanData(unassignedSections, oceanTemplate, mapTemplate, partition);
 
+            Profiler.EndSample();
+
             return new OceanAndContinentData() {
                 HomelandDataForCiv = homelandOfCivs,
                 OceanData          = oceanData
@@ -183,6 +193,8 @@ namespace Assets.Simulation.MapGeneration {
         private void PaintMap(
             OceanAndContinentData oceansAndContinents, IMapTemplate mapTemplate
         ) {
+            Profiler.BeginSample("PaintMap()");
+
             var nonBarbarianCivs = CivFactory.AllCivilizations.Where(civ => !civ.Template.IsBarbaric).ToList();
 
             foreach(var civ in nonBarbarianCivs) {
@@ -202,6 +214,8 @@ namespace Assets.Simulation.MapGeneration {
             }
 
             OceanGenerator.DistributeYieldAndResources(oceansAndContinents.OceanData);
+
+            Profiler.EndSample();
         }
 
         private List<MapSection> GetCoastForLandSection(
